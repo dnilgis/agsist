@@ -1,0 +1,250 @@
+# Benchmark gdu-calculator: Kansas Mesonet degree days
+# https://mesonet.k-state.edu/agriculture/degreedays/
+# fetched 2026-10-16T15:34:10Z, sha256 2142922982bfdf078ad455a1c2b551d0714b8e48287bc0fd705e0a3ca50e4779
+
+Kansas Mesonet · Degree Days
+
+Degree Days
+
+Page Tour
+
+Page Help
+
+Stations
+
+Calculation
+
+To
+
+Submit
+
+Equation
+
+Graph
+
+CSV Data
+
+Summary Data:
+
+Download
+
+Display
+
+Full Data Set:
+
+Download
+
+Display
+
+References
+
+Duncan, S., Fjell, D. Vanderlip, R. et. al. (2007). Corn Production Handbook. K-State Research and Extension.
+
+Midwest Regional Climate Center, Corn Stress Degree Days
+
+Vanderlip, R., Gerik, T., & Bean, B. W. (2003). Sorghum Growth and Development. Texas FARMER Collection.
+
+Whitworth, R.J., Davis, H., McCornack, B. (2011). Kansas Crop Pests: Alfalfa Weevils. K-State Research and Extension.
+
+Arguez, A., Applequist, S., Vose, R., Durre, I., Squires, M., Yin, X., (2011) NOAA's 1981-2010 Climate Normals Methodology of Temperature-related Normals.
+
+-
+
+Mesonet
+
+-
+
+Weather
+
+-
+
+Agriculture
+
+-
+
+Precipitation
+
+-
+
+Fire
+
+-
+
+About
+
+-
+
+Kansas Climate Office
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+Weather Data Library
+
+Kansas Mesonet
+
+-
+Kansas State University
+
+1004 Throckmorton
+
+Manhattan, KS 66506
+
+-
+
+785-532-3029
+
+-
+
+kansas-wdl@k-state.edu
+
+-
+
+Contact
+
+-
+
+Emergency
+
+-
+
+Statements and Disclosures
+
+-
+Kansas State University
+
+-
+Manhattan, KS 66506
+
+-
+785-532-6011
+
+-
+© Kansas State University
+
+GDU =
+Daily Max Air Temp + Daily Min Air Temp
+- Base Temp
+Base Temp:
+
+2
+
+Temperatures above ATmax will be set to ATmax
+
+ATmax:
+
+Temperatures below ATmin will be set to ATmin
+
+ATmin:
+
+Stress Degree Days =
+Daily Max Air Temp
+- Base Temp
+Base Temp:
+86
+
+Stress Degree Days below 0 are left at 0
+
+GDU =
+Daily Max Air Temp + Daily Min Air Temp
+- Base Temp
+Base Temp:
+
+2
+
+Temperatures below ATmin will be set to ATmin
+
+ATmin:
+
+GDU =
+Daily Max Air Temp + Daily Min Air Temp
+- Base Temp
+Base Temp:
+
+2
+
+Cooling Degrees =
+Daily Max Air Temp + Daily Min Air Temp
+- Base Temp
+Base Temp:
+
+2
+
+Heating Degrees = Base Temp -
+Daily Max Air Temp + Daily Min Air Temp
+Base Temp:
+
+2
+
+GDU =
+Daily Max Air Temp + Daily Min Air Temp
+- Base Temp
+Base Temp:
+
+2
+
+Temperatures above ATmax will be set to ATmax
+
+ATmax:
+
+Temperatures below ATmin will be set to ATmin
+
+ATmin:
+
+Apply

@@ -1,0 +1,406 @@
+# Benchmark gdu-calculator: Ag PhD GDU Calculator (iOS)
+# https://apps.apple.com/np/app/gdu-calculator/id850528308
+# fetched 2026-10-16T15:34:25Z, sha256 6129f7d5d70e7cfb52963fe358fe0dad4c70e554d953f33385a58af5d79752e2
+
+‎GDU Calculator App - App Store
+
+GDU Calculator
+
+Business
+
+Free · Designed for iPad. Not verified for macOS.
+
+-
+
+Age Rating
+
+4+
+Years
+
+-
+
+Category
+
+Business
+
+-
+
+Developer
+
+Ag PhD
+
+-
+
+Language
+
+EN
+English
+
+-
+
+Size
+
+59.3
+MB
+
+-
+
+-
+
+-
+
+-
+
+-
+
+The Ag PhD GDU Calculator is a reference for corn and wheat growers to determine the amount of Growing Degree Units for their crops in the current crop season. Includes day-by-day breakdown of temperature and GDU data and has the option for push notifications informing growers of potential problems in their fields based on their crop growth stage, as calculated by the crop GDU from planting date.
+
+Ratings & Reviews
+
+-
+This app has not received enough ratings or reviews to display an overview.
+
+Version History
+
+-
+
+Bug Fixes: Resolved minor issues to enhance reliability.
+Performance Improvements: Enjoy a faster and smoother app experience.or bug fix!App performance improvement.
+
+1.6.0 26/11/2024
+
+-
+
+We've resolved an issue that caused the app to crash for some users. Thank you for your patience and feedback!
+
+1.5.9 20/11/2024
+
+-
+
+We have added a local storage of data for fast calculations and better user experience.
+Minor bug fixing.
+
+1.5.8 26/08/2022
+
+-
+
+The app is stuck with a loading indicator when choosing the current day as the planted date. - Fixed
+Please share your reviews.
+
+1.5.7.1 18/08/2022
+
+-
+
+fixed an crash for year earlier then 2012.
+
+1.5.7 18/08/2022
+
+-
+
+We have fixed the error coming to users when calculating the previous or past years.
+minor bug fixing.
+
+1.5.6 07/08/2022
+
+-
+
+We have changed to most advanced version of GDU calculation.
+Minor bug fix.
+
+1.5.5 08/07/2022
+
+-
+
+GDU calculation is working now.
+Minor bug fixes and UI enhancement.
+Calculation for previous years up-to January 2010 will be working now.
+
+1.5.4 12/05/2022
+
+-
+
+Minor bug fix
+
+1.5.3 01/05/2020
+
+-
+
+Bug fixed in Charts, Now showing correct calculated GDU
+Minor bug fixing
+
+1.5.2 29/04/2020
+
+-
+
+Support for IOS 13 and later.
+Fixed minor bugs.
+
+1.5.1 10/03/2020
+
+-
+
+- Minor bug fix.
+- Support for latest devices.
+
+1.5 04/12/2018
+
+-
+
+Minor bug fix
+
+1.4 29/05/2017
+
+-
+
+Minor bug fix
+
+1.3 16/05/2017
+
+-
+
+minor bug fix
+
+1.2 05/05/2017
+
+-
+
+Improved all features.
+
+1.1 14/05/2016
+
+-
+
+1.0 29/04/2014
+
+Bug Fixes: Resolved minor issues to enhance reliability.
+Performance Improvements: Enjoy a faster and smoother app experience.or bug fix!App performance improvement.
+
+Version 1.6.0 26/11/2024
+
+App Privacy
+
+The developer, Ag PhD, indicated that the app’s privacy practices may include handling of data as described below. This information has not been verified by Apple. For more information, see the developer’s privacy policy .
+
+To help you better understand the developer’s responses, see Privacy Definitions and Examples .
+
+Privacy practices may vary based, for example, on the features you use or your age. Learn More
+
+Data Not Collected
+
+The developer does not collect any data from this app.
+
+The developer, Ag PhD, indicated that the app’s privacy practices may include handling of data as described below. For more information, see the developer’s privacy policy .
+
+-
+
+Data Not Collected
+
+The developer does not collect any data from this app.
+
+Privacy practices may vary based, for example, on the features you use or your age. Learn More
+
+Accessibility
+
+The developer has not yet indicated which accessibility features this app supports. Learn More
+
+Information
+
+Provider
+
+IFA Productions Inc.
+
+Size
+
+59.3 MB
+
+Category
+
+Business
+
+Compatibility
+
+Requires iOS 13.0 or later.
+
+- iPhone
+Requires iOS 13.0 or later.
+
+-
+
+- iPad
+Requires iPadOS 13.0 or later.
+
+-
+
+- iPod touch
+Requires iOS 13.0 or later.
+
+-
+
+- Mac
+Requires macOS 11.0 or later and a Mac with Apple M1 chip or later.
+
+-
+
+- Apple Vision
+Requires visionOS 1.0 or later.
+
+Languages
+
+English
+
+Age Rating
+
+4+
+
+-
+4+
+
+-
+Learn More
+
+Copyright
+
+© 2014 IFA Productions, Inc
+
+-
+Privacy Policy
+
+More by Ag PhD
+
+-
+
+View
+
+Nutrient Deficiencies by Crop
+
+Reference
+
+-
+
+View
+
+Fertilizer Removal by Crop
+
+Reference
+
+-
+
+View
+
+Ag PhD Field Guide
+
+Reference
+
+-
+
+View
+
+Planting Population Calculator
+
+Reference
+
+-
+
+View
+
+Spray Tips Guide
+
+Business
+
+-
+
+View
+
+Ag PhD Modes of Action
+
+Reference
+
+-
+
+View
+
+AcresTV
+
+Committed to Agriculture
+
+-
+
+View
+
+Soybean Diseases
+
+Reference
+
+-
+
+View
+
+Corn Diseases
+
+Reference
+
+-
+
+View
+
+Drainage Tile Calculator
+
+Reference
+
+-
+
+View
+
+Harvest Loss Calculator
+
+Reference
+
+You Might Also Like
+
+-
+
+View
+
+Taranis mobile
+
+AI Crop Intelligence App
+
+-
+
+View
+
+Sirrus
+
+Productivity
+
+-
+
+View
+
+Agvance SKY Mapping
+
+Business
+
+-
+
+View
+
+FarmQA - Crop Scouting & more
+
+Scout / Advise / Analyze
+
+-
+
+View
+
+Panorama by Precision Planting
+
+Powerful agronomic insights
+
+-
+
+View
+
+Commodity Classic 2026
+
+Business

@@ -1,0 +1,1441 @@
+
+
+<!DOCTYPE html>
+<html id="mainHTML" xmlns="http://www.w3.org/1999/xhtml" lang="en" class="desktop">
+<head>
+
+    
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfFdOgJV2xzEd030B9c-PEkCxzfJEisKY&libraries=geometry,places"></script>
+    
+    <script src="https://unpkg.com/@googlemaps/markerwithlabel/dist/index.min.js"></script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Golden Harvest",
+  "url": "https://www.goldenharvestseeds.com",
+  "logo": "https://assets.syngentaebiz.com/images/media/gh-logo.svg",
+  "sameAs": [
+    "https://www.facebook.com/GldnHarvest/",
+    "https://x.com/gldnharvest",
+    "https://www.instagram.com/goldenharvestseeds",
+    "https://www.youtube.com/@GoldenHarvestSeeds"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "url": "https://www.goldenharvestseeds.com/contact-us"
+  }
+}
+</script><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /><title>
+	Golden Harvest | Calculating GDU and Corn Seed Germination
+</title><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="theme-color" content="#ffffff" /><link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" /><link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" rel="stylesheet" /><link rel="stylesheet" type="text/css" href="../../styles/fontawesome.min.css" /><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/brands.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.css" /><link rel="stylesheet" type="text/css" href="../../styles/select2.min.css" /><link rel="stylesheet" type="text/css" href="../../styles/cookiebot.css" /><link rel="stylesheet" type="text/css" href="../../styles/m-2021.css?v=1.8" /><link rel="stylesheet" type="text/css" href="../../styles/n-2021.css?v=1.31" /><link rel="stylesheet" type="text/css" href="../../styles/harvest-popup.css?v=1.8" />
+   
+    <style>
+        @media print {
+            nav.megaMenu, a.skip-navigation, #site-survey {
+                display: none !important;
+            }
+
+            footer p, footer a {
+                color: #000 !important;
+            }
+
+            .social-links {
+                position: relative;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+            }
+
+            footer .social-links a {
+                font-size: 12px;
+                text-align: center;
+                display: block;
+                margin: 0;
+            }
+
+                footer .social-links a i {
+                    display: block;
+                }
+        }
+
+        #regPopUpDisplay .popup {
+            position: relative;
+            width: 100%; /* Full width on smaller screens */
+            max-width: 36em; /* Fixed max width on larger screens */
+            margin-left: auto !important;
+            margin-right: auto !important; /* Center the popup */
+        }
+
+        #regPopUpDisplay .cookiePopupClose {
+            position: absolute;
+            top: -10px;
+            right: 35px;
+            z-index: 1000;
+            color: black !important;
+            font-size: 14px !important;
+            background-color: white;
+            border: none;
+            margin-right: 15px;
+            margin-top: 11px;
+        }
+
+        #regPopUpDisplay .modal-content {
+            border-radius: 0px;
+            max-width: 100%;
+        }
+
+        @media (max-width: 576px) {
+            #regPopUpDisplay .popup {
+                margin-top: 4em !important;
+                margin-right: 1em !important;
+            }
+        }
+
+        .fab.fa-twitter::before {
+            content: "\1D54F" !important;
+            font-size: 1.2em;
+        }
+
+        @media screen and (max-width: 767px) {
+            .responsive-image {
+                content: url('/images/aia-registration/GH-25002-AiAPopUp-Mobile.ai.gif') !important;
+            }
+
+            #regPopUpDisplay .cookiePopupClose {
+                right: -10px;
+            }
+        }
+
+        @media screen and (min-width: 390px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 6px;
+            }
+        }
+
+        @media screen and (min-width: 412px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 26px;
+            }
+        }
+
+        @media screen and (min-width: 414px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 30px;
+            }
+        }
+
+        @media screen and (min-width: 430px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 44px;
+            }
+        }
+
+        @media screen and (min-width: 450px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 73px;
+            }
+        }
+
+        @media screen and (min-width: 500px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 117px;
+            }
+        }
+
+        @media screen and (min-width: 550px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 170px;
+            }
+        }
+
+        @media screen and (min-width: 600px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 212px;
+            }
+        }
+
+        @media screen and (min-width: 650px) {
+            #regPopUpDisplay .cookiePopupClose {
+                right: 240px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .responsive-image {
+                content: url('/images/aia-registration/GH-25002-AiAPopUp-Desktop.ai.gif') !important;
+            }
+
+            #regPopUpDisplay .cookiePopupClose {
+                right: 35px;
+            }
+        }
+    </style>
+
+
+    <!-- establish dataLayer -->
+    <script>
+        dataLayer = [];
+    </script>
+    <!-- Cookiebot: must load before GTM so Consent Mode defaults are set first -->
+    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="e794a8de-4d02-4da5-a511-20861ab6def8" data-blockingmode="auto" type="text/javascript"></script>
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NFPP47T');</script>
+    <!-- End Google Tag Manager -->
+
+
+    
+    
+    <link rel="stylesheet" media="print" href='/newsarticle/print-articles.css' />
+    <link rel="stylesheet" href='/newsarticle/news-articles.css?v=1.3' />
+    <meta property="og:url" content="https://www.goldenharvestseeds.com/agronomy/articles/gdu-calculator-for-corn-germination" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Calculating GDU and Corn Seed Germination" />
+<meta property="og:description" content="Explore the growing degree units (GDU) calculator to help track corn growth." />
+<meta property="og:image" content="https://assets.syngentaebiz.com/images/CornGermination_Blog.jpg" />
+       
+          
+    
+    
+      <meta name="robots" content="index, follow" />
+    <style>
+/*            .tts-player {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        margin: 16px 0;
+        background: #f3f6f4;
+        border: 1px solid #d5ddd8;
+        border-radius: 8px;
+    }
+
+    .tts-player button,
+    .tts-player select {
+        min-height: 40px;
+        padding: 8px 12px;
+        border: 1px solid #777;
+        border-radius: 5px;
+        background: white;
+        cursor: pointer;
+    }
+
+    .tts-player button:hover {
+        background: #e5f0e8;
+    }
+
+    #ttsStatus {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    @media (max-width: 600px) {
+        .tts-player {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .tts-player button,
+        .tts-player select {
+            width: 100%;
+        }
+    }*/
+    .article-audio-player {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    width: 100%;
+    max-width: 980px;
+    margin: 24px 0;
+    font-family: Arial, sans-serif;
+}
+
+.read-time {
+    display: flex;
+    flex-direction: column;
+    min-width: 92px;
+    color: #5d7620;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.play-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    border: 0;
+    border-radius: 50%;
+    background: #DF6420;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.play-button:hover {
+    background: #DF6420;
+    transform: scale(1.05);
+}
+
+.audio-track {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-height: 102px;
+    flex: 1;
+    padding: 0 22px 0 42px;
+    background: #f7f7f6;
+    color: #222;
+    width:50%;
+}
+
+#audioTime {
+    min-width: 38px;
+    font-size: 20px;
+    white-space: nowrap;
+}
+
+.waveform {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+    height: 38px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.wave-bar {
+    width: 3px;
+    min-width: 3px;
+    background: #c9c9c9;
+    border-radius: 2px;
+}
+
+.wave-bar.active {
+    background: #DF6420;
+}
+
+.speed-button {
+    border: 0;
+    background: transparent;
+    color: #333;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+@media (max-width: 650px) {
+    .article-audio-player {
+        gap: 12px;
+    }
+
+    .read-time {
+        min-width: 58px;
+        font-size: 14px;
+    }
+
+    .play-button {
+        width: 48px;
+        height: 48px;
+        flex-basis: 48px;
+        font-size: 20px;
+    }
+
+    .audio-track {
+        min-height: 78px;
+        gap: 10px;
+        padding: 0 12px;
+    }
+
+    #audioTime {
+        min-width: 34px;
+        font-size: 14px;
+    }
+
+    .waveform {
+        gap: 2px;
+        height: 30px;
+    }
+
+    .wave-bar {
+        width: 2px;
+        min-width: 2px;
+    }
+}
+    </style>
+<meta name="Description" content="Explore the growing degree units (GDU) calculator to help track corn growth." /></head>
+<body>
+    <form method="post" action="./gdu-calculator-for-corn-germination" id="aspnetForm">
+<div class="aspNetHidden">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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" />
+</div>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="3027317B" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="zK2YXwbgcEuWmbO0DaQVf9n5c4jG7eyiV3fib01dLgiXjua/r4Aegr9YjZMG+4IfpqkukBBO1KWVjG3uLGK11+O1Fc/asqHjCxVNWONSTmZPXyynWz2eTGBIlNRIlF/A" />
+</div>
+        <input type="hidden" name="ctl00$hdnzipCodeAPIKey" id="hdnzipCodeAPIKey" value="KGBJ13KLRARPGINLGT68" />
+        <span id="zipCode" style="display: none"></span>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NFPP47T"
+                height="0" width="0" style="display: none; visibility: hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        <!-- COPM 519 AIA PopUp for Registration -->
+        <!-- Hidden automatic Registration PopUp button -->
+        <a id="registerPopUp" href="#" data-toggle="modal" data-target="#registerModel" data-keyboard="false" data-backdrop="static" style="display: none">BUTTON</a>
+
+        <!-- Registartion modal -->
+        <div id="regPopUpDisplay">
+            <div class="modal fade margin-bottom-10" id="registerModel" tabindex="-1" role="dialog" aria-labelledby="registerModel" aria-hidden="true">
+                <div class="popupModalWidth modal-dialog modal-lg" role="document">
+                    <div class="modal-body">
+                        <div class="popup">
+                            <a target="_blank" href="/aiaregistration" onclick="document.getElementById('regPopUpDisplay').style.display='none';sessionStorage.setItem('firstVisit', '1');$('.modal-backdrop').removeClass('in');">
+                                <img class="modal-content responsive-image" src="/images/aia-registration/GH-25002-AiAPopUp-Desktop.ai.gif" />
+                            </a>
+                            <button onclick="document.getElementById('regPopUpDisplay').style.display='none';sessionStorage.setItem('firstVisit', '1');" type="button" class="cookiePopupClose" data-dismiss="modal" aria-label="Close">X</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Registration modal-->
+        
+
+
+        <div id="pc-overflow">
+            <a class="skip-navigation" href="#">Skip to Main Content</a>
+
+            <!-- begin nav -->
+            <nav class="megaMenu">
+                <div class="megaMenu-inner">
+                    <div class="container megaMenu-container">
+                        <div class="megaMenu-wrapper">
+                            <div class="megaMenu-logo">
+                                <a href="/" class="gh-logo">
+                                    <img src="https://assets.syngentaebiz.com/images/media/gh-logo.svg" alt="Golden Harvest Logo" />
+                                </a>
+
+                                <button type="button" class="toggle-megaMenu">
+
+                                    <img class="menu-icon-closed" src="https://assets.syngentaebiz.com/images/media/gh-icon-mobile-menu.svg" />
+
+                                    <span style="display: none;" class="icon-bar"></span>
+                                    <span style="display: none;" class="icon-bar"></span>
+                                    <span style="display: none;" class="icon-bar"></span>
+
+                                </button>
+                            </div>
+
+                            <ul class="megaMenu-links">
+                                <li class="megaMenu-has-dropdown" data-name="products">
+                                    <a>Products</a>
+                                    <i class="fas fa-angle-right"></i>
+                                </li>
+                                <li class="megaMenu-has-dropdown" data-name="agronomy">
+                                    <a>Agronomy</a>
+                                    <i class="fas fa-angle-right"></i>
+                                </li>
+                                <li class="megaMenu-has-dropdown" data-name="services">
+                                    <a>Programs & Services</a>
+                                    <i class="fas fa-angle-right"></i>
+                                </li>
+                                <li class="megaMenuLink megaMenuLink--connect hide-desktop">
+                                    <a href="/emailpreference/sign-up">Connect
+                                    </a>
+                                </li>
+                                <li class="megaMenuLink megaMenuLink--search hide-desktop">
+                                    <span class="megaMenuSearch">
+                                        <img src="https://assets.syngentaebiz.com/images/media/gh-icon-search-black.svg" alt="Magnifying Glass" class="icon-magnifying-glass" />
+                                    </span>
+                                    <div class="megaMenuSearch-wrapper">
+                                        <input class="searchBox form-control allResults mobileSearchBox" id="txtMobileSearch1" type="search" placeholder="Search..." maxlength="2048" autocomplete="off" autocorrect="off" aria-label="Search" />
+                                        <span class="icon-close">&times;</span>
+                                        <img id="txtMobileSearchIcon" src="https://assets.syngentaebiz.com/images/media/icon_magnifying-glass-orange.svg" alt="Magnifying Glass" class="icon-magnifying-glass" />
+
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <ul class="megaMenu-links hide-mobile">
+                                <li class="megaMenuLink megaMenuLink--connect">
+                                    <a href="/emailpreference/sign-up">Connect
+                                    </a>
+                                </li>
+                                <li class="megaMenuLink megaMenuLink--search">
+                                    <span class="megaMenuSearch megaMenuSearchDesktop">
+                                        <img src="https://assets.syngentaebiz.com/images/media/gh-icon-search-black.svg" alt="Magnifying Glass" class="icon-magnifying-glass" />
+                                    </span>
+                                    <div class="megaMenuSearch-wrapper megaMenuSearchWrapperDesktop">
+                                        <img src="https://assets.syngentaebiz.com/images/media/icon_magnifying-glass-orange.svg" alt="Magnifying Glass" class="icon-magnifying-glass" />
+                                        <input class="searchBox form-control allResults mobileSearchBox" id="txtMobileSearch2" type="search" placeholder="Search" maxlength="2048" autocomplete="off" autocorrect="off" aria-label="Search" />
+                                        <span class="icon-close iconCloseDesktop">&times;</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                <ul class="megaMenu-dropdowns">
+                    
+                    <li class="megaMenu-dropdown-list animate-to-right" data-dropdown="products">
+                        <ul class="megaMenu-submenus">
+                            
+
+                            <li class="megaMenu-submenu megaMenu-submenu--links hide-desktop">
+                                <span class="megaMenu-mobile-nav" data-mobile-nav="products"><i class="fas fa-angle-left"></i>Products</span>
+                                <a href="/products/corn">Corn</a>
+                                <a href="/products/soybeans">Soybeans</a>
+                                <a href="/products">Seed Finder</a>
+                                <a href="/yield-results">Yield Results</a>
+                                <a href="/seed-guide">Seed Guide</a>
+                                <a href="/innovation">Research & Development</a>
+                                <a href="/products/corn/wild-north">Hybrids Built for the North</a>
+                            </li>
+
+                            <li class="megaMenu-submenu megaMenu-submenu--links animate-to-right hide-mobile">
+                                <span class="megaMenu-mobile-nav" data-mobile-nav="return-corn"><i class="fas fa-angle-left"></i>Products&nbsp;&nbsp;<i class="fas fa-angle-right"></i>&nbsp;&nbsp;Corn</span>
+                                <a href="/products/corn">Corn</a>
+                                <a href="/products/soybeans">Soybeans</a>
+                                <a href="/products">Seed Finder</a>
+                                <a href="/yield-results">Yield Results</a>
+                            </li>
+
+                            <li class="megaMenu-submenu megaMenu-submenu--links animate-to-right hide-mobile">
+                                <span class="megaMenu-mobile-nav" data-mobile-nav="return-corn"><i class="fas fa-angle-left"></i>Products&nbsp;&nbsp;<i class="fas fa-angle-right"></i>&nbsp;&nbsp;Corn</span>
+                                <a href="/seed-guide">Seed Guide</a>
+                                <a href="/innovation">Research & Development</a>
+                                <a href="/products/corn/wild-north">Hybrids Built for the North</a>
+                            </li>
+
+
+                            <li class="megaMenu-submenu megaMenu-submenu--figure">
+                                <a href="/Seed-guide">
+                                    <figure>
+                                        <img style="width: 228px; height: 129px;" src="https://assets.syngentaebiz.com/images/media/gh-nav-2027-seed-guide@2x.jpg" alt="Seed Guide Thumbnail" />
+                                        <figcaption><span>View 2027 Seed Guide <i class="fas fa-angle-right"></i></span></figcaption>
+                                    </figure>
+                                </a>
+                            </li>
+
+                            
+                            
+
+                            
+                            
+
+                            
+                        </ul>
+                    </li>
+
+                    
+                    <li class="megaMenu-dropdown-list animate-to-right" data-dropdown="agronomy">
+                        <ul class="megaMenu-submenus">
+
+                            <li class="megaMenu-submenu megaMenu-submenu--links hide-desktop">
+                                <span class="megaMenu-mobile-nav" data-mobile-nav="agronomy"><i class="fas fa-angle-left"></i>Agronomy</span>
+                                <a href="/agronomy-in-action">Agronomy in Action</a>
+                                
+                                <a href="/agronomy/articles">Articles</a>
+                                <a href="/agronomy/insight-series">Insight Series</a>
+                                <a href="/agronomy/research-sites">Research Sites</a>
+                                <a href="/agronomy/sign-up">Sign Up</a>
+                            </li>
+
+                            <li class="megaMenu-submenu megaMenu-submenu--links animate-to-right hide-mobile">
+                                <a href="/agronomy-in-action">Agronomy in Action</a>
+                                
+                                <a href="/agronomy/articles">Articles</a>
+                                <a href="/agronomy/insight-series">Insight Series</a>
+                            </li>
+
+                            <li class="megaMenu-submenu megaMenu-submenu--links animate-to-right hide-mobile">
+                                <a href="/agronomy/research-sites">Research Sites</a>
+                                <a href="/agronomy/sign-up">Sign Up</a>
+                            </li>
+
+
+
+
+                            
+                        </ul>
+                    </li>
+
+                    
+                    <li class="megaMenu-dropdown-list animate-to-right" data-dropdown="services">
+                        <ul class="megaMenu-submenus">
+                            <li class="megaMenu-submenu megaMenu-submenu--links">
+                                <span class="megaMenu-mobile-nav" data-mobile-nav="services"><i class="fas fa-angle-left"></i>Programs & Services</span>
+                                <a href="/ghx">GHX</a>
+                                <a href="/goldenadvantage">Golden Advantage</a>
+                                <a href="/gh-reward/default.aspx">Golden Rewards</a>
+                                
+                            </li>
+                            
+
+                            <li class="megaMenu-submenu megaMenu-submenu--figure">
+                                <a href="/goldenadvantage">
+                                    <figure>
+                                        <img style="width: 228px; height: 129px;" src="https://assets.syngentaebiz.com/images/media/gh-nav-golden-advantage@2x.jpg" />
+                                        
+                                        <figcaption>Learn More </figcaption>
+                                    </figure>
+                                </a>
+                            </li>
+
+                            
+
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <!-- end nav -->
+
+
+            <!-- BEGIN Page Content -->
+            <div class="page-content">
+                <div id="main-content"></div>
+                
+           <section class="breadcrumb-wrapper hidden-sm hidden-xs">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/">Home</a>
+
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="/agronomy">Agronomy</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <a href="#">Calculating GDU and Corn Seed Germination</a>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>   
+    <div id="article-page">
+    <div id="mainBody_article" class="container add-btm agronomy-type"> 
+        <div class="row">
+            <!-- MAIN CONTENT -->
+        
+         <section id="article-section">
+            <div class="col-sm-8">
+
+                <!-- Print only header -->
+                <div class="print-only print-header">
+                    <div class="row">
+                        <div class="col-xs-5"><img class="print-header-gh-logo" src='/Images/global/golden_harvest_logo.svg' alt="Golden Harvest logo"/></div>
+                        <div class="col-xs-3"><img class="print-header-orange-line" src='/Images/print/orange-swatch.png' alt=""/></div>
+                        <div class="col-xs-4"><img class="print-header-aia-logo" src='/Images/print/agronomy-in-action.svg' alt="agronomy in action"/></div>
+                    </div>
+                </div>
+
+                <div id="mainBody_mainHeading" class="page-heading"><h1>Calculating GDU and Corn Seed Germination</h1><h3>Author: Syngenta Agronomist</h3><h6>Categories: CORN MANAGEMENT, Growing, CORN<h6></div>
+
+               
+
+
+               
+
+                <div id="social-share">
+                    <div class="article-share">
+                        <span>Share:</span>
+                        
+                        <a class="facebook-share" data-sharing="facebook"><i class="fab fa-facebook-f"></i></a> 
+                        
+                        <a class="twitter-share" data-sharing="twitter"><i class="fab fa-twitter"></i></a> 
+                        
+                        <a class="email-share" data-sharing="email"><i class="fa fa-envelope"></i></a> 
+                        
+                        
+                        
+                    </div>
+
+                    <section id="article-content">
+                        <div id="mainBody_mainArticle"><h2><strong>Maximize Corn Yields by Mastering Growing Degree Units</strong></h2><p>Growing Degree Units (GDUs) are essential for predicting corn development stages from planting through harvest. Understanding how to calculate and use GDUs helps optimize planting timing, estimate germination and emergence, determine when to apply fungicides, and fine-tune harvest planning.</p><br><h2><strong>What Are Growing Degree Units?</strong></h2><p>GDUs (also known as Growing Degree Days or GDDs) measure heat accumulation that drives corn development.</p><p>The basic formula to calculate GDUs for corn is:</p><p>GDU = [(Tmax + Tmin) / 2] - 50</p><ul style="list-style:none; padding-left:0; line-height:1.6;"><li><strong>✓</strong>&nbsp;&nbsp;<strong>Tmax</strong> = Maximum daily temperature (°F )</li><li><strong>✓</strong>&nbsp;&nbsp;<strong>Tmin</strong> = Minimum daily temperature (°F )</li><li><strong>✓</strong>&nbsp;&nbsp;<strong>Tbase</strong> = Base temperature (50°F for corn)</li></ul><br><h2><strong>Remember these key adjustments when calculating:</strong></h2><ul style="list-style:none; padding-left:0; line-height:1.6;"><li><strong>✓</strong>&nbsp;&nbsp;If <strong>Tmax</strong> exceeds 86°F , use 86°F as the maximum temperature</li><li><strong>✓</strong>&nbsp;&nbsp;If <strong>Tmin</strong> falls below 50°F , use 50°F as the minimum temperature</li><li><strong>✓</strong>&nbsp;&nbsp;If the calculated GDU is negative, record it as zero</li></ul><br><h2><strong>Use these key adjustments to ensure accurate calculations:</strong></h2><ul><li>Cap maximum temperature at 86°F</li><li>Set minimum temperature at 50°F</li><li>Record negative values as zero</li></ul><p>These limits reflect corn's biological needs for rest and growth limitations.</p> &nbsp;<h2><strong>Daily GDU calculation examples:</strong></h2><ol><li><strong>Ideal Spring Day</strong><ul><li>High: 75°F, Low: 55°F</li><li>GDU = [(75 + 55) / 2] − 50 = 15 GDUs</li></ul></li><li><strong>Cool Day, adjustment needed</strong><ul><li>High: 68°F, Low: 45°F</li><li>Adjusted Low: 50°F (use base temperature)</li><li>GDU = [(68 + 50) / 2] − 50 = 9 GDUs</li></ul></li><li><strong>Hot Summer Day (cap applied)</strong><ul><li>High: 92°F, Low: 68°F</li><li>Adjusted High: 86°F (use cap)</li><li>GDU = [(86 + 68) / 2] − 50 = 27 GDUs</li></ul></li><li><strong>Cold Day (no accumulation)</strong><ul><li>High: 48°F, Low: 38°F</li><li>Both adjusted to 50°F</li><li>GDU = [(50 + 50) / 2] − 50 = 0 GDUs</li></ul></li></ol> &nbsp;<h2><strong>What Conditions Are Needed for Successful Germination?</strong></h2><p>Critical requirements include:</p><ul><li>Soil temperature above 50°F at 2-inch depth</li><li>Good seed-to-soil contact</li><li>Available soil moisture</li><li>90–120 accumulated GDUs</li><li>Well-aerated soil (saturated soils minimize aeration)</li></ul> &nbsp;<h2><strong>Example: How To Manage Early Season Planting Risks</strong></h2><p><strong>The Scenario:</strong> Cold rain is forecast during planting window.</p><p><strong>The Risks</strong>: Imbibitional chilling (uptake of cold first moisture) could cause poor emergence by shocking the seed, leading to seedling abortion and/or uneven emergence. Waiting too long to plant could cause scheduling or management complications.</p><h3 style="font-style:normal;"><strong>Possible Plan of Action:</strong></h3><ul><li>Stop planting 12 hours before cold rain is forecast</li><li>Monitor soil temperature trends</li><li>Resume planting only when soil stays above 50°F</li></ul> &nbsp;<h2><strong>Key Takeaways</strong></h2><p>The most important points to remember: Track GDU accumulation to predict crop development stages, adjust calculations using temperature limits, and protect emerging crops by avoiding planting before cold rains. This systematic approach helps maximize yield potential through precise timing of planting and management activities.</p><p>These calculations are being provided to you for information purposes only. No guarantee is given or responsibility taken by Syngenta for the accuracy of the calculations or the applicability to your particular circumstances.</p> &nbsp;<p>© 2026 Syngenta. The Syngenta logo is a trademark of a Syngenta Group Company.</p></div>
+                    </section>
+
+              
+
+                   <div class="social-follow">
+                        
+                    </div>
+                </div>
+
+                <!-- Print only footer -->
+                <div class="print-only print-footer">
+                    <div class="row">
+                        <div class="col-xs-12"><p>For more information about Golden Harvest seeds, contact your Golden Harvest Seed Advisor or visit <a href="https://www.goldenharvestseeds.com">www.goldenharvestseeds.com</a></p></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3"><img class="print-header-gh-logo" src='/Images/print/goldenharvest-logo-stacked.svg' alt="Golden Harvest logo stacked"/></div>
+                        <div class="col-xs-9"><p class="legal-copy"><i>All photos are either the property of Syngenta or are used with permission.</i><br />&copy;<script type="text/javascript">document.write(new Date().getFullYear());</script> Syngenta. <b>Important:</b> Always read and follow label instructions. Some products may not be registered for sale or use in all states or counties. Please check with your local extension service to ensure registration status. Golden Harvest<sup>&reg;</sup>, is a trademark of a Syngenta Group Company. All other trademarks are the property of their respective owners.</p></div>
+                    </div>
+                </div>
+
+            </div>
+
+                <!-- SIDEBAR -->
+            <div class="col-sm-4 sidebar">
+
+                    <div id="mainBody_relatedArticles"><h2 class="orange pt-md">Related Articles</h2>
+<div class="article-list">
+<div class="hit-box sb-article-blurb img-left clearfix newAg"><div class="sb-article-image-cont" style="background-image: url(https://assets.syngentaebiz.com/images/Photo_Corn_kernel_BlackLayer.png);"></div><div class="sb-article-blurb-copy"><h4>Black Layer Development in Corn: Timing Your Harvest Right</h4><p>When corn is officially done growing it reaches a stage which is known as black layer. This developm&hellip;</p><a href="/agronomy/articles/black-layer-development-in-corn" class="newAg btn-default" stagename="" cropname="" title="black-layer-development-in-corn">Read More</a></div></div><div class="hit-box sb-article-blurb img-left clearfix newAg"><div class="sb-article-image-cont" style="background-image: url(https://assets.syngentaebiz.com/images/Steven-Heightchew.jpg);"></div><div class="sb-article-blurb-copy"><h4>Meet Agronomist - Steven Heightchew</h4><p>Steven has dreamed of a life in agriculture since he was a child growing up in Owen County Kentucky.&hellip;</p><a href="/agronomy/articles/agronomist-steven-heightchew" class="newAg btn-default" stagename="" cropname="" title="agronomist-steven-heightchew">Read More</a></div></div><div class="hit-box sb-article-blurb img-left clearfix newAg"><div class="sb-article-image-cont" style="background-image: url(https://assets.syngentaebiz.com/images/Cornrootworm_TN2.png);"></div><div class="sb-article-blurb-copy"><h4>Durastak Trait Technology: Taking Corn Rootworm Protection to the Next Level</h4><p>Durastak Trait Technology: Taking Corn Rootworm Protection to the Next Level&hellip;</p><a href="/agronomy/articles/durastak-taking-corn-rootworm-protection-to-the-next-level" class="newAg btn-default" stagename="" cropname="" title="Durastak-Taking-Corn-Rootworm-Protection-to-the-Next-Level">Read More</a></div></div></div>
+</div>
+
+
+                   
+                </div>
+        </section>
+        
+        
+            </div>
+        </div>
+    </div>
+    <div class="qualtrics-page-category hidden" id="Category">GHS News</div>
+   
+ 
+
+
+            </div>
+
+            
+
+            <footer id="globalFooter">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <p class="footer-connect">CONNECT</p>
+                            
+                            
+                            <ul>
+                                <li>
+                                    <a href="https://www.goldenharvestseeds.com/contact-us">Get Connected</a><br />
+                                </li>
+                                <li>
+                                    <a href="https://www.goldenharvestseeds.com/news">Media</a>
+                                </li>
+                            </ul>
+
+
+                            <div class="social-links">
+                                <a href="https://www.facebook.com/GldnHarvest/" target="_blank"><i class="fab fa-facebook orange"></i></a>
+                                <a href="https://twitter.com/gldnharvest" target="_blank"><i class="fab fa-twitter orange"></i></a>
+                                <a href="https://www.instagram.com/goldenharvestseeds" target="_blank"><i class="fab fa-instagram orange"></i></a>
+                                <a href="https://www.youtube.com/channel/UCzDPlbMu8QTz4gOh_AzXpow" target="_blank"><i class="fab fa-youtube orange"></i></a>
+
+                            </div>
+
+
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <p class="footer-abt">ABOUT</p>
+                            <ul>
+
+                                <li><a href="https://www.goldenharvestseeds.com/history">History</a></li>
+
+                                <li><a href="https://www.goldenharvestseeds.com/golden-harvest-seed-advisor">Become a Seed Advisor</a></li>
+                                <li><a href="https://www.goldenharvestseeds.com/seed-guide">Seed Guide</a></li>
+                                <li><a href="https://myacreone.com/acreone/login" target="_blank">AcreOne&nbsp;<img class="img-responsive" src="https://assets.syngentaebiz.com/images/media/gh-icon-external-link-black.svg" width="12" /></a></li>
+                                
+                                <li><a target="_blank" href="https://app.ghxseed.com/login">GHX Web Log-In&nbsp;<img src="https://assets.syngentaebiz.com/images/media/gh-icon-external-link-black.svg" class="img-responsive" width="12" /></a></li>
+                                <li><a href="https://jobs.syngenta.com/">Careers&nbsp;<img src="https://assets.syngentaebiz.com/images/media/gh-icon-external-link-black.svg" class="img-responsive" width="12" /></a></li>
+                            </ul>
+
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <p class="footer-lgl">LEGAL</p>
+
+                            <ul>
+                                <li><a target="_blank" href="https://www.syngenta-us.com/copyright.aspx">Copyright&nbsp;<img src="https://assets.syngentaebiz.com/images/media/gh-icon-external-link-black.svg" class="img-responsive" width="12"></a></li>
+                                <li><a target="_blank" href="https://www.syngenta-us.com/legal/useragreement.html">User Agreement&nbsp;<img src="https://assets.syngentaebiz.com/images/media/gh-icon-external-link-black.svg" class="img-responsive" width="12"></a></li>
+                                <li><a target="_blank" href="https://www.syngenta-us.com/legal/privacypolicy.html">Privacy Policy&nbsp;<img src="https://assets.syngentaebiz.com/images/media/gh-icon-external-link-black.svg" class="img-responsive" width="12"></a></li>
+                                <li><a target="_blank" href="https://www.goldenharvestseeds.com/legal/cookiepolicy/">Cookie Policy</a></li>
+                                <li><a target="_blank" href="https://www.syngenta-us.com/legal/SMSpolicy.html">SMS Terms and Conditions&nbsp;<img src="https://assets.syngentaebiz.com/images/media/gh-icon-external-link-black.svg" class="img-responsive" width="12"></a></li>
+                            </ul>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <p class="small-legal">
+                            &copy; <span id="year"></span>
+                            Syngenta.<strong>Important:Always read and follow label and bag tag instructions; only those labeled as tolerant to glufosinate may be sprayed with glufosinate ammonium-based herbicides.</strong>
+                        </p>
+                        <p class="small-legal">
+                            LibertyLink<sup>&reg;</sup>, Liberty<sup>&reg;</sup> and the Water Droplet logo are registered trademarks of BASF. HERCULEX<sup>&reg;</sup> and the HERCULEX Shield are trademarks of Corteva Agriscience LLC. 
+                                HERCULEX Insect Protection technology by Corteva Agriscience LLC.
+                        </p>
+                        <p class="small-legal">
+                            <strong>No dicamba may be used in-crop with seed with Roundup Ready<sup>&reg;</sup> Xtend Technology, 
+                                unless and until approved or specifically permitted in the state of application. 
+                                Contact the U.S. EPA and your state pesticide regulatory agency with any questions about the approval status of dicamba herbicide products for in-crop use with products with XtendFlex<sup>&reg;</sup> Technology. 
+                                See product labels for details and tank mix partners.</strong>
+                            Golden Harvest<sup>&reg;</sup>and NK<sup>&reg;</sup> soybean varieties are protected under granted or pending U.S. variety patents and other intellectual property rights, regardless of the trait(s) within the seed.
+                                The Enlist E3 <sup>&reg;</sup> soybean, LibertyLink<sup>&reg;</sup>, Roundup Ready 2 Xtend<sup>&reg;</sup>, Roundup Ready 2 Yield<sup>&reg;</sup> and XtendFlex<sup>&reg;</sup> soybean traits may be protected under numerous United States patents. It is unlawful to save soybeans containing these traits for planting or transfer to others for use as a planting seed. NOT ALL formulations of dicamba, glyphosate or glufosinate are approved for in-crop use with products with XtendFlex<sup>&reg;</sup> Technology. 
+                                ONLY USE FORMULATIONS THAT ARE SPECIFICALLY LABELED FOR SUCH USES AND APPROVED FOR SUCH USE IN THE STATE OF APPLICATION. Only 2,4-D choline formulations with Colex-D<sup>&reg;</sup> Technology are approved for use with Enlist E3 <sup>&reg;</sup> soybeans. 
+                                The transgenic soybean event in ENLIST E3 <sup>&reg;</sup> soybeans is jointly developed and owned by Corteva Agriscience LLC and M.S. Technologies, L.L.C. The ENLIST trait and ENLIST Weed Control System are technologies owned and developed by Corteva Agriscience LLC. ENLIST&reg; and ENLIST E3 &reg; are trademarks of Corteva Agriscience LLC. EXPANCE soybean technology is owned by M.S. Technologies,
+                                L.L.C. EXPANCE is a trademark of M.S. Technologies, L.L.C. Roundup Ready 2 Xtend<sup>&reg;</sup>, Roundup Ready 2 Yield<sup>&reg;</sup>, YieldGard VT Pro and XtendFlex<sup>&reg;</sup> are trademarks used under license from the Bayer Group.
+                        </p>
+
+
+                        <p class="small-legal">More information about Syngenta seed products is available at <a class="legal-a" target="_blank" href="http://www.biotradestatus.com/">http://www.biotradestatus.com/</a>. Trademarks are the property of their respective owners.</p>
+                        <img style="width: 100%" src="https://assets.syngentaebiz.com/images/media/boilerplate_2026_web.png" class="legal-img" />
+                        <img style="width: 100%" src="https://assets.syngentaebiz.com/images/media/boilerplate_2026_mob.png" class="mbl-legal-img" />
+                    </div>
+
+                </div>
+            </footer>
+
+        </div>
+        
+        <div id="region-overlay">
+            <div class="region-overlay-cont">
+                <span class="region-overlay-close">X</span>
+                <h2 class="region-heading">You are viewing from <span class="region-name"></span></h2>
+                <p>
+                    Thank you for visiting the Golden Harvest website. We understand how important it is for you to find agronomic and product information pertinent to your local area. Please enter your zip code or select your area below to ensure you are seeing the information that matters most to you.<br />
+                    <a href="/regions"><strong>Learn more about regions ></strong></a>
+                </p>
+
+                <div class="map-container">
+                    <svg id="region_map" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 623.75 385.98">
+                        <polygon id="_9b" data-name="9b" class="land" points="317.75 145.4 317.5 146.01 317.5 146.38 317.5 146.63 317.24 146.63 317.24 147 313.65 147 313.65 146.01 312.37 146.01 308.39 146.01 306.86 146.01 304.55 146.01 303.01 146.01 297.75 146.01 297.75 143.3 297.75 140.71 303.01 140.71 303.27 137.01 303.27 135.66 301.73 135.66 301.98 129.37 302.24 129.37 303.01 129 304.04 129.37 304.29 129.37 304.55 129.37 304.8 129.74 305.06 129.99 305.57 130.36 305.83 130.73 307.11 130.97 307.62 130.97 307.62 131.34 308.39 131.34 309.42 131.71 309.42 132.08 309.42 132.33 310.44 132.33 310.7 132.33 310.7 132.7 310.44 133.07 311.6 134.06 311.6 134.3 311.86 134.67 312.11 134.3 312.37 134.3 313.14 135.04 313.65 135.04 314.16 135.41 314.16 135.66 313.91 136.03 313.91 136.64 313.91 137.01 314.16 137.38 314.42 137.63 314.68 138 314.93 138.37 314.68 138.74 314.68 138.99 314.68 139.73 315.44 140.34 315.7 141.33 315.96 141.7 315.96 142.07 316.21 142.31 316.47 142.68 316.98 142.68 316.98 143.3 316.73 143.67 316.98 144.41 317.75 145.4" />
+                        <polygon id="_9a" data-name="9a" class="land" points="303.5 140.67 298.3 140.67 298.3 143.32 293.23 143.32 293.23 145.72 292.98 149.89 292.98 151.28 287.79 150.9 287.53 150.9 282.72 150.9 282.34 155.95 279.8 155.95 279.8 161.51 279.8 161.77 280.81 161.77 281.32 162.15 282.72 162.15 282.34 166.95 282.08 172 277.01 171.75 270.55 171.75 270.3 171.75 264.21 171.37 263.96 171.37 257.24 170.99 256.48 170.99 248.75 170.74 249.26 165.18 249.26 163.91 249.51 159.75 249.77 159.11 249.77 155.32 250.02 151.91 250.27 149.51 251.03 149.51 251.29 144.08 250.27 144.08 250.78 139.91 251.29 139.91 251.29 138.9 251.03 138.65 251.29 133.47 251.03 133.47 251.29 128.41 251.29 125 260.79 125.63 272.32 126.01 279.8 126.26 282.97 126.26 291.08 126.64 291.59 127.65 292.47 128.03 293.23 128.41 295.01 129.04 295.01 129.42 295.26 129.42 295.26 129.68 296.28 130.43 296.78 130.43 297.04 130.05 297.54 129.68 297.8 129.42 297.8 129.04 298.81 128.66 298.81 129.04 299.32 129.04 299.82 129.04 300.08 129.42 300.58 129.04 301.35 129.04 302.23 129.04 302.48 129.04 302.23 135.49 303.75 135.49 303.75 136.88 303.5 140.67" />
+                        <polygon id="_8" data-name="8" class="land" points="346.75 135 346.75 138.78 344.26 138.78 344.26 144.2 343.02 144.2 343.02 148.24 343.51 148.24 343.51 149.62 342.27 149.62 338.41 149.62 333.18 149.62 329.31 150 328.07 150 324.33 150 318.73 149.62 318.73 149.24 318.23 149.62 317.73 149.24 317.73 148.99 317.98 148.99 317.73 148.61 317.73 147.61 317.48 147.23 317.48 146.85 317.73 146.85 317.73 146.6 317.73 146.22 317.98 145.59 317.23 144.58 316.98 143.83 317.23 143.45 317.23 142.82 316.73 142.82 316.49 142.44 316.24 142.19 316.24 141.81 315.99 141.43 315.74 140.42 314.99 139.79 314.99 139.04 314.99 138.78 315.24 138.41 314.99 138.03 314.74 137.65 314.49 137.4 314.24 137.02 314.24 136.64 314.24 136.01 314.49 135.63 314.49 135.38 313.99 135 313.5 134.63 313.5 133.62 313.25 133.62 313.5 133.24 313.25 132.61 313 132.23 312.75 132.23 312 131.6 311.75 130.84 312 130.59 312.25 130.22 312.5 129.59 312.75 129.59 313 128.58 313.25 127.82 313.25 127.19 313.5 126.81 313.25 126.18 313.75 126.18 313.99 126.18 313.99 125.81 313.99 125.17 313.75 123.79 313.5 123.79 312.75 123.79 312.75 123.41 312.75 123.03 312.5 122.78 313 122.4 313.25 121.65 313.25 121.39 312.75 121.02 312.5 120.39 312.5 119.63 312.25 119.63 313.99 119.63 318.23 119.63 320.22 119.63 324.58 119.63 325.33 119.63 330.56 119.38 331.18 119.38 335.67 119.38 337.91 119.38 340.77 119.38 344.26 119.38 346 119 346 123.03 346.25 128.2 346.25 133.62 346.25 135 346.75 135" />
+                        <polygon id="_7b" data-name="7b" class="land" points="490.77 136.32 491.76 141.66 492.26 145.01 492.26 145.75 492.75 148.73 492.26 149.1 492.01 149.35 491.76 149.35 491.51 150.09 492.01 150.34 492.01 151.09 492.26 151.46 492.26 152.7 492.5 152.7 492.75 153.82 492.75 154.44 492.5 155.06 492.26 155.8 492.01 156.05 492.01 156.42 492.01 158.16 492.01 158.78 491.76 159.4 492.01 159.77 492.01 160.15 491.51 159.77 491.51 160.15 491.76 160.77 491.76 161.14 491.51 161.14 491.51 161.76 491.02 162.5 491.26 162.75 491.76 163.12 491.51 163.5 491.26 163.87 491.26 164.49 491.02 164.86 490.77 164.86 490.27 165.48 489.78 165.85 489.78 166.1 489.28 166.85 489.03 167.22 488.54 167.84 488.29 168.21 488.04 168.21 487.79 168.46 487.3 168.83 486.8 169.2 486.55 169.58 485.81 168.83 485.56 168.83 485.31 168.83 484.57 169.83 484.57 170.2 484.57 171.19 483.2 171.19 482.95 171.56 482.95 171.81 482.71 172.18 482.46 172.93 482.71 173.55 482.71 173.92 482.46 174.17 481.96 174.17 481.96 174.54 482.21 174.91 482.71 175.16 482.71 175.9 482.95 176.53 482.71 176.53 482.21 176.28 481.96 176.53 481.96 177.27 481.71 177.52 481.22 177.27 481.47 176.53 480.97 175.9 480.72 175.9 480.47 175.9 480.22 175.53 479.73 175.53 479.48 175.9 479.23 176.28 479.23 176.53 478.73 177.52 478.73 178.26 478.24 178.88 478.24 179.25 478.73 180.25 478.73 180.87 478.98 181.61 478.98 182.23 478.49 182.23 477.99 182.23 477.74 182.23 477.74 184.22 477.49 184.59 477 184.96 476.75 184.96 475.76 185.34 475.26 185.58 474.77 185.58 474.27 184.59 473.65 184.22 473.15 183.6 472.66 183.6 471.91 183.6 471.67 183.6 471.17 183.23 470.92 182.23 470.67 181.86 470.67 181.24 470.42 180.87 470.18 180.87 469.68 181.61 468.94 181.61 468.69 182.23 468.19 182.61 467.94 183.23 467.45 183.6 466.7 183.23 466.46 183.6 466.21 183.97 465.96 183.97 465.96 183.6 465.71 183.23 465.22 182.98 464.1 182.98 463.6 182.61 463.35 182.61 462.36 183.23 462.11 183.23 462.11 183.6 462.11 183.97 461.62 183.97 461.37 183.97 460.62 183.6 460.38 183.23 459.63 182.98 459.38 182.61 458.89 182.23 458.14 182.23 457.15 182.61 456.9 182.61 455.66 182.23 455.17 181.86 454.8 181.24 454.55 180.62 454.05 179.88 453.8 179.25 453.31 178.88 452.81 178.88 452.31 178.88 452.31 178.26 452.07 177.89 451.57 177.89 451.32 178.26 450.33 178.51 450.08 178.51 449.59 178.51 448.59 177.89 448.1 178.51 447.85 178.51 447.1 179.25 447.35 179.63 447.6 179.88 447.85 180.25 447.85 180.87 447.6 181.24 447.6 181.61 447.85 181.61 448.34 181.61 448.59 181.61 448.59 181.86 448.34 182.61 448.34 183.23 446.61 183.6 446.11 183.97 445.61 183.97 444.99 184.59 444.5 184.96 444 184.96 443.26 184.59 442.51 184.59 441.52 184.59 441.27 184.96 441.27 185.34 441.77 186.95 442.02 187.32 441.77 187.57 441.52 187.94 441.03 188.93 439.79 189.31 439.54 190.3 439.54 190.92 439.29 191.66 438.55 192.04 438.3 192.04 437.8 192.04 437.55 192.04 437.55 192.66 436.81 193.65 437.06 195.39 436.81 196.01 436.56 196.38 436.06 196.38 435.69 196.63 435.44 197 434.95 196.38 433.71 196.38 433.21 196.38 432.72 196.01 432.47 195.63 432.47 194.64 431.72 194.27 432.22 194.27 431.97 194.02 432.22 193.65 432.47 193.65 432.72 193.65 432.96 193.28 432.47 193.03 432.47 192.66 432.72 192.66 432.22 192.04 432.47 191.66 432.72 191.66 432.47 191.29 432.47 190.92 432.22 190.67 431.72 190.67 431.23 186.58 431.23 185.96 431.47 185.96 431.47 185.58 431.72 185.34 430.98 181.86 430.73 181.86 430.48 181.24 429.98 181.24 429.49 176.9 430.98 176.9 430.48 172.56 433.71 171.81 433.71 171.19 433.46 168.21 433.71 168.21 433.71 167.47 434.45 167.47 434.45 167.22 433.96 163.12 433.71 160.52 433.71 160.15 429.49 160.77 429.74 161.14 429.24 161.14 428.99 161.14 428.74 160.52 428 160.52 427.75 158.41 430.23 158.16 429.49 153.07 429.49 151.71 431.97 151.46 431.72 151.09 430.98 151.09 430.98 150.34 430.23 150.34 430.23 149.1 430.48 149.1 429.98 145.01 429.98 144.39 429.49 140.29 432.22 140.04 433.71 140.04 437.8 139.3 439.04 139.3 443.01 139.05 443.51 138.68 443.51 139.67 448.1 139.05 448.34 139.05 453.55 138.31 454.8 137.93 457.9 137.69 461.62 138.68 463.35 139.67 465.96 139.3 465.96 139.67 462.86 141.04 464.97 141.04 466.95 140.66 468.69 141.04 470.92 140.29 474.52 138.31 475.01 138.31 477.49 138.31 479.98 135.95 480.97 134.34 484.81 131.61 489.53 129 490.02 130.99 490.77 135.95 490.77 136.32" />
+                        <polygon id="_7c" data-name="7c" class="land" points="433.01 160.56 433.26 163.21 433.75 167.37 433.75 167.63 433.01 167.63 433.01 168.38 432.77 168.38 433.01 171.41 433.01 172.04 429.8 172.8 430.29 177.22 428.81 177.22 426.09 177.59 425.23 177.59 425.48 180.24 421.28 180.62 419.3 181 419.05 179.61 415.22 179.99 414.98 179.61 414.98 179.23 414.73 179.23 415.22 178.6 415.72 178.22 415.72 176.59 415.47 174.44 415.22 170.03 414.73 165.99 414.23 161.19 414.23 160.81 413.99 157.16 413.49 152.99 413.49 150.6 413.25 148.58 413 146.18 412.75 142.15 413.49 142.78 413.99 142.78 413.74 143.15 414.23 143.41 416.21 143.41 419.3 141.77 420.29 140.76 423.75 140.38 426.84 140.38 428.81 140 429.31 144.16 429.31 144.79 429.8 148.96 429.55 148.96 429.55 150.22 430.29 150.22 430.29 150.97 431.04 150.97 431.28 151.35 428.81 151.61 428.81 152.99 429.55 158.17 427.08 158.42 427.33 160.56 428.07 160.56 428.32 161.19 428.56 161.19 429.06 161.19 428.81 160.81 433.01 160.18 433.01 160.56" />
+                        <polygon id="_7a" data-name="7a" class="land" points="466.75 117.19 466.26 118.19 466.5 120.21 466.5 122.23 465.02 122.6 465.02 121.85 463.9 121.85 463.16 122.6 463.16 122.98 462.41 125 462.91 125.38 462.41 127.01 460.68 128.4 459.93 131.05 460.18 132.43 457.7 137.6 454.6 137.85 453.36 138.23 448.15 138.98 447.91 138.98 443.32 139.61 443.32 138.61 442.82 138.98 438.86 139.24 437.61 139.24 433.52 139.99 432.04 139.99 429.31 140.24 427.32 140.62 424.22 140.62 420.75 141 422.98 138.61 423.98 135.2 424.97 133.44 425.71 130.42 425.96 125 424.72 119.83 422.24 114.79 421.25 112.02 421.99 110.38 422.49 110.38 422.24 110.38 422.24 109.63 421.5 107.61 421.74 107.61 420.75 106.22 421.99 104.21 422.98 101.44 423.23 98.79 422.74 96.02 424.22 95.39 424.22 94.63 423.98 93.62 424.22 92.99 427.08 91.23 428.81 87.83 429.31 88.21 428.56 91.61 429.06 94.38 430.3 94.38 430.8 92.62 431.29 90.6 430.8 87.58 431.04 86.44 431.54 85.81 433.77 84.8 434.76 84.43 435.51 83.8 433.52 83.04 433.03 81.78 433.52 80.77 434.27 79.64 434.27 79.01 436.87 78 439.85 79.64 441.34 79.39 442.57 79.64 443.32 80.39 443.81 81.4 445.67 81.4 447.41 82.41 448.15 82.41 449.39 83.04 450.39 82.79 450.63 83.04 451.63 84.17 451.38 84.17 451.63 84.8 452.87 86.44 451.63 87.2 451.63 87.83 451.38 88.21 451.87 89.21 453.11 89.84 453.86 92.24 453.86 95.01 453.86 98.03 452.12 99.42 451.87 100.81 451.87 102.19 450.88 103.58 449.15 104.21 448.9 104.84 448.9 108.24 451.63 109.37 452.12 109.37 453.11 107.23 453.61 107.61 453.86 106.98 454.6 105.22 454.97 103.83 458.69 101.44 460.43 101.81 461.17 102.44 462.66 105.22 463.16 106.6 465.27 114.04 466.75 117.19" />
+                        <polygon id="_6" data-name="6" class="land" points="394.75 205.64 394.75 206.4 394 206.4 393.75 206.02 393.5 206.02 392.99 206.4 392.74 206.02 392.49 206.02 392.49 206.4 392.24 206.02 391.99 206.4 391.49 206.02 390.73 206.02 387.35 206.4 387.35 205.64 382.82 206.02 382.57 206.65 382.82 211.19 382.82 211.82 380.56 211.82 380.82 213.45 380.56 213.45 380.56 213.83 380.31 213.83 380.31 215.22 380.82 215.22 381.07 215.85 381.32 216.6 381.57 216.6 381.57 216.98 381.82 217.99 382.07 219 376.42 219 376.42 224.04 373.16 224.04 372.66 224.04 369.89 224.42 364.49 224.42 359.97 224.79 356.84 224.79 355.83 224.79 350.56 225.05 350.31 225.05 346.92 225.05 343.9 225.42 341.14 225.42 334.74 225.42 335.49 230.21 332.48 230.21 329.84 230.21 328.84 230.21 328.84 231.6 327.58 231.6 324.82 231.6 323.31 231.85 323.31 231.6 323.31 231.22 323.06 230.84 322.81 230.84 322.81 230.21 320.8 230.21 321.05 234.24 320.17 234.24 320.17 235 317.66 235 317.66 231.6 314.4 231.6 314.4 230.21 314.9 230.21 317.91 230.21 317.91 226.43 317.91 217.99 318.42 217.99 318.42 213.2 318.42 211.82 318.42 208.41 318.42 206.65 318.42 201.99 318.42 199.85 318.67 195.81 318.42 192.03 318.67 192.03 318.67 191.4 313.9 191.4 313.65 191.4 313.65 190.02 312.39 190.02 312.39 189.39 312.39 186.62 313.65 186.62 313.65 184.6 313.39 184.6 312.89 184.22 312.64 184.6 312.39 184.6 312.14 184.6 311.89 184.6 311.64 184.22 311.89 184.22 311.64 183.84 311.38 183.59 311.13 183.21 310.88 182.58 309.75 181.2 309.75 180.44 311.38 178.8 315.15 178.8 315.15 172 317.91 172 320.55 172 325.82 172 326.83 173.01 327.08 173.01 327.33 173.39 327.83 173.39 328.34 174.02 328.84 174.02 329.09 173.64 329.84 173.39 330.22 173.64 330.22 174.39 330.47 174.39 330.72 174.65 330.72 175.02 330.22 175.4 330.47 175.78 330.97 175.78 330.97 176.03 330.72 176.03 330.47 176.03 330.22 176.03 329.84 176.03 329.84 176.79 329.09 177.04 328.84 177.8 328.84 178.43 328.34 178.8 328.34 179.18 329.09 179.81 329.09 180.19 329.59 180.44 330.22 180.82 330.47 181.45 330.72 181.45 330.72 181.83 330.72 182.21 330.97 182.84 331.73 183.21 331.73 183.84 332.23 184.22 332.73 184.6 333.48 184.6 333.73 184.6 334.24 184.98 334.24 185.61 334.49 185.23 335.24 184.98 335.74 184.98 335.99 185.23 336.5 184.6 336.5 184.22 337 184.6 337.75 183.59 338.25 183.59 338.76 183.84 339.01 183.84 339.26 183.84 339.01 184.22 339.51 184.22 340.14 184.98 340.39 184.98 340.64 184.98 340.89 184.6 340.64 184.22 341.39 183.84 341.39 184.22 341.14 184.6 341.39 184.98 341.9 184.6 341.9 184.22 342.4 184.22 342.9 183.84 343.9 183.84 344.41 183.59 345.16 183.21 345.41 183.21 345.91 183.21 346.16 183.59 346.92 183.59 346.92 183.21 346.92 182.84 347.17 182.58 347.67 182.84 347.92 182.84 347.92 183.21 348.17 183.21 348.42 183.21 348.67 183.21 348.92 182.84 348.67 182.21 349.3 181.83 349.8 181.45 350.06 181.83 350.56 181.2 350.56 180.44 350.81 180.44 351.06 180.82 351.31 180.82 351.56 180.82 352.06 181.83 353.07 181.83 353.32 182.58 353.57 182.58 353.82 183.21 354.32 183.21 354.57 183.21 355.08 181.45 356.08 181.45 359.47 182.58 360.73 182.58 363.24 182.58 363.24 185.23 368.64 185.23 368.64 183.84 371.15 183.59 372.91 183.59 373.91 183.59 373.91 182.21 379.31 182.21 379.31 182.58 379.31 183.21 379.81 184.22 379.56 184.6 379.56 184.98 380.06 186.62 380.56 187.25 381.32 187.25 381.82 186.99 382.32 185.99 383.08 185.99 384.08 186.24 384.58 186.24 385.09 186.62 386.34 187.25 386.59 187.62 386.59 188 386.34 188.38 386.09 188.63 385.84 189.39 385.84 189.64 385.84 190.4 385.84 191.03 385.34 191.78 385.09 192.41 385.09 192.79 384.83 194.05 384.33 194.43 384.33 195.18 384.08 195.44 384.33 196.82 384.58 197.45 385.09 197.83 385.59 198.59 386.09 198.84 387.09 199.59 387.35 199.85 388.22 200.22 388.73 200.98 389.23 200.98 389.23 201.61 389.73 201.99 389.98 201.99 390.48 201.99 390.48 201.61 390.73 201.61 391.99 202.62 392.49 203 392.74 203.25 392.99 204 394 204.38 394.75 204.63 394.75 205.39 394.75 205.64" />
+                        <polygon id="_5" data-name="5" class="land" points="325.75 172 325.75 172 320.55 172 317.94 172 315.21 172 312.98 172 308.89 172 307.65 172 302.69 172 297.36 172 296.12 172 292.4 171.63 289.55 171.63 287.32 171.63 283.35 171.25 281.98 171.25 282.23 166.28 282.61 161.55 281.24 161.55 280.74 161.17 279.75 161.17 279.75 160.92 279.75 155.45 282.23 155.45 282.61 150.47 287.32 150.47 287.56 150.47 292.65 150.84 292.65 149.47 292.9 145.37 292.9 143 297.86 143 297.86 145.74 302.94 145.74 304.43 145.74 306.66 145.74 308.15 145.74 311.99 145.74 313.23 145.74 313.23 146.73 316.7 146.73 316.95 147.11 316.95 148.1 317.2 148.48 316.95 148.48 316.95 148.72 317.44 149.1 317.94 148.72 317.94 149.1 317.94 149.47 317.94 149.72 318.44 149.72 318.68 150.09 318.68 151.09 318.68 151.84 319.18 152.46 318.93 152.09 318.68 152.46 318.93 153.46 318.93 153.83 318.93 154.2 319.68 154.2 319.68 154.45 319.43 154.45 319.68 155.2 319.43 155.82 319.68 156.57 319.68 156.81 319.68 157.19 319.92 158.56 319.92 158.81 319.68 159.18 319.68 160.18 319.43 160.92 320.79 162.17 320.79 162.54 320.79 163.29 320.79 163.91 321.04 163.91 321.54 163.91 321.54 163.54 321.79 163.54 321.79 163.91 321.54 164.28 321.54 164.53 322.28 165.9 322.28 166.65 322.28 166.9 322.03 167.27 322.53 167.27 323.27 167.89 324.02 168.64 324.02 169.26 324.51 170.01 325.01 170.26 325.01 170.63 324.76 170.63 324.76 171.25 325.01 171.25 325.01 171.63 325.5 171.63 325.75 172" />
+                        <polygon id="_4" data-name="4" class="land" points="412.76 141.69 413.01 145.71 413.26 148.1 413.51 150.11 413.51 152.49 414.01 156.64 414.25 160.28 414.25 160.66 414.75 165.43 415.25 169.45 415.5 173.84 415.75 175.98 415.75 177.61 415.25 177.99 414.75 178.61 415 178.61 415 178.99 415.25 179.37 415.5 179.37 415.5 180 415.25 180 414.75 180.62 414.5 180.62 414.5 180.37 411.26 180.62 410.76 181 410.26 177.61 405.15 178.24 404.9 177.23 403.65 177.23 403.65 176.98 403.4 176.98 403.4 176.6 403.15 176.6 403.15 176.23 402.9 176.23 401.9 176.23 401.9 175.22 400.9 175.22 400.9 174.22 398.41 174.59 397.04 174.59 396.79 172.59 396.29 172.21 395.79 172.21 395.54 172.21 395.29 172.59 394.79 173.21 394.04 173.59 393.54 173.59 393.79 174.22 393.04 174.59 393.04 174.85 392.54 174.85 392.54 176.98 390.8 176.98 388.3 177.23 385.43 177.23 383.93 177.23 380.69 177.61 380.44 179.37 380.44 179.62 376.57 179.62 375.57 179.37 375.07 178.61 374.82 177.99 374.07 177.61 373.57 176.98 372.33 175.6 371.58 174.85 371.58 174.59 371.33 173.84 370.58 172.84 370.58 172.59 370.83 172.59 370.83 172.21 370.58 171.83 370.08 170.83 369.83 170.2 369.58 168.82 369.58 167.81 369.58 167.06 369.83 166.43 370.08 165.43 370.58 165.05 370.83 165.05 371.08 164.67 370.83 164.05 370.83 163.42 370.83 163.04 370.58 162.66 370.58 162.29 370.83 161.66 372.08 161.03 372.58 161.03 373.32 160.66 373.57 160.28 373.57 160.03 373.82 159.27 373.82 158.27 374.32 157.27 375.07 156.64 375.07 156.26 375.07 154.5 375.07 153.87 374.82 153.25 374.57 153.25 374.07 152.87 373.32 152.12 373.32 151.49 373.57 150.48 370.33 150.86 370.33 149.48 369.08 149.48 368.83 149.1 368.83 148.73 368.83 148.47 368.46 148.47 368.46 148.1 365.21 148.47 363.72 148.47 359.97 148.47 358.6 148.47 354.86 148.47 353.61 148.73 348.24 148.73 348.24 149.1 347.49 149.1 347.24 148.73 343.25 149.1 343.25 147.72 342.75 147.72 342.75 143.7 344 143.7 344 138.3 346.5 138.3 346.5 134.53 346 134.53 346 133.15 346 127.75 351.11 127.38 356.11 127.38 361.47 127 361.47 131.14 366.71 130.77 366.71 133.53 366.96 133.53 366.96 136.17 369.58 136.17 372.33 135.92 374.82 135.92 377.32 135.92 377.32 134.16 379.44 134.16 378.44 133.78 377.82 133.15 377.32 132.78 377.57 132.53 379.94 132.53 385.43 132.15 386.43 131.77 391.05 131.77 391.54 131.77 396.29 131.52 398.16 131.52 398.91 131.52 403.15 130.77 404.4 130.77 408.77 130.39 408.52 133.15 409.76 135.54 410.76 136.92 411.76 139.93 412.76 141.69" />
+                        <polygon id="_3" data-name="3" class="land" points="432.75 193.12 432.5 193.5 432.25 193.5 432 193.5 431.75 193.88 432 194.13 431.5 194.13 431.5 193.88 431 193.88 431 194.13 431.5 194.51 431.75 194.51 431.75 194.89 431 194.89 431 195.27 430.25 194.89 430.25 195.27 430.5 195.52 430.5 195.9 430 196.28 429.75 196.28 429.75 196.53 429.75 197.29 430 197.93 429.75 197.93 429.75 198.31 429.25 198.31 429 198.31 429 199.32 428.75 199.7 428.25 199.7 428.25 199.32 428.25 198.68 428 198.68 427.5 198.94 427.25 198.94 426.5 197.55 426.13 197.55 425.88 197.55 425.38 198.31 425.13 198.31 424.38 198.68 424.13 198.68 423.88 198.94 423.63 200.71 423.13 201.09 422.88 201.09 422.63 200.33 422.38 200.33 421.63 199.95 421.13 199.95 420.63 199.7 419.88 198.94 419.13 198.94 418.38 199.32 417.13 198.68 417.13 199.32 417.38 199.95 417.38 200.33 417.38 200.71 416.88 201.09 416.25 200.71 416.25 199.95 416 199.95 415.75 199.95 415.5 199.95 414.75 200.33 414.25 200.33 413.75 199.7 413.5 199.7 413.25 199.95 413.25 200.33 413.75 201.09 413.75 201.34 413.5 201.72 413.25 202.1 412.75 201.72 412.25 201.72 412 202.73 411.25 203.37 411 203.74 411 204.5 411.5 205.13 412.25 206.15 412.25 206.78 409.5 207.54 409 207.92 408.25 207.92 407.75 208.17 407.5 209.94 407.5 210.57 408.25 211.33 408.5 211.97 408.25 212.6 408 213.36 407.75 213.36 407.25 213.36 406.38 212.6 405.38 212.34 404.88 212.34 404.63 212.34 403.38 211.59 402.38 211.33 401.63 211.33 400.88 211.97 400.38 213.36 400.13 213.61 399.88 213.99 399.88 214.75 400.13 215 400.38 215 399.63 215 399.38 214.75 399.13 214.37 398.63 213.61 398.38 213.61 398.13 213.99 398.88 214.75 398.88 215 398.63 215 398.38 215 397.25 214.37 397.25 213.61 396.75 212.98 396.5 212.6 396 211.97 396 211.33 395.75 211.33 395.5 210.95 395.5 210.57 395.5 210.19 396 209.94 396.25 209.94 396.25 208.93 396 208.17 395.5 207.92 395 206.53 395 205.77 395 205.52 395 204.76 394.25 204.5 393.25 204.12 393 203.37 392.75 203.11 392.25 202.73 391 201.72 390.75 201.72 390.75 202.1 390.25 202.1 390 202.1 389.5 201.72 389.5 201.09 389 201.09 388.5 200.33 387.63 199.95 387.38 199.7 386.38 198.94 385.88 198.68 385.38 197.93 384.88 197.55 384.63 196.91 384.38 195.52 384.63 195.27 384.63 194.51 385.13 194.13 385.38 192.87 385.38 192.49 385.63 191.86 386.13 191.1 386.13 190.47 386.13 189.71 386.13 189.45 386.38 188.69 386.63 188.44 386.88 188.06 386.88 187.68 386.63 187.3 385.38 186.67 384.88 186.29 384.38 186.29 383.38 186.04 382.63 186.04 382.13 187.05 381.63 187.3 380.88 187.3 380.38 186.67 379.88 185.03 379.88 184.65 380.13 184.27 379.63 183.26 379.63 182.62 379.63 182.24 379.38 181.87 378.88 181.23 378 180.22 376.75 179.46 380.63 179.46 380.63 179.21 380.88 177.44 384.13 177.06 385.63 177.06 388.5 177.06 391 176.81 392.75 176.81 392.75 174.66 393.25 174.66 393.25 174.4 394 174.02 393.75 173.39 394.25 173.39 395 173.01 395.5 172.38 395.75 172 396 172 396.5 172 397 172.38 397.25 174.4 398.63 174.4 401.13 174.02 401.13 175.03 402.13 175.03 402.13 176.05 403.13 176.05 403.38 176.05 403.38 176.43 403.63 176.43 403.63 176.81 403.88 176.81 403.88 177.06 405.13 177.06 405.38 178.07 410.5 177.44 411 180.85 411.5 180.47 414.75 180.22 414.75 180.47 415 180.47 415.5 179.84 415.75 179.84 415.75 179.21 415.5 179.21 419.38 178.83 419.63 180.22 421.63 179.84 425.88 179.46 425.63 176.81 426.5 176.81 429.25 176.43 429.75 180.85 430.25 180.85 430.5 181.49 430.75 181.49 431.5 185.03 431.25 185.28 431.25 185.66 431 185.66 431 186.29 431.5 190.47 432 190.47 432.25 190.72 432.25 191.1 432.5 191.48 432.25 191.48 432 191.86 432.5 192.49 432.25 192.49 432.25 192.87 432.75 193.12" />
+                        <polygon id="_2" data-name="2" class="land" points="379.75 182.58 374.39 182.58 374.39 183.97 373.39 183.97 371.64 183.97 369.15 184.23 369.15 185.62 363.79 185.62 363.79 182.96 361.29 182.96 360.04 182.96 356.67 181.82 355.68 181.82 355.18 183.59 354.93 183.59 354.43 183.59 354.18 182.96 353.93 182.96 353.68 182.2 352.68 182.2 352.18 181.19 351.93 181.19 351.68 181.19 351.44 180.81 351.19 180.81 351.19 181.57 350.69 182.2 350.44 181.82 349.94 182.2 349.31 182.58 349.56 183.21 349.31 183.59 349.07 183.59 348.82 183.59 348.57 183.59 348.57 183.21 348.32 183.21 347.82 182.96 347.57 183.21 347.57 183.59 347.57 183.97 346.82 183.97 346.57 183.59 346.07 183.59 345.82 183.59 345.07 183.97 344.57 184.23 343.58 184.23 343.08 184.61 342.58 184.61 342.58 184.99 342.08 185.37 341.83 184.99 342.08 184.61 342.08 184.23 341.33 184.61 341.58 184.99 341.33 185.37 341.08 185.37 340.83 185.37 340.21 184.61 339.71 184.61 339.96 184.23 339.71 184.23 339.46 184.23 338.96 183.97 338.46 183.97 337.71 184.99 337.22 184.61 337.22 184.99 336.72 185.62 336.47 185.37 335.97 185.37 335.22 185.62 334.97 186 334.97 185.37 334.47 184.99 334.22 184.99 333.47 184.99 332.97 184.61 332.48 184.23 332.48 183.59 331.73 183.21 331.48 182.58 331.48 182.2 331.48 181.82 331.23 181.82 330.98 181.19 330.35 180.81 329.86 180.55 329.86 180.17 329.11 179.54 329.11 179.16 329.61 178.78 329.61 178.15 329.86 177.39 330.6 177.13 330.6 176.37 330.98 176.37 331.23 176.37 331.48 176.37 331.73 176.37 331.73 176.12 331.23 176.12 330.98 175.74 331.48 175.36 331.48 174.98 331.23 174.73 330.98 174.73 330.98 173.97 330.6 173.71 329.86 173.97 329.61 174.35 329.11 174.35 328.61 173.71 328.11 173.71 327.86 173.33 327.61 173.33 326.61 172.32 326.36 171.94 325.86 171.94 325.86 171.56 325.61 171.56 325.61 170.93 325.86 170.93 325.86 170.55 325.36 170.29 324.86 169.53 324.86 168.9 324.12 168.14 323.37 167.51 322.87 167.51 323.12 167.13 323.12 166.87 323.12 166.11 322.37 164.72 322.37 164.47 322.62 164.09 322.62 163.71 322.37 163.71 322.37 164.09 321.87 164.09 321.62 164.09 321.62 163.45 321.62 162.69 321.62 162.31 320.25 161.05 320.5 160.29 320.5 159.27 320.75 158.89 320.75 158.64 320.5 157.25 320.5 156.87 320.5 156.61 320.25 155.85 320.5 155.22 320.25 154.46 320.5 154.46 320.5 154.21 319.75 154.21 319.75 153.83 319.75 153.45 319.5 152.43 319.75 152.05 320 152.43 319.5 151.8 319.5 151.04 319.5 150.03 319.25 149.65 318.75 149.65 318.75 149.39 318.75 149.01 324.37 149.39 328.11 149.39 329.36 149.39 333.22 149.01 338.46 149.01 342.33 149.01 343.58 149.01 347.57 148.63 347.82 149.01 348.57 149.01 348.57 148.63 353.93 148.63 355.18 148.38 358.92 148.38 360.29 148.38 364.04 148.38 365.53 148.38 368.78 148 368.78 148.38 369.15 148.38 369.15 148.63 369.15 149.01 369.4 149.39 370.65 149.39 370.65 150.79 373.89 150.41 373.64 151.42 373.64 152.05 374.39 152.81 374.89 153.19 375.14 153.19 375.39 153.83 375.39 154.46 375.39 156.23 375.39 156.61 374.64 157.25 374.14 158.26 374.14 159.27 373.89 160.03 373.89 160.29 373.64 160.67 372.89 161.05 372.39 161.05 371.15 161.68 370.9 162.31 370.9 162.69 371.15 163.07 371.15 163.45 371.15 164.09 371.4 164.72 371.15 165.1 370.9 165.1 370.4 165.48 370.15 166.49 369.9 167.13 369.9 167.89 369.9 168.9 370.15 170.29 370.4 170.93 370.9 171.94 371.15 172.32 371.15 172.7 370.9 172.7 370.9 172.95 371.64 173.97 371.89 174.73 371.89 174.98 372.64 175.74 373.89 177.13 374.39 177.77 375.14 178.15 375.39 178.78 375.89 179.54 376.88 179.79 378.13 180.55 379 181.57 379.5 182.2 379.75 182.58" />
+                        <path id="_16" data-name="16" class="land unsupported" d="M565.26,211.87l.5,6.12-2.49,1,.5-.75,2-1.25-.5-4.5-.5-1.25-.75-1.37Zm-1.49-2.37L561,206.13h-.25l-1.37-2.37L557.17,199h.25l2.24,4.75ZM562,211.87l-.25,1.37-1.49-.37-1.37,3.37L557.68,218l-4-.37-.5-.62.75-1.12v-.62h-1l.5.37-1.74.62.5,1.37-1,.37-5.1-1,1.74,1.25,3.61.75,1.24,1,.25-.75h.5l.75.75-1.48,1.35.5.25V223l-.5.75-1.74,1-1.37-.37-.25-.62h-2V224h1.49l1.24,1.75,3.36-.37-.5-1,1.74-.37.75-.62.5,1,.75-.37.25-.25.25.25-1.24,2.75-1.76,1.36-4.83,1.24-1.49-.62.5,1-.25.37-4,4-.5.75h-.25l-1.24,2-1,2v2h-.62l-.75-1.62.5,3-.75,1-6.19,2.12-.5.25h.5L530.17,248l-1.24,2.75-1.24,2.37v1.62l-.25-.37-1,1.12,1,1.25-.25.75-1.49.25h.75l.25.37-1.49,1.75-2,.25-.25.75.5.62-.25.37-1.62,2-2,.37,1.24-2.37-1.24,1.37-.5-.75h-.25l.25,1.37,1,1v1l-1,1.37-2.49,1-.75,1h-.68l-1-2h-.25l.5,2.37h-1l-1-.62.25.62H511.3v.37l2.36,1,.75.62-.24.8-2.11,1h-.5l-1-1-1-1.37v-.75h-.5l-.5-.25.75,2,1,2-1,3.12-2.74-.37,2.74,1.37-.75,1,.25.62-2,.75-.75-.37h-.25v-.37l-.25.37-.75-.75.5,1.12.5-.75-.25.75.5-.37.75.62h1.24l-.25.75-.75,1-.5-1-.25.25.25.75-1.49-.75,2.24,2.12-.5.62-.75-.37.25,1,.5.75v.62l-1,2.37h-.75l-.5.37.5.62v-.37h1v.37l-.75,1.75-1.74.62.25.75.75.25-1-.25.75,1.25-.5.37.75.37-.5,1,.75,1.62-.25.75.5,1.62v.75l1,1.25-.25,1.12.5.25.5,1.75,2.49,4.75V311l1,1.12.25,1,2.36,3.37.25,1,5.22,7.74.5.62-1-.62-.25.37,2.24,5.37,4.6,7.12v.62l.25-.37,1.49,2.12.75,2,2.24,4,1,1-.5-.25-1-.37h-.53l.5.37h1l1.24,1.25,1.12,1.75-.25.37L533,353l.75,7,.25,5.12-.5,3.37-1,2.37-.25,1.62.75,1.37-1.24,2.37v1h-1.61l-2,1H526l-1.49,1-2,.37-.25-.37-.87-1.62.62-.75,2,1.37h.75l.5-.62-1-1-2.61-.75-2.24-4,.75-.75-1-1-3.73-1h-2.74v-1l-1.37-1.37-.75-2.62-.5-.75-.5-1.37-1-.25L508,361l.5-.25.25-1.75,1.49-1-1.49.62-.5,1.75-1,.62-1.24-2.62.25-.75V356l-.75-.75,1.24-.62v-1h-.25v1l-1.74.62-1.49-.62-.5-.37.5.37,1.24,1,.5,1.75-2-.37-1.12-1.37-.75-.62.5.62.5.37-.5-.37-2.24-4-.5-.37.25.62-.75-1,.5-.62-.75-.75-1.74-1,.5-.62-.25.37-.25-.75,2.49.37-.25-.37,1-.25-1.74.25-1-.25h1v-.75l-.75.75,1-1.12-.25-.62,1.49-2.37v-1.62l-1-.37v1.62h-.5l-.5-1.25L496,340.14v.37l-.75-.37.5.37-.5.62H496l-1,.37,2.24.62-.75.62v2.12h-.25l-1.74-1.37,1,1.37v.62l-1.74-2.37.25-5,.75-3.75v-4.12l-.75-1.62h.5l-.25-1-1.86-1.75-1-2h-3l-.5-1.37-1-.25.25-.37-.75-.37-1-1-2.11-1-.75-2.37-2-.62L479,314.15l-4.48-2h-1.37l-1,.25-1-.25-1.49.62v1.37h-1v.62h1.24v.37h-1.49l-4.6,3.37-1.24-.37-.5,1-3,.75-1.74.25-.75-1.25-.25-1.37h.25v1l.75,1.37h.84l-.25-1.75-1.24-1.62-3.36-2.12.75-.25,1.37,1h.73l-.25-.37.75.37-.25-.37h-1l-.87-1-2.49-.62.5-1h.75l.25-1.12-1.74,1.12-.5-.75-1.24.75.5.62h.75l.5,1.37-3.48-2L443,311l-1.49-.25H445l-.25-.37,1.86.37-.25-.75L445,309.4l-2,.62-1-.62-1.74,1.37L438,311l-5.35,1.75,3.36-2-1.12-.75.25-1.25-.5.25-.5,2-.75-1.62h-.75l.5,1.37-1.49,2-1.74.62v-1.25l.75-.75-1-.37-.25-.62.25-.62.25-1-.25-.75-.25-.37h-.5l-1-.62-.25-.37-1-1v-.33l.25-1.25-.25-.75,5.47-.25,5.1-.75h1l4-.37,2.49-.25h2.11l6.71-1,6.09-.75-.25-1-.21-.63-.5-.75h-.25l-.25-.25V297l-.25-.62.5-.75-.25-.37v-.62l.25-1-.25-.62.25-.75v-.37l-.5-1-.75-1v-.62l-.25-.75-.25-1,.25-.62.5-1.37v-.37l-.25-.62.25-.37v-.25l-.25-.37.25-.75.25-.25.5-.37-.25-.37h.75v-.25h.25v-.37l-.25-.37-1.24-.25v-.37l.5-.75h-.25l.25-.25v-.37l-.5-.37v-1l-1.24-.62-.25-.37v-.62h-.25v-.75l-.25-.62h-.25v-.75l-.62-.25-.25-1-1-3.75h-.25l-1.24-4.37v-1l-.75-2.37-1-3.75-.25-.62-.5-2.12-.75-2.62-1-3.75-.25-.62-.25-.75-1-3.37-.5-2,1.74-.37h2.24l3.48-.62h.25l2.11-.37h2l3.73-.25v-3.37l.5-1.12.5.37,1-.37.75-.25v-1l.25-.75-.25-.62.87-.75.5-.25.25-.75h.5l.75-.62,1-.37.75-.37.75.37h.5l.5-.62.75-.75.5-.62h.5l.5-.37v-.25l.25-.37.5-.37.5-.37H474l.87-.62h1l.5-1.37-.25-1,.25-.37h.5l.5.37.5-.62-.25-.37.25-.37,1.24-1h.25l.25.37.25.37-.25.25.25.37h.5l.5-.37.5-.25.5-1.37.25-.37.75-.37h.87l.5-.62h.5l.75.62h.5l.5-.62.75-2.37.25-.37.75-.62,1.24-.37h.25l-.5-.25v-.37l.25-1.37-.25-.62.25-1.37h4.1l5-1h.75l2.74-.37h2.11l4.48-1h.25l3.85-.62,2.24-.37,3.48-.75h.7l4.35-.62.5-.37,3.23-.25,1.74-.37,3.11-.62,1.74-.75h1.74l5-1,1.86-.37,2.74-.62h.25l4-1h.75l2-.72,2.24-.62,1-.37.25.62-.5.37,1.49.75v.25h-.25l.75.75v-1l.25,1,2.24,3.37v.62l-.5-.37-1.24-2h-.5v-.62l-.75-.37,1,2-.25.37-2.71-1.75-.5.37,1.74,1.37-.25.62h-1.24l-.75-.62.5,1.62-2.24.75.75.37-1.24,1h-.75l-.87-.75.25.37h-.75l-.5-1.37v-2l-1.24-1h-2l2.49.62.5.75-.5.62.25,1.37,1.24,2-.5,1,.5-.37,3.36-1.25.75.62,1.74-1h1.24l1,.37-.25,2.62.75.75-1.49.25.75.37,1-.37-.25-3.37,2.11-1,.75.75Zm1,7.12-.5.25-1,1.12-.75,1h-.25l.25-.75,1.24-1Zm-6.1-19.65.25,1h-.75V200l-.75-.62h1.25Zm1,25.61-1.76,3.15-.5,1.62-.25-.37h.25l.25-1.25.5-1,.5-1.12ZM533.8,374.5l-.75,3.12L530.17,381l2.61-4.12.25-1-.5-.25Zm-11.07-45.22-.75,1h-.62l.25-2-.25-.62h-1l-.25.37-1.24-.37-.25-1,.75-.37-.25-.37,1.49,1-1.44-1.63,2.49,2.37Zm-.25,5.12L520.37,331v-2.75l.25-.62.75.37-.5,2.25.25,1.75Zm-10.69-60.06-1.74,2,.5-2.37.5-.37Zm7.34,51-.5-.62-.75-1.12-1.24-1.26-.5-1.12.25.37.75.75Zm-13.55-30.73v3.73l-.5-.37v-2h-.5v-.37l.75-1.37Zm1.24,67.2h-.5l-.75-2-.75-.75.75-.37.5,1.75ZM441.3,311.09h0l-2.74.37h-.5l-.75.37-5.1,1.37h-.5v-.37h1.74l1.24-.62,1.62-.37,1-.37h.75l2-.37Z" />
+                        <path id="_14" data-name="14" class="land unsupported" d="M623.75,52.48l-.25.75L622,55.61l-1,.25-1-.25-1.51,2-.25,1-2.14.38-.25.25v1.4h-1V62l-.5.38-1-1.38-1.27.32-1,1h-.75l-1,1.25.75,1.38-.25.75-2.39-1-.5.63-.5-1.38.5-1.63-.25-.38-1.26-.62v-.7l-.25.7.75.63.25,1-1.26,1.38.5,2.38-.5.25.25,2.76-.75,2.38-1,.38-.75-1h-.49l-.5,2.26-.75.75-.75.38-.5-2.13.25-1-.75,2-.25.75.75,1.38-.25.25-.25-.2-1.38-3.14.25-.63-.25-.38-.5,1.38,1.88,3.4-.25.38h-.38l-.25-1.38-.75-.38.25,1.38-.5.38h-.5V76h-.5L595,77.34,594.74,79l.5,1.38-1,1,.25,1.63-.75,1.36-.75.75-.25,3.64h-2.57l.25.38-.5.63.5.38.75-1,.75.38v3l1.51,2.76h1.51v1l-1.76,1-.5,1.63-.75.38-.25,2.38,1.51.38.25-.38.75-.38h.5l1.26,1.38,1.51,2.38,1,.38.63,1.63,1.51.75h1.57l-.5.25,1.51-.25,1.76-1.76-.25-1-1.76-2-1.76-.38,1.26-.63,1,.63,1.51,1.38,1,2v1.38l-4.52,2.38-.25.63-2,1-.25-.25-.38-2.76-2,2.38H596l-.75,2-1.26.75-.75.63-.75-3-.5-.38-.5.38-1-.75H590l.75.75-.5,1,.5,2.38-.25,1.63-2.39,1.38-1.51.63L582.36,120h-.5l-1-1,.5,1.38-1.76.63-4.14.63L573.7,124l-5.4,3.76-1,2v1l-1.26.75-.75,1.63-1,1-.25-1v.75l-.5,1.38-.5,1.25.25.75.5.25,1.26-.25,2,1.38V142h-.5v.25h.75l-.25.38-.75.38h.5l-.25,2.63.25,2.38-.25,1.76-.75.63v1l-1-.25.25.63-.25,1.38.25.63-2,2h.5v.38L562.17,160l-.75.63v.74h-1l.5-2.38-.5-.75L559,158l-1.26.63L554,156.21l-2-1.38.25-1-.75-.63.5-1.76-1,1.76.75.63v1.76l1.26,1,1.51,1.38.75,3,1,.63.25.75,2,2,1-.38,1.63,5.14h-.5l-.25,1.38.25,1.25-1.13,1.38-.75,2.38.25,1-2,5.14.5.25-1,1.76h.75l-1,.38v.63l.5.38-1,.63v.38l.25.38h-.25l-.75,1,.25,3.39-.5.25-1-2.63.25-2.76h-.25v-.63l.25-.38.75-.38-1,.38L554,184h0l1-2.13v-1.25l.75-.75v-.25l-.75-1.13.75-.25v-.75l-2.26.75.5-2-1.51-1.13.5-1h-.5l.75-.25-1,.25-.25-1.63h-.25l-.25,1.38-.5.25-.63-.63-.25,1-3.27-2v-.75l1-1.25-1-.38,2.76-.38-.25-.63v.38l-.5-.38-.75-1h-.75l-.5-.75h-.5l-.5,1.38h-.25l.55-2.42,1,1,.25-.63.25-1.38.5-.38h-.5v-.61l-.25.38-1-.38.5-2.38-1,.38-.5-.38v-1l1-2,.5-.75,2.26-1h-1.51v-1l-.5-.63-.75-.75-.5.75-.25,2-.75.63h-1.55V161h-2.64l.63.38v.25l-.25.38.25.38.25-.75,1.76,1,.25,3.14-.5,2.38.5.63.75,2.76,1.8,1.62v1l-.25.38-.75-.38-.5-1h-1.5l4,2.76.75,2.38-3.52-2-2,.25-1.88-2-.25,1.38-.75-.38-.5-1.38-2.51,1H536l-.5-1,1.26-3-.75.63v-.63l-.25.38-.5,2.38-.25,1,.75,1-.25.38h1l2-1.13.75,1.38,1,1,4.4.38.5.38v1.38l.5-.38,2,.38,1.5.66.25.63-.75,1,.5,1.13-.75.63h.75l-.25,1h-2l-1-1.63-.75-.38-2-1.38h-.5l1.26,1.76.75.25,1.76,1.38,3.27,1-.5.38h-2l1,.38,1-.38,1.63,1.63v1.13h-.38l-.75-.75-1.26-.63-.25.63h.5l.5.38h-.75l1,1.38-.75.63-2.51-2h-.75l.5.63,1.26,1,2.26.75.25,1v-.38l.5.38.25-.75.88.75-1.38.63h1.63v1l-1.13.75-.25.25-1.76-1.25h.25l-.75-.38v.38l-.75-.75.25-.63-.75-.75h-.53l-.5,1.13-.75-.75h-.75l-.5-1,.25.63-.75.75.75.38,1.26-.38.75.63.5-.63.25.63.25,1.38,1.26.38-.25.25.5-.25,1,.63-.25.75h.5v.25l-.75,1v.75l.5-1.38,1-.63.88-.38v.63l-.5.75,1-.38h.25l-.5-1.76.25-.25,1,.25.25.38.75-.38,1.51-.25,2.51,5h-.25l-.25-.63-1-1.76v2.76h-.25l-.5-.38.25.38-1,.38-2.26.63-2.14.38h-.75l-4,1h-.25l-2.76.63-1.88.38-5,1H534l-1.76.75-3.14.63-1.76.38-3.27.25-.5.38-4.4.63h-.75l-3.52.75-2.26.38-3.89.63h-.25l-4.52,1h-2.14l-2.76.38h-.75l-5,1h-4.14l-.25,1.38.25.63-.25,1.38V215l.5.25h-.25l-1.26.38-.75.63-.25.38-.75,2.38-.5.63h-.5l-.75-.63H484l-.5.63h-.88l-.75.38-.25.38-.5,1.38-.5.25-.5.38h-.5l-.25-.38.25-.25-.42-.42-.25-.38h-.25l-1.26,1-.24.38.25.38-.5.63-.5-.38h-.5l-.25.38.25,1-.5,1.38h-1l-.88.63h-.25l-.5.38-.5.38-.25.38v.25l-.5.38H471l-.5.63-.75.75-.5.63h-.5l-.75-.38-.75.38-1,.38-.75.63H465l-.25.75-.5.25-.88.75.25.63-.25.75v1l-.75.25-1,.38-.5-.38-.5,1.13v3.39l-3.77.25h-2l-2.14.38h-.25l-3.52.63h-2.31l-1.76.38-3.14.38-.5-3.76-.25.38v-.75l-.5-.25.25-.75v-.25l.25-.38h-.25v-2.38h.5l.5.38v-.38l.5-.38,1.51-.25h.75l-.5-1.76v-.63l-.25-.75h-.25v-.63l-.75-.38.25-.38h-.25l.25-.63h-.25v-.38l-.25-1,.25-.38v-.25H443l.25-.38.25-.63h.75l1.89.22h.75v.75h.5v-.38l.25-1.38.75-.25.25-.38h.25l.25-.36h-1.26l-1.74-.4v-.25h-1l-.63-.75-.25-.25H444v-1.76l-.25-.38.25-.63.25-.38h.88v-.2l1-.38v-1.42h-.25l.25-1.63.25-2.13-.25.38-.25-.63h-.25l.25-.75.25-1,.75-1,1-2-.25-.38-.25-.63-1.26-.75h-.25v.75l-1,.25v.32h-.38v.38l-.5.38-.25-.38h-.25v-.38l-1-1.63-1.51-1v-.37h.5l.25-.38h.5l-.5-1-.25-.38L442,201l.5-1h.25v-.38H443v-.38l.5-.25v-.75h.25v-.38h1.13l-.38-.63h.88l-.25-1-2.64.63-1.26-.25v-.38l-.5-.38.5-1,.25-.38v-1l.25-1.63-.75-.38-2.26-1,.25-1,1.26-.38.5-1,.25-.38.25-.25L441,187l-.5-1.63V185l.25-.38h1.76l.75.38h.5l.5-.38.63-.63h.5l.5-.38,1.76-.38v-.63l.25-.75v-.25h-1v-.27l.25-.38v-.62l-.25-.38-.25-.25-.25-.38.75-.75h.25l.5-.63,1,.63h.75l1-.25.25-.38h.5l.25.38V179h1l.5.38.25.63.5.75.25.63.38.63.5.38,1.26.38h.25l1-.38h.75l.5.38.25.38.75.25.25.38.75.38h.75v-.79h.25l1-.63H463l.5.38h1.13l.5.25.25.38v.38h.25l.25-.38.25-.38.75.38.5-.38.25-.63.5-.38.25-.63h.75l.5-.75h.25l.25.38V182l.25.38.25,1,.5.38h1.51l.5.63.63.38.5,1h.5l.5-.25,1-.38h.25l.5-.38.25-.38v-2h1.26v-.63l-.25-.75v-.62l-.5-1V179l.5-.63v-.75l.5-1v-.25l.25-.38.25-.38h.5l.25.38h.5l.5.63-.25.75.5.25.25-.25v-.75l.25-.25.5.25h.25l-.25-.63v-.75l-.5-.25-.25-.38v-.38h.5l.25-.25v-.38l-.25-.63.25-.75.25-.38v-.25l.25-.38h1.38v-1.38l.75-1h.5l.75.75.25-.38.5-.38.5-.38.25-.25H488l.25-.38.5-.63.25-.38.5-.75v-.25l.5-.38.5-.63h.25l.47-.41v-.63l.25-.38.25-.38-.5-.38-.25-.25.5-.75v-.63h.25v-.38l-.25-.63v-.38l.5.38v-.38l-.25-.38.25-.63v-2.76l.25-.25.25-.75.25-.63v-.63l-.25-1.13h-.25v-1.25l-.25-.38V150l-.5-.25.25-.75h.25l.25-.25.5-.38-.5-3v-.75l-.5-3.39-1-5.39v-.38l-.75-5-.5-2,7.66-5.77,3.27-2.76.75-1.38,2.14-1.63.75-2.13,1.76-1.63-1.26-2.76.25-.63-.5-.63h-1.51v-.75l-.63-2,6.15-2.76,5.15-.63h2.76l2,1,2-1,5.15-1,1.76-1.38,1-1.38,1.26-1.63L532,96.24V94.88l-.25-.38-.88-2.38v-1l.88-.63-.25-1-1.13-.75-1,.38-.75-.38L533.17,83l.5-2,3.5-5.4,3.27-2.76,2.39-1,7.28-2,7.16-1.63,1.51-.38L565.44,66l6.73-1.63,4-1.38v-.63l.5-1V60l-.75-.38h.75l.5-1,1.76.38.63-1.13,1-1,1.26,1.38.25-.63V56.25l-.25-.38.25-.63h1.76l-1.51-1.38,1.26-2.76,1.26-1.25-.5-1,1.26-2.13v-.63h-.75l-.25-1.38-.25-.38.5-1-.75-.63.5-2.38,1-1.76-.28-2.22-.25-1.76,4.4-12.92,2-.25.75,2.38,1.76.63,3.27-2.76,1.26-.25.38-1,1-.38,5.53,2.63,5.15,16.28.25.38-.25.63.5.75-.25.25.5,1.76.75.38v-.75l1.51.75h1.76l.75,1-.75.63,1.26,1-.25,1.76.75,1.38,1.38.25.5-1h1.26l.25.75,1.51,2-.5,1ZM613.58,63.4l-1.26,1v1l-1-.63-.25-1.38.25-.38-.25-.63,1.26-.38Zm-6.15,49.42v.75l-1.51.63h-1l-.25-.38,1.26-.25.75-.75-.25-.25-.5.63.5-.63-.5-.75Zm-5.78,1-2.76,1-.38.38-1-.38.75-.25.25.25v-1l.63-1,.5-.63.25.63.25-.63.5.63-.25.38h.78Zm-9.17-2,.25,2.38h-.5l-.5.63.25-2.63Zm-5.15,9.78-.25,1.13-5.78,4.61-9.42,4.77-3.39,2-1.76.75,1.51-1v-.38h-1l-.75.38.5.63-1.26.38-.5-.75.5-1.63.5-1,1.51-.38v-.63L569,129.1h1.63l.25-.63,2.51-.38.5-1,1.28-.75,4.4-1,2.76-3.39h.5l-.75.75-.25,1.25-1.28,1.39-.5,1,1.51-.63,1.51-2,1-.38,1.51.38,1.26-2.13Zm-8.41,7.15v.38l-2,1.38-.75.25-2.26,1.38h0l2-1.38,1.76-1.25,1-.75Zm-13.69,5.77-.75,1-.5,1h-.5v-.25l.5-1.76.75-.38Zm-4,36.62-.25,3-.5,1.76-.38,1-.5,1.38-.25.25.25-.63h-.25l.25-.38.5-1.63.38-.38.25-.63v-1.74ZM546.17,165l-.5-.25v.6l-.25-1-.5.38.25.25v.37h-.25l.25.63-.25.38-.25-1.63.5-1.38.75,1Z" />
+                        <path id="_13a" data-name="13a" class="land unsupported" d="M232.88,93.62h-.25L222.27,92.5H222l-10.11-1h-2.5l-17.24-2.38-3.75-.25-3.87-.75L172.17,86.5l-2-.37-4.37-.62-.25.25-6.49-1.25-.75,5-.62,3-1.25,7.12-1,7.13-.5,3.38-.75,4-1,7.5-1.22,7.7-1,6.13-.75,4.63-.75,4.13,11.11,1.63h.5l10.86,1.75-.77,4.73-1,6.75-1.25,8.38-.25,2.13-.25,2.25-1.87,12.88-.75,4.13v1.25l-.5,4.13-.5,3.63-1.25,9.5L152.19,206l-5.37-1h-.25l-3-.62-7.37-1-10-1.76-3.75-.62-4.12-.75-13.36-2.37-.5,2.13-1.79,9.33v.38l-1,.63-.5,1.38H99.78l-.75-.62.25-.37-.25-.62-.25-.37-.25-.37-.75.38h-.5l-.5-.62H95.53l-1,.25-.25.38-.25.38.25.25-.5.75.25,1.38.5.25v.38l-.5.38-.25,1v2.75l-.25.63-.25.38v1l.5,1.63-.25.75.25,1.25-.25.75-.25.38v.25l-.5-.25-.25.25.25.75-.5.25v.75l-9.61-14.31-2.37-3.62L68.44,190.87l-6.12-9.53-5.24-7.75-6.37-9.75-1.54-2.09L47,158.34l-2.5-4L43.34,153l.37-1,.25-.62v-.75l.75-2.37.25-2,1.25-4,5.24-21.37,3.37-11.75-9.65-2.36-6.12-2-8.82-2.41L20.12,99.25l-3-.62-3.37-1-4-1.37-1-2V91.87l.5-2.75,1-1.25.25-1.12-.75-3.62L11,81.34l2.5-4L13.25,77l2.37-2,1-2,1.75-3.37,2.25-5.75,2.24-5.51.5-2.25L25.23,53l1.5-3.37.5-3H28l.25.63.5-.25L28,45.61l.75-2V42.5l.5-1.25v-1l1-1.12.25-2.62L32,38.14l.25-.25L32,37.14h.75l.25.75h.5l1.87-.37,1,1.63h.75L35.85,36.9h-1.5l-1.12-.75H31.48l-.75-1.37-1,.38L31.48,30l.25.75-.75,3,1.75.38L32,32.79l.75-.37-.25-2,.5-.62,1.12-.46L33.73,29H32l-.25-.25v-1L32,26h.25v.37l.5,1v-1L35.6,26l-1.87-.63-.25-1L32.73,24l-1,1.63L32.48,22l.25-1.75-.5-1.37.25-2.62.25-1.37-.25-2.75-.75-1.37V6.34l.5-1L32.73,3l1.62,1,4.5,4.5,5.62,2.25,2.75.38L49,12.48l-.25.38L50,12.11h.75l-.75.75.75,3-.25.63-1,.75-.5-.37v-.62l-.5.25-1,2.13-1,.63-2,1.75-.75,1.25L45,23l2.2-.76-2.5.38-.5-.37,1.25-1.62,1.5-1.37h1.75l.75-1.37,1.5-1,.25-1.4.75.75v2.38l-1.75.24L49.92,21h.5l-.25.63.25.38-.75,1.25V24l-.75.38.25.63-.5.63v-.31l-1-.75,1.25-1.37h-.25l-1,.38-.75,1,.25,1-.5.75L46.42,25l.75-1.36v-.37L45.92,24l-2.62.63-.21,1.71h.62l1,1,1.5-.75.5.75H47l1.5-.75,1-1.62V24.6l1,1h.25l-.25-.26.25-.37h1l.25-.62-.25-2.12.5-1.25L52,19.86l.75-1.25,1.62-2.37h1l.25-.37-1-2.37V12.12l-.5-.25-.25,1.25.5,1.38-1.25-1.37.25-1.25.5-.37.75.38.5-.75-1.25-2-1.12-.37V7.34h1.12l.5,1.13h.5V7.12l1-.37-.5-.62V4.75L55.58,4l-1.5-1V1.34l-.5-.75h.75V0L72.56,5.12l19.73,5,6,1.38,7.62,2,3.75.63L119,16.26l13.24,2.63,6.49,1.38,18.42,3.35,8.91,1.72,5.37.63,12.36,2,12.36,1.37,10.49,1.38,10.61,1.38,10.61,1,9.86,1-.25,5-.25,3.75-.5,6.13L236,57.73l-.25,1L235,68.85l-.25,1.75-.37,3.63-.2,5.11-.25,1-.75,10.16Z" />
+                        <path id="_12" data-name="12" class="land" d="M413.75,89l-.5.38-.5-.38.5,1.39h-.5l.25.76-.25.25v.38h-.25l-.74,1.39.25.63-.25,1-1,1-.74-.25-.5-1.39.5-1.39.5-.63L411,90l.74.38L412.5,88l.5.38.25-.38Zm-3.23,6.8L410.27,98l-1,2-.25,3.4.5,2L408,106.74l-.5,3,.5,3.4-.74,2v1.39l-.5,1.76v2.39l.5,1.64-.5.76.74,1,.25,2,.74.63-.25,1.76.25,2.65-4.35.38h-1.24l-4.22.76h-2.54l-4.72.25h-5.09l-1,.38-5.46.38h-2.36l-.25.25.5.38.62.63,1,.38H377.3v1.76h-5l-2.73.25H367v-2.58h-.25v-2.77l-5.21.38v-4.16l-5.34.38h-5l-5.09.38-.25-5.16v-4l-1.74.38-.25-5.54h-1l-.25-5v-.76H340l-.25-.25.25-.76h.62v-1.39l.25-1,.25-1v-1l1-.63h.25l1-.76v-.34h.5v-.76h.25l-.25-.25.5-.38.5-.38h1.49l.25.38h.5l1-.76.75-1,.5-.63H350v.38l.5.25V100h1l.5.38h.75l.5-1.39v-.38h6.58V101H365l-.25-2.77,7.82-.25.25,4v1h1.24l.25,1.39,5.09-.38.25,2.77,4.47-.38h1.74l1.24-.38h4.08l3.48-.25h1.74l3.6-.38,2.23-.38-.5-5h-.55V98.58l2.48-.38-.25.76.5.63-.5-.38-.25.76.75.63.5-.25.5-1.13,1.24-.63.25-.63,1.12-2.14.5-.63.25.63,1-1.26.74,1.26Z" />
+                        <polygon id="_11" data-name="11" class="land" points="344.75 99.34 344.25 99.72 343.75 100.09 344 100.34 343.75 100.34 343.75 101.1 343.25 101.1 343.25 101.35 342.24 102.1 341.99 102.1 340.99 102.73 340.99 103.48 340.99 103.73 340.73 104.74 340.48 105.74 340.48 106.87 340.48 107.13 339.86 107.13 339.61 107.88 339.86 108.13 342.49 108.13 342.49 108.88 342.74 113.91 343.75 113.91 344 119.43 340.48 119.43 337.6 119.43 335.34 119.43 330.82 119.43 330.19 119.43 324.92 119.68 324.16 119.68 319.77 119.68 317.76 119.68 313.49 119.68 311.73 119.68 311.98 119.68 311.98 120.43 312.24 121.06 312.74 121.44 312.74 121.69 312.49 122.44 311.98 122.82 312.24 123.07 312.24 123.45 312.24 123.82 312.99 123.82 313.24 123.82 313.49 125.21 313.49 125.83 313.49 126.21 313.24 126.21 312.74 126.21 312.99 126.84 312.74 127.22 312.74 127.84 312.49 128.6 312.24 129.6 311.98 129.6 311.73 130.23 311.48 130.6 311.23 130.86 311.48 131.61 312.24 132.24 312.49 132.24 312.74 132.61 312.99 133.24 312.74 133.62 312.99 133.62 312.99 134.62 313.49 135 312.99 135 312.24 134.25 311.98 134.25 311.73 134.62 311.48 134.25 311.48 134 310.35 132.99 310.6 132.61 310.6 132.24 310.35 132.24 309.35 132.24 309.35 131.99 309.35 131.61 308.34 131.23 307.59 131.23 307.59 130.86 307.09 130.86 305.83 130.6 305.58 130.23 305.08 129.85 304.83 129.6 304.58 129.22 304.33 129.22 304.08 129.22 303.07 128.85 302.32 129.22 302.07 129.22 301.82 129.22 300.94 129.22 300.18 129.22 299.68 129.6 299.43 129.22 298.93 129.22 298.43 129.22 298.43 128.85 297.42 129.22 297.42 129.6 297.17 129.85 296.67 130.23 296.42 130.6 295.92 130.6 294.91 129.85 294.91 129.6 294.66 129.6 294.66 129.22 292.9 128.6 292.15 128.22 291.27 127.84 290.77 126.84 282.73 126.46 279.59 126.46 272.19 126.21 260.76 125.83 251.35 125.21 243.69 124.45 241.43 124.45 235.9 123.82 229.75 123.45 230.51 116.29 230.51 115.66 231.01 110.52 231.26 106.12 231.26 105.49 231.76 99.72 232.26 93.31 232.51 93.31 232.77 90.17 233.52 80 233.77 79 244.82 80 245.32 80 255.24 80.76 270.68 81.76 277.59 81.76 279.09 82.01 286.75 82.39 289.51 82.39 297.17 82.77 297.42 82.77 305.33 82.77 312.49 82.77 312.24 84.4 311.98 84.78 311.48 85.78 309.35 87.16 309.35 87.54 309.35 88.17 315.5 88.17 315.75 88.17 315.75 90.55 317.01 90.93 321.15 90.55 326.17 90.55 327.68 90.55 327.43 85.4 327.43 85.15 332.83 85.15 336.59 85.15 336.84 85.4 337.09 85.78 337.09 86.16 337.6 86.41 337.35 87.16 337.85 88.17 338.1 88.79 338.1 89.55 339.1 90.17 338.6 91.18 338.35 91.56 337.85 92.18 337.6 91.93 336.84 91.93 336.84 92.56 337.09 96.95 339.61 96.95 342.24 96.95 342.24 98.34 344.75 98.34 344.75 99.34" />
+                        <polygon id="_10c" data-name="10c" class="land" points="300.5 72.5 297 72.5 292.74 72.12 286.6 72.12 282.34 71.87 277.46 71.87 277.21 76.87 277.71 76.87 277.46 82 270.57 82 255.17 81 245.27 80.25 244.77 80.25 233.75 79.25 234 74.12 234.38 70.5 234.63 68.75 235.38 58.62 235.63 57.62 236.38 48.87 236.88 42.75 237.13 39 237.39 34 248.53 34.62 257.92 35.37 263.06 35.62 276.21 36.37 282.84 36.75 282.59 40.75 282.84 40.75 282.84 43.5 282.84 45.75 285.6 46.12 285.6 49.5 286.35 49.5 286.35 50.25 286.85 50.25 286.85 51.25 287.1 50.87 287.6 50.87 287.6 51.25 287.85 51.5 287.6 51.5 288.36 51.5 288.61 51.5 288.86 51.25 289.36 50.87 289.61 51.25 289.86 51.87 289.86 51.5 290.11 51.87 289.86 52.25 290.11 52.25 290.36 51.87 290.86 51.87 291.11 52.25 291.11 52.62 291.11 52.87 292.49 53.25 292.49 54.25 292.24 56.62 292.49 56.62 292.49 58 292.49 61.75 292.74 61.75 292.74 63 298 63.37 300.5 63.37 300.5 67.12 300.75 67.12 300.5 72.5" />
+                        <path id="_10b" data-name="10b" class="land" d="M449.75,73.87l-.25,1-.75.38-.5-.37-1.75.38-.5-1-.62.63.38-.62.75.25.25-.62,1-.37-.25-.62H447l.75-.37h.5l1,1.38Zm-4.37.38v.63h-4.75l-1.5.75-1.25-.75h-.71l-.25,2.75-1.37-.37-2.25-1.62-3.5-.75h-1.25l-1.25,2-2.37.38-.5.38V78l-1.5-.37-2,.38-.5.63L420.17,80l-1,1-.75.38v.25l-.5.38-.5,1.38L416.8,83l-.25-.62,1.13-2.12h-1.87l-1.31,2.06-2.25.25L411,84.72,410.25,87,408,91.1v.63l-.87-.25v.25l1.13.38-.25.63v.75l-1.37.63-1,.75v.63l-1.25,2.38v.63l-2.5.38v1.37h.5l.5,5-2.25.38L397,106h-1.75l-3.5.25h-4.12l-1.25.38h-1.75l-4.5.38-.25-2.75-5.12.38-.25-1.37h-1.25v-1l-.25-4-7.87.25.25,2.75h-5.24V98.87h-6.62v.38l-.5,1.37h-.75l-.5-.37h-1V98.5l-.5-.25v-.37h-.62l-.5.63-.75,1-1,.75h-.5l-.25-.37h-1.51v-1h-2.5V97.5h-5.12l-.25-4.37v-.62h.75l.25.25.5-.62.25-.37.5-1-1-.62v-.81l-.25-.62-.5-1,.25-.75-.5-.25v-.38L337.3,86l-.25-.25h-9.12V83.34h-.25V70.12l-.25-5V62.75h-.26v-8.5l-.75-.25h-.25v-.37l.25-1,.25-.37h-3.5V49.87l-.25-5.37h-7.87V41.75h-.25v-4h12.63V32l3,.63L332,39.34v1.38l1.25,1H336l.75,1,3.88.38.25,1.38.5.38,2.5-.75h.5v-.62l1.5-.75h3.75l2.13,1.13h1l.25.63h-.75l-.25.63h2.25l.25.75v.63l1.25,2,.75-.25-.25-.75.25-1,1.5-.37,1,.38.63,1.38,2,.63h.75v1.38h1.5v1l3.25-.62,2.13-2,1.5-.75,1.5,2.38L374,49.3v.38l4.25-.75,1.13.38.5,1,1,.38,1.5-.75,2.25.38-1,.38V51l-3.75,2.38-4.87,2-5,4.13-4.37,5-3.25,3.38L359.29,70,358,71.6h-.75V72h1l1-1.37,1.13,1h.75l3.75-1.37,7.13-3.37.75.38v.63l-1.25,4.5,2-1.12,2,.75,1.5.38,3.88-2.12,1.24-1.4,1-1.12,4-.25,1.88-1.37.75-1,1.25-.37.75-.37.25-1.25,2.5-2.12.25,1.75h1l.25,1.37.75.25v1.13l-.25,1,.5,1,2.63-2.37v.38h2.75l2.5.63,3.63,4.75,2.75-.37,1-.37,1.5,1,1-.62,1.5,1,1.63-2.37,3-2h.5l2.5-.62h3.63l2.75-1.75,2.75-.37-.75,1.13.5,2.25-.25.38.25.75,1-.37,1.25.38,1.88-.75.75,1,1.5-1.37h1L442,71.22l-.75.75.25.38h1.25l1,.25-.25.75,1,1Zm-41.5-16.62-.25.38-1.75.63-3,2.38L397,64.34l-.75-1.62L395,62.34l-.25-1.62,1-.75.5-1,2.38-1.63,4.25-.37Zm-9.12-10.75-1,2.38L391,50.64l-1.25,1.63-1,.38-.62-.37-.25-.37.63-1Z" />
+                        <polygon id="_10a" data-name="10a" class="land" points="327.75 90.63 326.26 90.63 321.27 90.63 317.15 91 315.91 90.63 315.91 88.27 315.66 88.27 309.55 88.27 309.55 87.65 309.55 87.28 311.67 85.91 312.17 84.92 312.42 84.54 312.67 82.93 305.56 82.93 297.7 82.93 297.45 82.93 289.85 82.56 287.1 82.56 279.5 82.19 278 81.94 278.25 76.85 277.75 76.85 278 71.88 282.86 71.88 287.1 72.13 293.21 72.13 297.45 72.5 300.94 72.5 301.19 67.17 300.94 67.17 300.94 63.44 298.45 63.44 293.21 63.07 293.21 61.83 292.97 61.83 292.97 58.1 292.97 56.74 292.72 56.74 292.97 54.38 292.97 53.39 291.59 53.01 291.59 52.76 291.59 52.39 291.34 52.02 290.85 52.02 290.6 52.39 290.35 52.39 290.6 52.02 290.35 51.65 290.35 52.02 290.1 51.4 289.85 51.03 289.35 51.4 289.1 51.65 288.85 51.65 288.1 51.65 288.35 51.65 288.1 51.4 288.1 51.03 287.6 51.03 287.35 51.4 287.35 50.41 286.86 50.41 286.86 49.66 286.11 49.66 286.11 46.31 283.36 45.94 283.36 43.7 283.36 40.97 283.11 40.97 283.36 37 288.6 37 299.2 37.25 306.31 37.62 314.41 37.62 314.41 41.59 314.66 41.59 314.66 44.32 322.52 44.32 322.77 49.66 322.77 52.02 326.26 52.02 326.01 52.39 325.76 53.39 325.76 53.76 326.01 53.76 326.75 54.01 326.75 61.08 326.75 62.45 327 62.45 327 64.81 327.25 69.77 327.25 71.14 327.25 76.48 327.25 80.57 327.25 82.93 327.5 82.93 327.5 85.29 327.5 85.54 327.75 90.63" />
+                        <polygon id="_1c" data-name="1c" class="land" points="318.75 191.55 318.75 192.18 318.51 192.18 318.75 195.99 318.51 200.05 318.51 202.21 318.51 206.9 318.51 208.67 318.51 212.1 318.51 213.5 318.51 218.31 318.02 218.31 318.02 226.81 318.02 230.62 315.07 230.62 314.58 230.62 310.77 231 308.31 231 308.31 229.6 307.33 229.6 304.62 229.6 304.62 230.62 302.17 230.62 300.82 230.62 298.11 230.62 293.2 230.62 291.85 230.62 286.93 230.62 283.25 230.24 277.96 230.24 275.75 230.24 275.75 223.39 279.44 223.39 279.68 220.34 279.19 219.58 278.46 218.95 278.46 218.57 278.21 218.31 277.96 217.3 276.74 217.3 276.98 211.47 276.74 211.47 276.74 210.07 276.98 206.26 276.98 203.47 276.98 200.81 276.98 198.02 276.98 196.62 277.23 191.55 276.98 191.17 277.47 184.7 277.23 184.7 277.47 178.1 277.23 178.1 277.47 171 282.39 171.25 283.74 171.25 287.67 171.63 289.88 171.63 292.71 171.63 296.39 172.02 297.62 172.02 302.9 172.02 307.82 172.02 309.05 172.02 313.1 172.02 315.31 172.02 315.31 178.87 311.63 178.87 310.03 180.51 310.03 181.28 311.14 182.67 311.38 183.3 311.63 183.68 311.87 183.94 312.12 184.32 311.87 184.32 312.12 184.7 312.36 184.7 312.61 184.7 312.86 184.7 313.1 184.32 313.59 184.7 313.84 184.7 313.84 186.73 312.61 186.73 312.61 189.52 312.61 190.15 313.84 190.15 313.84 191.55 314.08 191.55 318.75 191.55" />
+                        <polygon id="_1b" data-name="1b" class="land" points="279.75 220.27 279.5 223.31 275.7 223.31 275.7 230.15 277.98 230.15 277.98 232.56 277.47 232.18 276.97 232.56 276.46 233.57 275.95 234.33 275.95 234.58 275.19 234.58 274.43 234.58 273.93 234.33 273.42 234.33 272.79 233.57 272.79 233.31 272.79 232.56 272.53 232.18 272.03 232.18 271.77 232.93 271.27 233.57 270.25 234.33 270.25 238 263.67 237.75 256.96 237.37 250.25 236.99 243.79 236.73 233.02 235.97 233.28 234.33 229.22 233.95 229.48 228.5 224.29 228.12 224.54 226.73 221.75 226.35 222.01 225.72 223.02 214.07 234.04 214.83 235.18 214.83 246.7 215.84 246.95 210.02 247.21 205.84 247.21 204.57 247.71 196.59 247.71 196.34 247.97 190.77 248.22 189.75 248.47 184.31 248.47 183.3 248.98 176.46 249.23 170 256.96 170.25 257.72 170.25 264.43 170.63 264.68 170.63 270.76 171.01 271.02 171.01 277.47 171.01 277.22 178.1 277.47 178.1 277.22 184.69 277.47 184.69 276.97 191.15 277.22 191.53 276.97 196.59 276.97 197.99 276.97 200.77 276.97 203.43 276.97 206.22 276.71 210.02 276.71 211.41 276.97 211.41 276.71 217.23 277.98 217.23 278.23 218.25 278.49 218.5 278.49 218.88 279.25 219.51 279.75 220.27" />
+                        <polygon id="_1a" data-name="1a" class="land" points="251.5 149.43 250.76 149.43 250.51 151.82 250.26 155.21 250.26 158.98 250.01 159.61 249.76 163.75 249.76 165.01 249.26 170.53 249.01 176.94 248.51 183.72 248.51 184.73 248.26 190.13 248.01 191.13 247.76 196.66 247.76 196.91 247.26 204.82 247.26 206.08 247.01 210.22 246.76 216 235.42 215 234.3 215 223.45 214.24 209.86 212.86 209.11 212.86 203 212.23 199.76 211.85 194.14 211.23 189.66 210.85 189.16 210.85 183.05 210.22 182.3 209.85 171.7 208.46 163.84 207.46 165.09 197.91 165.59 194.27 166.09 190.13 166.09 188.87 166.84 184.73 168.71 171.79 168.96 169.53 169.2 167.4 170.45 158.98 171.45 152.2 172.2 147.43 161.35 145.67 160.85 145.67 149.75 144.03 150.5 139.89 151.25 135.24 152.25 129.09 153.49 121.3 154.49 113.77 155.24 109.75 155.74 106.36 156.74 99.2 157.98 92.04 158.61 89.02 159.35 84 165.84 85.26 166.09 85.01 170.45 85.63 172.45 86.01 184.79 87.64 188.66 88.4 192.4 88.65 209.61 91.03 212.1 91.03 222.2 92.04 222.45 92.04 232.8 93.17 232.3 99.57 231.8 105.35 231.8 105.98 231.55 110.37 231.05 115.52 231.05 116.15 230.3 123.31 236.42 123.69 241.9 124.32 244.15 124.32 251.75 125.07 251.75 128.46 251.5 133.48 251.75 133.48 251.5 138.63 251.75 138.88 251.75 139.89 251.25 139.89 250.76 144.03 251.75 144.03 251.5 149.43" />
+                        <path id="_17" data-name="17" class="land" d="M350,305.38l-.94-1.66-.48-.47.24-.82-.47-.59-.71-1.42-.83-.71-.24-.47.47-1.66L346,295.46l-1.78-1.66-.59-.95-.35-15.12v-8l-1.89-.47-1.66.71-.59-.12-1.89-1.42-.59-.12-.47-.59-1.07-.35-6-3.19-.35.35-1.77.59-2.72-.35H323.2l-.83.12-2.25.82-2.71.24-.71.36-2,1.53-1.89-1.3-1.19-.59v-.35l-.23-.24-.94-.12-.48.71h-.59l-1.42-.47-.11-.95-.47-.12-1.19.71-.95,1.3.12.83-.82.59-.48-.94.24-1.3-.12-.59h-1.06l-1.3.94h-.47l-2.95-2.25-.95.36-.48,1.54-2.36-.48v-1.53l-.47-.24-1.42-1.18v-.47l-3.19-.48-.83.95-1.3-.59-.82-1.18-.95.23-.24.24h-.71l-1.18-.59-3.31-.59-.35-.24-.71-1.06.12-.71-.36-.71-1.42-.71-.82.71-2.48.24-.83-.36-1.78-2.25-.7-.58-1.3-.24.5-15.52-37.21-2.14v0l-.21-1.62-3.34-.61v-5l-5.13-.75v-1.21l-2.27-.61,1-12.54-59.71-6.68v.06l-58.2-9.23-1.72,8.51-.57,3.33-1,.63-.74.76-1.63-.37-.75-1.36-1.75-.24-1.6-.14-1.49,1.36.34,2.17-.75,5.77.5,2.63-2,3.31-.59,1.07.12.71-.12,2.12.12.83-.12.59.95,1.89v1.42l.47,1.06.47,1.78.72.47.7.94.24,1.42-.24.47-.47-.35L92.48,240l-1.77.59-1.3,1.77-1,4.14-2.35,3.07H84.8l-.11.83.35,1.06-.12.83-.59,1.89.47,1,1.66,1.42.23.58-.47.72-.23.94-1.07,1.06-.59-.11-1.89-.36-.94,3.55,44,25.29,25.65,4.25v-.05l11,1.18.83-6.62,20.7,2.59,0,0,2.37,1.53.59,1.54.95,2.12,2.36,1.54,7,8.39,5.91,4.73.47.83.36,1.06-.12,1.3.47.71,1.3,2.13-.12,4.84.36,1.42,2.12,3.42,8.87,6.5,6,3.79,1.65.23,1.18-.59,1.3-1.65,1.06-.83,2.61-5.91,1.17-1.89.95-.47,2.13.59.47-.12.36-.94.58-.71,1.19.47,1.06.71,3.43.47.94.47,2.13.59,1.18-.47,2.72,1.54.59,1.54.47.23.24.59.47.12,1.18.71,1.54,2.13,2.6,2.24,1.3,2,.12,1,3.9,9.33.59,1.89,4.26,4.84.35,1.19,2.95,3.19.83.47,1.18,1.42.35.83-.23,3.19.95,1.18.35,3.54.95,1.19,3.07,5.91.23,1.65,2.13.24,2.36,1.42,2.84.94,4.26,2.72,5.67.47,1.18.12,3.08,2.13,1.53.71,1.42-1.78,1.29.36.48-.48v-.82l-1.3-.48.23-.47-1.3-1.53-1.89-7.09-.94-2.84,1.41-4.25-.23-1.42-.36-.24-.34-.11-.25-.24v-.36l.25-.24,1.88-1.18,1.19-3.89-.95-.36-.35-1.9.94-1.17,1.3.94,2.13-1.54.59-2-1.07-.83.48-.95.47.24.59.12.47-.59.71.36h.71l.59-.24.12-.48v-1.65l.24-.48.59-.11.23.23.59.12,3.19-.83.36-.12.12-.58-.24-.36-1.66-.95v-.7l3-.83.48-.59.82-.24.24.24-.36.35.47.83h.48l.59-.47L321.9,343l7.68-5,.35-1.9,3.55-3.07.11-.47-1.53-2.13.35-1.65,2.37-.95h.47l-.36,1.89.24.59,2.72-.35.47.71,5.44-2.36L347,328l.11-.12-.11-.35-.59-.59-.23-.95.35-.47.35-.94.95-.95,1.18-3.31-.95-1.42v-1.06l.24-.71-.12-.94.35-1.9.95-.7.59-1.42.48-2.72v-1.66Z" />
+                        <path id="_15b" data-name="15b" class="land unsupported" d="M346.48,327.3l-.23-.94.35-.47.35-.95.95-.94,1.18-3.31-.95-1.42v-1.06l.24-.71-.12-.95.35-1.89.95-.71.59-1.42.47-2.71v-1.66l-.47-2.36-.94-1.66-.48-.47.24-.83-.47-.58-.71-1.42-.83-.72-.24-.47.47-1.65-1.06-2.13-1.77-1.65-.59-1-.35-15.12v-8l-1.9-.48-1.65.72-.59-.12-1.89-1.42-.59-.12-.47-.59-1.07-.35-6-3.2-.35.36-1.77.59-2.72-.36h-1.06l-.83.12-2.25.83-2.71.24-.71.35-2,1.54-1.89-1.3-1.19-.59V266l-.23-.24-.95-.12-.47.71h-.59l-1.42-.48-.11-.94-.48-.12-1.18.71-.95,1.3.12.83-.82.59-.48-1,.24-1.29-.12-.6h-1.06l-1.3.95h-.47l-3-2.25-.94.36-.48,1.54-2.36-.48V264l-.47-.23-1.42-1.18v-.48l-3.19-.47-.83.95-1.3-.6-.82-1.18-.95.24-.24.24h-.71l-1.18-.6-3.31-.59-.35-.23-.71-1.06.11-.71-.35-.71-1.42-.71-.82.71-2.48.23-.83-.35L271.67,255l-.7-.59-1.3-.23.29-19.93,1-.75.5-.63.26-.75h.5l.25.38v1l.62.75h.5l.5.25h1.5v-.25l.5-.75.5-1,.5-.38.5.38v-2.39H283l3.76.38h18v-1h3.75v1.38H311v-.15l3.89-.38v1.38h3.26v3.37h2.5v-.75h.88l-.25-4h2V231h.26l.25.37V232l1.5-.25h4v-1.38h6.64l-.75-4.75h9.15l3-.38H351l5.26-.25h4.14l4.51-.37h5.39l2.76-.38h3.76v-5h5.63l-.25-1-.25-1v-.38h-.25l-.25-.75-.25-.62h-.5v-1.38h.25v-.37h.25l-.25-1.63h2.26v-.63l-.25-4.5.25-.63,4.51-.37v.75l3.38-.38h.75l.51.38.25-.38.25.38v-.38h.25l.25.38.5-.38h.25l.25.38h.75l.5,1.38.51.25.25.75v1h-.25l-.51.25v.75l.25.37h.26v.63l.5.62.25.38.5.63v.75l1.13.62h.5v-.25l-.75-.75.25-.37h.25l.5.75.25.37.25.25h.5l-.25-.25v-.75l.25-.37.25-.25.5-1.38.75-.63h.76l1,.25,1.25.75h.75l1,.25.87.76h.76l.25-.76.25-.62-.25-.63-.76-.75v-.62l.25-1.75.51-.25h.75l.5-.38,2.76-.75v-.63l-.76-1-.5-.62v-.75l.25-.38.76-.62.25-1h.5l.5.37.25-.37.25-.38v-.25l-.5-.75v-.37l.25-.25h.25l.5.62h.5l.76-.37h.75v.75l.62.37.51-.37v-.75l-.26-.63v-.63l1.26.63.75-.37H420l.75.75.5.25h.51l.75.37h.25l.25.75h.25l.5-.37.25-1.75.25-.26h.25l.76-.37h.25l.5-.75h.62l.76,1.38h.25l.5-.26h.25v1h.5l.25-.38v-1h.75v-.38h.25l-.25-.62v-1h.25l.5-.38v-.37l-.25-.25v-.38l.75.38v-.38h.76v-.37h-.25l-.51-.38v-.25h.51v.25l.75.38v1l.25.37.5.38h1.75l.5.62.26-.37.37-.25h.5l.25-.38.25-.62-.25-1.75.76-1v-.63h1l.75-.37.25-.76v-.62l2.26,1,.75.38-.25,1.62v1l-.25.38-.5,1,.5.37v.38l1.25.25,2.63-.63.25,1h-.87l.37.63h-1.13v.37h-.25v.75l-.5.26v.37h-.25v.38h-.25l-.5,1-.5,1.62.25.38.5,1h-.5l-.25.37h-.5v.38l1.5,1,1,1.63v.37h.25l.25.38.51-.38v-.37h.37v-.38l1-.25v-.75H447l1.25.75.25.63.25.37-1,2-.75,1-.26,1-.25.75h.25l.26.63.25-.38-.25,2.13-.26,1.63H447v1.37l-1,.38v.25h-.87l-.26.37-.25.63.25.37v1.76h.26l.25.25.62.75h1v.25l1.75.37H450l-.25.38h-.25l-.25.37-.75.25-.25,1.38v.37h-.5v-.75H447l-1.88-.25h-.76l-.25.63-.25.37h-.25v.25l-.25.38.25,1v.37h.25l-.25.63h.25l-.25.38.75.37V230h.25l.25.75v.62l.51,1.75h-.76l-1.5.25-.5.38v.37l-.5-.37h-.5v2.37h.25l-.25.38v.25l-.25.75.5.25v.75l.25-.38.5,3.76,3.13-.38.5,2,1,3.38.25.75.25.63,1,3.75.75,2.63.5,2.12.25.63,1,3.75.75,2.38v1l1.25,4.37h.25l1,3.76.25,1,.63.25v.75h.25l.25.62V276h.25v.63l.25.37,1.26.63v1l.5.38v.37l-.25.25h.25l-.5.75v.38l1.25.25.25.37v.38h-.25V282h-.75l.25.37-.5.38-.25.25-.25.75.25.38v.25l-.25.37.25.63v.37l-.5,1.38-.26.62.26,1,.25.75v.63l.75,1,.5,1v.38l-.25.75.25.62-.25,1v.63l.25.37-.5.75.25.63v.37l.25.25h.25l.5.75.25.63.25,1-6.14.75L447,302h-2.14l-2.5.25-4,.38h-1l-5.13.75-5.52.25.25.75-.25,1.25V306l1,1,.25.37,1,.63h.5l.25.37.25.75-.25,1-.25.63.25.62.25.38-.5,1.37-1.75.63v.75l-2.64,1h-2.5l2.76-.75.25-.25-2-1.75-.5-3-1.5-1.75-1,6.12-2.25-.62-1,.25v.37l-.87.63-1.51-.63-1.5.63-2.51-1.25-.75.25.75.37-5.14,1.76v-1.13H405l-.25.38.5.75-1.25,1v.62l-1.75.38-2,.25-.5-.63-2.38-.62-2-1.38h-2l-1,1.38-1.26,1.62.5,1.38,1.51.37,2,.25,1.76-.25L398,318.5l1.25.75.75-.75.25.38.75-.75.25.75-.75,1-1.75,1,.5.62,1.25-.25.25,1,1,.38.51-.38V320.5l1.75-.62v1l1,.37-.75.25.5,1.38-.25.38.75.37-.75.25-.75-.62-.75,1h-1.51l.76.75v.25l1.25.37.5.38-1.75-.38-1-.37H401l1,1h-1.51l.25.37h-.5l3,2,.25,1h2l.5.76,1-.38v1l.87-1,1,1,.25,1,1-.25-.75,1,1,.25-.25.75-1-.37.25.62-.5.38v.75l-1.26-1.75-.25,1-1.63,2,1.63-3.38-.87-.25-.25,1-.76.25v-.62l-1-1v-.63l-.5.25-1.5-.62v-.75l-2.26.37.5-.62-1-.76v-1l-2,.38v-.38h-.62l-1.51-1-.25.75-.25-1.12-.5.75.25.62,2,.75-.25.25.25.76-.25.25.25.75h-1l.51,1.37h.5l-.25.63-2,1.37-.5-1.37.25-1-.5-.38v.75l-1-1-.5.25-.25-.62-.51-.38-.25,1h-2l.5.75-.5.25-.25-.25V334l-.5-.25v.63l-1.38.37.25-.75h-1l-.5.75-.5-.75,1.26-.62v-.63h-1l-.5-1-2-.37-.25.62-1.51-1-.75-1.38-2.38-1-1.5.75v-1.75h-1.26l.25-2-3.25.63V326l.25-.75.25.37V325h-1.76v.25l-2,1.37V326l-1.13.25,2.13,2.12-3.38,1-3.76-.37-8.4-2.75-6.39.37-1,.63-.51.75Z" />
+                        <path id="_13b" data-name="13b" class="land unsupported" d="M84.42,259.37l-17.57-2L54.18,256l-.5-3,.75,2,.25-1-.75-1.38-.75.75V251l.5-.75-.26-3.39-.5-2L51,242.08l-4.77-6.76-1.76-.63-.75.63-1.34-.62v-.63l.5-.38v-1.42l-1-2.38-3-.63-1.76-.75-2.74-2.33-.5-1.63-2.13-2.38-1.25-1-3.26-.63L26,219.16l-1.51-.75-4.14-.25-.25-1.38-1.25-1,1-2.13-.25-1,.5-1-.25-1,.5-1,.75-1.38v-1l-2.51-1.63v-.75l.75-1.63v-1l-1.25-.75-1.25-3-1.25-.75v-2.25l-1-1.38-1.88-5.39L11,186.36l.25-4.51.75-.63.5.63.75-.25,1.38-2.38-.38-.75-.5-1.63-2-.38-1.31-1.38-.5-1.63-1.26-2.38.75-1.63v-2.17l-.5-.63.75-2.76.25-1.38h1.25l.25,1.38-.25.38-.25,1.38L13.17,169H14.8l-1.38-1-.24-3.75-1-1,.5-1.38-.76-.62.25-1,1-.38,3.64.38,3.26,1.63.75-1,1,.38-.25.25h.5l-.25-.63.25-.38-1.25.38.25-1.38-1.76,1.38-1.25-.38-.75-1.38-3.14.38v-1.63l-.5-.75h-.25l.5.75v1l-1.25-1.38-.5.63-.75-.25-.25-.75.5,1.38-.75.63.5.75-.75.63v1.38H9.92l-1.25-1.38H8.42l-1-2-1-.63-.75.25-.5-.25,1.51-2.13v-2.25h-.5l-.25-2.38L4.3,149l-1.76-3.63L1,142l1-1.38v-5.13l1.51-2.63.25-2.13v-2.25l-1-2.76-.5-2L0,120.6l.5-1V118l5.4-6.76.25-2.38,1.51-2.38,1-2,.25-4.38-.75-1.13.5-1,.75-2,4,1.33,3.39,1,3,.63L30,102l8.91,2.38,6.15,2,9.66,2.38L51.32,120.6,46.05,142l-1.25,4-.25,2-.75,2.38v.75l-.25.63-.38,1,1.13,1.38,2.51,4,2.26,3.38,1.51,2.13,6.4,9.77,5.27,7.76,6.17,9.54L80.34,208l2.38,3.63,9.66,14.28,0,0,.12.71-.12,2.13.12.83-.12.59.95,1.89v1.42l.47,1.06.47,1.78.72.47.7.94.24,1.42-.24.47-.47-.35-1.54,1.3-1.77.59L90.63,243l-.95,4.14-2.35,3.07H86l-.11.83.35,1.06-.12.83-.59,1.89.47,1,1.66,1.41.23.59-.47.71-.23.95-1.07,1.06-.59-.11Z" />
+                    </svg>
+                </div>
+                <div class="region-form">
+                    <p><strong>CHANGE BY ZIP CODE OR SELECT YOUR REGION</strong></p>
+                    <input type="text" placeholder="Enter Zip Code" id="searchinput-region" maxlength="5" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                    <input id="region-submit" class="rs-in-btn" type="button" value=">" />
+                    <span class="separator">OR</span>
+                    <select>
+                        <option></option>
+                        <option data-region-cookie="Fort Collins_CO 80521_40.5958347_-105.1430199_" value="1a">Western High Plains</option>
+                        <option data-region-cookie="Liberal_KS 67901_37.0473293_-100.9489195_" value="1b">Central High Plains</option>
+                        <option data-region-cookie="Amarillo_TX 79118_35.193354_-101.754749_" value="17">Southwest</option>
+                        <option data-region-cookie="Pratt_KS 67066_37.6460797_-98.7433492_" value="1c">Eastern High Plains</option>
+                        <option data-region-cookie="Princeton_MO 64673_40.3977342_-93.5975302_" value="2">Southern IA/Northern MO</option>
+                        <option data-region-cookie="Vincennes_IN 47591_38.6750281_-87.5264615_" value="3">Southern IL/Southern IN</option>
+                        <option data-region-cookie="Davenport_IA 52722_41.5410647_-90.6590187_" value="4">Eastern IA/Northern IL</option>
+                        <option data-region-cookie="Grand Island_NE 68801_40.9219312_-98.3948532_" value="5">South and Eastern NE</option>
+                        <option data-region-cookie="Joplin_MO 64801_37.0953129_-94.5783988_" value="6">Missouri/East Kansas</option>
+                        <option data-region-cookie="Lansing_MI 48864_42.7086762_-84.5940513_" value="7a">Great Lakes North</option>
+                        <option data-region-cookie="Lafayette_IN 47901_40.4049758_-86.8932352_" value="7b">Great Lakes East</option>
+                        <option data-region-cookie="Springfield_OH 45501_39.9353507_-83.8215622_" value="7c">Great Lakes West</option>
+                        <option data-region-cookie="Storm Lake_IA 50588_42.6444386_-95.2175884_" value="8">Northwest IA</option>
+                        <option data-region-cookie="North Platte_NE 69101_41.1276911_-100.7945922_" value="9a">West NE Plains</option>
+                        <option data-region-cookie="Wayne_NE 68787_42.2398536_-97.0250953_" value="9b">Eastern NE Plains</option>
+                        <option data-region-cookie="Grand Forks_ND 58201_47.9149282_-97.1378772_" value="10a">Red River Valley</option>
+                        <option data-region-cookie="Esko_MN 55733_46.7031626_-92.3962532_" value="10b">MN/WI</option>
+                        <option data-region-cookie="Manning_ND 58642_47.231465_-102.7741879_" value="10c">Western ND</option>
+                        <option data-region-cookie="Huron_SD 57350_44.3633032_-98.2412362_" value="11">SD/MN</option>
+                        <option data-region-cookie="La Crosse_WI 54601_43.8222224_-91.2869528_" value="12">Upper Midwest</option>
+                        
+                    </select>
+                    <div class="error-unsupported">We&apos;re sorry. Golden Harvest is not available in this area. Please try another zip code or contact a Golden Harvest Seed Advisor<sup>&trade;</sup> for more information.</div>
+                </div>
+            </div>
+        </div>
+
+        
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+            <script src="//code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+            <script src='/scripts/select2.min.js'></script>
+            <script src='/scripts/autocomplete.js'></script>
+            <script src='/scripts/userlocation.js?v=1.4'></script>
+            <script src='/scripts/modernizr-2.8.3.min.js'></script>
+            <script src='/scripts/main.js?v=8.43'></script>
+
+            
+
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+            <script src="/Scripts/mega-menu.js?v1.1"></script>
+            <script src="/Scripts/datalayer-events.js?v=1.1"></script>
+            <script src='/scripts/harvest-popup.js?v=1.13'></script>
+            <script>
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                })
+            </script>
+
+            <script type="text/javascript">
+                $('.skip-navigation').on('click', function (e) {
+                    $('html,body').animate({ scrollTop: $("#main-content").offset().top });
+                    $(this).css('transform', 'translateY(-150%)');
+                });
+            </script>
+
+            
+    <script type="text/javascript">
+const playButton = document.getElementById("audioPlayButton");
+const playIcon = document.getElementById("playIcon");
+const audioTime = document.getElementById("audioTime");
+const waveform = document.getElementById("waveform");
+const speedButton = document.getElementById("audioSpeedButton");
+ const article = document.getElementById("article-content");
+
+        //const newsplaybutton = document.getElementById("audioPlayButton-news");
+        //const newsplayIcon = document.getElementById("playicon-news");
+        //const newsaudioTime = document.getElementById("audioTime-news");
+        //const waveform = document.getElementById("waveform-news");
+        //const speedButton = document.getElementById("speedButton-news");
+
+let utterance = null;
+let isPlaying = false;
+let elapsedSeconds = 0;
+let timer = null;
+let speedIndex = 0;
+
+const speeds = [1, 1.25, 1.5, 0.8];
+const speedLabels = ["1x", "1.25x", "1.5x", "0.8x"];
+
+// Create waveform bars
+for (let i = 0; i < 95; i++) {
+    const bar = document.createElement("span");
+    bar.className = "wave-bar";
+
+    // Create a natural-looking repeating waveform
+    const height = 8 + Math.abs(Math.sin(i * 0.75)) * 27;
+    bar.style.height = `${height}px`;
+
+    waveform.appendChild(bar);
+}
+
+const bars = document.querySelectorAll(".wave-bar");
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60)
+        .toString()
+        .padStart(2, "0");
+
+    return `${minutes}:${remainingSeconds}`;
+}
+
+function stopTimer() {
+    clearInterval(timer);
+    timer = null;
+}
+
+function startTimer() {
+    stopTimer();
+
+    timer = setInterval(() => {
+        elapsedSeconds++;
+        audioTime.textContent = formatTime(elapsedSeconds);
+
+        const activeBars = Math.min(
+            bars.length,
+            Math.floor((elapsedSeconds / 120) * bars.length)
+        );
+
+        bars.forEach((bar, index) => {
+            bar.classList.toggle("active", index < activeBars);
+        });
+    }, 1000);
+}
+
+function resetPlayer() {
+    speechSynthesis.cancel();
+    stopTimer();
+
+    isPlaying = false;
+    elapsedSeconds = 0;
+    audioTime.textContent = "0:00";
+    playIcon.textContent = "▶";
+
+    bars.forEach(bar => bar.classList.remove("active"));
+}
+
+playButton.addEventListener("click", () => {
+    if (!("speechSynthesis" in window)) {
+        alert("Text-to-speech is not supported in this browser.");
+        return;
+    }
+
+    if (isPlaying) {
+        speechSynthesis.pause();
+        isPlaying = false;
+        playIcon.textContent = "▶";
+        stopTimer();
+        return;
+    }
+
+    if (speechSynthesis.paused) {
+        speechSynthesis.resume();
+        isPlaying = true;
+        playIcon.textContent = "Ⅱ";
+        startTimer();
+        return;
+    }
+
+    resetPlayer();
+
+    utterance = new SpeechSynthesisUtterance(article.innerText);
+    utterance.lang = "en-US";
+    utterance.rate = speeds[speedIndex];
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    utterance.onstart = () => {
+        isPlaying = true;
+        playIcon.textContent = "Ⅱ";
+        startTimer();
+    };
+
+    utterance.onend = () => {
+        resetPlayer();
+    };
+
+    utterance.onerror = () => {
+        resetPlayer();
+    };
+
+    speechSynthesis.speak(utterance);
+});
+
+speedButton.addEventListener("click", () => {
+    speedIndex = (speedIndex + 1) % speeds.length;
+    speedButton.textContent = speedLabels[speedIndex];
+
+    if (isPlaying) {
+        const wasPlaying = true;
+        const currentText = article.innerText;
+
+        speechSynthesis.cancel();
+
+        utterance = new SpeechSynthesisUtterance(currentText);
+        utterance.lang = "en-US";
+        utterance.rate = speeds[speedIndex];
+
+        utterance.onend = resetPlayer;
+        speechSynthesis.speak(utterance);
+
+        if (wasPlaying) {
+            playIcon.textContent = "Ⅱ";
+        }
+    }
+});
+
+// newsplayButton.addEventListener("click", () => {
+//     if (!("speechSynthesis" in window)) {
+//         alert("Text-to-speech is not supported in this browser.");
+//         return;
+//     }
+
+//     if (isPlaying) {
+//         speechSynthesis.pause();
+//         isPlaying = false;
+//         newsplayIcon.textContent = "▶";
+//         stopTimer();
+//         return;
+//     }
+
+//     if (speechSynthesis.paused) {
+//         speechSynthesis.resume();
+//         isPlaying = true;
+//         newsplayIcon.textContent = "Ⅱ";
+//         startTimer();
+//         return;
+//     }
+
+//     resetPlayer();
+
+//     utterance = new SpeechSynthesisUtterance(article.innerText);
+//     utterance.lang = "en-US";
+//     utterance.rate = speeds[speedIndex];
+//     utterance.pitch = 1;
+//     utterance.volume = 1;
+
+//     utterance.onstart = () => {
+//         isPlaying = true;
+//         playIcon.textContent = "Ⅱ";
+//         startTimer();
+//     };
+
+//     utterance.onend = () => {
+//         resetPlayer();
+//     };
+
+//     utterance.onerror = () => {
+//         resetPlayer();
+//     };
+
+// 			speechSynthesis.speak(utterance);
+// 		});
+</script>
+    <script src='/scripts/article-scripts.js?v=1.3'></script>
+    <script src='/scripts/Article-Detail.js'></script>
+    <script src='/sproutplayer/js/sprout-player.js'></script>
+    <script src='/scripts/seedAdvisor-usercontrol.js'></script>
+
+
+            </script>
+        
+    </form>
+    <script>
+        function ssmobilesearch() {
+
+            var ss360Config = {
+                siteId: 'www.goldenharvestseeds.com',
+                searchBoxSelector: '.mobileSearchBox',
+                searchResultsCaption: '<h1>Search results for: #QUERY#</h1>',
+                searchResults: { 'contentBlock': '#results' },
+                searchButton: '#ss360Button',
+                defaultCss: false,
+                highlightQueryTerms: true,
+                showSearchSuggestions: false,
+                showImagesSuggestions: false,
+                showImagesResults: false,
+                numResults: 100,
+                moreResultsButton: 'Show More Results',
+                moreResultsPagingSize: 10,
+                preSearchCallback: function (query) {
+                    if (document.location.href.indexOf('search-results') == -1) {
+                        document.location.href = baseUrl + "search-results/?ss360Query=" + query;
+                    }
+                    return true;
+                },
+                postSearchCallback: function () {
+                    moreResultsSearch();
+                }
+            };
+        }
+    </script>
+
+    <script>
+        var baseUrl = "/";
+        var searchURL = baseUrl + "search-results";
+
+        function getSearchCount() {
+            if ($('.ss360-top-nav').length) {
+                $('.ss360-top-nav button').each(function (i) {
+                    var catName = $($(this).contents().get(0)).text(),
+                        catName = catName.replace(/[\s&]+/g, '_').toLowerCase();
+                    var catCount = $(this).find('.ss360-result-count').text();
+
+                    $('.ss360-group-' + catName + ' h3').append(' <span>(' + catCount + ' results)</span>');
+                });
+            }
+        }
+
+        var ss360Config = {
+            siteId: 'www.goldenharvestseeds.com',
+            suggestions: {
+                show: false,
+                showImages: false
+            },
+            style: { defaultCss: true },
+            searchBox: {
+                selector: '.searchBox',
+                searchButton: '.btn-search',
+                preventFormParentSubmit: false
+            },
+            results: {
+                embedConfig: {
+                    url: searchURL,
+                    contentBlock: '#results'
+                },
+                caption: '<span class="count">#COUNT# results</span>Search Results for <span class="term">#QUERY#</span>',
+                num: 100,
+                highlightQueryTerms: true,
+                moreResultsButton: 'Show More Results',
+                moreResultsPagingSize: 25,
+                showContentGroupHeadings: true
+            },
+            queryTerm: {
+                highlightContext: undefined,
+                highlight: true,
+                scrollIntoViewBehavior: 'smooth',
+                highlightColor: '#b5f948'
+            },
+            contentGroups: {
+                otherName: 'Other', // the name of the results not in any other content group
+                ignoreOther: false // whether or not to ignore the "other" content group
+            },
+
+            layout: {
+                mobile: { showImages: false, showUrl: false },
+                desktop: { showImages: false, showUrl: false },
+                navigation: {
+                    position: 'top',
+                    type: 'tabs',
+                    tabSpacingPx: 5,
+                    borderRadiusPx: 1,
+                    tabTitle: 'Found #COUNT# #NAME# for \'#QUERY#\'',
+                    showGroupResultCount: true
+                }
+            }
+        };
+
+
+
+
+        $(document).ready(function () {
+            document.getElementById("ss360search").addEventListener("keypress", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    const query = document.getElementById("ss360search").value;
+                    document.getElementById("ss360Button").click();
+                    document.getElementById("txtMobileSearch2").value = query;
+                }
+                document.getElementById("ss360Button").addEventListener("click", function (event) {
+
+                    event.preventDefault();
+                    const query = document.getElementById("ss360search").value;
+
+                    document.getElementById("txtMobileSearch2").value = query;
+                    document.getElementById("ss360Button").click();
+
+                });
+            });
+
+
+            $('#txtMobileSearch2').on('keypress', function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    const query = document.getElementById("txtMobileSearch2").value;
+
+                    document.getElementById("ss360search").value = query;
+                    document.getElementById("ss360Button").click();
+
+                }
+            })
+        });
+
+
+    </script>
+    <script type="module" src="https://cdn.sitesearch360.com/sitesearch360-v12.mjs"></script>
+    <script nomodule src="https://cdn.sitesearch360.com/sitesearch360-v12.min.js" async></script>
+     <script>
+         document.getElementById('year').textContent = new Date().getFullYear();
+     </script>
+     <style>
+        #site-survey {
+        width: 350px;
+        padding: 25px 30px;
+        position: fixed;
+        bottom: -100%;
+        right: 0;
+        -webkit-box-shadow: -16px -4px 30px 0px rgba(0,0,0,0.35);
+        -moz-box-shadow: -16px -4px 30px 0px rgba(0,0,0,0.35);
+        box-shadow: -16px -4px 30px 0px rgba(0,0,0,0.35);
+        -webkit-transition: all 1s ease;
+        -moz-transition: all 1s ease;
+        -o-transition: all 1s ease;
+        -ms-transition: all 1s ease;
+        transition: all 1s ease;
+        z-index: 9999;
+        }
+
+        #site-survey.visible {
+        bottom: 0;
+        }
+
+        #site-survey {
+        background: rgba(189,85,28,0.95);
+        }
+
+        #site-survey .survey-questions {
+        display: none;
+        }
+
+        #site-survey sup {
+        font-size: 12px;
+        }
+
+        #site-survey h3 {
+        color:#fff;
+        display: block;
+        font-size:18px;
+        font-weight: 400;
+        margin: 15px 0 0;
+        }
+
+        #site-survey.syngenta-us h3, #site-survey.kmgm h3 {
+        color: #fff;
+        }
+
+        #site-survey .form-intro h3 {
+        margin: 0;
+        }
+
+        #site-survey p {
+        margin-bottom: 0;
+        }
+
+        #site-survey.syngenta-us p, #site-survey.kmgm p {
+        color: #fff;
+        }
+
+        #site-survey textarea, #site-survey button {
+        width: calc(100% / 3 - 6px);
+        padding: 5px 0;
+        margin-right: 2px;
+        border-radius: 0;
+        border: none;
+        outline: none;
+        }
+
+        #site-survey textarea, #site-survey select {
+        outline: none;
+        border: none;
+        width: 100%;
+        margin-top: 15px;
+        }
+
+        #site-survey textarea {
+        resize: none;
+        padding: 10px;
+        height: 100px;
+        }
+
+        #site-survey button {
+        background: #fff;
+        margin-top: 20px;
+        cursor: pointer;
+        }
+
+        #site-survey button:first-child {
+        margin-left: 0;
+        }
+
+        #site-survey button.active {
+        background: #8a380a;
+        color: #fff;
+        }
+
+        #site-survey div.close-button {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        }
+
+        #site-survey div.close-button svg path {
+        fill-rule: evenodd;
+        fill: #000;
+        }
+
+        #site-survey.syngenta-us div.close-button svg path, #site-survey.kmgm div.close-button svg path {
+        fill: #fff;
+        }
+
+        #site-survey .survey-thanks {
+        display: none;
+        }
+    </style>
+   
+    <link rel="stylesheet" type="text/css" href="/survey/css/survey.css" />
+    <div id="formQualtrics" data-survey-id="SV_2mzgmGHdpMCQIYd">
+        <div class="container">
+            <div id="site-survey">
+                <div class="form-intro">
+                    <h3>Is this page helpful to you?</h3>
+                    <button class="btnclick" id="btnYes" value="Yes" name="Yes" data-qid="Q1" data-question="Is this Page Helpful?" data-importId="QID1_TEXT">Yes</button>
+                    <button class="btnclick" id="btnSortof" value="Sort of" name="Sort of" data-qid="Q1" data-question="Is this Page Helpful?" data-importId="QID1_TEXT">Sort of</button>
+                    <button class="btnclick" id="btnNotReally" value="Not really" name="Not really" data-qid="Q1" data-question="Is this Page Helpful?" data-importId="QID1_TEXT">Not really</button>
+                </div>
+                <div class="survey-questions">
+                    <h3>How can we improve<br />this page? <sup>(optional)</sup></h3>
+                    <textarea id="improve-how" name="Improvements" placeholder="Tell us by typing here." data-question="How can we improve this page" data-qid="Q2" data-importId="QID2_TEXT"></textarea>
+                    <h3>Can you tell us your<br />role in agriculture? <sup>(optional)</sup></h3>
+                    <select name="Agriculture role" id="agriculture-role" data-question="Can you tell us your role in agriculture?" data-qid="Q3" data-importId="QID5_TEXT">
+                        <option selected=selected>---Select---</option>
+                        <option>Farm owner/operator</option>
+                        <option>Seed dealer</option>
+                        <option>Sales rep</option>
+                        <option>Agronomist</option>
+                        <option>Student</option>
+                        <option>Farm advisor</option>
+                        <option>Farm employee</option>
+                        <option>Journalist</option>
+                        <option>Financial investor</option>
+                        <option>Other</option>
+                    </select>
+                    <button id="submit-survey">Submit</button>
+                    <div style="display: none">
+                        <input type="text" name="User IP" id="userId" data-qid="Q8" data-question="IP Address" data-importId="QID8_TEXT" />
+                        <input type="text" name="Browser" id="browserId" data-qid="Q4" data-question="User Info" data-importId="QID6_TEXT" />
+                        <input type="text" name="Current URL" id="currentUrlId" data-qid="Q7" data-question="Current URL(referrer)" data-importId="QID7_TEXT" />
+                        <input type="text" name="Category" id="categoryId" data-qid="Q9" data-question="Category ID" data-importId="QID9_TEXT" />
+                        <input type="text" name="GAID" id="GAID" data-qid="Q10" data-question="GA Client ID" data-importId="QID10_TEXT" />
+                    </div>
+                </div>
+                <div class="survey-thanks">
+                    <h3>Thanks for the feedback.</h3>
+                    <p>We appreciate your participation</p>
+                    <button class="close-button">Close</button>
+                </div>
+                <div class="close-button">
+                    <?xml version="1.0" encoding="UTF-8" ?>
+                    <svg viewBox="0 0 61.88 60.78" xmlns="http://www.w3.org/2000/svg">
+                        <g data-name="Layer 2">
+                            <g data-name="Layer 1">
+                                <path class="cls-1" d="M57.38,0l4.5,4.42L4.5,60.78,0,56.36Z" />
+                                <path class="cls-1" d="M61.88,56.36l-4.5,4.42L0,4.42,4.5,0Z" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/survey/js/Qualtrics.js">
+    </script>
+    <script src="/survey/js/survey.js?v=1.0">
+    </script>
+
+</body>
+</html>
