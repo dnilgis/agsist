@@ -1,0 +1,342 @@
+# Benchmark planting-date: Penn State Extension soil thresholds
+# https://extension.psu.edu/soil-conditions-approaching-thresholds-for-planting
+# fetched 2026-10-16T15:56:11Z, sha256 2e6c5bde33a4aad838e1ee98275b885868d854c0c43702f9655ad97b56afabaf
+
+Agronomic Crop Soil Fertility | Penn State Extension
+
+Agronomic Crops
+
+Soil Fertility and Management
+
+Soil fertility is essential for plant growth and to optimize agronomic crop yield. Use Penn State Extension’s extensive resources on soil fertility and management of agronomic crops, including quality assessment and conditions such as crusting, compaction, and rill erosion. You’ll also find tips on levels of nitrogen, potassium and phosphorus, crop rotation, and no-till yields.
+
+Soil Health and Conservation Practices
+
+Healthy soil is the foundation for profitable, productive, and environmentally sound agronomic production. There are many ways to optimize the health of the soil, but you first need to understand the soil's physical, chemical, and biological components if you want to manage them successfully.
+
+There are lots of different things that can affect soil quality. Wet conditions in fall and spring, for example, can lead to problems with severe soil compaction during harvest or manure spreading. Soil compaction can drastically affect the growth of crops when their roots hit the compacted layer. It can also lead to issues with compaction infiltration.
+
+Popular ways of improving soil health include using a no-till system and cover crops. Both bring many advantages, such as reduced soil erosion, improved soil physical properties and soil quality, and improved water quality. It requires careful management, in particular for livestock farms as continuous applications of manure can lead to high concentrations of phosphorus. Soil tests can measure these levels as well as levels of different nutrients.
+
+Soil Fertility and Nutrient Management for Agronomic Crops
+
+Nutrients are essential for maintaining soil health and soil fertility. Soil fertility can be improved by incorporating the 4Rs. These are:
+
+- Right fertilizer source: matching fertilizer type to crop needs
+
+- Right rate: matches the amount of fertilizer each crop needs
+
+- Right time: allowing nutrients to be available when they are needed
+
+- Right place: providing nutrients where crops can use them
+
+Different crops take up nutrients in unique ways which means careful nutrient management is imperative. Much research is being done to discover how to optimize carbon, nitrogen, and phosphorus management, because of the vital role these nutrients play. Potassium also has a critical role to play in crop production.
+
+Nitrogen is present in the air that we breathe, but it can only be used by plants after it’s fixed, or taken from the air. A process called the nitrogen cycle controls levels in the soil. Two processes make up the cycle: immobilization and mineralization.
+
+How much nitrogen is in the soil changes almost daily, making it difficult for producers to predict and manage levels. Two methods for testing nitrate levels are currently being researched: Pre-sidedress Soil Nitrate Test (PSNT) and the leaf chlorophyll meter test. Both allow producers to determine when to top-dress nitrogen or apply a nitrate fertilizer. Several other tools are available for in-season nitrogen management decision making, for example, the Late Season Stalk Nitrate Test for Corn.
+
+The Managing and Predicting Soil Carbon and Nitrogen in Agronomic Cropping Systems workshop helps you understand the importance of managing soil carbon and nitrogen, in regard to maintaining soil health, improving crop yields, and protecting the environment.
+
+Narrow By
+
+Narrow By:
+
+Education Format
+
+Language
+
+Author / Instructor
+
+View as List Grid
+
+Items 1-25 of 118
+
+View
+
+Sort by:
+Date Posted
+
+- Position
+
+- Product Name
+
+- SKU
+
+- Price
+
+- Date Posted
+
+- Start Date
+
+Set Ascending Direction
+
+-
+
+Workshops
+
+$10.00
+
+Crops Day
+
+When Multiple Options Available
+
+Explore 2026 crop results, innovations, and agronomic research at Crops Day 2027 with Penn State Extension specialists.
+
+-
+
+Articles
+
+Repairing Compacted Soil
+
+By Sjoerd Willem Duiker, Ph.D., CCA
+
+Plentiful rainfall just before crop harvest caused some fields to be badly compacted. What should a producer do in the aftermath?
+
+-
+
+News
+
+Manure Has Real Fertilizer Value: Putting a Dollar Value on Local Nutrients
+
+Date Posted 9/29/2026
+
+Manure is not simply a waste product that needs to be disposed of, especially when fertilizer prices are high. The Penn State Manure N-P-K Economic Value Calculator makes the process of calculating manure nutrient value relatively simple.
+
+-
+
+Articles
+
+Biosolids Quality
+
+Application of sewage sludge to farmland has been a common practice in Pennsylvania for many years and allows this material to be recycled, rather than incinerated or disposed of in landfills.
+
+-
+
+Articles
+
+Managing Soils to Maximize Infiltration
+
+By Sjoerd Willem Duiker, Ph.D., CCA
+
+High precipitation in recent weeks caused localized flooding in parts of Pennsylvania. Another clear call for the critical importance of soil management to improve infiltration and reduce runoff.
+
+-
+
+Articles
+
+Managing Soil Compaction During Corn Silage Harvest
+
+By Sjoerd Willem Duiker, Ph.D., CCA
+
+High soil moisture content increases risk of soil compaction during corn silage harvest, calling on farmers to make soil resistant compaction better and avoid or repair if needed.
+
+-
+
+Articles
+
+What Is Sewage Sludge and What Can Be Done with It?
+
+By Richard Stehouwer, Ph.D.
+
+In this document, "sewage sludge" will refer to wastewater treatment solids generally, and "biosolids" will refer specifically to material that is suitable for land application.
+
+-
+
+Articles
+
+Use of Biosolids in Crop Production
+
+By Richard Stehouwer, Ph.D.
+
+Characteristics of various types of biosolids and discusses management, regulatory, and other practical issues regarding their use on cropland.
+
+-
+
+Articles
+
+Effects of Biosolids on Soil and Crop Quality
+
+Results of a three-year research project that investigated how agronomic biosolids utilization has affected soil and crop quality.
+
+-
+
+Online Courses
+
+$30.00
+
+Soils: Nutrient Management
+
+Sections 5
+
+Length 3 hours
+
+Learn how to test, interpret, and manage soil nutrients to improve plant growth, balance farm fertility, and protect the environment.
+
+-
+
+News
+
+Consider the Cornstalk Nitrate Test to Assess Your Nitrogen Management
+
+Date Posted 9/1/2026
+
+The corn stalk nitrate test can help you check the success of nitrogen management decisions at the end of the season.
+
+-
+
+Articles
+
+Cover Crops After Corn Silage
+
+By Sjoerd Willem Duiker, Ph.D., CCA
+
+Cover crops are important after any crop, but never as important as after corn silage. Plan to drill the cover crop immediately after harvest to maximize its benefits.
+
+-
+
+Articles
+
+Soil Erosion Benefits of Pastures
+
+By Sjoerd Willem Duiker, Ph.D., CCA
+
+Livestock integration in crop production can be beneficial for soil health. Pastures are excellent components of a farming system with minimal soil erosion potential, but runoff can still be significant.
+
+-
+
+Articles
+
+Diagnostic Tools for Determining Appropriate Sidedress Nitrogen Rates
+
+By Charles White
+
+Several tools are available to help determine an appropriate sidedress nitrogen rate for corn.
+
+-
+
+Articles
+
+The 1-800-PENN-IPM Hotline
+
+By Daniel Weber, Ph.D.
+
+The 1-800 PENN IPM line is designed to provide concise messages on important production and management issues for growers of specialty and field and forage crops including vegetables, cut flowers, small fruit, tree fruit, Christmas trees and all things agronomic. Certain content is also available in Spanish.
+
+-
+
+Articles
+
+Manure Management Planning Resources
+
+By Sarah Tzilkowski, Jennifer Weld, Nathan Radabaugh
+
+Learn more about Manure Management Plans, why they are important, who can develop a plan, what information is needed to develop a plan, and available educational and planning resources.
+
+-
+
+Articles
+
+No-till and the Soil
+
+By Sjoerd Willem Duiker, Ph.D., CCA
+
+No-till is the best way to avoid tillage and water erosion, while 'cold soil syndrome' is a temporary effect that disappears a few weeks after planting. For soil and water conservation, let's continue to work on no-till, make it better.
+
+-
+
+Articles
+
+What is the Potential for Nitrogen Losses from Extreme Summer Rainfall?
+
+By Charles White
+
+The severity of nitrogen losses from extreme summer rainfalls, and how you react to them, depends on many factors.
+
+-
+
+Articles
+
+Using an NDVI Sensor to Estimate Cover Crop Nitrogen Content
+
+By Charles White
+
+An NDVI sensor is a quick way to non-destructively estimate cover crop biomass N content.
+
+-
+
+Tools and Apps
+
+Nitrogen Recommendations for Corn That Credit Cover Crops and Soil Organic Matter
+
+By Charles White
+
+This tool allows you to make a prediction for how much nitrogen (N) fertilizer is needed for a corn crop based on credits that are given to soil organic matter and cover crop residues.
+
+-
+
+Articles
+
+No-Till Planting Considerations
+
+By Sjoerd Willem Duiker, Ph.D., CCA
+
+Checking field conditions and planter and drill performance is crucial to maximize yields, especially when planting in no-till conditions.
+
+-
+
+News
+
+Drought Status in Pennsylvania
+
+Date Posted 4/14/2026
+
+The southeastern section of Pennsylvania, most intensively used for agriculture, has received less precipitation than normal.
+
+-
+
+Articles
+
+Will Late Spring Low Temperatures Affect Small Grains?
+
+By Heidi Reed, Justin Brackenrich, Ryan Spelman
+
+Low temperatures in late spring happen, but do they get cold enough to cause yield reduction and crop damage?
+
+-
+
+Videos
+
+Soil Sampling
+
+By Rachel Milliron
+
+Length 5:02
+
+In this video, learn how to take representative soil samples in agronomic fields.
+
+-
+
+Articles
+
+Penn State Podcast Offers Farm Management Resources
+
+By Justin Brackenrich, Ryan Spelman
+
+The Penn State Agronomy Highlights Podcast has multiple episodes that can help with farm profitability and decision-making.
+
+Page
+
+Page Previous
+
+Page Next
+
+You're currently reading page 1
+
+Page 2
+
+Page 3
+
+Page 4
+
+Page 5
