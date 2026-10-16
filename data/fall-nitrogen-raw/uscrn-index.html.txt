@@ -1,0 +1,982 @@
+# https://www.ncei.noaa.gov/pub/data/uscrn/products/daily01/2026/
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Index of /pub/data/uscrn/products/daily01/2026/</title>
+</head>
+<body>
+<h1>Index of /pub/data/uscrn/products/daily01/2026/</h1>
+<table><tbody>
+<tr>
+<th>Name</th>
+<th>Last modified</th>
+<th>Size</th>
+<th>Description</th>
+</tr>
+<tr><th colspan="4"><hr></th></tr>
+<tr>
+<td><a href="..">Parent Directory</a></td>
+<td> </td>
+<td align="right">-</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Aleknagik_1_NNE.txt">CRND0103-2026-AK_Aleknagik_1_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Bethel_87_WNW.txt">CRND0103-2026-AK_Bethel_87_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Cordova_14_ESE.txt">CRND0103-2026-AK_Cordova_14_ESE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Deadhorse_3_S.txt">CRND0103-2026-AK_Deadhorse_3_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Denali_27_N.txt">CRND0103-2026-AK_Denali_27_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Fairbanks_11_NE.txt">CRND0103-2026-AK_Fairbanks_11_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Galena_44_SW.txt">CRND0103-2026-AK_Galena_44_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Glennallen_64_N.txt">CRND0103-2026-AK_Glennallen_64_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Gustavus_2_NE.txt">CRND0103-2026-AK_Gustavus_2_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Huslia_27_E.txt">CRND0103-2026-AK_Huslia_27_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Kenai_29_ENE.txt">CRND0103-2026-AK_Kenai_29_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_King_Salmon_42_SE.txt">CRND0103-2026-AK_King_Salmon_42_SE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Metlakatla_6_S.txt">CRND0103-2026-AK_Metlakatla_6_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Port_Alsworth_1_SW.txt">CRND0103-2026-AK_Port_Alsworth_1_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Red_Dog_Mine_3_SSW.txt">CRND0103-2026-AK_Red_Dog_Mine_3_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Ruby_44_ESE.txt">CRND0103-2026-AK_Ruby_44_ESE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Sand_Point_1_ENE.txt">CRND0103-2026-AK_Sand_Point_1_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Selawik_28_E.txt">CRND0103-2026-AK_Selawik_28_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Sitka_1_NE.txt">CRND0103-2026-AK_Sitka_1_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_St._Paul_4_NE.txt">CRND0103-2026-AK_St._Paul_4_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Tok_70_SE.txt">CRND0103-2026-AK_Tok_70_SE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Toolik_Lake_5_ENE.txt">CRND0103-2026-AK_Toolik_Lake_5_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Utqiagvik_formerly_Barrow_4_ENE.txt">CRND0103-2026-AK_Utqiagvik_formerly_Barrow_4_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AK_Yakutat_3_SSE.txt">CRND0103-2026-AK_Yakutat_3_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Brewton_3_NNE.txt">CRND0103-2026-AL_Brewton_3_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Clanton_2_NE.txt">CRND0103-2026-AL_Clanton_2_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Courtland_2_WSW.txt">CRND0103-2026-AL_Courtland_2_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Cullman_3_ENE.txt">CRND0103-2026-AL_Cullman_3_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Fairhope_3_NE.txt">CRND0103-2026-AL_Fairhope_3_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Gadsden_19_N.txt">CRND0103-2026-AL_Gadsden_19_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Gainesville_2_NE.txt">CRND0103-2026-AL_Gainesville_2_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Greensboro_2_WNW.txt">CRND0103-2026-AL_Greensboro_2_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Highland_Home_2_S.txt">CRND0103-2026-AL_Highland_Home_2_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Muscle_Shoals_2_N.txt">CRND0103-2026-AL_Muscle_Shoals_2_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Northport_2_S.txt">CRND0103-2026-AL_Northport_2_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Russellville_4_SSE.txt">CRND0103-2026-AL_Russellville_4_SSE.txt</a></td>
+<td align="right">2026-10-09 11:42</td>
+<td align="right">61194</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Scottsboro_2_NE.txt">CRND0103-2026-AL_Scottsboro_2_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Selma_13_WNW.txt">CRND0103-2026-AL_Selma_13_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Selma_6_SSE.txt">CRND0103-2026-AL_Selma_6_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Talladega_10_NNE.txt">CRND0103-2026-AL_Talladega_10_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Thomasville_2_S.txt">CRND0103-2026-AL_Thomasville_2_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Troy_2_W.txt">CRND0103-2026-AL_Troy_2_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AL_Valley_Head_1_SSW.txt">CRND0103-2026-AL_Valley_Head_1_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AR_Batesville_8_WNW.txt">CRND0103-2026-AR_Batesville_8_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AZ_Elgin_5_S.txt">CRND0103-2026-AZ_Elgin_5_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AZ_Tucson_11_W.txt">CRND0103-2026-AZ_Tucson_11_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AZ_Williams_35_NNW.txt">CRND0103-2026-AZ_Williams_35_NNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-AZ_Yuma_27_ENE.txt">CRND0103-2026-AZ_Yuma_27_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CA_Bodega_6_WSW.txt">CRND0103-2026-CA_Bodega_6_WSW.txt</a></td>
+<td align="right">2026-08-22 11:43</td>
+<td align="right">50561</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CA_Fallbrook_5_NE.txt">CRND0103-2026-CA_Fallbrook_5_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CA_Merced_23_WSW.txt">CRND0103-2026-CA_Merced_23_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CA_Redding_12_WNW.txt">CRND0103-2026-CA_Redding_12_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CA_Santa_Barbara_11_W.txt">CRND0103-2026-CA_Santa_Barbara_11_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CA_Stovepipe_Wells_1_SW.txt">CRND0103-2026-CA_Stovepipe_Wells_1_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CA_Yosemite_Village_12_W.txt">CRND0103-2026-CA_Yosemite_Village_12_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CO_Boulder_14_W.txt">CRND0103-2026-CO_Boulder_14_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CO_Cortez_8_SE.txt">CRND0103-2026-CO_Cortez_8_SE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CO_Dinosaur_2_E.txt">CRND0103-2026-CO_Dinosaur_2_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CO_La_Junta_17_WSW.txt">CRND0103-2026-CO_La_Junta_17_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CO_Montrose_11_ENE.txt">CRND0103-2026-CO_Montrose_11_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-CO_Nunn_7_NNE.txt">CRND0103-2026-CO_Nunn_7_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-FL_Everglades_City_5_NE.txt">CRND0103-2026-FL_Everglades_City_5_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-FL_Sebring_23_SSE.txt">CRND0103-2026-FL_Sebring_23_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-FL_Titusville_7_E.txt">CRND0103-2026-FL_Titusville_7_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-GA_Brunswick_23_S.txt">CRND0103-2026-GA_Brunswick_23_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-GA_Newton_11_SW.txt">CRND0103-2026-GA_Newton_11_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-GA_Newton_8_W.txt">CRND0103-2026-GA_Newton_8_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-GA_Watkinsville_5_SSE.txt">CRND0103-2026-GA_Watkinsville_5_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-HI_Hilo_5_S.txt">CRND0103-2026-HI_Hilo_5_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-HI_Mauna_Loa_5_NNE.txt">CRND0103-2026-HI_Mauna_Loa_5_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-IA_Des_Moines_17_E.txt">CRND0103-2026-IA_Des_Moines_17_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ID_Arco_17_SW.txt">CRND0103-2026-ID_Arco_17_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ID_Murphy_10_W.txt">CRND0103-2026-ID_Murphy_10_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-IL_Champaign_9_SW.txt">CRND0103-2026-IL_Champaign_9_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-IL_Shabbona_5_NNE.txt">CRND0103-2026-IL_Shabbona_5_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-IN_Bedford_5_WNW.txt">CRND0103-2026-IN_Bedford_5_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-KS_Manhattan_6_SSW.txt">CRND0103-2026-KS_Manhattan_6_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-KS_Oakley_19_SSW.txt">CRND0103-2026-KS_Oakley_19_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-KY_Bowling_Green_21_NNE.txt">CRND0103-2026-KY_Bowling_Green_21_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-KY_Versailles_3_NNW.txt">CRND0103-2026-KY_Versailles_3_NNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-LA_Lafayette_13_SE.txt">CRND0103-2026-LA_Lafayette_13_SE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-LA_Monroe_26_N.txt">CRND0103-2026-LA_Monroe_26_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MA_Blue_Hill_0_W.txt">CRND0103-2026-MA_Blue_Hill_0_W.txt</a></td>
+<td align="right">2026-09-25 11:43</td>
+<td align="right">57939</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ME_Limestone_4_NNW.txt">CRND0103-2026-ME_Limestone_4_NNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ME_Old_Town_2_W.txt">CRND0103-2026-ME_Old_Town_2_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MI_Chatham_1_SE.txt">CRND0103-2026-MI_Chatham_1_SE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MI_Gaylord_9_SSW.txt">CRND0103-2026-MI_Gaylord_9_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MN_Goodridge_12_NNW.txt">CRND0103-2026-MN_Goodridge_12_NNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MN_Sandstone_6_W.txt">CRND0103-2026-MN_Sandstone_6_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MO_Chillicothe_22_ENE.txt">CRND0103-2026-MO_Chillicothe_22_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MO_Joplin_24_N.txt">CRND0103-2026-MO_Joplin_24_N.txt</a></td>
+<td align="right">2026-09-25 11:43</td>
+<td align="right">58156</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MO_Salem_10_W.txt">CRND0103-2026-MO_Salem_10_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MS_Holly_Springs_4_N.txt">CRND0103-2026-MS_Holly_Springs_4_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MS_Newton_5_ENE.txt">CRND0103-2026-MS_Newton_5_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MT_Dillon_18_WSW.txt">CRND0103-2026-MT_Dillon_18_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MT_Lewistown_42_WSW.txt">CRND0103-2026-MT_Lewistown_42_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MT_St._Mary_1_SSW.txt">CRND0103-2026-MT_St._Mary_1_SSW.txt</a></td>
+<td align="right">2026-10-12 11:41</td>
+<td align="right">61845</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MT_Wolf_Point_29_ENE.txt">CRND0103-2026-MT_Wolf_Point_29_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-MT_Wolf_Point_34_NE.txt">CRND0103-2026-MT_Wolf_Point_34_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NC_Asheville_13_S.txt">CRND0103-2026-NC_Asheville_13_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NC_Asheville_8_SSW.txt">CRND0103-2026-NC_Asheville_8_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NC_Durham_11_W.txt">CRND0103-2026-NC_Durham_11_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ND_Jamestown_38_WSW.txt">CRND0103-2026-ND_Jamestown_38_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ND_Medora_7_E.txt">CRND0103-2026-ND_Medora_7_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ND_Northgate_5_ESE.txt">CRND0103-2026-ND_Northgate_5_ESE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NE_Harrison_20_SSE.txt">CRND0103-2026-NE_Harrison_20_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NE_Lincoln_11_SW.txt">CRND0103-2026-NE_Lincoln_11_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NE_Lincoln_8_ENE.txt">CRND0103-2026-NE_Lincoln_8_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NE_Whitman_5_ENE.txt">CRND0103-2026-NE_Whitman_5_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NH_Durham_2_N.txt">CRND0103-2026-NH_Durham_2_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NH_Durham_2_SSW.txt">CRND0103-2026-NH_Durham_2_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NM_Las_Cruces_20_N.txt">CRND0103-2026-NM_Las_Cruces_20_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NM_Los_Alamos_13_W.txt">CRND0103-2026-NM_Los_Alamos_13_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NM_Socorro_20_N.txt">CRND0103-2026-NM_Socorro_20_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NV_Baker_5_W.txt">CRND0103-2026-NV_Baker_5_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NV_Denio_52_WSW.txt">CRND0103-2026-NV_Denio_52_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NV_Mercury_3_SSW.txt">CRND0103-2026-NV_Mercury_3_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NY_Ithaca_13_E.txt">CRND0103-2026-NY_Ithaca_13_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-NY_Millbrook_3_W.txt">CRND0103-2026-NY_Millbrook_3_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OH_Wooster_3_SSE.txt">CRND0103-2026-OH_Wooster_3_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OK_Goodwell_2_E.txt">CRND0103-2026-OK_Goodwell_2_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OK_Goodwell_2_SE.txt">CRND0103-2026-OK_Goodwell_2_SE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OK_Stillwater_2_W.txt">CRND0103-2026-OK_Stillwater_2_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OK_Stillwater_5_WNW.txt">CRND0103-2026-OK_Stillwater_5_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-ON_Egbert_1_W.txt">CRND0103-2026-ON_Egbert_1_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OR_Coos_Bay_8_SW.txt">CRND0103-2026-OR_Coos_Bay_8_SW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OR_Corvallis_10_SSW.txt">CRND0103-2026-OR_Corvallis_10_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OR_John_Day_35_WNW.txt">CRND0103-2026-OR_John_Day_35_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-OR_Riley_10_WSW.txt">CRND0103-2026-OR_Riley_10_WSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-PA_Avondale_2_N.txt">CRND0103-2026-PA_Avondale_2_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-RI_Kingston_1_NW.txt">CRND0103-2026-RI_Kingston_1_NW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-RI_Kingston_1_W.txt">CRND0103-2026-RI_Kingston_1_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-SC_Blackville_3_W.txt">CRND0103-2026-SC_Blackville_3_W.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-SC_McClellanville_7_NE.txt">CRND0103-2026-SC_McClellanville_7_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-SD_Aberdeen_35_WNW.txt">CRND0103-2026-SD_Aberdeen_35_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-SD_Buffalo_13_ESE.txt">CRND0103-2026-SD_Buffalo_13_ESE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-SD_Pierre_24_S.txt">CRND0103-2026-SD_Pierre_24_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-SD_Sioux_Falls_14_NNE.txt">CRND0103-2026-SD_Sioux_Falls_14_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TN_Crossville_7_NW.txt">CRND0103-2026-TN_Crossville_7_NW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Austin_33_NW.txt">CRND0103-2026-TX_Austin_33_NW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Bronte_11_NNE.txt">CRND0103-2026-TX_Bronte_11_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Edinburg_17_NNE.txt">CRND0103-2026-TX_Edinburg_17_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Monahans_6_ENE.txt">CRND0103-2026-TX_Monahans_6_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Muleshoe_19_S.txt">CRND0103-2026-TX_Muleshoe_19_S.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Palestine_6_WNW.txt">CRND0103-2026-TX_Palestine_6_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Panther_Junction_2_N.txt">CRND0103-2026-TX_Panther_Junction_2_N.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-TX_Port_Aransas_32_NNE.txt">CRND0103-2026-TX_Port_Aransas_32_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-UT_Brigham_City_28_WNW.txt">CRND0103-2026-UT_Brigham_City_28_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-UT_Torrey_7_E.txt">CRND0103-2026-UT_Torrey_7_E.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-VA_Cape_Charles_5_ENE.txt">CRND0103-2026-VA_Cape_Charles_5_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-VA_Charlottesville_2_SSE.txt">CRND0103-2026-VA_Charlottesville_2_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WA_Darrington_21_NNE.txt">CRND0103-2026-WA_Darrington_21_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WA_Quinault_4_NE.txt">CRND0103-2026-WA_Quinault_4_NE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WA_Spokane_17_SSW.txt">CRND0103-2026-WA_Spokane_17_SSW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WI_Necedah_5_WNW.txt">CRND0103-2026-WI_Necedah_5_WNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WV_Elkins_21_ENE.txt">CRND0103-2026-WV_Elkins_21_ENE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WY_Lander_11_SSE.txt">CRND0103-2026-WY_Lander_11_SSE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WY_Moose_1_NNE.txt">CRND0103-2026-WY_Moose_1_NNE.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr>
+<td><a href="CRND0103-2026-WY_Sundance_8_NNW.txt">CRND0103-2026-WY_Sundance_8_NNW.txt</a></td>
+<td align="right">2026-10-15 11:42</td>
+<td align="right">62496</td>
+<td> </td>
+</tr>
+<tr><th colspan="4"><hr></th></tr>
+</tbody></table>
+<script id="_fed_an_ua_tag" type="text/javascript" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&amp;subagency=NOAA"></script>
+<script id="_fed_an_ua_tag" type="text/javascript" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NOAA"></script></body>
+</html>

@@ -1,0 +1,10 @@
+https://usdmdataservices.unl.edu/api/CountyStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=19169&startdate=9/4/2026&enddate=10/16/2026&statisticsType=1
+
+MapDate,FIPS,County,State,None,D0,D1,D2,D3,D4,ValidStart,ValidEnd,StatisticFormatID
+20261013,19169,Story County,IA,100.00,0.00,0.00,0.00,0.00,0.00,2026-10-13,2026-10-19,1
+20261006,19169,Story County,IA,100.00,0.00,0.00,0.00,0.00,0.00,2026-10-06,2026-10-12,1
+20260929,19169,Story County,IA,100.00,0.00,0.00,0.00,0.00,0.00,2026-09-29,2026-10-05,1
+20260922,19169,Story County,IA,100.00,0.00,0.00,0.00,0.00,0.00,2026-09-22,2026-09-28,1
+20260915,19169,Story County,IA,100.00,0.00,0.00,0.00,0.00,0.00,2026-09-15,2026-09-21,1
+20260908,19169,Story County,IA,100.00,0.00,0.00,0.00,0.00,0.00,2026-09-08,2026-09-14,1
+20260901,19169,Story County,IA,100.00,0.00,0.00,0.00,0.00,0.00,2026-09-01,2026-09-07,1
