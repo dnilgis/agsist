@@ -376,10 +376,22 @@ function basisCents(b,bid){
    "unusual basis -- check with the elevator", and it never sets a best bid, a
    best basis or a median. */
 var BASIS_SANE={corn:2.5,soybeans:2.5,wheat:3};
+/* AND A BASIS FAR FROM ITS NEIGHBORS IS NOT ONE EITHER. markBidOutliers()
+   sets bid._odd when the basis sits more than 5 robust standard deviations
+   (never under 75c) from the middle of the other elevators in this search for
+   the same crop and futures contract: scripts/basis_method.py's rule, ported
+   in components/cb-rank.js. Riceville IA soybeans at +$1.40 against neighbors
+   near -$0.70 (2026-10-15) was Best soybeans before this. */
 function basisUnusual(bid){
   if(!bid||bid.basis==null)return false;
+  if(bid._odd)return true;
   var cap=BASIS_SANE[bid.category],c=basisCents(bid.basis,bid);
   return cap!=null&&c!=null&&Math.abs(c)>cap*100;
+}
+/* "Basis 210c over the middle of 9 other elevators here (-70c)" */
+function oddTitle(o){
+  var where=o.via==='state'?'the state middle':'the middle of '+o.n+' other elevators in this search';
+  return 'Basis '+Math.round(Math.abs(o.dist))+'\u00a2 '+(o.dist>0?'over':'under')+' '+where+' ('+AG.px.basis(Math.round(o.median*4)/4)+'). Often a special contract (food grade, non-GMO).';
 }
 function basisUnclear(bid){return !!bid&&bid.basis!=null&&isFinite(bid.basis)&&basisUnit(bid.basis,bid)==='?';}
 /* A TRUE MINUS, not a hyphen. toFixed() on a negative gives U+002D, which is
@@ -1574,10 +1586,26 @@ function renderSeasonNote(names){
     '. Choose \u201CHarvest\u201D or \u201CAny delivery\u201D.';
   el.style.display='';
 }
+/* One elevator key per board, the same one groupElevators() uses. */
+function markBidOutliers(bids){
+  if(!window.cbRank||!cbRank.markOutliers||!bids)return;
+  var items=bids.map(function(b){
+    b._odd=null;
+    if(b.basis==null||!plausible(b)||notPerBushel(b)||bidPeriodPast(b))return null;
+    var con=cbRank.contractKey(b),c=basisCents(b.basis,b);
+    if(!con||c==null)return null;
+    return{key:(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||''),group:b.category+'|'+con,c:c,state:b.state};
+  });
+  var res=cbRank.markOutliers(items);
+  bids.forEach(function(b,i){b._odd=res[i]||null;});
+}
+/* The state medians arrive after the first draw: mark and draw again. */
+window.cbOutlierRedraw=function(){if(cbLastBids&&cbLastBids.length)renderBids(cbLastBids,true);};
 function renderBids(bids,keepLimit){
   if(!keepLimit)cbVisibleLimit=CB_PAGE_FIRST;
   if(window.CBGlance)CBGlance.clear();
   cbLastBids=bids;
+  markBidOutliers(bids);
   if(!bids||!bids.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No bids found</h2><p>Try a larger search radius or a different ZIP code.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
   renderSeasonNote([]);
   var filtered=currentFilter==='all'?bids:bids.filter(function(b){return b.category===currentFilter;});
@@ -1740,7 +1768,7 @@ function renderBids(bids,keepLimit){
         }
         var bhi='';
         if(bhSym(bid)&&bid.deliveryMonth){_bhRows.push({bid:bid,elev:elev});bhi=' data-bh-i="'+(_bhRows.length-1)+'"';}
-        if(bf.odd)gradeHtml+='<span class="bid-grade bid-odd">unusual basis, check with the elevator</span>';
+        if(bf.odd)gradeHtml+='<span class="bid-grade bid-odd"'+(bid._odd?' title="'+escH(oddTitle(bid._odd))+'"':'')+'>Unusual basis, call before you haul</span>';
         html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+((!perTon&&_tone&&_tone(bid))||bf.cls)+'">'+bf.str+'</span>'+gradeHtml+'</div>';
       });
       if(catBids.length>3)html+='<button class="bid-more" type="button" aria-expanded="false">+'+(catBids.length-3)+' more months &#9662;</button>';
