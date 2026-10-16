@@ -29,6 +29,10 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - `references` branch (never deployed): primary sources (refs/<id>.txt, index.json, refs.yml fetches them),
   Sig's uploads in manual/ (RMA LRP handbook text; Bing AI performance exports in manual/bing-ai-performance/2026-10-16/).
 - `lrp-history` branch: raw RMA LRP offers and ending values.
+- `raw` branch (never deployed, Oct 16): raw build inputs no page reads, same paths as they had on main: the Farmland Atlas pulls
+  (data/atlas/raw/*, except drought.json which stays on main) and every probe capture (data/*-raw/, data/drought/probe/).
+  Workflows save them with scripts/push_raw.sh; farmland-atlas.yml unpacks them with scripts/pull_raw.sh. The paths are in
+  .gitignore on main. Local Atlas build: `bash scripts/pull_raw.sh data/atlas/raw`. data/fsa stays on main (arc-plc --check reads it).
 - TODO-SIG.md: Sig's own to-do list; the morning report email shows it.
 - Subscriber counts: the subscriber-count skill (counts only, never an address). sponsor-report.yml also prints
   signups by page and the rent / rain-gauge notice lists as job annotations.

@@ -111,7 +111,9 @@ test('the reader selftest passes; the workflow runs it first and has a probe and
   assert.ok(wf.indexOf('--selftest') < wf.indexOf('--probe'));
   assert.match(wf, /inputs\.probe/);
   assert.match(wf, /inputs\.scan/);
-  assert.match(wf, /data\/hay\/ams-hay\.json data\/hay-ams-raw/);
+  // main gets the feed and the probe's listing (the normal run reads it); the report text goes to the raw branch
+  assert.match(wf, /FILES="data\/hay\/ams-hay\.json data\/hay-ams-raw\/listing\.json"/);
+  assert.match(wf, /bash scripts\/push_raw\.sh "hay-ams probe" data\/hay-ams-raw\n/);
 });
 
 test('a data file, when present, is shaped right and checks out', () => {
