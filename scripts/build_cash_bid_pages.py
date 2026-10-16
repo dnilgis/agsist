@@ -722,11 +722,11 @@ def odd_note(r):
     if not o:
         return ""
     if o["via"] == "sanity":
-        return "Unusual basis, call before you haul"
+        return "Unusual basis. Call before you haul."
     where = ("the state middle" if o["via"] == "state" else
              f"the middle of {o['n']} other elevators nearby for the same futures month")
     return (f"Unusual basis, {abs(o['dist']) * 100:.0f}&cent; {'over' if o['dist'] > 0 else 'under'} {where} "
-            f"({money_basis(o['median'])}). Call before you haul")
+            f"({money_basis(o['median'])}). Call before you haul.")
 
 
 def trim(rows):

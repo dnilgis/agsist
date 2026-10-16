@@ -391,7 +391,7 @@ function basisUnusual(bid){
 /* "Basis 210c over the middle of 9 other elevators here (-70c)" */
 function oddTitle(o){
   var where=o.via==='state'?'the state middle':'the middle of '+o.n+' other elevators in this search';
-  return 'Basis '+Math.round(Math.abs(o.dist))+'\u00a2 '+(o.dist>0?'over':'under')+' '+where+' ('+AG.px.basis(Math.round(o.median*4)/4)+'). Often a special contract (food grade, non-GMO).';
+  return 'Basis '+Math.round(Math.abs(o.dist))+'\u00a2 '+(o.dist>0?'over':'under')+' '+where+' ('+AG.px.basis(Math.round(o.median*4)/4)+'). It may be a special contract (food grade, non-GMO).';
 }
 function basisUnclear(bid){return !!bid&&bid.basis!=null&&isFinite(bid.basis)&&basisUnit(bid.basis,bid)==='?';}
 /* A TRUE MINUS, not a hyphen. toFixed() on a negative gives U+002D, which is
@@ -1667,7 +1667,7 @@ function renderBids(bids,keepLimit){
   }
   if(!filtered.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No '+escH(currentFilter)+' bids found</h2><p>Pick All at the top, or try a different area.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
   var elevators=groupElevators(filtered);
-  elevators.sort(function(a,b){switch(currentSort){case 'best-cash':return(b.bestCash||0)-(a.bestCash||0);case 'best-basis':return((b.bestBasis!=null?b.bestBasis:-9999))-((a.bestBasis!=null?a.bestBasis:-9999));case 'name':return(a.facility||'').localeCompare(b.facility||'');default:return(a.distance||999)-(b.distance||999);}});
+  elevators.sort(function(a,b){switch(currentSort){case 'best-cash':return(b.bestCash||0)-(a.bestCash||0);case 'best-basis':return((b.bestBasis!=null?b.bestBasis:-9999))-((a.bestBasis!=null?a.bestBasis:-9999));case 'name':return(a.facility||'').localeCompare(b.facility||'');default:return(a.distance!=null?a.distance:999)-(b.distance!=null?b.distance:999);}});  /* 0 mi is a distance: ||999 sent the elevator AT the ZIP to the end of the list (Riceville, 50466) */
   currentElevators=elevators;
   /* Saved elevators on screen are the compare pins (components/cb-myelev.js). */
   if(window.CBMyElev){if(!cbPinsHidden)pinnedKeys=CBMyElev.pinKeys(elevators,pinnedKeys).filter(function(k){return !cbPinsDropped[k];});CBMyElev.feed(elevators,myElevPick,function(){cbVisibleLimit=1e4;renderBids(cbLastBids,true);},function(){cbPinsHidden=false;pinnedKeys=CBMyElev.pinKeys(currentElevators,[]);openCompareModal();});}
