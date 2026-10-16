@@ -1200,9 +1200,12 @@ def head_name(bd, with_town=True):
     town = (bd.get("town") or "").strip()
     if not op:
         return city
-    if not city or not town or city.lower() in (op.lower(), town.lower()):
+    def n(x):          # "Le Roy" = "Leroy", "Co-op" = "Coop", "Mt Vernon" = "Mount Vernon"
+        x = re.sub(r"\b(mt|st|ft)\b\.?", lambda m: {"mt": "mount", "st": "saint", "ft": "fort"}[m.group(1)], x.lower())
+        return re.sub(r"[^a-z0-9]", "", x)
+    if not city or not town or n(city) in n(op) or n(op) in n(city) or n(city) == n(town):
         return op
-    if bd.get("how") == "near" or not with_town:
+    if bd.get("how") == "near" or not with_town or n(town) in n(city):
         return f"{op} ({city})"
     return f"{op} ({city}, {town})"
 
@@ -2416,6 +2419,10 @@ def selftest():
     assert head_name({"operator": "Op", "city": "Hooper, NE", "town": "Hooper"}) == "Op"
     assert head_name({"operator": "Op", "city": "Dewar, IA, IA", "town": "Dewar"}) == "Op"
     assert head_name({"operator": "", "city": "Oran", "town": "Oran"}) == "Oran"
+    assert head_name({"operator": "Nexus Cooperative", "city": "Leroy", "town": "Le Roy"}) == "Nexus Cooperative"
+    assert head_name({"operator": "Osage Co-op Elevator", "city": "Osage Coop", "town": "Osage"}) == "Osage Co-op Elevator"
+    assert head_name({"operator": "Mid-Iowa Cooperative", "city": "Cargill Cedar Rapids", "town": "Cedar Rapids"}) \
+        == "Mid-Iowa Cooperative (Cargill Cedar Rapids)"
     merged, index = _fixture()
     # map pins for the nearby lists: Fremont and Hooper are about 13 mi apart, Iowa is far
     PINS = {"FREMONT": (41.433, -96.498), "Fremont": (41.433, -96.498), "Hooper": (41.611, -96.548),

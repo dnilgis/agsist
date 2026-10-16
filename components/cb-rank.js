@@ -301,7 +301,9 @@ function markOutliers(items){
 var NAMES={operators:{},places:{}};
 var OP_HEAD=/^\s*(?:cash\s+bid\s+)?(?:jsi\s+site|iframe|current\s+grain\s+bids)\s*-\s*/i;
 var OP_TAIL=/\s*-\s*cash\s+bid\s+include\s*$/i;
-var ST_TAIL=/(?:\s*[,.]\s*[A-Z]{2})+\s*$/;
+var ST_TAIL=new RegExp('(?:\\s*[,.]\\s*(?:'+('AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND '+
+  'OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY').split(' ').join('|')+'))+\\s*$','i');
+var OP_ARCHIVED=/^z(?=[A-Z])|\s*\.?\b(?:OLD|Old)$/g;
 function setNames(json){
   NAMES={operators:(json&&json.operators)||{},places:(json&&json.places)||{}};
   return NAMES;
@@ -309,12 +311,13 @@ function setNames(json){
 function displayName(op){
   var s=String(op||'').trim();
   if(Object.prototype.hasOwnProperty.call(NAMES.operators,s))return NAMES.operators[s];
-  return s.replace(OP_HEAD,'').replace(OP_TAIL,'').trim().replace(/,+$/,'').trim();
+  s=s.replace(OP_HEAD,'').replace(OP_TAIL,'').trim().replace(/,+$/,'').trim();
+  return s.replace(OP_ARCHIVED,'').trim();
 }
 function cleanPlace(p){
   var s=String(p||'').trim();
   if(Object.prototype.hasOwnProperty.call(NAMES.places,s))return NAMES.places[s];
-  s=s.replace(/[,\s]+$/,'').trim();
+  s=s.replace(/^[{\s]+|[}\s]+$/g,'').replace(/[,\s]+$/,'').trim();
   var out=s.replace(ST_TAIL,'').trim().replace(/,+$/,'').trim();
   return out||s;
 }
