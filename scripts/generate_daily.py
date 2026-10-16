@@ -3968,7 +3968,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-corrections{{margin:-1rem 0 1.5rem;padding:.75rem 1rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:6px;background:var(--surface)}}
 .dv3-correction{{margin:.2rem 0;font-size:.84rem;line-height:1.55;color:var(--text-dim)}}
 .dv3-correction strong{{color:var(--text)}}
-.dv3-trust{{display:flex;flex-wrap:wrap;justify-content:center;gap:.25rem .5rem;font-size:.74rem;color:var(--text-muted);margin:-1.25rem 0 2rem}}
+.dv3-trust{{text-align:center;font-size:.74rem;line-height:1.4;color:var(--text-muted);margin:-1.25rem 0 2rem}}
 .dv3-trust a{{color:var(--text-muted);display:inline-block;padding:.6rem .15rem}}
 .dv3-trust a:hover{{color:var(--gold)}}
 @media(max-width:640px){{.dv3-page{{padding:1.25rem .9rem}}.dv3-topbar{{grid-template-columns:minmax(0,1fr)}}.dv3-one-number-val{{font-size:2.4rem}}.dv3-sec{{padding:.85rem 1rem}}.dv3-forward{{flex-direction:column;align-items:flex-start;gap:.7rem}}.dv3-forward-cta{{width:100%;justify-content:center}}}}
