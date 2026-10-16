@@ -525,6 +525,35 @@ def body_breakeven(c):
             f"Change any line below to get yours.")
 
 
+def _be_corn():
+    d = _be_defaults("corn")
+    return (d[0], d[1], d[0] / d[1]) if d else None
+
+
+def body_be_faq(c):
+    """The sentence under the calculator that quotes the corn defaults. It was
+    typed ($905 / $5.03) and went stale when the fertilizer default became a
+    baked live price ($910 / $5.06, 2026-10-16 audit); it is baked from the
+    same CROP_DEFAULTS now, or says no number when there is none."""
+    d = _be_corn()
+    if not d:
+        return "With no live fertilizer price there is no default example right now; put in your own costs."
+    cost, yld, be = d
+    return (f"With the default example costs (${cost:,.0f}/acre, {yld:g} bu corn), the break-even works out "
+            f"to about ${be:.2f} per bushel cash.")
+
+
+def body_be_total(c):
+    """The results panel before the script runs (crawlers, no script)."""
+    d = _be_corn()
+    return f"${d[0]:,.0f}/ac" if d else "-"
+
+
+def body_be_cpb(c):
+    d = _be_corn()
+    return f"${d[2]:.2f}/bu" if d else "-"
+
+
 # ---------------------------------------------------------------- futures
 # The biggest ranking gap in the 2026-08-16 export is one query cluster:
 #
@@ -940,7 +969,8 @@ PAGES[CATTLE_PAGE] = (seo_cattle, frozenset({"title", "desc"}))
 BODY = {
     "usda-calendar.html": ("next-wasde", body_usda_calendar),
     "usda-quick-stats.html": ("state-yields", body_quick_stats),
-    "breakeven.html": ("be-example", body_breakeven),
+    "breakeven.html": [("be-example", body_breakeven), ("be-faq", body_be_faq), ("be-total", body_be_total),
+                       ("be-cpb", body_be_cpb, True)],
 }
 
 
@@ -1004,13 +1034,14 @@ def stamp(text, title, desc, owns=frozenset({"title", "desc"})):
     return text, n
 
 
-def bake_body(text, name, inner):
-    """(text, found). Replaces what sits between the markers; found is False
-    when the page has no such markers (markup changed: write nothing)."""
+def bake_body(text, name, inner, every=False):
+    """(text, found). Replaces what sits between the markers (the first pair,
+    or every pair with every=True); found is False when the page has no such
+    markers (markup changed: write nothing)."""
     pat = re.compile(r"(<!--BAKE:" + re.escape(name) + r"-->)(.*?)(<!--/BAKE-->)", re.S)
     if not pat.search(text):
         return text, False
-    return pat.sub(lambda m: m.group(1) + inner + m.group(3), text, count=1), True
+    return pat.sub(lambda m: m.group(1) + inner + m.group(3), text, count=0 if every else 1), True
 
 
 def expected_tags(owns):
@@ -1047,17 +1078,22 @@ def run(today, dry=False, only=None):
                                   f"refusing to half-update"))
             continue
         if page in BODY:
-            name, bfn = BODY[page]
-            try:
-                inner = bfn(ctx)
-            except Exception as exc:                      # noqa: BLE001
-                skipped.append((page, f"body builder raised: {exc}")); continue
-            out, found = bake_body(out, name, inner)
-            if not found:
-                skipped.append((page, f"no <!--BAKE:{name}--> markers: markup changed; "
-                                      f"refusing to half-update"))
-                continue
-            print(f"  body  {re.sub(r'<[^>]+>', '', inner)}")
+            # one (name, fn) or a list of them; a third item True bakes every
+            # copy of that marker (one value shown in several places)
+            specs = BODY[page] if isinstance(BODY[page], list) else [BODY[page]]
+            bad = None
+            for spec in specs:
+                name, bfn = spec[0], spec[1]
+                try:
+                    inner = bfn(ctx)
+                except Exception as exc:                      # noqa: BLE001
+                    bad = f"body builder raised: {exc}"; break
+                out, found = bake_body(out, name, inner, every=len(spec) > 2 and spec[2])
+                if not found:
+                    bad = f"no <!--BAKE:{name}--> markers: markup changed; refusing to half-update"; break
+                print(f"  body  {re.sub(r'<[^>]+>', '', inner)}")
+            if bad:
+                skipped.append((page, bad)); continue
         print(f"\n{page}  ({n} tags, owns {'+'.join(sorted(owns))})")
         if title:
             print(f"  title [{len(title):>3}] {title}")

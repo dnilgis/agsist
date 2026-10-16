@@ -166,3 +166,24 @@ test("fertilizer: the lede says Kansas co-ops and the posting date range; the ti
   assert.ok(/^Kansas Co-op Fertilizer/.test(title) || !/\$\d/.test(title), title);
   execFileSync("python3", [ROOT + "scripts/bake_seo.py", "--selftest"], { cwd: ROOT, stdio: "pipe" });
 });
+
+test("breakeven: the FAQ and the results panel quote the calculator's own corn defaults", () => {
+  const B = read("breakeven.html");
+  const m = /CROP_DEFAULTS=\{corn:\{([^}]*)\}/.exec(B);
+  assert.ok(m, "no CROP_DEFAULTS corn");
+  const kv = Object.fromEntries([...m[1].matchAll(/(\w+):'?([\d.]*)'?/g)].map((x) => [x[1], x[2]]));
+  const keys = ["seed", "fertilizer", "chemicals", "insurance", "machinery", "labor", "land", "overhead"];
+  if (keys.some((k) => kv[k] === "")) {
+    /* no live fertilizer price: the sentence carries no number */
+    assert.match(B, /<!--BAKE:be-faq-->With no live fertilizer price/);
+    return;
+  }
+  const cost = keys.reduce((a, k) => a + Number(kv[k]), 0), yld = Number(kv.yield);
+  const be = (cost / yld).toFixed(2);
+  const money = "$" + Math.round(cost).toLocaleString("en-US");
+  assert.ok(B.includes(`<!--BAKE:be-faq-->With the default example costs (${money}/acre, ${yld} bu corn), the break-even works out to about $${be} per bushel cash.<!--/BAKE-->`),
+    `the FAQ sentence does not match the defaults (${money}, $${be})`);
+  assert.ok(B.includes(`id="totalCost"><!--BAKE:be-total-->${money}/ac<!--/BAKE-->`));
+  assert.equal((B.match(new RegExp(`<!--BAKE:be-cpb-->\\$${be.replace(".", "\\.")}/bu<!--/BAKE-->`, "g")) || []).length, 4);
+  assert.doesNotMatch(B, /\$905|\$5\.03/, "the old typed example is back");
+});
