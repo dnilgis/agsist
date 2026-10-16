@@ -187,7 +187,7 @@
       ans.className = 'sos-line ' + tone(n);
       where.innerHTML = 'At <b>' + esc(nameOf(top.row)) + '</b>' + (top.row.distance != null ? (top.row.distance < 1 ? ', under a mile from ' : ', ' + Math.round(top.row.distance) + ' miles from ') + esc(state.zip) : '') +
         ': its ' + esc(SS.shortMon(m.spot.start)) + ' bid is ' + esc(SS.cashQ(m.spot.cash)) + ' and its ' + esc(SS.shortMon(p.key)) + ' bid is ' + esc(SS.cashQ(p.cash)) + '.' +
-        (m.posted ? ' Posted ' + esc(ctTime(m.posted)) + '.' : '');
+        (m.posted ? (m.postedKind === 'posted' ? ' Posted ' : ' Read ') + esc(ctTime(m.posted)) + '.' : '');
       var lk = SS.lockNote('posted', n, SS.shortMon(p.key));
       note.textContent = 'Net = the later posted bid minus the nearest one, less ' + SS.costNote(inp, p.months, m.spot.cash).replace(/\.$/, '') + '. ' + (lk ? lk + ' ' : '') + 'Call the elevator before you count on a bid.';
       drawTable(m, p, inp);

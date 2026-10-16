@@ -458,7 +458,11 @@
           if(want && norm(b.commodity) !== want) return;
           var r = shardRow(b, crop); if(r) rows.push(r);
         });
-        return done(rows, s.pricedAt || s.checkedAt, 'posted');
+        /* "Posted" only with a time the elevator side gave: a pricedAt equal
+           to checkedAt (or none) is the read itself, and says "Read". */
+        var pa = Date.parse(s.pricedAt || ''), ca = Date.parse(s.checkedAt || '');
+        var kind = (isFinite(pa) && !(isFinite(ca) && pa === ca)) ? 'posted' : 'read';
+        return done(rows, s.pricedAt || s.checkedAt, kind);
       });
     }
     return Promise.resolve(done(o.periods || [], o.posted, 'read'));
@@ -511,7 +515,8 @@
     }
     var fine = [];
     var t = ctTime(m.posted);
-    if(t) fine.push((m.postedKind === 'posted' ? 'Bids posted by the elevator ' : 'Bids read from the feed ') + t + '.');
+    if(t) fine.push(m.postedKind === 'posted' ? 'Bids posted by the elevator ' + t + '.'
+      : 'Read ' + t + '. The board gives no time of its own, so this is when AGSIST read it.');
     if(m.later.length){
       fine.push('Carry is the later bid minus the ' + shortMon(m.spot.start) + ' bid of ' + cashQ(m.spot.cash) + '. Net takes off your storage for the months shown'
         + (inputs.rate != null ? ', interest on ' + cashQ(m.spot.cash) : '') + (inputs.shrink != null ? ', shrink on the later bid' : '') + '. '

@@ -57,3 +57,23 @@ test("Worth the Drive charges fuel on estimated road miles (audit example: +$5 s
   /* the radius search itself stays straight line */
   assert.doesNotMatch(liftFn(JS, "netDistanceMi"), /ROAD/);
 });
+
+test('a board with no posted time of its own says "Read", never "Posted"', () => {
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(liftFn(JS, "readTimeOnly"), ctx);
+  const t = "2026-10-16T01:40:19.715Z";
+  assert.equal(ctx.readTimeOnly(t, t), true, "pricedAt equal to checkedAt is the read itself");
+  assert.equal(ctx.readTimeOnly("", t), true, "no pricedAt");
+  assert.equal(ctx.readTimeOnly(null, null), true);
+  assert.equal(ctx.readTimeOnly("2026-10-15T19:02:00Z", t), false, "an earlier pricedAt is kept as posted");
+  /* the network row carries it and the Best card uses it */
+  assert.match(JS, /asOfRead:readTimeOnly\(shard\.pricedAt,shard\.checkedAt\)/);
+  assert.match(liftFn(JS, "renderBestBids"), /prefix:best\.asOfRead\?'Read':'Posted'/);
+  /* store-or-sell: the same rule, and the words */
+  const SS = read("components/storesell.js"), SOS = read("components/store-or-sell.js");
+  assert.match(SS, /var kind = \(isFinite\(pa\) && !\(isFinite\(ca\) && pa === ca\)\) \? 'posted' : 'read';/);
+  assert.match(SS, /'Read ' \+ t \+ '\. The board gives no time of its own/);
+  assert.doesNotMatch(SS, /done\(rows, s\.pricedAt \|\| s\.checkedAt, 'posted'\)/);
+  assert.match(SOS, /m\.postedKind === 'posted' \? ' Posted ' : ' Read '/);
+});

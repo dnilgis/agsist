@@ -1249,6 +1249,13 @@ function basisKey(html){
   return '<p class="cb-basis-key">Basis color: <span class="bz-up">green</span> is stronger than the middle of the elevators in this search for the same crop and month, <span class="bz-dn">red</span> is weaker, grey is within '+band+'\u00a2 of it or too few to compare.</p>';
 }
 
+/* True when a board's time is only when it was read: no pricedAt, or a
+   pricedAt that is the read itself. */
+function readTimeOnly(pricedAt,checkedAt){
+  if(!pricedAt)return true;
+  var p=Date.parse(pricedAt),c=Date.parse(checkedAt||'');
+  return !isFinite(p)||(isFinite(c)&&p===c);
+}
 /* "3h ago" from a row's posted time; nothing when the board posted no time. */
 function bbcAgo(asOf){
   var t=Date.parse(asOf||'');if(isNaN(t))return'';
@@ -1307,8 +1314,8 @@ function renderBestBids(elevators){
       if(cs||topElev.distance!=null)html+='<span class="bbc-city bbc-where">'+escH(cs)+(topElev.distance!=null?(cs?'\u00a0\u00b7 ':'')+'<span class="bbc-dist">'+topElev.distance.toFixed(0)+' mi</span>':'')+'</span>';
       var bfut=futuresOf(best),blab=contractLabel(best),l2=[];
       if(del)l2.push('<span class="bbc-delivery'+(isSpot?' bbc-delivery-spot':'')+'">'+escH(isSpot?'Spot':del)+'</span>');
-      var agoSt=window.AgAsOf?AgAsOf.html(best.asOf,'bids'):'';
-      if(agoSt)l2.push(agoSt);else if(ago)l2.push('posted '+escH(ago));
+      var agoSt=window.AgAsOf?AgAsOf.html(best.asOf,'bids',{prefix:best.asOfRead?'Read':'Posted'}):'';
+      if(agoSt)l2.push(agoSt);else if(ago)l2.push((best.asOfRead?'read ':'posted ')+escH(ago));
       if(bfut!=null&&blab)l2.push('<span class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+fmtPx(bfut)+'</span>');
       if(l2.length)html+='<div class="bbc-city">'+l2.join(' \u00b7 ')+'</div>';
       if(rkN)html+='<div class="bbc-note'+(top.rk.old?' bbc-warn':'')+'">'+escH(rkN)+'</div>';
@@ -2071,6 +2078,13 @@ function netRowsFrom(shard,distanceMi){
       basisMonth:netContract(b).month,
       futRaw:String(b.futuresMonth||''),
       asOf:shard.pricedAt||shard.checkedAt||'',
+      /* NO ELEVATOR-SIDE TIME, NO "POSTED". The network stamps pricedAt with
+         the read that first saw a price, unless the board states when it
+         posted; when pricedAt is the read itself (equal to checkedAt) or is
+         missing, the time is when AGSIST read the board, and the card says
+         "Read 8:40 pm". 1,985 of 2,094 boards carried no posted time on
+         2026-10-15. */
+      asOfRead:readTimeOnly(shard.pricedAt,shard.checkedAt),
       category:classify(b.commodity||b.crop||''),
       /* THE SEASON THE FEED ALREADY WORKED OUT, CARRIED RATHER THAN REDERIVED.
          An elevator's delivery label is often a season, not a month: Flash
