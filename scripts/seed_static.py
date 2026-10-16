@@ -1593,8 +1593,9 @@ def storage_html(d, today, hist=None, basis=None):
         out += f"; {_e(ST_NAME.get(top[0], top[0]))} is most crowded at {_fixed(top[1]['ratio'], 2)}&times;"
     out += ". "
     if us and us.get("ratio") is not None:
-        out += (f"The US as a whole: <strong>{_fixed(us['ratio'], 2)}&times;</strong> ({mb(us['total'])} million bu "
-                f"to hold, {mb(us['cap'])} of bins).</p>")
+        # as a percent to a tenth: 0.996 as "1.00x" would read as full
+        out += (f"The US as a whole: grain to hold is <strong>{_fixed(100 * us['total'] / us['cap'], 1)}%</strong> of "
+                f"bin space ({mb(us['total'])} million bu, {mb(us['cap'])} of bins; NASS national figures).</p>")
     elif yr == 2026:
         out += ("The US as a whole has room: grain to hold is about 99% of bin space (farmdoc daily, on "
                 "NASS&rsquo;s September forecast). The pinch is local.</p>")

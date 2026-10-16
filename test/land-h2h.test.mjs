@@ -147,7 +147,8 @@ import { execFileSync } from "node:child_process";
 const storageHtml = (crunch, today = "2026-10-15") => execFileSync("python3", ["-c",
   "import sys,json;sys.path.insert(0,'scripts');import seed_static as s;print(s.storage_html(json.loads(sys.stdin.read()),sys.argv[1]))", today],
   { cwd: ROOT, input: JSON.stringify(crunch), encoding: "utf8" });
-const STORE = JSON.parse(read("data/storage/storage.json"));
+// the frozen Oct 16, 2026 pull, so the hand-checked Wisconsin floor holds after later pulls
+const STORE = JSON.parse(read("test/fixtures/storage/2026-10-16.json")).storage;
 
 test("storage: farmdoc's conclusion is printed beside the ratios", () => {
   const h = storageHtml(STORE);
@@ -182,7 +183,7 @@ test("storage: Wisconsin is a floor, at least 1.03x, cut not rounded", () => {
 test("storage: the seeded basis page carries the new table and the phone fold", () => {
   const B = read("basis.html");
   assert.match(B, /<table class="bs-tbl bs-st">/);
-  assert.match(B, /at least 1\.03&times;/);
+  assert.match(B, /at least \d\.\d\d&times;/);
   assert.match(B, /@media \(max-width:600px\)\{\n  \.tblscroll table\.bs-st\{min-width:0\}\n  \.bs-st \.st-c\{display:none\}\n  \.bs-st \.st-in\{display:block/);
 });
 
