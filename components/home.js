@@ -552,8 +552,11 @@ try {
          shift" while /usda-calendar said Tuesday. One rule now, the one in
          scripts/usda_dates.py; test/usda-holidays.test.mjs runs these
          functions against /usda-calendar's holiday list.
-       - Crop Progress runs from the first Monday of April to the Monday of
-         Thanksgiving week, as on /usda-calendar. */
+       - Crop Progress runs from the first Monday of April to the last Monday
+         NASS lists (2026: Nov 30), as on /usda-calendar.
+       - 2026-10-16: the .ics is built from /usda-calendar's own report list
+         (scripts/build_usda_ics.mjs), so livestock and dairy reports show
+         here too. */
     function etParts(d){var s=d.toLocaleString('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
       var m=/(\d+)\/(\d+)\/(\d+),?\s+(\d+):(\d+)/.exec(s);return m?{y:+m[3],mo:+m[1],d:+m[2],h:(+m[4])%24,mi:+m[5]}:null;}
     function etToUtc(y,mo,d,h,mi){var g=Date.UTC(y,mo-1,d,h,mi),p=etParts(new Date(g));if(!p)return new Date(g);return new Date(g-(Date.UTC(p.y,p.mo-1,p.d,p.h,p.mi)-g));}
@@ -568,7 +571,11 @@ try {
     var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function clock(h,mi){return ((h%12)||12)+':'+('0'+mi).slice(-2)+' '+(h<12?'AM':'PM')+' ET';}
     function nextBiz(di){var p=di.split('-'),d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));do{d.setUTCDate(d.getUTCDate()+1);}while(d.getUTCDay()===0||d.getUTCDay()===6||HOL[iso(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate())]);return iso(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());}
-    function cpSeason(di){var y=+di.slice(0,4);return di>=iso(y,4,nth(y,4,1,1))&&di<=iso(y,11,nth(y,11,4,4)-3);}
+    /* The season's last Monday where NASS's calendar for the year lists it
+       (2026: Nov 30, the Monday after Thanksgiving), else the Monday of
+       Thanksgiving week. Same table as scripts/usda_dates.py CROP_PROGRESS_LAST. */
+    var CP_LAST={2026:'2026-11-30'};
+    function cpSeason(di){var y=+di.slice(0,4);return di>=iso(y,4,nth(y,4,1,1))&&di<=(CP_LAST[y]||iso(y,11,nth(y,11,4,4)-3));}
     var weekly=[{name:'Export Sales',wd:4,h:8,mi:30},{name:'Export Inspections',wd:1,h:11,mi:0},{name:'Crop Progress',wd:1,h:16,mi:0,season:cpSeason}];
     var events=[];
     for(var i=-4;i<28;i++){

@@ -15,5 +15,131 @@
   "ok": true,
   "note": "",
   "checked": "2026-10-15T19:55:45Z"
+ },
+ "areas": {
+  "month_key": "2026-06",
+  "all": 20.18,
+  "rows": [
+   {
+    "area": "New England States",
+    "value": 22.51,
+    "prev": 22.05,
+    "year_ago": 21.52
+   },
+   {
+    "area": "New York",
+    "value": 23.34,
+    "prev": 22.56,
+    "year_ago": 21.2
+   },
+   {
+    "area": "Eastern Pennsylvania",
+    "value": 22.05,
+    "prev": 21.54,
+    "year_ago": 20.99
+   },
+   {
+    "area": "Appalachian States",
+    "value": 25.16,
+    "prev": 23.2,
+    "year_ago": 21.33
+   },
+   {
+    "area": "Southeast States",
+    "value": 26.75,
+    "prev": 24.63,
+    "year_ago": 22.26
+   },
+   {
+    "area": "Southern Missouri",
+    "value": 19.39,
+    "prev": 20.27,
+    "year_ago": 20.41
+   },
+   {
+    "area": "Florida",
+    "value": 27.59,
+    "prev": 25.47,
+    "year_ago": 22.71
+   },
+   {
+    "area": "Western Pennsylvania",
+    "value": 23.62,
+    "prev": 23.17,
+    "year_ago": 22.11
+   },
+   {
+    "area": "Ohio",
+    "value": 23.24,
+    "prev": 22.77,
+    "year_ago": 21.42
+   },
+   {
+    "area": "Indiana",
+    "value": 22.41,
+    "prev": 22.15,
+    "year_ago": 20.3
+   },
+   {
+    "area": "Michigan",
+    "value": 21.77,
+    "prev": 21.41,
+    "year_ago": 19.85
+   },
+   {
+    "area": "Wisconsin",
+    "value": 18.13,
+    "prev": 19.13,
+    "year_ago": 21.15
+   },
+   {
+    "area": "Minnesota",
+    "value": 18.04,
+    "prev": 19.42,
+    "year_ago": 20.97
+   },
+   {
+    "area": "Iowa",
+    "value": 18.29,
+    "prev": 19.28,
+    "year_ago": 20.1
+   },
+   {
+    "area": "Illinois",
+    "value": 20.54,
+    "prev": 20.81,
+    "year_ago": 21.29
+   },
+   {
+    "area": "Corn Belt States",
+    "value": 19.26,
+    "prev": 19.59,
+    "year_ago": 19.51
+   },
+   {
+    "area": "Western Texas",
+    "value": 19.45,
+    "prev": 20.24,
+    "year_ago": 19.93
+   },
+   {
+    "area": "New Mexico",
+    "value": 18.75,
+    "prev": 19.17,
+    "year_ago": 18.92
+   },
+   {
+    "area": "Northwest States",
+    "value": 18.54,
+    "prev": 19.37,
+    "year_ago": 17.96
+   },
+   {
+    "area": "California",
+    "value": 18.97,
+    "prev": 19.47,
+    "year_ago": 20.57
+   }
+  ]
  }
 }

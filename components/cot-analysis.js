@@ -398,7 +398,7 @@
     if (MARKET_STATE === 'loading') return;
     MARKET_STATE = 'loading';
     var s = document.createElement('script');
-    s.src = '/components/cot-market.js?v=1';
+    s.src = '/components/cot-market.js?v=2';
     s.onload = function(){
       MARKET = (window.cotMarket && window.cotMarket(MARKET_API)) || null;
       MARKET_STATE = MARKET ? 'ready' : 'idle';

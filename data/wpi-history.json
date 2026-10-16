@@ -224,7 +224,8 @@
       "expected": 722,
       "actual": 740,
       "unit": "mil bu",
-      "reaction": ""
+      "reaction": "Dec KC wheat finished 17\u00a2 lower at $7.19\u00bc and Chicago spot wheat 12\u00a2 lower that day, as DTN's report review printed them on Oct 9, 2026. AGSIST keeps no wheat settles to check these against.",
+      "reaction_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/09/october-wasdes-shocking-rise-corn"
     },
     {
       "date": "2026-10-09",
@@ -251,7 +252,8 @@
       "expected": null,
       "actual": 1534,
       "unit": "mil bu",
-      "reaction": ""
+      "reaction": "Dec KC wheat finished 17\u00a2 lower at $7.19\u00bc and Chicago spot wheat 12\u00a2 lower that day, as DTN's report review printed them on Oct 9, 2026. AGSIST keeps no wheat settles to check these against.",
+      "reaction_source": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/09/october-wasdes-shocking-rise-corn"
     }
   ]
 }

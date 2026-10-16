@@ -78,12 +78,21 @@ jobs:
         continue-on-error: true
         run: python3 scripts/bake_discovery_now.py
 
+      # The tracker loads a 30 KB index first and one state's rows when the
+      # reader picks a state (data/rma-prices/, 2026-10-16), not the whole
+      # 430 KB mirror. Cut from the file just written, rows verbatim.
+      - name: Split the mirror per state for the tracker
+        if: ${{ inputs.probe != true }}
+        run: |
+          python3 scripts/split_rma_prices.py --selftest
+          python3 scripts/split_rma_prices.py
+
       - name: Commit and push (rebase armor, 3 tries)
         if: ${{ inputs.probe != true }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/rma-prices.json data/rma-discovery-now.json harvest-price-tracker.html
+          git add data/rma-prices.json data/rma-prices data/rma-discovery-now.json harvest-price-tracker.html
           if git diff --cached --quiet; then
             echo "RMA figures unchanged — nothing to commit"
             exit 0
@@ -97,10 +106,12 @@ jobs:
               git rebase --abort 2>/dev/null || true
               cp data/rma-prices.json /tmp/rp.json
               cp data/rma-discovery-now.json /tmp/rn.json
+              rm -rf /tmp/rps && cp -r data/rma-prices /tmp/rps
               git reset --hard origin/main
               cp /tmp/rp.json data/rma-prices.json
               cp /tmp/rn.json data/rma-discovery-now.json
-              git add data/rma-prices.json data/rma-discovery-now.json harvest-price-tracker.html
+              rm -rf data/rma-prices && cp -r /tmp/rps data/rma-prices
+              git add data/rma-prices.json data/rma-prices data/rma-discovery-now.json harvest-price-tracker.html
               git commit -m "data: RMA price discovery refresh [skip ci]" || true
             }
           done

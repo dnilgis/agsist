@@ -137,13 +137,21 @@ def _weekly(day, weekday):
     return next_business_day(normal) if federal_holiday_name(normal) else normal
 
 
+# The last Crop Progress of a season, where NASS's own calendar for that year
+# lists it. 2026: Mon Nov 30, the Monday after Thanksgiving (NASS 2026
+# Agricultural Statistics Board calendar, fetched 2026-10-16). A year not
+# listed here falls back to the Monday of Thanksgiving week.
+CROP_PROGRESS_LAST = {2026: date(2026, 11, 30)}
+
+
 def crop_progress_season(monday):
     """Is the week starting `monday` a Crop Progress week? From the first
-    Monday of April to the Monday of Thanksgiving week: the seasons
-    usda-calendar.html lists (2025: Apr 7 to Nov 24, 2026: Apr 6 to Nov 23;
-    the selftest compares them) and the rule index.html applies."""
+    Monday of April to the season's last Monday (CROP_PROGRESS_LAST, else the
+    Monday of Thanksgiving week): the seasons usda-calendar.html lists (2025:
+    Apr 7 to Nov 24, 2026: Apr 6 to Nov 30; the selftest compares them) and
+    the rule components/home.js applies."""
     first = _nth_weekday(monday.year, 4, 0, 1)
-    last = _nth_weekday(monday.year, 11, 3, 4) - timedelta(days=3)
+    last = CROP_PROGRESS_LAST.get(monday.year) or (_nth_weekday(monday.year, 11, 3, 4) - timedelta(days=3))
     return first <= monday <= last
 
 
@@ -373,7 +381,9 @@ def _selftest():
         mons = [m for m in mons if m.year == y and m.weekday() == 0 and crop_progress_season(m)]
         table.add((mons[0].isoformat(), mons[-1].isoformat()))
     check(page_seasons == table, "same Crop Progress seasons", str(page_seasons ^ table))
-    check(crop_progress_date(date(2026, 11, 30)) is None, "no Crop Progress after the last season week")
+    check(crop_progress_date(date(2026, 11, 30)) == date(2026, 11, 30),
+          "Mon Nov 30, 2026 is the last Crop Progress (NASS 2026 calendar)")
+    check(crop_progress_date(date(2026, 12, 7)) is None, "no Crop Progress after the last season week")
     check("nextBizDay(iso)" in cal and "type:'croprog'" in cal,
           "and moves a holiday Crop Progress to the next business day")
     idx = open(os.path.join(here, "..", "index.html"), encoding="utf-8").read()

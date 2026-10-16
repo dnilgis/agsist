@@ -4,146 +4,443 @@ PRODID:-//AGSIST//USDA Report Calendar//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:USDA Reports - AGSIST
-X-WR-CALDESC:WASDE, Crop Production, Grain Stocks and international report dates, plus FSA ARC/PLC signup dates. Weekly Crop Progress and Export Sales are not included. agsist.com/usda-calendar
+X-WR-CALDESC:WASDE\, Crop Production\, Grain Stocks\, livestock and dairy (
+ Cattle on Feed\, Milk Production\, Cold Storage\, Hogs and Pigs) and inter
+ national report dates\, plus FSA ARC/PLC signup dates. Weekly Crop Progres
+ s and Export Sales are not included. Built from the list on agsist.com/usd
+ a-calendar
 X-PUBLISHED-TTL:PT48H
 REFRESH-INTERVAL;VALUE=DURATION:PT48H
 BEGIN:VEVENT
-UID:2026-08-12-wasde-report@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20260812T160000Z
-DTEND:20260812T170000Z
+UID:2026-01-12-crop-production-annual-summary@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260112T170000Z
+DTEND:20260112T180000Z
+SUMMARY:Crop Production Annual Summary
+DESCRIPTION:Final 2025 crop production estimates\nDetails: https://agsist.c
+ om/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-12-grain-stocks-dec-1@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260112T170000Z
+DTEND:20260112T180000Z
+SUMMARY:Grain Stocks (Dec 1)
+DESCRIPTION:Quarterly grain stocks: corn\, soybeans\, wheat\nDetails: https
+ ://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-01-12-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260112T170000Z
+DTEND:20260112T180000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates - first 2026 corn/soy yield survey\nDetails: https://agsist.com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-10-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260210T170000Z
+DTEND:20260210T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-02-19-agricultural-outlook-forum@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART;VALUE=DATE:20260219
+SUMMARY:Agricultural Outlook Forum
+DESCRIPTION:USDA's first new-crop projections for 2026/27 marketing year\nD
+ etails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-10-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260310T160000Z
+DTEND:20260310T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-31-grain-stocks-mar-1@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260331T160000Z
+DTEND:20260331T170000Z
+SUMMARY:Grain Stocks (Mar 1)
+DESCRIPTION:Quarterly grain stocks report\nDetails: https://agsist.com/usda
+ -calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-03-31-prospective-plantings@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260331T160000Z
+DTEND:20260331T170000Z
+SUMMARY:Prospective Plantings
+DESCRIPTION:Farmer survey of intended 2026 corn\, soybean\, and wheat acres
+ \nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-09-crop-production@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260409T160000Z
+DTEND:20260409T170000Z
+SUMMARY:Crop Production
+DESCRIPTION:April crop production update\nDetails: https://agsist.com/usda-
+ calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-04-09-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260409T160000Z
+DTEND:20260409T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-05-12-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260512T160000Z
+DTEND:20260512T170000Z
+SUMMARY:WASDE
+DESCRIPTION:First 2026/27 new-crop supply/demand projections\nDetails: http
+ s://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-11-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260611T160000Z
+DTEND:20260611T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-30-acreage@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260630T160000Z
+DTEND:20260630T170000Z
+SUMMARY:Acreage
+DESCRIPTION:Actual planted acreage for 2026 crops\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-06-30-grain-stocks-jun-1@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260630T160000Z
+DTEND:20260630T170000Z
+SUMMARY:Grain Stocks (Jun 1)
+DESCRIPTION:Quarterly grain stocks\nDetails: https://agsist.com/usda-calend
+ ar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-07-10-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260710T160000Z
+DTEND:20260710T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
 UID:2026-08-12-crop-production@agsist.com
-DTSTAMP:20260727T120000Z
+DTSTAMP:20261016T120000Z
 DTSTART:20260812T160000Z
 DTEND:20260812T170000Z
 SUMMARY:Crop Production
-DESCRIPTION:First objective yield estimates for 2026 corn and soybeans\nDetails: https://agsist.com/usda-calendar
+DESCRIPTION:First survey-based yield estimates for 2026 corn and soybeans\n
+ Details: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-12-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260812T160000Z
+DTEND:20260812T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates: first 2026 corn/soy yiel
+ d survey\nDetails: https://agsist.com/usda-calendar
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
 UID:2026-09-11-wasde-report@agsist.com
-DTSTAMP:20260727T120000Z
+DTSTAMP:20261016T120000Z
 DTSTART:20260911T160000Z
 DTEND:20260911T170000Z
 SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
-URL:https://agsist.com/usda-calendar
-END:VEVENT
-BEGIN:VEVENT
-UID:2026-09-30-grain-stocks-sep-1@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20260930T160000Z
-DTEND:20260930T170000Z
-SUMMARY:Grain Stocks (Sep 1)
-DESCRIPTION:Quarterly grain stocks - critical for 2026 carry-out\nDetails: https://agsist.com/usda-calendar
-URL:https://agsist.com/usda-calendar
-END:VEVENT
-BEGIN:VEVENT
-UID:2026-09-30-small-grains-summary@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20260930T160000Z
-DTEND:20260930T170000Z
-SUMMARY:Small Grains Summary
-DESCRIPTION:Final 2026 winter wheat and oat production\nDetails: https://agsist.com/usda-calendar
-URL:https://agsist.com/usda-calendar
-END:VEVENT
-BEGIN:VEVENT
-UID:2026-10-09-wasde-report@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20261009T160000Z
-DTEND:20261009T170000Z
-SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
-URL:https://agsist.com/usda-calendar
-END:VEVENT
-BEGIN:VEVENT
-UID:2026-10-09-crop-production@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20261009T160000Z
-DTEND:20261009T170000Z
-SUMMARY:Crop Production
-DESCRIPTION:October 2026 corn and soybean production estimates\nDetails: https://agsist.com/usda-calendar
-URL:https://agsist.com/usda-calendar
-END:VEVENT
-BEGIN:VEVENT
-UID:2026-11-10-wasde-report@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20261110T170000Z
-DTEND:20261110T180000Z
-SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
-URL:https://agsist.com/usda-calendar
-END:VEVENT
-BEGIN:VEVENT
-UID:2026-11-10-crop-production@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20261110T170000Z
-DTEND:20261110T180000Z
-SUMMARY:Crop Production
-DESCRIPTION:November 2026 crop production estimates\nDetails: https://agsist.com/usda-calendar
-URL:https://agsist.com/usda-calendar
-END:VEVENT
-BEGIN:VEVENT
-UID:2026-12-10-wasde-report@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20261210T170000Z
-DTEND:20261210T180000Z
-SUMMARY:WASDE
-DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.com/usda-calendar
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
 UID:2026-09-15-conab-grain-survey-brazil@agsist.com
-DTSTAMP:20260727T120000Z
+DTSTAMP:20261016T120000Z
 DTSTART;VALUE=DATE:20260915
 SUMMARY:CONAB Grain Survey (Brazil)
-DESCRIPTION:Final 2025/26 Brazilian grain estimate - corn & soybeans - CONAB\nDetails: https://agsist.com/usda-calendar
+DESCRIPTION:Final 2025/26 Brazilian grain estimate\, corn & soybeans\, CONA
+ B\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-30-grain-stocks-sep-1@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260930T160000Z
+DTEND:20260930T170000Z
+SUMMARY:Grain Stocks (Sep 1)
+DESCRIPTION:Quarterly grain stocks: sets the 2025/26 carryout\nDetails: htt
+ ps://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-30-small-grains-annual-summary@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20260930T160000Z
+DTEND:20260930T170000Z
+SUMMARY:Small Grains Annual Summary
+DESCRIPTION:Final 2026 winter wheat and oat production\nDetails: https://ag
+ sist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-09-crop-production@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261009T160000Z
+DTEND:20261009T170000Z
+SUMMARY:Crop Production
+DESCRIPTION:October 2026 corn and soybean production estimates\nDetails: ht
+ tps://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-09-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261009T160000Z
+DTEND:20261009T170000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
 UID:2026-10-15-conab-grain-survey-brazil@agsist.com
-DTSTAMP:20260727T120000Z
+DTSTAMP:20261016T120000Z
 DTSTART;VALUE=DATE:20261015
 SUMMARY:CONAB Grain Survey (Brazil)
-DESCRIPTION:First 2026/27 Brazilian crop estimate - new-crop soybeans & corn - CONAB\nDetails: https://agsist.com/usda-calendar
+DESCRIPTION:First monthly 2026/27 Brazil crop survey from CONAB\, soybeans 
+ and corn (a preliminary projection came out Sep 15)\nDetails: https://agsi
+ st.com/usda-calendar
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-12-04-statcan-crop-production-canada@agsist.com
-DTSTAMP:20260727T120000Z
-DTSTART:20261204T133000Z
-DTEND:20261204T143000Z
-SUMMARY:StatCan Crop Production (Canada)
-DESCRIPTION:Final 2026 Canadian production - wheat\, canola\, barley - Statistics Canada\nDetails: https://agsist.com/usda-calendar
+UID:2026-10-22-milk-production@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261022T190000Z
+DTEND:20261022T200000Z
+SUMMARY:Milk Production
+DESCRIPTION:Monthly milk cows\, milk per cow and total milk output\, NASS\n
+ Details: https://agsist.com/usda-calendar\nMilk prices: https://agsist.com
+ /milk-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-23-cattle-on-feed@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261023T190000Z
+DTEND:20261023T200000Z
+SUMMARY:Cattle on Feed
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
+  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
+ le-futures-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-23-cold-storage@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261023T190000Z
+DTEND:20261023T200000Z
+SUMMARY:Cold Storage
+DESCRIPTION:Month-end stocks of beef\, pork\, poultry\, butter and cheese i
+ n cold storage\, NASS\nDetails: https://agsist.com/usda-calendar\nMilk pri
+ ces: https://agsist.com/milk-prices
 URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
 UID:2026-11-02-arc-plc-2027-signup-opens@agsist.com
-DTSTAMP:20261009T120000Z
+DTSTAMP:20261016T120000Z
 DTSTART;VALUE=DATE:20261102
 SUMMARY:2027 ARC/PLC signup opens (FSA)
-DESCRIPTION:FSA signup for the 2027 crop year opens. It runs to Mar 15\, 2027.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net
+DESCRIPTION:FSA signup for the 2027 crop year opens. It runs to Mar 15\, 20
+ 27.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSour
+ ce: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-20
+ 26-2027-enrollment-key-price-revenue-safety-net
 URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-crop-production@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261110T170000Z
+DTEND:20261110T180000Z
+SUMMARY:Crop Production
+DESCRIPTION:November 2026 crop production estimates\nDetails: https://agsis
+ t.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261110T170000Z
+DTEND:20261110T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-20-cattle-on-feed@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261120T200000Z
+DTEND:20261120T210000Z
+SUMMARY:Cattle on Feed
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
+  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
+ le-futures-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-20-milk-production@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261120T200000Z
+DTEND:20261120T210000Z
+SUMMARY:Milk Production
+DESCRIPTION:Monthly milk cows\, milk per cow and total milk output\, NASS\n
+ Details: https://agsist.com/usda-calendar\nMilk prices: https://agsist.com
+ /milk-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-24-cold-storage@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261124T200000Z
+DTEND:20261124T210000Z
+SUMMARY:Cold Storage
+DESCRIPTION:Month-end stocks of beef\, pork\, poultry\, butter and cheese i
+ n cold storage\, NASS\nDetails: https://agsist.com/usda-calendar\nMilk pri
+ ces: https://agsist.com/milk-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-04-statcan-crop-production-canada@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261204T133000Z
+DTEND:20261204T143000Z
+SUMMARY:StatCan Crop Production (Canada)
+DESCRIPTION:Final 2026 Canadian production (wheat\, canola\, barley) Statis
+ tics Canada\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-10-crop-production@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261210T170000Z
+DTEND:20261210T180000Z
+SUMMARY:Crop Production
+DESCRIPTION:December crop production update (cotton and other late crops)\,
+  NASS\nDetails: https://agsist.com/usda-calendar
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-10-wasde-report@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261210T170000Z
+DTEND:20261210T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nDetails: https://agsist.
+ com/usda-calendar
+URL:https://agsist.com/usda-calendar
 END:VEVENT
 BEGIN:VEVENT
 UID:2026-12-11-arc-plc-2026-signup-deadline@agsist.com
-DTSTAMP:20261009T120000Z
+DTSTAMP:20261016T120000Z
 DTSTART;VALUE=DATE:20261211
 SUMMARY:2026 ARC/PLC signup deadline (FSA)
-DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. A farm with no 2026 election keeps its 2025 election but gets no 2026 payment.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net
+DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. No electio
+ n means you keep your 2025 choice but get no 2026 payment.\nCompare ARC an
+ d PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa
+ .usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-
+ key-price-revenue-safety-net
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT
+UID:2026-12-18-cattle-on-feed@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261218T200000Z
+DTEND:20261218T210000Z
+SUMMARY:Cattle on Feed
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nDetails:
+  https://agsist.com/usda-calendar\nCattle futures: https://agsist.com/catt
+ le-futures-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-22-milk-production@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261222T200000Z
+DTEND:20261222T210000Z
+SUMMARY:Milk Production
+DESCRIPTION:Monthly milk cows\, milk per cow and total milk output\, NASS\n
+ Details: https://agsist.com/usda-calendar\nMilk prices: https://agsist.com
+ /milk-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-23-cold-storage@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261223T200000Z
+DTEND:20261223T210000Z
+SUMMARY:Cold Storage
+DESCRIPTION:Month-end stocks of beef\, pork\, poultry\, butter and cheese i
+ n cold storage\, NASS\nDetails: https://agsist.com/usda-calendar\nMilk pri
+ ces: https://agsist.com/milk-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-23-quarterly-hogs-and-pigs@agsist.com
+DTSTAMP:20261016T120000Z
+DTSTART:20261223T200000Z
+DTEND:20261223T210000Z
+SUMMARY:Quarterly Hogs and Pigs
+DESCRIPTION:December 1 hog inventory\, breeding herd and pig crop\, NASS. O
+ ne of four a year.\nDetails: https://agsist.com/usda-calendar\nLivestock f
+ utures: https://agsist.com/cattle-futures-prices
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
 UID:2027-03-15-arc-plc-2027-signup-deadline@agsist.com
-DTSTAMP:20261009T120000Z
+DTSTAMP:20261016T120000Z
 DTSTART;VALUE=DATE:20270315
 SUMMARY:2027 ARC/PLC signup deadline (FSA)
-DESCRIPTION:Last day to sign 2027 ARC or PLC at your FSA office.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net
+DESCRIPTION:Last day to sign 2027 ARC or PLC at your FSA office.\nCompare A
+ RC and PLC for your county: https://agsist.com/arc-plc\nSource: https://ww
+ w.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enroll
+ ment-key-price-revenue-safety-net
 URL:https://agsist.com/arc-plc
 END:VEVENT
 END:VCALENDAR

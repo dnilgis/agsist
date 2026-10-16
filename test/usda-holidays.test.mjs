@@ -68,9 +68,14 @@ test("Tuesday Oct 13 before the release, the moved card is today's", () => {
   assert.ok(cards.some((c) => /Today Crop Progress 4:00 PM ET · moved from Mon Oct 12, holiday · Oct 13/.test(c)), cards.join(" | "));
 });
 
-test("no Crop Progress after the Monday of Thanksgiving week", () => {
-  const cards = strip("2026-11-24T15:00:00Z");
-  assert.ok(!cards.some((c) => /Crop Progress/.test(c)), cards.join(" | "));
+// NASS's 2026 calendar lists the last Crop Progress on Mon Nov 30, the Monday
+// after Thanksgiving (2026-10-16 head to head). Until then this test held the
+// strip to the Monday of Thanksgiving week, a week short.
+test("Crop Progress runs to Mon Nov 30, NASS's last listed Monday, and no later", () => {
+  const before = strip("2026-11-24T15:00:00Z");
+  assert.ok(before.some((c) => /^Nov 30 Crop Progress 4:00 PM ET$/.test(c)), before.join(" | "));
+  const after = strip("2026-12-01T15:00:00Z");
+  assert.ok(!after.some((c) => /Crop Progress/.test(c)), after.join(" | "));
 });
 
 test("the strip's holiday rule gives the dates /usda-calendar lists", () => {

@@ -33,7 +33,13 @@ CHECKED AGAINST THE LIVE REPORT
     released Sep 23 2026, June 2026 $20.18) to data/dairy-raw/ams-mailbox.*;
     a copy is the main selftest fixture, test/fixtures/mailbox/mmpr-0626.txt.
     The sentence wording matched; ams_3357.pdf is the latest issue. Only the
-    newest month (the sentence) is taken; the by-month tables are not.
+    newest month (the sentence) is taken for the average.
+  * Reporting areas (added 2026-10-16): the first table's area rows (year
+    ago, last month, this month) are read, and each area's this-month and
+    last-month figures must match the same area in the by-month table
+    further down (a second print of the same numbers). Any area missing,
+    out of order, out of range or disagreeing drops ALL areas for that
+    month; the average above is unaffected.
 
 Stdlib only, plus pdftotext or pypdf through fetch_dairy.pdf_to_text.
 """
@@ -136,7 +142,80 @@ def parse(text, today):
     return out, None
 
 
-def compose(existing, parsed, err, now_iso):
+# The reporting areas in report order (MMPR-0626). An asterisk in the report
+# marks a group of states or part of a state; GROUPS says which (report
+# footnote, page 3).
+AREAS = ["New England States", "New York", "Eastern Pennsylvania", "Appalachian States",
+         "Southeast States", "Southern Missouri", "Florida", "Western Pennsylvania", "Ohio",
+         "Indiana", "Michigan", "Wisconsin", "Minnesota", "Iowa", "Illinois", "Corn Belt States",
+         "Western Texas", "New Mexico", "Northwest States", "California"]
+NUM = r"(\d{1,2}\.\d{2})"
+
+
+def _area_rows(seg, ncols):
+    """{area: [n numbers]} for every AREAS name found in seg, in order, each
+    followed by exactly the numbers up to the next name (ncols minimum)."""
+    names = AREAS + ["All Federal Order Areas"]
+    pat = "(" + "|".join(re.escape(n) for n in names) + r")\s*\*?\s*((?:\d{1,2}\.\d{2}\s*)+)"
+    out, order = {}, []
+    for m in re.finditer(pat, seg):
+        nums = [float(x) for x in re.findall(NUM, m.group(2))]
+        if m.group(1) in out or len(nums) < ncols:
+            return None, order
+        out[m.group(1)] = nums
+        order.append(m.group(1))
+    return out, order
+
+
+def parse_areas(text, month_key):
+    """([{"area", "value", "prev", "year_ago"}...], None) or (None, reason).
+    Reads the 'Mailbox Milk Prices, <Month> <Year>' table and checks every
+    row against the by-month table for the same half year."""
+    t = norm(text)
+    y, mo = int(month_key[:4]), int(month_key[5:])
+    mname = MONTHS[mo - 1]
+    head = re.search(r"Mailbox Milk Prices,\s+" + mname + r",?\s+" + str(y) + r"\b", t, re.I)
+    if not head:
+        return None, "area table for %s not found" % month_key
+    end = re.search(r"All Federal Order Areas\s*\*?\s*" + NUM + r"\s+" + NUM + r"\s+" + NUM, t[head.end():])
+    if not end:
+        return None, "area table has no All Federal Order Areas row"
+    seg = t[head.end(): head.end() + end.end()]
+    rows, order = _area_rows(seg, 3)
+    if rows is None or order != AREAS + ["All Federal Order Areas"]:
+        return None, "area table rows not as expected (%d read)" % len(order)
+    if any(len(v) != 3 for v in rows.values()):
+        return None, "an area row does not have exactly 3 figures"
+    # the by-month table for the same half year: "by Month, January - June 2026"
+    half = ("January", "June") if mo <= 6 else ("July", "December")
+    bm = re.search(r"by\s+Month,\s+" + half[0] + r"\s*[-\u2013]+\s*" + half[1] + r"\s+" + str(y) + r"\b", t, re.I)
+    if not bm:
+        return None, "by-month table for %s %s-%s not found" % (y, half[0], half[1])
+    k = (mo - 1) % 6
+    rest = t[bm.end():]
+    stop = re.search(r"All Federal Order Areas\s*\*?\s*((?:\d{1,2}\.\d{2}\s*)+)", rest)
+    if not stop:
+        return None, "by-month table has no All Federal Order Areas row"
+    rows2, order2 = _area_rows(rest[: stop.end()], k + 1)
+    if rows2 is None or order2 != AREAS + ["All Federal Order Areas"]:
+        return None, "by-month table rows not as expected"
+    out = []
+    for a in AREAS + ["All Federal Order Areas"]:
+        yago, prev, cur = rows[a]
+        if not all(RANGE[0] <= x <= RANGE[1] for x in (yago, prev, cur)):
+            return None, "%s figure outside %s" % (a, RANGE)
+        if abs(rows2[a][k] - cur) > 0.001:
+            return None, "%s %s: %.2f in the first table, %.2f in the by-month table" % (a, month_key, cur, rows2[a][k])
+        if k > 0 and abs(rows2[a][k - 1] - prev) > 0.001:
+            return None, "%s last month: %.2f vs %.2f in the by-month table" % (a, prev, rows2[a][k - 1])
+        if a != "All Federal Order Areas":
+            out.append({"area": a, "value": cur, "prev": prev, "year_ago": yago})
+        else:
+            allrow = cur
+    return {"month_key": month_key, "all": allrow, "rows": out}, None
+
+
+def compose(existing, parsed, err, now_iso, areas=None):
     """(doc, wrote, note). Keep-last-good; never older; changes must agree."""
     doc = dict(existing or {})
     hist = dict(doc.get("history") or {})
@@ -164,6 +243,12 @@ def compose(existing, parsed, err, now_iso):
     doc["source_url"] = PAGE_URL
     doc["updated"] = now_iso if held != parsed["month_key"] else doc.get("updated", now_iso)
     doc["status"] = {"ok": True, "note": "", "checked": now_iso}
+    # areas belong to one month and must agree with the average just written
+    if isinstance(areas, dict) and areas.get("month_key") == parsed["month_key"] \
+            and abs(areas.get("all", -1) - parsed["value"]) < 0.001:
+        doc["areas"] = areas
+    elif (doc.get("areas") or {}).get("month_key") != parsed["month_key"]:
+        doc.pop("areas", None)
     return doc, True, ""
 
 
@@ -187,11 +272,15 @@ def run(root, got=None, now=None):
     root = Path(root)
     now = now or datetime.datetime.now(datetime.timezone.utc)
     raw, text, err = got if got is not None else fetch()
-    parsed = None
+    parsed, areas = None, None
     if text:
         parsed, err = parse(text, now.date())
+        if parsed:
+            areas, aerr = parse_areas(text, parsed["month_key"])
+            if aerr:
+                print("::warning::mailbox areas not written: %s" % aerr)
     existing = FD.read_json(root / OUT)
-    doc, wrote, note = compose(existing, parsed, err, now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    doc, wrote, note = compose(existing, parsed, err, now.strftime("%Y-%m-%dT%H:%M:%SZ"), areas)
     if wrote and doc is not None and doc != existing:
         FD.atomic_write(root / OUT, doc)
     return doc, note
@@ -211,6 +300,9 @@ def probe(root):
         (rd / "ams-mailbox.txt").write_text(text)
         p, why = parse(text, datetime.date.today())
         print("  parsed:", p or "NOT PARSED (%s)" % why)
+        if p:
+            a, aw = parse_areas(text, p["month_key"])
+            print("  areas:", ("%d read" % len(a["rows"])) if a else "NOT READ (%s)" % aw)
     return 0
 
 
@@ -251,6 +343,25 @@ def selftest():
        parse(real.replace("down $0.25 from the May", "down $0.35 from the May"), datetime.date(2026, 10, 15))[0] is None)
     ck("real report: a table headed with another month is refused",
        parse(real.replace("Mailbox Milk Prices, June 2026", "Mailbox Milk Prices, May 2026"), datetime.date(2026, 10, 15))[0] is None)
+    # reporting areas, every figure read off MMPR-0626 by hand (Oct 16)
+    ar, aw = parse_areas(real, "2026-06")
+    byname = {x["area"]: x for x in (ar or {}).get("rows", [])}
+    ck("areas: 20 read, in report order", ar is not None and len(ar["rows"]) == 20, aw)
+    ck("areas: Wisconsin $18.13 (May $19.13, Jun 2025 $21.15)",
+       byname.get("Wisconsin") == {"area": "Wisconsin", "value": 18.13, "prev": 19.13, "year_ago": 21.15})
+    ck("areas: Minnesota $18.04, Iowa $18.29, Florida $27.59, California $18.97",
+       [byname.get(n, {}).get("value") for n in ("Minnesota", "Iowa", "Florida", "California")] == [18.04, 18.29, 27.59, 18.97])
+    ck("areas: All Federal Order Areas $20.18 carried for the cross-check", ar and ar["all"] == 20.18)
+    ck("areas: a first-table figure that disagrees with the by-month table drops all areas",
+       parse_areas(real.replace("Wisconsin\n21.15\n19.13\n18.13", "Wisconsin\n21.15\n19.13\n18.31"), "2026-06")[0] is None)
+    ck("areas: a missing area drops all areas",
+       parse_areas(real.replace("Iowa\n20.10\n19.28\n18.29\n", ""), "2026-06")[0] is None)
+    ck("areas: asking for another month finds no table", parse_areas(real, "2026-05")[0] is None)
+    doc, _, _ = compose({"month_key": "2026-05", "value": 20.43, "history": {"2026-05": 20.43}}, r, None, "2026-10-16T00:00:00Z", ar)
+    ck("areas written with the month they belong to", doc.get("areas", {}).get("month_key") == "2026-06")
+    doc2, _, _ = compose(dict(doc), dict(r, month="July 2026", month_key="2026-07", value=20.0, prev_month_change=None),
+                         None, "2026-11-16T00:00:00Z", None)
+    ck("a newer month without readable areas drops the old month's areas", "areas" not in doc2)
     held_mar = {"month": "March 2026", "month_key": "2026-03", "value": 18.84, "history": {"2026-03": 18.84}}
     doc, wrote, note = compose(held_mar, r, None, "2026-10-15T16:23:00Z")
     ck("real report over the held March figure: June written, only the newest month added to history",

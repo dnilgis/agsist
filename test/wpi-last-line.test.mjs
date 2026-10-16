@@ -53,7 +53,7 @@ const OCT = {
   biggest_surprise: {
     metric: "2026/27 corn ending stocks", actual: 1.849, expected: 1.677, unit: "bil bu",
     gap_pct: 10.3, surprise: "bearish", reaction_from: "settles",
-    reaction: "Dec '26 corn settled 20½¢ lower that day, $5.00¼ to $4.79¾ (CBOT settles).",
+    reaction: "Dec '26 corn settled 20½¢ lower that day, $5.00¼ to $4.79¾ (CBOT daily settles as Yahoo Finance reports them).",
   },
 };
 
@@ -63,7 +63,7 @@ test("the last result reads the same baked and live", () => {
   assert.equal(js, '<div class="wp-last"><b>Last report, the October WASDE (Oct 9):</b> 3 of 7 graded '
     + 'figures landed in line. Biggest miss, 2026/27 corn ending stocks: 1.849 bil bu vs 1.677 bil bu '
     + "expected (+10.3%, bearish). Dec '26 corn settled 20½¢ lower that day, $5.00¼ to $4.79¾ "
-    + '(CBOT settles). <a href="#track-record">Every figure</a></div>');
+    + '(CBOT daily settles as Yahoo Finance reports them). <a href="#track-record">Every figure</a></div>');
   for (const lr of [{ ...OCT, all_in_line: true, in_line_count: 7 },
                     { ...OCT, metric_count: 0 },
                     { ...OCT, biggest_surprise: { ...OCT.biggest_surprise, reaction_from: "typed",
@@ -85,10 +85,15 @@ test("the October rows carry the settle move from data on file, and the COT line
   const d = JSON.parse(readFileSync(join(ROOT, "data/whats-priced-in.json"), "utf8"));
   const oct = d.history.filter((r) => r.date === "2026-10-09");
   const corn = oct.find((r) => r.metric === "2026/27 corn ending stocks");
-  assert.equal(corn.reaction, "Dec '26 corn settled 20½¢ lower that day, $5.00¼ to $4.79¾ (CBOT settles).");
+  assert.equal(corn.reaction, "Dec '26 corn settled 20½¢ lower that day, $5.00¼ to $4.79¾ (CBOT daily settles as Yahoo Finance reports them).");
   assert.equal(corn.reaction_from, "settles");
   const wheat = oct.find((r) => r.metric === "2026/27 wheat ending stocks");
-  assert.ok(!wheat.reaction, "no wheat settles on file, so no wheat note");
+  // no wheat settles on file: the wheat note is typed from DTN's dated review, sourced, and says it is unchecked
+  assert.equal(wheat.reaction_from, "typed");
+  assert.match(wheat.reaction, /Dec KC wheat finished 17¢ lower at \$7\.19¼/);
+  assert.match(wheat.reaction, /Oct 9, 2026/);
+  assert.match(wheat.reaction, /no wheat settles to check/);
+  assert.match(wheat.reaction_source || "", /dtnpf\.com.*2026\/10\/09/);
   if (d.upcoming && /WASDE/.test(d.upcoming.report)) {
     assert.match(d.upcoming.positioning || "", /^Managed money: Corn net/);
     assert.ok(!(d.upcoming.withheld || {}).positioning);

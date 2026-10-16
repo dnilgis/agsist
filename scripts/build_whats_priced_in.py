@@ -315,6 +315,51 @@ def calendar_fallback(today, released=()):
         "from_calendar": True,
     }
 
+# THE NUMBER TO BEAT (Oct 16 head to head, change 1). Between reports the
+# next-report card had three "not yet" boxes and nothing else, while USDA's
+# standing figures sat in data/wasde.json. Those are USDA's own published
+# numbers, not ours: each is shown with the report and date it came from, and
+# only until the next report's own survey is typed in (the numbers table then
+# carries them as "USDA now").
+TO_BEAT_ORDER = ["corn_yield_2627", "corn_prod_2627", "corn_2627", "soy_yield_2627",
+                 "soy_prod_2627", "soy_2627", "wheat_prod_2627", "wheat_2627"]
+
+
+def _wasde_name(iso):
+    try:
+        return datetime.strptime(iso, "%Y-%m-%d").strftime("%B") + " WASDE"
+    except (TypeError, ValueError):
+        return "WASDE"
+
+
+def to_beat(upcoming, wasde):
+    """{"report", "date", "source", "rows": [{key, label, value, unit}]} or None.
+
+    Only for a WASDE or Crop Production card, only from a WASDE released
+    BEFORE that card's date, and only figures with a positive value."""
+    if not upcoming or not isinstance(wasde, dict):
+        return None
+    if not re.search(r"WASDE|Crop Production", str(upcoming.get("report") or ""), re.I):
+        return None
+    if upcoming.get("numbers"):
+        return None
+    rel = wasde.get("release")
+    if not isinstance(rel, str) or not re.match(r"^\d{4}-\d{2}-\d{2}$", rel) or rel >= (upcoming.get("date") or ""):
+        return None
+    by = {m.get("key"): m for m in wasde.get("metrics") or [] if isinstance(m, dict)}
+    rows = []
+    for k in TO_BEAT_ORDER:
+        m = by.get(k)
+        v = (m or {}).get("value")
+        if isinstance(v, (int, float)) and not isinstance(v, bool) and v > 0 and m.get("label") and m.get("unit"):
+            rows.append({"key": k, "label": m["label"], "value": v, "unit": m["unit"]})
+    if not rows:
+        return None
+    pdf = (wasde.get("wasde_pdf") or {}).get("report") if isinstance(wasde.get("wasde_pdf"), dict) else None
+    return {"report": _wasde_name(rel), "date": rel, "wasde_no": pdf,
+            "source": "https://www.usda.gov/oce/commodity/wasde", "rows": rows}
+
+
 def released_dates(history, wasde=None):
     """Report dates that have printed: any history row with a USDA figure, plus
     the release data/wasde.json records once the watcher has read it.
@@ -452,6 +497,15 @@ def survey_ranges(path=None):
 # move only: nothing here says why. A day is used only when the series has a
 # later day too, so a provisional last value is never printed as a settle.
 MOVE_CROPS = (("corn", "Corn"), ("soybean", "Soybeans"))
+# The series is Yahoo Finance's daily CBOT data (scripts/fetch_harvest_prices.py),
+# not a CME settlement copy, and the sentence says so. Where a dated outside
+# copy prints a different level, the sentence carries that too (Oct 16 head to
+# head, B2). Nothing here picks a winner.
+SETTLE_SRC = "(CBOT daily settles as Yahoo Finance reports them)"
+SETTLE_CHECKS = {
+    ("2026-10-09", "Soybeans"): (" DTN's report review printed $12.94, up 4\u00bd\u00a2. The move agrees; the level "
+                                 "is 2\u00a2 apart and no CME settlement copy is on file to say which is right."),
+}
 
 
 def settle_moves(path=None):
@@ -475,9 +529,10 @@ def settle_moves(path=None):
             q = pricefmt.quarters(mv)
             what = ("settled unchanged" if q == 0 else
                     "settled %s %s that day" % (pricefmt.move(abs(mv)), "higher" if q > 0 else "lower"))
-            out[(b["d"], w.get("crop"))] = "%s %s %s, %s to %s (CBOT settles)." % (
+            out[(b["d"], w.get("crop"))] = "%s %s %s, %s to %s %s.%s" % (
                 w.get("contract") or "", str(w.get("crop") or "").lower(), what,
-                pricefmt.price(c0), pricefmt.price(c1))
+                pricefmt.price(c0), pricefmt.price(c1), SETTLE_SRC,
+                SETTLE_CHECKS.get((b["d"], w.get("crop")), ""))
     return out
 
 
@@ -487,6 +542,14 @@ def plain_dashes(text):
     if not isinstance(text, str):
         return text
     return re.sub(r"\s*\u2014\s*", ", ", text).strip(", ")
+
+
+def _long_date(iso):
+    try:
+        d = datetime.strptime(iso, "%Y-%m-%d")
+    except (TypeError, ValueError):
+        return "this report day"
+    return d.strftime("%b ") + str(d.day) + d.strftime(", %Y")
 
 
 def build_history(rows, ranges=None, meta=None, moves=None):
@@ -519,10 +582,29 @@ def build_history(rows, ranges=None, meta=None, moves=None):
         # came before the print; they stay on the record, flagged.
         row["source_date_unknown"] = (r.get("expected") is not None
                                       and (not mt or mt.get("source_date_unknown", True)))
+        # ...AND IS NOT GRADED (Oct 16 head to head, B4). The five May rows
+        # were graded and counted while labeled "source date unknown", which is
+        # the one thing the consensus lock exists to prevent. They stay on the
+        # record with their numbers, marked not graded, like the July WASDE.
+        # Only when a survey book was read: with none at all (a unit call
+        # with no meta) there is nothing to say the date is missing from.
+        if row["source_date_unknown"] and meta:
+            row["surprise"] = ""
+            row["ungraded_why"] = ("Not graded: the trade survey's date is not on file, so nothing "
+                                   "shows it was published before the report.")
         # HOW FAR OFF, ON EVERY ROW. This was computed for the one report in the
         # result banner and nowhere else, so the track record showed "765 -> 744"
         # and left the reader to do the arithmetic on thirteen rows.
         row["gap_pct"] = band_gap_pct(r.get("expected"), r.get("actual"))
+        # NO MOVE ON FILE, DATED, WITH THE REASON (Oct 16, B3). "No note
+        # written" read as if someone forgot. The settles kept here cover Dec
+        # corn and Nov soybeans in the February and October windows only.
+        if not row["reaction"]:
+            row["reaction_why"] = ("No price move on file for %s. The settles kept here cover Dec corn and "
+                                   "Nov soybeans in the February and October price windows only, and no "
+                                   "move is typed in without a dated source." % _long_date(r.get("date")))
+        if r.get("reaction_source"):
+            row["reaction_source"] = r["reaction_source"]
         out.append(row)
     # newest first
     out.sort(key=lambda x: x.get("date") or "", reverse=True)
@@ -596,6 +678,9 @@ def main():
     upcoming = build_upcoming(reports, today, cot, released_dates(history, wasde))
     if upcoming:
         upcoming["numbers"] = build_report_numbers(upcoming)
+        tb = to_beat(upcoming, wasde)
+        if tb:
+            upcoming["to_beat"] = tb
 
     # ── THE WALK-THROUGH HAS TO OUTLIVE THE REPORT IT WALKS THROUGH ──────
     #
@@ -902,10 +987,12 @@ def _selftest():
     json.dump(hp, open(hpp, "w"))
     mv = settle_moves(hpp)
     assert mv[("2026-10-09", "Corn")] == \
-        "Dec '26 corn settled 20\u00bd\u00a2 lower that day, $5.00\u00bc to $4.79\u00be (CBOT settles).", mv
+        "Dec '26 corn settled 20\u00bd\u00a2 lower that day, $5.00\u00bc to $4.79\u00be (CBOT daily settles as Yahoo Finance reports them).", mv
     assert mv[("2026-10-09", "Soybeans")].startswith("Nov '26 soybeans settled 4\u00bd\u00a2 higher"), mv
     assert mv[("2026-10-13", "Soybeans")] == \
-        "Nov '26 soybeans settled unchanged, $12.92 to $12.92 (CBOT settles).", mv
+        "Nov '26 soybeans settled unchanged, $12.92 to $12.92 (CBOT daily settles as Yahoo Finance reports them).", mv
+    # Oct 9 soybeans carry DTN's different level beside ours, dated, no winner picked
+    assert mv[("2026-10-09", "Soybeans")].endswith("no CME settlement copy is on file to say which is right."), mv
     # the newest settle can still be a provisional last trade: never printed
     assert ("2026-10-13", "Corn") not in mv and ("2026-10-08", "Corn") not in mv, mv
     rows = build_history([

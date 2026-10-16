@@ -79,10 +79,14 @@ window.cotMarket = function (api) {
     var room = c.net > 0 ? c.capacity.room_down : c.capacity.room_up;
     var dir = c.net > 0 ? 'selling' : 'buying';
     if (p !== null && (p >= 75 || p <= 25)) {
-      var strength = (p >= 90 || p <= 10) ? 'a ' + crowdWord(p) : 'an unusually large';
+      /* ONE CROWDING PHRASE (2026-10-16 head to head). This said "an unusually
+         large net long" at the 81st percentile while The Read and the card
+         said "high side, not crowded" for the same number. The words now come
+         from crowdWord() and the pipeline's crowded flag, the same as The Read. */
+      var where = crowdWord(p) + ', ' + (c.crowded ? 'crowded ' + c.crowded : 'not crowded');
       return '<p class="cx-verdict warn"><b>No timing signal, but a real exposure.</b> Funds hold '
-        + strength + ' net ' + side + ' in ' + esc(c.label) + ' against their own record since '
-        + c.first_week.slice(0,4) + '. Nothing we tested says which way price goes next. What it does '
+        + 'a net ' + side + ' in ' + esc(c.label) + ' at the ' + ord(p) + ' percentile of their own record since '
+        + c.first_week.slice(0,4) + ' (' + where + '). Nothing we tested says which way price goes next. What it does '
         + 'say is that ' + num(c.capacity.to_flat) + ' contracts of ' + dir + ' sit between here and '
         + 'flat, and ' + num(room) + ' between here and the far end of that record (as a share of open interest, at today\'s open interest). That is a reason '
         + 'to look this week at ' + esc(noun) + ', not a reason to predict a move.</p>';

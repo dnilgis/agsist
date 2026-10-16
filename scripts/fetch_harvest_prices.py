@@ -493,6 +493,67 @@ def _span(series):
     return fa + " to " + (str(b.day) if (a.year, a.month) == (b.year, b.month) else b.strftime("%b ") + str(b.day))
 
 
+def chart_svg(c):
+    """The window drawn: each daily settle, the running average and the flat
+    projected price, inline SVG, from the series this file already keeps
+    (Oct 16 head to head, change 1). Plotted settles only, nothing projected
+    forward; the days still to come are empty space. A provisional last day is
+    drawn hollow. '' when there are fewer than two days to draw."""
+    leg = c.get("harvest") or {}
+    ser = [x for x in (leg.get("series") or []) if isinstance(x.get("s"), (int, float))]
+    proj = (c.get("projected") or {}).get("price")
+    total = leg.get("days_total") or len(ser)
+    if len(ser) < 2 or not isinstance(proj, (int, float)) or total < len(ser):
+        return ""
+    W, H, L, R, T, B = 300, 132, 40, 8, 10, 20
+    vals = [x["s"] for x in ser] + [x["a"] for x in ser if isinstance(x.get("a"), (int, float))] + [proj]
+    lo, hi = min(vals), max(vals)
+    pad = max((hi - lo) * 0.08, 0.02)
+    lo, hi = lo - pad, hi + pad
+
+    def X(i):
+        return L + i * (W - L - R) / max(total - 1, 1)
+
+    def Y(v):
+        return T + (hi - v) * (H - T - B) / (hi - lo)
+
+    def f(v):
+        return "%.1f" % v
+    pts = " ".join(f(X(i)) + "," + f(Y(x["s"])) for i, x in enumerate(ser))
+    avg = [(i, x["a"]) for i, x in enumerate(ser) if isinstance(x.get("a"), (int, float))]
+    apts = " ".join(f(X(i)) + "," + f(Y(a)) for i, a in avg)
+    dots = "".join(
+        '<circle cx="' + f(X(i)) + '" cy="' + f(Y(x["s"])) + '" r="2.8" class="hpg-d'
+        + (' hpg-p' if x.get("p") else '') + '"/>' for i, x in enumerate(ser))
+    yp = Y(proj)
+    first = date.fromisoformat(ser[0]["d"])
+    # the legs are calendar-month windows ("window": "October"): the axis
+    # runs to the month's last day, where the window ends
+    e = date(first.year, first.month, calendar.monthrange(first.year, first.month)[1])
+    xl_end = e.strftime("%b ") + str(e.day)
+    last = ser[-1]
+    run = leg.get("running_avg") if leg.get("status") == "running" else leg.get("price")
+    label = (c["label"] + " " + c["contract"] + ": " + str(len(ser)) + " daily settles, " + _span(ser)
+             + (", " + _md(last["d"]) + " provisional" if last.get("p") else "")
+             + (", running average $" + "%.2f" % run if isinstance(run, (int, float)) else "")
+             + ", projected price $" + "%.2f" % proj)
+    return (
+        '<figure class="hpg"><svg viewBox="0 0 ' + str(W) + ' ' + str(H) + '" role="img" aria-label="'
+        + label.replace('"', "&quot;").replace("'", "&#39;") + '">'
+        + '<line x1="' + str(L) + '" x2="' + str(W - R) + '" y1="' + f(yp) + '" y2="' + f(yp) + '" class="hpg-proj"/>'
+        + '<polyline points="' + pts + '" class="hpg-s"/>'
+        + ('<polyline points="' + apts + '" class="hpg-a"/>' if len(avg) > 1 else '')
+        + dots
+        + '<text x="' + str(L - 4) + '" y="' + f(T + 4) + '" class="hpg-t" text-anchor="end">$' + "%.2f" % hi + '</text>'
+        + '<text x="' + str(L - 4) + '" y="' + f(H - B) + '" class="hpg-t" text-anchor="end">$' + "%.2f" % lo + '</text>'
+        + '<text x="' + str(L) + '" y="' + str(H - 5) + '" class="hpg-t">' + first.strftime("%b ") + str(first.day) + '</text>'
+        + ('<text x="' + str(W - R) + '" y="' + str(H - 5) + '" class="hpg-t" text-anchor="end">' + xl_end + '</text>' if xl_end else '')
+        + '</svg><figcaption class="hpg-k"><span><i class="hpg-kd"></i>daily settle'
+        + (' (hollow: provisional)' if last.get("p") else '') + '</span>'
+        + ('<span><i class="hpg-ka"></i>running average</span>' if len(avg) > 1 else '')
+        + '<span><i class="hpg-kp"></i>projected $' + "%.2f" % proj + '</span></figcaption></figure>')
+
+
 def card_html(c, crop_year):
     def leg_line(leg, label, month_word):
         if leg["status"] == "final":
@@ -520,6 +581,7 @@ def card_html(c, crop_year):
             + ' \u00b7 ' + str(crop_year) + ' crop year</div>'
             + leg_line(c["projected"], "Projected price", "February")
             + leg_line(c["harvest"], "Harvest price", "October")
+            + (chart_svg(c) if (c.get("harvest") or {}).get("status") in ("running", "final") else "")
             + '</div>')
 
 
@@ -545,6 +607,25 @@ def seed_note(d):
         tail += (' ' + _md(last["d"]) + ' is Yahoo Finance&rsquo;s close that afternoon, which can sit a tick off '
                  'the exchange settle; the next evening&rsquo;s run replaces it with the settle.')
     return base + tail
+
+
+def method_note(d):
+    """The Method and Sources line. 2026-10-16 head to head (H3): it said
+    "Sources: CBOT settles" while the newest day was Yahoo's afternoon close.
+    It now names where the settles come from and, when the newest day is not
+    a settle yet, says so on the Sources line itself."""
+    ser = []
+    for c in d.get("commodities") or []:
+        if (c.get("harvest") or {}).get("status") == "running":
+            ser = c["harvest"].get("series") or []
+            break
+    src = "CBOT daily settles as Yahoo Finance reports them"
+    if ser and ser[-1].get("p"):
+        src += (" (" + _md(ser[-1]["d"]) + " is Yahoo&rsquo;s afternoon close, not yet the settle)")
+    return ('<div class="method-note"><b>Method</b> &middot; Running average of the contract&rsquo;s daily settles '
+            'across RMA&rsquo;s window so far, the same math RMA uses for the final harvest price. &middot; '
+            '<b>Sources</b> &middot; ' + src + '; USDA RMA Price Discovery for the window and the official price. '
+            '&middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>')
 
 
 # The page's title, description and H1 carry the running number while a
@@ -614,7 +695,8 @@ def seed_page(d, today):
     block = ("<!--SEED:hpcards-->\n      "
              + "\n      ".join(card_html(c, d["crop_year"]) for c in d["commodities"])
              + '\n      <div class="hp-seed-note">' + seed_note(d) + '</div>'
-             "\n      <!--/SEED:hpcards-->")
+             + "\n      " + method_note(d)
+             + "\n      <!--/SEED:hpcards-->")
     pat = re.compile(r"<!--SEED:hpcards-->.*?<!--/SEED:hpcards-->", re.S)
     if not pat.search(src):
         raise RuntimeError("SEED:hpcards markers missing from page")
