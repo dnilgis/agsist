@@ -55,7 +55,7 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
   agsist side to prefer whole-month rows first. This session could not attach the bids repo.
 - USDA payments: data/payments covers 21 states only; Sig downloads all FY2025 FSA payment xlsx files (FSA blocks datacenters), then
   scripts/process_payments.py runs locally. Build /payments only with all states or a clear "21 states" label.
-- Soybean EMC low fit (Modified Henderson constants) is from ASAE D245 memory, matched to Minnesota and NDSU values; save D245 to references.
+- Soybean EMC low fit (Modified Henderson constants) is from ASAE D245 memory, matched to Minnesota and Hellevang's two figures (10.2% 2015 slide, 13.5% 2020 release); NDSU's 2011 table matches neither fit (22 of 30 cells outside the range, pinned in tests). D245 itself is paywalled; listing saved to references.
 - Gap list from the audit (not built): fall anhydrous soil-temp go/no-go by county (window is now), harvest now or wait in dollars,
   CCC loan calculator, combine loss check, DDGS feed value.
 
