@@ -85,8 +85,6 @@
       .es-byline{font-size:.85rem;color:var(--text-muted);margin:-1.5rem 0 2rem}
     .es-byline a{color:var(--text-dim)}
     .info-page p{margin:0 0 .85rem}
-    .es-steps{padding-left:1.4rem}
-    .es-steps li{margin:.35rem 0}
     .info-page h2{scroll-margin-top:5rem}
     .breadcrumb{font-size:.8rem;color:var(--text-muted);margin-bottom:1rem}
     .breadcrumb a{color:var(--text-muted)}
@@ -125,15 +123,7 @@
       <p>AGSIST is one person: me, Sigurd Lindquist, a Certified Crop Adviser in Chetek, Wisconsin. I own it and pay for it. There are no investors. I also own Farmers First Agri Service LLC (crop insurance, agronomy and ag technology) and Loke Drone LC (drone spraying). The <a href="/about">About page</a> has the rest, including who sponsors the site.</p>
 
       <h2 id="how-the-daily-is-made">How the AGSIST Daily is made</h2>
-      <p>The AGSIST Daily is put together by software every morning, under rules I write and keep changing. Here is what happens, in order:</p>
-      <ol class="es-steps">
-        <li><strong>The numbers are read first.</strong> Overnight futures quotes (Yahoo Finance, delayed, not CME settlements), the prior day's settles, USDA reports and the harvest price window from USDA RMA. Each issue prints the time the quotes were read.</li>
-        <li><strong>Headlines are gathered</strong> from farm news sites and wire feeds. Each issue names the outlets it drew on in its source line.</li>
-        <li><strong>A language model writes the draft, in my voice.</strong> It is Anthropic's Claude. It is not a model of its own; each morning it is handed the numbers, the headlines, a set of my own issues written the way I write as examples to follow, and a long set of my rules: how I write, what not to say, never invent a conversation or something I did, and use only the prices it was handed.</li>
-        <li><strong>A second pass edits it</strong> against those same rules and rewrites the weakest parts.</li>
-        <li><strong>Code checks it before it posts.</strong> Every price in the text is matched against the price feed. The calendar, report days and word limits are checked. A draft that fails is not published, and the last good issue stays up.</li>
-      </ol>
-      <p>No person reads an issue before it goes up. It usually posts between 5:45 and 6:30 a.m. Central, seven days a week. A copy comes to my inbox each morning, and I fix what is wrong when I see it or when you tell me. The byline is mine because the voice, the rules, the sources and the mistakes are mine.</p>
+      <p>The Daily is drafted each morning by AI software, working from my rules, examples of how I write, and that morning&rsquo;s market data and news. Before it posts, code checks every price in it against the market feed; a draft that fails does not post. It usually goes up between 5:45 and 6:30 a.m. Central. I read it each morning and fix what is wrong when I see it or when you tell me.</p>
       <p>The Daily is market news and commentary. It is not advice to buy, sell or hedge anything, and it never knows your farm. When an issue carries the prediction bot's call, it is copied from <a href="/scorecard">the bot's own page</a>, where every call is graded.</p>
 
       <h2 id="sources">Where the numbers come from</h2>

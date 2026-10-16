@@ -109,8 +109,9 @@ test("editorial standards page: how the Daily is made, corrections, no em dashes
     assert.ok(h.includes(`id="${id}"`), id);
   assert.ok(h.includes('<link rel="canonical"    href="https://agsist.com/editorial-standards">'));
   assert.ok(!h.includes("—"), "no em dashes");
-  assert.match(h, /A language model writes the draft/);
-  assert.match(h, /No person reads an issue before it goes up/);
+  // Oct 16, Sig: toned down to one plain paragraph; the AI draft and the price check stay stated
+  assert.match(h, /drafted each morning by AI software/);
+  assert.match(h, /code checks every price in it against the market feed; a draft that fails does not post/);
   assert.match(h, /Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\)/);
   assert.ok(!/insurance agent/i.test(h));
   const ld = JSON.parse(h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
