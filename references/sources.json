@@ -1292,6 +1292,14 @@
     {"id": "bench-rain-county-6", "kind": "html",
      "url": "https://hprcc.unl.edu/maps.php",
      "title": "Benchmark rain-county: HPRCC ACIS climate maps",
-     "why": "/rain-county competitor benchmark Oct 16, 2026 (university)"}
+     "why": "/rain-county competitor benchmark Oct 16, 2026 (university)"},
+    {"id": "ecfr-7-1412", "kind": "html",
+     "url": "https://www.ecfr.gov/current/title-7/subtitle-B/chapter-XIV/subchapter-B/part-1412",
+     "title": "7 CFR part 1412: Agriculture Risk Coverage, Price Loss Coverage (eCFR)",
+     "why": "/arc-plc ARC-IC: guarantee, payment cap and paid share of base under the 2025 law, before any ARC-IC figure is printed"},
+    {"id": "fr-2026-00313", "kind": "html",
+     "url": "https://www.federalregister.gov/d/2026-00313",
+     "title": "Federal Register 2026-00313 (Jan 12, 2026): FSA rule for ARC and PLC under the 2025 law",
+     "why": "/arc-plc: the rule the build script cites as [FR26]; ARC-IC terms for the ARC-IC check"}
 ]
 }
