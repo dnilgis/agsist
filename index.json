@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T02:47:53Z",
+ "run_utc": "2026-10-16T03:22:40Z",
  "sources": [
   {
    "bytes": null,
@@ -1584,6 +1584,31 @@
    "text_chars": 1088
   },
   {
+   "bytes": 92314,
+   "sha256": "7c938828ceefc057dc94ff9dbc424797c0297ffb388cb4b0a2788039732765c9",
+   "fetched_utc": "2026-10-16T03:22:31Z",
+   "pages": null,
+   "etag": "\"1792119815\"",
+   "last_modified": "Fri, 16 Oct 2026 03:03:35 GMT",
+   "saved_as": "refs/nass-agprices.html",
+   "final_url": "https://esmis.nal.usda.gov/publication/agricultural-prices",
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "nass-agprices",
+   "url": "https://usda.library.cornell.edu/concern/publications/c821gj76b",
+   "title": "USDA NASS Agricultural Prices (report page)",
+   "why": "/hay-prices: report name, release timing, revision of the newest month",
+   "kind": "html",
+   "checked_utc": "2026-10-16T03:22:31Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1752
+  },
+  {
    "bytes": 140983,
    "sha256": "140253bc5b0215cff2e3bbe10c7f8d8ac862b0453cb024fe5706f5f2dad84e3b",
    "fetched_utc": "2026-10-16T02:47:39Z",
@@ -1807,6 +1832,69 @@
    ],
    "status": "new",
    "text_chars": 1296
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "isu-pm1688",
+   "url": "https://www.extension.iastate.edu/Publications/PM1688.pdf",
+   "title": "Iowa State PM 1688, A General Guide for Crop Nutrient and Limestone Recommendations in Iowa",
+   "why": "/nutrient-removal: N, P2O5, K2O removal per unit of yield (second source beside A2809; corn stover, silage, straw)",
+   "kind": "pdf",
+   "checked_utc": "2026-10-16T03:22:33Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback: availability API: Too Many Requests",
+   "status": "failed"
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "osu-tristate-974",
+   "url": "https://agcrops.osu.edu/sites/agcrops/files/imce/fertility/bulletin_974.pdf",
+   "title": "Tri-State Fertilizer Recommendations for Corn, Soybean, Wheat and Alfalfa (Bulletin 974)",
+   "why": "/nutrient-removal: crop removal table (grain, stover, straw, silage, alfalfa) to show the range beside A2809",
+   "kind": "pdf",
+   "checked_utc": "2026-10-16T03:22:36Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback: availability API: Too Many Requests",
+   "status": "failed"
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "psu-agronomy-guide-fertility",
+   "url": "https://extension.psu.edu/soil-fertility-management",
+   "title": "Penn State Agronomy Guide, soil fertility management",
+   "why": "/nutrient-removal: nutrient removal by crops including N and S, earlage/HMC if listed",
+   "kind": "html",
+   "checked_utc": "2026-10-16T03:22:38Z",
+   "error": "direct/python: HTTP 404; direct/curl: HTTP 404; wayback: availability API: Too Many Requests",
+   "status": "failed"
   }
  ]
 }

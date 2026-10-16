@@ -1,0 +1,175 @@
+# USDA NASS Agricultural Prices (report page)
+# https://usda.library.cornell.edu/concern/publications/c821gj76b
+# fetched 2026-10-16T03:22:31Z, sha256 7c938828ceefc057dc94ff9dbc424797c0297ffb388cb4b0a2788039732765c9
+
+Agricultural Prices | Economics, Statistics, and Market Information Systemdot gov iconhttps iconUSDA Logo
+
+-
+
+-
+
+Agricultural Prices
+
+This file contains prices received by farmers for principal crops, livestock and livestock products; indexes of prices received by farmers; feed price ratios; indexes of prices paid by farmers; and parity prices. Historical data covering years 1910-60 reported in 1962 publication.
+
+Agency
+
+National Agricultural Statistics Service
+
+Frequency of Release
+
+Monthly
+
+Upcoming releases
+
+Oct 30 2026 3:00 PM
+, Nov 30 2026 3:00 PM
+, Dec 30 2026 3:00 PM
+
+Category
+
+Retail and Market Prices
+
+Keywords
+
+animals, prices, crops, commodities, parity prices
+
+Releases
+
+Date
+Download
+Operations
+
+Sep 29 2026
+
+Sep 29 2026
+- pdfSep 29 2026
+- txtSep 29 2026
+- zip
+
+- View
+
+Aug 31 2026
+
+Aug 31 2026
+- pdfAug 31 2026
+- txtAug 31 2026
+- zip
+
+- View
+
+Jul 31 2026
+
+Jul 31 2026
+- pdfJul 31 2026
+- txtJul 31 2026
+- zip
+
+- View
+
+Jun 29 2026
+
+Jun 29 2026
+- pdfJun 29 2026
+- txtJun 29 2026
+- zip
+
+- View
+
+May 29 2026
+
+May 29 2026
+- pdfMay 29 2026
+- txtMay 29 2026
+- zip
+
+- View
+
+Apr 30 2026
+
+Apr 30 2026
+- pdfApr 30 2026
+- txtApr 30 2026
+- zip
+
+- View
+
+Mar 30 2026
+
+Mar 30 2026
+- pdfMar 30 2026
+- txtMar 30 2026
+- zip
+
+- View
+
+Feb 27 2026
+
+Feb 27 2026
+- pdfFeb 27 2026
+- txtFeb 27 2026
+- zip
+
+- View
+
+Jan 30 2026
+
+Jan 30 2026
+- pdfJan 30 2026
+- txtJan 30 2026
+- zip
+
+- View
+
+Dec 31 2025
+
+Dec 31 2025
+- pdfDec 31 2025
+- txtDec 31 2025
+- zip
+
+- View
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Latest Release
+
+Date
+Download
+
+Sep 29 2026
+
+Agricultural Prices - Sep 29 2026
+- pdfAgricultural Prices - Sep 29 2026
+- txtAgricultural Prices - Sep 29 2026
+- zip
+
+Contact office name
+
+National Agricultural Statistics Service
+
+Contact email
+
+nass@nass.usda.gov
