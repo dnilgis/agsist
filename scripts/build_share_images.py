@@ -169,6 +169,7 @@ LINES = {
     "fertilizer": ("Fertilizer", "Co-op posted prices and the cost per pound of N, P and K."),
     "markets": ("Markets", "Grain, livestock and energy futures, free."),
     "cot": ("Commitments of Traders", "What the funds hold in corn, soybeans, wheat and cattle."),
+    "cattle-auction-prices": ("Sale barn prices", "Feeder steer and heifer prices by weight at the barns near you, from USDA."),
     "conditions": ("Crop conditions", "Every state's crop rating, ranked against the same week since 2000."),
     "conditions-yield": ("Crop size", "Every 2026 corn and soybean yield forecast, side by side."),
     "crop-tour": ("Crop tour", "The tour's yield, set against USDA's and how close it has been."),

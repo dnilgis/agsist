@@ -30,7 +30,7 @@ test("tool groups and the cards in each run by 90-day views, new pages last", ()
   assert.deepEqual(groups().map((g) => g.hrefs), [
     ["/cash-bids", "/breakeven", "/arc-plc", "/prf", "/store-or-sell", "/lrp"],
     ["/hail-map", "/gdu-calculator", "/field-scout", "/planting-date"],
-    ["/usda-calendar", "/tariffs", "/", "/hay-prices"],
+    ["/usda-calendar", "/tariffs", "/", "/hay-prices", "/cattle-auction-prices"],
     ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/data-sources"],
     ["/spray", "/fertilizer", "/urea", "/manure-value", "/nutrient-removal"],
     ["/grain-bin-calculator", "/grain-emc", "/grain-shrink"],

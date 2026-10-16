@@ -136,6 +136,7 @@ PAGES = [
         ("/grain-shrink", "Grain Shrink Calculator", "what wet corn, soybeans, wheat or sorghum nets after the elevator's shrink and drying charges, and the bushels and dollars given away delivering below base moisture (soybeans under 13%); at your bid, a ZIP's nearest posted bid, or a labeled state estimate"),
         ("/nutrient-removal", "Nutrient Removal Value Calculator", "pounds of P2O5 and K2O removed per ton, bale and acre when you bale corn stalks or small grain straw, chop silage, sell hay or haul grain (UW A2809 Table 4.2), priced at posted co-op fertilizer prices; N and S withheld until sourced"),
         ("/hay-prices", "Hay Prices by State", "USDA NASS monthly prices received for alfalfa, other hay and all hay, dollars a ton, every published state, the same month last year and 3 years of history; withheld states say so"),
+        ("/cattle-auction-prices", "Sale Barn Prices", "feeder steer and heifer prices by 100 lb weight class (Medium and Large 1 and 1-2), weighted average $/cwt and $/head with head counts, at USDA-reported sale barns and state auction summaries near a ZIP"),
     ]),
     ("My ground and programs", [
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),

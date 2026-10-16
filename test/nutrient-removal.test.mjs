@@ -13,6 +13,9 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const require = createRequire(import.meta.url);
 const NR = require("../components/nutrient-removal.js");
 const html = readFileSync(ROOT + "nutrient-removal.html", "utf8");
+// The page may write P2O5 as P&#8322;O&#8325; or with subscript characters (the
+// freshness bake does); the arithmetic checks read all three the same.
+const plain = html.replace(/&#8322;|\u2082/g, "2").replace(/&#8325;|\u2085/g, "5");
 const js = readFileSync(ROOT + "components/nutrient-removal.js", "utf8");
 const near = (a, b, tol = 1e-6) => Math.abs(a - b) <= tol;
 
@@ -161,12 +164,12 @@ test("page: FAQ JSON-LD matches the questions on the page", () => {
 test("FAQ arithmetic matches A2809", () => {
   // 1,000 lb bale at 15% = 850 lb dry = 0.425 dry ton: 1.955 lb P2O5 ("about 2"), 13.6 lb K2O
   assert.ok(near(0.425 * 4.6, 1.955) && near(0.425 * 32, 13.6));
-  assert.match(html, /about 2 lb of P2O5 and 13\.6 lb of K2O/);
+  assert.match(plain, /about 2 lb of P2O5 and 13\.6 lb of K2O/);
   // 20 ton silage: 72 and 166; 180 bu corn: 52 lb K2O
-  assert.match(html, /about 72 lb of P2O5 and 166 lb of K2O/);
+  assert.match(plain, /about 72 lb of P2O5 and 166 lb of K2O/);
   assert.ok(near(180 * 0.29, 52.2));
   // 3 dry ton stover: 13.8 ("about 14") and 96
-  assert.match(html, /about 14 lb of P2O5 and 96 lb of K2O/);
+  assert.match(plain, /about 14 lb of P2O5 and 96 lb of K2O/);
   // a ton at 15%: 3.91 ("about 3.9") and 27.2 ("27")
-  assert.match(html, /about 3\.9 lb of P2O5 and 27 lb of K2O/);
+  assert.match(plain, /about 3\.9 lb of P2O5 and 27 lb of K2O/);
 });

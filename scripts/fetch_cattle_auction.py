@@ -125,12 +125,33 @@ def receipts(text):
 
 
 # ------------------------------------------------------------------ tables
+# Real AMS layout (probe, Oct 16 2026): "FEEDER CATTLE" on its own line, then
+# "STEERS - Medium and Large 1 (Per Cwt / Actual Wt)". Medium and Large 1 / 1-2
+# are feeder grades only (slaughter cattle grade Select/Choice), so the grade
+# words pin these to the feeder tables. The older "Feeder steers Medium..." form
+# still matches.
 SECTION_RE = re.compile(
-    r"\bfeeder\s+(steers|heifers)\s+medium\s+(?:and|&)\s+large\s+(1-2|1)\s*\(\s*per\s+cwt\s*/\s*actual\s+wt\s*\)", re.I)
+    r"\b(?:feeder\s+)?(steers|heifers)\s*-?\s*medium\s+(?:and|&)\s+large\s+(1-2|1)\s*\(\s*per\s+cwt\s*/\s*actual\s+wt\s*\)", re.I)
 # any table heading, so a block ends where the next one starts
 HEAD_RE = re.compile(
-    r"\b(?:feeder|slaughter|bred|stock|replacement|cow|cows|holstein|dairy|pairs|bulls?|"
+    r"\b(?:feeder|slaughter|bred|stock|replacement|cow|cows|holstein|dairy|pairs|bulls?|steers|heifers|"
     r"heiferettes|baby|calves)\b[A-Za-z0-9 ,&/\-]{0,80}?\(\s*(?:per|price)\b[^)]*\)", re.I)
+# The market comment after the tables ("**CLOSE** Compared to last week ... 317.00/cwt")
+# quotes prices; a table ends where it starts.
+# Any run of six or more words is prose (row notes are at most three words:
+# "Thin Fleshed", "Certified Prgms"), so "Throughout the week ..." ends it too.
+COMMENT_RE = re.compile(r"\*\*|\bcompared\s+to\b|\bsource:|\bsupply\s+included\b|\bthe\s+largest\s+lot\b|"
+                        r"\b[A-Za-z][A-Za-z'.]*(?:[ ,;]+[A-Za-z][A-Za-z'.]*){5,}", re.I)
+COLHEAD_ALL_RE = re.compile(r"\bhead\s+wt\s+range\s+avg\s+wt\s+price\s+range\s+avg\s+price(?:\s+dressing)?", re.I)
+# A table that runs onto the next PDF page repeats the footer, the report title,
+# the date and sometimes the column header mid-table (Missouri 1821, Texas 1955,
+# Oct 2026): drop from the footer through "Page N of M" up to the next row,
+# never crossing a table heading. Column headers carry no data and go everywhere.
+PAGEBREAK_RE = re.compile(
+    r"\bsource:\s*usda\s+ams(?:(?!\(\s*per\b).){0,1200}?\bpage\s+\d+\s+of\s+\d+(?:(?!\(\s*per\b).){0,600}?"
+    r"(?=\s+head\s+wt\s+range|\s+\d{1,4}\s+\d{3,4}(?:-\d{3,4})?\s+\d{3,4}\s+\d{2,4}\.\d{2})", re.I)
+# the column header under each table heading (and repeated after page breaks)
+COLHEAD_RE = re.compile(r"\s*head\s+wt\s+range\s+avg\s+wt\s+price\s+range\s+avg\s+price(?:\s+dressing)?", re.I)
 INT = r"(\d{1,3}(?:,\d{3})*|\d+)"
 WT = r"(\d{3,4})"
 PX = r"(\d{2,4}\.\d{2})"
@@ -182,12 +203,22 @@ def parse_report(text):
     date = sale_date(text)
     if not date:
         return None, "no sale date in the first lines"
-    j = joined(text)
+    j = PAGEBREAK_RE.sub(" ", joined(text))
+    j = COLHEAD_ALL_RE.sub(" ", j)
     heads = [m.start() for m in HEAD_RE.finditer(j)]
     tables = {}
     for m in SECTION_RE.finditer(j):
         key = "%s|%s" % (m.group(1).lower(), m.group(2))
-        end = next((h for h in heads if h > m.start()), len(j))
+        end = next((h for h in heads if h > m.end()), len(j))
+        start = m.end()
+        col = COLHEAD_RE.match(j, start)
+        if col:
+            start = col.end()
+        # prose only counts inside this table's own text, so a row note next to
+        # the next heading ("Fleshy STEERS - Medium and Large 1-2") is not prose
+        c = COMMENT_RE.search(j[start:end])
+        if c:
+            end = start + c.start()
         rows, why = parse_rows(j[m.end():end])
         if rows is None:
             return None, "%s table: %s" % (key, why)
@@ -477,6 +508,26 @@ def selftest():
         ck("%s: 700 class from one row is that row" % label,
            st["700"]["cwt"] == 305.8 and st["700"]["head"] == 120 and st["700"]["per_head"] == round(7.28 * 305.8, 2))
         ck("%s: heifers 400 class 391.75" % label, s["classes"]["heifers|1"]["400"]["cwt"] == 391.75)
+
+    # Real AMS reports saved by the probe (Oct 16, 2026), one cell per line, with
+    # tables that run across PDF page breaks. Counts and the 500 lb class were
+    # checked by hand against the report.
+    fx = Path(__file__).resolve().parent.parent / "test" / "fixtures" / "cattle-auction"
+    jp, why = parse_report((fx / "ams_1245-real.txt").read_text())
+    ck("real Joplin 1245 parses", jp is not None, why)
+    if jp:
+        n = {k: len(v) for k, v in jp["tables"].items()}
+        ck("real Joplin: 16 steer 1, 7 steer 1-2, 12 heifer 1, 12 heifer 1-2 rows (10 after a page break)",
+           n == {"steers|1": 16, "steers|1-2": 7, "heifers|1": 12, "heifers|1-2": 12}, n)
+        c5 = summarize(jp)["classes"]["steers|1"]["500"]
+        # 118 hd x 5.14 cwt x 413.97 + 43 hd x 5.74 cwt x 415.61 = 353661.90 over 853.34 cwt
+        ck("real Joplin: 500 lb steers 414.44 on 161 head, $2196.66 a head",
+           (c5["cwt"], c5["head"], c5["per_head"], c5["avg_wt"]) == (414.44, 161, 2196.66, 530), c5)
+        ck("real Joplin: the market comment's 317.00/cwt never becomes a row",
+           all(r["price"] != 317.0 for r in jp["tables"]["steers|1"]))
+    tx, why = parse_report((fx / "ams_1955-real.txt").read_text())
+    ck("real Texas 1955: heifer 1-2 table read past a page break with no repeated header",
+       tx is not None and len(tx["tables"].get("heifers|1-2", [])) == 11, why or (tx and len(tx["tables"].get("heifers|1-2", []))))
 
     bad = ROW_FIX.replace("  8    410-445     430    400.00-418.00      409.25",
                           "  8    410-445     430    400.00-418.00      419.25")
