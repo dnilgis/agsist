@@ -47,7 +47,7 @@ const COPY = {
     title: "Soybean EMC chart: equilibrium moisture content, % wet basis",
     howto: "Find the air temperature down the side and the relative humidity across the top. The cell is the moisture soybeans end up at in that air, % wet basis. Each cell gives two published fits, low over high; plan on the high one.",
     eq: "Low: Modified Henderson, ASAE D245 soybean constants, 1-RH = exp(-30.5327e-5&middot;(T+134.136)&middot;M^1.2164). High: Modified Halsey, RH = exp(-exp(2.87-0.0054&middot;T)/M^1.38). T &deg;C, M % dry basis.",
-    note: "Low matches Minnesota Extension (60 F) and NDSU; high matches every cell of the Kentucky and Arkansas soybean tables. At 80 to 90% humidity the two split wide. Bold: within half a point of a 13% target.",
+    note: "Low matches Minnesota Extension (60 F); high matches every cell of the Kentucky and Arkansas soybean tables. NDSU&#x27;s 2011 table runs up to half a point over the high fit at 50 to 60% humidity and at or under the low fit at 80 to 90%. At 80 to 90% humidity the two fits split wide. Bold: within half a point of a 13% target.",
     target: 13,
   },
   wheat: {
