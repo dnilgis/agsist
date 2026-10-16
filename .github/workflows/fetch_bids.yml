@@ -270,6 +270,8 @@ jobs:
           # The withheld-rows report is written by fetch_bids.py inside a try/except,
           # so it can be missing. A missing file must never cost the run its commit.
           [ -f data/bids-withheld.json ] && git add data/bids-withheld.json || true
+          # The homepage counts line (scripts/fetch_bids.py STATS_PATH), same run as bids.json.
+          [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
           # WAVE1-A: the day-change record and the contacts shards.
           [ -d data/bids-prev ] && git add -A data/bids-prev || true
           [ -d data/elevator-contacts ] && git add -A data/elevator-contacts || true

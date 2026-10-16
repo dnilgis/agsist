@@ -1175,10 +1175,17 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     if(st){ cov.innerHTML = k.read.toLocaleString('en-US') + ' of ' + k.elevators.toLocaleString('en-US') + ' elevators read directly \u00b7 ' + st; return; }
     cov.textContent = k.read.toLocaleString('en-US') + ' of ' + k.elevators.toLocaleString('en-US') + ' elevators read directly' + w;
   }).catch(function(){ cov.textContent = 'Elevator network: Not loaded yet'; });
-  fetch('/data/bids.json').then(function(r){
-    if(!r.ok) throw new Error('bids.json ' + r.status);
+  /* 2026-10-16: the counts only (data/bids-stats.json, under 1 KB, written
+     by scripts/fetch_bids.py on the same run as data/bids.json), not the
+     230 KB bids file. The bids file stays the fallback. */
+  function getj(u){ return fetch(u).then(function(r){
+    if(!r.ok) throw new Error(u + ' ' + r.status);
     return r.json();
-  }).then(function(d){
+  }); }
+  getj('/data/bids-stats.json').then(function(d){
+    if(!d || !d.stats || typeof d.stats.total_bids !== 'number') throw new Error('no stats');
+    return d;
+  }).catch(function(){ return getj('/data/bids.json'); }).then(function(d){
     var stats = d && d.stats;
     if(!stats || typeof stats.facilities !== 'number' || typeof stats.total_bids !== 'number' || !d.fetched){
       el.textContent = 'elevator-board stats unavailable this load';

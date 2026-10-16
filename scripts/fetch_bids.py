@@ -75,6 +75,10 @@ def _env_int(name, default):
 
 TOTAL_LOCATIONS = _env_int("BARCHART_TOTAL_LOCATIONS", 200)
 OUTPUT_PATH = "data/bids.json"        # SLIM. Browsers fetch this one.
+# The homepage's "All feeds: N bids from M locations" line needs four numbers
+# and a time, not the 230 KB slim file. Written beside OUTPUT_PATH on the same
+# run, from the same dict, so the two never disagree (bids_stats_doc).
+STATS_PATH = "data/bids-stats.json"
 FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")  # never committed
 DIRECTORY_PATH = "data/elevator-directory.json"  # the Barchart roster: who and where
 
@@ -1879,6 +1883,9 @@ def main():
     os.makedirs(os.path.dirname(OUTPUT_PATH) or ".", exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:
         json.dump(output, f, separators=(",", ":"))
+    with open(STATS_PATH, "w") as f:
+        json.dump(bids_stats_doc(output), f, separators=(",", ":"))
+        f.write("\n")
 
     # PROVE IT, ON THE REAL DATA, EVERY RUN. Not a unit test on a fixture:
     # the actual payload that is about to be committed, checked against the
@@ -1915,6 +1922,15 @@ def location_key(b):
     """One elevator location: facility name, town, state, case and spacing folded."""
     f = lambda v: " ".join(str(v or "").lower().split())
     return (f(b.get("facility")), f(b.get("city")), f(b.get("state")))
+
+
+def bids_stats_doc(output):
+    """data/bids-stats.json: the counts line of data/bids.json and its time,
+    nothing else (the homepage reads this instead of the whole file)."""
+    st = output.get("stats") or {}
+    return {"schema": "agsist-bids-stats/1", "fetched": output.get("fetched"),
+            "note": "Counts from data/bids.json, written by scripts/fetch_bids.py on the same run.",
+            "stats": {k: st.get(k) for k in ("total_bids", "facilities", "locations", "states")}}
 
 
 def selftest():
@@ -2409,6 +2425,11 @@ def selftest():
     ck("a basis that fits the cohort as cents is flagged, and the flag decides nothing",
        _wh[("Soybeans", "ZSX26", 12.85)]["basisAsCentsFits"] is True
        and _wh[("Soybeans", "ZSX26", 12.85)]["cash"] == 12.85)
+    _sd = bids_stats_doc({"fetched": "2026-10-16T23:37:42Z", "stats": {"total_bids": 5, "facilities": 2,
+                          "locations": 3, "states": 1, "by_state": {"IA": 5}}, "bids": [1, 2]})
+    ck("the stats file carries the four counts and the time, no rows",
+       _sd["fetched"] == "2026-10-16T23:37:42Z" and _sd["stats"] == {"total_bids": 5, "facilities": 2,
+       "locations": 3, "states": 1} and "bids" not in _sd)
     ck("the report is the same bytes twice", json.dumps(withheld_report(_b, _det))
        == json.dumps(withheld_report(_b, _det)))
     _cap = globals()["WITHHELD_MAX_GROUPS"]
