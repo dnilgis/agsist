@@ -448,14 +448,43 @@
      the gap, so nobody has to put two boxes together. It is USDA's regional
      series (data/transport/basis.json), for the newest week the table above
      prints, never a week the jump check held back; our number is today's. */
-  function usdaNormal(name,g,c,b){
+  /* 2026-10-16: the normal is USDA's 5-year mean for the week our number is
+     from (data/transport/basis.json norms, written by fetch_transport.py), not
+     for USDA's newest posted week, which runs weeks behind. When the file has
+     no normal for this week the older line below (USDA's week) is kept. */
+  function usdaNormal(name,g,c,b,asof){
     if(!b||!b.series||!c||c.median==null) return '';
     var crop=g==='corn'?'Corn':'Soybeans', s=b.series[crop+'|'+name+'|Elevator Bid'];
     if(!s||s.avg5==null||s.latest==null||!s.date) return '';
     var wk=((b.weeks||{})[crop+'|Elevator Bid']||{}).week;
-    if(wk&&s.date!==wk) return '';
-    var ours=Math.round(c.median*100), norm=Math.round(s.avg5*100), usda=Math.round(s.latest*100);
+    var onTable=!wk||s.date===wk;
+    var ours=Math.round(c.median*100), usda=Math.round(s.latest*100);
     function vs(x,what){ return x===0?'right at '+what:Math.abs(x)+'\u00a2 '+(x<0?'weaker':'stronger')+' than '+what; }
+    /* ISO week of a YYYY-MM-DD calendar day */
+    function isoWk(iso){
+      var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso||'')); if(!m) return '';
+      var t=new Date(Date.UTC(+m[1],+m[2]-1,+m[3])), dn=(t.getUTCDay()+6)%7;
+      t.setUTCDate(t.getUTCDate()-dn+3);
+      var y=t.getUTCFullYear(), f=new Date(Date.UTC(y,0,4));
+      return y+'-W'+(1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7));
+    }
+    /* our snapshot's day on the Central clock */
+    var today='';
+    if(asof){ var d=new Date(asof); if(!isNaN(d)){ try{ var p={}; new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;}); today=p.year+'-'+p.month+'-'+p.day; }catch(e){ today=d.toISOString().slice(0,10); } } }
+    var tw=isoWk(today), cur=null;
+    if(tw){
+      if(isoWk(s.date)===tw) cur=[s.date,s.avg5,s.avg5_n];
+      else (s.norms||[]).forEach(function(r){ if(isoWk(r[0])===tw) cur=r; });
+    }
+    if(cur&&cur[1]!=null){
+      var nw=Math.round(cur[1]*100);
+      return '<span class="bs-norm">USDA normal for '+esc(name)+' for this week of the year: <b>'+AG.px.basis(nw)+'</b> (5-year average'
+        +(cur[2]?', n = '+cur[2]+' yrs':'')+'). Ours today is <b>'+vs(ours-nw,'that')+'</b>.'
+        +(onTable?' USDA\u2019s newest '+esc(name)+' bid, week of '+day(s.date)+', was '+AG.px.basis(usda)+', '
+          +vs(usda-Math.round(s.avg5*100),'its normal for that week')+'.':'')+'</span>';
+    }
+    if(!onTable) return '';
+    var norm=Math.round(s.avg5*100);
     return '<span class="bs-norm">USDA normal for '+esc(name)+', week of '+day(s.date)+': <b>'+AG.px.basis(norm)+'</b> (5-year average'
       +(s.avg5_n?', n = '+s.avg5_n+' yrs':'')+'). Ours today is <b>'+vs(ours-norm,'that')+'</b>. USDA\u2019s own '+esc(name)
       +' bid that week was '+AG.px.basis(usda)+', '+vs(usda-norm,'its normal')+'.</span>';
@@ -465,7 +494,7 @@
     var li=[];
     ['corn','soybeans'].forEach(function(g){ var c=v.crops[g]; if(!c||c.median==null) return;
       li.push('<li><b>'+LAB[g]+'</b> '+money(c.median)+' vs '+esc(c.label)+' <span class="mut">n = '+c.n+' elevator'+(c.n===1?'':'s')
-        +(c.wow!=null?'; '+cents(c.wow)+' in a week ('+c.wow_n+' bids both weeks)':'')+'</span>'+usdaNormal(v.name,g,c,USDA)+'</li>'); });
+        +(c.wow!=null?'; '+cents(c.wow)+' in a week ('+c.wow_n+' bids both weeks)':'')+'</span>'+usdaNormal(v.name,g,c,USDA,doc.generated)+'</li>'); });
     box.innerHTML=li.length
       ? '<ul class="bs-pick-l">'+li.join('')+'</ul><p class="bs-seed">Middle bid of '+esc(v.name)+' elevators in the AGSIST network, snapshot of '+day(doc.generated)+'. <a href="'+esc(v.path)+'">'+esc(v.name)+' bids and basis by elevator &rarr;</a></p>'
       : '<p class="bs-seed">Too few '+esc(v.name)+' elevators on one futures month for a middle number today. <a href="'+esc(v.path)+'">Every '+esc(v.name)+' elevator we read &rarr;</a></p>';

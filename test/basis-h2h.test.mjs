@@ -109,3 +109,31 @@ test("map projection: lower 48 only, Iowa east of Nebraska, every state drawn", 
   assert.ok(at("IA").cx > at("NE").cx && at("MN").cy < at("IA").cy);
   assert.ok(m.h > 400 && m.h < 700, "aspect of the lower 48: " + m.h);
 });
+
+// 2026-10-16 audit: on Oct 16 the line compared today's number with USDA's
+// normal for the week of Sep 25. With the per-week normals fetch_transport.py
+// now writes, it uses the normal for the week our snapshot is from.
+test("today's number is held to USDA's normal for THIS week, not USDA's newest week", () => {
+  const c = ctx();
+  const b = JSON.parse(JSON.stringify(BASIS));
+  b.series["Corn|Iowa|Elevator Bid"].norms = [["2026-10-02", -0.31, 5], ["2026-10-09", -0.33, 5],
+    ["2026-10-16", -0.352, 5], ["2026-10-23", -0.38, 4]];
+  // Oct 16, 10 am Central = ISO 2026-W42 -> the Oct 16 normal, -35c. Ours -40c: 5c weaker.
+  const t = c.usdaNormal("Iowa", "corn", { median: -0.40 }, b, "2026-10-16T15:00:00Z");
+  assert.match(t, /USDA normal for Iowa for this week of the year: <b>−35¢<\/b> \(5-year average, n = 5 yrs\)/);
+  assert.match(t, /Ours today is <b>5¢ weaker than that<\/b>/);
+  assert.match(t, /USDA’s newest Iowa bid, week of Sep 25, 2026, was −43¢, 12¢ weaker than its normal for that week/);
+  assert.doesNotMatch(t, /normal for Iowa, week of Sep 25/, "not the Sep 25 normal");
+  // Sunday 10 pm Central (Monday 03:00 UTC) is still week 42; Monday 1 am Central is week 43.
+  assert.match(c.usdaNormal("Iowa", "corn", { median: -0.40 }, b, "2026-10-19T03:00:00Z"), /<b>−35¢<\/b>/);
+  const t43 = c.usdaNormal("Iowa", "corn", { median: -0.40 }, b, "2026-10-19T06:00:00Z");
+  assert.match(t43, /<b>−38¢<\/b> \(5-year average, n = 4 yrs\)\. Ours today is <b>2¢ weaker than that<\/b>/);
+  // a week the file has no normal for falls back to the dated USDA-week line
+  assert.match(c.usdaNormal("Iowa", "corn", { median: -0.40 }, b, "2026-12-01T15:00:00Z"), /USDA normal for Iowa, week of Sep 25, 2026/);
+  // a held series still gets this week's normal, without the held bid
+  b.series["Corn|Kansas|Elevator Bid"].norms = [["2026-10-16", 0.05, 5]];
+  const k = c.usdaNormal("Kansas", "corn", { median: -0.40 }, b, "2026-10-16T15:00:00Z");
+  assert.match(k, /<b>\+5¢<\/b>.*45¢ weaker than that/);
+  assert.doesNotMatch(k, /newest Kansas bid/);
+  assert.match(HTML, /usdaNormal\(v\.name,g,c,USDA,doc\.generated\)/, "the page passes our snapshot time");
+});

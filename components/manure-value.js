@@ -250,6 +250,19 @@
   }
   var NQ = 'no price';
 
+  /* 2026-10-16 audit: N here is priced at urea. One line says what it is at
+     anhydrous, from the same shared price file (no typed price). Empty when
+     either price is missing. */
+  function nh3Note(data, pr) {
+    var a = byKey(data, 'anhydrous');
+    if (!ok(a) || pr.n == null || !pr.src.n) return '';
+    var g = grade(a.symbol) || { N: 82 };
+    var nh3 = a.price / (2000 * g.N / 100), pct = Math.round((1 - nh3 / pr.n) * 100);
+    return 'N is priced at urea, ' + money(pr.n) + ' a lb. At anhydrous ammonia, ' + money(a.price, 0) + ' a ton' +
+      (a.src_label ? ' (' + a.src_label + ')' : '') + ', N is ' + money(nh3) + ' a lb' +
+      (pct > 0 ? ', ' + pct + '% less' : pct < 0 ? ', ' + (-pct) + '% more' : ', the same') + '.';
+  }
+
   function bakeValues(data) {
     var pr = nutrientPrices(data), v = {};
     v['price-n'] = pr.n != null ? money(pr.n) : NQ;
@@ -261,6 +274,7 @@
     v['p-prod'] = pr.src.p ? pr.src.p.name + ' ' + pr.src.p.symbol : NQ;
     v['p-name'] = pr.src.p ? pr.src.p.name : 'MAP or DAP';
     v['region-co-op'] = pr.src.n && pr.src.n.region ? pr.src.n.region + ' co-op' : 'co-op';
+    v['nh3-note'] = nh3Note(data, pr);
     var dv = derivation(pr);
     ['n', 'p', 'k'].forEach(function (x) {
       var s = pr.src[x];

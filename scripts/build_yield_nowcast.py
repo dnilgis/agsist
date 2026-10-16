@@ -338,6 +338,19 @@ def main(force_stale=False):
         print(f"ratings week_ending {we} is {age} days old — off-season, keeping last nowcast. exit 0")
         return
 
+    # pairs.json (fetched in this job) and conditions.json (conditions.yml)
+    # must be on the same week; 2026-10-15 a manual run raced conditions.yml,
+    # read last week's ratings beside this week's pairs and died in the
+    # fallback backtest. cond-yield.yml now runs after conditions.yml.
+    try:
+        pw = json.load(open("data/cond-yield/pairs.json"))["crops"]["corn"].get("week")
+    except (FileNotFoundError, KeyError, ValueError):
+        pw = None
+    cw = date.fromisoformat(we).isocalendar()[1]
+    if pw is not None and pw != cw:
+        print(f"::warning::pairs.json is on ISO week {pw}, ratings on week {cw} ({we}); "
+              f"falling back to the local panel")
+
     try:
         prev = json.load(open(OUT))
     except FileNotFoundError:

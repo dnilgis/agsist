@@ -77,6 +77,8 @@ jobs:
             git reset --hard "origin/$BR"
             cp /tmp/state-stats.json "$FILE"
             git add "$FILE"
+            # title, snippet, state line and JSON-LD dateModified from this file
+            if python scripts/bake_seo.py --page usda-quick-stats.html; then git add usda-quick-stats.html; fi
             # the yield-by-state share image reads this file (best effort)
             if python scripts/build_share_images.py --only usda-quick-stats; then git add usda-quick-stats.html img/og/usda-quick-stats.jpg; fi
             if git diff --staged --quiet; then echo "No change."; exit 0; fi

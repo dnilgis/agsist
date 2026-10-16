@@ -974,6 +974,31 @@ BODY = {
 }
 
 
+# JSON-LD dateModified, stamped from the data file's own date in the same run
+# (2026-10-16 audit: /usda-quick-stats said June 16 in its structured data
+# while the body carried the October forecast). Only ever moves forward.
+def dm_quick_stats(c):
+    u = str(((c["state_stats"] or {}).get("updated") or ""))[:10]
+    return u if re.fullmatch(r"\d{4}-\d{2}-\d{2}", u) else None
+
+
+DATE_MODIFIED = {"usda-quick-stats.html": dm_quick_stats}
+_DM = re.compile(r'("dateModified"\s*:\s*")(\d{4}-\d{2}-\d{2})([^"]*")')
+
+
+def stamp_date_modified(text, iso):
+    """(text, n): every JSON-LD dateModified older than iso set to iso."""
+    n = 0
+
+    def sub(m):
+        nonlocal n
+        if m.group(2) >= iso:
+            return m.group(0)
+        n += 1
+        return m.group(1) + iso + '"'
+    return _DM.sub(sub, text), n
+
+
 # ---------------------------------------------------------------- stamping
 
 _ENT = {"&": "&amp;", "<": "&lt;", ">": "&gt;"}
@@ -1094,6 +1119,12 @@ def run(today, dry=False, only=None):
                 print(f"  body  {re.sub(r'<[^>]+>', '', inner)}")
             if bad:
                 skipped.append((page, bad)); continue
+        if page in DATE_MODIFIED:
+            iso = DATE_MODIFIED[page](ctx)
+            if iso:
+                out, k = stamp_date_modified(out, iso)
+                if k:
+                    print(f"  dateModified -> {iso}")
         print(f"\n{page}  ({n} tags, owns {'+'.join(sorted(owns))})")
         if title:
             print(f"  title [{len(title):>3}] {title}")
@@ -1306,7 +1337,15 @@ def selftest():
         "name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613,
         "year": 2026, "forecast": True, "forecast_month": "October"}}}))
     ck("the visible state line names its vintage", "USDA October 2026 forecast" in _b, _b)
+    _j = '{"@type":"WebPage","dateModified":"2026-06-16","x":1}'
+    ck("dateModified moves to the data date",
+       stamp_date_modified(_j, "2026-10-15") == ('{"@type":"WebPage","dateModified":"2026-10-15","x":1}', 1))
+    ck("dateModified never moves back", stamp_date_modified(_j, "2026-01-02") == (_j, 0))
+    ck("dateModified date comes from state-stats updated",
+       dm_quick_stats({"state_stats": {"updated": "2026-10-15T17:19:12Z"}}) == "2026-10-15"
+       and dm_quick_stats({"state_stats": {}}) is None)
     _qp = (REPO / "usda-quick-stats.html").read_text(encoding="utf-8")
+    ck("usda-quick-stats.html JSON-LD has a dateModified to stamp", _DM.search(_qp) is not None)
     ck("usda-quick-stats.html carries the state-yields markers",
        bake_body(_qp, "state-yields", "x")[1])
 

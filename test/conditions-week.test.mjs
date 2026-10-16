@@ -125,3 +125,49 @@ test("both data workflows re-bake the page right after their fetch and commit it
   }
   assert.ok(read("scripts/seed_static.py").includes('sys.argv[1:] == ["--only", "conditions"]'), "seed_static has --only conditions");
 });
+
+// 2026-10-16 audit: in October the page opened "Every drought summer..." and
+// buried harvest pace. Oct-Nov lead with harvest pace by state vs average.
+test("builder: Oct-Nov lead with harvest pace by state; summer lede only Jun-Sep", () => {
+  const dir = mkdtempSync(join(tmpdir(), "cond-season-"));
+  mkdirSync(join(dir, "data/conditions"), { recursive: true });
+  copyFileSync(ROOT + "conditions.html", join(dir, "conditions.html"));
+  const mk = (rd) => ({
+    report_date: rd, in_season: true,
+    corn: { good_excellent: 61, report_date: rd },
+    soybeans: { good_excellent: 58, report_date: rd },
+    progress: { corn_harvested: { date: rd, pct: 45, avg5: 50 }, soybeans_harvested: { date: rd, pct: 60, avg5: 64 } },
+    states: {
+      IA: { corn_harvested: { date: rd, pct: 30, avg5: 48 }, soybeans_harvested: { date: rd, pct: 70, avg5: 66 } },
+      IL: { corn_harvested: { date: rd, pct: 55, avg5: 52 } },
+      TX: { corn_harvested: { date: rd, pct: 90, avg5: 88 } },
+    },
+  });
+  const run = (rd, today) => {
+    writeFileSync(join(dir, "data/crop-progress.json"), JSON.stringify(mk(rd)));
+    writeFileSync(join(dir, "data/conditions/conditions.json"), JSON.stringify({ crops: {} }));
+    execFileSync("python3", ["-c",
+      "import os,sys; sys.path.insert(0, sys.argv[1]); os.chdir(sys.argv[2]); import seed_static; seed_static.seed_conditions(sys.argv[3])",
+      ROOT + "scripts", dir, today], { stdio: "pipe" });
+    return readFileSync(join(dir, "conditions.html"), "utf8");
+  };
+  let html = run("2026-10-18", "2026-10-20");
+  let lede = seed(html, "condlede"), lead = seed(html, "condharvlead");
+  assert.match(lede, /^Harvest pace first/, "October lede leads with harvest");
+  assert.ok(!/drought summer/i.test(lede), "no summer lede in October");
+  assert.ok(lead.includes("Harvest pace by state vs average") && lead.includes("week ending Oct 18, 2026"), "harvest block on this week");
+  // hand-worked: IA corn 30 vs 48 = -18, beans 70 vs 66 = +4; IL corn 55 vs 52 = +3, no beans row
+  assert.ok(/Iowa<\/td><td class="num">30% <span class="cd-hl-gap lo">&minus;18<\/span><\/td><td class="num">70% <span class="cd-hl-gap">\+4<\/span>/.test(lead), "Iowa corn -18, beans +4");
+  assert.ok(/Illinois<\/td><td class="num">55% <span class="cd-hl-gap">\+3<\/span><\/td><td class="num" style="color:#8a948f">&ndash;<\/td>/.test(lead), "Illinois beans not reported shows a dash");
+  assert.ok(!lead.includes("Texas"), "only the big corn and soybean states up top");
+  assert.ok(html.indexOf("SEED:condharvlead") < html.indexOf('id="cd-grid"'), "harvest block sits above the state map");
+  assert.ok(!html.includes("—"), "no em dashes");
+
+  html = run("2026-07-12", "2026-07-14");
+  assert.match(seed(html, "condlede"), /drought summer/, "summer lede in July");
+  assert.equal(seed(html, "condharvlead"), "", "no harvest block in July");
+
+  html = run("2026-11-29", "2026-12-01");
+  assert.ok(!/drought summer/i.test(seed(html, "condlede")), "no summer lede in December");
+  assert.equal(seed(html, "condharvlead"), "", "no harvest block in December");
+});
