@@ -76,7 +76,14 @@ test("The Read: corn, then soybeans, then the week's newsworthy market", () => {
     "corn and soybeans must lead The Read, every week");
   assert.match(h, /Also this week/);
   // Oct 6 2026 report, checked by hand: 393,249 - 63,410 = 329,839; 381,220 - 329,839 = 51,381.
-  assert.match(h, /funds are net long 329,839 contracts, 51,381 fewer than last week/);
+  // The data file moves every Friday, so the same arithmetic is checked on whatever week is on file:
+  // net = long - short, and the change is this week's net against last week's.
+  const c = JSON.parse(read("data/cot.json")).corn;
+  assert.equal(c.long - c.short, c.net, "corn net is long minus short");
+  const f = (n) => n.toLocaleString("en-US"), d = c.net - c.prev;
+  const side = c.net >= 0 ? "long" : "short";
+  if (d !== 0) assert.ok(h.includes(`funds are net ${side} ${f(Math.abs(c.net))} contracts, ${f(Math.abs(d))} ${d < 0 ? "fewer" : "more"} than last week`),
+    `corn line: net ${c.net}, prev ${c.prev}`);
 });
 
 test("The Read still works on an analysis file written before grain_lines", () => {
