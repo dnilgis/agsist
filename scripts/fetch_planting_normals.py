@@ -92,10 +92,19 @@ SEASON = {"spring": (doy(3, 1), doy(7, 15)), "fall": (doy(8, 1), doy(11, 30))}
 
 
 def parse_date_cell(v, season):
-    """A freeze-date cell as day of year, or None. NCEI has written these as
-    MMDD numbers; a day-of-year reading is also tried. Only a reading that
+    """A freeze-date cell as day of year, or None. The 1991-2020 CSVs write
+    "MM/DD" (seen in the 2026-10-16 probe); bare MMDD numbers and day of year
+    are also tried. Only a reading that
     lands inside the season counts, and if both do, the cell is refused."""
     s = str(v or "").strip()
+    m = re.fullmatch(r"(\d{1,2})/(\d{1,2})", s)      # the 2026-10-16 probe: "   05/16"
+    if m:
+        mo, d = int(m.group(1)), int(m.group(2))
+        if not (1 <= mo <= 12 and 1 <= d <= MDAYS[mo - 1]):
+            return None
+        x = doy(mo, d)
+        lo, hi = SEASON[season]
+        return x if lo <= x <= hi else None
     if not re.fullmatch(r"-?\d+(\.0+)?", s):
         return None
     n = int(float(s))
@@ -115,7 +124,9 @@ def parse_date_cell(v, season):
 
 def find_col(header, pattern):
     rx = re.compile(pattern, re.I)
-    hits = [h for h in header if h and "flag" not in h.lower() and rx.search(h.strip())]
+    # NCEI puts meas_flag_<col>, comp_flag_<col> and years_<col> beside every value column,
+    # all ending in the same name: only a header with no underscore is a value column.
+    hits = [h for h in header if h and "_" not in h and rx.search(h.strip())]
     return hits[0] if len(hits) == 1 else None
 
 
@@ -222,7 +233,9 @@ def station_record(sid, ann_text, dly_text):
         return None, probs + ["no coordinates"]
     if not (24 < lat < 50 and -125 < lon < -66):
         return None, probs + ["coordinates outside the lower 48"]
-    rec = {"id": sid, "n": re.sub(r",\s*[A-Z]{2}\s+US$", "", str(meta.get("NAME") or sid)).strip().title(),
+    name = re.sub(r",\s*[A-Z]{2}\s+US$", "", str(meta.get("NAME") or sid)).strip()
+    name = re.sub(r"\bAP\b", "AIRPORT", re.sub(r"\bRGNL\b", "REGIONAL", name))
+    rec = {"id": sid, "n": name.title(),
            "lat": round(lat, 4), "lon": round(lon, 4)}
     el = num(meta.get("ELEVATION"))
     if el is not None:
@@ -460,6 +473,23 @@ def selftest():
     d = {"schema": SCHEMA, "stations": sts}
     ok(validate_file(d) == [], "fake state file validates")
     ok(validate_file({"schema": SCHEMA, "stations": sts[:5]}) != [], "5 stations is too thin to write")
+    # Real NCEI files from the 2026-10-16 probe (trimmed to the columns read, values untouched):
+    # dates are "   MM/DD", every value column has meas_flag_, comp_flag_ and years_ twins.
+    RD = FIX_DIR / "real"
+    rm, pm = station_record("USW00014837", (RD / "USW00014837-annual.csv").read_text(), (RD / "USW00014837-daily.csv").read_text())
+    ok(rm is not None, "real Madison parses: %s" % pm)
+    if rm:
+        ok(rm["n"] == "Madison Dane Regional Airport", "real name: %s" % rm["n"])
+        ok(rm["s32"] == ["04-16", "05-01", "05-16"], "Madison last spring 32 F: FP90 04/16, FP50 05/01, FP10 05/16 -> %s" % rm["s32"])
+        ok(rm["f32"] == ["09-26", "10-10", "10-24"], "Madison first fall 32 F: 09/26, 10/10, 10/24 -> %s" % rm["f32"])
+        ok(rm["s28"] == ["04-05", "04-20", "05-05"] and rm["f28"] == ["10-06", "10-22", "11-04"], "Madison 28 F dates")
+        ok(rm["el"] == 866, "264.0 m = 866 ft (%s)" % rm.get("el"))
+        # Apr 1-30 DLY-GRDD-TB5086 in the file adds to 137.5.
+        ok(abs(rm["g"][6] - 137.5) <= 0.5, "Madison Apr GDD 137.5 -> g[6] = %s" % rm["g"][6])
+        ok(not pm, "no problems on a real station: %s" % pm)
+    rp, pp = station_record("USW00014922", (RD / "USW00014922-annual.csv").read_text(), (RD / "USW00014922-daily.csv").read_text())
+    ok(rp is not None and rp["s32"] == ["04-08", "04-23", "05-07"] and rp["f32"] == ["10-01", "10-18", "10-31"], "real Minneapolis 32 F dates: %s" % ((rp and [rp["s32"], rp["f32"]]),))
+    ok(rp is not None and abs(rp["g"][6] - 138.5) <= 0.5, "Minneapolis Apr GDD 138.5")
     print("selftest: %d failure(s)" % fails)
     return 1 if fails else 0
 

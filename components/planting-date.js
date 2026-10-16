@@ -80,35 +80,33 @@ var CORN_PENALTY = [
   {label:'Jun 9',  lo:69, hi:79, note:'Roughly 1 to 1.4 points a day in early June'}
 ].map(function(r){ if(r.pct==null) r.pct = Math.round((r.lo+r.hi)/2); return r; });
 
-// Soybean planting date yield response. APPROXIMATION, computed, not a trial table:
-// a 55 bu/a base minus 0.2-0.5 bu/a per day of planting delay past May 1, straight line, no loss
-// counted before May 1. What the UW source actually says (Conley, Badger Crop Connect, May 2026,
-// saved on the references branch as uw-soy-pivot-mid-may): in southern Wisconsin, "past roughly
-// April 10th, we're losing 2.1 bushels per acre per week" (0.3 bu/a a day), and no penalty to
-// speak of for an Apr 20 planting. 0.3 sits inside the 0.2-0.5 band this table prints; the band
-// itself and the May 1 start are this page's, not UW's, and the page says so. 0.4 is only the
-// band's middle, used for row colour.
+// Soybean planting date yield response: UW-Madison's southern Wisconsin figure, as said in the
+// saved source (Conley, Badger Crop Connect, May 2026; references branch uw-soy-pivot-mid-may):
+// "Past roughly April 10th, we're losing 2.1 bushels per acre per week" = 0.3 bu/a a day.
+// Rows are that straight line from Apr 10. UW gave it for spring planting into mid-May; the June
+// rows extend the same line and say so. % of max and est. yield use a 55 bu/a example maximum;
+// the bushel loss is the sourced number. A southern Wisconsin figure, not a rule for every field.
 // https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/
-var BEAN_BASE = 55, BEAN_LOSS_PER_DAY = 0.4, BEAN_LOSS_LO = 0.2, BEAN_LOSS_HI = 0.5;
+var BEAN_BASE = 55, BEAN_LOSS_PER_DAY = 0.3; // 2.1 bu/a a week / 7
 var BEAN_PENALTY = [
-  {label:'Apr 25', days:0},
-  {label:'May 1',  days:0},
-  {label:'May 5',  days:4},
-  {label:'May 10', days:9},
-  {label:'May 15', days:14},
-  {label:'May 20', days:19},
-  {label:'May 25', days:24},
-  {label:'Jun 1',  days:31},
-  {label:'Jun 10', days:40},
-  {label:'Jun 15', days:45},
-  {label:'Jun 20', days:50, extra:'past the final planting date in every WI and MN county (RMA)'}
+  {label:'Apr 10', days:0},
+  {label:'Apr 20', days:10},
+  {label:'Apr 25', days:15},
+  {label:'May 1',  days:21},
+  {label:'May 5',  days:25},
+  {label:'May 10', days:30},
+  {label:'May 15', days:35},
+  {label:'May 20', days:40},
+  {label:'May 25', days:45},
+  {label:'Jun 1',  days:52, extra:'June rows extend UW\u2019s line'},
+  {label:'Jun 10', days:61, extra:'June rows extend UW\u2019s line'},
+  {label:'Jun 15', days:66, extra:'June rows extend UW\u2019s line'},
+  {label:'Jun 20', days:71, extra:'past the final planting date in every WI and MN county (RMA)'}
 ].map(function(r){
-  var loss = BEAN_LOSS_PER_DAY * r.days, bu = BEAN_BASE - loss;
+  var loss = Math.round(BEAN_LOSS_PER_DAY * r.days * 10) / 10, bu = BEAN_BASE - loss;
   r.bu = bu; r.lossBu = loss; r.pct = Math.round(bu / BEAN_BASE * 100);
-  r.lossLo = BEAN_LOSS_LO * r.days; r.lossHi = BEAN_LOSS_HI * r.days;
-  r.note = r.days===0
-    ? (r.label==='Apr 25' ? 'No loss counted before May 1 here (UW-Madison sees 0.2–0.5 bu/a/day after Apr 25)' : 'Base: no delay past May 1')
-    : r.days+' days × 0.2–0.5 bu/a/day (middle '+loss.toFixed(1)+')'+(r.extra?', '+r.extra:'');
+  r.note = r.days===0 ? 'UW\u2019s start: losses add up past roughly Apr 10'
+    : r.days+' days past Apr 10 \u00d7 0.3 bu/a a day'+(r.extra?'; '+r.extra:'');
   return r;
 });
 
@@ -199,9 +197,9 @@ function renderWindowBars(){
     {label:'Very late',  dates:'After Jun 1',      pct:25,  cls:'red',   tip:'Jun 9 is 69 to 79% (UMN). Final planting dates are May 25 or 31.'}
   ] : [
     {label:'Best',       dates:'Apr 25 to May 1',  pct:100, cls:'green', tip:'Plant when the field is fit and soil is 50°F.'},
-    {label:'Good',       dates:'May 1 to May 15',  pct:70,  cls:'gold',  tip:'About 3 to 7 bu/a below May 1 by May 15 at 0.2 to 0.5 bu/a a day; UW counts about 0.3 a day.'},
-    {label:'Late',       dates:'May 15 to Jun 1',  pct:45,  cls:'gold',  tip:'About 3 to 16 bu/a below May 1 on a 55 bu base.'},
-    {label:'Very late',  dates:'After Jun 1',      pct:20,  cls:'red',   tip:'More than 6 to 16 bu/a down. Final planting dates are Jun 10 or 15.'}
+    {label:'Good',       dates:'May 1 to May 15',  pct:70,  cls:'gold',  tip:'About 2.1 bu/a a week (UW, southern WI): May 15 is about 4 bu/a below May 1.'},
+    {label:'Late',       dates:'May 15 to Jun 1',  pct:45,  cls:'gold',  tip:'Jun 1 is about 9 bu/a below May 1 on the same line.'},
+    {label:'Very late',  dates:'After Jun 1',      pct:20,  cls:'red',   tip:'Still about 2 bu/a a week if the line holds. Final planting dates are Jun 10 or 15.'}
   ];
   $('win-bars').innerHTML = windows.map(function(w){
     return '<div class="window-bar-wrap">'
@@ -221,9 +219,9 @@ function renderPenaltyTable(){
     var pctStr, lossStr, estYield;
     if(d.bu!=null){ // soybean: computed from bu/a, approximation
       if(d.days>0){
-        pctStr = Math.round((maxYield-d.lossHi)/maxYield*100)+'–'+Math.round((maxYield-d.lossLo)/maxYield*100)+'%';
-        lossStr = '-'+d.lossLo.toFixed(1)+' to -'+d.lossHi.toFixed(1)+' bu/a';
-        estYield = (maxYield-d.lossHi).toFixed(0)+'–'+(maxYield-d.lossLo).toFixed(0);
+        pctStr = d.pct+'%';
+        lossStr = '-'+d.lossBu.toFixed(1)+' bu/a';
+        estYield = Math.round(d.bu).toString();
       } else { pctStr = '100%'; lossStr = '-'; estYield = maxYield.toFixed(0); }
     } else if(d.lo!=null){ // a published range, printed as a range
       pctStr = '~'+d.lo+'–'+d.hi+'%';
@@ -240,7 +238,7 @@ function renderPenaltyTable(){
   }).join('');
   var foot = isCorn
     ? 'Each range is the two <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn" target="_blank" rel="noopener">UMN Extension</a> planting date studies, % of maximum yield: Lamberton 1988&ndash;2003 and Lamberton, Morris and Waseca 2009&ndash;11. UMN: Apr 21 to May 6 was within 1% of the maximum in the first, Apr 25 to May 10 best on average in the second. Est. yield on a 200 bu/ac base; your field, hybrid and year will differ.'
-    : 'Approximation, not a trial table: a 55 bu/ac base minus 0.2 to 0.5 bu/a per day past May 1, a straight line; the row colour uses the 0.4 middle. The band is this page&rsquo;s. <a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison (Conley, 2026)</a> puts southern Wisconsin at about 2.1 bu/a a week (0.3 a day) past roughly Apr 10, so losses before May 1 are left out here. Actual loss varies by year, variety and field.';
+    : 'UW-Madison&rsquo;s southern Wisconsin figure: about 2.1 bu/a lost per week of delay past roughly Apr 10 (<a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">Conley, 2026</a>), 0.3 a day, drawn as a straight line. UW gave it for spring planting into mid-May; the June rows extend the same line. % of max and est. yield use a 55 bu/ac example; the bushel loss is the sourced number. Farther north the losses start later, and any year or field can differ.';
   $('penalty-section').innerHTML = '<div class="pd-card"><h2 class="pd-card-title">'+(isCorn?'Corn':'Soybean')+' Yield Penalty by Planting Date</h2>'
     +'<div class="pen-wrap"><table class="pen-table">'
     +'<thead><tr><th>Planted</th><th>% max</th><th>Loss</th><th>Est. yield</th><th class="pen-note">Notes</th></tr></thead>'
