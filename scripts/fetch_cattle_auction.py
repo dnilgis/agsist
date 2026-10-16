@@ -343,17 +343,17 @@ def run(root, got=None, now=None):
     return doc
 
 
-LINK_RE = re.compile(r"""<a\b[^>]*href=["'][^"']*?ams_(\d{3,5})\.(?:pdf|txt)["'][^>]*>(.*?)</a>""", re.I | re.S)
+LINK_RE = re.compile(r"""<a\b[^>]*href=["'][^"']*?(?:ams_(\d{3,5})\.(?:pdf|txt)|viewReport/(\d{3,5}))/?["'][^>]*>(.*?)</a>""", re.I | re.S)
 
 
 def parse_listing(html_text):
     """{link text: slug} from the AMS auction listing page."""
     out = {}
     for m in LINK_RE.finditer(html_text or ""):
-        t = re.sub(r"<[^>]+>", " ", m.group(2))
+        t = re.sub(r"<[^>]+>", " ", m.group(3))
         t = re.sub(r"\s+", " ", t).strip()
         if t:
-            out[t] = m.group(1)
+            out[t] = m.group(1) or m.group(2)
     return out
 
 
@@ -523,9 +523,11 @@ def selftest():
     ck("at most %d sales kept" % KEEP_SALES, len(b5["sales"]) == KEEP_SALES)
 
     lst = parse_listing('<li><a href="/mnreports/ams_1245.pdf">Joplin Regional Stockyards - Carthage, MO (Mon)</a></li>'
-                        '<li><a href="https://www.ams.usda.gov/mnreports/ams_1889.pdf">Winter Livestock - Dodge City, KS</a></li>')
-    ck("listing links read", lst == {"Joplin Regional Stockyards - Carthage, MO (Mon)": "1245",
-                                     "Winter Livestock - Dodge City, KS": "1889"}, lst)
+                        '<li><a href="https://www.ams.usda.gov/mnreports/ams_1889.pdf">Winter Livestock - Dodge City, KS</a></li>'
+                        '<li><a href="https://mymarketnews.ams.usda.gov/viewReport/1856">Valentine Livestock Auction - Valentine, NE</a></li>')
+    ck("listing links read (mnreports PDFs and My Market News pages)", lst == {
+        "Joplin Regional Stockyards - Carthage, MO (Mon)": "1245", "Winter Livestock - Dodge City, KS": "1889",
+        "Valentine Livestock Auction - Valentine, NE": "1856"}, lst)
     ck("listing fills a missing slug by title", pick_slug(dict(other, slug=None), lst) == "1889")
 
     cfg = json.loads((ROOT / SOURCES).read_text())
