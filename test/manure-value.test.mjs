@@ -390,6 +390,6 @@ test("anhydrous note: N at anhydrous, by hand, from the shared file only", () =>
   assert.equal(v["nh3-note"], "N is priced at urea, $0.64 a lb. At anhydrous ammonia, $820 a ton (Kansas co-ops, middle of 4, posted Sep 1, 2026), N is $0.50 a lb, 22% less.");
   assert.equal(M.bakeValues(SEP1)["nh3-note"], "", "no anhydrous price, no line");
   const html = read("manure-value.html");
-  assert.match(html, /<p class="fine" data-mv="nh3-note">N is priced at urea, \$[\d.]+ a lb\. At anhydrous ammonia, \$[\d,]+ a ton/, "baked on the page");
+  assert.match(html, /<p class="mv-nh3" data-mv="nh3-note">N is priced at urea, \$[\d.]+ a lb\. At anhydrous ammonia, \$[\d,]+ a ton/, "baked on the page");
   assert.ok(!/—/.test(v["nh3-note"]), "no em dash");
 });
