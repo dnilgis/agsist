@@ -25,3 +25,8 @@ across 2,800 counties is 280 MB.
 budgets, and a 150 KB cap on any page in a generated set). Run it before shipping
 any generated page set; the site-budget workflow runs it on every push. Raising a budget is a decision: change the number in that file in the
 same commit and say why.
+
+## New session? Start here
+
+Read `.claude/notes/HANDOFF.md` (how we ship, where things live, what is open) and
+`.claude/notes/STANDING-DECISIONS.md` (Sig's rules) before doing anything. Ship checks: `scripts/dev/checks.sh`.
