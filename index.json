@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:54:23Z",
+ "run_utc": "2026-10-16T15:55:04Z",
  "sources": [
   {
    "bytes": null,
@@ -2216,6 +2216,31 @@
    ],
    "status": "new",
    "text_chars": 502
+  },
+  {
+   "bytes": 692704,
+   "sha256": "dcde670085293f28612503e026282e0fa1f73be5a06547fd56784f4bdf1c991c",
+   "fetched_utc": "2026-10-16T15:55:04Z",
+   "pages": null,
+   "etag": "W/\"a91e0-9Km/v1nYkc6WJgT6kOteqXiv1Wk\"",
+   "last_modified": null,
+   "saved_as": "refs/bench-planting-date-3.html",
+   "final_url": "https://www.fbn.com/community/blog",
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-planting-date-3",
+   "url": "https://www.fbn.com/community/blog/how-soil-temperature-can-help-you-determine-if-its-planting-time",
+   "title": "Benchmark planting-date: FBN soil temperature blog",
+   "why": "/planting-date competitor benchmark Oct 16, 2026 (startup)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:55:04Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 2373
   },
   {
    "bytes": null,
