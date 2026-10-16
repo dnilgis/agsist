@@ -1155,6 +1155,15 @@ function _num(el,dflt){var v=parseFloat(el&&el.value);return isFinite(v)&&v>=0?v
    compared the line says the closest one is as good, within EARN_MIN; with
    nothing compared there is no line (''). */
 var EARN_MIN=50;
+/* ROAD MILES, NOT CROW MILES. Every distance on this page is straight line
+   from the ZIP to the elevator's pin. Roads run about a quarter farther, so
+   fuel charged on straight-line miles flattered the far elevator: 30 extra
+   straight miles for 11c more on 1,000 bu showed +$5, and at road distance it
+   is -$21. Fuel is charged on straight line x ROAD_FACTOR and labeled
+   "estimated road miles". */
+var ROAD_FACTOR=1.25;
+function roadMi(d){return d*ROAD_FACTOR;}
+var ROAD_NOTE='estimated road miles (straight line x 1.25)';
 var EARN_CROP={corn:'corn',soybeans:'soybeans',wheat:'wheat'};
 function earningsLine(win,compared,bu,money){
   var load=Number(bu).toLocaleString('en-US')+' bu';
@@ -1199,7 +1208,7 @@ function renderEarnings(){
          two ways in one scroll is worse than a page that does not ask it.
          On an equal net the fresher board wins, then the nearer. */
       var scored=elevRows.map(function(r){
-        var extra=r.elev.distance-closest.elev.distance;
+        var extra=roadMi(r.elev.distance-closest.elev.distance);
         return{r:r,extraMi:extra,net:((r.p-closest.p)*bu)-(2*extra*fpm)};
       }).sort(function(a,b){
         var d=Math.round(b.net)-Math.round(a.net);if(d)return d;
@@ -1226,7 +1235,7 @@ function renderEarnings(){
     var n=window.cbRank?cbRank.note(r.rk,fmtPx):'';
     return s+(n?' ('+escH(n)+')':'');
   }
-  earningsDetail.innerHTML='<strong>'+escH(bannerName(best.top.elev))+'</strong> pays '+priceHtml(best.top)+' vs <strong>'+escH(bannerName(best.close.elev))+'</strong> at '+priceHtml(best.close)+'. On '+bu.toLocaleString()+' bu: '+fmtMoney(best.gross)+' gross'+(best.extraMi>0?', minus '+fmtMoney(2*best.extraMi*fpm)+' round-trip fuel':best.extraMi<0?', plus '+fmtMoney(-2*best.extraMi*fpm)+' round-trip fuel saved':'')+' = <strong>'+fmtMoney(best.net)+' net gain</strong>.';
+  earningsDetail.innerHTML='<strong>'+escH(bannerName(best.top.elev))+'</strong> pays '+priceHtml(best.top)+' vs <strong>'+escH(bannerName(best.close.elev))+'</strong> at '+priceHtml(best.close)+'. On '+bu.toLocaleString()+' bu: '+fmtMoney(best.gross)+' gross'+(best.extraMi>0?', minus '+fmtMoney(2*best.extraMi*fpm)+' round-trip fuel':best.extraMi<0?', plus '+fmtMoney(-2*best.extraMi*fpm)+' round-trip fuel saved':'')+' = <strong>'+fmtMoney(best.net)+' net gain</strong>. Fuel on '+ROAD_NOTE+'.';
   gaEvent('earnings_shown',{commodity:best.cat,net_gain:Math.round(best.net)});
 }
 
@@ -1356,7 +1365,8 @@ function renderWTD(){
   if(comm==='wheat')Object.keys(groups).forEach(function(k){if(k!==cls)others.push(clsName(k)+' ('+groups[k].length+')');});
   (cls!=null?(groups[cls]||[]):[]).forEach(function(x){
     var p=x.rk.price,d=x.elev.distance;
-    rows.push({elev:x.elev,bid:x.bid,rk:x.rk,dist:d,ppu:p,gross:p*bu,fuel:2*d*fpm,net:(p*bu)-(2*d*fpm),delivery:delShow(x.bid)});
+    var rd=roadMi(d);
+    rows.push({elev:x.elev,bid:x.bid,rk:x.rk,dist:d,road:rd,ppu:p,gross:p*bu,fuel:2*rd*fpm,net:(p*bu)-(2*rd*fpm),delivery:delShow(x.bid)});
   });
   if(!rows.length){wtdTbody.innerHTML='<tr><td colspan="7" class="wtd-empty">No '+comm+' bids in results. Switch commodity or try a larger radius.</td></tr>';wtdWinner.style.display='none';$('wtd-delivery-note').style.display='none';return;}
   rows.sort(function(a,b){
@@ -1378,9 +1388,9 @@ function renderWTD(){
     var tossup=bu>0&&(gain/bu)*100<WTD_TOSSUP_CENTS;
     wtdWinner.classList.toggle('wtd-tossup',tossup);
     if(tossup){
-      wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(bannerName(winner.elev))+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator: under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick.';
+      wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(bannerName(winner.elev))+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator: under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick. Fuel on '+ROAD_NOTE+'.';
     }else
-    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(bannerName(winner.elev))+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load.';
+    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(bannerName(winner.elev))+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load, after round-trip fuel on '+ROAD_NOTE+'.';
     gaEvent('wtd_calc',{commodity:comm,bushels:bu,fpm:fpm,winner:winner.elev.facility,gain:Math.round(gain)});
   }else{wtdWinner.style.display='none';wtdWinner.classList.remove('wtd-tossup');}
   var _toss=wtdWinner.classList.contains('wtd-tossup')&&wtdWinner.style.display!=='none';
@@ -1402,12 +1412,13 @@ function renderWTD(){
     html+='<td class="wt-rank">'+(i+1)+'</td>';
     html+='<td><div class="wt-name">'+escH(r.elev.facility)+'</div><div class="wt-sub">'+subTxt+'</div></td>';
     html+='<td data-l="Cash/bu" class="wt-cash r">'+(r.rk.remark?escH(cbRank.priceText(r.rk,fmtPx)):'$'+fmtPx(r.ppu))+'</td>';
-    html+='<td data-l="Distance" class="wt-dist r">'+r.dist.toFixed(0)+' mi</td>';
+    html+='<td data-l="Road miles (est.)" class="wt-dist r" title="'+r.dist.toFixed(0)+' mi straight line x '+ROAD_FACTOR+'">'+r.road.toFixed(0)+' mi</td>';
     html+='<td data-l="Round-trip fuel" class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
     html+='<td data-l="Total net" class="wt-net r'+(i===0&&!_toss?' best':'')+'">'+fmtMoney(r.net)+'</td>';
     html+='<td data-l="vs closest" class="wt-delta '+dcls+'">'+dstr+'</td></tr>';
   }
   if(others.length)html+='<tr><td colspan="7" class="wtd-empty">Comparing '+escH(clsName(cls))+' wheat only. Also posted nearby, a different wheat and not compared: '+escH(others.join(', '))+'.</td></tr>';
+  html+='<tr><td colspan="7" class="wtd-empty">Miles are '+ROAD_NOTE+'; fuel is round trip on them.</td></tr>';
   wtdTbody.innerHTML=html;
   $('wtd-delivery-note').style.display='block';
 }
