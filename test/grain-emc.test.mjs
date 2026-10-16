@@ -396,7 +396,7 @@ test("browser: bad saved or linked settings are ignored (B4); plenum box ignores
 test("browser: each EMC chart prints on exactly one Letter page with its title, every row and the footer", { skip }, async () => {
   const srv = await serve(), browser = await chromium.launch({ executablePath: CHROME });
   try {
-    for (const k of ["corn", "wheat"]) {
+    for (const k of ["corn", "soybeans", "wheat"]) {
       const { pg, ctx } = await open(browser, srv.address().port, { loc: false, width: 1280, onForecast: (r) => r.abort() });
       await pg.waitForTimeout(200);
       await pg.evaluate((k) => document.documentElement.classList.add("print-chart", "print-" + k), k);
@@ -416,7 +416,7 @@ test("browser: each EMC chart prints on exactly one Letter page with its title, 
           cellPt: parseFloat(getComputedStyle(c.querySelector("td")).fontSize) * 0.75,
         };
       }, k);
-      assert.match(vis.title, new RegExp(`^${k === "corn" ? "Corn" : "Wheat"} EMC chart: equilibrium moisture content, % wet basis$`));
+      assert.match(vis.title, new RegExp(`^${{ corn: "Corn", soybeans: "Soybean", wheat: "Wheat" }[k]} EMC chart: equilibrium moisture content, % wet basis$`));
       assert.match(vis.foot, /A G S I S T\s+·\s+agsist\.com\/grain-emc\s+·\s+free tools for working farmers/);
       assert.equal(vis.rows, 7);
       assert.equal(vis.others, 0, "only the chart prints");
