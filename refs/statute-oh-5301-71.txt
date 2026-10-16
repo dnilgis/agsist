@@ -1,0 +1,61 @@
+# Ohio Rev. Code 5301.71: farm lease notice by September 1
+# https://codes.ohio.gov/ohio-revised-code/section-5301.71
+# fetched 2026-10-16T18:14:59Z, sha256 0425be9f5d4cf621ef2a4f7501bba616075c5590954b5120252ccbf9d905ad36
+
+Section 5301.71 - Ohio Revised Code | Ohio Laws
+
+The Legislative Service Commission staff updates the Revised Code on an ongoing basis, as it completes its act review of enacted legislation.
+Updates may be slower during some times of the year, depending on the volume of enacted legislation.
+
+Section 5301.71 | Termination of agricultural leases.
+
+Ohio Revised Code
+
+/
+
+Title 53 Real Property
+
+/
+
+Chapter 5301 Conveyances; Encumbrances
+
+Effective:
+
+July 21, 2022
+
+Latest Legislation:
+
+House Bill 397 - 134th General Assembly
+
+PDF:
+
+Download Authenticated PDF
+
+(A) As used in this section:
+
+(1) "Agricultural lease agreement" means an agreement or lease, written or oral, that establishes or modifies the terms, conditions, rules, or any other provisions between a landlord and tenant concerning the use and occupancy of real property by one of the parties for agricultural purposes.
+
+(2) "Agricultural purposes" means the use and occupancy of real property for the planting, growing, and harvesting of crops and all practices necessary for that planting, growing, and harvesting. It does not mean the use and occupancy of real property for pasture, timber, farm buildings, horticultural buildings, or leases solely for equipment.
+
+(3) "Landlord" means the owner or lessor of real property used for agricultural purposes that is authorized to receive remuneration from a tenant under an agricultural lease agreement, and has entered into, or has actual or constructive knowledge of, an agricultural lease agreement.
+
+(4) "Tenant" means the person entitled under an agricultural lease agreement to use real property for agricultural purposes to the exclusion of all others.
+
+(B)(1) Notwithstanding anything in Chapter 1335. of the Revised Code, if an agricultural lease agreement does not provide for a termination date or method for notice of termination of the agricultural lease agreement, the landlord shall provide the tenant with written notice of termination. The written notice shall be delivered on or before the first day of September, in the year the termination is to be effective, by personal delivery, facsimile, or electronic mail.
+
+(2) If notice of termination of an agricultural lease agreement is given pursuant to division (B)(1) of this section, the termination date for the agricultural lease agreement shall be the earlier of the following, unless otherwise agreed to, in writing, by the landlord and tenant:
+
+(a) The date harvesting or removal of crops is complete;
+
+(b) The thirty-first day of December in the year in which the notice was given.
+
+(C) This section does not affect the requirements of section 5301.01 of the Revised Code.
+
+Last updated April 29, 2022 at 4:12 PM
+
+Available Versions of this Section
+
+-
+July 21, 2022 – Enacted by House Bill 397 - 134th General Assembly
+
+[ View July 21, 2022 Version ]

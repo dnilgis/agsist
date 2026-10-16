@@ -1,0 +1,31 @@
+# Iowa Code 562.6: farm tenancy notice by September 1
+# https://www.legis.iowa.gov/docs/code/562.6.pdf
+# fetched 2026-10-16T18:14:54Z, sha256 387c8cabca3672917bf52be95d854a5b406ecbf1e90eaa5010ea6b62171a8088
+
+1                                                 OWNER-LESSOR AND TENANT-LESSEE, §562.6
+
+
+
+
+  562.6 Agreement for termination.
+  If a written agreement is made fixing the time of the termination of a tenancy, the tenancy
+shall terminate at the time agreed upon, without notice. Except for a farm tenant who is a
+mere cropper or a person who holds a farm tenancy with an acreage of less than forty acres
+where an animal feeding operation is the primary use of the acreage, a farm tenancy shall
+continue beyond the agreed term for the following crop year and otherwise upon the same
+terms and conditions as the original lease unless written notice for termination is served upon
+either party or a successor of the party in the manner provided in section 562.7, whereupon
+the farm tenancy shall terminate March 1 following. However, the tenancy shall not continue
+because of an absence of notice if there is default in the performance of the existing rental
+agreement.
+  [R60, §2218; C73, §2015; C97, §2991; C24, 27, 31, 35, 39, §10161; C46, 50, 54, 58, 62, 66, 71,
+73, 75, 77, 79, 81, §562.6]
+  83 Acts, ch 132, §3; 2006 Acts, ch 1077, §3; 2013 Acts, ch 44, §2; 2016 Acts, ch 1089, §1
+    Referred to in §562.8
+    Forcible entry provisions, §648.3 and 648.4
+
+
+
+
+Fri Dec 12 23:28:32 2025                                   Iowa Code 2026, Section 562.6 (20, 0)
+

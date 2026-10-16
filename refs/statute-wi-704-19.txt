@@ -1,0 +1,428 @@
+# Wis. Stat. 704.19: notice to end a periodic tenancy
+# https://docs.legis.wisconsin.gov/statutes/statutes/704/19
+# fetched 2026-10-16T18:14:52Z, sha256 dc82d98c2f485827a7cd613810b0fcc06619929c935479b8987299ebd5bf9512
+
+Wisconsin Legislature: 704.19
+
+Skip navigation
+
+- Home
+
+- Documents
+
+- Senate
+
+- Assembly
+
+- Committees
+
+- Service Agencies
+
+- Docs
+
+- Options
+
+- Help
+
+-
+
+-
+
+- 2025 Biennium
+
+- Statutes
+
+- Admin. Rules
+
+- Indices
+
+- Miscellaneous
+
+- Archives
+
+- Home
+
+- Bill, Rule, and Appointment Histories
+
+- Senators
+
+- Representatives
+
+- Committees
+
+- Text of Introduced Proposals
+
+- Amendment Text
+
+- Acts
+
+- Veto Messages
+
+- Enrolled Bills
+
+- Votes
+
+- Assembly and Senate Floor Calendars
+
+- Schedule of Committee Activities
+
+- Assembly and Senate Journals
+
+- Committee Records (ROCPs)
+
+- Legislative Rules
+
+- All Session-Related Documents
+
+- Subject Index to Acts
+
+- Subject Index to Legislation
+
+- Subject Index to Journals
+
+- Author Index to Legislation
+
+- Subject Index to Clearinghouse Rules
+
+- Miscellaneous Budget Documents
+
+- Executive Orders
+
+- Rulings of the Chair
+
+- Wisconsin Supreme Court Rules
+
+- Opinions of the Attorney General
+
+- Town Law Forms
+
+- Law
+
+- Districts
+
+- Session
+
+- Drafting Files
+
+- Feeds
+
+- Preferences
+
+- Show tree
+
+- Hide tree
+
+- Feedback
+
+- Help
+
+- Home
+
+- Senate Home
+
+- Senators
+
+- Committees
+
+- Session
+
+- Chief Clerk
+
+- Sergeant at Arms
+
+- Civics Education
+
+- Human Resources
+
+- Assembly Home
+
+- Representatives
+
+- Committees
+
+- Session
+
+- Chief Clerk
+
+- Sergeant at Arms
+
+- Human Resources
+
+- Schedule
+
+- Joint
+
+- Senate
+
+- Assembly
+
+- Study
+
+- Legislative Audit Bureau
+
+- Legislative Council
+
+- Legislative Fiscal Bureau
+
+- Legislative Human Resources Office
+
+- Legislative Reference Bureau
+
+- Legislative Technology Services Bureau
+
+- Menu
+
+- »Statutes Related
+
+- »Statutes
+
+- »Chapter 704
+
+Up
+
+Up
+
+704.17(1p)(c)(c) A property owner may terminate the tenancy of a week-to-week or month-to-month tenant if the property owner receives written notice from a law enforcement agency, as defined in s. 165.83 (1) (b), or from the office of the district attorney, that a nuisance under s. 823.113 (1) or (1m) (b) exists in that tenant’s rental unit or was caused by that tenant on the property owner’s property and if the property owner gives the tenant written notice requiring the tenant to vacate on or before a date at least 5 days after the giving of the notice. The notice shall state the basis for its issuance and the right of the tenant to contest the termination of tenancy in an eviction action under ch. 799. If the tenant contests the termination of tenancy, the tenancy may not be terminated without proof by the property owner by the greater preponderance of the credible evidence of the allegation in the notice from the law enforcement agency or the office of the district attorney that a nuisance under s. 823.113 (1) or (1m) (b) exists in that tenant’s rental unit or was caused by that tenant.
+
+704.17(2)(2) Tenancies under a lease for one year or less, and year-to-year tenancies.
+
+704.17(2)(a)(a) If a tenant under a lease for a term of one year or less, or a year-to-year tenant, fails to pay any installment of rent when due, the tenant’s tenancy is terminated if the landlord gives the tenant notice requiring the tenant to pay rent or vacate on or before a date at least 5 days after the giving of the notice and if the tenant fails to pay accordingly. If a tenant has been given such a notice and has paid the rent on or before the specified date, or been permitted by the landlord to remain in possession contrary to such notice, and if within one year of any prior default in payment of rent for which notice was given the tenant fails to pay a subsequent installment of rent on time, the tenant’s tenancy is terminated if the landlord, while the tenant is in default in payment of rent, gives the tenant notice to vacate on or before a date at least 14 days after the giving of the notice.
+
+704.17(2)(b)(b) If a tenant under a lease for a term of one year or less, or a year-to-year tenant, commits waste or a material violation of s. 704.07 (3) or breaches any covenant or condition of the tenant’s lease, other than for payment of rent, the tenant’s tenancy is terminated if the landlord gives the tenant a notice requiring the tenant to remedy the default or vacate the premises on or before a date at least 5 days after the giving of the notice, and if the tenant fails to comply with such notice. A tenant is deemed to be complying with the notice if promptly upon receipt of such notice the tenant takes reasonable steps to remedy the default and proceeds with reasonable diligence, or if damages are adequate protection for the landlord and the tenant makes a bona fide and reasonable offer to pay the landlord all damages for the tenant’s breach. If within one year from the giving of any such notice, the tenant again commits waste or breaches the same or any other covenant or condition of the tenant’s lease, other than for payment of rent, the tenant’s tenancy is terminated if the landlord gives the tenant notice to vacate on or before a date at least 14 days after the giving of the notice.
+
+704.17(2)(c)(c) A property owner may terminate the tenancy of a tenant who is under a lease for a term of one year or less or who is a year-to-year tenant if the property owner receives written notice from a law enforcement agency, as defined in s. 165.83 (1) (b), or from the office of the district attorney, that a nuisance under s. 823.113 (1) or (1m) (b) exists in that tenant’s rental unit or was caused by that tenant on the property owner’s property and if the property owner gives the tenant written notice requiring the tenant to vacate on or before a date at least 5 days after the giving of the notice. The notice shall state the basis for its issuance and the right of the tenant to contest the termination of tenancy in an eviction action under ch. 799. If the tenant contests the termination of tenancy, the tenancy may not be terminated without proof by the property owner by the greater preponderance of the credible evidence of the allegation in the notice from the law enforcement agency or the office of the district attorney that a nuisance under s. 823.113 (1) or (1m) (b) exists in that tenant’s rental unit or was caused by that tenant.
+
+704.17(2)(d)(d) This subsection does not apply to week-to-week or month-to-month tenants.
+
+704.17(3)(3) Lease for more than one year.
+
+704.17(3)(a)(a) If a tenant under a lease for more than one year fails to pay rent when due, or commits waste, or breaches any other covenant or condition of the tenant’s lease, the tenancy is terminated if the landlord gives the tenant notice requiring the tenant to pay the rent, repair the waste, or otherwise comply with the lease on or before a date at least 30 days after the giving of the notice, and if the tenant fails to comply with the notice. A tenant is deemed to be complying with the notice if promptly upon receipt of the notice the tenant takes reasonable steps to remedy the default and proceeds with reasonable diligence, or if damages are adequate protection for the landlord and the tenant makes a bona fide and reasonable offer to pay the landlord all damages for the tenant’s breach; but in case of failure to pay rent, all rent due must be paid on or before the date specified in the notice.
+
+704.17(3)(b)(b) A property owner may terminate the tenancy of a tenant who is under a lease for a term of more than one year if the property owner receives written notice from a law enforcement agency, as defined in s. 165.83 (1) (b), or from the office of the district attorney, that a nuisance under s. 823.113 (1) or (1m) (b) exists in that tenant’s rental unit or was caused by that tenant on the property owner’s property and if the property owner gives the tenant written notice to vacate on or before a date at least 5 days after the giving of the notice. The notice shall state the basis for its issuance and the right of the tenant to contest the termination of tenancy in an eviction action under ch. 799. If the tenant contests the termination of tenancy, the tenancy may not be terminated without proof by the property owner by the greater preponderance of the credible evidence of the allegation in the notice from the law enforcement agency or the office of the district attorney that a nuisance under s. 823.113 (1) or (1m) (b) exists in that tenant’s rental unit or was caused by that tenant.
+
+704.17(3m)(3m) Criminal activity.
+
+704.17(3m)(a)(a) In this subsection:
+
+704.17(3m)(a)1.1. “Controlled substance” has the meaning given in s. 961.01 (4).
+
+704.17(3m)(a)2.2. “Drug-related criminal activity” means criminal activity that involves the manufacture or distribution of a controlled substance. “Drug-related criminal activity” does not include the manufacture, possession, or use of a controlled substance that is prescribed by a physician for the use of a disabled person, as defined in s. 100.264 (1) (a), and that is manufactured by, used by, or in the possession of the disabled person or in the possession of the disabled person’s personal care worker or other caregiver.
+
+704.17(3m)(b)(b)
+
+704.17(3m)(b)1.1. Notwithstanding subs. (1p) (b), (2) (b), and (3) (a), and except as provided in par. (c), a landlord may, upon notice to the tenant, terminate the tenancy of a tenant, without giving the tenant an opportunity to remedy the default, if the tenant, a member of the tenant’s household, or a guest or other invitee of the tenant or of a member of the tenant’s household engages in any criminal activity that threatens the health or safety of, or right to peaceful enjoyment of the premises by, other tenants; engages in any criminal activity that threatens the health or safety of, or right to peaceful enjoyment of their residences by, persons residing in the immediate vicinity of the premises; engages in any criminal activity that threatens the health or safety of the landlord or an agent or employee of the landlord; or engages in any drug-related criminal activity on or near the premises. The notice shall require the tenant to vacate on or before a date at least 5 days after the giving of the notice. The notice shall state the basis for its issuance; include a description of the criminal activity or drug-related criminal activity, the date on which the activity took place, and the identity or description of the individuals engaging in the activity; advise the tenant that he or she may seek the assistance of legal counsel, a volunteer legal clinic, or a tenant resource center; and state that the tenant has the right to contest the allegations in the notice before a court commissioner or judge if an eviction action is filed. If the tenant contests the termination of tenancy, the tenancy may not be terminated without proof by the landlord by the greater preponderance of the credible evidence of the allegation in the notice.
+
+704.17(3m)(b)2.2. To terminate a tenancy under this subsection, it is not necessary that the individual committing the criminal activity or drug-related criminal activity has been arrested for or convicted of the criminal activity or drug-related criminal activity.
+
+704.17(3m)(c)(c) Paragraph (b) does not apply to a tenant who is the victim, as defined in s. 950.02 (4), of the criminal activity.
+
+704.17(4)(4) Form of notice and manner of giving. Notice must be in writing and given as specified in s. 704.21. If so given, the tenant is not entitled to possession or occupancy of the premises after the date of termination specified in the notice.
+
+704.17(4m)(4m) Effect of incorrect amount in notice. A notice for failure to pay rent or any other amount due under the rental agreement that includes an incorrect statement of the amount due is valid unless any of the following applies:
+
+704.17(4m)(a)(a) The landlord’s statement of the amount due is intentionally incorrect.
+
+704.17(4m)(b)(b) The tenant paid or tendered payment of the amount the tenant believes to be due.
+
+704.17(5)(5) Contrary provision in the lease.
+
+704.17(5)(a)(a) Except as provided in par. (b), provisions in the lease or rental agreement for termination contrary to this section are invalid except in leases for more than one year.
+
+704.17(5)(b)(b) Provisions in any lease or rental agreement for termination contrary to sub. (3m) are invalid.
+
+704.17 HistoryHistory: 1981 c. 286; 1993 a. 139, 486; 1995 a. 267; 2005 a. 281; 2011 a. 143; 2015 a. 176; 2017 a. 317, ss. 43 to 45, 54.
+
+704.17 AnnotationOnly a limited number of defenses may be raised in an eviction action, including defenses as to the landlord’s title to the premises and whether the eviction is in retaliation for the tenant’s reporting housing violations, but not including violations of federal antitrust and state franchise laws—as well as public policy defenses. Clark Oil & Refining Corp. v. Leistikow, 69 Wis. 2d 226, 230 N.W.2d 736 (1975).
+
+704.17 AnnotationAbsent notice of termination, the violation of the terms of a lease that required landlord permission for long-term guests did not result in the tenants losing their rights to possession of the property. Consequently, the tenants’ guests were on the premises with the legal possessor’s permission and were not trespassers. Johnson v. Blackburn, 220 Wis. 2d 260, 582 N.W.2d 488 (Ct. App. 1998), 97-1414.
+
+704.17 AnnotationFederal law, 42 USC 1437d (l) (6), preempts the right-to-remedy provision of sub. (2) (b) when a public housing tenant is evicted for engaging in “drug-related criminal activity” within the meaning of 42 USC 1437d (l). A right to cure past illegal drug activity is counter to Congress’ goal of providing drug-free public housing and is in conflict with Congress’ method of achieving that goal by allowing eviction of tenants who engage in drug-related criminal activity. Milwaukee City Housing Authority v. Cobb, 2015 WI 27, 361 Wis. 2d 359, 860 N.W.2d 267, 13-2207.
+
+704.17 AnnotationA lease that prohibited the “use of the premises for an unlawful purpose” and did not include the notice of domestic abuse protections required by s. 704.14 was void and unenforceable under s. 704.44 (10). The fact that the relevant lease provision may have been valid under sub. (3m) had no impact on whether that same provision violated the distinct requirements under s. 704.44 (10). Koble Investments v. Marquardt, 2024 WI App 26, 412 Wis. 2d 1, 7 N.W.3d 915, 22-0182.
+
+704.19704.19 Notice necessary to terminate periodic tenancies and tenancies at will.
+
+704.19(1)(1) Scope of section. The following types of tenancies, however created, are subject to this section:
+
+704.19(1)(a)(a) A periodic tenancy, whether a tenancy from year-to-year, from month-to-month, or for any other periodic basis according to which rent is regularly payable; and
+
+704.19(1)(b)(b) A tenancy at will.
+
+704.19(2)(2) Requirement of notice.
+
+704.19(2)(a)(a) A periodic tenancy or a tenancy at will can be terminated by either the landlord or the tenant only by giving to the other party written notice complying with this section, unless any of the following conditions is met:
+
+704.19(2)(a)1.1. The parties have agreed expressly upon another method of termination and the parties’ agreement is established by clear and convincing proof.
+
+704.19(2)(a)2.2. Termination has been effected by a surrender of the premises.
+
+704.19(2)(a)3.3. Subsection (6) applies.
+
+704.19(2)(b)(b)
+
+704.19(2)(b)1.1. A periodic tenancy can be terminated by notice under this section only at the end of a rental period. In the case of a tenancy from year-to-year the end of the rental period is the end of the rental year even though rent is payable on a more frequent basis.
+
+704.19(2)(b)2.2. Notwithstanding subd. 1., nothing in this section prevents termination of a tenancy before the end of a rental period because of an imminent threat of serious physical harm, as provided in s. 704.16, or for criminal activity or drug-related criminal activity, nonpayment of rent, or breach of any other condition of the tenancy, as provided in s. 704.17.
+
+704.19(3)(3) Length of notice. At least 28 days’ notice must be given except in the following cases: If rent is payable on a basis less than monthly, notice at least equal to the rent-paying period is sufficient; all agricultural tenancies from year-to-year require at least 90 days’ notice.
+
+704.19(4)(4) Contents of notice. Notice must be in writing, formal or informal, and substantially inform the other party to the landlord-tenant relation of the intent to terminate the tenancy and the date of termination. A notice is not invalid because of errors in the notice which do not mislead, including omission of the name of one of several landlords or tenants.
+
+704.19(5)(5) Effect of inaccurate termination date in notice. If a notice provides that a periodic tenancy is to terminate on the first day of a succeeding rental period rather than the last day of a rental period, and the notice was given in sufficient time to terminate the tenancy at the end of the rental period, the notice is valid; if the notice was given by the tenant, the landlord may require the tenant to remove on the last day of the rental period, but if the notice was given by the landlord the tenant may remove on the last day specified in the notice. If a notice specified any other inaccurate termination date, because it does not allow the length of time required under sub. (3) or because it does not correspond to the end of a rental period in the case of a periodic tenancy, the notice is valid but not effective until the first date which could have been properly specified in such notice subsequent to the date specified in the notice, but the party to whom the notice is given may elect to treat the date specified in the notice as the legally effective date. If a notice by a tenant fails to specify any termination date, the notice is valid but not effective until the first date which could have been properly specified in such notice as of the date the notice is given.
+
+704.19(6)(6) Tenant moving out without notice. If any periodic tenant vacates the premises without notice to the landlord and fails to pay rent when due for any period, such tenancy is terminated as of the first date on which it would have terminated had the landlord been given proper notice on the day the landlord learns of the removal.
+
+704.19(7)(7) When notice given. Notice is given on the day specified below, which is counted as the first day of the notice period:
+
+704.19(7)(a)(a) The day of giving or leaving under s. 704.21 (1) (a) and (2) (a) and (b).
+
+704.19(7)(b)(b) The day of leaving or affixing a copy or the date of mailing, whichever is later, under s. 704.21 (1) (b) and (c).
+
+704.19(7)(c)(c) The 2nd day after the day of mailing if the mail is addressed to a point within the state, and the 5th day after the day of mailing in all other cases, under s. 704.21 (1) (d) and (2) (c).
+
+704.19(7)(d)(d) The day of service under s. 704.21 (1) (e) and (2) (d).
+
+704.19(7)(e)(e) The day of actual receipt by the other party under s. 704.21 (5).
+
+704.19(8)(8) Effect of notice. If a notice is given as required by this section, the tenant is not entitled to possession or occupancy of the premises after the date of termination as specified in the notice.
+
+704.19 HistoryHistory: 1993 a. 486; 1995 a. 225; 2001 a. 103; 2007 a. 184; 2015 a. 176.
+
+704.21704.21 Manner of giving notice.
+
+704.21(1)(1) Notice by landlord. Notice by the landlord or a person in the landlord’s behalf must be given under this chapter by one of the following methods:
+
+704.21(1)(a)(a) By giving a copy of the notice personally to the tenant or by leaving a copy at the tenant’s usual place of abode in the presence of some competent member of the tenant’s family at least 14 years of age, who is informed of the contents of the notice;
+
+704.21(1)(b)(b) By leaving a copy with any competent person apparently in charge of the rented premises or occupying the premises or a part thereof, and by mailing a copy by regular or other mail to the tenant’s last-known address;
+
+704.21(1)(c)(c) If notice cannot be given under par. (a) or (b) with reasonable diligence, by affixing a copy of the notice in a conspicuous place on the rented premises where it can be conveniently read and by mailing a copy by regular or other mail to the tenant’s last-known address;
+
+704.21(1)(d)(d) By mailing a copy of the notice by registered or certified mail to the tenant at the tenant’s last-known address;
+
+704.21(1)(e)(e) By serving the tenant as prescribed in s. 801.11 for the service of a summons.
+
+704.21(2)(2) Notice by tenant. Notice by the tenant or a person in the tenant’s behalf must be given under this chapter by one of the following methods:
+
+704.21(2)(a)(a) By giving a copy of the notice personally to the landlord or to any person who has been receiving rent or managing the property as the landlord’s agent, or by leaving a copy at the landlord’s usual place of abode in the presence of some competent member of the landlord’s family at least 14 years of age, who is informed of the contents of the notice;
+
+704.21(2)(b)(b) By giving a copy of the notice personally to a competent person apparently in charge of the landlord’s regular place of business or the place where the rent is payable;
+
+704.21(2)(c)(c) By mailing a copy by registered or certified mail to the landlord at the landlord’s last-known address or to the person who has been receiving rent or managing the property as the landlord’s agent at that person’s last-known address;
+
+704.21(2)(d)(d) By serving the landlord as prescribed in s. 801.11 for the service of a summons.
+
+704.21(3)(3) Corporation or partnership. If notice is to be given to a corporation notice may be given by any method provided in sub. (1) or (2) except that notice under sub. (1) (a) or (2) (a) may be given only to an officer, director, registered agent or managing agent, or left with an employee in the office of such officer or agent during regular business hours. If notice is to be given to a partnership, notice may be given by any method in sub. (1) or (2) except that notice under sub. (1) (a) or (2) (a) may be given only to a general partner or managing agent of the partnership, or left with an employee in the office of such partner or agent during regular business hours, or left at the usual place of abode of a general partner in the presence of some competent member of the general partner’s family at least 14 years of age, who is informed of the contents of the notice.
+
+704.21(4)(4) Notice to one of several parties. If there are 2 or more landlords or 2 or more cotenants of the same premises, notice given to one is deemed to be given to the others also.
+
+704.21(5)(5) Effect of actual receipt of notice. If notice is not properly given by one of the methods specified in this section, but is actually received by the other party, the notice is deemed to be properly given; but the burden is upon the party alleging actual receipt to prove the fact by clear and convincing evidence.
+
+704.21 HistoryHistory: Sup. Ct. Order, 67 Wis. 2d 585, 777 (1975); 1993 a. 486.
+
+704.22704.22 Service of process in residential tenancy on nonresident party.
+
+704.22(1)(1) A party to a residential tenancy in this state who is not a resident of this state shall designate an agent to accept service of process in this state for an action involving the tenancy. The agent shall be a resident of this state or a corporation authorized to do business in this state. If a party is a corporation, the agent is the corporation’s registered agent.
+
+704.22(2)(2) Designation of an agent under sub. (1) shall be in writing and filed with the department of financial institutions.
+
+704.22 HistoryHistory: 1981 c. 300; 1995 a. 27.
+
+704.23704.23 Removal of tenant on termination of tenancy. If a tenant remains in possession without consent of the tenant’s landlord after termination of the tenant’s tenancy, the landlord may in every case proceed in any manner permitted by law to remove the tenant and recover damages for such holding over.
+
+704.23 HistoryHistory: 1993 a. 486.
+
+704.25704.25 Effect of holding over after expiration of lease; removal of tenant.
+
+704.25(1)(1) Removal and recovery of damages. If a tenant holds over after expiration of a lease, the landlord may in every case proceed in any manner permitted by law to remove the tenant and recover damages for such holding over.
+
+704.25(2)(2) Creation of periodic tenancy by holding over.
+
+704.25(2)(a)(a) Nonresidential leases for a year or longer. If premises are leased for a year or longer primarily for other than private residential purposes, and the tenant holds over after expiration of the lease, the landlord may elect to hold the tenant on a year-to-year basis.
+
+704.25(2)(b)(b) All other leases. If premises are leased for less than a year for any use, or if leased for any period primarily for private residential purposes, and the tenant holds over after expiration of the lease, the landlord may elect to hold the tenant on a month-to-month basis; but if such lease provides for a weekly or daily rent, the landlord may hold the tenant only on the periodic basis on which rent is computed.
+
+704.25(2)(c)(c) When election takes place. Acceptance of rent for any period after expiration of a lease or other conduct manifesting the landlord’s intent to allow the tenant to remain in possession after the expiration date constitutes an election by the landlord under this section unless the landlord has already commenced proceedings to remove the tenant.
+
+704.25(3)(3) Terms of tenancy created by holding over. A periodic tenancy arising under this section is upon the same terms and conditions as those of the original lease except that any right of the tenant to renew or extend the lease, or to purchase the premises, or any restriction on the power of the landlord to sell without first offering to sell the premises to the tenant, does not carry over to such a tenancy.
+
+704.25(4)(4) Effect of contrary agreement. This section governs except as the parties agree otherwise either by the terms of the lease itself or by an agreement at any subsequent time.
+
+704.25(5)(5) Holdover by assignee or subtenant. If an assignee or subtenant holds over after the expiration of the lease, the landlord may either elect to:
+
+704.25(5)(a)(a) Hold the assignee or subtenant or, if he or she participated in the holding over, the original tenant as a periodic tenant under sub. (2); or
+
+704.25(5)(b)(b) Remove any person in possession and recover damages from the assignee or subtenant or, if the landlord has not been accepting rent directly from the assignee or subtenant, from the original tenant.
+
+704.25(6)(6) Notice terminating a tenancy created by holding over. Any tenancy created pursuant to this section is terminable under s. 704.19.
+
+704.25 HistoryHistory: 1983 a. 36.
+
+704.25 AnnotationUpon the landlord’s acceptance of a holdover tenant’s monthly rent payment, both parties were bound to a one-year tenancy, on the same terms and conditions as set forth in the expired lease. The existence of a one-year holdover tenancy does not mean, however, that the landlord could not subsequently accept a surrender of the premises from the tenant and release the tenant from the tenant’s obligations as a holdover tenant. Vander Wielen v. Van Asten, 2005 WI App 220, 287 Wis. 2d 726, 706 N.W.2d 123, 04-1788.
+
+Down
+
+Down
+
+/statutes/statutes/704
+true
+statutes
+/statutes/statutes/704/19
+
+Chs. 700-711, Property
+statutes/704.19
+statutes/704.19
+section
+true
+
+- Menu
+
+- »Statutes Related
+
+- »Statutes
+
+- »Chapter 704
+
+×
+
+Details for
+
+PDF view
+
+Link (Permanent link)
+
+Bookmark this location
+
+View toggle
+
+Go to top of document
+
+Search in this chapter
+
+Search in this section
+
+Search in this agency
+
+Search in this chapter group
+
+Search in this chapter
+
+Search in this section
+
+Cross references for section
+
+Acts affecting this section
+
+References to this
+
+1970 Statutes Annotations
+
+Appellate Court Citations
+
+Administrative Code Index
+
+Reference lines
+
+Clear highlighting
+
+2023-24 Wisconsin Statutes updated through 2025 Wis. Act 247 and through all Supreme Court Orders and Controlled Substances Board Orders filed before and in effect on October 1, 2026. Published and certified under s. 35.18. Changes effective after October 1, 2026, are designated by NOTES. (Published 10-1-26)

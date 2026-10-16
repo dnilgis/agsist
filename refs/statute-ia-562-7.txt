@@ -1,0 +1,36 @@
+# Iowa Code 562.7: how farm tenancy notice is served
+# https://www.legis.iowa.gov/docs/code/562.7.pdf
+# fetched 2026-10-16T18:14:55Z, sha256 56b4dda40bf1b744eaed5faaf9f34cb09b4b0640be06edfd66d4de2d8ea14bc6
+
+1                                                 OWNER-LESSOR AND TENANT-LESSEE, §562.7
+
+
+
+
+  562.7 Notice — how and when served.
+  Written notice shall be served upon either party or a successor of the party by using one of
+the following methods:
+  1. By delivery of the notice, on or before September 1, with acceptance of service to be
+signed by the party to the lease or a successor of the party, receiving the notice.
+  2. By serving the notice, on or before September 1, personally, or if personal service has
+been tried and cannot be achieved, by publication, on the same conditions, and in the same
+manner as is provided for the service of original notices, except that when the notice is served
+by publication no affidavit is required. Service by publication is completed on the day of the
+last publication.
+  3. By mailing the notice before September 1 by certified mail. Notice served by certified
+mail is made and completed when the notice is enclosed in a sealed envelope, with the
+proper postage on the envelope, addressed to the party or a successor of the party at the last
+known mailing address and deposited in a mail receptacle provided by the United States
+postal service.
+  [C73, §2016; C97, §2991; C24, 27, 31, 35, 39, §10162; C46, 50, 54, 58, 62, 66, 71, 73, 75, 77,
+79, 81, §562.7]
+  83 Acts, ch 132, §4
+    Referred to in §562.6, 562.8
+    Forcible entry provisions, §648.3 and 648.4
+    Original notice, R.C.P. 1.302 – 1.315
+
+
+
+
+Fri Dec 12 23:28:32 2025                                   Iowa Code 2026, Section 562.7 (21, 0)
+
