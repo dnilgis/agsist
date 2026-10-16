@@ -296,10 +296,13 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-ans-side div:first-child{color:var(--text);font-weight:600;}
 .ff-ans-line{font-size:.86rem;color:var(--text);line-height:1.5;margin:.25rem 0 .6rem;max-width:720px;}
 .ff-ans-in{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem .6rem;}
-@media(min-width:760px){.ff-ans-in{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(min-width:760px){.ff-ans-in{grid-template-columns:repeat(4,minmax(0,1fr));}}
 .ff-ans-in .ff-cf{min-width:0;gap:.2rem;}
 .ff-ans-in .ff-cs,.ff-ans-in .ff-ci{padding:.4rem .5rem;min-height:44px;}
 .ff-ans-in .ff-cs:disabled{opacity:.55;}
+.ff-ans-wide{grid-column:1/-1;}
+@media(min-width:760px){.ff-ans-wide{grid-column:span 2;}}
+.fert-pill{text-align:left;}
 .ff-ans-res{display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;font-size:.8rem;color:var(--text-dim);margin:.6rem 0 0;}
 .ff-ans-res b{font-family:'JetBrains Mono',monospace;color:var(--text);margin-left:.2rem;}
 .ff-ans-src{font-size:0.755rem;color:var(--text-muted);margin:.45rem 0 0;line-height:1.45;}
@@ -459,8 +462,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   </div>
   <p class="ff-ans-line" id="ans-line">Loading posted N and corn prices&hellip;</p>
   <div class="ff-ans-in">
-    <div class="ff-cf"><label class="ff-cl" for="ans-soil">Soil, yield potential</label><select class="ff-cs" id="ans-soil"><option value="hi">Loamy, high</option><option value="med">Loamy, medium</option><option value="sand_irr">Sand, irrigated</option><option value="sand_dry">Sand, dryland</option></select></div>
-    <div class="ff-cf"><label class="ff-cl" for="ans-prev">Last crop</label><select class="ff-cs" id="ans-prev"><option value="soy">Soy, small grain</option><option value="corn">Corn, legume</option></select></div>
+    <div class="ff-cf ff-ans-wide"><label class="ff-cl" for="ans-soil">Soil</label><select class="ff-cs" id="ans-soil"><option value="hi">Loamy, high yield potential</option><option value="med">Loamy, medium yield potential</option><option value="sand_irr">Sand or loamy sand, irrigated</option><option value="sand_dry">Sand or loamy sand, dryland</option></select></div>
+    <div class="ff-cf"><label class="ff-cl" for="ans-prev">Last crop</label><select class="ff-cs" id="ans-prev"><option value="soy">Soy or grain</option><option value="corn">Corn or alfalfa</option></select></div>
     <div class="ff-cf"><label class="ff-cl" for="nc-fert">N form</label>
       <select class="ff-cs" id="nc-fert">
         <option value="82">Anhydrous</option><option value="46">Urea</option><option value="28">UAN 28%</option><option value="32">UAN 32%</option>
@@ -469,7 +472,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     </div>
     <div class="ff-cf" id="nc-custom-wrap" style="display:none"><label class="ff-cl" for="nc-custom-pct">Custom % N</label><input class="ff-ci" id="nc-custom-pct" type="number" value="46" step="1" min="1" max="100"></div>
     <div class="ff-cf"><label class="ff-cl" for="nc-fertprice">N $/ton</label><input class="ff-ci" id="nc-fertprice" type="number" inputmode="decimal" value="" placeholder="loading" step="5" min="50" max="3000"></div>
-    <div class="ff-cf"><label class="ff-cl" for="ans-state">Basis from</label><select class="ff-cs" id="ans-state"><option value="">No basis (futures)</option></select></div>
+    <div class="ff-cf"><label class="ff-cl" for="ans-state">Basis from</label><select class="ff-cs" id="ans-state"><option value="">Futures only</option></select></div>
     <div class="ff-cf"><label class="ff-cl" for="nc-corn">Corn $/bu</label><input class="ff-ci" id="nc-corn" type="number" inputmode="decimal" value="" placeholder="loading" step="0.05" min="1" max="12"></div>
   </div>
   <div class="ff-ans-res">
