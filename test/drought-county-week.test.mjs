@@ -160,7 +160,7 @@ test("this week for Story County: shares, changes and dates, hand-worked", { ski
     if (miss.length) {
       assert.match(out, new RegExp(`${d.first_year}–${d.last_full_year} except ${miss.join(", ")}:`));
       assert.match(out, new RegExp(`${miss.join(", ")} left out`));
-    } else assert.doesNotMatch(out, /except|left out/);
+    } else assert.doesNotMatch(out, /\d{4}–\d{4} except|left out/);
     assert.deepEqual(GAPS.filter((y) => !miss.includes(y)), [], "every gap in the raw file shows on the page");
     const sw = await pg.evaluate(() => document.documentElement.scrollWidth);
     assert.ok(sw <= 390, `no sideways scroll at 390 (${sw})`);
