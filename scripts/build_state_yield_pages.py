@@ -245,6 +245,8 @@ CSS = """
     .yl-stat ul b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:600}
     .yl-note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:var(--text-muted);margin:14px 0}
     .yl-note b{color:var(--text)}
+    .yl-fc{font-size:1rem;line-height:1.55;color:var(--text);margin:6px 0 10px}
+    .yl-fc b{color:var(--gold)}
     .yl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
     table.yl-t{width:100%;border-collapse:collapse;font-size:.82rem;margin:10px 0}
     .yl-t th{text-align:left;color:var(--text-muted);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:bottom}
@@ -411,6 +413,22 @@ def current_season(st, rec, stats, warn):
     return out
 
 
+def forecast_line(rec, seasons):
+    """One labeled line near the top for this season's USDA corn/soy forecast
+    (2026-10-16 audit: the pages led with 2025 in October). Only a figure the
+    finals table does not already hold (current_season decides that), only
+    when state-stats marks it a forecast and names the report month."""
+    if not rec or not rec.get("forecast") or not rec.get("forecast_month") or not rec.get("year"):
+        return ""
+    items = [(c, v) for _meta, its, fc in seasons if fc for c, v in its if c in ("corn", "soy")]
+    if not items:
+        return ""
+    lab = f"{rec['year']} USDA {esc(rec['forecast_month'])} forecast"
+    vals = ", ".join(f"{CROP_LC[c]} <b>{num(v)} bu</b>" for c, v in items)
+    return (f'<p class="yl-fc"><b>{lab}:</b> {vals} per acre. A forecast, not a final: '
+            f'the table and averages below use finals only.</p>')
+
+
 def county_section(st, name, inp, corn_stats, root):
     rows = inp["counties"].get(st) or []
     total = inp["atlas_counts"].get(st)
@@ -567,6 +585,7 @@ def build_state_page(name, inp, ctx):
 <main class="yl-wrap" id="main">
   <p class="yl-sub" style="margin-top:14px"><a href="/usda-quick-stats" style="color:var(--text-muted)">USDA Quick Stats</a> &rsaquo; <b style="color:var(--text)">{esc(name)} yield by year</b></p>
   <h1>{esc(name)} {crops_phrase(crops).lower()} yield by year</h1>
+  {forecast_line(inp["state_stats"].get(st), seasons)}
   <p class="yl-sub">USDA NASS state yield estimates for {esc(name)}, annual (end-of-season) figures only: {intro_crops}.
   Every figure below is a USDA NASS number for the year shown; nothing is estimated or filled in by AGSIST.
   Source files updated {fmt_date(updated)}.</p>
@@ -638,7 +657,7 @@ def _fixture():
         "wheat": ser({"Kansas": {2024: 43.0, 2025: 51.0, 2026: 34.0}}, list(range(2010, 2027)), 2026),
         "acres": {"corn": ser({"Iowa": {2025: 13.6}}, [2025], 2025), "soy": ser({}, [2025], 2025)},
         "state_stats": {"IA": {"name": "Iowa", "meta": "2026 crop · USDA NASS in-season forecast", "year": 2026,
-                               "forecast": True, "corn_yield": 219.0, "bean_yield": 64.0},
+                               "forecast": True, "forecast_month": "October", "corn_yield": 219.0, "bean_yield": 64.0},
                         "KS": {"wheat_year": 2026, "wheat_yield": 35.0, "wheat_forecast": False,
                                "wheat_meta": "2026 crop year · USDA NASS final"}},
         "counties": {"IA": [("19001", {2025: 220.0}), ("19003", {2025: 230.0}), ("19005", {2024: 999.0}),
@@ -721,6 +740,10 @@ def selftest():
         ck("high/low years", "<b>211</b> in 2024" in ia and "<b>137</b> in 2012" in ia)
         ck("forecast kept out of table", "<tr><td>2026</td>" not in ia and "219" in ia
            and "in-season forecast" in ia)
+        ck("forecast line near the top, labeled with year and report month",
+           '<p class="yl-fc"><b>2026 USDA October forecast:</b> corn <b>219 bu</b>, soybeans <b>64 bu</b> per acre.' in ia
+           and ia.find('class="yl-fc"') < ia.find('class="yl-hero"'))
+        ck("no forecast line without a forecast", 'class="yl-fc"' not in ut and 'class="yl-fc"' not in ks)
         ck("same-year disagreement hidden + warned", "35</b>" not in ks and any("KS wheat 2026" in w for w in warn), warn)
         ck("county ranking uses newest corn year only", ia.find("Adams County") < ia.find("Adair County")
            < ia.find("Appanoose County") and "999" not in ia)
