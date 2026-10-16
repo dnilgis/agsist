@@ -256,7 +256,7 @@
       su.querySelector('option[value="bale"]').hidden = !c.bale;
       su.querySelector('option[value="ton"]').textContent = c.basis === 'bu' ? 'bushel' : c.basis === 'dm' ? 'ton as baled' : 'ton';
       if (!c.bale && su.value === 'bale') su.value = 'ton';
-      root2.querySelector('[data-o="hint"]').textContent = 'Starting yield ' + c.def + ' ' + (c.basis === 'bu' ? 'bu' : 'ton') + ': ' + c.defWhy + '. Put in yours.' +
+      root2.querySelector('[data-o="hint"]').textContent = 'Starting yield ' + c.def + ' ' + (c.basis === 'bu' ? 'bu' : c.basis === 'dm' ? 'dry ton' : 'ton') + ': ' + c.defWhy + '. Put in yours.' +
         (c.bale ? ' A2809 counts stalks, straw and hay by the dry ton, so bale weight and moisture turn it into bales. Weigh a few bales; 1,000 lb and 15% are only a start.' : '');
       run();
     }

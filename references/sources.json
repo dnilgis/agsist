@@ -268,6 +268,18 @@
     {"id": "coop-mulvane-fert", "kind": "html",
      "url": "https://www.mulvanecoop.com/fertilizer",
      "title": "Mulvane Co-op: fertilizer page",
-     "why": "/fertilizer: candidate co-op posted retail fertilizer prices"}
+     "why": "/fertilizer: candidate co-op posted retail fertilizer prices"},
+    {"id": "isu-pm1688", "kind": "pdf",
+     "url": "https://www.extension.iastate.edu/Publications/PM1688.pdf",
+     "title": "Iowa State PM 1688, A General Guide for Crop Nutrient and Limestone Recommendations in Iowa",
+     "why": "/nutrient-removal: N, P2O5, K2O removal per unit of yield (second source beside A2809; corn stover, silage, straw)"},
+    {"id": "osu-tristate-974", "kind": "pdf",
+     "url": "https://agcrops.osu.edu/sites/agcrops/files/imce/fertility/bulletin_974.pdf",
+     "title": "Tri-State Fertilizer Recommendations for Corn, Soybean, Wheat and Alfalfa (Bulletin 974)",
+     "why": "/nutrient-removal: crop removal table (grain, stover, straw, silage, alfalfa) to show the range beside A2809"},
+    {"id": "psu-agronomy-guide-fertility", "kind": "html",
+     "url": "https://extension.psu.edu/soil-fertility-management",
+     "title": "Penn State Agronomy Guide, soil fertility management",
+     "why": "/nutrient-removal: nutrient removal by crops including N and S, earlage/HMC if listed"}
   ]
 }
