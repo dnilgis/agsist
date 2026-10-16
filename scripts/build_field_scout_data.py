@@ -20,11 +20,14 @@ Writes (nothing here is new data, only the same records cut smaller):
       {"years": [closed years], "cell": 2, "cells": ["40_-94", ...]}
   data/field-scout/hail/<lat>_<lon>.json
       {"years": [...], "ev": [[lat, lon, size_in, "MM-DD", year], ...]}
-      Hail reports from data/hail/events-YYYY.json for closed years only
-      (every year before the newest events file), in 2 x 2 degree cells keyed
-      by the cell's south-west corner. A cell with no report has no file and is
-      not in "cells". The current year changes every month, so the page keeps
-      reading that one from the national file.
+      Hail reports from data/hail/events-YYYY.json for every year, the
+      current one included, in 2 x 2 degree cells keyed by the cell's
+      south-west corner. A cell with no report has no file and is not in
+      "cells". The current year changes with each hail run, and
+      .github/workflows/hail-data.yml rebuilds these cells in the same run
+      and commit, so the cells never lag the national file. (Until Oct 16,
+      2026 the current year was left out and the page read its 357 KB
+      national file on every field.)
 
   python3 scripts/build_field_scout_data.py           # write
   python3 scripts/build_field_scout_data.py --check   # exit 1 if the slices
@@ -87,7 +90,7 @@ def hail_slices():
     years = sorted(int(re.search(r"events-(\d{4})\.json$", f).group(1)) for f in files)
     if not years:
         return {}
-    closed = years[:-1]          # the newest year still changes every month
+    closed = years               # every year; hail-data.yml rebuilds the cells with each fetch
     cells = {}
     for y in closed:
         d = load("data/hail/events-%d.json" % y)
