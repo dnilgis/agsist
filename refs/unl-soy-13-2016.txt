@@ -1,0 +1,107 @@
+# Nebraska CropWatch: set soybean harvest goal of 13% moisture to aid profits (2016)
+# https://cropwatch.unl.edu/2016/set-harvest-goal-13-soybean-moisture-aid-profits
+# fetched 2026-10-16T02:47:42Z, sha256 ad75c4b823042eca7d47e9cb869cc5c54ffb2eda63f794f97dadaaff4ad2d93c
+
+Set Soybean Harvest Goal of 13% Moisture to Aid Profits | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+September 21, 2016
+
+Set Soybean Harvest Goal of 13% Moisture to Aid Profits
+
+By Randy Pryor - Extension Educator, Paul Jasa - Former Extension Engineer, Retired, Gary Zoubek - Emeritus Extension Educator
+
+Figure 1. Keep a careful eye on soybean moisture as the crop dries down. What appears to be wet from the road may be dry enough to harvest. Soybeans in right side of photo had a fungicide application, same variety, thus are staying green longer.
+
+Most soybeans are harvested and delivered directly to an elevator instead of being placed in on-farm storage. Too often, soybeans are harvested at moisture contents under the 13% definition of a standard bushel. The marketplace pays farmers as if they delivered soybeans at 13% moisture. That's why 13% moisture needs to be the goal — delivering soybeans below or above that goal reduces profits. Generally, when beans are 14% moisture or less, harvest can start, but as moisture increases and nears 15%, consider letting them dry slightly to closer to 13-14% moisture.
+
+Greater than 13%, there is a moisture dock on the scale ticket for delivering wet beans, resulting in a lower price per bushel. Less than 13%, there are fewer “bushels” to sell rather than a dockage on the ticket. There are fewer bushels because the load weight is divided by 60 pounds per bushel (assuming 13% moisture) rather than by the actual pounds per bushel for the moisture content of the beans at the time of delivery
+
+A study of farmer practices was conducted in Hamilton and York counties by former extension educators Andy Christiansen and Gary Zoubek. They collected information from 115 truckloads of soybean that were harvested and being delivered to the elevators. Of those sampled, 5 loads were less than 8.9% moisture; 14 loads were 9-9.9%; 28 loads were 10-10.9%; 27 loads were 11-11.9%; 29 loads were 12-12.9%; 9 loads were 13-13.9% and only 3% loads were 14-14.9% moisture.
+
+What difference does harvesting and selling soybeans at 8% or 9% compared to 13% moisture mean to your bottom line?
+
+If you sell soybeans at 8% moisture, you're losing about 5.43% of your yield; at 9% moisture, it's 4.4%; at 10% moisture, 3.3%; at 11% moisture, 2.25%; and at 12% moisture, it's 1.14% yield loss. That does not take into account additional risk for shatter losses during harvest. For a field that's yielding 75 bu/ac, harvesting it at 9% results in selling 3.3 fewer bushels per acre based on weight because you are not selling the water that you are entitled to sell if the beans were at 13% moisture. With soybeans priced at $9/bushel, that's a loss of about $30 per acre.
+
+So what can you do? Everyone knows that it is impossible to harvest all your soybeans at exactly 13%, but that should be your goal. Consider these soybean harvest tips:
+
+Figure 2. In a study of soybeans being delivered to elevators in two counties in south central Nebraska, only 8% were delivered at the target level of 13% moisture while 90% were delivered below 13% moisture and 2% were delivered over 13% moisture. While not all soybeans can be delivered at 13% moisture, that should be the goal.
+
+Table 1. Potential loss from delivering soybeans at less than 13% moisture.
+
+Moisture Level Potential
+Yield Reduction
+
+8% 5.4%
+
+9% 4.4%
+
+10% 3.3%
+
+11% 2.25%
+
+12% 1.14%
+
+Figure 3. The worn feeder house chain on the left won’t grip and pull green stemmed soybeans into the thresher as well as the new one on the right. Replace worn parts on the combine to keep the materials flowing through the machine during harvest.
+
+- When harvesting tough or green stems, make combine adjustments and operate at slower ground speeds. Make combine adjustments several times a day to match conditions as they change. The following combine adjustments are suggested when harvesting higher moisture soybeans or soybeans with green stems:
+
+- To increase “grip” on the green stems to pull them through the combine, replace rounded or worn parts in the thresher, especially worn feeder house chains (Figure 3) and rasp bars.
+
+- Increase cylinder/rotor speed to make threshing more aggressive to break open green pods and pull the green material through. Do not close down concave clearance as that reduces room for the green materials to pass through the thresher.
+
+- Insert filler plates or wires in the front portion of the concave to keep the green pods in the cylinder/rotor chamber longer for better threshing. If not, the pods will fall through to the sieves unopened. Consider closing down the top sieve slightly to send the green pods out the back if you are not threshing them properly.
+
+- Increase fan speed as the green stems are heavier and need more airflow to keep them suspended above the sieves to allow for proper cleaning and to blow the green leaves out.
+
+- Close down the lower sieve slightly to keep green pods out of the grain tank and send them back to the cylinder/rotor for rethreshing.
+
+- Install disrupter bars on rotary combines to improve green stem flow through the rotor and to reduce “roping. On some rotary combines, you can retard the material flow by adjusting the vanes on the rotor cage or by installing reverser rasp bars to keep the material in the rotor longer to allow more time for threshing and separating.
+
+- Consider adding an air reel to the head to have airflow help feed the soybeans into the combine and reduce bunch feeding. More uniform feeding will improve threshing.
+
+- Begin harvesting at 14% or 15% moisture. What appears to be wet or green from the road may be dry enough to harvest. Try harvesting when some of the leaves are still on the plant as the beans may be drier than you think. Soybeans are fully mature when 95% of the pods are at their mature tan color. The moisture driven from the wet beans in the bottom of the bin will help rehydrate any dry beans in the top of the bin.
+
+- Harvest under optimum conditions. Moisture content can increase by several points with an overnight dew or it can decrease by several points during a day with low humidity and windy conditions. Avoid harvesting when beans are driest, such as on hot afternoons, to maintain moisture and reduce shattering losses. Harvesting immediately after a rain, if field conditions allow, will result in higher moisture contents. However, several wetting and drying cycles from rain events will make the soybeans more susceptible to shatter losses from pods splitting open.
+
+- Avoid harvest losses from shattering by harvesting before the beans become overly dry. Four to five beans on the ground per square foot can add up to one bushel per acre loss. Many times, the dock for delivering beans over 13% moisture content may be less the shatter losses from harvesting overly dry soybeans.
+
+- If there are green leaves and green pods in the grain, they are considered foreign matter at the marketplace which can result in dockage. If placed in on-farm storage, they can cause challenges in a grain bin at the edges. Avoid dockage and spoilage by doing the following:
+
+- Reset the combine as outlined above to provide a cleaner harvest.
+
+- Use a grain cleaner to remove the foreign matter before marketing or storage.
+
+- Use a grain spreader when putting beans into storage to better distribute any foreign matter.
+
+- In storage, operate the aeration fan to dry the leaves and green pods to a safe storage moisture content. The pods and green beans will dry quickly and help rehydrate any overly dry beans. The fans need to be operated for temperature management anyway.
+
+- Don’t place “all of your eggs in one basket” when it comes to selecting the maturity of soybean seed at planting time. Select your varieties and schedule your planting to spread out plant maturity and harvest. Plant your early maturing varieties first.
+
+Good luck and hopefully you'll have a safe harvest and an excellent crop of 13% moisture soybeans.
+
+-
+
+-
+
+-
+
+Subscribe to CropWatch
+
+Online Master of Science in Agronomy
+
+With a focus on industry applications and research, the online program is designed with maximum flexibility for today's working professionals.
+
+Learn More
+
+Explore our full collection of CropWatch articles.
+Explore Articles

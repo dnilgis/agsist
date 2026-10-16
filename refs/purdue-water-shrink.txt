@@ -1,0 +1,80 @@
+# Purdue Corny News (Nielsen): grain moisture and water shrink
+# https://www.agry.purdue.edu/ext/corn/news/timeless/WaterShrink.html
+# fetched 2026-10-16T02:47:45Z, sha256 6a7bfd1d492aa54e32d2cb0cffdd23be2af642647d3d7e089e8799cedfec61c0
+
+Converting Wet Corn Weight to Dry Corn Weight (Purdue University)
+
+Purdue
+Extension
+Agriculture
+Agronomy
+The Kernel
+Corny News
+
+Updated July 2025
+
+URL: http://www.kingcorn.org/news/timeless/WaterShrink.html
+
+Converting Wet Corn Weight to Dry Corn Weight
+
+Alternative Title: Marketing Consequence of Selling Unusually Dry Grain
+
+R.L. (Bob) Nielsen
+
+Professor Emeritus & Retired Extension Corn Specialist
+
+Agronomy Dept., Purdue Univ.
+
+West Lafayette, IN 47907-2054
+
+Email address: rnielsen at purdue.edu
+
+Corn grain is composed of dry matter (the important stuff) plus a certain amount of water. In other words, some of the "grain" weight that farmers sell to the grain buyer is actually water, not dry matter. The term "% moisture" refers to the percentage of the total weight of a specific volume of corn grain that is water. Boerner (1916) provided a pictorial diagram (below) that nicely illustrated the concept of the proportions of dry matter and water in five railroad grain cars filled with corn. For example, if the grain moisture content was 20%, that would be equivalent to four grain cars of absolute dry matter and one grain car of water (second row of diagram).
+
+Source of diagram: Boerner (1916).
+
+Corn grain is sold on the basis of weight converted to 56-lb "bushels". Understand that the term "bushel" in this context does not refer to a volume bushel (e.g., a bushel basket). Farmers are simply paid for 56-lb "chunks" of grain regardless of volume.
+
+Grain buyers typically prefer to purchase corn grain at moisture contents no greater than 15% moisture. In other words, grain buyers are willing to pay farmers for the weight of water in delivered grain up to 15% moisture content. However, corn is often harvested at grain moisture contents greater than the 15% moisture. To avoid paying for the unwanted weight of water in "wet" grain (greater than 15% moisture) delivered to the elevator, grain buyers will mathematically "shrink" the weight of "wet" grain to the equivalent weight of "dry" grain (15% moisture) and then divide that weight by 56 to calculate the "bushels" of grain they will purchase from the grower.
+
+The two sources of weight loss due to mechanical drying are 1) the weight of the moisture (water) removed by the drying process and 2) the anticipated weight loss resulting from the loss of dry matter that occurs during the grain drying and handling processes (e.g., broken kernels, fines, foreign materials). An exact value for the handling loss, sometimes called "invisible shrink", is difficult to predict and can vary significantly from one grain buyer to another. For a lengthier discussion on grain weight shrinkage due to mechanical drying, see Hicks and Cloud (1991).
+
+The simple weight loss due to the removal of grain moisture represents the greatest percentage of the total grain weight shrinkage due to drying and is easily calculated using a handheld or smartphone calculator. In general terms, you first convert the "wet" weight (greater than 15% moisture) to absolute dry weight (0% moisture). Then you convert the absolute dry weight back to the market-standard "dry" weight of 15% grain moisture.
+
+Concept:
+
+- The initial percent dry matter content depends on the initial grain moisture content. For example, if the initial grain moisture content is 20%, then the initial percent dry matter content is 80% (e.g., 100% - 20%).
+
+- If the desired ending grain moisture content is 15% (the typical market standard), then the desired ending percent dry matter content is 85% (100% - 15%).
+
+- Multiply the weight of the "wet" grain by the initial percent dry matter content, then divide the result by the desired ending percent dry matter content.
+
+- Finally, divide the "dry" weight by 56 to determine "dry" bushels of grain.
+
+Example:
+
+- 100,000 lbs of grain at 20% moisture = 80,000 lbs of absolute dry matter (i.e., 100,000 x 0.80).
+
+- 80,000 lbs of absolute dry matter = 94,118 lbs of grain at 15% moisture (i.e., 80,000 ÷ 0.85).
+
+- 94,118 lbs of grain at 15% moisture = 1681 bu of grain at 15% moisture (i.e., 94,118 ÷ 56).
+
+Bottom Line
+
+Recognize that the fact that grain buyers purchase corn grain on the basis of 15% grain moisture content means that the grain trade allows you to sell water in the form of grain moisture up to the maximum market-standard 15% grain moisture content (or 14% for long term storage). In the preceding example, the difference in weight between 80,000 lbs of absolute dry matter and 94,118 lbs of grain at 15% moisture content is the weight of water in the grain you are selling to the buyer.
+
+AVOID THIS IMPLICIT WEIGHT PENALTY!
+
+Unfortunately, grain buyers do not apply "reverse shrink" calculations for grain delivered at moisture contents lower than the market-standard 15%. If you deliver corn to the elevator at grain moisture contents lower than 15%, you will be paid for fewer pounds (i.e., less water weight) than if you were delivering grain at 15% moisture content. In other words, there is an implicit weight penalty to farmers for delivering unusually dry grain to the elevator. Take advantage of this fact and maximize your "marketable" grain weight by delivering corn grain to the elevator at moisture levels no lower than 15% moisture content. Hill and Otte (2017) provide a more detailed discussion on this issue.
+
+Citations and related reading
+
+Boerner, E.G. 1916. The intrinsic values of grain, cottonseed, flour, and similar products, based on the dry-matter content. U.S. Dept. of Agriculture Bulletin No. 374, Washington D.C. https://www.biodiversitylibrary.org/bibliography/108182 [URL accessed Jul 2025]
+
+Glewen, Keith, Paul Jasa, and Jenny Rees. 2020. Plan Harvest to Deliver Soybeans at the Optimum Moisture. Cropwatch, Univ Nebraska Extension. http://cropwatch.unl.edu/2017/plan-harvest-deliver-soybean-optimum-moisture [URL accessed Jul 2025]
+
+Hicks, D.R. and H.A. Cloud. 1991. Calculating Grain Weight Shrinkage in Corn Due to Mechanical Drying. National Corn Handbook Publication NCH-61. https://www.extension.purdue.edu/extmedia/nch/nch-61.html [URL accessed Jul 2025]
+
+Hill, Lowell and John Otte. 2017. How much grain are you giving away each year? FarmProgress, InformaMarkets. https://www.farmprogress.com/farming-equipment/how-much-grain-are-you-giving-away-each-year- [URL accessed Jul 2025]
+
+Nielsen, RL (Bob). 2021. Grain Test Weight Considerations for Corn. Corny News Network, Purdue Extension. http://www.kingcorn.org/news/timeless/TestWeight.html [URL accessed Jul 2025]

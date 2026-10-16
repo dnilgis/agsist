@@ -1,0 +1,146 @@
+# Nebraska CropWatch: harvest soybeans at 13% moisture
+# https://cropwatch.unl.edu/harvest-soybeans-13-moisture
+# fetched 2026-10-16T02:47:39Z, sha256 140253bc5b0215cff2e3bbe10c7f8d8ac862b0453cb024fe5706f5f2dad84e3b
+
+Harvest Soybeans At 13% Moisture | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Harvest Soybeans At 13% Moisture
+
+January 6, 2009
+
+Thomas Dorn, Extension Educator
+
+Expected extra profit: $11.48 per acre
+
+Assuming soybeans are sold at 13% moisture instead of 11% and price is $8.50 per bushel.
+
+Harvesting soybeans can be a combination of art, luck and skill. How you develop the art and skill might earn you big dividends at the elevator. It is more common for soybeans to be harvested and delivered to the elevator at 10% moisture than it is for them to come in at the "desired" 13% moisture. Figure 1 shows the results of a survey from several farms in south-central Nebraska where 115 loads of soybeans were harvested and delivered to the elevator in 2004.
+
+Figure 1. Frequency of different moisture contents for 115 loads of soybeans harvested in 2004.
+
+When a crop such as soybeans is delivered to the buyer, any difference between actual and desired moisture content in the grain will result in lost revenue to the grain producer. Beans testing over 13% moisture are assigned a penalty that is shown directly on the scale ticket. Beans testing under 13% moisture are accepted by the buyer at face value with the assumption that 60 pounds of soybeans constitutes a bushel.
+
+Here's how the loss occurs from delivering beans that are too dry. Let's start with a standard bushel of soybeans. By definition, a standard bushel of soybeans weighs 60 pounds and is 13% moisture. Since 13% of the weight is water, only 87% is dry matter. The dry matter in a standard bushel is 52.2 lb (60 lb x 0.87) and the remaining 7.8 lb is water.
+
+If you kept this bushel of soybeans in an open basket and allowed some moisture to evaporate, the net weight would decrease. If the dry matter weight remains unchanged at the standard 52.2 lb, the wet basis weight for any moisture content can be calculated. For example, a standard bushel at 13% moisture (87% dry matter) weighs 60 lb. If the moisture content were reduced to 11% (89% dry matter), the wet basis weight of the soybeans would be 52.2 lb of dry matter divided by 0.89 = 58.65 lb. For each 52.2 lb of dry matter delivered at 11% moisture, you miss an opportunity to sell 1.35 lb of water (60 - 58.65 lb).
+
+It is standard practice for buyers to assume 60 pounds of soybeans constitutes a bushel when soybeans are at or below 13% moisture. When the beans are below 13%, the difference in water content is made up for by an equal number of pounds (wet basis) of soybeans.
+
+In the table, the "Wet wt, lbs" line shows the wet basis weight of a bushel of soybeans containing 52.2 pounds of dry matter plus the water content to bring the moisture to the stated level. The next line in the table (lbs lost) shows the pounds of soybeans per bushel being substituted for water when the moisture content is below 13%. The bottom line ($/acre) is the potential extra profit the producer could realize if the beans had been harvested at 13% moisture instead of the lower moisture content (assuming a 60 bu/ac yield and selling price of $8.50 per bushel).
+
+Table 1. Potential added profit if selling soybeans at 13% moisture rather reduced moisture levels (assuming 60 bu/aca and $8.50/bub).
+
+% Moisture
+
+7
+
+8
+
+9
+
+10
+
+11
+
+12
+
+13
+
+Wet wt, lbs
+
+56.13
+
+56.74
+
+57.36
+
+58.00
+
+58.65
+
+59.32
+
+60.00
+
+Lbs lost
+
+3.87
+
+3.26
+
+2.64
+
+2.00
+
+1.35
+
+0.68
+
+0.00
+
+$/Acre
+
+$32.90
+
+$27.71
+
+$22.44
+
+$17.00
+
+$11.48
+
+$5.78
+
+$0.00
+
+a) Adjusting Table 1 for Different Yields. To convert the potential profit numbers to other yields, divide your expected yield by the assumed yield of 60 bushels per acre, then multiply the result by the $/acre. For example, if you expect a yield of 70 bushels per acre, you can estimate the potential profit for 13% moisture vs 11% moisture as follows: 70/60 bushels/acre = 1.167. At 70 bushels per acre, the potential extra profit is $11.48 x 1.167 = $13.40 / acre.
+
+b) Adjusting Table 1 for Different Grain Prices. To convert from $8.50 per bushel to another price, divide your expected price by $8.50, then multiply the result by the potential profit estimates in the bottom line of the table. For example, if you expect a soybean price of $10.00 per bushel and a yield of 60 bushels per acre, you can estimate the potential profit for 13% vs 11% moisture as follows: $10.00 / $8.50 = 1.177; then multiply 1.177 x $11.48 ($/acre savings) = $13.51.
+
+c) Adjusting for Both Yield and Price. Assuming your yield is 70 instead of the assumed 60 bushels per acre and your price is $10.00 instead of the assumed $8.50 per bushel, the potential extra profit is the product of the two correction factors from a and b multiplied by the $/acre in the table. 1.167 x 1.177 = 1.374; then, to estimate the potential profit increase per acre, multiply 1.374 x $11.48 = $15.77.
+
+Managing Harvest to Reduce Dry-down and Shattering Losses
+
+Rapid dry-down and difficulty harvesting green stems and pods are the most common reasons for harvesting at lower than standard moisture. The following practices can help producers maintain quality and expected moisture content. These practices do have a cost in time and labor but that cost should be weighed against the potential benefit of selling soybeans at 13% and reducing harvest losses.
+
+- Adjust harvest practices. When harvesting tough or green stems, make combine adjustments and operate at slower speeds.
+
+- Begin harvesting at 14% moisture. What appears to be wet from the road may be dry enough to harvest. Try harvesting when some of the leaves are still dry on the plant; the beans may be drier than you think. Soybeans are fully mature when 95% of the pods are at their mature tan color.
+
+- Plan your planting and variety selection to spread out plant maturity and harvest.
+
+- Harvest under optimum conditions. Moisture content can increase by several points with an overnight dew or it can decrease by several points in low humidity, windy conditions. Avoid harvesting when beans are the driest, such as on hot afternoons, to maintain moisture and reduce shattering losses.
+
+- Avoid harvest losses from shattering. Four to five beans on the ground per square foot can add up to one bushel per acre loss. If you are putting beans in a bin equipped for drying grain, start harvesting at 16% moisture and aerate down to 13%. Harvest at a slow pace and make adjustments to the combine to match conditions several times a day as conditions change.
+
+Acknowledgement
+
+This revision is based on Harvest Soybeans at 13% Moisture in Ten Ways to Boost Profits by $10 per Acre (EC196) by Andrew Christiansen, Extension Educator, published by University of Nebraska-Lincoln Extension in 2006.
+
+-
+
+-
+
+-
+
+Subscribe to CropWatch
+
+Online Master of Science in Agronomy
+
+With a focus on industry applications and research, the online program is designed with maximum flexibility for today's working professionals.
+
+Learn More
+
+Explore our full collection of CropWatch articles.
+Explore Articles

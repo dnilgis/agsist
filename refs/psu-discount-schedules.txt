@@ -1,0 +1,450 @@
+# Penn State Extension: understanding grain discount schedules
+# https://extension.psu.edu/understanding-grain-discount-schedules
+# fetched 2026-10-16T02:47:49Z, sha256 c27b546fa8646bd979e7458d660e40a6717cb7dd9661cfa14588beb6fe794cab
+
+Understanding Grain Discount Schedules
+
+Articles
+
+Understanding Grain Discount Schedules
+
+Discount schedules vary from mill to mill and can be hard to understand; this article will help you gain confidence in interpreting this year's weigh tickets and marketing next year's grain.
+
+Save for later Print
+
+- Share
+
+-
+
+-
+
+-
+
+Updated:
+June 24, 2026
+
+Skip to the end of the images gallery
+
+Price paid for grain will vary depending on how a buyer handles moisture and contaminants. Photo credit: Heidi Reed
+
+Skip to the beginning of the images gallery
+
+When it comes to settling the books after harvest and you start looking at your weigh tickets, it can be unclear just where all the numbers are from and how your payout will be calculated, especially if you work with multiple buyers. Figuring out how your buyers value your grain can help you position yourself more favorably in the marketplace. The following paragraphs review some key terms and calculations for understanding discount schedules.
+
+It might be helpful for you to grab a weigh ticket of your own to follow along.
+
+Some Things Are Standard
+
+The first value common to all weigh tickets, regardless of mill, is the gross weight, sometimes called the "heavy" weight or weight of the full truck coming in. A representative sample of grain is taken from the truck, and test weight, percent moisture, and foreign matter are determined. These factors will be discussed later. Once the grain is unloaded, the truck re-enters the scales to determine the tare weight, sometimes called the "light" weight, or weight of the empty truck going out. The difference between the heavy and light weights gives us our net weight, or how many pounds of grain were delivered, not considering moisture content.
+
+Since we deal with grain on a volume basis, we need to convert our net weight to volume bushels, or the amount of grain in 1.244 cubic feet. We do so by dividing the net weight of the load of grain by a standard test weight, or the pounds of grain that fit into those 1.244 cubic feet at a standard moisture content. Standard test weights and corresponding standard moisture content for selected grains are shown in the table below.
+
+Table 1. Standard Test Weight and Standard Moisture of Common Crops.
+
+Crop
+Standard Test Weight
+
+(Pounds per Bushel)
+Standard Moisture
+
+(Percent)
+
+Corn
+
+56
+
+15.5
+
+Soybeans
+
+60
+
+13
+
+Wheat
+
+60
+
+13.5
+
+Barley
+
+48
+
+14.5
+
+Oats
+
+32
+
+14
+
+It's important to remember that these are not the same as the test weight and moisture values given on your weigh ticket. These standards were established by the USDA and are not based on your truckload. Once we divide our net weight by the standard test weight, we are left with gross bushels.
+
+Now It Depends Where You Go
+
+One method is to next account for shrink, which has two components: drying shrink and foreign material shrink. Drying shrink is the weight that will be lost by drying "wet" grain down to the standard moisture—the larger the difference between the measured "wet" and standard moisture, the more water will be lost, and thus greater shrinkage will be experienced during drying. Details on calculating drying shrink are available in this excerpt from the National Corn Handbook. A drying/handling fee is often also applied to cover the cost of drying the grain down to the standard moisture.
+
+The USDA's definition of foreign material (FM) varies by crop but typically includes anything other than the crop that falls through sieves specifically sized for each crop—this may include pods, stones, weed seeds, other crop seeds, dirt clumps, etc. FM over the buyer's threshold (sometimes there is zero tolerance for FM) will result in another shrinkage calculation. If the buyer uses the shrinkage method, they typically reference a table like the one shown in this sample discount schedule.
+
+PSU Mills, Soybean Discount Schedule. (Effective June 1, 2019)
+
+Moisture%
+Shrink %
+
+13.1-13.5
+0.5
+
+13.6-14.0
+1.0
+
+14.1-14.5
+1.5
+
+14.6-15.0
+2.0
+
+15.1-15.5
+2.5
+
+15.6-16.0
+3.0
+
+16.1-16.5
+3.5
+
+16.6-17.0
+4.0
+
+17.1-17.5
+4.5
+
+17.6-18.0
+5.0
+
+18.1-18.5
+5.5
+
+18.6-19.0
+6.0
+
+19.1-19.5
+6.5
+
+19.6-20.0
+7.0
+
+*Moisture over 20% subject to rejection
+
+Drying Fee: $0.02/Bu for each 0.5% above 13%
+
+Test weight: -0.01/Bu for each point under 54.0
+
+FM: Foreign Material from 1.0%-3.0% will be deducted from the gross weight. Foreign material above 3.0% is subject to the following deductions:
+
+FM (%)
+Deduction
+
+3.1-4.0%
+4%
+
+4.1-5.0%
+5.5%
+
+5.1-6.0%
+7.0%
+
+6.1-7.0%
+9%
+
+7.1-8.0%
+Rejectable
+
+The total shrink is then subtracted from the gross bushels and is shown as net bushels on the weigh ticket. This is one way a mill avoids paying for excess water and unwanted materials that can bulk up a truckload of grain.
+
+Alternatively to the shrink method, a mill might assign a moisture discount factor, which is a tiered deduction from the selling price of each bushel. An example of this type of discount schedule is shown below.
+
+Reed Mills,Inc., Soybean Discount Schedule. (Effective June 1, 2019)
+
+Moisture%
+Discount per Bushel
+
+13.1-13.5
+$0.13
+
+13.6-14.0
+$0.26
+
+14.1-14.5
+$0.39
+
+14.6-15.0
+$0.52
+
+15.1-15.5
+$0.65
+
+15.6-16.0
+$0.78
+
+16.1-16.5
+$0.91
+
+16.6-17.0
+$1.04
+
+17.1-17.5
+$1.17
+
+17.6-18.0
+$1.30
+
+18.1-18.5
+$1.43
+
+18.6-19.0
+$1.56
+
+19.1-19.5
+$1.69
+
+19.6-20.0
+$1.82
+
+*Moisture over 19% subject to rejection
+
+Test Weight: -$0.01/Bu for each point under 54.0
+
+FM: less than 3.9% no discount, -$0.1/Bu for each percent between 4.0-10.0%, rejected greater than 10%
+
+Once moisture is accounted for either through shrink or moisture discounts, further discounts may be applied. For example, if the measured test weight (TW) falls below the allowable minimum, the grain price will be discounted according to the buyer's policy, often one or so cents per point below the threshold. This test weight determined from the representative sample taken upon arrival at the scales is what appears on the weigh ticket, and is how many pounds of your grain at its current moisture (not the standard moisture) fit into that 1.244 cubic feet, or bushel, mentioned earlier. If FM was not accounted for in shrinkage, it can also be discounted at this point.
+
+Depending on mill policy, other miscellaneous discounts may be applied, for any of the following: aflatoxins, musty of sour grain, moldy or heat damaged grain, commercially objectionable foreign odor (COFO), or live or dead insects. Outright rejection of a load of grain may occur for any type of dockage that exceeds mill thresholds.
+
+Putting It All Together
+
+Two simplified sample weigh tickets, and payouts from the same load of soybeans taken to two different mills are listed below. Discount schedules from the two example mills above will be used.
+
+Example 1—PSU Mills, Shrink Method, Soybeans:
+
+PSU Mills Weigh Ticket
+
+Soybeans
+
+- Gross Wt: 50,000
+
+- Moisture: 16.1
+
+- Tare Wt: 20,000
+
+- TW: 53.9
+
+- Net Wt: 30,000
+
+- FM: 3.1
+
+- Gross Bushels: 500
+
+- Spot Price: 9.00
+
+- Net Bushels: 462.5
+
+____________________________________________________
+
+- Calculate net weight
+
+- 50,000 pounds –20,000 pounds = 30,000 pounds
+
+- Calculate gross bushels
+
+- 30,000 pounds ÷ 60 pounds per bushel = 500 gross bushels
+
+- Calculate moisture shrink
+
+- 0.035 (from table) × 500 gross bushels = 17.5 bushels moisture shrink
+
+- Calculate foreign material shrink
+
+- 0.04 (from table) × 500 gross bushels = 20 bushels FM shrink
+
+- Calculate drying charge
+
+- 16.1 percent - 13.0 percent = 3.1 percent above standard moisture
+
+- 3.1 percent ÷ 0.5 percent (from table) = 6.2
+
+- 7 (rounded 6.2 up to next whole number) × $0.02 per each 0.5 percent per bushel = $0.14 drying charge per gross bushel
+
+- 500 gross bushels × $0.14 = $70.00 drying charge
+
+- Calculate net bushels or dry saleable bushels
+
+- 500 gross bushels – (17.5 bushels moisture shrink + 20 bushels FM shrink) = 462.5 net bushels
+
+- Calculate test weight discount
+
+- 54 pounds per bushel minimum allowable TW – 53.9 pounds per bushel = 0.1 bushels under minimum allowable TW
+
+- $0.01 discount per point under minimum × 0.1 × 10 = $0.01 discount per gross bushel
+
+- $0.01 discount per gross bushel × 500 gross bushels = $5.00 test weight discount
+
+- Calculate other discounts (damage/splits/misc.)
+
+- No other discounts applied
+
+- Calculate gross payment without discounts and drying charges
+
+- 462.5 net bushels × $9.00 spot price = $4,162.50 gross payment
+
+- Calculate net payment
+
+- $4,162.50 gross payment – ($70.00 drying charge + $5.00 TW discount) = $4,087.00 net payment for load
+
+Example 2—Reed Mills, Inc., Moisture Discount Method, Soybeans
+
+Reed Mills, Inc. Weigh Ticket
+
+Soybeans
+
+- Gross Wt: 50,000
+
+- Moisture: 16.1
+
+- Tare Wt: 20,000
+
+- TW: 53.9
+
+- Net Wt: 30,000
+
+- FM: 3.1
+
+- Gross Bushels: 500
+
+- Spot Price: 9.00
+
+_______________________________________________
+
+- Calculate net weight
+
+- 50,000 pounds –20,000 pounds = 30,000 pounds
+
+- Calculate gross bushels
+
+- 30,000 pounds ÷ 60 pounds per bushel = 500 gross bushels
+
+- Calculate moisture discount
+
+- $0.91 moisture discount per gross bushel (from table) × 500 bushels = $455.00 total moisture discount
+
+- Calculate foreign material discount
+
+- No FM discount applied
+
+- Calculate test weight discount
+
+- 54 pounds per bushel minimum allowable TW – 53.9 pounds per bushel = 0.1 bushels under minimum allowable TW
+
+- $0.01 discount per point under minimum × 0.1 × 10 = $0.01 discount per gross bushel
+
+- $0.01 discount per gross bushel × 500 gross bushels = $5.00 test weight discount
+
+- Calculate other discounts (damage/splits/misc.)
+
+- No other discounts applied
+
+- Calculate gross payment without discount
+
+- 500 gross bushels × $9.00 spot price = $4,500.00 gross payment
+
+- Calculate net payment for load
+
+- $4,500.00 gross payment – ($455.00 moisture discount + $5.00 TW discount) = $4,040.00 net payment for load
+
+For this exercise, if hauling costs are equal, the payout from PSU Mills (example 1) is $50 higher than Reed Mills, Inc. (example 2).
+
+Many variations on discount schedules are currently in use. Your mill should readily share its discount schedule with you and be happy to explain any portion you're unsure about. This is a great topic to cover over the winter so you can prepare for the next harvest season. Understanding and regularly reviewing your buyers' discount schedules can help you make smart marketing decisions and improve cash grain profitability.
+
+References
+
+Hicks, D.R., and H.A. Cloud. "Calculating Grain Weight Shrinkage in Corn Due to Mechanical Drying." National Corn Handbook fact sheet NCH-61
+
+Staton, M. "Understanding Soybean Discount Schedules." Michigan State University Extension.
+
+Agenda
+
+Authors
+
+Heidi Reed
+
+Extension Educator, Agronomy
+
+Expertise
+
+- Cover crops
+
+- Planting green
+
+- Soil health
+
+- Pasture management
+
+- Grain crop production
+
+- On-Farm Research
+
+More By Heidi Reed
+
+Ask Tilva™
+
+Your trusted source for science-based answers—now powered by PlantVillage+
+
+Ask Tilva™
+
+You may also be interested in ...
+
+Guides and Publications
+
+The Penn State Agronomy Guide
+
+Starting at $15.00
+
+Online Courses
+
+Agronomy Scout School: Crop Scouting Fundamentals
+
+$149.00
+
+Online Courses
+
+Pennsylvania Certified Crop Adviser Study Guide
+
+$99.00
+
+Videos
+
+Grain Drill Calibration
+
+Articles
+
+How to Become an Aerial (Drone) Pesticide Applicator
+
+Articles
+
+Summer Cover Crop Options
+
+Articles
+
+Evaluating Nodulation in Soybeans
+
+Articles
+
+Early Season Herbicide Injury to Corn
+
+Articles
+
+Wheat Stand Assessment
+
+Articles
+
+Growing Corn and Corn Silage on a Budget

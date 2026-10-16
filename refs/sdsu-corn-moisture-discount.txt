@@ -1,0 +1,89 @@
+# SDSU Extension: corn grain moisture discount, why and how much
+# https://extension.sdstate.edu/corn-grain-moisture-discount-why-and-how-much
+# fetched 2026-10-16T02:47:51Z, sha256 3a7f5bf8e358224e92543fd34a46334fb28b8205faa3056aeee17f60134eb667
+
+Corn Grain Moisture Discount: Why and How Much?South Dakota State University extension logoSouth Dakota State University extension logoFacebook logoX logoYouTube logoInstagram logo
+
+-
+
+Corn Grain Moisture Discount: Why and How Much?
+
+Corn marketed at the standard moisture content of 15.5% and 56 pounds per bushel typically contains 47.3 pounds of dry matter and 8.7 pounds of water. At harvest, a producer has to decide whether to sell (or even store) his corn at ‘as is’ moisture content or mechanically dry before taking it to the buyer. For proper storage, grain moisture content has to be reduced to acceptable levels. Corn at 15.5% can be stored up to six months, 14% up to 12 months and 13% for more than one year. Total weight loss while drying grain to desirable moisture levels is called ‘shrink’ and grain buyers usually take this into consideration to estimate how much actual grain they will have after it is dried down.
+
+Moisture Shrink, Shrink Factor, and Total Shrink
+
+Moisture Shrink
+
+Moisture shrink can be calculated by the following formula:
+
+1 − [ (100 − Initial Moisture) ÷ (100 − Final Moisture) ] × 100%
+
+For example: Corn with 25% initial moisture and 15.5% (final moisture) after drying has a moisture shrink of 11.24%
+
+Moisture Shrink Factor
+
+Moisture Shrink Factor is determined as:
+
+100 ÷ (100 − Final Moisture)
+
+From the example above, water shrink is calculated as 1.18% for each point of moisture removed when the final moisture is 15.5%. Table 1 shows the moisture shrink factor when drying corn grain at different moistures.
+
+Table 1. Moisture shrink factor when drying corn grain at different moistures.
+
+Final Moisture Content (%)
+
+Shrink Factor (% Shrink per point)
+
+15.5
+
+1.18
+
+15
+
+1.18
+
+14
+
+1.16
+
+13
+
+1.15
+
+12
+
+1.14
+
+11
+
+1.13
+
+10
+
+1.11
+
+Total Shrink
+
+The total shrink accounts for both moisture shrink and handling loss. When shelled corn is dried from 25% to 15.5% total weight reduction is 11.24% of the original weight. When handling loss is added the total weight reduction would be greater than 11.24%. To estimate the total shrink or total weight loss grain buyers generally use a constant shrink factor which can range from 1.2% to 1.5%. The handling loss alone can range from 0.22 to 1.71% and the research shows that less than 1% handling loss is considered ‘reasonable’. This handling loss can vary depending on corn quality, drying method, and the handling throughout drying process. Generally, when the constant shrink factor increases, total handling loss also increases.
+
+Suggested Reading:
+
+- Hoeft, R.G., E.D. Nafziger, R.R. Johnson, and S.R. Aldrich. 2000. Modern Corn and Soybean Production. First Edition, MCSP Publications, Champaign, IL, USA.
+
+- D.R. Hicks, and H.A. Cloud. Calculating Grain Weight Shrinkage in Corn Due to Mechanical Drying. In: National Corn Handbook-61. Purdue Extension, Purdue University.
+
+Related Topics
+
+Farm Business Management, Harvesting Corn
+
+Crop Insurance
+
+The SDSU Extension crop insurance team is here to answer all questions related to crop insurance endorsements, as well as to provide information and materials needed to make crop insurance decisions.
+
+Grazing Corn Stalks to Combat Volunteer Corn Following Drought Periods
+
+The incidence of volunteer corn in subsequent crops tends to be greater following periods of drought. Utilizing livestock to graze corn residue following harvest is a strategic management practice to reduce volunteer corn in the following crop.
+
+Should We Sell Corn Stalks?
+
+Grazing and baling corn stalks may have financial and agronomic benefits for the landowner and provide feed resources for cattle producers. Learn how to determine if it's the right decision for your operation.

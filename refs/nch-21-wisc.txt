@@ -1,0 +1,399 @@
+# National Corn Handbook NCH-21: economics of on-farm corn drying
+# https://corn.aae.wisc.edu/Management/pdfs/NCH21.pdf
+# fetched 2026-10-16T02:47:53Z, sha256 23c45a782872f35f6c85ebc306257da077537d3c050e4ded681c5cbb912c3e41
+
+                                NATIONAL
+                                CORN
+                                HANDBOOK
+
+MARKETING & UTILIZATION                                                                                         NCH-21
+
+
+
+
+                   Economics of On-Farm Corn Drying
+                                   T. E. NiChols, Jr., North Carolina State Universlly
+
+                                                           Rs"/ewers
+                  C. M. Farmer. UnIVersity of Tennessee         J. W. Glover, North Carolma Stale Universlly
+                  D . E. Kenyon. Vlrgmia PolytechniC InSlilute  J. W. Uhng. Purdue Universlfy
+
+
+
+
+    Most corn coming out of the field at harvest                 taxes (.5%) and repairs (.5%). Table 1 compares
+must be mechanically dried by someone before it                  the annual ownership costs of similar -capacity
+can be marketed or put into storage. If the moisture             automatic batch and continuous flow heated -air
+content of corn taken to market is more than 15.5                grain dryers. The costs are shOwn on a per -bushel
+percent (the maximum for No.2 corn), the price                   basis for various quantities dried.
+paid for that corn will be adlusted by the prevailing
+moisture discount-usually around 2 percent of                    Operating Cost
+market price for each point above 15.5 percent.                      This includes the fuel for drying, electricity to
+    The corn producer generally can avoid moisture               run the fans and augers, and a reasonable charge
+discounts by drying grain on the farm prior to seil-             for operating labor.
+ing it. On -farm drying equipment not only allows                    The amount of fuel required to dry corn
+greater flexibility in marketing, but may also provide           depends on (1) initial and final moisture contents of
+some added income through custom drying.                         the grain, (2) type of drying system, (3) air -flow
+    However, if drying corn on the farm is to be                 rate, (4) drying air temperature and (5) outside
+profitable, its cost must be less than the discounts             atmospheric conditions. Table 2 shows the approx-
+in the market channel. Thus, before investing in                 imate BTUs needed to dry a bushel of corn from
+grain drying equipment, realistic estimates of costs             various beginning to ending moisture contents. As
+and returns are essential. The purpose of this pub-              you can see, the more moisture to be removed
+ication is to help you make those estimates.                    from the grain, the more BTUs required and the
+                                                                 higher the cost of drying.
+DETERMINING THE COSTS OF DRYING                                     Fuel cost per bushel can be estimated by
+     There are three major expenses involved in                  using the equation (Eq.1):
+on -farm corn drying: overhead cost (ownership of
+                                                                        F I     Ib _ BTUslbu. x unit cost 01 fuel
+the drying equipment), operating cost (fuel, electri-                    ue cost u. -   BTUslunit of fuel
+city and labor associated with the drying process),
+and shrinkage cost (weight loss that occurs in dry-              where:  BTUs! bu. is the drying requirement from
+ing). Here briefly is what each includes and how it                      Table 2.
+is figured.                                                              unit cost of fuef is the present fuel price.
+                                                                         BTUs!umt of fuef is 140,000 BTUs per
+Overhead Cost                                                            gallon for fuel oil, 92,000 BTUs per gallon
+   Generally, the annual cost of owning a grain                          for LP gas, and 1,000 BTUs per cubic foot
+dryer is estimated to be 18 -20 percent of its pur-                      for natural gas.
+chase price. The specific overhead items and their                  For example, assume corn IS to be dried from
+Rnnual "costs" as a percent of original price are:               25 percent down to 15.5 percent moisture In an
+depreciation (10%), interest (6%), insurance (1%),               automatic batch dryer using LP gas priced at 75
+cents per gallon. The cost per bushel for fuel would                              automatic batch dryer require 42.5 hp, that electri-
+be-                                                                               city costs 7 cents per kilowatt hour, and that rated
+15,829BTUs/bu.x$0.75/gal. -$0129   129    /b                                      drying capacity is 333 bushels per hour. The cost
+     92,000 BTUs/gal.        .   or . cts. u.                                     per bushel for electriCity would be-
+
+   Electricity cost per bushel can be calculated                                   42.5 hp x .90 kwh x $O.07!kwh
+                                                                                                                             $0008 or 0.8 cUbu.
+by the equation (Eq.2):                                                                      333 bu'/hr.
+
+    Electricity cost/bu. =       hp x .90 kwh x cost/kwh                             Labor cost per bushel can be determined from
+                                       bu. drled/hr.                              the equation (Eq.3)
+
+where:    hp is combined horsepower to operate                                                                      hourly wage x .50 hr.
+                                                                                            Labor cost! bu
+          fans and augurs.                                                                                              bu. dried/hr.
+          0.90 kwh is the conversion factor of hor-
+                                                                                  where:   hourly wage is the rate at which drying
+          sepower to kilowatt hours.
+                                                                                           labor can be hired.
+          cost! kwh is the present cost of electricity.
+                                                                                          0.50 hr. is the portion of labor time
+          bu. dried/ hr. is the rated drying capacity                                     charged to the dryer.
+          for the mOisture levels desired.                                                bu. dried/ hr is the rated drying capacity
+   For example, assume that 25 -percent -moisture                                         for the mOisture levels deSired.
+corn will be dried to 15.5 percent. that the com-                                    For example, assuming corn will be dried from
+bined heating and cooling fans and augers on an                                   25 to 15.5 percent mOisture in an automatic batch
+
+
+                                 Table 1. Approximate Annual Overhead Costs of Two
+                                 Heated-Air Grain Dryers af Various Usage Levels (1983 Dol-
+                                 lars).
+
+                                                Automatic batch dryera                                        b
+                                                                                       Continuous flow dryer
+                                 Bushels           with vaneaxil fan                     with centrifugal fan
+                                  dried          (price new-$28,526)                    (price new-$36,550)
+                                 annually       (annual COSf-$5,135)c                  (annual cost-$6,579)c
+                                                                             cenls/bushel
+                                   10,000                     51 3                                   658
+                                   20,000                     257                                    329
+                                   50.000                     103                                    13.1
+                                   75,000                      68                                     88
+                                  100,000                      51                                     66
+                                  200,000                      26                                     3.3
+                                  300,000                      17                                     2.2
+                                   a AulolYlatlc baler, With rated capacity of 479 bu " hr drying trorn 200/Q
+                                 tu 15'"/0 rnOlsturc and 333 bu.   '"1[,   from 25% to 15 u·o rnOlslurc
+                                   b Contmuous flow With ratcu capacity 01 500 bu./hr, drYing from 20 IJ o
+                                 10 15'''0 rnOlsture and 325 bu ,hr Irarn 2~uo to 1~~!o mOisture
+                                   c Annual overhead cost - prtce new x 18'-"0 (0_18)
+
+
+
+  Table 2. BTUs Required to Dry a Bushel 01 Corn."
+    Final                                          BTU. required when Initial moisture content la-
+  moisture
+  content       18%        19%       20%        21%       22%         23%          24%      25%       26%      27%        28%      29%      30%
+                                                                             BTUs/bushel
+      24%                                                                                              3,083    4,543      6,003    7,386    8,769
+      22 0:0                                                                       3.220     4.717     6,214    7,628      9,042   to,376   11.710
+      20%                                                 3,387       4,945        6.502     7,957     9,414   10,779     12,146   13,448   14,745
+      18%                      3.626            5,259     6,891       8.407        9.922    11.328    12,733   14,061     15,388   16,645   17,901
+      16%        3,910  5,665  7.420            9,008    10,596      12,051       13.506    14.874    16,241   17,513     18,784   19,986   21,188
+     .15.5%      4,972  6,709  8.445           10,019    11,593      13,035       14,477    15,829    17.180   18,442     19,704   20,894   22:083
+      15%        6,033  7,752  9.470           11,030    12,589      14,018       15.447    16,783    18.118   19,371     20,624   21,801   22,978
+      14%        8,156  9,838 11,519           13,051    14,582      15,985       17,388    18,691    19,994   21,229     22.463   23,616   24,768
+      13%       10.479 12.128 13,777           15,276    16,774      18,151       19,528    20,808    n08El    23,288     24.486   25,615   26,744
+      12%       12,801 14.418 16,034           17,500    18.966      20,317       21,667    22,925    24,182   25,346     26,509   27,614   28,719
+   "Assumes bushel IS at Initial mOisture content. air flow rale IS 100 cu.tt /bu. and air temperature IS 180 0 F
+    Source John Glover. ExtenSion Agricultural Engineer. North Carolina Slate UniverSity
+
+
+
+                                                                              2
+dryer with a 333 -bushel-per -hour rated capacity                        The cost of shrinkage is the number of pounds
+and labor is available at $4.25 per hour, the cost                  (or bushels) of grain lost In the drying process mul-
+per bushel for labor would be:                                      tiplied by corn's market price after drYing. A more
+                                                                    direct way of computing shrinkage cost is to use
+      $425/hr. x .50 hr.
+                              $0.0064 or 0.6 cUbu.                  the equation (EqA):
+          333 bu'/hr.
+                                                                      Shrinkage cost/bu ~ market price x pct. shrinkage
+   Total operating cost to dry corn from 25 to                                         . No.2 corn       (from Table 4)
+t 5.5 percent moisture in our example is 14.3 cents
+per bushel (12.9 + 0.8 + 0.6). Operating expenses                      For exarnple, if No.2 corn is $3.00 per bushel,
+to dry corn in batch and continuous flow dryers to                  and 25 -percent -moisture corn IS dried to 15.5 per-
+                                                                    cent, shnnkage cost per bushel would be-
+15.5 percent from other initial mOisture levels
+(assuming the same per-unit fuel, electricity and                      $3.00 x .1174 (11.74%) ~ $0.352 or 352 cUbu.
+labor costs) are shown in Table 3. If your
+equipment's drying capacity or any per -unit Input                       Table 5 shows the cost of shrinkage when dry-
+cost differs from that in the table, determine your                 ing corn to 15.5 percent mOisture from various ini-
+operating cost as described above.                                  tial mOisture levels and at various market prices. If
+                                                                    drying to other than 15.5 percent, use the equation
+Shrinkage Cost                                                      here to figure shrink value.
+    Although overhead and operating expenses are
+important, the principal "cost" of drYing corn is that
+due to shrinkage or weight loss. When corn is dried                 DETERMINING RETURNS TO DRYING
+fron) 25 percent moisture content to 15.5 percent,                  AND BREAKEVEN VOLUMES
+9.5 POints of moisture are removed; however, 11.74                  Returns to Drying
+percent of the onginal weight IS lost.                                  As mentioned at the outset, if corn is dned
+    Shrinkage due to mOisture removal always                        rather than sold wet, the commercial moisture
+exceeds the reduction in moisture percentage                        discount can be avoided. The discount schedule
+pOints, because it IS based on different total weights              for corn at most elevators in 1984 was 2.0 percent
+before and after drying. Table 4 shows the percent                  of base price per point of moisture In excess of
+weight loss in a bushel of gra'ln dried from various
+                                                                    15.5 percent, or stated as an equation (Eq.5):
+ beginning to vanous ending moisture contents.
+These figures Include actual moisture loss plus .5                     Moisture     discount x market price     moisture pIs.
+percent for dry matter loss.                                         discount/bu.      rate      No.2 corn x above 15.5%
+
+
+     Table 3, Estimated Operallng Costs for Drying Grain from Varying Initial Moisture Levels to 15,5 Per-
+     cent Using Automatic Batch Dryer and Continuous-Flow Dryer,
+                                     a                                                         b
+                          Batch dryer operating cost                      Continuous-flow dryer operating cost
+      Inilial
+     moisture                  Elec-                                                 Elec-
+     content      Fuelc       tricllyd    Labore      Total             Fuel
+                                                                               c    trlCllyd       Labore         Total
+                                                               cents per bushel
+
+       30°:'0      180         143         1 11        20.5             18.0          .96           1.06           202
+       29%         17.0        124           98        192              17.0          .84            .92           t 8.8
+       28"0        t6.l        1.09          87        18.1             16.t           74             82           t77
+       27%         150           97          77        16.7             15.0           66            .73           164
+       26~:o       14.0          88           70       15.6             14.0           60             66           15.3
+       25%         12.9          80           64       14.3             12.9           55            .61           14.1
+       24%         11.8          74           59       13.1             11 .8          51            .56           12.9
+       23%         10.6          68          .54       11 .8            10.6           47            .52           t 1.6
+       22°;0        9.5          64          .51       10.7              9.5          .44            48            104
+       21%          82           60           47        93               82           41              45             9.1
+       20°:'0       6.9         .56          .44        79               6.9          .38            .43             7.7
+       19%          5.5         .53          .42        6.5              5.5          .36             40             6.3
+       18%          41          .50           40        5.0              4.1          .34             38             4.8
+       a Automatic batch with rated capacity 01 479 bu'!hr drying 1rom 20% to 15% mOisture and 333 bu ihr from 25% to 15%
+     rnolsture
+       b Continuous ·flow with rated capacity 01 500 bu./ hr drYing trom 20% 10 15% mOisture and 325 bu ihr from 25% to 15%
+     mOlslure
+       c LP gas al $0,75:'gal
+       d Eleclrlclty al SO ali kwh
+       e Labor at $4 25/hr, with one-halt lime charged 10 dryer
+
+
+
+                                                                3
+
+
+
+
+                                                                          ,
+    For example, the commercial moisture discount                  market price figures most applicable to your situa-
+for marketing 25 -percent-moisture No. 2 corn                      ton.
+priced at $3.00 per bushel would be-
+  02 (2%) x S3.00/bu. x 9.5 pIs. = $0.57 or 57 cUbu.               Breakeven Volumes
+                                                                      The volume of corn that would be needed to
+    Gross returns to drying is the commercial                      break even (i.e., cover all drying costs) is deter-
+discount minus the value of shrinkage. In our                      mined by using the equation (Eq.6):
+example, that would be 21.8 cents per bushel (57 -
+35.2).                                                               Breakeven             annual overhead cost
+    Net returns to drYing is the gross returns minus                  volume       discount - (shrinkage + operating cost)
+the overhead (Table 1) and operating expenses
+(Table 3). Again using the example, If 75,000                         For example, if 25 -percent -moisture corn
+bushels a year were dried in a batch dryer, the net                batch-dried to 15.5 percent has a market price of
+return would be 0.7 cents per bushel [21.8 - (6.8 +                $3.00 per bushel, the volume needed to lustify the
+14.3)], or about equal to the cost of drying. How-                 dryer described in Table 1 having an annual over-
+ever, if tWice as much corn was dried, the profit                  head cost of $5,13468 would be:
+would be about 4 cents per bushel [21.8 - (3.4 +                            $5,134.68                $5,134.68
+14.3)]-which certainly is sufficient to justify on-                                                               68,462 bu.
+                                                                      $0.57 - (0.352 + 0.143)        $0075/bu.
+farm drying equipment.
+    The worksheet at the end allows you to deter-                     Thus, with an annual volume of about 68,500
+mine the profitability of drying vs. immediate mar-                bushels of corn, one would be ahead to purchase
+keting using drying cost, moisture discount rate and               the specified dryer rather than take the commercial
+
+
+   Table 4. Grain Shrinkage When Drying Irom Various Beginning to Ending Moisture Levels.'
+    Initial                                 Percent 01 shrinkage when grain Is dried to-
+   moisture
+   content        13.0%       13.5%       14.0%        14.5%        15.0%      15.5%       16.0%        16.5%       17.0%
+                                                                   percent
+     15.51)'0      3.37        2.81         2.24        1.67         1 09
+     16.0Q'o       3.95        3.39         283         225          1.68        1.09
+     16.5%         452         397          341         2.84         226         1.68        1 10
+     17.0°'0       5 10        455          3.99        342          285         228         1.69        1 10
+     17.5~!o       5.67        5 12         4.57        401          3.44        2.87        229         1 70         1.10
+     18.0',1'0     625         570          5.15        4.59         403         3.46        288         2.30         1.70
+     185 J ,o      6.82        628          573         518          462         405         348         2.90         2.31
+     19 QU·o       740         6.86         631         5.76         521         4.64        407         3.49         2.91
+     195 0 /0      7.97        744          690         635          5.79        523         4.67        4.09         3.51
+     200%          8.55        8.01         748         693          638         583         5.26        4.69         4.11
+     20.5%         9.12        8.59         806         7.52         6.97       642          5.86        529          4.72
+     21 _0"'0      9.70        9.17         864         810          7.56       701          645         5.89         5.32
+     21 .5°:0     1027         9.75         922         869          8.15       760          705         649          5.92
+     220%         10.84       10.33         9.80        927          874        8.19         7.64        7.09         6.52
+     22.5[1/0     1142        10.90        1038         9.86         932        8.78         8.24        7.69         7.13
+     23.mo        11 99       11 48        1097        1044          991        9.38         8.83        828          7.73
+     23 5 J,o     1257        1206         11 55       1103         1050        997          943         8.88         8.33
+     24.0 %       1314        1264         1213        11 61        11 09      1056         10.02        948          8.93
+     245%         1372        1322         1271        1220         1168       11 15        10.62       1008          9.54
+     250%         1429        1379         1329        1278         1226       11.74        11 .21      10.68        10.14
+     255%         1487        1437         1387        1337         1285       1233         11.81       1128         10.7~
+     260%         1544        1495         1445        1395         1344       1293         12.40       11.88       11.34
+     26.5%        1602        15.53        15.03       14.54        14.03      1352         1300        1248        11.95
+     27.0%)       16.59       16.11        1562        15.12        14.62      14.11        1360        1307        12.55
+     27.5%        1I.1l       16.68        1620        15 70        1521       14.70        1419        13.67       13.15
+     28.0%        17 14       1726         1678        1629         1579       1529         14.79       1427        13.75
+     28.5%        18.32       17.84        1736        16.87        16.38      15.88        15.38       14.87       14.36
+     29.0 D,o     1889        1842         1794        1746         16.97      1648         15.98        1547       14.96
+     29.5 J ,o    1947        1900         18.52       1804         17.56      17.07        16.57        1607       15.56
+     300%         2004        1958         19 10       18.63        18.15      17.66        17.17        16.67      16.16
+    • Shrinkage flgurus Include actual 'nOlslure loss plus ~ percent for dry rnattor loss
+      Source T E, N,chols Jr. Grain S~1rInkagc anu Conversion Tables. AG"182, North Carolina State University. June 1982
+
+
+
+                                                               4
+
+
+
+
+                                                                   IA         ,          ,
+                                                                                          11
+moisture discount. However, with less than that                            Also, it is not a good practice to mix overdry
+volume, it would pay to take the discount or con-                      corn with higher -moisture grain to arrive at an
+sider a dryer with a smaller annual ownership cost.                    "average" (e.g., mixing 12-percent and 16-percent
+                                                                       corn in order to market a 14-percent corn). This
+                                                                       practice results in a foreign matter content more
+A WORD ABOUT OVERDRYING
+                                                                       typical of 12 -percent -moisture corn.
+   Overdrying corn is an expensive practice. The
+market corn price is based on a "standard bushel,"
+which is 56 pounds of corn containmg 15.5 percent
+moisture. When corn is dried below this level, the                     SUMMARY
+producer loses pounds or bushels of gram without                           Costs of on -farm corn drying consist of three
+being compensated by a higher price. For example,                      components-overhead expenses, operating ex-
+at $3.00 per bushel, the producer loses about 5                        penses and weight loss or shrinkage. Farmers who
+cents per bushel for each point of moisture that is                    are considering drying their corn shOuld determine
+removed below 15.5 percent (1.6% x $3.00) plus                         what these costs will be and compare them with
+the additional drying cost.                                            the drying costs and moisture discounts at their
+    Besides the weight loss, overdrying reduces                        local elevators.
+dryer capacity and increases the chances of bro-                           At a 2 percent moisture discount rate, drying
+ken kernels and stress cracks in the grain, which                      corn is profitable at high initial moisture levels and
+may result in a discount for excessive foreign                         relatively high market prices. However, at low
+material. Corn dried to, say, 13.5 percent moisture                    market prices and/or at initial moisture content lev-
+content breaks much more easily during handling                        els below 20 percent, returns to drying may be
+than does corn at 15.5 percent moisture.                               uneconomical.
+
+
+    Table 5. Shrinkage Costs of Drying Com to 15.5 Percent from Various Initial Moisture Levels and at
+    Various Market Prices.
+     Grain                               Value of shrinkage" when Initial moisture content Is-
+    prlcel
+    bushel       16%        17%         18%        19%         20%         22%       24%       26%       28%       30%
+                                                               cents per bushel
+     $1.50        164       342         5.19        6.69        8.75       12.29     1584      1940      22.94    26.49
+     $1.60        1.74      365         554         7.42        933        13.10     16.90     20.69     24.46    2826
+     $1.70       185        388         588         7.89        9.91       13.92     17.95     2198      2599     30.02
+     $180        195        4.10        623         8.35       1049        14.74     19.01     2327      27.52    31.79
+     $190        207        4.33        6.57        8.82       11.08       15.56     20.06     24.57     2905     33.55
+     $2.00       2.18       4.56        6.92        928        11.66       16.38     2112      25.86     30.58    35.32
+     $2.10       229        4.79        727         9.74       1224        1720      22.18     27.15     32.11    37.09
+     $220        240        5.02        7.61       10.21       12.83       1802      2323      2845      33.64    38.85
+     $2.30       2.51       524         7.96       1067        1341        1884      2429      29.74     35.17    40.62
+     $240        2.62       547         8.30       11.14       1399        19.66     25.34     3103      36.70    4238
+     $2.50       2.73       5.70        8.65       11.60       14.58       2048      2640      32.33     3823     44.15
+     $2.60       2.83       5.93        9.00       12.06       1516        2129      2746      33.62     39.75    45.92
+     $2.70       2.94       6.16        9.34       12.53       15.74       2211      28.51     34.91     4128     47.68
+     $2.80       3.05       638         9.69       1299        1632        22.93     2957      3620      42.81    49.45
+     $2.90       3.16       6.61       1003        1346        1691        23.75     30.62     3750      44.34    5121
+     $3.00       327        6.84       10.38       13.92       1749        24.57     3168      38.79     45.87    52.98
+     $310        338        707        10.73       14.38       18.07       25.38     32.74     40.08     47.40    54.75
+     $320        3.49       730        11.07       14.85       18.65       2621      33.79     41.38     48.93    56.51
+     $3.30       3.60       752        1142        1531        1924        2703      34.85     42.67     50.46    5828
+     $340        3.71       7 75       11.76       15.78       19.82       27.85     35.90     43.96     51.99    60.04
+     $3.50       382        798        12 11       1624        2041        28.67     36.96     4526      53.52    61.81
+     $360        392        821        1246        16.70       2099        2948      38.02     46.55     5504     63.58
+     $3.70       403        844        1280        1717        21.57       30.30     3907      4784      56.57    65.34
+     S3.80       414        8.66       13 15       17.63       22.15       31.12     40.13     49.13     58.10    67.11
+     $3.90       425        8.89       1349        1810        22.74       31.94     41.18     50.43     59.63    68.87
+     $400        4.36       912        13.84       18.56       2332        32.76     4224      51.72     61.16.   7064
+     . Value 0+ shrinK.   market price x percentage shrinkage Itroln Table 4)
+
+
+
+
+                                                                  5
+
+
+
+
+                                                    tA
+                                                                  ,             1
+                                                                                11
+                                    Worksheet for Determining Returns to On-Farm Drying
+                                     vs. Marketing with a Commercial Moisture Discount
+                                             (Total of 75,000 Bushels Annually)
+
+                                                                                                       Our                         Your
+                                                                                                     example                       farm
+       Per-bushel net return (or loss) to drying
+         I. Markel price for No .2 corn
+                                                                                                   13. 00
+         2. Inilial moisture content
+         3. Final moisture content
+         4. Moisture POints removed (line 2 - line 3)
+         5. Percent shrinkage (Table 4)
+         6. Discount (2% x line I x line 4)
+         7. Value of shrink (line I x line 5)
+                                                                                                  1(J.3~
+         8. Amount left to cover operating and overhead costs
+            (line 6 - line 7)
+                                                                                                   "GJ.~J'
+         9. Operating cost (Tab le 3 or Eq. 1 + Eq. 2 + Eq 3)
+                                                                                                  ttJ./~.]
+        10 . Amount left to cover overhead cost (line 8 - line 9)
+                                                                                                  ~Ci. Ci 7S
+        11. Overhead cost (Table 1)
+                                                                                                  It!. 0'-;'
+        12. Net return to drYing (line 10 - line 11)
+                                                                                                   1#.O. tJo"1
+       Per-bushel prices received for dried vs. discounted corn
+        13. Price lor dried corn I line 1 - (lines 7 + 9 + 11)J
+        14. Price lor commercial discounted corn (line 1 - line 6)
+
+
+
+
+                                        A publication of Ihe National Corn Handbook Project
+
+                                                                                                                                         NEW 2185 ( SM)
+Cooperative ExtenSion Work In Agriculture and Home EconomiCS, State of Indiana, Purdue UniverSity and U .S. Depanmenl of Agriculture cooperating.
+H. A. Wadsworth, Director, West Lafayette. IN. Issued In furtherance 01 the Acts of May 8 and June 30,1914 It IS the policy 01 the Cooperative Exten-
+Sion Service 01 Purdue UnIVersity that all persons shall have equal opportunity and access 10 Its programs and faCI lities WithOut regard to race, colOI',
+                                                     sex. religion. national oflgm. age. or handicap
+
+
+
+                                                                            6
+
