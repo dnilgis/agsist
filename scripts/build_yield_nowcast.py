@@ -369,9 +369,9 @@ def held_back_record(prev, we, err, recorded):
         "need": err.need,
         "last_good_week": last,
         "recorded": recorded,
-        "reason": (f"No nowcast from the ratings for the week ending {we}: only {err.years} past "
-                   f"years had {err.crop} ratings that late in the season, and the error band needs "
-                   f"{err.need}. The figures shown are from the week ending {last}, the last ratings "
+        "reason": (f"No nowcast from the ratings for the week ending {we}: this late in the season "
+                   f"only {err.years} past years of {err.crop} ratings can be checked against the final "
+                   f"yield, and the error band needs {err.need}. The figures shown are from the week ending {last}, the last ratings "
                    f"week with enough history."),
     }
     return out
@@ -551,7 +551,7 @@ def _selftest():
     chk(hb["held_back"]["week_ending"] == "2026-10-11" and hb["held_back"]["backtest_years"] == 9
         and hb["held_back"]["need"] == 10 and hb["held_back"]["last_good_week"] == "2026-10-04",
         "the refusal records the week, the years it had and the years it needed")
-    chk("only 9 past years" in hb["held_back"]["reason"] and "\u2014" not in hb["held_back"]["reason"],
+    chk("only 9 past years of corn ratings" in hb["held_back"]["reason"] and "\u2014" not in hb["held_back"]["reason"],
         "the refusal says why in plain words")
     chk(held_back_record(prev, "2026-07-12", thin_err, "t3") is None,
         "mid-season thin history is a fault, not a refusal (still exits 1)")
