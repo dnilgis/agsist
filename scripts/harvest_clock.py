@@ -137,6 +137,24 @@ def hp_count(series):
     return len(vals), (round(sum(vals) / len(vals) + 1e-9, 2) if vals else None)
 
 
+def rma_through(series, rma_h, settled):
+    """The last settle RMA's posted running figure covers, or None.
+
+    RMA's figure is the plain mean of the contract's settles to the cent, the
+    same as ours, posted once a day, so it can run a settle or two behind
+    (Oct 15, 2026: ours $4.92 through Oct 15, RMA's $4.93 = the mean through
+    Oct 14). The date is the longest run of our settles, ending no later than
+    the last session settled when the RMA file was read, whose mean rounds to
+    RMA's figure. Only the last three such runs are tried: an older match
+    could be chance, and then no date is printed, never a guess."""
+    vals = [(_d(x.get("d")), float(x["s"])) for x in series or [] if x.get("s") is not None]
+    vals = [v for v in vals if v[0] and v[0] <= settled]
+    for k in range(len(vals), max(0, len(vals) - 3), -1):
+        if round(sum(s for _, s in vals[:k]) / k + 1e-9, 2) == round(rma_h, 2):
+            return vals[k - 1][0]
+    return None
+
+
 def _contract(row):
     m, y = str(row.get("h_mon") or ""), row.get("h_yr")
     return f"{m[:3]} '{str(y)[-2:]}" if m and y else ""
@@ -184,8 +202,9 @@ def build(rma, hp=None, today=None):
         (h, p), grp = max(by_px.items(), key=lambda kv: len(kv[1]))
         total = trading_days(a, b)
         ser = hp_series(hp, crop, hs, he)
-        rma_h, through = h, None
+        rma_h, through, rma_thr = h, None, None
         if ser:
+            rma_thr = rma_through(ser, rma_h, settled)
             done, own = hp_count(ser)
             if own is None:
                 continue
@@ -200,6 +219,7 @@ def build(rma, hp=None, today=None):
                       "start": hs, "end": he, "n_states": len({r.get("state") for r in grp}),
                       "all_states": len(by_px) == 1, "rma_harvest": rma_h,
                       "through": through.isoformat() if through else None,
+                      "rma_through": rma_thr.isoformat() if rma_thr else None,
                       "source": "settles" if ser else "rma"})
         lines.append(f"{crop} harvest price so far: ${h:.2f} vs ${p:.2f} projected "
                      f"({pct:+.1f}%), {done} of {total} trading days in.")
@@ -209,10 +229,25 @@ def build(rma, hp=None, today=None):
     own = [c for c in crops if c["source"] == "settles"]
     if own:
         thr = max(c["through"] for c in own)
-        note = (f"Average of the daily CBOT settles through {md(_d(thr))}, figured the way USDA RMA does."
-                + "".join(f" RMA posts {c['crop'].lower()} at ${c['rma_harvest']:.2f}." for c in own
-                          if round(c["rma_harvest"], 2) != round(c["harvest"], 2))
-                + f" Window and projected price: USDA RMA, as of {md(asof)}.")
+        # Every figure carries its own through date (2026-10-16: the Daily
+        # printed RMA's $4.93 beside our $4.92 "as of Oct 15" with no date,
+        # and RMA's covered one settle fewer).
+        diff = [c for c in own if round(c["rma_harvest"], 2) != round(c["harvest"], 2)]
+        rma_txt = ""
+        if diff:
+            figs = [f"{c['crop'].lower()} at ${c['rma_harvest']:.2f}" for c in diff]
+            joined = figs[0] if len(figs) == 1 else ", ".join(figs[:-1]) + " and " + figs[-1]
+            thrs = {c["rma_through"] for c in diff}
+            if len(thrs) == 1 and None not in thrs:
+                rma_txt = (f" RMA posts {joined}, {'both ' if len(figs) == 2 else ''}"
+                           f"through {md(_d(next(iter(thrs))))}.")
+            else:
+                rma_txt = "".join(
+                    f" RMA posts {c['crop'].lower()} at ${c['rma_harvest']:.2f}"
+                    + (f", through {md(_d(c['rma_through']))}." if c["rma_through"]
+                       else f" (its file read {md(asof)}).") for c in diff)
+        note = (f"Ours: the average of the daily CBOT settles through {md(_d(thr))}, figured the way USDA RMA does."
+                + rma_txt + f" Window and projected price: USDA RMA, as of {md(asof)}.")
     else:
         note = f"USDA RMA, as of {md(asof)}."
     if len(wins) == 1:
@@ -293,7 +328,10 @@ def _selftest():
            b["lines"][1])
         ck("organic and high amylose ignored", b["crops"][0]["rma_harvest"] == 5.01)
         ck("window is the most states' one", b["crops"][0]["start"] == "2026-10-01")
-        ck("note names the settles and RMA's own figure", b["note"] == "Average of the daily CBOT settles through Oct 9, figured the way USDA RMA does. RMA posts corn at $5.01. Window and projected price: USDA RMA, as of Oct 7. Oct 1-31 window, most states.", b["note"])
+        # RMA's $5.01, read Oct 7 at 9:06 PM CT (settled through Oct 7): the
+        # mean of the Oct 1-7 settles is 25.0725 / 5 = 5.0145 -> $5.01.
+        ck("note dates both figures", b["note"] == "Ours: the average of the daily CBOT settles through Oct 9, figured the way USDA RMA does. RMA posts corn at $5.01, through Oct 7. Window and projected price: USDA RMA, as of Oct 7. Oct 1-31 window, most states.", b["note"])
+        ck("RMA's figure never dated past the file's own read", b["crops"][0]["rma_through"] == "2026-10-07", b["crops"][0]["rma_through"])
         ck("days left", b["crops"][0]["days_left"] == 15)
         ck("visible on Oct 9", visible(b, date(2026, 10, 9)) is b)
         ck("hidden 4 days after as-of", visible(b, date(2026, 10, 11)) is None)
@@ -317,6 +355,36 @@ def _selftest():
     ck("a fall reads with a minus", nb and nb["lines"][0].startswith("Corn harvest price so far: $4.12 vs $4.62 projected (-10.8%)"),
        nb and nb["lines"][0])
     ck("22 trading days in Oct 2026", trading_days(date(2026, 10, 1), date(2026, 10, 31)) == 22)
+
+    # The Oct 16, 2026 issue, from the real files: Dec corn and Nov beans,
+    # 11 settles Oct 1-15. Ours: 54.12 / 11 = $4.92, 141.36 / 11 = $12.85.
+    # RMA posted $4.93 and $12.87, read Oct 15 7:29 PM CT: the first 10
+    # settles give 49.3375 / 10 = 4.93375 -> $4.93 and 128.7175 / 10 =
+    # 12.87175 -> $12.87, so both are through Oct 14.
+    corn15 = [("2026-10-01", 5.0225), ("2026-10-02", 4.9775), ("2026-10-05", 4.9725), ("2026-10-06", 5.08),
+              ("2026-10-07", 5.02), ("2026-10-08", 5.0025), ("2026-10-09", 4.7975), ("2026-10-12", 4.83),
+              ("2026-10-13", 4.8275), ("2026-10-14", 4.8075), ("2026-10-15", 4.7825)]
+    soy15 = [("2026-10-01", 12.84), ("2026-10-02", 12.7825), ("2026-10-05", 12.8075), ("2026-10-06", 13.03),
+             ("2026-10-07", 12.975), ("2026-10-08", 12.875), ("2026-10-09", 12.92), ("2026-10-12", 12.8775),
+             ("2026-10-13", 12.8375), ("2026-10-14", 12.7725), ("2026-10-15", 12.6425)]
+    rows15 = ([_row("Corn", "All (Non-High Amylose)", s, h=4.93) for s in ("Iowa", "Illinois")]
+              + [_row("Soybeans", "All", s, h=12.87, p=11.09) for s in ("Iowa", "Illinois")])
+    hp15 = {"windows": [{"crop": c, "start": "2026-10-01", "end": "2026-10-31",
+                         "series": [{"d": d_, "s": s_} for d_, s_ in ser]} for c, ser in (("Corn", corn15), ("Soybeans", soy15))]}
+    b15 = build({"updated": "2026-10-16T00:29:24Z", "crop_year": 2026, "rows": rows15}, hp15, date(2026, 10, 16))
+    ck("Oct 16 issue: our two lines", b15 and b15["lines"] == [
+        "Corn harvest price so far: $4.92 vs $4.62 projected (+6.5%), 11 of 22 trading days in.",
+        "Soybeans harvest price so far: $12.85 vs $11.09 projected (+15.9%), 11 of 22 trading days in."], b15 and b15["lines"])
+    ck("Oct 16 issue: RMA's figures dated a settle behind ours", b15 and b15["note"] ==
+       "Ours: the average of the daily CBOT settles through Oct 15, figured the way USDA RMA does. "
+       "RMA posts corn at $4.93 and soybeans at $12.87, both through Oct 14. "
+       "Window and projected price: USDA RMA, as of Oct 15. Oct 1-31 window, most states.", b15 and b15["note"])
+    ck("no prefix matches: no date, the read day instead",
+       rma_through([{"d": d_, "s": s_} for d_, s_ in corn15], 4.99, date(2026, 10, 15)) is None)
+    nod = build({"updated": "2026-10-16T00:29:24Z", "crop_year": 2026,
+                 "rows": [_row("Corn", "All (Non-High Amylose)", "Iowa", h=4.99)]}, hp15, date(2026, 10, 16))
+    ck("undated RMA figure says when its file was read", nod and "RMA posts corn at $4.99 (its file read Oct 15)." in nod["note"],
+       nod and nod["note"])
     print("harvest_clock selftest " + ("FAILED" if bad else "ok"))
     return 1 if bad else 0
 
