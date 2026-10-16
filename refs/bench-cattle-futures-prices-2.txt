@@ -1,0 +1,135 @@
+# Benchmark cattle-futures-prices: K-State feedlot returns / OSU BEFLCALC
+# https://www.agmanager.info/sites/default/files/pdf/KSU_FeedlotReturns_Sep-2025.pdf
+# fetched 2026-10-16T16:14:34Z, sha256 342c6a2340bfb03732f26052883cd4f160c6b0d9cf349c33b6e5e69ee04b042a
+
+Kansas State University Department of Agricultural Economics Extension Publication                            09/12/2025
+
+
+
+Historical and Projected Kansas Feedlot Net Returns
+Glynn Tonsor (gtonsor@ksu.edu)
+Kansas State University Department of Agricultural Economics – September 2025
+
+This article presents estimated net returns of cattle finishing operations as of September 11, 2025. The calculation
+and projection process was updated in July of 2012. 1 This process reflects a cash market situation without price risk
+management strategies being implemented. Each month updates are made to reflect the most recent feedlot
+closeout estimates and to reflect current market conditions.
+
+Close-out Calculations
+
+The most recent Focus on Feedlots survey provides information on lots closed out in July of 2025. As shown in figures
+1 and 2, steers and heifers were estimated to be sold in July at +$533.39/hd and +$535.23/hd, respectively.
+
+Projected Returns
+
+Given the lag in Focus on Feedlots survey information, market information is available for August but realized animal
+performance data are not yet available. Currently, the net returns projected for closeouts in August are +$735.51/hd
+and +$746.06/hd for steers and heifers, respectively (tables 1 and 2). Tables 1 and 2 also present projected net
+returns for closeouts over upcoming months based on forecasts of both animal performance and market prices.
+Projected net returns have further improved, mainly reflecting higher fed sales prices and lower costs of gain.
+Included tables also include the projected and breakeven values for cattle prices and cost of gain, which provides
+further insight into the sensitivity underlying these projections. Producers are encouraged to carefully compare their
+own costs and prices with those reported here. While always important, elevated market changes and barometer
+assumptions made here relative to on-farm situations are extra important currently. Finally, historical and breakeven
+values are provided in chart format revealing trends over time in fed cattle sales prices (figures 3 and 4), cost of gain
+(figures 5 and 6), and feeder cattle purchase prices (figures 7 and 8).
+
+
+
+
+1
+ A document describing the specific approach taken in these calculations and projections is available at:
+http://www.agmanager.info/livestock-meat/cattle-finishing-historical-and-projected-returns/detail-procedures-estimating-fed.
+
+
+
+WRITTEN BY: GLYNN T. TONSOR                                                                                AGMANAGER.INFO
+KSU-AgEcon-GTT-KFR-2025.9                                                                                                   1
+Kansas State University Department of Agricultural Economics Extension Publication                       09/12/2025
+
+
+
+
+Table 1. Projected Values for Finishing Steers in Kansas Feedyards*
+ Closeout                                                                   Breakeven         Breakeven Breakeven
+             Net Return FCOG** Fed Price Fed Futures Fed Basis Feeder Price
+  Mo-Yr                                                                      FCOG**            Fed Price Feeder Price
+ Aug-25      735.51      97.81     238.21       236.76    1.45       255.57          204.62     190.40       342.13
+ Sep-25      700.84      97.12     233.28       232.27    1.01       249.89          200.06     187.99       330.76
+ Oct-25      699.17      97.46     235.55       234.13    1.43       251.50          202.25     190.60       330.22
+ Nov-25      690.40      98.63     235.92       234.13    1.79       251.61          202.98     191.21       329.84
+ Dec-25      520.40      97.46     236.91       235.25    1.66       264.42          181.90     203.58       319.49
+ Jan-26      519.96     101.22     236.34       235.25    1.09       261.37          185.85     202.45       317.90
+ Feb-26       -19.66    101.50     236.22       235.32    0.89       319.25           98.36     237.49       317.12
+ Mar-26     -256.74     101.93     238.88       235.32    3.56       342.62           59.23     255.56       315.26
+ Apr-26     -266.10     101.11     231.29       228.02    3.26       340.03           58.38     248.85       310.23
+ May-26     -186.32     100.88     235.45       228.02    7.43       336.79           70.85     247.66       316.21
+
+Table 2. Projected Values for Finishing Heifers in Kansas Feedyards*
+ Closeout                                                                   Breakeven         Breakeven Breakeven
+             Net Return FCOG** Fed Price Fed Futures Fed Basis Feeder Price
+  Mo-Yr                                                                      FCOG**            Fed Price Feeder Price
+ Aug-25      746.06     106.78     237.51       236.76    0.74       230.32          235.78     182.41       326.49
+ Sep-25      579.11     106.68     233.15       232.27    0.88       239.34          211.28     191.34       308.99
+ Oct-25      605.17     106.47     235.24       234.13    1.11       234.28          224.41     190.90       305.33
+ Nov-25      669.57     105.37     236.70       234.13    2.57       233.55          229.49     188.35       312.73
+ Dec-25      531.61     104.70     236.87       235.25    1.62       246.84          207.30     198.88      307.17
+ Jan-26      444.46     107.57     235.76       235.25    0.51       252.64          193.78     203.79      303.46
+ Feb-26     -191.69     112.91     235.52       235.32    0.20       317.96           75.54     249.20      296.40
+ Mar-26     -117.94     112.65     236.84       235.32    1.52       313.63           89.59     245.41      299.99
+ Apr-26       -34.34    110.10     230.16       228.02    2.14       308.79          104.02     232.67      304.53
+ May-26       -62.79    108.54     234.10       228.02    6.07       307.47           96.54     238.63      300.19
+
+
+ * Net return is $/head and all other values are $/cwt.
+ ** FCOG = Feeding cost of gain
+
+
+
+
+WRITTEN BY: GLYNN T. TONSOR                                                                           AGMANAGER.INFO
+KSU-AgEcon-GTT-KFR-2025.9                                                                                             2
+Kansas State University Department of Agricultural Economics Extension Publication     09/12/2025
+
+
+
+
+WRITTEN BY: GLYNN T. TONSOR                                                          AGMANAGER.INFO
+KSU-AgEcon-GTT-KFR-2025.9                                                                       3
+Kansas State University Department of Agricultural Economics Extension Publication     09/12/2025
+
+
+
+
+WRITTEN BY: GLYNN T. TONSOR                                                          AGMANAGER.INFO
+KSU-AgEcon-GTT-KFR-2025.9                                                                       4
+Kansas State University Department of Agricultural Economics Extension Publication     09/12/2025
+
+
+
+
+WRITTEN BY: GLYNN T. TONSOR                                                          AGMANAGER.INFO
+KSU-AgEcon-GTT-KFR-2025.9                                                                       5
+Kansas State University Department of Agricultural Economics Extension Publication     09/12/2025
+
+
+
+
+WRITTEN BY: GLYNN T. TONSOR                                                          AGMANAGER.INFO
+KSU-AgEcon-GTT-KFR-2025.9                                                                       6
+Kansas State University Department of Agricultural Economics Extension Publication                    09/12/2025
+
+
+
+
+      View more information about the authors of this publication and other K-State agricultural economics faculty.
+                        For more information about this publication and others, visit AgManager.info.
+K-State Agricultural Economics | 342 Waters Hall, Manhattan, KS 66506-4011 | (785) 532-1504 | Fax: (785) 532-6925
+                       Copyright 2025 AgManager.info, K-State Department of Agricultural Economics.
+
+
+
+
+WRITTEN BY: GLYNN T. TONSOR                                                                        AGMANAGER.INFO
+KSU-AgEcon-GTT-KFR-2025.9                                                                                        7
+

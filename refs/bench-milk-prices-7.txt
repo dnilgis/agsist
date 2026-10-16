@@ -1,0 +1,95 @@
+# Benchmark milk-prices: FMMA Central
+# https://www.fmmacentral.com/PDFdata/cp2609.pdf
+# fetched 2026-10-16T16:14:31Z, sha256 baed9bb47ed63e2e5f910131c52ccd26b2537563edf4f01e3049ae9fd7755881
+
+               Central Federal Milk Order #32
+ Announcement Of “Advanced” Class Prices For September 2026
+                                     Released On August 19, 2026
+
+Class I Price @ 3.5% Butterfat
+   $3.20 Location Adjustment @ Jackson County (MO)                                                       $20.24 /cwt
+   Fluid Milk Promotion Order Processor Assessment 1                                                      +0.20
+                                                                                                         $20.44
+Class I Butterfat Price
+   $3.20 Location Adjustment @ Jackson County (MO)                                                       $1.5484 /lb
+
+Class I Skim Price
+   $3.20 Location Adjustment @ Jackson County (MO)                                                       $15.36 /cwt
+
+​​​​​​Class I ESL Adjustment							                                                                      $0.81 /cwt
+
+Class II Skim Price                                                                                      $12.86 /cwt
+
+Class II Nonfat Solids Price                                                                             $1.3828 /lb
+  1
+   Processor Assessment: The 20-cent per hundredweight processor assessment is an obligation under the Fluid Milk
+  Promotion Order (7CFR§1160.101 et seq.) imposed on any person who processes and markets commercially more than
+  3 million pounds of packaged fluid milk products on a monthly basis. Deliveries to consumer residences are excluded.
+  Effective February 29, 2016, processors of certified “organic” and “100 percent organic” fluid milk products may apply for
+  an organic assessment exemption for those products.
+
+
+             Announcement Of Class Prices For September 2026
+                                        Released On September 30, 2026
+
+  Class II Price @ 3.5% BF ......................................................................$17.60 /cwt
+  Class II Butterfat .....................................................................….…….$1.4832 /lb
+  Class III Price @ 3.5% BF ...................................................….………..$16.04 /cwt
+  Class III Skim Milk ..........................................................................$11.27 /cwt
+  Class IV Price @ 3.5% BF ....................................................................$18.94 /cwt
+  Class IV Skim Milk ...............................................................................$14.27 /cwt
+  Butterfat Price .....................................................................................$1.4762 /lb
+  Nonfat Solids Price...............................................................................$1.5343 /lb
+  Protein Price .........................................................................................$2.6619 /lb
+  Other Solids Price.................................................................................$0.4147 /lb
+  Somatic Cell Adjustment Rate ..........................................................$0.00078 /cwt
+      Per 1,000 Somatic Cell Count
+                   Released: September 30, 2026 by Todd D. Wilson, Market Administrator
+                  “Advanced” Pricing Factors For September 2026
+                                   Released On August 19, 2026
+
+         Prices Used Only In Calculating Advanced Class I & II Prices
+         Advanced Class III Skim Milk Price                           $11.76  /cwt
+         Advanced Butterfat Price                                   $1.5164  /lb
+         Advanced Class III Price @ 3.5% BF                           $16.66  /cwt
+         Advanced Class IV Skim Milk Price                            $12.16  /cwt
+         Advanced Class IV Price @ 3.5% BF                            $17.04  /cwt
+
+         Base Price @ 3.5% BF For Class I                           $17.04 /cwt
+
+
+                AMS Two-Week Product Price Weighted Averages (Per Lb)
+
+
+                                                   Nonfat                                Dry
+                              Butter              Dry Milk              Cheese          Whey
+Week 1 Ending
+08/08/26                     $1.4750 		$1.5426 		$1.6094 		$0.6568
+
+Week 2 Ending
+08/15/26                     $1.4849 		$1.5800 		$1.6350 		$0.6642
+
+Wtd.2-Week Average           $1.4794 		           $1.5603 		             $1.6216 		   $0.6608
+
+
+
+                         Component Prices for September 2026
+                                 Released On September 30, 2026
+
+                                                   Nonfat                                Dry
+                              Butter              Dry Milk              Cheese          Whey
+Week 1 Ending
+09/05/26			$1.4723		$1.7297		$1.6121		$0.6664
+
+Week 2 Ending
+09/12/26 			$1.4907 		$1.7512 		$1.5793 		$0.6621
+
+Week 3 Ending
+09/19/26 			$1.4412 		$1.7966 		$1.5435 		$0.6727
+
+Week 4 Ending
+09/26/26 			$1.3871 		$1.8727 		$1.4958 		$0.6752
+
+
+Wtd. Monthly Average       $1.4462 		             $1.7891 		             $1.5577 		   $0.6694
+

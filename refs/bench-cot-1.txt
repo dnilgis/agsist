@@ -1,0 +1,219 @@
+# Benchmark cot: Tradingster
+# https://www.tradingster.com/cot/futures/disagg/002602
+# fetched 2026-10-16T16:14:44Z, sha256 0e17974e1664e197c6959cab2444279be0a6ab878a5508264a07a5723835909f
+
+COT Report: CORN with COT Chart (Futures Only) - Tradingster
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+New COT tools
+
+COT Signals and COT Analysis are now in free preview.
+
+See what's new
+
+-
+
+-
+
+-
+
+COT Report: CORN - CHICAGO BOARD OF TRADE
+
+Futures Only Positions as of 2026-10-06
+
+- View COT Analysis
+
+-
+
+- My Watchlist
+
+My Watchlist
+
+Below is the Commitments of Traders (COT) report for CORN - CHICAGO BOARD OF TRADE (futures only) with COT charts. This COT report for CORN is as of 2026-10-06. COT reports are released each Friday (except for U.S. holidays) by the CFTC. Each COT report release includes data from the previous Tuesday.
+
+CORN - CHICAGO BOARD OF TRADE (CONTRACTS OF 5,000 BUSHELS)
+
+CFTC Code: #002602
+
+Open Interest: 1,859,993
+Total Changes: +2,676
+Total Traders: 867
+
+AS OF: 2026-10-06
+
+Long
+Short
+Spread
+
+Positions
+Open Int
+# Traders
+Positions
+Open Int
+# Traders
+Positions
+Open Int
+# Traders
+
+Producer/Merchant/
+
+Processor/User
+
+362,038
+
++12,709
+19.5%
+287
+
+1,050,415
+
+-31,899
+56.5%
+351
+
+Swap Dealers
+
+307,708
+
+-13,766
+16.5%
+30
+
+30,283
+
+-6,714
+1.6%
+14
+
+54,849
+
++8,018
+2.9%
+
+23
+
+Managed Money
+
+393,249
+
+-46,594
+21.1%
+109
+
+63,410
+
++4,787
+3.4%
+46
+
+287,623
+
+-2,752
+15.5%
+
+91
+
+Other Reportables
+
+188,462
+
+-4,547
+10.1%
+107
+
+65,828
+
++1,100
+3.5%
+97
+
+125,294
+
++41,889
+6.7%
+90
+
+Nonreportable
+
+Positions
+
+140,770
+
++7,719
+7.6%
+
+182,291
+
+-11,753
+9.8%
+
+Long vs. Short
+
+Prices & Net Positions
+
+Positions: Long
+
+Positions: Short
+
+Site
+
+- Home
+
+- COT Reports
+
+- COT Futures
+
+- COT Legacy Futures
+
+- Help
+
+- Blog
+
+- RSS feed
+
+- About
+
+- Sign in
+
+- Account
+
+Contact
+
+Email:
+
+Newsletter: Subscribe
+
+© Copyright by Tradingster.com. All rights reserved.
+
+(Privacy Policy)

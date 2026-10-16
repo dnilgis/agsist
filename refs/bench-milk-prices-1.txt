@@ -1,0 +1,297 @@
+# Benchmark milk-prices: USDA AMS Dairy Market News / FMMA announcements
+# https://www.ams.usda.gov/mnreports/dymclassprices.pdf
+# fetched 2026-10-16T16:14:18Z, sha256 c1c97b3fca03875679f2a8f3d15fd5f8231da7190ef92707386eed5a3e927958
+
+                                               Announcement of Class and
+                                                  Component Prices
+Email us with accessibility issues regarding
+this report.
+                                                    United States Department of Agriculture
+Agricultural Marketing Service                      Dairy Program                        Market Information Branch
+CLS - 0926                                                                                         September 30, 2026
+
+September 2026 Highlights
+
+Class II Price was $17.60 per hundredweight for the month of September 2026. The price per hundredweight
+decreased $1.11 from the previous month. Class III Price was $16.04 per hundredweight for the month of September
+2026. The price per hundredweight decreased $0.60 from the previous month. Class IV Price was $18.94 per
+hundredweight for the month of September 2026. The price per hundredweight increased $1.58 from the previous
+month.
+
+Announcement of Class and Component Prices for September 2026
+
+Class II Price:                                                             $17.60 (per hundredweight)
+Class II Butterfat Price:                                                  $1.4832 (per pound)
+Class II Skim Milk Price ¹:                                                 $12.86 (per hundredweight)
+
+Class III Price:                                                            $16.04 (per hundredweight)
+Class III Skim Milk Price ²:                                                $11.27 (per hundredweight)
+
+Class IV Price:                                                             $18.94 (per hundredweight)
+Class IV Skim Milk Price ²:                                                 $14.27 (per hundredweight)
+
+Butterfat Price ²:                                                         $1.4762   (per pound)
+Nonfat Solids Price ²:                                                     $1.5343   (per pound)
+Protein Price ²:                                                           $2.6619   (per pound)
+Other Solids Price ²:                                                      $0.4147   (per pound)
+
+Somatic Cell Adjustment Rate:                                              0.00078 (per 1,000 somatic cell count)
+
+Product Price Averages:
+Butter                                                                      $1.4462 (per pound)
+Nonfat Dry Milk                                                             $1.7891 (per pound)
+Cheese ² ³                                                                  $1.5577 (per pound)
+Dry Whey                                                                    $0.6694 (per pound)
+¹ August 2026 Advanced Price Announcement.
+² Per Final Rule 90 FR 6600, published in the Federal Register on January 17, 2025, changes were made to the
+pricing formulas. See the methodology section (p. 5) for details.
+³ The cheese price is derived using the weighted average of cheddar cheese in 40-pound blocks for the previous four
+or five weeks (depending on date of last publication), weighted by sales volume in pounds.
+                                   Class and Component Prices
+                                USDA - Agricultural Marketing Service
+                                                                                                September 30, 2026
+
+                     Federal Milk Order Class II, Class III, and Class IV Milk Prices, 2026
+
+                                 Class II                     Class III                    Class IV
+                     Class II                   Class III                    Class IV
+             Month               Butterfat                   Skim Milk                    Skim Milk
+                      Price                       Price                        Price
+                                  Price                         Price                        Price
+
+                      ($/cwt)      ($/lb)                         (dollars per cwt)
+             Jan      13.92       1.4595         14.59          9.85           13.55           8.77
+             Feb      15.34       1.7864         14.94          9.03           16.29          10.43
+             Mar      17.34       2.0290         16.16          9.41           18.94          12.29
+             Apr      18.82       1.8762         16.82         10.65           20.22          14.17
+             May      20.28       1.7071         16.92         11.37           22.32          16.96
+             Jun      22.78       1.6970         15.98         10.43           20.96          15.59
+             Jul      21.89       1.6738         15.52         10.04           18.34          12.96
+             Aug      18.71       1.5177         16.64         11.76           17.36          12.51
+             Sep      17.60       1.4832         16.04         11.27           18.94          14.27
+
+
+
+
+                     Federal Milk Order Class II, Class III, and Class IV Milk Prices, 2025
+
+                                 Class II                     Class III                    Class IV
+                     Class II                   Class III                    Class IV
+             Month               Butterfat                   Skim Milk                    Skim Milk
+                      Price                       Price                        Price
+                                  Price                         Price                        Price
+
+                     ($/cwt)       ($/lb)                         (dollars per cwt)
+             Jan      21.58       2.9530         20.34         10.39           20.73          10.80
+             Feb      21.08       2.8256         20.18         10.69           19.90          10.40
+             Mar      20.12       2.6312         18.62          9.78           18.21           9.35
+             Apr      19.22       2.6476         17.48          8.54           17.92           8.99
+             May      18.72       2.6697         18.57          9.59           18.13           9.13
+             Jun      18.43       2.7448         18.82          9.57           18.30           9.03
+             Jul      19.31       2.8505         17.32          7.63           18.89           9.26
+             Aug      19.18       2.7325         17.24          7.98           18.50           9.29
+             Sep      17.39       2.1995         17.59         10.28           16.17           8.80
+             Oct      16.02       1.8322         16.91         10.90           14.30           8.20
+             Nov      14.54       1.7131         17.18         11.62           13.89           8.21
+             Dec      14.41       1.5831         15.86         10.72           13.64           8.42
+             Avg      18.33       2.4486         18.01          9.81           17.38           9.16
+
+
+
+
+CLS - 0926                                                                                                 Page 2
+                                 Class and Component Prices
+                              USDA - Agricultural Marketing Service
+                                                                                             September 30, 2026
+
+                               Federal Milk Order Component Prices, 2026
+
+                                       Nonfat Solids                     Other Solids    Somatic Cell
+             Month   Butterfat Price                     Protein Price
+                                          Price                             Price       Adjustment Rate
+                                             (dollars per pound)                           ($/count)
+              Jan       1.4525            0.9433           2.1768          0.4448          0.00070
+              Feb       1.7794            1.1220           1.9373          0.4391          0.00072
+             Mar        2.0220            1.3215           2.0905          0.4178          0.00078
+             Apr        1.8692            1.5241           2.5190          0.3888          0.00082
+             May        1.7001            1.8232           2.7477          0.3840          0.00083
+              Jun       1.6900            1.6765           2.4553          0.3873          0.00078
+              Jul       1.6668            1.3940           2.3202          0.3970          0.00076
+             Aug        1.5107            1.3456           2.8281          0.4052          0.00081
+              Sep       1.4762            1.5343           2.6619          0.4147          0.00078
+
+
+
+
+                               Federal Milk Order Component Prices, 2025
+
+                                       Nonfat Solids                     Other Solids    Somatic Cell
+             Month   Butterfat Price                    Protein Price
+                                          Price                             Price       Adjustment Rate
+                                             (dollars per pound)                           ($/count)
+              Jan       2.9460            1.2002           2.3267          0.5384          0.00094
+             Feb        2.8186            1.1552           2.5337          0.4799          0.00095
+             Mar        2.6242            1.0393           2.4606          0.3647          0.00091
+             Apr        2.6406            0.9994           2.1682          0.3087          0.00087
+             May        2.6627            1.0145           2.4810          0.3222          0.00092
+              Jun       2.7378            1.0037           2.5328          0.2914          0.00097
+              Jul       2.8435            1.0286           1.8730          0.3092          0.00088
+             Aug        2.7255            1.0323           1.9646          0.3204          0.00088
+             Sep        2.1925            0.9773           2.7062          0.3207          0.00090
+              Oct       1.8252            0.9116           2.8761          0.3360          0.00087
+             Nov        1.7061            0.9124           3.0143          0.3859          0.00087
+             Dec        1.5761            0.9057           2.4563          0.4352          0.00076
+             Avg        2.4416            1.0150           2.4495          0.3677          0.00089
+
+
+
+
+CLS - 0926                                                                                                Page 3
+                                      Class and Component Prices
+                                   USDA - Agricultural Marketing Service
+                                                                                                       September 30, 2026
+
+                 Dairy Products Price Averages Used in Federal Milk Order Price Formulas, 2026
+
+                                                    Product Price Averages For:
+             Class I (Skim, Bfat.), Class II (Skim, Nonfat Solids)   Class II (Bfat.), Class III, Class IV, Components
+    Month                 Nonfat dry                                              Nonfat dry
+               Butter                     Cheese      Dry Whey       Butter                     Cheese      Dry Whey
+                            milk                                                    milk
+                             (dollars per pound)                                    (dollars per pound)
+      Jan      1.5419       1.1551        1.5777        0.6844       1.4266        1.1921       1.4003        0.6986
+     Feb       1.4201       1.1860        1.4078        0.7040       1.6966        1.3726       1.4338        0.6931
+     Mar       1.6217       1.3156        1.4083        0.6973       1.8969        1.5741       1.5607        0.6724
+     Apr       1.8970       1.5431        1.5297        0.6840       1.7707        1.7788       1.6427        0.6443
+     May       1.7672       1.7724        1.6522        0.6474       1.6311        2.0809       1.6577        0.6396
+      Jun      1.6463       2.0589        1.6644        0.6409       1.6227        1.9327       1.5642        0.6428
+      Jul      1.6372       1.9669        1.5975        0.6422       1.6036        1.6474       1.5149        0.6522
+     Aug       1.6524       1.6709        1.4940        0.6501       1.4747        1.5985       1.6203        0.6602
+     Sep       1.4794       1.5603        1.6216        0.6608       1.4462        1.7891       1.5577        0.6694
+      Oct      1.4678       1.7731        1.5598        0.6657
+
+
+
+
+                 Dairy Products Price Averages Used in Federal Milk Order Price Formulas, 2025
+
+                                                    Product Price Averages For:
+             Class I (Skim, Bfat.), Class II (Skim, Nonfat Solids)   Class II (Bfat.), Class III, Class IV, Components
+    Month                 Nonfat dry                                              Nonfat dry
+               Butter                     Cheese      Dry Whey       Butter                     Cheese      Dry Whey
+                            milk                                                    milk
+                             (dollars per pound)                                    (dollars per pound)
+      Jan      2.5916       1.3966        1.7563        0.6207       2.6042        1.3801       1.8851        0.7218
+      Feb      2.6049       1.3907        1.8803        0.7194       2.4990        1.3347       1.9077        0.6650
+     Mar       2.5236       1.3587        1.9097        0.6986       2.3385        1.2176       1.8215        0.5532
+     Apr       2.3419       1.2461        1.8751        0.5701       2.3520        1.1773       1.7361        0.4988
+     May       2.3549       1.1801        1.7230        0.4982       2.3703        1.1925       1.8404        0.5119
+      Jun      2.3519       1.1862        1.8019        0.5080       2.4880        1.2531       1.9322        0.5497
+      Jul      2.4685       1.2463        1.9373        0.5436       2.5753        1.2783       1.7634        0.5670
+     Aug       2.5860       1.2786        1.7471        0.5713       2.4778        1.2820       1.7529        0.5779
+      Sep      2.5120       1.2871        1.7205        0.5814       2.0377        1.2265       1.8066        0.5782
+      Oct      2.1992       1.2791        1.8470        0.5766       1.7344        1.1601       1.7384        0.5930
+     Nov       1.7617       1.1546        1.7245        0.5886       1.6360        1.1609       1.7419        0.6415
+     Dec       1.6239       1.1611        1.7920        0.6230       1.5287        1.1541       1.5271        0.6893
+     Avg       2.3267       1.2638        1.8096        0.5916       2.2202        1.2348       1.7878        0.5956
+
+
+
+CLS - 0926                                                                                                               Page 4
+                                      Class and Component Prices
+                                   USDA - Agricultural Marketing Service
+                                                                                                 September 30, 2026
+
+Methodology: Monthly Class and Component Prices
+
+Data: The Class and Component Prices are calculated using the most recent four or five weeks (since the
+last monthly Announcement of Class and Component Prices) from the latest National Dairy Products Sales
+Report (NDPSR).
+
+Reliability: NDPSR are subject to revision for four weeks following the initial weekly report. For
+enforcement purposes, the information in the NDPSR is subject to verification for up to two years from the
+time of submission. The AMS audit staff periodically reviews a company’s sales records to ensure accurate
+reports during onsite verifications. Note that the monthly Announcements of Class and Component Prices
+are not subject to revision.
+
+Terms and Definitions: Announced milk prices are per 100 pounds or cwt, rounded to the nearest cent.
+Component prices are per pound, rounded to nearest one-hundredth cent. Announced product prices and
+pricing factors are per pound, rounded to the nearest one-hundredth cent. The somatic cell adjustment rate is
+for every 1,000 cells, rounded to the nearest one thousandth cent.
+
+The NDPSR provides current wholesale market prices for basic dairy commodities. These commodity prices
+are used in the following formulas to calculate the USDA’s Class and Component Prices used in the Federal
+Milk Marketing Order Program. Please see 7 CFR 1000.53 for more information.
+
+  •   Commodity Prices (Butter, Nonfat Dry Milk, Cheddar Cheese, and Dry Whey)
+         ◦ Commodity prices are calculated on the NDPSR ¹.
+         ◦ The prices are weighted averages for the previous four or five weeks (depending on date of last
+             publication), weighted by sales volume in pounds.
+         ◦ For more information, see the Price Formulas publication ².
+  •   Butterfat Price = (Butter Price – 0.2272) × 1.211
+  •   Nonfat Solids Price = (NFDM Price - 0.2393) × 0.99
+  •   Protein Price = ((Cheese Price - 0.2519) × 1.383) + ((((Cheese Price - 0.2519) × 1.589) – Butterfat Price × 0.91)
+      × 1.17)
+  •   Other Solids Price = (Dry Whey Price - 0.2668) × 1.03
+  •   Somatic Cell Adjustment Rate = Cheese Price × 0.0005
+  •   Class II Price = (Class II Skim Milk Price × 0.965) + (Class II Butterfat Price × 3.5)
+         ◦ Class II Skim Milk Price = See the Announcement of Advanced Prices and Pricing Factors for the
+             applicable month.
+         ◦ Class II Butterfat Price = Butterfat Price + 0.007
+  •   Class III Price = (Class III Skim Milk Price × 0.965) + (Butterfat Price × 3.5)
+         ◦ Class III Skim Milk Price = (Protein Price × 3.3) + (Other Solids Price × 6.0)
+  •   Class IV Price = (Class IV Skim Milk Price × 0.965) + (Butterfat Price × 3.5)
+         ◦ Class IV Skim Milk Price = Nonfat Solids Price × 9.3
+¹ https://www.ams.usda.gov/mnreports/dywdairyproductssales.pdf
+² https://www.ams.usda.gov/resources/price-formulas
+
+
+
+
+ CLS - 0926                                                                                                    Page 5
+                                                       Class and Component Prices
+                                                    USDA - Agricultural Marketing Service
+                                                                                                                                            September 30, 2026
+
+Information Contacts
+Listed below are the specialists in the Agricultural Marketing Service, Dairy Program, Market Information Branch to
+contact for additional information. E-mail inquiries may be sent to dpp@usda.gov.
+
+Lorie Cashman
+Economics Division Director
+(202) 313-2702
+
+Dairy Product Mandatory Reporting Program
+Hripsime Tamrazyan                                                                      Joshua McNeff
+Dairy Products Marketing Specialist, Coordinator                                        Dairy Products Marketing Specialist
+(202) 260-8953                                                                          (202) 937-4934
+Alexis Alexander                                                                        Bradley Vierra
+Dairy Products Marketing Specialist                                                     Dairy Products Marketing Specialist
+(202) 799-7296                                                                          (940) 245-8963
+
+Federal Milk Order Information Program
+Joshua McNeff                                                                           Hripsime Tamrazyan
+Dairy Products Marketing Specialist, Coordinator                                        Dairy Products Marketing Specialist
+(202) 937-4934                                                                          (202) 260-8953
+
+
+For the most current release, visit AMS Dairy Program’s Dairy Product Mandatory Reporting Program's page or Milk
+Marketing Order Statistics page.
+
+To receive e-mail notification for Dairy Product Mandatory Reporting Program (DPMRP) reports, please subscribe at this
+webpage (https://content.govdelivery.com/accounts/USDAAMS/bulletins/3da2b33).
+
+To receive e-mail notification for Dairy Product Mandatory Reporting Program (DPMRP) or Federal Milk Marketing
+Order Statistics (FMMOS) reports, visit My Market News (https://mymarketnews.ams.usda.gov/).
+
+In accordance with Federal civil rights law and U.S. Department of Agriculture (USDA) civil rights regulations and policies, the USDA, its Agencies, offices, and
+employees, and institutions participating in or administering USDA programs are prohibited from discriminating based on race, color, national origin, religion, sex,
+disability, age, marital status, family/parental status, income derived from a public assistance program, political beliefs, or reprisal or retaliation for prior civil rights
+activity, in any program or activity conducted or funded by USDA (not all bases apply to all programs). Remedies and complaint filing deadlines vary by program or
+incident.
+
+
+
+
+  CLS - 0926                                                                                                                                                     Page 6
+

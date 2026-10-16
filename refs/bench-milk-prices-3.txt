@@ -1,0 +1,9 @@
+# Benchmark milk-prices: Center for Dairy Excellence
+# https://www.centerfordairyexcellence.org/?p=22587
+# fetched 2026-10-16T16:14:24Z, sha256 f54120a27d85754ec5ff06ed6358b0de944dba818171cbbb3b534a05609dd6b1
+
+September 9, 2026: Dairy Week in Review | Center for Dairy Excellence
+
+Based on the most recent USDA Announcement of Advanced Class and Component Prices, August’s Class III price landed at $16.61 per cwt, up $1.12 from July’s $15.52 per cwt. However, year over year, the Class III price was down 60 cents. For Class IV milk, the price fell 98 cents to $17.36 per cwt for August 2026’s milk from $18.34 per cwt for July. Compared to the same month the prior year, the Class IV price was $1.14 per cwt under the $18.50 reported for August 2025.
+
+Read The Full Report

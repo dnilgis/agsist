@@ -1,0 +1,5 @@
+# Benchmark cattle-futures-prices: Barchart
+# https://www.barchart.com/futures/quotes/GF*0/futures-prices
+# fetched 2026-10-16T16:14:33Z, sha256 86d8c045b5f52fd4b3f707f02a6a29959d732ff88f62841572b0402227bd1f80
+
+

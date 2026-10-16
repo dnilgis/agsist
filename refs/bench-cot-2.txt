@@ -1,0 +1,368 @@
+# Benchmark cot: CFTC Commitments of Traders
+# https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm
+# fetched 2026-10-16T16:14:46Z, sha256 dc6ef65a78eba51b3ff5edf701d7e4cd71a10e8e8a08d10b0b18205837339a47
+
+Commitments of Traders | CFTCicon-hamburger
+
+Commitments of Traders (COT) Reports Descriptions
+
+Introduction and Classification Methodology
+
+The Commodity Futures Trading Commission (Commission or CFTC) publishes the Commitments of Traders (COT) reports to help the public understand market dynamics. Specifically, the COT reports provide a breakdown of each Tuesday’s open interest for futures and options on futures markets in which 20 or more traders hold positions equal to or above the reporting levels established by the CFTC.
+
+The CFTC releases the weekly COT reports in static format to support the historical usage patterns of industry professionals viewing and accessing each week’s data. Each historical report is viewable with the data for the respective reporting week, along with all historical data compressed within an annual file. In October 2022, CFTC began publishing weekly and historical report data within a public reporting environment to support industry professionals needing to customize, search, filter, and download report data for analysis and trends.
+
+The COT reports are based on position data supplied by reporting firms (FCMs, clearing members, foreign brokers and exchanges). While the position data is supplied by reporting firms, the actual trader category or classification is based on the predominant business purpose self-reported by traders on the CFTC Form 40 and is subject to review by CFTC staff for reasonableness. CFTC staff does not know specific reasons for traders’ positions and hence this information does not factor in determining trader classifications. In practice this means, for example, that the position data for a trader classified in the “producer/merchant/processor/user” category for a particular commodity will include all of its positions in that commodity, regardless of whether the position is for hedging or speculation. Note that traders are able to report business purpose by commodity and, therefore, can have different classifications in the COT reports for different commodities. For one of the reports, Traders in Financial Futures, traders are classified in the same category for all commodities.
+
+Due to legal restraints (CEA Section 8 data and confidential business practices), the CFTC does not publish information on how individual traders are classified in the COT reports.
+
+Generally, the data in the COT reports is from Tuesday and released Friday. The CFTC receives the data from the reporting firms on Wednesday morning and then corrects and verifies the data for release by Friday afternoon.
+
+Frequently Asked Questions (FAQs)
+
+The Division of Market Oversight has prepared the following responses to questions regarding Commitments of Traders reports (COT Reports) published by the Commission. The responses to these FAQs reflect only the views of DMO staff, and not necessarily those of the Commission or any other branch or division. The Commission has neither approved nor disapproved of these FAQs, and they have no legal force or effect, do not alter or amend applicable law, and do not create any new or additional obligations for any person.
+
+1. Missing Contract Market
+
+I can’t find commodity or contract market I was looking for. It was on last week’s COT Report, but has been dropped from this week’s report. What might be the explanation for this?
+
+It is possible that there’s a lack of a sufficient number of Large Traders with respect to the contract market in question. Specifically, when the number of reportable Large Traders drops below 20 for a commodity or contract market, it no longer appears in the COT report. In such event, once a contract market has again reached 20 or more reportable Large Traders, the contract market will be added again to the COT Reports.
+
+2. Contract Reportable Levels
+
+Where can I find a list of contract reportable levels?
+
+The CFTC publishes a list of contract reportable levels on the CFTC Strike Price Report, which you can find here: https://www.cftc.gov/strikeprice.
+
+3. Clarity of COT Classifications
+
+How are traders classified in the COT Reports?
+
+If the number of reported long positions fall significantly from a previous week’s COT Report, what is the likely explanation? Trader classifications are based on the information provided by the trader on their CFTC Form 40.
+
+4. Week-to-week changes in the COT report
+
+Why might the number of reported long positions fall significantly from the previous week’s COT Report?
+
+Generally speaking, there are three ways that a change in reported positions in the COT Report can happen:
+
+- A trader submits a new Form 40 and indicates they have changed their primary business function (e.g., from Financial Asset Manager (FAM) to Financial Leverage Speculator (FLS));
+
+- A new trader has submitted a Form 40, and those new positions alter the previous week’s numbers vis-a-vis the current week; and
+
+- An existing trader has left the market, altering the previous week vs. current week numbers.
+
+5. COT Release Schedule
+
+When do you publish the COT data?
+
+The COT Report is generally published each Friday at 3:30 pm Eastern Time (US), using the data from the immediately preceding Tuesday of that week.
+
+How do government holidays or days off affect the release schedule?
+
+The COT Reports are typically based upon data calculated as of the close of business of Tuesday of a given week. It takes three days to process the data, and therefore the COT Reports are generally released Friday at 3:30 p.m. Eastern Time (US) of the same week. Note that holidays can change the COT release schedule. Accordingly, for instances where a holiday takes place in a reporting week, please consult the COT release schedule, located here: https://www.cftc.gov/MarketReports/CommitmentsofTraders/ReleaseSchedule/index.htm
+
+Is there a list of historical release dates?
+
+There is not a list of historical release dates; the only available release dates are for the 13 months of reports that are published on the Commission’s website.
+
+6. Corrected Data
+
+Do you perform backdated COT updates to the (historical) data?
+
+No, historical data is not updated once published.
+
+7. Options Calculations
+
+Can I calculate options data from the COT Report, or is there options only data available?
+
+Options data can generally be calculated by subtracting from the Futures and Options Combined data information set forth in the Futures report, but some information will be lost due to “spreading,” as discussed further below.
+
+8. Use of COT Data
+
+What does this COT data mean, and how do I use it?
+
+Can you analyze it for me? The CFTC publishes the COT Reports based upon data we get from the reporting entities. The CFTC does not analyze the data nor make recommendations on it.
+
+9. Notification
+
+Can you notify me by email when the COT is released?
+
+You can receive such notifications by signing up for the weekly COT announcement emails, at the following location: https://service.govdelivery.com/accounts/USCFTC/subscriber/new
+Note: You can also use this same link to manage/update your subscriber preferences.
+
+10. Report Frequency
+
+Can you release the COT Reports more than once a week?
+
+Because of resource constraints, we are currently only able to release this report once a week.
+
+11. Spreading
+
+How is open interest calculated? Why, when I add up all long positions (or short), does the sum does not equal open interest?
+
+The spread number needs to be added to be both long and short sides, respectively. If you are doing these calculations on the Combined file, the sum of the long and or short positions may be +1 or -1 Open Interest, due to option delta calculations.
+
+For the “producer/merchant/processor/user” category, open interest is reported only by long or short positions. The computed amount of spreading is calculated as the number of offsetting futures in different calendar months or offsetting futures and options in the same or different calendar months. Any residual long or short position is reported in the long or short column. Inter-market spreads are not considered.
+
+Example: A non-commercial trader has 350 long and 200 short positions. In commitment positions, 150 long, 0 short, and 200 spread. Here is the calculation to balance open interest to published long and short positions:
+
+Open Interest = NonC Long + NonC Spread + Com Long + NonRep Long
+Open Interest = NonC Short + NonC Spread + Com Short + NonRep Short
+
+Spreading is the difference, or a computed amount, equal to offsetting long and short positions held by a trader. The Disaggregated COT report sets out open interest by long, short, and spreading for the three categories of traders: “swap dealers,” “managed money,” and “other reportable”.
+
+In the COT Report published weekly, I want to understand what the spreading position means. For example, the Managed Money length for ethane on the CME is 5,762 lots long and 3,355 lots short. However, the number of traders reported on the long side is 0 while the short side has 9. How are there 5,762 lots on the long side but zero traders? Is there some type of netting that is occurring in the number of traders category?
+
+The sum of the numbers of traders in each separate category typically exceeds the total number of reportable traders. This results from the fact that, in the “swap dealers,” “managed money,” and “other reportable” categories, “spreading” can be a partial activity, so the same trader can fall into either the outright “long” or “short” trader count, as well as into the “spreading” count. Additionally, a reportable producer/merchant/processor/user may be in both the long and the short position columns. In order to preserve the confidentiality of traders, for any given commodity where a specific category has fewer than four active traders, the size of the relevant positions will be provided but the trader count will be suppressed (specifically, a “·” will appear for trader counts of fewer than four traders).
+
+Furthermore, the COT long format reports show the percent of open interest held by (i) the largest four and (ii) the largest eight reportable traders, without regard to whether they are classified as commercial or non-commercial. The concentration ratios are shown with trader positions computed on a gross long and gross short basis and on a net long or net short basis. The "Net Position" ratios are computed after offsetting each trader’s equal long and short positions. A reportable trader with relatively large, balanced long and short positions in a single market, therefore, may be among the four and eight largest traders in both the gross long and gross short categories, but will probably not be included among the four and eight largest traders on a net basis.
+
+12. Public Reporting Environment
+
+As part of my research, I require historical data from the COT Reports. Can you please send me the data for a specific contract market?
+
+CFTC provides the Public Reporting Environment to allow users to customize your queries and export the data for your use. You can find the CFTC Public Reporting Environment for the Commitments of Traders data here: https://publicreporting.cftc.gov/stories/s/r4w3-av2u
+
+Do you maintain historical datasets and how can I access it?
+
+Yes. There are four COT reports. The Legacy Report has data available back to January 15, 1986. The CIT Report has data available back to January 3, 2006, and both the Disaggregated Reports and Trader in Financial Futures reports have data back to June 13, 2006.
+
+Using the CFTC Public Reporting Environment will allow you to access these historical reports and select only the dates and contracts you are interested in reviewing.
+
+Is the ID column the primary key of your dataset?
+
+There is no primary key in the dataset. You will most likely want to sort by “Report Date” or “Report Week” and then by “Contract” or “Contract Market,” the choice really is up to you as to how you wish to refine the data.
+
+13. Application Programming Interface (API) Access to COT Data
+
+How do I get a token to access the COT reports via API from the public reporting environment?
+
+Currently, we are not providing tokens to use the Public Reporting APIs. People who are using the API are generally using it successfully without using a token. As long as you are not overusing the API, you should be able to use the API without a token. For additional questions regarding the APIs, please contact [email protected].
+
+COT Public Reporting Environment
+
+The COT Public Reporting Environment (PRE) provides an application programming interface (API) to allow users to customize their experience with the COT market report data. The API allows users to search and filter across columns for each of the datasets, including reporting date or week, commodity groups, subgroups, or name, and contract market name. Customized data report results can be downloaded to available formats -- CSV, RDF, RSS, TSV, or XML.
+
+- COT Public Reporting Environment (PRE)
+
+- COT PRE User Guide
+
+- COT PRE Frequently Asked Questions (FAQs)
+
+Types of Reports
+
+There are four main reports:
+
+1. Legacy -- The Legacy reports are broken down by exchange. These reports have a futures only report and a combined futures and options report. Legacy reports break down the reportable open interest positions into two classifications: non-commercial and commercial traders.
+
+2. Supplemental -- The Supplemental report includes 13 select agricultural commodity contracts for combined futures and options positions. Supplemental reports break down the reportable open interest positions into three trader classifications: non-commercial, commercial, and index traders.
+
+3. Disaggregated -- The Disaggregated reports are broken down by agriculture, petroleum and products, natural gas and products, electricity and metals and other physical contracts. These reports have a futures only report and a combined futures and options report. The Disaggregated reports break down the reportable open interest positions into four classifications:
+
+- Producer/Merchant/Processor/User
+
+- Swap Dealers
+
+- Managed Money
+
+- Other Reportables
+
+Please see the “Disaggregated Explanatory Notes” for further information.
+
+4. Traders in Financial Futures -- The Traders in Financial Futures (TFF) report includes financial contracts, such as currencies, US Treasury securities, Eurodollars, stocks, VIX and Bloomberg commodity index. These reports have a futures only report and a combined futures and options report. The TFF report breaks down the reportable open interest positions into four classifications:
+
+- Dealer/Intermediary
+
+- Asset Manager/Institutional
+
+- Leveraged Funds
+
+- Other Reportables
+
+Please see the “Traders in Financial Futures Explanatory Notes” for further information.
+
+Short and Long Format of Reports
+
+The Legacy and Disaggregated reports are available in both a short and long format. The TFF report is only available in the long format. The Supplemental report is only available in the short format.
+
+The short format shows reportable open interest and week-to-week open interest changes separately by reportable and non-reportable positions. For reportable positions, additional data is provided for commercial and non-commercial holdings, spreading (in certain categories only), changes from the previous report, percent of open interest by category, and numbers of traders.
+
+The long report, in addition to the information in the short report, groups the data by crop year, where appropriate, and shows the concentration of positions held by the largest four and eight traders.
+
+COT Weekly Add/ Dropped Contracts
+
+New Futures Markets Added This Week
+
+Contract Market Code Contract Market Name
+
+4603 OATS - CHICAGO BOARD OF TRADE
+
+176LM2 XRP - COINBASE DERIVATIVES, LLC
+
+177742 MICRO SOL - CHICAGO MERCANTILE EXCHANGE
+
+399741 EURO FX/JAPANESE YEN XRATE - CHICAGO MERCANTILE EXCHANGE
+
+Futures Markets Dropped From Reporting This Week
+
+Contract Market Code Contract Market Name
+
+0233A9 FLORIDA GAS-ZONE 3 BASIS - ICE FUTURES ENERGY DIV
+
+0233BF ONEOK GAS TRANSPORTATION BASIS - ICE FUTURES ENERGY DIV
+
+0233DC TGT ZONE 1 INDEX DIFF - ICE FUTURES ENERGY DIV
+
+0233EP NAT GAS TETCO-WLA INDEX - ICE FUTURES ENERGY DIV
+
+052645 DRY WHEY - CHICAGO MERCANTILE EXCHANGE
+
+066397 BUTANE,OPIS MT B, NONTET FIX - ICE FUTURES ENERGY DIV
+
+06639H PROPANE ARGUS SAUDI CP MINI - ICE FUTURES ENERGY DIV
+
+06639Z PROPANE,OPIS MT BELV TET BALMO - ICE FUTURES ENERGY DIV
+
+180LM2 SUI - COINBASE DERIVATIVES, LLC
+
+221607 BLOOMBERG IG DURATION-HEDGED - CHICAGO BOARD OF TRADE
+
+239744 EMINI RUSSELL 1000 VALUE INDEX - CHICAGO MERCANTILE EXCHANGE
+
+New Futures and Options Combined Markets Added This Week
+
+Contract Market Code Contract Market Name
+
+4603 OATS - CHICAGO BOARD OF TRADE
+
+67657 CRUDE OIL CAL SPREAD OPTIONS - NEW YORK MERCANTILE EXCHANGE
+
+176LM2 XRP - COINBASE DERIVATIVES, LLC
+
+177742 MICRO SOL - CHICAGO MERCANTILE EXCHANGE
+
+399741 EURO FX/JAPANESE YEN XRATE - CHICAGO MERCANTILE EXCHANGE
+
+New Futures and Options Combined Markets Dropped From Reporting This Week
+
+Contract Market Code Contract Market Name
+
+0233A9 FLORIDA GAS-ZONE 3 BASIS - ICE FUTURES ENERGY DIV
+
+0233BF ONEOK GAS TRANSPORTATION BASIS - ICE FUTURES ENERGY DIV
+
+0233DC TGT ZONE 1 INDEX DIFF - ICE FUTURES ENERGY DIV
+
+0233EP NAT GAS TETCO-WLA INDEX - ICE FUTURES ENERGY DIV
+
+066397 BUTANE,OPIS MT B, NONTET FIX - ICE FUTURES ENERGY DIV
+
+06639H PROPANE ARGUS SAUDI CP MINI - ICE FUTURES ENERGY DIV
+
+06639Z PROPANE,OPIS MT BELV TET BALMO - ICE FUTURES ENERGY DIV
+
+180LM2 SUI - COINBASE DERIVATIVES, LLC
+
+221607 BLOOMBERG IG DURATION-HEDGED - CHICAGO BOARD OF TRADE
+
+239744 EMINI RUSSELL 1000 VALUE INDEX - CHICAGO MERCANTILE EXCHANGE
+
+Reports Dated October 06, 2026 - Current Disaggregated Reports:
+
+Disaggregated Futures Only Disaggregated Futures-and-Options -Combined
+
+Agriculture Long Format Short Format Long Format Short Format
+
+Petroleum and
+Products Long Format Short Format Long Format Short Format
+
+Natural Gas and
+Products Long Format Short Format Long Format Short Format
+
+Electricity Long Format Short Format Long Format Short Format
+
+Metals and Other Long Format Short Format Long Format Short Format
+
+- Disaggregated Futures-Only Commitments of Traders Comma Delimited
+
+- Disaggregated Futures and Options Commitments of Traders Comma Delimited
+
+- Disaggregated Explanatory Notes
+
+Current Traders in Financial Futures Reports:
+
+Traders in Financial Futures; Futures Only Traders in Financial Futures; Futures-and-Options -Combined
+
+Financial Long Format Long Format
+
+- Traders in Financial Futures; Futures-Only Commitments of Traders Comma Delimited
+
+- Traders in Financial Futures; Futures and Options Commitments of Traders Comma Delimited
+
+- Traders in Financial Futures; Explanatory Notes
+
+Current Legacy Reports:
+
+Futures Only Futures-and-Options-Combined
+
+Chicago Board of
+Trade Long Format Short Format Long Format Short Format
+
+Chicago Mercantile
+Exchange Long Format Short Format Long Format Short Format
+
+Chicago Board
+Options Exchange Long Format Short Format Long Format Short Format
+
+MIAX
+Futures Exchange Long Format Short Format Long Format Short Format
+
+Commodity Exchange
+Incorporated Long Format Short Format Long Format Short Format
+
+ICE Futures U.S. Long Format Short Format Long Format Short Format
+
+ICE Futures Europe Long Format Short Format Long Format Short Format
+
+ICE – Futures Energy Long Format Short Format Long Format Short Format
+
+Coinbase Derivatives
+LLC Long Format Short Format Long Format Short Format
+
+New York Mercantile
+Exchange Long Format Short Format Long Format Short Format
+
+NODAL Exchange Long Format Short Format Long Format Short Format
+
+Supplemental Commodity Index CIT Report
+
+Other Available Formats
+
+Comma Delimited
+
+These text-only files contain the most recent Futures-only and Futures-and-Options-Combined long form data in a comma delimited format for easy loading into a spreadsheet.
+
+- Futures-Only Commitments of Traders Comma Delimited
+
+- Options and Futures Commitments of Traders Comma Delimited
+
+- Supplement: Commodity Index Report Comma Delimited
+
+Variable Names
+
+Variable Names for Long COT Legacy Reports
+
+Variable Names for Long Commodity Index Trader Supplemental Report
+
+Variable Names for Disaggregated COT Reports
+
+Variable Names for Traders in Financial Futures Reports
+
+Supplemental Report
+
+In a CFTC Press Release 5262-06 (December 05,2006), the CFTC announced that, in addition to the existing weekly Commitments of Traders reports, a supplemental report would be published beginning January 5, 2007.
+
+The Commission’s actions in response to its comprehensive review of the Commitments of Traders Reporting program are summarized in Comprehensive Review of the Commitments of Traders Reporting Program published December 5, 2006. An Executive Summary of the December 5, 2006 report is also available.
+
+Send comments to [email protected].

@@ -1,0 +1,71 @@
+# Benchmark cot: DTN Canada Markets COT commentary
+# https://www.dtnpf.com/agriculture/web/ag/news/article/2025/01/27/corn-topping-soon-necessarily
+# fetched 2026-10-16T16:14:50Z, sha256 87f53e85d99f42603b8896325fb9d436da567b188e46c53065ee99a4a9ceef79
+
+Corn Topping Soon? Not Necessarily, According to Commitments of Traders Analysis
+
+By
+
+Mitch Miller
+,
+DTN Contributing Canadian Grains Analyst
+
+This busy chart shows the managed money trader net-long position quickly rising to record territory. Some in the industry suggest it implies the end is near for the corn rally, but history disagrees. Starting in Nov. 2020, corn rallied another $3.25/bushel after a similar position was established. (DTN ProphetX chart)
+
+Content note: Given the complexity of the subject matter and its importance, much of the previous related blog https://www.dtnpf.com/… will be added at the end for those who missed the original and updated throughout for all. Realizing that there are far too many factors affecting price than space allows here, I will focus on the topic at hand.
+
+With all the attention that money managed funds in corn are getting -- specifically that the rally will likely be over soon, given the size of the position that they have amassed already -- I wanted to share a brief history lesson to bust that myth.
+
+It is quite remarkable that they went from a record net short of 353,983 contracts to a current net long of 311,678 contracts in just over six months. That represents 3.328 billion bushels (bb) of net corn purchases and is a perfect example of why we track their activities as closely as we do. They were at least partially responsible for the $1.10/bushel rally along the way. But what now? They are not far off the record net long of 429,189 contracts set in October of 2010. Does that mean they are close to running out of buying potential as some suggest, limiting any significant further gains?
+
+Simply put, not necessarily. As you can see from the accompanying chart, the market was in a similar position in November 2020: A quick flip from a very large net-short position to a net-long position similar in size to the current one. Inflation was starting to accelerate with the Federal Reserve downplaying it, and corn exports were running hot with a sharp reduction in ending stocks resulting. Sound familiar?
+
+By the time corn prices marked a top for 2021 (in early May with seeding progressing well), the nearby contract had added another $3.25/bushel with money managers only increasing their net-long position by 111,913 contracts. If that was added to their current net-long position, they would still be short of the record.
+
+It's worth noting that part of the buying that contributed to the next net long higher came from Commodity Index Traders. They went from being net long 349,874 contracts on Nov. 2, 2020, to 442,295 contracts on June 28, 2021, while trying to hedge against inflation. They have been very active on the current rally, already at 456,201 contracts net long as of Jan. 21. With their record net long being 493,736 contracts, their contributions to further gains may be more limited than seen in the past event.
+
+In short, the risk of buyer exhaustion is increasing, but in no way should that be interpreted as a top is nearby. It's more like a situation of simply a good reason to reward the rally with another incremental sale, while working through a disciplined marketing strategy.
+
+REFRESHER ON PARTICIPANTS AND ROLES
+
+Now, a quick refresher on participants and their roles commonly referred to in market commentary for those who are interested.
+
+P[L1] D[0x0] M[300x250] OOP[F] ADUNIT[] T[]
+
+The Commodity Futures Trading Commission (CFTC) releases its latest data on market participants through the Commitments of Traders (COT) report every Friday afternoon. It contains a wealth of valuable information, helping to explain who was doing what, the impact their actions likely had on prices, and clues into what may lie ahead. The biggest problem is complexity. This will hopefully help you understand the report better.
+
+It should be noted that the data is as of the close of trading on the preceding Tuesday, so any significant moves after that will not be reflected until the following weekly report.
+
+The original format is referred to as the Legacy report, while a far more detailed version has been provided since 2006 -- the Disaggregated report. Both are available for futures only or futures and options combined. Given the fact so many are incorporating options into their strategies, the latter is the more commonly followed. Finally, a Supplemental Commodity Index report covering futures and options combined is updated weekly.
+
+The Legacy reports are likely the most-commonly quoted, but my least favorite. They show the long, short and net positions of the Commercial group, the Noncommercial (Large Speculators) and the Nonreportable (small traders). Group titles are self-explanatory. As mentioned, futures only or futures and options combined versions are available with most consideration going to the latter.
+
+The disaggregated report was introduced to provide better clarity using more classifications -- thus my preference. It breaks the commercial group down into 'producer/merchant/processor/user' and 'swap dealer' classifications. Swap dealers are often considered commercials in the Legacy report as they are hedging their risk using futures or options markets, but clearly have different business interests than the ones dealing with the physical commodity.
+
+The 'producer/merchant/processor/user' group tends to be managing risk by hedging with little need or desire to move markets, either on entry or exit. As a result, they tend to have much more patience when liquidating positions than the other groups, and money managers in particular.
+
+The noncommercial group is replaced by 'managed money' traders and 'other reportable' while nonreportable (small) traders remain the same. Obviously the 'other reportable' category contains those large traders that don't fit into the other three.
+
+Managed money traders (commonly referred to as money managers) tend to have the greatest impact on price movements. They have one purpose and one purpose only -- to profit from speculating in futures and options markets. They don't have a bias on price direction, only that the price is moving and that they are on the right side of it. They tend to be trend followers and momentum traders. They will add to a position aggressively if it is proving to be correct, thus adding to the momentum of a trend. That leaves them vulnerable to pushing prices beyond levels that they would normally go, either higher or lower. It is often the producer/merchant/processor/user group that is on the other side of the trade, with the latter group having little urgency to lift their hedges.
+
+When money-managed funds build up historically extreme position sizes, there is a risk of a liquidation event sending prices sharply against the trend. Given their only motive is profit, the faster they can get out, the better during a correction -- often leading to violent liquidate first/ decide if it was appropriate later type of reactions. The phrase "the trend is your friend until it ends" best sums up this group. The challenge is trying to foresee what might cause the 'end'.
+
+Last, but not least, the Commodity Index Trader (CIT) group is found in the supplemental report. They represent those investors that would like to passively have exposure to commodity markets, most often as a hedge against inflation. Their positions don't typically attract a lot of attention but when they matter, they can really matter.
+
+The inflation surge to start the decade was a perfect example. By late 2019, those with significant wealth were increasingly worried about the Federal Reserve's view that early inflation indications at the time were merely 'transitory'. With inflation destroying real returns on investments, they began buying commodities as a hedge against inflation through CIT funds. Futures markets provide an excellent form of leverage and liquidity for such a purpose, attracting their interest. From the fall of 2019 to March of 2022, CITs went from 214,468 contracts net-long corn to 493,736 contracts. At 5,000 bushels each, they increased their ownership of corn by almost 1.4 billion bushels over that period. The price of corn was slow to react, given the bearish fundamentals at the time, but went from $3.09 per bushel in the spring of 2020 to $8.24 1/2 per bushel by April of 2022.
+
+Corn was used for this demonstration, but the same story played out throughout the ag markets. Corn, Chicago wheat, Kansas wheat, soybeans, soybean meal, soybean oil, feeder cattle, live cattle and lean hogs combined had a CIT net-long position go from 812,206 contracts in 2019 to 1,398,356 by Mar. 28, 2022, when the Fed declared war on inflation. Their buying activity coincided with the strongest bull market seen in ag markets in a decade. Once interest rates began rising, the combined position fell back to 808,286 contracts by August 2024. It has since increased to the current 1,155,104 net long (as of Jan. 21) as they began re-establishing their inflation hedges.
+
+The critical point going forward with regards to this group will be whether inflation reaccelerates as it did in the 1970s and how the Federal Reserve deals with the signals. As signs have developed of such a scenario, the Fed continues to suggest further rate cuts lie ahead while again downplaying inflation. That has led to the recent buildup in their long hedges with no sign that they are finished.
+
+One final thought on the topic: As distasteful as this subject is to many, without liquidity guaranteeing ease of entry and exit, futures markets die, and price discovery becomes much more difficult. The industry ends up with delisted commodities, like barley and flaxseed on the Winnipeg Commodity Exchange, at the time. Hedgers also need speculators to assume the risk they are trying to limit. As such, it is critical that participants other than those directly involved with a commodity use futures markets for various purposes. I do believe it's better to know as much as we can about the elephants we're dancing with -- they are all a necessary evil and the more we understand, the better.
+
+**
+
+I welcome feedback along with any suggestions for future blogs. My daily comments can be found in Plains, Prairies Opening Comments and Plains, Prairies Quick Takes on DTN products.
+
+Mitch Miller can be reached at mitchmiller.dtn@gmail.com
+
+Follow him on social platform X @mgreymiller
+
+(c) Copyright 2025 DTN, LLC. All rights reserved.
