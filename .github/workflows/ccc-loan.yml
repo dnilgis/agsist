@@ -1,0 +1,71 @@
+name: CCC loan rates
+
+# Writes data/ccc-loan.json (the monthly CCC commodity loan interest rate) and
+# data/ccc-loan/<ST>.json (2026 county loan rates for corn and soybeans) for
+# /commodity-loan. Public FSA pages, read by scripts/fetch_ccc_loan.py. The
+# page shows an empty state and asks for the rate until this file exists.
+#
+# FIRST RUN: dispatch this once with "probe" ticked. It saves what FSA returned
+# to data/ccc-loan-raw/ and commits it, so the real page and file layouts can be
+# checked against the parsers before trusting a number.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the raw FSA pages and county files to data/ccc-loan-raw/ and commit them"
+        type: boolean
+        default: false
+  schedule:
+    - cron: '23 14 1-5 * *'   # FSA posts the month's rates in the first business days
+    - cron: '23 14 15 * *'    # mid-month check for county file changes
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ccc-loan
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pypdf (fallback if pdftotext is missing)
+        run: pip install pypdf==6.20.1
+      - name: Selftest
+        run: python scripts/fetch_ccc_loan.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_ccc_loan.py --probe
+      - name: Fetch and write data/ccc-loan.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/fetch_ccc_loan.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/ccc-loan.json data/ccc-loan data/ccc-loan-raw"
+          rm -rf /tmp/cl && mkdir -p /tmp/cl
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/cl/ || true
+          done
+          [ -n "$(ls -A /tmp/cl)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/cl/data/. data/
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update CCC loan rates $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
