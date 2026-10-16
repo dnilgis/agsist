@@ -787,14 +787,13 @@ def seo_basis(c):
 FERT_TITLE_ORDER = (("urea", "Urea"), ("anhydrous", "Anhydrous"), ("dap", "DAP"), ("potash", "Potash"))
 FERT_ROUND_DAYS = 30
 FERT_PLAIN = ("Fertilizer Prices per Ton: What Co-ops Are Posting" + SUFFIX,
-              "Retail fertilizer prices co-ops post on their own websites, with the USDA Illinois average "
-              "where co-ops do not post. Cost per lb of N, P and K.")
+              "Retail fertilizer prices co-ops post on their own websites, each named with its region "
+              "and date. Cost per lb of N, P and K.")
 
 
 def seo_fertilizer(c):
     """data/fertilizer-prices.json (scripts/build_fert_prices.py): each
-    product's middle cash price posted by co-ops, else the USDA AMS Illinois
-    average. Posted prices move week to week, so the TITLE carries no date --
+    product's middle cash price posted by the co-ops Sig sent, nothing else. Posted prices move week to week, so the TITLE carries no date --
     a date there would read as today's price. The newest posted date goes in
     the description, and a price more than FERT_ROUND_DAYS older than it is
     not named. Until 2026-10-15 this read a hand-typed dealer sheet.
@@ -829,8 +828,6 @@ def seo_fertilizer(c):
     parts = []
     for i, (s, r) in enumerate(named):
         bit = f"{s if s.isupper() else s.lower()} ${r['price']:,.0f}" + ("/ton" if i == 0 else "")
-        if r.get("src") == "ams":
-            bit += " (USDA IL avg)"
         parts.append(bit)
     regs = sorted({r.get("region") for _, r in named if r.get("src") == "coop" and r.get("region")})
     lead = (f"{' and '.join(regs)} co-op cash prices through {mdY(newest)}: " if regs
@@ -1531,7 +1528,6 @@ def selftest():
     t, d = seo_fertilizer(ctx)
     # the co-op posted price list (2026-10-15; was the hand-typed dealer sheet)
     ck("fertilizer title names this round's prices", "Prices per Ton: Urea $623, Anhydrous $832" in t, t)
-    ck("fertilizer description says which price is the USDA average", "potash $470 (USDA IL avg)" in d, d)
     ck("fertilizer description names the co-ops' region", d.startswith("Kansas co-op cash prices through"), d)
     ck("fertilizer title carries NO date (weekly/monthly data)",
        not re.search(r"\b(20\d\d|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b", t), t)

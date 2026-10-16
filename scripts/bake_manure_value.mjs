@@ -13,9 +13,8 @@
  *
  * so a reader with no JavaScript, and a search engine, see the same numbers
  * the page computes live. The page rewrites the [data-mv] numbers from the
- * live file on load; the two fertilizer price workflows (fertilizer-coops,
- * fertilizer-ams) run this after every price change, so the baked copy and
- * the live copy agree.
+ * live file on load; the co-op price workflow (fertilizer-coops) runs this
+ * after every price change, so the baked copy and the live copy agree.
  *
  *   node scripts/bake_manure_value.mjs           write
  *   node scripts/bake_manure_value.mjs --check   exit 1 if a file is stale

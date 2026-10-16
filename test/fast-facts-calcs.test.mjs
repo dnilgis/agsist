@@ -7,7 +7,7 @@
  *   priced only at the reader's own $/ton.
  *
  *   Fertilizer prices come from data/fertilizer-prices.json
- *   (scripts/build_fert_prices.py): co-op middle cash price, else USDA. The
+ *   (scripts/build_fert_prices.py): the co-op posted prices Sig sent, only. The
  *   files below are made up in that shape; none is a real price.
  *
  * Needs Playwright and Chromium; skipped where they are missing.
@@ -31,8 +31,8 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 const FERT = {
   updated: "2026-09-01",
   prices: [
-    { key: "urea", name: "Urea", symbol: "46-0-0", price: 590, unit: "$/ton", as_of: "2026-09-01", src: "coop", n: 4,
-      src_label: "middle cash price of 4 co-ops, posted Aug 28, 2026 to Sep 1, 2026" },
+    { key: "urea", name: "Urea", symbol: "46-0-0", price: 590, unit: "$/ton", as_of: "2026-09-01", src: "coop", n: 4, region: "Kansas",
+      src_label: "Kansas co-ops, middle of 4, posted Sep 1, 2026", short_label: "Kansas co-ops, Sep 1" },
   ],
 };
 
@@ -142,24 +142,24 @@ test("every fertilizer pill names its source and date, and the arithmetic is wri
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const fert = { updated: "2026-10-06", prices: [
-      { key: "urea", name: "Urea", symbol: "46-0-0", price: 622.98, as_of: "2026-10-06", src: "coop", n: 4,
-        src_label: "middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026" },
-      { key: "uan32", name: "UAN 32%", symbol: "32-0-0", price: 530, as_of: "2026-10-02", src: "ams",
-        src_label: "USDA AMS Illinois average, report of Oct 2, 2026" } ] };
+      { key: "urea", name: "Urea", symbol: "46-0-0", price: 622.98, as_of: "2026-10-06", src: "coop", n: 4, region: "Kansas",
+        src_label: "Kansas co-ops, middle of 4, posted Oct 6, 2026", short_label: "Kansas co-ops, Oct 6" },
+      { key: "uan32", name: "UAN 32%", symbol: "32-0-0", price: 451.05, as_of: "2026-09-24", src: "coop", n: 1, region: "Kansas",
+        src_label: "Farmers Coop, Kansas, posted Sep 24, 2026", short_label: "Farmers Coop, Sep 24" } ] };
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
     const syms = await pg.$$eval(".fert-pill-sym", (els) => els.map((e) => e.textContent));
-    assert.deepEqual(syms, ["46-0-0 · co-ops Oct 6", "32-0-0 · USDA IL Oct 2"]);
+    assert.deepEqual(syms, ["46-0-0 · Kansas co-ops, Oct 6", "32-0-0 · Farmers Coop, Sep 24"]);
     const how = await pg.$$eval("#fert-deriv li", (els) => els.map((e) => e.textContent));
-    // 622.98 / 920 = 0.6772 -> $0.68; 530 / 640 = 0.828 -> $0.83
-    assert.equal(how[0], "Urea $623 / (2,000 lb x 46% N) = $0.68 a lb of N (middle cash price of 4 co-ops, posted Sep 24, 2026 to Oct 6, 2026).");
-    assert.equal(how[1], "UAN 32% $530 / (2,000 lb x 32% N) = $0.83 a lb of N (USDA AMS Illinois average, report of Oct 2, 2026).");
+    // 622.98 / 920 = 0.6772 -> $0.68; 451.05 / 640 = 0.7048 -> $0.70
+    assert.equal(how[0], "Urea $623 / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026).");
+    assert.equal(how[1], "UAN 32% $451 / (2,000 lb x 32% N) = $0.70 a lb of N (Farmers Coop, Kansas, posted Sep 24, 2026).");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
 
-/* Potash is priced at the grade its source names: USDA's Illinois report
- * quotes white potash 0-0-62, so $516.36 / (2000 x 0.62) = $0.4164/lb K2O,
+/* Potash is priced at the grade its source names: a sheet quoting white
+ * potash 0-0-62 gives $516.36 / (2000 x 0.62) = $0.4164/lb K2O,
  * not the 0-0-60 figure. (Was: the K-Mag pill at 22% K2O; K-Mag has no live
  * price source and is gone.) */
 test("the potash pill prices K2O at the grade its source names", { skip }, async () => {
@@ -167,12 +167,12 @@ test("the potash pill prices K2O at the grade its source names", { skip }, async
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const fert = { updated: "2026-10-02", prices: [
-      { key: "potash", name: "Potash", symbol: "0-0-62", price: 516.36, as_of: "2026-10-02", src: "ams",
-        src_label: "USDA AMS Illinois average, report of Oct 2, 2026" } ] };
+      { key: "potash", name: "Potash", symbol: "0-0-62", price: 516.36, as_of: "2026-10-02", src: "coop", n: 1, region: "Kansas",
+        src_label: "Test Coop, Kansas, posted Oct 2, 2026" } ] };
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 1);
     const label = await pg.$eval(".fert-pill", (e) => e.getAttribute("aria-label"));
-    assert.equal(label, "Potash $516/ton, USDA AMS Illinois average, report of Oct 2, 2026: $0.416/lb K2O");
+    assert.equal(label, "Potash $516/ton, Test Coop, Kansas, posted Oct 2, 2026: $0.416/lb K2O");
     assert.equal(await pg.inputValue("#eco-k-pplb"), "0.42");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }

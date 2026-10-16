@@ -26,9 +26,9 @@ const read = (f) => readFileSync(ROOT + f, "utf8");
    the Sep 1 dealer sheet, with MAP + sulfur 12-40-0-10S for P; that sheet is
    gone, and P now comes from MAP 11-52-0 or, when MAP has no price, DAP.) */
 const SEP1 = { updated: "2026-09-01", prices: [
-  { key: "urea", name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01", src: "coop", src_label: "middle cash price of 4 co-ops, posted Sep 1, 2026" },
-  { key: "dap", name: "DAP", symbol: "18-46-0", price: 900, as_of: "2026-08-28", src: "coop", src_label: "middle cash price of 3 co-ops, posted Aug 28, 2026" },
-  { key: "potash", name: "Potash", symbol: "0-0-60", price: 460, as_of: "2026-09-01", src: "ams", src_label: "USDA AMS Illinois average, report of Sep 1, 2026" },
+  { key: "urea", name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01", src: "coop", src_label: "Kansas co-ops, middle of 4, posted Sep 1, 2026" },
+  { key: "dap", name: "DAP", symbol: "18-46-0", price: 900, as_of: "2026-08-28", src: "coop", src_label: "Kansas co-ops, middle of 3, posted Aug 28, 2026" },
+  { key: "potash", name: "Potash", symbol: "0-0-60", price: 460, as_of: "2026-09-01", src: "coop", src_label: "Kansas co-ops, middle of 3, posted Sep 1, 2026" },
 ] };
 
 test("N, P2O5 and K2O $/lb, by hand", () => {
@@ -46,9 +46,9 @@ test("N, P2O5 and K2O $/lb, by hand", () => {
   near(q.p, (980 - 220 * 590 / 920) / 1040, "P2O5 from MAP when MAP has a price");
   // every price says how it was worked out, with its source and date
   const dv = M.derivation(p);
-  assert.equal(dv.n, "Urea 46-0-0 at $590.00 a ton (middle cash price of 4 co-ops, posted Sep 1, 2026) / (2,000 lb x 46% N) = $0.64 a lb of N.");
-  assert.equal(dv.p, "DAP 18-46-0 at $900.00 a ton (middle cash price of 3 co-ops, posted Aug 28, 2026), less its 360 lb of N at the urea price ($231), / 920 lb of P2O5 = $0.73 a lb of P2O5.");
-  assert.equal(dv.k, "Potash 0-0-60 at $460.00 a ton (USDA AMS Illinois average, report of Sep 1, 2026) / (2,000 lb x 60% K2O) = $0.38 a lb of K2O.");
+  assert.equal(dv.n, "Urea 46-0-0 at $590.00 a ton (Kansas co-ops, middle of 4, posted Sep 1, 2026) / (2,000 lb x 46% N) = $0.64 a lb of N.");
+  assert.equal(dv.p, "DAP 18-46-0 at $900.00 a ton (Kansas co-ops, middle of 3, posted Aug 28, 2026), less its 360 lb of N at the urea price ($231), / 920 lb of P2O5 = $0.73 a lb of P2O5.");
+  assert.equal(dv.k, "Potash 0-0-60 at $460.00 a ton (Kansas co-ops, middle of 3, posted Sep 1, 2026) / (2,000 lb x 60% K2O) = $0.38 a lb of K2O.");
 });
 
 test("the live file: P credits MAP's or DAP's N at the live urea price, K from potash, and agrees with the pipeline", () => {

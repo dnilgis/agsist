@@ -36,12 +36,13 @@ test("no file or nothing current: nothing is drawn", () => {
 
 test("section: middle price only where the file gives one, every co-op named and linked", () => {
   const h = FC.section(FEED, AMS);
-  assert.match(h, /What co-ops are posting/);
+  assert.match(h, /What Kansas co-ops are posting/, "the heading names the region");
   assert.match(h, /\$623<\/div>/, "urea middle of four co-ops, 622.98 rounded");
   assert.match(h, /middle of 4 co-ops/);
   assert.match(h, /\$608 to \$840/);
-  assert.match(h, /one co-op: Test sheet co-op/, "UAN 32 from one co-op: no middle price");
-  assert.match(h, /2 co-ops, same price/, "MAP from two co-ops at $980");
+  assert.match(h, /one co-op: Test sheet co-op/, "UAN 32 from one co-op: no middle price, the co-op named");
+  assert.match(h, /\$980<\/div><div class="fpc-unit">\$\/ton cash<\/div><div class="fpc-loc">average of 2 co-ops/, "MAP from two co-ops: their average, said so");
+  assert.match(h, /\$420<\/div><div class="fpc-unit">\$\/ton cash<\/div><div class="fpc-loc">average of 2 co-ops/, "Thio-Sul: 390 and 450 average to 420");
   for (const c of FEED.coops) assert.ok(h.includes('href="' + c.url + '"'), c.name + " linked");
   assert.match(h, /Call to confirm/);
   assert.ok(!/—/.test(h), "no em dashes");
@@ -58,12 +59,11 @@ test("far from the others is said, not hidden", () => {
   assert.match(FC.section(FEED, AMS), /Far from the other co-ops: Mulvane Cooperative Union&rsquo;s Urea \(\$840\)/);
 });
 
-test("USDA line: only products with both figures, and says they differ", () => {
-  const h = FC.amsLine(FC.valid(FEED), AMS);
-  assert.match(h, /Urea \$623 here, \$770 USDA; DAP \$929 here, \$929 USDA\./);
-  assert.ok(!/UAN 32/.test(h), "no co-op middle price for UAN 32, so no comparison");
-  assert.match(h, /Not the same measure/);
-  assert.equal(FC.amsLine(FC.valid(FEED), null), "");
+test("no USDA figure is drawn in the co-op section or its top line", () => {
+  const all = FC.section(FEED) + FC.bar(FEED);
+  assert.ok(!/\$770|USDA Illinois avg|Against the USDA/.test(all), "a USDA number in the co-op section");
+  assert.match(FC.bar(FEED), /The USDA box lower down is an Illinois reference only/);
+  assert.equal(FC.amsLine, undefined, "the USDA comparison line is gone");
 });
 
 test("a link that is not https is not drawn as a link", () => {
@@ -83,10 +83,10 @@ test("fertilizer.html loads the component and the file, sections hidden until dr
 });
 
 test("the top: hero line names the newest posted date and the co-op count; cards say how many co-ops", () => {
-  assert.match(FC.bar(FEED), /^Co-op prices posted through <strong>Oct 12, 2026<\/strong> &middot; four co-ops in KS &middot; read Oct 15, 2026$/);
+  assert.equal(FC.bar(FEED), "Every price on this page is from <strong>Kansas</strong> co-ops: the middle cash price of four co-ops, posted through <strong>Oct 12, 2026</strong>. The USDA box lower down is an Illinois reference only. Read Oct 15, 2026.");
   assert.equal(FC.bar(null), "");
   const t = FC.top(FEED);
   assert.match(t, /middle of 4 co-ops/);
   assert.ok(!t.includes("<table"), "the co-op table and every posted price sit lower down, not in the top");
-  assert.match(FC.more(FEED, AMS), /Where the co-op prices come from/);
+  assert.match(FC.more(FEED), /Where the co-op prices come from/);
 });

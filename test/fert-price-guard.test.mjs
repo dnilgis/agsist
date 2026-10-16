@@ -107,6 +107,22 @@ test("nothing reads the old dealer sheet", () => {
   assert.deepEqual(bad, []);
 });
 
+/* Sig, 2026-10-15: prices come only from the co-op pages he sent. The USDA
+   AMS file may be read only by /fertilizer's reference box. */
+test("only /fertilizer's reference box reads the USDA file; nothing else blends it in", () => {
+  const bad = [];
+  for (const f of PAGES.concat(SCRIPTS)) {
+    if (["fertilizer.html", "components/fert-sources.js"].includes(f)) continue;
+    if (/fertilizer-ams\.json/.test(read(f))) bad.push(f);
+  }
+  for (const f of ["scripts/build_fert_prices.py", "scripts/bake_fert_defaults.py", "scripts/bake_manure_value.mjs", "scripts/fert_after_prices.sh"]) {
+    if (/fertilizer-ams/.test(read(f))) bad.push(f);
+  }
+  assert.deepEqual(bad, []);
+  const prices = JSON.parse(read("data/fertilizer-prices.json"));
+  assert.ok(prices.prices.length > 0 && prices.prices.every((p) => p.src === "coop"), "a non-co-op price in the shared file");
+});
+
 test("the baked fertilizer numbers are current with the shared file", () => {
   // breakeven.html's fertilizer defaults and their source line
   execFileSync("python3", ["scripts/bake_fert_defaults.py", "--check"], { cwd: ROOT, encoding: "utf8" });

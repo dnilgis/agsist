@@ -8,13 +8,14 @@ WHY IT LIVES HERE AND NOT IN dnilgis/bids
   feeds the USDA box beside it: a stdlib Python reader on a GitHub runner that
   writes one small JSON file and commits it. dnilgis/bids is a Node pipeline
   built around grain-bid boards and a browser; a co-op's fertilizer page is a
-  hand-typed table, not a bid board, so none of its adapters apply. What bids
-  does have is the list of co-op websites on the Barchart / AgriCharts
-  platform (data/platforms.json, data/directory.json); --discover reads that
-  list at run time from the public repo instead of keeping a copy here.
+  hand-typed table, not a bid board, so none of its adapters apply.
 
 WHERE THE CO-OPS COME FROM
-  scripts/coop_fert_sources.json, one line per co-op. Parsers go by page
+  scripts/coop_fert_sources.json, one line per co-op: the four co-op price
+  pages Sig sent on 2026-10-15. Nothing searches for more (Sig, Oct 15: "stop
+  looking for fertilizer prices for now and just use the pricing data that i
+  provided"). A one-off discovery run that day asked 273 Barchart/AgriCharts
+  co-op sites from the dnilgis/bids lists and found no others posting prices. Parsers go by page
   LAYOUT, not by co-op, so a new co-op with a known layout is one config line:
     html-table  a price table typed into a Barchart / AgriCharts co-op page
                 (pages/custom.php?id=..., /fertilizer). Columns are read from
@@ -28,9 +29,6 @@ WHERE THE CO-OPS COME FROM
 Modes:
   (default)    fetch every co-op, parse, check, write data/fertilizer-coops.json
                and append changes to data/fertilizer-coops-history.json.
-  --discover   ask each Barchart / AgriCharts co-op site in the bids network,
-               one request at a time, whether it posts fertilizer prices.
-               Writes data/fertilizer-coops-discovery.json; changes no feed.
   --selftest   offline tests on test/fixtures/coop-fert/.
 
 WHAT THIS FILE WILL NOT DO
@@ -45,7 +43,8 @@ WHAT THIS FILE WILL NOT DO
     price, or a cash price above the charge price, keeps the row out of the
     summary. Summaries are middle values (medians), and a co-op far from the
     others is flagged, not hidden.
-  * Print a middle price from fewer than MIN_MEDIAN co-ops.
+  * Call one co-op's price a middle price. With two co-ops the middle is the
+    average of the two and says so; with one, the co-op is named.
   * Overwrite a co-op's last good rows with nothing when its page fails.
 
 Stdlib only, plus pdftotext (poppler) or pypdf for a PDF sheet.
@@ -68,12 +67,12 @@ ROOT = Path(__file__).resolve().parent.parent
 CONFIG = "scripts/coop_fert_sources.json"
 OUT = "data/fertilizer-coops.json"
 HIST = "data/fertilizer-coops-history.json"
-DISC = "data/fertilizer-coops-discovery.json"
 FIX_DIR = "test/fixtures/coop-fert"
 UA = "agsist.com fertilizer price reader (contact: sig@farmers1st.com)"
 
 STALE_DAYS = 60
-MIN_MEDIAN = 3          # fewer co-ops than this: no middle price, just the range
+MIN_MEDIAN = 2          # a middle price from 2 co-ops up (2: the average of the two)
+FAR_MIN = 3             # "far from the others" needs at least 3 co-ops
 FAR_FROM_OTHERS = 0.25  # flag a cash price this far from the middle of the others
 HIST_MAX_KB = 1024      # history file cap; also in scripts/check_site_budget.py FILE_KB
 PAUSE = 1.5             # seconds between requests to co-op sites
@@ -533,7 +532,7 @@ def summarize(coops):
         vals = [r["cash"] for _, r in picks]
         med = median(vals) if len(vals) >= MIN_MEDIAN else None
         far = []
-        if len(vals) >= MIN_MEDIAN:
+        if len(vals) >= FAR_MIN:
             for c, r in picks:
                 others = median([x["cash"] for cc, x in picks if cc is not c])
                 if others and abs(r["cash"] - others) / others > FAR_FROM_OTHERS:
@@ -651,7 +650,7 @@ def compose(cfgs, results, existing, now):
         "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). "
                        "Rows dated over %d days ago, rows whose per-unit or cwt figure does not match, and products the reader "
                        "cannot name are shown but not summarized. One price per co-op per product: the first listed. "
-                       "Middle price only from %d co-ops." % (STALE_DAYS, MIN_MEDIAN),
+                       "Middle price from %d co-ops up (from 2 it is their average); one co-op is named." % (STALE_DAYS, MIN_MEDIAN),
         "coops_total": len(coops), "coops_current": sum(states.values()), "states": states,
         "summary": summary, "coops": coops,
     }
@@ -703,142 +702,6 @@ def run(root, now=None, fetcher=None):
     if hist_ok:
         (root / HIST).write_text(body + "\n")
     return {"wrote": True, "why": None, "results": results, "doc": doc, "hist_ok": hist_ok}
-
-
-# ---------------------------------------------------------------- discovery
-BIDS_RAW = "https://raw.githubusercontent.com/dnilgis/bids/main/"
-FERT_LINK = re.compile(r"fertili|agronom|plant ?food|crop nutri", re.I)
-
-
-def host_of(u):
-    if not u:
-        return None
-    if "//" not in u:
-        u = "https://" + u
-    h = (urllib.parse.urlsplit(u).hostname or "").lower()
-    return h[4:] if h.startswith("www.") else h
-
-
-def bids_hosts(platforms, directory):
-    """Co-op hosts on the Barchart / AgriCharts platform, with any operator
-    name and states the bids directory has for them."""
-    hosts = {}
-    for k, v in (platforms.get("sites") or {}).items():
-        if v.get("platform") in ("agricharts", "barchart"):
-            h = host_of(k)
-            if h and "marketplace.barchart.com" not in h and "barchart.com" != h:
-                hosts.setdefault(h, {"operators": set(), "states": set()})
-    for r in (directory or {}).get("elevators") or []:
-        h = host_of(r.get("website"))
-        plat = r.get("platform") or ""
-        if h and (h in hosts or plat.startswith("agricharts") or plat.startswith("barchart")) and "marketplace" not in h:
-            e = hosts.setdefault(h, {"operators": set(), "states": set()})
-            if r.get("operator"):
-                e["operators"].add(r["operator"])
-            if r.get("state"):
-                e["states"].add(r["state"])
-    return hosts
-
-
-def links(page, base):
-    out = []
-    for m in re.finditer(r"""<a\b[^>]*href\s*=\s*["']([^"'#]+)["'][^>]*>(.*?)</a>""", page, re.I | re.S):
-        href, label = html.unescape(m.group(1)), clean(re.sub(r"<[^>]+>", " ", m.group(2)))
-        out.append((urllib.parse.urljoin(base, href), label))
-    return out
-
-
-def judge(url, raw, today):
-    """What a candidate page holds: (kind, n priced product rows, date)."""
-    if raw is None:
-        return None, 0, None
-    if raw[:5] == b"%PDF-":
-        text, _ = pdf_to_text(raw)
-        if not text:
-            return "pdf-unreadable", 0, None
-        rows, d, _ = pdf_rows(text, today)
-        n = sum(1 for r in rows if product_key(r["raw"]) != "other" and r["prices"])
-        return ("pdf-sheet" if n >= 2 else "pdf-other"), n, d
-    page = raw.decode("utf-8", "replace")
-    rows, text, _ = html_rows(page, today)
-    n = sum(1 for r in rows if product_key(r["raw"]) != "other" and r["prices"])
-    return ("html-table" if n >= 2 else None), n, one_date(text, today)
-
-
-def discover(root, now=None, fetcher=None, sources=None, limit=None):
-    root = Path(root)
-    now = now or datetime.datetime.now(datetime.timezone.utc)
-    today = now.date()
-    fetcher = fetcher or (lambda u: (time.sleep(PAUSE), get(u))[1])
-    if sources is None:
-        # bids' own files; spelled in two parts so scripts/build_feeds.py does
-        # not take them for agsist's data/ files
-        p, e1 = get(BIDS_RAW + "data/" + "platforms.json")
-        d, e2 = get(BIDS_RAW + "data/" + "directory.json")
-        if p is None:
-            print("::error::discover: could not read the bids site list: %s" % e1)
-            return 1
-        sources = bids_hosts(json.loads(p), json.loads(d) if d else None)
-    hosts = sorted(sources)[:limit] if limit else sorted(sources)
-    found, asked, failed = [], 0, 0
-    for h in hosts:
-        asked += 1
-        base = "https://www.%s/" % h if h.count(".") == 1 else "https://%s/" % h
-        raw, err = fetcher(base)
-        if raw is None and base != "https://%s/" % h:
-            base = "https://%s/" % h
-            raw, err = fetcher(base)
-        if raw is None:
-            failed += 1
-            continue
-        home = raw.decode("utf-8", "replace")
-        title = clean(html.unescape((re.search(r"<title>(.*?)</title>", home, re.I | re.S) or [None, ""])[1]))
-        site_ids = sorted(set(re.findall(r"media\.agricharts\.com/sites/(\d+)/", home)))
-        cands = []
-        for u, label in links(home, base):
-            if host_of(u) != h and "media.agricharts.com" not in u:
-                continue
-            if FERT_LINK.search(label) or FERT_LINK.search(u.rsplit("/", 1)[-1]):
-                if u not in cands:
-                    cands.append(u)
-        if not any(urllib.parse.urlsplit(u).path.rstrip("/") == "/fertilizer" for u in cands):
-            cands.append(urllib.parse.urljoin(base, "/fertilizer"))
-        hits = []
-        for u in cands[:5]:
-            r2, _ = fetcher(u)
-            kind, n, d = judge(u, r2, today)
-            if kind in ("html-table", "pdf-sheet"):
-                hits.append({"url": u, "layout": kind, "products": n, "date": d.isoformat() if d else None})
-                continue
-            if r2 is not None and r2[:5] != b"%PDF-":
-                # a fertilizer page that links a price sheet
-                sub = r2.decode("utf-8", "replace")
-                pdf, pd = newest_pdf(sub, u, today)
-                for pu, label in ([(pdf, "dated sheet")] if pdf else []) + [
-                        (x, lb) for x, lb in links(sub, u) if x.lower().endswith(".pdf") and FERT_LINK.search(lb + x)][:2]:
-                    r3, _ = fetcher(pu)
-                    k3, n3, d3 = judge(pu, r3, today)
-                    if k3 == "pdf-sheet":
-                        hits.append({"url": pu, "index": u, "layout": k3, "products": n3,
-                                     "date": d3.isoformat() if d3 else None})
-                        break
-        src = sources[h]
-        entry = {"host": h, "title": title, "agricharts_site": site_ids,
-                 "operators": sorted(src["operators"]), "states": sorted(src["states"]), "pages": hits}
-        if hits:
-            found.append(entry)
-            print("::notice::fert discover: %s (%s) %s" % (h, "/".join(entry["states"]) or "state?",
-                  "; ".join("%s %s %d products %s" % (x["layout"], x["url"], x["products"], x["date"] or "undated") for x in hits)))
-    by_state = {}
-    for f in found:
-        for s in f["states"] or ["unknown"]:
-            by_state[s] = by_state.get(s, 0) + 1
-    rep = {"generated": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "asked": asked, "unreachable": failed,
-           "posting": len(found), "by_state": by_state, "found": found}
-    atomic_write(root / DISC, rep)
-    print("::notice::fert discover: asked %d co-op sites, %d unreachable, %d post fertilizer prices; by state %s"
-          % (asked, failed, len(found), json.dumps(by_state, sort_keys=True)))
-    return 0
 
 
 # ---------------------------------------------------------------- fixture feed
@@ -977,8 +840,10 @@ def selftest():
     ck("summary anhydrous: Mulvane own tank (first listed) is its price",
        summ["anhydrous"]["n"] == 4 and 965.0 >= summ["anhydrous"]["high"] and "mulvane-ks" in summ["anhydrous"]["coops"])
     ck("summary AMS: the stale Two Rivers row is not counted", summ["ams"]["n"] == 1 and summ["ams"]["coops"] == ["sheet"])
-    ck("summary: under %d co-ops, no middle price" % MIN_MEDIAN, summ["map"]["n"] == 2 and summ["map"]["median"] is None
-       and summ["uan32"]["median"] is None)
+    ck("summary: two co-ops give their average as the middle, one co-op gives no middle",
+       summ["map"]["n"] == 2 and summ["map"]["median"] == 980.0 and summ["thiosul"]["median"] == 420.0
+       and summ["uan32"]["n"] == 1 and summ["uan32"]["median"] is None)
+    ck("summary: far-from-others is not judged from two co-ops", summ["thiosul"]["far"] == [])
     ck("summary: 'other' products never summarized", "other" not in summ)
     ck("summary: dates span 2026-09-24 to 2026-10-06", summ["urea"]["oldest"] == "2026-09-24" and summ["urea"]["newest"] == "2026-10-06")
     ck("summary: the undated DAP is counted as undated, not given today's date",
@@ -1039,38 +904,6 @@ def selftest():
     idx = '<a href="https://s3.amazonaws.com/media.agricharts.com/sites/1041/2026-9-24.pdf">a</a><a href="/x/2026-10-8.pdf">b</a><a href="/x/2027-1-1.pdf">c</a>'
     ck("newest dated sheet, future sheet ignored",
        newest_pdf(idx, "https://farmerscoop.coop/fert", today) == ("https://farmerscoop.coop/x/2026-10-8.pdf", datetime.date(2026, 10, 8)))
-    # discovery host list
-    hs = bids_hosts({"sites": {"https://www.mulvanecoop.com/markets/cashgrid.php?basis=1": {"platform": "agricharts"},
-                               "https://midmo.marketplace.barchart.com/": {"platform": "barchart"},
-                               "https://x.com/": {"platform": "bushel"}}},
-                    {"elevators": [{"website": "https://mulvanecoop.com/", "operator": "Mulvane", "state": "KS"}]})
-    ck("discovery: agricharts hosts only, marketplace left out, states joined",
-       list(hs) == ["mulvanecoop.com"] and hs["mulvanecoop.com"]["states"] == {"KS"})
-
-    # discovery end to end, offline: a site whose menu links its fertilizer page
-    import contextlib
-    import io
-    import tempfile
-    asked = []
-
-    def fake(u):
-        asked.append(u)
-        if "mulvanecoop.com" in u:
-            return mu.encode(), None
-        return None, "HTTP 404"
-    with tempfile.TemporaryDirectory() as tdir:
-        buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            discover(tdir, now=now, fetcher=fake, sources={
-                "mulvanecoop.com": {"operators": {"Mulvane Cooperative Union"}, "states": {"KS"}},
-                "gone.example": {"operators": set(), "states": {"NE"}}})
-        rep = read_json(Path(tdir) / DISC)
-        ck("discover: finds the price table, counts by state, logs the dead site",
-           rep["posting"] == 1 and rep["by_state"] == {"KS": 1} and rep["unreachable"] == 1
-           and rep["found"][0]["pages"][0]["layout"] == "html-table" and rep["found"][0]["pages"][0]["date"] == "2026-10-06")
-        ck("discover: one request at a time, the bare host tried after www",
-           "https://www.gone.example/" in asked and "https://gone.example/" in asked)
-
     import check_site_budget
     ck("history cap matches scripts/check_site_budget.py FILE_KB", check_site_budget.FILE_KB.get(HIST) == HIST_MAX_KB)
 
@@ -1087,12 +920,6 @@ def main(argv):
     if "--fixture-feed" in argv:
         print(json.dumps(fixture_doc()))
         return 0
-    if "--discover" in argv:
-        lim = None
-        for a in argv:
-            if a.startswith("--limit="):
-                lim = int(a.split("=", 1)[1])
-        return discover(ROOT, limit=lim)
     info = run(ROOT)
     for cid, (parsed, err) in info["results"].items():
         if err:

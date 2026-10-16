@@ -56,8 +56,8 @@ setTimeout(function(){if(!tabFromHash(true)){switchTab(document.querySelector('.
 /* ─── FERTILIZER PRICES ─────────────────────────────────────────────── */
 var PRICES={};
 /* data/fertilizer-prices.json (scripts/build_fert_prices.py): each product's
-   middle cash price posted by co-ops, or the USDA AMS Illinois average where
-   the co-ops do not cover it. Every row has its source and date, and every
+   middle cash price posted by the co-ops Sig sent, nothing else. Every row
+   names its co-ops, region and date, and every
    $/lb shown here says how it was worked out. Lime and K-Mag have no live
    source, so they are not priced here (the lime calculator takes your $/ton). */
 /* Short source with its region: "Kansas co-ops, Oct 6" / "USDA Illinois, Oct 2". */
@@ -73,7 +73,7 @@ function loadFertPrices(){
     if(!data||!data.prices)return;
     function key(k){return data.prices.find(function(p){return p.key===k&&p.price>0;})||null;}
     var el=document.getElementById('fert-date');
-    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Posted through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'. Co-op middle cash prices, else the USDA Illinois average. Call to confirm.';
+    if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Posted through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'. Co-op posted cash prices, each named with its region. Call to confirm.';
       if((Date.now()-d.getTime())/864e5>30){el.style.color='var(--gold)';}}
     var urea=key('urea'), potash=key('potash'), ams=key('ams'), phos=key('map')||key('dap');
     var wrap=document.getElementById('fert-pills');

@@ -274,12 +274,12 @@ def card_lrp():
 
 def card_fertilizer():
     """data/fertilizer-prices.json (scripts/build_fert_prices.py): co-op middle
-    cash prices, else the USDA AMS Illinois average. Until 2026-10-15 this
+    cash prices of the co-ops Sig sent, nothing else. Until 2026-10-15 this
     read the hand-typed dealer sheet."""
     d = js("data/fertilizer-prices.json")
     by = {p["key"]: p for p in d["prices"]}
     u = by["urea"]
-    who = f"middle of {u['n']} {u.get('region', '')} co-ops".replace("  ", " ") if u["src"] == "coop" else "USDA Illinois average"
+    who = u["src_label"].split(", posted")[0]
     rows = []
     for key, lab in (("anhydrous", "Anhydrous"), ("dap", "DAP"), ("potash", "Potash")):
         if key in by:

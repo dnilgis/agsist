@@ -1,14 +1,13 @@
 /* components/fert-sources.js -- the price sources on /fertilizer.
  *
  *   1. data/fertilizer-prices.json (scripts/build_fert_prices.py): the one
- *      list every page prices from. Each product is the middle cash price of
- *      the co-ops that post it (data/fertilizer-coops.json), or, where the
- *      co-ops do not cover it, the USDA AMS Illinois average
- *      (data/fertilizer-ams.json). The pipeline makes that choice; this file
- *      only turns the rows into the calculator's rows. Until 2026-10-15 a
+ *      list every page prices from: the middle cash price of the co-ops that
+ *      post each product (data/fertilizer-coops.json) and nothing else
+ *      (Sig, 2026-10-15). This file only turns its rows into the
+ *      calculator's rows. Until 2026-10-15 a
  *      hand-typed dealer sheet was merged in here; it is gone.
- *   2. data/fertilizer-ams.json for the USDA box: the report's average, its
- *      range and its date.
+ *   2. data/fertilizer-ams.json for the USDA box only: the report's average,
+ *      its range and its date, labeled a reference. It feeds no number.
  *
  * RULES
  *   * Until a file exists and holds at least one real price, nothing about it
@@ -54,7 +53,6 @@
       return p && p.name && p.symbol && good(p.price) && isDate(p.as_of);
     }).map(function (p) {
       return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of, src: p.src, region: p.region || null,
-        other: p.other || null,
         srcLabel: p.src_label || (p.src === 'ams' ? 'USDA Illinois average, ' + shortDate(p.as_of) : shortDate(p.as_of)) };
     });
   }
@@ -71,7 +69,7 @@
       groups[g].push(x.name);
     });
     return order.map(function (g) { return list(groups[g]) + ': ' + g + '.'; }).join(' ') +
-      ' Each product uses whichever source posted more recently; each price names its region and date.';
+      ' Each price names its co-ops, region and date.';
   }
 
   /* The USDA box. '' when there is nothing real to show. */
@@ -87,7 +85,8 @@
           ? 'one price reported'
           : 'range $' + Math.round(p.low).toLocaleString('en-US') + ' to $' + Math.round(p.high).toLocaleString('en-US')) + '</div></div>';
     }).join('');
-    return '<h2 class="fert-related-title" id="fert-ams-h">USDA Illinois average, ' + esc(shortDate(a.report_date, true)) + '</h2>' +
+    return '<h2 class="fert-related-title" id="fert-ams-h">For reference: USDA Illinois average, ' + esc(shortDate(a.report_date, true)) + '</h2>' +
+      '<p class="fert-ams-sub"><strong>Reference only.</strong> A USDA survey of Illinois distributors, shown beside the co-op prices for comparison. It feeds no price, cost or calculator on this site.</p>' +
       '<p class="fert-ams-sub">From the <a href="' + esc(a.page || a.url) + '" target="_blank" rel="noopener">USDA AMS Illinois Production Cost Report</a> ' +
       '(<a href="' + esc(a.url) + '" target="_blank" rel="noopener">PDF</a>), which comes out every other week. Report dated ' + esc(shortDate(a.report_date, true)) +
       (days != null && days > 21 ? ', ' + days + ' days ago' : '') + '.' +

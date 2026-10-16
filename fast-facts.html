@@ -164,7 +164,6 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .fert-banner-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
 .fert-banner-date{font-size:0.755rem;color:var(--text-muted);}
 .fert-pills{display:flex;flex-wrap:wrap;gap:.4rem;}
-.fert-pill-other{display:block;opacity:.8}
 .fert-deriv{list-style:none;margin:.6rem 0 0;padding:0;font-size:.78rem;color:var(--text-muted);line-height:1.5}.fert-deriv li{margin:.15rem 0}
 /* FIX: fert-pill min-height:44px — reliable touch target in the field */
 .fert-pill{display:flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.3rem .6rem;cursor:pointer;transition:all .15s;min-height:44px;}
@@ -582,7 +581,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div class="eco-price-card"><div class="eco-price-label">MOP (K)</div><div class="eco-price-val" id="eco-mop-price">-</div><div class="eco-price-unit">$/ton</div></div>
 </div>
 <div class="ff-h2">Input Cost Builder</div>
-<p class="ff-sub">Build your projected cost per acre. N $/lb fills in from co-op posted prices (USDA where co-ops do not post); edit to match your own.</p>
+<p class="ff-sub">Build your projected cost per acre. N $/lb fills in from co-op posted prices, named with their region; edit to match your own.</p>
 <div class="eco-section">
   <div class="eco-section-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn: Cost Per Acre</div>
   <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen: <span id="eco-n-source-label" style="color:var(--gold)">Urea 46%</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="160" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="" placeholder="-" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">-</span></div></div>

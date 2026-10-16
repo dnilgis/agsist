@@ -860,7 +860,6 @@
     "urea.html"
    ],
    "written_by": [
-    "Fertilizer USDA AMS series",
     "Fertilizer co-op posted prices"
    ],
    "touched_by": [
@@ -871,7 +870,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer USDA AMS series",
     "Fertilizer co-op posted prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
@@ -879,18 +877,15 @@
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "4 launches on a fixed schedule at about 8am, 10am, 3pm, 8pm Central",
+   "cadence": "1 launch weekdays at about 8am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "23 20 * * 5",
-    "23 1 * * 6",
-    "23 15 * * 1",
     "41 13 * * 1-5"
    ],
-   "max_gap_hours": 60.3,
+   "max_gap_hours": 72.0,
    "quiet": null,
    "why_quiet": null
   },

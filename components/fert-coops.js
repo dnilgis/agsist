@@ -13,8 +13,8 @@
  *     Otherwise the card shows the co-op count and the range in words.
  *   * Every co-op is named and linked to its own page. Prices are what the
  *     co-op posts; the copy says to call and confirm.
- *   * The USDA line compares like with like only where both have a figure,
- *     and says plainly that they are different measures.
+ *   * No USDA figure is drawn here or blended into any price: the USDA box
+ *     on the page is a separate Illinois reference (Sig, 2026-10-15).
  */
 (function (root) {
   'use strict';
@@ -64,11 +64,11 @@
     return s && u ? s + ', ' + u : (s || u);
   }
 
-  function card(p, coops, amsBy) {
+  function card(p, coops) {
     var big, under;
     if (p.median != null) {
       big = money(p.median);
-      under = 'middle of ' + p.n + ' co-ops';
+      under = (p.n === 2 ? 'average of 2 co-ops' : 'middle of ' + p.n + ' co-ops');
     } else if (p.n === 1) {
       var c = coops[p.coops[0]] || {};
       big = money(p.low);
@@ -86,23 +86,7 @@
     return '<div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">' + esc(p.name) +
       '</span>' + (p.symbol !== p.name ? '<span class="fpc-sym">' + esc(p.symbol) + '</span>' : '') + '</div><div class="fpc-price' + (p.median == null && Math.round(p.low) !== Math.round(p.high) ? ' fcp-range' : '') + '">' + big +
       '</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">' + under + '</div>' + (range ? '<div class="fpc-loc">' + range + '</div>' : '') +
-      '<div class="fpc-loc">' + dateSpan(p) + '</div>' +
-      (amsBy && amsBy[p.key] ? '<div class="fpc-loc fcp-other">USDA Illinois avg ' + money(amsBy[p.key].avg) + ', ' + esc(shortDate(amsBy._date)) + '</div>' : '') +
-      '</div>';
-  }
-
-  /* One plain line against the USDA Illinois figure already on the page. */
-  function amsLine(d, ams) {
-    if (!ams || !isDate(ams.report_date) || !Array.isArray(ams.products)) return '';
-    var a = {};
-    ams.products.forEach(function (p) { if (p && good(p.avg)) a[p.key] = p; });
-    var parts = [];
-    d.summary.forEach(function (p) {
-      if (p.median != null && a[p.key]) parts.push(esc(p.name) + ' ' + money(p.median) + ' here, ' + money(a[p.key].avg) + ' USDA');
-    });
-    if (!parts.length) return '';
-    return '<p class="fert-coop-ams">Against the USDA Illinois average of ' + esc(shortDate(ams.report_date, true)) + ': ' + parts.join('; ') +
-      '. Not the same measure: USDA averages distributor prices in Illinois, these are retail cash prices posted by co-ops elsewhere.</p>';
+      '<div class="fpc-loc">' + dateSpan(p) + '</div></div>';
   }
 
   function posted(c) {
@@ -188,52 +172,44 @@
 
   /* The line under the hero: which region each number is from, the newest
      posted date and the co-op count. */
-  function bar(data, ams) {
+  function bar(data) {
     var d = valid(data);
     if (!d) return '';
     var n = newest(d), reg = regionOf(d);
-    var a = ams && /^\d{4}-\d{2}-\d{2}$/.test(ams.report_date || '') ? shortDate(ams.report_date, true) : null;
-    return 'Cards below: <strong>' + esc(reg || 'co-op') + '</strong> co-ops&rsquo; middle cash price, ' + count(d.coops_current, 'co-op', 'co-ops') +
-      (n ? ', posted through <strong>' + esc(shortDate(n, true)) + '</strong>' : '') + '.' +
-      (a ? ' USDA figures are the <strong>Illinois</strong> average, report of ' + esc(a) + '.' : '') +
-      ' Read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true)) + '.';
+    return 'Every price on this page is from <strong>' + esc(reg || 'co-op') + '</strong> co-ops: the middle cash price of ' +
+      count(d.coops_current, 'co-op', 'co-ops') + (n ? ', posted through <strong>' + esc(shortDate(n, true)) + '</strong>' : '') + '.' +
+      ' The USDA box lower down is an Illinois reference only. Read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true)) + '.';
   }
 
   /* The top of the page: the co-op price cards. '' when there is nothing real. */
-  function top(data, ams) {
+  function top(data) {
     var d = valid(data);
     if (!d) return '';
     var coops = byId(d), reg = regionOf(d);
-    var amsBy = null;
-    if (ams && Array.isArray(ams.products) && /^\d{4}-\d{2}-\d{2}$/.test(ams.report_date || '')) {
-      amsBy = { _date: ams.report_date };
-      ams.products.forEach(function (x) { if (x && x.key && good(x.avg)) amsBy[x.key] = x; });
-    }
     return '<h2 class="fert-related-title" id="fert-coops-h">What ' + esc(reg || '') + (reg ? ' ' : '') + 'co-ops are posting</h2>' +
       '<p class="fert-ams-sub">Read each weekday from the co-ops&rsquo; own websites. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p>' +
-      '<div class="fert-cards">' + d.summary.map(function (p) { return card(p, coops, amsBy); }).join('') + '</div>' +
+      '<div class="fert-cards">' + d.summary.map(function (p) { return card(p, coops); }).join('') + '</div>' +
       farNote(d, coops) +
       '<p class="fert-coop-ams">Prices from ' + credits(d) + '. <a href="#fert-coops-more-h">Every co-op and every posted price</a>.</p>';
   }
 
   /* Lower down: the USDA line, the co-op table, every posted price. */
-  function more(data, ams) {
+  function more(data) {
     var d = valid(data);
     if (!d) return '';
     return '<h2 class="fert-related-title" id="fert-coops-more-h">Where the co-op prices come from</h2>' +
-      amsLine(d, ams) +
       coopTable(d) +
       '<p class="fert-coop-ams">Rows over ' + esc(d.stale_days) + ' days old are listed below but not counted.</p>' +
       detail(d);
   }
 
-  function section(data, ams) {
-    var t = top(data, ams);
-    return t ? t + more(data, ams) : '';
+  function section(data) {
+    var t = top(data);
+    return t ? t + more(data) : '';
   }
 
   var api = { valid: valid, section: section, top: top, more: more, bar: bar, newest: newest,
-    amsLine: amsLine, card: card, posted: posted, shortDate: shortDate };
+    card: card, posted: posted, shortDate: shortDate };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.FertCoops = api;
 })(typeof window !== 'undefined' ? window : this);

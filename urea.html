@@ -1205,7 +1205,6 @@ function scoreToLevel(s){if(s<30)return'low';if(s<55)return'moderate';if(s<75)re
   var nPct=parseFloat(String(u.symbol||'').split('-')[0]);if(!(nPct>0))return;
   var perN=(u.price/(2000*nPct/100)).toFixed(2);
   var src=u.src_label||(u.src==='coop'?'co-op middle cash price, posted '+when:'USDA Illinois average, report of '+when);
-  if(u.other)src+='; '+(u.other.src_label||'')+': $'+Math.round(u.other.price)+'/ton';
   var lo=Math.round(8/perN),hi=Math.round(12/perN);
   el.innerHTML='Looking for the price? Urea: <strong>$'+Math.round(u.price)+'/ton</strong>, '+src+'. $'+Math.round(u.price)+' / ('+'2,000 lb x '+nPct+'% N) = about $'+perN+' per lb N. At that price, NBPT at $8 to $12 an acre pays for itself if it saves about '+lo+' to '+hi+' lb of N an acre. Call to confirm. <a href="/fertilizer">All fertilizer prices</a>.';
   el.hidden=false;}).catch(function(){});}catch(e){}})();

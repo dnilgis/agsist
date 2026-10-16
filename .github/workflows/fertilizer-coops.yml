@@ -7,26 +7,18 @@ name: Fertilizer co-op posted prices
 # scripts/fetch_coop_fert.py (one parser per page layout). The sandbox cannot
 # reach co-op sites; a runner can.
 #
+# It then rebuilds data/fertilizer-prices.json, the one fertilizer price list
+# every page reads, and rebakes the pages that carry a price
+# (scripts/fert_after_prices.sh).
+#
 # Weekdays, morning Central. One request at a time with a pause between, a
 # handful of pages a day. Nothing new, no commit.
 #
-# DISCOVER: dispatch with "discover" ticked to ask every Barchart / AgriCharts
-# co-op site in the dnilgis/bids list whether it posts fertilizer prices. It
-# writes data/fertilizer-coops-discovery.json and commits it to the branch the
-# run is on; the run page lists each site found as a ::notice. A person then
-# adds the confirmed ones to scripts/coop_fert_sources.json.
+# The co-ops are the ones Sig sent (Oct 15). Nothing searches for more: a new
+# co-op is a line Sig adds to scripts/coop_fert_sources.json by hand.
 
 on:
   workflow_dispatch:
-    inputs:
-      discover:
-        description: "Discover: ask each co-op site in the bids list for a fertilizer page (slow, about an hour)"
-        type: boolean
-        default: false
-      limit:
-        description: "Discover only: ask this many sites (blank = all)"
-        required: false
-        default: ""
   schedule:
     - cron: '41 13 * * 1-5'    # weekdays, morning Central
 
@@ -40,7 +32,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -57,20 +49,7 @@ jobs:
           python scripts/fetch_coop_fert.py --selftest
           python scripts/build_fert_prices.py --selftest
           python scripts/bake_fert_defaults.py --selftest
-      - name: Discover co-ops that post fertilizer prices
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.discover }}
-        env:
-          IN_LIMIT: ${{ inputs.limit }}
-        run: |
-          set -e
-          if [ -n "$IN_LIMIT" ]; then
-            printf '%s' "$IN_LIMIT" | grep -Eq '^[0-9]+$' || { echo "::error::limit must be a whole number"; exit 1; }
-            python scripts/fetch_coop_fert.py --discover --limit="$IN_LIMIT"
-          else
-            python scripts/fetch_coop_fert.py --discover
-          fi
       - name: Fetch and write data/fertilizer-coops.json
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.discover) }}
         run: python scripts/fetch_coop_fert.py
 
       # Share cards for /fertilizer and /manure-value (scripts/fert_after_prices.sh).
@@ -87,7 +66,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json data/fertilizer-coops-discovery.json"
+          FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json"
           BAKED="data/fertilizer-prices.json fertilizer.html breakeven.html manure-value.html fast-facts.html img/og"
           rm -rf /tmp/fcoop && mkdir -p /tmp/fcoop
           for f in $FILES; do

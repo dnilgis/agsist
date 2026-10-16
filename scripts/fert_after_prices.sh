@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# After a fertilizer source file changes (data/fertilizer-coops.json or
-# data/fertilizer-ams.json): rebuild the one price list every page reads,
-# then rebake every page that carries a fertilizer number in its HTML.
-# Run by .github/workflows/fertilizer-coops.yml and fertilizer-ams.yml inside
-# their commit loop, so the list and the baked pages always match the two
-# source files on the branch being pushed. No network.
+# After data/fertilizer-coops.json changes: rebuild the one price list every
+# page reads (co-op prices only), then rebake every page that carries a
+# fertilizer number in its HTML. Run by .github/workflows/fertilizer-coops.yml
+# inside its commit loop, so the list and the baked pages always match the
+# co-op file on the branch being pushed. No network.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 scripts/build_fert_prices.py
