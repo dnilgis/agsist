@@ -1011,12 +1011,14 @@
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "conditions",
     "COT Release Watch",
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
     "lrp",
     "Build Price Stats (5-year percentile)",
@@ -1914,6 +1916,8 @@
   {
    "path": "data/rain-print.json",
    "pages": [
+    "farm-anniversary-gifts.html",
+    "farmer-retirement-gifts.html",
     "gifts-for-farmers.html",
     "index.html",
     "rain-print.html"
@@ -2297,8 +2301,12 @@
     "yield-panel"
    ],
    "touched_by": [
+    "conditions",
     "COT Release Watch",
+    "Fetch Crop Progress",
     "bake crop tour",
+    "Dairy prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
     "yield-panel"
@@ -2331,8 +2339,12 @@
    ],
    "touched_by": [
     "Build Analyst Scorecard",
+    "conditions",
     "COT Release Watch",
+    "Fetch Crop Progress",
     "Generate Daily Briefing",
+    "Dairy prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Rebuild Call Scorecard",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
