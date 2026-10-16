@@ -329,3 +329,15 @@ test("with fewer than 4 other elevators the state median is the middle", () => {
   assert.equal(Math.round(xs[2]._odd.dist), 203);
   assert.equal(xs[0]._odd, null);
 });
+
+test("the basis on a BEST card follows the color key, not its sign (54728: three red best bids)", () => {
+  const fn = liftFn("renderBestBids");
+  assert.match(fn, /CBGlance\.toneFn\(/, "the Best cards tone basis against this search's middle");
+  assert.doesNotMatch(fn, /bbc-basis '\+bf\.cls/, "a negative basis is not red by itself");
+  assert.match(fn, /bbc-basis '\+\(\(_btone&&_btone\(best\)\)\|\|'flat'\)/, "grey when the tone cannot say");
+  const css = readFileSync(ROOT + "cash-bids.html", "utf8");
+  assert.match(css, /\.bbc-basis\.bz-up\{color:var\(--green\)\}/);
+  assert.match(css, /\.bbc-basis\.bz-dn\{/);
+  /* the key's words are the rule the card now follows */
+  assert.match(liftFn("basisKey"), /stronger than the middle of the elevators in this search for the same crop and month/);
+});
