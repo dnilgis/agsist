@@ -93,6 +93,8 @@ PAGES = [
     ("/grain-bin-calculator", "Grain bin calculator", "Bushels and shrink", "grain bin bushels capacity moisture shrink calculator dryer"),
     ("/grain-emc", "Grain EMC: fans on or off", "When to run aeration fans, EMC charts", "emc equilibrium moisture content chart aeration fans dry wet grain humidity bin corn soybean soybeans beans wheat natural air drying cooling"),
     ("/grain-shrink", "Grain shrink: wet or too dry", "Shrink, drying charges and overdry loss", "grain shrink moisture discount drying charge wet corn overdry soybeans dry beans 13 percent 15.5 elevator settlement calculator sorghum wheat"),
+    ("/commodity-loan", "Commodity Loan (CCC)", "Marketing loan cash now and interest per bushel per month, a", "ccc loan marketing assistance loan commodity loan fsa loan rate interest stored grain"),
+    ("/combine-loss", "Combine Loss Check", "Count beans or kernels behind the combine: bushels and dolla", "combine loss harvest loss beans per square foot kernels header loss soybean shatter ear drop"),
     ("/nutrient-removal", "Nutrient removal value", "P and K in stalks, silage, straw and hay", "nutrient removal value phosphorus potassium p2o5 k2o corn stalks stover bales baling silage straw hay alfalfa sell selling fertilizer replace"),
     ("/hay-prices", "Hay prices by state", "Alfalfa and other hay, $/ton", "hay prices alfalfa grass hay bale ton price per ton state usda nass forage"),
     ("/cattle-auction-prices", "Sale barn prices", "Feeder cattle by weight near you", "sale barn auction feeder cattle steers heifers calves prices cwt weight class stockyards livestock auction market report usda"),
