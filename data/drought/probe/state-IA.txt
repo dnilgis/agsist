@@ -1,0 +1,2 @@
+https://usdmdataservices.unl.edu/api/StateStatistics/GetDroughtSeverityStatisticsByAreaPercent?aoi=IA&startdate=10/3/2025&enddate=10/16/2026&statisticsType=1
+
