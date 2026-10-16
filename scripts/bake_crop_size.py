@@ -151,7 +151,16 @@ def cell(label, c):
 
 def week(d):
     c = ((d or {}).get("crops") or {}).get("corn") or {}
-    return (f'ratings week ending {esc(c["week_ending"])} &middot; updates Tuesdays' if c.get("week_ending") else "")
+    if not c.get("week_ending"):
+        return ""
+    hb = (d or {}).get("held_back") or {}
+    if hb.get("week_ending") and str(hb["week_ending"]) > str(c["week_ending"]):
+        # A late-season week refused by build_yield_nowcast.py: the figures are
+        # the last good week's, and the page says so with both dates.
+        return (f'ratings week ending {esc(c["week_ending"])}, the last week with enough history '
+                f'&middot; no nowcast from the {md(hb["week_ending"])} ratings: this late in the season only '
+                f'{esc(hb.get("backtest_years"))} past years can be checked, {esc(hb.get("need"))} needed')
+    return f'ratings week ending {esc(c["week_ending"])} &middot; updates Tuesdays'
 
 
 def record(d, today):
@@ -276,6 +285,13 @@ def selftest():
                                           "backtest_years": 1, "states": 1, "week_ending": "2026-10-04"}}}, dd, "2026-10-10") == once,
        "baking twice changes nothing")
     ck("Nowcast data did not build" in once, "a crop with no model figure says so")
+    nd = {"crops": {"corn": {"week_ending": "2026-10-04"}},
+          "held_back": {"week_ending": "2026-10-11", "backtest_years": 9, "need": 10}}
+    w = week(nd)
+    ck("ratings week ending 2026-10-04, the last week with enough history" in w and "Oct 11" in w
+       and "only 9 past years" in w and "10 needed" in w, "a refused late week is named beside the week shown")
+    ck(week({"crops": {"corn": {"week_ending": "2026-10-11"}}, "held_back": {"week_ending": "2026-10-11"}})
+       == "ratings week ending 2026-10-11 &middot; updates Tuesdays", "a stale refusal record is ignored")
     # THE PAGE CARRIES NO SECOND RENDERER FOR THESE BLOCKS
     if PAGE.exists():
         live = PAGE.read_text(encoding="utf-8")
