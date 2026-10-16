@@ -1,0 +1,55 @@
+# Iowa State ICM: Minimize the amount of corn left on the ground behind the combine (Hanna, 2010)
+# https://crops.extension.iastate.edu/cropnews/2010/09/minimize-amount-corn-left-ground-behind-combine
+# fetched 2026-10-16T16:47:13Z, sha256 247afc129114ed8e200bf2d1078e35829450111cd3b4a294dc0dc03902071c57
+
+Minimize Amount of Corn Left on the Ground Behind Combine | Integrated Crop Management
+
+-
+
+-
+
+-
+
+Minimize Amount of Corn Left on the Ground Behind Combine
+
+September 14, 2010
+
+Content Author: Mark Hanna
+
+By Mark Hanna, Department of Agriculture and Biosystems Engineering
+
+Leaving corn in the field during harvest always results in a yield penalty. A recent soybean Sudden Death Syndrome article shows data that suggest corn kernels may be one of the most likely sites for survival of SDS pathogens with potential to harm subsequent soybean crop.
+
+Harvest loss and disease pathogen survival are both reminders to combine operators of the need to take time periodically to look on the ground behind the combine for harvest losses. Over half of corn harvest losses occur at the cornhead and are not able to be measured by grain loss sensors on the rear of the combine. Two corn kernels per square foot or a single three-quarter pound ear in 436 square feet (0.01 acre) equals one bushel per acre of corn loss (see Profitable Corn Harvesting, PM 574).
+
+In-field checks suggest that loss due to machine harvest should be no greater than one bushel per acre if corn is standing reasonably well. Be particularly aware of dropped ears as hundreds of kernels are lost in a single ear drop. Finding just one ear by kicking through residue in a 20 x 22 foot area behind an 8-row cornhead equals one bushel per acre loss. Ear-saver tabs or shields commonly found at the lower end of stalk rolls should be maintained and excessive harvest speeds avoided to keep ear losses down.
+
+Shelling of corn kernels when the butt end of the ear is allowed to contact stalk rolls is another common way kernels are left in the field. Deck or snapping plates that shield the stalk rolls should be adjusted appropriately for ear size in the field. A good starting point for today's corn hybrids is about 1 ¼ inch gap between plates to allow stalks to move through between deck plates, but ears to be snapped before contacting stalk rolls. It may be advantageous to allow a slightly wider gap at the top/rear of plates so that stalks don't wedge.
+
+On newer cornheads, the gap between deck plates is often hydraulically adjustable from the cab, so there's little reason not to adjust as conditions change. A key is to take a few minutes periodically to check and measure losses on the ground. Perhaps disease pathogen survival offers another reason to limit corn loss in the field this fall.
+
+Adjust the gap between deck plates on the corn head to avoid shelling on stalk rolls.
+
+Mark Hanna is an extension agricultural engineer in agricultural and biosystems engineering with responsibilities in field machinery.
+
+Links to this article are strongly encouraged, and this article may be republished without further permission if published as written and if credit is given to the author, Integrated Crop Management News, and Iowa State University Extension and Outreach. If this article is to be used in any other manner, permission from the author is required. This article was originally published on September 14, 2010. The information contained within may not be the most current and accurate depending on when it is accessed.
+
+Authored by
+
+Mark Hanna
+
+Crops:
+
+-
+Corn
+
+Topic:
+
+-
+Equipment
+
+Tags:
+
+- Corn
+
+- Handling and Storage

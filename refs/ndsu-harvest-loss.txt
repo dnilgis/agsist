@@ -1,0 +1,51 @@
+# NDSU Extension: Measuring harvest losses in corn and soybean
+# https://www.ndsu.edu/agriculture/extension/impact-stories/measuring-harvest-losses-corn-and-soybean
+# fetched 2026-10-16T16:47:17Z, sha256 59fee0dab4e2387a4794a13e03281b689d0d8aa3c61e21149cc238d92563efaa
+
+Measuring Harvest Losses in Corn and Soybean | NDSU Agriculture
+
+-
+
+-
+
+-
+
+-
+
+Banner
+
+Title
+
+Measuring Harvest Losses in Corn and Soybean
+
+Authored on
+
+Sep 24, 2021
+
+Body
+
+A small amount of rain fell in the past week. Temperatures were above normal for the past week.
+
+Crop progress slowed drastically this past week.
+
+Soybean harvest has begun in the county.
+
+With the low yields that are expected, we can ill afford to leave corn and soybean seeds on the ground at harvest. This is lost profits. Keep corn and soybean harvest loss to 1-2 bushels per acre.
+
+Two tools are needed to estimate corn yield loss and just one tool for soybean. A one-square foot frame made of any sturdy material is needed for both corn and soybean. A tape measure is also necessary for corn.
+
+To estimate yield loss begin combining at your normal settings and speed for at least a distance of 100 feet from the end rows. Suddenly turn off header and threshing unit of the combine. Then back up the combine 10 to 20 feet from where you stopped harvesting. Get out of the combine with your tools.
+
+Take the square and throw it into the unharvested corn and soybean to count the number of seeds on the ground for preharvest shattering loss. In the case of soybean be sure to throw it in beyond where the reel was into the soybeans at the time of stopping the combine. Count the number of seeds in the square and record. Place the square on the ground 4 to 6 times in this area and calculate the average number of seeds in a square for preharvest loss. For corn, observe the number of ears laying on the ground in 1/100 of an acre in the unharvested area. For 30-inch row corn and a 6-row head measure 29 feet. For an 8-row head measure 22 feet. For a 12-row head measure 14 feet 8 inches. One ear in 1/100 of an acre is roughly equivalent to 1 bushel per acre.
+
+To measure header loss, place the square on the soil within the area from the header to the unharvested crop. Count the number of seeds in the square and record. Repeat this process for a total of 4 to 6 times and obtain an average number of seeds per square for header loss. This loss is important because most of the losses occur at the header, especially for soybean. Knowing this information allows for proper header adjustments to be made.
+
+Next take the square to the back of the combine and throw it on the soil and count the number of seeds in the square and record. This will give you the total seed loss. Repeat this step for a total of 4 to 6 times, carefully sorting through plant residue to find the seeds. Obtain an average of the number of seeds per square. For corn also count the number of whole ears per 100th of an acre.
+
+For corn, two kernels per square foot equals a 1 bushel per acre loss. For soybean, 4 seeds per square foot equals a 1 bushel per acre loss. To figure out the loss in corn take the average number of seeds per square counted and divide by two to convert to bushels per acre. For soybean take the average number of seeds per square and divide by 4 to convert to bushels per acre.
+
+Based upon the data collected, make a single adjustment targeting the greatest loss first. Harvest for at least 200 feet and repeat process to determine what other changes are necessary.
+
+Shattering losses in soybean are most controlled by harvesting soybean at 15% moisture. Other things to reduce shattering include reducing travel speeds to 3 miles per hour and adjusting reel speeds to 25% faster than the ground speed. To reduce cracked seeds and pods in the grain adjust rotor or cylinder speed and adjust the gap between concave and rotor or cylinder.
+
+To reduce ear loss in corn adjust snapping rolls to fit stalk diameter and change the speed of the snapping rolls to match ground speed. To reduce threshing losses, damaged kernels, and cobs in the grain, adjust cylinder or rotor speed and/or concave distance.

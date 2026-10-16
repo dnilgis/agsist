@@ -1,0 +1,211 @@
+# Nebraska CropWatch: How to estimate harvest losses in soybean and corn fields (2023)
+# https://cropwatch.unl.edu/2023/how-estimate-harvest-losses-soybeans-and-corn-fields
+# fetched 2026-10-16T16:47:11Z, sha256 aeb4f6bf3e05e4693dc1fbbf19d1007da2dcee384a9d09cc9d51b6af16fc442a
+
+How to Estimate Harvest Losses in Soybean and Corn Fields | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+October 5, 2023
+
+How to Estimate Harvest Losses in Soybean and Corn Fields
+
+By Luan Pereira de Oliveira - Assistant Professor, University of Georgia, Nate Dorsey - Senior Curriculum Lead, Nutrien Ag Solutions, Bruno Lena - Former Extension Educator, Mailson Freire de Oliveira – Assistant Extension Educator
+
+Combine calibration is a crucial step for keeping grain losses at acceptable levels.
+
+Soybean and corn are some of the most valuable commodities in the world. Therefore, soybean crop management should be performed in the most efficient way to prevent the loss of inputs (e.g., seeds, fertilizers, etc.). Planting, spraying and harvesting are complementary operations during the production process — the success of one operation depends on the success of the other.
+
+For example, if the crops are planted correctly but harvest is not performed properly, the effort made during planting will be wasted. Therefore, considering that harvest is the final step of the crop production cycle, combine calibration is a crucial step for keeping grain losses at acceptable levels.
+
+Knowing where the losses occur is key to keeping grain loss as low as possible. Losses are divided into pre-harvest and at-harvest. Pre-harvest losses occur before harvest even begins and could be related to weather and crop maturity level. Examples of pre-harvest losses include loose soybeans, pods and corn ears lying on the ground. At-harvest losses are caused by the combine head, thresher and cleaning system during the harvest process. Because of the many systems involved, it can be difficult to pinpoint the cause of harvest losses in corn and soybeans. However, there are several methods you can use to measure crop losses, all of which uses the same principle of using a known area and weighing the grains left on the ground.
+
+For soybean, circle or square frames should be used as a sampling area. For example, a 1 square foot (sq. ft.) frame could be built by using 1 foot x 1 foot pipes with 90-degree bends, a 5 sq. ft. can be built using 2.5 feet x 2 feet pipes, and a 10 square foot frame using 5 feet x 2 feet pipes. In principle, the larger the measurement area, the more accurate the results will be.
+
+For calculating the pre-harvest losses, select random areas ahead of the combine that haven’t been harvested yet (Figure 1 — Zone 1) and look for loose soybean or corn seeds lying on the ground inside of the selected frame.
+
+Figure 1. Sampling zones for soybean pre-harvest and harvesting losses. Adapted from SDSU, 2019.
+
+At-harvest losses can only be measured after the combine pass. Make sure you turn the combine’s cleaning fan off before standing behind it. As mentioned before, the harvesting losses can be measured for different components of a combine. For example, shatter losses are caused because of a combination of soybeans maturity and the combine’s head calibration.
+
+To measure the shatter losses, drive backward about 10 feet, and measure the losses right below where the header was.
+
+To measure the actual harvest losses, set the frame down in random areas of the field and count the number of seeds left inside of the frame (Figure 1 — Zones 2 and 3). The sum of those two are equal to the total harvesting losses.
+
+Before beginning the calculation examples, it’s important to review some numbers:
+
+- One acre is equivalent to 43,560 sq. ft.
+
+- One bushel of soybean at 13% moisture weighs 60 lbs.
+
+- Total losses will depend on soybean size and weight (Table 1) (Adapted from SDSU, 2019).
+
+Table 1. Relationship between soybean grain size and losses.
+
+Soybean Grain Size Weight/bushel
+@ 13% Moisture Grains/sq. ft.
+Equivalent to 1 bu/acre
+
+Small 60 lbs 5
+
+Medium 60 lbs 4
+
+Large 60 lbs 3
+
+Now, let’s look at some examples:
+
+You have found 70 soybeans using a 10 sq. ft. frame. How do you calculate your losses?
+
+If there are 70 soybean seeds in 10 sq. ft., divide 70 by 10, and the result will be seven grains per sq. ft.
+
+- Grains per sq. ft. = 70 (number of grains found in the frame) ÷ 10 (number of sq. ft. present in the frame) = 7
+
+Now, divide seven by the numbers present on Table 1 representing the grain size (small, medium or large).
+
+If Small Grains:
+
+- Bushels per acre = 7 (number of grains found in 1 sq. ft.). ÷ 5 (grains per sq. ft. equivalent to 1 bu/ac) = 1.4
+
+If Medium Grains:
+
+- Bushels per acre = 7 (number of grains found in 1 sq. ft.) ÷ 4 (grains per sq. ft. equivalent to 1 bu/ac) = 1.75
+
+If Large Grains:
+
+- Bushels per acre = 7 (number of grains found in 1 sq. ft.) ÷ 3 (grains per sq. ft. equivalent to 1 bu/ac) = 2.33
+
+You can also find the number of grains you are losing per acre by multiplying the number of soybeans found in 10 by 43,560 (number of contained in one acre) and divide it by 10 (number of used to measure the losses).
+
+- Grains per acre = 70 (grains found in 10 sq. ft.) x 43,560 (number of sq. ft. in 1 acre) ÷ 10 (10 sq. ft. sampling area) = 304,920
+
+If you have a precise scale and don’t know exactly what the seeds size is, you can weigh 200 grains from the combine and calculate the losses more precisely. For example, if 200 grains weigh 0.90 ounces, you can multiply 0.90 by the 304,920 lost grains per acre and divide it by the number of grains used to measure the weight (200) to find how many ounces you are losing per acre, and then convert ounces to lbs. following the formulas below.
+
+- Grains losses (oz./ac.) = 0.90 (weight of collected grains) x 304,920 (number of lost grains per ac.) ÷ 200 (number of grains used to measure the weight) = 1,372.1
+
+The next step is to convert the number of losses to lbs/acre, and bu/acre.
+
+- Grain losses (lb./ac.) = 1,372.14 oz. ÷ 16 (number of oz. in a lb.) = 85.75
+
+- Grain losses (bu./ac.) = 85.75 lbs. ÷ 60 (number of lbs. in a bu.) = 1.42
+
+To have a percentage, divide the pre-harvest and harvest losses found by the actual yield on the monitor, and multiply it by 100 to find the percentage of losses.
+
+- Total losses percentage = 1.42 (number of losses per acre) ÷ 55 (monitor yield) = 2.58%
+
+In this situation, the losses are less than 3%, which is a good indicator of pre-harvest and harvest losses combined. If your losses are more than 3%, check where most of your losses are occurring.
+
+For example, let’s suppose that the pre-harvest losses (checked before combining the soybeans) were 1.2 bushels per acre, and the harvest losses (after the combine pass) were 5.2 bushels per acre. By subtracting the 1.2 bushels per acre of pre-harvest losses from the 5.2 bushels per acre from harvest losses, the result is that the harvesting operation is responsible for 4 bushels per acre loss.
+
+In this case, check the machine for the possible point of losses.
+
+For corn, different values are used, but with the same principles previously seen for soybeans. For example, a bushel of corn at 15.5% moisture is equivalent to 56 lbs. Another way to quantify corn losses is to measure it separately as pre-harvest losses, head losses, and cylinder and separation losses.
+
+A previous study from Sumner, (2012) (University of Georgia) found that two kernels per sq. ft. is equivalent to 1 bushel per acre loss. Therefore, 20 kernels inside of a 10 sq. ft. rectangle is equivalent to 1 bushel per acre loss, and one whole ¾ pound ear within 1/100 acre is also equivalent to 1 bushel per acre loss.
+
+To measure the head losses, back up the combine 20 ft. and count the kernels on the ground in 10 sq. ft. sampling areas over the left, center and right rows (or all the rows you want to measure) (Figure 2 — Zone 2) in front of the combine. Determine the 10 sq. ft. areas using the table below (Table 2) (Adapted from UGA, 2012).
+
+Figure 2. Sampling zones for soybean pre-harvest and harvesting losses.
+
+Table 2. Dimensions to be followed to build a 10 square foot frame depending on row width.
+
+Row Width (inches) Frame Dimensions (Inches)
+
+20 40 x 36 (Place over two rows)
+
+28 28 x 51.5
+
+30 30 x 48
+
+36 36 x 40
+
+38 38 x 38
+
+80 40 x 36
+
+Adapted from UGA, 2012.
+
+Let’s suppose that you measured the losses in front of four rows of the combine and the results were the following:
+
+- Row 1: 25 Kernels
+
+- Row 2: 20 Kernels
+
+- Row 3: 23 Kernels
+
+- Row 4: 31 Kernels
+
+As those numbers were found in a 10 sq. ft. frame, divide it by 20, and the number will be equivalent to bushels per acre:
+
+- Bushels per acre losses, Row 1 = 25 kernels ÷ 20 = 1.25
+
+- Bushels per acre losses, Row 2 = 20 kernels ÷ 20 = 1
+
+- Bushels per acre losses, Row 3 = 23 kernels ÷ 20 = 1.15
+
+- Bushels per acre losses, Row 4 = 31 kernels ÷ 20 = 1.55
+
+Therefore, the average head losses is 1.23 bushels per acre.
+
+The cylinder and separation losses should be measured in the rows under the combine (Figure 2 — Zone 3). To calculate it, use the same principle as the head. Count the number of kernels inside of the 10 sq. ft. areas, divide the number by 20, and subtract the losses of the head.
+
+After measuring the cylinders loss, count the ears and pre-harvest losses. To determine the ear loss, collect the ears lying on the ground behind the combine in 1/100 of an acre (435.6 sq. ft.) on the number of rows you are currently harvesting (Figure 2 — Zone 1). For each ¾ lb or equivalent smaller ears, there is a 1 bushel per acre loss. For measuring the 1/100 acre area, use the table below (Table 3).
+
+Table 3. Necessary row length composing 1/100 of an acre area.
+
+Row Width/
+Plant Spacing (inches) One Row Two Rows Three Rows Four Rows Six Rows Eight Rows
+
+Distance (ft)
+
+20 262 131 87.3 65.5 43.6 32.7
+
+28 187 93.5 62.3 46.7 31.1
+
+30 174 87 58 43.5 29
+
+36 145 72.5 48.3 36.2
+
+38 138 69 46 34.5
+
+40 131 65.5 43.6 32.7
+
+42 124 62 41.3 31
+
+Adapted from Sumner et al. 2012.
+
+Therefore, if your combine has eight rows, and your row width or plant spacing is 30 inches, select the center six rows, and use 29 ft. of length on the border rows to cover the sampling area.
+
+To verify the pre-harvest losses, do the same steps in front of the combine in the area not yet harvested. Follow the Table 3 to determine the measurement area. Subtract the pre-harvest losses number from the ear losses, then the result will be the ear loss in bushels per acre.
+
+To find the total machine loss, sum the ear loss to the corn kernel loss, and compare with your actual yield. Losses from 2-4% are usually common, but if your losses exceed these values, check your machine.
+
+Resources
+
+- Humburg, D. (2019) Chapter 38: Determining Harvest Losses in Soybeans. South Dakota State University iGrow Soybean Best Management Practices. Available at: https://extension.sdstate.edu/igrow-soybeans-best-management-practices-soybean-production
+
+- Sumner, P.E.; Williams, E. J. (2012) Measuring Field Losses from Grain Combines. University of Georgia Bulletin 973. Available at: https://extension.uga.edu/publications/detail.html?number=B973&title=measuring-field-losses-from-grain-combines
+
+-
+
+-
+
+-
+
+Subscribe to CropWatch
+
+Online Master of Science in Agronomy
+
+With a focus on industry applications and research, the online program is designed with maximum flexibility for today's working professionals.
+
+Learn More
+
+Explore our full collection of CropWatch articles.
+Explore Articles

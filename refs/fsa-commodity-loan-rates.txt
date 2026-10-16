@@ -1,0 +1,345 @@
+# FSA: Commodity loan rates page (county loan rate files)
+# https://www.fsa.usda.gov/programs-and-services/price-support/commodity-loan-rates
+# fetched 2026-10-16T16:47:24Z, sha256 bf57384e0d93679f62f6da0d58011c00af5b2d9f62bbb1f2f3b6ec327fcc10ed
+
+Commodity Loan Rates | Farm Service AgencyLock
+
+-
+
+-
+
+-
+
+-
+
+Resources
+
+-
+Find a Program
+
+-
+Loans
+
+-
+Climate-Smart Agriculture and Farm Loan Programs
+
+-
+Emergency Farm Loans
+
+-
+Farm Operating Loans
+
+-
+Farm Ownership Loans
+
+-
+Farm Storage Facility Loan (FSFL) Program
+
+-
+Graze-Out
+
+-
+Guaranteed Farm Loans
+
+-
+Guaranteed Loans - Lender Toolkit
+
+-
+Highly Fractionated Indian Land Loan Program (HFIL)
+
+-
+Indian Tribal Land Acquisition Loan Program
+
+-
+Loan Deficiency Payments (LDP)
+
+-
+Marketing Assistance Loans (MAL)
+
+-
+Operating Microloan
+
+-
+Organic Dairy Marketing Assistance Program (ODMAP 2024)
+
+-
+Youth Loans
+
+-
+Conservation
+
+-
+CRP Grasslands
+
+-
+Conservation Reserve Enhancement Program (CREP)
+
+-
+Conservation Reserve Program (CRP)
+
+-
+Farmable Wetlands Program (FWP)
+
+-
+General CRP
+
+-
+Transition Incentives Program
+
+-
+Water-Saving Commodities (WSC) Program
+
+-
+Disaster Recovery
+
+-
+2023/2024 Supplemental Disaster Assistance
+
+-
+Disaster Set-Aside Program (DSA)
+
+-
+Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish (ELAP)
+
+-
+Emergency Conservation Program (ECP)
+
+-
+Emergency Forest Restoration Program (EFRP)
+
+-
+Emergency Livestock Relief Program (ELRP)
+
+-
+Emergency Relief Program (ERP)
+
+-
+Livestock Forage Disaster Program (LFP)
+
+-
+Livestock Indemnity Program (LIP)
+
+-
+Milk Loss Program (MLP)
+
+-
+Noninsured Disaster Assistance Program (NAP)
+
+-
+On-Farm Stored Commodity Loss Program (OFSCLP)
+
+-
+Supplemental Disaster Relief Program (SDRP)
+
+-
+Tree Assistance Program (TAP)
+
+-
+Income Support
+
+-
+Agriculture Risk Coverage (ARC) & Price Loss Coverage (PLC)
+
+-
+Assistance for Specialty Crop Farmers (ASCF) Program
+
+-
+Dairy Indemnity Payment Program (DIPP)
+
+-
+Dairy Margin Coverage Program (DMC)
+
+-
+Emergency Commodity Assistance Program (ECAP)
+
+-
+Farmer Bridge Assistance (FBA) Program
+
+-
+Marketing Assistance for Specialty Crops (MASC)
+
+-
+Organic Certification Cost Share Program (OCCSP)
+
+-
+Reimbursement Transportation Cost Payment (RTCP)
+
+-
+Strengthening Processing for U.S. Ranchers (SPUR) Program
+
+-
+General Programs
+
+-
+Certified Mediation Program (CMP)
+
+-
+Farm Labor Stabilization and Protection Pilot Grant Program
+
+-
+Food Safety Certification for Specialty Crops (FSCSC) Program
+
+-
+Outreach & Education
+
+-
+About Us
+
+-
+Programs
+
+-
+Partner Organization Resources
+
+-
+State Outreach Coordinators
+
+-
+Price Support
+
+-
+Commodity Loans
+
+-
+Commodity Loan Rates
+
+-
+Facility Loan Programs
+
+-
+Loan Deficiency Payments
+
+-
+Price Support Reports
+
+-
+Posted County Price Rates
+
+-
+Economic and Policy Analysis
+
+-
+EPAD Reports
+
+-
+Commodity Loan Activity Reports
+
+-
+ELS Cotton Reports
+
+-
+Honey Reports
+
+-
+Peanut Reports
+
+-
+Rice Reports
+
+-
+Upland Cotton Reports
+
+-
+Wool and Mohair Reports
+
+-
+Financial Management Information
+
+-
+Initiatives
+
+-
+Acreage Crop Reporting Streamlining Initiative (ACRSI)
+
+Commodity Loan Rates
+
+The commodity loan rates below are available in PDF only. Download Adobe Acrobat Reader here.
+
+***Adobe Acrobat Reader 6.0 is recommended to view the Loan Rates.***
+
+Rates and More
+
+Loan Rates
+
+2026 2025 2024 2023 2022 2021 2020
+
+National Loan Rate National Loan Rate National Loan Rate National Loan Rate National Loan Rate National Loan Rate National Loan Rate
+
+Barley and Oats Barley and Oats Barley and Oats Barley and Oats Barley and Oats Barley and Oats Barley and Oats
+
+Canola, Crambe, Flaxseed, Rapeseed Canola, Crambe, Flaxseed, Rapeseed Canola, Crambe, Flaxseed, Rapeseed Canola, Crambe, Flaxseed, Rapeseed Canola, Crambe, Flaxseed, Rapeseed Canola, Crambe, Flaxseed, Rapeseed Canola, Crambe, Flaxseed, Rapeseed
+
+Corn, Grain, Sorghum, Soybeans Corn, Grain, Sorghum, Soybeans Corn, Grain, Sorghum, Soybeans Corn, Grain, Sorghum, Soybeans Corn, Grain Sorghum, Soybeans Corn, Grain Sorghum, Soybeans Corn, Grain Sorghum, Soybeans
+
+Cotton (UP and ELS) Cotton (UP and ELS) Cotton (UP and ELS) Cotton (UP and ELS) Cotton (UP and ELS) Cotton (UP and ELS) Cotton (UP and ELS)
+
+Mustard, Safflower, Sesame Seed, Sunflower Mustard, Safflower, Sesame Seed, Sunflower Mustard, Safflower, Sesame Seed, Sunflower Mustard, Safflower, Sesame Seed, Sunflower Mustard, Safflower, Sesame Seed, Sunflower Mustard, Safflower, Sesame Seed, Sunflower Mustard, Safflower, Sesame Seed, Sunflower
+
+Peanuts Peanuts Peanuts Peanuts Peanuts Peanuts Peanuts
+
+Pulse Crops Pulse Crops Pulse Crops Pulse Crops Pulse Crops Pulse Crops Pulse Crops
+
+Rice Rice Rice Rice Rice Rice Rice
+
+Sugar Sugar Sugar Sugar Sugar Sugar Sugar
+
+Wheat by Class Wheat by Class Wheat by Class Wheat by Class Wheat by Class Wheat by Class Wheat by Class
+
+Wool, and Mohair Wool and Mohair Wool and Mohair Wool and Mohair Wool and Mohair Wool and Mohair Wool and Mohair
+
+Honey Honey Honey Honey Honey Honey Honey
+
+Premiums and Discounts
+
+2026 2025 2024 2023 2022 2021 2020 2019
+
+Corn, Grain, Sorghum, Soybeans Corn, Grain, Sorghum, Soybeans Corn, Grain, Sorghum,
+Soybeans Corn, Grain, Sorghum, Soybeans Corn, Grain, Sorghum, Soybeans Corn, Grain, Sorghum, Soybeans Corn, Grain, Corn, Sorghum, Soybeans Corn, Grain, Sorghum, Soybeans
+
+Cotton Cotton Cotton Cotton Cotton Cotton Cotton Cotton
+
+Honey Honey Honey Honey Honey Honey Honey Honey
+
+Oilseeds Oilseeds Oilseeds Oilseeds Oilseeds Oilseeds Oilseeds Oilseeds
+
+Peanuts Peanuts Peanuts Peanuts Peanuts Peanuts Peanuts Peanuts
+
+Pulse Crops Pulse Crops Pulse Crops Pulse Crops Pulse Crops Pulse Crops Pulse Crops Pulse Crops
+
+Rice Rice Rice Rice Rice Rice Rice Rice
+
+Sugar Sugar Sugar Sugar Sugar Sugar Sugar Sugar
+
+Sugar Wheat, Barley, Oats Wheat, Barley, Oats Wheat, Barley, Oats Wheat, Barley, Oats Wheat, Barley, Oats Wheat, Barley, Oats Wheat, Barley, Oats
+
+Wool Wool Wool Wool Wool Wool Wool Wool
+
+Other Useful Links
+
+- Wool and Mohair Loans/LDP Program
+
+- Peanut Program
+
+- Pulse Crop Program
+
+- Cotton Program
+
+- Rice Program
+
+- Honey Loan Program
+
+Weekly Commodity Rates
+
+- Pulse Crop LDP Rates (Excel)
+
+- Peanut LDP Rates (Excel)
+
+- Wool and Mohair LDP Rates (pdf)
+
+- Upland Cotton LDP Rates (Excel)
+
+- ELS Cotton LDP Rates (Excel)
+
+- Rice LDP Rates (Excel)
+
+- Monthly CCC Honey Survey Prices (pdf)

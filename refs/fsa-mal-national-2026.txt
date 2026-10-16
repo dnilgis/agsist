@@ -1,0 +1,43 @@
+# FSA: 2026 national average loan rates
+# https://www.fsa.usda.gov/sites/default/files/2026-04/2026-National-Average-Loan-Rates.pdf
+# fetched 2026-10-16T16:47:21Z, sha256 7d8c0e8b0dc75124602ebbe18d6daf4084c76efde7610353c911a9286ffd0a20
+
+2026 National Average Loan Rates
+
+
+
+Commodity                                     Loan Rates per Unit
+
+Wheat                                         $3.72 per bushel
+Corn                                          $2.42 per bushel
+Grain Sorghum                                 $2.42 per bushel
+Barley                                        $2.75 per bushel
+Oats                                          $2.20 per bushel
+Upland Cotton                                 To Be Announced
+Extra Long Staple (ELS) Cotton                To Be Announced
+Rice
+    •     Long Grain                          $13.21 per hundredweight
+    •     Medium/Short                        $11.79 per hundredweight
+Soybeans                                      $6.82 per bushel
+Oilseeds
+    •     Canola                              $11.10 per hundredweight
+    •     Crambe                              $11.10 per hundredweight
+    •     Flaxseed                            $11.10 per hundredweight
+    •     Mustard Seed                        $11.10 per hundredweight
+    •     Rapeseed                            $11.10 per hundredweight
+    •     Safflower Seed                      $11.10 per hundredweight
+    •     Sesame Seed                         $11.10 per hundredweight
+    •     Sunflower (oil and non-oil types)   $11.10 per hundredweight
+Graded Wool                                   $1.15 per pound
+Non-Graded Wool                               $0.55 per pound
+Mohair                                        $5.00 per pound
+Honey                                         $1.50 per pound
+Dry Peas                                      $6.87 per hundredweight
+Lentils                                       $14.30 per hundredweight
+Small Chickpeas                               $11.00 per hundredweight
+Large Chickpeas                               $15.40 per hundredweight
+Peanuts                                       To Be Announced
+Sugar
+    •     Beet Sugar, Refined                 To Be Announced
+    •     Cane Sugar, Raw Value               To Be Announced
+

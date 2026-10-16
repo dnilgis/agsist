@@ -1,0 +1,152 @@
+# FSA: Current FSA loan interest rates
+# https://www.fsa.usda.gov/tools/informational/rates/current-fsa-loan-interest-rates
+# fetched 2026-10-16T16:47:27Z, sha256 43f0f2794b9bbf03e0e21437c1666882d92ac47f45e0a1533e6ad06966e2aa6b
+
+Current FSA Loan Interest Rates | Farm Service AgencyLock
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Tools
+
+-
+Decision-Making
+
+-
+Loan Assistance
+
+-
+Disaster Assistance
+
+-
+Livestock Indemnity
+
+-
+Emergency Livestock, Honey Bees, Fish
+
+-
+Online Services
+
+-
+ARC/PLC
+
+-
+Apply for a Loan
+
+-
+FSA Borrower Education
+
+-
+Pay My Loan
+
+-
+Informational
+
+-
+Fact Sheets
+
+-
+Payment Eligibility
+
+-
+Actively Engaged in Farming
+
+-
+Adjusted Gross Income
+
+-
+Cash-Rent Tenant
+
+-
+Conservation Compliance
+
+-
+Controlled Substance
+
+-
+Deceased Person
+
+-
+Foreign Persons
+
+-
+Payment Limitations
+
+-
+Freedom of Information Act (FOIA)
+
+-
+Electronic Reading Room
+
+-
+eFOIA Request Form
+
+-
+Farm Bill
+
+-
+Farm Safety Net
+
+-
+Forms
+
+-
+Rates
+
+-
+FSA Loan Interest Rates
+
+-
+Posted County Price Rates
+
+-
+Loan Deficiency Payments
+
+Current FSA Loan Interest Rates
+
+Program Interest Rates
+
+Farm Operating - Direct 5.375%
+
+Farm Operating - Microloan 5.375%
+
+Farm Ownership - Direct 6.250%
+
+Farm Ownership - Microloan 6.250%
+
+Farm Ownership - Direct, Joint Financing 4.250%
+
+Farm Ownership - Down Payment 2.250%
+
+Emergency Loan - Amount of Actual Loss 3.750%
+
+Effective as of October 1, 2026
+
+Guaranteed Loan Maximum Interest Rates
+
+Interest rates charged by guaranteed lenders at the time of closing or restructuring may not exceed the following:
+
+For loans with rates variable or fixed for less than 5 years: The prior business day’s SOFR plus 6.75%.
+
+For loans with rates fixed for 5 years or more: The prior business day’s 5 Year Treasury note rate plus 5.5%.
+
+*Note: If SOFR is less than 1.75%, lenders may add an additional 1% to each of the respective maximums above.
+
+Lenders are not required to directly price their loans on the SOFR or 5 year Treasury. These rules simply establish the maximum interest rates that may not be exceeded by guaranteed lenders at closing.
+
+** SOFR is the Standard Overnight Financing Rate
+
+You can look up the current SOFR and Treasury Rates by using these links:
+
+SOFR https://www.newyorkfed.org/markets/reference-rates/sofr
+
+Treasury Yields https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value=2022
+
+For a full description of the maximum interest rate rules view 2-FLP_Interest_Rate_Rules.
