@@ -18,3 +18,24 @@ data/signups.json
 data/seo-opportunities.json
 data/seo-index.json
 build/shots/
+
+# Raw build inputs no page reads live on the `raw` branch (never deployed),
+# not main (2026-10-16; data/ was at 290 of its 300 MB budget). The workflows
+# write them here and save them with scripts/push_raw.sh; farmland-atlas.yml
+# unpacks data/atlas/raw with scripts/pull_raw.sh and then runs
+# `git add -A data/atlas`, which would put 71 MB back on main without these.
+# Kept on main on purpose: data/atlas/raw/drought.json (a test reads it) and
+# each probe's listing.json (the normal run reads it).
+/data/atlas/raw/*
+!/data/atlas/raw/drought.json
+/data/cattle-auction-raw/*
+!/data/cattle-auction-raw/listing.json
+/data/hay-ams-raw/*
+!/data/hay-ams-raw/listing.json
+/data/cattle-cash-raw/
+/data/ccc-loan-raw/
+/data/dairy-raw/
+/data/fall-nitrogen-raw/
+/data/fert-ams-raw/
+/data/hay-raw/
+/data/drought/probe/
