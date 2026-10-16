@@ -1,0 +1,2418 @@
+
+<!DOCTYPE html>
+<html class="ArticlePage" lang="en-US"data-header-hat="true"
+ data-lead="standard">
+    <head>
+    <meta charset="UTF-8">
+
+    
+    <link rel="preconnect" href="https://www.googletagservices.com" crossorigin>
+    <link rel="preconnect" href="https://securepubads.g.doubleclick.net" crossorigin>
+    <link rel="preconnect" href="https://tpc.googlesyndication.com" crossorigin>
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
+
+    
+    <script async src="https://pub.doubleverify.com/dvtag/35132840/DV1475268/pub.js"></script>
+    <script>
+    if (typeof console !== 'undefined' && console.log) console.log('dvps onDvtag running');
+    window.onDvtagReady = function (callback, timeout) {
+        timeout = typeof timeout !== 'undefined' ? timeout : 500;
+        window.dvtag = window.dvtag || {};
+        window.dvtag.cmd = window.dvtag.cmd || [];
+        var opt = { callback: callback, timeout: timeout, timestamp: new Date().getTime() };
+        window.dvtag.cmd.push(function () { window.dvtag.queueAdRequest(opt); });
+        setTimeout(function () {
+            var cb = opt.callback;
+            opt.callback = null;
+            if (cb) cb();
+        }, timeout);
+    };
+    </script>
+
+    
+    <script>
+    window.liosetup = window.liosetup || {};
+    window.liosetup.callback = window.liosetup.callback || [];
+    window.liosetup.addCallback = function (fn) {
+        if (typeof window.liosetup.callback === 'function') {
+            var arr = []; arr.push(window.liosetup.callback); window.liosetup.callback = arr;
+        }
+        if (window.lio && window.lio.loaded) {
+            fn(window.lio.data);
+        } else {
+            window.liosetup.callback.push(fn);
+        }
+    };
+    </script>
+    <script>
+    !function(){"use strict";var o=window.jstag||(window.jstag={}),r=[];function n(e){o[e]=function(){for(var n=arguments.length,t=new Array(n),i=0;i<n;i++)t[i]=arguments[i];r.push([e,t])}}n("send"),n("mock"),n("identify"),n("pageView"),n("unblock"),n("getid"),n("setid"),n("loadEntity"),n("getEntity"),n("on"),n("once"),n("call"),o.loadScript=function(n,t,i){var e=document.createElement("script");e.async=!0,e.src=n,e.onload=t,e.onerror=i;var o=document.getElementsByTagName("script")[0],r=o&&o.parentNode||document.head||document.body,c=o||r.lastChild;return null!=c?r.insertBefore(e,c):r.appendChild(e),this},o.init=function n(t){return this.config=t,this.loadScript(t.src,function(){if(o.init===n)throw new Error("Load error!");o.init(o.config),function(){for(var n=0;n<r.length;n++){var t=r[n][0],i=r[n][1];o[t].apply(o,i)}r=void 0}()}),this}}();
+
+    // Only initialize Lytics when OneTrust Targeting (C0004) consent is granted
+    (function () {
+        var lyticsInitialized = false;
+
+        function initLytics() {
+            if (lyticsInitialized) return;
+            lyticsInitialized = true;
+            jstag.init({
+                src: "//c.lytics.io/api/tag/eac31194ea568ccce5a018f129fe36df/latest.min.js",
+                loadid: true,
+                pageAnalysis: { dataLayerPull: { disabled: true } }
+            });
+        }
+
+        function hasTargetingConsent() {
+            return typeof window.OnetrustActiveGroups === 'string'
+                && window.OnetrustActiveGroups.split(',').indexOf('C0004') !== -1;
+        }
+
+        // Check if consent is already available (e.g. returning visitor with saved preferences)
+        if (hasTargetingConsent()) {
+            initLytics();
+        }
+
+        // Listen for consent changes (initial banner interaction or preference update)
+        window.addEventListener('OneTrustGroupsUpdated', function () {
+            if (hasTargetingConsent()) {
+                initLytics();
+            }
+        });
+    })();
+    </script>
+
+    <meta property="og:title" content="October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton">
+
+    <meta property="og:url" content="https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton">
+
+    <meta property="og:image" content="https://assets.farmjournal.com/dims4/default/a05e2ef/2147483647/strip/true/crop/800x450+0+37/resize/1440x810!/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg">
+
+    
+    <meta property="og:image:url" content="https://assets.farmjournal.com/dims4/default/a05e2ef/2147483647/strip/true/crop/800x450+0+37/resize/1440x810!/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg">
+    
+    <meta property="og:image:width" content="1440">
+    <meta property="og:image:height" content="810">
+    <meta property="og:image:type" content="image/jpeg">
+    
+    <meta property="og:image:alt" content="Grain Bins">
+    
+
+
+    <meta property="og:description" content="All eyes are on whether USDA will cut new-crop corn yield toward the trade average of 177.8 bu. per acre—and what that means for ending stocks.">
+
+    <meta property="og:site_name" content="Pro Farmer">
+
+
+
+    <meta property="og:type" content="article">
+
+    <meta property="article:author" content="https://www.profarmer.com/authors/spencer-langford">
+
+    <meta property="article:published_time" content="2026-10-07T13:49:47.708">
+
+    <meta property="article:modified_time" content="2026-10-07T13:49:47.708">
+
+    <meta property="article:section" content="Agriculture News">
+
+    <meta property="article:tag" content="USDA Reports">
+
+    
+    <meta name="twitter:card" content="summary_large_image"/>
+    
+    
+    
+    
+    <meta name="twitter:description" content="All eyes are on whether USDA will cut new-crop corn yield toward the trade average of 177.8 bu. per acre—and what that means for ending stocks."/>
+    
+    
+    <meta name="twitter:image" content="https://assets.farmjournal.com/dims4/default/a05e2ef/2147483647/strip/true/crop/800x450+0+37/resize/1440x810!/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg"/>
+
+
+    
+    <meta name="twitter:image:alt" content="Grain Bins"/>
+    
+    
+    <meta name="twitter:site" content="@profarmer"/>
+    
+    
+    
+    <meta name="twitter:title" content="October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton"/>
+    
+
+
+    <meta name="bs:section" content="News">
+
+
+    <meta name="bs:child-section" content="Agriculture News">
+
+
+    <meta name="bs:author" content="Spencer Langford">
+
+
+    <meta name="bs:page-type" content="Article">
+
+
+    <meta name="paywall:enabled" content="true">
+
+
+    <meta name="paywall:free-page-views" content="1">
+
+
+    <meta name="paywall:api-url" content="https://bsp-connector.staging.farmjournal.cloud/api/pv-check">
+
+
+    <meta name="paywall:anon:headline" content="Expert insights, market intelligence, and analysis trusted by ag professionals.">
+
+
+    <meta name="paywall:anon:price" content="$40/month">
+
+
+    <meta name="paywall:anon:best-value" content="Best Value: $400/year (Save $80 with SMART80)">
+
+
+    <meta name="paywall:anon:orig-price" content="$480/year">
+
+
+    <meta name="paywall:anon:subscribe-text" content="Start your subscription">
+
+
+    <meta name="paywall:anon:cancel-text" content="Cancel anytime.">
+
+
+    <meta name="paywall:loggedin:headline" content="Expert insights, market intelligence, and analysis trusted by ag professionals.">
+
+
+    <meta name="paywall:loggedin:price" content="$40/month">
+
+
+    <meta name="paywall:loggedin:best-value" content="Best Value: $400/year (Save $80 with SMART80)">
+
+
+    <meta name="paywall:loggedin:orig-price" content="$480/year">
+
+
+    <meta name="paywall:loggedin:subscribe-text" content="Start your subscription">
+
+
+    <meta name="paywall:loggedin:cancel-text" content="Cancel anytime.">
+
+
+    <script>
+    (function() {
+        var path = window.location.pathname;
+        var search = window.location.search;
+
+        if (path === '/markets/futures' && search !== '') {
+            var meta = document.createElement('meta');
+            meta.name = 'robots';
+            meta.content = 'noindex, nofollow';
+            document.head.appendChild(meta);
+        }
+
+        if (path.startsWith('/news/')) {
+            var meta = document.createElement('meta');
+            meta.name = 'robots';
+            meta.content = 'max-image-preview:large';
+            document.head.appendChild(meta);
+        }
+
+        if (search.match(/(\?|&)video(_)?id=/i)) {
+            var existing = document.querySelector('meta[name="robots"]');
+            if (existing) {
+                existing.content = 'noindex, nofollow';
+            } else {
+                var meta = document.createElement('meta');
+                meta.name = 'robots';
+                meta.content = 'noindex, nofollow';
+                document.head.appendChild(meta);
+            }
+        }
+    })();
+    </script><link rel="alternate" href="https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton" hreflang="en-US" /><style type="text/css">:root {
+    
+
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+
+    --color-footer-bg-theme: #434343;
+    --color-footer-text-theme: #ffffff;
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+}
+</style>
+    <style type="text/css">:root {
+            --button-border-radius:40px;
+        }
+</style>
+    <style type="text/css">:root {
+  --font-1: "Montserrat";
+  --font-2: "Merriweather";
+}
+
+body {
+  --font-1: "Montserrat";
+  --font-2: "Merriweather";
+  --font-page-titles: var(--font-1);
+  --font-list-titles: var(--font-1);
+  --font-promo-titles: var(--font-1);
+  --font-description: var(--font-1);
+  --font-quote: var(--font-2);
+}
+</style>
+
+    
+        <link data-cssvarsponyfill="true" class="Webpack-css" rel="stylesheet" href="https://assets.farmjournal.com/resource/0000018e-8174-d5cf-a1ff-bffc6a350000/styles/default/All.min.0b0363f4f83953060a88286be1dd9e48.css">
+    <link rel="stylesheet" href="https://cdn.aerisapi.com/sdk/js/latest/aerisweather.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5"><title>October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton - Pro Farmer</title><meta name="description" content="All eyes are on whether USDA will cut new-crop corn yield toward the trade average of 177.8 bu. per acre—and what that means for ending stocks."><link rel="canonical" href="https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton"><meta name="brightspot.contentId" content="000001a1-16a0-d305-a1bb-3ee2a0f70000"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","url":"https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton","dateModified":"2026-10-07T13:49:47.708Z","datePublished":"2026-10-07T13:49:47.708Z","description":"All eyes are on whether USDA will cut new-crop corn yield toward the trade average of 177.8 bu. per acre—and what that means for ending stocks.","image":[{"@context":"http://schema.org","@type":"ImageObject","height":524,"url":"https://assets.farmjournal.com/dims4/default/d4cbff0/2147483647/strip/false/crop/800x524+0+0/resize/800x524!/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg","width":800},{"@context":"http://schema.org","@type":"ImageObject","height":675,"url":"https://assets.farmjournal.com/dims4/default/e8f5e6d/2147483647/strip/false/crop/800x450+0+37/resize/1200x675!/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg","width":1200}],"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton"},"author":[{"@context":"http://schema.org","@type":"Person","description":"Spencer Langford grew up on a dairy and tobacco farm in central Kentucky. After that, he attended Western Kentucky University and received a B.S. in Agribusiness while also publishing research on small farmers financial well-being. Following graduation Spencer worked for USDA’s National Agricultural Statistics Service for 5 years where he primarily worked on row crop and livestock estimates across the Delta and Mid-South states.","image":{"@context":"http://schema.org","@type":"ImageObject","url":"https://assets.farmjournal.com/81/32/90ccace54792a45a4b63ad26b837/langford-headshot.jpg"},"jobTitle":"Economist, Pro Farmer","name":"Spencer Langford","url":"https://www.profarmer.com/authors/spencer-langford"}],"publisher":{"@type":"Organization","name":"Pro Farmer"},"name":"October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton - Pro Farmer","headline":"October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton"}</script>
+    <!-- this will add webcomponent polyfills based on browsers. As of 04/29/21 still needed for IE11 and Safari -->
+    <script src="https://assets.farmjournal.com/resource/0000018e-8174-d5cf-a1ff-bffc6a350000/webcomponents-loader/webcomponents-loader.2938a610ca02c611209b1a5ba2884385.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
+    <script>
+        /**
+            This allows us to load the IE polyfills via feature detection so that they do not load
+            needlessly in the browsers that do not need them. It also ensures they are loaded
+            non async so that they load before the rest of our JS.
+        */
+        var head = document.getElementsByTagName('head')[0];
+        if (!window.CSS || !window.CSS.supports || !window.CSS.supports('--fake-var', 0)) {
+            var script = document.createElement('script');
+            script.setAttribute('src', "https://assets.farmjournal.com/resource/0000018e-8174-d5cf-a1ff-bffc6a350000/util/IEPolyfills.min.d0c7a490001ff465c331acdd185d6287.js");
+            script.setAttribute('type', 'text/javascript');
+            script.async = false;
+            head.appendChild(script);
+        }
+    </script>
+
+    
+        <script src="https://assets.farmjournal.com/resource/0000018e-8174-d5cf-a1ff-bffc6a350000/styles/default/All.min.ba8ed2a45516e5e4f671a643698c755a.js" async></script>
+    <script>(function(){
+var p = document.getElementsByTagName('script')[0],
+    s = document.createElement('script');
+s.async = 1;
+s.src = '//client.px-cloud.net/PXngHps7bZ/main.min.js';
+p.parentNode.insertBefore(s,p);
+}());</script>
+<script src="https://cdn.aerisapi.com/sdk/js/latest/aerisweather.min.js"></script>
+<script src="https://cdn.aerisapi.com/wxblox/latest/aeris-wxblox.js"></script>
+<script>(function () {
+    const tokenKey = 'fj_jwt';
+
+    function getJwtPayload(token) {
+        try {
+            const base64Url = token.split('.')[1]; // Extract payload part
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = atob(base64);
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            console.error('Invalid JWT format', e);
+            return null;
+        }
+    }
+
+    function pushToDataLayer() {
+        const token = localStorage.getItem(tokenKey);
+        if (token) {
+            const payload = getJwtPayload(token);
+            if (payload && payload.id) {
+                window.dataLayer = window.dataLayer || [];
+                window.dataLayer.push({ fjuserId: payload.id });
+                window.dataLayer.push({ has_sub: payload.has });
+                console.log('Pushed user ID to dataLayer:', payload.id);
+            } else {
+                console.warn('ID not found in JWT payload');
+            }
+        } else {
+            console.warn(`JWT not found in localStorage under key: ${tokenKey}`);
+        }
+    }
+
+    pushToDataLayer();
+})();
+</script>
+<script></script> <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://www.profarmer.com/",
+      "sameAs": ["https://x.com/profarmer", "https://www.farmjournal.com/brands/pro-farmer/"],
+      "logo": "https://assets.farmjournal.com/e9/86/d9373d6d4fbfa30275181c01864e/profarmer.png",
+      "name": "Pro Farmer",
+      "description": "Pro Farmer is a subscription-based agricultural news and market advisory organization focused on marketing and risk-management. Pro Farmer provides in-depth information about ag policy and the corn, soybean, wheat, cotton, pork and beef markets and how to maximize profits in easy-to-read, everyday language.",
+      "email": "editors@farmjournal.com",
+      "telephone": "+1-800-331-9310",
+      "parentOrganization":{
+        "@type": "Organization",
+        "name": "Farm Journal, Inc.",
+        "url": "https://www.farmjournal.com/",
+        "logo": "https://www.farmjournal.com/wp-content/uploads/2024/07/farm-journal-logo.svg"
+        }
+    }
+</script>
+<script>(function() {
+    console.log('logout func loaded');
+    document.addEventListener('click', function(e) {
+        var link = e.target.closest('.Page-header-logout a');
+        if (link) {
+            e.preventDefault();
+            e.stopPropagation();
+            localStorage.removeItem('fj_jwt');
+            window.location.reload();
+            console.log('is logout link');
+        }
+    }, true);
+})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <script>
+        var link = document.createElement('link');
+        link.setAttribute('href', '//fonts.googleapis.com/css?family=Roboto:300,400,700|Montserrat:300,400,700&display=swap');
+        var relList = link.relList;
+
+        if (relList && relList.supports('preload')) {
+            link.setAttribute('as', 'style');
+            link.setAttribute('rel', 'preload');
+            link.setAttribute('onload', 'this.rel="stylesheet"');
+            link.setAttribute('crossorigin', 'anonymous');
+        } else {
+            link.setAttribute('rel', 'stylesheet');
+        }
+
+        head.appendChild(link);
+    </script>
+
+    
+    
+    <script>
+    (function () {
+        function getMeta(name) {
+            var el = document.querySelector('meta[name="' + name + '"]');
+            return el ? (el.getAttribute('content') || '') : '';
+        }
+        function getMetaProp(prop) {
+            var el = document.querySelector('meta[property="' + prop + '"]');
+            return el ? (el.getAttribute('content') || '') : '';
+        }
+
+        var path     = window.location.pathname;
+        var section          = getMeta('bs:section');
+        var childSection     = getMeta('bs:child-section');
+        var grandchildSection = getMeta('bs:grandchild-section');
+        var author   = getMeta('bs:author');
+        var pageType = getMeta('bs:page-type') || 'Article';
+
+        var navigaAdvertiserId = getMeta('bs:naviga-advertiser-id');
+        var navigaCampaignId   = getMeta('bs:naviga-campaign-id');
+        var navigaLineId       = getMeta('bs:naviga-line-id');
+        var isSponsored        = getMeta('bs:is-sponsored');
+
+        var publishedDate = getMetaProp('article:published_time');
+        var contentId     = getMeta('brightspot.contentId');
+
+        var keywordEls = document.querySelectorAll('meta[property="article:tag"]');
+        var keywords = [];
+        for (var i = 0; i < keywordEls.length; i++) {
+            keywords.push(keywordEls[i].getAttribute('content'));
+        }
+
+        // Only push keys that have a value
+        var data = { page_type: pageType, url: path };
+        if (author)               data.author                = author;
+        if (section)              data.section               = section;
+        if (childSection)         data.child_section         = childSection;
+        if (grandchildSection)    data.grandchild_section    = grandchildSection;
+        if (contentId)            data.content_id            = contentId;
+        if (publishedDate)        data.published_date        = publishedDate;
+        if (keywords.length)      data.keywords              = keywords.join(', ');
+        if (navigaAdvertiserId)   data.naviga_advertiser_id  = navigaAdvertiserId;
+        if (navigaCampaignId)     data.naviga_campaign_id    = navigaCampaignId;
+        if (navigaLineId)         data.naviga_line_id        = navigaLineId;
+        if (isSponsored === 'true') data.is_sponsored        = true;
+
+        // JWT subscriber flag
+        try {
+            var jwt = localStorage.getItem('fj_jwt');
+            if (jwt) {
+                var payload = jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+                while (payload.length % 4) { payload += '='; }
+                var claims = JSON.parse(atob(payload));
+                if (claims.has === true) {
+                    data.has_sub_access = true;
+                }
+            }
+        } catch (e) {}
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(data);
+    })();
+    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PPFRWX7');</script>
+    <!-- End Google Tag Manager -->
+
+
+</head>
+
+
+    <body class="Page-body">
+        
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PPFRWX7" height="0" width="0" style="display:none;visibility:hidden">
+        </iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+
+<!-- Putting icons here, so we don't have to include in a bunch of -body hbs's -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" id="iconsMap">
+    <symbol id="mono-icon-facebook" viewBox="0 0 10 19">
+        <path fill-rule="evenodd" d="M2.707 18.25V10.2H0V7h2.707V4.469c0-1.336.375-2.373 1.125-3.112C4.582.62 5.578.25
+        6.82.25c1.008 0 1.828.047 2.461.14v2.848H7.594c-.633 0-1.067.14-1.301.422-.188.235-.281.61-.281
+        1.125V7H9l-.422 3.2H6.012v8.05H2.707z"></path>
+    </symbol>
+    <symbol id="action-icon-facebook" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g transform="translate(-112.000000, -395.000000)" fill="#FFFFFF">
+                <g transform="translate(100.000000, 386.000000)">
+                    <g transform="translate(12.000000, 9.000000)">
+                        <path d="M1.777125,12 L1.777125,6.48659606 L0,6.48659606 L0,4.05412254 L1.777125,4.05412254
+                        L1.777125,3.10626869 C1.777125,1.47184919 2.99976923,0 4.50308654,0 L6.46153846,0 L6.46153846,2.43247352
+                        L4.50308654,2.43247352 C4.28864423,2.43247352 4.03846154,2.69376172 4.03846154,3.08498454 L4.03846154,4.05412254
+                        L6.46153846,4.05412254 L6.46153846,6.48659606 L4.03846154,6.48659606 L4.03846154,12"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-instagram" viewBox="0 0 17 17">
+        <g>
+            <path fill-rule="evenodd" d="M8.281 4.207c.727 0 1.4.182 2.022.545a4.055 4.055 0 0 1 1.476 1.477c.364.62.545 1.294.545 2.021 0 .727-.181 1.4-.545 2.021a4.055 4.055 0 0 1-1.476 1.477 3.934 3.934 0 0 1-2.022.545c-.726 0-1.4-.182-2.021-.545a4.055 4.055 0 0 1-1.477-1.477 3.934 3.934 0 0 1-.545-2.021c0-.727.182-1.4.545-2.021A4.055 4.055 0 0 1 6.26 4.752a3.934 3.934 0 0 1 2.021-.545zm0 6.68a2.54 2.54 0 0 0 1.864-.774 2.54 2.54 0 0 0 .773-1.863 2.54 2.54 0 0 0-.773-1.863 2.54 2.54 0 0 0-1.864-.774 2.54 2.54 0 0 0-1.863.774 2.54 2.54 0 0 0-.773 1.863c0 .727.257 1.348.773 1.863a2.54 2.54 0 0 0 1.863.774zM13.45 4.03c-.023.258-.123.48-.299.668a.856.856 0 0 1-.65.281.913.913 0 0 1-.668-.28.913.913 0 0 1-.281-.669c0-.258.094-.48.281-.668a.913.913 0 0 1 .668-.28c.258 0 .48.093.668.28.187.188.281.41.281.668zm2.672.95c.023.656.035 1.746.035 3.269 0 1.523-.017 2.62-.053 3.287-.035.668-.134 1.248-.298 1.74a4.098 4.098 0 0 1-.967 1.53 4.098 4.098 0 0 1-1.53.966c-.492.164-1.072.264-1.74.3-.668.034-1.763.052-3.287.052-1.523 0-2.619-.018-3.287-.053-.668-.035-1.248-.146-1.74-.334a3.747 3.747 0 0 1-1.53-.931 4.098 4.098 0 0 1-.966-1.53c-.164-.492-.264-1.072-.299-1.74C.424 10.87.406 9.773.406 8.25S.424 5.63.46 4.963c.035-.668.135-1.248.299-1.74.21-.586.533-1.096.967-1.53A4.098 4.098 0 0 1 3.254.727c.492-.164 1.072-.264 1.74-.3C5.662.394 6.758.376 8.281.376c1.524 0 2.62.018 3.287.053.668.035 1.248.135 1.74.299a4.098 4.098 0 0 1 2.496 2.496c.165.492.27 1.078.317 1.757zm-1.687 7.91c.14-.399.234-1.032.28-1.899.024-.515.036-1.242.036-2.18V7.689c0-.961-.012-1.688-.035-2.18-.047-.89-.14-1.524-.281-1.899a2.537 2.537 0 0 0-1.512-1.511c-.375-.14-1.008-.235-1.899-.282a51.292 51.292 0 0 0-2.18-.035H7.72c-.938 0-1.664.012-2.18.035-.867.047-1.5.141-1.898.282a2.537 2.537 0 0 0-1.512 1.511c-.14.375-.234 1.008-.281 1.899a51.292 51.292 0 0 0-.036 2.18v1.125c0 .937.012 1.664.036 2.18.047.866.14 1.5.28 1.898.306.726.81 1.23 1.513 1.511.398.141 1.03.235 1.898.282.516.023 1.242.035 2.18.035h1.125c.96 0 1.687-.012 2.18-.035.89-.047 1.523-.141 1.898-.282.726-.304 1.23-.808 1.512-1.511z"></path>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-mailto" viewBox="0 0 18 13">
+        <style>.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#434343}</style>
+        <g id="Symbols"><g transform="translate(-382 -56)" id="Footer_x2F_All">
+            <g id="SocialMedia_x2F_White-group" transform="translate(98 40)">
+                <g id="SocialMedia_x2F_White">
+                    <g transform="translate(270)" id="SM-Individual-White_x2F_Message">
+                        <g id="Message" transform="translate(14 16)">
+                            <path id="Path" class="st0" d="M.359 1.047c2.362 2 6.506 5.519 7.724 6.616.164.148.339.223.521.223a.772.772 0 00.52-.222c1.219-1.098 5.363-4.617 7.725-6.617a.359.359 0 00.05-.495A1.424 1.424 0 0015.774 0H1.434C.994 0 .584.201.309.552a.359.359 0 00.05.495z"/>
+                            <path id="Path_1_" class="st0" d="M17 2.131a.355.355 0 00-.382.052c-2.619 2.22-5.962 5.066-7.013 6.014-.591.533-1.41.533-2.002-.001C6.482 7.186 2.728 3.995.59 2.183a.36.36 0 00-.59.273v9.016c0 .791.643 1.434 1.434 1.434h14.34c.791 0 1.434-.643 1.434-1.434V2.456A.36.36 0 0017 2.131z"/>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+        </g>
+    </symbol>
+    <svg id="action-icon-mailto" viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(-245.000000, -2697.000000)" stroke="#000000">
+                <g transform="translate(100.000000, 1138.000000)">
+                    <g transform="translate(0.000000, 132.000000)">
+                        <g transform="translate(0.000000, 1419.000000)">
+                            <g transform="translate(140.000000, 0.000000)">
+                                <g transform="translate(6.000000, 9.000000)">
+                                    <path d="M17.5909091,10.6363636 C17.5909091,11.3138182 17.0410909,11.8636364 16.3636364,11.8636364
+                                    L1.63636364,11.8636364 C0.958909091,11.8636364 0.409090909,11.3138182 0.409090909,10.6363636
+                                    L0.409090909,1.63636364 C0.409090909,0.958090909 0.958909091,0.409090909 1.63636364,0.409090909
+                                    L16.3636364,0.409090909 C17.0410909,0.409090909 17.5909091,0.958090909 17.5909091,1.63636364
+                                    L17.5909091,10.6363636 L17.5909091,10.6363636 Z"/>
+                                    <polyline points="17.1818182 0.818181818 9 7.36363636 0.818181818 0.818181818"/>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </svg>
+    <symbol id="mono-icon-print" viewBox="0 0 12 12">
+        <g fill-rule="evenodd">
+            <path fill-rule="nonzero" d="M9 10V7H3v3H1a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3.132A2.868 2.868 0 0 1 9.132 10H9zm.5-4.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM3 0h6v2H3z"></path>
+            <path d="M4 8h4v4H4z"></path>
+        </g>
+    </symbol>
+    <symbol id="action-icon-print" viewBox="0 0 20 18" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(-280.000000, -2695.000000)" stroke="#000000" stroke-width="0.9">
+                <g transform="translate(100.000000, 1138.000000)">
+                    <g transform="translate(0.000000, 132.000000)">
+                        <g transform="translate(0.000000, 1419.000000)">
+                            <g transform="translate(140.000000, 0.000000)">
+                                <g transform="translate(35.000000, 0.000000)">
+                                    <g transform="translate(6.000000, 7.000000)">
+                                        <path d="M4.125,12.375 L1.875,12.375 C1.05,12.375 0.375,11.7 0.375,10.875 L0.375,6.375
+                                        C0.375,5.55 1.05,4.875 1.875,4.875 L16.125,4.875 C16.95075,4.875 17.625,5.55 17.625,6.375
+                                        L17.625,10.875 C17.625,11.7 16.95075,12.375 16.125,12.375 L13.875,12.375"/>
+                                        <g transform="translate(4.125000, 0.375000)">
+                                            <polyline id="Stroke-2384" points="0 3 0 0 7.5 0 9.75 2.25 9.75 3"/>
+                                            <polygon id="Stroke-2385" points="0 15.75 9.75 15.75 9.75 9.75 0 9.75"/>
+                                        </g>
+                                        <path d="M3.375,7.125 C3.375,7.539 3.03975,7.875 2.625,7.875 C2.211,7.875 1.875,7.539
+                                        1.875,7.125 C1.875,6.71025 2.211,6.375 2.625,6.375 C3.03975,6.375 3.375,6.71025 3.375,7.125
+                                        L3.375,7.125 Z"/>
+                                        <line x1="5.625" y1="11.625" x2="12.375" y2="11.625" id="Stroke-2387"/>
+                                        <line x1="5.625" y1="13.125" x2="12.375" y2="13.125" id="Stroke-2388"/>
+                                        <line x1="5.625" y1="14.625" x2="12.375" y2="14.625" id="Stroke-2389"/>
+                                        <polyline points="11.625 0.375 11.625 2.625 13.875 2.625"/>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-copylink" viewBox="0 0 12 12">
+        <g fill-rule="evenodd">
+            <path d="M10.199 2.378c.222.205.4.548.465.897.062.332.016.614-.132.774L8.627 6.106c-.187.203-.512.232-.75-.014a.498.498 0 0 0-.706.028.499.499 0 0 0 .026.706 1.509 1.509 0 0 0 2.165-.04l1.903-2.06c.37-.398.506-.98.382-1.636-.105-.557-.392-1.097-.77-1.445L9.968.8C9.591.452 9.03.208 8.467.145 7.803.072 7.233.252 6.864.653L4.958 2.709a1.509 1.509 0 0 0 .126 2.161.5.5 0 1 0 .68-.734c-.264-.218-.26-.545-.071-.747L7.597 1.33c.147-.16.425-.228.76-.19.353.038.71.188.931.394l.91.843.001.001zM1.8 9.623c-.222-.205-.4-.549-.465-.897-.062-.332-.016-.614.132-.774l1.905-2.057c.187-.203.512-.232.75.014a.498.498 0 0 0 .706-.028.499.499 0 0 0-.026-.706 1.508 1.508 0 0 0-2.165.04L.734 7.275c-.37.399-.506.98-.382 1.637.105.557.392 1.097.77 1.445l.91.843c.376.35.937.594 1.5.656.664.073 1.234-.106 1.603-.507L7.04 9.291a1.508 1.508 0 0 0-.126-2.16.5.5 0 0 0-.68.734c.264.218.26.545.071.747l-1.904 2.057c-.147.16-.425.228-.76.191-.353-.038-.71-.188-.931-.394l-.91-.843z"></path>
+            <path d="M8.208 3.614a.5.5 0 0 0-.707.028L3.764 7.677a.5.5 0 0 0 .734.68L8.235 4.32a.5.5 0 0 0-.027-.707"></path>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-linkedin" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.245 7.318c-.704 0-1.273.57-1.273 1.273v4.454H4.79s.038-7.636 0-8.272h3.182v.945s.985-.919 2.507-.919c1.884 0 3.22 1.364 3.22 4.012v4.234h-3.182V8.591c0-.703-.57-1.273-1.272-1.273zM1.92 3.5h-.018C.94 3.5.318 2.748.318 1.921.318 1.075.96.386 1.94.386s1.583.712 1.603 1.557c0 .828-.622 1.557-1.622 1.557zm1.597 9.545H.336V4.773h3.181v8.272z" fill-rule="evenodd"/>
+    </symbol>
+    <symbol id="action-icon-linkedin" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g transform="translate(-214.000000, -394.000000)" fill="#FFFFFF">
+                <g transform="translate(100.000000, 386.000000)">
+                    <g transform="translate(114.318373, 8.386273)">
+                        <path d="M8.92627273,6.93190909 C8.22309091,6.93190909 7.65354545,7.50209091 7.65354545,8.20463636
+                        L7.65354545,12.6591818 L4.47172727,12.6591818 C4.47172727,12.6591818 4.50927273,5.02281818
+                        4.47172727,4.38645455 L7.65354545,4.38645455 L7.65354545,5.33145455 C7.65354545,5.33145455
+                        8.63863636,4.41318182 10.1601818,4.41318182 C12.0444545,4.41318182 13.3808182,5.77690909
+                        13.3808182,8.42481818 L13.3808182,12.6591818 L10.199,12.6591818 L10.199,8.20463636 C10.199,7.50209091
+                        9.62945455,6.93190909 8.92627273,6.93190909 L8.92627273,6.93190909 Z M1.60172727,3.11372727
+                        L1.58327273,3.11372727 C0.621727273,3.11372727 0,2.36154545 0,1.53490909 C0,0.689181818
+                        0.640818182,1.77635684e-15 1.62081818,1.77635684e-15 C2.60145455,1.77635684e-15 3.20409091,0.711454545
+                        3.22318182,1.55718182 C3.22318182,2.38445455 2.60145455,3.11372727 1.60172727,3.11372727 L1.60172727,3.11372727
+                        Z M3.199,12.6591818 L0.0171818182,12.6591818 L0.0171818182,4.38645455 L3.199,4.38645455 L3.199,12.6591818 Z"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="download" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <g fill="none" fill-rule="evenodd">
+            <g>
+                <g>
+                    <g>
+                        <path d="M0 0H24V24H0z" transform="translate(-802.000000, -1914.000000) translate(0.000000, 1756.000000) translate(802.000000, 158.000000)"/>
+                        <path fill="currentColor" fill-rule="nonzero" d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2zm-1 8V6h2v4h3l-4 4-4-4h3zm6 7H7v-2h10v2z" transform="translate(-802.000000, -1914.000000) translate(0.000000, 1756.000000) translate(802.000000, 158.000000)"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-pinterest" viewBox="0 0 512 512">
+        <g>
+            <path d="M256,32C132.3,32,32,132.3,32,256c0,91.7,55.2,170.5,134.1,205.2c-0.6-15.6-0.1-34.4,3.9-51.4
+                c4.3-18.2,28.8-122.1,28.8-122.1s-7.2-14.3-7.2-35.4c0-33.2,19.2-58,43.2-58c20.4,0,30.2,15.3,30.2,33.6
+                c0,20.5-13.1,51.1-19.8,79.5c-5.6,23.8,11.9,43.1,35.4,43.1c42.4,0,71-54.5,71-119.1c0-49.1-33.1-85.8-93.2-85.8
+                c-67.9,0-110.3,50.7-110.3,107.3c0,19.5,5.8,33.3,14.8,43.9c4.1,4.9,4.7,6.9,3.2,12.5c-1.1,4.1-3.5,14-4.6,18
+                c-1.5,5.7-6.1,7.7-11.2,5.6c-31.3-12.8-45.9-47-45.9-85.6c0-63.6,53.7-139.9,160.1-139.9c85.5,0,141.8,61.9,141.8,128.3
+                c0,87.9-48.9,153.5-120.9,153.5c-24.2,0-46.9-13.1-54.7-27.9c0,0-13,51.6-15.8,61.6c-4.7,17.3-14,34.5-22.5,48
+                c20.1,5.9,41.4,9.2,63.5,9.2c123.7,0,224-100.3,224-224C480,132.3,379.7,32,256,32z"></path>
+        </g>
+    </symbol>
+    <symbol id="action-icon-pinterest" viewBox="0 0 30 30" xmlns="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g transform="translate(-135.000000, -526.000000)">
+                <g transform="translate(100.000000, 526.000000)">
+                    <g transform="translate(35.000000, 0.000000)">
+                        <circle fill="#BD081C" cx="15" cy="15" r="15"/>
+                        <path d="M10.125,13.6640625 C10.125,13.1015597 10.2226553,12.5716171 10.4179687,12.0742188 C10.6132822,11.5768204
+                            10.8828108,11.143231 11.2265625,10.7734375 C11.5703142,10.403644 11.9661436,10.0833347 12.4140625,9.8125
+                            C12.8619814,9.54166531 13.3437474,9.33854234 13.859375,9.203125 C14.3750026,9.06770766 14.901039,9 15.4375,9
+                            C16.2604208,9 17.0260381,9.17317535 17.734375,9.51953125 C18.4427119,9.86588715 19.018227,10.3697884
+                            19.4609375,11.03125 C19.903648,11.6927116 20.125,12.4401 20.125,13.2734375 C20.125,13.77344 20.0755213,14.2630184
+                            19.9765625,14.7421875 C19.8776037,15.2213566 19.7213552,15.6822895 19.5078125,16.125 C19.2942698,16.5677105
+                            19.0338557,16.9570296 18.7265625,17.2929688 C18.4192693,17.6289079 18.0416689,17.8971344 17.59375,18.0976562
+                            C17.1458311,18.2981781 16.6536485,18.3984375 16.1171875,18.3984375 C15.7630191,18.3984375 15.4114601,18.315105
+                            15.0625,18.1484375 C14.7135399,17.98177 14.4635424,17.7526056 14.3125,17.4609375 C14.2604164,17.6640635
+                            14.1875005,17.9570293 14.09375,18.3398438 C13.9999995,18.7226582 13.9388022,18.9700515 13.9101562,19.0820312
+                            C13.8815103,19.194011 13.8281254,19.378905 13.75,19.6367188 C13.6718746,19.8945325 13.604167,20.0794265
+                            13.546875,20.1914062 C13.489583,20.303386 13.4062505,20.4661448 13.296875,20.6796875 C13.1874995,20.8932302
+                            13.067709,21.0950511 12.9375,21.2851562 C12.807291,21.4752614 12.6458343,21.7005195 12.453125,21.9609375
+                            L12.34375,22 L12.2734375,21.921875 C12.1953121,21.1041626 12.15625,20.6145841 12.15625,20.453125
+                            C12.15625,19.9739559 12.212239,19.4362009 12.3242187,18.8398438 C12.4361985,18.2434866 12.6093738,17.4947962
+                            12.84375,16.59375 C13.0781262,15.6927038 13.2135415,15.1640633 13.25,15.0078125 C13.0833325,14.6692691
+                            13,14.2291694 13,13.6875 C13,13.2552062 13.1354153,12.8489602 13.40625,12.46875 C13.6770847,12.0885398
+                            14.0208312,11.8984375 14.4375,11.8984375 C14.7552099,11.8984375 15.0026033,12.0039052 15.1796875,12.2148438
+                            C15.3567717,12.4257823 15.4453125,12.6927067 15.4453125,13.015625 C15.4453125,13.3593767 15.3307303,13.8567676
+                            15.1015625,14.5078125 C14.8723947,15.1588574 14.7578125,15.6458317 14.7578125,15.96875 C14.7578125,16.2968766
+                            14.8749988,16.5690093 15.109375,16.7851562 C15.3437512,17.0013032 15.6276025,17.109375 15.9609375,17.109375
+                            C16.2473973,17.109375 16.5130196,17.0442715 16.7578125,16.9140625 C17.0026054,16.7838535 17.2070304,16.606772
+                            17.3710937,16.3828125 C17.5351571,16.158853 17.6809889,15.9114597 17.8085937,15.640625 C17.9361986,15.3697903
+                            18.0351559,15.0820328 18.1054687,14.7773438 C18.1757816,14.4726547 18.2278644,14.1835951 18.2617187,13.9101562
+                            C18.2955731,13.6367174 18.3125,13.3776054 18.3125,13.1328125 C18.3125,12.2317663 18.0273466,11.5299504
+                            17.4570312,11.0273438 C16.8867159,10.5247371 16.1432337,10.2734375 15.2265625,10.2734375 C14.1848906,10.2734375
+                            13.3151077,10.6106737 12.6171875,11.2851562 C11.9192673,11.9596388 11.5703125,12.815099 11.5703125,13.8515625
+                            C11.5703125,14.0807303 11.6028643,14.3020823 11.6679687,14.515625 C11.7330732,14.7291677 11.803385,14.8984369
+                            11.8789062,15.0234375 C11.9544275,15.1484381 12.0247393,15.2669265 12.0898437,15.3789062 C12.1549482,15.490886
+                            12.1875,15.5703123 12.1875,15.6171875 C12.1875,15.7630216 12.1484379,15.9531238 12.0703125,16.1875
+                            C11.9921871,16.4218762 11.8958339,16.5390625 11.78125,16.5390625 C11.7708333,16.5390625 11.7265629,16.5312501
+                            11.6484375,16.515625 C11.3828112,16.4374996 11.1471364,16.2916677 10.9414062,16.078125 C10.7356761,15.8645823
+                            10.5768235,15.618491 10.4648437,15.3398438 C10.352864,15.0611965 10.2682295,14.7799493 10.2109375,14.4960938
+                            C10.1536455,14.2122382 10.125,13.9348972 10.125,13.6640625 Z" fill="#FFFFFF"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="icon-fullscreen" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 1024 1024">
+        <path d="M290 236.4l43.9-43.9a8.01 8.01 0 0 0-4.7-13.6L169 160c-5.1-.6-9.5 3.7-8.9 8.9L179 329.1c.8 6.6 8.9 9.4 13.6 4.7l43.7-43.7L370 423.7c3.1 3.1 8.2 3.1 11.3 0l42.4-42.3c3.1-3.1 3.1-8.2 0-11.3L290 236.4zm352.7 187.3c3.1 3.1 8.2 3.1 11.3 0l133.7-133.6 43.7 43.7a8.01 8.01 0 0 0 13.6-4.7L863.9 169c.6-5.1-3.7-9.5-8.9-8.9L694.8 179c-6.6.8-9.4 8.9-4.7 13.6l43.9 43.9L600.3 370a8.03 8.03 0 0 0 0 11.3l42.4 42.4zM845 694.9c-.8-6.6-8.9-9.4-13.6-4.7l-43.7 43.7L654 600.3a8.03 8.03 0 0 0-11.3 0l-42.4 42.3a8.03 8.03 0 0 0 0 11.3L734 787.6l-43.9 43.9a8.01 8.01 0 0 0 4.7 13.6L855 864c5.1.6 9.5-3.7 8.9-8.9L845 694.9zm-463.7-94.6a8.03 8.03 0 0 0-11.3 0L236.3 733.9l-43.7-43.7a8.01 8.01 0 0 0-13.6 4.7L160.1 855c-.6 5.1 3.7 9.5 8.9 8.9L329.2 845c6.6-.8 9.4-8.9 4.7-13.6L290 787.6 423.7 654c3.1-3.1 3.1-8.2 0-11.3l-42.4-42.4z"/>
+    </symbol>
+    <symbol id="mono-icon-tumblr" viewBox="0 0 512 512">
+        <g>
+            <path d="M321.2,396.3c-11.8,0-22.4-2.8-31.5-8.3c-6.9-4.1-11.5-9.6-14-16.4c-2.6-6.9-3.6-22.3-3.6-46.4V224h96v-64h-96V48h-61.9
+                c-2.7,21.5-7.5,44.7-14.5,58.6c-7,13.9-14,25.8-25.6,35.7c-11.6,9.9-25.6,17.9-41.9,23.3V224h48v140.4c0,19,2,33.5,5.9,43.5
+                c4,10,11.1,19.5,21.4,28.4c10.3,8.9,22.8,15.7,37.3,20.5c14.6,4.8,31.4,7.2,50.4,7.2c16.7,0,30.3-1.7,44.7-5.1
+                c14.4-3.4,30.5-9.3,48.2-17.6v-65.6C363.2,389.4,342.3,396.3,321.2,396.3z"></path>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-twitter" viewBox="0 0 19 16">
+        <g>
+            <path fill-rule="evenodd" d="M16.48 4.594c.024.094.036.246.036.457 0 1.687-.41 3.316-1.23 4.887-.845 1.664-2.028 2.988-3.552 3.972-1.664 1.102-3.574 1.652-5.73 1.652-2.063 0-3.95-.55-5.66-1.652.258.024.55.035.879.035 1.71 0 3.246-.527 4.605-1.582-.82 0-1.54-.24-2.162-.72a3.671 3.671 0 0 1-1.283-1.811c.234.023.457.035.668.035.328 0 .656-.035.984-.105a3.72 3.72 0 0 1-2.11-1.301 3.54 3.54 0 0 1-.843-2.32v-.07a3.475 3.475 0 0 0 1.652.492A4.095 4.095 0 0 1 1.54 5.227a3.546 3.546 0 0 1-.457-1.776c0-.644.176-1.26.527-1.845a10.18 10.18 0 0 0 3.358 2.742 10.219 10.219 0 0 0 4.236 1.125 5.124 5.124 0 0 1-.07-.844c0-.656.164-1.272.492-1.846a3.613 3.613 0 0 1 1.336-1.353 3.565 3.565 0 0 1 1.828-.492c.54 0 1.037.105 1.494.316.457.21.861.492 1.213.844a7.51 7.51 0 0 0 2.356-.88c-.282.868-.82 1.548-1.618 2.04a7.93 7.93 0 0 0 2.11-.598 8.114 8.114 0 0 1-1.864 1.934z"></path>
+        </g>
+    </symbol>
+    <symbol id="action-icon-twitter"viewBox="0 0 16 16" fill="none" >
+        <g id="Social Base Icons/XPlatform">
+            <path id="Vector" d="M9.28455 7.08118L13.5285 2H12.5228L8.8378 6.41192L5.89462 2H2.5L6.95067 8.6716L2.5 14H3.50573L7.39716 9.34087L10.5054 14H13.9L9.28455 7.08118ZM7.90707 8.73038L7.45612 8.06604L3.8681 2.77981H5.41284L8.30841 7.04596L8.75936 7.71031L12.5233 13.2557H10.9785L7.90707 8.73038Z" fill="white"/>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-youtube" viewBox="0 0 512 512">
+        <g>
+            <path fill-rule="evenodd" d="M508.6,148.8c0-45-33.1-81.2-74-81.2C379.2,65,322.7,64,265,64c-3,0-6,0-9,0s-6,0-9,0c-57.6,0-114.2,1-169.6,3.6
+                c-40.8,0-73.9,36.4-73.9,81.4C1,184.6-0.1,220.2,0,255.8C-0.1,291.4,1,327,3.4,362.7c0,45,33.1,81.5,73.9,81.5
+                c58.2,2.7,117.9,3.9,178.6,3.8c60.8,0.2,120.3-1,178.6-3.8c40.9,0,74-36.5,74-81.5c2.4-35.7,3.5-71.3,3.4-107
+                C512.1,220.1,511,184.5,508.6,148.8z M207,353.9V157.4l145,98.2L207,353.9z"></path>
+        </g>
+    </symbol>
+    <symbol id="mono-icon-tiktok" viewBox="0 0 512 512">
+        <path d="M412.19,118.66a109.27,109.27,0,0,1-9.45-5.5,132.87,132.87,0,0,1-24.27-20.62c-18.1-20.71-24.86-41.72-27.35-56.43h.1C349.14,23.9,350,16,350.13,16H267.69V334.78c0,4.28,0,8.51-.18,12.69,0,.52-.05,1-.08,1.56,0,.23,0,.47-.05.71,0,.06,0,.12,0,.18a70,70,0,0,1-35.22,55.56,68.8,68.8,0,0,1-34.11,9c-38.41,0-69.54-31.32-69.54-70s31.13-70,69.54-70a68.9,68.9,0,0,1,21.41,3.39l.1-83.94a153.14,153.14,0,0,0-118,34.52,161.79,161.79,0,0,0-35.3,43.53c-3.48,6-16.61,30.11-18.2,69.24-1,22.21,5.67,45.22,8.85,54.73v.2c2,5.6,9.75,24.71,22.38,40.82A167.53,167.53,0,0,0,115,470.66v-.2l.2.2C155.11,497.78,199.36,496,199.36,496c7.66-.31,33.32,0,62.46-13.81,32.32-15.31,50.72-38.12,50.72-38.12a158.46,158.46,0,0,0,27.64-45.93c7.46-19.61,9.95-43.13,9.95-52.53V176.49c1,.6,14.32,9.41,14.32,9.41s19.19,12.3,49.13,20.31c21.48,5.7,50.42,6.9,50.42,6.9V131.27C453.86,132.37,433.27,129.17,412.19,118.66Z"></path>
+    </symbol>
+    <symbol id="icon-magnify" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21.876 18.281l-.314.548L30 27.343 27.343 30l-8.437-8.516-.546.392c-2.083 1.3-4.245 1.951-6.486 1.951-3.28 0-6.08-1.171-8.398-3.515C1.16 17.968 0 15.156 0 11.874c0-3.28 1.159-6.08 3.476-8.398C5.794 1.16 8.595 0 11.876 0c3.282 0 6.079 1.159 8.398 3.476 2.318 2.318 3.477 5.119 3.477 8.4a11.786 11.786 0 0 1-1.875 6.405zm-3.36-13.046c-1.823-1.824-4.037-2.736-6.642-2.736-2.604 0-4.818.912-6.639 2.736-1.824 1.822-2.736 4.035-2.736 6.64 0 2.606.912 4.818 2.736 6.64 1.822 1.823 4.035 2.734 6.64 2.734 2.606 0 4.818-.91 6.64-2.733 1.876-1.875 2.813-4.088 2.813-6.642 0-2.55-.937-4.764-2.812-6.639z" fill-rule="evenodd"/>
+    </symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M9.62,5.29a.91.91,0,0,0-1.34,0A1,1,0,0,0,8.2,6.61l.08.1,5,5.29-5,5.29a1,1,0,0,0-.08,1.32l.08.1a.91.91,0,0,0,1.25.08l.09-.08L16,12Z"/>
+    </symbol>
+    <symbol id="icon-chevron-left" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M14.38,5.29a.91.91,0,0,1,1.34,0,1,1,0,0,1,.08,1.32l-.08.1-5,5.29,5,5.29a1,1,0,0,1,.08,1.32l-.08.1a.91.91,0,0,1-1.25.08l-.09-.08L8,12Z"/>
+    </symbol>
+    <symbol id="burger-menu" viewBox="0 0 14 10">
+        <g>
+            <path fill-rule="evenodd" d="M0 5.5v-1h14v1H0zM0 1V0h14v1H0zm0 9V9h14v1H0z"></path>
+        </g>
+    </symbol>
+    <symbol id="close-x" viewBox="0 0 14 14"  xmlns="http://www.w3.org/2000/svg">
+        <g>
+            <path fill-rule="nonzero" d="M6.336 7L0 .664.664 0 7 6.336 13.336 0 14 .664 7.664 7 14 13.336l-.664.664L7 7.664.664 14 0 13.336 6.336 7z"></path>
+        </g>
+    </symbol>
+    <symbol id="download" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <g fill="none" fill-rule="evenodd">
+            <g>
+                <g>
+                    <g>
+                        <path d="M0 0H24V24H0z" transform="translate(-802.000000, -1914.000000) translate(0.000000, 1756.000000) translate(802.000000, 158.000000)"/>
+                        <path fill="#000" fill-rule="nonzero" d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2zm-1 8V6h2v4h3l-4 4-4-4h3zm6 7H7v-2h10v2z" transform="translate(-802.000000, -1914.000000) translate(0.000000, 1756.000000) translate(802.000000, 158.000000)"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="share-more-arrow" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;">
+        <g>
+            <g>
+                <path d="M512,241.7L273.643,3.343v156.152c-71.41,3.744-138.015,33.337-188.958,84.28C30.075,298.384,0,370.991,0,448.222v60.436
+                    l29.069-52.985c45.354-82.671,132.173-134.027,226.573-134.027c5.986,0,12.004,0.212,18.001,0.632v157.779L512,241.7z
+                    M255.642,290.666c-84.543,0-163.661,36.792-217.939,98.885c26.634-114.177,129.256-199.483,251.429-199.483h15.489V78.131
+                    l163.568,163.568L304.621,405.267V294.531l-13.585-1.683C279.347,291.401,267.439,290.666,255.642,290.666z"></path>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="chevron" viewBox="0 0 100 100">
+        <g>
+            <path d="M22.4566257,37.2056786 L-21.4456527,71.9511488 C-22.9248661,72.9681457 -24.9073712,72.5311671 -25.8758148,70.9765924 L-26.9788683,69.2027424 C-27.9450684,67.6481676 -27.5292733,65.5646602 -26.0500598,64.5484493 L20.154796,28.2208967 C21.5532435,27.2597011 23.3600078,27.2597011 24.759951,28.2208967 L71.0500598,64.4659264 C72.5292733,65.4829232 72.9450684,67.5672166 71.9788683,69.1217913 L70.8750669,70.8956413 C69.9073712,72.4502161 67.9241183,72.8848368 66.4449048,71.8694118 L22.4566257,37.2056786 Z" id="Transparent-Chevron" transform="translate(22.500000, 50.000000) rotate(90.000000) translate(-22.500000, -50.000000) "></path>
+        </g>
+    </symbol>
+    <symbol id="chevron-down" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.108 4.088L.965.158a.587.587 0 0 0-.8 0 .518.518 0 0 0 0 .758L5.13 5.625 9.845.905a.517.517 0 0 0-.021-.758.588.588 0 0 0-.8.02l-3.916 3.92z" fill-rule="evenodd"/>
+    </symbol>
+    <symbol id="chevron-up" viewBox="0 0 284.929 284.929" xmlns="http://www.w3.org/2000/svg">
+        <path d="M282.082 195.285L149.028 62.24c-1.901-1.903-4.088-2.856-6.562-2.856s-4.665.953-6.567 2.856L2.856 195.285C.95 197.191 0 199.378 0 201.853c0 2.474.953 4.664 2.856 6.566l14.272 14.271c1.903 1.903 4.093 2.854 6.567 2.854s4.664-.951 6.567-2.854l112.204-112.202 112.208 112.209c1.902 1.903 4.093 2.848 6.563 2.848 2.478 0 4.668-.951 6.57-2.848l14.274-14.277c1.902-1.902 2.847-4.093 2.847-6.566.001-2.476-.944-4.666-2.846-6.569z"/>
+    </symbol>
+    <symbol id="icon-arrow-down" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.108 4.088L.965.158a.587.587 0 0 0-.8 0 .518.518 0 0 0 0 .758L5.13 5.625 9.845.905a.517.517 0 0 0-.021-.758.588.588 0 0 0-.8.02l-3.916 3.92z" fill="inherit" fill-rule="evenodd"/>
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 15 11">
+        <path d="m9.91.876.088.067 4.5 4 .014.013.044.045-.058-.058a.757.757 0 0 1 .192.266c.039.09.06.19.06.295l-.006.095a.748.748 0 0 1-.169.386l-.019.022a.755.755 0 0 1-.044.045l-.014.012-4.5 4a.75.75 0 0 1-1.074-1.04l.078-.08 3.023-2.69H1A.75.75 0 0 1 .898 4.76L1 4.754h11.026l-3.024-2.69a.75.75 0 0 1-.13-.97l.067-.088a.75.75 0 0 1 .971-.13z" fill-rule="nonzero"/>
+    </symbol>
+    <symbol id="play-arrow" viewBox="0 0 30 30">
+        <g fill-rule="evenodd">
+            <path d="M9 9l12 6-12 6z"></path>
+        </g>
+    </symbol>
+    <symbol id="play-icon" viewBox="0 0 50 50"  xmlns="http://www.w3.org/2000/svg" >
+        <g stroke="none" stroke-width="1" fill="none" fill-rule="nonzero">
+            <circle fill="currentColor" cx="25" cy="25" r="24"/>
+            <polygon fill="#FFFFFF" points="18 36.25 18 13.75 33 25"/>
+        </g>
+    </symbol>
+    <symbol id="player-play" viewBox="0 0 40 40">
+        <path fill="currentColor" d="M17.6 27.8l9.34-7c.54-.4.54-1.2 0-1.6l-9.34-7c-.66-.5-1.6-.02-1.6.8v14c0 .82.94 1.3 1.6.8zM20 0C8.96 0 0 8.96 0 20s8.96 20 20 20 20-8.96 20-20S31.04 0 20 0zm0 38c-9.922 0-18-8.078-18-18S10.078 2 20 2s18 8.078 18 18-8.078 18-18 18z"/>
+    </symbol>
+    <symbol id="player-pause" viewBox="0 0 40 40">
+        <path fill="currentColor" d="M20 0C8.96 0 0 8.96 0 20s8.96 20 20 20 20-8.96 20-20S31.04 0 20 0zm0 38c-9.922 0-18-8.078-18-18S10.078 2 20 2s18 8.078 18 18-8.078 18-18 18zm-4-26c.552 0 1 .448 1 1v14c0 .552-.448 1-1 1s-1-.448-1-1V13c0-.552.448-1 1-1zm8 0c.552 0 1 .448 1 1v14c0 .552-.448 1-1 1s-1-.448-1-1V13c0-.552.448-1 1-1z"/>
+    </symbol>
+    <symbol id="grid" viewBox="0 0 32 32">
+        <g>
+            <path d="M6.4,5.7 C6.4,6.166669 6.166669,6.4 5.7,6.4 L0.7,6.4 C0.233331,6.4 0,6.166669 0,5.7 L0,0.7 C0,0.233331 0.233331,0 0.7,0 L5.7,0 C6.166669,0 6.4,0.233331 6.4,0.7 L6.4,5.7 Z M19.2,5.7 C19.2,6.166669 18.966669,6.4 18.5,6.4 L13.5,6.4 C13.033331,6.4 12.8,6.166669 12.8,5.7 L12.8,0.7 C12.8,0.233331 13.033331,0 13.5,0 L18.5,0 C18.966669,0 19.2,0.233331 19.2,0.7 L19.2,5.7 Z M32,5.7 C32,6.166669 31.766669,6.4 31.3,6.4 L26.3,6.4 C25.833331,6.4 25.6,6.166669 25.6,5.7 L25.6,0.7 C25.6,0.233331 25.833331,0 26.3,0 L31.3,0 C31.766669,0 32,0.233331 32,0.7 L32,5.7 Z M6.4,18.5 C6.4,18.966669 6.166669,19.2 5.7,19.2 L0.7,19.2 C0.233331,19.2 0,18.966669 0,18.5 L0,13.5 C0,13.033331 0.233331,12.8 0.7,12.8 L5.7,12.8 C6.166669,12.8 6.4,13.033331 6.4,13.5 L6.4,18.5 Z M19.2,18.5 C19.2,18.966669 18.966669,19.2 18.5,19.2 L13.5,19.2 C13.033331,19.2 12.8,18.966669 12.8,18.5 L12.8,13.5 C12.8,13.033331 13.033331,12.8 13.5,12.8 L18.5,12.8 C18.966669,12.8 19.2,13.033331 19.2,13.5 L19.2,18.5 Z M32,18.5 C32,18.966669 31.766669,19.2 31.3,19.2 L26.3,19.2 C25.833331,19.2 25.6,18.966669 25.6,18.5 L25.6,13.5 C25.6,13.033331 25.833331,12.8 26.3,12.8 L31.3,12.8 C31.766669,12.8 32,13.033331 32,13.5 L32,18.5 Z M6.4,31.3 C6.4,31.766669 6.166669,32 5.7,32 L0.7,32 C0.233331,32 0,31.766669 0,31.3 L0,26.3 C0,25.833331 0.233331,25.6 0.7,25.6 L5.7,25.6 C6.166669,25.6 6.4,25.833331 6.4,26.3 L6.4,31.3 Z M19.2,31.3 C19.2,31.766669 18.966669,32 18.5,32 L13.5,32 C13.033331,32 12.8,31.766669 12.8,31.3 L12.8,26.3 C12.8,25.833331 13.033331,25.6 13.5,25.6 L18.5,25.6 C18.966669,25.6 19.2,25.833331 19.2,26.3 L19.2,31.3 Z M32,31.3 C32,31.766669 31.766669,32 31.3,32 L26.3,32 C25.833331,32 25.6,31.766669 25.6,31.3 L25.6,26.3 C25.6,25.833331 25.833331,25.6 26.3,25.6 L31.3,25.6 C31.766669,25.6 32,25.833331 32,26.3 L32,31.3 Z" id=""></path>
+        </g>
+    </symbol>
+    <symbol id="filter" viewBox="0 0 16 12">
+        <path d="M0 2V0h16v2H0zm2.4 5V5h11.2v2H2.4zm2.4 5v-2h6.4v2H4.8z"></path>
+    </symbol>
+    <symbol id="icon-filter" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"></path>
+    </symbol>
+    <symbol id="icon-radio-on" viewBox="0 0 24 24">
+        <path fill="currentColor" fill-rule="nonzero" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
+    </symbol>
+    <symbol id="icon-radio-off" viewBox="0 0 24 24">
+        <path fill="currentColor" fill-rule="nonzero" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
+    </symbol>
+    <symbol id="icon-pause" viewBox="0 0 13 16">
+        <rect width="4.636" height="16" rx="2.318"/>
+        <rect width="4.636" height="16" x="7.727" rx="2.318"/>
+    </symbol>
+    <symbol id="icon-plus" viewBox="0 0 14 14" height="14px" width="14px">
+        <path d="M13, 6H8V1A1, 1, 0, 0, 0, 6, 1V6H1A1, 1, 0, 0, 0, 1, 8H6v5a1, 1, 0, 0, 0, 2, 0V8h5a1, 1, 0, 0, 0, 0-2Z"/>
+    </symbol>
+    <symbol id="icon-minus" viewBox="0 0 14 14" height="14px" width="14px">
+        <path d="M13, 8H1A1, 1, 0, 0, 1, 1, 6H13a1, 1, 0, 0, 1, 0, 2Z"/>
+    </symbol>
+    <symbol id="amazon-alexa" fill="none" viewBox="0 0 14 14">
+        <path clip-rule="evenodd" d="m52.4998 105c-28.9946 0-52.4998-23.5055-52.4998-52.5003 0-26.6214 19.8151-48.61142 45.5003-52.03433v10.57883c0 2.9832-1.8814 5.6636-4.7091 6.6127-14.8197 4.9787-25.4216 19.1433-25.0311 35.7287.4754 20.1911 16.923 36.0663 37.1187 35.8628 20.122-.2035 36.3714-16.5785 36.3714-36.7487 0-.4597-.0113-.9172-.0283-1.3721-.004-.102-.0072-.2048-.0113-.307-.0194-.4228-.0452-.8446-.0784-1.2639-.0097-.1335-.0234-.2666-.0355-.3998-.0259-.2928-.0558-.5837-.0889-.8739-.0372-.3297-.08-.6576-.1261-.9838-.0202-.1492-.0404-.2988-.063-.4467-4.4995-29.6389-43.1025-46.296896-43.3144-46.388077 2.2893-.304462 4.6239-.464423 6.9955-.464423 28.9951 0 52.5002 23.5048 52.5002 52.4997 0 28.9948-23.5051 52.5003-52.5002 52.5003z" fill="#5fcaf4" fill-rule="evenodd" transform="matrix(.133333 0 0 -.133333 0 14)"/>
+    </symbol>
+    <symbol id="apple" viewBox="0 0 511.86 511.86">
+        <rect fill="#822cbe" width="511.86" height="511.86" rx="113.87"/>
+        <path fill="#ffffff" d="M240.44,448.26c-15.27-5.46-18.54-12.88-24.81-56.38-7.28-50.55-8.87-81.84-4.65-91.75,5.59-13.14,20.78-20.6,42-20.68,21.07-.09,36.39,7.44,42,20.68,4.24,9.89,2.65,41.2-4.64,91.75-4.95,35.32-7.67,44.25-14.5,50.25-9.38,8.31-22.69,10.61-35.32,6.14Zm-65.22-51.87c-52.73-25.94-86.51-69.82-98.79-128.2-3.07-15.07-3.59-51-.69-64.84,7.68-37.11,22.36-66.13,46.75-91.79,35.15-37.06,80.37-56.65,130.7-56.65,49.82,0,94.86,19.23,129.16,55.18,26.1,27.13,40.77,55.84,48.28,93.67,2.56,12.59,2.56,46.92.17,61.08a181.4,181.4,0,0,1-69.1,113c-13,9.79-44.7,26.89-49.82,26.89-1.88,0-2.05-1.94-1.19-9.81,1.53-12.63,3.07-15.25,10.23-18.26,11.44-4.77,30.89-18.63,42.83-30.61a163,163,0,0,0,42.82-75.41c4.44-17.57,3.93-56.64-1-74.73C390,138.36,343.1,93.66,285.61,81.72c-16.73-3.42-47.1-3.42-64,0-58.18,11.94-106.29,58.86-121,117.89-3.92,16-3.92,55.11,0,71.15,9.73,39.07,35,74.9,68.08,96.23a147.45,147.45,0,0,0,17.58,10.07c7.16,3.07,8.7,5.63,10.06,18.25.85,7.68.68,9.9-1.19,9.9-1.2,0-9.9-3.75-19.11-8.19ZM175.9,327c-17.75-14.16-33.44-39.28-39.93-63.91-3.92-14.88-3.92-43.17.17-58,10.75-40.06,40.27-71.12,81.22-85.71,14-4.94,45-6,62.27-2.25C339,130.33,381.15,189.79,373,248.77c-3.24,23.77-11.43,43.29-25.93,61.42-7.17,9.16-24.57,24.54-27.64,24.54-.51,0-1-5.8-1-12.87V309l8.88-10.58c33.44-40.06,31.05-96-5.46-132.74-14.16-14.29-30.54-22.69-51.7-26.56-13.65-2.53-16.55-2.53-30.88-.17-21.76,3.55-38.61,12-53.58,26.78C148.94,202,146.55,258.29,180,298.38L188.8,309v13c0,7.17-.57,13-1.27,13s-5.63-3.41-10.92-7.68Zm59.2-69.66c-15.18-7.07-23.37-20.39-23.54-37.76,0-15.61,8.7-29.23,23.71-37.2,9.56-5,26.45-5,36,0a46.34,46.34,0,0,1,22.18,26.85c9.9,33.65-25.76,63.13-58,48.07Z" transform="translate(-0.14 -0.14)"/><circle fill="#ffffff" cx="255.74" cy="221.24" r="42.55"/><path fill="#ffffff" d="M260,280.42a83.61,83.61,0,0,1,14.25,2.9,51.55,51.55,0,0,1,14.26,7.13c3.76,2.73,6.49,5.56,8.19,9s2.56,7.54,3.07,14.25c.34,6.72.34,16-1.19,33.44s-4.61,42.79-7,59.08-4.09,23.55-6.31,28.84a25.82,25.82,0,0,1-18.94,16.55,41,41,0,0,1-9.89.85,42.41,42.41,0,0,1-9.9-.85c-3.92-.86-9-2.39-12.8-5.46-3.92-3.07-6.48-7.51-8.53-13.31s-3.58-12.8-5.63-26.79-4.78-34.8-6.48-50.67-2.39-26.79-2.53-34.13.17-11,1-14.5a28.93,28.93,0,0,1,4.09-9.38,31.14,31.14,0,0,1,6.83-7,27.87,27.87,0,0,1,8-4.3A60.8,60.8,0,0,1,241.35,283c4.43-.85,9.55-1.7,12.18-2.05a13.34,13.34,0,0,1,5.56,0Z" transform="translate(-0.14 -0.14)"/>
+    </symbol>
+    <symbol id="google" fill="none" viewBox="0 0 14 14">
+        <path d="m0 0v2.12148.84795 2.12148h1.75v-2.12148-.84795-2.12148z" fill="#fab908" transform="translate(6.125 4.45453)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#0066d9" transform="translate(0 5.64764)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#0066d9" transform="translate(0 6.60236)"/>
+        <path d="m1.75 0h-1.75v.954546h1.75z" fill="#0066d9" transform="translate(0 6.52264)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#4285f4" transform="translate(12.25 6.60236)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#4285f4" transform="translate(12.25 5.64764)"/>
+        <path d="m1.75 0h-1.75v.954546h1.75z" fill="#4285f4" transform="matrix(-1 0 0 -1 14 7.47736)"/><path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#ea4335" transform="translate(3.02274 8.51141)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#ea4335" transform="translate(3.02274 9.46594)"/>
+        <path d="m1.75 0h-1.75v.954546h1.75z" fill="#ea4335" transform="translate(3.02274 9.38641)"/><path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#ea4335" transform="translate(3.02274 2.78406)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#ea4335" transform="translate(3.02274 5.88641)"/>
+        <path d="m1.75 0h-1.75v3.12216h1.75z" fill="#ea4335" transform="translate(3.02274 3.65906)"/><path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#34a853" transform="translate(9.22726 3.73859)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#34a853" transform="translate(9.22726 2.78406)"/>
+        <path d="m1.75 0h-1.75v.954546h1.75z" fill="#34a853" transform="matrix(-1 0 0 -1 10.9773 4.61359)"/><g fill="#fab908">
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" transform="translate(6.125 .954529)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" transform="translate(6.125)"/>
+        <path d="m1.75 0h-1.75v.954546h1.75z" transform="matrix(-1 0 0 -1 7.875 1.82953)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" transform="translate(6.125 12.25)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" transform="translate(6.125 11.2955)"/>
+        <path d="m1.75 0h-1.75v.954546h1.75z" transform="matrix(-1 0 0 -1 7.875 13.125)"/></g><path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#34a853" transform="translate(9.22726 9.46594)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#34a853" transform="translate(9.22726 6.36359)"/>
+        <path d="m1.75 0h-1.75v3.10227h1.75z" fill="#34a853" transform="matrix(-1 0 0 -1 10.9773 10.3409)"/><path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#fab908" transform="translate(6.125 3.57953)"/>
+        <path d="m.875 1.75c.48325 0 .875-.39175.875-.875 0-.483249-.39175-.875-.875-.875-.483249 0-.875.391751-.875.875 0 .48325.391751.875.875.875z" fill="#fab908" transform="translate(6.125 8.67047)"/>
+    </symbol>
+    <symbol id="npr-one" viewBox="0 0 15 16">
+        <g clip-rule="evenodd" fill-rule="evenodd">
+            <path d="m-.00000001 3.99903 3.11681001 1.9192c.6747-1.24356 1.93544-2.08032 3.37935-2.08032v-3.83791c-2.77571 0-5.1993 1.60843-6.49616001 3.99903z" fill="#d61900" transform="translate(1.00378)"/>
+            <path d="m3.78823 5.28599c-.12325-.40495-.18984-.83705-.18984-1.28579 0-.75804.19011-1.4688.52217-2.081-1.53085-.942623-2.25153-1.386398-3.11681-1.91919993-.638301 1.17671993-1.00375 2.54287993-1.00375 4.00019993 0 1.45723.365449 2.82349 1.00375 4.0002l1.97257-1.21466z" fill="#f30" transform="translate(0 4.00128)"/>
+            <path d="m-.00000001 1.21467c1.29686001 2.3906 3.72045001 3.99903 6.49616001 3.99903v-3.83801c-1.15017 0-2.18402-.530854-2.89814-1.37539816h-1.62563l.00018-.00029136z" fill="#83aeed" transform="translate(1.00378 10.7867)"/>
+            <path d="m6.49625 1.9192-3.1168-1.91919949c-.67471 1.24355949-1.93535 2.08022949-3.37944981 2.08022949v3.838c2.77589981 0 5.19938981-1.60843 6.49624981-3.99903z" fill="#3266cc" transform="translate(7.50012 10.0768)"/>
+            <path d="m.522174 4.0002c0 .75815-.190114 1.46881-.52217447 2.08101l3.11681047 1.91919c.63839-1.17671 1.00375-2.54297 1.00375-4.0002 0-1.45732-.36536-2.82348-1.00375-4.00019993-.86528.53280193-1.58596.97657693-3.11681047 1.91919993.33206047.6122.52217447 1.32296.52217447 2.081z" fill="#3a3a3a" transform="translate(10.8795 4.00128)"/>
+            <path d="m.00000019 3.83791c1.44409981 0 2.70473981.83676 3.37944981 2.08032l3.1168-1.9192c-1.29686-2.3906-3.72044-3.99903-6.49624981-3.99903z" fill="#191919" transform="translate(7.50012)"/>
+        </g>
+    </symbol>
+    <symbol id="overcast" viewBox="0 0 365 365" fill="none">
+        <g xmlns="http://www.w3.org/2000/svg" id="surface1">
+            <path style=" stroke:none;fill-rule:nonzero;fill:rgb(96.099854%,49.398804%,12.5%);fill-opacity:1;" d="M 90.179688 274.820313 C 66.550781 251.195313 51.9375 218.554688 51.9375 182.5 C 51.9375 146.445313 66.550781 113.804688 90.179688 90.179688 L 101.789063 101.789063 C 81.136719 122.445313 68.359375 150.980469 68.359375 182.5 C 68.359375 214.019531 81.136719 242.554688 101.789063 263.210938 Z M 125.890625 239.109375 C 111.402344 224.621094 102.441406 204.609375 102.441406 182.5 C 102.441406 160.390625 111.402344 140.378906 125.890625 125.890625 L 137.503906 137.503906 C 125.988281 149.019531 118.863281 164.925781 118.863281 182.5 C 118.863281 200.074219 125.988281 215.980469 137.503906 227.496094 Z M 227.496094 227.496094 C 239.011719 215.980469 246.136719 200.074219 246.136719 182.5 C 246.136719 164.925781 239.011719 149.019531 227.496094 137.503906 L 239.109375 125.890625 C 253.597656 140.378906 262.558594 160.390625 262.558594 182.5 C 262.558594 204.609375 253.597656 224.621094 239.109375 239.109375 Z M 274.820313 274.820313 L 263.210938 263.210938 C 283.863281 242.554688 296.640625 214.019531 296.640625 182.5 C 296.640625 150.980469 283.863281 122.445313 263.210938 101.789063 L 274.820313 90.179688 C 298.449219 113.804688 313.0625 146.445313 313.0625 182.5 C 313.0625 218.554688 298.449219 251.195313 274.820313 274.820313 Z M 182.5 16.640625 C 90.898438 16.640625 16.640625 90.898438 16.640625 182.5 C 16.640625 255.765625 64.148438 317.933594 130.039063 339.886719 L 172.632813 212.101563 C 160.238281 207.972656 151.296875 196.28125 151.296875 182.5 C 151.296875 165.265625 165.265625 151.296875 182.5 151.296875 C 199.734375 151.296875 213.703125 165.265625 213.703125 182.5 C 213.703125 196.28125 204.761719 207.972656 192.367188 212.101563 L 234.960938 339.886719 C 300.851563 317.933594 348.359375 255.765625 348.359375 182.5 C 348.359375 90.898438 274.101563 16.640625 182.5 16.640625 Z M 202.902344 347.109375 C 195.519531 341.375 188.371094 335.058594 181.539063 328.164063 C 174.933594 334.996094 168.046875 341.269531 160.945313 346.96875 C 168 347.882813 175.195313 348.359375 182.5 348.359375 C 189.40625 348.359375 196.214844 347.933594 202.902344 347.109375 Z M 191.792969 316.824219 C 200.890625 327.066406 210.65625 336.113281 220.847656 343.898438 C 221.527344 343.734375 222.203125 343.570313 222.878906 343.402344 L 205.261719 299.355469 C 200.972656 305.472656 196.472656 311.300781 191.792969 316.824219 Z M 182.257813 305.34375 C 187.945313 298.007813 193.300781 290.164063 198.257813 281.84375 L 182.5 242.453125 L 166.550781 282.324219 C 171.425781 290.464844 176.679688 298.148438 182.257813 305.34375 Z M 143.78125 343.804688 C 153.617188 336.28125 163.054688 327.59375 171.875 317.78125 C 167.367188 312.621094 163.03125 307.179688 158.894531 301.46875 L 142.121094 343.402344 C 142.671875 343.539063 143.226563 343.671875 143.78125 343.804688 Z M 182.5 364.796875 C 81.820313 364.796875 0.207031 283.179688 0.207031 182.5 C 0.207031 81.820313 81.820313 0.203125 182.5 0.203125 C 283.179688 0.203125 364.796875 81.820313 364.796875 182.5 C 364.796875 283.179688 283.179688 364.796875 182.5 364.796875 "/>
+            <path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 90.179688 274.820313 L 90.324219 274.675781 C 66.734375 251.085938 52.140625 218.496094 52.140625 182.5 C 52.140625 146.503906 66.730469 113.914063 90.324219 90.324219 L 90.179688 90.179688 L 90.03125 90.324219 L 101.644531 101.9375 L 101.789063 101.789063 L 101.644531 101.644531 C 80.953125 122.339844 68.15625 150.925781 68.15625 182.5 C 68.15625 214.074219 80.953125 242.660156 101.644531 263.355469 L 101.789063 263.210938 L 101.644531 263.0625 L 90.03125 274.675781 L 90.179688 274.820313 L 90.324219 274.675781 L 90.179688 274.820313 L 90.324219 274.96875 L 102.082031 263.210938 L 101.9375 263.0625 C 81.316406 242.445313 68.566406 213.964844 68.566406 182.5 C 68.566406 151.035156 81.316406 122.554688 101.9375 101.9375 L 102.082031 101.789063 L 90.179688 89.886719 L 90.03125 90.03125 C 66.367188 113.695313 51.730469 146.390625 51.730469 182.5 C 51.730469 218.609375 66.367188 251.304688 90.03125 274.96875 L 90.179688 275.113281 L 90.324219 274.96875 Z M 125.890625 239.109375 L 126.035156 238.964844 C 111.582031 224.515625 102.644531 204.550781 102.644531 182.5 C 102.644531 160.449219 111.582031 140.484375 126.035156 126.035156 L 125.890625 125.890625 L 125.742188 126.035156 L 137.355469 137.648438 L 137.503906 137.503906 L 137.355469 137.355469 C 125.804688 148.910156 118.660156 164.871094 118.660156 182.5 C 118.660156 200.128906 125.804688 216.089844 137.355469 227.644531 L 137.503906 227.496094 L 137.355469 227.351563 L 125.742188 238.964844 L 125.890625 239.109375 L 126.035156 238.964844 L 125.890625 239.109375 L 126.035156 239.257813 L 137.792969 227.496094 L 137.648438 227.351563 C 126.167969 215.871094 119.070313 200.015625 119.070313 182.5 C 119.070313 164.984375 126.167969 149.128906 137.648438 137.648438 L 137.792969 137.503906 L 125.890625 125.597656 L 125.742188 125.742188 C 111.21875 140.269531 102.234375 160.335938 102.234375 182.5 C 102.234375 204.664063 111.21875 224.730469 125.742188 239.257813 L 125.890625 239.402344 L 126.035156 239.257813 Z M 227.496094 227.496094 L 227.644531 227.644531 C 239.195313 216.089844 246.339844 200.128906 246.339844 182.5 C 246.339844 164.871094 239.195313 148.910156 227.644531 137.355469 L 227.496094 137.503906 L 227.644531 137.648438 L 239.257813 126.035156 L 239.109375 125.890625 L 238.964844 126.035156 C 253.417969 140.484375 262.355469 160.449219 262.355469 182.5 C 262.355469 204.550781 253.417969 224.515625 238.964844 238.964844 L 239.109375 239.109375 L 239.257813 238.964844 L 227.644531 227.351563 L 227.496094 227.496094 L 227.644531 227.644531 L 227.496094 227.496094 L 227.351563 227.644531 L 239.109375 239.402344 L 239.257813 239.257813 C 253.78125 224.730469 262.765625 204.664063 262.765625 182.5 C 262.765625 160.335938 253.78125 140.269531 239.257813 125.742188 L 239.109375 125.597656 L 227.207031 137.503906 L 227.351563 137.648438 C 238.832031 149.128906 245.929688 164.984375 245.929688 182.5 C 245.929688 200.015625 238.832031 215.871094 227.351563 227.351563 L 227.207031 227.496094 L 227.351563 227.644531 Z M 274.820313 274.820313 L 274.96875 274.675781 L 263.355469 263.0625 L 263.210938 263.210938 L 263.355469 263.355469 C 284.046875 242.660156 296.84375 214.074219 296.84375 182.5 C 296.84375 150.925781 284.046875 122.339844 263.355469 101.644531 L 263.210938 101.789063 L 263.355469 101.9375 L 274.96875 90.324219 L 274.820313 90.179688 L 274.675781 90.324219 C 298.265625 113.914063 312.855469 146.503906 312.855469 182.5 C 312.855469 218.496094 298.265625 251.085938 274.675781 274.675781 L 274.820313 274.820313 L 274.96875 274.675781 L 274.820313 274.820313 L 274.96875 274.96875 C 298.632813 251.304688 313.269531 218.609375 313.269531 182.5 C 313.269531 146.390625 298.632813 113.695313 274.96875 90.03125 L 274.820313 89.886719 L 262.917969 101.789063 L 263.0625 101.9375 C 283.683594 122.554688 296.433594 151.035156 296.433594 182.5 C 296.433594 213.964844 283.683594 242.445313 263.0625 263.0625 L 262.917969 263.210938 L 274.820313 275.113281 L 274.96875 274.96875 Z M 182.5 16.640625 L 182.5 16.433594 C 90.785156 16.433594 16.433594 90.785156 16.433594 182.5 C 16.433594 255.859375 64.003906 318.097656 129.972656 340.082031 L 130.167969 340.144531 L 172.894531 211.972656 L 172.699219 211.90625 C 160.382813 207.804688 151.503906 196.191406 151.503906 182.5 C 151.503906 173.941406 154.972656 166.191406 160.582031 160.582031 C 166.191406 154.972656 173.9375 151.503906 182.5 151.503906 C 191.058594 151.503906 198.808594 154.972656 204.417969 160.582031 C 210.027344 166.191406 213.496094 173.9375 213.496094 182.5 C 213.496094 196.191406 204.617188 207.804688 192.300781 211.90625 L 192.105469 211.972656 L 234.832031 340.144531 L 235.027344 340.082031 C 301 318.097656 348.566406 255.859375 348.566406 182.5 C 348.566406 90.785156 274.214844 16.433594 182.5 16.433594 L 182.5 16.84375 C 228.246094 16.84375 269.65625 35.386719 299.636719 65.363281 C 329.613281 95.34375 348.15625 136.753906 348.15625 182.5 C 348.15625 255.675781 300.703125 317.765625 234.898438 339.691406 L 234.960938 339.886719 L 235.15625 339.820313 L 192.5625 212.035156 L 192.367188 212.101563 L 192.433594 212.296875 C 204.910156 208.140625 213.90625 196.375 213.910156 182.5 C 213.90625 165.152344 199.847656 151.09375 182.5 151.089844 C 165.152344 151.09375 151.09375 165.152344 151.089844 182.5 C 151.09375 196.375 160.089844 208.140625 172.566406 212.296875 L 172.632813 212.101563 L 172.4375 212.035156 L 129.84375 339.820313 L 130.039063 339.886719 L 130.101563 339.691406 C 64.296875 317.765625 16.84375 255.675781 16.84375 182.5 C 16.84375 136.753906 35.386719 95.34375 65.363281 65.363281 C 95.34375 35.386719 136.753906 16.84375 182.5 16.84375 Z M 202.902344 347.109375 L 203.027344 346.949219 C 195.652344 341.21875 188.511719 334.90625 181.683594 328.019531 L 181.535156 327.867188 L 181.390625 328.019531 C 174.792969 334.847656 167.910156 341.113281 160.816406 346.808594 L 160.441406 347.109375 L 160.917969 347.171875 C 167.984375 348.089844 175.1875 348.566406 182.5 348.566406 C 189.414063 348.566406 196.230469 348.136719 202.925781 347.316406 L 203.417969 347.253906 L 203.027344 346.949219 L 202.902344 347.109375 L 202.875 346.90625 C 196.199219 347.726563 189.398438 348.15625 182.5 348.15625 C 175.203125 348.15625 168.019531 347.679688 160.972656 346.765625 L 160.945313 346.96875 L 161.074219 347.128906 C 168.179688 341.421875 175.078125 335.144531 181.6875 328.304688 L 181.539063 328.164063 L 181.394531 328.308594 C 188.230469 335.210938 195.386719 341.53125 202.773438 347.273438 L 202.902344 347.109375 L 202.875 346.90625 Z M 191.792969 316.824219 L 191.636719 316.964844 C 200.742188 327.210938 210.519531 336.269531 220.722656 344.058594 L 220.800781 344.117188 L 220.894531 344.097656 C 221.574219 343.9375 222.253906 343.769531 222.929688 343.601563 L 223.15625 343.542969 L 205.3125 298.929688 L 205.09375 299.238281 C 200.808594 305.347656 196.3125 311.171875 191.636719 316.695313 L 191.519531 316.832031 L 191.636719 316.964844 L 191.792969 316.824219 L 191.949219 316.960938 C 196.632813 311.429688 201.136719 305.59375 205.429688 299.472656 L 205.261719 299.355469 L 205.070313 299.433594 L 222.6875 343.476563 L 222.878906 343.402344 L 222.828125 343.203125 C 222.152344 343.371094 221.476563 343.535156 220.800781 343.695313 L 220.847656 343.898438 L 220.972656 343.734375 C 210.789063 335.957031 201.035156 326.917969 191.945313 316.691406 L 191.792969 316.824219 L 191.949219 316.960938 Z M 182.257813 305.34375 L 182.421875 305.46875 C 188.113281 298.128906 193.472656 290.273438 198.433594 281.945313 L 198.484375 281.859375 L 182.5 241.898438 L 166.320313 282.34375 L 166.375 282.429688 C 171.253906 290.578125 176.511719 298.269531 182.097656 305.46875 L 182.257813 305.679688 L 182.421875 305.46875 L 182.257813 305.34375 L 182.421875 305.21875 C 176.847656 298.03125 171.597656 290.351563 166.726563 282.21875 L 166.550781 282.324219 L 166.742188 282.402344 L 182.5 243.003906 L 198.066406 281.917969 L 198.257813 281.84375 L 198.078125 281.738281 C 193.128906 290.050781 187.777344 297.890625 182.097656 305.21875 L 182.257813 305.34375 L 182.421875 305.21875 Z M 143.78125 343.804688 L 143.90625 343.96875 C 153.75 336.4375 163.199219 327.738281 172.027344 317.917969 L 172.152344 317.785156 L 172.03125 317.648438 C 167.527344 312.492188 163.195313 307.054688 159.058594 301.351563 L 158.839844 301.046875 L 141.84375 343.542969 L 142.070313 343.601563 C 142.625 343.738281 143.179688 343.871094 143.734375 344.007813 L 143.828125 344.027344 L 143.90625 343.96875 L 143.78125 343.804688 L 143.828125 343.605469 C 143.273438 343.472656 142.722656 343.339844 142.171875 343.203125 L 142.121094 343.402344 L 142.3125 343.476563 L 159.085938 301.546875 L 158.894531 301.46875 L 158.726563 301.589844 C 162.871094 307.304688 167.207031 312.753906 171.722656 317.917969 L 171.875 317.78125 L 171.722656 317.644531 C 162.910156 327.445313 153.480469 336.128906 143.65625 343.644531 L 143.78125 343.804688 L 143.828125 343.605469 Z M 182.5 364.796875 L 182.5 364.589844 C 132.21875 364.589844 86.695313 344.210938 53.742188 311.257813 C 20.792969 278.304688 0.410156 232.78125 0.410156 182.5 C 0.410156 132.21875 20.792969 86.695313 53.742188 53.742188 C 86.695313 20.789063 132.21875 0.410156 182.5 0.410156 C 232.78125 0.410156 278.304688 20.789063 311.257813 53.742188 C 344.210938 86.695313 364.589844 132.21875 364.589844 182.5 C 364.589844 232.78125 344.210938 278.304688 311.257813 311.257813 C 278.304688 344.210938 232.78125 364.589844 182.5 364.589844 L 182.5 365 C 283.292969 365 365 283.292969 365 182.5 C 365 81.707031 283.292969 0 182.5 0 C 81.707031 0 0 81.707031 0 182.5 C 0 283.292969 81.707031 365 182.5 365 L 182.5 364.796875 "/>
+        </g>
+    </symbol>
+    <symbol id="pandora" viewBox="0 0 180 200">
+        <g id="bg">
+            <rect fill="#FFFFFF" width="180" height="200"/>
+        </g>
+        <g id="icons">
+            <g>
+                <path fill="#019FEE" d="M160.7,74.2c-0.9-8.8-3.4-17.1-8.8-24.4c-4.1-5.6-9.4-9.8-15.6-13c-6-3-12.3-5-19-5.9l0,0
+                    c-3.9-0.6-7.8-0.9-11.8-0.9H43.8c-0.4,0-0.7,0.3-0.7,0.7l0,0c0,46.1,0,92.2,0,138.3v0.1c0,0.4,0.3,0.7,0.7,0.7l0,0
+                    c12.3,0,24.7,0,37,0c3.3,0,6-2.7,6.1-5.9c0-0.3,0-0.6,0-0.7c0-8.6,0-17.1,0-25.5v-0.3c0-0.4,0.3-0.7,0.7-0.7c0,0,0,0,0.1,0
+                    c3.1,0,6.4,0,9.6,0c2.4,0,4.9,0,7.3-0.3c7.8-0.6,15.7-2,23.1-5c2.3-0.9,4.6-2,6.9-3.1c9-4.9,15.8-11.7,20.6-20.8
+                    c2.3-4.6,3.9-9.4,4.9-14.6c0.6-2.7,0.9-5.4,1-8.3c0-0.1,0-0.1,0-0.3s0-0.1,0-0.3v-7c0,0,0,0,0-0.1C160.9,76,160.8,75.1,160.7,74.2
+                    z"/>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="pocket-casts" viewBox="0 0 39 36" style="enable-background:new 0 0 39 36;">
+        <g>
+            <path fill="#F44336" d="M18,36c9.9,0,18-8,18-18S28,0,18,0S0,8,0,18S8,36,18,36L18,36L18,36z"/>
+            <path fill="#FFFFFF" d="M17.8,27.1c-4.8-0.2-8.7-4.1-8.7-9c0-5,4.1-9,9-9s8.9,3.9,9,8.7c0,0.2,0.1,0.3,0.3,0.3H30
+                c0.2,0,0.3-0.1,0.3-0.3C30.1,11.2,24.7,5.9,18,5.9c-6.8,0-12.3,5.5-12.3,12.3c0,6.7,5.3,12.1,11.9,12.3c0.2,0,0.3-0.1,0.3-0.3v-2.6
+                C18.1,27.2,17.9,27.1,17.8,27.1L17.8,27.1L17.8,27.1z M18.1,11c-3.9,0-7.1,3.2-7.1,7.1c0,3.8,3,6.9,6.8,7.1c0.2,0,0.3-0.1,0.3-0.3
+                v-2.1c0-0.2-0.1-0.3-0.3-0.3c-2.3-0.2-4.1-2.1-4.1-4.4c0-2.4,2-4.4,4.4-4.4c2.3,0,4.2,1.8,4.4,4.1c0,0.2,0.2,0.3,0.3,0.3h2.1
+                c0.2,0,0.3-0.2,0.3-0.3C25,14,21.9,11,18.1,11L18.1,11L18.1,11z"/>
+        </g>
+    </symbol>
+    <symbol id="rss" viewBox="0 0 12 12">
+        <path d="m1.59148 8.7795c-.878186.0032-1.58780186.71645-1.58566708 1.5938.00213478.8773.71521308 1.5871 1.59340708 1.5861.87819-.0011 1.58954-.7126 1.58955-1.59-.0032-.879-.71739-1.58991-1.59729-1.5899zm-1.59147997-4.7118v2.32108c1.48808997.00154 2.91461997.59358 3.96575997 1.64589 1.05115 1.05231 1.64082 2.47873 1.63927 3.96533h2.32333c.00464-2.10318-.82881-4.12172-2.31634-5.60999-1.48753-1.48826-3.5068-2.32386-5.61201997-2.32231zm0-4.06189726v2.32108726c5.33125997.00952 9.65431997 4.31803 9.67666997 9.64411h2.32333c-.0096-6.61422-5.37938-11.97100707-11.99999997-11.9710001z" fill="#257BBC"/>
+    </symbol>
+    <symbol id="spotify" viewBox="0 0 170.1 170.1" style="enable-background:new 0 0 170.1 170.1;" xml:space="preserve">
+        <g>
+            <g>
+                <g>
+                    <path fill="#1ED760" d="M85,1.3C38.8,1.3,1.3,38.8,1.3,85c0,46.3,37.5,83.7,83.7,83.7c46.3,0,83.7-37.5,83.7-83.7
+                        C168.8,38.8,131.3,1.3,85,1.3z M123.4,122.1c-1.5,2.5-4.7,3.2-7.2,1.7c-19.7-12-44.4-14.7-73.6-8.1c-2.8,0.6-5.6-1.1-6.2-3.9
+                        c-0.6-2.8,1.1-5.6,3.9-6.2c31.9-7.3,59.3-4.2,81.3,9.3C124.2,116.4,124.9,119.6,123.4,122.1z M133.7,99.3c-1.9,3.1-5.9,4-9,2.2
+                        c-22.5-13.8-56.8-17.8-83.4-9.8c-3.5,1-7.1-0.9-8.1-4.3c-1-3.5,0.9-7.1,4.4-8.1c30.4-9.2,68.2-4.8,94.1,11.1
+                        C134.6,92.2,135.6,96.2,133.7,99.3z M134.6,75.5c-27-16-71.5-17.5-97.3-9.7c-4.1,1.3-8.5-1.1-9.8-5.2c-1.3-4.1,1.1-8.5,5.2-9.8
+                        c29.6-9,78.8-7.2,109.8,11.2c3.7,2.2,4.9,7,2.7,10.7C143.1,76.5,138.3,77.7,134.6,75.5z"/>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="stitcher" viewBox="0 0 122.88 51.61" style="enable-background:new 0 0 122.88 51.61">
+        <g>
+            <polygon fill="#3590C5" points="0,10.14 21.5,10.14 21.5,49.15 0,49.15 0,10.14"/>
+            <polygon fill="#C53827" points="101.38,7.99 122.88,7.99 122.88,43.93 101.38,43.93 101.38,7.99"/>
+            <polygon fill="#EC8B24" points="76.19,0 97.69,0 97.69,46.7 76.19,46.7 76.19,0"/>
+            <polygon fill="#FBC618" points="51,6.76 72.5,6.76 72.5,51.61 51,51.61 51,6.76"/>
+            <polygon fill="#612268" points="25.5,3.07 47,3.07 47,46.39 25.5,46.39 25.5,3.07"/></g>
+    </symbol>
+    <symbol id="tuneIn" viewBox="56 56 200 88" fill="none">
+        <g id="Logos">
+            <g id="Logo__x2013__Horizontal_1A_12_">
+                <g id="Logo_2_">
+                    <path fill="#1C203C" d="M95,96.8v4c0,0.4-0.4,0.8-0.8,0.8h-5c-0.2,0-0.4,0.2-0.4,0.4v21.2c0,0.4-0.4,0.8-0.8,0.8h-4
+				c-0.4,0-0.8-0.4-0.8-0.8V102c0-0.2-0.2-0.4-0.4-0.4h-5c-0.4,0-0.8-0.4-0.8-0.8v-4c0-0.4,0.4-0.8,0.8-0.8h16.4
+				C94.6,96,95,96.4,95,96.8z M117,96h-4c-0.4,0-0.8,0.4-0.8,0.8v18.8c0,1.8-1.4,3.2-3.9,3.2c-2.4,0-3.8-1.4-3.8-3.2V96.8
+				c0-0.4-0.4-0.8-0.8-0.8h-4c-0.4,0-0.8,0.4-0.8,0.8v18.8c0,4.8,4,8.8,9.4,8.8c5.5,0,9.5-4,9.5-8.8V96.8
+				C117.8,96.4,117.4,96,117,96z M139.6,96h-4c-0.4,0-0.8,0.4-0.8,0.8v15c0,0.2-0.3,0.3-0.4,0.1l-5.5-15.2c-0.1-0.4-0.4-0.7-1-0.7
+				h-4.8c-0.4,0-0.8,0.4-0.8,0.8v26.4c0,0.4,0.4,0.8,0.8,0.8h4c0.4,0,0.8-0.4,0.8-0.8v-13.8c0-0.2,0.3-0.3,0.4-0.1l5.4,14
+				c0.1,0.3,0.4,0.7,1.1,0.7h4.7c0.4,0,0.8-0.4,0.8-0.8V96.8C140.4,96.4,140,96,139.6,96z M160.3,118.4h-9.5c-0.2,0-0.4-0.2-0.4-0.4
+				v-4.8c0-0.2,0.2-0.4,0.4-0.4h9c0.4,0,0.8-0.4,0.8-0.8v-4c0-0.4-0.4-0.8-0.8-0.8h-9c-0.2,0-0.4-0.2-0.4-0.4V102
+				c0-0.2,0.2-0.4,0.4-0.4h9.3c0.4,0,0.8-0.4,0.8-0.8v-4c0-0.4-0.4-0.8-0.8-0.8h-14.5c-0.4,0-0.8,0.4-0.8,0.8v26.4
+				c0,0.4,0.4,0.8,0.8,0.8h14.7c0.4,0,0.8-0.4,0.8-0.8v-4C161.1,118.8,160.7,118.4,160.3,118.4z M256,59v62c0,1.7-1.3,3-3,3h-69v17
+				c0,1.7-1.3,3-3,3H59c-1.7,0-3-1.3-3-3V79c0-1.7,1.3-3,3-3h119V59c0-1.7,1.3-3,3-3h72C254.7,56,256,57.3,256,59z M178,82H62.5
+				c-0.3,0-0.5,0.2-0.5,0.5v55c0,0.3,0.2,0.5,0.5,0.5h115c0.3,0,0.5-0.2,0.5-0.5V82z M213.8,99.4c0-0.4-0.4-0.8-0.8-0.8h-3.4
+				c-0.2,0-0.4-0.2-0.4-0.4V81.8c0-0.2,0.2-0.4,0.4-0.4h3c0.4,0,0.8-0.4,0.8-0.8v-3.8c0-0.4-0.4-0.8-0.8-0.8h-12.4
+				c-0.4,0-0.8,0.4-0.8,0.8v3.8c0,0.4,0.4,0.8,0.8,0.8h3c0.2,0,0.4,0.2,0.4,0.4v16.4c0,0.2-0.2,0.4-0.4,0.4h-3.4
+				c-0.4,0-0.8,0.4-0.8,0.8v3.8c0,0.4,0.4,0.8,0.8,0.8H213c0.4,0,0.8-0.4,0.8-0.8V99.4z M236.2,76.8c0-0.4-0.4-0.8-0.8-0.8h-4
+				c-0.4,0-0.8,0.4-0.8,0.8v15c0,0.2-0.3,0.3-0.4,0.1l-5.5-15.2c-0.1-0.4-0.4-0.7-1-0.7H219c-0.4,0-0.8,0.4-0.8,0.8v26.4
+				c0,0.4,0.4,0.8,0.8,0.8h4c0.4,0,0.8-0.4,0.8-0.8V89.4c0-0.2,0.3-0.3,0.4-0.1l5.4,14c0.1,0.3,0.4,0.7,1.1,0.7h4.7
+				c0.4,0,0.8-0.4,0.8-0.8V76.8z"/>
+                </g>
+            </g>
+        </g>
+    </symbol>
+    <symbol id="cme-logo">
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(23.3556 1.56927)" d="M0 8.41281L0 8.36681C0 3.76606 3.43952 0 8.33311 0C11.3117 0 13.1118 1.03945 14.66 2.51813L12.8361 4.623C11.5414 3.41958 10.1577 2.61087 8.31088 2.61087C5.21746 2.61087 2.97706 5.15274 2.97706 8.32007L2.97706 8.36681C2.97706 11.5312 5.21746 14.1198 8.31088 14.1198C10.2963 14.1198 11.5659 13.3118 12.951 12.0179L14.7742 13.8653C13.0896 15.6229 11.2413 16.7306 8.21824 16.7306C3.50845 16.7306 0 13.0573 0 8.41281"></path>
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(40.6173 1.84682)" d="M0 0L3.02376 0L7.94181 7.6501L12.8599 0L15.8829 0L15.8829 16.1772L13.0444 16.1772L13.0444 4.57477L7.94181 12.2011L7.84842 12.2011L2.79475 4.62077L2.79475 16.1772L0 16.1772L0 0Z"></path>
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(59.5492 1.84682)" d="M0 0L11.9831 0L11.9831 2.54039L2.83996 2.54039L2.83996 6.7479L10.9433 6.7479L10.9433 9.28977L2.83996 9.28977L2.83996 13.6345L12.0965 13.6345L12.0965 16.1772L0 16.1772L0 0Z"></path>
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(77.5281 1.56927)" d="M0 8.41281L0 8.36681C0 3.83729 3.46546 0 8.33608 0C11.1531 0 12.8828 0.78571 14.5444 2.19465L12.7435 4.34403C11.4992 3.28084 10.2741 2.61087 8.21899 2.61087C5.24118 2.61087 2.98003 5.22248 2.98003 8.32007L2.98003 8.36681C2.98003 11.6936 5.17226 14.1443 8.47245 14.1443C9.99619 14.1443 11.3828 13.6575 12.3759 12.9186L12.3759 9.89148L8.24493 9.89148L8.24493 7.41787L15.1217 7.41787L15.1217 14.2118C13.5283 15.5762 11.2457 16.7306 8.38129 16.7306C3.32613 16.7306 0 13.1271 0 8.41281"></path>
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(95.5566 5.58475)" d="M0 0.235418L2.79401 0.235418L2.79401 2.98472C3.55662 1.161 4.96326 -0.0872003 7.10879 0.00476445L7.10879 2.96321L6.94797 2.96321C4.50154 2.96321 2.79401 4.55628 2.79401 7.79062L2.79401 12.4341L0 12.4341L0 0.235418Z"></path>
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(103.807 5.56674)" d="M10.2052 6.42516L10.2052 6.37916C10.2052 4.22977 8.65921 2.44987 6.46476 2.44987C4.22733 2.44987 2.79549 4.20677 2.79549 6.33242L2.79549 6.37916C2.79549 8.50481 4.34146 10.3062 6.51293 10.3062C8.77334 10.3062 10.2052 8.52781 10.2052 6.42516M0 6.42516L0 6.37916C0 2.8891 2.77252 0 6.51294 0C10.2511 0 12.9977 2.84235 12.9977 6.33242L12.9977 6.37916C12.9977 9.84474 10.2267 12.7331 6.46476 12.7331C2.7488 12.7331 0 9.89297 0 6.42516"></path>
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(119.041 5.82004)" d="M0 7.76732L0 0L2.79401 0L2.79401 6.93413C2.79401 8.82977 3.74041 9.91523 5.402 9.91523C7.01911 9.91523 8.1508 8.78303 8.1508 6.88813L8.1508 0L10.9433 0L10.9433 12.2034L8.1508 12.2034L8.1508 10.3085C7.36521 11.4636 6.23427 12.4578 4.34072 12.4578C1.59192 12.4578 0 10.6089 0 7.76732"></path>
+        <path fill="rgb(58,70,79)" stroke="none" transform="translate(132.836 5.56637)" d="M2.79401 0.253742L0 0.253742L0 16.8983L2.79401 16.8983L2.79401 10.5622C3.64629 11.6944 4.91731 12.7116 6.92648 12.7116C9.83462 12.7116 12.6049 10.4234 12.6049 6.37916L12.6049 6.33316C12.6049 2.28813 9.81239 0 6.92648 0C4.964 0 3.69299 1.01794 2.79401 2.28813L2.79401 0.253742ZM9.76644 6.33316L9.76644 6.37916C9.76644 8.78155 8.19601 10.2862 6.28096 10.2862C4.38741 10.2862 2.72583 8.73555 2.72583 6.37916L2.72583 6.33316C2.72583 3.99829 4.38741 2.42687 6.28096 2.42687C8.17304 2.42687 9.76644 3.97603 9.76644 6.33316Z" fill-rule="evenodd"></path>
+        <defs><clipPath id="clip_0"><rect x="0.00012207031" y="0.7421608" width="18.845116" height="18.888344" clip-rule="evenodd"></rect></clipPath></defs>
+        <g clip-path="url(#clip_0)"><path class="icon" fill="rgb(37,169,224)" stroke="none" transform="translate(0.00012207 0.741566)" d="M5.40571 0L7.23997 0C6.13941 1.0261 5.25822 2.3601 4.64235 3.91222L1.54819 3.91222L5.40571 0ZM9.08164 3.91222L5.3353 3.91222C6.01342 2.30148 6.99985 0.95858 8.2301 0L9.08164 0L9.08164 3.91222ZM10.6143 0L9.76347 0L9.76347 3.91222L13.5024 3.91222C12.8265 2.30148 11.8423 0.95858 10.6143 0ZM13.3683 0L17.2762 3.91222L14.1946 3.91222C13.5824 2.3601 12.7027 1.0261 11.6037 0L13.3683 0ZM4.39408 4.59555L0.874518 4.59555L0 5.48216L0 9.07164L3.64481 9.07164C3.67816 7.47055 3.93755 5.96071 4.39408 4.59555ZM9.08164 9.07164L4.28958 9.07164C4.32442 7.4609 4.59418 5.9481 5.06998 4.59555L9.08164 4.59555L9.08164 9.07164ZM9.76347 9.07164L14.5392 9.07164C14.5074 7.4609 14.2391 5.9481 13.7655 4.59555L9.76347 4.59555L9.76347 9.07164ZM14.4421 4.59555L17.9587 4.59555L18.8451 5.48216L18.8451 9.07164L15.1833 9.07164C15.1529 7.47055 14.8957 5.96071 14.4421 4.59555ZM0 9.75497L3.64481 9.75497C3.67668 11.3672 3.93681 12.8889 4.39927 14.2652L0.850061 14.2652L0 13.4149L0 9.75497ZM5.07443 14.2652L9.08164 14.2652L9.08164 9.75497L4.28958 9.75497C4.32145 11.3761 4.59122 12.9023 5.07443 14.2652ZM14.537 9.75497L9.76347 9.75497L9.76347 14.2652L13.7433 14.2652C14.2294 12.9023 14.5007 11.3761 14.537 9.75497ZM14.4192 14.2652L17.9713 14.2652L18.8451 13.3905L18.8451 9.75497L15.181 9.75497C15.1469 11.3672 14.8838 12.8889 14.4192 14.2652ZM5.4687 18.8889L1.53189 14.9485L4.65051 14.9485C5.27527 16.5095 6.16906 17.8547 7.28888 18.8889L5.4687 18.8889ZM8.28346 18.8889L9.08164 18.8889L9.08164 14.9485L5.34049 14.9485C6.02824 16.5696 7.03097 17.9222 8.28346 18.8889ZM9.76347 14.9485L9.76347 18.8889L10.5268 18.8889C11.7808 17.9222 12.7857 16.5696 13.4765 14.9485L9.76347 14.9485ZM13.3527 18.8889L11.5214 18.8889C12.6434 17.8539 13.5395 16.5095 14.1664 14.9485L17.2895 14.9485L13.3527 18.8889Z" fill-rule="evenodd"></path></g>
+    </symbol>
+    <symbol id="phone-icon" viewBox="0 0 384 512">
+        <!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc.-->
+        <path fill="#434343" d="M16 64C16 28.7 44.7 0 80 0h224c35.3 0 64 28.7 64 64v384c0 35.3-28.7 64-64 64H80c-35.3 0-64-28.7-64-64V64zm208 384c0-17.7-14.3-32-32-32s-32 14.3-32 32 14.3 32 32 32 32-14.3 32-32zm80-384H80v320h224V64z"/>
+    </symbol>
+</svg>
+
+
+
+    <div class="Page-header-hat tablet">
+        <div class="Hat">
+    <div class="Hat-content">
+        
+            
+                <nav class="Navigation" >
+    
+        <ul class="Navigation-items">
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/news/advice-monitor/pro-farmers-daily-advice-monitor" data-cms-ai="0">Daily Advice Monitor </a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/pro-farmer-podcast" data-cms-ai="0">Pro Farmer Podcast</a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/newsletters" data-cms-ai="0">Pro Farmer Newsletter</a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/about" data-cms-ai="0">About Pro Farmer</a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+        </ul>
+    
+</nav>
+
+            
+        
+    </div>
+</div>
+
+    </div>
+
+<bsp-header class="Page-header">
+    <div class="Page-header-hamburger-menu">
+        <div class="Page-header-hamburger-menu-wrapper">
+            <div class="Page-header-hamburger-menu-content">
+                
+                    <nav class="Navigation" data-nav-align="left">
+    
+        <ul class="Navigation-items">
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/news" data-cms-ai="0">Today’s Analysis</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/advice-monitor/pro-farmers-daily-advice-monitor" data-cms-ai="0"><span class="NavigationLink-text">Daily Advice Monitor</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/first-thing-today" data-cms-ai="0"><span class="NavigationLink-text">First Thing Today</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/ahead-open" data-cms-ai="0"><span class="NavigationLink-text">Ahead of the Open</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/market-snapshot" data-cms-ai="0"><span class="NavigationLink-text">Market Snapshot</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/after-bell" data-cms-ai="0"><span class="NavigationLink-text">After the Bell</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/crops-analysis" data-cms-ai="0"><span class="NavigationLink-text">Crops Analysis</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/livestock-analysis" data-cms-ai="0"><span class="NavigationLink-text">Livestock Analysis</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/evening-report" data-cms-ai="0"><span class="NavigationLink-text">Evening Report</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news" data-cms-ai="0"><span class="NavigationLink-text">All News &amp; Analysis</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/markets/futures" data-cms-ai="0">Market Data &amp; Tools</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/markets/futures" data-cms-ai="0"><span class="NavigationLink-text">Commodity Market Futures</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/markets/cash-grain-bids" data-cms-ai="0"><span class="NavigationLink-text">Cash Grain Bids</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://marketmate.profarmer.com/" target="_blank" data-cms-ai="0"><span class="NavigationLink-text">Market Mate</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news" data-cms-ai="0"><span class="NavigationLink-text">Commodity Market News</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/weather" data-cms-ai="0">Weather</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/weather" data-cms-ai="0"><span class="NavigationLink-text">Weather Forecast</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/topics/weather" data-cms-ai="0"><span class="NavigationLink-text">Weather News</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/newsletters" data-cms-ai="0">More Pro Farmer Insights</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/newsletters" data-cms-ai="0"><span class="NavigationLink-text">Weekly Newsletter</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-podcast" data-cms-ai="0"><span class="NavigationLink-text">Pro Farmer Podcast</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/topics/monday-morning-wake-call" data-cms-ai="0"><span class="NavigationLink-text">Monday Morning Wake-up Call</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/midweek-cash-market" data-cms-ai="0"><span class="NavigationLink-text">Midweek Cash Markets</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/topics/report-reactions" data-cms-ai="0"><span class="NavigationLink-text">USDA Report Reactions</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.landowner.com/" target="_blank" data-cms-ai="0"><span class="NavigationLink-text">LandOwner Newsletter</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/policy-update" data-cms-ai="0"><span class="NavigationLink-text">Washington/Ag Policy</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+        </ul>
+    
+</nav>
+
+                
+                
+                    <div class="Page-header-hat mobile">
+                        <div class="Hat">
+    <div class="Hat-content">
+        
+            
+                <nav class="Navigation" >
+    
+        <ul class="Navigation-items">
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/news/advice-monitor/pro-farmers-daily-advice-monitor" data-cms-ai="0">Daily Advice Monitor </a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/pro-farmer-podcast" data-cms-ai="0">Pro Farmer Podcast</a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/newsletters" data-cms-ai="0">Pro Farmer Newsletter</a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem " >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/about" data-cms-ai="0">About Pro Farmer</a>
+        
+        
+    </div>
+
+    
+</div>
+</li>
+            
+        </ul>
+    
+</nav>
+
+            
+        
+    </div>
+</div>
+
+                    </div>
+                
+                <div class="Page-header-hamburger-menu-mobile-links">
+                    
+                        <div class="Page-header-subscribe Button">
+                            
+                                <a class="Link" href="https://www.profarmer.com/r/subscribe" target="_blank" rel="noopener" data-cms-ai="0">Subscribe</a>
+                            
+                        </div>
+                    
+
+                    
+                        <div class="Page-header-login Button" data-theme="secondary">
+                            
+                                <a class="Link" href="https://www.profarmer.com/r/sign-in" data-cms-ai="0">Login</a>
+                            
+                        </div>
+                    
+
+                    
+                        <div class="Page-header-logout Button" data-theme="secondary">
+                            
+                                <a class="Link" href="https://www.profarmer.com/r/sign-in" data-cms-ai="0">Logout</a>
+                            
+                        </div>
+                    
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="Page-header-bar">
+        <button class="Page-header-menu-trigger" aria-expanded="false"><svg class="burger-menu"><use xlink:href="#burger-menu"></use></svg><svg class="close-x"><use xlink:href="#close-x"></use></svg><span class="label">Menu</span></button>
+
+        
+            
+                <div class="Page-header-bar-logo"><a aria-label="home page" href="/" data-cms-ai="0"  >
+    
+        <picture>
+            
+            
+                
+                    
+
+                
+            
+
+            
+            
+                
+    
+            <source type="image/webp"  width="250" height="47" srcset="https://assets.farmjournal.com/dims4/default/47003d6/2147483647/strip/true/crop/300x56+0+0/resize/250x47!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe9%2F86%2Fd9373d6d4fbfa30275181c01864e%2Fprofarmer.png 1x,https://assets.farmjournal.com/dims4/default/307b45b/2147483647/strip/true/crop/300x56+0+0/resize/500x94!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe9%2F86%2Fd9373d6d4fbfa30275181c01864e%2Fprofarmer.png 2x"/>
+
+    
+
+    
+        <source width="250" height="47" srcset="https://assets.farmjournal.com/dims4/default/80f1d3a/2147483647/strip/true/crop/300x56+0+0/resize/250x47!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe9%2F86%2Fd9373d6d4fbfa30275181c01864e%2Fprofarmer.png"/>
+
+    
+
+
+            
+            
+    <img class="Image" alt="ProFarmer Logo" srcset="https://assets.farmjournal.com/dims4/default/80f1d3a/2147483647/strip/true/crop/300x56+0+0/resize/250x47!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe9%2F86%2Fd9373d6d4fbfa30275181c01864e%2Fprofarmer.png 1x,https://assets.farmjournal.com/dims4/default/f3cd279/2147483647/strip/true/crop/300x56+0+0/resize/500x94!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe9%2F86%2Fd9373d6d4fbfa30275181c01864e%2Fprofarmer.png 2x" width="250" height="47" src="https://assets.farmjournal.com/dims4/default/80f1d3a/2147483647/strip/true/crop/300x56+0+0/resize/250x47!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe9%2F86%2Fd9373d6d4fbfa30275181c01864e%2Fprofarmer.png"
+    >
+
+
+        </picture>
+    
+    </a>
+</div>
+            
+        
+
+        <div class="Page-header-navigation">
+            
+              <nav class="Navigation" data-nav-align="left">
+    
+        <ul class="Navigation-items">
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/news" data-cms-ai="0">Today’s Analysis</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/advice-monitor/pro-farmers-daily-advice-monitor" data-cms-ai="0"><span class="NavigationLink-text">Daily Advice Monitor</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/first-thing-today" data-cms-ai="0"><span class="NavigationLink-text">First Thing Today</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/ahead-open" data-cms-ai="0"><span class="NavigationLink-text">Ahead of the Open</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/market-snapshot" data-cms-ai="0"><span class="NavigationLink-text">Market Snapshot</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/after-bell" data-cms-ai="0"><span class="NavigationLink-text">After the Bell</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/crops-analysis" data-cms-ai="0"><span class="NavigationLink-text">Crops Analysis</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/livestock-analysis" data-cms-ai="0"><span class="NavigationLink-text">Livestock Analysis</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/evening-report" data-cms-ai="0"><span class="NavigationLink-text">Evening Report</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news" data-cms-ai="0"><span class="NavigationLink-text">All News &amp; Analysis</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/markets/futures" data-cms-ai="0">Market Data &amp; Tools</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/markets/futures" data-cms-ai="0"><span class="NavigationLink-text">Commodity Market Futures</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/markets/cash-grain-bids" data-cms-ai="0"><span class="NavigationLink-text">Cash Grain Bids</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://marketmate.profarmer.com/" target="_blank" data-cms-ai="0"><span class="NavigationLink-text">Market Mate</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news" data-cms-ai="0"><span class="NavigationLink-text">Commodity Market News</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/weather" data-cms-ai="0">Weather</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/weather" data-cms-ai="0"><span class="NavigationLink-text">Weather Forecast</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/topics/weather" data-cms-ai="0"><span class="NavigationLink-text">Weather News</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+                <li class="Navigation-items-item"><div class="NavigationItem  has-menu" >
+    <div class="NavigationItem-text">
+        
+            <a  href="https://www.profarmer.com/newsletters" data-cms-ai="0">More Pro Farmer Insights</a>
+        
+        
+            <div class="NavigationItem-more">
+                <button aria-label="More"><svg class="chevron"><use xlink:href="#chevron-down"></use></svg></button>
+            </div>
+        
+    </div>
+
+    
+        <ul class="NavigationItem-items" >
+            
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/newsletters" data-cms-ai="0"><span class="NavigationLink-text">Weekly Newsletter</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-podcast" data-cms-ai="0"><span class="NavigationLink-text">Pro Farmer Podcast</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/topics/monday-morning-wake-call" data-cms-ai="0"><span class="NavigationLink-text">Monday Morning Wake-up Call</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/midweek-cash-market" data-cms-ai="0"><span class="NavigationLink-text">Midweek Cash Markets</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/topics/report-reactions" data-cms-ai="0"><span class="NavigationLink-text">USDA Report Reactions</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.landowner.com/" target="_blank" data-cms-ai="0"><span class="NavigationLink-text">LandOwner Newsletter</span></a>
+</li>
+                
+                    <li class="NavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/policy-update" data-cms-ai="0"><span class="NavigationLink-text">Washington/Ag Policy</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+</li>
+            
+        </ul>
+    
+</nav>
+
+            
+        </div>
+
+        <div class="Page-header-end">
+            
+
+            
+                <div class="Page-header-subscribe Button tablet">
+                    
+                        <a class="Link" href="https://www.profarmer.com/r/subscribe" target="_blank" rel="noopener" data-cms-ai="0">Subscribe</a>
+                    
+                </div>
+            
+
+            
+                <div class="Page-header-login Button tablet" data-theme="secondary">
+                    
+                        <a class="Link" href="https://www.profarmer.com/r/sign-in" data-cms-ai="0">Login</a>
+                    
+                </div>
+            
+
+            
+                <div class="Page-header-logout Button tablet" data-theme="secondary">
+                    
+                        <a class="Link" href="https://www.profarmer.com/r/sign-in" data-cms-ai="0">Logout</a>
+                    
+                </div>
+            
+
+            
+
+            
+                <bsp-search-overlay class="SearchOverlay">
+    <div class="SearchOverlay-search-overlay">
+      <form class="SearchOverlay-search-form" action="https://www.profarmer.com/search#nt=navsearch" novalidate="" autocomplete="off">
+          <label class="SearchOverlay-search-label">
+              <input placeholder="Keyword Search..." type="text" class="SearchOverlay-search-input" name="q" required="true">
+              <span class="sr-only">
+                  Search Query
+              </span>
+            <button type="submit" class="SearchOverlay-search-submit">
+                <svg>
+                    <use xlink:href="#icon-magnify"></use>
+                </svg>
+                <span class="sr-only">Submit Search</span>
+            </button>
+          </label>
+      </form>
+     </div>
+    <button class="SearchOverlay-search-button">
+        <svg class="icon-magnify">
+            <use xlink:href="#icon-magnify"></use>
+        </svg>
+        <span class="sr-only">
+            Show Search
+        </span>
+        <svg class="close-x">
+            <use xlink:href="#close-x"></use>
+        </svg>
+    </button>
+</bsp-search-overlay>
+
+            
+        </div>
+    </div>
+
+    
+</bsp-header>
+
+
+        
+
+        
+
+
+        <div class="Page-content">
+            <div class="Page-twoColumn">
+                <main class="Page-main" data-module data-padding="none">
+                    
+                        <div class="ArticlePage-lede">
+                            
+                            <div class="ArticlePage-lede-content">
+                                
+    <div class="Page-breadcrumbs"><a class="Link" href="https://www.profarmer.com/pro-farmer" data-cms-ai="0">Pro Farmer</a><span class="separator">/</span><a class="Link" href="https://www.profarmer.com/news" data-cms-ai="0">News</a><span class="separator">/</span><a class="Link" href="https://www.profarmer.com/news/agriculture-news" data-cms-ai="0">Agriculture News</a></div>
+
+
+
+                                
+    <h1 class="Page-headline">October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton</h1>
+
+
+
+                                
+    <h2 class="Page-subHeadline">All eyes are on whether USDA will cut new-crop corn yield toward the trade average of 177.8 bu. per acre—and what that means for ending stocks.</h2>
+
+
+
+                                <div class="ArticlePage-actions-wrapper">
+                                    <div class="Page-byline"><div class="Page-authors"><div class="Page-author">
+                    
+                        <div class="Page-author-image">
+                            
+                                
+                                    <picture>
+    
+    
+        
+            
+
+        
+    
+
+    
+    
+        
+    
+            <source type="image/webp"  width="90" height="90" srcset="https://assets.farmjournal.com/dims4/default/16c9ec7/2147483647/strip/true/crop/405x405+86+0/resize/90x90!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F81%2F32%2F90ccace54792a45a4b63ad26b837%2Flangford-headshot.jpg 1x,https://assets.farmjournal.com/dims4/default/4d1abe1/2147483647/strip/true/crop/405x405+86+0/resize/180x180!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F81%2F32%2F90ccace54792a45a4b63ad26b837%2Flangford-headshot.jpg 2x"/>
+
+    
+
+    
+        <source width="90" height="90" srcset="https://assets.farmjournal.com/dims4/default/7fca8c6/2147483647/strip/true/crop/405x405+86+0/resize/90x90!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F81%2F32%2F90ccace54792a45a4b63ad26b837%2Flangford-headshot.jpg"/>
+
+    
+
+
+    
+    
+    <img class="Image" alt="Spencer Langford" srcset="https://assets.farmjournal.com/dims4/default/7fca8c6/2147483647/strip/true/crop/405x405+86+0/resize/90x90!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F81%2F32%2F90ccace54792a45a4b63ad26b837%2Flangford-headshot.jpg 1x,https://assets.farmjournal.com/dims4/default/c291495/2147483647/strip/true/crop/405x405+86+0/resize/180x180!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F81%2F32%2F90ccace54792a45a4b63ad26b837%2Flangford-headshot.jpg 2x" width="90" height="90" src="https://assets.farmjournal.com/dims4/default/7fca8c6/2147483647/strip/true/crop/405x405+86+0/resize/90x90!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F81%2F32%2F90ccace54792a45a4b63ad26b837%2Flangford-headshot.jpg" loading="lazy"
+    >
+
+
+</picture>
+
+                                
+                            
+                        </div>
+                    
+                    <div class="Page-author-content">
+                        <div class="Page-author-name">
+                            By&nbsp;<a class="Link" href="https://www.profarmer.com/authors/spencer-langford" data-cms-ai="0">Spencer Langford</a>
+                        </div>
+                    </div>
+                </div></div>&nbsp;&bull;&nbsp;<div class="Page-datePublished">
+                October 09, 2026 09:38 AM
+            </div></div>
+
+
+                                    
+
+
+                                    
+
+                                </div>
+                            
+                        </div>
+                            
+                            
+                        </div>
+                    
+                    
+                        
+                        
+                            
+                                
+                                    
+                                        
+    <div class="Page-lead"><figure class="Figure">
+    
+
+    
+        <picture>
+    
+    
+        
+            
+
+        
+    
+
+    
+    
+        
+    
+                <source type="image/webp"  width="800" height="534" srcset="https://assets.farmjournal.com/dims4/default/6e71cc3/2147483647/strip/true/crop/785x524+7+0/resize/800x534!/format/webp/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg"/>
+
+            
+        
+    
+
+    
+        <source width="800" height="534" srcset="https://assets.farmjournal.com/dims4/default/e0c2b00/2147483647/strip/true/crop/785x524+7+0/resize/800x534!/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg"/>
+
+    
+
+
+    
+    
+    <img class="Image" alt="Grain Bins" width="800" height="534" src="https://assets.farmjournal.com/dims4/default/e0c2b00/2147483647/strip/true/crop/785x524+7+0/resize/800x534!/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2023-07%2Facre-grainbinsLO.jpg"
+    >
+
+
+</picture>
+
+    
+
+    
+        <div class="Figure-content"><figcaption class="Figure-caption">The grain market faces another deluge of data when USDA releases its latest production and supply-and-demand reports Friday morning.</figcaption><div class="Figure-credit">(Purdue)</div></div>
+    
+</figure>
+</div>
+
+
+                                    
+                                
+                            
+                        
+                    
+
+                    <div class="Page-articleBody">
+                            
+
+                                
+
+                            
+                                <div class="RichTextArticleBody RichTextBody">
+                                    <p>USDA’s monthly World Agricultural Supply and Demand Estimates (WASDE) and Crop Production reports are scheduled to be released simultaneously at 11 a.m. CT on Friday, October 9. Here’s a breakdown on what markets will be watching most heading in to the data dump:</p><h3>Corn</h3><p>Last week’s Quarterly Grain Stocks showed 2025-26 corn ending stocks at 2.095 billion bushels, up 173 million bushels from the September WASDE and will likely be very close to the figure printed in the October WASDE. A majority of that increase will be implemented by a reduction in feed and residual use. The agency also cut old-crop production by 57 million bushels after looking at all available data.</p><p>In new-crop, yield looks to be the big driver of price action. The range of analyst estimates polled by Reuters is wide, stretching from 173.2 to 182.1 and an average value of 177.8 compared to USDA’s previous estimate of 178.5. With carry-in increased, a yield of 176.6 or lower along with stable demand would be needed to return to the stocks-to-use previously expected. In recent years, the September to October updates have been relatively quiet, averaging a change of 0.4 bushels. The longer-term 25 year average change shows 1.87 bushels as the standard adjustment, and thus that the reduction is not out of the realm of possibility.</p><p>Since some categories like exports and residual typically move in proportion to total supply, a yield between 175 and 176 could be needed to truly reach the sub-10-percent mark again. The metric is a key determinant of the average cash price received, as seen in the chart below higher stocks-to-use ratios have a fairly direct relationship with cash prices. Of the three years in the past decade that have had a final stocks-to-use ratio of under 10%, only 1 has had the average farm price under $5.00.</p><div class="Enhancement" data-align-center>
+        <div class="Enhancement-item">
+            
+            
+                
+                    
+                        
+                            <figure class="Figure">
+    
+    <a class="AnchorLink" id="image-f10000" name="image-f10000" data-cms-ai="0"></a>
+
+
+    
+        <picture>
+    
+    
+        
+            
+
+        
+    
+
+    
+    
+        
+    
+            <source type="image/webp"  width="1440" height="865" srcset="https://assets.farmjournal.com/dims4/default/79fffca/2147483647/strip/true/crop/1653x993+0+0/resize/568x341!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 568w,https://assets.farmjournal.com/dims4/default/42b45b9/2147483647/strip/true/crop/1653x993+0+0/resize/768x461!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 768w,https://assets.farmjournal.com/dims4/default/a30bfc8/2147483647/strip/true/crop/1653x993+0+0/resize/1024x615!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 1024w,https://assets.farmjournal.com/dims4/default/cae2a37/2147483647/strip/true/crop/1653x993+0+0/resize/1440x865!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 1440w"/>
+
+    
+
+    
+        <source width="1440" height="865" srcset="https://assets.farmjournal.com/dims4/default/b6140d4/2147483647/strip/true/crop/1653x993+0+0/resize/1440x865!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png"/>
+
+    
+
+
+    
+    
+    <img class="Image" alt="STU_corn_WASDE.png" srcset="https://assets.farmjournal.com/dims4/default/58006ca/2147483647/strip/true/crop/1653x993+0+0/resize/568x341!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 568w,https://assets.farmjournal.com/dims4/default/099f0e5/2147483647/strip/true/crop/1653x993+0+0/resize/768x461!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 768w,https://assets.farmjournal.com/dims4/default/8e4e9bd/2147483647/strip/true/crop/1653x993+0+0/resize/1024x615!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 1024w,https://assets.farmjournal.com/dims4/default/b6140d4/2147483647/strip/true/crop/1653x993+0+0/resize/1440x865!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png 1440w" width="1440" height="865" src="https://assets.farmjournal.com/dims4/default/b6140d4/2147483647/strip/true/crop/1653x993+0+0/resize/1440x865!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2F84%2Ffd%2F72bb1f3d42cf834c17d1a91396a1%2Fstu-corn-wasde.png" loading="lazy"
+    >
+
+
+</picture>
+
+    
+
+    
+        <div class="Figure-content"><div class="Figure-credit">(USDA/Pro Farmer)</div></div>
+    
+</figure>
+
+                        
+                    
+                
+            
+        </div>
+    </div><p></p><h3>Soybeans</h3><p>Beans received a relatively more friendly update from the Grain Stocks report. Old-crop ending stocks were cut 9.7 million to 315.1 million bushels as demand has continued to run hot, and should offer some small support ahead as stocks are tighter than realized.</p><p>Last month’s report saw corn yields receive a cut while soybeans got a 0.1 bushel boost to yield. This past month has seen both corn and soybean ratings decline, though the drop in soybeans has only been 1%. Estimates were also spread across a wide range in soybean yields, with analyst estimates anywhere from 51.4 to 54.1 bushels per acre, and an average of 52.9. That would be another 0.1 bushel increase from the previous forecast.</p><div class="Enhancement" data-align-center>
+        <div class="Enhancement-item">
+            
+            
+                
+                    
+                        
+                            <figure class="Figure">
+    
+    <a class="AnchorLink" id="image-600000" name="image-600000" data-cms-ai="0"></a>
+
+
+    
+        <picture>
+    
+    
+        
+            
+
+        
+    
+
+    
+    
+        
+    
+            <source type="image/webp"  width="1440" height="294" srcset="https://assets.farmjournal.com/dims4/default/1d30b46/2147483647/strip/true/crop/587x120+0+0/resize/568x116!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 568w,https://assets.farmjournal.com/dims4/default/32162e0/2147483647/strip/true/crop/587x120+0+0/resize/768x157!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 768w,https://assets.farmjournal.com/dims4/default/c20b62f/2147483647/strip/true/crop/587x120+0+0/resize/1024x209!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 1024w,https://assets.farmjournal.com/dims4/default/f630b59/2147483647/strip/true/crop/587x120+0+0/resize/1440x294!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 1440w"/>
+
+    
+
+    
+        <source width="1440" height="294" srcset="https://assets.farmjournal.com/dims4/default/a55eee6/2147483647/strip/true/crop/587x120+0+0/resize/1440x294!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png"/>
+
+    
+
+
+    
+    
+    <img class="Image" alt="Tablle_WASDE_ending.png" srcset="https://assets.farmjournal.com/dims4/default/9261992/2147483647/strip/true/crop/587x120+0+0/resize/568x116!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 568w,https://assets.farmjournal.com/dims4/default/9a96af7/2147483647/strip/true/crop/587x120+0+0/resize/768x157!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 768w,https://assets.farmjournal.com/dims4/default/f72b3fd/2147483647/strip/true/crop/587x120+0+0/resize/1024x209!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 1024w,https://assets.farmjournal.com/dims4/default/a55eee6/2147483647/strip/true/crop/587x120+0+0/resize/1440x294!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png 1440w" width="1440" height="294" src="https://assets.farmjournal.com/dims4/default/a55eee6/2147483647/strip/true/crop/587x120+0+0/resize/1440x294!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Ff8%2F8e%2Fdfdf71964d70a81f884285da3b48%2Ftablle-wasde-ending.png" loading="lazy"
+    >
+
+
+</picture>
+
+    
+
+    
+        <div class="Figure-content"><div class="Figure-credit">(Reuters)</div></div>
+    
+</figure>
+
+                        
+                    
+                
+            
+        </div>
+    </div><p></p><h3>Wheat</h3><p>The supply side update on wheat was mostly settled in the Annual Small Grains Summary. Production was raised 3 million bushels, with winter wheat production being increased while spring wheat got a minor cut. As a result the average analyst sees ending stocks up roughly 4 million bushels.</p><p>Exports from wheat have continued to be lackluster this marketing year. While part of that can be explained by the smaller crop size this season, the gap between realized exports and USDA’s expectations has widened in recent weeks. Be on the lookout for a potential reduction in the forecast for wheat exports if the agency doesn’t expect exports to pick up in the midst of a quickly strengthening U.S. dollar.</p><div class="Enhancement" data-align-center>
+        <div class="Enhancement-item">
+            
+            
+                
+                    
+                        
+                            <figure class="Figure">
+    
+    <a class="AnchorLink" id="image-a40000" name="image-a40000" data-cms-ai="0"></a>
+
+
+    
+        <picture>
+    
+    
+        
+            
+
+        
+    
+
+    
+    
+        
+    
+            <source type="image/webp"  width="1440" height="420" srcset="https://assets.farmjournal.com/dims4/default/1d647ff/2147483647/strip/true/crop/418x122+0+0/resize/568x166!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 568w,https://assets.farmjournal.com/dims4/default/98265ca/2147483647/strip/true/crop/418x122+0+0/resize/768x224!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 768w,https://assets.farmjournal.com/dims4/default/dfd9b88/2147483647/strip/true/crop/418x122+0+0/resize/1024x299!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 1024w,https://assets.farmjournal.com/dims4/default/4c0611b/2147483647/strip/true/crop/418x122+0+0/resize/1440x420!/format/webp/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 1440w"/>
+
+    
+
+    
+        <source width="1440" height="420" srcset="https://assets.farmjournal.com/dims4/default/87c6ce2/2147483647/strip/true/crop/418x122+0+0/resize/1440x420!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png"/>
+
+    
+
+
+    
+    
+    <img class="Image" alt="Table_WASDE_Yields.png" srcset="https://assets.farmjournal.com/dims4/default/2747e76/2147483647/strip/true/crop/418x122+0+0/resize/568x166!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 568w,https://assets.farmjournal.com/dims4/default/7fc0bc5/2147483647/strip/true/crop/418x122+0+0/resize/768x224!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 768w,https://assets.farmjournal.com/dims4/default/fe77e9b/2147483647/strip/true/crop/418x122+0+0/resize/1024x299!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 1024w,https://assets.farmjournal.com/dims4/default/87c6ce2/2147483647/strip/true/crop/418x122+0+0/resize/1440x420!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png 1440w" width="1440" height="420" src="https://assets.farmjournal.com/dims4/default/87c6ce2/2147483647/strip/true/crop/418x122+0+0/resize/1440x420!/quality/90/?url=https%3A%2F%2Fk1-prod-farm-journal.s3.us-east-2.amazonaws.com%2Fbrightspot%2Fe6%2Fb8%2F839237b14adc8938bb41ff213be9%2Ftable-wasde-yields.png" loading="lazy"
+    >
+
+
+</picture>
+
+    
+
+    
+        <div class="Figure-content"><div class="Figure-credit">(Reuters)</div></div>
+    
+</figure>
+
+                        
+                    
+                
+            
+        </div>
+    </div><p></p><h3>Cotton</h3><p>Cotton markets have bounced from their recent lows in the area of 77 cents, but have continued to teeter on either side of the 80-cent mark since. A cut to production could act as a catalyst needed to get futures moving again. Condition ratings have slid to 33% good to excellent as of October 4, the lowest mark for the growing season. Heavy rains early in October have likely caused fiber quality issues and possibly yield declines in the Southeastern U.S. as well.</p><p>Analysts expect a 230,000 bale production cut on average. While a production cut would likely lead to tighter ending stocks, cotton will still be limited by the lack of firm export interest from sizable buyers like China in the near-term.</p>
+                                </div>
+                            
+
+                            
+                    </div>
+
+                    
+    <div class="Page-tags">
+        
+            <a class="Button" data-size="small" data-theme="secondary" href="https://www.profarmer.com/topics/usda-reports" data-cms-ai="0" >USDA Reports</a>
+        
+    </div>
+
+
+                    
+    
+
+
+                    
+
+                </main>
+
+                
+                    <aside class="Page-aside">
+                        
+                            
+                                <bsp-markets-module-mini class="MarketsModuleMini">
+    <div id="block-marketsblock" class="block block-farmjournal-markets block-markets-block">
+        <div id="block-markettable">
+        </div>
+    </div>
+    
+
+</bsp-markets-module-mini>
+                            
+                        
+                            
+                                <div class="HtmlModule">
+    
+    <a class="AnchorLink" id="html-embed-module-d00000" name="html-embed-module-d00000" data-cms-ai="0"></a>
+
+
+    <!-- ===== Pro Farmer — Cash Grain Bids rail module (paste into an HTML embed) ===== -->
+<div class="pfcgb-mod">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    .pfcgb-mod{max-width:320px;box-sizing:border-box;border:1px solid #E7E7E7;background:#fff;font-family:'Roboto','Helvetica Neue',Arial,sans-serif;line-height:1.5;margin:30px 0}
+    .pfcgb-mod *{box-sizing:border-box}
+    .pfcgb-accent{height:3px;background:#0850A3}
+    .pfcgb-body{padding:20px}
+    .pfcgb-eyebrow{font-family:'Montserrat',Arial,sans-serif;font-size:13px;font-weight:700;color:#0850A3;text-transform:uppercase;letter-spacing:.06em;line-height:1.2;margin:0 0 10px}
+    .pfcgb-dek{font-size:15px;font-weight:400;color:#565656;line-height:1.5;margin:0 0 16px}
+    .pfcgb-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-family:'Montserrat',Arial,sans-serif;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:#0850A3;border:1px solid #0850A3;padding:12px 16px;line-height:1;cursor:pointer;transition:background-color .12s ease,color .12s ease}
+    .pfcgb-btn:hover{background:#fff;color:#0850A3}
+    .pfcgb-btn span{font-size:16px;line-height:1}
+  </style>
+  <div class="pfcgb-accent"></div>
+  <div class="pfcgb-body">
+    <p class="pfcgb-eyebrow">Cash Grain Bids</p>
+    <p class="pfcgb-dek">Enter your ZIP code to find the cash bids and basis levels for the five elevators closest to you.</p>
+    <a class="pfcgb-btn" href="https://www.profarmer.com/markets/cash-grain-bids" data-cms-ai="0">Search for Bids</a>
+  </div>
+</div>
+<!-- ===== end module ===== -->
+</div>
+
+                            
+                        
+                            
+                                <div class="HtmlModule">
+    
+    <a class="AnchorLink" id="html-embed-module-7c0000" name="html-embed-module-7c0000" data-cms-ai="0"></a>
+
+
+    <!-- ===== Pro Farmer — Daily Advice Monitor rail module (paste into an HTML embed) ===== -->
+<div class="pfam-mod">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    .pfam-mod{max-width:320px;box-sizing:border-box;border:1px solid #E7E7E7;background:#fff;font-family:'Roboto','Helvetica Neue',Arial,sans-serif;line-height:1.5;margin:20px 0}
+    .pfam-mod *{box-sizing:border-box}
+    .pfam-accent{height:3px;background:#0850A3}
+    .pfam-imgwrap{width:100%;aspect-ratio:800/534;overflow:hidden;background:#fff}
+    .pfam-imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
+    .pfam-body{padding:18px 20px 20px}
+    .pfam-eyebrow{font-family:'Montserrat',Arial,sans-serif;font-size:13px;font-weight:700;color:#0850A3;text-transform:uppercase;letter-spacing:.06em;line-height:1.2;margin:0 0 8px}
+    .pfam-dek{font-size:15px;font-weight:400;color:#565656;line-height:1.5;margin:0 0 18px}
+    .pfam-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-family:'Montserrat',Arial,sans-serif;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:#0850A3;border:1px solid #0850A3;padding:12px 16px;line-height:1;cursor:pointer;transition:background-color .12s ease,color .12s ease}
+    .pfam-cta:hover{background:#fff;color:#0850A3}
+    .pfam-cta span{font-size:16px;line-height:1}
+  </style>
+  <div class="pfam-accent"></div>
+  <div class="pfam-imgwrap">
+    <img src="https://assets.farmjournal.com/dims4/default/fd47c36/2147483647/strip/true/crop/630x421+0+15/resize/800x534!/format/webp/quality/90/?url=https%3A%2F%2Ffj-corp-pub.s3.us-east-2.amazonaws.com%2Fs3fs-public%2F2021-05%2FDaily-Advice-Monitor840x600%400.75x.jpg" alt="Pro Farmer's Daily Advice Monitor" loading="lazy">
+  </div>
+  <div class="pfam-body">
+    <p class="pfam-eyebrow">Daily Advice Monitor</p>
+    <p class="pfam-dek">Pro Farmer's daily updates on advice, including if now is a good time to catch up on cash sales.</p>
+    <a class="pfam-cta" href="https://www.profarmer.com/news/advice-monitor/pro-farmers-daily-advice-monitor" data-cms-ai="0">Read Today's Advice</a>
+  </div>
+</div>
+<!-- ===== end module ===== -->
+</div>
+
+                            
+                        
+                            
+                                <div class="HtmlModule">
+    
+    <a class="AnchorLink" id="html-embed-module-8c0000" name="html-embed-module-8c0000" data-cms-ai="0"></a>
+
+
+    <!-- ===== Pro Farmer — App Download rail module (paste into an HTML embed) ===== -->
+<div class="pfapp-mod">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&amp;family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    .pfapp-mod{max-width:320px;box-sizing:border-box;border:1px solid #E7E7E7;background:#fff;font-family:'Roboto','Helvetica Neue',Arial,sans-serif;line-height:1.5;margin:30px 0}
+    .pfapp-mod *{box-sizing:border-box}
+    .pfapp-accent{height:3px;background:#0850A3}
+    .pfapp-body{padding:20px}
+    .pfapp-eyebrow{font-family:'Montserrat',Arial,sans-serif;font-size:13px;font-weight:700;color:#0850A3;text-transform:uppercase;letter-spacing:.06em;line-height:1.2;margin:0 0 8px}
+    .pfapp-dek{font-size:15px;font-weight:400;color:#565656;line-height:1.5;margin:0 0 16px}
+    .pfapp-badges{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+    .pfapp-badges a{display:inline-flex;text-decoration:none}
+    .pfapp-badges img{width:auto;display:block}
+    .pfapp-ios{height:42px}
+    .pfapp-play{height:61px}
+  </style>
+  <div class="pfapp-accent"></div>
+  <div class="pfapp-body">
+    <p class="pfapp-eyebrow">Download the Pro Farmer Mobile App</p>
+    <p class="pfapp-dek">Market analysis, cash bids and daily advice in your pocket &mdash; anywhere the market takes you.</p>
+    <div class="pfapp-badges">
+      <a href="https://apps.apple.com/us/app/pro-farmer/id1500056023" target="_blank" rel="noopener" data-cms-ai="0">
+        <img class="pfapp-ios" src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store">
+      </a>
+      <a href="https://play.google.com/store/apps/details?id=com.farmjournalinc.id3678" target="_blank" rel="noopener" data-cms-ai="0">
+        <img class="pfapp-play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play">
+      </a>
+    </div>
+  </div>
+</div>
+<!-- ===== end module ===== -->
+</div>
+
+                            
+                        
+                    </aside>
+                
+            </div>
+        </div>
+            
+                
+                    <div class="SocialModule" data-module>
+    <div class="SocialModule-content">
+        
+            <div class="SocialModule-socials">
+                
+                    <div class="SocialModule-title">Follow Pro Farmer</div>
+                
+                
+                    <div class="SocialModule-socialBar">
+                        <div class="SocialBar">
+    
+        <ul class="SocialBar-items">
+            
+                <li class="SocialBar-items-item"> <a class="SocialLink" rel="noreferrer" href="https://twitter.com/profarmer" target="_blank" data-social-service="twitter" data-cms-ai="0">
+     <svg>
+         <use xlink:href="#mono-icon-twitter"></use>
+     </svg>
+     <span class="sr-only">
+         twitter
+     </span>
+ </a>
+</li>
+            
+                <li class="SocialBar-items-item"> <a class="SocialLink" rel="noreferrer" href="https://www.facebook.com/ProFarmerCropTour" target="_blank" data-social-service="facebook" data-cms-ai="0">
+     <svg>
+         <use xlink:href="#mono-icon-facebook"></use>
+     </svg>
+     <span class="sr-only">
+         facebook
+     </span>
+ </a>
+</li>
+            
+                <li class="SocialBar-items-item"> <a class="SocialLink" rel="noreferrer" href="https://www.linkedin.com/company/pro-farmer-u-s/" target="_blank" data-social-service="linkedin" data-cms-ai="0">
+     <svg>
+         <use xlink:href="#mono-icon-linkedin"></use>
+     </svg>
+     <span class="sr-only">
+         linkedin
+     </span>
+ </a>
+</li>
+            
+        </ul>
+    
+</div>
+
+                    </div>
+                
+            </div>
+        
+        
+        
+        
+            <div class="SocialModule-app">
+                <div class="SocialModule-app-title">
+                    <svg>
+                        <use xlink:href="#phone-icon"></use>
+                    </svg>
+                    Get News & Markets App
+                </div>
+                <div class="SocialModule-app-icons">
+                    
+                    
+                </div>
+            </div>
+        
+    </div>
+</div>
+                
+            
+        <footer class="Page-footer">
+    <div class="Page-footer-container">
+        
+            <div class="Page-footer-navigation" >
+                <nav class="FooterNavigation">
+    
+        <ul class="FooterNavigation-items" data-column-count="4">
+            
+                <li class="FooterNavigation-items-item">
+                    <div class="FooterNavigationItem">
+    <div class="FooterNavigationItem-text">
+        
+            <a href="https://www.profarmer.com/markets/futures" data-cms-ai="0">Markets</a>
+        
+    </div>
+
+    
+        <ul class="FooterNavigationItem-items">
+            
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/markets/futures" data-cms-ai="0"><span class="NavigationLink-text">Futures</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/markets/cash-grain-bids" data-cms-ai="0"><span class="NavigationLink-text">Cash Grain Bids</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://marketmate.profarmer.com/" target="_blank" data-cms-ai="0"><span class="NavigationLink-text">Market Mate</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news" data-cms-ai="0"><span class="NavigationLink-text">Market News</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+
+                </li>
+            
+                <li class="FooterNavigation-items-item">
+                    <div class="FooterNavigationItem">
+    <div class="FooterNavigationItem-text">
+        
+            <a href="https://www.profarmer.com/news" data-cms-ai="0">Today’s Analysis</a>
+        
+    </div>
+
+    
+        <ul class="FooterNavigationItem-items">
+            
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/advice-monitor/pro-farmers-daily-advice-monitor" data-cms-ai="0"><span class="NavigationLink-text">Daily Advice Monitor</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/first-thing-today" data-cms-ai="0"><span class="NavigationLink-text">First Thing Today</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/ahead-open" data-cms-ai="0"><span class="NavigationLink-text">Ahead of the Open</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/market-snapshot" data-cms-ai="0"><span class="NavigationLink-text">Market Snapshot</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/news/after-bell" data-cms-ai="0"><span class="NavigationLink-text">After the Bell</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-max/evening-report" data-cms-ai="0"><span class="NavigationLink-text">Evening Report</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+
+                </li>
+            
+                <li class="FooterNavigation-items-item">
+                    <div class="FooterNavigationItem">
+    <div class="FooterNavigationItem-text">
+        
+            <a href="https://www.profarmer.com/" data-cms-ai="0">Pro Farmer</a>
+        
+    </div>
+
+    
+        <ul class="FooterNavigationItem-items">
+            
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://events.farmjournal.com/pro-farmer-crop-tour-2026" target="_blank" data-cms-ai="0"><span class="NavigationLink-text">Crop Tour</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/newsletters" data-cms-ai="0"><span class="NavigationLink-text">Newsletter</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/pro-farmer-podcast" data-cms-ai="0"><span class="NavigationLink-text">Podcast</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.landowner.com/" target="_blank" data-cms-ai="0"><span class="NavigationLink-text">LandOwner</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/about" data-cms-ai="0"><span class="NavigationLink-text">About Pro Farmer</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+
+                </li>
+            
+                <li class="FooterNavigation-items-item">
+                    <div class="FooterNavigationItem">
+    <div class="FooterNavigationItem-text">
+        
+            <a href="https://www.profarmer.com/r?sign-in" data-cms-ai="0">Account</a>
+        
+    </div>
+
+    
+        <ul class="FooterNavigationItem-items">
+            
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="profarmer.com/r/subscribe" data-cms-ai="0"><span class="NavigationLink-text">Subscribe</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://www.profarmer.com/r?sign-in" data-cms-ai="0"><span class="NavigationLink-text">Login</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="https://profarmer.recurly.com/account" data-cms-ai="0"><span class="NavigationLink-text">Manage Subscription</span></a>
+</li>
+                
+                    <li class="FooterNavigationItem-items-item"><a class="NavigationLink" href="" data-cms-ai="0"><span class="NavigationLink-text">Subscription FAQs</span></a>
+</li>
+                
+            
+        </ul>
+    
+</div>
+
+                </li>
+            
+        </ul>
+    
+</nav>
+
+            </div>
+        
+        
+            
+                <div class="Page-footer-logo"><a aria-label="home page" href="https://www.farmjournal.com/"  target="_blank" data-cms-ai="0"  >
+    
+        <picture>
+            
+            
+                
+                    
+
+                
+            
+
+            
+            
+                
+    
+
+    
+        <source srcset="https://assets.farmjournal.com/4a/49/c7f184d2445c8d5a698b4fc416f3/farm-journal.svg"/>
+
+    
+
+
+            
+            
+    <img class="Image" alt="footer logo" src="https://assets.farmjournal.com/4a/49/c7f184d2445c8d5a698b4fc416f3/farm-journal.svg"
+    >
+
+
+        </picture>
+    
+    </a>
+</div>
+            
+        
+
+        <div class="Page-footer-columns">
+            
+                <div class="Page-footer-column">
+                    <div class="Page-footer-disclaimer"><p>© 1995 - 2026 Farm Journal, Inc. All Rights Reserved. This material may not be published, broadcast, rewritten, or redistributed.  </p></div>
+                </div>
+            
+
+            
+                <div class="Page-footer-column">
+                    <div class="Page-footer-content">
+                        
+                            <div class="PagePromoFooter" data-no-media>
+    <div class="PagePromoFooter-content">
+        
+    <div class="PagePromo-title">
+        <a class="Link" href="https://www.farmjournal.com/terms-conditions/" target="_blank" rel="noopener" data-cms-ai="0">Terms &amp; Conditions</a>
+    </div>
+
+
+        
+
+
+        
+    </div>
+</div>
+                        
+                            <div class="PagePromoFooter" data-no-media>
+    <div class="PagePromoFooter-content">
+        
+    <div class="PagePromo-title">
+        <a class="Link" href="https://www.profarmer.com/privacy-policy" data-cms-ai="0">Privacy Policy</a>
+    </div>
+
+
+        
+
+
+        
+    </div>
+</div>
+                        
+                            <div class="PagePromoFooter" data-no-media>
+    <div class="PagePromoFooter-content">
+        
+    <div class="PagePromo-title">
+        <a class="Link" href="https://privacyportal.onetrust.com/webform/749ec3ae-b5ab-4add-80b8-8daa45a5517a/0ffca67b-ac70-4c50-9beb-34deb32e1f08" target="_blank" rel="noopener" data-cms-ai="0">Do Not Sell or Share My Information</a>
+    </div>
+
+
+        
+
+
+        
+    </div>
+</div>
+                        
+                            <div class="PagePromoFooter" data-no-media>
+    <div class="PagePromoFooter-content">
+        
+    <div class="PagePromo-title">
+        <a class="Link" href="https://privacyportal.onetrust.com/webform/749ec3ae-b5ab-4add-80b8-8daa45a5517a/0ffca67b-ac70-4c50-9beb-34deb32e1f08" target="_blank" rel="noopener" data-cms-ai="0">Limit the Use of My Sensitive Personal Information </a>
+    </div>
+
+
+        
+
+
+        
+    </div>
+</div>
+                        
+                    </div>
+                </div>
+            
+
+            <div class="Page-footer-column">
+                <div class="Page-footer-cme-container">
+                    <a href="https://www.cmegroup.com/education" target="_blank" data-cms-ai="0">
+                        <svg class="Page-footer-cme-logo">
+                            <use xlink:href="#cme-logo"></use>
+                        </svg>
+                    </a>
+                    <div class="Page-footer-cme-text">
+                        All market data delayed 10 minutes.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+        
+    <span data-bsp-pv="c2a98712-61fa-35ef-bd5d-e0bfe394c8b6"></span><span data-bsp-pv="000001a1-16a0-d305-a1bb-3ee2a0f70000"></span><script data-bsp-site="0000018e-8142-de2f-a3ae-b3fea9290000" data-bsp-contentid="000001a1-16a0-d305-a1bb-3ee2a0f70000"></script><script data-bsp-site="0000018e-8142-de2f-a3ae-b3fea9290000" data-bsp-contentid="000001a1-16a0-d305-a1bb-3ee2a0f70000" src="https://assets.farmjournal.com/resource/0000018e-8174-d5cf-a1ff-bffc6a350000/_resource/analytics/bsp-analytics.min.686c87a3ca6667675841641b91fc7fe6.js"></script></body>
+</html>
+

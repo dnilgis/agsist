@@ -1,0 +1,217 @@
+# Benchmark manure-value: UNL Calculating the Value of Nutrients in Manure
+# https://water.unl.edu/article/animal-manure-management/calculating-value-nutrients-manure
+# fetched 2026-10-16T16:08:12Z, sha256 7a35727769fde9dc1a64d71c84b80aabe0f0bfa4c58bdc291f5e14d5706cde4d
+
+Calculating the Value of Nutrients in Manure | UNL Water | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Thursday September 25, 2025
+
+Calculating the Value of Nutrients in Manure
+
+Leslie Johnson - Animal Manure Management Extension Educator
+
+“How much is this manure worth?” This is a common question from both livestock farmers who are supplying manure and crop farmers who are utilizing it. To answer this question, it is important to understand the difference between gross value and net value. The gross value of manure reflects the equivalent commercial fertilizer value of the nutrients contained in the manure. The net value considers the impacts of application method, transportation, and cropping system nutrient needs as well as intrinsic values that are much more difficult to put a number on. Therefore, this article will focus on determining the gross value of nutrients in manure. This article will walk you through the steps to calculate your manure value, but the University of Nebraska has an Excel based spreadsheet tool that also works.
+
+The value of manure depends upon:
+
+- the manure type,
+
+- how and where the manure is applied,
+
+- the amount of nutrients that the field needs for the next crop or crops, and
+
+- the cost of fertilizer.
+
+Determining Commercial Fertilizer Costs in $/pound of Nutrient
+
+Table 1. Some common commercial fertilizers and primary nutrient composition.
+
+Fertilizer Product
+% of Primary Nutrient
+
+Urea
+46% Nitrogen (N)
+
+32% UAN
+32% Nitrogen (N)
+
+MAP
+52% Phosphorus (P)
+
+Potash
+60% Potassium (K)
+
+Bentonite sulfur
+85-90% Sulfur (S)
+
+Zinc Sulfate
+36% Zinc (Zn)
+
+The first thing we need is the cost of fertilizer, which will have to be obtained from your local fertilizer dealer as prices vary between dealers. Once the price is known, you will need to know the percent of nutrient in the fertilizer product. Some common fertilizers are in the table to the right. With this information, we can get a price per pound of nutrient. The equation to do that is:
+
+\( \frac {price\ \ of\ \ fertilizer\ \ per\ \ ton} {2000\ \ lbs} \div \ percent\ \ of\ \ actual\ \ nutrient\ = \ price\ \ of\ \ nutrient\ \ per\ \ pound\)
+
+If urea is $580 per ton, then the price you’re paying for nitrogen when buying urea is:
+
+\( \frac {$580} {2000\ \ lbs} \div 0.46 = $0.63\ \ per\ \ lb\ \ N \)
+
+This worksheet is a guide to the math for calculating price per pound of nutrient. This process would need to be repeated for each nutrient.
+
+Manure Nutrient Availability
+
+Table 2. Example Beef Manure Nutrient Analysis
+
+Lbs of nutrient per ton (as is basis)
+
+Ammonium Nitrogen
+1.4
+
+Organic Nitrogen
+12.9
+
+Phosphorus (P2O5)
+12.7
+
+Potassium (K2O)
+12.5
+
+Sulfur
+2.8
+
+Zinc
+0.2
+
+The next step in determining a manure value is to determine how much of our manure nitrogen is available. A number of factors influence this, including the temperature at the time of application, whether the product was incorporated, and the type of animal and housing that the manure came from. For this reason, different places have different availability factors.
+
+Table 3. Fraction of organic nitrogen available this year.
+
+Beef/Dairy Manure
+
+Solid or Stored liquid
+0.40
+
+Composted feedlot
+0.15
+
+Poultry Manure
+
+Layers with no bedding
+0.45
+
+All other poultry
+0.40
+
+Swine Manure
+0.40
+
+Here in Nebraska, UNL research shows that for most species about 40% of the organic nitrogen in manure is available the first year with an additional 35% becoming available over the following 3 years (See table 3).
+
+For this example, I’m using a sample of beef manure with about 13 pounds of organic nitrogen, which calculates to about 5 pounds per ton the first year and another 4 and a half in the next few years.
+
+\(12.9\ \ lbs\ \ Organic\ \ N\ \ in\ \ manure \times 40\ \ percent\ \ available\ \ (from\ \ table\ \ 3) = 5\ \ lbs\ \ available\ \ this\ \ year\)
+
+\(12.9\ \ lbs\ \ Organic\ \ N\ \ in\ \ manure \times 35\ \ percent\ \ available\ \ (over\ \ next\ \ 3\ \ years) = 4.5\ \ lbs\ \ available\ \ in\ \ the\ \ future\)
+
+\(5\ \ lbs\ \ available\ \ this\ \ year\ + 4.5\ \ lbs\ \ available\ \ in\ \ the\ \ future\ = 9.5\ \ lbs\ \ of\ \ value\)
+
+Ammonium nitrogen is only available the first year and is more easily lost to the atmosphere, which affects its availability (see table 4). Since beef manure is not usually incorporated, we’re going to assume that the manure is being broadcasted without incorporation and we’ve lost all of our ammonium nitrogen to volatilization (into the air).
+
+\(1.4\ \ lbs\ \ Ammonium\ \ N\ \ in\ \ manure \times 0\ \ percent\ \ available\ \ (from\ \ table\ \ 4) = 0\ \ lbs\ \ available\ \ this\ \ year\)
+
+Table 4. Fraction of ammonium nitrogen available this year.
+
+Sidedress Application
+
+Injected 0.95
+
+Sprinkler Irrigated 0.80 (if >0.4” applied) or 0.40 (if ≤0.4” applied)
+
+Preplant Application and Not Incorporated
+
+Surface – spring or fall 0
+
+Preplant Application and Incorporated
+
+Solid
+
+Liquid Applied When Air Temp > 50˚F
+
+Liquid Applied When Air Temp ≤50˚F
+
+Immediately
+0.95
+
+0.95
+
+0.95
+
+One day later
+0.5
+
+0.7
+
+0.7
+
+Two days later
+0.25
+
+0.45
+
+0.55
+
+Three days later
+0.15
+
+0.25
+
+0.45
+
+Seven or more days later
+0
+
+0
+
+0.25
+
+So, using 63 cents/pound of N and manure with 9.5 pounds of nitrogen available per ton, our manure is worth about $6 per ton for the nitrogen alone.
+
+\($0.63\ \ per\ \ lb\ \ N \times 9.5\ \ lb\ \ N \ \ per\ \ ton\ = $5.99\ \ per\ \ ton\)
+
+Table 5. Example Fertilizer Prices
+
+Urea (46-0-0)
+$580
+
+MAP (11-52-0)
+$910
+
+Potash (0-0-60)
+$495
+
+Ammonium Sulfate/AMS (21-0-0-24)
+$500
+
+Zinc Sulfate (0-0-0-17-36)
+$2100
+
+However, we know that manure contains many nutrients besides nitrogen, so we need to repeat this process for all nutrients and add them together. Without going through all the math for each nutrient (and assuming the fertilizer prices listed at the right), the sample of manure listed above is worth about $25.75 per ton – accounting for nitrogen (N), phosphorus (P), potassium (K), sulfur (S), and zinc (Zn).
+
+Remember, we typically don’t apply just 1 ton per acre, so that makes manure a valuable part of our livestock and cropping operations.
+
+This worksheet is a guide to the math for calculating nutrient availability and the price of those nutrients per ton.
+
+Nutrient Needs
+
+The last and most important factor in valuing manure is whether the crop you are growing needs the nutrients that will be applied with the manure. If the crop doesn’t need nutrients or the soil has sufficient nutrients for the crop, those nutrients are not as valuable. So, looking at the soil test and knowing what crop will be grown following the manure application will make a big difference in the value of the manure.
+
+This article was reviewed by Javed Iqbal and Amy Schmidt.

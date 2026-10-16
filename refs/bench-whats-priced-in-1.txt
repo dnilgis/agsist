@@ -1,0 +1,57 @@
+# Benchmark whats-priced-in: Pro Farmer WASDE preview
+# https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton
+# fetched 2026-10-16T16:07:25Z, sha256 9e7ec4269def5e4dda63f4639a219bf64885696030aafa59bb12689bbe771a6f
+
+October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton - Pro Farmer
+
+Pro Farmer/News/Agriculture News
+
+October WASDE preview: Key metrics to watch for corn, soybeans, wheat and cotton
+
+All eyes are on whether USDA will cut new-crop corn yield toward the trade average of 177.8 bu. per acre—and what that means for ending stocks.
+
+By Spencer Langford
+
+•
+
+October 09, 2026 09:38 AM
+
+The grain market faces another deluge of data when USDA releases its latest production and supply-and-demand reports Friday morning.
+
+(Purdue)
+
+USDA’s monthly World Agricultural Supply and Demand Estimates (WASDE) and Crop Production reports are scheduled to be released simultaneously at 11 a.m. CT on Friday, October 9. Here’s a breakdown on what markets will be watching most heading in to the data dump:
+
+Corn
+
+Last week’s Quarterly Grain Stocks showed 2025-26 corn ending stocks at 2.095 billion bushels, up 173 million bushels from the September WASDE and will likely be very close to the figure printed in the October WASDE. A majority of that increase will be implemented by a reduction in feed and residual use. The agency also cut old-crop production by 57 million bushels after looking at all available data.
+
+In new-crop, yield looks to be the big driver of price action. The range of analyst estimates polled by Reuters is wide, stretching from 173.2 to 182.1 and an average value of 177.8 compared to USDA’s previous estimate of 178.5. With carry-in increased, a yield of 176.6 or lower along with stable demand would be needed to return to the stocks-to-use previously expected. In recent years, the September to October updates have been relatively quiet, averaging a change of 0.4 bushels. The longer-term 25 year average change shows 1.87 bushels as the standard adjustment, and thus that the reduction is not out of the realm of possibility.
+
+Since some categories like exports and residual typically move in proportion to total supply, a yield between 175 and 176 could be needed to truly reach the sub-10-percent mark again. The metric is a key determinant of the average cash price received, as seen in the chart below higher stocks-to-use ratios have a fairly direct relationship with cash prices. Of the three years in the past decade that have had a final stocks-to-use ratio of under 10%, only 1 has had the average farm price under $5.00.
+
+(USDA/Pro Farmer)
+
+Soybeans
+
+Beans received a relatively more friendly update from the Grain Stocks report. Old-crop ending stocks were cut 9.7 million to 315.1 million bushels as demand has continued to run hot, and should offer some small support ahead as stocks are tighter than realized.
+
+Last month’s report saw corn yields receive a cut while soybeans got a 0.1 bushel boost to yield. This past month has seen both corn and soybean ratings decline, though the drop in soybeans has only been 1%. Estimates were also spread across a wide range in soybean yields, with analyst estimates anywhere from 51.4 to 54.1 bushels per acre, and an average of 52.9. That would be another 0.1 bushel increase from the previous forecast.
+
+(Reuters)
+
+Wheat
+
+The supply side update on wheat was mostly settled in the Annual Small Grains Summary. Production was raised 3 million bushels, with winter wheat production being increased while spring wheat got a minor cut. As a result the average analyst sees ending stocks up roughly 4 million bushels.
+
+Exports from wheat have continued to be lackluster this marketing year. While part of that can be explained by the smaller crop size this season, the gap between realized exports and USDA’s expectations has widened in recent weeks. Be on the lookout for a potential reduction in the forecast for wheat exports if the agency doesn’t expect exports to pick up in the midst of a quickly strengthening U.S. dollar.
+
+(Reuters)
+
+Cotton
+
+Cotton markets have bounced from their recent lows in the area of 77 cents, but have continued to teeter on either side of the 80-cent mark since. A cut to production could act as a catalyst needed to get futures moving again. Condition ratings have slid to 33% good to excellent as of October 4, the lowest mark for the growing season. Heavy rains early in October have likely caused fiber quality issues and possibly yield declines in the Southeastern U.S. as well.
+
+Analysts expect a 230,000 bale production cut on average. While a production cut would likely lead to tighter ending stocks, cotton will still be limited by the lack of firm export interest from sizable buyers like China in the near-term.
+
+USDA Reports

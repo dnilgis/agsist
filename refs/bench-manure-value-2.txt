@@ -1,0 +1,51 @@
+# Benchmark manure-value: Penn State Manure Nutrient Value Calculator
+# https://agsci.psu.edu/assets/extension/manure-nutrient-value-calculator/
+# fetched 2026-10-16T16:08:04Z, sha256 32390c8c3be7b78ec9dac6fd98746ce6d29bf9d4b014daed032336d9091a48cf
+
+The economic value of nitrogen (N), phosphorus (P) and potassium (K) in manure is determined based on the amount of commercial fertilizer that the manure can replace.
+Therefore, the manure value is dependent on the manure nutrient analysis, the cost of commercial fertilizer, and the amount of commercial fertilizer that is needed to meet crop needs.
+The value of the nitrogen component of manure also depends on the nitrogen availability, which is affected by application management,
+including the season of application relative to when the crop will utilize the nitrogen and how quickly the manure is incorporated.
+Finally, the nutrients in manure only have value if they are replacing commercial fertilizer that would have been purchased in the
+abscence of the manure. For instance, on manure applied to legumes, which typically do not receive nitrogen fertilizer,
+there is no economic value to the nitrogen component of the manure. Similarly, if soil test levels are above optimum in P or K and
+no P or K fertilizer would have been purchased and applied for a given field, then the P or K component of the manure has no immediate economic
+value when applied to that field. This calculator determines the potential economic value of the manure if all N-P-K nutrients were to be fully utilized,
+the annual economic value in replacing recommended fertilizer requirements based on soil testing, and the manure breakeven price relative to fertilizer costs.
+
+Instructions for Using the Calculator
+
+1. Enter the nutrient analysis of the manure from a manure test in Box 1. Use analysis units of lbs/1000 gal for liquid manures
+and lbs/Ton for solid manures. Also enter the ammonium and organic N availability factors for the nitrogen components of the manure
+based on the application timing and incorporation management using availability factors in Table 1.2-12 of the Penn State Agronomy Guide. If the calculator is used
+outside of Pennsylvania, enter locally determined N availability factors.
+
+2. In Box 2, enter the recommended rates of N, P2O5, and K2O fertilizer for the crop to be grown based on a soil test. Then enter the costs of
+N, P, and K fertilizers. Costs should be entered in units of $/Ton of the product. Use the
+dropdown boxes to select different fertilizer types for each nutrient. Box 2 will calculate
+the value of each nutrient on a per pound basis, which will be used to determine the potential economic value of the manure.
+
+3. In Box 3, enter the planned manure application rate along with units (gal/ac or tons/ac). The potential economic value of the manure N-P-K
+at the planned application rate is calculated on a $/acre basis, as well as the annual fertilizer replacement value.
+A manure breakeven price is calculated to aid in determining whether manure can be sourced as a more economical option than fertilizer to meet the annual N-P-K recommendation.
+
+3. Manure N-P-K Economic Value
+
+Enter planned manure application rate and select units
+
+Rate
+
+Potential Economic Value per Acre
+
+The potential economic value of manure credits the full potential ability of the manure to meet the nutrient needs of crops in this year and future years.
+It credits the available ammonium N in the first year, and the total organic N, P2O5, and K2O applied by manure, regardless of the current crop requirements.
+It represents the value of the manure if all nutrients were to be fully utilized at some point in the future.
+
+Annual Fertilizer Replacement Value per Acre
+
+The annual fertilizer replacement value of manure credits the available ammonium N, available organic N, P2O5, and K2O applied by manure up to the amount of fertilizer recommended annually based on the soil test.
+
+Manure Breakeven Price
+
+The manure breakeven price is the price at which the cost of manure would equal the cost of annual fertilizer purchases.
+If manure can be sourced for below the breakeven price, then it will be cheaper than fertilizer purchases on an annual operating basis. If the cost of manure is greater than the breakeven price, it will be cheaper to purchase fertilizer to meet the annual crop needs.

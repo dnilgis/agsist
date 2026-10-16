@@ -1,0 +1,299 @@
+# Benchmark whats-priced-in: DTN Preview/Review
+# https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop
+# fetched 2026-10-16T16:07:28Z, sha256 32847d2a80449ca8802411e73471715bee8f642fea9d09753998b35f936f3456
+
+US Harvests Delayed, USDA to Gauge Crop Sizes
+
+By
+
+Rhett Montgomery
+,
+DTN Lead Analyst
+
+Connect with Rhett:
+
+@R_D_Montgomery
+
+USDA will release its October Crop Production and World Agricultural Supply and Demand Estimates (WASDE) reports at 11 a.m. CDT on Friday, Oct. 9. (Logo courtesy of USDA)
+
+USDA will release its October Crop Production and World Agricultural Supply and Demand Estimates (WASDE) reports at 11 a.m. CDT on Friday, Oct. 9. It's a quick turnaround for USDA, with two rounds of reports in 10 days, following the Sept. 30 releases. Meanwhile, the 2026 fall harvest has struggled to get off the ground with historic Midwest rainfall through September keeping producers out of the combine.
+
+CORN
+
+The corn market has been a roller coaster over the past few months. The bullish fundamentals took a hit on paper last week, with USDA's September stocks survey finding an additional 173 million bushels (mb) of old-crop corn reserves above what the agency had been estimating in recent WASDE reports. However, the market has already begun climbing back, as late September rainfall has delayed harvest and severely diminished crop conditions in some key growing areas in the central and western Corn Belt. On Friday, traders will be eager to see if USDA will acknowledge multiple growing season challenges with another cut to the national yield estimate.
+
+Beginning with what we know for certain: USDA will increase its beginning stocks estimate for 2026-27 from 1.922 billion bushels (bb) in the September WASDE to the 2.095 bb found in last week's stocks survey. As a result, the corn yield has roughly a 2-bushel-per-acre (bpa) cushion, assuming acreage remains unchanged. For Friday, the Dow Jones survey of 15 analytic firms has an average trade guess of 177.6 bpa for the national yield, which would be down 0.9 bpa from the September report if realized. There is a high degree of disagreement, however, with an almost 9 bpa difference between the lowest yield guess to the highest. Personally, I am using a 175 bpa yield, but I would also be shocked if USDA lowered it that much in one report. Since 2000, USDA has increased the yield in the October WASDE on 13 occasions, while decreasing it 10 times. On one occasion, the yield was unchanged, and there was no October WASDE in 2013 or 2025 due to government shutdowns. More recently, the report has been extremely quiet, averaging a 0.01 bpa decrease over the past 10 reports -- the largest increase being 1.9 bpa in 2017 and the largest decrease being 0.8 bpa in 2023. As a result, the expectation is for a modest decrease in U.S. corn production on Friday, with an average trade guess of 15.716 bb.
+
+Looking at the demand side of the balance sheet, it is likely that USDA will cut its 2025-26 feed and residual figure to explain the 173 mb of added corn stocks as of Sept. 1. There are some early demand concerns to be wary of for U.S. corn, notably corn export commitments, which are running over 30% behind 2025 through the first month of the marketing year. The average trade guess for 2026-27 corn ending stocks is 1.677 bb, a 110 mb increase from September if true. Using the aforementioned production and stocks estimates, this would imply 16.159 bb of corn demand for the 2026-27 season -- down from 16.180 bb in September with feed and residual or exports as the likely candidates for a cut.
+
+World corn adjustments should be minimal in Friday's update. There may be some fine-tuning to South American crops from the previous summer, with Argentina still a source of some speculation. Local agency estimates are well above what USDA has been publishing for the 2026 crop size. Otherwise, it is simply too early to say anything with confidence regarding the 2027 crops in Argentina and Brazil. In that sense, expect changes to the U.S. balance sheet to be directly reflected in changes to the world sheet. As with the most recent WASDE reports, the dynamics between Ukrainian exports and European production will be worth noting as well. The average trade guess is calling for 273.9 million metric tons (mmt) of ending world stocks on Friday, which would be up 1.8 mmt from September if realized.
+
+P[L1] D[0x0] M[300x250] OOP[F] ADUNIT[] T[]
+
+SOYBEANS
+
+After a brief down spell following the late September trade summit between President Donald Trump and President Xi Jinping of China, November soybeans are back over $13 this week, supported by yield and quality concerns for the significantly delayed U.S. crop, and poised to potentially challenge 2026 highs once again should Friday's USDA adjustments prove bullish.
+
+First things first, we can expect to see a 10 mb cut to beginning supplies for the 2026-27 season right off the bat because of the findings of USDA's September stocks survey. Since USDA's monthly crush came in 10 mb lower than the most recent WASDE estimate, it is likely that old-crop exports and seed/residual usage will see increases to explain the lower-than-expected inventories to begin the new year. As for the yield, it is interesting to see the average trade guess in the Dow Jones pre-report survey coming in a 10th of a bushel above September at 52.9 bpa -- although it should be noted that there is once again a very wide range of guesses from 51.4 to 54.1 bpa. I personally am now using a 51.7 bpa yield in my balance sheet. Since 2000, yield changes in the October WASDE are fairly evenly split -- with 11 instances of yield increases, 10 instances of yield cuts and three years with no changes across the 24 years with an October report. Like corn, the recent history of the report has featured subtle changes, with an average decrease of 0.06 bpa over the past 10 reports, with the largest cut being 1 bpa in 2019 and the largest increase being 0.9 bpa in 2021. Analyst expectations (per the Dow Jones survey) for total soybean production is 4.541 bb, up 6 mb from September and a U.S. record if realized.
+
+As for soybean demand, I've already discussed the old-crop expectations above. For new crop, I will be watching for another revision higher to exports. Commitments as of late September are still running almost double the same point in 2025, and USDA thus far is penciling only an 11% year-over-year increase. However, the Dow Jones survey seems to disagree, with the above production and stocks estimates and trade guess of 311 mb of soybean ending stocks in 2026-27 implying soybean usage of 4.570 bb, actually down 5 mb from September. I personally don't see a cut to demand as being likely, though no changes from September is certainly possible this early in the marketing year. Either way, should stocks fall at or above the September estimate of 310 mb, that could be a disappointment to soybean bulls holding near-record noncommercial length. Personally, I have stocks falling well below the 300 mb level should production slide and demand keep on its recent trajectory.
+
+World soybean news should feature very few, if any, changes on Friday. The 2026 soybean crops in South America are all but finalized at this point. Meanwhile, planting is still in the very early stages in Brazil and won't gain steam until November in Argentina. The key number to me for Friday is China's demand amid recent rumors of oversupply of soybeans among privately owned crushers. As for stocks, the Dow Jones average guess is for 123.8 mmt in 2026-27, down 200,000 mt from September if true.
+
+WHEAT
+
+It was a tough September for wheat prices, with Kansas City futures falling over $1 per bushel through the month as grain flows out of the Black Sea showed marginal improvement and diplomatic efforts for a ceasefire ramped up. However, the latter has fallen flat once again, and wheat prices look to have formed at least a short-term bottom in recent sessions after holding support near early August lows. On Friday, traders will again look to USDA for clues on how U.S. and world balance sheets will shape up through the year.
+
+Beginning with the U.S. sheet, we know from last week's Small Grains Summary that 2026 wheat production was pegged at 1.534 bb on a 48.1 bpa yield, both up from the September WASDE estimates despite another reduction in harvested area to 31.9 million acres. Any changes will likely come to the demand side of the balance sheet. Exports will be the category to watch, with first-quarter shipments (June through August) being the second lowest of the past 50 years behind 2023, which was a historically low year for U.S. wheat exports. As of late September, wheat export commitments are 31% behind the same point in 2025, with USDA's most recent forecasts calling for a 15% year-over-year drop. The analysts surveyed by Dow Jones see only small changes on Friday, with an average guess of 722 mb for 2026-27 ending wheat stocks in the U.S., which would be up 5 mb from September and mostly explained by the higher production found in last week's report.
+
+For the world wheat balance sheet, once again, attention will be on Russia and Ukrainian exports amid the ongoing closure of the Black Sea. Thus far, USDA has softened the blow of lower Black Sea region exports by increasing the shares of world trade for other major producers such as Canada, Argentina and Australia. However, it is now unclear how much further production can feasibly be stretched in those countries to support the idea of higher exports. For Friday, the Dow Jones survey is calling for 276.8 mmt of world wheat stocks in 2026-27, up half a million mt from September. But I would repeat my word of caution from recent WASDE reports in that the ending stocks estimate currently is misleading and skewed by rising Black Sea reserves, which have no outlet despite active demand and very inexpensive prices.
+
+**
+
+Join us for DTN's post-report webinar at 12:30 p.m. CDT on Friday, Oct. 9, as we discuss USDA's new estimates in light of recent market events. Questions are welcome, and registrants will receive a replay link for viewing at their convenience. Register here for Friday's USDA WASDE webinar: https://www.dtn.com/….
+
+U.S. PRODUCTION (Million Bushels) 2026-27
+
+Oct
+
+Avg
+
+High
+
+Low
+
+Sep
+
+2025-26
+
+Corn
+
+15,716
+
+16,115
+
+15,344
+
+15,800
+
+17,021
+
+Soybeans
+
+4,541
+
+4,648
+
+4,415
+
+4,535
+
+4,262
+
+U.S. AVERAGE YIELD (Bushels Per Acre) 2026-27 (WASDE)
+
+Oct
+
+Avg
+
+High
+
+Low
+
+Sep
+
+2025-26
+
+Corn
+
+177.6
+
+182.1
+
+173.2
+
+178.5
+
+186.5
+
+Soybeans
+
+52.9
+
+54.1
+
+51.4
+
+52.8
+
+53.0
+
+U.S. HARVESTED ACRES (Million Acres) 2026-27
+
+Oct
+
+Avg
+
+High
+
+Low
+
+Sep
+
+2025-26
+
+Corn
+
+88.5
+
+88.6
+
+88.1
+
+88.5
+
+91.3
+
+Soybeans
+
+85.8
+
+85.9
+
+85.5
+
+85.9
+
+80.4
+
+U.S. ENDING STOCKS (Million Bushels) 2026-27
+
+Oct
+
+Avg
+
+High
+
+Low
+
+Sep
+
+Corn
+
+1,677
+
+1,895
+
+1,522
+
+1,567
+
+Soybeans
+
+311
+
+358
+
+245
+
+310
+
+Wheat
+
+722
+
+750
+
+701
+
+717
+
+WORLD ENDING STOCKS (million metric tons) 2025-26
+
+Oct
+
+Avg
+
+High
+
+Low
+
+Sep
+
+Corn
+
+299.9
+
+310.5
+
+273.0
+
+301.4
+
+Soybeans
+
+125.2
+
+127.4
+
+123.0
+
+125.3
+
+Wheat
+
+280.4
+
+281.0
+
+279.0
+
+280.6
+
+WORLD ENDING STOCKS (million metric tons) 2026-27
+
+Oct
+
+Avg
+
+High
+
+Low
+
+Sep
+
+Corn
+
+273.9
+
+279.8
+
+272.0
+
+272.1
+
+Soybeans
+
+123.8
+
+126.0
+
+121.7
+
+124.0
+
+Wheat
+
+276.8
+
+279.6
+
+275.0
+
+276.3
+
+Rhett Montgomery can be reached at rhett.montgomery@dtn.com
+
+Follow him on social platform X @R_D_Montgomery
+
+(c) Copyright 2026 DTN, LLC. All rights reserved.

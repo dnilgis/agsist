@@ -1,0 +1,55 @@
+# Benchmark whats-priced-in: DTN report review
+# https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/09/october-wasdes-shocking-rise-corn
+# fetched 2026-10-16T16:07:31Z, sha256 1ad22df18b1cf04c1ca3c3949e5a937849250d1b975870f07c9b7195900fa7f3
+
+October WASDE's Shocking Rise in Corn Yield, Production Sends Futures Briefly Limit Down
+
+By
+
+Dana Mantini
+,
+Senior Market Analyst
+
+The chart above shows the daily chart for December 2026 corn, showing the dramatic bearish reaction to the shocking yield data on Friday's WASDE report. (DTN ProphetX chart)
+
+In its October 2026 World Agricultural Supply and Demand Estimates (WASDE) and Crop Production reports, USDA shocked traders and sent the long and wrong funds running for the exit door.
+
+Here is a look at some of the changes in both U.S. and world numbers in USDA's October Crop Production and WASDE reports, starting with corn:
+
+CORN:
+
+With the pre-report Dow Jones survey showing an average yield estimate of 177.7 bpa and production of 15.716 bb -- both lower than the September WASDE, the USDA instead shocked traders with a sharp increase in both yield and production. The 181.1 bpa yield figure was 2.7 bpa higher than September and 3.6 bpa above the Dow Jones estimate. Likewise, production of 16.034 billion bushels was 234 mb above the September report and 318 mb above the average trade estimate. After some of the hottest temperatures in July during pollination, followed by the deluge of rain in many western and central belt areas in September, and ongoing heat and dryness in the south and the northern Plains, we had become accustomed to analyst and news media calls for a fall in yield and condition in corn. Talk of disease, such as crown rot, made the rounds on social media daily. And that may indeed prove to be true ultimately, but in the meantime, we must trade the USDA data. There are serious questions post-report about yields for both Nebraska and Iowa, and at the time of the data collection, the corn and soy harvests were well behind the average pace.
+
+One thing to note is that the DTN Digital Yield Tour results came out and also indicated a rise in corn yield from September; though not as dramatic, the 1.1 bpa rise in yield put the tour average at 179.5 bpa and above most trade estimates. The tour showed decreases in 6 of the 11 states, including Minnesota and Wisconsin. Notable changes from September to October included a large increase in South Dakota and the opposite in North Dakota. To read more about the DTN Digital Yield Tour, see Senior Crops Editor Jason Jenkins' article here: https://www.dtnpf.com/….
+
+The other changes made in Friday's USDA report were an increase in corn usage, comprised of a 25 mb rise in corn exports along with a 50 mb increase in both feed and residual and ethanol usage. The net result of the latest shock and awe report from the USDA was a rise in U.S. corn ending stocks by 282 mb to 1.849 billion bushels. The season-average price on corn was reduced by 10 cents per bushel to $4.70 per bushel. On the world front, ending stocks rose by 8.3 mmt (327 mb) to 280.4 mmt (11.04 bb), with the U.S. accounting for the lion's share of that increase (just over 7 mmt). EU corn production was reduced from 50.6 mmt (1.97 bb) to 48 mmt (1.89 bb), and Mexico's production was lowered modestly. Argentina's ending corn stocks were raised 1 mmt to 5 mmt 197 (mb).
+
+P[L1] D[0x0] M[300x250] OOP[F] ADUNIT[] T[]
+
+While corn did end up trading limit-down for a brief period, it was able to come back a bit at the end. December corn finished down 20 1/2 cents at $4.79 3/4.
+
+SOYBEANS:
+
+Soybean changes on the October USDA and WASDE report were much less drastic, but the reaction was equally as bearish early, with soybeans and wheat joining the bearish corn parade. The soy report was neutral to slightly bearish. With Dow Jones traders looking for a minor increase in the soy yield of 0.1 bpa to 52.9 bpa, the USDA printed a record yield of 53.1 bpa -- up 0.3 bpa from September. The resulting production was also a new record, at 4.562 billion bushels -- up 27 mb from September. While beginning stocks were down 10 mb to 315 mb, exports were increased by another 10 mb to 1.695 bb to account for soy commitments being up 80% from last year at this time, thanks to China. The 2026-27 ending stocks were estimated to be up 5 mb at 315 mb, with the season average price unchanged at $12.00 per bushel. As in corn, throughout the chaotic growing season we had heard plenty of chatter and real evidence of off-color beans and other disease, with standing water in many fields. This report sure did not take into account that issue, but the harvest was just less than 25% done during the survey.
+
+To compare, the DTN Digital Yield Tour forecast a minor fall in soybean yield in October, to 52.2 bpa -- down 0.1 bpa from the tour's September finding. The soybean yield increased from September to October in 7 of 11 states, with the most notable being Nebraska, after beneficial rain, rising from 58.6 bpa to 61.1 bpa. The other side of the coin was Kansas, where the estimate fell 1.7 bpa to just 35 bpa. There were few notable changes on the world side, with world ending stocks rising by just 0.3 mmt to 124.3 mmt (4.6 bb). On another note, the WASDE forecast a sharp fall of 2.5 mmt in palm oil production to the lowest since 2017-18 due to dryness. Soybeans shook off the early bearish reaction to close higher for the day along with the surging soybean meal market.
+
+November soybeans finished up 4 1/2 cents at $12.94 but rallied more than 22 cents above the morning low.
+
+WHEAT:
+
+Wheat changes on the October USDA production and WASDE report were overall minor, but the reaction was bearish as ending stocks rose on the heels of slightly higher production and lower exports. U.S. all-wheat production rose to 1.534 bb as yield increased from 47.8 bpa to 48.1 bpa and is still the smallest wheat production since 1970. However, with U.S. wheat export commitments down over 32% from a year ago, USDA chose to cut exports by 25 mb to 750 mb. Feed and residual was increased by 10 mb to 90 mb. The net effect was a rise in ending stocks of 23 mb to 740 mb. Of that, hard red winter ending stocks rose by 14 mb to 333 mb as exports remain slow. Dow Jones traders had been looking for 18 mb less than the 740 mb carryout. The season average price was lowered by a dime to $6.30 per bushel.
+
+On the world front, some notable changes include EU wheat production falling by 800,000 mt, with Canada and Turkey production both rising by 500,000 mt to 36.5 mmt (1.34 bb) and 23 mmt (845 mb), respectively. Both Argentine and Canadian wheat exports rose by 500,000 mt each, while Russia's exports were lowered by 3 mmt to just 40 mmt (1.47 bb), the lowest in five years. Other changes include feed use of wheat rising by 1 mmt each in China and the EU. Global ending stocks on wheat were little changed at 276 mmt (10.14 bb).
+
+December Kansas City wheat finished 17 cents lower at $7.19 1/4 with Chicago spot wheat off 12 cents.
+
+Final Thoughts:
+
+In short, the October USDA and WASDE report seemed to go against the grain of in-field and media reports suggesting that wet September weather and earlier hot and dry weather wreaked havoc with the corn and soy crops. So, Friday's shocking yield rise, especially in corn, came as a surprise to many. The jury is certainly still out, with probably 50% to 60% of the crop left to collect, but the always surprising and unpredictable USDA hit traders with a bearish surprise that few expected on Friday.
+
+Dana Mantini can be reached at dana.mantini@dtn.com
+
+Follow Dana Mantini on Twitter @mantini_r
+
+(c) Copyright 2026 DTN, LLC. All rights reserved.

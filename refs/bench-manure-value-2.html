@@ -1,0 +1,443 @@
+<head>
+<script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+</head>
+
+<body onload="javascript:CalculateValue()" onresize="javascript:CalculateValue()">
+
+<div class="row" style="margin:2%">
+
+
+<p>The economic value of nitrogen (N), phosphorus (P) and potassium (K) in manure is determined based on the amount of commercial fertilizer that the manure can replace.
+  Therefore, the manure value is dependent on the manure nutrient analysis, the cost of commercial fertilizer, and the amount of commercial fertilizer that is needed to meet crop needs.
+  The value of the nitrogen component of manure also depends on the nitrogen availability, which is affected by application management,
+  including the season of application relative to when the crop will utilize the nitrogen and how quickly the manure is incorporated.
+  Finally, the nutrients in manure only have value if they are replacing commercial fertilizer that would have been purchased in the
+  abscence of the manure.  For instance, on manure applied to legumes, which typically do not receive nitrogen fertilizer,
+  there is no economic value to the nitrogen component of the manure.  Similarly, if soil test levels are above optimum in P or K and
+  no P or K fertilizer would have been purchased and applied for a given field, then the P or K component of the manure has no immediate economic
+  value when applied to that field.  This calculator determines the potential economic value of the manure if all N-P-K nutrients were to be fully utilized,
+  the annual economic value in replacing recommended fertilizer requirements based on soil testing, and the manure breakeven price relative to fertilizer costs.<p>
+
+  <h2>Instructions for Using the Calculator</h2>
+  <p>1. Enter the nutrient analysis of the manure from a manure test in Box 1.  Use analysis units of lbs/1000 gal for liquid manures
+    and lbs/Ton for solid manures.  Also enter the ammonium and organic N availability factors for the nitrogen components of the manure
+    based on the application timing and incorporation management using availability factors in Table 1.2-12 of the Penn State Agronomy Guide.  If the calculator is used
+  outside of Pennsylvania, enter locally determined N availability factors.</p>
+
+  <p> 2. In Box 2, enter the recommended rates of N, P2O5, and K2O fertilizer for the crop to be grown based on a soil test.  Then enter the costs of
+    N, P, and K fertilizers.  Costs should be entered in units of $/Ton of the product.  Use the
+    dropdown boxes to select different fertilizer types for each nutrient.  Box 2 will calculate
+  the value of each nutrient on a per pound basis, which will be used to determine the potential economic value of the manure. </p>
+
+    <p>3. In Box 3, enter the planned manure application rate along with units (gal/ac or tons/ac).  The potential economic value of the manure N-P-K
+      at the planned application rate is calculated on a $/acre basis, as well as the annual fertilizer replacement value.
+      A manure breakeven price is calculated to aid in determining whether manure can be sourced as a more economical option than fertilizer to meet the annual N-P-K recommendation.</p>
+
+</div>
+
+<div class="row">
+      <form name ="Manure Inputs" id="ManureInputs_frm" >
+
+      <div class="row" style="width:95%; margin:1%; float:left; border-style: solid; border-radius: 10px; background: rgba(0,126,179,.1); padding:10px">
+      <div class="row" style="float:left; width:100%">
+        <h2>1. Manure Nutrient Analysis and N Availability</h2>
+        <label>Enter values from a manure analysis in lbs/1000 gal or lbs/Ton</label>
+
+        <div class="row" style="width:95%; margin:1%; float:left;">
+            <div class="column" style="width:175px; margin:0% 1%; float:left;">
+              <p></p>
+              <label style="font-size: 24px;" for="ManureNH4N"><b>Ammonium N</b></label>
+
+              </div>
+            <div class="column" style="margin:0% 1%; float:left;">
+                  <input type="number" value="0" name="ManureNH4N" id="ManureNH4N" onchange="CalculateValue()">
+            </div>
+        </div>
+
+
+
+        <div class="row" style="width:95%; margin:1%; float:left;">
+            <div class="column" style="width:175px; margin:0% 1%; float:left;">
+              <p></p>
+              <label style="font-size: 24px;" for="ManureOrgN"><b>Organic N</b></label>
+
+
+            </div>
+            <div class="column" style="margin:0% 1%; float:left;">
+              <input type="number" value="0" name="ManureOrgN" id="ManureOrgN" onchange="CalculateValue()">
+            </div>
+        </div>
+
+
+        <div class="row" style="width:95%; margin:1%; float:left;">
+            <div class="column" style="width:175px; margin:0% 1%; float:left;">
+              <p></p>
+              <label style="font-size: 24px;" for="ManureP"><b>P2O5</b></label>
+
+
+            </div>
+            <div class="column" style="margin:0% 1%; float:left;">
+              <input type="number" value="0" name="ManureP" id="ManureP" onchange="CalculateValue()">
+            </div>
+        </div>
+
+
+
+        <div class="row" style="width:95%; margin:1%; float:left;">
+            <div class="column" style="width:175px; margin:0% 1%; float:left;">
+              <p></p>
+              <label style="font-size: 24px;" for="ManureK"><b>K2O</b></label>
+
+
+            </div>
+            <div class="column" style="margin:0% 1%; float:left;">
+              <input type="number" value="0" name="ManureK" id="ManureK" onchange="CalculateValue()">
+            </div>
+        </div>
+        </div>
+
+        <div class="row" style="width:95%; margin:1%; float:left;">
+          <label>Enter manure nitrogen availability factors from the Penn State Agronomy Guide Table 1.2-12 or use other regionally appropriate availability factors</label>
+
+          <div class="row" style="width:95%; margin:1%; float:left;">
+              <div class="column" style="width:300px; margin:0% 1%; float:left;">
+                <p></p>
+                <label style="font-size: 24px;" for="ManureNH4NAvailability"><b>Ammonium N Availability</b></label>
+
+                </div>
+              <div class="column" style="margin:0% 1%; float:left;">
+                <input type="number" value="0" min="0" max="1" step="0.05" name="ManureNH4NAvailability" id="ManureNH4NAvailability" onchange="CalculateValue()">
+
+              </div>
+          </div>
+
+
+          <div class="row" style="width:95%; margin:1%; float:left;">
+              <div class="column" style="width:300px; margin:0% 1%; float:left;">
+                <p></p>
+                <label style="font-size: 24px;" for="ManureOrgNAvailability"><b>Organic N Availability</b></label>
+
+                </div>
+              <div class="column" style="margin:0% 1%; float:left;">
+                <input type="number" value="0" min="0" max="1" step="0.05" name="ManureOrgNAvailability" id="ManureOrgNAvailability" onchange="CalculateValue()">
+
+              </div>
+          </div>
+
+
+        </div>
+
+      </div>
+</form>
+
+  <div class="row" style="width:95%; margin:1%; float:left; border-style: solid; border-radius: 10px; background: rgba(0,126,179,.1); padding:10px">
+        <form name ="Fertilizer" id="Fertilizer" >
+                <h2>2. Soil Test Recommendations and Fertilizer Costs</h2>
+
+                <div class="row" style="float:left; width:95%">
+
+                      <p style="font-size: 16px; font-weight: bold;"><u>Fertilizer Recommendations Based on Soil Test</u></p>
+                      <div class="column" style="float:left; width:30%; margin:0% 1%;">
+                        <label for="N_Recommendation"><b>N (lbs/ac)</b></label>
+                        <input type="number" value="0" name="N_Recommendation_Form" id="N_Recommendation_Form" onchange="CalculateValue()">
+                      </div>
+
+                      <div class="column" style="float:left; width:30%; margin:0% 1%;">
+                        <label for="P_Recommendation"><b>P2O5 (lbs/ac)</b></label>
+                        <input type="number" value="0" name="P_Recommendation_Form" id="P_Recommendation_Form" onchange="CalculateValue()">
+                      </div>
+
+                      <div class="column" style="float:left; width:30%; margin:0% 1%;">
+                        <label for="K_Recommendation"><b>K2O (lbs/ac)</b></label>
+                        <input type="number" value="0" name="K_Recommendation_Form" id="K_Recommendation_Form" onchange="CalculateValue()">
+                      </div>
+
+                  </div>
+
+
+                <div class="row" style="float:left; width:95%">
+                  <p style="font-size: 16px; font-weight: bold;"><u>Fertilizer Product Costs</u></p>
+
+
+                      <div class="column" style="float:left; width:40%; margin:0% 2%;">
+                      <label><b>Nitrogen Fertilizer</b></label>
+                              <select name="N_Fert_Type_Form" id="N_Fert_Type_Form" onchange="CalculateValue()">
+                                <option value="Urea">Urea (46-0-0)</option>
+                                <option value="UAN">UAN Solution (30-0-0)</option>
+                              </select>
+                      </div>
+
+                      <div class="column" style="float:left; width:15%; margin:0% 2%;">
+                        <label for="N_Fert_Cost_Form"><b>Cost ($/Ton)</b></label>
+                        <input type="number" value="0" name="N_Fert_Cost_Form" id="N_Fert_Cost_Form" onchange="CalculateValue()">
+                      </div>
+
+
+                      <div class="column" style="float:left; width:25%; margin:0% 2%;"><label for="N_Fert_Value_Form"><b>Value</b></label>
+                        <div style="font-size:      28px; font-weight: bold;" id="N_Fert_Value_Form">
+                        </div>
+                      </div>
+                  </div>
+
+
+                  <div class="row" style="float:left; width:95%">
+
+
+                        <div class="column" style="float:left; width:40%; margin:2%">
+                        <label><b>Phosphorus Fertilizer</b></label>
+                                <select name="P_Fert_Type_Form" id="P_Fert_Type_Form" onchange="CalculateValue()">
+                                  <option value="MAP">MAP (11-52-0)</option>
+                                  <option value="DAP">DAP (18-46-0)</option>
+                                </select>
+                        </div>
+
+                        <div class="column" style="float:left; width:15%; margin:2%;">
+                          <label for="P_Fert_Cost_Form"><b>Cost ($/Ton)</b></label>
+                          <input type="number" value="0" name="P_Fert_Cost_Form" id="P_Fert_Cost_Form" onchange="CalculateValue()">
+                        </div>
+
+
+                        <div class="column" style="float:left; width:25%; margin:0% 2%;">
+                          <label for="P_Fert_Value_Form">
+                            <b>Value </b>
+                            <a href="#P_ProductPopupInfo" data-rel="popup" data-transition="pop" class="my-tooltip-btn ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext" title="Click for more info"></a>
+                          </label>
+
+                          <div data-role="popup" id="P_ProductPopupInfo" class="ui-content" data-theme="a" style="max-width:350px;">
+                             If N fertilizer is recommended and an N fertilizer cost is entered, the value of any N contained in P fertilizers is subtracted before determining the cost of P.
+                          </div>
+
+                          <div style="font-size:      28px; font-weight: bold;"  id="P_Fert_Value_Form">
+
+                          </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="row" style="float:left; width:95%">
+
+
+                          <div class="column" style="float:left; width:40%; margin:0% 2%">
+                          <label><b>Potassium Fertilizer</b></label>
+                                  <select name="K_Fert_Type_Form" id="K_Fert_Type_Form" onchange="CalculateValue()">
+                                    <option value="Potash">Muriate of Potash (0-0-60)</option>
+                                  </select>
+                          </div>
+
+                          <div class="column" style="float:left; width:15%; margin:0% 2%;">
+                            <label for="K_Fert_Cost_Form"><b>Cost ($/Ton)</b></label>
+                            <input type="number" value="0" name="K_Fert_Cost_Form" id="K_Fert_Cost_Form" onchange="CalculateValue()">
+                          </div>
+
+
+                          <div class="column" style="float:left; width:25%; margin:0% 2%;"><label for="K_Fert_Value_Form"><b>Value</b></label>
+                            <div style="font-size:      28px; font-weight: bold;" id="K_Fert_Value_Form">
+                            </div>
+                          </div>
+                      </div>
+              </form>
+              </div>
+
+                <div class="row" style="width:95%; margin:1%; margin:1%; float:left; border-style: solid; border-radius: 10px; background: rgba(0,126,179,.1); padding:10px">
+                  <h2>3. Manure N-P-K Economic Value</h2>
+                  <label>Enter planned manure application rate and select units</label>
+
+                  <div class="row" style="width:95%">
+                      <div class="column" style="width:50px; margin:0% 1%; float:left;">
+                        <p></p>
+                        <label style="font-size: 24px;" for="ManureRate"><b>Rate</b></label>
+
+                        </div>
+                      <div class="column" style="width:100px; margin:0% 1%; float:left;">
+                            <input type="number" value="0" name="ManureRate" id="ManureRate" onchange="CalculateValue()">
+                      </div>
+                      <div class="column" style="float:left; width:150px; margin:0% 1%">
+
+                              <select name="Rate_Units" id="Rate_Units" onchange="CalculateValue()">
+                                <option value="gallons">gal/ac</option>
+                                <option value="tons">tons/ac</option>
+                              </select>
+                      </div>
+
+
+                  </div>
+
+                  <div class="row" style="width:95%; float:left">
+                    <div class="column" style="width:95%; margin:0% 1%; float:left;">
+                        <label style="font-size: 24px; font-weight: bold;">Potential Economic Value per Acre
+                          <a href="#CompleteValue_PopupInfo" data-rel="popup" data-transition="pop" class="my-tooltip-btn ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext" title="Click for more info"></a>
+                        </label>
+
+                        <div data-role="popup" id="CompleteValue_PopupInfo" class="ui-content" data-theme="a" style="max-width:350px;">
+                          The potential economic value of manure credits the full potential ability of the manure to meet the nutrient needs of crops in this year and future years.
+                          It credits the available ammonium N in the first year, and the total organic N, P2O5, and K2O applied by manure, regardless of the current crop requirements.
+                          It represents the value of the manure if all nutrients were to be fully utilized at some point in the future.
+                        </div>
+
+                        <div style="font-size:      20px;  padding-left:10px"  id="ManureNValue_Form">
+                        </div>
+
+                        <div style="font-size:      20px;  padding-left:10px"  id="ManurePValue_Form">
+                        </div>
+
+                        <div style="font-size:      20px;  text-decoration:underline; padding-left:10px"  id="ManureKValue_Form">
+                        </div>
+
+                        <div style="font-size:      28px; font-weight: bold; padding-left:10px"  id="ManureTotalValue_Form">
+                        </div>
+
+                        <p></p>
+
+                        <label style="font-size: 24px; font-weight: bold;">Annual Fertilizer Replacement Value per Acre
+                          <a href="#AnnualValue_PopupInfo" data-rel="popup" data-transition="pop" class="my-tooltip-btn ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext" title="Click for more info"></a>
+                        </label>
+
+                        <div data-role="popup" id="AnnualValue_PopupInfo" class="ui-content" data-theme="a" style="max-width:350px;">
+                                                     The annual fertilizer replacement value of manure credits the available ammonium N, available organic N, P2O5, and K2O applied by manure up to the amount of fertilizer recommended annually based on the soil test.
+                        </div>
+
+                        <div style="font-size:      20px;  padding-left:10px"  id="AnnManureNValue_Form">
+                        </div>
+
+                        <div style="font-size:      20px;  padding-left:10px"  id="AnnManurePValue_Form">
+                        </div>
+
+                        <div style="font-size:      20px;  text-decoration:underline; padding-left:10px"  id="AnnManureKValue_Form">
+                        </div>
+
+                        <div style="font-size:      28px; font-weight: bold; padding-left:10px;"  id="AnnManureTotalValue_Form">
+                        </div>
+
+                        <p></p>
+
+                        <label style="font-size: 24px; font-weight: bold;">Manure Breakeven Price
+                          <a href="#ManureBreakeven_PopupInfo" data-rel="popup" data-transition="pop" class="my-tooltip-btn ui-btn ui-alt-icon ui-nodisc-icon ui-btn-inline ui-icon-info ui-btn-icon-notext" title="Click for more info"></a>
+                        </label>
+
+                        <div data-role="popup" id="ManureBreakeven_PopupInfo" class="ui-content" data-theme="a" style="max-width:350px;">
+                                                     The manure breakeven price is the price at which the cost of manure would equal the cost of annual fertilizer purchases.
+                                                      If manure can be sourced for below the breakeven price, then it will be cheaper than fertilizer purchases on an annual operating basis.  If the cost of manure is greater than the breakeven price, it will be cheaper to purchase fertilizer to meet the annual crop needs.
+                        </div>
+                        <div style="font-size:      28px; font-weight: bold; padding-left:10px"  id="ManureBreakeven_Form">
+                        </div>
+                      </div>
+                  </div>
+
+                </div>
+
+
+
+
+
+<script type="text/javascript">
+
+function CalculateValue(){
+
+       var N_Recommendation = document.getElementById ('N_Recommendation_Form').value
+       var P_Recommendation = document.getElementById ('P_Recommendation_Form').value
+       var K_Recommendation = document.getElementById ('K_Recommendation_Form').value
+       var N_Fert_Type = document.getElementById ('N_Fert_Type_Form').value
+       var N_Fert_Cost = document.getElementById ('N_Fert_Cost_Form').value
+       var N_Fert_Value = 0;
+       var P_Fert_Type = document.getElementById ('P_Fert_Type_Form').value
+       var P_Fert_Cost = document.getElementById ('P_Fert_Cost_Form').value
+       var P_Fert_Value = 0;
+       var K_Fert_Type = document.getElementById ('K_Fert_Type_Form').value
+       var K_Fert_Cost = document.getElementById ('K_Fert_Cost_Form').value
+       var K_Fert_Value = 0;
+       var ManureNH4N = document.getElementById ('ManureNH4N').value
+       var ManureOrgN = document.getElementById ('ManureOrgN').value
+       var ManureP = document.getElementById ('ManureP').value
+       var ManureK = document.getElementById ('ManureK').value
+       var ManureNH4NAvailability = document.getElementById ('ManureNH4NAvailability').value
+       var ManureOrgNAvailability = document.getElementById ('ManureOrgNAvailability').value
+       var ManureAvailableNH4=0;
+       var ManureAvailableOrgN=0;
+       var ManureCompleteN=0;
+       var ManureAvailableTotalN = 0;
+       var ManureNValue = 0;
+       var ManurePValue = 0;
+       var ManureKValue = 0;
+       var ManureTotalValue = 0;
+       var ManureRate = document.getElementById ('ManureRate').value;
+       var Rate_Units = document.getElementById ('Rate_Units').value;
+       var AnnManureNValue = 0;
+       var AnnManurePValue = 0;
+       var AnnManureKValue = 0;
+       var AnnManureTotalValue = 0;
+
+  if (Rate_Units == "gallons")
+      ManureRate = ManureRate/1000;
+
+	if (N_Fert_Type == "Urea")
+		N_Fert_Value = N_Fert_Cost / (2000 *0.46);
+  if (N_Fert_Type == "UAN")
+    N_Fert_Value = N_Fert_Cost / (2000 * 0.30);
+
+	document.getElementById('N_Fert_Value_Form').innerHTML =
+          "$"+Math.max(N_Fert_Value,0).toFixed(2)+"/lb N";
+
+  if (P_Fert_Type == "MAP")
+    P_Fert_Value = Math.max((P_Fert_Cost - (2000*0.11*N_Fert_Value*(N_Recommendation>0))) / (2000 *0.52),0);
+  if (P_Fert_Type == "DAP")
+    P_Fert_Value = Math.max((P_Fert_Cost - (2000*0.18*N_Fert_Value*(N_Recommendation>0))) / (2000 *0.46),0);
+
+  document.getElementById('P_Fert_Value_Form').innerHTML =
+          "$"+Math.max(P_Fert_Value,0.00).toFixed(2)+"/lb P2O5";
+
+  if (K_Fert_Type == "Potash")
+    var K_Fert_Value = K_Fert_Cost / (2000 *0.60);
+
+  document.getElementById('K_Fert_Value_Form').innerHTML =
+          "$"+Math.max(K_Fert_Value,0.00).toFixed(2)+"/lb K2O";
+
+  ManureAvailableNH4 = ManureNH4N * ManureNH4NAvailability;
+  ManureAvailableOrgN = ManureOrgN * ManureOrgNAvailability;
+  ManureAvailableTotalN = ManureAvailableNH4 + ManureAvailableOrgN;
+
+  ManureCompleteN = +ManureOrgN + ManureAvailableNH4;
+  ManureNValue = ManureCompleteN * N_Fert_Value * ManureRate;
+  ManurePValue = ManureP * P_Fert_Value  * ManureRate;
+  ManureKValue = ManureK * K_Fert_Value  * ManureRate;
+  ManureTotalValue = ManureNValue + ManureKValue + ManurePValue;
+  document.getElementById('ManureNValue_Form').innerHTML =
+          Math.round(ManureCompleteN* ManureRate) + " lbs N x " + "$"+ Math.max(N_Fert_Value,0).toFixed(2)+"/lb N = $"+ (Math.round(ManureNValue*100)/100).toFixed(2);
+  document.getElementById('ManurePValue_Form').innerHTML =
+          Math.round(ManureP* ManureRate) +" lbs P2O5 x " + "$"+ Math.max(P_Fert_Value,0).toFixed(2)+"/lb P2O5 = $"+ (Math.round(ManurePValue*100)/100).toFixed(2);
+  document.getElementById('ManureKValue_Form').innerHTML =
+          Math.round(ManureK* ManureRate) +" lbs K2O x " + "$"+ Math.max(K_Fert_Value,0).toFixed(2)+"/lb K2O = $"+ (Math.round(ManureKValue*100)/100).toFixed(2);
+  document.getElementById('ManureTotalValue_Form').innerHTML =
+          "Total Potential Value = $"+ (Math.round(ManureTotalValue*100)/100).toFixed(2) + "/ac";
+
+  AnnManureNValue = Math.min(ManureAvailableTotalN*ManureRate, N_Recommendation) * N_Fert_Value;
+  AnnManurePValue = Math.min(ManureP*ManureRate, P_Recommendation) * P_Fert_Value  ;
+  AnnManureKValue = Math.min(ManureK*ManureRate, K_Recommendation) * K_Fert_Value;
+  AnnManureTotalValue = AnnManureNValue + AnnManureKValue + AnnManurePValue;
+
+  document.getElementById('AnnManureNValue_Form').innerHTML =
+          Math.round(Math.min(ManureAvailableTotalN*ManureRate, N_Recommendation)) + " lbs N x " + "$"+ Math.max(N_Fert_Value,0).toFixed(2)+"/lb N = $"+ (Math.round(AnnManureNValue*100)/100).toFixed(2);
+  document.getElementById('AnnManurePValue_Form').innerHTML =
+          Math.round(Math.min(ManureP*ManureRate, P_Recommendation)) +" lbs P2O5 x " + "$"+ Math.max(P_Fert_Value,0).toFixed(2)+"/lb P2O5 = $"+ (Math.round(AnnManurePValue*100)/100).toFixed(2);
+  document.getElementById('AnnManureKValue_Form').innerHTML =
+          Math.round(Math.min(ManureK*ManureRate, K_Recommendation)) +" lbs K2O x " + "$"+ Math.max(K_Fert_Value,0).toFixed(2)+"/lb K2O = $"+ (Math.round(AnnManureKValue*100)/100).toFixed(2);
+  document.getElementById('AnnManureTotalValue_Form').innerHTML =
+          "Total Annual Value = $"+ (Math.round(AnnManureTotalValue*100)/100).toFixed(2) + "/ac";
+
+  if (ManureRate == 0 )
+    document.getElementById('ManureBreakeven_Form').innerHTML = "= $0";
+  else if (Rate_Units == "gallons")
+      document.getElementById('ManureBreakeven_Form').innerHTML =
+          "= $"+ (Math.round(AnnManureTotalValue/ManureRate*100)/100).toFixed(2) + "/1000 gal";
+          else
+          document.getElementById('ManureBreakeven_Form').innerHTML =
+              "= $"+ (Math.round(AnnManureTotalValue/ManureRate*100)/100).toFixed(2) + "/Ton";
+
+
+}
+
+</script>
+</body>

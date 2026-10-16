@@ -1,0 +1,115 @@
+# Benchmark harvest-price-tracker: farmdoc
+# https://farmdocdaily.illinois.edu/2026/03/projected-prices-and-volatility-factors-for-2026.html
+# fetched 2026-10-16T16:07:49Z, sha256 fcb615d4e50ecd3eda8e5ac429b3f9fe47a2d20d669853ab64d52496964429cc
+
+Projected Prices and Volatility Factors for 2026 - farmdoc daily
+
+Share This
+
+-
+
+Twitter
+
+-
+
+Facebook
+
+-
+
+LinkedIn
+
+download PDF
+
+Weekly Farm Economics
+
+- Nick Paulson, Gary Schnitkey, Henrique Monaco, and Bruce Sherrick
+
+- Department of Agricultural and Consumer Economics
+
+- University of Illinois
+
+- Carl Zulauf
+
+- Department of Agricultural, Environmental and Development Economics
+
+- Ohio State University
+
+March 3, 2026
+
+farmdoc daily (16):35
+
+Recommended citation format:
+Paulson, N., G. Schnitkey, H. Monaco, B. Sherrick and C. Zulauf. "Projected Prices and Volatility Factors for 2026." farmdoc daily (16):35, Department of Agricultural and Consumer Economics, University of Illinois at
+Urbana-Champaign, March 3, 2026. Permalink
+
+The February price discovery period has concluded and final Projected Prices and Volatility Factors for crops with a sales closing date of March 15th have been released by the Risk Management Agency (RMA). The 2026 Projected Price for corn is $4.62, down slightly from the $4.70 Projected Price for 2025. The 2026 Projected Price for soybeans is $11.09, up from the $10.54 Projected Price for 2025. Volatility Factors for 2026 are 0.15 for corn and 0.13 for soybean, both down from their levels in 2025. The Projected Prices and Volatility Factors, combined with higher subsidy rates, should result in lower farmer premium costs for most policies and coverage levels in 2026 than in 2025.
+
+Projected Prices and Volatility Factors
+
+Projected Prices have a direct impact on the guarantees that producers can receive and the premiums that they pay for federal crop insurance policies. Higher Projected Prices result in larger insurance guarantees and, as a result, higher premium costs holding other factors constant. The increased guarantee levels apply to both revenue and yield insurance programs.
+
+The Projected Prices for corn and soybeans are determined each year during the month of February for most US counties that grow corn and soybeans that have a Sales Closing Date of March 15, including Illinois. Specifically, futures contract settlement prices for the December corn contract and the November soybean contract – often referred to as the “harvest contracts” for both crops – are averaged across all active trading days during the month of February.
+
+Volatility Factors are a measure of the potential variability in prices that could occur during the insurance period. The Volatility Factors for crop insurance are based on the implied volatility from the options market for each crop. These implied volatilities are measured and averaged over the final five trading days during the February price discovery period for corn and soybeans. Higher (lower) Volatility Factors suggest larger (smaller) potential price deviations from what the market currently expects, resulting in higher (lower) crop insurance premiums for revenue products.
+
+Corn
+
+For corn, the settlement price for the December 2026 corn contract averaged $4.62 per bushel over the month of February (see upper panel of Figure 1). This is $0.08 below the 2025 Projected Price of $4.70 and $0.14 below the average Projected Price for corn since 2011 of $4.76 since 2011. Holding other factors constant, lower insurance prices translate to slightly lower insurance guarantees and lower premium costs for the same policy in 2026 compared with 2025.
+
+The 2026 Volatility Factor for corn is 0.15, down from a value of 0.18 in 2025 (see lower panel of Figure 1). The lower Volatility Factor will lead to lower insurance premiums for revenue products this year, holding other factors constant. The 0.15 Volatility Factor matches the lowest values observed in the past 15 years.
+
+Soybeans
+
+For soybeans, the settlement price for the November 2026 soybean contract averaged $11.09 per bushel over the month of February (see upper panel of Figure 2). This price is $0.55 higher than the 2025 Projected Price of $10.54 per bushel but $0.23 per bushel below the average Projected Price for soybeans since 2011 of $11.32. Higher Projected Prices result in larger insurance guarantees being available in 2026 compared to 2025 as well as higher premium costs, holding other factors constant.
+
+The 2026 Volatility Factor for soybeans is 0.13, down from 0.14 in 2025 (see lower panel of Figure 2). This is the lowest Volatility Factor for soybeans since the 2023 crop year and only slightly higher than the lowest value of 0.12 over the past 15 years. The lower Volatility Factor will tend to reduce premium costs for equivalent revenue policies compared with years with higher Volatility factors, assuming other premium pricing factors are the same.
+
+Decision-Making Resources
+
+The final projected prices and Volatility Factors are now built into the various crop insurance decision tools available from farmdoc. Increased subsidy rates for both COMBO and Supplemental Products were also incorporated. These include:
+
+- Crop Insurance Evaluator: Allows producers to compare premiums, net benefit and risk measures for a representative farm and multiple insurance combinations, including when stacking SCO/ECO.
+
+- Crop Insurance Premium Calculator: Provides estimated farmer-paid premiums for different commodities, counties, practices, and insurance yield levels.
+
+- Excel-based Crop Insurance Decision Tool: Provides estimated farmer-paid premiums for different commodities, counties, practices and yield levels. Includes SCO/ECO premiums and total premiums for combinations of underlying coverage and SCO/ECO.
+
+We also urge readers to review the farmdoc daily articles below which have focused on 2026 crop insurance decisions, particularly the use of SCO and ECO given the substantial increase in subsidy rates for those products.
+
+- SCO and ECO Choices in 2026 (February 3, 2026)
+
+- Release of Insurance Evaluator with the New SCO and ECO (February 10, 2026)
+
+- Comparing Crop Insurance Scenarios with SCO and ECO for 2026 (February 17, 2026)
+
+- Revisiting the Basis Risk when evaluating SCO and ECO (February 19, 2026)
+
+- Common Questions on SCO and ECO (February 24, 2026)
+
+Crop insurance decisions for 2026 were also covered in a farmdoc webinar held on February 12,2026. An archived version of this webinar is available on the farmdoc youtube channel. An additional webinar on 2026 crop insurance decisions is scheduled for Thursday March 5th, interested readers can register at the webinars page of the farmdoc website.
+
+Conclusions
+
+Projected prices and Volatility Factors for crops with a February price discovery period and sales closing date of March 15th have been finalized by the RMA. The 2026 Projected Price for corn is $4.62 per bushel, $0.08 lower than in 2025. The 2026 Projected Price for soybeans is $11.09, $0.55 higher than in 2025. Volatility Factors for corn (0.15) and soybeans (0.13) are both slightly lower than last year. Combined with other factors impacting premium costs and increased subsidy rates, most farmers should have access to the same policies and coverage at lower cost in 2026 compared to 2025.
+
+It is also important to recognize that the final Projected Prices are based on average settlement prices across the entire month of February, they may differ substantially from the current futures prices for the same crops at the time producers make their crop insurance purchase decisions. As of early March, November Soybean futures prices are substantially above the Projected Price for soybeans. One implication is that actual expected revenue is currently above insurance guarantee levels, resulting in insurance coverage being effectively lower than what is effectively implied by the coverage level times expected yield. On the other hand, current futures being above the average across February would suggest that Harvest Prices are more likely to be above Projected Prices and a greater likelihood for increased coverage in Revenue Protection policies whose guarantee adjusts to the higher price. These and other comparisons will be developed in upcoming farmdoc daily articles prior to the March 15th sales closing date.
+
+References
+
+Schnitkey, G., N. Paulson, C. Zulauf, H. Monaco and B. Sherrick. "SCO and ECO Choices in 2026." farmdoc daily (16):16, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, February 3, 2026.
+
+Monaco, H., G. Schnitkey, N. Paulson, J. Coppess, B. Sherrick, C. Zulauf, C. Navarro, P. Shan and L. Fu. "Release of Insurance Evaluator with the New SCO and ECO." farmdoc daily (16):21, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, February 10, 2026.
+
+Paulson, N., G. Schnitkey, H. Monaco and C. Zulauf. "Comparing Crop Insurance Scenarios with SCO and ECO for 2026." farmdoc daily (16):25, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, February 17, 2026.
+
+Monaco, H., G. Schnitkey, N. Paulson, B. Sherrick and C. Zulauf. "Revisiting the Basis Risk when evaluating SCO and ECO." farmdoc daily (16):27, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, February 19, 2026.
+
+Schnitkey, G., N. Paulson, C. Zulauf and H. Monaco. "Common Questions on SCO and ECO." farmdoc daily (16):30, Department of Agricultural and Consumer Economics, University of Illinois at Urbana-Champaign, February 24, 2026.
+
+Disclaimer: We request all readers, electronic media and others follow our citation guidelines when re-posting articles from farmdoc daily. Guidelines are available here. The farmdoc daily website falls under University of Illinois copyright and intellectual property rights. For a detailed statement, please see the University of Illinois Copyright Information and Policies here.
+
+Related Posts
+
+- New Commodity Program Base Acres
+
+- SCO, ECO, and the Probability of Regret

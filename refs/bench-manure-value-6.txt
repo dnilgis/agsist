@@ -1,0 +1,42 @@
+# Benchmark manure-value: ISU Iowa Pork Industry Center
+# https://www.ipic.iastate.edu/news/getting-most-value-manure-start-nutrient-analysis
+# fetched 2026-10-16T16:08:15Z, sha256 dff4e04c6bbd562988ac80a290550da8467ba964e0103ff0bbb70659e263c9e1
+
+Getting the Most Value from Manure: Start with Nutrient Analysis | Iowa State University Extension and Outreach Iowa Pork Industry Center
+
+Getting the Most Value from Manure: Start with Nutrient Analysis
+
+-
+
+September 8, 2026
+| Russ Euken
+
+Image
+
+Photo Courtesy of National Pork Board
+
+Swine producers recognize the value of manure as a crop fertilizer, but getting the optimum value depends on several variables.
+
+Appraising the monetary value of manure used as fertilizer for crops is commonly estimated by calculating the value of the manure’s nutrient content compared to the cost of applying those nutrients with commercial fertilizer. In simple terms, the higher the price of commercial fertilizer, or the more nutrients present in the manure, the greater the financial value of the manure.
+
+That seems straight forward, but determining nutrient content, application rates to meet crop needs, and variability in manure can complicate determining the value. It is also necessary to consider application costs and the potential loss of nutrients from application timing or methods when comparing manure nutrient value to commercial fertilizer. A swine manure calculator created by Iowa State University Extension and Outreach is helpful tool in making those calculations.
+
+The first step is getting a good estimate of the manure’s nutrient content. Lab analysis of a representative sample of manure is the only way to know nutrient content. The nutrients most often analyzed are nitrogen (N), phosphorus (P), and potassium (K). How and when to sample are key questions on getting the best estimate of nutrient content.
+
+Taking samples dipped from the surface of an unagitated deep pit can provide a good estimate of nitrogen and potassium concentrations. However, phosphorus tends to settle out more with solids in the manure, so a sample of unagitated manure is unlikely to measure the phosphorus that settles out.
+
+Sampling agitated manure at the time of application gives a more accurate picture of nutrient content, especially phosphorus concentration. Unfortunately, in most cases, the results from lab analysis of a post agitation sample would not be known in time to adjust rates for current year application. However, using the prior year’s post agitation results is likely a good estimate of the current nutrient analysis provided nothing has changed in water use, diets, etc. that would affect nutrient content.
+
+If producers plan to only apply manure to meet the crop nutrient needs, then a better estimate of the current year’s manure nutrient concentration is necessary to plan the application rate. In this case, taking samples before and after agitation for a few years can be useful to see how the pre- and post-agitation sample analysis compare. If any differences are consistent year-to-year, then the pre-agitation sample can be adjusted accordingly to determine current year application rates.
+
+If producers are planning to use some commercial fertilizer to supplement manure nutrients for the upcoming crop year, then the commercial fertilizer rate can be adjusted once the post-agitation nutrient analysis is available.
+
+If only nitrogen content is used to plan application rates, the pre-agitation sample can be a good estimate of the nitrogen in the manure. Producers should be monitoring soil test levels of P and K if they are just using nitrogen to plan application rates.
+
+Key Takeaway:
+
+Taking manure samples regularly and getting a lab analysis for N, P, and K can help determine manure application rates to match crop need or additional commercial fertilizer needed. When and how to take the samples depends on how you plan to use the manure nutrients to meet or supplement crop needs. Typically, the value gained by using manure analysis outweighs the cost of the tests. Producers can reference “How to Sample Manure for Nutrient Analysis” from Iowa State University Extension and Outreach for additional information.
+
+There are other factors that can aid in increasing manure value such as rate, timing, application method, etc. Consider exploring additional resources from the Iowa Manure Management Action Group, Manure Scoop blog, Talkin’ Crop podcast, Iowa Pork Industry Center, and Livestock and Poultry Environmental Learning Center to review the most current information available.
+
+This content is intended for educational and informational purposes only and is not a substitute for professional veterinary, medical, or other expert advice. Always consult a qualified professional regarding specific health, disease, treatment, or management decisions.

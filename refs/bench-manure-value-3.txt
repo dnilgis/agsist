@@ -1,0 +1,269 @@
+# Benchmark manure-value: Univ. of Maryland Organic Nutrient Value Calculator
+# https://extension.umd.edu/programs/agriculture-food-systems/program-areas/integrated-programs/agricultural-nutrient-management-program/additional-resources
+# fetched 2026-10-16T16:08:07Z, sha256 aea71be943323180b398d5c54235d473d8a6050be708fc14f6e82b6aaf2e8269
+
+Additional Resources | University of Maryland Extension
+
+Nutrient Management Resources
+
+In addition to providing general information on nutrient management planning, the Agricultural Nutrient Management Program has additional information available for the following topics:
+
+The Agricultural Nutrient Management Program offers free publications which cover a wide variety of topics related to nutrient management and soil fertility. All publications are in PDF format, can be downloaded for free, and are grouped in relevant categories: Click here to access
+
+The following study materials will help prepare you to take the Maryland Nutrient Management Certification Exam:
+
+Example Questions
+
+- Maryland Nutrient Management Certification Exam - Example Questions
+
+Fundamentals of Nutrient Management Course
+
+- 2021 Presentations, Slides, and Additional Resources
+
+Publications
+
+- Mid-Atlantic Nutrient Management Handbook (PDF File)
+
+- Chapter 1 - Introduction to Nutrient Management
+
+- Chapter 2 - Regional Landscapes and the Hydrologic Cycle
+
+- Chapter 3 - Concepts of Basic Soil Science
+
+- Chapter 4 - Basic Soil Fertility
+
+- Chapter 5 - Crop Production
+
+- Chapter 6 - Soil Management
+
+- Chapter 7 - Nutrient Testing, Analysis, and Assessment
+
+- Chapter 8 - Commercial Fertilizers
+
+- Chapter 9 - Manure as a Nutrient Source
+
+- Chapter 10 - Land Application of Biosolids
+
+Organic Nutrient Value Calculator - ONVC (Excel Spreadsheet)
+
+ONVC Instructions (PDF)
+
+To help quantify the value of manure, the University of Maryland Agricultural Nutrient Management Program has developed the ONVC. This calculator is designed to utilize current fertilizer prices to determine the value of the nutrients in a manure or other organic source. You'll have to do a little leg work by calling your local fertilizer dealer to determine current pricing.
+
+The ONVC assigns value only to those nutrients required by the crop. For example, if the phosphorus (P) levels in the manure exceed crop requirements at a given application rate, the calculator will only assign value to the pounds of P required by the crop. Any P applied in excess will not be assigned a value. The theory here is that you would not purchase fertilizer nutrients in excess of your crop's needs; therefore, we should not assign a value to excess nutrients supplied by manure or other organic materials.
+
+You will be asked to enter the organic analysis of your nutrient source, the crop requirements, and the recommended application rate of the nutrient source. The calculator will assign a value to the nitrogen, phosphate and potash supplied by the nutrient source. The ONVC also splits out organic nitrogen and ammonia nitrogen so that you can evaluate how much money you will save by incorporating the nutrient source vs. leaving it on the soil surface.
+
+Crop yield predictions for all 23 counties in Maryland have now been incorporated in to the USDA's online Web Soil Survey. Please visit Web Soil Survey for more information and to look up soils and crop data for your county.
+
+- For instructions on how to use the Web Soil Survey to determine crop yield, please see "Finding Yield Goals in Web Soil Survey"
+
+- For instructions on how to use the Web Soil Survey to determine dominant map units, please see "Instructions for Accessing and Using the Web Soil Survey to Determine Dominant Map Units and Related Soil Information"
+
+- For instructions on how to use the Web Soil Survey to print reports, please see "Using Web Soil Survey to Print Reports of Soil Properties for All Map Units within a County"
+
+Available Extension Publications
+
+- University of Maryland Extension
+
+- Penn State Cooperative Extension
+
+- University of Delaware
+
+- Virginia Cooperative Extension
+
+General Nutrient Management
+
+- Maryland Department of Agriculture
+
+- Natural Resources Conservation Service
+
+Urban Nutrient Management
+
+Home Gardening
+
+Turfgrass
+
+Equine Pasture Management
+
+eXtension (LPELC)
+
+- Livestock & Poultry Environmental Learning Center News (LPELC)
+
+- Livestock & Poultry Environmental Learning Center (LPELC) YouTube Channel
+
+Manure
+
+- Animal Feeding Operations (US EPA)
+
+Nitrogen Use Efficiency and GreenSeeker Sensors
+
+- N Use Efficiency (NUE) and GreenSeekerTMSensors (Oklahoma State U.)
+
+- How Remote Sensing/GreenSeekerTM Works (VA Tech)
+
+- Nitrogen Efficiency and Mgmt. (NRCS)
+
+Soils
+
+- NRCS Soils
+
+- Soil: The Foundation of Agriculture (The Nature Education Knowledge Project)
+
+- What Are Soils? (The Nature Education Knowledge Project)
+
+Pfiesteria
+
+- Pfiesteria Hysteria, Agriculture and Water Quality in the Chesapeake Bay (D. E. Terlizzi, UMD)
+
+- Pfiesteria piscicida (USDA, National Agricultural Library)
+
+Water Quality
+
+- MD Water Resources Research Center
+
+- How's My Waterway (US EPA)
+
+- Water Information Center (MD Dept. of the Environment)
+
+- Water Quality (Chesapeake Bay Program)
+
+- Water and Agriculture Information Center (USDA, National Agricultural Library)
+
+Other States' Nutrient Management Programs
+
+- Conservation Technology Information Center (Core4)
+
+- DE Nutrient Management Program
+
+- NC Nutrient Management Program
+
+- PA Nutrient Management Program
+
+- VA Nutrient Management Program
+
+- WI Nutrient Management Program
+
+Chesapeake Bay
+
+- Alliance for the Chesapeake Bay
+
+- Chesapeake Bay Program
+
+- Chesapeake Bay Trust
+
+- Chesapeake Research Consortium, Inc.
+
+- Maryland Dept. of Natural Resources - Chesapeake Bay Page
+
+- Maryland Sea Grant
+
+- USGS - Chesapeake Bay: Measuring Pollution Reduction
+
+Check out the Soil Science Society of America (SSSA) International Year of Soils Playlist
+
+- January: Soils Sustain Life
+
+- February: Soils Support Urban Life
+
+- March: Soils Support Agriculture
+
+- April: Soils Clean and Capture Water
+
+- May: Soils Support Buildings and Infrastructure
+
+- June: Soils Support Recreation
+
+- July: Soils are Living!
+
+- August: Soils Support Health
+
+- September: Soils Protect the Natural Environment
+
+- October: Soils and the Products We Use
+
+- November: Soils and Climate
+
+- December: Soils and Culture
+
+Cover crop Anthem
+
+Following the popular “Soil Health Lessons in a Minute” video demonstrations, NRCS and film maker Robin “Buz” Kloot, PhD, have once again teamed up to develop a series of short videos—this time focusing on the science of soil health.
+
+Film Premiere: "Let's Talk about Soil" - This animated film tells the reality of soil resources around the world, covering the issues of degradation, urbanization, land grabbing and overexploitation; the film offers options to make the way we manage our soils more sustainable.
+
+Do you know the story of soil?
+
+Explore several videos on soil's affect on human health, food security, and water quality.
+
+- A Simple Way to Increase Crop Yields (H. A. Miller, 1918)
+
+- Cover Crops for Soil Conservation (USDA Farmers' Bulletin No. 1758, 1936)
+
+- A Citizen's Guide to the Water Quality Improvement Act of 1998
+
+- Nutrient Management Implementation Studies
+
+- "Nutrient Management Practices of Farmers in the Pokomoke River Watershed"
+
+- "Evaluation of Maryland's Statewide Nutrient Management Program"
+
+- Effects of Winter Cover Crops on Growth, Quality and Nitrogen Nutrition of Maryland Tobacco (April 1957)
+
+- Accumulating Soil Nitrogen by Manure and Cover Crops (August 1942)
+
+- The Maryland Agricultural College Bulletin excerpt on winter cover crops (October 1915)
+
+- Soil Characterization Data
+
+- NuMan Pro 3.0 Manual
+
+- Development of Soil Testing Conversion Indices for Regional Soil Testing Laboratories (F.J. Coale, 2001)
+
+- UM-Bulletin 232: A Guide to Land Judging in Maryland (Maryland Cooperative Extension 1986)
+
+- Manure summary 2016
+
+- Phosphorus Site Index (PSI)
+
+- SFG P-3 "Phosphorus Site Index" (Revised October 2010)
+
+- SFM-6 "The Maryland Phosphorus Site Index: An Overview"
+
+- SFM-7 "The Maryland Phosphorus Site Index Technical Users Guide"
+
+- Results of the PSI for determining rates of organic and chemical fertilizers
+
+- Past PAN Rates for Sewage Sludge
+
+- 2020 PAN rates for sewage sludge
+
+- 2019 PAN rates for sewage sludge
+
+- Nutrient Management Annual Reports
+
+- 2023-2024 Annual Report
+
+- 2020 ANMP Annual Report
+
+- 2019 ANMP Annual Report
+
+- 2018 ANMP Annual Report
+
+- 2017 ANMP Annual Report
+
+- 2016 ANMP Annual Report
+
+- 2015 ANMP Annual Report
+
+- 2014 ANMP Annual Report
+
+- 2013 ANMP Annual Report
+
+- 2012 ANMP Annual Report
+
+- 2011 ANMP Annual Report
+
+- 2010 ANMP Annual Report
+
+- 2008 ANMP Annual Report
