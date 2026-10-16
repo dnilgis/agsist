@@ -3248,7 +3248,8 @@ def _trim_words(text, limit, ellipsis="…"):
 
 def daily_page_title(briefing, date_iso):
     """'Corn holds $5 as grain stocks come in heavy | Oct 6, 2026 | AGSIST'.
-    Plain text (escape it for HTML). Never longer than DAILY_TITLE_MAX."""
+    Plain text (escape it for HTML). The brand goes first when the whole
+    thing would pass DAILY_TITLE_MAX; the headline is never trimmed."""
     hl = news_headline(briefing)
     dated = f" | {_short_date(date_iso)}"
     brand = " | AGSIST"
@@ -3256,8 +3257,11 @@ def daily_page_title(briefing, date_iso):
     # the site name above the result anyway), the headline the last.
     if len(hl) + len(dated) + len(brand) <= DAILY_TITLE_MAX:
         return hl + dated + brand
-    if len(hl) + len(dated) > DAILY_TITLE_MAX:
-        hl = _trim_words(hl, DAILY_TITLE_MAX - len(dated))
+    # 2026-10-16: the headline is never cut. Google News and Top stories
+    # compare the <title> with the H1 and the NewsArticle headline; a title
+    # that stops mid-headline reads as a different story. A long title is
+    # shortened by Google on screen, not here. The date stays: two issues
+    # with the same headline must not share a title.
     return hl + dated
 
 
