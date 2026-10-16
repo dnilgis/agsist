@@ -1,37 +1,177 @@
 {
-  "note": "State hay reports read by scripts/fetch_hay_ams.py. slug = the AMS report number in https://www.ams.usda.gov/mnreports/ams_<slug>.pdf. 3183 (South Dakota Direct Hay) and 3050 (Alabama Direct, bi-weekly) were read in full from the references branch on Oct 16, 2026. slug null = find it by title in the AMS hay listing the probe saves (data/hay-ams-raw/listing.json). A report is used only when its own title says hay and names the state, so a wrong number shows nothing instead of another state's hay. match narrows the title when a state has more than one hay report.",
+  "note": "State hay reports read by scripts/fetch_hay_ams.py. slug = the AMS report number in https://www.ams.usda.gov/mnreports/ams_<slug>.pdf. Numbers filled from the Oct 16, 2026 probe (scan 2800-3300, data/hay-ams-raw/listing.json): every one with a slug was read there. slug null = no report found for that state yet; a later probe can fill it from the listing by title. A report is used only when its own title names the state and the report says hay, so a wrong number shows nothing instead of another state's hay. match narrows the title when a state has more than one hay report. MO 2929 and NM 2939 posted asking prices only on Oct 16 and show nothing until they report trades.",
   "listing_urls": [
     "https://www.ams.usda.gov/market-news/hay-reports",
     "https://www.ams.usda.gov/market-news/livestock-poultry-grain-hay"
   ],
   "reports": [
-    {"id": "sd-direct", "state": "SD", "slug": "3183", "match": "direct hay"},
-    {"id": "al-direct", "state": "AL", "slug": "3050", "match": "direct"},
-    {"id": "nd-direct", "state": "ND", "slug": null, "match": "direct"},
-    {"id": "ne-direct", "state": "NE", "slug": null, "match": "direct"},
-    {"id": "ks-direct", "state": "KS", "slug": null, "match": "direct"},
-    {"id": "ia-direct", "state": "IA", "slug": null, "match": "direct"},
-    {"id": "mn-direct", "state": "MN", "slug": null, "match": "direct"},
-    {"id": "mo-hay", "state": "MO", "slug": null, "match": "hay"},
-    {"id": "ok-direct", "state": "OK", "slug": null, "match": "direct"},
-    {"id": "tx-direct", "state": "TX", "slug": null, "match": "direct"},
-    {"id": "co-direct", "state": "CO", "slug": null, "match": "direct"},
-    {"id": "wy-direct", "state": "WY", "slug": null, "match": "direct"},
-    {"id": "mt-direct", "state": "MT", "slug": null, "match": "direct"},
-    {"id": "id-direct", "state": "ID", "slug": null, "match": "direct"},
-    {"id": "wa-direct", "state": "WA", "slug": null, "match": "direct"},
-    {"id": "or-direct", "state": "OR", "slug": null, "match": "direct"},
-    {"id": "ca-direct", "state": "CA", "slug": null, "match": "direct"},
-    {"id": "ut-direct", "state": "UT", "slug": null, "match": "direct"},
-    {"id": "nv-direct", "state": "NV", "slug": null, "match": "direct"},
-    {"id": "az-direct", "state": "AZ", "slug": null, "match": "direct"},
-    {"id": "nm-direct", "state": "NM", "slug": null, "match": "direct"},
-    {"id": "tn-hay", "state": "TN", "slug": null, "match": "hay"},
-    {"id": "ky-hay", "state": "KY", "slug": null, "match": "hay"},
-    {"id": "pa-hay", "state": "PA", "slug": null, "match": "hay"},
-    {"id": "va-hay", "state": "VA", "slug": null, "match": "hay"},
-    {"id": "ga-hay", "state": "GA", "slug": null, "match": "hay"},
-    {"id": "wi-hay", "state": "WI", "slug": null, "match": "hay"},
-    {"id": "il-hay", "state": "IL", "slug": null, "match": "hay"}
+    {
+      "id": "sd-direct",
+      "state": "SD",
+      "slug": "3183",
+      "match": "direct hay"
+    },
+    {
+      "id": "al-direct",
+      "state": "AL",
+      "slug": "3050",
+      "match": "direct"
+    },
+    {
+      "id": "nd-direct",
+      "state": "ND",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "ne-direct",
+      "state": "NE",
+      "slug": "2935",
+      "match": "direct"
+    },
+    {
+      "id": "ks-direct",
+      "state": "KS",
+      "slug": "2885",
+      "match": "direct"
+    },
+    {
+      "id": "ia-direct",
+      "state": "IA",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "mn-direct",
+      "state": "MN",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "mo-hay",
+      "state": "MO",
+      "slug": "2929",
+      "match": "hay"
+    },
+    {
+      "id": "ok-direct",
+      "state": "OK",
+      "slug": "3095",
+      "match": "direct"
+    },
+    {
+      "id": "tx-direct",
+      "state": "TX",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "co-direct",
+      "state": "CO",
+      "slug": "2905",
+      "match": "direct"
+    },
+    {
+      "id": "wy-direct",
+      "state": "WY",
+      "slug": "3236",
+      "match": "direct"
+    },
+    {
+      "id": "mt-direct",
+      "state": "MT",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "id-direct",
+      "state": "ID",
+      "slug": "3056",
+      "match": "direct"
+    },
+    {
+      "id": "or-direct",
+      "state": "OR",
+      "slug": "3057",
+      "match": "^oregon direct"
+    },
+    {
+      "id": "wa-or-columbia",
+      "state": "WA",
+      "slug": "3058",
+      "match": "columbia basin"
+    },
+    {
+      "id": "ca-direct",
+      "state": "CA",
+      "slug": "2904",
+      "match": "direct"
+    },
+    {
+      "id": "ut-direct",
+      "state": "UT",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "nv-direct",
+      "state": "NV",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "az-direct",
+      "state": "AZ",
+      "slug": null,
+      "match": "direct"
+    },
+    {
+      "id": "nm-direct",
+      "state": "NM",
+      "slug": "2939",
+      "match": "direct"
+    },
+    {
+      "id": "tn-hay",
+      "state": "TN",
+      "slug": null,
+      "match": "hay"
+    },
+    {
+      "id": "ky-hay",
+      "state": "KY",
+      "slug": null,
+      "match": "hay"
+    },
+    {
+      "id": "pa-hay",
+      "state": "PA",
+      "slug": null,
+      "match": "hay"
+    },
+    {
+      "id": "va-hay",
+      "state": "VA",
+      "slug": null,
+      "match": "hay"
+    },
+    {
+      "id": "ga-hay",
+      "state": "GA",
+      "slug": null,
+      "match": "hay"
+    },
+    {
+      "id": "wi-hay",
+      "state": "WI",
+      "slug": null,
+      "match": "hay"
+    },
+    {
+      "id": "il-hay",
+      "state": "IL",
+      "slug": null,
+      "match": "hay"
+    }
   ]
 }
