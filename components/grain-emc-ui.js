@@ -24,8 +24,15 @@
   function inRange(v, a, b) { return E.num(v) && v >= a && v <= b ? v : null; }
   function g() { return E.GRAINS[S.grain]; }
   function gname() { return g().name.toLowerCase(); }
+  function gadj() { return S.grain === 'soybeans' ? 'soybean' : gname(); }
+  function soy() { return S.grain === 'soybeans'; }
+  /* ?grain=soy and ?grain=soybean open soybeans too */
+  function grainKey(k) { return k === 'soy' || k === 'soybean' || k === 'beans' ? 'soybeans' : k; }
   function target() { var t = S.targets[S.grain]; return E.num(t) ? t : g().target; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function dryCfm() {
+    return soy() ? 'NDSU says drying soybeans takes at least 1 cfm per bushel, and 1.5 for beans at 18%.' : 'drying corn takes about 1 cfm per bushel or more.';
+  }
   function emcText(e) {
     if (!e || !e.ok) return 'no number';
     var lo = fmt(e.wb, 1), hi = fmt(e.wet, 1);
@@ -83,7 +90,8 @@
     var q = new URLSearchParams(location.search);
     var L = E.LIMITS;
     S.mode = E.has(MODES, q.get('mode')) ? q.get('mode') : (E.has(MODES, s.mode) ? s.mode : 'hold');
-    S.grain = E.has(E.GRAINS, q.get('grain')) ? q.get('grain') : (E.has(E.GRAINS, s.grain) ? s.grain : 'corn');
+    var gq = grainKey(q.get('grain'));
+    S.grain = E.has(E.GRAINS, gq) ? gq : (E.has(E.GRAINS, s.grain) ? s.grain : 'corn');
     S.targets = {};
     if (s.targets && typeof s.targets === 'object') for (var k in E.GRAINS) { var tv = inRange(s.targets[k], L.targetMin, L.targetMax); if (tv != null) S.targets[k] = tv; }
     var tq = inRange(parseFloat(q.get('target')), L.targetMin, L.targetMax);
@@ -114,7 +122,13 @@
     $('emc-cfm').value = S.cfm != null ? S.cfm : '';
     var n = document.querySelectorAll('[data-gname]');
     for (var k = 0; k < n.length; k++) n[k].textContent = gname();
+    var gh = $('emc-ghint');
+    if (gh) { gh.innerHTML = GHINT[S.grain] || ''; gh.hidden = !GHINT[S.grain]; }
   }
+  /* storage moisture for the grain picked, from the documents read (references branch) */
+  var GHINT = {
+    soybeans: 'Soybean targets: Minnesota Extension stores aerated soybeans at 13% until June, 12% for a year and 11% for longer; Arkansas FSA1074 says 11% for a year. The default target here is 13%.'
+  };
 
   /* ---------- the answer ---------- */
   function nowRow() {
@@ -162,14 +176,15 @@
       else if (now) lines.push(nr.label + ': ' + airWords(now) + '. That air brings ' + gname() + ' to <b>' + emcText(now.emc) + '</b>: ' + callWord(now.call) + ' for your ' + fmt(S.current, 1) + '% ' + gname() + '.');
       if (now && now.call === 'part' && S.current != null && S.current > target()) lines.push('This air still pulls water out, but it cannot take the grain all the way to ' + fmt(target(), 1) + '%: if the weather stays like this, the bottom of the bin ends above target until drier air comes.');
       if (S.current != null && S.current > target()) lines.push(tonight(rows));
-      lines.push('<span class="note">For natural-air drying of wet corn, Minnesota Extension says to leave the fan running while corn is wetter than about 16% and warmer than about 40 F; running only in the driest weather badly overdries the bottom. NDSU says to turn fans off during extended rain, fog or snow.</span>');
+      if (soy()) lines.push('<span class="note">For natural-air drying soybeans, NDSU says to use at least 1 cfm per bushel for beans up to 16% (about 50 days of drying) and at least 1.5 cfm per bushel for 18% beans, which keep only about 40 days at 50 F. Running fans only at night adds water to beans. NDSU says to turn fans off during extended rain, fog or snow.</span>');
+      else lines.push('<span class="note">For natural-air drying of wet corn, Minnesota Extension says to leave the fan running while corn is wetter than about 16% and warmer than about 40 F; running only in the driest weather badly overdries the bottom. NDSU says to turn fans off during extended rain, fog or snow.</span>');
       E.dryWarnings(rows).forEach(function (w) {
         if (w.kind === 'cold') lines.push('<b>Cold:</b> the next 24 hours average ' + fmt(w.avg, 0) + ' F. NDSU says natural-air drying does little until outside air averages about 40 F.');
         if (w.kind === 'humid') lines.push('<b>Humid:</b> humidity averages ' + fmt(w.avg, 0) + '% over the forecast, above the 55 to 75% Minnesota Extension says natural-air drying works best in. If you add heat, it says to warm the air no more than about 5 F.');
       });
-      if (S.cfm != null && S.cfm < 1) lines.push('<b>Airflow:</b> at ' + S.cfm + ' cfm per bushel the fans cool more than they dry. Aeration fans at 0.1 to 0.2 cfm per bushel do not dry grain safely; drying corn takes about 1 cfm per bushel or more.');
+      if (S.cfm != null && S.cfm < 1) lines.push('<b>Airflow:</b> at ' + S.cfm + ' cfm per bushel the fans cool more than they dry. Aeration fans at 0.1 to 0.2 cfm per bushel do not dry grain safely; ' + dryCfm());
       var dryAvg = E.avg(rows.map(function (r) { return { x: r.emc && r.emc.ok ? r.emc.wb : null }; }), 'x');
-      if (dryAvg && dryAvg.avg <= target() - 2) lines.push('<b>Overdrying:</b> this air averages ' + fmt(dryAvg.avg, 1) + '% ' + gname() + ' EMC, well under your target. The bottom of the bin will end drier than ' + fmt(target(), 1) + '%, which is weight you sell for nothing.');
+      if (dryAvg && dryAvg.avg <= target() - 2) lines.push('<b>Overdrying:</b> this air averages ' + fmt(dryAvg.avg, 1) + '% ' + gadj() + ' EMC, well under your target. The bottom of the bin will end drier than ' + fmt(target(), 1) + '%, which is weight you sell for nothing.' + (soy() ? ' Iowa State warns that over-dry beans are brittle and break when they are moved.' : ''));
     } else if (S.mode === 'cool') {
       if (S.grainF == null) { head = 'How warm is the grain?'; lines.push('Type the grain temperature (from cables or a probe) above. Minnesota Extension says grain is cooling when the 24-hour average is 10 F or more under it; Iowa State says 10 to 20 F.'); }
       else {
@@ -190,12 +205,12 @@
     } else {
       cls = now && now.call ? now.call : 'none';
       head = now && now.call ? HEAD[now.call] : 'No answer for this air';
-      if (now) lines.push(nr.label + ': ' + airWords(now) + '. That air holds ' + gname() + ' at <b>' + emcText(now.emc) + '</b>' + (S.grain === 'corn' && now.emc.ok ? ' (two published fits)' : '') + '. Your target is ' + fmt(target(), 1) + '%.');
+      if (now) lines.push(nr.label + ': ' + airWords(now) + '. That air holds ' + gname() + ' at <b>' + emcText(now.emc) + '</b>' + (g().fits.length > 1 && now.emc.ok ? ' (two published fits)' : '') + '. Your target is ' + fmt(target(), 1) + '%.');
       if (now && !now.emc.ok) lines.push('No number: ' + esc(now.emc.reason) + '.');
       if (now && now.call === 'close') lines.push('<b>Close call:</b> published tables disagree about air like this. For grain that is already dry, run only if you need to cool it; this air will not move much moisture either way.');
       lines.push(tonight(rows));
       var best = E.bestWindow(rows, 'dry', 2);
-      lines.push(best ? zach() + ' <b>' + span(rows[best.start].t, rows[best.end].t + 3600e3) + '</b>, ' + best.len + ' hours of drying air, at or under ' + fmt(best.worst, 1) + '% ' + gname() + ' EMC.' + zachNote()
+      lines.push(best ? zach() + ' <b>' + span(rows[best.start].t, rows[best.end].t + 3600e3) + '</b>, ' + best.len + ' hours of drying air, at or under ' + fmt(best.worst, 1) + '% ' + gadj() + ' EMC.' + zachNote()
                       : 'No run of 2 or more drying hours in the next ' + rows.length + ' hours.');
       if (now && E.num(now.fanTF)) {
         var inv = E.rhDries(S.grain, now.fanTF, target());
@@ -204,7 +219,7 @@
           lines.push('At ' + fmt(now.tF, 0) + ' F outside, fans dry ' + gname() + ' toward your target while outside humidity stays under <b>' + Math.floor(outRh) + '%</b>' + (S.fan > 0 ? ' (with the fan\'s ' + S.fan + ' F)' : '') + '. Read your own gauge against that.');
         }
       }
-      lines.push('Aeration fans at 0.1 to 0.2 cfm per bushel cool grain but do not dry it safely; drying corn takes about 1 cfm per bushel or more.');
+      lines.push('Aeration fans at 0.1 to 0.2 cfm per bushel cool grain but do not dry it safely; ' + dryCfm());
     }
     box.className = 'emc-answer v-' + cls;
     v.textContent = head;
@@ -318,7 +333,7 @@
     out.className = 'emc-mout v-' + (a.call || 'none');
     var s = '';
     if (!plenum && S.fan > 0) s += 'With the fan adding ' + S.fan + ' F, that air reaches the grain at ' + fmt(a.fanTF, 0) + ' F and ' + fmt(a.fanRh, 0) + '%. ';
-    s += g().name + ' in that air heads for <b>' + emcText(a.emc) + '</b>. ';
+    s += g().name + ' in that air ' + (soy() ? 'head' : 'heads') + ' for <b>' + emcText(a.emc) + '</b>. ';
     if (mode === 'dry') s += S.current == null ? 'Type your grain\'s moisture at the top to judge drying.' : 'For grain at ' + fmt(S.current, 1) + '%: <b>' + callWord(a.call) + '</b>.';
     else s += 'Against your ' + fmt(target(), 1) + '% target: <b>' + (a.call ? HEAD[a.call] : 'no answer') + '</b>.';
     out.innerHTML = s;
