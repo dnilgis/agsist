@@ -1,0 +1,55 @@
+# Benchmark lrp: K-State Managing Feeder Cattle Price Risk
+# https://www.k-state.edu/news/beef-tips/articles/2024/02/managing-feeder-cattle-price-risk.html
+# fetched 2026-10-16T15:49:40Z, sha256 223d3375ae2438d57877bfc3f2d5d8110576b51eb83185a248734a8aee83c0e3
+
+Managing Feeder Cattle Price Risk | K-State | Kansas State UniversityPowercatchevrondouble-chevronchat-purplehomecomputer window with a question markclosefacebooklinkedinmenusearchtwitteryoutubeapply-purpleapply-whitechat-whiterequest-purplerequest-white
+
+- K-State home
+
+-
+K-State Today
+
+-
+Beef Tips
+
+- Managing Feeder Cattle Price Risk
+
+Managing Feeder Cattle Price Risk
+
+By Sandy Johnson
+
+Wednesday, Feb. 28, 2024
+
+By Jennifer Ifft, agricultural policy extension specialist, Flinchbaugh Agricultural Policy Chair
+
+For producers that will have calves to sell in fall 2024 or early 2025, futures prices have rallied to around nearly $265-270/cwt. However, weather, global conflict, or other factors could negatively impact the 2024 market. Prices were relatively high throughout 2014 in response to a drought-induced decline in cow numbers, but during the fall of 2015 prices declined rapidly. While market fundamentals may currently be stronger in 2024 than 2015, markets remain volatile and high prices have never lasted forever.
+
+Producers can manage price risk in many ways. Many self-insure, whether through other agricultural enterprises, working additional jobs, or savings accounts (maintaining higher working capital). Marketing and hedging strategies can also be an important part of price risk management. Today, Livestock Risk Protection (LRP) insurance is the primary federally subsidized insurance product used to manage feeder cattle price risk. LRP makes payouts when actual feeder cattle prices at the intended marketing date are lower than expected prices at the time of purchase. LRP actual and expected prices are based on futures markets; LRP does not protect against local price (basis) risk.
+
+Below are ten important things to know about LRP, for a producer considering using LRP.
+
+- LRP is similar to a “put option”, which a producer purchases to have the right, but not the obligation, to sell a futures contract at a specific price at any date in the future before expiration. For example, a put option for October feeders at the “strike price” of $270 currently costs around $13.20 per cwt.
+
+- LRP is more ‘small producer-friendly’ than a put option. First, LRP is cheaper: a LRP policy for feeder cattle that will be sold around October currently costs around $9.95 per cwt (current quote for “steers weight 2”, 600 – 1,000 lbs). Second, while futures and options contracts are sold on a volume basis with a minimum of 50,000 lbs., LRP is sold on a head basis, with no minimum on the number of head enrolled.
+
+- Nearly 322,000 head of feeder cattle were covered by LRP in Kansas in 2023. Over 258,000 head have been enrolled in 2024; this number is likely to increase. These enrollment numbers can be indirectly compared to the following USDA estimates for Kansas: the 2023 calf crop was 1.29 million head and calf inventory on January 1, 2024, was 620,000 head.
+
+- A producer must select a coverage price for LRP that is equal to or lower than the expected price, which is based on current futures price, with a conversation factor for lower-weight feeders, different breeds, and heifers. These coverage prices reflect a coverage level of around 92-100% (coverage levels could go as low as 70%, but lower levels are currently not available). The current fall feeder prices of around $270 per cwt correspond to coverage prices in the range of $250-270.
+
+- Like other insurance policies that are a part of the “Federal Crop Insurance Program”, the Federal government pays 35-50% of the LRP premium. The government share has increased in recent years, making LRP a better value for the producer than in the past. If a producer uses a subsidized insurance product consistently, over the long-term payouts (indemnities) are typically greater than premiums. While there is no guarantee, many producers that use crop or livestock insurance report that, over time, total payouts add up to more than total premium costs.
+
+- Producers must sign up for an LRP policy with a livestock agent before purchasing a policy, or an “endorsement”. There are many qualified livestock insurance agents across Kansas. The USDA provides an online agent directory at https://prodwebnlb.rma.usda.gov/apps/AgentLocator/#/.
+
+- Producers using LRP cannot sell their livestock (without permission) more than 60 days before their LRP endorsement ends. However, there is no obligation to sell your feeders at the end of the endorsement. This lack of flexibility may be a disadvantage for some producers. Also, if death loss is reported to an insurance agent within 72 hours, coverage can be maintained.
+
+- Premium costs today range from $2 to $11 per cwt. Higher coverage policies cost more and pay out more often. Lower coverage polices cost less and pay out less often. Costs increase with higher prices, higher market volatility, a longer LRP endorsement length, and higher coverage levels.
+
+- The LRP premium is not due until after the end of the endorsement period. From a practical perspective, this means a producer might not have to pay the LRP premium until after they get their calf check.
+
+- Before purchasing an LRP endorsement, a producer needs to have an idea of an acceptable range of costs and coverage prices, which could be determined as a part of farm financial and marketing planning. For example, knowing your breakeven price for feeder cattle can be an important part of a marketing plan.
+
+For additional LRP and other livestock insurance policy details and analysis, see https://agmanager.info/crop-insurance/livestock-insurance-papers-and-information
+
+For a spreadsheet that allows a user to develop a detailed beef cow/calf enterprise budget to evaluate potential income, costs, and profitability, see https://agmanager.info/farm-mgmt-guides/livestock-budgets/ksu-detailed-cow-calf-budget
+
+For the USDA Risk Management Agency Fact Sheet on LRP for Feeder Cattle, see https://www.rma.usda.gov/en/Fact-Sheets/National-Fact-Sheets/Livestock-Risk-Protection-Feeder-Cattle

@@ -1,0 +1,51 @@
+# Benchmark lrp: Utah State LRP Support Tool
+# https://agrisk.umn.edu/Library/AMPRecord/livestock_risk_protection_lrp_support_tool
+# fetched 2026-10-16T15:49:36Z, sha256 26a636313eb56d84c9382cca88239c356f4abdf63eb925376f732c35c4a35ad3
+
+Livestock Risk Protection (LRP) Support Tool | Library | AgRisk Library
+
+Livestock Risk Protection (LRP) Support Tool
+
+Ryan Larsen
+( 2026 )
+
+Summary
+
+This tool provides a simple way to analyze historical LRP contracts to aid
+producers in making current LRP insurance coverage selections that have historically been associated with optimal outcomes
+
+Go To This Material
+
+Details
+
+Organization
+
+Utah State University Extension
+
+Publisher
+
+Utah State University
+
+Publication Views
+
+190
+
+Material Type
+
+Website
+
+More by Ryan Larsen
+
+- Advantages and Disadvantages of Early Weaning of Cattle
+
+- See more
+
+More by Utah State University Extension
+
+- Alfalfa Hay Pricing Tool
+
+- Crop Insurance for Fruit
+
+- Cow-Calf Retained Ownership Analysis and Price Forecasting Using an Online Decision-Support Tool
+
+- See more
