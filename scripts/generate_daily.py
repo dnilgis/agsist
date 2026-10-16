@@ -2788,7 +2788,7 @@ def render_byline_block_html():
     # posts. /editorial-standards#how-the-daily-is-made says so in plain words,
     # and Google asks that automation be evident to the reader.
     return ('<div class="dv3-byline">'
-            'By <strong>Sigurd Lindquist</strong>, Certified Crop Adviser (CCA). '
+            'By <strong>Sigurd Lindquist</strong>, CCA. '
             '<a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>. '
             'Reply at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>. I read everything.'
             '</div>')
@@ -2800,7 +2800,7 @@ def render_dateline_html(briefing, date_iso):
     rewritten 10 minutes or more after it first went up."""
     pub_iso = published_at(briefing)
     pub_dt, mod_dt = _ct_dt(pub_iso), _ct_dt(briefing.get("generated_at"))
-    parts = ['By <a href="/about" rel="author">Sigurd Lindquist</a>, Certified Crop Adviser (CCA)']
+    parts = ['By <a href="/about" rel="author">Sigurd Lindquist</a>, CCA']
     if pub_dt:
         parts.append(f'Published <time datetime="{iso_ct(pub_iso)}">{html_esc(human_ct(pub_iso))}</time>')
     else:

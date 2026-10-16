@@ -48,7 +48,7 @@ test("every issue: one NewsArticle, one headline, dates with an offset, a byline
     assert.equal(a.publisher.logo.url, "https://agsist.com/img/logo-agsist.png");
     assert.ok(a.image[0].width >= 1200, f + ": image 1200 wide");
     assert.ok(h.includes(`Published <time datetime="${a.datePublished}">`), f + ": visible published time = datePublished");
-    assert.ok(h.includes('By <a href="/about" rel="author">Sigurd Lindquist</a>, Certified Crop Adviser (CCA)'), f + ": byline");
+    assert.ok(h.includes('By <a href="/about" rel="author">Sigurd Lindquist</a>, CCA'), f + ": byline");
     assert.ok(h.includes("max-image-preview:large"), f + ": large image preview");
     assert.ok(h.includes(`<meta property="article:published_time" content="${a.datePublished}">`), f);
     for (const href of ["/editorial-standards#how-the-daily-is-made", "/editorial-standards#corrections", "/about", "/contact"])
@@ -112,7 +112,7 @@ test("editorial standards page: how the Daily is made, corrections, no em dashes
   // Oct 16, Sig: toned down to one plain paragraph; the AI draft and the price check stay stated
   assert.match(h, /drafted each morning by AI software/);
   assert.match(h, /code checks every price in it against the market feed; a draft that fails does not post/);
-  assert.match(h, /Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\)/);
+  assert.match(h, /Sigurd Lindquist<\/a>, CCA /);
   assert.ok(!/insurance agent/i.test(h));
   const ld = JSON.parse(h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const org = ld["@graph"].find((x) => x["@type"] === "NewsMediaOrganization");
