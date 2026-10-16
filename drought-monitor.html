@@ -78,12 +78,12 @@
         {
           "@type": "Question",
           "name": "When is the US Drought Monitor updated?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The US Drought Monitor is published every Thursday by 8:30 AM ET by the National Drought Mitigation Center, USDA, and NOAA. The map reflects conditions through the previous Tuesday. AGSIST links directly to the official NDMC map with no delay." }
+          "acceptedAnswer": { "@type": "Answer", "text": "The US Drought Monitor is published every Thursday by 8:30 AM ET by the National Drought Mitigation Center, USDA, and NOAA. The map reflects conditions through the previous Tuesday." }
         },
         {
           "@type": "Question",
           "name": "Does drought monitor status affect crop insurance?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Different USDA programs work differently. The Livestock Forage Disaster Program (LFP) is tied directly to USDM status: sustained D2 or worse on grazing land can make you eligible. Check the current FSA schedule. The Pasture, Rangeland, and Forage (PRF) rainfall-index program does not use USDM categories. It pays on grid precipitation deviation from the historical norm. Whole-Farm Revenue Protection (WFRP) pays on year-end revenue shortfall from any covered cause, not USDM status. Contact your crop insurance agent for program-specific details." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Different USDA programs work differently. The Livestock Forage Disaster Program (LFP) is tied directly to USDM status: sustained D2 or worse on grazing land can make you eligible. Check the current FSA schedule. The Pasture, Rangeland, and Forage (PRF) rainfall-index program does not use USDM categories. It pays on grid precipitation deviation from the historical norm. Whole-Farm Revenue Protection (WFRP) pays on year-end revenue shortfall from any covered cause, not USDM status." }
         },
         {
           "@type": "Question",
@@ -178,6 +178,25 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-outlook a { display: inline-flex; align-items: center; gap: .35rem; padding: .45rem .9rem; border: 1px solid var(--border); border-radius: 8px; font-size:0.787rem; color: var(--text-dim); text-decoration: none; background: var(--surface); transition: all .15s; min-height: 44px; }
 .dm-outlook a:hover { border-color: var(--gold); color: var(--gold); }
 .tblscroll table{margin:0;min-width:480px}
+/* Phone: the stress table becomes one card per row, so "What's at stake" is never cut off at 390 px */
+@media (max-width: 600px) {
+  .dm-stress-wrap.tblscroll { overflow: visible; }
+  .dm-stress-wrap .dm-stress-table { min-width: 0; border: 0; background: none; }
+  .dm-stress-wrap .dm-stress-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .dm-stress-wrap .dm-stress-table tr { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .55rem .75rem; margin-bottom: .55rem; }
+  .dm-stress-wrap .dm-stress-table td { display: block; padding: .12rem 0; border: 0; }
+  .dm-stress-wrap .dm-stress-table td:first-child { font-weight: 700; color: var(--text); }
+  .dm-stress-wrap .dm-stress-table td[data-k]::before { content: attr(data-k) ": "; color: var(--text-muted); font-weight: 600; }
+}
+/* County box: this week's numbers */
+.dm-wk { width: 100%; border-collapse: collapse; font-size: .84rem; margin: .35rem 0 .4rem; }
+.dm-wk th, .dm-wk td { padding: .3rem .4rem; border-bottom: 1px solid var(--border); text-align: right; }
+.dm-wk th:first-child, .dm-wk td:first-child { text-align: left; }
+.dm-wk th { font-size: .74rem; color: var(--text-muted); font-weight: 700; }
+.dm-wk-bar { display: flex; height: 14px; border-radius: 3px; overflow: hidden; border: 1px solid var(--border); margin: .35rem 0 .2rem; background: var(--bg); }
+.dm-wk-bar span { display: block; height: 100%; }
+.dm-wk-key { display: flex; flex-wrap: wrap; gap: .2rem .7rem; font-size: .76rem; color: var(--text-dim); }
+.dm-wk-key i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: .25rem; vertical-align: -1px; }
 </style>
 </head>
 <body>
@@ -246,7 +265,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     <h1>US Drought Monitor</h1>
     <p class="page-lede">Weekly drought conditions for US crop regions. Select national, state, or regional views. Published every Thursday by the National Drought Mitigation Center, USDA, and NOAA. For every county's drought record since 2000, see <a href="/farmland-atlas#l=dr_share" style="color:var(--gold)">the Farmland Atlas</a>.</p>
     <div class="dm-hero-meta">
-      <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d){var v=document.getElementById("dm-valid"),h=window.AgAsOf?AgAsOf.html(d,"drought",{prefix:"Map valid"}):"";if(h)v.innerHTML=" · "+h;else v.textContent=" · map valid "+d;}}).catch(function(){});</script>
+      <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d){var v=document.getElementById("dm-valid"),h=window.AgAsOf?AgAsOf.html(d,"drought",{prefix:"Map valid"}):"";if(h)v.innerHTML=" · "+h;else v.textContent=" · map valid "+d;var mv=document.getElementById("dm-map-valid");if(mv)mv.textContent=", valid "+d;}}).catch(function(){});</script>
       <div class="dm-next-update" id="dm-next-update">Next update: -</div>
     </div>
   </div>
@@ -261,8 +280,8 @@ button,a,[role="button"] { touch-action: manipulation; }
   <div id="dm-map-section">
     <div class="dm-map-wrap">
       <img class="dm-map-img" id="dm-map-img"
-        src="https://droughtmonitor.unl.edu/data/png/current/current_usdm.png"
-        alt="US Drought Monitor: current weekly national map"
+        src="/data/outlooks/usdm_latest.png"
+        alt="US Drought Monitor: weekly national map"
         loading="eager">
       <div class="dm-map-fallback" id="dm-map-fallback"><p style="margin:0">The drought map image did not load.<br>See the current map at <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">droughtmonitor.unl.edu</a>.</p></div>
       <span class="dm-map-label" id="dm-map-label">US · national view</span>
@@ -271,6 +290,7 @@ button,a,[role="button"] { touch-action: manipulation; }
         i.addEventListener('error',bad); i.addEventListener('load',ok);
         if(i.complete&&!i.naturalWidth)bad();})();</script>
       <div class="dm-map-src">
+        <span id="dm-map-note">AGSIST's saved copy of the national map<span id="dm-map-valid"></span>.</span>
         Source: <a href="https://droughtmonitor.unl.edu" target="_blank" rel="noopener">droughtmonitor.unl.edu</a>
         &middot; National Drought Mitigation Center · USDA · NOAA
       </div>
@@ -293,8 +313,8 @@ button,a,[role="button"] { touch-action: manipulation; }
   </div>
 
   <section class="dm-card dm-county" aria-labelledby="dm-county-h" style="margin:0 0 1.1rem">
-    <h2 id="dm-county-h" style="font-size:1rem;margin:0 0 .35rem">Your county since 2000</h2>
-    <p style="margin:0 0 .55rem;font-size:.85rem;color:var(--text-dim)">How many weeks at least half your county sat in severe drought (D2) or worse, from the Drought Monitor&rsquo;s county numbers as the <a href="/farmland-atlas#l=dr_share" style="color:var(--gold)">Farmland Atlas</a> keeps them. This week&rsquo;s map is above.</p>
+    <h2 id="dm-county-h" style="font-size:1rem;margin:0 0 .35rem">Your county: this week and since 2000</h2>
+    <p style="margin:0 0 .55rem;font-size:.85rem;color:var(--text-dim)">How much of your county is in each drought category on this week&rsquo;s map, against last week and four weeks back. Then how many weeks since 2000 at least half of it sat in severe drought (D2) or worse, as the <a href="/farmland-atlas#l=dr_share" style="color:var(--gold)">Farmland Atlas</a> counts them. All from the Drought Monitor&rsquo;s own county numbers.</p>
     <label for="dm-county-q" style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.25rem">County</label>
     <input id="dm-county-q" type="search" autocomplete="off" placeholder="Type a county, like Story" style="width:100%;max-width:420px;box-sizing:border-box;padding:.55rem .7rem;min-height:44px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:inherit">
     <div id="dm-county-list" style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem"></div>
@@ -302,13 +322,50 @@ button,a,[role="button"] { touch-action: manipulation; }
   </section>
   <script>
   /* County lookup. Data AGSIST already publishes, loaded only when the box is used:
-     the Atlas county list (farmland-atlas/data/counties-index.json, [fips, "Name, ST", atlas path])
-     and one county's Atlas file (data/atlas/counties/<fips>.json, its "drought" block: weeks with
-     at least half the county's area in D2 or worse, per year since 2000). No number is made here. */
+     the Atlas county list (farmland-atlas/data/counties-index.json, [fips, "Name, ST", atlas path]),
+     one county's Atlas file (data/atlas/counties/<fips>.json, its "drought" block: weeks with
+     at least half the county's area in D2 or worse, per year since 2000), and this week's file
+     (data/drought/county-week.json, written each Thursday by scripts/fetch_drought_county_week.py:
+     NDMC's cumulative percent of area in D0-D4 for the newest map, a week back and four weeks back).
+     No number is made here except the week-to-week differences, which are plain subtraction. */
   (function(){
     var q=document.getElementById('dm-county-q'),list=document.getElementById('dm-county-list'),out=document.getElementById('dm-county-out');
     if(!q)return;
-    var IDX=null,loading=null;
+    var IDX=null,loading=null,WK=null,wkLoading=null;
+    function loadWeek(){
+      if(WK)return Promise.resolve(WK);
+      if(!wkLoading)wkLoading=fetch('/data/drought/county-week.json').then(function(r){if(r.status===404)return {missing:true};if(!r.ok)throw 0;return r.json();}).then(function(w){WK=w;return w;},function(){wkLoading=null;return {failed:true};});
+      return wkLoading;
+    }
+    function day(iso){var p=String(iso).split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});}
+    function f1(v){return (Math.round(v*10)/10).toFixed(1).replace(/\.0$/,'');}
+    function chg(a,b){if(a==null||b==null)return 'n/a';var d=Math.round((a-b)*10)/10;return d===0?'no change':(d>0?'+':'\u2212')+f1(Math.abs(d))+' pts';}
+    var CAT=[['None','#d9d9d9'],['D0','#ffff00'],['D1','#fcd37f'],['D2','#ffaa00'],['D3','#e60000'],['D4','#730000']];
+    var ROWS=['D0\u2013D4: abnormally dry or worse','D1\u2013D4: in drought','D2\u2013D4: severe or worse','D3\u2013D4: extreme or worse','D4: exceptional'];
+    /* fips -> the week block's HTML. w: the file; every figure carries the map's valid date. */
+    function weekHtml(w,fips){
+      var head='<div style="font-weight:700;margin:.1rem 0 .15rem">This week</div>';
+      if(!w||w.missing)return head+'<p style="margin:0 0 .5rem;color:var(--text-dim)">This week&rsquo;s county numbers load after the first Drought Monitor read. The map above is current.</p>';
+      if(w.failed)return head+'<p style="margin:0 0 .5rem;color:var(--text-dim)">This week&rsquo;s county numbers did not load. Try again.</p>';
+      var rows=w.c&&w.c[fips], zero=w.zero&&w.zero.indexOf(fips)>=0, z=[0,0,0,0,0];
+      if(!rows&&zero)rows=[z,z,z];
+      if(!rows)return head+'<p style="margin:0 0 .5rem;color:var(--text-dim)">The Drought Monitor has no county figure for this county on the map valid '+esc(day(w.valid))+'.</p>';
+      var now=rows[0],wk1=rows[1],wk4=rows[2];
+      var old=(Date.now()-Date.parse(w.valid+'T00:00:00Z'))/864e5>9;
+      var t='<table class="dm-wk"><thead><tr><th scope="col">Share of the county</th><th scope="col">Map valid '+esc(day(w.valid))+'</th><th scope="col">vs a week before</th><th scope="col">vs 4 weeks before</th></tr></thead><tbody>';
+      for(var i=0;i<5;i++)t+='<tr><td>'+ROWS[i]+'</td><td><strong>'+f1(now[i])+'%</strong></td><td>'+chg(now[i],wk1&&wk1[i])+'</td><td>'+chg(now[i],wk4&&wk4[i])+'</td></tr>';
+      t+='</tbody></table>';
+      var ex=[100-now[0],now[0]-now[1],now[1]-now[2],now[2]-now[3],now[3]-now[4],now[4]];
+      var bar='<div class="dm-wk-bar" role="img" aria-label="'+esc(CAT.map(function(c,k){return c[0]+' '+f1(Math.max(0,ex[k]))+'%';}).join(', '))+'">'+CAT.map(function(c,k){var v=Math.max(0,ex[k]);return v>0?'<span style="width:'+v+'%;background:'+c[1]+'"></span>':'';}).join('')+'</div>';
+      var key='<div class="dm-wk-key">'+CAT.map(function(c,k){var v=Math.max(0,ex[k]);return v>0?'<span><i style="background:'+c[1]+'"></i>'+(k?c[0]:'No drought')+' '+f1(v)+'%</span>':'';}).join('')+'</div>';
+      return head+bar+key+t+'<p style="margin:0 0 .6rem;font-size:.8rem;color:var(--text-muted)">Percent of the county&rsquo;s area, U.S. Drought Monitor county statistics (NDMC). Each row counts that category and every worse one; the bar splits them. A week before is the map valid '+esc(day(w.prev))+'; four weeks before, '+esc(day(w.prev4))+'.'+(old?' <strong>This is not the newest map: the weekly read is late.</strong>':'')+'</p>';
+    }
+    function missingYears(d){
+      if(d.missing_years)return d.missing_years.map(Number);
+      var s=d.series||{},o=[];
+      for(var y=+d.first_year;y<=+d.last_full_year;y++){if(!s[y]||s[y].maps<40)o.push(y);}
+      return o;
+    }
     function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
     function n(x){return Number(x).toLocaleString('en-US');}
     function loadIdx(){
@@ -330,20 +387,25 @@ button,a,[role="button"] { touch-action: manipulation; }
     }
     function pick(h){
       list.innerHTML='';q.value=h[1];out.textContent='Loading '+h[1]+'\u2026';
-      fetch('/data/atlas/counties/'+h[0]+'.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(c){
+      var wkP=loadWeek();
+      fetch('/data/atlas/counties/'+h[0]+'.json').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(c){return wkP.then(function(w){return [c,w];});}).then(function(cw){
+        var c=cw[0],wkb=weekHtml(cw[1],h[0]);
+        if(q.value!==h[1])return;
         var d=c.drought||{},links='<a href="'+esc(h[2])+'" style="color:var(--gold)">Full county record in the Atlas</a>';
         if(d.status!=='ok'){
-          out.innerHTML='<strong>'+esc(h[1])+'</strong>: withheld in the Atlas ('+esc(String(d.status||'no drought record').replace(/^withheld:\s*/,''))+'). '+links;
+          out.innerHTML='<strong>'+esc(h[1])+'</strong>'+wkb+'<div style="font-weight:700;margin:.1rem 0 .15rem">Since 2000</div>Withheld in the Atlas ('+esc(String(d.status||'no drought record').replace(/^withheld:\s*/,''))+'). '+links;
           return;
         }
+        var miss=missingYears(d),exc=miss.length?' except '+miss.join(', '):'';
         var py=d.partial_year,last=d.series&&d.series[String(d.last_full_year)],w=d.weeks||{},wy=d.worst_year;
         var rows=[];
         if(py)rows.push(py.year+' so far: '+py.d2+' of '+py.maps+' weekly maps');
         if(last)rows.push(d.last_full_year+': '+last.d2+' of '+last.maps+' weekly maps');
-        if(w.counted)rows.push(d.first_year+'\u2013'+d.last_full_year+': '+n(w.d2)+' of '+n(w.counted)+' weekly maps ('+w.share_d2_pct+'%)'+(w.d3!=null?'; '+n(w.d3)+' of them at D3 or worse':''));
+        if(w.counted)rows.push(d.first_year+'\u2013'+d.last_full_year+exc+': '+n(w.d2)+' of '+n(w.counted)+' weekly maps ('+w.share_d2_pct+'%)'+(w.d3!=null?'; '+n(w.d3)+' of them at D3 or worse':''));
+        if(miss.length)rows.push(miss.join(', ')+' left out: the Atlas copy of that year is incomplete, so it is in no total here');
         if(wy&&wy.d2>0)rows.push('Worst year: '+wy.year+', '+wy.d2+' weeks');
         var built=c.generated?new Date(c.generated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}):'';
-        out.innerHTML='<strong>'+esc(h[1])+'</strong>, weeks with at least half the county in D2 or worse:'
+        out.innerHTML='<strong>'+esc(h[1])+'</strong>'+wkb+'<div style="font-weight:700;margin:.1rem 0 .15rem">Since 2000</div>Weeks with at least half the county in D2 or worse:'
           +'<ul style="margin:.3rem 0 .4rem;padding-left:1.1rem">'+rows.map(function(r){return '<li>'+esc(r)+'</li>';}).join('')+'</ul>'
           +'<span style="font-size:.8rem;color:var(--text-muted)">U.S. Drought Monitor county statistics (NDMC), counted by the Atlas'+(built?', built '+esc(built):'')+'. Half the county is the Atlas&rsquo;s line, not an FSA program rule.</span>'
           +'<div id="dm-county-links" style="margin-top:.4rem">'+links+'</div>';
@@ -359,40 +421,40 @@ button,a,[role="button"] { touch-action: manipulation; }
   </script>
 
   <div class="dm-section-label">Crop stress windows: when drought hurts most</div>
-  <div class="tblscroll" tabindex="0" role="region" aria-label="Crop drought stress calendar table, scrolls sideways"><table class="dm-stress-table" aria-label="Crop drought stress calendar">
+  <div class="tblscroll dm-stress-wrap" tabindex="0" role="region" aria-label="Crop drought stress calendar"><table class="dm-stress-table" aria-label="Crop drought stress calendar">
     <thead>
       <tr><th>Crop</th><th>Critical Period</th><th>Drought Risk</th><th>What's at Stake</th></tr>
     </thead>
     <tbody>
       <tr>
         <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</td>
-        <td>Late July – August</td>
-        <td class="dm-stress-high">D1+ = High risk</td>
-        <td>Pollination failure; grain fill stunted. D2 during silking is commonly cited to cut yields substantially.</td>
+        <td data-k="When">Late July – August</td>
+        <td data-k="Risk" class="dm-stress-high">D1+ = High risk</td>
+        <td data-k="At stake">Pollination failure; grain fill stunted. D2 during silking is commonly cited to cut yields substantially.</td>
       </tr>
       <tr>
         <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</td>
-        <td>June (early growth)</td>
-        <td class="dm-stress-med">D2+ = Moderate risk</td>
-        <td>Root development impaired; plants stress before they can show it.</td>
+        <td data-k="When">June (early growth)</td>
+        <td data-k="Risk" class="dm-stress-med">D2+ = Moderate risk</td>
+        <td data-k="At stake">Root development impaired; plants stress before they can show it.</td>
       </tr>
       <tr>
         <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg> Soybeans</td>
-        <td>Late July – September</td>
-        <td class="dm-stress-high">D1+ = High risk</td>
-        <td>Pod set and seed fill, most water-sensitive stage. Yield loss compounds quickly.</td>
+        <td data-k="When">Late July – September</td>
+        <td data-k="Risk" class="dm-stress-high">D1+ = High risk</td>
+        <td data-k="At stake">Pod set and seed fill, most water-sensitive stage. Yield loss compounds quickly.</td>
       </tr>
       <tr>
         <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Winter Wheat</td>
-        <td>Fall establishment &amp; spring green-up</td>
-        <td class="dm-stress-med">D1+ = Moderate risk</td>
-        <td>Poor tiller development; winter kill risk increases on shallow soils.</td>
+        <td data-k="When">Fall establishment &amp; spring green-up</td>
+        <td data-k="Risk" class="dm-stress-med">D1+ = Moderate risk</td>
+        <td data-k="At stake">Poor tiller development; winter kill risk increases on shallow soils.</td>
       </tr>
       <tr>
         <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Hay / Pasture</td>
-        <td>May – August</td>
-        <td class="dm-stress-high">D0+ = Risk begins</td>
-        <td>First cutting reduced; recovery slows. Supplemental feed costs escalate at D2.</td>
+        <td data-k="When">May – August</td>
+        <td data-k="Risk" class="dm-stress-high">D0+ = Risk begins</td>
+        <td data-k="At stake">First cutting reduced; recovery slows. Supplemental feed costs escalate at D2.</td>
       </tr>
     </tbody>
   </table></div>
@@ -400,11 +462,11 @@ button,a,[role="button"] { touch-action: manipulation; }
   <div class="dm-grid">
     <div class="dm-card">
       <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Release Schedule</h3>
-      <p>Published every Thursday by 8:30 AM ET. The map reflects conditions through the preceding Tuesday. AGSIST links directly to the official NDMC map with no delay.</p>
+      <p>Published every Thursday by 8:30 AM ET. The map reflects conditions through the preceding Tuesday. The national map here is a copy AGSIST saves after each release, labeled with its valid date.</p>
     </div>
     <div class="dm-card">
       <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-landmark"/></svg> Crop insurance and drought</h3>
-      <p>Different USDA programs respond to drought in different ways. <strong style="color:var(--text)">LFP</strong> (Livestock Forage Disaster Program) is tied directly to the USDM: sustained D2 or worse on grazing land can make you eligible. Check the current FSA schedule. <strong style="color:var(--text)">PRF</strong> (Pasture/Rangeland/Forage) is a rainfall-index product and does not use USDM categories. It pays when grid precipitation falls below the historical norm. <a href="/prf" style="color:var(--gold)">See what PRF would have paid on your grid</a>, every year since 1951. <strong style="color:var(--text)">WFRP</strong> (Whole-Farm Revenue Protection) pays when year-end revenue falls below your insured revenue from any covered cause, not on USDM status. Check the <a href="https://droughtmonitor.unl.edu/fsa/Home.aspx" target="_blank" rel="noopener" style="color:var(--gold)">FSA LFP eligibility tool</a> for your county, and ask your crop insurance agent for specifics on your coverage.</p>
+      <p>Different USDA programs respond to drought in different ways. <strong style="color:var(--text)">LFP</strong> (Livestock Forage Disaster Program) is tied directly to the USDM: sustained D2 or worse on grazing land can make you eligible. Check the current FSA schedule. <strong style="color:var(--text)">PRF</strong> (Pasture/Rangeland/Forage) is a rainfall-index product and does not use USDM categories. It pays when grid precipitation falls below the historical norm. <a href="/prf" style="color:var(--gold)">See what PRF would have paid on your grid</a>, every year since 1951. <strong style="color:var(--text)">WFRP</strong> (Whole-Farm Revenue Protection) pays when year-end revenue falls below your insured revenue from any covered cause, not on USDM status. Check the <a href="https://droughtmonitor.unl.edu/fsa/Home.aspx" target="_blank" rel="noopener" style="color:var(--gold)">FSA LFP eligibility tool</a> for your county.</p>
     </div>
     <div class="dm-card">
       <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Regional drought patterns</h3>
@@ -442,8 +504,8 @@ button,a,[role="button"] { touch-action: manipulation; }
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>How does drought affect corn and soybean yields?</summary><div class="agf-a">Corn is most vulnerable to drought during pollination (late July) and grain fill (August). A D2 drought during those weeks is commonly cited to cut yields substantially. Soybeans are most sensitive during pod set and fill, roughly late July through early September. Even D1 moderate drought during peak demand can cut yields.</div></details>
 <details><summary>What is D2 drought and what does it mean for farmers?</summary><div class="agf-a">D2 is Severe Drought on the US Drought Monitor scale. At D2 and above, crop and pasture losses become likely and water restrictions may begin. Sustained D2 or worse on grazing land can make you eligible for the Livestock Forage Program. Check the current FSA schedule. D3 (Extreme) and D4 (Exceptional) mean widespread losses and major economic impacts for agriculture. Revenue and rainfall-index insurance products use different mechanisms and are not triggered directly by USDM categories.</div></details>
-<details><summary>When is the US Drought Monitor updated?</summary><div class="agf-a">The US Drought Monitor is published every Thursday by 8:30 AM ET by the National Drought Mitigation Center, USDA, and NOAA. The map reflects conditions through the previous Tuesday. AGSIST links directly to the official NDMC map with no delay.</div></details>
-<details><summary>Does drought monitor status affect crop insurance?</summary><div class="agf-a">Different USDA programs work differently. The Livestock Forage Disaster Program (LFP) is tied directly to USDM status: sustained D2 or worse on grazing land can make you eligible. Check the current FSA schedule. The Pasture, Rangeland, and Forage (PRF) rainfall-index program does not use USDM categories. It pays on grid precipitation deviation from the historical norm. Whole-Farm Revenue Protection (WFRP) pays on year-end revenue shortfall from any covered cause, not USDM status. Contact your crop insurance agent for program-specific details.</div></details>
+<details><summary>When is the US Drought Monitor updated?</summary><div class="agf-a">The US Drought Monitor is published every Thursday by 8:30 AM ET by the National Drought Mitigation Center, USDA, and NOAA. The map reflects conditions through the previous Tuesday.</div></details>
+<details><summary>Does drought monitor status affect crop insurance?</summary><div class="agf-a">Different USDA programs work differently. The Livestock Forage Disaster Program (LFP) is tied directly to USDM status: sustained D2 or worse on grazing land can make you eligible. Check the current FSA schedule. The Pasture, Rangeland, and Forage (PRF) rainfall-index program does not use USDM categories. It pays on grid precipitation deviation from the historical norm. Whole-Farm Revenue Protection (WFRP) pays on year-end revenue shortfall from any covered cause, not USDM status.</div></details>
 <details><summary>Which states are most affected by drought in the Corn Belt?</summary><div class="agf-a">Drought impacts in the Corn Belt vary year to year. The western Corn Belt (Iowa, Nebraska, Kansas, South Dakota) tends to see more drought frequency than the eastern Corn Belt. The Southern Plains (Texas, Oklahoma) frequently see D2+ conditions. Use the state view on this page to check current conditions for any agricultural state.</div></details>
 </section>
 <!--FAQ:END-->
@@ -466,7 +528,9 @@ button,a,[role="button"] { touch-action: manipulation; }
   'use strict';
 
   var VIEWS = {
-    national:   { src: 'https://droughtmonitor.unl.edu/data/png/current/current_usdm.png',           label: 'US · National View',     alt: 'US Drought Monitor: national view' },
+    // national: the dated copy scripts/fetch_outlooks.py saves after each release, so the
+    // image and the "Map valid" label are the same map. Regions and states are NDMC's live images.
+    national:   { src: '/data/outlooks/usdm_latest.png',                                             label: 'US · National View',     alt: 'US Drought Monitor: national view' },
     'corn-belt':{ src: 'https://droughtmonitor.unl.edu/data/png/current/current_usdm_Midwest.png',   label: 'Corn Belt · Midwest',    alt: 'US Drought Monitor: Corn Belt / Midwest' },
     plains:     { src: 'https://droughtmonitor.unl.edu/data/png/current/current_usdm_High Plains.png', label: 'High Plains View',     alt: 'US Drought Monitor: High Plains' }
   };
@@ -530,6 +594,14 @@ button,a,[role="button"] { touch-action: manipulation; }
     img.src = v.src;
     img.alt = v.alt;
     lbl.textContent = v.label;
+    mapNote(view === 'national');
+  }
+  var NOTE0 = (document.getElementById('dm-map-note') || {}).innerHTML;
+  function mapNote(saved) {
+    var n = document.getElementById('dm-map-note');
+    if (!n) return;
+    if (saved) n.innerHTML = NOTE0;
+    else n.textContent = "NDMC's live image for this view; it changes when the Thursday map is released.";
   }
 
   function loadStateMap(st) {
@@ -538,6 +610,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     img.src = 'https://droughtmonitor.unl.edu/data/png/current/current_usdm_' + st + '.png';
     img.alt = 'US Drought Monitor: ' + st + ' state view';
     lbl.textContent = st + ' · State View';
+    mapNote(false);
   }
 
   function buildStateGrid() {
