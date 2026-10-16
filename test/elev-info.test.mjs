@@ -48,7 +48,7 @@ function liftVar(name) {
   return m[0];
 }
 
-const FNS = ["escH", "truncName", "hasPhone", "classify", "usScope", "netContract", "netLog", "netRowsFrom",
+const FNS = ["escH", "truncName", "hasPhone", "classify", "usScope", "netContract", "netLog", "netRowsFrom", "readTimeOnly",
   "ppu", "basisUnit", "basisCents", "basisUnusual", "basisUnclear", "groupElevators",
   "portalInfo", "portalClosedLabel", "portalBadge", "portalLines"];
 const VARS = ["US_STATES_OK", "PPU_BAND", "BASIS_SANE"];

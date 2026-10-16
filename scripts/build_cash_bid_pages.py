@@ -89,6 +89,7 @@ import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reade
 import basis_method as BM  # noqa: E402  (the one state-basis method)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
+from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of cb-rank.js)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
 
@@ -311,15 +312,17 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             tname = how["town"] if how["how"] != "none" else None
         if not tname:
             drops["rows_not_placed_in_a_town"] += 1
-            unplaced.setdefault((st, b.get("place") or sid), (b.get("operator") or "", town_name(b.get("city")),
+            unplaced.setdefault((st, b.get("place") or sid), (display_name(b.get("operator") or ""),
+                                                              clean_place(town_name(b.get("city"))),
                                                               zip5(b.get("zip") or src.get("zip"))))
             continue
         tk = (st, url_slug(tname))
         t = towns.setdefault(tk, {"state": st, "name": tname, "slug": tk[1], "boards": {}})
         place = b.get("place") or sid
         bd = t["boards"].setdefault(place, {
-            "place": place, "source": sid, "operator": (b.get("operator") or src.get("operator") or "").strip(),
-            "city": town_name(b.get("city")), "zip": zip5(b.get("zip") or src.get("zip")),
+            "place": place, "source": sid,
+            "operator": display_name(b.get("operator") or src.get("operator") or ""),
+            "city": clean_place(town_name(b.get("city"))), "zip": zip5(b.get("zip") or src.get("zip")),
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
             "town": tname, "state": st, "pin": _pin(b),
@@ -1633,7 +1636,12 @@ def state_basis_rows(merged, index):
     group at its nearest open delivery."""
     rows = SB.fresh_rows(merged, index)
     SB.flag_futures_disagreement(rows)
-    return SB.nearby(rows)
+    out = SB.nearby(rows)
+    for r in out:        # printed words only; keys stay as the board gave them
+        r["operator"] = display_name(r.get("operator"))
+        if r.get("city"):
+            r["city"] = clean_place(r["city"])
+    return out
 
 
 def _plural(n, one, many=None):

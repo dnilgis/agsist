@@ -293,12 +293,39 @@ function markOutliers(items){
   });
 }
 
+/* ── The name printed for an elevator and its place ───────────────────────
+   Twin of scripts/elevator_names.py (test/cashfix.test.mjs runs the same cases
+   through both). "Cash Bid JSI Site - Ag State" is a page title, not a name;
+   "Dewar, IA" printed beside its state read "Dewar, IA, IA". Exact fixes are in
+   data/elevator-names.json; until it loads, the general rules still apply. */
+var NAMES={operators:{},places:{}};
+var OP_HEAD=/^\s*(?:cash\s+bid\s+)?(?:jsi\s+site|iframe|current\s+grain\s+bids)\s*-\s*/i;
+var OP_TAIL=/\s*-\s*cash\s+bid\s+include\s*$/i;
+var ST_TAIL=/(?:\s*[,.]\s*[A-Z]{2})+\s*$/;
+function setNames(json){
+  NAMES={operators:(json&&json.operators)||{},places:(json&&json.places)||{}};
+  return NAMES;
+}
+function displayName(op){
+  var s=String(op||'').trim();
+  if(Object.prototype.hasOwnProperty.call(NAMES.operators,s))return NAMES.operators[s];
+  return s.replace(OP_HEAD,'').replace(OP_TAIL,'').trim().replace(/,+$/,'').trim();
+}
+function cleanPlace(p){
+  var s=String(p||'').trim();
+  if(Object.prototype.hasOwnProperty.call(NAMES.places,s))return NAMES.places[s];
+  s=s.replace(/[,\s]+$/,'').trim();
+  var out=s.replace(ST_TAIL,'').trim().replace(/,+$/,'').trim();
+  return out||s;
+}
+
 var api={centralDay:centralDay,dayLabel:dayLabel,pairMonths:pairMonths,pairEnd:pairEnd,
   wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,setFutures:setFutures,
   futureFor:futureFor,assess:assess,compare:compare,note:note,priceText:priceText,
   looksLikePoint:looksLikePoint,learnTowns:learnTowns,placeTown:placeTown,
   outlierCheck:outlierCheck,markOutliers:markOutliers,setStateMedians:setStateMedians,
-  stateMedian:stateMedian,futuresReady:false,stateReady:false};
+  stateMedian:stateMedian,setNames:setNames,displayName:displayName,cleanPlace:cleanPlace,
+  futuresReady:false,stateReady:false,namesReady:false};
 root.cbRank=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 
@@ -312,6 +339,13 @@ if(typeof fetch==='function'&&typeof document!=='undefined'){
       :fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}))
       .then(function(j){if(!j)return;setFutures(j);api.futuresReady=true;
         if(typeof root.cbRankRedraw==='function')root.cbRankRedraw();})
+      .catch(function(){});
+  }catch(e){}
+  /* Exact display-name fixes (data/elevator-names.json). */
+  try{
+    fetch('/data/elevator-names.json').then(function(r){return r.ok?r.json():null;})
+      .then(function(j){if(!j)return;setNames(j);api.namesReady=true;
+        if(typeof root.cbOutlierRedraw==='function')root.cbOutlierRedraw();})
       .catch(function(){});
   }catch(e){}
   /* The state medians the outlier check falls back to with few elevators. */

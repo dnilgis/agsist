@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { execFileSync } from "node:child_process";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
@@ -76,4 +77,26 @@ test('a board with no posted time of its own says "Read", never "Posted"', () =>
   assert.match(SS, /'Read ' \+ t \+ '\. The board gives no time of its own/);
   assert.doesNotMatch(SS, /done\(rows, s\.pricedAt \|\| s\.checkedAt, 'posted'\)/);
   assert.match(SOS, /m\.postedKind === 'posted' \? ' Posted ' : ' Read '/);
+});
+
+test("page-title elevator names are fixed the same way on the live page and the town pages", () => {
+  const ctx = { console };
+  ctx.window = ctx;
+  vm.createContext(ctx);
+  vm.runInContext(read("components/cb-rank.js"), ctx);
+  const R = ctx.cbRank;
+  R.setNames(JSON.parse(read("data/elevator-names.json")));
+  const [ops, places] = JSON.parse(execFileSync("python3", ["-I", "-c",
+    "import sys,json;sys.path.insert(0,sys.argv[1]);import elevator_names as e;print(json.dumps([e.CASES_OP,e.CASES_PLACE]))",
+    ROOT + "scripts"], { encoding: "utf8" }));
+  assert.ok(ops.length >= 8 && places.length >= 8);
+  for (const [a, b] of ops) assert.equal(R.displayName(a), b, `operator ${a}`);
+  for (const [a, b] of places) assert.equal(R.cleanPlace(a), b, `place ${a}`);
+  /* the 83 Iowa pages: the name is the co-op's */
+  assert.equal(R.displayName("Cash Bid JSI Site - Ag State"), "Ag State");
+  /* the live page prints through them */
+  assert.match(liftFn(JS, "townOf"), /cbRank\.cleanPlace/);
+  assert.match(liftFn(JS, "groupElevators"), /cbRank\.displayName\(b\.facility\)/);
+  /* and the town builder imports the same module */
+  assert.match(read("scripts/build_cash_bid_pages.py"), /from elevator_names import clean_place, display_name/);
 });

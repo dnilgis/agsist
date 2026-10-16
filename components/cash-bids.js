@@ -1049,12 +1049,12 @@ function portalExpire(root){
 }
 /* What a card prints for the town: the feed's display town when the place's
    `city` is an elevator's name, else the city. Keys still use `city`. */
-function townOf(x){return String((x&&(x.town||x.city))||'');}
+function townOf(x){var t=String((x&&(x.town||x.city))||'');return window.cbRank&&cbRank.cleanPlace?cbRank.cleanPlace(t):t;}
 function groupElevators(bids){
   var map={};
   bids.forEach(function(b){
     var key=(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||'');
-    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,town:b.town||'',state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null,portal:null};
+    if(!map[key])map[key]={key:key,facility:window.cbRank&&cbRank.displayName?(cbRank.displayName(b.facility)||townOf(b)+' elevator'):b.facility,branch:b.branch,city:b.city,town:b.town||'',state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null,portal:null};
     /* One row read straight from the board makes the elevator a direct read. */
     if(b.via==='direct')map[key].via='direct';
     /* AND ONE ROW WHOSE READ FAILED MAKES THE CARD SAY SO. Flagged, never

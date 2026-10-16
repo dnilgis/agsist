@@ -60,6 +60,9 @@ const NAMES = ["classify", "netZipCoord", "netDistanceMi", "netPlacesWithin",
                /* netPlacesWithin spends its budget through netRankPlaces
                   (2026-10-07): best bids per crop first, then the nearest. */
                "netRankPlaces",
+               /* netRowsFrom marks a board time that is only our read
+                  (readTimeOnly, 2026-10-16: "Read", not "Posted"). */
+               "readTimeOnly",
                /* netRowsFrom attaches an elevator's own portal info through
                   portalInfo() (2026-10-13, the elevator portal). */
                "portalInfo"];
