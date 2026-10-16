@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T22:18:36Z",
+ "run_utc": "2026-10-16T22:26:58Z",
  "sources": [
   {
    "bytes": null,
@@ -8615,6 +8615,81 @@
    ],
    "status": "new",
    "text_chars": 3916
+  },
+  {
+   "bytes": 498143,
+   "sha256": "e876bd1613492758a4816db3f85bddaaea164e19d84acbff8bc7b9700dfe12e3",
+   "fetched_utc": "2026-10-16T22:26:55Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/ecfr-7-1416.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "ecfr-7-1416",
+   "url": "https://www.ecfr.gov/current/title-7/subtitle-B/chapter-XIV/subchapter-B/part-1416",
+   "title": "7 CFR part 1416: Emergency agricultural disaster assistance (LFP is subpart C) (eCFR)",
+   "why": "/drought-monitor: the LFP drought-intensity rule (D2 weeks in a row, D3, D4) before the page prints the payment ladder next to its county streak counts",
+   "kind": "html",
+   "checked_utc": "2026-10-16T22:26:54Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 186664
+  },
+  {
+   "bytes": 22626,
+   "sha256": "926fc176f6550a7bd18fbcbb40bbd9e396921e47d5d068ab3ebbade3e3cc8e9b",
+   "fetched_utc": "2026-10-16T22:26:57Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/ndmc-fsa-lfp.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "ndmc-fsa-lfp",
+   "url": "https://droughtmonitor.unl.edu/fsa/Home.aspx",
+   "title": "NDMC: U.S. Drought Monitor LFP page for FSA",
+   "why": "/drought-monitor: what NDMC publishes for FSA LFP by county, linked from the page",
+   "kind": "html",
+   "checked_utc": "2026-10-16T22:26:56Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 116
+  },
+  {
+   "bytes": 56510,
+   "sha256": "121ce26b79f5364b0fe5d639959a8d9aa93ff98243592bcb378f8894722ae432",
+   "fetched_utc": "2026-10-16T22:26:58Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/usdm-data-services.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "usdm-data-services",
+   "url": "https://droughtmonitor.unl.edu/DmData/DataDownload/WebServiceInfo.aspx",
+   "title": "NDMC: U.S. Drought Monitor web service (statistics API) documentation",
+   "why": "/drought-monitor: the USStatistics (aoi=conus) and StateStatistics endpoints scripts/fetch_drought_county_week.py reads for summary.json",
+   "kind": "html",
+   "checked_utc": "2026-10-16T22:26:58Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 203
   },
   {
    "bytes": 64707,

@@ -1,0 +1,41 @@
+# NDMC: U.S. Drought Monitor LFP page for FSA
+# https://droughtmonitor.unl.edu/fsa/Home.aspx
+# fetched 2026-10-16T22:26:57Z, sha256 926fc176f6550a7bd18fbcbb40bbd9e396921e47d5d068ab3ebbade3e3cc8e9b
+
+Home | FSA Livestock Forage Disaster Program Eligibility Tool
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-

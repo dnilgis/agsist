@@ -1,0 +1,2578 @@
+# 7 CFR part 1416: Emergency agricultural disaster assistance (LFP is subpart C) (eCFR)
+# https://www.ecfr.gov/current/title-7/subtitle-B/chapter-XIV/subchapter-B/part-1416
+# fetched 2026-10-16T22:26:55Z, sha256 e876bd1613492758a4816db3f85bddaaea164e19d84acbff8bc7b9700dfe12e3
+
+eCFR :: 7 CFR Part 1416 -- Emergency Agricultural Disaster Assistance Programs
+
+Site Feedback
+
+You are using an unsupported browser
+
+You are using an unsupported browser. This web site is designed for the current versions of
+Microsoft Edge, Google Chrome, Mozilla Firefox, or Safari.
+
+Site Feedback
+
+The Office of the Federal Register publishes documents on behalf of Federal agencies but does not have any authority over their programs. We recommend you directly contact the agency associated with the content in question.
+
+If you have comments or suggestions on how to improve the www.ecfr.gov website or have questions about using www.ecfr.gov, please choose the 'Website Feedback' button below.
+
+Website Feedback
+
+If you would like to comment on the current content, please use the 'Content Feedback' button below for instructions on contacting the issuing agency
+
+Content Feedback
+
+If you have questions for the Agency that issued the current document please contact the agency directly.
+
+Website Feedback
+
+-
+
+☰
+
+-
+
+-
+
+-
+
+Home
+
+-
+
+Browse
+
+-
+
+Titles
+
+-
+
+Agencies
+
+-
+
+CFR Updates
+
+-
+
+Recent Changes
+
+-
+
+Issue Summaries
+
+-
+
+Corrections
+
+-
+
+Finding Aids
+
+-
+
+Parallel Table of Authorities
+
+-
+
+Subject Index
+
+-
+
+Agency-prepared Indexes
+
+-
+
+Reader Aids
+
+-
+Reader Aids Home
+
+-
+Using the eCFR Point-in-Time System
+
+-
+Understanding the eCFR
+
+-
+Government Policy and OFR Procedures
+
+-
+Developer Resources
+
+-
+Recent Site Updates
+
+-
+
+My eCFR
+
+-
+My Subscriptions
+
+-
+Sign Out
+
+-
+Sign In / Sign Up
+
+-
+
+eCFR
+
+The Electronic Code of Federal Regulations
+
+Enhanced Content :: FR Reference
+
+Enhanced content is provided to the user to provide additional context.
+
+Enhanced Content :: FR Reference
+
+Title 7
+
+This content is from the eCFR and is authoritative but unofficial.
+
+Displaying title 7, up to date as of 10/15/2026. Title 7 was last amended 10/09/2026.
+
+view historical versions
+
+A drafting site is available for use when drafting amendatory language
+
+switch to drafting site
+
+Navigate by entering citations or phrases
+(eg:
+1 CFR 1.1
+49 CFR 172.101
+Organization and Purpose
+1/1.1
+Regulation Y
+FAR).
+
+Choosing an item from
+citations and headings
+will bring you directly to the content. Choosing an item from
+full text search results
+will bring you to those results. Pressing enter in the search box
+will also bring you to search results.
+
+Background and more details are available in the
+
+Search & Navigation
+
+guide.
+
+-
+Title 7 —Agriculture
+
+-
+Subtitle B —Regulations of the Department of Agriculture
+
+-
+Chapter XIV —Commodity Credit Corporation, Department of Agriculture
+
+-
+Subchapter B —Loans, Purchases, and Other Operations
+
+-
+Part 1416
+
+-
+Previous
+
+-
+Next
+
+-
+Top
+
+-
+
+- Table of Contents
+
+Enhanced Content - Table of Contents
+
+Part 1416 Emergency Agricultural Disaster Assistance Programs 1416.1 – 1416.407
+
+Subpart A General Provisions for Supplemental Agricultural Disaster Assistance Programs 1416.1 – 1416.14
+
+§ 1416.1 Applicability.
+
+§ 1416.2 Administration of ELAP, LFP, LIP, and TAP.
+
+§ 1416.3 Eligible producer.
+
+§ 1416.5 [Reserved]
+
+§ 1416.6 Payment eligibility and limitation.
+
+§ 1416.7 Misrepresentation.
+
+§ 1416.8 Appeals.
+
+§ 1416.9 Offsets, assignments, and debt settlement.
+
+§ 1416.10 Records and inspections.
+
+§ 1416.11 Refunds; joint and several liability.
+
+§ 1416.12 Minors.
+
+§ 1416.13 Deceased individuals or dissolved entities.
+
+§ 1416.14 Miscellaneous.
+
+Subpart B Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish Program 1416.101 – 1416.113
+
+§ 1416.101 Applicability.
+
+§ 1416.102 Definitions.
+
+§ 1416.103 Eligible losses, adverse weather, and other loss conditions.
+
+§ 1416.104 Eligible livestock, honeybees, and farm-raised fish.
+
+§ 1416.105 Eligible producers, owners, and contract growers.
+
+§ 1416.106 Notice of loss and application process.
+
+§ 1416.107 Notice of loss and application period.
+
+§ 1416.108 [Reserved]
+
+1416.109 National payment rate.
+
+§ 1416.110 Livestock payment calculations.
+
+§ 1416.111 Honeybee payment calculations.
+
+§ 1416.112 Farm-raised fish payment calculations.
+
+§ 1416.113 Milk losses due to H5N1.
+
+Subpart C Livestock Forage Disaster Program 1416.201 – 1416.207
+
+§ 1416.201 Applicability.
+
+§ 1416.202 Definitions.
+
+§ 1416.203 Eligibility.
+
+§ 1416.204 Covered livestock.
+
+§ 1416.205 Eligible grazing losses.
+
+§ 1416.206 Application for payment.
+
+§ 1416.207 Payment calculation.
+
+Subpart D Livestock Indemnity Program 1416.301 – 1416.306
+
+§ 1416.301 Applicability.
+
+§ 1416.302 Definitions.
+
+§ 1416.303 Eligible owners and contract growers.
+
+§ 1416.304 Eligible livestock.
+
+§ 1416.305 Application process.
+
+§ 1416.306 Payment calculation.
+
+Subpart E Tree Assistance Program 1416.400 – 1416.407
+
+§ 1416.400 Applicability.
+
+§ 1416.401 Administration.
+
+§ 1416.402 Definitions.
+
+§ 1416.403 Eligible losses.
+
+§ 1416.404 Eligible orchardists and nursery tree growers.
+
+§ 1416.405 Application.
+
+§ 1416.406 Payment calculations.
+
+§ 1416.407 Obligations of a participant.
+
+Enhanced Content - Table of Contents
+
+- Details
+
+Enhanced Content - Details
+
+URL
+
+https://www.ecfr.gov/current/title-7/part-1416
+
+Citation
+
+7 CFR Part 1416
+
+Agency
+
+Commodity Credit Corporation, Department of Agriculture
+
+Part 1416
+
+Authority:
+
+7 U.S.C. 9081 and 15 U.S.C. 714b and 714c.
+
+Source:
+
+79 FR 21097, Apr. 14, 2014, unless otherwise noted.
+
+Enhanced Content - Details
+
+- Print/PDF
+
+Enhanced Content - Print
+
+Generate PDF (approximately 50+ pages)
+
+This content is from the eCFR and may include recent changes applied to the CFR.
+The official, published CFR, is updated annually and available below under
+"Published Edition". You can learn more about the process
+here.
+
+Enhanced Content - Print
+
+- Display Options
+
+Enhanced Content - Display Options
+
+Enhanced Content - Display Options
+
+- Subscribe
+
+Enhanced Content - Subscribe
+
+Subscribe to: 7 CFR Part 1416
+
+Enhanced Content - Subscribe
+
+-
+
+- Timeline
+
+Enhanced Content - Timeline
+
+-
+
+7/09/2026
+
+view on this date
+
+view change introduced
+
+-
+
+1/17/2025
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+7/01/2024
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+11/28/2023
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+1/11/2023
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+4/06/2022
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+2/26/2020
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+9/13/2019
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+-
+
+10/02/2018
+
+view on this date
+
+view change introduced
+
+compare to most recent
+
+Enhanced Content - Timeline
+
+- Go to Date
+
+Enhanced Content - Go to Date
+
+Enhanced Content - Go to Date
+
+- Compare Dates
+
+Enhanced Content - Compare Dates
+
+Show changes as:red/greenpurple/orange
+
+Show strike-through for removed contentyesno
+
+Enhanced Content - Compare Dates
+
+-
+
+- Published Edition
+
+Enhanced Content - Published Edition
+
+View the most recent official publication:
+
+-
+View Title 7 on govinfo.gov
+
+-
+View the PDF for 7 CFR Part 1416
+
+These links go to the official, published CFR, which is updated annually. As a
+result, it may not include the most recent changes applied to the CFR.
+Learn more.
+
+Enhanced Content - Published Edition
+
+-
+
+- Developer Tools
+
+Enhanced Content - Developer Tools
+
+Information and documentation can be found in our
+developer resources.
+
+Enhanced Content - Developer Tools
+
+eCFR Content
+
+The Code of Federal Regulations (CFR) is the official legal print publication containing the codification of the general and permanent rules published in the Federal Register by the departments and agencies of the Federal Government. The Electronic Code of Federal Regulations (eCFR) is a continuously updated online version of the CFR. It is not an official legal edition of the CFR.
+
+Learn more about the eCFR, its status, and the editorial process.
+
+Enhanced Content
+
+View
+table of contents
+for this page.
+
+Editorial Note on Subchapter B of Chapter XIV
+
+Editorial Note:
+
+For Federal Register citations to regulations affecting previous program years not included in this volume, see the List of CFR Sections Affected, which appears in the Finding Aids section of the printed volume and at www.govinfo.gov.
+
+PART 1416—EMERGENCY AGRICULTURAL DISASTER ASSISTANCE PROGRAMS
+
+Authority:
+
+7 U.S.C. 9081 and 15 U.S.C. 714b and 714c.
+
+Source:
+
+79 FR 21097, Apr. 14, 2014, unless otherwise noted.
+
+Subpart A—General Provisions for Supplemental Agricultural Disaster Assistance Programs
+
+§ 1416.1 Applicability.
+
+(a) This subpart establishes general conditions for this subpart and subparts B through E of this part and applies only to those subparts. Subparts B through E cover the following programs authorized by the Agricultural Act of 2014 (Pub. L. 113-79, also referred to as the 2014 Farm Bill):
+
+(1) Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish Program (ELAP);
+
+(2) Livestock Forage Disaster Program (LFP);
+
+(3) Livestock Indemnity Payments Program (LIP); and
+
+(4) Tree Assistance Program (TAP).
+
+(b) To be eligible for payments under these programs, participants must comply with all provisions under this subpart and the relevant particular subpart for that program. All other provisions of law also apply.
+
+§ 1416.2 Administration of ELAP, LFP, LIP, and TAP.
+
+(a) The programs in subparts B through E of this part will be administered under the general supervision and direction of the Executive Vice President, CCC, and will be carried out in the field by FSA State and county committees, respectively.
+
+(b) State and county committees, and representatives and their employees, do not have authority to modify or waive any of the provisions of the regulations set forth in this part.
+
+(c) The State FSA committee will take any action required by the regulations of this part that the county FSA committee has not taken. The State FSA committee will also:
+
+(1) Correct, or require a county FSA committee to correct, any action taken by such county FSA committee that is not in accordance with the regulations of this part or
+
+(2) Require a county FSA committee to withhold taking any action that is not in accordance with this part.
+
+(d) No provision or delegation to an FSA State or county committee will preclude the Executive Vice President, CCC, or a designee, from determining any question arising under this part, or from reversing or modifying any determination made by an FSA State or county committee.
+
+(e) [Reserved]
+
+(f) Payments issued under this part are subject to the availability of funds under Federal law. Within whatever funding limitation that may exist under law, the only funds that will be considered available to pay eligible losses will be that amount approved by the Secretary. If funds are limited, for a particular program year, payments may be delayed until the time for applying for the payment for that program year has passed. In the event that, within the limits of the funding made available by the Secretary, approval of eligible applications would result in expenditures in excess of the amount available, FSA will prorate the available funds by a national factor to reduce the total expected payments to the amount made available by the Secretary. FSA will make payments based on the factor for the national rate determined by FSA. FSA will prorate the payments in such manner as it determines necessary and appropriate and reasonable. Applications for payment that are unpaid or prorated for a program year for any reason will not be carried forward for payment under other funds for later years or otherwise, but will be considered, as to any unpaid amount, void and nonpayable.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49463, Oct. 2, 2018; 85 FR 10963, Feb. 26, 2020; 91 FR 42323, July 9, 2026]
+
+§ 1416.3 Eligible producer.
+
+(a) Eligible producer means, in addition to other requirements as may apply, an individual or legal entity who is an owner, operator, landlord, tenant, or sharecropper, who shares in the risk of producing a crop or livestock and who is entitled to share in the crop or livestock available for marketing from the farm, or would have shared had the crop or livestock been produced, and who also meets the requirements of paragraph (b) of this section. The term eligible producer can include a livestock owner or contract grower who satisfies other requirements of this part.
+
+(b) An individual or legal entity seeking to be an eligible producer under this part must submit a farm operating plan in accordance with part 1400 of this chapter and be a:
+
+(1) Citizen of the United States;
+
+(2) Resident alien; for purposes of this part, resident alien means “lawful alien”;
+
+(3) Partnership of citizens of the United States;
+
+(4) Corporation, limited liability company, or other organizational structure organized under State law; or
+
+(5) Indian Tribe or Tribal organization, as defined in section 4(b) of the Indian Self-Determination and Education Assistance Act (25 U.S.C. 5304).
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49463, Oct. 2, 2018; 85 FR 10963, Feb. 26, 2020]
+
+§ 1416.5 [Reserved]
+
+§ 1416.6 Payment eligibility and limitation.
+
+(a) Payment limitation will apply to LFP in accordance with part 1400 of this chapter.
+
+(b) The Deputy Administrator may take such actions as needed to avoid a duplication of benefits under the programs provided for in this part, or duplication of benefits received in other programs, and may impose such cross-program payment limitations as may be consistent with the intent of this part in order to help prevent a person or legal entity being paid more than the total value of their loss.
+
+(c) LIP, LFP, ELAP, and TAP will be administered in accordance with the average adjusted gross income (AGI) limitation provisions in part 1400 of this chapter.
+
+(d) The direct attribution provisions in part 1400 of this chapter apply to ELAP, LFP, LIP, and TAP.
+
+[83 FR 49463, Oct. 2, 2018, as amended at 85 FR 10963, Feb. 26, 2020; 91 FR 42324, July 9, 2026]
+
+§ 1416.7 Misrepresentation.
+
+(a) A person or legal entity who is determined to have misrepresented any fact affecting a program determination made in accordance with this part, or any other part that is applicable to this part, to receive benefits for which that person or legal entity would not otherwise be entitled, is ineligible for program payments under this part and must refund all such payments received, plus interest as determined in accordance with part 3 of this title. The person or legal entity is ineligible and will be denied program benefits under this part for the immediately subsequent period of at least 2 crop years, and up to 5 crop years. Interest will run from the date of the original disbursement by CCC.
+
+(b) For each year of ineligibility determined according to paragraph (a) of this section, a person or legal entity will refund to CCC all program payments, in accordance with § 1416.11, received by such person or legal entity with respect to all applications under this part, as may be applicable, if the person or legal entity is determined to have knowingly misrepresented any fact affecting a program determination
+
+[83 FR 49464, Oct. 2, 2018 as amended at 85 FR 10963, Feb. 26, 2020; 91 FR 42324, July 9, 2026]
+
+§ 1416.8 Appeals.
+
+Appeal regulations in parts 11 and 780 of this title apply to this part.
+
+§ 1416.9 Offsets, assignments, and debt settlement.
+
+(a) Any payment under this part will be made without regard to questions of title under State law, and without regard to any claim or lien against the commodity, or proceeds, in favor of the owner or any other creditor except agencies of the U.S. Government. The regulations governing offsets and withholdings in part 3 of this title apply to payments made under this part.
+
+(b) A participant may assign any payment(s) under this part in accordance with regulations governing the assignment of payments in part 1404 of this chapter.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49464, Oct. 2, 2018; 91 FR 42324, July 9, 2026]
+
+§ 1416.10 Records and inspections.
+
+(a) Any participant receiving payments under any program in ELAP, LFP, LIP or TAP, or any other legal entity or person who provides information for the purposes of enabling a participant to receive a payment under ELAP, LFP, LIP, or TAP must:
+
+(1) Maintain any books, records, and accounts supporting the information for 3 years following the end of the year during which the request for payment was submitted, and
+
+(2) Allow authorized representatives of USDA and the Government Accountability Office, during regular business hours, to inspect, examine, and make copies of such books or records, and to enter the farm and to inspect and verify all applicable livestock and acreage in which the participant has an interest for the purpose of confirming the accuracy of information provided by or for the participant.
+
+(b) [Reserved]
+
+§ 1416.11 Refunds; joint and several liability.
+
+(a) In the event that the participant fails to comply with any term, requirement, or condition for payment or assistance arising under ELAP, LFP, LIP, or TAP and if any refund of a payment to CCC will otherwise become due in connection with this part, the participant must refund to CCC all payments made in regard to such matter, together with interest and late-payment charges as provided for in part 3 of this title provided that interest will in all cases run from the date of the original disbursement.
+
+(b) All persons with a financial interest in an operation or in an application for payment will be jointly and severally liable for any refund, including related charges, that is determined to be due CCC for any reason under this part.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 91 FR 42324, July 9, 2026]
+
+§ 1416.12 Minors.
+
+A minor child is eligible to apply for program benefits under ELAP, LFP, LIP, or TAP if all the eligibility requirements are met and the provision for minor children in part 1400 of this chapter are met.
+
+§ 1416.13 Deceased individuals or dissolved entities.
+
+(a) The provisions of part 707 of this chapter apply to the programs of this part.
+
+(b) [Reserved].
+
+[83 FR 49464, Oct. 2, 2018]
+
+§ 1416.14 Miscellaneous.
+
+(a) As a condition of payment eligibility under ELAP, LFP, LIP, or TAP, a participant must have been in compliance with the applicable provisions of parts 12 and 718 of this title and 1400 of this chapter, and must not otherwise be precluded from receiving payments under those provisions or under any law.
+
+(b) In order to be eligible for benefits, participants in the programs specified in this part must submit an accurate acreage report annually as required by these provisions.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49464, Oct. 2, 2018; 85 FR 10963, Feb. 26, 2020]
+
+Subpart B—Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish Program
+
+§ 1416.101 Applicability.
+
+(a) This subpart establishes the terms and conditions under which the Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish Program (ELAP) will be administered.
+
+(b) Eligible producers of livestock, honeybees, and farm-raised fish will be compensated for eligible losses due to an eligible adverse weather or eligible loss condition that occurred in the program year for which the producer requests benefits. The eligible loss must have been a direct result of eligible adverse weather or eligible loss conditions as determined by the Deputy Administrator. ELAP does not cover losses that are covered under LFP or LIP.
+
+§ 1416.102 Definitions.
+
+The following definitions apply to this subpart and to the administration of ELAP. The definitions in parts 718 of this title and 1400 of this chapter also apply, except where they conflict with the definitions in this section.
+
+Adult beef bull means a male beef breed bovine animal that was used for breeding purposes that was at least 2 years old before the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult beef cow means a female beef breed bovine animal that had delivered one or more offspring before the beginning date of the eligible adverse weather or eligible loss condition. A first-time bred beef heifer is also considered an adult beef cow if it was pregnant on or by the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult beefalo bull means a male hybrid of beef and bison that was used for breeding purposes and was at least 2 years old before the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult beefalo cow means a female hybrid of beef and bison that had delivered one or more offspring before the beginning date of the eligible adverse weather or eligible loss condition. A first-time bred beefalo heifer is also considered an adult beefalo cow if it was pregnant by the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult buffalo or bison bull means a male animal of those breeds that was used for breeding purposes and was at least 2 years old before the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult buffalo or bison cow means a female animal of those breeds that had delivered one or more offspring before the beginning date of the eligible adverse weather or eligible loss condition. A first-time bred buffalo or bison heifer is also considered an adult buffalo or bison cow if it was pregnant by the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult dairy bull means a male dairy breed bovine animal that was used primarily for breeding dairy cows and was at least 2 years old by the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult dairy cow means a female bovine dairy breed animal used for the purpose of providing milk for human consumption that had delivered one or more offspring by the beginning date of the eligible adverse weather or eligible loss condition. A first-time bred dairy heifer is also considered an adult dairy cow if it was pregnant by the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult water buffalo bull means a male animal of that breed that was used for breeding purposes and was at least 2 years old before the beginning date of the eligible adverse weather or eligible loss condition.
+
+Adult water buffalo cow means a female animal of that breed that had delivered one or more offspring before the beginning date of the eligible adverse weather or eligible loss condition. A first-time bred water buffalo heifer is also considered an adult water buffalo cow if it was pregnant by the beginning date of the eligible adverse weather or eligible loss condition.
+
+Agricultural operation means a farming operation.
+
+All-milk price means the national average price received, per hundredweight of milk, by dairy operations for all milk sold to dairy plants and milk dealers in the United States, as determined by the Secretary.
+
+APHIS means the Animal and Plant Health Inspection Service.
+
+Application means CCC or FSA form used to apply for either the emergency loss assistance for livestock or emergency loss assistance for farm-raised fish or honeybees.
+
+Aquatic species means any species of aquatic organism grown as food for human consumption, fish raised as feed for fish that are consumed by humans, or ornamental fish propagated and reared in an aquatic medium by a commercial operator on private property in water in a controlled environment. Catfish and crawfish are both defined as aquatic species for ELAP. However, aquatic species do not include reptiles or amphibians.
+
+Bait fish means small fish caught for use as bait to attract large predatory fish. For ELAP, it also must meet the definition of aquatic species and not be raised as food for fish; provided, however, that only bait fish produced in a controlled environment are eligible for payment under ELAP.
+
+Bird depredation means damage or loss caused by piscivorous birds, to freshwater farm-raised fish.
+
+Blizzard means, as defined by the National Weather Service, a storm which contains large amounts of snow or blowing snow with winds in excess of 35 miles per hour and visibility of less than one-fourth of a mile for an extended period of time.
+
+Buck means a male goat.
+
+Cattle tick fever means a severe and often fatal disease that destroys red blood cells of cattle, commonly known as Texas or cattle fever, which is spread by Rhipicephalus (Boophilus) annulatus, and the southern cattle tick, R. (Boophilus) microplus.
+
+Commercial use means used in the operation of a business activity engaged in as a means of livelihood for profit.
+
+Contract means, with respect to contracts for the handling of livestock, a written agreement between a livestock owner and another individual or entity setting the specific terms, conditions, and obligations of the parties involved regarding the production of livestock or livestock products.
+
+Eligible adverse weather means, as determined by the Deputy Administrator, an extreme and abnormal damaging weather event that is not expected to occur during the loss period, which results in eligible losses. The eligible adverse weather would have resulted in agricultural losses not covered by other programs in this part for which the Deputy Administrator determines financial assistance should be provided to producers. Adverse weather may include, but is not limited to, blizzard, eligible winter storms, and wildfires. Specific eligible adverse weather may vary based on the type of loss. Identification of eligible adverse weather will include locations (National, State, or county-level) and start and end dates.
+
+Eligible drought means that any area of the county has been rated by the U.S. Drought Monitor as having D2 (severe drought) intensity for at least 8 consecutive weeks for the specific type of eligible grazing land or pastureland for the county, or D3 (extreme drought) or D4 (exceptional drought) intensity for the specific type of eligible grazing land or pastureland for the county, as determined by the Secretary:
+
+(1) At any time during the program year, for additional honey bee feed loss;
+
+(2) That directly impacts water availability at any time during the normal grazing period (for example, snow pack that feeds streams and springs), as determined by the Deputy Administrator or designee, for losses resulting from transporting water to livestock; or
+
+(3) At any time during the normal grazing period, for losses resulting from the additional cost incurred to transport livestock feed or eligible livestock to feed, for additional mileage above normal.
+
+Eligible grazing land means land that is native or improved pastureland with permanent vegetative cover or land planted to a crop planted specifically for the purpose of providing grazing for eligible livestock.
+
+Eligible loss condition means a condition that would have resulted in agricultural losses not covered by other programs in this part for which the Deputy Administrator determines financial assistance needs to be provided to producers. Specific eligible loss conditions include, but are not limited to, disease (including cattle tick fever), insect infestation, colony collapse disorder, and bird depredation. Identification of eligible loss conditions will include locations (National, State, or county-level) and start and end dates. All other causes of losses are not covered, including, but not limited to, negligence, mismanagement, or wrongdoing by the producer.
+
+Eligible winter storm means an event that is so severe as to directly cause loss and lasts in duration for at least 3 consecutive days and includes a combination of high winds, freezing rain or sleet, heavy snowfall, and extremely cold temperatures. The wind, precipitation, and extremely cold temperatures must occur during the consecutive 3-day period, with wind and extremely cold temperatures occurring in each of the 3 days.
+
+Equine animal means a weaned domesticated horse, mule, or donkey.
+
+Ewe means a female sheep.
+
+Farming operation means a business enterprise engaged in producing agricultural products.
+
+Farm-raised fish means:
+
+(1) For losses other than losses due to bird depredation, any aquatic species that is propagated and reared in a controlled environment; and
+
+(2) For losses due to bird depredation, fish propagated and reared in a controlled freshwater environment, excluding crayfish and crawfish.
+
+Freshwater means water that is low in salinity with dissolved salt concentrations of less than 0.5 parts per thousand and suitable for species that thrive outside marine environments.
+
+FSA means the Farm Service Agency.
+
+Game or sport fish means fish pursued for sport by recreational anglers; provided, however, that only game or sport fish produced in a controlled environment can generate claims under ELAP.
+
+Goat means a weaned domesticated, ruminant mammal of the genus Capra, including Angora goats.
+
+Grazing animals mean those species of weaned livestock that, from a nutritional and physiological perspective, satisfy more than 50 percent of their net energy requirement through the consumption of growing forage grasses and legumes. Species of livestock for which more than 50 percent of their net energy requirements are not recommended to be met from consumption of forage grasses and legumes, such as poultry and swine, are excluded regardless of whether those species are grazing or are present on grazing land or pastureland. Unweaned livestock are not grazing animals regardless of whether those unweaned livestock are present on grazing land or pastureland.
+
+Grazing loss means the value, as calculated in § 1416.110(g) or (m), of eligible grazing lost due to an eligible adverse weather or eligible loss condition based on the number of days that the eligible livestock were not able to graze the eligible grazing land during the normal grazing period.
+
+Harvested feed or feedstuffs means, for the purpose of purchased or produced feed under ELAP, feed or feedstuffs that are mechanically harvested in the field, and wrapped, twined, stacked, or combined in a manner that the harvested product can be transported from one area to another. It does not include material left in a windrow or as straw in the field.
+
+Herd means, for milk losses due to H5N1, one or more dairy cows that are under common ownership or supervision and are grouped on a single premises (lot, farm, or ranch) or multiple premises which are geographically separated but physically located in the same county.
+
+H5N1 means Highly Pathogenic Avian Influenza A (HPAI) H5N1 virus as either detected in milk and other bovine-origin samples associated with illness in dairy cattle, or, when pertaining to infection in cattle themselves, as confirmed by means of an H5N1 test.
+
+H5N1 test means a test, as defined in the APHIS H5N1 case definition, on individual animal or bulk tank samples confirmed at NVSL.
+
+Kid means a goat less than 1 year old.
+
+Lamb means a sheep less than 1 year old.
+
+Livestock owner means one having legal ownership of the livestock for which benefits are being requested during the 60 calendar days before the eligible adverse weather or eligible loss condition.
+
+Miles above normal means mileage from a single trip from 1 point to another, and not multiple stops or end points, and it does not include mileage for delivery that is not identified clearly by mileage rate on verifiable documentation.
+
+Nanny means a female goat.
+
+Newborn livestock means livestock that are within 10 calendar days of the date of birth.
+
+Non-adult beef cattle means a weaned beef breed bovine animal that on or before the beginning date of the eligible adverse weather or eligible loss condition does not meet the definition of adult beef cow or bull.
+
+Non-adult beefalo means a weaned hybrid of beef and bison that on or before the beginning date of the eligible adverse weather or eligible loss condition does not meet the definition of adult beefalo cow or bull.
+
+Non-adult buffalo or bison means a weaned animal of those breeds that on or before the beginning date of the eligible adverse weather or loss condition does not meet the definition of adult buffalo or adult bison cow or bull.
+
+Non-adult dairy cattle means a weaned bovine animal of a breed used for the purpose of providing milk for human consumption that on or before the beginning date of the eligible adverse weather or eligible loss condition does not meet the definition of adult dairy cow or bull.
+
+Non-adult water buffalo means a weaned animal of that breed that on or before the beginning date of the eligible adverse weather or loss condition does not meet the definition of adult water buffalo cow or bull in this section.
+
+Normal grazing period means, as determined by FSA, with respect to a specific type of grazing land or pastureland in the county, the period during the calendar year when grazing animals receive daily nutrients and satisfy net energy requirements without supplemental feed.
+
+Normal mortality means the numerical amount, computed by a percentage of expected honeybee colony and farm-raised fish deaths, by category, that normally occur during a program year for a producer, as established for the area by the FSA State Committee for farm-raised fish, and as established nationwide by the Deputy Administrator for honeybee colonies.
+
+NVSL means the APHIS National Veterinary Services Laboratories.
+
+Positive H5N1 test collection date means the date of sample collection for a positive H5N1 test that is reported to an NVSL and indicated on the H5N1 test result.
+
+Program year means the calendar year, January 1 through December 31.
+
+Ram means a male sheep.
+
+Reliable record means any non-verifiable record available that reasonably supports the eligible loss, as determined acceptable by the COC.
+
+Sheep means a weaned domesticated, ruminant mammal of the genus Ovis.
+
+Truckload means, for transportation of livestock, feed, or feedstuff, a load that:
+
+(1) Is transported by a motorized land vehicle that is clearly intended for operation on highways, and is either owned by the producer or for which the producer directly pays for the transportation of livestock, feed, or feedstuffs based on a rate per loaded mile from the distribution point to the first delivery location;
+
+(2) Is considered a single trip and only includes mileage from distribution point to the producer's delivery location of the eligible livestock, not multiple end points or more than one stop; and
+
+(3) Must include a clearly identified mileage rate on verifiable documentation.
+
+U.S. Drought Monitor is a system for classifying drought severity according to a range of abnormally dry to exceptional drought. It is a collaborative effort between Federal and academic partners, produced on a weekly basis, to synthesize multiple indices, outlooks, and drought impacts on a map and in narrative form. This synthesis of indices is reported by the National Drought Mitigation Center at http://droughtmonitor.unl.edu. Should an eligible area not be covered by the U.S. Drought Monitor, the Deputy Administrator, in consultation with appropriate weather-related agencies and experts, will establish procedures for rating drought intensity using the same range of categories as the U.S. Drought Monitor and use this information in place of the missing data for eligibility purposes.
+
+Unweaned livestock means an animal not weaned from mother's milk or milk replacement to other nourishment. For ELAP purposes, unweaned livestock does not include turkeys, ducks, chickens, and geese.
+
+Verifiable record means a document provided by the producer that can be verified by the County Committee (COC) through an independent source.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 79 FR 57721, Sept. 26, 2014; 79 FR 74571, Dec. 15, 2014; 83 FR 49464, Oct. 2, 2018; 85 FR 10963, Feb. 26, 2020; 87 FR 19785, Apr. 6, 2022; 88 FR 1891, Jan. 11, 2023; 89 FR 54334, July 1, 2024; 91 FR 42324, July 9, 2026]
+
+§ 1416.103 Eligible losses, adverse weather, and other loss conditions.
+
+(a) An eligible loss covered under this subpart is a loss that an eligible producer, livestock owner, or contract grower of livestock, or eligible producer of honeybees or farm-raised fish incurs due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator. All other causes of loss are not considered an eligible loss condition, including, but not limited to, negligence, mismanagement or wrongdoing by the producer.
+
+(b) A loss covered under LFP or LIP is not eligible for ELAP.
+
+(c) To be an eligible loss in a program year, the loss must have been apparent to the person or legal entity providing the notice and to FSA in the program year for which payment is being requested.
+
+(d) For a livestock feed loss to be considered an eligible loss, the livestock feed loss must be one of the following:
+
+(1) Loss of purchased forage or feedstuffs that was intended for use as feed for the participant's eligible livestock as specified in § 1416.104(a) that was physically located in the county where the eligible adverse weather or eligible loss condition occurred on the beginning date of the eligible adverse weather or eligible loss condition. The loss must be due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator, including, but not limited to, blizzard, eligible winter storms, flood, hurricane, lightning, tidal surge, tornado, volcanic eruption, or wildfire on non-Federal land;
+
+(2) Loss of mechanically harvested forage or feedstuffs intended for use as feed for the participant's eligible livestock as specified in § 1416.104(a) that was physically located in the county where the eligible adverse weather or eligible loss condition occurred on the beginning date of the eligible adverse weather or eligible loss condition. The loss must have occurred after harvest due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator, including, but not limited to, blizzard, eligible winter storms, flood, hurricane, lightning, tidal surge, tornado, volcanic eruption, or wildfire on non-Federal land;
+
+(3) A loss resulting from the additional cost of purchasing additional livestock feed, above normal quantities, required to maintain the eligible livestock as specified in § 1416.104(a) during an eligible adverse weather or eligible loss condition, until additional livestock feed becomes available, as determined by the Deputy Administrator. To be eligible, the additional feed purchased above normal quantities must be feed that is fed to maintain livestock in the county where the eligible adverse weather or eligible loss condition occurred. Eligible adverse weather or eligible loss conditions, as determined by the Deputy Administrator, including, but not limited to, blizzard, eligible winter storms, flood, hurricane, lightning, tidal surge, tornado, volcanic eruption, or wildfire on non-Federal land;
+
+(4) A loss resulting from the additional cost incurred for transporting livestock feed to eligible livestock as specified in § 1416.104(a) due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator, including, but not limited to, costs associated with equipment rental fees for hay lifts and snow removal. To be eligible, the loss must be incurred in combination with a loss described in paragraphs (d)(1), (2), or (3) of this section. The additional costs incurred must have been incurred for losses suffered in the county where the eligible adverse weather or eligible loss condition occurred. Eligible adverse weather or eligible loss conditions, as determined by the Deputy Administrator, include, but not limited to, blizzard, eligible winter storms, flood, hurricane, lightning, tidal surge, tornado, volcanic eruption, or wildfire on non-Federal land;
+
+(5) A loss resulting from the additional cost of transporting water to eligible livestock as specified in § 1416.104(a) due to eligible adverse weather, eligible loss condition, or eligible drought, as determined by the Deputy Administrator, including, but not limited to, costs associated with water transport equipment rental fees, labor, and contracted water transportation fees. The cost of the water is not eligible for payment. To be eligible for additional cost of transporting water to eligible livestock, the livestock must be livestock that would normally have been grazing on eligible grazing lands that meet all of the following:
+
+(i) Physically located in the county where the eligible adverse weather, eligible loss condition, or eligible drought, as determined by the Deputy Administrator, occurred;
+
+(ii) That had adequate livestock watering systems or facilities before the eligible adverse weather, eligible loss condition, or eligible drought occurred; and
+
+(iii) That the producer is not normally required to transport water to the livestock.
+
+(6) A loss resulting from the additional cost incurred on or after January 1, 2021, to transport eligible livestock to feed or livestock feed to eligible livestock for additional mileage above normal, due to eligible adverse weather, an eligible loss condition, or eligible drought, as determined by the Deputy Administrator, including costs associated with treating livestock feed to prevent the spread of invasive pests. The cost of the feed is not eligible for payment. Negligence, mismanagement, or wrongdoing by the producer is not considered an eligible loss condition for livestock or feed transportation costs. To be eligible for a loss under this paragraph (d)(6), the livestock must be livestock that would normally have been on eligible grazing lands physically located in the county where the eligible adverse weather, eligible loss condition, or eligible drought, as determined by the Deputy Administrator, occurred. The eligible loss from the additional cost to transport livestock feed is limited to the cost to transport feed to meet the feed needs of eligible livestock for the program year in which the eligible adverse weather, eligible loss condition, or eligible drought occurred. The cost to transport livestock feed is not an eligible loss if the feed is purchased or obtained:
+
+(i) In excess of the amount needed for the program year in which eligible adverse weather, eligible loss condition, or eligible drought occurred, as determined according to § 1416.110(q);
+
+(ii) To sell to another producer;
+
+(iii) For another producer's livestock; or
+
+(iv) For ineligible livestock.
+
+(e) For a grazing loss to be considered eligible, the grazing loss must have been incurred:
+
+(1) During the normal grazing period, as specified in § 1416.102;
+
+(2) On eligible grazing land that is physically located in the county where the eligible adverse weather or eligible loss condition occurred;
+
+(3) Due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator, including, but not limited to, blizzard, eligible winter storm, flood, hurricane, hail, lightning, tidal surge, volcanic eruption, and wildfire on non-Federal land. The grazing loss will not be eligible if it is due to an adverse weather condition covered by LFP as specified in subpart C of this part, such as drought or wildfire on federally managed land where the producer is prohibited by the Federal agency from grazing the normally permitted livestock on the managed rangeland due to a fire.
+
+(f) For a loss resulting from the additional cost associated with gathering livestock to inspect or treat for cattle tick fever, the livestock gathered for inspection or treatment for cattle tick fever must be considered eligible livestock as specified in § 1416.104(d). To be considered an eligible loss, acceptable records, as determined by the Deputy Administrator, must be on file with APHIS, that provide the number of livestock gathered and inspected or treated for cattle tick fever and the number of treatments given during the program year.
+
+(g) For honeybee feed or farm-raised fish feed losses to be considered an eligible loss, the honeybee feed or farm-raised fish feed loss must be one of the following:
+
+(1) Loss of honeybee feed or farm-raised fish feed that was intended as feed for the participant's eligible honeybees or farm-raised fish that was physically located in the county where the eligible adverse weather or eligible loss condition occurred on the beginning date of the eligible adverse weather or eligible loss condition. The loss must be due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator, including, but not limited to, earthquake, flood, hurricane, lightning, tidal surge, tornado, volcanic eruption, and wildfire.
+
+(2) A loss resulting from the additional cost of purchasing additional honeybee feed, above normal quantities, required to maintain the honeybees during an eligible adverse weather or eligible loss condition, until additional honeybee feed becomes available, as determined by the Deputy Administrator. To be eligible the additional feed purchased above normal quantities must be feed that is fed to maintain honeybees in the county where the eligible adverse weather or eligible loss condition occurred. The loss must be due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator, including, but not limited to, earthquake, early fall frost, excessive rainfall, flood, hurricane, late spring frost, lightning, tidal surge, tornado, volcanic eruption, wildfire and eligible drought, as specified in § 1416.102.
+
+(h) For honeybee colony or honeybee hive losses to be considered eligible, the hive producer must have incurred the loss in the county where the eligible adverse weather or eligible loss condition occurred. The honeybee colony or hive losses must be due to an eligible adverse weather or eligible loss condition, as determined by the Deputy Administrator, including, but not limited to, colony collapse disorder, earthquake, eligible winter storm, as specified in § 1416.102, excessive wind, flood, hurricane, lightning, tornado, volcanic eruption, and wildfire. Drought is not an eligible adverse weather event or eligible loss condition for honeybee hive losses. To be considered eligible for honeybee hive loss as of the beginning date of the eligible adverse weather event or eligible loss condition the honeybee hive must be all the following: Maintained for producing honey, pollinating, or breeding honeybees for commercial use in a farming operation; physically located in the county where the eligible adverse weather or eligible loss conditions occurred; and be a part of a honeybee farming operation in which the applicant has a risk in honey production, pollination, or honeybee breeding. To be considered an eligible honeybee colony loss, the colony loss must be in excess of normal mortality, as established by the Deputy Administrator, and the loss could not have been prevented through reasonable and available measures. The notice of loss must be accompanied by acceptable documentation, as determined by the Deputy Administrator, that demonstrates an eligible loss occurred and was associated with an eligible adverse weather or eligible loss condition, and that generally accepted husbandry and production practices had been followed. For colony collapse disorder, acceptable documentation includes, but is not limited to, proof of beginning inventory and good management practices, and a producer certification that the loss of honeybee colonies was a direct result of at least 3 of the following 5 symptoms:
+
+(1) The loss of live queen or drone bee populations inside the hives;
+
+(2) Rapid decline of adult worker bee population outside the hives, leaving brood poorly or completely unattended;
+
+(3) Absence of dead adult bees inside the hive and outside the entrance of the hive;
+
+(4) Absence of robbing collapsed colonies;
+
+(5) At the time of collapse, varroa mite and Nosema populations are not at levels known to cause economic injury or population decline.
+
+(i) For death losses of bait fish, game fish, or other aquatic species, as determined by the Deputy Administrator, to be considered eligible, the producer must have incurred the fish loss, in excess of normal mortality, in the county where the eligible adverse weather or eligible loss condition occurred. The fish death must be due to an eligible adverse weather or eligible loss condition as determined by the Deputy Administrator including, but not limited to, earthquake, flood, hurricane, tidal surge, tornado, and volcanic eruption.
+
+(j) For milk losses due to H5N1 to be considered eligible, the producer must have had reduced milk production as a result of removal of adult dairy cows from daily milking due to H5N1 infection. Such infection must be confirmed for the herd by at least one positive H5N1 test for a dairy cow within that herd. The date of the eligible loss condition for milk losses due to H5N1 is the positive H5N1 test collection date.
+
+(k) For losses due to bird depredation, the producer must have propagated or reared eligible farm-raised fish in a controlled environment and have suffered eligible damage or loss due to bird depredation, including costs associated with the deterrence of piscivorous birds, the value of lost fish and revenue due to bird depredation, and costs associated with disease loss from bird depredation. Losses of crawfish, crayfish, saltwater fish, or any other fish not considered freshwater are not eligible. The losses must have been associated with acres of freshwater that were reported to FSA on a timely filed acreage report, as determined by CCC, as water used for propagating and growing eligible freshwater farm-raised fish in a controlled environment and were in use at the time of bird depredation. Unused ponds or waterways, bodies of water not under control of the producer, and any water that is reduced due to drought are not eligible acres for bird depredation losses. Payments can only be earned once per program year for total eligible acres.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49465, Oct. 2, 2018; 85 FR 10964, Feb. 26, 2020; 87 FR 19785, Apr. 6, 2022; 88 FR 1891, Jan. 11, 2023; 89 FR 54334, July 1, 2024; 90 FR 5496, Jan. 17, 2025; 91 FR 42324, July 9, 2026]
+
+§ 1416.104 Eligible livestock, honeybees, and farm-raised fish.
+
+(a) To be considered eligible livestock for livestock grazing and feed; losses resulting from transporting water, feed, and livestock; and gathering livestock to treat for cattle tick fever; livestock must meet all the following conditions:
+
+(1) Be grazing animals such as alpacas, adult or non-adult dairy cattle, adult or non-adult beef cattle, adult or non-adult beefalo, adult or non-adult buffalo or bison, adult or non-adult water buffalo,deer, elk, emus, equine, goats, llamas, reindeer, or sheep;
+
+(2) Except for livestock losses resulting from gathering livestock to treat cattle tick fever, be livestock that would normally have been grazing the eligible grazing land or pastureland during the normal grazing period for the specific type of grazing land or pastureland for the county where the eligible adverse weather or eligible loss condition occurred;
+
+(3) Be livestock that is owned, cash-leased, purchased, under contract for purchase, or been raised by a contract grower or an eligible livestock owner, for not less than 60 days before the beginning date of the eligible adverse weather or eligible loss condition; and
+
+(4) Be livestock produced or maintained for commercial use or be livestock that is produced or maintained for producing livestock products for commercial use, such as milk from dairy, as part of the contract grower's or livestock owner's farming operation on the beginning date of the eligible adverse weather or eligible loss condition.
+
+(b) The eligible livestock types for grazing and feed losses; losses resulting from transporting water, feed, and livestock; and gathering livestock to treat for cattle tick fever are:
+
+(1) Adult beef cows or bulls,
+
+(2) Adult beefalo cows or bulls,
+
+(3) Adult buffalo or bison cows or bulls,
+
+(4) Adult dairy cows or bulls,
+
+(5) Adult water buffalo cows or bulls;
+
+(6) Alpacas,
+
+(7) Deer,
+
+(8) Elk,
+
+(9) Emus,
+
+(10) Equine,
+
+(11) Goats,
+
+(12) Llamas,
+
+(13) Non-adult beef cattle,
+
+(14) Non-adult beefalo,
+
+(15) Non-adult buffalo or bison,
+
+(16) Non-adult dairy cattle,
+
+(17) Non-adult water buffalo;
+
+(18) Ostriches,
+
+(19) Reindeer, and
+
+(20) Sheep.
+
+(c) Ineligible livestock for grazing and feed losses and losses resulting from transporting water, feed, and livestock include, but are not limited to:
+
+(1) Livestock that were or would have been in a feedlot, on the beginning date of the eligible adverse weather or eligible loss condition, as a part of the normal business operation of the producer, as determined by FSA;
+
+(2) Animals that are not grazing animals;
+
+(3) Yaks;
+
+(4) Poultry;
+
+(5) Swine;
+
+(6) All unweaned beef and dairy cattle, and buffalo or bison, beefalo, and water buffalo that weighed less than 500 pounds on the beginning date of the eligible adverse weather or eligible loss condition; and
+
+(7) Livestock that are not produced for commercial use or those that are not produced or maintained in a commercial operation for livestock products, such as milk from dairy, including, but not limited to:
+
+(i) Any wild free roaming livestock;
+
+(ii) Horses and other animals used or intended to be used for racing or wagering;
+
+(iii) Animals produced or maintained for hunting; and
+
+(iv) Animals produced or maintained for consumption by owner.
+
+(d) Under ELAP, “contract growers” only includes producers of livestock, other than feedlots, whose income is dependent on any of the following: Actual weight gain of the livestock, number of offspring produced from the livestock, or quantity of products (eggs, milk, etc.) produced from the livestock.
+
+(e) For honeybee colony, hive, and feed losses to be eligible, the honeybee colony must meet the following conditions:
+
+(1) Been maintained for the purpose of producing honey or pollination for commercial use in a farming operation on the beginning date of the eligible adverse weather or eligible loss condition;
+
+(2) Been physically located in the county where the eligible adverse weather or eligible loss condition occurred on the beginning date of the eligible adverse weather or eligible loss condition;
+
+(3) Been a honeybee colony in which the participant has a risk in the honey production or pollination farming operation on the beginning date of the eligible adverse weather or eligible loss condition;
+
+(4) Been a honeybee colony for which the producer had an eligible loss of a honeybee colony, honeybee hive, or honeybee feed; the feed must have been intended as feed for honeybees.
+
+(f) For fish to be eligible to generate payments under ELAP, the fish must be produced in a controlled environment and the farm-raised fish must:
+
+(1) For feed losses:
+
+(i) Be an aquatic species that is propagated and reared in a controlled environment;
+
+(ii) Be maintained and harvested for commercial use as part of a farming operation; and
+
+(iii) Be physically located in the county where the eligible adverse weather or eligible loss condition occurred on the beginning date of the eligible adverse weather or eligible loss condition.
+
+(2) For death losses:
+
+(i) Be bait fish, game fish, or another aquatic species deemed eligible by the Deputy Administrator that are propagated and reared in a controlled environment;
+
+(ii) Been maintained for commercial use as part of a farming operation; and
+
+(iii) Been physically located in the county where the eligible loss adverse weather or eligible loss condition occurred on the beginning date of the eligible adverse weather or eligible loss condition.
+
+(3) For losses due to bird depredation, the farm-raised fish must:
+
+(i) Be propagated or reared in a controlled freshwater environment;
+
+(ii) Have been maintained for commercial use as part of the farming operation; and
+
+(iii) Have been physically located in the county where the piscivorous birds were present on the beginning day of the loss condition.
+
+(g) To be considered eligible for milk losses due to H5N1, livestock must be adult dairy cows that are:
+
+(1) Currently in one of the lactation phases (early, mid, or late) of their lactation cycle and producing milk in which the producer had financial risk at the time of the positive H5N1 test collection date;
+
+(2) Owned, cash-leased, purchased, or been raised by a contract grower or eligible livestock owner, for not less than 60 days before the date of the eligible loss condition;
+
+(3) Maintained for commercial milk production as part of the producer's farming operation on the positive H5N1 test collection date;
+
+(4) Part of a herd that has a minimum of one positive H5N1 test; and
+
+(5) Initially removed from commercial milk production due to confirmed or suspected H5N1 infection at some point during the time period beginning 14 days before the positive H5N1 test collection date through 120 days after the positive H5N1 test collection date.
+
+(h) An adult dairy cow that meets the requirements of paragraph (g) of this section is considered eligible to be reported for payment only for the month in which it is initially removed from commercial milk production due to confirmed or suspected H5N1 infection. In order to prevent duplicate benefits for the same loss, an adult dairy cow cannot be reported as an eligible animal for any subsequent month after the initial month of eligibility unless the animal has returned to milk production and is later removed from milk production due to a new infection after the initial 120 day eligibility from an APHIS confirmed positive test within the herd. During the 120 day time period after a positive H5N1 test collection date, an animal is only eligible for payment one time, based on the positive H5N1 test for that herd.
+
+79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49465, Oct. 2, 2018;85 FR 10964, Feb. 26, 2020; 87 FR 19785, Apr. 6, 2022; 88 FR 1891, Jan. 11, 2023; 89 FR 54335, July 1, 2024; 91 FR 42325, July 9, 2026]
+
+§ 1416.105 Eligible producers, owners, and contract growers.
+
+(a) To be considered an eligible livestock producer and receive payments for feed losses; losses resulting from transporting water, feed, or livestock; and gathering livestock to treat for cattle tick fever; the participant must have:
+
+(1) Owned, cash-leased, purchased, entered into a contract to purchase, or been a contract grower of eligible livestock for not less than 60 days before the beginning date of the eligible adverse weather or eligible loss condition; and
+
+(2) Had a loss that is determined to be eligible as specified in § 1416.103(d) or (f).
+
+(b) To be considered an eligible livestock producer for grazing losses and to receive payments, the participant must have:
+
+(1) Owned, cash-leased, purchased, entered into a contract to purchase, or been a contract grower of eligible livestock for not less than 60 days before the beginning date of the eligible adverse weather or eligible loss condition;
+
+(2) Had a loss that is determined to be eligible as specified in § 1416.103(e);
+
+(3) Had eligible livestock that would normally have been grazing the eligible grazing land or pastureland during the normal grazing period for the specific type of grazing land or pastureland for the county;
+
+(4) Provided for the eligible livestock pastureland or grazing land, including cash leased pastureland or grazing land for eligible livestock that is physically located in the county where the eligible adverse weather or loss condition occurred during the normal grazing period for the county.
+
+(c) To be considered an eligible honeybee producer, a participant must have an interest and risk in an eligible honeybee colony, as specified in § 1416.104(e), for the purpose of producing honey or pollination for commercial use as part of a farming operation and must have had a loss that is determined to be eligible as specified in § 1416.103(h).
+
+(d) To be considered an eligible farm-raised fish producer for feed, death, and bird depredation loss purposes, the participant must have produced eligible farm-raised fish, as specified in § 1416.104(f) for commercial use as part of a farming operation and must have had a loss that is determined to be eligible as specified in § 1416.103(i) for feed and death losses or § 1416.103(k) for bird depredation losses.
+
+(e) A producer seeking payments must not be ineligible under the restrictions applicable to foreign persons contained in § 1416.3(b) and must meet all other requirements of subpart A of this part and other applicable USDA regulations.
+
+(f) To be considered an eligible producer for the purpose of milk losses due to H5N1, the producer must have:
+
+(1) Owned, cash-leased, purchased, or been a contract grower of eligible adult dairy cows, as specified in § 1416.104(g), for not less than 60 days before the positive H5N1 test collection date;
+
+(2) Had financial risk in the milk production of the eligible adult dairy cows, as specified in § 1416.104(g), on the positive H5N1 test collection date; and
+
+(3) Had an eligible loss as specified in § 1416.103(j).
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49466, Oct. 2, 2018; 85 FR 10964, Feb, 26, 2020; 87 FR 19785, Apr. 6, 2022; 89 FR 54335, July 1, 2024; 91 FR 42325, July 9, 2026]
+
+§ 1416.106 Notice of loss and application process.
+
+(a) To apply for ELAP, the participant that suffered eligible livestock, honeybee, or farm-raised fish losses must submit, to the FSA county office, the following:
+
+(1) A notice of loss to FSA as specified in § 1416.107(a),
+
+(2) A completed application as specified in § 1416.107(b) for one or more of the following:
+
+(i) For livestock feed and grazing losses; losses resulting from transporting water, feed, and livestock; and gathering livestock to treat for cattle tick fever; a completed Emergency Loss Assistance for Livestock Application;
+
+(ii) For honeybee feed, honeybee colony, and honeybee hive losses a completed Emergency Loss Assistance for Honeybees Application;
+
+(iii) For farm-raised fish feed or death losses and damage and loss due to bird depredation, a completed Emergency Loss Assistance for Farm-Raised Fish Application; and
+
+(iv) For milk losses due to H5N1, a completed Emergency Loss Assistance for H5N1 Application;
+
+(3) A report of acreage, if applicable, as determined by the Deputy Administrator;
+
+(4) A copy of the participant's grower contract, if the participant is a contract grower;
+
+(5) Other supporting documents required for FSA to determine eligibility of the participant, livestock, honeybee colonies, hives, farm-raised fish, and loss;
+
+(6) A farm operating plan, if a current farm operating plan is not already on file in the FSA county office; and
+
+(7) A socially disadvantaged, limited resource, beginning, or veteran farmer or rancher certification, if applicable.
+
+(b) For livestock grazing losses, participant must provide acceptable, verifiable, or reliable records that:
+
+(1) Additional livestock feed was fed to sustain eligible livestock during an eligible adverse weather or loss condition, or
+
+(2) Eligible livestock were removed from the eligible grazing land where the grazing loss occurred.
+
+(c) For livestock, honeybee, or farm-raised fish feed losses, participant must provide acceptable, verifiable, or reliable records of the following as determined by the COC:
+
+(1) Purchased feed intended as feed for livestock, honeybees, or farm-raised fish that was lost, or additional feed purchased above normal quantities to sustain livestock, honeybees, and farm-raised fish for a period of time, not to exceed 150 days, until additional feed becomes available, due to an eligible adverse weather or eligible loss condition. Verifiable or reliable records may include, but are not limited to, feed receipts, invoices, settlement sheets, warehouse ledger sheets, load summaries, register tapes, and contemporaneous records.
+
+(2) Harvested feed intended as feed for livestock, honeybees, or farm-raised fish that was lost due to an eligible adverse weather or eligible loss condition. Verifiable or reliable records may include, but are not limited to, weight tickets, truck scale tickets, pick records, contemporaneous records used to verify that the crop was stored with the intent to feed the crop to livestock, honeybees, or farm-raised fish, and custom harvest documents that clearly identify the amount of feed produced from the applicable acreage.
+
+(3) Additional cost of transporting livestock feed to eligible livestock due to an eligible adverse weather or eligible loss condition as determined by the Deputy Administrator, including, but not limited to, costs associated with equipment rental fees for hay lifts and snow removal. Verifiable or reliable records may include, but are not limited to, invoices, commercial receipts, load summaries, and contemporaneous records used to verify transportation cost of additional livestock feed.
+
+(4) Additional cost of transporting water to eligible livestock due to an eligible adverse weather or eligible loss condition as determined by the Deputy Administrator, including, but not limited to, costs associated with water transport equipment rental fees, labor, and contracted water transportation fees. Verifiable or reliable records include, but are not limited to, commercial receipts, contemporaneous records and invoices. Records must clearly indicate the dates on which water was transported and the total gallons transported.
+
+(5) Additional cost incurred to transport eligible livestock to feed or livestock feed to eligible livestock for additional mileage above normal, due to an eligible adverse weather, an eligible loss condition, or eligible drought, as determined by the Deputy Administrator, including costs associated with treating livestock feed to prevent the spread of invasive pests. Verifiable or reliable records include, but are not limited to, commercial receipts, contemporaneous records, and invoices. Handwritten receipts are not acceptable without accompanying truck logs or other documentation to verify the cost of transportation. Cash payments must be supported by a verifiable record indicating that the transaction was made between two parties. Records must clearly indicate the dates on which livestock or feed was transported and the total mileage transported. A participant must provide verifiable records or reliable records that show additional livestock feed was only purchased or obtained to sustain eligible livestock during eligible adverse weather, an eligible loss condition, or eligible drought.
+
+(d) For eligible honeybee colony, honeybee hive and farm-raised fish losses, the participant must provide verifiable or reliable records of honeybee colony, hive, or farm-raised fish losses. For honeybee colony and hive losses, the participant must also provide verifiable or reliable records of inventory at the beginning of the program year, and records of purchase and sale transactions of honeybee colonies and hives throughout the program year. If the participant was paid for a loss of honeybee colony or honeybee hive in either or both of the 2 previous years, the participant must provide documentation that FSA deems acceptable to substantiate how current year honeybee colony and honeybee hive inventory was acquired. For farm-raised fish losses, the participant must also provide verifiable or reliable records of inventory on the beginning date and ending date of the eligible adverse weather or eligible loss condition. Verifiable and reliable records may include, but are not limited to, any combination of the following:
+
+(1) A report of acreage,
+
+(2) Loan records,
+
+(3) Private insurance documents,
+
+(4) Property tax records,
+
+(5) Sales and purchase receipts,
+
+(6) State colony registration documentation, and
+
+(7) Chattel inspections.
+
+(e) If verifiable or reliable records are not available or provided, as required in paragraphs (b) through (d) of this section, the COC may accept producer's certification of losses if similar producers have comparable losses, as determined by the COC and approved by the STC (FSA State Committee).This paragraph does not apply to documentation for milk losses due to H5N1.
+
+(f) For milk losses due to H5N1, the producer must provide to FSA a positive H5N1 test at the time the application for payment is filed. The producer must also provide current and prior year milk production records and herd inventory records if requested by FSA to substantiate the certified number of eligible adult dairy cows removed from production through a comparison of the per head production rates for the current and prior years. If requested by FSA, the producer must also provide any other records necessary to substantiate the information provided on the producer's application, including the producer's share of the milk production. An eligible adult dairy cow must be reported on the application for the month it was initially removed from milk production and cannot be included in subsequent months in the same application for payment. If the producer removes adult dairy cows from commercial milk production due to H5N1 infection more than 120 days after the positive H5N1 test reported to FSA, the producer must submit another notice of loss and application for payment for the subsequent positive H5N1 test after the initial 120 day eligibility from an APHIS confirmed positive test within the herd.
+
+(g) For farm-raised fish losses due to bird depredation:
+
+(1) A producer must submit by March 1 after the end of the applicable program year:
+
+(i) A report indicating acres of ponds in use at the time of bird depredation, updated from the timely filed acreage report per § 1416.107(a)(1); and
+
+(ii) An active U.S. Fish and Wildlife Depredation permit with cormorant, American white pelican, heron, or Great egret listed on the permit; and
+
+(2) If requested by FSA, a producer must also provide:
+
+(i) Documentation to substantiate the producer's use of eligible acres of freshwater reported;
+
+(ii) Documentation of the producer's inventory losses; and
+
+(iii) A minimum of 3 of the following 5 items:
+
+(A) Documentation that losses are from bird depredation, supported by evidence like bird sightings, fish mortality records, Aerial Surveys, or third-party assessments;
+
+(B) Documentation of annual expenditures on non-lethal and lethal methods to prevent or reduce bird presence;
+
+(C) Documentation of costs attributed to disease spread by birds, such as prescriptions for medicated feed or any other costs showing disease loss from bird depredation;
+
+(D) A USDA-Wildlife Services or U.S. Fish and Wildlife Service approved bird harassment plan; and
+
+(E) A year-end collection report of the number of birds terminated and reported to the U.S. Fish and Wildlife Service.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49466, Oct. 2, 2018; 85 FR 10964, Feb. 26, 2020; 87 FR 19786, Apr. 6, 2022; 89 FR 54335, July 1, 2024; 90 FR 5496, Jan. 17, 2025; 91 FR 42325, July 9, 2026]
+
+§ 1416.107 Notice of loss and application period.
+
+(a) To receive an ELAP payment, the participant must submit:
+
+(1) A timely filed acreage report in accordance with §§ 1416.106 and 718.101 through 718.112 of this title; and
+
+(2) The following to the FSA county office by March 1 after the end of the applicable program year:
+
+(i) A notice of loss;
+
+(ii) A complete application for payment; and
+
+(iii) Any other documentation required by this subpart.
+
+(b) If additional information is requested by FSA to verify the producer's eligibility or losses under this subpart, the producer must submit the requested information by the later of March 1 after the end of the applicable program year or 60 days after the date of the request.
+
+[91 FR 42325, July 9, 2026]
+
+§ 1416.108 [Reserved]
+
+1416.109 National payment rate.
+
+(a) For an eligible livestock, honeybee, or farm-raised fish producer that meets the definition of beginning farmer or rancher, veteran farmer or rancher, socially disadvantaged farmer or rancher, or limited resource farmer or rancher, payments calculated in §§ 1416.110, 1416.111, and 1416.112(a) through (d) will be based on a national payment rate of 90 percent.
+
+(b) For an eligible livestock, honeybee, or farm-raised fish producer, payments calculated in §§ 1416.110(a), (b), (f), (g) and (l), 1416.111(a), and 1416.112(a), will be based on a national payment rate, to be determined by the Deputy Administrator, of not less than 60 percent and not more than 80 percent of the calculated payment.
+
+(c) For an eligible livestock, honeybee, or farm-raised fish producer, payments calculated in § 1416.11(b) and (c), and 1416.112(b), will be based on a national payment rate, to be determined by the Deputy Administrator, of not less than 75 percent and not more than 80 percent of the calculated payment.
+
+(d) For an eligible livestock producer with milk losses due to H5N1, payments calculated in § 1416.113 will be based on a national payment rate of 90 percent.
+
+(e) For an eligible farm-raised fish producer for eligible damage and loss due to bird depredation, payments calculated in § 1416.112(c) will be based on a payment rate of not less than $600 per eligible acre of freshwater. For program year 2026, the rate will be $600 for all species of eligible farm-raised fish. For subsequent program years, CCC may increase the payment rate if CCC determines an increase in the payment rate is warranted. When determining the payment rate, CCC will take into account:
+
+(1) Costs associated with the deterrence of piscivorous birds;
+
+(2) The value of lost fish and revenue due to bird depredation; and
+
+(3) Costs associated with disease loss from bird depredation.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 85 FR 10965, Feb. 26, 2020; 89 FR 54335, July 1, 2024; 91 FR 42325, July 9, 2026]
+
+§ 1416.110 Livestock payment calculations.
+
+(a) Livestock feed payments for an eligible livestock producer will be calculated based on losses for no more than 150 grazing days during the program year. Payment calculations for feed losses will be based on a national payment rate, as specified in § 1416.109, multiplied by the producer's actual cost for:
+
+(1) Livestock feed that was purchased forage or feedstuffs intended for use as feed for the participant's eligible livestock that was physically damaged or destroyed due to the direct result of an eligible adverse weather or eligible loss condition, as specified in § 1416.103(d)(1);
+
+(2) Livestock feed that was mechanically harvested forage or feedstuffs intended for use as feed for the participant's eligible livestock that was physically damaged or destroyed after harvest due to the direct result of an eligible adverse weather or eligible loss condition, as specified in § 1416.103(d)(2);
+
+(3) The additional cost of purchasing additional livestock feed above normal quantities, required to maintain the eligible livestock during an eligible adverse weather or eligible loss condition until additional livestock feed becomes available, as specified in § 1416.103(d)(3); and
+
+(4) The additional cost incurred for transporting livestock feed to eligible livestock due to an eligible adverse weather or eligible loss condition, as specified in § 1416.103(d)(4).
+
+(b) Payments for losses resulting from the additional cost of transporting water to eligible livestock due to an eligible adverse weather, eligible loss condition, or eligible drought for no more than 150 days during the program year, as specified in § 1416.103(d)(5) will be calculated based on a national payment rate, as determined in § 1416.109, multiplied by the lesser of either:
+
+(1) The total value of the cost to transport water to eligible livestock for 150 days, based on the daily water requirements for the eligible livestock, or
+
+(2) The total value of the cost to transport water to eligible livestock for the program year, based on the actual number of gallons of water the eligible producer transported to eligible livestock for the program year.
+
+(c) The total value of the cost to transport water to eligible livestock for 150 days to be used in the calculation for paragraph (b)(1) of this section is equal to the product obtained by multiplying:
+
+(1) The number of eligible livestock converted to an animal unit basis;
+
+(2) The gallons of water required per animal unit for maintenance for one day, as determined by the Deputy Administrator;
+
+(3) The national average price per gallon to transport water and any appropriate regional or local adjustments as recommended by the STC and determined by the Deputy Administrator; and
+
+(4) 150 days.
+
+(d) The total value of the cost to transport water to eligible livestock for the program year to be used in the calculation for paragraph (b)(2) of this section is equal to the product obtained by multiplying:
+
+(1) Actual number of gallons of water transported by the eligible producer to eligible livestock in the program year; and
+
+(2) The national average price per gallon to transport water and any appropriate regional or local adjustments as recommended by the STC and determined by the Deputy Administrator.
+
+(e) The national average price per gallon to transport water to be used in the calculation for paragraphs (c)(3) and (d)(2) of this section is $0.04, or such other price determined by the Deputy Administrator.
+
+(f) Payments for an eligible livestock producer, for livestock losses resulting from the additional cost associated with gathering livestock to treat or inspect for cattle tick fever will be calculated for the actual number of livestock involved in each treatment or inspection. Total payments are equal to the sum of the following for each treatment or inspection:
+
+(1) The national payment rate, as determined in § 1416.109, times
+
+(2) The number of eligible livestock treated or inspected by APHIS for cattle tick fever, times
+
+(3) The average cost to gather livestock, per head, as established by the Deputy Administrator.
+
+(g) Payments for an eligible livestock producer for grazing losses, except for losses due to wildfires on non-Federal land, will be calculated based on the applicable national payment rate, as determined in § 1416.109, multiplied by the lesser of:
+
+(1) The total value of the feed cost for all covered livestock owned by the eligible livestock producer based on the number of days grazing was lost, not to exceed 150 days of daily feed cost for all eligible livestock, or
+
+(2) The total value of grazing lost for all eligible livestock based on the normal carrying capacity, as determined by the Secretary, of the eligible grazing land of the eligible livestock producer for the number of grazing days lost, not to exceed 150 days of lost grazing.
+
+(h) The total value of feed cost to be used in the calculation for paragraph (g)(1) of this section is based on the number of days grazing was lost and equals the product obtained by multiplying:
+
+(1) A payment quantity equal to the feed grain equivalent, as determined in paragraph (i) of this section;
+
+(2) A payment rate equal to the corn price per pound, as determined in paragraph (j) of this section;
+
+(3) The number of all eligible livestock owned by the eligible producer converted to an animal unit basis;
+
+(4) The number of days grazing was lost, not to exceed 150 calendar days during the normal grazing period for the specific type of grazing land; and
+
+(5) The producer's ownership share in the livestock.
+
+(i) The feed grain equivalent to be used in the calculation for paragraph (g)(1) of this section equals, in the case of:
+
+(1) An adult beef cow, 15.7 pounds of corn per day, or
+
+(2) Any other type or weight of livestock, an amount determined by the Secretary that represents the average number of pounds of corn per day necessary to feed that specific type of livestock.
+
+(j) The corn price per pound to be used in the calculation for paragraph (h)(2) of this section equals the quotient calculated as follows:
+
+(1) The higher of:
+
+(i) The national average corn price per bushel of corn for the 12-month period immediately preceding March 1 of the program year for which payments are calculated; or
+
+(ii) The national average corn price per bushel of corn for the 24-month period immediately preceding March 1 of the program year for which payments are calculated;
+
+(2) Divided by 56.
+
+(k) The total value of grazing lost to be used in the calculation for paragraph (h)(2) of this section equals the product obtained by multiplying:
+
+(1) A payment quantity equal to the feed grain equivalent of 15.7 pounds of corn per day;
+
+(2) A payment rate equal to the corn price per pound, as determined in paragraph (j) of this section;
+
+(3) The number of animal units the eligible livestock producer's grazing land or pastureland can sustain during the normal grazing period in the county for the specific type of grazing land or pastureland, in the absence of an eligible adverse weather or eligible loss condition, determined by dividing the:
+
+(i) Number of eligible grazing land or pastureland acres of the specific type of grazing land or pastureland, by
+
+(ii) The normal carrying capacity of the specific type of eligible grazing land or pastureland; and
+
+(4) The number of days grazing was lost, not to exceed 150 calendar days during the normal grazing period for the specific type of grazing land.
+
+(l) Payments for an eligible livestock producer for grazing losses due to a wildfire on non-Federal land will be calculated based on the applicable national payment rate, as determined in § 1416.109, multiplied by:
+
+(1) The result of dividing:
+
+(i) The number of acres of grazing land or pastureland acres affected by the fire, by
+
+(ii) The normal carrying capacity of the specific type of eligible grazing land or pastureland; times
+
+(2) The daily value of grazing as calculated by FSA under this section; times
+
+(3) The number of days grazing was lost due to fire, not to exceed 180 calendar days;
+
+(m) If a participant, during the normal grazing period for the eligible grazing land, claims both an eligible loss resulting from the additional cost of purchasing additional livestock feed above normal quantities, as calculated in paragraph (a)(3) of this section, and an eligible grazing loss, as calculated in paragraphs (g) or (l) of this section, then the participant may receive no more than the larger of the value of the loss resulting from the:
+
+(1) Additional cost of purchasing additional livestock feed, as calculated in paragraph (a)(3) of this section; or
+
+(2) Grazing loss, as determined in:
+
+(i) Paragraph (g) of this section, for losses due to an eligible adverse weather or eligible loss condition, except wildfires on non-Federal lands, or
+
+(ii) Paragraph (l) of this section, for losses due to wildfires on non-Federal lands.
+
+(n) Payments for losses resulting from the additional cost of transporting eligible livestock to feed or livestock feed to eligible livestock, for additional mileage above normal, in excess of 25 miles per truckload and for no more than 1,000 miles per truckload of livestock or livestock feed during the program year, as specified in § 1416.103(d)(6) will be calculated based on a national payment rate, as determined in § 1416.109, multiplied by:
+
+(1) The national average price per mile to transport a truckload of livestock or livestock feed; and
+
+(2) The actual number of additional miles above normal to transport livestock or livestock feed by an eligible producer, in excess of 25 miles per truckload of livestock or feed and for no more than 1,000 miles per truckload of livestock or feed during the program year.
+
+(o) The national average price per mile to transport a truckload of livestock or feed to be used in the calculation for paragraph (n)(1) of this section is determined by the Deputy Administrator for each program year using a national cost formula developed by FSA based on the cost of hauling feed or livestock above normal mileage, not to include the first 25 miles. The national average price per mile considers the average cost for hauling a truckload of forage or livestock from sources 200 miles away. The Deputy Administrator may determine a different price per mile for a particular state, if the Deputy Administrator determines that a different price is necessary due to differences in state hauling costs compared to national average costs. The original physical location of the livestock will determine the applicable state for payment purposes.
+
+(p) Payments for losses resulting from costs associated with treating livestock feed transported above normal to prevent the spread of invasive pests, as specified in § 1416.103(d)(6), will be calculated based on a national payment rate, as determined in § 1416.109, multiplied by the producer's actual cost for controlling invasive pests in livestock feed transported above normal.
+
+(q) For the purpose of payments under paragraph (n) of this section, losses resulting from the additional cost of transporting livestock feed to eligible livestock are limited to the additional cost of transportation of feed to satisfy the feed needs of the eligible livestock identified on the application during the program year in which the eligible drought or other eligible loss condition occurred. Therefore, FSA will:
+
+(1) Convert the number of eligible livestock identified on the application to an animal unit basis;
+
+(2) Multiply the animal units determined in paragraph (q)(1) of this section by 24 pounds of corn or corn equivalent or 39 pounds of hay or forage;
+
+(3) Multiply the result of paragraph (q)(2) of this section by the number of calendar days in the time period from the beginning date of the eligible drought or other eligible loss condition until the end of the program year; and
+
+(4) Limit the truckloads used in the calculation to the total pounds calculated in paragraph (q)(3) of this section. Any loads hauled in excess of that amount during the program year are not eligible for assistance.
+
+(r) For the purpose of payments under paragraph (n) of this section, reimbursable transportation costs for a truckload are limited to mileage of the truckload supported by an established, published hauling rate per loaded mile. Any parcel delivery or distribution-center delivery service including UPS, FedEx, U.S. Postal Service, or similar carriers and any transportation fees or handling fees applied are not eligible for reimbursement.
+
+(s Payments calculated in this section are subject to the adjustments and limits provided for in this part.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 85 FR 10965, Feb, 26, 2020; 87 FR 19786, Apr. 6, 2022; 90 FR 5496, Jan. 17, 2025; 91 FR 42325, July 9, 2026]
+
+§ 1416.111 Honeybee payment calculations.
+
+(a) An eligible honeybee producer may receive payments for eligible honeybee feed losses, as specified in § 1416.103(h), based on a national payment rate, as determined in § 1416.109, multiplied by the producer's actual cost for honeybee feed that was:
+
+(1) Damaged or destroyed due to an eligible adverse weather or eligible loss condition, as specified in § 1416.103(h)(1); and
+
+(2) Purchased, above normal, to maintain the honeybees during an eligible adverse weather or eligible loss condition until additional honeybee feed becomes available, as specified in § 1416.103(h)(2);
+
+(b) An eligible honeybee producer may receive payments for eligible honeybee colony losses, as specified in § 1416.103(i), based on a national payment rate, as determined in § 1416.109(b), multiplied by:
+
+(1) Average fair market value of the honeybee colonies as computed using nationwide prices unless some other price data is approved for use by the Deputy Administrator; and
+
+(2) Number of eligible honeybee colonies that were damaged or destroyed due to an eligible adverse weather or eligible loss condition, in excess of normal honeybee mortality. For 2026 and subsequent program years, normal honeybee mortality is 15 percent.
+
+(c) An eligible honeybee producer may receive payments for eligible honeybee hive losses, as specified in § 1416.103(i), based on a national payment rate, as determined in § 1416.109, multiplied by:
+
+(1) Average fair market value for honeybee hives as computed using nationwide prices unless some other price data is approved for use by the Deputy Administrator; and
+
+(2) Number of honeybee hives that were damaged or destroyed due to an eligible adverse weather or eligible loss condition.
+
+(d) Payments calculated in this section are subject to the adjustments and limits provided for in this part.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 91 FR 42326, July 9, 2026]
+
+§ 1416.112 Farm-raised fish payment calculations.
+
+(a) An eligible farm-raised fish producer may receive payments for fish feed losses due to an eligible adverse weather or eligible loss condition, as specified in § 1416.103(h), based on a national payment rate, as determined in § 1416.109, multiplied by the producer's actual cost for the fish feed that was:
+
+(1) Damaged or destroyed due to an eligible adverse weather or eligible loss condition, as specified in § 1416.103(h)(1); and
+
+(2) Purchased, above normal, to maintain the farm-raised fish during an eligible adverse weather or eligible loss condition until additional farm-raised fish feed becomes available, as specified in § 1416.103(h)(2).
+
+(b) An eligible producer of farm-raised fish may receive payments for death losses of farm-raised fish due to an eligible adverse weather or eligible loss condition, as specified in § 1416.103(j), based on a national payment rate, as determined in § 1416.109, multiplied by:
+
+(1) Average fair market value of the bait fish, game fish, or other aquatic species, as determined by the Deputy Administrator, that died as a direct result of an eligible adverse weather or eligible loss condition, as computed using nationwide prices unless some other price data is approved for use by the Deputy Administrator; and
+
+(2) Number of eligible bait fish, game fish, or other aquatic species, as determined by the Deputy Administrator, that died as a result of an eligible adverse weather or loss condition, in excess of normal mortality, as determined by the Deputy Administrator.
+
+(c) An eligible producer of freshwater farm-raised fish may receive payments for eligible damage and loss due to bird depredation, as specified in § 1416.103(k), based on the payment rate determined in accordance with § 1416.109(e), multiplied by 85 percent of the total eligible acres of freshwater in production for the program year, as provided in 1416.103(k).
+
+(d) Payments calculated in this section or elsewhere with respect to ELAP are subject to the adjustments and limits provided for in this part and are also subject to the payment limitations and average adjusted gross income limitations that are contained in part 1400 of this chapter.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 91 FR 42326, July 9, 2026]
+
+§ 1416.113 Milk losses due to H5N1.
+
+(a) Payments for milk losses due to H5N1 are based on a standard number of days of lost production and the expected production for an eligible adult dairy cow. The payment for milk losses due to H5N1 is equal to the payment rate per head specified in paragraph (b) of this section, multiplied by the number of eligible adult dairy cows specified in § 1416.109(g), multiplied by the producer's share of milk production from the eligible adult dairy cows, multiplied by the national payment rate specified in § 1416.109(d).
+
+(b) The payment rate per head varies by month and is equal to the expected milk production loss for an eligible adult dairy cow, as determined by FSA, multiplied by the all-milk price. The applicable payment rate will be determined by the month in which an eligible adult dairy cow was removed from milk production, as reported on the application. To determine the expected milk production loss for an eligible adult dairy cow, FSA will:
+
+(1) Determine the daily expected production by dividing the total expected production for 28 days of production, as determined by FSA based on a month-specific national production value obtained from NASS data, by 28 days; and
+
+(2) Calculate the sum of:
+
+(i) The result of paragraph (b)(1) of this section multiplied by 21 days, and
+
+(ii) The result of paragraph (b)(1) of this section multiplied by 7 days, multiplied by 50 percent.
+
+(c) Payments calculated in this section are subject to the adjustments and limits provided for in this part.
+
+[89 FR 54335, July 1, 2024]
+
+Subpart C—Livestock Forage Disaster Program
+
+§ 1416.201 Applicability.
+
+(a) This subpart establishes the terms and conditions under which the Livestock Forage Disaster Program (LFP) will be administered.
+
+(b) Eligible livestock owners or contract growers who are eligible producers of eligible grazed forage crop acreage will be compensated for eligible grazing losses for covered livestock that occur due to a qualifying drought or fire that occurs in the calendar year for which benefits are being requested.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 85 FR 10965, Feb. 26, 2020]
+
+§ 1416.202 Definitions.
+
+The following definitions apply to this subpart and to the administration of LFP. The definitions in parts 718 of this title and 1400 of this chapter also apply, except where they conflict with the definitions in this section.
+
+Adult beef bull means a male beef breed bovine animal that was at least 2 years old and used for breeding purposes on or before the beginning date of a qualifying drought or fire.
+
+Adult beef cow means a female beef breed bovine animal that had delivered one or more offspring. A first-time bred beef heifer is also considered an adult beef cow if it was pregnant on or before the beginning date of a qualifying drought or fire.
+
+Adult beefalo bull means a male hybrid of beef and bison that was used for breeding purposes and was at least 2 years old before the beginning date of the qualifying drought or fire.
+
+Adult beefalo cow means a female hybrid of beef and bison that had delivered one or more offspring before the beginning date of the qualifying drought or fire. A first-time bred beefalo heifer is also considered an adult beefalo cow if it was pregnant by the beginning date of the qualifying drought or fire.
+
+Adult buffalo or bison bull means a male animal of those breeds that was used for breeding purposes and was at least 2 years old before the beginning date of the qualifying drought or fire.
+
+Adult buffalo or bison cow means a female animal of those breeds that had delivered one or more offspring before the beginning date of the qualifying drought or fire. A first-time bred buffalo or bison heifer is also considered an adult buffalo or bison cow if it was pregnant by the beginning date of the qualifying drought or fire.
+
+Adult dairy bull means a male dairy breed bovine animal at least 2 years old used primarily for breeding dairy cows on or before the beginning date of a qualifying drought or fire.
+
+Adult dairy cow means a female dairy breed bovine animal used for the purpose of providing milk for human consumption that had delivered one or more offspring. A first-time bred dairy heifer is also considered an adult dairy cow if it was pregnant on or before the beginning date of a qualifying drought or fire.
+
+Adult water buffalo bull means a male animal of that breed that was used for breeding purposes and was at least 2 years old before the beginning date of the qualifying drought or fire.
+
+Adult water buffalo cow means a female animal of that breed that had delivered one or more offspring before the beginning date of the qualifying drought or fire. A first-time bred water buffalo heifer is also considered an adult water buffalo cow if it was pregnant by the beginning date of the qualifying drought or fire.
+
+Agricultural operation means a farming operation.
+
+Application means the “Livestock Forage Disaster Program” form.
+
+Commercial use means used in the operation of a business activity engaged in as a means of livelihood for profit by the eligible livestock producer.
+
+Contract means, with respect to contracts for the handling of livestock, a written agreement between a livestock owner and another individual or entity setting the specific terms, conditions, and obligations of the parties involved regarding the production of livestock or livestock products.
+
+Contract grower means a person or legal entity, other than a feedlot, that was engaged in a farming operation not as an owner of covered livestock but in a business whose income is dependent on either the actual weight gain of the livestock or number of offspring produced from the livestock.
+
+Covered livestock means livestock of an eligible livestock producer that, during the 60 days prior to the beginning date of a qualifying drought or fire, the eligible livestock producer owned, leased, purchased, entered into a contract to purchase, was a contract grower of, or sold or otherwise disposed of due to a qualifying drought during the current production year. It includes livestock that the producer otherwise disposed of due to drought in one or both of the two production years immediately preceding the current production year as determined by the Secretary. Notwithstanding the foregoing portions of this definition, covered livestock will not include livestock in feedlots.
+
+Equine animal means a weaned domesticated horse, mule, or donkey.
+
+Farming operation means a business enterprise engaged in producing agricultural products.
+
+Federal Agency means, with respect to the control of grazing land, an agency of the federal government that manages rangeland on which livestock is generally permitted to graze. For the purposes of this section, it includes, but is not limited to, the U.S. Department of the Interior (DOI), Bureau of Indian Affairs (BIA), Bureau of Land Management (BLM), and USDA Forest Service (FS).
+
+Goat means a weaned domesticated, ruminant mammal of the genus Capra, including Angora goats.
+
+Grazing animals mean those species of weaned livestock that, from a nutritional and physiological perspective, satisfy more than 50 percent of their net energy requirement through the consumption of growing forage grasses and legumes. Species of livestock for which more than 50 percent of their net energy requirements are not recommended to be met from consumption of forage grasses and legumes, such as poultry and swine, are excluded regardless of whether those species are present on grazing land or pastureland. Unweaned livestock are excluded as grazing animals regardless of whether those unweaned livestock are present on grazing land or pastureland.
+
+Non-adult beef cattle means a weaned beef breed bovine animal that on or before the beginning date of a qualifying drought or fire does not meet the definition of adult beef cow or bull.
+
+Non-adult beefalo means a weaned hybrid of beef and bison that on or before the beginning date of the qualifying drought or fire does not meet the definition of adult beefalo cow or bull.
+
+Non-adult buffalo or bison means a weaned animal of those breeds that on or before the beginning date of beginning date of the qualifying drought or fire does not meet the definition of adult buffalo or bison cow or bull.
+
+Non-adult dairy cattle means a weaned bovine animal, of a breed used for the purpose of providing milk for human consumption, that on or before the beginning date of a qualifying drought or fire does not meet the definition of adult dairy cow or bull.
+
+Non-adult water buffalo means a weaned animal of that breed that on or before the beginning date of the qualifying drought or fire does not meet the definition of adult water buffalo cow or bull in this section.
+
+Normal carrying capacity means, with respect to each type of grazing land or pastureland in a county, the normal carrying capacity that would be expected from the grazing land or pastureland for livestock during the normal grazing period in the county, in the absence of a drought or fire that diminishes the production of the grazing land or pastureland.
+
+Normal grazing period means, as determined by FSA, with respect to a specific type of grazing land or pastureland in the county, the period during the calendar year when grazing animals receive daily nutrients and satisfy net energy requirements without supplemental feed.
+
+Owner means one who had legal ownership of the livestock for which benefits are being requested during the 60 days prior to the beginning of a qualifying drought or fire.
+
+Sheep means a weaned domesticated, ruminant mammal of the genus Ovis.
+
+U.S. Drought Monitor is a system for classifying drought severity according to a range of abnormally dry to exceptional drought. It is a collaborative effort between Federal and academic partners, produced on a weekly basis, to synthesize multiple indices, outlooks, and drought impacts on a map and in narrative form. This synthesis of indices is reported by the National Drought Mitigation Center at http://droughtmonitor.unl.edu.
+
+Unweaned livestock means an animal not weaned from mother's milk or milk replacement to other nourishment.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49466, Oct. 2, 2018; 85 FR 10965, Feb. 26, 2020; 91 FR 42326, July 9, 2026]
+
+§ 1416.203 Eligibility.
+
+(a) In addition to meeting all other requirements, to be eligible for benefits under this subpart, an individual or legal entity with an eligible producer interest in grazing land acreage who is either an owner or contract grower of grazing animals, must:
+
+(1) During the 60 days prior to the beginning date of a qualifying drought or fire, own, cash or share lease, or be a contract grower of covered livestock.
+
+(2) As of the date of the qualifying drought or fire provide pastureland or grazing land for covered livestock, including cash-leased pastureland or grazing land, that is:
+
+(i) Physically located in a county affected by a qualifying drought during the normal grazing period for the specific forage crop acreage in the county, or
+
+(ii) Rangeland managed by a Federal agency for which the otherwise eligible livestock producer is prohibited by the Federal agency from grazing the normal permitted livestock due to a qualifying fire.
+
+(b) The eligible livestock producer must have certified that the livestock producer has suffered a grazing loss due to a qualifying drought or fire to be eligible for LFP payments.
+
+(c) An eligible livestock producer does not include any owner, cash or share lessee, or contract grower of livestock that rents or leases pastureland or grazing land owned by another person on a rate-of-gain basis. (That is, where the lease or rental agreement calls for payment based in whole or in part on the amount of weight gained by the animals that use the pastureland or grazing land.)
+
+(d) A producer seeking payment must not be prohibited from receiving these benefits as a result of the restrictions applicable to foreign persons contained in § 1416.3(b) and must meet all other requirements of subpart A of this part and other applicable USDA regulations.
+
+(e) If a contract grower is an eligible livestock producer for covered livestock, the owner of that livestock is not eligible for payment.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49467, Oct. 2, 2018; 85 FR 10965, Feb. 26, 2020]
+
+§ 1416.204 Covered livestock.
+
+(a) To be considered covered livestock for LFP payments, livestock must meet all the following conditions:
+
+(1) Be grazing animals such as adult or non-adult beef cattle, adult or non-adult beefalo, adult or non-adult buffalo or bison, adult or non-adult dairy cattle, alpacas, deer, elk, emus, equine, goats, llamas, ostriches, reindeer, or sheep;
+
+(2) Be livestock that would normally have been grazing the eligible grazing land or pastureland:
+
+(i) During the normal grazing period for the specific type of grazing land or pastureland for the county during the qualifying drought; or
+
+(ii) When the Federal agency prohibited the eligible livestock producer from using the managed rangeland for grazing due to a fire;
+
+(3) Be livestock that the eligible livestock producer:
+
+(i) During the 60 days prior to the beginning date of a qualifying drought or fire:
+
+(A) Owned,
+
+(B) Leased,
+
+(C) Purchased,
+
+(D) Entered into a contract to purchase, or
+
+(E) Was a contract grower of; or
+
+(ii) Sold or otherwise disposed of due to qualifying drought during:
+
+(A) The current production year, or
+
+(B) 1 or both of the 2 production years immediately preceding the current production year;
+
+(4) Been livestock produced or maintained for commercial use or be livestock that is produced and maintained for producing livestock products for commercial use, such as milk from dairy, as part of the contract grower's or livestock owner's farming operation on the beginning date of the qualifying drought or fire;
+
+(5) Not have been produced and maintained for reasons other than commercial use as part of a farming operation. Such excluded uses include, but are not limited to:
+
+(i) Any uses of wild free roaming livestock;
+
+(ii) Racing or wagering;
+
+(iii) Hunting; and
+
+(iv) Consumption by owner; and
+
+(6) Not have been livestock that were or would have been in a feedlot, on the beginning date of the qualifying drought or fire, as a part of the normal business operation of the eligible livestock producer, as determined by the Secretary.
+
+(b) The covered livestock categories are:
+
+(1) Adult beef cows or bulls,
+
+(2) Adult beefalo cows or bulls,
+
+(3) Adult buffalo or bison cows or bulls,
+
+(3) Adult dairy cows or bulls,
+
+(4) Alpacas,
+
+(5) Deer,
+
+(6) Elk,
+
+(7) Emu,
+
+(8) Equine,
+
+(9) Goats,
+
+(10) Llamas,
+
+(11) Non-adult beef cattle,
+
+(12) Non-adult beefalo,
+
+(13) Non-adult buffalo or bison,
+
+(14) Non-adult dairy cattle,
+
+(15) Ostriches,
+
+(16) Reindeer,
+
+(17) Sheep,
+
+(18) Adult water buffalo cows and bulls, and
+
+(19) Non-adult water buffalo.
+
+(c) Livestock that are not covered include, but are not limited to:
+
+(1) Livestock that were or would have been in a feedlot, on the beginning date of the qualifying drought or fire, as a part of the normal business operation of the eligible livestock producer, as determined by the Secretary;
+
+(2) Animals that are not grazing animals;
+
+(3) Yaks;
+
+(4) Poultry;
+
+(5) Swine;
+
+(6) Unweaned livestock or animals not meeting the definition of a grazing animal;
+
+(7) Any wild free roaming livestock, including horses and deer; and
+
+(8) Livestock produced or maintained for reasons other than commercial use, including, but not limited to, livestock produced or maintained for racing or wagering purposes, hunting, or consumption by owner.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49467, Oct. 2, 2018; 85 FR 10965, Feb. 26, 2020; 88 FR 1891, Jan. 11, 2023; 91 FR 42326, July 9, 2026]
+
+§ 1416.205 Eligible grazing losses.
+
+(a) A grazing loss due to drought is eligible for LFP only if the grazing loss for the covered livestock occurs on land that:
+
+(1) Is native or improved pastureland with permanent vegetative cover, or
+
+(2) Is planted to a crop planted specifically for the purpose of providing grazing for covered livestock, as reported on the producer's acreage report, including crops such as forage sorghum, small grains, annual planted ryegrass, or annual planted crabgrass, but not including corn stalks or grain sorghum stalks; and
+
+(3) Is grazing land or pastureland that is owned or leased by the eligible livestock producer that is physically located in a county that is, during the normal grazing period for the specific type of grazing land or pastureland for the county, rated by the U.S. Drought Monitor as having a:
+
+(i) D2 (severe drought) intensity in any area of the county for at least 4 consecutive weeks during the normal grazing period for the specific type of grazing land or pastureland for the county, as determined by the Secretary, or
+
+(ii) D3 (extreme drought) or D4 (exceptional drought) intensity in any area of the county at any time during the normal grazing period for the specific type of grazing land or pastureland for the county, as determined by the Secretary. (As specified elsewhere in this subpart, the amount of potential payment eligibility will be higher than under paragraph (a)(3)(i) of this section where the D4 trigger applies or where the D3 condition as determined by the Secretary lasts at least 4 weeks during the normal grazing period for the specific type of grazing land or pastureland for the county.)
+
+(b) A grazing loss is not eligible for LFP if:
+
+(1) The grazing loss due to drought on land used for haying or grazing under the Conservation Reserve Program established under subchapter B of chapter 1 of subtitle D of title XII of the Food Security Act of 1985 (16 U.S.C. 3831-3835a), or
+
+(2) The grazing loss occurs on irrigated land, unless the irrigated land has not been irrigated in the program year for which benefits are being requested due to the lack of surface water as a result of a qualifying eligible drought condition.
+
+(c) A grazing loss due to fire qualifies for LFP only if:
+
+(1) The grazing loss occurs on rangeland that is managed by a Federal agency and
+
+(2) The eligible livestock producer is prohibited by the Federal agency from grazing the normal permitted livestock on the managed rangeland due to a fire.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49467, Oct. 2, 2018; 85 FR 10966, Feb. 26, 2020; 91 FR 42326, July 9, 2026]
+
+§ 1416.206 Application for payment.
+
+(a) To apply for LFP, the participant that suffered eligible grazing losses must submit a completed application and required supporting documentation, including some supporting documentation such as an acreage report that may have been required at an earlier date, to the administrative FSA county office no later than March 1 after the end of the calendar year in which the grazing loss occurred.
+
+(b) A participant must also provide a copy of the grower contract, if a contract grower, and other supporting documents required for determining eligibility as an applicant at the time the participant submits the completed application for payment. Supporting documents must include:
+
+(1) Evidence of loss;
+
+(2) Evidence that grazing land or pastureland is owned or leased;
+
+(3) A report of acreage according to part 718 of this title for the grazing lands incurring losses for which assistance is being requested under this subpart;
+
+(4) Adequate proof, as determined by FSA that the grazing loss:
+
+(i) Was for the covered livestock;
+
+(ii) If the loss of grazing occurred as the result of a fire, that the:
+
+(A) Loss was due to a fire, and
+
+(B) Participant was prohibited by the Federal agency from grazing the normal permitted livestock on the managed rangeland due to a fire; and
+
+(iii) Occurred in the program year for which payments are being requested;
+
+(5) A farm operating plan, if a current farm operating plan is not already on file in the FSA county office; and
+
+(6) Any other supporting documentation as determined by FSA to be necessary to make a determination of eligibility of the participant. Supporting documents include, but are not limited to: Verifiable purchase and sales records; grower contracts; veterinarian records; bank or other loan papers; written contracts; production records; private insurance documents; sales records; and similar documents determined acceptable to FSA.
+
+(c) [Reserved]
+
+(d) Data furnished by the participant will be used to determine eligibility for program benefits. Furnishing the data is voluntary; however, without all required data, program benefits will not be approved or provided.
+
+[79 FR 21097, Apr. 14, 2014. Redesignated and amended at 83 FR 49467, Oct. 2, 2018; 85 FR 10966, Feb. 26, 2020; 90 FR 5497, Jan. 17, 2025; 91 FR 42326, July 9, 2026]
+
+§ 1416.207 Payment calculation.
+
+(a) An eligible livestock producer will be eligible to receive payments for grazing losses for qualifying drought as specified in § 1416.205(a), calculated as specified in paragraph (g) or (i) of this section. Total LFP payments to an eligible livestock producer in a calendar year for grazing losses due to qualifying drought will not exceed 5 monthly payments for the same livestock. Payments calculated in this section or elsewhere with respect to LFP are subject to the adjustments and limits provided for in this part and are also subject to the payment limitations and average adjusted gross income provisions that are contained in subpart A of this part. Payment may only be made to the extent that eligibility is specifically provided for in this subpart. Hence, with respect to drought, payments will be made only as representative to a “1-month” payment, a “2-month” payment, a “3-month” payment, “4-month” payment, or a “5-month” payment based on the provisions of paragraphs (b) through (f) of this section.
+
+(b) To be eligible to receive a 1-month payment, that is a payment equal to the monthly feed cost as determined under paragraph (i) of this section, the eligible livestock producer must own or lease grazing land or pastureland that is physically located in a county that is rated by the U.S. Drought Monitor as having at least a D2 severe drought (intensity) in any area of the county for at least 4 consecutive weeks during the normal grazing period for the specific type of grazing land or pastureland in the county.
+
+(c) To be eligible to receive a 2-month payment, that is a payment equal to the monthly feed cost as determined under paragraph (i) of this section, the eligible livestock producer must own or lease grazing land or pastureland that is physically located in a county that is rated by the U.S. Drought Monitor as having at least a D2 severe drought (intensity) in any area of the county for at least 7 of the previous 8 consecutive weeks during the normal grazing period for the specific type of grazing land or pastureland in the county.
+
+(d) To be eligible to receive a 3-month payment, that is a payment equal to three times the monthly feed cost as determined under paragraph (h) of this section, the eligible livestock producer must own or lease grazing land or pastureland that is physically located in a county that is rated by the U.S. Drought Monitor as having at least a D3 (extreme drought) intensity in any area of the county at any time during the normal grazing period for the specific type of grazing land or pastureland for the county.
+
+(e) To be eligible to receive a 4-month payment, that is a payment equal to four times the monthly feed cost as determined under paragraph (i) of this section, the eligible livestock producer must own or lease grazing land or pastureland that is physically located in a county that is rated by the U.S. Drought Monitor as having at least a D3 (extreme drought) intensity in any area of the county for at least 4 weeks (not necessarily consecutive weeks) during the normal grazing period for the specific type of grazing land or pastureland for the county, or is rated as having a D4 (exceptional drought) intensity in any area of the county at any time during the normal grazing period for the specific type of grazing land or pastureland for the county.
+
+(f) To be eligible to receive a 5-month payment, that is a payment equal to five times the monthly feed cost as determined under paragraph (i) of this section, the eligible livestock producer must own or lease grazing land or pastureland that is physically located in a county that is rated by the U.S. Drought Monitor as having at least a D4 (exceptional drought) in any area of the county for at least 4 weeks (not necessarily consecutive weeks) during the normal grazing period for the specific type of grazing land or pastureland for the county.
+
+(g) The monthly payment rate for LFP for grazing losses due to a qualifying drought, except as specified in paragraph (i) of this section, will be equal to 60 percent of the lesser of:
+
+(1) The monthly feed cost for all covered livestock owned or leased by the eligible livestock producer, as determined in paragraph (j) of this section, or
+
+(2) The monthly feed cost calculated by using the normal carrying capacity of the eligible grazing land of the eligible livestock producer, as determined in paragraph (m) of this section.
+
+(h) An eligible livestock producer cannot receive more than a 5-month payment for the same covered livestock during the calendar year regardless of the number of drought intensity ratings the county receives; that is, the maximum payment an eligible livestock producer may receive under LFP in a calendar year cannot exceed 60 percent of 5 times the same covered livestock's monthly feed cost.
+
+(i) In the case of an eligible livestock producer that sold or otherwise disposed of covered livestock due to a qualifying drought in 1 or both of the 2 production years immediately preceding the current production year, the payment rate is 80 percent of the monthly payment rate calculated in paragraph (g) of this section.
+
+(j) The monthly feed cost for covered livestock equals the product obtained by multiplying:
+
+(1) 30 days;
+
+(2) A payment quantity equal to the amount of the “feed grain equivalent”, as determined under paragraph (k) of this section; and
+
+(3) A payment rate equal to the corn price per pound, as determined in paragraph (l) of this section.
+
+(k) The feed grain equivalent equals, in the case of:
+
+(1) An adult beef cow, 15.7 pounds of corn per day or
+
+(2) In the case of any other type or weight of covered livestock, an amount determined by the Secretary that represents the average number of pounds of corn per day necessary to feed that specific type of livestock.
+
+(l) The corn price per pound equals the quotient calculated as follows:
+
+(1) The higher of:
+
+(i) The national average corn price per bushel for the 12-month period immediately preceding March 1 of the calendar year for which LFP payment is calculated, or
+
+(ii) The national average corn price per bushel for the 24-month period immediately preceding March 1 of the calendar year for which LFP payment is calculated,
+
+(2) Divided by 56.
+
+(m) The monthly feed cost using the normal carrying capacity of the eligible grazing land equals the product obtained by multiplying:
+
+(1) 30 days;
+
+(2) A payment quantity equal to the feed grain equivalent of 15.7 pounds of corn per day;
+
+(3) A payment rate equal to the corn price per pound, as determined in paragraph (l) of this section; and
+
+(4) The number of animal units the eligible livestock producer's grazing land or pastureland can sustain during the normal grazing period in the county for the specific type of grazing land or pastureland, in the absence of a drought or fire, determined by dividing the:
+
+(i) Number of eligible grazing land or pastureland acres of the specific type of grazing land or pastureland, by
+
+(ii) The normal carrying capacity of the specific type of eligible grazing land or pastureland as determined under this subpart.
+
+(n) An eligible livestock producer will be eligible to receive payments for grazing losses due to a fire as specified in § 1416.205(c):
+
+(1) For the period:
+
+(i) Beginning on the date on which the Federal Agency prohibits the eligible livestock producer from using the managed rangeland for grazing, and
+
+(ii) Ending on the earlier of the last day of the Federal lease of the eligible livestock producer or the day that would make the period a 180 day period.
+
+(2) For grazing losses that occur on not more than 180 days per calendar year.
+
+(3) For 50 percent of the monthly feed cost, as determined under paragraph (j) of this section, pro-rated to a daily rate, for the total number of livestock covered by the Federal lease of the eligible livestock producer.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49468, Oct. 2, 2018; 85 FR 10966, Feb. 26, 2020; 91 FR 42326, July 9, 2026]
+
+Subpart D—Livestock Indemnity Program
+
+§ 1416.301 Applicability.
+
+(a) This subpart establishes the terms and conditions of the Livestock Indemnity Program (LIP).
+
+(b) Eligible livestock owners and contract growers will be compensated in accordance with § 1416.306 for eligible livestock deaths in excess of normal mortality, or livestock owners will be compensated for sales of injured livestock for a reduced price, if either the death or injury that results in sale at a reduced price occurred as a direct result of an eligible cause of loss. The eligible cause of loss is one, as determined by FSA, that directly results in the death of livestock or injury and sale of livestock at a reduced price, despite the livestock owner's or contract grower's performance of expected and normal preventative or corrective measures and acceptable animal husbandry practices.
+
+[83 FR 49468, Oct. 2, 2018, as amended at 85 FR 10966, Feb. 26, 2020]
+
+§ 1416.302 Definitions.
+
+The following definitions apply to this subpart. The definitions in parts 718 of this title and 1400 of this chapter also apply, except where they conflict with the definitions in this section.
+
+Acceptable animal husbandry means animals raised and cared for to produce offspring, meat, fiber, milk, eggs, or other products. Includes day-to-day care and selective breeding and raising of livestock. The practices are those that are generally recognized by the commercial livestock industry.
+
+Actual livestock beginning inventory means the actual livestock beginning inventory per calendar year for unweaned livestock that is calculated from the verifiable or reliable records of death, birthing, docking, inventory, and sales.
+
+Adjusted livestock beginning inventory means the LBIH for unweaned livestock that will be adjusted during the base period for years for which continuous actual LBIH records are not provided.
+
+Adult alpaca means a male or female of that species that is at least 1 year old and used for breeding purposes.
+
+Adult beef bull means a male beef breed bovine animal that was at least 2 years old and used for breeding purposes.
+
+Adult beef cow means a female beef breed bovine animal that had delivered one or more offspring. A first-time bred beef heifer is also considered an adult beef cow if it was pregnant at the time it died or was sold at a reduced price.
+
+Adult beefalo bull means a male hybrid of beef and bison that was at least 2 years old and used for breeding purposes.
+
+Adult beefalo cow means a female hybrid of beef and bison that had delivered one or more offspring before dying or being injured and sold at a reduced price. A first-time bred beefalo heifer is also considered an adult beefalo cow if it is pregnant at the time it died or was sold at a reduced price.
+
+Adult buffalo or bison bull means a male animal of those breeds that was at least 2 years old and used for breeding purposes.
+
+Adult buffalo or bison cow means a female animal of those breeds that had delivered one or more offspring before it died or was injured and sold at a reduced price. A first-time bred buffalo or bison heifer is also considered an adult buffalo or bison cow if it was pregnant at the time it died or was sold at a reduced price.
+
+Adult caribou means a male or female of that species that is of breeding age, at least 1.5 years old. This term includes adult reindeer, which are the same species.
+
+Adult dairy bull means a male dairy breed bovine animal at least 2 years old used primarily for breeding dairy cows.
+
+Adult dairy cow means a female bovine dairy breed animal used for the purpose of providing milk for human consumption that had delivered one or more offspring. A first-time bred dairy heifer is also considered an adult dairy cow if it was pregnant at the time it died or was injured and sold at a reduced price.
+
+Adult deer means a male or female of that species that is of breeding age, at least 6 months old.
+
+Adult elk means a male or female of that species that is of breeding age, at least 1.5 years old.
+
+Adult equine means a male or female domesticated horse, mule, or donkey that is of breeding age, at least 1 year old.
+
+Adult goat, buck means a male goat that is of breeding age, at least 1 year old.
+
+Adult goat, nanny means an adult female goat that is of breeding age, at least 1 year old.
+
+Adult llama means a male or female of that species that is of breeding age, at least 1 year old.
+
+Adult sheep, ewe means an adult female sheep that is of breeding age, at least 1 year old.
+
+Adult sheep, ram means a male sheep that is of breeding age, at least 1 year old.
+
+Adult swine, boars or barrows means male swine further delineated in weight classes 151 to 450 pounds and 451 pounds or more.
+
+Adult swine, sows or gilts means female swine of breeding age further delineated in weight classes 151 to 450 pounds and 451 pounds or more.
+
+Adult water buffalo bull means a male animal of that breed that was at least 2 years old and used for breeding purposes.
+
+Adult water buffalo cow means a female animal of that breed that had delivered one or more offspring before it died or was injured and sold at a reduced price. A first-time bred water buffalo heifer is also considered an adult water buffalo cow if it was pregnant at the time it died or was sold at a reduced price.
+
+Agricultural operation means a farming operation.
+
+Application means the LIP Notice of Loss and Application for Payment forms.
+
+Approved livestock beginning inventory means the approved livestock beginning inventory for unweaned livestock, calculated by the sum of the yearly actual and transitional LBIH divided by the number of years of LBIH.
+
+Base period means the five consecutive calendar years immediately preceding the calendar year of the LIP application for which the approved livestock beginning inventory is being established for the unweaned livestock.
+
+Birthing factor means:
+
+(1) The factor established by 7 U.S.C. 9081(b)(5)(C) for cattle, bison, horses, sheep, and swine; or
+
+(2) The factor established by CCC that is equal to the average number of birthed animals for one gestational cycle for other species of livestock, as determined by CCC.
+
+Blizzard means, as defined by the National Weather Service, a storm which contains large amounts of snow or blowing snow with winds in excess of 35 miles per hour and visibility of less than one-fourth of a mile for an extended period of time.
+
+Bred means that an eligible adult female livestock has been exposed to an adult male breeding animal and is gestating or deliberately bred through controlled reproduction. This term does not apply to poultry.
+
+Commercial use means used in the operation of a business activity engaged in as a means of livelihood for profit.
+
+Continuous livestock beginning inventory reports means livestock beginning inventory reports submitted by a producer for each calendar year that the producer was involved in the unweaned livestock
+
+Contract means, with respect to contracts for the handling of livestock, a written agreement between a livestock owner and another individual or entity setting the specific terms, conditions, and obligations of the parties involved regarding the production of livestock or livestock products.
+
+Cow, Ewe, Nanny LBIH means, the applicable calendar year cow, ewe, or nanny verifiable livestock beginning inventory records provided to FSA by the unweaned livestock operation to be used in calculating the transitional LBIH.
+
+Eligible adverse weather event means extreme and abnormal damaging weather in the calendar year for which benefits are being requested that is not expected to occur during the loss period for which it occurred, which directly results in eligible livestock death losses in excess of normal mortality or injury and sale of livestock at a reduced price. Eligible adverse weather events include, but are not limited to, as determined by the Deputy Administrator or designee, earthquake; hail; lightning; tornado; tropical storm; typhoon; vog if directly related to a volcanic eruption; winter storm if the winter storm meets the definition provided in this section; hurricanes; floods; blizzards; wildfires; extreme heat; extreme cold; and straight-line wind. Drought is not an eligible adverse weather event except when associated with anthrax, a condition that occurs because of drought and results in the death of eligible livestock.
+
+Eligible attack means an attack by animals reintroduced into the wild by the Federal government or protected by Federal law, including wolves and avian predators, that directly results in the death of eligible livestock in excess of normal mortality or injury and sale of eligible livestock at reduced price. Eligible livestock owners or contract growers are responsible for showing to FSA's satisfaction that eligible attacks are substantiated according to § 1416.305 in order to be considered eligible for payment.
+
+Eligible disease means a disease that, as determined by the Deputy Administrator, is exacerbated by an eligible adverse weather event that directly results in the death of eligible livestock in excess of normal mortality, including, but not limited to anthrax, cyanobacteria, and larkspur poisoning, or a disease that is caused or transmitted by a vector and cannot be controlled by vaccination or acceptable management practices. Eligible diseases are not an eligible cause of loss for benefits based on injury and sales of eligible livestock at reduced price.
+
+Eligible loss condition means any of the following that occur in the calendar year for which benefits are requested: Eligible adverse weather event, eligible attack, and eligible disease. Eligible disease is not an eligible loss condition for injured livestock.
+
+Equine animal means a domesticated horse, mule, or donkey.
+
+Farming operation means a business enterprise engaged in producing agricultural products.
+
+FSA means the Farm Service Agency.
+
+Gestating means the period of pregnancy of female livestock, excluding poultry, which is the time between conception and birth.
+
+Goat means a domesticated, ruminant mammal of the genus Capra, including Angora goats. Goats are further defined by sex (bucks and nannies) and age (kids).
+
+Livestock beginning inventory history (LBIH) means a minimum of four, up to a maximum of five, calendar years of actual and transitional beginning inventory records used to calculate the approved livestock beginning inventory history for a livestock operation.
+
+LBIH reporting date means the LBIH reporting date for which the reports will be accepted for inclusion in the base period for the current calendar year.
+
+Livestock inventory report means a written record showing the producer's annual inventory used to determine the LBIH for LIP purposes for the livestock operation. The report contains LBIH by livestock operation by livestock type or kind.
+
+Livestock owner means one having legal ownership of the livestock for which benefits are being requested on the day such livestock died or were sold at a reduced sale price.
+
+Livestock unit means all eligible livestock in the physical location county where the livestock losses occurred for the program year:
+
+(1) In which a person or legal entity has 100 percent share interest; or
+
+(2) Which is owned individually by more than one person or legal entity on a shared basis.
+
+National average market value means livestock values established by CCC based on national market data provided by USDA's National Agricultural Statistical Service (NASS) or Agricultural Marketing Service (AMS) for the applicable period.
+
+Newborn livestock means livestock that are within 10 calendar days of date of birth.
+
+Non-adult beef cattle means a beef breed bovine animal that does not meet the definition of adult beef cow or bull. Non-adult beef cattle are further delineated by weight categories of either less than 400 pounds or 400 pounds or more at the time they died or were sold at a reduced price.
+
+Non-adult beefalo means a hybrid of beef and bison that does not meet the definition of adult beefalo cow or bull. Non-adult beefalo are further delineated by weight categories of either less than 400 pounds or 400 pounds or more at the time they died or were sold at a reduced price.
+
+Non-adult buffalo or bison means an animal of those breeds that does not meet the definition of adult buffalo or bison cow or bull. Non-adult buffalo or bison are further delineated by weight categories of either less than 400 pounds or 400 pounds or more at the time they died or were sold at a reduced price.
+
+Non-adult caribou means a male or female of that species that does not meet the definition of an adult caribou. The term includes non-adult reindeer, which are the same species.
+
+Non-adult dairy cattle means a dairy breed bovine animal, of a breed used for the purpose of providing milk for human consumption, that do not meet the definition of adult dairy cow or bull. Non-adult dairy cattle are further delineated by weight categories of either less than 400 pounds or 400 pounds or more at the time they died or were sold at a reduced price.
+
+Non-adult deer means a male or female of that species that does not meet the definition of an adult deer.
+
+Non-adult elk means a male or female of that species that does not meet the definition of an adult elk.
+
+Non-adult equine means a male or female domesticated horse, mule, or donkey that does not meet the definition of an adult equine.
+
+Non-adult goat, slaughter goat or kid means a goat less than 1 year old.
+
+Non-adult llama means a male or female of that species that does not meet the definition of an adult llama.
+
+Non-adult sheep, lamb means a sheep less than 1 year old.
+
+Non-adult swine, suckling or nursery pig means a young piglet weighing less than 50 pounds.
+
+Non-adult swine, lightweight barrow or gilt means a castrated male swine (barrow) or a female swine that has not given birth (gilt), weighing 50 to 150 pounds.
+
+Non-adult water buffalo means an animal of that breed that does not meet the definition of adult water buffalo cow or bull. Non-adult water buffalo are further delineated by weight categories of either less than 400 pounds or 400 pounds or more at the time they died or were sold at a reduced price.
+
+Normal mortality means the numerical amount, computed by a percentage, as established for the area by the FSA State Committee, of expected livestock deaths, by category, that normally occur during a calendar year for a producer.
+
+Poultry means domesticated chickens, turkeys, ducks, and geese. Poultry are further delineated by sex, age, and purpose of production as determined by FSA.
+
+Program year means the calendar year the loss occurred.
+
+Reliable record or documentation means any non-verifiable document provided by the producer that reasonably supports the eligible loss as determined acceptable by CCC.
+
+Sheep means a domesticated, ruminant mammal of the genus Ovis. Sheep are further defined by sex (rams and ewes) and age (lambs) for purposes of dividing into categories for loss calculations.
+
+State office or county office means the respective FSA office.
+
+Swine means a domesticated omnivorous pig, hog, or boar. Swine for purposes of dividing into categories for loss calculations are further delineated by sex and weight as determined by FSA.
+
+Transitional LBIH for unweaned livestock means an estimated LBIH, generally determined by multiplying the livestock operation's beginning cow, ewe, or nanny LBIH by the national established birthing rate percentage established by FSA for the species of unweaned livestock. The Deputy Administrator has the authority to make adjustments for variations in stocking levels for livestock during the period covered by the history as necessary. It is to be used in the transitional LBIH calculation process when less than 4 consecutive calendar years of actual LBIH is available.
+
+Unborn death losses means losses of eligible livestock, excluding poultry, that was gestating on the date of the death of the eligible adult female livestock due to an eligible loss condition.
+
+Unweaned livestock means an animal not weaned from mother's milk or milk replacement to other nourishment. For LIP purposes, unweaned livestock does not include turkeys, ducks, chickens, and geese.
+
+Verifiable record or documentation means a document provided by the producer that can be verified by CCC through an independent source.
+
+Winter storm means, for an eligible adverse weather event, an event that so severe as to directly cause injury to livestock and lasts in duration for at least 3 consecutive days and includes a combination of high winds, freezing rain or sleet, heavy snowfall, and extremely cold temperatures. For a determination of winter storm, the wind, precipitation, and extremely cold temperatures must occur with the 3-day period, with wind and extremely cold temperatures occurring in each of the 3 days.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49468, Oct. 2, 2018; 85 FR 10966, Feb. 26, 2020; 91 FR 42326, July 9, 2026]
+
+Editorial Note
+
+Editorial Note:
+
+At 85 FR 10966, Feb. 26, 2020, § 1416.302 was amended in the definition “eligible adverse weather” however, the amendment to remove the last three sentences could not be incorporated due to inaccurate amendatory instruction.
+
+§ 1416.303 Eligible owners and contract growers.
+
+(a) In addition, to other eligibility rules that may apply, to be eligible as a:
+
+(1) Livestock owner for benefits with respect to the death of an animal or sale of an injured animal at a reduced price under this subpart, the applicant must have had legal ownership of the eligible livestock on the day the livestock died or was injured and sold at a reduced price and under conditions in which no contract grower could have been eligible for benefits with respect to the animal. Eligible types of animal categories for which losses can be calculated for an owner are specified in § 1416.304(a).
+
+(2) Contract grower for benefits with respect to the death of an animal, the animal must be in one of the categories specified on § 1416.304(b), and the contract grower must have had,
+
+(i) A written agreement with the owner of eligible livestock setting the specific terms, conditions, and obligations of the parties involved regarding the production of livestock;
+
+(ii) Control of the eligible livestock on the day the livestock died; and
+
+(iii) A risk of loss in the animal.
+
+(b) A livestock owner or contract grower seeking payment must be an eligible producer as defined in subpart A of this part and other applicable USDA regulations.
+
+(c) All of an eligible livestock owner's or contract grower's interest in livestock in a physical location county must be taken into account and summarized by livestock unit when determining the extent of payment eligibility.
+
+(d) Livestock owners are eligible for benefits for injured animals sold at reduced price only when those animals are not in a contract grower's inventory for which a contract grower seeks benefits for death losses. Contract growers are not eligible for benefits for injured animals sold at a reduced price.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49469, Oct. 2, 2018]
+
+§ 1416.304 Eligible livestock.
+
+(a) To be considered eligible livestock for livestock owners, the kind of livestock must be adult or non-adult alpacas, dairy cattle, beef cattle, beefalo, bison, buffalo, caribou, elk, equine, llamas, sheep, goats, swine, deer, or water buffalo; or emus, poultry, or ostriches; and meet all the conditions in paragraph (c) of this section.
+
+(b) To be considered eligible livestock for contract growers, the kind of livestock must be poultry or swine and meet all the conditions in paragraph (c) of this section.
+
+(c) To be considered eligible livestock for the purpose of generating payments under this subpart, livestock must have:
+
+(1) Died as a direct result of an eligible loss condition:
+
+(i) With the eligible loss condition occurring in the program year for which benefits are sought;
+
+(ii) No later than 30 calendar days for livestock, or 7 calendar days for newborn livestock, from the ending date of the eligible loss condition; or
+
+(2) Been injured and sold at a reduced price as a direct result of an eligible adverse weather event or eligible attack no later than 30 calendar days for livestock, or 7 calendar days for newborn livestock, from the ending date of the eligible adverse weather event or eligible attack.
+
+(3) Been produced or maintained for commercial use for livestock sale or the production of livestock products such as milk or eggs as part of a farming operation on the day they died or until the event that resulted in their sale at a reduced price; and
+
+(4) Not be produced or maintained for reasons other than commercial use for livestock sale or for the production of livestock products such as milk or eggs. Livestock excluded from being eligible include, but are not limited to:
+
+(i) Wild free roaming animals;
+
+(ii) Horses and other animals used or intended to be used for racing or wagering;
+
+(iii) Animals produced or maintained for hunting; and
+
+(iv) Animals produced or maintained for consumption by owner.
+
+(d) The following categories of animals owned by a livestock owner are eligible livestock and calculations of eligibility for payments will be calculated separately for each producer with respect to each category:
+
+(1) Adult alpacas;
+
+(2) Adult beef bulls;
+
+(3) Adult beef cows;
+
+(4) Adult beefalo bulls;
+
+(5) Adult beefalo cows;
+
+(6) Adult buffalo or bison bulls;
+
+(7) Adult buffalo or bison cows;
+
+(8) Adult caribou;
+
+(9) Adult dairy bulls;
+
+(10) Adult dairy cows;
+
+(11) Adult deer;
+
+(12) Adult elk;
+
+(13) Adult equine;
+
+(14) Adult goats, bucks;
+
+(15) Adult goats, nannies;
+
+(16) Adult llamas;
+
+(17) Adult sheep, ewes;
+
+(18) Adult sheep, rams;
+
+(19) Adult swine, boars or barrows, 151 to 450 pounds;
+
+(20) Adult swine, boars or barrows, 451 pounds or more;
+
+(21) Adult swine, sows or gilts, 151 to 450 pounds;
+
+(22) Adult swine, sows or gilts, 451 pounds or more;
+
+(23) Adult water buffalo bull;
+
+(24) Adult water buffalo cow;
+
+(25) Chickens, broilers, pullets (regular size), 4.26 to 6.25 pounds;
+
+(26) Chickens, chicks;
+
+(27) Chickens, layers;
+
+(28) Chickens, pullets or Cornish hens (small size), less than 4.26 pounds;
+
+(29) Chickens, roasters, 6.26 to 7.75 pounds;
+
+(30) Chickens, super roasters or parts, 7.76 pounds or more;
+
+(31) Ducks;
+
+(32) Ducks, ducklings;
+
+(33) Emus;
+
+(34) Geese, goose;
+
+(35) Geese, gosling;
+
+(36) Non-adult alpacas;
+
+(37) Non-adult beef cattle, less than 400 pounds;
+
+(38) Non-adult beef cattle, 400 to 799 pounds;
+
+(39) Non-adult beef cattle, 800 pounds or more;
+
+(40) Non-adult beefalo, less than 400 pounds;
+
+(41) Non-adult beefalo, 400 to 799 pounds;
+
+(42) Non-adult beefalo, 800 pounds or more;
+
+(43) Non-adult buffalo or bison, less than 400 pounds;
+
+(44) Non-adult buffalo or bison, 400 to 799 pounds;
+
+(45) Non-adult buffalo or bison, 800 pounds or more;
+
+(46) Non-adult caribou;
+
+(47) Non-adult dairy cattle, less than 400 pounds;
+
+(48) Non-adult dairy cattle, 400 to 799 pounds;
+
+(49) Non-adult dairy cattle, 800 pounds or more;
+
+(50) Non-adult deer;
+
+(51) Non-adult elk;
+
+(52) Non-adult equine;
+
+(53) Non-adult llamas;
+
+(54) Non-adult goats, slaughter or goats or kids;
+
+(55) Non-adult sheet, lambs;
+
+(56) Non-adult swine, suckling or nursery pigs, less than 50 pounds;
+
+(57) Non-adult swine, lightweight barrows or gilts, 50 to 100 pounds;
+
+(58) Non-adult water buffalo, less than 400 pounds;
+
+(59) Non-adult water buffalo, 400 to 799 pounds;
+
+(60) Non-adult water buffalo, 800 pounds or more;
+
+(61) Ostriches;
+
+(62) Turkeys, poults; and
+
+(63) Turkeys, toms, fryers, and roasters.
+
+(e) The following categories of animals are eligible livestock for contract growers and calculations of eligibility for payments will be calculated separately for each producer with respect to each category:
+
+(1) Adult swine, boars or barrows, 151 to 450 pounds;
+
+(2) Adult swine, boars or barrows, 451 pounds or more;
+
+(3) Adult swine, sows or gilts, 151 to 450 pounds;
+
+(4) Adult swine, sows or gilts, 451 pounds or more;
+
+(5) Chickens, broilers, pullets (regular size), 4.26 to 6.25 pounds;
+
+(6) Chickens, chicks;
+
+(7) Chickens, layers;
+
+(8) Chickens, pullets or Cornish hens (small size), less than 4.26 pounds;
+
+(9) Chickens, roasters, 6.26 to 7.75 pounds;
+
+(10) Chickens, super roasters or parts, 7.76 pounds or more;
+
+(11) Ducks;
+
+(12) Ducks, ducklings;
+
+(13) Geese;
+
+(14) Non-adult swine, suckling or nursery pigs, less than 50 pounds;
+
+(15) Non-adult swine, lightweight barrows or gilts, 50 to 150 pounds;
+
+(16) Turkeys, poults; and
+
+(17) Turkeys, toms, fryers, and roasters.
+
+(f) To be eligible for unborn death loss compensation in accordance with § 1416.306(h), eligible livestock includes adult female livestock that were gestating on the date of death and that died as a direct result of an eligible loss condition in the program year for which benefits are sought. Eligible adult livestock categories for unborn death losses include alpacas, beef cattle, beefalo, buffalo, bison, caribou, dairy cattle, deer, elk, equine, goats, llamas, sheep, swine, water buffalo, and any other livestock determined eligible by CCC, excluding poultry. Losses must have been incurred on or after January 1, 2024, and calculations of eligibility for payments will be determined separately for each producer.
+
+(g) Ineligible livestock for the purpose of generating payments under this subpart include those livestock that died due to disease that is not an eligible disease; eligible livestock suffering injury due to disease or eligible disease which are sold for reduced price; and any eligible livestock that died or were injured by anything other than an eligible loss condition. Ineligible livestock for unborn death loss compensation include injured livestock that were sold due to an eligible livestock condition and livestock that are stillborn or aborted from adult females that did not die as a result of an eligible loss condition.
+
+[83 FR 49469, Oct. 2, 2018, as amended at 85 FR 10966, Feb. 26, 2020; 88 FR 1891, Jan. 11, 2023; 91 FR 42327, July 9, 2026]
+
+§ 1416.305 Application process.
+
+(a) A notice of loss must be accompanied by documentation acceptable to FSA substantiating that the claimed eligible loss condition occurred and was responsible for eligible losses. For any notice of loss being submitted for disease exacerbated by eligible adverse weather, the notice of loss must be accompanied by a certification referenced in paragraph (g) of this section.
+
+(b) A livestock owner or contract grower that suffered livestock losses must:
+
+(1) Provide a notice of loss, by livestock unit, to FSA by March 1 after the end of the calendar year in which the eligible loss occurred.
+
+(2) Submit the notice of loss required in this section to the FSA county office responsible for servicing the physical location county where the loss occurred.
+
+(c) In addition to the notice of loss required in paragraph (b) of this section, a participant must also submit a completed application for payment, by livestock unit, to FSA no later than March 1 after the end of the calendar year in which the eligible loss condition occurred.
+
+(d) A participant must provide other supporting documents required for determining eligibility as an applicant at the time the participant submits the completed application for payment. Supporting documents must include:
+
+(1) Evidence of loss,
+
+(2) Current physical location of livestock in inventory,
+
+(3) Physical location of claimed livestock at the time of death or injury,
+
+(4) Documentation acceptable to FSA showing inventory numbers for the livestock unit and other inventory information necessary to establish actual mortality as required by FSA,
+
+(5) A farm operating plan, if a current farm operating plan is not already on file in the FSA county office,
+
+(6) Documentation of the adverse weather event from an official weather reporting data source that is determined by FSA to be reputable and available in the public domain such as, but not limited to, NOAA, from which State and County FSA Offices can validate the adverse weather event occurred,
+
+(7) Documentation to substantiate eligible attacks obtained from a source such as, but not limited to, the following:
+
+(i) APHIS,
+
+(ii) State level Department of Natural Resources, or
+
+(iii) Other sources or documentation, such as third parties, as determined by the Deputy Administrator, and
+
+(8) If livestock are injured and sold at a reduced price;
+
+(i) Documentation of injured livestock's gross price, and
+
+(ii) Documentation to substantiate injury of livestock due to an eligible adverse weather event or eligible attack.
+
+(9) The livestock producer may supplement additional documentation to support the eligible loss condition, as determined by the Deputy Administrator.
+
+(10) For unborn death losses, additional information requested may include, but is not limited to verification of breeding records, exposure dates, herd health or veterinary documentation, inventory logs, or other supporting operational records consistent with the producer's normal business practices.
+
+(11) In addition, contract growers must provide a copy of the grower contract.
+
+(e) For death losses or losses resulting from injured livestock sold at a reduced price, the participant must provide adequate proof that the death or injury of the eligible livestock occurred as a direct result of an eligible loss condition, as opposed to any other possible or potential cause of loss. The quantity and kind of livestock that died as a direct result of the eligible loss condition may be documented by: Purchase records; veterinarian records; bank or other loan papers; rendering-plant truck receipts; Federal Emergency Management Agency records; National Guard records; written contracts; production records; Internal Revenue Service records; property tax records; private insurance documents; and other similar verifiable documents as determined by FSA. The quantity and kind of livestock that died or has been injured and sold at a reduced price as a direct result of an eligible attack must be substantiated by documentation of confirmed kills observed by an acceptable source as specified in paragraphs (d)(7) and (g) of this section.
+
+(f) For losses resulting from an eligible adverse weather event or eligible disease, if adequate verifiable proof of death or injury documentation is not available, the participant may provide reliable records as proof of death or injury. Reliable records may include contemporaneous producer records, dairy herd improvement records, brand inspection records, vaccination records, dated pictures, and other similar reliable documents as determined by FSA.
+
+(g) For livestock death losses due to an eligible disease, a licensed veterinarian's certification of livestock deaths may be accepted as proof of death, if the livestock are not owned by the licensed veterinarian and reliable beginning inventory data is available, only if the veterinarian provides a written statement containing all of the following:
+
+(1) Veterinarian's personal observation of the animals and knowledge of how the deaths of the livestock were because of disease caused or exacerbated by an eligible adverse weather event;
+
+(2) Livestock deaths were not otherwise avoidable and preventable using good animal husbandry and management protocols and practices by the livestock producer; and
+
+(3) Other information required by FSA to determine the certification acceptable.
+
+(4) Information furnished by the participant and the veterinarian will be used to determine eligibility for program benefits. Furnishing the information is voluntary; however, without all required information program benefits will not be approved or provided
+
+(h) Certification of livestock deaths or injuries by third parties may be accepted if both of the following conditions are met:
+
+(1) The livestock owner or livestock contract grower, as applicable, certifies in writing:
+
+(i) That there is no other documentation of death available;
+
+(ii) The number of livestock, by category identified in this subpart and by FSA were in inventory at the time the eligible adverse weather event occurred;
+
+(iii) The physical location of the livestock, by category, in inventory when the deaths occurred; and
+
+(iv) Other details required for FSA to determine the certification acceptable; and
+
+(2) The third party is an independent source who is not affiliated with the farming operation such as a hired hand and is not a “family member,” defined as a person whom a member in the farming operation or their spouse is related as lineal ancestor, lineal descendant, sibling, spouse, and provides their telephone number, address, and a written statement containing specific details about:
+
+(i) Their knowledge of the livestock deaths;
+
+(ii) Their affiliation with the livestock owner;
+
+(iii) The accuracy of the deaths claimed by the livestock owner or contract grower including, but not limited to, the number and kind or type of the participant's livestock that died because of the eligible adverse weather event; and
+
+(iv) Other information required by FSA to determine the certification acceptable.
+
+(v) Data furnished by the participant and the third party will be used to determine eligibility for program benefits. Furnishing the data is voluntary; however, without all required data program benefits will not be approved or provided.
+
+(i) Unweaned livestock operations may provide proof of death by using the LBIH.
+
+(1) Livestock inventory reports by livestock unit must be provided to the FSA local county office by March 1 after the end of the calendar year of the eligible adverse weather event. The STC may approve a waiver of the reporting deadline if a participant has not previously received benefits under this method.
+
+(i) Livestock inventory reports must provide an accurate account of livestock beginning inventory for the livestock type or kind and must be supported by written records such as but not limited to: Docking records, sales receipts, shearing records, shipping records, bank records, veterinarian records, IRS records, or other records approved by COC. For purposes of determining beginning livestock inventory, livestock inventory reports may require adjustment by COC, not to exceed normal mortality, for when loss occurs at different points during the growing season (for example, inventories from docking may need little to no adjustment, but sales records at the end of the growing season may require an adjustment to account for a full years of normal mortality).
+
+(ii) The unweaned livestock operation must certify to the accuracy of the information.
+
+(2) The unweaned livestock operation is solely responsible for the timely submission and certification of accurate, complete livestock beginning inventory to the county FSA office. Livestock beginning inventory records must be provided for all livestock type or kind.
+
+(i) Records may be requested by the applicable COC or STC, on behalf of FSA. The unweaned livestock operation must provide such records upon request.
+
+(ii) The COC will explain the procedure for the LBIH to unweaned livestock operation. COC will determine the LBIH in accordance with § 1416.305(g).
+
+(iii) COC will determine if the livestock beginning inventory records are acceptable and calculate the approved livestock beginning inventory history.
+
+(3) The LBIH is calculated utilizing a minimum of 4 years of data and will be updated each subsequent inventory year. The transitional LBIH may contain a maximum of the 4 most recent calendar years and may include actual and transitional livestock beginning inventories. Transitional LBIH will only be used when less than 4 years of actual records are available. Appropriate adjustments to LBIH may be made to account for variations in ewe, cow and nanny stocking levels during the period covered by the history.
+
+(4) The unweaned livestock operation is required to provide beginning livestock inventory records to determine the LBIH, if livestock beginning inventory records are available.
+
+(i) If no acceptable livestock beginning inventory records are available for calves, lambs, or kids, calculate the 4 transitional livestock beginning inventory histories by multiplying the approved birthing rate or drop rate percentage for the unweaned livestock operation times the applicable cow, ewe, or nanny LBIH times 65 percent.
+
+(ii) If acceptable livestock beginning inventory records are provided for only one of the most recent 5 calendar years, calculate the 3 transitional livestock beginning inventory histories by multiplying the approved birthing rate or drop rate percentage for the unweaned livestock operation times the applicable cow, ewe, or nanny LBIH times 80 percent.
+
+(iii) If acceptable livestock beginning inventory records are provided for only 2 of the most recent 5 calendar years, calculate the 2 transitional livestock beginning inventory histories by multiplying the approved birthing rate or drop rate percentage for the unweaned livestock operation times the applicable cow, ewe, or nanny LBIH times 90 percent.
+
+(iv) If acceptable livestock beginning inventory records are provided for only 3 of the most recent 5 calendar years, calculate the one transitional livestock beginning inventory histories by multiplying the approved birthing rate or drop rate percentage for the unweaned livestock operation times the applicable cow, ewe, or nanny LBIH times 100 percent.
+
+(v) If acceptable livestock beginning inventory history records containing information for 4 or more of the most recent calendar years are provided, calculate the livestock beginning inventory history by taking a simple average of the actual livestock beginning inventory histories.
+
+(j) When an eligible owner claims eligible livestock were injured by an eligible loss condition and were sold for a reduced price, the owner must provide verifiable evidence of the gross sale price of the livestock. The injured livestock must be sold through an independent third party (sale barn, slaughter facility, or rendering facility). Only verifiable proof of sale with price is acceptable. The gross sale price of the livestock is the amount received for the injured livestock before any reductions, such as sale yard fees. The owner must provide verifiable evidence of livestock sold at a reduced price. Documents that may satisfy this requirement include but are not limited to, any or a combination of the following: Sales receipt from a livestock auction, sale barn, or other similar livestock sales facility; bona-fide commercial sales receipts; private insurance documents; and processing plant receipts.
+
+(k) For program year 2026 and subsequent years, eligible livestock producers may provide verifiable sales documentation to support and request an alternative market price for their eligible livestock, by kind, type, and weight range as applicable, that may be used for the payment calculation in § 1416.306. Acceptable alternative price market documentation must be a verifiable sales transaction in the name of the producer applying for benefits. The documentation must include the name and contact information of the buyer; the producer applying for benefits as the seller; the number of livestock sold and the market price received per head by livestock kind, type, and weight class, as applicable; and the location and date of the sale, which must be within the same program year of the eligible loss event.
+
+(l) For unborn livestock death losses:
+
+(1) For program years 2024 and 2025, eligible producers with an approved application that contains eligible livestock death losses for the livestock categories of alpacas, caribou, deer, elk, equine, llamas or swine may revise their 2024 or 2025 application for payment by a deadline established and announced by CCC to include a certification of the number of eligible livestock for which benefits were requested and approved that were female for purposes of determining eligibility for an additional payment for unborn death losses as calculated in accordance with § 1416.306(i);
+
+(2) For program years 2024 and 2025, producers with an approved application that contains eligible livestock death losses for the livestock categories of adult beef, beefalo, bison, buffalo, dairy, or water buffalo cows, nanny goats, and ewes (sheep) are not required to take additional action for purposes of determining eligibility for an additional payment for unborn death losses as calculated in accordance with § 1416.306(i); and
+
+(3) For program year 2026 and subsequent years, eligible producers with eligible livestock death losses must certify on the application for payment, the number of adult female livestock that were bred and gestating on the date of death for purposes of determining eligibility for an additional payment for unborn death losses as calculated in accordance with § 1416.306(i).
+
+(i) CCC may request additional supporting documentation from eligible livestock producers or conduct spot checks to confirm that livestock were gestating at the time of the eligible loss of the adult female. Additional information requested includes, but is not limited to, verification of breeding records, exposure dates, herd health or veterinary documentation, inventory logs, and other supporting operational records consistent with the producer's normal business practices. A spot check or request for additional information is appropriate when CCC identifies any of the following:
+
+(A) Missing, inconsistent, or incomplete breeding or inventory records;
+
+(B) Reported death losses that appear excessive or outside normal expectations for the operation type, size, or production practices;
+
+(C) Conflicting information between the application, supporting documentation, or prior-year program participation;
+
+(D) Patterns of repeated corrections, revisions, or documentation gaps by the producer; or
+
+(E) Situations where CCC has reason to question whether livestock were bred at the time of loss based on reported exposure dates, breeding windows, or herd management practices.
+
+(ii) If discrepancies are identified, further documentation may be requested and adjustments may be made to approved death loss numbers.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49470, Oct. 2, 2018; 85 FR 10967, Feb. 26, 2020; 88 FR 1891, Jan. 11, 2023; 90 FR 5497, Jan. 17, 2025; 91 FR 42328, July 9, 2026]
+
+§ 1416.306 Payment calculation.
+
+(a) Under this subpart, separate payment rates for eligible livestock owners and eligible livestock contract growers are specified in paragraphs (c) through (f) of this section, respectively. Payments for death losses are calculated by multiplying the national payment rate for each livestock category by the number of eligible livestock in excess of normal mortality in each category that died as a result of an eligible loss condition. Normal mortality for each livestock category will be determined by CCC on a State-by-State basis using local data sources including, but not limited to, State livestock organizations and the Cooperative Extension Service for the State. Adjustments will be applied as specified in paragraph (g) of this section.
+
+(b) The market values of livestock, by kind, type, and weight class, as applicable, for the establishment of payment rates used in the payment calculation, are determined using the higher of:
+
+(1) The national average market value by livestock kind, type, and weight class, at the beginning of the program year based on the prior-year market data as determined by CCC;
+
+(2) The national average market value by livestock kind, type, and weight class, at the end of the program year based on the current-year market data, as determined by CCC;
+
+(3) A producer's verifiable market value for livestock of the same kind, type, and weight class, based on the market value closest to the date of loss or date of event that caused the injury, specific to the producer's operation and program year, established in accordance with § 1416.305(k), not to exceed 145 percent of the higher of the national average market values established in accordance with paragraphs (b)(1) and (2) of this section; or
+
+(4) Another price approved by CCC based on data showing market value the day before the livestock loss or the day before the date of the event that caused the loss.
+
+(c) For losses due to an eligible adverse weather event or eligible disease, the LIP payment rate for eligible livestock owners is based on 75 percent of the determined market value of the applicable livestock kind, type, and weight class in accordance with paragraph (b) of this section.
+
+(d) For losses due to an eligible attack, the LIP payment rate for eligible livestock owners is based on 100 percent of the determined market value of the applicable livestock kind, type, and weight class in accordance with paragraph (b) of this section.
+
+(e) For losses due to an eligible adverse weather event or eligible disease, the LIP national payment rate for eligible livestock contract growers is based on 75 percent of the average income loss sustained by the contract grower with respect to the dead livestock. The rate that applies is based on the type, class, and weight of the animal at the time of the eligible loss condition and death.
+
+(f) For losses due to an eligible attack, the LIP payment rate for eligible livestock contract growers is based on 100 percent of the average income loss sustained by the contract grower based on the applicable livestock kind, type, and weight of the animal at the time of the eligible loss condition and death.
+
+(g) The LIP payment calculated for eligible livestock contract growers will be reduced by the amount the participant received from the party who contracted with the producer to raise the livestock for the loss of income from the dead livestock.
+
+(h) Payments to livestock owners for losses due to sale of livestock at a reduced price because of injury from an eligible loss condition are calculated by multiplying the payment rate for each livestock category by the number of eligible livestock sold at a reduced price as a result of an eligible loss condition, minus the gross amount the eligible livestock owner received for the livestock up to the applicable established payment rate. In the event livestock sells for a reduced price that is in excess of the established payment rate, the payment rate will be subtracted, resulting in no payment for that livestock.
+
+(i) Payments to livestock owners and contract growers for eligible unborn death losses are calculated as follows:
+
+(1) For program year 2024 and 2025, multiplying the number of eligible adult female livestock death losses, including losses due to eligible attacks, as provided in § 1416.305(l)(1), excluding swine, after normal mortality, by 40 percent of the payment rate established in accordance with paragraph (c) or (e) of this section for the livestock category, multiplied by the applicable birthing factor in paragraph (j) of this section;
+
+(2) For program year 2024 and 2025, multiplying the number of eligible adult female livestock death losses, including losses due to eligible attacks, as provided in § 1416.305(l)(2), including swine, after normal mortality, by 85 percent of the payment rate established in accordance with paragraph (c) or (e) of this section for the lowest weight class of the same kind and type of livestock, multiplied by the applicable birthing factor in paragraph (j) of this section; and
+
+(3) For program year 2026 and subsequent years, multiplying the number of eligible adult female livestock death losses that were bred and gestating at the time of death or injury, after normal mortality, by 85 percent of the payment rate established in accordance with paragraphs (c) through (f) of this section for the lowest weight class of the same kind and type of livestock multiplied by the applicable birthing factor in paragraph (j) of this section.
+
+(j) The birthing factor for unborn livestock loss payment calculation is:
+
+(1) One for cattle (beef and dairy), bison, buffalo, beefalo, water buffalo, alpacas, caribou, horses, llamas, and elk;
+
+(2) Two for deer, goats, and sheep;
+
+(3) Twelve for swine; and
+
+(4) The factor established by CCC for any other livestock determined eligible by CCC.
+
+[91 FR 42329, July 9, 2026]
+
+Subpart E—Tree Assistance Program
+
+§ 1416.400 Applicability.
+
+(a) This subpart establishes the terms and conditions under which the Tree Assistance Program (TAP) will be administered under Title I of the Agricultural Act of 2014 (Pub. L. 113-79, the 2014 Farm Bill), as amended.
+
+(b) Eligible orchardists and nursery tree growers will be compensated as specified in § 1416.406 for eligible tree, bush, and vine losses in excess of normal mortality, or, where applicable, damage in excess of normal mortality and normal damage, that occurred in the calendar year (or loss period in the case of plant disease) for which benefits are being requested and as a direct result of a natural disaster.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49471, Oct. 2, 2018; 84 FR 48537, Sept. 13, 2019; 85 FR 10968, Feb. 26, 2020; 91 FR 42330, July 9, 2026]
+
+§ 1416.401 Administration.
+
+The program will be administered as specified in § 1416.2 and in this subpart.
+
+§ 1416.402 Definitions.
+
+The following definitions apply to this subpart. The definitions in parts 718 of this title and 1400 of this chapter also apply, except where they conflict with the definitions in this section.
+
+Bush means, a low, branching, woody plant, from which at maturity of the bush, an annual fruit or vegetable crop is produced for commercial purposes, such as a blueberry bush. The definition does not cover plants that produce a bush after the normal crop is harvested such as asparagus.
+
+Commercial use means used in the operation of a business activity engaged in as a means of livelihood for profit by the eligible producer.
+
+Commercially viable means an eligible tree, bush, or vine, though damaged, that can rejuvenate and return to an acceptable level of commercial production at some time with rehabilitation and without replanting. A commercially viable tree, bush, or vine, regardless of the extent of damage or years of reduced production, is always excluded and never included as part of mortality under § 1416.403.
+
+County office means the FSA or U.S. Department of Agriculture (USDA) Service Center that is responsible for servicing the farm on which the trees, bushes, or vines are located.
+
+Cutting means a piece of a vine which was planted in the ground to propagate a new vine for the commercial production of fruit, such as grapes, kiwi fruit, passion fruit, or similar fruit.
+
+Eligible nursery tree grower means a person or legal entity that produces nursery, ornamental, fruit, nut, or Christmas trees for commercial sale.
+
+Eligible orchardist means a person or legal entity that produces annual crops from trees, bushes, or vines for commercial purposes.
+
+FSA means the Farm Service Agency.
+
+Lost means, with respect to the extent of damage to a tree or other plant, that the plant is destroyed or the damage is such that it would, as determined by FSA, be more cost effective to replace the tree or other plant than to leave it in its deteriorated, low-producing state.
+
+Natural disaster means plant disease, insect infestation, drought, fire, freeze, flood, earthquake, lightning, or other natural occurrence. Each of these types of disasters must be extreme, abnormal, and damaging as well as of significant magnitude or severity, as determined by the Deputy Administrator.
+
+Normal damage means the percentage, as established for the area by the FSA State Committee, of trees, bushes, or vines in the stand that would normally be damaged during a calendar year for a producer.
+
+Normal mortality means percentage, as established for the area by the FSA State Committee, of expected lost trees, bushes, or vines in the stand that normally occurs during a calendar year for a producer. This term refers to the number of whole trees, bushes, or vines that are destroyed or damaged beyond rehabilitation. Mortality does not include partial damage such as lost tree limbs.
+
+Seedling means an immature tree, bush, or vine that was planted in the ground or other growing medium to grow a new tree, bush, or vine for commercial purposes.
+
+Stand means a contiguous acreage of the same type of trees (including Christmas trees, ornamental trees, nursery trees, and potted trees), bushes (including shrubs), or vines.
+
+Tree means a tall, woody plant having comparatively great height, and a single trunk from which an annual crop is produced for commercial purposes, such as a maple tree for syrup, papaya tree, or orchard tree. Trees used for pulp or timber are not considered eligible trees under this subpart.
+
+Vine means a perennial plant grown under normal conditions from which an annual fruit crop is produced for commercial market for human consumption, such as grape, kiwi, or passion fruit, and that has a flexible stem supported by climbing, twining, or creeping along a surface. Perennials that are normally propagated as annuals such as tomato plants, biennials such as the plants that produce strawberries, and annuals such as pumpkins, squash, cucumbers, watermelon, and other melons, are excluded from the term vine in this subpart.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49471, Oct. 2, 2018; 85 FR 10968, Feb. 26, 2020]
+
+§ 1416.403 Eligible losses.
+
+(a) To qualify for any assistance under this subpart, except for assistance under § 1416.400(c), the eligible orchardist or nursery tree grower must first have suffered a mortality loss on a stand in excess of normal mortality as a result of a natural disaster as determined by CCC.
+
+(b) The qualifying loss of a stand of trees, bushes, or vines specified in paragraph (a) of this section will be determined based on:
+
+(1) Each eligible disaster event, except for losses due to plant disease;
+
+(2) For plant disease, the time period, as determined by the Deputy Administrator, for which the stand is infected.
+
+(c) Mortality or damage loss not eligible for inclusion as a qualifying loss under this section or for payment under § 1416.406 includes those losses where:
+
+(1) The loss or damage could have been prevented through reasonable and available measures; and
+
+(2) The trees, bushes, or vines, in the absence of a natural disaster, would normally have required rehabilitation or replanting within the 12-month period following the loss.
+
+(d) The damage or loss must be visible and obvious to the county committee representative. If the damage is no longer visible, the county committee may accept other evidence of the loss as it determines is reasonable.
+
+(e) The county committee may require information from a qualified expert, as determined by the county committee, to determine extent of loss in the case of plant disease or insect infestation.
+
+(f) The Deputy Administrator will determine the types of trees, bushes, and vines that are eligible.
+
+(g) A stand that did not suffer a qualifying mortality loss as specified in paragraph (a) of this section is not eligible for payment. The qualifying mortality loss will be determined based on the eligible trees, bushes, or vines that reached mortality, which means that the tree, bush, or vine died, above and below ground, as a result of an eligible natural disaster event. If an eligible tree, bush, or vine is damaged to such an extent that it is not commercially viable, now or at any time in the future, the tree, bush, or vine can be considered dead in determining if the requisite qualifying mortality loss threshold in paragraph (a) of this section is reached.
+
+[83 FR 49471, Oct. 2, 2018, as amended at 85 FR 10968, Feb. 26, 2020; 91 FR 42330, July 9, 2026]
+
+§ 1416.404 Eligible orchardists and nursery tree growers.
+
+(a) Once the requisite qualifying eligible mortality loss is determined according to § 1416.403, to be eligible for TAP payments, the eligible orchardist or nursery tree grower must:
+
+(1) Have planted, or be considered to have planted (by purchase prior to the loss of existing stock planted for commercial purposes) trees, bushes, or vines for commercial purposes, or have a production history, for commercial purposes, of planted or existing trees, bushes, or vines;
+
+(2) Have suffered eligible losses of eligible trees, bushes, or vines, as a result of a natural disaster or related condition;
+
+(3) Have continuously owned the stand from the time of the disaster until the time that the TAP application is submitted.
+
+(b) A new owner of an orchard or nursery who does not meet the requirements of paragraph (a) of this section may receive TAP payments approved for the previous owner of the orchard or nursery and not paid to the previous owner, if the previous owner of the orchard or nursery agrees to the succession in writing and if the new owner:
+
+(1) Acquires ownership of trees, bushes, or vines for which benefits have been approved;
+
+(2) Agrees to complete all approved practices that the original owner has not completed; and
+
+(3) Otherwise meets and assumes full responsibility for all provisions of this part, including refund of payments made to the previous owner, if applicable.
+
+(c) A producer seeking payment must not be ineligible under the restrictions applicable to citizenship and foreign corporations contained in § 1416.3(b) and must meet all other requirements of subpart A of this part.
+
+(d) Federal, State, and local governments and agencies and political subdivisions thereof are not eligible for payment under this subpart.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49472, Oct. 2, 2018; 85 FR 10968, Feb. 26, 2020]
+
+§ 1416.405 Application.
+
+(a) To apply for TAP, a producer that suffered eligible tree, bush, or vine losses must provide an application for payment and supporting documentation to FSA or within 90 calendar days of the disaster event or date when the loss of trees, bushes, or vines is apparent to the producer.
+
+(b) The producer must submit the application for payment within the time specified in paragraph (a) of this section to the FSA administrative county office that maintains the producer's farm records for the agricultural operation.
+
+(c) A complete application includes all of the following:
+
+(1) A completed application form provided by FSA;
+
+(2) An acreage report for the farming operation as specified in part 718, subpart B, of this title;
+
+(3) Subject to verification and a loss amount determined appropriate by the county committee, a written estimate of the number of trees, bushes, or vines lost or damaged that is certified by the producer or a qualified expert, including the number of acres on which the loss occurred;
+
+(4) Sufficient evidence of the loss to allow the county committee to calculate whether an eligible loss occurred; and
+
+(5) A farm operating plan, if a current farm operating plan is not already on file in the FSA county office.
+
+(d) Before requests for payment will be approved, the county committee:
+
+(1) Must make an eligibility determination based on a complete application for assistance;
+
+(2) Must verify actual qualifying losses and the number of acres involved by on-site visual inspection of the land and the trees, bushes, or vines;
+
+(3) May request additional information and may consider all relevant information in making its determination; and
+
+(4) Must verify actual costs to complete the practices, as documented by the producer.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49472, Oct. 2, 2018; 85 FR 10968, Feb. 26, 2020]
+
+§ 1416.406 Payment calculations.
+
+(a) Once the loss threshold in § 1416.403(a) is satisfied, payment to an eligible orchardist or nursery tree grower for the cost of replanting or rehabilitating trees, bushes, or vines damaged or lost due to a natural disaster, in excess of normal damage or normal mortality (, will be calculated as follows:
+
+(1) For the cost of planting seedlings or cuttings, to replace lost trees, bushes, or vines, the lesser of:
+
+(i) 65 percent of the actual cost of the practice for eligible producers, or 75 percent of the actual cost of the practice for an eligible producer who is a beginning or veteran farmer or rancher, or
+
+(ii) The amount calculated using rates established by the Deputy Administrator for the practice.
+
+(2) For the cost of pruning, removal, and other costs incurred for salvaging damaged trees, bushes, or vines, or in the case of mortality, to prepare the land to replant trees, bushes, or vines, the lesser of:
+
+(i) 65 percent of the actual cost of the practice for eligible producers, or 75 percent of the actual cost of the practice for an eligible producer who is a beginning or veteran farmer or rancher, or
+
+(ii) The amount calculated using rates established by the Deputy Administrator for the practice.
+
+(b) An orchardist or nursery tree grower that did not plant the trees, bushes, or vines, but has a production history for commercial purposes on planted or existing trees and lost the trees, bushes, or vines as a result of a natural disaster, in excess of normal mortality, will be eligible for the salvage, pruning, and land preparation payment calculation as specified in paragraph (a)(2) of this section. To be eligible for the replanting payment calculation as specified in paragraph (a)(1) of this section, the orchardist or nursery grower who did not plant the stock must be a new owner who meets all of the requirements of § 1416.404(b) or be considered the owner of the trees under provisions appearing elsewhere in this subpart.
+
+(c) Eligible costs for payment calculation include costs for:
+
+(1) Seedlings or cuttings, for tree, bush, or vine replanting;
+
+(2) Site preparation and debris handling within normal horticultural practices for the type of stand being re-established, and necessary to ensure successful plant survival;
+
+(3) Pruning, removal, and other costs incurred to salvage damaged trees, bushes, or vines, or, in the case of tree mortality, to prepare the land to replant trees, bushes, or vines;
+
+(4) Chemicals and nutrients necessary for successful establishment;
+
+(5) Labor to plant seedlings or cuttings as determined reasonable by the county committee; and
+
+(6) Labor used to transplant existing seedlings established through natural regeneration into a productive tree stand.
+
+(d) The following costs are not eligible:
+
+(1) Costs for fencing, irrigation, irrigation equipment, protection of seedlings from wildlife, general improvements, re-establishing structures, and windscreens.
+
+(2) Any other costs not listed in paragraphs (c)(1) through (6) of this section, unless specifically determined eligible by the Deputy Administrator.
+
+(3) Costs or expenses that the eligible orchardist or nursery tree grower did not actually bear or incur because someone or some other entity bore or incurred those costs or expenses, or the costs were reimbursed under another program. For example, if under any other program the expenses are paid for on behalf of the eligible orchardist or nursery tree grower, those expenses are not eligible for cost share under this subpart.
+
+(e) Producers must provide the county committee documentation of actual costs to complete the practices, such as receipts for labor costs, equipment rental, and purchases of seedlings or cuttings.
+
+(f) When lost stands are replanted, the types planted may be different from those originally planted. The alternative types will be eligible for payment if the new types have the same general end use, as determined and approved by the county committee. Payments for alternative types will be based on the lesser of rates established to plant the types actually lost or the cost to establish the alternative used. If the type of plantings, seedlings, or cuttings differs significantly from the types lost, the costs may not be approved for payment.
+
+(g) When lost stands are replanted, the types planted may be planted on the same farm in a different location than the lost stand. To be eligible for payment, site preparation costs for the new location must not exceed the cost to re-establish the original stand in the original location.
+
+(h) Eligible orchardists or nursery tree growers may elect not to replant the entire stand. If so, the county committee will calculate payment based on the number of qualifying trees, bushes, or vines actually replanted.
+
+(i) If a practice, such as site preparation, is needed to both replant and rehabilitate trees, bushes, or vines, the producer must document the expenses attributable to replanting versus rehabilitation. The county committee will determine whether the documentation of expenses detailing the amounts attributable to replanting versus rehabilitation is acceptable. In the event that the county committee determines the documentation does not include acceptable detail of cost allocation, the county committee will pro-rate payment based on physical inspection of the loss, damage, replanting, and rehabilitation.
+
+(j) The cumulative total quantity of acres planted to trees, bushes, or vines for which a producer may receive payment under this part for losses that cannot exceed 1,000 acres per program year.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 83 FR 49472, Oct. 2, 2018; 85 FR 10968, Feb. 26, 2020; 91 FR 42330, July 9, 2026]
+
+§ 1416.407 Obligations of a participant.
+
+(a) Eligible orchardists and nursery tree growers must execute all required documents and complete the TAP-funded practice within 24 months of application approval unless the participant requests an extension and CCC determines the delay is due to circumstances beyond the participant's control. Extensions are limited to a maximum of 36 months.
+
+(b) Eligible orchardist or nursery tree growers must allow representatives of FSA to visit the site for the purposes of certifying compliance with TAP requirements.
+
+(c) Producers who do not meet all applicable requirements and obligations will not be eligible for payment.
+
+[79 FR 21097, Apr. 14, 2014, as amended at 91 FR 42330, July 9, 2026]
+
+eCFR Content
+
+Pages
+
+- Home
+
+- Titles
+
+- Search
+
+- Recent Changes
+
+- Corrections
+
+Reader Aids
+
+-
+Using the eCFR Point-in-Time System
+
+-
+Understanding the eCFR
+
+-
+Government Policy and OFR Procedures
+
+-
+Developer Resources
+
+-
+Recent Site Updates
+
+Information
+
+- About This Site
+
+- Legal Status
+
+- Privacy
+
+- Accessibility
+
+- FOIA
+
+- No Fear Act
+
+- Continuity Information
+
+My eCFR
+
+-
+My Subscriptions
+
+-
+Sign In / Sign Up
