@@ -143,6 +143,7 @@ LINES = {
     "gdu-calculator": ("GDU calculator", "Growing degree units from your planting date, with real weather."),
     "grain-bin-calculator": ("Grain bins", "Bin size to bushels, moisture shrink and what the grain is worth."),
     "grain-emc": ("Grain EMC", "Drying, cooling or holding corn and wheat: which hours to run fans where you are."),
+    "grain-shrink": ("Grain shrink", "Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid."),
     "hail-map": ("Hail map", "Hail swaths and ground reports for any US address, by storm day."),
     "list-your-elevator": ("Elevators", "Post your elevator's cash bids free, where farmers already look."),
     "news": ("What moved", "Dated market events the moment they can be measured."),

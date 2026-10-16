@@ -1,0 +1,181 @@
+/* grain-shrink.js: the arithmetic behind /grain-shrink (2026-10-16).
+ *
+ * Pure functions, no DOM. The page (grain-shrink-ui.js) and the tests
+ * (test/grain-shrink.test.mjs) run this same file.
+ *
+ * WET GRAIN TO TOWN. The buyer pays for dry bushels at the base moisture.
+ *   Water shrink, % of wet weight = 100 x (Mw - Mb) / (100 - Mb)
+ *     (NCH-61, Hicks and Cloud, Univ. of Minnesota, Purdue's National Corn
+ *     Handbook; NDSU Hellevang 2009 gives the same formula.)
+ *   Buyers add handling loss two ways (NCH-61):
+ *     'water'  : water shrink plus a flat handling % (drying tables, 0.5%)
+ *     'factor' : a flat % per point removed (typically 1.2 to 1.5)
+ *   Dry bushels = wet bushels x (1 - total shrink / 100)
+ *   Drying charge, per WET bushel: cents per point removed, or a flat charge
+ *   from the elevator's own table for the band the moisture falls in.
+ *     (ISU ICM 2019: 4.8 cents a wet bushel a point, 1.4% a point.)
+ *
+ * DELIVERED TOO DRY. A bushel under base moisture is still weighed at the
+ * standard test weight, so the water you dried off was grain you could have
+ * sold. Bushels you would have had at base moisture:
+ *   bu at base = bu delivered x (100 - Ma) / (100 - Mb)
+ *   (dry matter is the same; Nebraska CropWatch, "Harvest soybeans at 13%")
+ */
+(function (root) {
+  'use strict';
+
+  /* Base moisture and test weight. Every one is editable on the page:
+     the elevator's scale ticket is the authority. */
+  var CROPS = {
+    corn:     { name: 'corn',     base: 15.5, tw: 56, method: 'factor', factor: 1.4, handling: 0.5, futures: 'corn' },
+    soybeans: { name: 'soybeans', base: 13,   tw: 60, method: 'water',  factor: 1.3, handling: 0.5, futures: 'soybeans' },
+    wheat:    { name: 'wheat',    base: 13.5, tw: 60, method: 'water',  factor: 1.3, handling: 0.5, futures: 'wheat' },
+    sorghum:  { name: 'sorghum',  base: 14,   tw: 56, method: 'water',  factor: 1.3, handling: 0.5, futures: null }
+  };
+
+  function num(v) { return typeof v === 'number' && isFinite(v); }
+  function r(v, d) { var p = Math.pow(10, d || 0); return Math.round(v * p) / p; }
+
+  /* % of wet weight lost to water alone, drying from m to base. */
+  function waterShrink(m, base) {
+    if (!num(m) || !num(base) || base >= 100 || m <= base) return 0;
+    return 100 * (m - base) / (100 - base);
+  }
+  /* Water shrink per point removed for a final moisture: 1.183 at 15.5. */
+  function waterFactor(base) { return 100 / (100 - base); }
+
+  /* Total pencil shrink, %. o = {method:'water'|'factor', handling, factor} */
+  function totalShrink(m, base, o) {
+    o = o || {};
+    var pts = m - base;
+    if (!num(pts) || pts <= 0) return 0;
+    if (o.method === 'factor') return pts * (num(o.factor) ? o.factor : 1.4);
+    return waterShrink(m, base) + (num(o.handling) ? o.handling : 0.5);
+  }
+  /* What the buyer's shrink assumes beyond water: NCH-61 Table 2. Iowa State
+     measured 0.22 to 1.71% on farms, 0.64 to 1.33% at commercial dryers. */
+  function handlingIn(m, base, o) {
+    var t = totalShrink(m, base, o);
+    return t ? t - waterShrink(m, base) : 0;
+  }
+
+  /* Drying charge in dollars per wet bushel.
+     d = {kind:'none'} | {kind:'point', cents} | {kind:'table', rows:[{upTo, cents}], over}
+     Table rows: moisture up to and including upTo pays a flat cents a wet
+     bushel; rows are read in order of upTo. Over the last row: 'over'
+     cents if given, else null (the page says it has no answer). */
+  function dryingPerBu(m, base, d) {
+    d = d || { kind: 'none' };
+    var pts = m - base;
+    if (!(pts > 0)) return 0;
+    if (d.kind === 'point') return num(d.cents) ? pts * d.cents / 100 : 0;
+    if (d.kind === 'table') {
+      var rows = (d.rows || []).filter(function (x) { return x && num(x.upTo) && num(x.cents); })
+        .slice().sort(function (a, b) { return a.upTo - b.upTo; });
+      for (var i = 0; i < rows.length; i++) if (m <= rows[i].upTo + 1e-9) return rows[i].cents / 100;
+      return num(d.over) ? d.over / 100 : null;
+    }
+    return 0;
+  }
+
+  /* One load of wet grain. o = {crop, m, base, lbs, tw, bid, method, factor, handling, drying}
+     Returns null on input that cannot be answered honestly. */
+  function wet(o) {
+    if (!o || !num(o.m) || !num(o.base) || !num(o.lbs) || !num(o.tw) || o.lbs <= 0 || o.tw <= 0) return null;
+    if (o.m <= 0 || o.m >= 60 || o.base <= 0 || o.base >= 40) return null;
+    var wetBu = o.lbs / o.tw, pts = Math.max(0, o.m - o.base);
+    var shrink = totalShrink(o.m, o.base, o);
+    if (shrink >= 100) return null;
+    var dryBu = wetBu * (1 - shrink / 100);
+    var water = waterShrink(o.m, o.base);
+    var dpb = dryingPerBu(o.m, o.base, o.drying);
+    var out = {
+      wetBu: wetBu, points: pts, shrinkPct: shrink, waterPct: water, handlingPct: shrink ? shrink - water : 0,
+      dryBu: dryBu, shrinkBu: wetBu - dryBu,
+      dryingPerBu: dpb, drying: dpb == null ? null : dpb * wetBu
+    };
+    if (num(o.bid) && o.bid > 0) {
+      out.gross = dryBu * o.bid;
+      out.net = out.drying == null ? null : out.gross - out.drying;
+      out.netPerWetBu = out.net == null ? null : out.net / wetBu;
+      /* What the moisture cost: the load paid as if every wet bushel were
+         dry, less what it actually brings. */
+      out.shrinkDollars = (wetBu - dryBu) * o.bid;
+      out.cost = out.net == null ? null : wetBu * o.bid - out.net;
+      out.costPerWetBu = out.cost == null ? null : out.cost / wetBu;
+    }
+    return out;
+  }
+
+  /* Grain delivered under base moisture. o = {m, base, bu (delivered, or lbs+tw), bid, yieldBu, acres} */
+  function overdry(o) {
+    if (!o || !num(o.m) || !num(o.base) || o.m <= 0 || o.base <= 0 || o.base >= 40) return null;
+    if (o.m >= o.base) return { under: 0, ratio: 1, extraPer1000: 0, lossPct: 0 };
+    var ratio = (100 - o.m) / (100 - o.base);
+    var out = {
+      under: o.base - o.m,
+      ratio: ratio,
+      extraPer1000: 1000 * (ratio - 1),
+      /* As Nebraska CropWatch states it: the share of the crop's base-moisture
+         bushels that never got paid for. 9% beans vs 13%: 4.4%. */
+      lossPct: 100 * (1 - 1 / ratio)
+    };
+    var bu = num(o.bu) ? o.bu : (num(o.lbs) && num(o.tw) && o.tw > 0 ? o.lbs / o.tw : null);
+    if (num(bu) && bu > 0) { out.bu = bu; out.atBase = bu * ratio; out.extraBu = bu * (ratio - 1); }
+    if (num(o.yieldBu) && o.yieldBu > 0) out.extraPerAcre = o.yieldBu * (ratio - 1);
+    if (num(o.bid) && o.bid > 0) {
+      if (out.extraBu != null) out.dollars = out.extraBu * o.bid;
+      out.dollarsPer1000 = out.extraPer1000 * o.bid;
+      if (out.extraPerAcre != null) out.dollarsPerAcre = out.extraPerAcre * o.bid;
+      if (out.dollarsPerAcre != null && num(o.acres) && o.acres > 0) out.dollarsFarm = out.dollarsPerAcre * o.acres;
+    }
+    return out;
+  }
+
+  /* A default bid when no ZIP: the futures contract most of the state's
+     elevators price against, plus that state's median basis
+     (data/basis-states.json). Null when either is missing; never guessed. */
+  var BASIS_KEYS = { corn: ['corn'], soybeans: ['soybeans'], wheat: ['wheat_hrw', 'wheat_srw', 'wheat_hrs'], sorghum: [] };
+  function quoteFor(prices, contract) {
+    var q = prices && prices.quotes;
+    if (!q || !contract) return null;
+    for (var k in q) {
+      if (!Object.prototype.hasOwnProperty.call(q, k)) continue;
+      var t = q[k] && q[k].ticker;
+      if (t && t.split('.')[0] === contract && num(q[k].close)) return { key: k, close: q[k].close / 100, date: q[k].close_date || null };
+    }
+    return null;
+  }
+  function defaultBid(prices, basis, st, crop) {
+    var s = basis && basis.states && basis.states[st];
+    if (!s || !s.crops) return null;
+    var keys = BASIS_KEYS[crop] || [], best = null;
+    keys.forEach(function (k) {
+      var c = s.crops[k];
+      if (c && num(c.median) && num(c.n) && (!best || c.n > best.c.n)) best = { k: k, c: c };
+    });
+    if (!best) return null;
+    var fq = quoteFor(prices, best.c.contract);
+    if (!fq) return null;
+    return {
+      bid: r(fq.close + best.c.median, 4), futures: fq.close, futuresDate: fq.date, contract: best.c.contract,
+      label: best.c.label || best.c.contract, basis: best.c.median, n: best.c.n, state: st, stateName: s.name || st,
+      cls: best.k, asOf: basis.generated || null
+    };
+  }
+
+  /* The nearest elevator's row for this crop from a bids-network snapshot. */
+  function nearestBid(snap, crop) {
+    var rows = (snap && snap.bids || []).filter(function (b) { return b.crop === crop && num(b.cashPrice) && b.cashPrice > 0; });
+    rows.sort(function (a, b) { return (a.distance || 0) - (b.distance || 0); });
+    return rows[0] || null;
+  }
+
+  var api = {
+    CROPS: CROPS, num: num, r: r, waterShrink: waterShrink, waterFactor: waterFactor, totalShrink: totalShrink,
+    handlingIn: handlingIn, dryingPerBu: dryingPerBu, wet: wet, overdry: overdry,
+    quoteFor: quoteFor, defaultBid: defaultBid, nearestBid: nearestBid
+  };
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.AgShrink = api;
+})(typeof self !== 'undefined' ? self : this);

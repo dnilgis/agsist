@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Grain shrink and moisture discount calculator | AGSIST</title>
+  <meta name="description" content="Grain shrink calculator: what wet corn, soybeans, wheat or sorghum nets at the elevator after shrink and drying charges, and what overdry beans give away.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/grain-shrink">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Grain shrink: what wet grain nets in town, and what dry grain gives away">
+  <meta property="og:description"  content="Grain shrink calculator: what wet corn, soybeans, wheat or sorghum nets at the elevator after shrink and drying charges, and what overdry beans give away.">
+  <meta property="og:url"          content="https://agsist.com/grain-shrink">
+  <meta property="og:image" content="https://agsist.com/img/og/grain-shrink.jpg?v=9408a87e">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Grain shrink: what wet grain nets in town, and what dry grain gives away. Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/grain-shrink.jpg?v=9408a87e">
+  <meta name="twitter:title"       content="Grain shrink: what wet grain nets in town, and what dry grain gives away">
+  <meta name="twitter:description" content="Grain shrink calculator: what wet corn, soybeans, wheat or sorghum nets at the elevator after shrink and drying charges, and what overdry beans give away.">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .gs{max-width:780px;margin:0 auto;padding:1rem 1rem 4rem}
+    .gs .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
+    .gs h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .gs .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .9rem}
+    .gs h2{font-size:1.2rem;line-height:1.3;margin:2.2rem 0 .7rem;color:var(--text)}
+    .gs p,.gs li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
+    .gs p{margin:0 0 1rem}
+    .gs a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
+    .gs b{color:var(--text)}
+    .gs-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .7rem}
+    .gs-seg button{flex:1 1 0;min-height:44px;padding:0 .4rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
+    .gs-seg button+button{border-left:1px solid var(--border)}
+    .gs-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+    .gs-in{display:flex;flex-wrap:wrap;gap:.6rem .9rem;margin:0 0 .6rem;align-items:flex-end}
+    .gs-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
+    .gs-in input,.gs-in select{width:6.2rem;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .gs-in select{width:auto;font-family:inherit;font-size:.92rem}
+    .gs-in input[aria-invalid="true"]{border-color:var(--red)}
+    .gs-in .wide{width:8rem}
+    .gs-quick{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .8rem}
+    .gs-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .gs-btn.go{background:var(--gold);color:#111;border-color:var(--gold)}
+    .gs-btn.sm{min-height:36px;padding:0 .7rem;font-size:.85rem;font-weight:600}
+    .gs-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.85rem 1rem .9rem;margin:0 0 .7rem}
+    .gs-answer.v-wet{border-left-color:var(--gold)} .gs-answer.v-dry{border-left-color:var(--red)} .gs-answer.v-ok{border-left-color:var(--green)}
+    .gs-v{display:block;font-size:clamp(1.35rem,6vw,1.9rem);font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .4rem}
+    .gs-answer p{margin:.3rem 0 0;font-size:.94rem;line-height:1.5;color:var(--text)}
+    .gs-answer p.fine{font-size:.82rem;color:var(--text-muted)}
+    .gs-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(8rem,1fr));gap:.5rem;margin:.6rem 0 0}
+    .gs-kv div{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem}
+    .gs-kv b{display:block;font-family:'JetBrains Mono',monospace;font-size:1.05rem}
+    .gs-kv span{font-size:.76rem;color:var(--text-muted)}
+    .gs-bid{background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:.6rem .8rem;margin:0 0 .8rem}
+    .gs-bid p{margin:.25rem 0;font-size:.86rem}
+    .gs-src{font-size:.84rem!important;color:var(--text-muted)!important}
+    .gs-status{font-size:.86rem;color:var(--text-muted);margin:.3rem 0 0}
+    .gs-status.err{color:var(--red)}
+    .gs-status:empty{display:none}
+    .gs details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
+    .gs details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
+    .gs-rad{display:flex;flex-direction:column;gap:.35rem;margin:.2rem 0 .7rem}
+    .gs-rad label{display:block;position:relative;padding:.35rem 0 .35rem 30px;font-size:.92rem;line-height:2.3;color:var(--text-dim)}
+    .gs-rad input[type=radio]{position:absolute;left:0;top:.75rem;width:20px;height:20px;margin:0}
+    .gs-rad input[type=number]{width:5rem;min-height:38px;padding:0 .45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem}
+    .gs-tiers{border-collapse:collapse;margin:.2rem 0 .5rem}
+    .gs-tiers th,.gs-tiers td{padding:.25rem .35rem;text-align:left;font-size:.82rem;color:var(--text-muted)}
+    .gs-tiers input{width:5rem;min-height:38px;padding:0 .45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem}
+    .gs-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .8rem}
+    .gs-t th,.gs-t td{padding:.42rem .55rem;border-bottom:1px solid var(--border);text-align:right}
+    .gs-t th:first-child{text-align:left;white-space:nowrap}
+    .gs-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .gs-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+    .gs-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .gs .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .gs-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+    .gs-faq details:last-child{border-bottom:1px solid var(--border)}
+    .gs-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+    .gs-faq details p{margin:.6rem 0 .2rem}
+    .gs .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 0}
+    .gs .srcs li{font-size:.86rem}
+    html:not([data-gs="wet"]) .w-only,html:not([data-gs="dry"]) .d-only{display:none!important}
+    @media(max-width:420px){.gs-seg button{font-size:.84rem}.gs-in input{width:5.4rem}}
+    @media print{#site-header,#site-footer,.skip,.breadcrumb,.gs-seg,.gs-quick,.gs-faq,.gs-rel,details.box:not([open]),.gs-btn{display:none!important}html,body,main{background:#fff!important;color:#000!important}.gs p,.gs li,.gs b,.gs-v{color:#000!important}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/grain-shrink#app","name":"Grain shrink and moisture discount calculator","url":"https://agsist.com/grain-shrink","description":"Grain shrink calculator: what wet corn, soybeans, wheat or sorghum nets at the elevator after shrink and drying charges, and what overdry beans give away.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-16","dateModified":"2026-10-16","inLanguage":"en-US"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Grain shrink","item":"https://agsist.com/grain-shrink"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How is grain shrink calculated?","acceptedAnswer":{"@type":"Answer","text":"Water shrink is 100 times the points removed, divided by 100 minus the base moisture. Drying corn from 25% to 15.5% takes out 9.5 points: 9.5 x 100 / 84.5 = 11.24% of the wet weight. Buyers then add handling loss, either a flat 0.5% on a drying table (11.74% total) or by using a flat factor per point, such as 1.3% a point (12.35% total). That is from NCH-61, the National Corn Handbook shrink publication."}},{"@type":"Question","name":"What is a normal shrink factor for corn?","acceptedAnswer":{"@type":"Answer","text":"NCH-61 says flat factors typically run 1.2 to 1.5% a point. Water alone is 1.183% a point when the base is 15.5%, so anything over that is handling loss. On 28% corn, a 1.25 factor assumes 0.83% handling loss and a 1.4 factor assumes 2.71%. Iowa State measured 0.22 to 1.71% on farms and 0.64 to 1.33% at commercial dryers; NCH-61 calls more than 1% a bigger loss than those surveys found."}},{"@type":"Question","name":"Should I sell wet corn or dry it myself?","acceptedAnswer":{"@type":"Answer","text":"Run both. Iowa State's 2019 example: 1,000 wet bushels of 20.5% corn at $3.50, with a 4.8 cent drying charge a point and a 1.4% factor from a 15% base, nets $2,967 sold wet. Dried on the farm at their figured 3 cents a point, with 1% handling loss and $40 of extra hauling, the same corn netted $3,033. Your elevator's numbers and your own drying cost decide it."}},{"@type":"Question","name":"How much do overdry soybeans cost?","acceptedAnswer":{"@type":"Answer","text":"Beans delivered under 13% are paid on the weight you haul, so the water you dried off is beans you did not sell. At 9%, 1,000 delivered bushels would have been 1046 bushels at 13%, 46 more. Nebraska CropWatch's example: 75 bushels an acre at 13% harvested at 9% sells 3.3 fewer bushels an acre, $33 an acre at $10 beans."}},{"@type":"Question","name":"What is the base moisture for corn, soybeans, wheat and sorghum?","acceptedAnswer":{"@type":"Answer","text":"Arkansas Extension's FSA1078 lists corn 15.5%, soybeans 13%, wheat 13.5% and grain sorghum 14%. Those are the defaults here. Your elevator's discount sheet is the one that counts, so change the base box to match it."}},{"@type":"Question","name":"Is a moisture discount the same as shrink?","acceptedAnswer":{"@type":"Answer","text":"Not quite. Some buyers knock a share off the price instead of the bushels: Iowa State's example takes 2% of the price per point over 15%, 11% for 20.5% corn. Paid on wet bushels, that comes to the same dollars as a flat 2% a point shrink with no drying charge, so enter it that way."}},{"@type":"Question","name":"Where does the bid come from?","acceptedAnswer":{"@type":"Answer","text":"Type your own, or enter your ZIP and the page uses the nearest elevator's posted bid for that grain from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest futures settle less that state's median basis, labeled as such. Sorghum has no state basis yet, so it needs your ZIP or your own bid."}}]}]}</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static crawlable header: loader.js replaceWith() swaps this for the live dropdown nav on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/header.html (the --check fails if they drift). -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="gs">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Grain shrink</nav>
+      <h1>Grain shrink: what wet grain nets in town, and what dry grain gives away</h1>
+      <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
+
+      <div class="gs-seg" role="group" aria-label="Grain"><button type="button" data-crop="corn" aria-pressed="true">Corn</button><button type="button" data-crop="soybeans" aria-pressed="false">Soybeans</button><button type="button" data-crop="wheat" aria-pressed="false">Wheat</button><button type="button" data-crop="sorghum" aria-pressed="false">Sorghum</button></div>
+
+      <div class="gs-in">
+        <label>Moisture at the scale, %<input id="gs-m" type="number" inputmode="decimal" step="0.1" min="5" max="40" value="20"></label>
+        <label>Elevator's base, %<input id="gs-base" type="number" inputmode="decimal" step="0.1" min="8" max="20" value="15.5"></label>
+        <label>Load, lb net<input id="gs-lbs" class="wide" type="number" inputmode="numeric" step="100" min="100" value="56000"></label>
+        <label>Bid, $/bu<input id="gs-bid" type="number" inputmode="decimal" step="0.01" min="0" placeholder="4.00"></label>
+      </div>
+      <div class="gs-quick"><button type="button" class="gs-btn sm" data-ex="wet">Example: wet corn, 20.5%</button><button type="button" class="gs-btn sm" data-ex="dry">Example: beans at 10%</button></div>
+
+      <div class="gs-bid">
+        <div class="gs-in" style="margin:0">
+          <label>Your ZIP, for the nearest posted bid<input id="gs-zip" class="wide" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="ZIP code" maxlength="5"></label>
+          <button type="button" id="gs-zipgo" class="gs-btn go">Get my bid</button>
+          <label>Or your state's median basis<select id="gs-state" aria-label="State for the default bid"><option value="">Pick a state</option></select></label>
+        </div>
+        <p id="gs-bidsrc" class="gs-src">Type your bid, or let the page fill one in.</p>
+        <p id="gs-status" class="gs-status" role="status"></p>
+      </div>
+
+      <div id="gs-answer" class="gs-answer" aria-live="polite" aria-atomic="true">
+        <h2 id="gs-verdict" class="gs-v" style="margin-top:0">Enter the moisture and the load.</h2>
+        <p id="gs-sub"></p>
+        <div id="gs-kv" class="gs-kv"></div>
+        <p id="gs-fine" class="fine"></p>
+        <noscript><p>The calculator needs JavaScript. The tables and the math below work without it.</p></noscript>
+      </div>
+
+      <details class="box w-only" id="gs-wetset" open>
+        <summary>How your elevator shrinks and charges</summary>
+        <div class="gs-rad" role="radiogroup" aria-label="Shrink method">
+          <label><input type="radio" name="gs-method" value="factor" checked> A flat <input id="gs-factor" type="number" inputmode="decimal" step="0.05" min="1" max="3" value="1.4" aria-label="Shrink, percent per point"> % per point over base</label>
+          <label><input type="radio" name="gs-method" value="water"> Water shrink plus <input id="gs-handling" type="number" inputmode="decimal" step="0.1" min="0" max="5" value="0.5" aria-label="Handling loss, percent"> % handling (a drying table)</label>
+        </div>
+        <div class="gs-rad" role="radiogroup" aria-label="Drying charge">
+          <label><input type="radio" name="gs-dry" value="none" checked> No drying charge, or I don't know it yet</label>
+          <label><input type="radio" name="gs-dry" value="point"> <input id="gs-cpp" type="number" inputmode="decimal" step="0.1" min="0" max="20" placeholder="4.5" aria-label="Drying charge, cents per point per wet bushel"> &cent; a wet bushel per point over base</label>
+          <label><input type="radio" name="gs-dry" value="table"> My elevator's table (flat cents a wet bushel by moisture)</label>
+        </div>
+        <table class="gs-tiers" id="gs-tiers" hidden>
+          <thead><tr><th scope="col">Up to moisture, %</th><th scope="col">&cent; a wet bushel</th></tr></thead>
+          <tbody>
+            <tr><td><input type="number" step="0.1" data-t="u" aria-label="Band 1 up to moisture"></td><td><input type="number" step="0.5" data-t="c" aria-label="Band 1 cents"></td></tr>
+            <tr><td><input type="number" step="0.1" data-t="u" aria-label="Band 2 up to moisture"></td><td><input type="number" step="0.5" data-t="c" aria-label="Band 2 cents"></td></tr>
+            <tr><td><input type="number" step="0.1" data-t="u" aria-label="Band 3 up to moisture"></td><td><input type="number" step="0.5" data-t="c" aria-label="Band 3 cents"></td></tr>
+            <tr><td><input type="number" step="0.1" data-t="u" aria-label="Band 4 up to moisture"></td><td><input type="number" step="0.5" data-t="c" aria-label="Band 4 cents"></td></tr>
+            <tr><td><input type="number" step="0.1" data-t="u" aria-label="Band 5 up to moisture"></td><td><input type="number" step="0.5" data-t="c" aria-label="Band 5 cents"></td></tr>
+          </tbody>
+        </table>
+        <p class="gs-src">The numbers are on your elevator's discount sheet or the back of the scale ticket. Test weight for bushels: <span id="gs-tw">56</span> lb.</p>
+      </details>
+
+      <details class="box d-only" id="gs-dryset" open>
+        <summary>Per acre</summary>
+        <div class="gs-in">
+          <label>Yield, bu/ac as weighed<input id="gs-yield" type="number" inputmode="decimal" step="1" min="1" max="400" placeholder="60"></label>
+          <label>Acres<input id="gs-acres" type="number" inputmode="decimal" step="1" min="1" placeholder="500"></label>
+        </div>
+      </details>
+
+      <details class="box" id="gs-mathbox">
+        <summary>Show the math</summary>
+        <div id="gs-math" class="eq">Enter a moisture and a load.</div>
+      </details>
+
+      <h2 id="how">How the elevator figures it</h2>
+      <p>The buyer pays for dry bushels at a base moisture. Grain wetter than base gets <b>shrunk</b> on paper to what it would weigh dried to base, and most elevators also take a <b>drying charge</b> per wet bushel. Grain drier than base gets no credit: it is weighed at the standard test weight, so the water you dried off is grain you did not get paid for.</p>
+      <p><b>Water shrink</b> is the weight of water taken out, as a share of the wet weight:</p>
+      <span class="eq">water shrink % = 100 x (wet moisture - base) / (100 - base)
+corn, 25% to 15.5%: 100 x 9.5 / 84.5 = 11.24%</span>
+      <p>Buyers add a little for dry matter lost in handling. Some use a drying table (water shrink plus about 0.5%); others use a flat factor per point, typically 1.2 to 1.5% (NCH-61). A flat factor carries more handling loss the wetter the corn. Iowa State measured 0.22 to 1.71% handling loss on farms and 0.64 to 1.33% at commercial dryers; NCH-61 calls more than 1% a loss greater than those surveys found. The calculator tells you what handling loss your elevator's factor assumes.</p>
+
+      <h3>Water shrink per point, by base moisture</h3>
+      <div class="gs-tw"><table class="gs-t"><caption class="sr-only">Water shrink per point of moisture removed</caption><thead><tr><th scope="col">Base moisture</th><th scope="col">Water shrink per point</th><th scope="col">Used for</th></tr></thead><tbody>
+<!--GS:WATER-->
+<tr><th scope="row">15.5%</th><td>1.183%</td><td style="font-family:inherit;color:var(--text-dim)">Corn</td></tr>
+<tr><th scope="row">15%</th><td>1.176%</td><td style="font-family:inherit;color:var(--text-dim)"></td></tr>
+<tr><th scope="row">14%</th><td>1.163%</td><td style="font-family:inherit;color:var(--text-dim)">Grain sorghum</td></tr>
+<tr><th scope="row">13.5%</th><td>1.156%</td><td style="font-family:inherit;color:var(--text-dim)">Wheat</td></tr>
+<tr><th scope="row">13%</th><td>1.149%</td><td style="font-family:inherit;color:var(--text-dim)">Soybeans</td></tr>
+<!--/GS:WATER-->
+      </tbody></table></div>
+
+      <h2 id="overdry">Overdry grain: what it gives away</h2>
+      <p>The dry matter in the grain does not change when it dries. Only the water does. Delivered under base, you are paid on the weight you hauled; at base, the same grain would have weighed more and made more bushels:</p>
+      <span class="eq">bushels at base = bushels delivered x (100 - delivered moisture) / (100 - base)
+soybeans at 9%, 1,000 bu: 1,000 x 91 / 87 = 1,046 bu, 46 more</span>
+
+      <h3>Soybeans delivered under 13%</h3>
+      <div class="gs-tw"><table class="gs-t"><caption class="sr-only">Soybean bushels given away below 13% moisture</caption><thead><tr><th scope="col">Delivered at</th><th scope="col">Share of the crop not paid for</th><th scope="col">Bushels per 1,000 delivered</th></tr></thead><tbody>
+<!--GS:SOY-->
+<tr><th scope="row">12%</th><td>1.1%</td><td>11.5</td></tr>
+<tr><th scope="row">11%</th><td>2.2%</td><td>23.0</td></tr>
+<tr><th scope="row">10%</th><td>3.3%</td><td>34.5</td></tr>
+<tr><th scope="row">9%</th><td>4.4%</td><td>46.0</td></tr>
+<tr><th scope="row">8%</th><td>5.4%</td><td>57.5</td></tr>
+<!--/GS:SOY-->
+      </tbody></table></div>
+      <p class="gs-src">The share column is how Nebraska CropWatch states it: of the bushels the crop would have made at 13%, the share that never got paid for. Their example: 75 bushels an acre at 13% harvested at 9% sells 3.3 fewer bushels an acre.</p>
+
+      <h3>Corn delivered under 15.5%</h3>
+      <div class="gs-tw"><table class="gs-t"><caption class="sr-only">Corn bushels given away below 15.5% moisture</caption><thead><tr><th scope="col">Delivered at</th><th scope="col">Share of the crop not paid for</th><th scope="col">Bushels per 1,000 delivered</th></tr></thead><tbody>
+<!--GS:CORN-->
+<tr><th scope="row">15%</th><td>0.6%</td><td>5.9</td></tr>
+<tr><th scope="row">14.5%</th><td>1.2%</td><td>11.8</td></tr>
+<tr><th scope="row">14%</th><td>1.7%</td><td>17.8</td></tr>
+<tr><th scope="row">13.5%</th><td>2.3%</td><td>23.7</td></tr>
+<tr><th scope="row">13%</th><td>2.9%</td><td>29.6</td></tr>
+<!--/GS:CORN-->
+      </tbody></table></div>
+
+      <h2 id="questions">Questions</h2>
+      <div class="gs-faq">
+<!--GS:FAQ-->
+        <details><summary>How is grain shrink calculated?</summary><p>Water shrink is 100 times the points removed, divided by 100 minus the base moisture. Drying corn from 25% to 15.5% takes out 9.5 points: 9.5 x 100 / 84.5 = 11.24% of the wet weight. Buyers then add handling loss, either a flat 0.5% on a drying table (11.74% total) or by using a flat factor per point, such as 1.3% a point (12.35% total). That is from NCH-61, the National Corn Handbook shrink publication.</p></details>
+        <details><summary>What is a normal shrink factor for corn?</summary><p>NCH-61 says flat factors typically run 1.2 to 1.5% a point. Water alone is 1.183% a point when the base is 15.5%, so anything over that is handling loss. On 28% corn, a 1.25 factor assumes 0.83% handling loss and a 1.4 factor assumes 2.71%. Iowa State measured 0.22 to 1.71% on farms and 0.64 to 1.33% at commercial dryers; NCH-61 calls more than 1% a bigger loss than those surveys found.</p></details>
+        <details><summary>Should I sell wet corn or dry it myself?</summary><p>Run both. Iowa State&#x27;s 2019 example: 1,000 wet bushels of 20.5% corn at $3.50, with a 4.8 cent drying charge a point and a 1.4% factor from a 15% base, nets $2,967 sold wet. Dried on the farm at their figured 3 cents a point, with 1% handling loss and $40 of extra hauling, the same corn netted $3,033. Your elevator&#x27;s numbers and your own drying cost decide it.</p></details>
+        <details><summary>How much do overdry soybeans cost?</summary><p>Beans delivered under 13% are paid on the weight you haul, so the water you dried off is beans you did not sell. At 9%, 1,000 delivered bushels would have been 1046 bushels at 13%, 46 more. Nebraska CropWatch&#x27;s example: 75 bushels an acre at 13% harvested at 9% sells 3.3 fewer bushels an acre, $33 an acre at $10 beans.</p></details>
+        <details><summary>What is the base moisture for corn, soybeans, wheat and sorghum?</summary><p>Arkansas Extension&#x27;s FSA1078 lists corn 15.5%, soybeans 13%, wheat 13.5% and grain sorghum 14%. Those are the defaults here. Your elevator&#x27;s discount sheet is the one that counts, so change the base box to match it.</p></details>
+        <details><summary>Is a moisture discount the same as shrink?</summary><p>Not quite. Some buyers knock a share off the price instead of the bushels: Iowa State&#x27;s example takes 2% of the price per point over 15%, 11% for 20.5% corn. Paid on wet bushels, that comes to the same dollars as a flat 2% a point shrink with no drying charge, so enter it that way.</p></details>
+        <details><summary>Where does the bid come from?</summary><p>Type your own, or enter your ZIP and the page uses the nearest elevator&#x27;s posted bid for that grain from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest futures settle less that state&#x27;s median basis, labeled as such. Sorghum has no state basis yet, so it needs your ZIP or your own bid.</p></details>
+<!--/GS:FAQ-->
+      </div>
+
+      <h2>Sources</h2>
+      <ul class="srcs">
+        <li>Hicks and Cloud, University of Minnesota: <a href="https://www.extension.purdue.edu/extmedia/NCH/NCH-61.html">Calculating Grain Weight Shrinkage in Corn Due to Mechanical Drying</a>, National Corn Handbook NCH-61 (Purdue). Water shrink, drying tables, flat factors, handling loss.</li>
+        <li>Iowa State ICM: <a href="https://crops.extension.iastate.edu/cropnews/2019/09/grain-drying-considerations-fall">Grain drying considerations this fall</a> (2019). The 20.5% corn example with a drying charge and a 1.4% factor.</li>
+        <li>Hellevang, NDSU: <a href="https://www.ndsu.edu/agriculture/sites/default/files/2021-05/Post%20Harvest%20Tips%20for%20Later%20Maturing%20Corn%20Oct2009.pdf">Post harvest tips for later maturing corn</a> (2009). Moisture shrink formula, 1.1834 per point to 15.5%.</li>
+        <li>Nebraska CropWatch: <a href="https://cropwatch.unl.edu/harvest-soybeans-13-moisture">Harvest soybeans at 13% moisture</a>. Beans under 13% are paid on weight; the 75 bushel example.</li>
+        <li>University of Arkansas: <a href="https://www.uaex.uada.edu/publications/pdf/FSA-1078.pdf">FSA1078</a>. Base moistures: corn 15.5, soybeans 13, wheat 13.5, grain sorghum 14.</li>
+      </ul>
+      <p class="gs-src">Bids: the nearest posted bid comes from the same elevator boards as <a href="/cash-bids">cash bids near me</a>. The state default is the futures settle less the state's median basis from <a href="/basis">the basis page</a>. Call the elevator before you count on a bid or a discount.</p>
+
+      <h2>Related</h2>
+      <ul class="rel gs-rel">
+        <li><a href="/grain-bin-calculator">Grain bin calculator: bushels, shrink and value</a></li>
+        <li><a href="/grain-emc">Grain EMC: fans on or off</a></li>
+        <li><a href="/store-or-sell">Sell now or store?</a></li>
+        <li><a href="/cash-bids">Cash bids near me</a></li>
+      </ul>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static crawlable nav: loader.js replaceWith() swaps this for the live footer on JS;
+       non-JS crawlers (Bing, AI) read these links; also a working fallback if the fetch fails.
+       Copied into every root page by scripts/inject_static_nav.py -- edit HERE, then re-run it.
+       Same links as components/footer.html (the --check fails if they drift). -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/bids-network.js?v=5" defer></script>
+  <script src="/components/grain-shrink.js?v=1" defer></script>
+  <script src="/components/grain-shrink-ui.js?v=1" defer></script>
+</body>
+</html>
