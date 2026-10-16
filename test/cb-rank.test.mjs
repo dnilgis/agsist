@@ -49,7 +49,7 @@ const FNS = ["ppu", "plausible", "basisUnit", "basisCents", "basisUnusual", "not
   "deliverySort", "delKey", "getNearestBid", "preferPlain", "harvestYear", "harvestKeys",
   "isHarvestSeason", "inDelivery", "windowMonths", "netNormOperator", "netPlain", "netKey",
   "netIsTwin", "netMerge", "netOlder", "rankOf", "rankable", "wheatCls", "rankCmp",
-  "rankCands", "classGroups", "pickClass", "clsName", "townOf", "placeOf", "bannerName"];
+  "rankCands", "classGroups", "pickClass", "clsName", "townOf", "placeOf", "bannerName", "markBidOutliers"];
 const VARS = ["PPU_BAND", "BASIS_SANE", "NOT_PER_BUSHEL", "SPECIAL_GRADE", "NET_LEGAL", "NET_INHERIT"];
 
 function load() {
@@ -223,4 +223,49 @@ test("the second feed's row is kept when ours is unread or a day older", () => {
   const ourTwin = { ...feedTwin, facility: "ADM", stale: true, via: "direct" };
   m = c.netMerge([feedTwin], [ourTwin]);
   assert.deepEqual(arr(m.rows.map((r) => r.facility)), ["ADM Grain"]);
+});
+
+/* Riceville IA, 2026-10-15: Nutrition Service Co. soybeans $14.04, basis
+   +$1.40, against neighbors near $11.93 / -70c. It was Best soybeans and the
+   Worth the Drive winner. The rule is scripts/basis_method.py's: more than 5
+   robust SDs (never under 75c) from the middle of the OTHER elevators in the
+   search, same crop and contract; fewer than 4 others, the state median. */
+function soyElevs(pairs) {
+  return pairs.map(([name, basis, cash], i) => {
+    const b = row({ facility: name, city: "T" + i, state: "IA", symbol: "ZSX26", basis, cashPrice: cash });
+    return { b, e: elev(name, 5 + i * 3, [b], { city: "T" + i }) };
+  });
+}
+test("an outlier basis is never Best or Worth the Drive (Riceville +$1.40)", () => {
+  const c = load();
+  const xs = soyElevs([["A", -0.70, 11.93], ["B", -0.68, 11.95], ["C", -0.72, 11.91], ["D", -0.75, 11.88],
+    ["Nutrition Service", 1.40, 14.04]]);
+  const bids = xs.map((x) => x.b);
+  c.markBidOutliers(bids);
+  const odd = bids[4]._odd;
+  assert.ok(odd && odd.via === "search" && odd.n === 4, "the +$1.40 row is not flagged");
+  /* the others sorted -75,-72,-70,-68: median -71c; 140 - (-71) = 211c */
+  assert.equal(Math.round(odd.dist), 211);
+  assert.equal(c.basisUnusual(bids[4]), true);
+  assert.ok(bids.slice(0, 4).every((b) => !b._odd), "an ordinary neighbor was flagged");
+  const g = c.classGroups(c.rankCands(xs.map((x) => x.e), "soybeans"));
+  const top = g[""].slice().sort(c.rankCmp)[0];
+  assert.equal(top.elev.facility, "B", "the outlier still tops the ranking");
+  assert.ok(!g[""].some((x) => x.elev.facility === "Nutrition Service"), "the outlier is still a ranked candidate");
+  /* 74c over the middle is a real bid and stays */
+  const ok = soyElevs([["A", -0.70, 11.93], ["B", -0.68, 11.95], ["C", -0.72, 11.91], ["D", -0.75, 11.88],
+    ["Plant", 0.03, 12.66]]).map((x) => x.b);
+  c.markBidOutliers(ok);
+  assert.equal(ok[4]._odd, null, "a bid 74c over the middle was flagged");
+});
+test("with fewer than 4 other elevators the state median is the middle", () => {
+  const c = load();
+  const xs = soyElevs([["A", -0.70, 11.93], ["B", -0.68, 11.95], ["Nutrition Service", 1.40, 14.04]]).map((x) => x.b);
+  c.markBidOutliers(xs);
+  assert.equal(xs[2]._odd, null, "flagged with no state median and only two others");
+  c.cbRank.setStateMedians({ states: { IA: { crops: { soybeans: { contract: "ZSX26", median: -0.63, n: 40 } } } } });
+  c.markBidOutliers(xs);
+  assert.ok(xs[2]._odd && xs[2]._odd.via === "state");
+  assert.equal(Math.round(xs[2]._odd.dist), 203);
+  assert.equal(xs[0]._odd, null);
 });

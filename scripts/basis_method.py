@@ -81,6 +81,32 @@ def robust_split(rows, k=OUTLIER_K, floor=OUTLIER_FLOOR, min_n=OUTLIER_MIN_N):
     return kept, out
 
 
+OUTLIER_MIN_OTHERS = OUTLIER_MIN_N - 1   # one bid tested against the rest
+
+
+def relative_outlier(val, others, state_median=None, k=OUTLIER_K, floor=OUTLIER_FLOOR):
+    """The same guard for ONE bid against the other elevators near it (town
+    pages here, the live page in components/cb-rank.js outlierCheck()).
+    val: this bid's basis, $/bu. others: one basis per OTHER elevator, same
+    crop and futures contract. With fewer than OUTLIER_MIN_OTHERS of them the
+    state's median for that contract stands in and the gate is k x floor
+    (75c); with neither, nothing is said. -> None or {median, dist, n, via}."""
+    if val is None:
+        return None
+    if len(others) >= OUTLIER_MIN_OTHERS:
+        med = statistics.median(others)
+        mad = statistics.median(abs(v - med) for v in others)
+        gate, n, via = k * max(1.4826 * mad, floor), len(others), "nearby"
+    elif state_median is not None:
+        med, gate, n, via = state_median, k * floor, 0, "state"
+    else:
+        return None
+    d = val - med
+    if abs(d) <= gate:
+        return None
+    return {"median": round(med, 4), "dist": round(d, 4), "n": n, "via": via}
+
+
 def state_basis(rows, prev_map):
     """Per crop group: headline contract stats + secondary contracts.
 
@@ -193,6 +219,18 @@ def selftest():
     assert w["wow_median"] == 5.0 and w["wow_n"] == 6, w
     j = headline_json(w)
     assert j["contract"] == "ZCZ26" and j["label"] == "Dec '26" and j["n"] == 9 and j["outliers"] == 1 and j["wow_n"] == 6
+    # relative_outlier: Riceville IA soybeans +1.40 against neighbors near -0.70
+    nb = [-0.70, -0.68, -0.72, -0.75, -0.65, -0.70]
+    o = relative_outlier(1.40, nb)
+    # median -0.70, MAD 0.025 -> 0.037 floored to 0.15, gate 0.75; 2.10 out
+    assert o and o["dist"] == 2.1 and o["median"] == -0.7 and o["n"] == 6 and o["via"] == "nearby", o
+    assert relative_outlier(0.04, nb) is None, "74c over the middle stays"
+    assert relative_outlier(0.06, nb) is not None, "76c over goes"
+    # three others: the state median stands in, gate 75c
+    assert relative_outlier(1.40, nb[:3]) is None
+    so = relative_outlier(1.40, nb[:3], state_median=-0.63)
+    assert so and so["via"] == "state" and abs(so["dist"] - 2.03) < 1e-9
+    assert relative_outlier(0.10, nb[:3], state_median=-0.63) is None
     print("basis_method selftest OK")
 
 

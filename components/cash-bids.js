@@ -376,10 +376,22 @@ function basisCents(b,bid){
    "unusual basis -- check with the elevator", and it never sets a best bid, a
    best basis or a median. */
 var BASIS_SANE={corn:2.5,soybeans:2.5,wheat:3};
+/* AND A BASIS FAR FROM ITS NEIGHBORS IS NOT ONE EITHER. markBidOutliers()
+   sets bid._odd when the basis sits more than 5 robust standard deviations
+   (never under 75c) from the middle of the other elevators in this search for
+   the same crop and futures contract: scripts/basis_method.py's rule, ported
+   in components/cb-rank.js. Riceville IA soybeans at +$1.40 against neighbors
+   near -$0.70 (2026-10-15) was Best soybeans before this. */
 function basisUnusual(bid){
   if(!bid||bid.basis==null)return false;
+  if(bid._odd)return true;
   var cap=BASIS_SANE[bid.category],c=basisCents(bid.basis,bid);
   return cap!=null&&c!=null&&Math.abs(c)>cap*100;
+}
+/* "Basis 210c over the middle of 9 other elevators here (-70c)" */
+function oddTitle(o){
+  var where=o.via==='state'?'the state middle':'the middle of '+o.n+' other elevators in this search';
+  return 'Basis '+Math.round(Math.abs(o.dist))+'\u00a2 '+(o.dist>0?'over':'under')+' '+where+' ('+AG.px.basis(Math.round(o.median*4)/4)+'). It may be a special contract (food grade, non-GMO).';
 }
 function basisUnclear(bid){return !!bid&&bid.basis!=null&&isFinite(bid.basis)&&basisUnit(bid.basis,bid)==='?';}
 /* A TRUE MINUS, not a hyphen. toFixed() on a negative gives U+002D, which is
@@ -491,6 +503,15 @@ function futuresOf(bid){
    and "Dec 26 KCBT Red Wheat", whose exchange is kept because KC and Chicago
    December are two different prices. Only a real month name is shortened;
    anything else is passed through as written. */
+/* "KC" / "Chicago" / "MIAX" for a wheat row's contract, '' when the row does
+   not say (a bare month on a board that names no class). */
+function wheatExch(bid){
+  var sym=String(bid&&bid.symbol||'').toUpperCase();
+  var at=/^@(KW|MW|W)\d[FGHJKMNQUVXZ]$/.exec(sym);
+  var root=at?{KW:'KE',MW:'MW',W:'ZW'}[at[1]]:(window.cbRank?cbRank.contractKey(bid).slice(0,2):'');
+  if(!root&&/^(KE|ZW|MW)/.test(sym))root=sym.slice(0,2);
+  return {KE:'KC',ZW:'Chicago',MW:'MIAX'}[root]||'';
+}
 function contractLabel(bid){
   var m=String(bid.basisMonth||'').trim();
   /* Barchart sends no month name, only the ticker (ZCZ26). Spell the month
@@ -1037,12 +1058,12 @@ function portalExpire(root){
 }
 /* What a card prints for the town: the feed's display town when the place's
    `city` is an elevator's name, else the city. Keys still use `city`. */
-function townOf(x){return String((x&&(x.town||x.city))||'');}
+function townOf(x){var t=String((x&&(x.town||x.city))||'');return window.cbRank&&cbRank.cleanPlace?cbRank.cleanPlace(t):t;}
 function groupElevators(bids){
   var map={};
   bids.forEach(function(b){
     var key=(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||'');
-    if(!map[key])map[key]={key:key,facility:b.facility,branch:b.branch,city:b.city,town:b.town||'',state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null,portal:null};
+    if(!map[key])map[key]={key:key,facility:window.cbRank&&cbRank.displayName?(cbRank.displayName(b.facility)||townOf(b)+' elevator'):b.facility,branch:b.branch,city:b.city,town:b.town||'',state:b.state,distance:b.distance,phone:hasPhone(b.phone)?b.phone:'',commodities:{},bestCash:null,bestBasis:null,asOfT:null,via:null,portal:null};
     /* One row read straight from the board makes the elevator a direct read. */
     if(b.via==='direct')map[key].via='direct';
     /* AND ONE ROW WHOSE READ FAILED MAKES THE CARD SAY SO. Flagged, never
@@ -1143,6 +1164,15 @@ function _num(el,dflt){var v=parseFloat(el&&el.value);return isFinite(v)&&v>=0?v
    compared the line says the closest one is as good, within EARN_MIN; with
    nothing compared there is no line (''). */
 var EARN_MIN=50;
+/* ROAD MILES, NOT CROW MILES. Every distance on this page is straight line
+   from the ZIP to the elevator's pin. Roads run about a quarter farther, so
+   fuel charged on straight-line miles flattered the far elevator: 30 extra
+   straight miles for 11c more on 1,000 bu showed +$5, and at road distance it
+   is -$21. Fuel is charged on straight line x ROAD_FACTOR and labeled
+   "estimated road miles". */
+var ROAD_FACTOR=1.25;
+function roadMi(d){return d*ROAD_FACTOR;}
+var ROAD_NOTE='estimated road miles (straight line x 1.25)';
 var EARN_CROP={corn:'corn',soybeans:'soybeans',wheat:'wheat'};
 function earningsLine(win,compared,bu,money){
   var load=Number(bu).toLocaleString('en-US')+' bu';
@@ -1187,7 +1217,7 @@ function renderEarnings(){
          two ways in one scroll is worse than a page that does not ask it.
          On an equal net the fresher board wins, then the nearer. */
       var scored=elevRows.map(function(r){
-        var extra=r.elev.distance-closest.elev.distance;
+        var extra=roadMi(r.elev.distance-closest.elev.distance);
         return{r:r,extraMi:extra,net:((r.p-closest.p)*bu)-(2*extra*fpm)};
       }).sort(function(a,b){
         var d=Math.round(b.net)-Math.round(a.net);if(d)return d;
@@ -1214,7 +1244,7 @@ function renderEarnings(){
     var n=window.cbRank?cbRank.note(r.rk,fmtPx):'';
     return s+(n?' ('+escH(n)+')':'');
   }
-  earningsDetail.innerHTML='<strong>'+escH(bannerName(best.top.elev))+'</strong> pays '+priceHtml(best.top)+' vs <strong>'+escH(bannerName(best.close.elev))+'</strong> at '+priceHtml(best.close)+'. On '+bu.toLocaleString()+' bu: '+fmtMoney(best.gross)+' gross'+(best.extraMi>0?', minus '+fmtMoney(2*best.extraMi*fpm)+' round-trip fuel':best.extraMi<0?', plus '+fmtMoney(-2*best.extraMi*fpm)+' round-trip fuel saved':'')+' = <strong>'+fmtMoney(best.net)+' net gain</strong>.';
+  earningsDetail.innerHTML='<strong>'+escH(bannerName(best.top.elev))+'</strong> pays '+priceHtml(best.top)+' vs <strong>'+escH(bannerName(best.close.elev))+'</strong> at '+priceHtml(best.close)+'. On '+bu.toLocaleString()+' bu: '+fmtMoney(best.gross)+' gross'+(best.extraMi>0?', minus '+fmtMoney(2*best.extraMi*fpm)+' round-trip fuel':best.extraMi<0?', plus '+fmtMoney(-2*best.extraMi*fpm)+' round-trip fuel saved':'')+' = <strong>'+fmtMoney(best.net)+' net gain</strong>. Fuel on '+ROAD_NOTE+'.';
   gaEvent('earnings_shown',{commodity:best.cat,net_gain:Math.round(best.net)});
 }
 
@@ -1228,6 +1258,13 @@ function basisKey(html){
   return '<p class="cb-basis-key">Basis color: <span class="bz-up">green</span> is stronger than the middle of the elevators in this search for the same crop and month, <span class="bz-dn">red</span> is weaker, grey is within '+band+'\u00a2 of it or too few to compare.</p>';
 }
 
+/* True when a board's time is only when it was read: no pricedAt, or a
+   pricedAt that is the read itself. */
+function readTimeOnly(pricedAt,checkedAt){
+  if(!pricedAt)return true;
+  var p=Date.parse(pricedAt),c=Date.parse(checkedAt||'');
+  return !isFinite(p)||(isFinite(c)&&p===c);
+}
 /* "3h ago" from a row's posted time; nothing when the board posted no time. */
 function bbcAgo(asOf){
   var t=Date.parse(asOf||'');if(isNaN(t))return'';
@@ -1286,8 +1323,8 @@ function renderBestBids(elevators){
       if(cs||topElev.distance!=null)html+='<span class="bbc-city bbc-where">'+escH(cs)+(topElev.distance!=null?(cs?'\u00a0\u00b7 ':'')+'<span class="bbc-dist">'+topElev.distance.toFixed(0)+' mi</span>':'')+'</span>';
       var bfut=futuresOf(best),blab=contractLabel(best),l2=[];
       if(del)l2.push('<span class="bbc-delivery'+(isSpot?' bbc-delivery-spot':'')+'">'+escH(isSpot?'Spot':del)+'</span>');
-      var agoSt=window.AgAsOf?AgAsOf.html(best.asOf,'bids'):'';
-      if(agoSt)l2.push(agoSt);else if(ago)l2.push('posted '+escH(ago));
+      var agoSt=window.AgAsOf?AgAsOf.html(best.asOf,'bids',{prefix:best.asOfRead?'Read':'Posted'}):'';
+      if(agoSt)l2.push(agoSt);else if(ago)l2.push((best.asOfRead?'read ':'posted ')+escH(ago));
       if(bfut!=null&&blab)l2.push('<span class="bbc-fut" title="Implied by this board: cash minus basis">vs '+escH(blab)+' $'+fmtPx(bfut)+'</span>');
       if(l2.length)html+='<div class="bbc-city">'+l2.join(' \u00b7 ')+'</div>';
       if(rkN)html+='<div class="bbc-note'+(top.rk.old?' bbc-warn':'')+'">'+escH(rkN)+'</div>';
@@ -1344,7 +1381,8 @@ function renderWTD(){
   if(comm==='wheat')Object.keys(groups).forEach(function(k){if(k!==cls)others.push(clsName(k)+' ('+groups[k].length+')');});
   (cls!=null?(groups[cls]||[]):[]).forEach(function(x){
     var p=x.rk.price,d=x.elev.distance;
-    rows.push({elev:x.elev,bid:x.bid,rk:x.rk,dist:d,ppu:p,gross:p*bu,fuel:2*d*fpm,net:(p*bu)-(2*d*fpm),delivery:delShow(x.bid)});
+    var rd=roadMi(d);
+    rows.push({elev:x.elev,bid:x.bid,rk:x.rk,dist:d,road:rd,ppu:p,gross:p*bu,fuel:2*rd*fpm,net:(p*bu)-(2*rd*fpm),delivery:delShow(x.bid)});
   });
   if(!rows.length){wtdTbody.innerHTML='<tr><td colspan="7" class="wtd-empty">No '+comm+' bids in results. Switch commodity or try a larger radius.</td></tr>';wtdWinner.style.display='none';$('wtd-delivery-note').style.display='none';return;}
   rows.sort(function(a,b){
@@ -1366,9 +1404,9 @@ function renderWTD(){
     var tossup=bu>0&&(gain/bu)*100<WTD_TOSSUP_CENTS;
     wtdWinner.classList.toggle('wtd-tossup',tossup);
     if(tossup){
-      wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(bannerName(winner.elev))+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator: under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick.';
+      wtdWinner.innerHTML='<strong>Toss-up.</strong> After hauling, '+escH(bannerName(winner.elev))+' nets '+(gain>0?'+':'')+fmtMoney(gain)+' on this '+bu.toLocaleString()+'-bu load, '+(Math.round(gain/bu*1000)/10)+'\u00a2/bu over your closest elevator: under '+WTD_TOSSUP_CENTS+'\u00a2/bu, so neither is the clear pick. Fuel on '+ROAD_NOTE+'.';
     }else
-    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(bannerName(winner.elev))+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load.';
+    wtdWinner.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg> <strong>'+escH(bannerName(winner.elev))+'</strong> nets you <strong style="color:var(--green)">'+(gain>0?'+':'')+fmtMoney(gain)+'</strong> more than your closest elevator on this '+bu.toLocaleString()+'-bu load, after round-trip fuel on '+ROAD_NOTE+'.';
     gaEvent('wtd_calc',{commodity:comm,bushels:bu,fpm:fpm,winner:winner.elev.facility,gain:Math.round(gain)});
   }else{wtdWinner.style.display='none';wtdWinner.classList.remove('wtd-tossup');}
   var _toss=wtdWinner.classList.contains('wtd-tossup')&&wtdWinner.style.display!=='none';
@@ -1390,12 +1428,13 @@ function renderWTD(){
     html+='<td class="wt-rank">'+(i+1)+'</td>';
     html+='<td><div class="wt-name">'+escH(r.elev.facility)+'</div><div class="wt-sub">'+subTxt+'</div></td>';
     html+='<td data-l="Cash/bu" class="wt-cash r">'+(r.rk.remark?escH(cbRank.priceText(r.rk,fmtPx)):'$'+fmtPx(r.ppu))+'</td>';
-    html+='<td data-l="Distance" class="wt-dist r">'+r.dist.toFixed(0)+' mi</td>';
+    html+='<td data-l="Road miles (est.)" class="wt-dist r" title="'+r.dist.toFixed(0)+' mi straight line x '+ROAD_FACTOR+'">'+r.road.toFixed(0)+' mi</td>';
     html+='<td data-l="Round-trip fuel" class="wt-fuel r">&minus;'+fmtMoney(r.fuel)+'</td>';
     html+='<td data-l="Total net" class="wt-net r'+(i===0&&!_toss?' best':'')+'">'+fmtMoney(r.net)+'</td>';
     html+='<td data-l="vs closest" class="wt-delta '+dcls+'">'+dstr+'</td></tr>';
   }
   if(others.length)html+='<tr><td colspan="7" class="wtd-empty">Comparing '+escH(clsName(cls))+' wheat only. Also posted nearby, a different wheat and not compared: '+escH(others.join(', '))+'.</td></tr>';
+  html+='<tr><td colspan="7" class="wtd-empty">Miles are '+ROAD_NOTE+'; fuel is round trip on them.</td></tr>';
   wtdTbody.innerHTML=html;
   $('wtd-delivery-note').style.display='block';
 }
@@ -1574,10 +1613,26 @@ function renderSeasonNote(names){
     '. Choose \u201CHarvest\u201D or \u201CAny delivery\u201D.';
   el.style.display='';
 }
+/* One elevator key per board, the same one groupElevators() uses. */
+function markBidOutliers(bids){
+  if(!window.cbRank||!cbRank.markOutliers||!bids)return;
+  var items=bids.map(function(b){
+    b._odd=null;
+    if(b.basis==null||!plausible(b)||notPerBushel(b)||bidPeriodPast(b))return null;
+    var con=cbRank.contractKey(b),c=basisCents(b.basis,b);
+    if(!con||c==null)return null;
+    return{key:(b.facility||'')+'||'+(b.branch||'')+'||'+(b.city||''),group:b.category+'|'+con,c:c,state:b.state};
+  });
+  var res=cbRank.markOutliers(items);
+  bids.forEach(function(b,i){b._odd=res[i]||null;});
+}
+/* The state medians arrive after the first draw: mark and draw again. */
+window.cbOutlierRedraw=function(){if(cbLastBids&&cbLastBids.length)renderBids(cbLastBids,true);};
 function renderBids(bids,keepLimit){
   if(!keepLimit)cbVisibleLimit=CB_PAGE_FIRST;
   if(window.CBGlance)CBGlance.clear();
   cbLastBids=bids;
+  markBidOutliers(bids);
   if(!bids||!bids.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No bids found</h2><p>Try a larger search radius or a different ZIP code.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
   renderSeasonNote([]);
   var filtered=currentFilter==='all'?bids:bids.filter(function(b){return b.category===currentFilter;});
@@ -1612,7 +1667,7 @@ function renderBids(bids,keepLimit){
   }
   if(!filtered.length){results.innerHTML='<div class="cb-empty"><div class="cb-empty-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg></div><h2>No '+escH(currentFilter)+' bids found</h2><p>Pick All at the top, or try a different area.</p></div>';elevCount.textContent='0 elevators';currentElevators=[];return;}
   var elevators=groupElevators(filtered);
-  elevators.sort(function(a,b){switch(currentSort){case 'best-cash':return(b.bestCash||0)-(a.bestCash||0);case 'best-basis':return((b.bestBasis!=null?b.bestBasis:-9999))-((a.bestBasis!=null?a.bestBasis:-9999));case 'name':return(a.facility||'').localeCompare(b.facility||'');default:return(a.distance||999)-(b.distance||999);}});
+  elevators.sort(function(a,b){switch(currentSort){case 'best-cash':return(b.bestCash||0)-(a.bestCash||0);case 'best-basis':return((b.bestBasis!=null?b.bestBasis:-9999))-((a.bestBasis!=null?a.bestBasis:-9999));case 'name':return(a.facility||'').localeCompare(b.facility||'');default:return(a.distance!=null?a.distance:999)-(b.distance!=null?b.distance:999);}});  /* 0 mi is a distance: ||999 sent the elevator AT the ZIP to the end of the list (Riceville, 50466) */
   currentElevators=elevators;
   /* Saved elevators on screen are the compare pins (components/cb-myelev.js). */
   if(window.CBMyElev){if(!cbPinsHidden)pinnedKeys=CBMyElev.pinKeys(elevators,pinnedKeys).filter(function(k){return !cbPinsDropped[k];});CBMyElev.feed(elevators,myElevPick,function(){cbVisibleLimit=1e4;renderBids(cbLastBids,true);},function(){cbPinsHidden=false;pinnedKeys=CBMyElev.pinKeys(currentElevators,[]);openCompareModal();});}
@@ -1736,11 +1791,15 @@ function renderBids(bids,keepLimit){
           /* "Nov '26 Soybeans" under the Soybeans heading says the crop twice;
              the crop word goes (a wheat class, "KCBT Red Wheat", stays). */
           var cl=contractLabel(bid).replace(/\s+(corn|soybeans?|beans)$/i,'');
-          if(cl&&cl.toLowerCase()!==String(del).toLowerCase())ctag='<span class="bid-fut-tag" title="Basis quoted against '+escH(bid.symbol)+'">&rarr; '+escH(cl)+'</span>';
+          /* Wheat says which exchange: Dec wheat is KC, Chicago or MIAX, and
+             a -50c HRW basis against Chicago is a different bid. */
+          var wx=bid.category==='wheat'?wheatExch(bid):'';
+          if(wx&&cl&&!/\b(kc|kcbt|chicago|cbot|miax|mgex|spring|red wheat)\b/i.test(cl))cl=wx+' '+cl;
+          if(cl&&(wx||cl.toLowerCase()!==String(del).toLowerCase()))ctag='<span class="bid-fut-tag" title="Basis quoted against '+escH(bid.symbol)+'">&rarr; '+escH(cl)+'</span>';
         }
         var bhi='';
         if(bhSym(bid)&&bid.deliveryMonth){_bhRows.push({bid:bid,elev:elev});bhi=' data-bh-i="'+(_bhRows.length-1)+'"';}
-        if(bf.odd)gradeHtml+='<span class="bid-grade bid-odd">unusual basis, check with the elevator</span>';
+        if(bf.odd)gradeHtml+='<span class="bid-grade bid-odd"'+(bid._odd?' title="'+escH(oddTitle(bid._odd))+'"':'')+'>Unusual basis, call before you haul</span>';
         html+='<div class="bid-row'+(bi>=3?' bid-xtra':'')+'"'+bhi+'><span class="bid-del-cell">'+delHtml+ctag+'</span><span class="bid-cash">'+cs2+'</span><span class="bid-basis '+((!perTon&&_tone&&_tone(bid))||bf.cls)+'">'+bf.str+'</span>'+gradeHtml+'</div>';
       });
       if(catBids.length>3)html+='<button class="bid-more" type="button" aria-expanded="false">+'+(catBids.length-3)+' more months &#9662;</button>';
@@ -2032,6 +2091,13 @@ function netRowsFrom(shard,distanceMi){
       basisMonth:netContract(b).month,
       futRaw:String(b.futuresMonth||''),
       asOf:shard.pricedAt||shard.checkedAt||'',
+      /* NO ELEVATOR-SIDE TIME, NO "POSTED". The network stamps pricedAt with
+         the read that first saw a price, unless the board states when it
+         posted; when pricedAt is the read itself (equal to checkedAt) or is
+         missing, the time is when AGSIST read the board, and the card says
+         "Read 8:40 pm". 1,985 of 2,094 boards carried no posted time on
+         2026-10-15. */
+      asOfRead:readTimeOnly(shard.pricedAt,shard.checkedAt),
       category:classify(b.commodity||b.crop||''),
       /* THE SEASON THE FEED ALREADY WORKED OUT, CARRIED RATHER THAN REDERIVED.
          An elevator's delivery label is often a season, not a month: Flash

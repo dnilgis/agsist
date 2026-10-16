@@ -89,6 +89,7 @@ import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reade
 import basis_method as BM  # noqa: E402  (the one state-basis method)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
+from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of cb-rank.js)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
 
@@ -112,6 +113,28 @@ DATED_VIA = {"deadline-inferred-year", "day-range-inferred-year", "month-day-yea
 
 
 # ---------------------------------------------------------------- helpers
+WHEAT_EXCH = {"KE": "KC", "ZW": "Chicago", "MW": "MIAX", "MWO": "MIAX"}
+
+
+def con_label(c):
+    """The futures month a basis is against, as a town page prints it. Wheat
+    names its exchange, because Dec wheat is three contracts: "KC Dec '26",
+    "Chicago Dec '26". Corn and soybeans: "Dec '26"."""
+    ex = WHEAT_EXCH.get(c[0])
+    return (ex + " " if ex else "") + contract_label(c)
+
+
+def cash_c(v):
+    """A cash bid on a town or state page, to the cent: $13.4275 -> "$13.43"
+    (half up, like the boards round). 293 town pages printed four places on
+    2026-10-15; the live page keeps the board's own decimals."""
+    if not isinstance(v, (int, float)):
+        return pricefmt.cash(v)
+    n = float(v)
+    r = pricefmt._js_round(abs(n) * 100 + 1e-7) / 100
+    return pricefmt.cash(-r if n < 0 else r)
+
+
 def url_slug(s):
     s = re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
     return s if s and s != "index" else (s or "town") + "-town"
@@ -311,15 +334,17 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             tname = how["town"] if how["how"] != "none" else None
         if not tname:
             drops["rows_not_placed_in_a_town"] += 1
-            unplaced.setdefault((st, b.get("place") or sid), (b.get("operator") or "", town_name(b.get("city")),
+            unplaced.setdefault((st, b.get("place") or sid), (display_name(b.get("operator") or ""),
+                                                              clean_place(town_name(b.get("city"))),
                                                               zip5(b.get("zip") or src.get("zip"))))
             continue
         tk = (st, url_slug(tname))
         t = towns.setdefault(tk, {"state": st, "name": tname, "slug": tk[1], "boards": {}})
         place = b.get("place") or sid
         bd = t["boards"].setdefault(place, {
-            "place": place, "source": sid, "operator": (b.get("operator") or src.get("operator") or "").strip(),
-            "city": town_name(b.get("city")), "zip": zip5(b.get("zip") or src.get("zip")),
+            "place": place, "source": sid,
+            "operator": display_name(b.get("operator") or src.get("operator") or ""),
+            "city": clean_place(town_name(b.get("city"))), "zip": zip5(b.get("zip") or src.get("zip")),
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
             "town": tname, "state": st, "pin": _pin(b),
@@ -362,7 +387,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         basis = b.get("basis")
         basis = round(float(basis), 4) if isinstance(basis, (int, float)) else None
         con = parse_contract(b.get("futuresMonth"), crop if crop in ("corn", "soybeans") else
-                             ("corn" if crop == "sorghum" else crop), gen.year)
+                             ("corn" if crop == "sorghum" else crop), gen.year, b.get("commodity"))
         bd["rows"].append({
             "crop": crop, "commodity": (b.get("commodity") or "").strip(), "label": delivery_label(b),
             "dm": delivery_month(b.get("period"), crop, snap_ct), "period": str(b.get("period") or ""),
@@ -630,6 +655,80 @@ def drop_misreads(towns, drops, tol=0.03):
                 bd["rows"] = [r for r in bd["rows"] if not r["bad"]]
 
 
+ODD_NEAR_MI = 50              # the live page's default search radius
+
+
+def flag_odd(towns, summaries=None):
+    """Mark r["odd"] on a row whose basis is far off the other elevators near
+    it for the same futures contract: scripts/basis_method.py's outlier rule,
+    one row at a time (BM.relative_outlier), each other board counted once at
+    the median of its own rows. The others are the boards within ODD_NEAR_MI
+    of this one (the live page compares the elevators in its search, 50 mi by
+    default); fewer than BM.OUTLIER_MIN_OTHERS there, the other boards in the
+    state; fewer still, the state page's median for that contract. A basis
+    past the state pages' SANITY cap is odd too. An odd row still prints,
+    flagged "call before you haul"; it never sets a town's top bid, the share
+    text, the answer, a hold line or the nearby list.
+    Nutrition Service Co., Riceville IA, soybeans +$1.40 vs -$0.63 (2026-10-15)
+    headlined six town pages and the Iowa share card before this."""
+    vals = defaultdict(lambda: defaultdict(list))        # (crop, contract) -> place -> [basis]
+    where = {}
+    allrows = []
+    for t in towns.values():
+        for bd in t["boards"].values():
+            where[bd["place"]] = (t["state"], bd.get("pin"))
+            for r in bd["rows"]:
+                allrows.append((t["state"], bd["place"], r))
+                if r["contract"] and r["basis"] is not None:
+                    vals[(r["crop"], r["contract"])][bd["place"]].append(r["basis"])
+    per = {c: {p: statistics.median(v) for p, v in d.items()} for c, d in vals.items()}
+    smed = {}
+    for st, gs in (summaries or {}).items():
+        for g in gs.values():
+            for c in g.get("contracts") or []:
+                if "median" in c:
+                    smed[(st, c["contract"])] = c["median"]
+    memo, n = {}, 0
+    for st, place, r in allrows:
+        r["odd"] = None
+        if r["basis"] is None:
+            continue
+        cap = BM.SANITY.get(r["crop"])
+        if cap is not None and abs(r["basis"]) > cap:
+            r["odd"] = {"median": None, "dist": None, "n": 0, "via": "sanity"}
+            n += 1
+            continue
+        if not r["contract"]:
+            continue
+        ck = (r["crop"], r["contract"])      # milo is never measured against corn on the same ZC month
+        key = (place, ck)
+        if key not in memo:
+            pin = where[place][1]
+            pool = per.get(ck, {})
+            near = [v for p, v in pool.items() if p != place and pin and where[p][1]
+                    and miles(pin[0], pin[1], where[p][1][0], where[p][1][1]) <= ODD_NEAR_MI]
+            if len(near) < BM.OUTLIER_MIN_OTHERS:
+                near = [v for p, v in pool.items() if p != place and where[p][0] == st]
+            memo[key] = near
+        sm = smed.get((st, r["contract"])) if r["crop"] in ("corn", "soybeans", "wheat") else None
+        r["odd"] = BM.relative_outlier(r["basis"], memo[key], sm)
+        n += bool(r["odd"])
+    return n
+
+
+def odd_note(r):
+    """The words under an odd row's basis."""
+    o = r.get("odd")
+    if not o:
+        return ""
+    if o["via"] == "sanity":
+        return "Unusual basis. Call before you haul."
+    where = ("the state middle" if o["via"] == "state" else
+             f"the middle of {o['n']} other elevators nearby for the same futures month")
+    return (f"Unusual basis, {abs(o['dist']) * 100:.0f}&cent; {'over' if o['dist'] > 0 else 'under'} {where} "
+            f"({money_basis(o['median'])}). Call before you haul.")
+
+
 def trim(rows):
     """Nearest MAX_PER_CROP delivery windows per crop; returns (kept, n_more)."""
     out, more = [], 0
@@ -680,6 +779,7 @@ CSS = """
     .cbt-more{display:inline-block;margin:8px 0 4px;padding:9px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--gold);font-size:.92rem;cursor:pointer;font:inherit}
     .cbt-more[hidden]{display:none}
     @media (max-width:640px){.cbt-stat{min-width:0;flex-basis:100%}.cbt-full-t td,.cbt-full-t th{padding:6px 3px}}
+    .cbt-t tr.cbt-odd td{color:#b07a10;font-size:.8rem;padding-top:0;line-height:1.4}
     .cbt-hold{font-size:.85rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5}
     .cbt-top{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.92rem;line-height:1.55;color:var(--text)}
     .cbt-top p{margin:0 0 4px}.cbt-top p:last-child{margin:0}.cbt-top a{color:var(--gold)}
@@ -759,7 +859,7 @@ def top_nearby(rows):
     page; on a tie the newer posting."""
     out = {}
     for c in CROPS:
-        rs = [r for r in rows if r["crop"] == c and r.get("dm")]
+        rs = [r for r in rows if r["crop"] == c and r.get("dm") and not r.get("odd")]
         if rs:
             m = min(r["dm"] for r in rs)
             best = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
@@ -771,7 +871,9 @@ def share_prices(tops, n=3):
     """-> ("corn $4.38, soybeans $9.87", the oldest posted time among them),
     from top_nearby(), at most n crops."""
     cs = [c for c in CROPS if c in tops][:n]
-    return (", ".join(f"{CROP_LABEL[c].lower()} {pricefmt.cash(tops[c][0])}" for c in cs),
+    if not cs:
+        return "", None
+    return (", ".join(f"{CROP_LABEL[c].lower()} {cash_c(tops[c][0])}" for c in cs),
             min(tops[c][1] for c in cs))
 
 
@@ -857,7 +959,7 @@ def hold_lines(bd):
     inputs = storesell.with_defaults({})
     out = []
     for c in CROPS:
-        rs = [r for r in bd["rows"] if r["crop"] == c]
+        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
         if not rs:
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
@@ -896,7 +998,7 @@ def board_glance(bd):
     delivery month, the highest cash there."""
     out = {}
     for c in CROPS:
-        rs = [r for r in bd["rows"] if r["crop"] == c]
+        rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
         if not rs:
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
@@ -917,7 +1019,7 @@ def live_board_list(towns):
             g = board_glance(bd)
             if not g:
                 continue
-            out.append({"town_key": (st, slug), "pin": bd["pin"], "name": bd["operator"] or bd["city"],
+            out.append({"town_key": (st, slug), "pin": bd["pin"], "name": head_name(bd, with_town=False),
                         "town": t["name"], "state": st,
                         "path": f"/cash-bids/{url_slug(STATE_NAMES[st])}/{slug}", "glance": g,
                         "posted": max(v[2] for v in g.values())})
@@ -978,7 +1080,7 @@ def nearby_section(t, center, live_all, snap_ct, has_own):
     for d, b in pick:
         g = b["glance"]
         cs = [c for c in ("corn", "soybeans") if c in g] or [c for c in CROPS if c in g][:1]
-        prices = " &middot; ".join(f'{CROP_LABEL[c]} {pricefmt.cash(g[c][0])} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
+        prices = " &middot; ".join(f'{CROP_LABEL[c]} {cash_c(g[c][0])} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
                                    for c in cs)
         p = b["posted"].astimezone(CT)
         dist = dist_text(d)
@@ -1033,9 +1135,11 @@ def board_section(bd, snap_ct):
         else:
             bas = money_basis(r["basis"])
             if r["contract"]:
-                bas += f'<br><span class="mut">vs {contract_label(r["contract"])}</span>'
-        trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">{pricefmt.cash(r["cash"])}</td>'
+                bas += f'<br><span class="mut">vs {con_label(r["contract"])}</span>'
+        trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">{cash_c(r["cash"])}</td>'
                    f'<td class="n">{bas}</td></tr>')
+        if r.get("odd"):
+            trs.append(f'<tr class="cbt-odd"><td colspan="4">{odd_note(r)}</td></tr>')
     z = bd["zip"]
     live = f'/cash-bids?zip={z}' if z else "/cash-bids"
     more_html = (f'<p class="cbt-sub" style="margin:6px 0 0">{more} more bid{"s" if more != 1 else ""} for later '
@@ -1084,6 +1188,28 @@ HIST_NOTE = (" &ldquo;Basis since June&rdquo; reads AGSIST&rsquo;s daily basis l
 HIST_JS = '<script src="/components/cb-basis-hist.js?v=1" defer></script>\n'
 
 
+def head_name(bd, with_town=True):
+    """The elevator as the answer, FAQ and structured data name it. When the
+    board is a delivery point under the company's name ("Ingredion" posted by
+    Linn Coop), the point and the town go with it: "Linn Coop Oil Company
+    (Ingredion, Cedar Rapids)". Linn Coop's own board paid 27c less than its
+    Ingredion bid on 2026-10-15; the bare company name sent a farmer to the
+    wrong scale."""
+    op = (bd.get("operator") or "").strip()
+    city = re.sub(r"(,\s*[A-Z]{2})+$", "", (bd.get("city") or "").strip().rstrip(", ")).strip()
+    town = (bd.get("town") or "").strip()
+    if not op:
+        return city
+    def n(x):          # "Le Roy" = "Leroy", "Co-op" = "Coop", "Mt Vernon" = "Mount Vernon"
+        x = re.sub(r"\b(mt|st|ft)\b\.?", lambda m: {"mt": "mount", "st": "saint", "ft": "fort"}[m.group(1)], x.lower())
+        return re.sub(r"[^a-z0-9]", "", x)
+    if not city or not town or n(city) in n(op) or n(op) in n(city) or n(city) == n(town):
+        return op
+    if bd.get("how") == "near" or not with_town or n(town) in n(city):
+        return f"{op} ({city})"
+    return f"{op} ({city}, {town})"
+
+
 def answer_picks(boards):
     """{crop: (row, elevator name)}: per elevator the commodity it posts most
     (a non-GMO premium is never the headline corn price), its nearest delivery
@@ -1093,14 +1219,14 @@ def answer_picks(boards):
     for c in CROPS:
         cands = []
         for bd in boards:
-            rs = [r for r in bd["rows"] if r["crop"] == c]
+            rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd")]
             if not rs:
                 continue
             com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
             rs = [r for r in rs if r["commodity"].lower() == com]
             m = min(r["dm"] for r in rs)
             best = max((r for r in rs if r["dm"] == m), key=lambda r: (r["cash"], r["priced"]))
-            cands.append((best, bd["operator"] or bd["city"]))
+            cands.append((best, head_name(bd)))
         if cands:
             m = min(r["dm"] for r, _ in cands)
             cands = sorted((x for x in cands if x[0]["dm"] == m), key=lambda x: x[1].lower())
@@ -1117,7 +1243,7 @@ def _basis_plain(r, vs=True):
     if r["basis"] is None:
         return ""
     b = pricefmt.basis(r["basis"] * 100)
-    return b + (f" vs {contract_label(r['contract'])}" if vs and r["contract"] else "")
+    return b + (f" vs {con_label(r['contract'])}" if vs and r["contract"] else "")
 
 
 def _posted_days(rows):
@@ -1139,7 +1265,7 @@ def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
     parts, prev = [], None
     for i, c in enumerate(cs):
         r, name = picks[c]
-        p = f"{CROP_LABEL[c].lower()} {pricefmt.cash(r['cash'])}"
+        p = f"{CROP_LABEL[c].lower()} {cash_c(r['cash'])}"
         if name != prev:
             p += f" at {name}"
         p += f" for {_mon_word(r['dm'], snap_ct)}" + (" delivery" if i == 0 else "")
@@ -1220,7 +1346,7 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
     crop = CROP_LABEL[c].lower()
     r, name = picks[c]
     qs = []
-    a1 = (f"The top {crop} bid we read in {place} is {pricefmt.cash(r['cash'])} a bushel at {name} for "
+    a1 = (f"The top {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name} for "
           f"{_mon_word(r['dm'], snap_ct)} delivery, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
     qs.append((f"What is {crop} paying in {town} today?", a1))
     if r["basis"] is not None:
@@ -1233,7 +1359,7 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
         d, b = near[0]
         g = b["glance"]
         pc = [x for x in ("corn", "soybeans") if x in g] or [x for x in CROPS if x in g][:1]
-        prices = " and ".join(f"{CROP_LABEL[x].lower()} {pricefmt.cash(g[x][0])}" for x in pc)
+        prices = " and ".join(f"{CROP_LABEL[x].lower()} {cash_c(g[x][0])}" for x in pc)
         p = b["posted"].astimezone(CT)
         a3 = (f"The nearest other elevator with a current bid is {b['name']} in {b['town']}, {b['state']}, "
               f"{dist_text(d).replace('mi', 'miles')} straight-line from {center[2]}. It posted {prices} on "
@@ -1358,11 +1484,14 @@ def build_town_page(t, ctx):
     live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
     secs, times, crops, nrows, shown, any_hold, held_all = [], [], set(), 0, [], False, []
-    for bd in live_b:
+    held_first = False
+    for i_bd, bd in enumerate(live_b):
         h, rows, ts, held = board_section(bd, snap_ct)
+        if held and i_bd == 0:
+            held_first = True
         any_hold = any_hold or bool(held)
         if held:
-            held_all.append((bd["operator"] or bd["city"], held))
+            held_all.append((head_name(bd), held))
         secs.append(h)
         times += ts
         shown += rows
@@ -1400,9 +1529,11 @@ def build_town_page(t, ctx):
             desc = adesc
         tops = top_nearby(shown)
         txt, when = share_prices(tops)
+        # every row here unusual (one specialty board): no price on the card
         share = (f"{place} cash bids",
-                 f"Top bids for nearest delivery: {txt} at {n} elevator{'s' if n != 1 else ''}. "
-                 f"Updated {fmt_share_time(when)}.")
+                 (f"Top bids for nearest delivery: {txt} at {n} elevator{'s' if n != 1 else ''}. " if txt else
+                  f"Bids from {n} elevator{'s' if n != 1 else ''}; call before you haul. ")
+                 + f"Updated {fmt_share_time(when or latest)}.")
         n_in = n - n_near
         who = (f'<b>{n_in}</b> elevator{"s" if n_in != 1 else ""} in {esc(place)}' if n_in else "")
         if n_near:
@@ -1438,7 +1569,10 @@ def build_town_page(t, ctx):
                       f"we list in {esc(t['name'])}; its card says how far.")
     hold_note = ""
     ss = "/store-or-sell" + (f"?zip={z}" if z else "")
-    top_html = top_holds(held_all, ss)
+    # the box sits right under the first card: when that card is the only one
+    # with a hold line (every one-elevator town), it already says it once
+    only_first = bool(live_b) and held_first and len(held_all) == 1
+    top_html = "" if only_first else top_holds(held_all, ss)
     center = town_center(t, z, ctx.get("zip_coord"))
     near_html = nearby_section(t, center, ctx.get("live_all"), snap_ct, indexable)
     cmp_lines, cmp_text = state_compare(picks, (ctx.get("summaries") or {}).get(st), sname)
@@ -1533,7 +1667,12 @@ def state_basis_rows(merged, index):
     group at its nearest open delivery."""
     rows = SB.fresh_rows(merged, index)
     SB.flag_futures_disagreement(rows)
-    return SB.nearby(rows)
+    out = SB.nearby(rows)
+    for r in out:        # printed words only; keys stay as the board gave them
+        r["operator"] = display_name(r.get("operator"))
+        if r.get("city"):
+            r["city"] = clean_place(r["city"])
+    return out
 
 
 def _plural(n, one, many=None):
@@ -1590,7 +1729,7 @@ def best_card(g, r, town_paths):
     where = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
     bas = (f'basis {money_basis(r["basis"])} vs {contract_label(r["contract"])}' if r["contract"]
            else f'basis {money_basis(r["basis"])}, futures month not named')
-    return (f'<div class="cbt-stat"><div class="v">{pricefmt.cash(r["cash"])}</div>'
+    return (f'<div class="cbt-stat"><div class="v">{cash_c(r["cash"])}</div>'
             f'<div class="l">Top {SB.CROP_LABEL[g].lower()} bid, nearest delivery ({esc(dtext(r))})</div>'
             f'<div class="s">{esc(r["operator"])}, {where} &middot; {bas} &middot; posted {fmt_day(r["priced"])}. '
             f'Call to confirm.</div></div>')
@@ -1672,7 +1811,7 @@ def top_bid_table(g, near, town_paths):
         tl = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
         con = f'<br><span class="mut">vs {contract_label(r["contract"])}</span>' if r["contract"] else ""
         trs.append(f'<tr><td>{esc(r["operator"])}<br><span class="mut">{tl}</span></td>'
-                   f'<td>{esc(dtext(r))}</td><td class="n">{pricefmt.cash(r["cash"])}</td>'
+                   f'<td>{esc(dtext(r))}</td><td class="n">{cash_c(r["cash"])}</td>'
                    f'<td class="n">{money_basis(r["basis"])}{con}</td></tr>')
     n = len([r for r in rs if r["start"] == first])
     ym_ = f"{MONTH_ABBR[int(first[5:7]) - 1]} {first[:4]}"
@@ -1884,8 +2023,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
         top_txt, when = share_prices(tops)
         share = (f"{sname} cash bids and basis",
                  f"Bids from {n_el} elevator{'s' if n_el != 1 else ''} across {len(live)} {sname} "
-                 f"town{'s' if len(live) != 1 else ''}. Top bid for nearest delivery: {top_txt}. "
-                 f"Updated {fmt_share_time(when)}.")
+                 f"town{'s' if len(live) != 1 else ''}. " + (f"Top bid for nearest delivery: {top_txt}. " if top_txt else "")
+                 + f"Updated {fmt_share_time(when or max(m['latest'] for m in live))}.")
     items = []
     for m in live:
         cl = ", ".join(CROP_LABEL[c].lower() for c in CROPS if c in m["crops"])
@@ -2085,6 +2224,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     summaries = {}
     for st_ in sorted({r["state"] for r in near}):
         summaries[st_] = BM.state_basis([r for r in near if r["state"] == st_], prev_map)
+    n_odd = flag_odd(towns, summaries)
     town_paths = {}
     for t in towns.values():
         for bd in t["boards"].values():
@@ -2167,7 +2307,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(out_dir) for f in fs)
     n_idx = sum(1 for m in metas if m["indexable"])
     print(f"[cash-bid-pages] snapshot {merged.get('generated')} ({age_h:.1f} h old); drops {dict(drops)}; "
-          f"{len(unplaced)} places not placed in a town (listed on the state index)")
+          f"{len(unplaced)} places not placed in a town (listed on the state index); {n_odd} unusual-basis rows flagged")
     print(f"[cash-bid-pages] places with no town in their name: {len(placed)}; placed by ZIP {how['zip']}, "
           f"within {NEAR_MI} mi of a town {how['near']}, not placed {how['none']}")
     print(f"[cash-bid-pages] {len(metas)} town pages ({n_idx} with a current bid, {len(metas) - n_idx} noindex), "
@@ -2242,6 +2382,47 @@ def selftest():
     assert not dated_label_past({"periodVia": "day-range-inferred-year", "delivery": "Oct 1-9th",
                                  "period": "2026-10"}, snap)
     assert town_name("BAXTER  SPRINGS") == "Baxter Springs" and url_slug("St. Paul") == "st-paul"
+    # an outlier basis never headlines (Riceville IA soybeans +1.40, 2026-10-15)
+    pt = parse_ts("2026-10-07T17:00:00Z")
+
+    def _bd(i, basis, cash, lat=43.3, crop="soybeans", con=("ZS", 10, 2026)):
+        return {"place": f"p{i}", "operator": f"Op {i}", "city": "", "pin": (lat, -92.5 + i * 0.05),
+                "rows": [{"crop": crop, "commodity": "Soybeans", "dm": "2026-10", "period": "2026-10",
+                          "cash": cash, "basis": basis, "contract": con, "priced": pt, "label": "Oct 2026"}]}
+    tw = {("IA", "a"): {"state": "IA", "boards": {f"p{i}": _bd(i, b, c) for i, (b, c) in enumerate(
+        [(-0.70, 11.93), (-0.68, 11.95), (-0.72, 11.91), (-0.75, 11.88), (1.40, 14.04)])}}}
+    # milo on the corn month far under corn is not judged against corn
+    tw[("IA", "a")]["boards"]["m"] = _bd(9, -1.50, 3.30, crop="sorghum", con=("ZC", 11, 2026))
+    assert flag_odd(tw) == 1
+    bds = list(tw[("IA", "a")]["boards"].values())
+    assert bds[4]["rows"][0]["odd"]["via"] == "nearby" and bds[4]["rows"][0]["odd"]["dist"] == 2.11
+    assert not bds[5]["rows"][0]["odd"], "milo judged against corn"
+    pk = answer_picks(bds)
+    assert pk["soybeans"][0]["cash"] == 11.95, pk
+    assert top_nearby([r for b in bds for r in b["rows"]])["soybeans"][0] == 11.95
+    assert "soybeans" not in board_glance(bds[4])
+    assert "Unusual basis, 211&cent; over" in odd_note(bds[4]["rows"][0])
+    # three others only: the state median stands in
+    tw2 = {("IA", "b"): {"state": "IA", "boards": {f"q{i}": _bd(i, b, c) for i, (b, c) in enumerate(
+        [(-0.70, 11.93), (-0.68, 11.95), (-0.72, 11.91), (1.40, 14.04)])}}}
+    summ = {"IA": {"soybeans": {"contracts": [{"contract": ("ZS", 10, 2026), "median": -0.63, "n": 40}]}}}
+    assert flag_odd(tw2) == 0 and flag_odd(tw2, summ) == 1
+    assert share_prices({}) == ("", None)
+    assert con_label(("KE", 11, 2026)) == "KC Dec '26" and con_label(("ZC", 11, 2026)) == "Dec '26"
+    assert parse_contract("December 2026", "wheat", 2026, "Hard Red Winter Wheat") == ("KE", 11, 2026)
+    assert cash_c(13.4275) == "$13.43" and cash_c(12.475) == "$12.48" and cash_c(4.2) == "$4.20" \
+        and cash_c(4.2125) == "$4.21" and cash_c(4.205) == "$4.21", "town pages print to the cent"
+    # the delivery point goes with the company's name (Cedar Rapids, 2026-10-15)
+    lc = {"operator": "Linn Coop Oil Company", "city": "Ingredion", "town": "Cedar Rapids", "how": "zip"}
+    assert head_name(lc) == "Linn Coop Oil Company (Ingredion, Cedar Rapids)"
+    assert head_name(lc, with_town=False) == "Linn Coop Oil Company (Ingredion)"
+    assert head_name({"operator": "Op", "city": "Hooper, NE", "town": "Hooper"}) == "Op"
+    assert head_name({"operator": "Op", "city": "Dewar, IA, IA", "town": "Dewar"}) == "Op"
+    assert head_name({"operator": "", "city": "Oran", "town": "Oran"}) == "Oran"
+    assert head_name({"operator": "Nexus Cooperative", "city": "Leroy", "town": "Le Roy"}) == "Nexus Cooperative"
+    assert head_name({"operator": "Osage Co-op Elevator", "city": "Osage Coop", "town": "Osage"}) == "Osage Co-op Elevator"
+    assert head_name({"operator": "Mid-Iowa Cooperative", "city": "Cargill Cedar Rapids", "town": "Cedar Rapids"}) \
+        == "Mid-Iowa Cooperative (Cargill Cedar Rapids)"
     merged, index = _fixture()
     # map pins for the nearby lists: Fremont and Hooper are about 13 mi apart, Iowa is far
     PINS = {"FREMONT": (41.433, -96.498), "Fremont": (41.433, -96.498), "Hooper": (41.611, -96.548),

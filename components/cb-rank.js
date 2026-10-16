@@ -223,11 +223,112 @@ function placeTown(label,zip){
   return t||label;
 }
 
+/* ── An outlier basis (port of scripts/basis_method.py's outlier guard) ──
+   Nutrition Service Co., Riceville IA posted soybeans at $14.04, basis +$1.40,
+   on 2026-10-15 with every neighbor near $11.93. Almost surely a food-grade or
+   non-GMO contract filed as plain soybeans. The Iowa state page already left
+   it out; this page made it Best soybeans and sent Worth the Drive to it.
+   The rule is the state page's: a basis further from the middle of the OTHER
+   elevators (same crop, same futures contract) than 5 robust standard
+   deviations (1.4826 x the median absolute deviation, never under 15c) is
+   unusual. So nothing within 75c of the middle is ever flagged. With fewer
+   than 4 other elevators to compare, the state's median for that contract
+   (data/basis-states.json) is the middle and the gate is the full 75c.
+   Basis in cents throughout. */
+var OUT_K=5,OUT_FLOOR=15,OUT_MIN_OTHERS=4;
+function med(a){
+  var s=a.slice().sort(function(x,y){return x-y;}),n=s.length;
+  if(!n)return null;
+  return n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2;
+}
+/* valC: this bid's basis; others: one basis per OTHER elevator; stateC: the
+   state median for the contract or null. -> null, or {median, dist, n, via}. */
+function outlierCheck(valC,others,stateC){
+  if(valC==null||!isFinite(valC))return null;
+  var m,gate,via,n=0;
+  if(others&&others.length>=OUT_MIN_OTHERS){
+    m=med(others);n=others.length;
+    var mad=med(others.map(function(v){return Math.abs(v-m);}));
+    gate=OUT_K*Math.max(1.4826*mad,OUT_FLOOR);via='search';
+  }else if(stateC!=null&&isFinite(stateC)){
+    m=stateC;gate=OUT_K*OUT_FLOOR;via='state';
+  }else return null;
+  var d=valC-m;
+  return Math.abs(d)>gate?{median:m,dist:d,n:n,via:via}:null;
+}
+/* items: [{key: elevator, group: crop+contract, c: basis cents, state}] ->
+   a result per item (null or outlierCheck's). An elevator counts once per
+   group, at the median of its own rows there. */
+var STATE_MED={};
+function setStateMedians(json){
+  var out={},s=json&&json.states;
+  if(s&&typeof s==='object')Object.keys(s).forEach(function(st){
+    var cr=s[st]&&s[st].crops;if(!cr)return;
+    Object.keys(cr).forEach(function(k){
+      var r=cr[k];if(!r||!r.contract||typeof r.median!=='number'||!isFinite(r.median))return;
+      (out[st]=out[st]||{})[r.contract]=Math.round(r.median*10000)/100;
+    });
+  });
+  return (STATE_MED=out);
+}
+function stateMedian(st,con){var s=STATE_MED[String(st||'').toUpperCase()];return s&&s[con]!=null?s[con]:null;}
+function markOutliers(items){
+  var by={};
+  items.forEach(function(it){
+    if(!it||!it.group||it.c==null||!isFinite(it.c))return;
+    var g=by[it.group]=by[it.group]||{};
+    (g[it.key]=g[it.key]||[]).push(it.c);
+  });
+  var perElev={};
+  Object.keys(by).forEach(function(g){
+    perElev[g]={};
+    Object.keys(by[g]).forEach(function(k){perElev[g][k]=med(by[g][k]);});
+  });
+  return items.map(function(it){
+    if(!it||!it.group||it.c==null||!isFinite(it.c))return null;
+    var pe=perElev[it.group],others=[];
+    Object.keys(pe).forEach(function(k){if(k!==it.key)others.push(pe[k]);});
+    var con=String(it.group).split('|')[1]||'';
+    return outlierCheck(it.c,others,stateMedian(it.state,con));
+  });
+}
+
+/* ── The name printed for an elevator and its place ───────────────────────
+   Twin of scripts/elevator_names.py (test/cashfix.test.mjs runs the same cases
+   through both). "Cash Bid JSI Site - Ag State" is a page title, not a name;
+   "Dewar, IA" printed beside its state read "Dewar, IA, IA". Exact fixes are in
+   data/elevator-names.json; until it loads, the general rules still apply. */
+var NAMES={operators:{},places:{}};
+var OP_HEAD=/^\s*(?:cash\s+bid\s+)?(?:jsi\s+site|iframe|current\s+grain\s+bids)\s*-\s*/i;
+var OP_TAIL=/\s*-\s*cash\s+bid\s+include\s*$/i;
+var ST_TAIL=new RegExp('(?:\\s*[,.]\\s*(?:'+('AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND '+
+  'OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY').split(' ').join('|')+'))+\\s*$','i');
+var OP_ARCHIVED=/^z(?=[A-Z])|\s*\.?\b(?:OLD|Old)$/g;
+function setNames(json){
+  NAMES={operators:(json&&json.operators)||{},places:(json&&json.places)||{}};
+  return NAMES;
+}
+function displayName(op){
+  var s=String(op||'').trim();
+  if(Object.prototype.hasOwnProperty.call(NAMES.operators,s))return NAMES.operators[s];
+  s=s.replace(OP_HEAD,'').replace(OP_TAIL,'').trim().replace(/,+$/,'').trim();
+  return s.replace(OP_ARCHIVED,'').trim();
+}
+function cleanPlace(p){
+  var s=String(p||'').trim();
+  if(Object.prototype.hasOwnProperty.call(NAMES.places,s))return NAMES.places[s];
+  s=s.replace(/^[{\s]+|[}\s]+$/g,'').replace(/[,\s]+$/,'').trim();
+  var out=s.replace(ST_TAIL,'').trim().replace(/,+$/,'').trim();
+  return out||s;
+}
+
 var api={centralDay:centralDay,dayLabel:dayLabel,pairMonths:pairMonths,pairEnd:pairEnd,
   wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,setFutures:setFutures,
   futureFor:futureFor,assess:assess,compare:compare,note:note,priceText:priceText,
   looksLikePoint:looksLikePoint,learnTowns:learnTowns,placeTown:placeTown,
-  futuresReady:false};
+  outlierCheck:outlierCheck,markOutliers:markOutliers,setStateMedians:setStateMedians,
+  stateMedian:stateMedian,setNames:setNames,displayName:displayName,cleanPlace:cleanPlace,
+  futuresReady:false,stateReady:false,namesReady:false};
 root.cbRank=api;
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 
@@ -241,6 +342,21 @@ if(typeof fetch==='function'&&typeof document!=='undefined'){
       :fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}))
       .then(function(j){if(!j)return;setFutures(j);api.futuresReady=true;
         if(typeof root.cbRankRedraw==='function')root.cbRankRedraw();})
+      .catch(function(){});
+  }catch(e){}
+  /* Exact display-name fixes (data/elevator-names.json). */
+  try{
+    fetch('/data/elevator-names.json').then(function(r){return r.ok?r.json():null;})
+      .then(function(j){if(!j)return;setNames(j);api.namesReady=true;
+        if(typeof root.cbOutlierRedraw==='function')root.cbOutlierRedraw();})
+      .catch(function(){});
+  }catch(e){}
+  /* The state medians the outlier check falls back to with few elevators. */
+  try{
+    (root.AG&&typeof root.AG.json==='function'?root.AG.json('/data/basis-states.json')
+      :fetch('/data/basis-states.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}))
+      .then(function(j){if(!j)return;setStateMedians(j);api.stateReady=true;
+        if(typeof root.cbOutlierRedraw==='function')root.cbOutlierRedraw();})
       .catch(function(){});
   }catch(e){}
 }

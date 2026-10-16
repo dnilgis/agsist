@@ -182,7 +182,25 @@ def cents_delta(v):
     return f"{'+' if v > 0 else '&minus;'}{abs(v):g}&cent;"
 
 
-def parse_contract(fm, crop, snap_year):
+_AT_ROOT = {"C": "ZC", "S": "ZS", "W": "ZW", "KW": "KE", "MW": "MW"}
+
+
+def wheat_root(commodity):
+    """The futures root a wheat bid's own commodity name points to, or None:
+    HRW / hard red winter / KC -> KE, SRW / soft red -> ZW, HRS / DNS /
+    spring -> MW. Pine Bluffs WY posts "Hard Red Winter Wheat" against
+    "December 2026" (2026-10-15): the class is in the name, not the month."""
+    t = (commodity or "").lower()
+    if re.search(r"\b(srw|soft red)\b", t):
+        return "ZW"
+    if re.search(r"\b(hrs|dns|spring|dark northern)\b", t):
+        return "MW"
+    if re.search(r"\b(hrww?|kc|kcbt|hard red winter)\b", t):
+        return "KE"
+    return None      # "Winter Wheat" alone could be either winter wheat
+
+
+def parse_contract(fm, crop, snap_year, commodity=None):
     """Futures month string as the board wrote it -> (root, month_index, year) or None.
 
     'ZCZ26', 'ZCZ6', 'KEN27', 'MWOZ26', 'Dec 26', 'December 2026',
@@ -200,6 +218,17 @@ def parse_contract(fm, crop, snap_year):
         if len(yy) == 1 and y < snap_year - 1:
             y += 10
         return root, MONTH_CODES.index(code), y
+    # DTN / Barchart style: "@C6Z" = Dec 2026 corn, "@KW7N" = Jul 2027 KC wheat
+    m = re.fullmatch(r"@(KW|MW|C|S|W)(\d)([FGHJKMNQUVXZ])", s)
+    if m:
+        root = _AT_ROOT[m.group(1)]
+        y = (snap_year // 10) * 10 + int(m.group(2))
+        if y < snap_year - 1:
+            y += 10
+        if (crop in ("corn", "soybeans") and root != {"corn": "ZC", "soybeans": "ZS"}[crop]) or \
+                (crop == "wheat" and root in ("ZC", "ZS")):
+            return None
+        return root, MONTH_CODES.index(m.group(3)), y
     m = re.match(r"^([A-Za-z]{3})[a-z]*\.?\s+(\d{2}|\d{4})\b(.*)$", s)
     if not m:
         return None
@@ -213,8 +242,11 @@ def parse_contract(fm, crop, snap_year):
         root = "KE"
     elif "spring" in rest or "miax" in rest or "mgex" in rest:
         root = "MW"
-    elif "wheat" in rest:
-        return None
+    elif "wheat" in rest or (crop == "wheat" and not rest.strip()):
+        # a bare month: which wheat only the commodity name can say
+        root = wheat_root(commodity) if commodity else None
+        if not root:
+            return None
     elif "oat" in rest:
         return None
     elif "soy" in rest:
@@ -440,7 +472,7 @@ def fresh_rows(merged, index, stats=None):
         if start is None or b.get("periodPast"):
             drop("undated_or_past_period")
             continue
-        con = parse_contract(b.get("futuresMonth"), crop, gen.year)
+        con = parse_contract(b.get("futuresMonth"), crop, gen.year, b.get("commodity"))
         if con is None:
             # A wheat row with no class contract cannot be grouped at all.
             if crop == "wheat":
@@ -1078,6 +1110,17 @@ def selftest():
     assert parse_contract("Nov 26 Soybeans", "soybeans", 2026) == ("ZS", 10, 2026)
     assert parse_contract("Dec 26 KCBT Red Wheat", "wheat", 2026) == ("KE", 11, 2026)
     assert parse_contract("Dec 26 Wheat", "wheat", 2026) is None
+    assert parse_contract("December 2026", "wheat", 2026) is None, "a bare month is no wheat contract"
+    assert parse_contract("December 2026", "wheat", 2026, "Hard Red Winter Wheat") == ("KE", 11, 2026)
+    assert parse_contract("Dec 26 Wheat", "wheat", 2026, "Wheat SRW") == ("ZW", 11, 2026)
+    assert parse_contract("Mar 27 Wheat", "wheat", 2026, "Wheat, HRS") == ("MW", 2, 2027)
+    assert parse_contract("December 2026", "wheat", 2026, "Wheat") is None
+    assert parse_contract("December 2026", "wheat", 2026, "Wheat (Soft Red Winter)") == ("ZW", 11, 2026)
+    assert parse_contract("December 2026", "wheat", 2026, "Winter Wheat") is None
+    assert parse_contract("@C6Z", "corn", 2026) == ("ZC", 11, 2026)
+    assert parse_contract("@KW7N", "wheat", 2026) == ("KE", 6, 2027)
+    assert parse_contract("@S7F", "soybeans", 2026) == ("ZS", 0, 2027)
+    assert parse_contract("@C6Z", "soybeans", 2026) is None
     assert parse_contract("12.5975s", "soybeans", 2026) is None
     assert parse_contract("MWOZ26", "wheat", 2026)[0] == "MWO"
     snap = parse_ts("2026-10-06T13:00:00Z")
