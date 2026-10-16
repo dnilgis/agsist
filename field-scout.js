@@ -2462,7 +2462,8 @@
       '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
       '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="3" fill="'+color+'"/>'+endTxt+'</svg>';
     var ax='<span class="fs-spark-ax" style="left:0;transform:none">'+ixDate(vals[0].date)+'</span>';
-    ticks.forEach(function(tk){ if(tk.frac>0.1 && tk.frac<0.9) ax+='<span class="fs-spark-ax" style="left:'+(tk.frac*100).toFixed(1)+'%">'+tk.label+'</span>'; });
+    // month labels keep clear of the first and last date labels (they ran together at 390 px: "May 10Jun")
+    ticks.forEach(function(tk){ if(tk.frac>0.18 && tk.frac<0.82) ax+='<span class="fs-spark-ax" style="left:'+(tk.frac*100).toFixed(1)+'%">'+tk.label+'</span>'; });
     ax+='<span class="fs-spark-ax" style="left:auto;right:0;transform:none">'+ixDate(vals[vals.length-1].date)+'</span>';
     return svg+'<div class="fs-spark-axis">'+ax+'</div>';
   }
