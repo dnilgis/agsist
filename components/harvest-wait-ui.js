@@ -284,7 +284,7 @@
   }
   function fineText(how, pick) {
     return 'Estimate. ' + (how === 'own' ? 'Drydown at your rate. ' : how === 'gdd' ? 'Drydown from the forecast heat. ' : 'Drydown at the published monthly rate for an average year; a wet or cold stretch dries less. ') +
-      'Fuel at today\'s price both ways; Iowa State says a dryer burns about 14% more for every 20 degrees colder. Handling shrink, hauling, labor and dryer capacity are not counted.';
+      'Fuel at today\'s price both ways; Iowa State says a dryer costs about 14% more to run for every 20 degrees colder. Handling shrink, hauling, labor and dryer capacity are not counted.';
   }
   function mathText(m, pick, c, o, D) {
     var L = [];
