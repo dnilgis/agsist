@@ -21,6 +21,7 @@ import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PAGE = readFileSync(ROOT + "drought-monitor.html", "utf8");
+const COUNTY_JS = readFileSync(ROOT + "components/drought-county.js", "utf8");
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -38,7 +39,12 @@ test("workflow commits the summary file; page order and copy", () => {
   assert.doesNotMatch(PAGE, /commonly cited/i, "no unsourced 'commonly cited' claims");
   assert.doesNotMatch(PAGE, /can make you eligible/i, "no eligibility promise");
   assert.doesNotMatch(PAGE, /&#39;/, "no entity apostrophes (they print raw in JSON-LD)");
-  assert.match(PAGE, /not an eligibility answer/);
+  assert.match(PAGE, /<script src="\/components\/drought-county\.js\?v=\d+" defer><\/script>/, "the county box script loads deferred");
+  for (const src of [PAGE, COUNTY_JS]) {
+    assert.doesNotMatch(src, /—/);
+    assert.doesNotMatch(src, /insurance agent/i);
+  }
+  assert.match(COUNTY_JS, /not an eligibility answer/);
   assert.match(PAGE, /not an NDMC rating/, "the stress table says whose rule it is");
   const ld = PAGE.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1];
   JSON.parse(ld);
