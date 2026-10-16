@@ -243,7 +243,7 @@
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:#5fc28a">RENT EASED</div>
       <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median Iowa county paid <b style="color:#5fc28a">$266 an acre</b> for non-irrigated cropland in 2026, <b style='color:#5fc28a'>-1.5&#37; vs 2025</b> across the same 99 counties. Highest county: Sioux at $336. Every county is in the table below.</div>
-      <div class="rs-rel">These are the 2026 county rents, the newest NASS has put out (released Aug 21, 2026). The 2027 rents usually come out in August 2027.</div>
+      <div class="rs-rel">These are the 2026 county rents, the newest NASS has put out (released Aug 21, 2026). NASS says county rents come out in late August every year, and they have every year since 2019; the 2027 date is not on its calendar yet.</div>
     </div>
   </div>
   <p class="rs-atlas">Part of the <a href="/farmland-atlas/iowa/">Farmland Atlas</a>: land values, rent and risk for every county.</p>
@@ -265,7 +265,7 @@
   <p class="rs-gr-out" id="gr-out" aria-live="polite">Pick a county and type your yield.</p>
   <p class="sub" id="gr-math" style="color:var(--text)"></p>
   <p class="sub">Derived by AGSIST, not a NASS number: the county&rsquo;s 2026 NASS dryland rent divided by its 2026 corn
-  trend yield (our 15-year fit, same practice as the rent), times your yield. It assumes rent moves in step with yield,
+  trend yield (our 14-yr trend, same practice as the rent), times your yield. It assumes rent moves in step with yield,
   which real leases only roughly do. Use your APH or a typical year, not your best one. 83 of 99 Iowa
   counties have both numbers; for the rest the Corn trend column below says why there is none.</p>
   <details><summary>Two more ways to figure a fair rent</summary>
@@ -337,7 +337,7 @@ function cur(){return D.c[+sel.value];}
 function usd(v){return '$'+Math.round(v).toLocaleString('en-US');}
 function num(e){var v=parseFloat(String(e.value).replace(/[$,%\s]/g,''));return isFinite(v)?v:NaN;}
 function cname(c){return c[0]+' '+D.unit;}
-function ownShare(c,p){return p>0?Math.round(1000*c[1]/(c[2]*p))/10:NaN;}
+function ownShare(c,p){return p>0?Math.round(10000*c[1]/(c[2]*p))/100:NaN;}
 function draw(){var c=cur(),Y=num(y),p=num(pr);
  if(!shDirty){var s0=ownShare(c,p);sh.value=isFinite(s0)?s0:'';}
  var S=num(sh);

@@ -96,6 +96,34 @@ def rent_verdict(yoy):
     if yoy > -3:     return ("RENT EASED", "#5fc28a")
     return ("RENT FELL", "#5fc28a")
 
+def reconcile_verdict(vw, sa_chg):
+    """The headline word comes from the median of matched counties. When USDA's own
+    state average moved the other way (Illinois 2026: counties flat, state average
+    $264 to $261), say both, so the page does not read 'held flat' against a decline."""
+    if sa_chg is None or abs(sa_chg) < 1:
+        return vw
+    up_word = vw in ("RENT ROSE", "RENT EDGED UP")
+    down_word = vw in ("RENT EASED", "RENT FELL")
+    if (sa_chg > 0 and up_word) or (sa_chg < 0 and down_word):
+        return vw
+    return (vw.replace("RENT ", "MIDDLE COUNTY ", 1) + " &middot; STATE AVERAGE "
+            + ("UP" if sa_chg > 0 else "DOWN") + f" ${abs(sa_chg):,.0f}")
+
+
+def state_avg_line(name, plabel, yr, s):
+    """NASS's statewide average beside our median, with its change, and why the two differ."""
+    sa, prev, chg = s.get("state_avg"), s.get("state_avg_prev"), s.get("state_avg_chg")
+    if sa is None:
+        return ""
+    move = ""
+    if chg is not None:
+        move = (f", {'up' if chg > 0 else 'down'} {money(abs(chg))} from {money(prev)} in {yr-1}" if abs(chg) >= 1
+                else f", about the same as {money(prev)} in {yr-1}")
+    return (f'<div class="rs-rel">USDA NASS&rsquo;s {name} state average for {plabel}: <b>{money(sa)} an acre</b> in {yr}{move}. '
+            f'The two differ because the state figure is NASS&rsquo;s own estimate for the whole state; the middle county '
+            f'counts each county once, big or small.</div>')
+
+
 def slug(name):
     return name.lower().replace(" ", "-")
 
@@ -253,7 +281,9 @@ def state_stats(d):
         if len(v_) >= MIN_DRY:
             other[t_] = {"median": med(v_), "n": len(v_)}
     # NASS's own statewide figure for the headline type, when the fetch has it
-    sa = (d.get("state_avg") or {}).get(primary, {}).get(str(yr_latest))
+    sa_all = (d.get("state_avg") or {}).get(primary, {})
+    sa = sa_all.get(str(yr_latest))
+    sa_prev = sa_all.get(str(yr_latest - 1)) if sa is not None else None   # last year's figure never stands in for this year's
     # rent per bushel of trend yield, per county: dryland only, same year, same
     # practice (pair_county), computed here so the page only multiplies
     ground = []
@@ -265,7 +295,9 @@ def state_stats(d):
                 ground.append({"n": c["name"], "f": c.get("fips"), "r": r_, "t": t_,
                                "b": round(r_ / t_, 2)})
     return {
-        "state_avg": sa, "ground": ground,
+        "state_avg": sa, "state_avg_prev": sa_prev,
+        "state_avg_chg": round(sa - sa_prev, 2) if sa is not None and sa_prev is not None else None,
+        "ground": ground,
         "other": other,
         "yr": yr_latest, "primary": primary, "have_types": have_types,
         "coverage": coverage, "n": len(cur), "median": med(list(cur.values())),
@@ -552,7 +584,7 @@ function cur(){return D.c[+sel.value];}
 function usd(v){return '$'+Math.round(v).toLocaleString('en-US');}
 function num(e){var v=parseFloat(String(e.value).replace(/[$,%\\s]/g,''));return isFinite(v)?v:NaN;}
 function cname(c){return c[0]+' '+D.unit;}
-function ownShare(c,p){return p>0?Math.round(1000*c[1]/(c[2]*p))/10:NaN;}
+function ownShare(c,p){return p>0?Math.round(10000*c[1]/(c[2]*p))/100:NaN;}
 function draw(){var c=cur(),Y=num(y),p=num(pr);
  if(!shDirty){var s0=ownShare(c,p);sh.value=isFinite(s0)?s0:'';}
  var S=num(sh);
@@ -608,7 +640,7 @@ def ground_panel(st, d, s, aslug=None):
   <p class="rs-gr-out" id="gr-out" aria-live="polite">Pick a {unit.lower()} and type your yield.</p>
   <p class="sub" id="gr-math" style="color:var(--text)"></p>
   <p class="sub">Derived by AGSIST, not a NASS number: the {unit.lower()}&rsquo;s {yr} NASS dryland rent divided by its {s['ty']} corn
-  trend yield (our 15-year fit, same practice as the rent), times your yield. It assumes rent moves in step with yield,
+  trend yield (our 14-yr trend, same practice as the rent), times your yield. It assumes rent moves in step with yield,
   which real leases only roughly do. Use your APH or a typical year, not your best one. {len(g)} of {s['n']} {name}
   {plural} have both numbers; for the rest the Corn trend column below says why there is none.</p>
   <details><summary>Two more ways to figure a fair rent</summary>
@@ -736,8 +768,12 @@ def build_state_page(st, d, s, all_states, aslug=None):
         f'<div class="s">{TYPE_LABEL[t_]}, {o["n"]} counties, shown apart</div></div>'
         for t_, o in s["other"].items())
     sa_tile = (f'<div class="rs-stat"><div class="v">{money(s["state_avg"])}</div><div class="l">NASS state average &middot; {yr}</div>'
-               f'<div class="s">{plabel}, whole state</div></div>') if s.get("state_avg") else ""
+               f'<div class="s">{plabel}, whole state'
+               + (f', {"+" if s["state_avg_chg"] >= 0 else "-"}{money(abs(s["state_avg_chg"]))} vs {yr-1}' if s.get("state_avg_chg") is not None else "")
+               + '</div></div>') if s.get("state_avg") else ""
     vw, vc = rent_verdict(s["yoy"])
+    vw = reconcile_verdict(vw, s.get("state_avg_chg"))
+    sa_line = state_avg_line(name, plabel, yr, s)
     # PRF link beside the pasture figure; a state with no pasture rent gets it in the links note
     has_pasture = "pasture" in s["have_types"]
     pasture_prf = ("\n  " + prf_line(st)) if has_pasture and prf_line(st) else ""
@@ -749,8 +785,8 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:{vc}">{money(s['median'])}</div>
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:{vc}">{vw}</div>
-      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}. Every county is in the table below.</div>
-      <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out{f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else ""}. The {yr + 1} rents usually come out in August {yr + 1}.</div>
+      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}. Every county is in the table below.</div>{sa_line}
+      <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out{f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else ""}. NASS says county rents come out in late August every year, and they have every year since 2019; the {yr + 1} date is not on its calendar yet.</div>
     </div>
   </div>
   {atlas_line(atlas_state_href(st))}{arc_line(st)}
