@@ -53,6 +53,18 @@
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
   }
 
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  /* "Oct 2026 delivery" from the row's period (2026-10 or 2026-10/2026-12). */
+  function delivWord(n) {
+    var m = /^(\d{4})-(\d{2})(?:\/(\d{4})-(\d{2}))?/.exec(String(n.period || ''));
+    if (m) {
+      var a = MON[+m[2] - 1] + ' ' + m[1];
+      if (m[3] && (m[3] !== m[1] || m[4] !== m[2])) a = MON[+m[2] - 1] + (m[3] !== m[1] ? ' ' + m[1] : '') + ' to ' + MON[+m[4] - 1] + ' ' + m[3];
+      return a + ' delivery';
+    }
+    return n.delivery ? String(n.delivery) : '';
+  }
+
   /* ── saved settings ─────────────────────────────────────────── */
   function saved() { try { var s = JSON.parse(lsGet(KEY) || 'null'); return s && typeof s === 'object' ? s : {}; } catch (e) { return {}; } }
   function save() {
@@ -129,7 +141,7 @@
         var where = esc(n.facility || 'Elevator') + (n.town || n.city ? ', ' + esc(String(n.town || n.city).replace(/,\s*[A-Z]{2}$/, '')) : '') + (n.state ? ' ' + esc(n.state) : '');
         setBid(n.cashPrice, 'zip', 'Nearest posted ' + esc(word) + ' bid: <b>' + where + '</b>' +
           (n.distance != null ? ', ' + (n.distance < 1 ? 'under a mile' : Math.round(n.distance) + ' miles') + ' from ' + esc(st.zip) : '') +
-          (n.delivery || n.period ? ', for ' + esc(n.delivery || n.period) : '') +
+          (delivWord(n) ? ', for ' + esc(delivWord(n)) : '') +
           (n.pricedAt ? '. Posted ' + esc(ctTime(n.pricedAt)) : '') + '. Call before you haul.');
         render(); return;
       }
@@ -224,7 +236,7 @@
       var items = [[bu(o.shrinkBu, 1) + ' bu', 'shrink, ' + pct(o.shrinkPct, 2)]];
       if (bid != null) items.push([dollars(o.shrinkDollars), 'shrink at your bid']);
       if (o.drying != null && o.drying > 0) items.push([dollars(o.drying), 'drying charge']);
-      if (bid != null && o.net != null) items.push([money(o.net / o.dryBu), 'net a dry bushel']);
+      if (bid != null && o.net != null && o.drying > 0) items.push([money(o.net / o.dryBu), 'net a dry bushel, after drying']);
       box.innerHTML = kv(items);
       var h = o.handlingPct;
       fine.textContent = (method === 'factor' ? 'Of that ' + pct(o.shrinkPct, 2) + ', water is ' + pct(o.waterPct, 2) + ' and the rest, ' + pct(h, 2) + ', is handling loss the factor assumes.' +
