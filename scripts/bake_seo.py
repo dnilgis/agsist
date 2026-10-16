@@ -786,6 +786,7 @@ def seo_basis(c):
 
 FERT_TITLE_ORDER = (("urea", "Urea"), ("anhydrous", "Anhydrous"), ("dap", "DAP"), ("potash", "Potash"))
 FERT_ROUND_DAYS = 30
+FERT_TITLE_DAYS = 30    # a newest price older than this: no number in the title (was 120 until 2026-10-16)
 FERT_PLAIN = ("Fertilizer Prices per Ton: What Co-ops Are Posting" + SUFFIX,
               "Retail fertilizer prices co-ops post on their own websites, each named with its region "
               "and date. Cost per lb of N, P and K.")
@@ -794,13 +795,20 @@ FERT_PLAIN = ("Fertilizer Prices per Ton: What Co-ops Are Posting" + SUFFIX,
 def seo_fertilizer(c):
     """data/fertilizer-prices.json (scripts/build_fert_prices.py): each
     product's middle cash price posted by the co-ops Sig sent, nothing else. Posted prices move week to week, so the TITLE carries no date --
-    a date there would read as today's price. The newest posted date goes in
-    the description, and a price more than FERT_ROUND_DAYS older than it is
-    not named. Until 2026-10-15 this read a hand-typed dealer sheet.
+    a date there would read as today's price. The dates the named prices were
+    posted go in the description, and a price more than FERT_ROUND_DAYS older
+    than the newest is not named. Until 2026-10-15 this read a hand-typed
+    dealer sheet.
 
-    With no file, no dated price, or a newest price over 120 days old, it
-    returns FERT_PLAIN: a title and description with no number, so an old
-    price never stays in the title."""
+    2026-10-16 (harvest audit): the title says whose prices they are ("Kansas
+    Co-op Fertilizer per Ton: ..."), because a Wisconsin farmer pricing fall
+    anhydrous read a bare "Urea $623" as his own; the description gives the
+    posting dates of the named prices (it said "through Oct 12" when only MAP,
+    not in the title, was that new); and a newest price over FERT_TITLE_DAYS
+    old drops the number from the title.
+
+    With no file, no dated price, or a newest price over FERT_TITLE_DAYS old,
+    it returns FERT_PLAIN: a title and description with no number."""
     d = c.get("fertilizer")
     rows = (d or {}).get("prices") or []
     dated = [(r, _d(r.get("as_of"))) for r in rows if isinstance(r.get("price"), (int, float)) and r.get("key")]
@@ -808,30 +816,39 @@ def seo_fertilizer(c):
     if not dated:
         return FERT_PLAIN
     newest = max(a for _, a in dated)
-    if _too_old(newest, c["today"], 120):
+    if _too_old(newest, c["today"], FERT_TITLE_DAYS):
         return FERT_PLAIN
-    cur = {r["key"]: r for r, a in dated if (newest - a).days <= FERT_ROUND_DAYS}
-    named = [(short, cur[k]) for k, short in FERT_TITLE_ORDER if k in cur]
+    cur = {r["key"]: (r, a) for r, a in dated if (newest - a).days <= FERT_ROUND_DAYS}
+    named = [(short, cur[k][0], cur[k][1]) for k, short in FERT_TITLE_ORDER if k in cur]
     if not named:
         return FERT_PLAIN
+    regs = sorted({r.get("region") for _, r, _ in named if r.get("src") == "coop" and r.get("region")})
+    who = (" and ".join(regs) + " Co-op") if regs else "Co-op"
     title = None
     for n in range(len(named), 0, -1):
-        # "per Ton" leads (2026-10-13): the page's named queries are
+        bits = ", ".join(f"{s} ${r['price']:,.0f}" for s, r, _ in named[:n])
+        # "per Ton" stays (2026-10-13): the page's named queries are
         # "... fertilizer price(s) per ton".
-        bits = [f"{s} ${r['price']:,.0f}" for s, r in named[:n]]
-        cand = "Fertilizer Prices per Ton: " + ", ".join(bits) + SUFFIX
-        if len(cand) <= TITLE_MAX:
-            title = cand
+        for cand in (f"{who} Fertilizer Prices per Ton: {bits}{SUFFIX}", f"{who} Fertilizer per Ton: {bits}{SUFFIX}"):
+            if len(cand) <= TITLE_MAX:
+                title = cand
+                break
+        if title:
             break
     if not title:
         return None
     parts = []
-    for i, (s, r) in enumerate(named):
+    for i, (s, r, _) in enumerate(named):
         bit = f"{s if s.isupper() else s.lower()} ${r['price']:,.0f}" + ("/ton" if i == 0 else "")
         parts.append(bit)
-    regs = sorted({r.get("region") for _, r in named if r.get("src") == "coop" and r.get("region")})
-    lead = (f"{' and '.join(regs)} co-op cash prices through {mdY(newest)}: " if regs
-            else f"Fertilizer prices through {mdY(newest)}: ")
+    lo, hi = min(a for *_, a in named), max(a for *_, a in named)
+    if lo == hi:
+        when = f"posted {mdY(hi)}"
+    elif lo.year == hi.year:
+        when = f"posted {mdY(lo).rsplit(',', 1)[0]} to {mdY(hi)}"
+    else:
+        when = f"posted {mdY(lo)} to {mdY(hi)}"
+    lead = (f"{' and '.join(regs)} co-op cash prices {when}: " if regs else f"Fertilizer prices {when}: ")
     head = lead + ", ".join(parts) + "."
     tail = " Cost per lb of N, P and K."
     desc = head + tail if len(head + tail) <= DESC_MAX else head
@@ -1527,16 +1544,28 @@ def selftest():
        "Aug 7, 2026" in d and "Aug 14 week is held" in d and "Indiana" not in d, d)
     t, d = seo_fertilizer(ctx)
     # the co-op posted price list (2026-10-15; was the hand-typed dealer sheet)
-    ck("fertilizer title names this round's prices", "Prices per Ton: Urea $623, Anhydrous $832" in t, t)
-    ck("fertilizer description names the co-ops' region", d.startswith("Kansas co-op cash prices through"), d)
+    ck("fertilizer title names this round's prices", "per Ton: Urea $623, Anhydrous $832" in t, t)
+    ck("fertilizer title says whose prices they are (2026-10-16 audit)", t.startswith("Kansas Co-op Fertilizer"), t)
+    ck("fertilizer description names the co-ops' region", d.startswith("Kansas co-op cash prices posted"), d)
     ck("fertilizer title carries NO date (weekly/monthly data)",
        not re.search(r"\b(20\d\d|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b", t), t)
-    ck("fertilizer description carries the quotes' own as-of date",
-       "through Aug 1, 2026" in d and "Aug 16" not in d, d)
+    ck("fertilizer description carries the posting dates of the prices it names",
+       "posted Jul 28 to Aug 1, 2026" in d and "Aug 16" not in d, d)   # potash Jul 28, urea Aug 1
+    rng = dict(ctx, fertilizer={"prices": [
+        {"key": "urea", "price": 622.98, "as_of": "2026-09-24", "src": "coop", "region": "Kansas"},
+        {"key": "anhydrous", "price": 832.1, "as_of": "2026-10-06", "src": "coop", "region": "Kansas"},
+        {"key": "map", "price": 980.0, "as_of": "2026-10-12", "src": "coop", "region": "Kansas"}]},
+        today=date(2026, 10, 16))
+    t2, d2 = seo_fertilizer(rng)
+    ck("fertilizer: the date range is the named prices' own, not a product left out of them",
+       "posted Sep 24 to Oct 6, 2026" in d2 and "Oct 12" not in d2, d2)
+    ck("fertilizer: newest price 31 days old gives the plain title (30-day rule)",
+       seo_fertilizer(dict(ctx, today=date(2026, 9, 1))) == FERT_PLAIN)
+    ck("fertilizer: newest price 30 days old still names it", seo_fertilizer(dict(ctx, today=date(2026, 8, 31))) != FERT_PLAIN)
     ck("fertilizer leaves out a price from an older round", "650" not in t + d)
     # 2026-10-15: no longer skipped (a skip left the old priced title in place);
     # the plain title carries no number at all.
-    ck("fertilizer: newest price over 120 days old gives the plain title, no number",
+    ck("fertilizer: an old newest price gives the plain title, no number",
        seo_fertilizer(dict(ctx, today=date(2026, 12, 15))) == FERT_PLAIN and not re.search(r"\$\d", "".join(FERT_PLAIN)))
     ck("fertilizer: no file gives the plain title", seo_fertilizer(dict(ctx, fertilizer=None)) == FERT_PLAIN)
 

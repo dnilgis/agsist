@@ -148,3 +148,21 @@ test("town pages: prices to the cent, one Hold line in a one-elevator town", () 
   /* the arithmetic is the builder's own selftest (cash_c, con_label, flag_odd) */
   execFileSync("python3", [ROOT + "scripts/build_cash_bid_pages.py", "--selftest"], { cwd: ROOT, stdio: "pipe" });
 });
+
+test("fertilizer: the lede says Kansas co-ops and the posting date range; the title says Kansas co-op", () => {
+  const F = read("fertilizer.html");
+  assert.match(F, /<span id="fert-lede-when"><\/span><\/p>/);
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(liftFn(F, "validPrice") + liftFn(F, "ledeWhen"), ctx);
+  const doc = { prices: [
+    { key: "urea", price: 622.98, as_of: "2026-10-06", src: "coop", region: "Kansas" },
+    { key: "uan32", price: 451.05, as_of: "2026-09-24", src: "coop", region: "Kansas" },
+    { key: "map", price: 980, as_of: "2026-10-12", src: "coop", region: "Kansas" },
+    { key: "bad", price: null, as_of: "2026-01-01" }] };
+  assert.equal(ctx.ledeWhen(doc), "Right now: Kansas co-ops only, posted Sep 24 to Oct 12, 2026.");
+  assert.equal(ctx.ledeWhen({ prices: [] }), "", "no price, no lede line");
+  const title = /<title>([^<]*)<\/title>/.exec(F)[1];
+  assert.ok(/^Kansas Co-op Fertilizer/.test(title) || !/\$\d/.test(title), title);
+  execFileSync("python3", [ROOT + "scripts/bake_seo.py", "--selftest"], { cwd: ROOT, stdio: "pipe" });
+});

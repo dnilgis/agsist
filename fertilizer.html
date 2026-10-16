@@ -18,8 +18,8 @@
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
 <link rel="manifest"                            href="/manifest.json">
 
-<title>Fertilizer Prices per Ton: Urea $623, Anhydrous $832 | AGSIST</title>
-<meta name="description" content="Kansas co-op cash prices through Oct 12, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<title>Kansas Co-op Fertilizer per Ton: Urea $623, Anhydrous $832 | AGSIST</title>
+<meta name="description" content="Kansas co-op cash prices posted Oct 6, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
 <meta name="keywords" content="fertilizer prices today, urea price per ton, anhydrous ammonia price, UAN price, DAP price, potash price, co-op fertilizer prices, nitrogen fertilizer cost, phosphate price, farm input prices, US fertilizer prices">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -27,8 +27,8 @@
 <meta property="og:type"         content="website">
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
-<meta property="og:title"        content="Fertilizer Prices per Ton: Urea $623, Anhydrous $832 | AGSIST">
-<meta property="og:description"  content="Kansas co-op cash prices through Oct 12, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<meta property="og:title"        content="Kansas Co-op Fertilizer per Ton: Urea $623, Anhydrous $832 | AGSIST">
+<meta property="og:description"  content="Kansas co-op cash prices posted Oct 6, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
 <meta property="og:url"          content="https://agsist.com/fertilizer">
 <meta property="og:image"        content="https://agsist.com/img/og/fertilizer.jpg?v=a876a101">
 <meta property="og:image:width"  content="1200">
@@ -37,8 +37,8 @@
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
-<meta name="twitter:title"       content="Fertilizer Prices per Ton: Urea $623, Anhydrous $832 | AGSIST">
-<meta name="twitter:description" content="Kansas co-op cash prices through Oct 12, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<meta name="twitter:title"       content="Kansas Co-op Fertilizer per Ton: Urea $623, Anhydrous $832 | AGSIST">
+<meta name="twitter:description" content="Kansas co-op cash prices posted Oct 6, 2026: urea $623/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/fertilizer.jpg?v=a876a101">
 
 <script type="application/ld+json">
@@ -326,7 +326,7 @@
   <div class="fert-hero">
     <div class="fert-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Input costs &middot; Co-op posted prices, read each weekday</div>
     <h1 class="fert-page-title">Fertilizer Prices</h1>
-    <p class="fert-page-sub page-lede">The middle cash price per ton that farm co-ops post for each product. Every price names its co-ops, region and date.</p>
+    <p class="fert-page-sub page-lede">The middle cash price per ton that farm co-ops post for each product. Every price names its co-ops, region and date.<span id="fert-lede-when"></span></p>
   </div>
 
   <div class="fert-updated-bar">
@@ -599,6 +599,22 @@ function initCalc(){
    data/fertilizer-prices.json (the one list every page prices from,
    scripts/build_fert_prices.py, co-op prices only). A missing file draws
    nothing for its part; the calculator says what has no price. */
+/* The lede says whose prices these are and when they were posted, from the
+   file: "Right now: Kansas co-ops only, posted Sep 24 to Oct 12, 2026."
+   (2026-10-16 audit: the page read as national prices in anhydrous season.) */
+function ledeWhen(doc){
+  var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],ds=[],regs={};
+  (doc&&doc.prices||[]).forEach(function(r){
+    if(!r||!validPrice(r.price)||!/^\d{4}-\d{2}-\d{2}$/.test(r.as_of||''))return;
+    ds.push(r.as_of);if(r.src==='coop'&&r.region)regs[r.region]=1;
+  });
+  if(!ds.length)return '';
+  ds.sort();
+  function f(d,yr){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);return M[+m[2]-1]+' '+(+m[3])+(yr?', '+m[1]:'');}
+  var lo=ds[0],hi=ds[ds.length-1],rs=Object.keys(regs).sort();
+  var when=lo===hi?f(hi,true):f(lo,lo.slice(0,4)!==hi.slice(0,4))+' to '+f(hi,true);
+  return 'Right now: '+(rs.length?rs.join(' and ')+' co-ops only':'co-op prices')+', posted '+when+'.';
+}
 function getJ(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-prices.json')]).then(function(res){
   var co=res[0],FS=window.FertSources,FC=window.FertCoops,prices=res[1];
@@ -607,6 +623,7 @@ Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-prices.j
   var top=document.getElementById('fert-coops'),th=FC?FC.top(co):'';if(top&&th){top.innerHTML=th;top.hidden=false;}
   var more=document.getElementById('fert-coops-more'),mh=FC?FC.more(co):'';if(more&&mh){more.innerHTML=mh;more.hidden=false;}
   if(!prices||!prices.prices)throw new Error('no-prices');
+  var lw=document.getElementById('fert-lede-when'),lt=ledeWhen(prices);if(lw&&lt)lw.textContent=' '+lt;
   var fvn=document.getElementById('fv-note');if(fvn)fvn.textContent=FS.coverNote(prices);
   var rows=FS.rows(prices);
   var prods=analyze(rows);STATE.products=prods;
