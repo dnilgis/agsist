@@ -1,0 +1,15 @@
+# Benchmark usda-quick-stats: farmdoc FAST crop yield database
+# https://farmdoc.illinois.edu/fast-tools/crop-yield-database
+# fetched 2026-10-16T16:22:43Z, sha256 e9e5bb9a3a924c52da493b12659436d158086aa38eb6872d69e2b7cf68f4e187
+
+Yield Risk Evaluator - farmdoc
+
+Yield Risk Evaluator
+
+About This Tool
+
+Last Updated : June 30, 2025
+
+Used to access historic crop yield data in for corn, soybeans, and wheat in Minnesota, Indiana, Illinois, and Iowa; sortable by state total, county level, and NASS crop reporting district.
+
+Download this FAST Tool

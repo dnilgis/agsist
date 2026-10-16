@@ -1,0 +1,643 @@
+# Benchmark urea: Manitoba Agriculture, surface-applied N
+# https://www.manitoba.ca/agriculture/crops/soil-fertility/what-is-happening-to-the-n.html
+# fetched 2026-10-16T16:22:53Z, sha256 19c67b45012dea3db4b42c229171d340a3ec625a2d3459691bdcd7b6d45769ad
+
+Province of Manitoba | agriculture - What is Happening to the N?
+
+﻿
+
+Header
+Side Menu
+Content
+Footer
+Search
+
+Printer FriendlyFrançaisSite Map Contact Government
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Agriculture
+
+- manitoba.ca
+
+- > Agriculture
+
+- > Crops
+
+- > Soil Fertility
+
+- > What is Happening to the N?
+
+Page Content
+
+What Happens to Surface Applied Nitrogen?
+
+Prepared by John Heard, MB Ag Soil Fertility Specialist
+
+Surface applied nitrogen in the urea form is susceptible to losses from volatilization. These forms include granular urea (46-0-0) and 28% UAN solution, which consists of 1/3 urea. Past experience tells us that when producers apply N in anticipation of forecasted rainfall and precipitation is not received N losses may be considerable. Factors favouring high volatilization potential are:
+
+Factor
+Reason
+
+High soil temperatures
+Speeds urea hydrolysis, diffusion of NH3
+
+Moist conditions followed by rapid drying
+Granular pellet dissolves, then NH3 is lost with evaporating water
+
+Windy conditions
+Reduces boundary layer between soil surface and atmosphere which increases losses of water and NH3
+
+High soil pH (>7.5)
+Increases ratio of NH3:NH4+. NH3 is subject to movement and loss, whereas NH4+ may be held by exchange sites on clay and organic matter
+
+High lime content in surface soil
+Increases ratio of NH3:NH4+
+
+Coarse soil texture (sandy)
+Less CEC (cation exchange capacity) to hold NH 4+
+
+Low organic matter content
+Less CEC to hold NH4+
+
+High amounts of surface residue
+More urease enzyme present may decrease volatilization if soil temperature and wind speed is reduced and soil moisture is preserved.
+
+Nitrogen source
+Urea > UAN solution > ammonium nitrate
+
+Several of these conditions have been experienced. Following is an estimate of losses based on Manitoba research:
+
+University of Manitoba: 38-46% of urea N lost in 5 days at 25°C vs less than 7% loss at 15°C.
+
+AAFC Brandon: 40% and 88% loss of urea N after 7 days in May (20-25°C temperatures) and July (30°C temperatures), respectively. Losses for 28% UAN were 7 % and 50% under the same circumstances.
+
+A 1/4 inch to 4/10" (6-10 mm) of rainfall is required to adequately incorporate surface applied urea forms.
+
+Options for topdressing in a dry spring:
+
+- Apply UAN (20-0-0) below the soil surface. Options include spoke wheel applicators and RTK guided,
+
+- Dribble application of UAN (28-0-0) solution will improve its efficiency over broadcast sprayed UAN,
+
+- Harrowing after application may not be very effective. Shallow incorporated urea will hydrolyse and the NH3 will move with water that is evaporating from the soil surface.
+
+- Use of a urease inhibitor such as Agrotain (active ingredient NBPT) will delay losses for up to 7-14 days.
+
+Farmers that have applied urea form nitrogen may want to estimate losses and make supplemental applications. Losses due to volatilization can be estimated by using Nitrogen Rich Strips (NRS) or measuring with clositubes. NRS are an applicator width of 150 percent the recommended N rate applied as a strip or in cells across the field. Simply compare crop growth (colour, height, biomass) between the field and he NRS. If differences are apparent, supplemental Nitrogen may be required. Use of NH3 clositubes for estimating volatilization loss is described here:
+
+https://www.umanitoba.ca/faculties/afs/agronomists_conf/media/2013_Heard_measuring_ammonia_lossesDec_4.pdf
+
+For further information, contact your MB Ag Office.
+
+Get Started
+
+- Homepage
+
+- About
+
+- Animal Health and Welfare
+
+- About the CVO
+
+- Animal Welfare
+
+- Animal Protection
+
+- Animal Welfare Dashboards
+
+- Education
+
+- Legislation and Codes of Practice
+
+- Education
+
+- Legislation and Codes of Practice
+
+- Animal Health
+
+- Biosecurity
+
+- Equine Biosecurity
+
+- Disease Control & Surveillance
+
+- Disease Investigations Dashboards
+
+- Veterinary Drugs
+
+- Emergency Preparedness
+
+- One Health
+
+- Rabies Dashboards
+
+- Traceability
+
+- Premises Identification
+
+- Animal Identification
+
+- Movement
+
+- Food Processing
+
+- Veterinary Diagnostic Services
+
+- Laboratory Manuals
+
+- Submission Forms
+
+- VDS Dashboards
+
+- Crops
+
+- Crop Management
+
+- Biosecurity
+
+- Soil Fertility
+
+- Insects
+
+- Plant Diseases
+
+- Weeds
+
+- Seasonal Reports
+
+- Crop Report
+
+- Crop Pest Update
+
+- Fruit Crop Report
+
+- Potato Report
+
+- Vegetable Crop Report
+
+- Crop Residue Burning Program
+
+- Frequently Asked Questions
+
+- Burning of Crop Residue and Non-Crop Herbage Regulation
+
+- Enforcement
+
+- Smoke Dispersion: the Key to it All
+
+- The Costs of Stubble Burning
+
+- Farmer Alternatives for Managing Straw
+
+- Why Do Farmers Burn?
+
+- Impact of the Manitoba Crop Residue Burning Program
+
+- History of the Program
+
+- Crop Diagnostic Services
+
+- Crop Diagnostic School
+
+- Horticulture School
+
+- Guides and Publications
+
+- Apiary
+
+- Home Page
+
+- Environment
+
+- Climate Change
+
+- Agriculture and Climate Change
+
+- Mitigation
+
+- Adaptation
+
+- Ecological Goods and Services
+
+- Activities in Manitoba
+
+- Working Groups
+
+- Estimating Program Uptake and the Nature of Costs-Benefits in Agro-Manitoba
+
+- Environmental Farm Plan
+
+- Mortality Management
+
+- Burial
+
+- Composting Mortalities
+
+- Incineration
+
+- Rendering
+
+- Nutrient Management
+
+- Manure Management
+
+- Soil Management
+
+- Manitoba Fall Soil Moisture Survey
+
+- Water Management
+
+- Watershed Evaluation of BMPs
+
+- Integrated Watershed Management Planning
+
+- Guides and Publications
+
+- Events and Deadlines
+
+- Farm Management
+
+- Cost of Production
+
+- Fertilizer Cost
+
+- Business Risk Management
+
+- Marketing Management
+
+- Non-Current Guides
+
+- Farm Machinery
+
+- Farmland and Buildings
+
+- Sample Agreements
+
+- Financial Management
+
+- Human Resources
+
+- Farm Succession and Transition
+
+- Ownership Structure
+
+- Young Farmers
+
+- Presentations and Videos
+
+- Manitoba Family Farm Recognition Program
+
+- Food and Ag Processing
+
+- About the Sector
+
+- Starting a Food Business
+
+- Business Pathways
+
+- Food Development Centre
+
+- Resources
+
+- Market Development
+
+- Value Chains
+
+- Provincial Abattoirs
+
+- Food Safety
+
+- On-Farm
+
+- Programs
+
+- Education and Resources
+
+- Inspection
+
+- Food Processing Inspection
+
+- Meat Inspection
+
+- Risk-Based Inspection
+
+- Funding
+
+- Sustainable Canadian Agricultural Partnership
+
+- Business Risk Management
+
+- AgriInvest
+
+- AgriStability
+
+- AgriRecovery
+
+- Canadian Agricultural Partnership (2018-2023)
+
+- Veterinary Student Grants
+
+- Industry Leadership
+
+- Leading an Organization
+
+- Starting an Organization
+
+- Developing a Strategic Plan
+
+- Strategic Planning
+
+- Mission Statement
+
+- Vision Statement
+
+- Goal Development
+
+- Evaluation
+
+- Board Operations
+
+- Risk Management
+
+- Effective Meetings
+
+- Communication
+
+- Employee Management
+
+- Storing Documents
+
+- Being a Board Member
+
+- Board Member Recruitment
+
+- Roles and Responsibilities
+
+- Dissolving an Organization
+
+- Resources
+
+- 4-H
+
+- Rural Organizations
+
+- Workforce
+
+- Employers
+
+- Job Seekers
+
+- Industry Careers
+
+- Land Management
+
+- Private Land
+
+- Crown Land
+
+- Leasing Program
+
+- Appeal Tribunal
+
+- Foreign Ownership
+
+- Land Map Viewers
+
+- Livestock
+
+- Aquaculture
+
+- Beef
+
+- Bison
+
+- Dairy
+
+- Goat
+
+- Pork
+
+- Poultry
+
+- Sheep
+
+- Other
+
+- Auctions and Selling
+
+- Brand Design
+
+- Brand Registry
+
+- Dealer and Agent License
+
+- Local Food
+
+- Markets and Statistics
+
+- Crops Statistics
+
+- Livestock Statistics
+
+- Food and Value Added Agriculture Statistics
+
+- Economic Analysis
+
+- Financial Statistics
+
+- Trade Statistics
+
+- Agriculture Census
+
+- Publications and Proceedings
+
+- Permits and Licences
+
+- Pesticide and Manure Licensing Program
+
+- Pesticide Applicator Licence
+
+- Pesticide Dealer License
+
+- Manure Applicator Licence
+
+- Renewing a Licence
+
+- Frequently Asked Questions
+
+- Legislation
+
+- Protein
+
+- Invest in Manitoba
+
+- Protein Sources
+
+- Sustainability
+
+- Sustainable Protein Initiatives
+
+- Industry Sustainability Drivers
+
+- Funding Sustainable Transitions
+
+- Protein Innovation
+
+- Food Development Centre
+
+- The Canadian Centre for Agri-Food Research in Health and Medicine
+
+- Richardson Centre for Food Technology and Research
+
+- University of Manitoba
+
+- Brandon University
+
+- University of Winnipeg
+
+- Red River College
+
+- ACC
+
+- Cereals Canada
+
+- EMILI
+
+- Reports, Videos and Podcasts
+
+- Manitoba Protein Advantage Strategy
+
+- Research and Innovation
+
+- Online Resources
+
+- Manitoba Hay Listing Service
+
+- Reports and Newsletters Signup
+
+- Sign Up for Growing Manitoba Ag
+
+- AgTalk Webcasts and Videos
+
+- Crop Talk
+
+- Contact
+
+- Reports and Expenses
+
+- Annual Reports
+
+- Supplement to the Estimates of Expenditure
+
+- Weather
+
+- Manitoba Ag Weather Program
+
+- Manitoba Weather Network Existing Stations
+
+- Weather Conditions and Reports
+
+Stay Connected
+
+- Join us on Facebook
+
+- Follow us on Twitter
+
+- Subscribe to our RSS
+
+- View our videos on YouTube
+
+- View our photos on Flickr
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+No

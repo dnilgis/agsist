@@ -1,0 +1,351 @@
+# Benchmark urea: Montana State urea volatilization BMP (EB0209)
+# https://landresources.montana.edu/soilfertility/documents/PDF/pub/UvolBMPEB0209.pdf
+# fetched 2026-10-16T16:22:49Z, sha256 e3be9513a8e7e81cf01b4c503922b3b63511d84c2071d03724cd921c8e123b9e
+
+                                                   Management to Minimize Nitrogen Fertilizer Volatilization   1
+
+Management to Minimize
+                                           Factors Affecting
+Nitrogen Fertilizer Volatilization
+
+
+
+EB0209 updated June 2020
+
+                           Clain Jones Extension Soil Fertility Specialist
+                           Dept. of Land Resources and Environmental Sciences, Montana State University, Bozeman
+                           Brad D. Brown Extension Soil and Crop Management Specialist, retired
+                           Parma Research and Extension Center, University of Idaho, Parma
+                           Rick Engel Professor of Nutrient Management
+                           Dept. of Land Resources and Environmental Sciences, Montana State University, Bozeman
+                           Don Horneck Former Professor of Soil Science
+                           Hermiston Agricultural Research and Extension Center, Oregon State University, Hermiston
+                           Kathrin Olson-Rutz Research Associate 									
+                           Dept. of Land Resources and Environmental Sciences, Montana State University, Bozeman
+
+
+
+
+Volatilization of ammonia from nitrogen fertilizers is controlled by a number
+of soil properties, environmental conditions, and management practices.
+This bulletin describes best management practices to minimize ammonia
+volatilization loss and increase nitrogen use efficiency, with a focus on
+urea fertilizer. The bulletin Factors Affecting Nitrogen Fertilizer Volatilization
+describes soil properties and environmental conditions affecting volatilization.
+Fertilizer products mentioned in the publication in no way represent all fertilizers. Discrimination or
+endorsement is not intended with the listing of commercial products by Montana State University Extension.
+Due to labels and registrations, which are constantly changing, applicators must always read and follow the
+product label.
+
+
+
+
+Copyright © 2020 MSU Extension
+We encourage the use of this document for nonprofit educational purposes. This document may be reprinted for nonprofit educational
+purposes if no endorsement of a commercial product, service or company is stated or implied, and if appropriate credit is given
+to the author and MSU Extension. To use these documents in electronic formats, permission must be sought from the Extension
+Communications Coordinator, 135 Culbertson Hall, Montana State University, Bozeman, MT 59717; E-mail: orderpubs@montana.edu
+The U.S. Department of Agriculture (USDA), Montana State University and Montana State University Extension prohibit discrimination
+in all of their programs and activities on the basis of race, color, national origin, gender, religion, age, disability, political beliefs, sexual
+orientation, and marital and family status. Issued in furtherance of cooperative extension work in agriculture and home economics,
+acts of May 8 and June 30, 1914, in cooperation with the U.S. Department of Agriculture, Cody Stone, Director of Extension, Montana
+State University, Bozeman, MT 59717.
+                                                                              Management to Minimize Nitrogen Fertilizer Volatilization                      1
+
+
+
+
+All ammonium and ammonia-based fertilizers, including                          TABLE 1. Common N fertilizer sources and their grade.
+manure, have the potential for ammonia volatilization -
+                                                                                             Fertilizer                                Grade
+the loss of nitrogen (N) to the air as ammonia gas. Our
+focus is on ammonia volatilization (hereafter referred to                                      Urea                                   46-0-0
+as simply volatilization) from urea and liquids containing                       Urea ammonium nitrate (UAN)                      28-0-0 or 32-0-0
+urea, such as urea ammonium nitrate (UAN; Table 1)                                     Ammonium sulfate                              21-0-0-24
+because urea fertilizers have the greatest potential for
+                                                                                        Ammonium nitrate                              34-0-0
+volatilization. They are also the most commonly used N
+fertilizers, and have been the focus of most volatilization                        Calcium ammonium nitrate                           27-0-0
+studies. Most volatilization from urea typically occurs
+                                                                              field conditions. While urea’s volatilization losses under
+during a two- to three-week period after application.
+                                                                              worst-case conditions can exceed 50 percent, losses can
+The conditions that affect volatilization (Table 2) are
+                                                                              be minimized with proper management. This publication
+described in more detail in Factors Affecting Nitrogen
+                                                                              suggests practices that minimize volatilization losses and
+Fertilizer Volatilization (see “Extension Materials” at end of
+                                                                              maximize N use efficiency in the inland Northwest and
+document). Multiple and often interrelated factors make
+                                                                              Montana.
+volatilization highly variable and difficult to predict under
+
+ TABLE 2. Environmental and soil conditions with high and low risk for ammonia volatilization. The risk of volatilization increases as the number of
+ high risk conditions increases, with soil moisture likely being the most important risk condition.
+                            High risk conditions                                                          Lower risk conditions
+                          Moist soil or heavy dew                                                               Dry soil
+                            High soil pH (>7.0)                                                            Low soil pH (<6.0)
+              High soil temperature (>70°F) or frozen soil                                                Cool soil temperature
+                   Crop residue, perennial thatch or sod                                                        Bare soil
+                Low cation exchange capacity soil (sandy)                            High cation exchange capacity soil (silt or clay-dominated)
+   Poorly buffered soils (low soil organic matter, low bicarbonate content,     Highly buffered soils (high soil organic matter, high bicarbonate content,
+                              high sand content)                                                            high clay content)
+
+
+Fertilizer Management
+The key to reducing volatilization is to get ammonium-
+and ammonia-based fertilizers, including manure, into the                          TABLE 3. Summary of urea management practices to minimize
+soil to trap the ammonia produced. By evaluating your                              or prevent volatilization.
+relative volatilization risk (Table 2), you can select the
+most appropriate practices presented in Table 3 and the                            • Delay application under high risk conditions
+following section to adopt.                                                        • Incorporate within one to two days after application with:
+
+N FERTILIZER SOURCE                                                                   - Tillage (> 2 inches deep)
+                                                                                      - Irrigation (> 0.5 inch)
+Common N fertilizers and their grade are in Table 1.
+Volatilization from different fertilizers varies with the form                        - Rainfall (when > 0.5 inch as a single event is expected)
+of N they contain and how they dissolve and transform                              • Subsurface band (> 2 inches deep)
+in the soil. Urea-based fertilizers, anhydrous ammonia
+                                                                                   • Add NBPT to surface applied urea
+and aqua ammonia have high volatilization potential
+because they can locally increase soil pH sufficiently to                          • Use a controlled-release N fertilizer
+increase ammonium conversion to ammonia. Volatilization                            • Consider an alternate N source such as UAN, calcium         		
+loss from ammonium nitrate is very low, often similar                                 ammonium nitrate or ammonium sulfate.
+to unfertilized controls, but it can be difficult to obtain
+because of its potential use for making explosives. Calcium
+2        ammonium nitrate is still available in the US and has                                             most common inhibitor is N-(n-butyl) thiophosphoric
+         similarly low volatilization potential (1). Ammonium                                              triamide (NBPT) which is the active ingredient of Agrotain®.
+         sulfate has intermediate volatilization potential, with                                           Volatilization loss from Agrotain®-urea ranged from four
+         higher losses in calcareous (containing free lime) soils                                          to 62 percent of the loss from conventional urea, and
+         than acidic soils.                                                                                averaged about 30 percent, depending on climate, soil
+            Sprayed liquid urea can have lower volatilization                                              conditions, and the duration over which loss was measured
+         potential than granular urea (2) in part because liquid                                           (4, 5; Figure 1). Studies that track volatilization for only
+         urea leaves a thin, even distribution of urea, with less                                          a few weeks may over-estimate NBPT’s ability to protect
+         effect on soil pH. Urea ammonium nitrate has generally                                            urea from volatilization, as NBPT’s effectiveness generally
+         demonstrated lower volatilization loss than granular                                              declines over time. NBPT breaks down more quickly in
+         urea (Figure 1) probably because after spraying, it is less                                       acidic than alkaline soils and as soil temperature and
+         concentrated than prills. In addition, one-fourth of UAN                                          moisture content increase. Under cold weather application
+         is nitrate which has no chance of volatilizing. For more                                          conditions, volatilization protection was found to last two
+         information on the mechanisms influencing differences                                             to three weeks on acidic to neutral soils (pH 5.5 to 7.0),
+         among fertilizers see Factors Affecting Nitrogen Fertilizer                                       and more than seven weeks on an alkaline soil (pH 8.4; 5).
+         Volatilization.                                                                                      NBPT will be more effective at reducing volatilization
+            Enhanced efficiency urea fertilizers have been developed                                       losses under high risk conditions that favor fast losses
+         to reduce N losses and increase N use efficiency. How                                             from urea, such as in poorly buffered soils. NBPT does
+         these products work and their effectiveness are explained                                         not prevent, but can inhibit urea volatilization for two to
+         in Enhanced Efficiency Fertilizers (see “Extension Materials”                                     10 weeks. This allows time for mechanical incorporation,
+         at end of document). Although there are numerous N                                                irrigation, or sufficient rainfall to move surface applied urea
+         fertilizer products that minimize volatilization, they may                                        below the soil surface and diffuse throughout the soil. Urea
+         not produce a proportionate yield increase because N                                              that converts to ammonium within the soil is less likely to
+         availability is not the only factor that affects crop yield.                                      be lost to the air as ammonia gas.
+         Also, N is often applied to meet high grain protein                                                  Over three years in central Montana, adding NBPT to
+         demands. At these higher N rates, yields won't necessarily                                        fall, mid-winter or early-spring broadcast urea reduced
+         benefit from moderately reduced volatilization losses. The                                        volatilization but did not increase winter wheat yields.
+         impact of these specialized fertilizer products on crop                                           However, NBPT applied to fall broadcast urea increased
+         yield varies with soil and environmental conditions. A few                                        grain protein by 0.6 to 0.8 protein units (%), making
+         products have been broadly studied and ongoing testing                                            protein similar to that in winter wheat receiving urea
+         will reveal more products’ volatilization potential and                                           broadcast in the spring without NBPT (6). NBPT combined
+         influence on yields and protein.                                                                  with dicyandiamide (DCD, to slow nitrification and
+            Urea fertilizers can be ‘stabilized’ with the addition of                                      loss of N gas) limited volatilization loss from urea in a
+         chemical compounds that inhibit N transformations. The                                            central Montana dryland study in the year when rainfall
+
+
+                                30                                                                                                     100
+                                                                                     Broadcast Urea                                    90
+                                25
+                                                                                                                                       80
+    Percent of Applied N Lost
+
+
+
+
+                                                                                                           Percent of Applied N Lost
+
+
+
+
+                                20                                                                                                     70
+                                                                                                                                       60
+                                15                                                                                                     50
+                                                                                Surface-band UAN
+                                                                                                                                       40
+                                10
+                                                                                                                                       30
+
+                                 5                                                                                                     20
+                                                                        Broadcast Agrotain®-urea                                        10
+                                 0                                                                                                      0
+                                     0         2         4           6           8         10         12                                     0       0.2        0.4         0.6        0.8       1.0       1.2
+                                                          Days After Application                                                                                 Irrigation Rate (inches)
+
+                                     FIGURE 1. Percent of applied N lost from UAN and broadcast urea                                         FIGURE 2. Percent of applied N lost to volatilization from urea
+                                     with and without Agrotain® from a newly seeded field irrigated                                          broadcast in the spring on moist soil followed by different rates
+                                     only before fertilizer application (3). Average soil temperature                                        of irrigation on winter wheat (16). Average soil temperature
+                                     was 50°F, pH 6.5.                                                                                       was 44°F, pH 6.5.
+                                                                            Management to Minimize Nitrogen Fertilizer Volatilization                    3
+
+
+
+incorporated the urea 5 days after broadcast. Camelina                       Unfortunately, in Montana studies, seeding with air drills
+yields were greater with the NBPT-DCD treated (1407 lb/                      after broadcasting did not incorporate fertilizer enough to
+ac) than untreated (1020 lb/ac) urea. When incorporation                     reduce volatilization loss (11). Sub-surface banding can
+by rainfall did not happen within 7 days of broadcast,                       also help reduce volatilization loss from urea in calcareous
+NBPT-DCD treated and untreated urea had the same N loss                      or well-buffered soils. However, in acidic (pH <7), poorly-
+and camelina yields, which were limited by water rather                      buffered soils, surface or subsurface bands can have higher
+than N (7).                                                                  volatilization loss than surface or incorporated broadcast
+  Controlled-release products, such as polymer-coated                        urea (8, 12). For best results, bands should be at least
+urea, have volatilization losses similar to well incorporated                two inches beneath the surface and the slit produced
+granular urea. The slow release of urea from polymer-                        by banding or knifing should be well-closed to trap the
+coated and NBPT-urea results in low soil ammonium                            ammonia produced by the urea band.
+content and minimal localized pH increase, therefore low                       Fields with high plant residue or thatch have higher
+volatilization loss (8). Polymer-coated urea broadcast on                    potential volatilization than bare soil (Factors Affecting
+sod in September and watered daily had 40 to 51 percent                      Nitrogen Fertilizer Volatilization). In perennial grass
+less volatilization loss than conventional urea in Utah                      systems, subsurface placement of urea by drilling or
+and improved growth. This suggests polymer-coated urea                       knifing increases plant N recovery, most likely from
+could reduce volatilization losses and increase yields                       reduced volatilization loss (13). However, subsurface
+in perennial forage systems (9). Unlike NBPT-urea, the                       placement may not be feasible or may cause excessive
+effectiveness of a polymer-coat to protect urea can last for                 stand disturbance. Alternatively, surface banding UAN in
+several months. Under dry, cool conditions, N release from                   perennial grass systems led to higher N uptake than UAN
+polymer-coated urea is very slow; therefore application                      sprayed uniformly on the surface (14).
+of polymer-coated urea must be timed well in advance of
+crop N need to ensure the N is available.                                    TIMING
+                                                                             When possible, time broadcast applications of urea when
+PLACEMENT
+                                                                             the likelihood of a significant rainfall is high, or when
+Broadcasting urea without incorporation increases                            irrigation or tillage can be used to incorporate the N. Urea
+volatilization loss and should be avoided on well-buffered                   broadcast on moist soil should have 0.5 inch of rain (15)
+soils that are common in our region. If broadcasting is                      or irrigation (Figure 2) in one event within a couple of
+the only feasible option, consider using a management                        days to dissolve prills and move urea deep enough into
+practice that minimizes volatilization (Table 3). Based on                   the soil to minimize volatilization. Furrow irrigation may
+lab trials, timing urea application so it can be followed                    exacerbate urea’s volatilization by dissolving urea without
+quickly by incorporation may be more important than                          pushing it down into the soil.
+applying urea on dry rather than moist soils (10).
+
+
+
+
+A                                                  B                                                  C
+FIGURE 3. Moist soil (A) and snow covered soil (B) should be avoided for spreading urea fertilizer regardless of soil temperature. Urea applied to dry
+soil (C) can remain undissolved for at least a week with no volatilization loss. Images by R. Engel.
+4      Surface soil moisture is a major contributor to broadcast     References
+    urea’s volatilization. This has been shown in cool season
+                                                                     1. Holcomb, J.C., III, D.A. Horneck, D.M. Sullivan, and
+    broadcast urea applications in semi-arid regions of
+                                                                        G.H. Clough. 2011. Ammonia volatilization. Western
+    Montana (5). Largest losses (30 to 44 percent of applied
+                                                                        Nutrient Management Conference Proceedings. 9:22-
+    N) occurred after urea was applied to wet or snowy soil
+                                                                        28. March 3-4, 2011, Reno, Nevada.
+    surfaces (Figure 3), followed by a period of slow drying
+    with little or no precipitation. Losses were less (10 to 20      2. Lightner, J.W., D.B. Mengel, and C.L. Rhykerd. 1990.
+    percent of applied N) when urea was broadcast on dry soil           Ammonia volatilization from nitrogen fertilizer surface
+    followed by only light scattered rainfall (<0.33 inch) and          applied to orchardgrass sod. Soil Science Society of
+    losses were least (<10 percent of applied N) when applied           America Journal. 54:1478- 1482.
+    to a dry surface followed within two weeks by at least 0.75      3. Horneck, D. Unpublished data. Former Professor,
+    inch of rainfall. Surfaces can be considered dry if there is        Hermiston Agricultural Research and Extension Center,
+    insufficient moisture to dissolve the urea granule (Figure 3).      Oregon State University, Hermiston.
+       Avoid applications onto moist soil surfaces unless
+                                                                     4. Rawluk, C., C. Grant, and G. Racz. 2001. Ammonia
+    a large precipitation/irrigation event or mechanical
+                                                                        volatilization from soils fertilized with urea and varying
+    incorporation is imminent or a N source with low
+                                                                        rates of urease inhibitor NBPT. Canadian Journal of
+    volatilization is used. This is particularly important on
+                                                                        Plant Science. 81:239–246.
+    fields with high amounts of surface residue or thatch
+    due to the potential for rapid conversion of urea to             5. Engel, R., C. Jones, and R. Wallander. 2011. Ammonia
+    ammonium and ammonia in perennial systems (see                      volatilization from urea and mitigation by NBPT
+    Factors Affecting Nitrogen Fertilizer Volatilization). At           following surface application to cold soils. Soil Science
+    least 1.5 inches of water are needed within two days on             Society of America Journal. 75:2348-2357.
+    fields with surface residue or thatch, compared to 0.5           6. Romero, C., R. Engel, C. Chen, R. Wallander, and C.
+    inch of water on bare or tilled soil to move the urea off           Jones. 2017. Late-fall, winter and spring broadcast
+    the residue and deep enough into the soil to prevent                applications of urea to no-till winter wheat. II. Fertilizer
+    volatilization. However, timing urea application within             N recovery, yield and protein as affected by NBPT. Soil
+    two days before sufficient irrigation or precipitation              Science Society America Journal. 81:331-340.
+    may not be feasible. Other management practices are
+                                                                     7. Afshar, K., R. Lin, Y. Mohammed, and C. Chen. 2018.
+    available to reduce potential volatilization (Table 3).
+                                                                        Agronomic effects of urease and nitrification inhibitors
+                                                                        on ammonia volatilization and nitrogen utilization
+    Summary                                                             in a dryland farming system: Field and laboratory
+    A number of soil and climate factors interact to affect             investigation. Journal of Cleaner Production.
+    ammonia volatilization from N fertilizers, including urea.          172:4130-4139.
+    As a result, it is difficult to predict precisely how much
+                                                                     8. Rochette, P., J.D. MacDonald, D.A. Angers, M.H.
+    N will be lost in a given situation. Recent research in
+                                                                        Chantigny, M. Gasser, and N. Bertrand. 2009. Banding
+    Montana and Oregon suggests that surface soil moisture at
+                                                                        of urea increased ammonia volatilization in a dry
+    the time of urea application and rainfall or irrigation after
+                                                                        acidic soil. Journal of Environmental Quality. 38:1383-
+    application play the biggest roles in affecting volatilization
+                                                                        1390.
+    loss. Applying during cool periods is no longer thought
+    to ensure minimal volatilization loss. Urea should not be        9. LeMonte, J.J., V.D. Jolley, J.S. Summerhays, R.E. Terry,
+    applied in situations that promote significant volatilization,      and B.G. Hopkins. Polymer coated urea in turfgrass
+    and best management practices should be adopted to                  maintains vigor and mitigates nitrogens' environmental
+    minimize loss. Recommended best management practices                impacts. PLoS ONE 11: e0146761. https://doi.
+    include incorporating urea with equipment, irrigation, or           org/10.1371/journal.pone.0146761
+    rainfall; adding NBPT to surface applied urea or selecting       10. Mahler, R.L., and A. Hamid. 1994. Evaluation of water
+    a N fertilizer with lower volatilization potential; and              potential, fertilizer placement and incubation time on
+    avoiding broadcast applications under high risk conditions           volatilization losses of urea in two northern Idaho soils.
+    unless there is an opportunity to incorporate the urea               Communications in Soil Science and Plant Analysis.
+    within one to two days of application.                               25:1991-2004.
+                                                                     11. Engel, R., C. Jones, and P. Miller. 2011. Enhancing
+                                                                         no-till cropping system sustainability by minimizing
+                                                                         ammonia-N losses from chemical and biological
+                                                                         inputs. WSARE Annual Report. SW10-050.
+                                                               Management to Minimize Nitrogen Fertilizer Volatilization       5
+
+
+
+
+12. Sommer, S.G., J.K. Schjoerring, and O.T. Denmead.          Extension Materials
+    2004. Ammonia emission from mineral fertilizers and
+                                                               These bulletins, and many others, can be found by title
+    fertilized crops. Advances in Agronomy. 82:557-622.
+                                                               under ‘Extension Publications’ at http://landresources.
+13. Raczkowski, C.W., and D.E. Kissel. 1989. Fate of           montana.edu/soilfertility/, or by contacting MSU Extension
+    subsurface-banded and broadcast nitrogen applied to        Publications at (406) 994-3273 or online at https://store.
+    tall fescue. Soil Science Society of America Journal.      msuextension.org/Departments/Publications.aspx.
+    53:566-570.
+                                                               Enhanced Efficiency Fertilizers (EB0188)
+14. Kissel, D. 1988. Management of Urea Fertilizers.
+                                                               Factors Affecting Nitrogen Fertilizer Volatilization (EB0208)
+    North Central Regional Extension Publication 326.
+    Kansas State University. 12 p. http://landresources.
+    montana.edu/soilfertility/documents/PDF/pub/
+    Kissel1988ManageUreaFert.pdf.
+15. Meyer, R.D., R.A. Olson, and H.F. Rhoades. 1961.
+    Ammonia losses from fertilized Nebraska soils.
+    Agronomy Journal. 53:241-244.
+16. Holcomb, J.C., III, D.M. Sullivan, D.A. Horneck,
+    and G.H. Clough. 2011. Effect of irrigation rate
+    on ammonia volatilization. Soil Science Society of
+    America Journal. 75:2341-2347.
+
+
+Acknowledgements
+We appreciate the time and expertise of the following co-
+authors of the original version of this document, leading to
+the foundation of this revision:
+- Rich Koenig, Chair, Dept. of Crop and Soil Sciences,
+  Washington State University, Pullman
+- Jason Ellsworth, Product Manager, Wilbur-Ellis,
+  Kennewick, Washington
+- Grant Jackson, Retired Professor, Montana State
+  University, Western Triangle Agricultural Research
+  Center, Conrad
+
+As reviewers of the original version:
+- John Hart, Retired Professor, Oregon State University,
+  Corvallis
+- David Kissel, Professor, University of Georgia, Athens
+
+As reviewers of this and the original version of this
+document:
+- Darren Crawford, Certified Crop Adviser and Former
+  MSU Extension County Agent, Fergus County, Montana
+- Stephen Reinertsen, Certified Crop Adviser and Director
+  of Research and Technology, McGregor Company,
+  Colfax, Washington
+

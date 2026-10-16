@@ -1,0 +1,52 @@
+# Benchmark field-scout: ISU GLSI CSR2 map
+# https://agron.iastate.edu/glsi/maps/corn-suitability-rating-2-csr2-distribution-across-iowa
+# fetched 2026-10-16T16:23:04Z, sha256 9ebd87de2557c81e63a51c4779a60c4fb98314765991c737d842e0921d233077
+
+Corn Suitability Rating 2 (CSR2) Distribution Across Iowa - Geospatial Laboratory for Soil Informatics
+
+This is an archived story. The content, links and information may have changed since the publication date.
+
+All Articles
+
+Corn Suitability Rating 2 (CSR2) Distribution Across Iowa
+
+30 January 2023 | Updated: 1 May 2025
+
+Author: Bradley Miller
+
+Share This Story
+
+Twitter Facebook LinkedIn
+
+This map displays the Corn Suitability Rating 2 (CSR2) values across Iowa, which estimate the potential soil productivity for row crops, particularly corn. CSR2 ratings range from 5 to 100, with higher values indicating greater potential productivity. Ratings are based on soil properties, topography, and climate, standardized across the state. This dataset helps farmers, landowners, and planners evaluate land value and suitability for agricultural use.
+
+Right-click image file to save.
+
+Source:
+
+Produced by the Geospatial Laboratory for Soil Informatics (GLSI) at Iowa State University. Map authors: Prepared by Aaron Sassman and C. Lee Burras, Department of Agronomy, Iowa State University, Ames, IA 50011
+
+Resolution:
+
+10-meter raster resolution overlaid on a hillshaded DEM; displayed as a statewide static image
+
+Interpretation:
+
+CSR2 integrates soil survey data and landscape attributes to assess productivity potential. It helps identify high-value farmland and areas where soil limitations may reduce yield potential, guiding decisions in land management and agricultural investment.
+
+Suggested Use:
+
+Useful for evaluating land productivity potential, determining land valuation, supporting conservation planning, and guiding crop suitability decisions. CSR2 maps assist in farm management decisions, agricultural assessments, and land-use prioritization.
+
+References
+
+CSR2 data for Iowa obtained through the United States Department of Agriculture (USDA) Natural Resources Conservation Service (NRCS) Geospatial Data Gateway (https://gdg.sc.egov.usda.gov/) downloaded August 2015.
+Map was created in January 2016.
+
+Categories
+
+- Soil Interpretations Images
+
+Tags
+
+- CSR2

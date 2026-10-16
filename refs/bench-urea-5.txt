@@ -1,0 +1,55 @@
+# Benchmark urea: FS Cooperatives urea loss in dry soil
+# https://www.fscooperatives.com/learning-hub/crop-nutrients/urea-loss-in-dry-soil-conditions
+# fetched 2026-10-16T16:22:55Z, sha256 86de862a29b6ef447d4e411270de64c30c4b743d0af942a7152cdc0162d7a6ca
+
+Urea Loss in Dry Soil Conditions
+
+Crop Nutrients
+
+Urea Loss in Dry Soil Conditions
+
+In dry soil conditions with a urease inhibitor, volatilization losses are generally very low because the volatilization reaction itself requires moisture to get started.
+
+June 4, 2026
+
+- In dry soil conditions with a urease inhibitor, volatilization losses are generally very low because the volatilization reaction itself requires moisture to get started.
+
+- If it stays dry for weeks: Urea is fine sitting there. It won't volatilize without moisture.
+
+- If you get a light shower (< 0.25"): The NBPT clock starts. You've got ~7–14 days before significant losses begin.
+
+- If you get ≥ 0.5" rain: Urea moves into the soil and volatilization risk drops to near zero.
+
+Should we apply urea without rain in the forecast?
+
+Yes, because urea volatilization requires moisture.
+
+The process works like this:
+
+- Urea dissolves in soil moisture
+
+- Urease enzyme (in soil organic matter and crop residue) hydrolyzes urea
+
+- Then ammonium carbonate breaks down
+
+- NH₃ gas escapes to the atmosphere
+
+If the soil surface is truly dry, Step 1 doesn't happen efficiently — the urea granule just sits there intact. No hydrolysis = no ammonia gas = no volatilization.
+
+When to be concerned about urea loss
+
+A light rain or dew dissolves the urea just enough to start hydrolysis but not enough rain to move it into the soil (need ≥ 0.25–0.5" to incorporate), then warm, windy conditions drive off the ammonia gas. That moist-then-drying cycle on warm days is where you see the big losses — up to 30–40% of applied N without an inhibitor.
+
+Note on UAN
+
+50% of the nitrogen in UAN is in the urea form and dissolved in liquid, so there is a risk of volatilization. Mitigation strategies are injection into soil and a NBPT-based urease inhibitor.
+
+Sources
+
+Iowa State University & Purdue University
+
+Tags:
+
+-
+
+-

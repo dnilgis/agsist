@@ -1,0 +1,258 @@
+# Benchmark urea: UNL N-LAT nitrogen loss tool (G2249)
+# https://extensionpubs.unl.edu/publication/g2249/2014/pdf/view/g2249-2014.pdf
+# fetched 2026-10-16T16:22:58Z, sha256 4753bc4ba81d3cf5b4c060a26b5a78d299039c3ccfc6f767ccb2e55ffa9c2912
+
+                                                                                                                      G2249
+
+
+Nitrogen Loss Assessment Tool (N-LAT)
+    for Nebraska: Background and
+             Users Guide
+            Charles S. Wortmann, Nutrient Management Specialist; Jim A. Jansen, Extension Educator;
+       Michael W. Van Liew, Hydrologic Computer Simulation Modeler, Richard B. Ferguson, Soils Specialist;
+Gary W. Hergert, Nutrient Management and Soil Quality Specialist; Charles A. Shapiro, Soil Scientists – Crop Nutrition;
+                               and Tim M. Shaver, Nutrient Management Specialist
+
+                                                                                   The Structure of N-LAT
+        This publication provides the basis and procedure
+   for using N-LAT to estimate average nitrogen (N) loss          The Worksheets
+   over several years for corn and soybean production                                                         Download
+   to leaching, volatilization, denitrification, and nitrous           N-LAT was developed as Excel®        Nitrogen Loss
+   oxide emission for specific field-management situa-            spreadsheets to ease calculations. Tabs
+   tions. The effects of alternative management practices         of two worksheets are found at the bot-    Assessment
+   can be assessed. N-LAT is not intended for short-term,         tom of the screen.                          Tool N-LAT
+   in-season management decisions.
+                                                                      1.   All data are entered into the
+                                                                           Data Entry worksheet where the results are pre-
+     Nitrogen is an essential nutrient for crop growth. Soil               sented. The results also can be saved in the Report
+N chemistry and the N cycle are complex with numerous                      worksheet.
+transformations and several pathways for loss, including              2.   Report contains the summarized records for up to
+leaching, volatilization, denitrification, nitrous oxide (N2O)             five N-LAT simulations. The records are numbered
+emission, runoff, and soil erosion. In comparison, phospho-                from one to five and coincide with the run number
+rus loss from crop land, excluding removal in harvests, is                 at the top of the Data Entry worksheet.
+nearly all through runoff and soil erosion.
+     All N losses have economic and environmental signifi-        The Components
+cance. Leached nitrate-N often contributes to contamination            N-LAT has components for denitrification, leaching,
+of ground water. Some volatilized ammonia is deposited in         volatilization, and N2O emission. N-LAT does not estimate
+N-sensitive water bodies or natural ecosystems, contributes       runoff and erosion losses of N, most of which would be in
+to acid rain, and reacts in the atmosphere to form N oxides       organic form and not necessarily available in the short term.
+and ammonium salts. Denitrification results in N loss but         All losses are estimated in pounds per acre per year (lb/ac/
+also contributes, together with the nitrification process, to     yr) of N. N-LAT was developed considering information
+the emission of N2O. Nitrous oxide is a greenhouse gas and        from diverse sources, including simulations conducted with
+contributes to ozone depletion. Transport of N through soil       the Nitrogen Loss and Environmental Assessment Package
+erosion and runoff results in contamination of surface waters.    (NLEAP; Delgado et al., 2010) and the California N-index
+Nitrogen losses are difficult to measure and vary greatly         (Delgado et al., 2008), but with final determination based on
+from year to year. The Nebraska N Loss Assessment Tool            the consensus of the authors.
+(N-LAT) quantifies these losses and the effects of alterna-            Functions were developed considering properties of soil
+tive management practices considering precipitation, soil         and climate, and of inorganic N supplied from fertilizers
+properties, and management practices.                             and organic materials such as
+     N-LAT is a decision-aid and was developed to be used
+on either a whole field or sub-field basis for making pre-plant       • crop residues and manure,
+decisions. In many fields, risk of N loss may be considerably         • wet plus dry deposition of ammonium-N which was
+greater for one sub-field compared with other sub-fields                assumed to be 10 lb/ac/yr N,
+due to differences in soil properties including pH, organic           • residual inorganic N assumed to be 46 lb/ac to the
+matter content, hydrology, and drainage.                                4-foot depth, and
+                                                                      • nitrate-N applied in irrigation water.
+Table I. Fertilizer use efficiency products available in the United States.
+ Chemical or Compound Nitrogen Products*                       Common Product Names                               Process Affected
+ Dicyandiamide (DCD)                                           Guardian®                                          Nitrification
+ 2-chloro-6 (trichloromethyl) pyridine (Nitrapyrin)            N-Serve®, Instinct®                                Nitrification
+ N-butyl-thiophosphoric triamide (NBPT)                        Agrotain®                                          N volatilization
+ Malic + itaconic acid co-polymer with urea                    Nutrisphere®                                       Nitrification, N volatilization
+ Polymer-coated urea (PCU)                                     ESN®, Polyon®, Duration®                           N release
+ Sulfur-coated urea (SCU)                                      SCU                                                N release
+ Polymer + SCU                                                 Tricote, Poly-S®                                   N release
+ Urea formaldehyde                                             Nitroform®                                         N release
+ Methylene urea                                                Nutralene®, CoRoN®, NFusion®                       N release
+ Triazone                                                      N-Sure®                                            N release
+ NBPT + DCD                                                    Agrotain®Plus, SuperU®                             Nitrification, N volatilization
+ Methylene urea + triazone                                     Nitamin®, Nfusion®                                 N release
+ Triazone + NBPT                                               N-Pact®                                            N release, volatilization
+*Mention or omission of a commercial company or trade name does not imply endorsement or censure by the authors or the University of Nebraska−Lincoln.
+
+
+      Nitrogen mineralization rates from corn and soybean                             • For surface or incorporated manure:
+residue of previous crops were estimated at 0.11 and 0.97                               ◆ 6 percent x available manure N x (1 + 0.54 x t/25)
+lb/bu of grain harvested, respectively. Therefore, for each                               for fall-applied
+100 bu/ac of corn or 50 bu/ac of soybean harvested the                                  ◆ 6 percent x available manure N x (1+0.48 x t/25) for
+previous season, N available to the current crop from de-                                 spring-applied
+composing crop residue was estimated to be 11 and 48.5                                  ◆ where t = ton per acre of dry weight of manure
+lb/ac, respectively.
+      Estimated N from soil organic matter (SOM) miner-                              The calculated sum for all fertilizer and manure N was
+alization was 40 lb/ac/yr for each 1 percent soil organic                        then multiplied by one or more of the following, if these apply:
+matter. Therefore total N availability (TN), not considering                          • 1.1 if fertilizer N other than anhydrous ammonia was
+leaching and N2O emission loss, was:                                                    incorporated.
+      TN = 56 + %SOM x 40 + IrrN (ac-in x ppm x 0.225) +                              • (0.33 + 0.65 x SOM %) / 2.5 to account for SOM level.
+(0.11 x bu of previous corn crop) or (0.97 x bu of previous                           • 2 if drainage was “somewhat poor” and 3 if drainage
+soybean crop) + FertilizerN + ManureN – volatilization                                  was “poor” if not tile-drained, but 1 if these fields were
+loss – denitrification loss.                                                            tile-drained.
+      Corn N uptake (Nu) was estimated as 1.2 x bu/ac grain                           • 0.9 if more than 40 percent of the N was applied in-
+yield. Soybean N uptake was estimated as 5 x bu/ac yield.                               season by either side-dress or fertigation.
+The difference of total N available and corn N uptake (TN                             • 0.9 if fall- or spring-tilled.
+– Nu) was used in calculating NO3--N leaching loss. Manure
+N availability was determined according to information in                             Denitrification decreased as sand content of the soil
+the NebGuide, Determining Crop Available Nutrients from                          increased. The adjustment for sand content was to add lb/ac
+Manure (G97-1335).                                                               N to the denitrification loss estimate according to (percent
+      Fertilizer use efficiency products intended to reduce N                    sand – 10) x -0.06.
+losses were considered in N-LAT (Table I). These included
+fertilizer additives such as nitrification or urease inhibitors                  Volatilization
+for reducing leaching and volatilization losses, respectively,                        Ammonia loss was affected by the total N supply, the
+and controlled release fertilizers. Some products also affected                  ammonium and urea N application rate, the ammonia volatil-
+denitrification and N2O emission. The N-LAT drop-down                            ization constant for the N source, fertilizer placement, soil pH,
+list does not include all of these products but has options for                  and whether a urease inhibitor was used. The volatilization
+“Other nitrification inhibitor” and “Other urease inhibitor.”                    rate used for N available from sources other than fertilizer
+                                                                                 and manure was 2 percent. The N-LAT equations to estimate
+                      The N Loss Processes                                       a base loss of NH3-N to volatilization on a neutral soil pH
+                                                                                 are given in Table II. The loss factor for each treated urea
+Denitrification                                                                  (including urea in UAN) application event was adjusted by
+     Denitrification is mostly affected by soil aeration, N avail-               multiplying by:
+ability, and source. The denitrification rate used by N-LAT for N                     • 0.6 for use of a urease inhibitor
+available from sources other than fertilizer and manure was 5.5                       • 0.96 for use of Nutrisphere or ammonium thiosulfate
+percent on a soil of better than “somewhat poor drainage” and
+hydrology class B, according to USDA-NRCS Soil Survey soil                           The loss factor for each fertilizer and manure application
+descriptors. Exceptions for other fertilizers and manure were:                   was then multiplied by the following one or more factors if
+                                                                                 applicable:
+     • 6 percent for UAN or urea surface-applied and 7 percent
+       for UAN or urea incorporated/injected                                          • 0.75 for some in-season applications, including either
+     • 5.5 percent for ammonium sulfate or ammonium nitrate                             side-dress or fertigation
+     • 6 percent for NH3 injected                                                     • 2.0 if soil pH > 7.2
+Table II. Base estimates of NH3 volatilization for application rates of ammonium and urea N (AmN).
+ Fertilizer Product    Application Method              Adjustment Equations
+ Urea N                Surface                         NH3-Nv = AmN x 0.05
+                       Incorporated/injected           NH3-Nv = AmN x 0.01
+ Ammonium N            Surface                         NH3-Nv = AmN x 0.025
+                       Incorporated/injected           NH3-Nv = AmN x 0.0015
+ Anhydrous ammonia Injected                            NH3-Nv = AmN x 0.004
+ Manure                Surface                         NH3-Nv = AmN x (1.0-0.985 x power (0.65,d)); d = ≤7 days to incorporation
+ Manure                Injected                        NH3-Nv = AmN x 0.008
+
+
+Leaching                                                                      • 0.7, 1.00, 1.25, and 1.35 for hydrologic class A, B C,
+                                                                                and D
+      Nitrate-N leaching is a function of water from precipita-
+                                                                              • 1.5 if drainage was somewhat poor or worse
+tion and irrigation (TW), the difference in available N and N
+uptake (Ndiff), soil hydrology class, application method, use
+                                                                        Crop Rotation
+of a nitrification inhibitor, split application, cover crops, and
+fertilizer compared with manure N. The base leaching rate for N             N-LAT estimates losses for the current crop of corn or
+available from all sources was equal to 0.00005 x TW2 x (total          soybean. Much less N was applied on average for the corn-
+available N – N uptake) in lb/ac/yr. The applied N leaching             soybean rotation compared to continuous corn. To estimate
+loss estimate for each fertilizer and manure N application event        N losses with corn-soybean rotation, run N-LAT for corn and
+was multiplied as appropriate by one or more of the following:          then for soybean as the current crop and use the estimated
+                                                                        losses to calculate annual average losses for the rotation.
+    • 1.1 if N fertilizer was incorporated
+                                                                        For example with the corn-corn-soybean rotation, average
+    • 1.2 if fall-applied fertilizer or manure
+                                                                        the values obtained for corn with soybean as the previous
+    • 0.75 or 0.90 if a nitrification inhibitor or controlled re-
+                                                                        crop, corn with corn as the previous crop, and soybean with
+      lease fertilizer was used with spring or fall application,
+                                                                        corn as the previous crop.
+      respectively
+    • 0.96 if ammonium thiosulfate or Nutrisphere was used
+                                                                                              N-LAT User Guide
+      with either spring or fall application
+   The above calculated sum of products for all fertilizer and                In the Data Entry worksheet, select:
+manure application was multiplied as appropriate by one or
+                                                                              • county (determines default values for precipitation)
+more of the following:
+                                                                              • soil unit (determines pH, hydrology class, SOM, and
+    • 1.7, 1.0, 0.6, and 0.4 for hydrologic class A, B C, and                   drainage)
+      D                                                                       • management practices (tile drainage, fall or spring till-
+    • 0.75 if > 40 percent of N was applied in June or July                     age, and cover crop)
+    • 0.80 if corn crop was preceded by a fall or winter cover                • current crop and expected yield
+      crop                                                                    • previous crop and expected yield
+    • 0.85 if >50 percent of supplied N was from manure that                  • irrigation type (none, pivot, furrow, and drip), and enter
+      was surface-applied or incorporated                                       amount applied and NO3-N (ppm) concentration in ir-
+    • 1.1 if tile drained but only if there was somewhat poor                   rigation water
+      or poor drainage
+                                                                             Fertilizer type and application method are selected from a
+    • 1.2 if fall tilled
+                                                                        drop-down list. For each selection the user provides the rate,
+    • 1.1 if spring tilled
+                                                                        selects the time of application (fall, spring, or in-season), and
+Nitrous Oxide                                                           checks a box indicating use of nitrification inhibitor, urease
+                                                                        inhibitor, controlled release, or ammonium thio-sulfate.
+     Base N2O emission with UAN surface-applied in lb/ac/yr                  Manure type is selected. A default unit of measurement
+was 0.94 + 0.015 x N + 0.15 x denitrification loss – 0.00039            is determined (t/ac, 1000 gal/ac, or ac-in/ac). Default values
+x N x denitrification loss. A value of 1 percent of inches of           are given for NH4-N, organic N, and water content. Rate of
+annual precipitation plus irrigation amount was added to the            application and time to incorporation is entered.
+base emission estimate. The base emission estimate for each                  Some default values can be revised, including rainfall,
+fertilizer application event was then multiplied as appropriate         soil organic matter, soil pH, and for manure, NH4-N, organic
+by one or more of the following:                                        N, and water content.
+                                                                             The outputs are estimated N losses (lb/ac) due to:
+    • 0.85 if a nitrification or a urease inhibitor was used;
+      0.95 for Nutrisphere                                                    • denitrification,
+    • 1.25 if N fertilizer was anhydrous ammonia                              • leaching,
+    • 1.1 if N fertilizer was urea                                            • volatilization, and
+    • 1.1 if UAN was injected                                                 • N2O emission.
+    • 0.75 for N applied as controlled release fertilizer.
+                                                                             The Data Entry sheet can be saved for a complete record
+    The above calculated sum of products for all fertilizer             of the field results. The results, with abbreviated input informa-
+applications was multiplied by the following (their product if          tion, also can be transferred and saved in the Report worksheet
+more than one applies):                                                 for easy comparison of the results for different scenarios.
+                                                                              Report Sheet
+ Scenario number                                                   1                                           2                                          3
+ Date
+ Field
+ Scenario name
+ County
+ Soil unit
+ Previous crop
+ Cover crop
+ Tillage
+ N fertilizer†                                 UreaSpSuUr150
+ N fertilizer
+ N fertilizer
+ Manure                                        2012FL-Su25ON15AN4
+ Irrigation                                    Pivot-8”-3ppm
+ Total N supply
+ N uptake
+ Denitrification N loss lb/ac
+ Leached NO3-N lb/ac
+ Volatilized NH3-N lb/ac
+ N2O-N emission lb/ac
+ Sum of all losses
+ †Abbreviations:
+ For fertilizer,
+      • UreaSpSuUr150: Nitrogen fertilizer type: AmN, ammonium nitrate; Anh, anhydrous ammonia; UAN, urea ammonium nitrate
+      • UreaSpSuUr150: Fa, Fe, Sp, and St are fall, fertigation, spring, and split application
+      • UreaSpSuUr150: Ij, I7, and Su are injection, incorporation days after application, and surface application with no incorporation within
+        seven days
+      • UreaSpSuUr150: Co, Ni, and Ur are controlled release N fertilizer, nitrification inhibitor, and urease inhibitor
+      • UreaSpSuUr150: the rate of N application in lb/ac
+ For manure,
+      • 2012FL-Su25ON15AN4: year of application
+      • 2012FL-Su25ON15AN4: FL, HP, Sl, SD, and Po are feedlot solid, feedlot holding pond, swine or dairy slurry, swine or dairy solid,
+        and poultry solid
+      • 2012FL-Su25ON15AN4: Ij, I7, and Su are injection, incorporation days after application, and surface application with no incorporation
+        within seven days
+      • 2012FL-Su25ON15AN4: Rate in t/ac for solids, ‘000 gal/ac for slurry, and ac-in for holding pond
+      • 2012FL-Su25ON15AN4: Content of organic (ON) and ammonium (AN) N in lb per rate unit
+ For irrigation,
+      • Pivot-8”-3ppm: Irrigation system
+      • Pivot-8”-3ppm: Water applied, in/yr
+      • Pivot-8”-3ppm: NO3-N concentration in ppm
+
+
+                                 Resources                                                                  This publication has been peer reviewed.
+
+Nitrogen Loss and Environmental Assessment Package (NLEAP) with
+     GIS Capabilities (NLKEAP-GIS 4.2): User Guide; J.A. Delgado,
+     P.M. Gagliardi, D. Neer, and M.J. Shaffer. 2010. http://www.                                     UNL Extension publications are available online at
+     ars.usda.gov/SP2UserFiles/ad_hoc/54020700NitrogenTools/                                     http://extension.unl.edu/publications.
+     NLEAP_GIS_4_2_Manual_Nov_29_2010.pdf
+California N Index: A Tool to Assess N Management for Environ-
+     mental Conservation. Z. Kabir, D. Chessman, and J. Delgado,
+     USDA-NRCS and USDA-ARS. http://www.epa.gov/region9/
+     ag/workshop/nitrogen/2013/kabir-epa-workshop-california-                                                                                Index: Soil Management
+     n-index2.pdf                                                                                                                                           Fertility
+                                                                                                                                                        Issued December 2014
+
+                       Extension is a Division of the Institute of Agriculture and Natural Resources at the University of Nebraska–Lincoln
+                                          cooperating with the Counties and the United States Department of Agriculture.
+                           University of Nebraska–Lincoln Extension educational programs abide with the nondiscrimination policies
+                                     of the University of Nebraska–Lincoln and the United States Department of Agriculture.
+                   © 2014, The Board of Regents of the University of Nebraska on behalf of the University of Nebraska–Lincoln Extension. All rights reserved.
+

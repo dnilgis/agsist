@@ -1,0 +1,587 @@
+# Benchmark usda-quick-stats: USDA NASS Charts and Maps
+# https://www.nass.usda.gov/Charts_and_Maps/
+# fetched 2026-10-16T16:22:45Z, sha256 cd1498254d23c2846c26a43a862154acff9b956745c72868e290d23bfae50496
+
+USDA - National Agricultural Statistics Service - Charts and Maps - By Commodity
+
+Skip to Main Content
+
+United States Department of Agriculture
+
+National Agricultural Statistics Service
+
+Subscriptions: National | News
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+- Data & Statistics
+
+Access Quick Stats (searchable database)
+
+The Quick Stats Database is the most comprehensive tool for accessing agricultural data published by NASS. It allows you to customize your query by commodity, location, or time period.
+
+- Quick Stats System Updates
+
+- Download Quick Stats data files
+
+Access Quick Stats Lite
+
+Quick Stats Lite provides a more structured approach to get commonly requested statistics from our online database.
+
+Explore Statistics
+
+-
+
+By State
+
+-
+
+By Subject
+
+- Crops and Plants
+
+- Demographics
+
+- Economic and Prices
+
+- Environmental
+
+- Livestock and Animals
+
+- Research, Science, and Technology
+
+-
+
+Charts and Maps
+
+-
+
+Data Visualization
+
+-
+
+Pre-Defined Queries
+
+-
+
+Special Tabulations and Restricted Microdata
+
+County Level Information
+
+- County Maps
+
+- County and District Geographic Boundaries
+
+- County and District Codes
+
+- Commodity Codes
+
+- Livestock County Estimates
+
+Geospatial Data & Interactive Maps
+
+- CroplandCROS
+
+- Cropland Data Layer
+
+- VegScape
+
+- Crop Condition and Soil Moisture Analytics
+
+- Crop Sequence Boundaries
+
+- Crop Progress & Condition Gridded Layers
+
+- Disaster Analysis
+
+- Land Use Strata for Selected States
+
+- Publications
+
+Today's Reports
+
+Browse NASS Reports
+
+- by Subject
+
+- by Date (Reports Calendar)
+
+- by Title/Release Day
+
+- by Keyword
+
+- Guide to Products and Services
+
+Additional Reports
+
+- Highlights
+
+- 2022 Census of Agriculture
+
+- Surveys and Programs
+
+- Methodology & Quality Measures
+
+- Agricultural Statistics Board Corrections
+
+- Research Reports
+
+Historical Publications
+
+- Archived Ag Census Reports (2002 and prior - published every 5 years)
+
+- Annual Agricultural Statistics
+
+- Statistical Bulletins (final estimates, 1987 to 2012
+
+- Track Records: (crops, livestock, grain stocks)
+
+- Trends 20th century
+
+- Price Reactions (after crop or livestock reports)
+
+Receive Reports by Email:
+
+- National Reports
+
+- NASS News Releases
+
+- Newsroom
+
+News Releases
+
+10/01/26 USDA to Host Virtual Data Users’ Meeting for Public Input on Statistical Programs
+
+09/30/26 US corn ending stocks up 35% from last year, soybean ending stocks down 3%
+
+09/24/26 United States hog inventory down 2%
+
+08/12/26 USDA unlocks the power of producer insights in latest August Crop Production report Data is vital to ag industry’s decision-making
+
+08/12/26 Producers Are Being Called to Help Build Their County Crop Estimates
+
+Read More News
+
+ASB Notices
+
+06/22/26 NASS Adds Additional Counties to the 2025 Cotton County-level Estimates
+
+12/22/25 USDA NASS reschedules reports due to December 24 & 26 government closure
+
+11/19/25 USDA Reschedules Reports Affected by Lapse in Federal Funding
+
+10/31/25 USDA’s National Agricultural Statistics Service (NASS) will release key data in November
+
+08/28/25 NASS discontinues select data collection programs and reports
+
+Read More Notices
+
+Videos
+
+02/13/24 2022 Census of Agriculture Data Highlights
+
+02/13/24 How to Find 2022 Census of Agriculture Data
+
+02/13/24 2022 Census of Agriculture Data Release Event
+
+07/16/21 What is a Farm?
+
+08/05/20 The NASS Mission: We do it for you
+
+View More Videos
+
+ASB Briefings
+
+10/09/26 Crop Production (October 2026)
+
+09/30/26 Small Grains Summary and Grain Stocks (September 2026)
+
+09/24/26 Quarterly Hogs and Pigs (September 2026)
+
+09/11/26 Crop Production (September 2026)
+
+08/12/26 Crop Production (August 2026)
+
+View More Briefings
+
+- Surveys
+
+Respond to Surveys Online
+
+Guide to NASS Surveys and Programs
+
+Understanding Agricultural Statistics
+
+Make Sure I'm Counted
+
+Statistical Programs and Review
+
+- Census
+
+- About NASS
+
+Structure and Organization
+
+- Agency Overview
+
+- NASS Biographies
+
+- Organizational Chart
+
+- Assistance to Other Organizations
+
+- International Programs
+
+- Talking About NASS - A guide for partners and stakeholders
+
+- USDA Strategic Goals
+
+Guiding Principles
+
+- Mission and Core Values
+
+- Keeping Data Safe
+
+- Confidentiality Pledge
+
+- Security Pledge
+
+- Security Statement
+
+- Statement of Commitment to Scientific Integrity
+
+- Regulations Guiding NASS
+
+- Information Quality
+
+- Learning Agenda, Fiscal Year 2024 -2026
+
+Civil Rights
+
+- Anti-Harassment Policy | USDA
+
+- Civil Rights Accountability Policy and Procedures
+
+- No FEAR Act Notice
+
+- No FEAR Act - NASS Data
+
+-
+
+REE Reasonable Accommodations and Personal Assistance Services
+
+- How to File an EEO Complaint
+
+- Accessibility Statement
+
+- Architectural Barriers Act
+
+- And Justice for All posters
+
+Work at NASS
+
+- Career Opportunities
+
+Education and Outreach
+
+- Understanding Ag Statistics
+
+- Data Users' Meetings
+
+- Morris Hansen Lecture
+
+- International Conference on Agricultural Statistics
+
+History and Procedures
+
+- Agricultural Statistics Board and Lockup
+
+- Agricultural Statistics: A Historical Timeline
+
+- The Story of U.S. Agricultural Estimates
+
+- As We Recall: The Growth of Agricultural Estimates, 1933-1961
+
+-
+
+Safeguarding America's Agricultural Statistics Report and Video
+
+- History of Ag Statistics
+
+- Report Procedures
+
+- An Evolving Statistical Service
+
+- Fact Finders for Agriculture
+
+-
+
+Agriculture Counts - The Founding and Evolution of the National Agricultural Statistics Service 1957-2007
+
+- Hall of Fame
+
+- Contact Us
+
+Mailing Address:
+
+USDA-NASS
+
+1400 Independence Ave., SW
+
+Washington, DC 20250
+
+Survey FAQs and Contact Us:
+
+Access FAQs or submit a question.
+
+Data Inquiries:
+
+Hours: 8:00 a.m. - 5:00 p.m. Central Standard Time
+
+Monday - Friday, except federal holidays
+
+Toll-Free: (800) 727-9540
+
+Media Inquiries:
+
+Email: NASS-Media@usda.gov
+
+Other USDA Inquiries:
+
+Hours: Monday to Friday 8 a.m. - 5 p.m. EST
+
+Toll-Free: (833) One-USDA
+
+Email: askusda@usda.gov
+
+Website: https://ask.usda.gov/s/
+
+Translation Services:
+
+Email: NASSLanguages@usda.gov
+
+Regional and State Field Offices:
+
+Find contact information for Regional and State Field Offices
+
+Ask a Specialist:
+
+Have a specific question for one of our subject experts? Contact a specialist.
+
+Web Content Publishing Schedule:
+
+Section 207(f)(2) of the E-Government Act of 2002 requires federal agencies to develop an inventory of information to be published on their Web sites, establish a schedule for publishing information, make those schedules available for public comment, and post the schedules and priorities on the Web site.
+
+- Help
+
+Technical Issues
+
+- RSS Feed
+
+- Contact Us
+
+Search Tips
+
+- Search Tips
+
+For Developers and Data Users
+
+- Application Programming Interfaces (APIs)
+
+Statistics by State
+
+Charts and Maps
+
+Related Topics
+
+- NASS Contacts
+
+- Estimating Programs
+
+- Query NASS Data from a Data Base
+
+Geospatial Data
+
+- CroplandCROS
+
+- Cropland Data Layer
+
+- VegScape
+
+- Crop-CASMA
+
+- Crop Progress & Condition Gridded Layers
+
+- Disaster Analysis
+
+- Crop Sequence Boundaries
+
+- Land Use Strata for Selected States
+
+Charts and Maps
+
+Alphabetical Listing
+
+- A to Z
+
+Crops and Plants
+
+- Citrus Fruits
+
+- County Maps
+
+- Cold Storage, Crops
+
+- Crop Progress and Condition
+
+- Dry Beans, Dry Peas, and Lentils
+
+- Field Crops
+
+- Floriculture Crops
+
+- Noncitrus Fruits
+
+- Specialty Crops
+
+Livestock and Animals
+
+- Cattle
+
+- Cold Storage, Livestock
+
+- Dairy Products
+
+- Hogs and Pigs
+
+- Livestock Slaughter
+
+- Meat Animals - Production, Disposition, and Income
+
+- Milk Production and Milk Cows
+
+- Poultry
+
+- Sheep and Lambs
+
+Economics
+
+- Agricultural Prices
+
+- Farms and Land In Farms
+
+- Farm Labor
+
+- Farm Production Expenditures
+
+- Grazing Fees
+
+- Land Values
+
+Census of Agriculture
+
+- 2017 - US Agricultural Atlas Maps
+
+- 2012 - US Agricultural Atlas Maps
+
+- 2007 - US Agricultural Atlas Maps
+
+- 2002 - US Agricultural Atlas Maps
+
+~ Providing Timely, Accurate and Useful Statistics in Service to U.S. Agriculture ~
+
+- NASS Home
+
+- |
+
+- USDA.gov
+
+- |
+
+- Data.gov
+
+- |
+
+- USA.gov
+
+- |
+
+- WhiteHouse.gov
+
+- |
+
+- Economics, Statistics and Market Information System (ESMIS)
+
+- |
+
+- No Fear Act - NASS Data
+
+- |
+
+- Accessibility Statement
+
+- |
+
+- FOIA
+
+- Privacy Policy and Assessments
+
+- |
+
+- Security Statement
+
+- |
+
+- Information Quality
+
+- |
+
+- Non-Discrimination Statement
+
+- |
+
+- Guidance Documents
+
+- |
+
+- USDA Policies and Links
+
+- |
+
+- AskUSDA
+
+Feedback
