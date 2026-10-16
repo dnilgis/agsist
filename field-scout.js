@@ -319,7 +319,7 @@
     // (data/hail/events-YYYY.json) — one source of truth, dates included.
     var yNowH = new Date().getFullYear();
     var yrsH = [yNowH-4, yNowH-3, yNowH-2, yNowH-1, yNowH];
-    Promise.all(yrsH.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); }))
+    _hailFilesNear(c, yrsH)
       .then(function(files){
         var got = files.filter(Boolean);
         if(!got.length) throw new Error('no event files');
@@ -1775,6 +1775,54 @@
       .then(function(r){ if(!r.ok) throw new Error('ev '+y); return r.json(); })
       .then(function(d){ _hailEvCache[y]=d; return d; });
   }
+  // Closed years come from 2 x 2 degree cells (data/field-scout/hail/, built from the same
+  // events files by scripts/build_field_scout_data.py): the 1 to 4 cells within 40 miles
+  // instead of every report in the country. The current year, and any year the cells were
+  // not built for, still reads the national file. A cell that fails to load sends its years
+  // back to the national files, so a failed read is never counted as "no hail".
+  var _hailIdx=null;
+  function _hailIndex(){
+    if(!_hailIdx) _hailIdx=fetch('/data/field-scout/hail/index.json')
+      .then(function(r){ if(!r.ok) throw new Error('idx'); return r.json(); })
+      .catch(function(){ _hailIdx=null; return null; });
+    return _hailIdx;
+  }
+  var _hailCellCache={};
+  function _hailCell(k){
+    if(!_hailCellCache[k]) _hailCellCache[k]=fetch('/data/field-scout/hail/'+k+'.json')
+      .then(function(r){ if(!r.ok) throw new Error('cell '+k); return r.json(); })
+      .catch(function(e){ delete _hailCellCache[k]; throw e; });
+    return _hailCellCache[k];
+  }
+  function _hailCellsNear(lat, lng, miles, size){
+    var dLat=miles/69.0, dLng=miles/(69.0*Math.max(0.2, Math.cos(lat*Math.PI/180)));
+    var out=[];
+    for(var a=Math.floor((lat-dLat)/size)*size; a<=Math.floor((lat+dLat)/size)*size; a+=size)
+      for(var b=Math.floor((lng-dLng)/size)*size; b<=Math.floor((lng+dLng)/size)*size; b+=size)
+        out.push(a+'_'+b);
+    return out;
+  }
+  function _hailFilesNear(c, yrs){
+    function national(list){ return Promise.all(list.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); })); }
+    return _hailIndex().then(function(ix){
+      var cov = (ix && ix.years && ix.cell) ? yrs.filter(function(y){ return ix.years.indexOf(y)>=0; }) : [];
+      if(!cov.length) return national(yrs);
+      var have={}; (ix.cells||[]).forEach(function(k){ have[k]=1; });
+      var keys=_hailCellsNear(c.lat, c.lng, 41, ix.cell).filter(function(k){ return have[k]; });
+      var cellsP=Promise.all(keys.map(_hailCell)).then(function(cells){
+        var by={}; cov.forEach(function(y){ by[y]={ year:y, ev:[] }; });
+        cells.forEach(function(cl){ (cl.ev||[]).forEach(function(e){ if(by[e[4]]) by[e[4]].ev.push(e); }); });
+        return by;
+      }, function(){ return null; });
+      var rest=yrs.filter(function(y){ return cov.indexOf(y)<0; });
+      return Promise.all([cellsP, national(rest)]).then(function(r){
+        if(!r[0]) return national(yrs);
+        var restBy={}; rest.forEach(function(y,i){ restBy[y]=r[1][i]; });
+        return yrs.map(function(y){ return r[0][y] || restBy[y] || null; });
+      });
+    });
+  }
+  window.__fsHailInternals = { cellsNear:_hailCellsNear, filesNear:_hailFilesNear };
   function _hvsMi(a,b,c,d){ var R=3958.8,p=Math.PI/180,x=(c-a)*p,y=(d-b)*p,
     s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)*Math.sin(y/2);
     return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s)); }
@@ -1948,7 +1996,7 @@
     fetchMeshIndex();
     var yNow = new Date().getFullYear();
     var yrs = [yNow-4, yNow-3, yNow-2, yNow-1, yNow];
-    Promise.all(yrs.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); }))
+    _hailFilesNear(c, yrs)
       .then(function(files){
         if(gen !== fieldGen) return;
         var got = files.filter(Boolean);
@@ -2883,12 +2931,11 @@
     });
   }
   function loadHoodCard(gen, abbr, cty, stFull){
-    Promise.all([
-      getJSON('/data/tenure/tenure.json').catch(function(){ return null; }),
-      getJSON('/data/afida/county.json').catch(function(){ return null; })
-    ]).then(function(res){
+    // One state's slice of the national tenure and AFIDA files (scripts/build_field_scout_data.py),
+    // records unchanged: about 30 KB instead of 1.4 MB.
+    getJSON('/data/field-scout/county/'+encodeURIComponent(abbr)+'.json').catch(function(){ return null; }).then(function(sl){
       if(gen!==fieldGen) return;
-      var t=res[0], a=res[1], html='', got=false;
+      var t=sl&&sl.tenure, a=sl&&sl.afida, html='', got=false;
       var fips=FIELD.county&&FIELD.county.fips;
       function findByName(obj){ var hit=null; if(!obj) return null;
         Object.keys(obj).some(function(k){ var v=obj[k]; if(v&&normCty(v.n)===normCty(cty)&&(v.st===abbr||v.st===stFull)){ hit={k:k,v:v}; return true; } return false; });
