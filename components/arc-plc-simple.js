@@ -161,7 +161,17 @@
     if (!root) return;
     var st = d.getElementById('af-st'), co = d.getElementById('af-co'), msg = d.getElementById('af-msg'), loc = d.getElementById('af-loc');
     var NAV = null, GEO = {};
-    function nav() { return NAV ? Promise.resolve(NAV) : getJSON(root.getAttribute('data-nav')).then(function (j) { NAV = j; return j; }); }
+    /* one download: the idle fill asks for the states and the counties at once, so the promise is kept,
+       not just the answer (2026-10-16: nav.json, 123 KB, was fetched twice on every county page) */
+    var navP = null;
+    function nav() {
+      if (NAV) return Promise.resolve(NAV);
+      if (!navP) {
+        navP = getJSON(root.getAttribute('data-nav')).then(function (j) { NAV = j; return j; });
+        navP.catch(function () { navP = null; });
+      }
+      return navP;
+    }
     function geo(s) { return GEO[s] ? Promise.resolve(GEO[s]) : getJSON(root.getAttribute('data-geo') + s + '.json').then(function (j) { GEO[s] = j; return j; }); }
     function say(html) { msg.innerHTML = html || ''; msg.classList.toggle('is-on', !!html); }
     function hub(s) { var x = NAV && NAV.s[s]; return x && x.slug ? ' <a href="/arc-plc/' + x.slug + '">Every ' + esc(x.n) + ' county</a>.' : ''; }

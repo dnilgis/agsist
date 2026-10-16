@@ -385,8 +385,8 @@
     /* start the download before the tap lands, so opening does not wait on the network and nothing jumps */
     var sum = det.querySelector('summary');
     ['pointerdown', 'focus', 'mouseenter', 'touchstart'].forEach(function (ev) { sum.addEventListener(ev, function () { getMath(url).catch(function () {}); }, { passive: true, once: true }); });
-    var idle = w.requestIdleCallback || function (f) { return setTimeout(f, 2500); };
-    w.addEventListener('load', function () { idle(function () { getMath(url).catch(function () {}); }); });
+    /* no download on page load (2026-10-16: math/<ST>.json, 208 KB for Iowa, came with every county page
+       view); it starts on the first sign of a tap or click on "Show the math", or when it opens */
     if (det.open || hash === 'math' || jump) { det.open = true; show(); }
   }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', boot); else boot();
