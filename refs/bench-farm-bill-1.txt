@@ -1,0 +1,601 @@
+# Benchmark farm-bill: National Agricultural Law Center
+# https://nationalaglawcenter.org/farm-bill-2026-overview/
+# fetched 2026-10-16T16:03:34Z, sha256 57076493ff2a72ac061b611fbbdeda543dcbf7bb9390942762fd56ba8e5ee1ff
+
+Farm Bill 2026: Overview – National Agricultural Law Center
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+14 MayFarm Bill 2026: Overview
+
+-
+Categorized Commodity Programs, Conservation Programs, Farm Bill, International Trade, Nutrition Programs, Specialty Crops, United States Department of Agriculture, Will Scobey
+
+-
+
+Introduction
+
+On April 30, 2026, the U.S. House of Representatives voted 224-200 to advance the Farm, Food, and National Security Act of 2026, more commonly known as the 2026 Farm Bill. The Farm Bill is a type of legislation called an “omnibus” bill, which means it affects numerous areas of the law- in this case, food, agricultural, and environmental law across various sectors. While this article is not comprehensive, it is meant to highlight and discuss provisions of the 2026 Farm Bill as a demonstration of the number of areas impacted. If passed, the 2026 Farm Bill will be effective through 2031.
+
+Background
+
+The Farm Bill is a central piece of agricultural legislation that is typically reauthorized every five years. However, the most recent full reauthorization of the Farm Bill was passed in 2018 as the Agriculture Improvement Act. The 2018 Farm Bill, like the 2026 bill, contained 12 separate titles which cover commodity programs, conservation, energy, forestry, and other areas of agricultural, food, and environmental law. Drafting and ultimately passing a Farm Bill can be a lengthy process which requires bipartisan cooperation. Currently, the 2026 Farm Bill has passed the House and will head to the Senate, where Senators will further discuss policy considerations within the bill and ultimately vote on whether it (or a version of it) should be passed into law. Because of this, the following provisions and amendments are all subject to change before a final result is reached.
+
+Title I – Commodities
+
+Title I, in general, is intended to provide stability to producers amidst economic hardships such as falling prices or natural disasters. The House Committee on Agriculture describes Title I as a “safety net” which provides price and revenue support for major crops, marketing loans, and disaster assistance. To read the House Committee on Agriculture’s summary of Title I in the 2026 Farm Bill, click here.
+
+Under Title I, some other areas of federal support would be expanded as well. For example, Title I would establish a framework for providing direct assistance to specialty crop producers who have been negatively impacted by an adverse event. This includes economic crises and market disruptions. Additionally, Title I would create a standing block grant authority to allow for future disaster payments to the states, when authorized by Congress. Block grants are lump sums of federal funds that are distributed to state and local governments. By establishing this authority, the 2026 Farm Bill provides a mechanism for the federal government to issue supplemental disaster relief to specialty crop farmers in the future.
+
+Title I would also expand eligibility and update the payment process in the Tree Assistance Program (TAP). TAP is a program administered by the Farm Service Agency (FSA) that provides financial support to tree growers and orchardists who have experienced loss as a result of natural disasters. Under Title I, eligibility for the program would be expanded to include more growers and will now include plant pests under its definition of “natural disasters.” Further, eligible growers should be able to receive aid sooner. Title I would update TAP to allow for an initial assistance payment that will be paid to growers with eligible losses before they actually incur the costs related to those losses. This can be helpful for producers who may be reliant on the initial payment to cover replanting or rehabilitation costs.
+
+Title II – Conservation
+
+Title II of the 2026 Farm Bill covers federal conservation programs. Title II would reauthorize select federal programs such as the Conservation Reserve Program and extend existing programs like the Farmable Wetlands Program. To read the House Committee on Agriculture’s summary of Title II in the 2026 Farm Bill, click here.
+
+Title II would also implement new changes and programs to aid federal conservation efforts. For example, Title II would establish the Forest Conservation Easement Program (FCEP). FCEP’s stated purpose is to “protect the viability and sustainability of working forest land, and related conservation values of eligible land, by limiting the negative effects of nonforest land uses of such land.” This would be accomplished through the acquisition of conservation easements or “other interests in land.” This is a new program and would be funded in the amount of $25 million in 2027, $50 million annually in 2028 through 2030, and finally $65 million in 2031.
+
+Title II introduces some important changes to the Environmental Quality Incentives Program (EQIP). EQIP is a federal program administered by the USDA which provides technical and financial assistance to agricultural producers seeking to implement conservation practices on working agricultural lands. Traditionally, practices eligible for EQIP incentives have included structural land management, forest management, and comprehensive nutrient management plans among other recognized practices. Under the version of the 2026 Farm Bill passed by the House, conservation practices eligible for EQIP would be expanded to include precision agriculture. Precision agriculture refers to the use of technology, like GPS or automation, to increase efficiency in farming operations. This means that producers implementing precision agriculture practices would potentially be eligible for assistance under EQIP.
+
+Additionally, the Conservation Title would fully codify the Feral Swine Eradication and Control Pilot Program (FSCP). This program was originally established as a pilot program intended to study the extent of damages caused by feral swine and develop measures to curb those damages. The 2026 Farm Bill would establish this pilot program as a permanent program, with funding increased to $150 million through 2031. According to the program’s information page, assistance is provided to producers for feral swine control through grants with non-federal partners. The Natural Resources Conservation Service (NRCS) reports that FSCP provided direct assistance to over 6,700 rural landowners on nearly 9 million acres to “mitigate the devastating impacts of feral swine.” At this time, the program is not accepting applications. Under the 2026 Farm Bill, the program would be provided with additional funding. Additionally, the NRCS and the Animal and Plant Health Inspection Service (APHIS) would be required to contract with one or more land-grant universities to assist with the program. The 2026 Farm Bill would also require that 40% of the FSCP’s funding be allocated to the NRCS, so that it may provide financial assistance to producers for “on-farm trapping and technology related to capturing and confining feral swine.” The remaining 60% would be allocated to APHIS to develop new “population reduction methods.”
+
+Title III – Trade
+
+Title III of the 2026 Farm Bill addresses agricultural trade policies. For a summary of Title III, click here. Notably, Title III would transfer the authority to administer the Food for Peace Act to USDA. The Food for Peace Act authorizes the U.S. to use its agricultural surpluses to promote international trade and global food security. Traditionally, the authority to administer the Food for Peace program lay with the United States Agency for International Development (USAID). Under the 2026 Farm Bill, that authority would transfer to USDA.
+
+Title III would also establish an Agricultural Trade Enforcement Task Force. This task force would be tasked with identifying trade barriers to U.S. agricultural exports. Specifically, trade barriers that are “vulnerable to dispute settlement” under the World Trade Organization (WTO) or other trade agreements. The purpose of this task force is to develop and implement strategies to enforce trade agreement violations with foreign trade partners. The task force would be required to submit periodic reports to Congress.
+
+Title IV – Nutrition
+
+Many of the programs typically included in the Nutrition Title of the Farm Bill were recently amended through the so-called “One Big Beautiful Bill Act” in 2025. To learn more about those provisions, click here. However, Title IV of the current proposal does introduce some notable changes to the Supplemental Nutrition Assistance Program (SNAP). Title IV would expand the SNAP healthy incentives program to include animal protein. This program encourages SNAP participants to purchase certain foods by offering incentives tied to the purchase of eligible foods. The SNAP dairy incentive program would also be expanded to include full-fat fluid milk and hard cheeses.
+
+Additionally, Title IV would update how individuals interact with the SNAP program. Title IV directs USDA to establish the online SNAP purchasing portal as a permanent service. Currently, the online portal exists as a “demonstration project” to determine whether USDA should authorize retailers to accept SNAP benefits via online transactions. Under the current draft of the 2026 Farm Bill, that portal would be transitioned from demonstration status to “permanent nationwide operations” within 120 days of the bill’s enactment.
+
+Title V – Credit
+
+Title V covers federal lending programs. For more information on Title V, click here. The 2026 Farm Bill, as currently passed through the House, would increase loan limits and expand eligibility for existing federal loan programs. The loan limit for guaranteed operating loans would be increased from $2 million to $3 million. Guaranteed farm ownership loans would likewise be increased from $2 million to $3.5 million.
+
+In other issues, Title V would also amend the Conservation Loan Program. This program authorizes USDA to provide loans to qualifying conservation projects. The program also establishes priority for administering loans to beginning farmers or ranchers, conversion to organic or sustainable productions, and practices for highly erodible land. Title V would amend that priority list to include precision agriculture practices and technologies.
+
+Additionally, Title V seeks to expand availability for USDA ownership and operating loans by altering current eligibility requirements. Under Title V, individuals or entity members that hold at least a 50 percent interest and that are or will become bona fide operators of the farm real estate acquired, improved, or supported with real estate loans would be eligible for direct farm ownership loans. Likewise, eligibility for operating loans would be expanded to include individuals or entity members that hold at least a 50 percent interest and that are or will become bona fide operators of the farm real estate acquired, improved, or supported with operating loans. Previously, eligibility required a majority ownership (over 50%) of the operation. In other words, proposed changes to Title V under the current version of the 2026 Farm Bill would increase eligibility for farm operating and ownership loans.
+
+Title X – Horticulture, Marketing and Regulatory Reform
+
+Title X of the 2026 Farm Bill covers specialty crops, local food programs, plant health, and organic production among other areas. According to the House Committee on Agriculture, Title X of the 2026 Farm Bill would “enhance the competitiveness of specialty crops and protect plant health” while also providing certain regulatory reforms. This section covers selected provisions of Title X.
+
+Some notable changes under the current 2026 Farm Bill, would include the establishment of a stakeholder consultation process under the Specialty Crop Block Grant Program. The Specialty Crop Block Grant Program is administered by the Agricultural Marketing Service (AMS) and provides grants to facilitate the marketing, promotion, research, and development of specialty crops. The stakeholder consultation process implemented by Title X would require program administrators to consult with producers when setting priorities under the Specialty Crop Security Act of 2023. Grant funds will be administered to the states to support the competitiveness of specialty crops. Under the pending proposal, specialty crop stakeholders would have a role in determining how those funds are ultimately allocated. Currently, more details on how much money will be allocated and what the consultation process will look like are unavailable.
+
+Title X would also expand eligibility for the Farmers’ Market and Local Food Promotion Program to include food hubs as an eligible entity. These programs operate under the umbrella of the Local Agriculture Market Program (LAMP) which coordinates and helps to provide funding to local and regional food systems. The Farmers’ Market Promotion Program promotes direct-to-consumer activities. The Local Food Promotion Program promotes “intermediary supply chain activities” which are activities that move products from the producer to markets. Food hubs are defined as “a business or organization that actively manages the aggregation, distribution, and marketing of source-identified food products to multiple buyers from multiple producers, who are primarily local and regional producers.” Should the proposed change be finalized, food hubs would now be eligible to receive federal assistance under the Farmer’ Market and Local Food Promotion programs.
+
+Title XI – Crop Insurance
+
+Title XI includes provisions related to federal crop insurance programs. For a summary of the proposed Title XI changes in the 2026 Farm Bill, click here.
+
+One notable Title XI change would expand coverage under the Federal Crop Insurance Act. Specifically, the Act would be amended to add “a decline in the market price of the insured commodity” to the list of qualifying losses. Previously, eligible losses were limited to those caused by drought, flood, or other natural disasters. With this amendment, Title XI would expand coverage options for producers under the Act.
+
+Additionally, Title XI would amend the Federal Crop Insurance Act to expand research and development on certain areas of interest for specialty crop producers. This includes but is not limited to: revenue policies for sugar beets, certain oilseeds, alfalfa, blueberries, and pulse crops; the creation of a pricing library for specialty crops; expanding hurricane and tropical storm coverage options; and expanding eligibility of certain specialty crops to have access to prevented plant coverage. The stated purpose of this expanded research initiative is to “expand the availability of policies that provide coverage against losses of revenue.”
+
+Other Notable Provisions
+
+Throughout its drafting, the 2026 Farm Bill was altered to include various floor amendments and marker bills. Floor amendments are measures introduced directly in the legislative chamber. Marker bills are pieces of legislation that are typically included in a larger piece of legislation, as opposed to being introduced as a standard piece of legislation. Often, these floor amendments and marker bills do not fit squarely into one of the above-mentioned titles. This section will highlight some notable floor amendments and a marker bill that is likely to garner additional attention.
+
+The “Save Our Bacon” Act
+
+H.R. 4673, also known as the “Save Our Bacon” Act, is a standalone piece of legislation included in the 2026 Farm Bill. The Act’s stated purpose is to “ensure the free movement of livestock-derived products in interstate commerce.” If passed, this bill would nullify parts of California’s Proposition 12, and prevent other states from passing similar laws. Specifically, it would prohibit any State or its subdivisions from enacting or enforcing “as a condition for sale or consumption, any condition or standard of production on products derived from covered livestock not physically raised in such State or subdivision that is in addition to, or different from, the conditions or standards of production in the State in which the production occurs.” However, it would not apply to hens raised primarily for egg production. Using Prop 12 as an example, the “Save Our Bacon” provision would allow the state to impose housing requirements on egg-laying hens, breeding pigs, and calves raised for veal within the state. However, it would not allow the state to impose limitations on pork or veal products from animals raised elsewhere but sold within California. Prop 12’s provisions setting requirements for living conditions of laying hens (no matter what state in which they were housed) would be unaffected. To learn more about Prop 12, including challenges to the law, click here.
+
+Pesticides
+
+The 2026 Farm Bill was amended to remove language related to pesticides. Specifically, the amendment struck down language that would have amended the Federal Insecticide, Fungicide, and Rodenticide Act (FIFRA). The language in question related to uniformity of pesticide labeling, state authority, and the use of registered pesticides. As a result, this language will not be included in the version of the 2026 Farm Bill heading to the Senate.
+
+Misc. Floor Amendments
+
+Floor amendments included in the current version of the 2026 Farm Bill covered a wide range of areas, from SNAP to foreign ownership of agricultural land. For example, one amendment would add “hot rotisserie chicken” to the list of items eligible to be purchased through SNAP benefits. Another amendment would remove certain emissions mandates on farm equipment, however the amendment’s text does not provide specifics. Another amendment would prohibit the purchase of agricultural land by foreign adversaries and state sponsors of terrorism. These amendments were all voted on and agreed to, meaning they are included in the House’s version of the 2026 Farm Bill. As is the case with the rest of the 2026 Farm Bill, these amendments are subject to change by the Senate.
+
+Programs Extended, Funded, or Suspended Through 2031
+
+Under the text of the bill, the following programs would be extended, funded, or suspended through 2031. This is not a comprehensive list of all affected programs.
+
+Title I: Commodities
+
+- Suspends permanent price support authority through 2031. Price support refers to a variety of agricultural programs intended to prevent commodity prices from falling below a certain threshold. This is accomplished through loans, direct payments, and supply management tools. The 2026 Farm Bill extends the suspension of permanent price support authority through crop year 2031 for commodities other than dairy. The suspension for dairy will be extended through December 31, 2031.
+
+Title II: Conservation
+
+- Reauthorizes Conservation Reserve Program through 2031.
+
+- Extends Farmable Wetlands Program through 2031.
+
+- Authorizes $150 million in funding through fiscal years 2025-2031 for the Feral Swine Eradication and Control Pilot Program.
+
+Title III: Trade
+
+- Extends the funding limitation for food aid quality oversight under the Food for Peace Act through 2031. Under the Food for Peace Act, funding is made available to assist the Administrator in ensuring the quality of food products being donated for food aid. Under the 2026 Farm Bill, this funding would continue to be limited to $4.5 million annually.
+
+- Amends the Food, Agriculture, Conservation, and Trade Act of 1990 to reauthorize funding for the promotion of agricultural exports to emerging markets through fiscal year 2031.
+
+Title IV: Nutrition
+
+- Authorizes appropriations for the Food and Nutrition Act of 2008 through 2031.
+
+- Authorizes appropriations for emergency food program infrastructure grants under the Emergency Food Assistance Act of 1983 through 2031.
+
+- Amends the Farm Security and Rural Investment Act of 2002 to reauthorize the purchase of specialty crops through 2031.
+
+Title V: Credit
+
+- Amends the Consolidated Farm and Rural Development Act to reauthorize existing funding levels for loan programs through 2031.
+
+- Amends the Consolidated Farm and Rural Development Act to extend the 50% operating loan funds set aside for qualified beginning farmers and ranchers through 2031.
+
+- Amends the Consolidated Farm and Rural Development Act to reauthorize the HEIRS Property Intermediary Relending Program through 2031.
+
+Title X: Horticulture, Marketing, and Regulatory Reform
+
+- Amends the Specialty Crop Competitiveness Act of 2004 to extend the authority of the Secretary to make grants through 2031
+
+Conclusion
+
+The 2026 Farm Bill has advanced further than any Farm Bill since 2018. However, it must still head to the Senate before it becomes law. If successfully passed, the 2026 Farm Bill would direct funding and federal agriculture policies until 2031. Recent reporting seems to indicate that the Senate will begin deliberations in late May or early June. For updates on the 2026 Farm Bill, be on the lookout for upcoming NALC resources.
+
+To read a Title-by-Title summary of the 2026 Farm Bill from the House Committee on Agriculture, click here.
+
+To read a Title-by-Title overview of the 2026 Farm Bill from the House Committee on Agriculture, click here.
+
+To read a section-by-section overview of the 2026 Farm Bill from the House Committee on Agriculture, click here.
+
+For a comparison of the 2026 Farm Bill with current law created by the Congressional Research Service, click here.
+
+For the full text of the 2026 Farm Bill, click here.
+
+For NALC resources on previous farm bills, click here.
+
+Share:
+
+Recent Posts
+
+-
+Legislative Proposals in Slaughter and Processing
+
+-
+The Feed: Vol. 4, Issue 19
+
+-
+Ninth Circuit Concludes United States Not Immune from Water Rights Lawsuit
+
+-
+Recent Changes to Dyed Diesel Regulations
+
+-
+The NALC Quarterly Newsletter: 3Q26
+
+- Administrative Law
+
+- Ag & Food Law Update
+
+- Agencies
+
+- Agricultural Marketing Service
+
+- Animal and Plant Health Inspection Service
+
+- Bureau of Land Management
+
+- Committee on Foreign Investment in the U.S. (CFIUS)
+
+- Commodity Credit Corporation
+
+- Court of International Trade
+
+- Department of Energy
+
+- Department of Labor
+
+- Environmental Protection Agency
+
+- Farm Service Agency
+
+- Federal Crop Insurance Corporation
+
+- Federal Energy Regulatory Commission
+
+- Federal Motor Carrier Safety Administration (FMCSA)
+
+- Fish and Wildlife Service
+
+- Food and Drug Administration
+
+- Food and Nutrition Service
+
+- Food Safety and Inspection Service
+
+- Foreign Agricultural Service
+
+- Forest Service
+
+- Grain Inspection Packers & Stockyards Administration (GIPSA)
+
+- International Trade Administration
+
+- National Agricultural Library
+
+- National Marine Fisheries Service
+
+- National Oceanic and Atmospheric Administration
+
+- Natural Resources Conservation Service
+
+- Rural Development
+
+- Rural Utilities Service
+
+- United States Department of Agriculture
+
+- Agricultural Data
+
+- Agricultural Liens
+
+- Agritourism
+
+- Alternative Dispute Resolution
+
+- Alternative Proteins
+
+- Animal Feeding Operations
+
+- Animal Identification
+
+- Animal Law
+
+- Animal Welfare
+
+- Antitrust
+
+- Aquaculture
+
+- Author:
+
+- Brigit Rollins
+
+- Plaintiffs & Pesticides
+
+- The Deal with Dicamba
+
+- WOTUS Update
+
+- Elizabeth Rumley
+
+- Emily Stone
+
+- Field Guide to CSA
+
+- Legal Issues with Land Trusts
+
+- Harrison Pittman
+
+- Jana Caracciolo
+
+- Mary Eichenberger
+
+- Micah Brown
+
+- Checking in on Crop Insurance
+
+- Lending for Livestock, Credit for Crops
+
+- NALC Staff
+
+- 'MAHA' Movement
+
+- AFIDA Updates Explained:
+
+- Between a Rock and a Hard Place
+
+- Considering Carbon
+
+- Focusing on Foreign Investment
+
+- Food Foundations
+
+- News Release
+
+- Procedure
+
+- Soil for Sale?
+
+- Spotlighting State Restrictions on Foreign Land Investments
+
+- State Proposals on Restricting Foreign Ownership of Farmland
+
+- Truth in Labeling Law(suits)
+
+- Phillip Powell
+
+- Research Fellows
+
+- Rusty Rumley
+
+- Solar Smarts
+
+- Samantha Capaldo
+
+- Samantha Mikolajczyk
+
+- Will Scobey
+
+- Bankruptcy
+
+- Biofuels
+
+- Biosecurity
+
+- Biotechnology
+
+- Business Organizations
+
+- Carbon
+
+- Checkoff Programs
+
+- Climate Change
+
+- Commercial Transactions
+
+- Commodity Programs
+
+- Conservation Programs
+
+- Cooperatives
+
+- Corporate Farming
+
+- Cottage Foods
+
+- Country of Origin Labeling
+
+- Crop Insurance
+
+- Disaster Assistance Programs
+
+- Environmental Law
+
+- Equine Activity
+
+- Estate Planning
+
+- Divorce
+
+- heirs property
+
+- Taxation
+
+- Farm Bill
+
+- Farm Credit System
+
+- Farm Foreclosures
+
+- Farm Labor
+
+- Farm Service Credit
+
+- Federal Loan Programs
+
+- Finance and Credit
+
+- Food Labeling
+
+- Food Safety
+
+- Foreign Ownership
+
+- Forestry
+
+- Grain Dealers
+
+- Growing Careers
+
+- Hemp
+
+- Immigration
+
+- Indigenous Food and Agriculture
+
+- Intellectual Property
+
+- International Trade
+
+- Labor
+
+- Land Ownership
+
+- Land Use Regulation
+
+- Landowner Liability
+
+- Leases
+
+- Local Food Systems
+
+- Marketing Orders
+
+- Meat Processing
+
+- NALC Resources
+
+- "NALC Explains"
+
+- Continuing Education
+
+- Daily Update
+
+- Monthly Round Up
+
+- Publication
+
+- Quarterly Newsletter
+
+- The Feed
+
+- Webinar
+
+- National Organic Program
+
+- Nutrition Programs
+
+- Pesticides
+
+- Dicamba
+
+- Glyphosate
+
+- Monsanto Co. v. Durnell
+
+- Paraquat
+
+- Production Contracts
+
+- Prop 12
+
+- Renewable Energy
+
+- Right to Farm
+
+- Right to Repair
+
+- Secured Transactions
+
+- Solar Leasing
+
+- Specialty Crops
+
+- Statutes
+
+- Agricultural Foreign Investment Disclosure Act
+
+- Animal Welfare Act
+
+- Clean Air Act
+
+- Clean Water Act
+
+- Comprehensive Environmental Response Compensation and Liability Act (CERCLA)
+
+- Corporate Transparency Act
+
+- Egg Products Inspection Act
+
+- Endangered Species Act
+
+- Fair Labor Standards Act
+
+- Federal Food Drug & Cosmetic Act
+
+- Federal Insecticide, Fungicide, and Rodenticide Act
+
+- Federal Meat Inspection Act
+
+- Food Safety Modernization Act
+
+- Foreign Investment Risk Review Modernization Act of 2018 (FIRRMA)
+
+- Grain Standards Act (GSA)
+
+- National Bioengineered Food Disclosure Standard (NBFDS)
+
+- National Environmental Policy Act
+
+- National Pollution Discharge Elimination System (NPDES)
+
+- Packers and Stockyards Act
+
+- Perishable Agricultural Commodities Act
+
+- Poultry Products Inspection Act
+
+- Sustainable Agriculture
+
+- Tariffs
+
+- Taxation
+
+- Timber Theft
+
+- Transportation
+
+- Uniform Commercial Code
+
+- Unmanned Aerial Vehicles
+
+- Urban Agriculture
+
+- Urban Encroachment
+
+- Veterinary Law
+
+- Water Law
+
+- Western Water
+
+- Wetlands Permitting
+
+- Zoning
+
+Archives
+
+Archives
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-

@@ -1,0 +1,189 @@
+# Benchmark prf: USDA RMA Rainfall Index / PRF program page
+# https://www.rma.usda.gov/en/Policy-and-Procedure/Insurance-Plans/Pasture-Rangeland-Forage
+# fetched 2026-10-16T16:04:01Z, sha256 b09a1852ee96cbff598605e9f1fcc515f7824c6f520e2ada6e7c522c75f115f7
+
+Rainfall Index | Risk Management AgencyLock
+
+-
+
+-
+
+-
+
+-
+
+Policy & Procedure
+
+-
+Appendix III/M-13 Handbook Index
+
+-
+Bulletins and Memos
+
+-
+Actuarial Releases
+
+-
+Informational Memorandums
+
+-
+Manager's Bulletins
+
+-
+Product Management Bulletins
+
+-
+Crop Loss Adjustment Standards
+
+-
+Crop Policies
+
+-
+Crop Underwriting Standards
+
+-
+Final Agency Determinations
+
+-
+General Handbooks
+
+-
+General Policies
+
+-
+Commodity Exchange Price Provisions
+
+-
+Commodity Exchange Price Provisions Archive
+
+-
+Livestock Insurance Plans
+
+-
+Margin Insurance
+
+-
+Rainfall Index
+
+-
+Pasture, Rangeland, Forage - Hawaii Archive
+
+-
+Whole-Farm Revenue Protection
+
+-
+Reinsurance Agreements
+
+-
+Livestock Price Reinsurance Agreement Archive
+
+-
+Standard Reinsurance Agreement Archive
+
+Rainfall Index
+
+Rainfall Index – Contiguous 48 States
+
+Starting with the 2027 crop year for programs with an 8/31 Contract Change Date, the Rainfall Index (RI) is based on weather data collected and maintained by the National Centers for Environmental Information (NCEI). The index reflects how much precipitation is received relative to the long-term average for a specified area and timeframe. The precipitation data is collected from thousands of rain gauges and reporting stations around the country. The precipitation reports are interpolated to specific areas called grids by scientists at NCEI.
+
+County Availability: Map Viewer
+
+Annual Forage
+
+The United States currently comprises about 954 million acres of farmland. The Annual Forage pilot program provides coverage to acreage that is planted each year and used as feed and fodder by livestock. This pilot program utilizes the Rainfall Index to correlate to this acreage. Also see livestock policies and resources.
+
+Note: Annual Forage will continue to use NOAA Climate Prediction Center data for the remainder of the 2027 crop year and will transition to the NOAA NCEI data for the 2028 crop year at the 4/30/27 contract change date.
+
+- 2027 RI Basic Provisions
+
+- 2027 Crop Provisions
+
+- Insurance Standards Handbook
+
+- Grid ID Locator, Decision Support Tool, Historical Indices
+
+- Annual Forage Archive
+
+Apiculture
+
+The United States currently produces about 163 million pounds of honey each year. The following insurance programs utilize various indexing systems to assess plant growth and vigor, which correlates to honey production.
+
+- 2027.1 RI Basic Provisions
+
+- 2027 Crop Provisions
+
+- Insurance Standards Handbook
+
+- Grid ID Locator, Decision Support Tool, Historical Indices
+
+- Apiculture Fact Sheet
+
+- Apiculture Archive
+
+Pasture, Rangeland, Forage
+
+Pasture, Rangeland, and forages cover approximately 55 percent of all U.S. land. Forage grows differently in different areas, so it's important for farmers and ranchers to know which types and techniques work best for their region. The following insurance program is available for Pasture, Rangeland, and Forage (PRF). Also see livestock policies.
+
+- 2027.1 RI Basic Provisions
+
+- 2027 Crop Provisions
+
+- Insurance Standards Handbook
+
+- Pasture, Rangeland, Forage Pilot Insurance Program Fact Sheet
+
+- Pasture, Rangeland, Forage Stocking Rate FAQs
+
+- Pasture, Rangeland, Forage FAQs
+
+- Grid ID Locator, Decision Support Tool, Historical Indices
+
+- Pasture, Rangeland, Forage Archive
+
+Rainfall Index – Hawaii
+
+Rainfall Index (RI) for Hawaii is based on weather data collected and maintained by the Hawaii Data Climate Portal (HCDP). The index reflects how much precipitation is received relative to the long-term average for a specified area and timeframe.
+
+Pasture, Rangeland, Forage - Hawaii
+
+The Pasture, Rangeland, and Forage (PRF) insurance was designed to help protect a producer’s livestock operation from the risks of forage loss due to the lack of precipitation. It's important for farmers and ranchers to know which months are most important for forage growth in their area to select the appropriate coverage for their grazing acres. Below are the program materials for the PRF Hawaii program. If producers are interested other livestock risk management tools, also see livestock policies.
+
+- 2027.1 RI Basic Provisions
+
+- 2027 PRF Hawaii Crop Provisions
+
+- Insurance Standards Handbook
+
+- PRF Hawaii Fact Sheet
+
+- Grid ID Locator, Decision Support Tool, Historical Indices
+
+- Pasture, Rangeland, Forage - Hawaii Archive
+
+News/Tools
+
+- USDA Risk Management Agency Upgrades Rainfall Data Source (Apr 30, 2026)
+
+- Rainfall Index Data - 2027 and Beyond Processing Instructions
+
+- Pasture, Rangeland, Forage Pilot Insurance Program Fact Sheet
+
+- Summary Overview of Rainfall Index Insurance plan for Pasture, Rangeland, and Forage
+
+- Pasture, Rangeland, Forage Stocking Rate FAQs
+
+- Pasture, Rangeland, Forage FAQs
+
+- Rainfall Index and Vegetation Index Pasture, Rangeland, and Forage General Program Overview
+
+- Rainfall Index Pasture, Rangeland, and Forage Technology
+
+- Rainfall Index and Vegetation Index Pasture, Rangeland, and Forage Shares
+
+- Rainfall Index and Vegetation Index Pasture, Rangeland, and Forage Tool
+
+Contact Information
+
+For more information regarding these programs, contact a qualified Crop Insurance Agent.
+
+For more information regarding the contents of this page, contact RMA.

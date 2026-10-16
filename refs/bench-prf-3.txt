@@ -1,0 +1,333 @@
+# Benchmark prf: ProAg
+# https://www.proag.com/products/mpci/rainfall-index-policies/pasture-rangeland-forage-prf/
+# fetched 2026-10-16T16:04:03Z, sha256 5d4455f0b99eec373fb55f97aa94595b11673305100d2f5abafaa70d04244834
+
+Pasture, Rangeland, Forage (PRF) Insurance - ProAg
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Pasture, Rangeland, Forage (PRF)
+
+PRF sales closing is Dec. 1. Start by finding your local ProAg agent.
+
+GET STARTED
+
+Pasture, Rangeland, and Forage insurance (PRF insurance) was designed to help protect a producer’s operation from the risks of forage loss due to the lack of precipitation.
+
+The Pasture, Rangeland, Forage Pilot Insurance Program provides insurance coverage on your pasture, rangeland, or forage acres grown for the intended use of grazing by livestock or haying. This program is designed to give producers the ability to buy insurance protection for losses of forage produced for grazing or harvested for hay, which result in increased costs for feed, destocking, depopulating, or other actions. The PRF program utilizes a rainfall index to determine precipitation for coverage purposes and does not measure production or loss of products themselves.
+
+Find an Agent
+
+Benefits of PRF Insurance
+
+Covers pasture, rangeland or forage acres
+
+Utilizes a rainfall index to determine precipitation
+
+Available in the 48 contiguous states
+
+Customizable based on coverage level, index intervals and productivity factor
+
+Previous
+Next
+
+How PRF Works
+
+PRF insurance is available in the 48 contiguous states with the exception of a few grids that cross international borders. PRF Hawaii is being piloted and will be available only on the Island of Hawaii.
+
+The Rainfall Index uses gridded precipitation data from the National Oceanic and Atmospheric Administration National Centers for Environmental Information (NOAA NCEI). Due to this change for the reinsurance year 2027, rates, historical illustrations and payment patterns may differ from prior-year results.
+
+Each grid covers an area equal to .25º in latitude by .25° in longitude. Acres will be assigned to one or more grids based on the location to be insured. A producer must select at least two, 2-month periods where precipitation is most critical to their operation. These periods are called index intervals. (See your actuarial documents to determine the minimum reporting periods required for your area.)
+
+It is important for ranchers and farmers to understand that payments are not based on individual rain gauges on their farm or a single weather station, but the interpolated data for the entire NOAA NCEI grid which may not be traced back to a single reporting station.
+
+The Pasture, Rangeland, and Forage insurance was designed to help protect a producer’s operation from the risks of forage loss due to the lack of precipitation, which is why it is sometimes referred to as PRF rainfall insurance. However, it is not designed to insure against ongoing or severe drought, as the coverage is based on precipitation expected during specific intervals only.
+
+Recent Changes to the Pasture, Rangeland, Forage Policy
+
+For the 2027 and succeeding crop years, the Risk Management Agency (RMA) has revised the Pasture, Rangeland, Forage (PRF) Crop Provisions and the PRF Hawaii Crop Provisions. The following changes are outlined in RMA Bulletin PM-26-053.
+
+- 25% Minimum Stocking Requirement: For grazing, the insured must maintain enough livestock on the insured acres to equal at least 25% of the stocking rate for the applicable forage type listed on their state or federal lease.
+
+- Supporting Records: RMA requires supporting livestock records to be maintained and provided upon request. The 25% stocking requirement should be determined before insured acreage is finalized.
+
+- NOAA NCEI: RY2027 and succeeding years use NOAA NCEI gridded precipitation data. Current RY2027 rates, historical illustrations and payment patterns may differ from prior-year results for an individual policy.
+
+- 25% Max Liability for Jan-Feb Interval: RMA has limited the percentage of value for the January-February interval to 25% of the total policy liability.
+
+How are PRF insurance payments determined?
+
+Insurance payments are determined by using NOAA NCEI data for their grid(s) and index intervals that were chosen to insure. When the final grid index falls below the policyholder’s “trigger grid index”, the producer may receive an indemnity. This insurance coverage is for a single peril — lack of precipitation. Coverage is based on the experience of the entire grid. It is not based on individual farms or ranches or specific weather stations in the general area.
+
+What PRF Insurance Tools are Available to ProAg Agents?
+
+Producers need to make several choices when insuring their grazing or hay production, including coverage level, index intervals, irrigated practice, productivity factor, and number of acres. Producers should work with their crop insurance agent to view the PRF Grid ID Locator map and index grids for their area and assign acreage to one or more grids based on the location and use of the acreage to be insured. RMA encourages the use of the Grid ID Locator, historical indices tool, FSA’s National Crop Table and decision support tools available on RMA’s website to help decide whether PRF is the right insurance coverage for a producer’s operation.
+
+Robust quoting tools are available within ProAg’s PRF quoting system which provides numerous data points and historical indices, as well as decision support tools available on RMA’s website. This data helps producers decide whether PRF is the right insurance coverage for their operation.
+
+Dive Deeper into PRF with these Articles
+
+Is PRF insurance worth it? Weigh these five benefits.
+
+What is PRF insurance and how is it helping hay producers and farmers when Mother Nature keeps the rain away too long? Find out the perks of this policy.
+
+Full Article
+
+Pasture, Rangeland, Forage (PRF) Helps Producers Make Up For Moisture, Forage Shortfalls
+
+Program helps protect ranches when Mother Nature cuts hay, grazing output Mother Nature always has the last say on the…
+
+Full Article
+
+Is Pasture, Rangeland, And Forage Coverage For You? Three Factors To Consider
+
+Feed capacity, financial leverage are major variables Editor’s Note: This is the second of two articles on the Pasture, Rangeland,…
+
+Full Article
+
+Is PRF drought insurance?
+
+No. The RI-PRF is not “drought insurance” and does not insure against abnormally “high temperatures” or “windy conditions.” While a drought may cause a decline in the index value to the point that an indemnity payment is issued to eligible insured producers, a drought being declared in a state, county or area does not, by itself, trigger an indemnity payment under the RI-PRF.
+
+Protect your operation when precipitation is lacking with PRF insurance.
+
+Learn More
+
+Learn more with our PRF brochure
+
+Pasture, Rangeland, Forage (PRF) Brochure
+
+Download
+
+Related Articles
+
+FCIC Crop Insurance Policy Updates for 2027 and Succeeding Crop Years
+
+FCIC has released several crop insurance policy updates for 2027 and succeeding crop years, including changes to general policy provisions, Grapevine and Rainfall Index programs. Review the key changes, effective dates and RMA bulletins that agents and producers should know as they prepare for 2027.
+
+Full Article
+
+Pasture, Rangeland, Forage (PRF) Helps Producers Make Up For Moisture, Forage Shortfalls
+
+Program helps protect ranches when Mother Nature cuts hay, grazing output Mother Nature always has the last say on the…
+
+Full Article
+
+Is Pasture, Rangeland, And Forage Coverage For You? Three Factors To Consider
+
+Feed capacity, financial leverage are major variables Editor’s Note: This is the second of two articles on the Pasture, Rangeland,…
+
+Full Article
+
+Find a ProAg Agent
+
+Search by Location
+
+Search Products by State
+
+Pro Ag Management, Inc.* (collectively with its corporate affiliates, “ProAg®”) is a managing general agency representing several risk bearing insurance companies, including Producers Agriculture Insurance Company and U.S. Specialty Insurance Company and doing business as Pro Ag Insurance Services, Inc. in California, CA Entity License #0F34212. The insurance products described on this website may not be a complete list of all products offered and may not be offered in all states. The provided information does not amend, or otherwise affect, the terms and conditions of any insurance policy issued by ProAg or any of its subsidiaries; always refer to the policy provisions. Actual coverages will vary based on the terms and conditions of the policy issued.
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+OK
+Cancel

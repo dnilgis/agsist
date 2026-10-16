@@ -1,0 +1,23 @@
+# Benchmark arc-plc: farmdoc
+# https://farmdoc.illinois.edu/fast-tools/arc-co-plc-model
+# fetched 2026-10-16T16:04:38Z, sha256 f0a25ae31bc9d051967bd9c6a28410183d33ff44457ac80f6f2b91925edb9fef
+
+Farm Bill What-If Tool - farmdoc
+
+Farm Bill What-If Tool
+
+About This Tool
+
+Last Updated : October 16, 2026
+
+This program calculates Agricultural Risk Coverage for County Coverage (ARC-CO), Price Loss Coverage (PLC) payments, and ARC at the Individual Level (ARC-IC). County yields and market year average (MYA) prices are brought in for a user-specified state-county-crop combination. Users then can change county yields and prices to see ARC-CO and PLC payments under those yields and prices.
+
+Download this FAST Tool
+
+Download previous Farm Bill What-If Tools:
+
+Spring 2026 Fall 2025
+
+Spring 2024 Spring 2023
+
+Fall 2022 Spring 2021

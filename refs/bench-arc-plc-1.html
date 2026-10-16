@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth h-full bg-white text-base subpixel-antialiased">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="ZT4iKzM2SFwZPAYnXlIYAkINJQUgCnQdQgdHEd28rEEO76SF7BkdVYGU">
+    <title data-default="Agricultural &amp; Food Policy Center" data-suffix=" · AFPC">
+      Tools
+     · AFPC</title>
+    <link phx-track-static rel="stylesheet" href="/assets/css/app-c9fec0d9f401ad2173d366e8970a524f.css?vsn=d">
+    <script defer phx-track-static type="text/javascript" src="/assets/js/app-ce5650555ddc3e09e3430eb44cef5252.js?vsn=d">
+    </script>
+    <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js">
+    </script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js">
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3G1G8LJZN1">
+    </script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3G1G8LJZN1');
+    </script>
+  </head>
+
+  <body class="flex min-h-full flex-col font-base-content">
+    <a class="sr-only" href="#main-content">
+      Skip to main content
+    </a>
+
+
+
+    <nav class="bg-neutral-950 border-b-[3px] px-6 border-b-maroon h-18">
+
+      <div class="flex flex-nowrap content-center mx-auto">
+        <a href="/" class="cursor-pointer font-bauhaus text-white text-[48px] align-middle hover:text-neutral-400">
+          AFPC
+        </a>
+        <div class="pl-6 my-auto text-neutral-200 text-[18px] font-base-content flex-row gap-4 hidden md:flex">
+          <a class="hover:underline" href="/about">
+            About Us
+          </a>
+          |
+          <a class="hover:underline" href="/courses">
+            Courses
+          </a>
+          |
+          <a class="hover:underline" href="/tools">
+            Tools
+          </a>
+          |
+          <a class="hover:underline" href="/research/publications">
+            Research
+          </a>
+          |
+          <a class="hover:underline" href="/extension/">
+            Extension
+          </a>
+        </div>
+        <div class="ml-auto my-auto" role="navigation">
+          <div class="hidden md:block">
+
+              <form method="get" action="/auth/login">
+                <input type="hidden" name="_csrf_token" value="ZT4iKzM2SFwZPAYnXlIYAkINJQUgCnQdQgdHEd28rEEO76SF7BkdVYGU">
+                <input type="hidden" name="return_to" value="/tools">
+                <button class="pc-button pc-button--primary pc-button--md pc-button--radius-md text-white text-[16px] bg-maroon hover:bg-primary cursor-pointer font-base-content" type="submit">
+  
+  
+    
+  
+
+  
+                  Login
+                
+
+</button>
+              </form>
+
+          </div>
+          <div class="visible md:hidden">
+            <a phx-click="[[&quot;toggle&quot;,{&quot;to&quot;:&quot;#mobile-nav&quot;}]]">
+              <span class="hero-bars-3 h-8 w-8 text-white"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </nav>
+    <nav class="bg-neutral-900 overflow-visible absolute top-17 w-full hidden border-y-[1px] border-primary" id="mobile-nav">
+      <ul role="nav" class="flex flex-1 flex-col text-white p-2 gap-1">
+        <li role="presentation" class="nav-item">
+          <a href="/about/" class="nav-link" role="link">About Us</a>
+        </li>
+        <li role="presentation" class="nav-item">
+          <a href="/courses/" class="nav-link" role="link">Courses</a>
+        </li>
+        <li role="presentation" class="nav-item">
+          <a href="/tools/" class="nav-link" role="link">Decision Aids</a>
+        </li>
+        <li role="presentation" class="nav-item">
+          <a href="/research/" class="nav-link" role="link">Research</a>
+        </li>
+        <li role="presentation" class="nav-item">
+          <a href="/extension/" class="nav-link" role="link">Extension</a>
+        </li>
+      </ul>
+    </nav>
+    <main class="px-4 py-4 sm:px-6 lg:px-8">
+  
+
+<div id="client-error" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;key&quot;:&quot;error&quot;},&quot;event&quot;:&quot;lv:clear-flash&quot;}],[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#client-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;]]}]]" role="alert" class="toast toast-top toast-end z-50" hidden phx-connected="[[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#client-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;]]}]]" phx-disconnected="[[&quot;show&quot;,{&quot;to&quot;:&quot;.phx-client-error #client-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;]]}]]">
+  <div class="alert w-80 sm:w-96 max-w-80 sm:max-w-96 text-wrap alert-error">
+    
+    <span class="hero-exclamation-circle size-5 shrink-0"></span>
+    <div class="flex flex-col">
+      <p class="font-semibold">We can&#39;t find the internet</p>
+      <p class="text-sm">
+  Attempting to reconnect <span class="hero-arrow-path ml-1 h-3 w-3 animate-spin"></span>
+</p>
+    </div>
+  </div>
+</div>
+
+<div id="server-error" phx-click="[[&quot;push&quot;,{&quot;value&quot;:{&quot;key&quot;:&quot;error&quot;},&quot;event&quot;:&quot;lv:clear-flash&quot;}],[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#server-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;]]}]]" role="alert" class="toast toast-top toast-end z-50" hidden phx-connected="[[&quot;hide&quot;,{&quot;time&quot;:200,&quot;to&quot;:&quot;#server-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-in&quot;,&quot;duration-200&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;]]}]]" phx-disconnected="[[&quot;show&quot;,{&quot;to&quot;:&quot;.phx-server-error #server-error&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;]]}]]">
+  <div class="alert w-80 sm:w-96 max-w-80 sm:max-w-96 text-wrap alert-error">
+    
+    <span class="hero-exclamation-circle size-5 shrink-0"></span>
+    <div class="flex flex-col">
+      <p class="font-semibold">Something went wrong!</p>
+      <p class="text-sm">
+  Hang in there while we get back on track
+  <span class="hero-arrow-path ml-1 h-3 w-3 animate-spin"></span>
+</p>
+    </div>
+  </div>
+</div>
+  <article class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-4xl font-bold text-gray-900 mb-4">Tools and Decision Aids</h1>
+  <p class="text-lg text-gray-600 mb-8">
+    The Agricultural and Food Policy Center (AFPC) has developed educational tools and decision aids to assist in the analysis of agricultural policy issues and assist producers in making informed decisions.
+  </p>
+
+  <div class="grid gap-8 md:grid-cols-2">
+
+    <a href="/tools/area-insurance/2026" data-phx-link="redirect" data-phx-link-state="push" class="group block bg-white rounded-lg shadow-lg hover:shadow-xl hover:shadow-green-950 transition-shadow duration-200 overflow-hidden">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-gray-900  transition-colors">
+            2026 Area-Wide Crop Insurance
+          </h2>
+          <span class="hero-arrow-right h-6 w-6 group-hover:translate-x-1 transition-transform"></span>
+        </div>
+        <div class="mb-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold uppercase tracking-wide bg-gray-200 text-gray-700">
+            Updated: Mar 2026
+          </span>
+        </div>
+        <p class="text-gray-700 mb-4">
+          A stochastic simulation that provides estimated per acre net indemnities based on your expected 2026 harvest prices and actual RMA area yields for:
+        </p>
+        <div class="space-y-2 text-sm text-gray-600">
+          <div class="flex items-start">
+            <span class="hero-check-circle h-5 w-5 text-green-600 mr-2 shrink-0 mt-0.5"></span>
+            <p>
+              <span class="text-semibold">STAX</span>
+              - Stacked Income Protection Plan <span class="text-xs">(cotton only)</span>
+            </p>
+          </div>
+          <div class="flex items-start">
+            <span class="hero-check-circle h-5 w-5 text-green-600 mr-2 shrink-0 mt-0.5"></span>
+            <p><span class="text-semibold">SCO</span> - Supplemental Coverage Option</p>
+          </div>
+          <div class="flex items-start">
+            <span class="hero-check-circle h-5 w-5 text-green-600 mr-2 shrink-0 mt-0.5"></span>
+            <p><span class="text-semibold">ECO</span> -  Enhanced Coverage Option</p>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <a href="/tools/farmbill/2026" data-phx-link="redirect" data-phx-link-state="push" class="group block bg-white rounded-lg shadow-lg hover:shadow-xl hover:shadow-green-950 transition-shadow duration-200 overflow-hidden">
+      <div class="p-6 h-full">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-gray-900">
+            2026 FSA ARC/PLC Expected Payments
+          </h2>
+          <span class="hero-arrow-right h-6 w-6 group-hover:translate-x-1 transition-transform"></span>
+        </div>
+        <div class="mb-4">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold uppercase tracking-wide bg-green-500/25 text-black">
+            Updated: Sep 2026
+          </span>
+        </div>
+        <p class="text-gray-700 mb-4">
+          A stochastic simulation characterizing the probabilities of different levels of expected FSA payments based on 500 possible future realizations of market prices and county yields for:
+        </p>
+        <div class="space-y-2 text-sm text-gray-600">
+          <div class="flex items-start">
+            <span class="hero-check-circle h-5 w-5 text-green-600 mr-2 shrink-0 mt-0.5"></span>
+            <p><span class="text-semibold">ARC</span> - Agriculture Risk Coverage</p>
+          </div>
+          <div class="flex items-start">
+            <span class="hero-check-circle h-5 w-5 text-green-600 mr-2 shrink-0 mt-0.5"></span>
+            <p><span class="text-semibold">PLC</span> - Price Loss Coverage</p>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <a href="/tools/decision-aids/2026/ARC_IC_DecisionAid_2026.xlsx" class="group block bg-white rounded-lg shadow-lg hover:shadow-xl hover:shadow-green-950 transition-shadow duration-200 overflow-hidden">
+      <div class="p-6 h-full">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-gray-900">
+            2026 ARC-IC Decision Aid
+          </h2>
+          <span class="hero-arrow-down-tray h-6 w-6 group-hover:translate-y-1 transition-transform"></span>
+        </div>
+        <div class="mb-4 flex items-center gap-2">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold uppercase tracking-wide bg-green-500/25 text-black">
+            Updated: Oct 2026
+          </span>
+          <span class="text-sm text-gray-500">Excel workbook</span>
+        </div>
+        <p class="text-gray-700 mb-4">
+          A spreadsheet that combines every FSA farm you have enrolled in ARC-IC in one state into a single ARC-IC farm, for up to fifty farms.
+        </p>
+        <div class="space-y-2 text-sm text-gray-600">
+          <div class="flex items-start">
+            <span class="hero-check-circle h-5 w-5 text-green-600 mr-2 shrink-0 mt-0.5"></span>
+            <p>ARC-IC</p>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</article>
+</main>
+  </body>
+</html>

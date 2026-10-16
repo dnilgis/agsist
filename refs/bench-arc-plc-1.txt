@@ -1,0 +1,50 @@
+# Benchmark arc-plc: Texas A&M AFPC decision aid
+# https://afpc.tamu.edu/tools
+# fetched 2026-10-16T16:04:36Z, sha256 3472463a18dfd5d65083dc82e01e270fc03081b9f53dc13257c10db674bf8f01
+
+Tools · AFPC
+
+We can't find the internet
+
+Attempting to reconnect
+
+Something went wrong!
+
+Hang in there while we get back on track
+
+Tools and Decision Aids
+
+The Agricultural and Food Policy Center (AFPC) has developed educational tools and decision aids to assist in the analysis of agricultural policy issues and assist producers in making informed decisions.
+
+2026 Area-Wide Crop Insurance
+
+Updated: Mar 2026
+
+A stochastic simulation that provides estimated per acre net indemnities based on your expected 2026 harvest prices and actual RMA area yields for:
+
+STAX
+- Stacked Income Protection Plan (cotton only)
+
+SCO - Supplemental Coverage Option
+
+ECO - Enhanced Coverage Option
+
+2026 FSA ARC/PLC Expected Payments
+
+Updated: Sep 2026
+
+A stochastic simulation characterizing the probabilities of different levels of expected FSA payments based on 500 possible future realizations of market prices and county yields for:
+
+ARC - Agriculture Risk Coverage
+
+PLC - Price Loss Coverage
+
+2026 ARC-IC Decision Aid
+
+Updated: Oct 2026
+
+Excel workbook
+
+A spreadsheet that combines every FSA farm you have enrolled in ARC-IC in one state into a single ARC-IC farm, for up to fifty farms.
+
+ARC-IC

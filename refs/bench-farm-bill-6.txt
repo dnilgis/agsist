@@ -1,0 +1,61 @@
+# Benchmark farm-bill: NSAC
+# https://sustainableagriculture.net/blog/the-senate-farm-bill-markup-what-happened-and-whats-next/
+# fetched 2026-10-16T16:03:56Z, sha256 61617f67994e907bd580f4d4c9128eda186e1d78af00061ca1589a1fd66fca97
+
+The Senate Farm Bill Markup: What Happened and What’s Next - National Sustainable Agriculture Coalition
+
+Credit: Jonathan P. Larsen/Diadem Images
+
+On Thursday, August 6, the Senate Agriculture Committee convened to consider the Agricultural Act of 2026, the Senate’s version of a new farm bill. The early August Committee meeting (known as a “markup”) was the Senate Agriculture Committee’s first farm bill markup since June 2018.
+
+The journey to a new farm bill is never straightforward and always unique, yet the path to a new farm bill – beginning in 2023 – has shattered all precedent. Opportunities to authorize a new, full farm bill during the 118th Congress – in 2023 and 2024 – came and went in both the House and Senate. When the November 2024 election delivered a governing “trifecta” for the Republican Party, they turned to the budget reconciliation process to pass a bill that updated some parts of the farm bill, while leaving most out. This reconciliation bill, commonly referred to as H.R. 1, took the unprecedented step of cutting nearly $200 billion from the Supplemental Nutrition Assistance Program (SNAP) in order to fund another part of the farm bill, effectively breaking the decades-old bipartisan farm bill coalition.
+
+Despite this fracturing, in the spring of 2026, the House Agriculture Committee approved the Farm, Food, and National Security Act of 2026, and the full House of Representatives followed suit shortly thereafter. Then in late June 2026, Senate Agriculture Committee Chairman John Boozman (R-AR) released a farm bill ‘discussion draft’. This discussion draft was subsequently modified before markup in early August 2026 with more than 80 new pages of text, including changes to nearly every title of the farm bill, from conservation, nutrition, research, local and regional food programs, and much more. Perhaps most noteworthy, Senate Republicans included a one-year SNAP cost-shift delay in the modified bill, falling short of Democrats’ ask for a two-year delay. Overall, many of these changes brought the Senate’s farm bill into closer alignment with the House-passed Food, Farm, and National Security Act and became the base bill for consideration during the Senate Agriculture Committee markup.
+
+Summarizing the Markup
+
+The Agricultural Act of 2026 markup kicked off shortly after 9:30 am EDT on Thursday, August 6, and concluded around 1:30 pm that same day. The markup centered on the debate of more than 14 amendments in addition to a separate ‘en bloc’ amendment that itself included 34 amendments.
+
+Of note, when the Senate Agriculture Committee has full attendance of its members, Republicans outnumber Democrats 12-11. For this markup in particular, Senator Mitch McConnell (R-KY) was absent due to ongoing health issues, bringing the Committee to an even 11-11. However, Senate Agriculture Committee rules allow for absent Senators to vote on amendments by proxy vote. While Senators can also vote by proxy on the overall bill, a proxy vote cannot be the deciding vote, meaning that with Sen. McConnell’s absence the bill would be unable to advance out of committee if the final vote fell along party lines.
+
+In total, over 200 amendments were filed to the Agricultural Act. 48 amendments received a vote of some sort – some of which were roll call votes and others that were included in the en bloc amendment. Of the 48 amendments that received a vote, 34 were approved in unison as a part of the bipartisan negotiated ‘en bloc’ amendment. Of the remaining 14 amendments, only 1 – establishing mandatory country of origin labeling – was successfully adopted. Each of the remaining 13 amendments failed on a party-line vote. See the full list of amendments that were considered here.
+
+Below is a list of amendment votes directly related to the National Sustainable Agriculture Coalition (NSAC)’s priorities that were taken during the Senate Agriculture Committee’s markup:
+
+- Senator Michael Bennet’s (D-CO) amendment #6 to eliminate a funding decrease contained in the base bill for the two most popular working lands conservation programs, the Conservation Stewardship Program (CSP) and the Environmental Quality Incentives Program (EQIP). NSAC supported. Failed by roll call vote along party lines, all Republicans (12) opposed – all Democrats (11) in favor.
+
+- Sen. Ben Ray Lujan’s (D-NM) amendment #5 to require USDA to use the specialty crop emergency payment framework for all future ad hoc farm payments to specialty crop producers and provide $5 billion in ad hoc payments to specialty crop producers. NSAC supported. Failed by roll call vote along party lines, all Republicans (12) opposed – all Democrats (11) in favor.
+
+- Sen. Lujan’s amendment #8 to provide $200 million in mandatory funding for the Strengthening Local Food Security Program for FY2027 and FY2028. NSAC supported. Approved by voice vote as part of the en bloc amendment.
+
+- Sen. Adam Schiff’s (D-CA) amendment #2 to provide transparency and guardrails on USDA disaster assistance block grants. NSAC supported. The amendment was offered and withdrawn without a vote.
+
+- Sen. Schiff’s amendment #3 to codify two regional food system programs at USDA: the Regional Food Systems Infrastructure (RFSI) program and a new version of regional business technical assistance hubs. NSAC supported. The amendment was offered and withdrawn without a vote.
+
+- Sen. Tina Smith’s (D-MN) amendment #3 to establish Tribal self-governance authority for the inspection of Tribal meat processing facilities. NSAC supported. Failed by roll call vote along party lines, all Republicans (12) opposed – all Democrats (11) in favor.
+
+- Sen. Smith’s amendment #4 to expand and make permanent the demonstration program for self-determination within the Food Distribution Program on Indian Reservation (FDIPR) food box program. NSAC supported. Failed by roll call vote along party lines, all Republicans (12) opposed – all Democrats (11) in favor.
+
+- Sen. Smith’s amendment #10 to require that all obligated Rural Energy for America Program (REAP) grants be reinstated. NSAC supported. Failed by roll call vote along party lines, all Republicans (12) opposed – all Democrats (11) in favor.
+
+- Sen. John Thune’s (R-SD) amendment #1 to reinstate mandatory Country of Origin Labeling (COOL) for beef that is compliant with World Trade Organization rules. NSAC supported. Approved by roll call vote, 17-6.
+
+- Sen. Raphael Warnock’s (D-GA) amendment #1 to permanently authorize Scholarships for Students at 1890s Institutions, expand scholarship eligibility, and rename the scholarship. NSAC supported. Approved by voice vote as a part of the en bloc amendment.
+
+- Sen. Warnock’s amendment #10 to increase funding for Centers of Excellence at 1890 Institutions. NSAC supported. Approved by voice vote as a part of the en bloc amendment.
+
+- Sen. Warnock’s amendment #11 to expand eligibility and address administrative issues related to the Heirs Property Relending Program. Approved by voice vote as a part of the en bloc amendment.
+
+- Sen. Peter Welch’s (D-VT) amendment #17 to apply actively engaged-in-farming requirements to family and nonfamily farming operations. NSAC supported. Failed by roll call vote along party lines, all Republicans (12) opposed – all Democrats (11) in favor.
+
+While nearly 50 amendments were considered, many critical improvements to the bill – from restored conservation funding to leveling the playing field for family farmers – were rejected. Moreover, dozens of NSAC-supported amendments that would have materially improved the bill were not considered at all.
+
+At the conclusion of amendment consideration, the Chairman moved to a roll call vote on the overall bill. Given the aforementioned absence of Sen. McConnell, in addition to the absence of Sen. Tommy Tuberville (R-AL), the final vote on the bill failed along party lines, all Republicans (10) in support – all Democrats (11) opposed. However, immediately following this failed vote, Chairman Boozman moved the Committee to recess rather than report the vote, thereby allowing the Committee to reconvene at a later date – perhaps in September 2026 – to revisit the bill.
+
+Passage? Where to From Here …
+
+The shadow of H.R. 1 looms large over not only the ongoing farm bill debate, but the future of federal agriculture policy. The unprecedented act of cutting nearly $200 billion from one part of the farm bill and using those cuts in part to fund another part of the farm bill severed the decades-old bipartisan farm bill coalition. Given this inescapable context, is a new farm bill possible by the end of 2026?
+
+Chairman John Boozman has signaled publicly that he plans to reconvene the Senate Agriculture Committee in mid-September 2026 to reconsider the bill. In order to achieve a different outcome in September, Chairman Boozman will need either Sen. McConnell to return to Washington, or he will need to strike a bipartisan deal on SNAP with Ranking Member Amy Klobuchar (D-MN). At the time of publishing this post, both of these pathways remain possible but far from guaranteed.
+
+However, while it’s possible to advance a new farm bill through the Senate Agriculture Committee on a party-line vote, a farm bill has to be bipartisan in order to pass the Senate floor because a farm bill requires 60 votes for approval in the Senate. Given the Senate’s current 53-47 Republican majority, only a bipartisan SNAP deal will create a viable pathway for a new farm bill by the end of 2026.

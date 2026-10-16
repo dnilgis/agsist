@@ -1,0 +1,35 @@
+# Benchmark farm-bill: Farm Policy News
+# https://farmpolicynews.illinois.edu/?p=33712
+# fetched 2026-10-16T16:03:52Z, sha256 083b792d556c5deec07aba4d7a9c17d2fc84b27b6f5825ea307fcd8854de862e
+
+Experts, Lawmakers Split on 2026 Farm Bill Likelihood | Farm Policy News | Illinois
+
+E&E News’ Grace Yarrow reported that “House Republicans are planning to revive farm bill negotiations in January after failing to garner enough political will to pass a new deal by the end of the year, as they’d initially hoped.”
+
+“House Agriculture Chair G.T. Thompson (R-Pa.) said in an interview that he wants to get a markup on the calendar ahead of a Jan. 30 funding deadline, though he acknowledged it may be too complicated to attach the farm bill to new spending legislation,” Yarrow reported. “The punt to January means Congress will have gone a third year without making needed updates to critical agriculture policies, creating fresh uncertainty for farmers who’ve been pummeled by high input costs, rising inflation and President Donald Trump’s tariff wars.”
+
+Courtesy of the House Ag Committee.
+
+Lawmakers Say 2026 Five-Year Farm Bill Still Possible
+
+Agri-Pulse’s Kim Chipman, Lydia Johnson, Oliver Ward, and Noah Wicks reported that “House Agriculture Committee Chair Glenn ‘GT’ Thompson, R-Pa., is taking issue with suggestions that the days of full, five-year farm bills may be over. ‘I think that’s people who are naive and don’t have a great historical grasp on farm bill processes,‘ he told Agri-Pulse.”
+
+Brownfield Ag News’ Carah Hart reported that “the chairman of the U.S. Senate Ag Committee says he’s optimistic lawmakers can make progress on a new farm bill in 2026. John Boozman from Arkansas says even in an election year it’s possible.”
+
+“‘If you spend any time at all in farm country, it doesn’t take a genius to figure out that it’s difficult,'” Hart reported. “The One Big Beautiful Bill Act signed into law earlier this year included some farm bill provisions, but others couldn’t be addressed with reconciliation. He tells Brownfield that includes addressing loan limits. ‘All of those limits and things they don’t work anymore, so we’ve got to increase those. That doesn’t cost a lot of money. You know that’s the good news, but it can be very helpful to our farm community. Those are the things that we got to get straightened out.'”
+
+Experts Doubt Full Five-Year Farm Bill in 2026
+
+Progressive Farmer’s Chris Clayton reported that former Farm Service Agency (FSA) director Jonathan Coppess “warned that Congress’ policy changes in the One Big Beautiful Bill Act have permanently severed the political link between food assistance and farm programs.”
+
+“The reconciliation package — sometimes dubbed as ‘OB3’ — doubled spending on commodity subsidy programs while cutting food assistance to low-income households by more than $200 billion, a move he described as politically unprecedented,” Clayton reported. “‘In effect, we cut spending on SNAP to double subsidies to farmers,’ Coppess said. Highlighting how marrying food stamps to farm programs kept the farm bill going since the 1960s, that linkage has been broken.”
+
+“‘This is the end of the farm bill as we’ve known it,’ Coppess said. ‘For 50 years, the core deal has been food assistance paired with farm programs. That deal is now broken. OB3 is the fatal, final blow,‘” Clayton reported. “Diving into specific policies, Coppess said the farm policy changes in OB3, combined with a growing reliance on ad-hoc aid, are a bad mix of costly farm policies.”
+
+AgWeb’s Tyne Morgan reported in November that “the loss of urgency to pass a new, comprehensive five-year farm bill may be due to the fact Congress included key enhancements to the Farm Safety Net in the One Big Beautiful Bill earlier this year. The Farm Journal Ag Economists’ Monthly Monitor asked economists in July if that makes it more difficult or easier to pass a Farm Bill this year. 70% said yes. And in September, the Monthly Monitor asked when Congress will pass a new farm bill. Nearly 40% (39%) said a piecemeal approach for passing the farm bill is the new norm.”
+
+Current Farm Bill Status
+
+Farm Progress’ Joshua Baethge reported in mid-November that “after 43 days, the longest government shutdown in American history has ended. By a 222-209 vote, the House of Representatives approved a Senate bill passed earlier this week to end the government shutdown. The bill also extended the 2018 Farm Bill another year, though many of the original provisions had already been updated in the July budget reconciliation package.”
+
+“The farm bill extension gives lawmakers until Sept. 30, 2026 to draft a new farm bill,” Baethge reported.
