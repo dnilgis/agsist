@@ -11,6 +11,10 @@ name: Cattle auction prices
 # commits them. The parser was written without a real report in hand: check
 # the saved text against it, add one as a selftest fixture, then run without
 # probe.
+#
+# NEW BARNS: the AMS listing page answers a script with 403, so the probe can
+# also scan report numbers ("scan" input, e.g. 1200-2300) and keep each
+# report's own title. A barn with slug null is then found by its title.
 
 on:
   workflow_dispatch:
@@ -19,6 +23,10 @@ on:
         description: "Probe only: save the AMS listing and raw auction reports to data/cattle-auction-raw/ and commit them"
         type: boolean
         default: false
+      scan:
+        description: "Probe only: also read the title of every AMS report number in these ranges (e.g. 1200-2300,3600-3700) to find barns the listing page will not give us"
+        type: string
+        default: ""
   schedule:
     - cron: '23 1 * * 2-6'    # evening after each sale day (Central), most barns sell Mon-Fri
     - cron: '37 14 * * 1-5'   # morning pass for reports filed overnight
@@ -44,7 +52,14 @@ jobs:
         run: python scripts/fetch_cattle_auction.py --selftest
       - name: Probe (raw source capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
-        run: python scripts/fetch_cattle_auction.py --probe
+        env:
+          SCAN: ${{ inputs.scan }}
+        run: |
+          if [ -n "$SCAN" ]; then
+            python scripts/fetch_cattle_auction.py --probe --scan "$SCAN"
+          else
+            python scripts/fetch_cattle_auction.py --probe
+          fi
       - name: Fetch and write data/cattle-auction.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_cattle_auction.py

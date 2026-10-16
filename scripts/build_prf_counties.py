@@ -204,7 +204,9 @@ def page(ctx):
     pb = fx["payback_mid_90"]
     prot = round(gz * 0.9, 2)
     subrow = ", ".join(f"{int(round(sub[k] * 100))}% at {k}%" for k in sorted(sub, key=int))
-    mid_word = "the middle grid" if many else "the grid"
+    # Each cell's middle is the median of the county's grids for that pair of months (and year),
+    # so the middle can be a different grid from row to row; say so rather than "the middle grid".
+    mid_word = f"the middle of the {ng} grids" if many else "the grid"
     ex = fx.get("example")
     faq = [
         (f"When is the PRF deadline in {name} for {cy}?",
@@ -303,7 +305,7 @@ def page(ctx):
     {sod}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
-    <p>At 90% coverage{', across the ' + str(ng) + ' grids that touch the county: the middle grid first, then the lowest and highest' if many else ''}. The premium is the full rate per $100 of protection; USDA pays {subrow}. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the {ny} from {y0} to {y1}, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.</p>
+    <p>At 90% coverage{', across the ' + str(ng) + ' grids that touch the county: first the middle of the ' + str(ng) + ' for that pair of months (it can be a different grid in each row), then the lowest and highest' if many else ''}. The premium is the full rate per $100 of protection; USDA pays {subrow}. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the {ny} from {y0} to {y1}, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-t prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(full)} at 90% coverage</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal</th><th scope="col">Premium per $100</th><th scope="col">Years under 90%</th></tr></thead><tbody>{''.join(iv_rows)}</tbody></table></div>
     <p>{('The wettest pair of months here is ' + S.LONG_IV[wet[0]] + f' ({wet[1]:.2f} in on {mid_word}) and the driest is ' + S.LONG_IV[dry[0]] + f' ({dry[1]:.2f} in). ') if wet and dry else ''}{('Coverage costs least in ' + S.LONG_IV[cheap[0]] + ' and most in ' + S.LONG_IV[dear[0]] + '. ') if cheap and dear and cheap[0] != dear[0] else ''}The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.</p>
 

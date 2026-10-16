@@ -202,22 +202,98 @@ def dated_label_past(row, snap_ct):
     return end < snap_ct.date()
 
 
-def delivery_label(row):
-    """The board's own words, minus the "(YYYY-MM)" suffix the gradable
-    adapter appends -- that is the futures contract, not delivery, and the
-    contract is shown in its own column. A DTN-style "10/01/2026" month start
-    reads as "Oct 2026"."""
-    lab = re.sub(r"\s*\(\d{4}-\d{2}\)\s*$", "", (row.get("delivery") or "").strip())
-    m = re.fullmatch(r"(\d{2})/01/(\d{4})", lab)
+_SEASON_RE = re.compile(
+    r"^(?:(harv(?:est)?(?:\s+del(?:ivery)?)?|har)|(n/?c|new\s*crop|n\s+crop|new)|(fall)|(o/?c|old\s*crop))"
+    r"\s*'?\s*(\d{4}|\d{2})?'?(?![\w/])(.*)$", re.I)
+_SEASON_FIRST_RE = re.compile(r"^(\d{4}|\d{2})\s+(new\s*crop|fall|harvest|crop)\b(.*)$", re.I)
+_SEASON_WORD = ("Harvest", "New crop", "Fall", "Old crop")
+_LAST_DAY = (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+
+
+def _yy(t):
+    return int(t) + 2000 if len(t) == 2 else int(t)
+
+
+def delivery_text(delivery, period=""):
+    """The delivery a board posted, as the page prints it. Twin of
+    components/cb-rank.js deliveryText(): the ZIP search and the town pages print
+    one board the same way. test/fixtures/delivery-labels.json runs through both
+    (test/cb-rank.test.mjs). River Country Co-op's "HAR 26" and "HAR 27" read as
+    "Harvest 2026" and "Harvest 2027" on both pages.
+
+    - "(YYYY-MM)" the gradable adapter appends is the futures contract, dropped.
+    - A month as a board writes one ("Oct 26", "OCTOBER 2026", "10/01/2026",
+      "Oct 01, 2026") is "Oct 2026". A bare "October" ("Dec corn" is "Dec 2026 corn") or a whole-month range
+      ("01 Oct 2026 to 31 Oct 2026") takes its year from the month the network
+      worked out (period "2026-10"); part of a month ("01 Oct 2026 to
+      16 Oct 2026") is "Oct 1-16, 2026". A deadline ("By Oct 9") stays as written.
+    - A season code is spelled out in the board's own word: HAR -> Harvest,
+      NC / New Crop -> New crop, Fall, OC -> Old crop; a two-digit year is 20xx.
+      With no year on the label, the network's season year (newcrop-2026) is used.
+    - Anything else is printed as the board wrote it."""
+    lab = re.sub(r"\s*\(\d{4}-\d{2}\)\s*$", "", str(delivery or "").strip())
+    lab = re.sub(r"\s+", " ", lab).strip()
+    per = str(period or "")
+    m = re.fullmatch(r"([A-Za-z]{3})[A-Za-z]*\.?\s*'?(\d{2}|\d{4})", lab)
+    if m and m.group(1).title() in MONTH_ABBR:
+        return f"{m.group(1).title()} {_yy(m.group(2))}"
+    m = re.fullmatch(r"(\d{1,2})/0?1/(\d{4})", lab)
     if m and 1 <= int(m.group(1)) <= 12:
-        lab = f"{MONTH_ABBR[int(m.group(1)) - 1]} {m.group(2)}"
-    # "Oct 01, 2026" is the same month start written out (CDR Farms' AgriCharts board)
-    m = re.fullmatch(MON_RE + r"\s+0?1,?\s+(\d{4})", lab, re.I)
+        return f"{MONTH_ABBR[int(m.group(1)) - 1]} {m.group(2)}"
+    m = re.fullmatch(r"([A-Za-z]{3})[A-Za-z]*\.?\s+0?1,?\s+(\d{4})", lab)
+    if m and m.group(1).title() in MONTH_ABBR:
+        return f"{m.group(1).title()} {m.group(2)}"
+    pm = re.fullmatch(r"(\d{4})-(\d{2})", per)
+    if pm and 1 <= int(pm.group(2)) <= 12:
+        y, mo = int(pm.group(1)), int(pm.group(2))
+        r = re.fullmatch(r"(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})", lab)
+        if r and r.group(2).title() == r.group(5).title() == MONTH_ABBR[mo - 1] \
+                and int(r.group(3)) == int(r.group(6)) == y:
+            d1, d2 = int(r.group(1)), int(r.group(4))
+            last = 29 if mo == 2 and y % 4 == 0 else (28 if mo == 2 else _LAST_DAY[mo - 1])
+            if not (d1 == 1 and d2 == last) and 1 <= d1 <= d2 <= last:
+                return f"{MONTH_ABBR[mo - 1]} {d1}-{d2}, {y}"
+            return f"{MONTH_ABBR[mo - 1]} {y}"
+        if not lab:
+            return f"{MONTH_ABBR[mo - 1]} {y}"
+        b_ = re.match(r"([A-Za-z]{3})[A-Za-z]*\.?\s*(?:'?(\d{4}|\d{2})'?)?(?![\w/'])\s*(.*)$", lab)
+        if b_ and b_.group(1).title() == MONTH_ABBR[mo - 1] and (not b_.group(2) or _yy(b_.group(2)) == y) \
+                and re.fullmatch(r"(?:[A-Za-z]+(?: [A-Za-z]+)*)?", b_.group(3)) \
+                and not re.match(MON_RE + r"(?![a-z])", b_.group(3), re.I):
+            return f"{MONTH_ABBR[mo - 1]} {y}" + (" " + b_.group(3) if b_.group(3) else "")
+    sy = re.fullmatch(r"(?:new|old)crop-(\d{4})", per)
+    m = _SEASON_RE.match(lab)
     if m:
-        lab = f"{m.group(1)[:3].title()} {m.groups()[-1]}"
+        word = _SEASON_WORD[next(i for i in range(4) if m.group(i + 1))]
+        rest = m.group(6).strip()
+        year = _yy(m.group(5)) if m.group(5) else None
+        if year is None and sy and not re.search(r"\d", rest):
+            year = int(sy.group(1))
+        out = word + (f" {year}" if year else "")
+        if rest:
+            out += (", " + rest.lstrip("-,: ").strip()) if re.match(r"[-,:]", rest) else " " + rest
+        return out.strip()
+    m = _SEASON_FIRST_RE.match(lab)
+    if m:
+        w = m.group(2).lower()
+        word = "New crop" if w.startswith("new") else "Harvest" if w == "harvest" else "Fall" if w == "fall" else "Crop"
+        rest = m.group(3).strip()
+        return f"{word} {_yy(m.group(1))}" + (" " + rest if rest else "")
     if not lab:
-        lab = "Spot" if row.get("period") == "spot" else str(row.get("period") or "")
+        if per == "spot":
+            return "Spot"
+        pr = re.fullmatch(r"(\d{4})-(\d{2})/(\d{4})-(\d{2})", per)
+        if pr and 1 <= int(pr.group(2)) <= 12 and 1 <= int(pr.group(4)) <= 12:
+            a_, b_ = MONTH_ABBR[int(pr.group(2)) - 1], MONTH_ABBR[int(pr.group(4)) - 1]
+            return f"{a_}-{b_} {pr.group(3)}" if pr.group(1) == pr.group(3) else f"{a_} {pr.group(1)}-{b_} {pr.group(3)}"
+        if sy:
+            return f"{'New crop' if per.startswith('new') else 'Old crop'} {sy.group(1)}"
     return lab
+
+
+def delivery_label(row):
+    """What the town page prints for a row's delivery: delivery_text()."""
+    return delivery_text(row.get("delivery"), row.get("period"))
 
 
 def fmt_posted(t, snap_ct):
@@ -894,12 +970,30 @@ SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=2">\n'
 SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 
 
-def page_end(ftr, table=False, signup=False, hist=False):
+# Rain Print, one quiet line on each town page in the gift season (Sig, 2026-10-16:
+# cross-promotion, at most one a page, after the main content). The page
+# carries the line only from Nov 1 to Dec 24 of the snapshot's Central date;
+# components/rain-print-promo.js then shows it only while data/rain-print.json
+# has promote on and today is inside promote_from..promote_until. Nothing
+# else promotes on these pages.
+RP_PROMO_SEASON = ((11, 1), (12, 24))
+RP_PROMO_JS = '<script src="/components/rain-print-promo.js?v=4" defer></script>\n'
+
+
+def rain_print_line(snap_ct):
+    """The empty, hidden gift-line slot for a town page, or '' out of season."""
+    md = (snap_ct.month, snap_ct.day)
+    if not (RP_PROMO_SEASON[0] <= md <= RP_PROMO_SEASON[1]):
+        return ""
+    return '<p class="rp-promo" data-rain-print-promo hidden></p>'
+
+
+def page_end(ftr, table=False, signup=False, hist=False, promo=False):
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}</body>
+{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}</body>
 </html>
 """
 
@@ -1596,6 +1690,7 @@ def build_town_page(t, ctx):
     # without scrolling past every board. A town with no ZIP keeps the plain
     # Daily ask at the bottom: the box's two choices both need a ZIP.
     box = signup_box(t, box_zip(t, z, ctx), ssl, crops, tops)
+    promo_html = rain_print_line(snap_ct)
     # one line under the title that jumps to it, when a table sits between
     first = next((c for c in CROPS if c in crops), "corn")
     jump = (f'<p class="cbt-jump"><a href="#bid-email" data-bid-alerts-jump>Email me {esc(t["name"])} bids each '
@@ -1624,6 +1719,7 @@ def build_town_page(t, ctx):
   {hist_html}
   {near_html if indexable else ''}
   {faq_html(qs, t['name'])}
+  {promo_html}
   {ask}
   {quiet_html}
   {known_html}
@@ -1643,7 +1739,7 @@ def build_town_page(t, ctx):
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
         assert sheet in h, "head() changed shape; update build_town_page()"
         h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
-    return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html)), meta
+    return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html), promo=bool(promo_html)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
@@ -2672,6 +2768,13 @@ def selftest():
         assert delivery_label(dict(cdr, delivery=d)) != d[:3] + " 2026", d
     _selftest_known()
     _selftest_answer()
+    # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
+    for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
+                  (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
+        got = rain_print_line(dt.datetime(d.year, d.month, d.day, 12))
+        assert bool(got) == on, d
+        assert got in ("", '<p class="rp-promo" data-rain-print-promo hidden></p>')
+    assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
     print("selftest OK")
 
 

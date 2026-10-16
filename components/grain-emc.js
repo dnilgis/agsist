@@ -27,9 +27,14 @@
  *      1 - RH = exp( -K * (T + C) * M^N )        K 30.5327e-5, N 1.2164, C 134.136
  *    They reproduce University of Minnesota Extension's soybean row at 60 F
  *    (Managing stored grain with aeration, Table 4: 8.6, 10.5, 12.8, 15.7% at
- *    50, 60, 70, 80% RH) within 0.05 point, and NDSU's (Hellevang) published
- *    soybean numbers: 10.2% at 70 F and 60% (long-term storage slide) and
- *    about 13.5% at 42 F and 70% (Jan 2020 release).
+ *    50, 60, 70, 80% RH) within 0.05 point, and two numbers from NDSU's Ken
+ *    Hellevang: 10.2% at 70 F and 60% (2015 slide hosted by Cornell) and
+ *    about 13.5% at 42 F and 70% (Jan 2020 release). It does NOT match NDSU's
+ *    own 2011 soybean table (32-80 F, 50-90% RH; checked 2026-10-16): 22 of
+ *    its 30 cells fall outside the two-fit range, up to 0.5 point over the
+ *    high fit at 50-60% RH and at or under the low fit at 80-90%. The 1.0
+ *    point dry margin still keeps every "dries" call under target by that
+ *    table (test/grain-emc-soybeans.test.mjs).
  *    High: Modified Halsey, the form University of Kentucky labels "ASAE Data
  *    D245.5 / modified-Halsey equation" on its soybean table:
  *      RH = exp( -exp(A + B * T) / M^C )         A 2.87, B -0.0054, C 1.38

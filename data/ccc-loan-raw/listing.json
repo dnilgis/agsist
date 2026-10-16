@@ -1,0 +1,53 @@
+{
+ "run_utc": "2026-10-16T16:59:57+00:00",
+ "files": [
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/tools/informational/rates/current-fsa-loan-interest-rates",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  },
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/news-events/news/10-01-2026/usda-announces-october-2026-lending-rates-agricultural-producers",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  },
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/news-events/news/10-02-2026/usda-announces-october-2026-lending-rates-agricultural-producers",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  },
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/news-events/news/10-03-2026/usda-announces-october-2026-lending-rates-agricultural-producers",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  },
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/news-events/news/10-04-2026/usda-announces-october-2026-lending-rates-agricultural-producers",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  },
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/news-events/news/10-05-2026/usda-announces-october-2026-lending-rates-agricultural-producers",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  },
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/programs-and-services/price-support/commodity-loan-rates",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  },
+  {
+   "file": null,
+   "url": "https://www.fsa.usda.gov/resources/programs/price-support/commodity-loan-rates",
+   "bytes": 0,
+   "error": "fetch failed: TimeoutError: The read operation timed out"
+  }
+ ]
+}

@@ -149,7 +149,7 @@ def last_year_words(c, L, year):
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = 10 # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=10" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=11" defer></script>'
 
 
 def rp_prices():
@@ -386,6 +386,13 @@ FOOT = """  </main>
 </body>
 </html>
 """
+# State pages (Sig, 2026-10-16): the one cross-promotion is the rain gauge
+# waitlist line, after the table (components/rain-print-promo.js "gauge":
+# "Want a better rain gauge? Sig is designing one. Get updates."). County
+# pages keep their Rain Print block and nothing else.
+GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="gauge" hidden></p>'
+FOOT_GAUGE = FOOT.replace('  <script src="/components/loader.js?v=19" defer></script>\n',
+                          '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=4" defer></script>\n')
 
 
 def crumbs_ld(items):
@@ -694,9 +701,10 @@ def state_page(st, d, pages, none_rows):
     <tbody>{''.join(rows)}</tbody></table></div>
     <p class="rc-fine">Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table and how the station was picked.</p>
     {none_html}
+    {GAUGE_SLOT}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA). Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>, read {long_date(d['fetched'][:10])}; rebuilt weekly. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
   </div>
-{FOOT}"""
+{FOOT_GAUGE}"""
 
 
 # ---------------------------------------------------------------- hub

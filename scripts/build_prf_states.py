@@ -41,7 +41,7 @@ e = html.escape
 # section, a rewritten paragraph). Their dateModified is the later of this and
 # the date of USDA's files, so a page that changed says so. Move it in the
 # same commit as any wording change; a data refresh moves the other date.
-PAGE_REVISED = "2026-10-15"
+PAGE_REVISED = "2026-10-16"
 # Where each 2027 change is written down at RMA (read 2026-10-15).
 RMA_NCEI = "https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source"
 RMA_PM_26_053 = "https://www.rma.usda.gov/policy-procedure/bulletins-memos/product-management-bulletin/pm-26-053-rainfall-index-crop"
@@ -76,7 +76,7 @@ def boot():
 def dataset(meta, name, desc, url, place=None):
     """schema.org Dataset for a PRF page: USDA's files, as read on the build date. USDA data is public domain."""
     d = {"@context": "https://schema.org", "@type": "Dataset", "name": name, "description": desc, "url": url,
-         "temporalCoverage": f"{meta['years']['first']}/{meta['years']['last_complete']}", "dateModified": meta["built"][:10],
+         "temporalCoverage": f"{meta['years']['first']}/{meta['years']['last_complete']}", "dateModified": modified(meta),
          "isAccessibleForFree": True, "license": "https://www.usa.gov/government-works",
          "creator": {"@type": "Organization", "name": "USDA Risk Management Agency", "url": "https://www.rma.usda.gov/"},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"},
@@ -246,8 +246,8 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     {sod}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
-    <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}.</p>
-    <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(name)} at 90% coverage, middle grid</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation, middle grid</th><th scope="col">Premium per $100, middle grid</th><th scope="col">Years under 90% of normal, of {ny}, middle grid</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
+    <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}. Each figure is the middle of the grids for that pair of months, so a row&rsquo;s middle can be a different grid from the next row&rsquo;s.</p>
+    <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(name)} at 90% coverage, middle of the grids for each pair</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation, middle grid for the pair</th><th scope="col">Premium per $100, middle grid for the pair</th><th scope="col">Years under 90% of normal, of {ny}, middle grid for the pair</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
     <p>Across {e(name)}&rsquo;s grids, $1 of full premium at 90% coverage would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates ({f['payback_n_90']:,} grid and month pairs), close to the national middle of $0.87. On the full premium, no month or grid stands out. The months to insure are the ones when a dry spell costs you grass or hay.</p>
     </div>
 
@@ -405,9 +405,9 @@ def guide(meta, facts, states, BOOT):
 
     <h2 id="intervals">2. The eleven intervals</h2>
     <p>The year is split into eleven overlapping two-month intervals, January to February through November to December. You spread the policy over at least two of them, no month in two, each with at least {lim['min_pct'][0]}% of the policy and no more than {' or '.join(str(x) + '%' for x in other_max)}, depending on the county. January to February is capped at 25% in {jf25:,} counties. Each interval pays on its own.</p>
-    <p>Across every grid at 90% coverage, the middle grid looks like this. Normal is the grid&rsquo;s average precipitation for the two months; the premium is the full rate per $100 of protection; the last column counts the years from {y0} to {y1} when the index came in under 90.</p>
+    <p>Across every grid at 90% coverage, the middle of all the grids for each interval looks like this (a different grid can be the middle one in each row). Normal is the grid&rsquo;s average precipitation for the two months; the premium is the full rate per $100 of protection; the last column counts the years from {y0} to {y1} when the index came in under 90.</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Each interval, scrolls sideways"><table class="prf-t prf-sub-t"><caption class="prf-sr">Each interval at 90% coverage, middle grid, all grids</caption><thead><tr><th scope="col">Interval</th><th scope="col">Normal</th><th scope="col">Premium per $100</th><th scope="col">Years under 90, of {ny}</th></tr></thead><tbody>{ivrows}</tbody></table></div>
-    <p>Coverage costs least in {LONG_IV[ivs.index(cheap)]} and most in {LONG_IV[ivs.index(dear)]}, on the middle grid. The price follows how often and how far the index has fallen short, so a cheaper interval is not a better buy. RMA&rsquo;s handbook says choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. On {dry['grids']:,} of {dry['of']:,} grids, the interval with the most average payment over your share of the premium was one of the grid&rsquo;s two driest.</p>
+    <p>Coverage costs least in {LONG_IV[ivs.index(cheap)]} and most in {LONG_IV[ivs.index(dear)]}, at the middle of the grids. The price follows how often and how far the index has fallen short, so a cheaper interval is not a better buy. RMA&rsquo;s handbook says choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. On {dry['grids']:,} of {dry['of']:,} grids, the interval with the most average payment over your share of the premium was one of the grid&rsquo;s two driest.</p>
 
     <h2 id="coverage">3. Coverage level and USDA&rsquo;s share</h2>
     <p>You pick 70%, 75%, 80%, 85% or 90%. At 90% an interval pays once the index is under 90; at 70% it has to fall under 70. A higher level pays sooner and costs more. USDA pays part of the premium, more at the lower levels:</p>

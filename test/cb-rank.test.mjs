@@ -49,8 +49,9 @@ const FNS = ["ppu", "plausible", "basisUnit", "basisCents", "basisUnusual", "not
   "deliverySort", "delKey", "getNearestBid", "preferPlain", "harvestYear", "harvestKeys",
   "isHarvestSeason", "inDelivery", "windowMonths", "netNormOperator", "netPlain", "netKey",
   "netIsTwin", "netMerge", "netOlder", "rankOf", "rankable", "wheatCls", "rankCmp",
-  "rankCands", "classGroups", "pickClass", "clsName", "townOf", "placeOf", "bannerName", "markBidOutliers"];
-const VARS = ["PPU_BAND", "BASIS_SANE", "NOT_PER_BUSHEL", "SPECIAL_GRADE", "NET_LEGAL", "NET_INHERIT"];
+  "rankCands", "classGroups", "pickClass", "clsName", "townOf", "placeOf", "bannerName", "markBidOutliers",
+  "delLabel", "delShow"];
+const VARS = ["MONTHNAME", "PPU_BAND", "BASIS_SANE", "NOT_PER_BUSHEL", "SPECIAL_GRADE", "NET_LEGAL", "NET_INHERIT"];
 
 function load() {
   const ctx = { console, Intl, Date, Math, JSON };
@@ -165,6 +166,65 @@ test("contract keys: board shorthand, and wheat only when the class is named", (
   assert.equal(cbRank.contractKey({ category: "corn", basisMonth: "ZSX26" }), "", "corn against a bean contract");
 });
 
+test("contract forms: one table, run through the town builder and this page alike", () => {
+  const { cbRank } = load();
+  const { cases } = JSON.parse(readFileSync(ROOT + "test/fixtures/contract-cases.json", "utf8"));
+  assert.ok(cases.length >= 40);
+  const py = JSON.parse(execFileSync("python3", ["-I", "-c",
+    "import sys,json;sys.path.insert(0,sys.argv[1]);import build_state_basis_pages as S\n" +
+    "cs=json.load(open(sys.argv[2]))['cases']\n" +
+    "out=[]\nfor fm,crop,com,y,_ in cs:\n c=S.parse_contract(fm,crop,y,com)\n out.append(S.contract_code(c) if c else None)\n" +
+    "print(json.dumps(out))",
+    ROOT + "scripts", ROOT + "test/fixtures/contract-cases.json"], { encoding: "utf8" }));
+  cases.forEach(([fm, crop, com, y, want], i) => {
+    assert.equal(py[i], want, `python ${fm} ${crop} ${com}`);
+    assert.equal(cbRank.parseContract(fm, crop, y, com) || null, want, `js ${fm} ${crop} ${com}`);
+  });
+  /* contractKey reads the row as the page holds it: the DTN ticker sits in
+     symbol, the spelled month in basisMonth, the year from the row's time */
+  assert.equal(cbRank.contractKey({ category: "corn", symbol: "@C6Z", basisMonth: "Dec 2026",
+    asOf: "2026-10-15T20:40:00Z" }), "ZCZ26");
+  assert.equal(cbRank.contractKey({ category: "wheat", commodity: "Wheat", symbol: "@KW6Z",
+    basisMonth: "Dec 2026", asOf: "2026-10-15T20:40:00Z" }), "KEZ26");
+  assert.equal(cbRank.contractKey({ category: "corn", symbol: "@C0Z", asOf: "2029-11-02T15:00:00Z" }), "ZCZ30");
+});
+
+test("one delivery labeler: the ZIP search and the town pages print a board alike (HAR 26, HAR 27)", () => {
+  const c = load();
+  const { cases } = JSON.parse(readFileSync(ROOT + "test/fixtures/delivery-labels.json", "utf8"));
+  assert.ok(cases.length >= 40);
+  const py = JSON.parse(execFileSync("python3", ["-I", "-c",
+    "import sys,json;sys.path.insert(0,sys.argv[1]);import build_cash_bid_pages as B\n" +
+    "print(json.dumps([B.delivery_label({'delivery':d,'period':p}) for d,p,_ in json.load(open(sys.argv[2]))['cases']]))",
+    ROOT + "scripts", ROOT + "test/fixtures/delivery-labels.json"], { encoding: "utf8" }));
+  cases.forEach(([d, p, want], i) => {
+    assert.equal(py[i], want, `town page: ${d} | ${p}`);
+    assert.equal(c.cbRank.deliveryText(d, p), want, `cbRank: ${d} | ${p}`);
+    /* and the cell the ZIP search draws goes through it */
+    assert.equal(c.delShow({ deliveryMonth: d, deliveryPeriod: p, deliveryStart: "" }), want, `delShow: ${d} | ${p}`);
+  });
+  /* River Country Co-op, Bloomer: no raw code, and no em dash anywhere in the table */
+  assert.ok(!cases.some(([, , w]) => /—/.test(w)));
+});
+
+test("a day-old DTN board is re-marked like any other (54728: Rooney over River Country Boyd)", () => {
+  const c = load();
+  const today = c.cbRank.centralDay(NOW);
+  c.cbRank.setFutures({ quotes: { "corn-dec26": { ticker: "ZCZ26.CBT", close: 474.25, close_date: today } } });
+  const yday = iso(30 * H);
+  /* Rooney Grain, Chippewa Falls: Oct 2026 corn $4.17 at -62c, futuresMonth "@C6Z" */
+  const rooney = elev("Rooney Grain", 25, [row({ category: "corn", commodity: "Corn", cashPrice: 4.17,
+    basis: -0.62, symbol: "@C6Z", basisMonth: "Dec 2026", asOf: yday })]);
+  /* River Country Co-op Boyd: $4.15 at -64c, futuresMonth "ZCZ26" */
+  const boyd = elev("River Country Co-op Boyd", 40, [row({ category: "corn", commodity: "Corn", cashPrice: 4.15,
+    basis: -0.64, symbol: "ZCZ26", basisMonth: "Dec 2026", asOf: yday })]);
+  const cands = c.rankCands([boyd, rooney], "corn").sort(c.rankCmp);
+  assert.equal(cands[0].elev.facility, "Rooney Grain");
+  assert.equal(cands[0].rk.price, 4.12, "4.7425 - 0.62, to the cent");
+  assert.equal(cands[0].rk.remark.sym, "ZCZ26");
+  assert.equal(cands[1].rk.price, 4.1, "4.7425 - 0.64");
+});
+
 test("wheat classes match the basis map's rules, label for label", () => {
   const { cbRank } = load();
   const labels = ["WHEAT HRW", "Wheat (Soft Red Winter)", "Wheat", "HRWW", "Hard Red Spring",
@@ -268,4 +328,16 @@ test("with fewer than 4 other elevators the state median is the middle", () => {
   assert.ok(xs[2]._odd && xs[2]._odd.via === "state");
   assert.equal(Math.round(xs[2]._odd.dist), 203);
   assert.equal(xs[0]._odd, null);
+});
+
+test("the basis on a BEST card follows the color key, not its sign (54728: three red best bids)", () => {
+  const fn = liftFn("renderBestBids");
+  assert.match(fn, /CBGlance\.toneFn\(/, "the Best cards tone basis against this search's middle");
+  assert.doesNotMatch(fn, /bbc-basis '\+bf\.cls/, "a negative basis is not red by itself");
+  assert.match(fn, /bbc-basis '\+\(\(_btone&&_btone\(best\)\)\|\|'flat'\)/, "grey when the tone cannot say");
+  const css = readFileSync(ROOT + "cash-bids.html", "utf8");
+  assert.match(css, /\.bbc-basis\.bz-up\{color:var\(--green\)\}/);
+  assert.match(css, /\.bbc-basis\.bz-dn\{/);
+  /* the key's words are the rule the card now follows */
+  assert.match(liftFn("basisKey"), /stronger than the middle of the elevators in this search for the same crop and month/);
 });

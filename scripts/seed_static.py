@@ -579,6 +579,37 @@ MK_MAP = [
 
 _MK_TICK, _MK_CENTS, _MK_INDEX = {"cattle", "feeders", "hogs"}, {"soyoil"}, {"dollar", "sp500"}
 
+_MON3 = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+
+
+def nearby_of(q, root):
+    """(quote, label) for a market's one quote (2026-10-16): the <root>-nearby
+    alias, else the nearest dated month on file (fetch_prices writes only live
+    months), else the continuous series with label None (most-active). None
+    when nothing is on file. Twin of nearbyOf in components/futures.js and
+    markets.html."""
+    q = q or {}
+    n = q.get(root + "-nearby")
+    if n and n.get("close") is not None:
+        return n, n.get("contract")
+    best = None
+    for k, v in q.items():
+        m = re.match(r"^" + re.escape(root) + r"-([a-z]{3})(\d{2})$", k)
+        if not m or m.group(1) not in _MON3 or not v or v.get("close") is None:
+            continue
+        i = int(m.group(2)) * 12 + _MON3.index(m.group(1))
+        if best is None or i < best[0]:
+            best = (i, v, m.group(1).capitalize() + " '" + m.group(2))
+    if best:
+        return best[1], best[2]
+    c = q.get(root)
+    return (c, None) if (c and c.get("close") is not None) else None
+
+
+# every other markets card names its month the same way (pct-* chips)
+MK_CHIPS = (("oats", "pct-oats"), ("cattle", "pct-cattle"), ("feeders", "pct-feeder"), ("hogs", "pct-hogs"),
+            ("milk", "pct-milk"), ("meal", "pct-meal"), ("soyoil", "pct-oil"))
+
 
 def _mk_num(v, key):
     """markets.html num(): livestock to the tick, everything else two places."""
@@ -619,6 +650,8 @@ def seed_markets(prices, today):
             seeds["mk:" + i] = "-"
         for i in ("pct-corn", "pct-beans", "pct-wheat"):
             seeds["mk:" + i] = "front"
+        for _, chip in MK_CHIPS:
+            seeds["mk:" + chip] = "-"
         return _write_seeds("markets.html", seeds)
 
     # the page swaps in the true nearest contract when the fetcher publishes it
@@ -630,6 +663,11 @@ def seed_markets(prices, today):
             seeds["mk:" + chip] = _e(lab) + " &middot; nearby"
         else:
             seeds["mk:" + chip] = "most-active"
+    for root, chip in MK_CHIPS:
+        r = nearby_of(q, root)
+        if r:
+            q[root] = r[0]
+        seeds["mk:" + chip] = _e(r[1] or "most-active") if r else "-"
     n = 0
     for _, pid, cid, key, grain in MK_MAP:
         d = q.get(key) or {}
@@ -2144,6 +2182,20 @@ def wheat_deferred(quotes, now=None):
     return None, None
 
 
+def wheat_class_quote(prices, cls):
+    """(quote, month label) the wheat page's class card shows: the month the
+    pipeline's same-month class spread uses (prices["spreads"]), else the
+    class's nearby. Twin of classQ in components/futures.js. (None, None)
+    when nothing is on file."""
+    q = prices.get("quotes") or {}
+    sp = (prices.get("spreads") or {}).get(cls) or {}
+    k = sp.get("class_key")
+    if sp.get("cents") is not None and k and (q.get(k) or {}).get("close") is not None:
+        return q[k], sp.get("month") or _ticker_label(q[k], None)
+    r = nearby_of(q, cls)
+    return (r[0], r[1]) if r else (None, None)
+
+
 def _nearby_label(prices, crop, fallback):
     """'Nearby Dec \'26' the way each page script builds it, else its fallback."""
     q = (prices.get("quotes") or {}).get(crop + "-nearby")
@@ -2219,6 +2271,20 @@ def futures_hero_seeds(page, prices, now=None):
     return out
 
 
+def moved_seed(page, today):
+    """The page's dated line of what USDA last printed and the board that day
+    (moved_line.py), from the data files on disk. Facts side by side only."""
+    import moved_line as ML
+    crop = page.split("-")[0]
+    if crop not in ML.CROPS:
+        return ""
+    tdate = _iso_date(today)
+    if not tdate:
+        return ML.moved_html(crop, None, None, None, None, None)
+    return ML.moved_html(crop, _load_json("data/wasde.json"), _load_json("data/whats-priced-in.json"),
+                         _load_json("data/harvest-prices.json"), _load_json("data/crop-progress.json"), tdate)
+
+
 def seed_futures_pages(prices, today):
     """The four futures pages: price seed, note, last-close/last-trade table and
     (grains) meta description. Callable on its own so the futures seeds can be
@@ -2261,8 +2327,9 @@ def seed_futures_pages(prices, today):
             rows = [((("Nearby " + mon) if mon else "Front month"), fq),
                     (bench_label, bq)]
             if page.startswith("wheat"):
-                rows += [("KC HRW (KE, most-active)", quotes.get("kcwheat")),
-                         ("Minneapolis HRS (MWE, most-active)", quotes.get("mplswheat"))]
+                for cls, nm in (("kcwheat", "KC HRW (KE"), ("mplswheat", "Minneapolis HRS (MWE")):
+                    cq, cl = wheat_class_quote(prices, cls)
+                    rows.append((nm + ", " + (cl or "most-active") + ")", cq))
             tbl = px_table(rows, flabel, live is True)
             has_tbl = bool(tbl) and "<!--SEED:pxtable-->" in t
             # the table caption names the source and delay; when it is on the
@@ -2285,7 +2352,7 @@ def seed_futures_pages(prices, today):
             if tmpl and sc is None:
                 print(f"  {page}: no finished session in the file — description left as-is")
             if tmpl and sc:
-                kc = settled_close(quotes.get("kcwheat"), fetched, "grain")
+                kc = settled_close(wheat_class_quote(prices, "kcwheat")[0], fetched, "grain")
                 kc_usd = grain_dollars({"close": kc["px"]}) if kc and kc["date"] == sc["date"] else None
                 desc, dnote = render_desc(
                     tmpl, px=grain_dollars({"close": sc["px"]}), mon=mon or "front month",
@@ -2302,6 +2369,9 @@ def seed_futures_pages(prices, today):
         for tag, val in futures_hero_seeds(page, prices).items():
             t, c6 = seed_between(t, tag, val)
             changed = changed or c6
+        # the dated "latest from USDA" line under the hero (scripts/moved_line.py)
+        t, c7 = seed_between(t, "moved", moved_seed(page, today))
+        changed = changed or c7
         t, c3 = stamp_datemodified(t, today)
         if changed or c3:
             open(page, "w", encoding="utf-8").write(t)

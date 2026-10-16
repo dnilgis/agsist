@@ -577,7 +577,7 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   assert.deepEqual(stories.map((h) => RP.fromParams(h.split("?")[1]).year), [2012, 1993]);
   assert.match(S2, /doc\.querySelectorAll\('\.rp-story'\)\.forEach/, "a tap draws it in place");
   // the shop-wall picture, under What you get, says it is a mockup, not a photo of a real print (2026-10-15)
-  assert.match(HTML, /<figure class="rp-onwall">.*?<figcaption>Mockup of a framed print\.[^<]*<\/figcaption><\/figure>/);
+  assert.match(HTML, /<figure class="rp-onwall"[^>]*>.*?<figcaption>Mockup of a framed print\.[^<]*<\/figcaption><\/figure>/);
   assert.ok(!/most popular/i.test(HTML), "no popularity claim without a count");
   // one picker, framed first and picked; the promise sits right under the one button
   const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));

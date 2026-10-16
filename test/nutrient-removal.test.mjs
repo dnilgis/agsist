@@ -1,7 +1,7 @@
 /* /nutrient-removal: P and K removal in dollars.
  *
  * Pounds: UW Extension A2809 Table 4.2 (references branch, refs/uw-a2809-2026.txt).
- * Prices: data/fertilizer-prices.json only, picked the way /fertilizer does.
+ * Prices: data/fertilizer-prices.json only, the same per_lb pick /fertilizer and Fast Facts show.
  * Every expected number below is worked by hand from those two. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -59,32 +59,87 @@ test("no N or S removal is filled in until a source for it is read", () => {
   }
 });
 
-test("prices: cheapest straight N, cheapest P after its N credit, potash for K (hand-worked)", () => {
+/* The shared pick (data/fertilizer-prices.json per_lb, /fertilizer, Fast Facts):
+   N = urea 620 / 920 = 0.673913; P = MAP (1000 - 220 x 0.673913) / 1040
+   = (1000 - 148.26087) / 1040 = 851.73913 / 1040 = 0.818980; K = 480 / 1200 = 0.40 */
+const PU = 620 / 920, PP = (1000 - 220 * PU) / 1040;
+
+test("prices: the shared pick, urea for N, MAP with urea N credit for P, potash for K (hand-worked)", () => {
   const pr = NR.nutrientPrices(FIX);
-  // N: anhydrous 820 / (2000 x 0.82) = 0.50; urea 620/920 = 0.674; AMS 500/420 = 1.19
-  assert.equal(pr.n.row.key, "anhydrous");
-  assert.ok(near(pr.n.usd, 0.5));
-  // P: DAP (920 - 360 x 0.50) / 920 = 740/920 = 0.80435; MAP (1000 - 220 x 0.50) / 1040 = 890/1040 = 0.85577
-  assert.equal(pr.p.row.key, "dap");
-  assert.ok(near(pr.p.usd, 740 / 920));
-  assert.ok(near(pr.p.credit, 180));
-  // K: 480 / 1200 = 0.40
+  assert.equal(pr.n.row.key, "urea", "urea, even though anhydrous is cheaper per lb N here");
+  assert.ok(near(pr.n.usd, 0.673913, 1e-6));
+  assert.equal(pr.p.row.key, "map", "MAP, even though DAP is cheaper after credit here");
+  assert.ok(near(pr.p.usd, 0.818980, 1e-6));
+  assert.ok(near(pr.p.credit, 148.26087, 1e-5));
   assert.equal(pr.k.row.key, "potash");
   assert.ok(near(pr.k.usd, 0.4));
+});
+
+test("prices: no MAP price falls back to DAP, credited at urea", () => {
+  const pr = NR.nutrientPrices({ prices: FIX.prices.filter((p) => p.key !== "map") });
+  // (920 - 360 x 0.673913) / 920 = (920 - 242.6087) / 920 = 0.736295
+  assert.equal(pr.p.row.key, "dap");
+  assert.ok(near(pr.p.usd, 0.736295, 1e-6));
+});
+
+test("prices: the live file gives exactly the per_lb numbers the other pages show", () => {
+  const data = JSON.parse(readFileSync(ROOT + "data/fertilizer-prices.json", "utf8"));
+  const pr = NR.nutrientPrices(data);
+  for (const x of ["n", "p", "k"]) {
+    assert.ok(data.per_lb[x], x + " in per_lb");
+    assert.equal(pr[x].row.key, data.per_lb[x].from, x + " same product");
+    assert.ok(near(pr[x].usd, data.per_lb[x].usd, 0.00006), x + " same $/lb (per_lb is rounded to 4 places)");
+    assert.equal(pr[x].row.as_of, data.per_lb[x].as_of);
+  }
+});
+
+test("corn stalks: other guides beside A2809, hand-worked", () => {
+  const st = NR.crop("corn_stover");
+  assert.deepEqual(st.alt.map((x) => x.id), ["a2809", "isu", "purdue"]);
+  const isu = NR.source(st, "isu"), pu = NR.source(st, "purdue");
+  // ISU PM 1688 via ICM: 4.8 and 18.0 a ton at 15% moisture -> / 0.85 for a dry ton
+  assert.ok(near(isu.p, 5.647059, 1e-6) && near(isu.k, 21.176471, 1e-6));
+  assert.ok(near(pu.p, 3.6) && near(pu.k, 20));
+  assert.equal(NR.source(st, "nope").id, "a2809", "unknown source falls back to A2809");
+  assert.equal(NR.source(NR.crop("wheat_straw"), "isu"), null, "straw has only A2809 read");
+  const pr = NR.nutrientPrices(FIX);
+  // Purdue: 3.6 x 0.818980 + 20 x 0.4 = 2.948328 + 8 = 10.948328
+  const r = NR.cropLine({ crop: "corn_stover", src: "purdue", yield: 3, acres: 10 }, pr);
+  assert.ok(near(r.perUnit.pk, 10.948328, 1e-5));
+  assert.ok(near(r.lbAc.k, 60) && near(r.perAc, 3 * 10.948328, 1e-4));
+  // spread: low Purdue 10.948, high A2809 4.6 x 0.818980 + 12.8 = 16.567308
+  assert.equal(r.spread.lo.src.id, "purdue");
+  assert.equal(r.spread.hi.src.id, "a2809");
+  assert.ok(near(r.spread.hi.usd, 16.567308, 1e-5));
+  // no potash price: no spread, never a half range
+  assert.equal(NR.spread(st, NR.nutrientPrices({ prices: FIX.prices.filter((p) => p.key !== "potash") })), null);
+  // the page names the sources and links them
+  assert.match(html, /stovernutrients-1010\.html/);
+  assert.match(html, /nutrient-removal-when-harvesting-corn-stover/);
+  assert.match(html, /data-nr-spread/);
+  assert.match(js, /The dollars above use <b>/, "the calculator says which source the dollars use");
+});
+
+test("copy: grain hints read right, no 'today's' on dated prices", () => {
+  for (const c of NR.CROPS) assert.ok(!/\/fertilizer prices a program at/.test(c.defWhy), c.id + " hint");
+  assert.equal(NR.crop("corn_grain").defWhy, "the yield the corn program on /fertilizer is priced at");
+  assert.ok(!/today/i.test(html), "prices are dated, never 'today's'");
+  assert.match(html, /posted through <span data-nr="asof">/);
+  assert.match(html, /Phosphate is MAP \(DAP if no co-op posts MAP\)/);
 });
 
 test("corn stalk bales, worked by hand", () => {
   const pr = NR.nutrientPrices(FIX);
   const r = NR.cropLine({ crop: "corn_stover", yield: 3, acres: 80, baleLb: 1000, baleMoist: 15, sale: 35, saleUnit: "bale" }, pr);
-  // a dry ton: 4.6 x 0.80435 = 3.7000, 32 x 0.40 = 12.80, together 16.5000
-  const dryTon = 4.6 * (740 / 920) + 32 * 0.4;
+  // a dry ton: 4.6 x 0.818980 = 3.767308, 32 x 0.40 = 12.80, together 16.567308
+  const dryTon = 4.6 * PP + 32 * 0.4;
   assert.ok(near(r.perUnit.pk, dryTon));
-  assert.ok(near(r.perUnit.pk, 16.5, 0.001));
+  assert.ok(near(r.perUnit.pk, 16.567308, 0.00001));
   assert.ok(near(r.lbAc.p, 13.8) && near(r.lbAc.k, 96));
-  assert.ok(near(r.perAc, 3 * dryTon));                   // 49.50 an acre
-  assert.ok(near(r.field, 80 * 3 * dryTon));              // 3,960 for 80 acres
-  assert.ok(near(r.perBaledTon, 0.85 * dryTon));          // 14.03 a ton at 15% moisture
-  assert.ok(near(r.perBale, 0.85 * dryTon * 0.5));        // 1,000 lb bale = 0.425 dry ton: 7.01
+  assert.ok(near(r.perAc, 3 * dryTon));                   // 49.70 an acre
+  assert.ok(near(r.field, 80 * 3 * dryTon));              // 3,976 for 80 acres
+  assert.ok(near(r.perBaledTon, 0.85 * dryTon));          // 14.08 a ton at 15% moisture
+  assert.ok(near(r.perBale, 0.85 * dryTon * 0.5));        // 1,000 lb bale = 0.425 dry ton: 7.04
   assert.ok(near(r.balesAc, 3 / 0.85 * 2));               // 7.06 bales an acre
   assert.ok(near(r.sale.nutrient, r.perBale) && near(r.sale.left, 35 - r.perBale));
 });
@@ -93,11 +148,11 @@ test("corn silage and soybean grain, worked by hand", () => {
   const pr = NR.nutrientPrices(FIX);
   const s = NR.cropLine({ crop: "corn_silage", yield: 20, acres: 0 }, pr);
   assert.ok(near(s.lbAc.p, 72) && near(s.lbAc.k, 166));
-  assert.ok(near(s.perAc, 20 * (3.6 * 740 / 920 + 8.3 * 0.4)));
+  assert.ok(near(s.perAc, 20 * (3.6 * PP + 8.3 * 0.4)));
   assert.equal(s.perBale, null);
   assert.equal(s.field, null);
   const b = NR.cropLine({ crop: "soy_grain", yield: 55, acres: 100, sale: 10, saleUnit: "ton" }, pr);
-  assert.ok(near(b.perUnit.pk, 0.8 * 740 / 920 + 1.4 * 0.4));   // 1.2035 a bushel
+  assert.ok(near(b.perUnit.pk, 0.8 * PP + 1.4 * 0.4));   // 1.2152 a bushel
   assert.ok(near(b.sale.nutrient, b.perUnit.pk), "a grain sale compares per bushel");
 });
 

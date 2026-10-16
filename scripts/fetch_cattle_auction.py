@@ -28,6 +28,16 @@ Modes:
               PDFs, their text and the listing to data/cattle-auction-raw/,
               print what parsed and which report titles did not match.
               Writes no feed.
+  --probe --scan 1200-2300[,3600-3700]
+              also read the title of every report number in those ranges
+              and save {title: number} for each one that holds feeder steer
+              or heifer tables to data/cattle-auction-raw/listing.json, so a
+              barn with slug null is found by its own title. This is the
+              fallback for the AMS listing page, which answers a script with
+              403 Forbidden (probe run Oct 16 2026).
+
+A barn can name more than one report (`also`: a second sale day). Each is
+read and checked on its own; the newest good sale is used.
   --selftest  offline tests, non-zero exit on any failure.
 
 WHAT THIS FILE WILL NOT DO
@@ -282,7 +292,7 @@ def title_ok(src, title):
 def merge_barn(existing, src, sale, err, now_iso, slug):
     """One barn, keep-last-good, never older, newest sale first."""
     b = dict(existing or {})
-    for k in ("name", "town", "state", "lat", "lon"):
+    for k in ("name", "town", "state", "lat", "lon", "label"):
         if k in src:
             b[k] = src[k]
     b["id"] = src["id"]
@@ -322,8 +332,8 @@ def pick_slug(src, listing):
     return None
 
 
-def fetch(slug):
-    raw, err = FD.http_get(URL % slug)
+def fetch(slug, tries=3):
+    raw, err = FD.http_get(URL % slug, tries=tries)
     if raw is None:
         return None, None, "fetch failed: %s" % err
     if raw[:5] != b"%PDF-":
@@ -347,6 +357,32 @@ def read_one(src, slug, got):
     return summarize(p), None
 
 
+def slugs_for(src, listing):
+    """The barn's report numbers: slug (or the listing's), then `also`."""
+    out = []
+    for s in [pick_slug(src, listing)] + list(src.get("also") or []):
+        if s and s not in out:
+            out.append(s)
+    return out
+
+
+def best_sale(src, slugs, getter):
+    """(sale, slug, None) for the newest good sale over a barn's reports, or
+    (None, slug, reason). Each report is checked on its own (title, tables)."""
+    if not slugs:
+        return None, None, "no report number yet (run the probe for the AMS listing)"
+    best, whys = None, []
+    for slug in slugs:
+        sale, why = read_one(src, slug, getter(slug) or (None, None, "not fetched"))
+        if sale is None:
+            whys.append(why if len(slugs) == 1 else "%s: %s" % (slug, why))
+        elif best is None or sale["date"] > best[0]["date"]:
+            best = (sale, slug)
+    if best:
+        return best[0], best[1], None
+    return None, slugs[0], "; ".join(whys)
+
+
 def run(root, got=None, now=None):
     """got = {slug: (raw, text, err)} in tests."""
     root = Path(root)
@@ -360,9 +396,8 @@ def run(root, got=None, now=None):
     barns, states = [], []
     for group, out, prev in (("barns", barns, old), ("state_reports", states, olds)):
         for src in cfg.get(group) or []:
-            slug = pick_slug(src, listing)
-            g = (got.get(slug) if got is not None else (fetch(slug) if slug else None)) or (None, None, "not fetched")
-            sale, why = read_one(src, slug, g)
+            getter = (lambda s: got.get(s)) if got is not None else fetch
+            sale, slug, why = best_sale(src, slugs_for(src, listing), getter)
             out.append(merge_barn(prev.get(src["id"]), src, sale, why, now_iso, slug))
     has = any(b.get("sales") for b in barns + states)
     if not has:
@@ -388,42 +423,119 @@ def parse_listing(html_text):
     return out
 
 
-def probe(root):
+# The AMS listing page sits behind a bot filter that answered the plain script
+# User-Agent with 403 Forbidden on the Oct 16 2026 probe while the report PDFs
+# came through. Ask the way a browser does; if it still refuses, the scan below
+# finds report numbers from the reports' own titles.
+BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+
+def parse_ranges(spec):
+    """'1200-2300,3654' -> sorted report numbers as strings; None if malformed or huge."""
+    out = set()
+    for part in (spec or "").split(","):
+        part = part.strip()
+        m = re.fullmatch(r"(\d{3,5})(?:-(\d{3,5}))?", part)
+        if not m:
+            return None
+        lo = int(m.group(1))
+        hi = int(m.group(2) or lo)
+        if hi < lo:
+            return None
+        out.update(range(lo, hi + 1))
+    if not out or len(out) > 3000:
+        return None
+    return [str(n) for n in sorted(out)]
+
+
+def scan_one(slug, getter):
+    """(slug, {"title", "date", "feeder"}) or (slug, None) when there is no report."""
+    _, text, _ = getter(slug)
+    if not text:
+        return slug, None
+    p, _why = parse_report(text)
+    first = next((ln for ln in norm_lines(text) if ln), "")
+    return slug, {"title": first[:140], "date": sale_date(text), "feeder": p is not None}
+
+
+def scan(slugs, getter=None, workers=4):
+    """{slug: info} for every report number that answers with a PDF."""
+    import concurrent.futures as cf
+    getter = getter or (lambda s: fetch(s, tries=1))
+    found = {}
+    with cf.ThreadPoolExecutor(max_workers=workers) as ex:
+        for slug, info in ex.map(lambda s: scan_one(s, getter), slugs):
+            if info:
+                found[slug] = info
+    return found
+
+
+def scan_listing(found):
+    """{title: slug} for scanned reports with feeder tables (what pick_slug reads)."""
+    return {v["title"]: s for s, v in sorted(found.items()) if v["feeder"] and v["title"]}
+
+
+def probe(root, scan_spec=None):
     root = Path(root)
     rd = root / RAW_DIR
     rd.mkdir(parents=True, exist_ok=True)
     cfg = load_sources(root)
-    raw, err = FD.http_get(cfg["listing_url"])
-    listing = {}
+    raw, err = FD.http_get(cfg["listing_url"], headers=BROWSER_HEADERS)
+    listing, doc = {}, {"url": cfg["listing_url"]}
     if raw is None:
-        print("listing ERROR:", err)
+        print("listing ERROR:", err, "(use --scan to find report numbers from the reports themselves)")
     else:
         (rd / "listing.html").write_bytes(raw)
         listing = parse_listing(raw.decode("utf-8", "replace"))
-        FD.atomic_write(rd / "listing.json", {"url": cfg["listing_url"], "reports": listing})
         print("listing: %d auction report links" % len(listing))
+    if scan_spec:
+        nums = parse_ranges(scan_spec)
+        if nums is None:
+            print("scan ERROR: bad range %r (want e.g. 1200-2300,3600-3700)" % scan_spec)
+        else:
+            found = scan(nums)
+            feeder = scan_listing(found)
+            print("scan: %d of %d numbers answered, %d with feeder tables" % (len(found), len(nums), len(feeder)))
+            for slug, v in sorted(found.items()):
+                print("  %s %s %s%s" % (slug, v["date"], v["title"][:90], "" if v["feeder"] else "  (no feeder tables)"))
+            doc["scanned"] = found
+            for t, s in feeder.items():
+                listing.setdefault(t, s)
+    if listing or doc.get("scanned"):
+        doc["reports"] = listing
+        FD.atomic_write(rd / "listing.json", doc)
     for group in ("barns", "state_reports"):
         for src in cfg.get(group) or []:
-            slug = pick_slug(src, listing)
-            print("%s slug=%s" % (src["id"], slug))
-            if not slug:
+            slugs = slugs_for(src, listing)
+            print("%s slug=%s" % (src["id"], ",".join(slugs) or None))
+            if not slugs:
                 print("  no report number; listing titles to look at:",
                       [t for t in listing if src.get("town", src["state"]).lower() in t.lower()][:5])
                 continue
-            raw, text, err = fetch(slug)
-            if raw is not None:
-                (rd / ("ams_%s.raw" % slug)).write_bytes(raw)
-            if err:
-                print("  ERROR:", err)
-            if text:
-                (rd / ("ams_%s.txt" % slug)).write_text(text)
-                print("  title:", report_title(text)[:120])
-                sale, why = read_one(src, slug, (raw, text, None))
-                if sale:
-                    print("  parsed %s: %s" % (sale["date"], {k: sorted(v) for k, v in sale["classes"].items()}))
-                else:
-                    print("  NOT PARSED:", why)
+            for slug in slugs:
+                probe_one(rd, src, slug)
     return 0
+
+
+def probe_one(rd, src, slug):
+    """Fetch one report, save it raw and as text, print whether it parsed."""
+    raw, text, err = fetch(slug)
+    if raw is not None:
+        (rd / ("ams_%s.raw" % slug)).write_bytes(raw)
+    if err:
+        print("  %s ERROR: %s" % (slug, err))
+    if text:
+        (rd / ("ams_%s.txt" % slug)).write_text(text)
+        print("  %s title: %s" % (slug, report_title(text)[:120]))
+        sale, why = read_one(src, slug, (raw, text, None))
+        if sale:
+            print("  parsed %s: %s" % (sale["date"], {k: sorted(v) for k, v in sale["classes"].items()}))
+        else:
+            print("  NOT PARSED:", why)
 
 
 # ---------------------------------------------------------------- selftest
@@ -581,6 +693,37 @@ def selftest():
         "Valentine Livestock Auction - Valentine, NE": "1856"}, lst)
     ck("listing fills a missing slug by title", pick_slug(dict(other, slug=None), lst) == "1889")
 
+    # a barn with two sale days (`also`): newest good sale wins, each report checked on its own
+    two = dict(src, slug="1245", also=["9001", "1245"])
+    ck("report numbers: slug first, also after, no repeats", slugs_for(two, {}) == ["1245", "9001"])
+    later = ROW_FIX.replace("Mon Oct 12, 2026", "Thu Oct 15, 2026")
+    s2, sl2, w2 = best_sale(two, ["1245", "9001"], {"1245": (None, ROW_FIX, None), "9001": (None, later, None)}.get)
+    ck("two sale days: the newer sale and its report number are used", s2 and s2["date"] == "2026-10-15" and sl2 == "9001", w2)
+    wrong = later.replace("Joplin Regional Stockyards", "Some Other Barn")
+    s3, sl3, _ = best_sale(two, ["1245", "9001"], {"1245": (None, ROW_FIX, None), "9001": (None, wrong, None)}.get)
+    ck("a second report that does not name the barn is ignored, the first still counts",
+       s3 and s3["date"] == "2026-10-12" and sl3 == "1245")
+    s4, _, w4 = best_sale(two, ["1245", "9001"], {}.get)
+    ck("both reports missing: nothing, and the reason names both", s4 is None and "1245" in w4 and "9001" in w4, w4)
+    ck("no report numbers: nothing", best_sale(src, [], {}.get)[0] is None)
+
+    # scan fallback for the listing page (AMS answers the listing with 403)
+    ck("scan ranges read", parse_ranges("1849-1852,3654") == ["1849", "1850", "1851", "1852", "3654"])
+    ck("bad or huge scan ranges refused", parse_ranges("12-x") is None and parse_ranges("1900-1800") is None
+       and parse_ranges("1000-9999") is None and parse_ranges("") is None)
+    slaughter = ("Sioux Falls Regional Livestock Auction - Worthing, SD\nWed Oct 14, 2026\nSLAUGHTER CATTLE\n"
+                 "STEERS - Choice 2-3 (Per Cwt / Actual Wt)\n20 1495 1495 227.00 227.00\n")
+    fake = {"1245": (None, ROW_FIX, None), "2016": (None, slaughter, None)}
+    found = scan(["1245", "2016", "2017"], lambda s: fake.get(s, (None, None, "404")), workers=2)
+    ck("scan keeps every report that answered, marks which have feeder tables",
+       sorted(found) == ["1245", "2016"] and found["1245"]["feeder"] and not found["2016"]["feeder"], found)
+    lst2 = scan_listing(found)
+    ck("scan listing holds only feeder reports (a slaughter-only report never fills a barn)",
+       list(lst2.values()) == ["1245"], lst2)
+    ck("scan listing fills a missing slug by the report's own title",
+       pick_slug(dict(src, slug=None), lst2) == "1245"
+       and pick_slug({"id": "worthing-sd", "match": "sioux falls|worthing", "slug": None}, lst2) is None)
+
     cfg = json.loads((ROOT / SOURCES).read_text())
     ids = [x["id"] for x in cfg["barns"]] + [x["id"] for x in cfg["state_reports"]]
     ck("source ids unique", len(ids) == len(set(ids)))
@@ -601,7 +744,8 @@ def main(argv):
     if "--selftest" in argv:
         return selftest()
     if "--probe" in argv:
-        return probe(ROOT)
+        spec = argv[argv.index("--scan") + 1] if "--scan" in argv and argv.index("--scan") + 1 < len(argv) else None
+        return probe(ROOT, spec)
     doc = run(ROOT)
     if not doc:
         print("::warning::no barn parsed; data/cattle-auction.json not written")

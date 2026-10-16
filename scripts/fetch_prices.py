@@ -163,6 +163,15 @@ def _month_label(key):
     return f"{mon} '{yr}"
 
 
+# Every root with dated months on file gets a <root>-nearby alias (2026-10-16).
+# The class wheats, oats, meal, oil, feeders, hogs and milk had none, so their
+# cards read the continuous series (KE=F, ZM=F, GF=F ...), fetched at a
+# different moment than the dated month beside it: the corn page's wheat card
+# said -10 1/2 while the wheat page said -11 1/4 for the same Dec contract.
+NEARBY_ROOTS = ("corn", "beans", "wheat", "cattle", "kcwheat", "mplswheat", "oats",
+                "meal", "soyoil", "feeders", "hogs", "milk")
+
+
 def add_nearby(quotes, symbols, now=None):
     """True-front-month aliases (2026-07-28).
 
@@ -181,7 +190,7 @@ def add_nearby(quotes, symbols, now=None):
     Pure function of its inputs — selftested in scripts/test_nearby.py.
     """
     nearby = {}
-    for crop in ("corn", "beans", "wheat", "cattle"):
+    for crop in NEARBY_ROOTS:
         dated = []
         for k in symbols:
             if not k.startswith(crop + "-"):

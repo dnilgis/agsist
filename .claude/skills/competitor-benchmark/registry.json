@@ -19,53 +19,58 @@
     "farm bill status",
     "farm bill extension"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 42,
-   "verdict": "close",
-   "report": "results/2026-10-15-farmbill.md",
+   "last_run": "2026-10-16",
+   "ours_total": 43,
+   "verdict": "yes",
+   "report": "results/2026-10-16-farm-bill.md",
    "competitors": [
     {
-     "name": "National Agricultural Law Center",
+     "name": "National Agricultural Law Center, Farm Bill 2026: Overview",
+     "url": "https://nationalaglawcenter.org/farm-bill-2026-overview/",
      "kind": "university",
-     "total": 36,
-     "evidence": "snippets"
+     "total": 30,
+     "evidence": "fetched Oct 16; dated May 14, House bill only; phone not scored (out of 45)"
     },
     {
-     "name": "Congressional Research Service (R48918)",
-     "kind": "government",
-     "total": 31,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Senate Agriculture Committee",
-     "kind": "government",
-     "total": 28,
-     "evidence": "snippets"
-    },
-    {
-     "name": "farmdoc daily",
-     "kind": "university",
-     "evidence": "snippets"
-    },
-    {
-     "name": "AFBF Market Intel",
-     "kind": "established",
-     "evidence": "snippets"
-    },
-    {
-     "name": "NSAC",
+     "name": "NSAC, The Senate Farm Bill Markup: What Happened and What's Next",
+     "url": "https://sustainableagriculture.net/blog/the-senate-farm-bill-markup-what-happened-and-whats-next/",
      "kind": "advocacy",
-     "evidence": "snippets"
+     "total": 29,
+     "evidence": "fetched Oct 16; after Aug 6 markup; out of 45"
     },
     {
-     "name": "Agri-Pulse",
+     "name": "AFBF Market Intel, Time to Finish the Job: 2026 Farm Bill",
+     "url": "https://www.fb.org/intel/policy/time-to-finish-the-job-2026-farm-bill",
      "kind": "established",
-     "evidence": "snippets"
+     "total": 25,
+     "evidence": "fetched Oct 16; after Aug 6 markup; out of 45"
     },
     {
-     "name": "Farm Policy News",
+     "name": "Agri-Pulse, Earliest Senate farm bill markup would be next week",
+     "url": "https://www.agri-pulse.com/articles/24983-earliest-senate-farm-bill-markup-would-be-next-week-boozman-says",
+     "kind": "established",
+     "total": 24,
+     "evidence": "fetched Oct 16; dated Jul 14; out of 45"
+    },
+    {
+     "name": "Farm Policy News ?p=33712",
+     "url": "https://farmpolicynews.illinois.edu/?p=33712",
      "kind": "university",
-     "evidence": "snippets"
+     "total": 23,
+     "evidence": "fetched Oct 16; roundup from about Dec 2025; out of 45"
+    },
+    {
+     "name": "Senate Agriculture Committee press release, Farm Bill 2.0 text",
+     "url": "https://www.agriculture.senate.gov/newsroom/rep/press/release/chairman-boozman-releases-updated-farm-bill-20-text-announces-business-meeting",
+     "kind": "government",
+     "total": 22,
+     "evidence": "fetched Oct 16; dated Jul 31; out of 45"
+    },
+    {
+     "name": "CRS R48918",
+     "url": "https://www.congress.gov/crs-product/R48918",
+     "kind": "government",
+     "evidence": "fetch failed (HTTP 403; Wayback 429)"
     }
    ]
   },
@@ -74,87 +79,98 @@
     "PRF insurance calculator",
     "pasture rangeland forage insurance <state>"
    ],
-   "last_run": "2026-10-15",
-   "verdict": "yes on substance; not yet found in search",
-   "report": "results/2026-10-15-prf.md",
+   "last_run": "2026-10-16",
+   "verdict": "yes",
+   "report": "results/2026-10-16-prf.md",
    "competitors": [
     {
-     "name": "USDA RMA PRF Decision Support Tool",
+     "name": "USDA RMA Rainfall Index / PRF program page",
+     "url": "https://www.rma.usda.gov/en/Policy-and-Procedure/Insurance-Plans/Pasture-Rangeland-Forage",
      "kind": "government",
-     "evidence": "snippets"
+     "total": 29,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
     },
     {
-     "name": "ProAg",
+     "name": "ProAg PRF product page",
+     "url": "https://www.proag.com/products/mpci/rainfall-index-policies/pasture-rangeland-forage-prf/",
      "kind": "vendor",
-     "evidence": "snippets"
+     "total": 26,
+     "evidence": "fetched Oct 16; out of 45"
     },
     {
-     "name": "Farmers Mutual Hail",
+     "name": "Redd Summit PRF page",
+     "url": "https://www.reddsummit.com/prf-insurance",
      "kind": "vendor",
-     "evidence": "snippets"
+     "total": 25,
+     "evidence": "fetched Oct 16; out of 45; portal and county data behind forms not readable"
     },
     {
-     "name": "Redd Summit",
-     "kind": "vendor",
-     "evidence": "snippets"
+     "name": "USDA RMA PRF Decision Support Tool",
+     "url": "https://public-rma.fpac.usda.gov/apps/PRF",
+     "kind": "government",
+     "evidence": "not fetched: app only"
     },
     {
-     "name": "farmdoc daily",
+     "name": "University of Missouri PRF tool",
+     "url": "https://extension.missouri.edu/news/mu-tool-helps-farmers-decide-on-pasture-insurance",
      "kind": "university",
-     "evidence": "snippets"
+     "evidence": "not fetched: app only, sign-up"
     },
     {
-     "name": "OSU, UNL, K-State extension",
+     "name": "Oklahoma State PRF fact sheet",
+     "url": "https://extension.okstate.edu/fact-sheets/pasture-rangeland-forage-insurance-program-prf.html",
      "kind": "university",
-     "evidence": "snippets"
+     "evidence": "fetch failed (HTTP 403)"
     }
-   ]
+   ],
+   "ours_total": 46
   },
   "arc-plc": {
    "queries": [
     "ARC or PLC 2026",
     "ARC PLC decision tool"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 44,
+   "last_run": "2026-10-16",
+   "ours_total": 47,
    "verdict": "close",
-   "report": "results/2026-10-15-arcplc.md",
+   "report": "results/2026-10-16-arc-plc.md",
    "competitors": [
     {
-     "name": "Texas A&M AFPC decision aid",
-     "kind": "university",
-     "total": 40,
-     "evidence": "snippets"
-    },
-    {
-     "name": "farmdoc",
-     "kind": "university",
-     "total": 37,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Michigan State (Oct 9 article)",
-     "kind": "university",
-     "total": 36,
-     "evidence": "snippets"
-    },
-    {
-     "name": "USDA FSA ARC/PLC",
-     "kind": "government",
-     "total": 34,
-     "evidence": "snippets"
-    },
-    {
-     "name": "K-State",
+     "name": "farmdoc daily, ARC-CO and PLC Payments: Improving Farmers' Decision Making",
+     "url": "https://farmdocdaily.illinois.edu/?p=42576",
      "kind": "university",
      "total": 33,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; Aug 5, 2026; phone not scored (out of 45)"
     },
     {
-     "name": "Iowa State Ag Decision Maker",
+     "name": "Texas A&M AFPC tools",
+     "url": "https://afpc.tamu.edu/tools",
      "kind": "university",
-     "total": 30,
-     "evidence": "snippets"
+     "evidence": "not readable: listing only (ARC/PLC Expected Payments Sep 2026; ARC-IC Decision Aid Oct 2026); tools not saved"
+    },
+    {
+     "name": "farmdoc Farm Bill What-If Tool",
+     "url": "https://farmdoc.illinois.edu/fast-tools/arc-co-plc-model",
+     "kind": "university",
+     "evidence": "not readable: download page only, updated Oct 16, 2026, Excel not saved"
+    },
+    {
+     "name": "K-State, Tradeoff Between 2026/2027 ARC and PLC",
+     "url": "https://www.agmanager.info/ag-policy/farm-bill-0/tradeoff-between-20262027-arc-and-plc",
+     "kind": "university",
+     "evidence": "not readable: Aug 19, 2026 page linking Excel, not saved"
+    },
+    {
+     "name": "MSU Farm Bill Analyzer 2026",
+     "url": "https://www.canr.msu.edu/resources/msu-farm-bill-analyzer",
+     "kind": "university",
+     "evidence": "not readable: saved copy empty"
+    },
+    {
+     "name": "Iowa State Ag Decision Maker A1-33",
+     "url": "https://www.extension.iastate.edu/agdm/crops/html/a1-33.html",
+     "kind": "university",
+     "evidence": "fetch failed (HTTP 403)"
     }
    ]
   },
@@ -163,34 +179,47 @@
     "cash grain bids near me",
     "<town> corn price today"
    ],
-   "last_run": "2026-10-15",
-   "verdict": "close (coverage: 1,923 of 8,404 known elevators read)",
-   "report": "results/2026-10-15-cashbids.md",
+   "last_run": "2026-10-16",
+   "verdict": "close",
+   "report": "results/2026-10-16-cash-bids.md",
    "competitors": [
     {
-     "name": "Barchart cash bids",
+     "name": "Barchart cash grain prices",
+     "url": "https://www.barchart.com/cmdty/data/grain-prices",
      "kind": "established",
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16: AWS WAF robot-challenge page, not readable"
     },
     {
-     "name": "DTN / Progressive Farmer",
+     "name": "Farm Progress cash grain bids (Barchart data)",
+     "url": "https://www.farmprogress.com/commodities/cash-grain-bids",
      "kind": "established",
-     "evidence": "snippets"
+     "evidence": "fetch failed Oct 16 (HTTP 403; Wayback 429)"
     },
     {
-     "name": "FBN",
+     "name": "DTN / Illinois Farm Bureau cash bids",
+     "url": "https://dtn.ilfb.org/index.cfm?show=62",
+     "kind": "established",
+     "evidence": "fetch failed Oct 16 (TLS hostname mismatch; no archived copy)"
+    },
+    {
+     "name": "FBN cash prices",
+     "url": "https://www.fbn.com/marketing",
      "kind": "startup",
-     "evidence": "snippets"
+     "total": 8,
+     "evidence": "fetched Oct 16: redirected to fbn.com home page; bids are members-only; 4 of 10 parts scored (out of 20)"
     },
     {
-     "name": "Iowa Farm Bureau basis",
+     "name": "KTIC radio daily cash grain bids",
+     "url": "https://ruralradio.com/ktic/news/daily-cash-grain-bids-monday-february-03-2025",
      "kind": "established",
-     "evidence": "snippets"
+     "evidence": "fetch failed Oct 16 (HTTP 403; Wayback 429)"
     },
     {
-     "name": "Elevator chains' own pages (ADM, Cargill, CHS, Bunge)",
+     "name": "Elevator portals on Agvance Grower360",
+     "url": "https://helpcenter.agvance.net/home/grower360-cash-bids",
      "kind": "vendor",
-     "evidence": "snippets"
+     "total": 14,
+     "evidence": "fetched Oct 16: help article (modified Jul 26, 2023), not the product; 5 of 10 parts scored (out of 25)"
     }
    ],
    "coverage_checks": [
@@ -203,48 +232,61 @@
      ],
      "date": "2026-10-15"
     }
-   ]
+   ],
+   "ours_total": 44
   },
   "grain-bin-calculator": {
    "queries": [
     "grain bin calculator",
     "bushels in a grain bin"
    ],
-   "last_run": "2026-10-15",
-   "verdict": "close; reads 5-6.5% under dealer charts (25 deg, no pack vs ASABE 28 deg + ~6% pack)",
-   "report": "results/2026-10-15-grainbin.md",
+   "last_run": "2026-10-16",
+   "verdict": "yes",
+   "report": "results/2026-10-16-grain-bin-calculator.md",
    "competitors": [
     {
      "name": "GSI 40-Series capacity table",
+     "url": "https://www.grainsystems.com/na/en/products/storage/grain-bins/40-series-grain-bins/",
      "kind": "vendor",
-     "evidence": "snippets"
+     "evidence": "not in the Oct 16 fetch index; not readable"
     },
     {
-     "name": "Brock BR-2286",
+     "name": "Brock BR-2286 on-farm capacities",
+     "url": "https://www.brockgrain.com/wp-content/uploads/2022/02/BR-2286-202201-Brock-On-Farm-Storage-Capacities-EM.pdf",
      "kind": "vendor",
-     "evidence": "snippets"
-    },
-    {
-     "name": "Sukup spec sheet",
-     "kind": "vendor",
-     "evidence": "snippets"
+     "total": 31,
+     "evidence": "fetched Oct 16 (PDF, Jan 2022); 28 deg from 1 in below eave, S413.1, 6% pack, drying-floor columns"
     },
     {
      "name": "UNL CropWatch",
+     "url": "https://cropwatch.unl.edu/how-estimate-bushels-grain-bin/",
      "kind": "university",
-     "evidence": "snippets"
-    },
-    {
-     "name": "Omni Calculator",
-     "kind": "startup",
-     "evidence": "snippets"
+     "total": 29,
+     "evidence": "fetched Oct 16; Sept 14, 2012 article by Tom Dorn; phone not scored (out of 45)"
     },
     {
      "name": "ToolGrit",
+     "url": "https://www.toolgrit.com/guides/what-size-grain-bin",
      "kind": "startup",
-     "evidence": "snippets"
+     "total": 29,
+     "evidence": "fetched Oct 16; Feb 10, 2026 guide; phone not scored (out of 45)"
+    },
+    {
+     "name": "Sukup spec sheet (metric)",
+     "url": "https://dealer.sukup.com/Content/Brochures/Metric%20Specifications/Bins.pdf",
+     "kind": "vendor",
+     "total": 23,
+     "evidence": "fetched Oct 16 (metric PDF, code L11283-032014S)"
+    },
+    {
+     "name": "Omni Calculator",
+     "url": "https://www.omnicalculator.com/biology/grain-bin",
+     "kind": "startup",
+     "total": 23,
+     "evidence": "fetched Oct 16; 0.7786 bu/ft3 (imperial bushel); phone not scored (out of 45)"
     }
-   ]
+   ],
+   "ours_total": 47
   },
   "rain-print": {
    "queries": [
@@ -255,46 +297,48 @@
     "how much rain did we get in <year>",
     "<town> rainfall <year>"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 46,
-   "verdict": "only product of its kind; not yet findable in search",
-   "report": "results/2026-10-15-rainprint.md",
+   "last_run": "2026-10-16",
+   "ours_total": 47,
+   "verdict": "yes",
+   "report": "results/2026-10-16-rain-print.md",
    "competitors": [
     {
      "name": "Show Your Stripes",
+     "url": "https://showyourstripes.info/",
      "kind": "university",
-     "total": 44,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; empty app shell, not readable"
     },
     {
      "name": "temperature-blanket.com",
+     "url": "https://temperature-blanket.com/",
      "kind": "startup",
-     "total": 35,
-     "evidence": "snippets"
+     "evidence": "not in the Oct 16 fetch index"
     },
     {
      "name": "Extreme Weather Watch",
-     "kind": "established",
-     "total": 34,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Weathered Moments (Etsy)",
-     "kind": "vendor",
-     "total": 33,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Day-you-were-born prints",
-     "kind": "vendor",
-     "total": 29,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Weather Radials",
-     "kind": "vendor",
+     "url": "https://www.extremeweatherwatch.com/cities/auburn/month-december/monthly-precipitation",
+     "kind": "startup",
      "total": 28,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; data through 2024; phone not scored (out of 45)"
+    },
+    {
+     "name": "Weather Radials (IIB showcase)",
+     "url": "https://informationisbeautifulawards.com/showcase/573-weather-radials-poster",
+     "kind": "startup",
+     "total": 21,
+     "evidence": "fetched Oct 16; 2013 poster, no price or purchase in copy; phone not scored (out of 45)"
+    },
+    {
+     "name": "Weather Portraits (c82.net)",
+     "url": "https://www.c82.net/work/weather-portraits",
+     "kind": "startup",
+     "evidence": "fetch failed Oct 16 (HTTP 403, no Wayback copy)"
+    },
+    {
+     "name": "Weathered Moments (Etsy search)",
+     "url": "https://www.etsy.com/search?q=weather+on+this+day+print",
+     "kind": "vendor",
+     "evidence": "not in the Oct 16 fetch index"
     }
    ]
   },
@@ -305,40 +349,54 @@
     "wheat futures",
     "live cattle futures"
    ],
-   "last_run": "2026-10-15",
+   "last_run": "2026-10-16",
    "ours_total": 43,
-   "verdict": "close (markets.html 38: no)",
-   "report": "results/2026-10-15-futures.md",
+   "verdict": "close",
+   "report": "results/2026-10-16-futures.md",
    "competitors": [
     {
-     "name": "FBN app",
-     "kind": "startup",
-     "total": 40,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Barchart",
+     "name": "Barchart ZCZ26",
+     "url": "https://www.barchart.com/futures/quotes/ZCZ26",
      "kind": "established",
-     "total": 37,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; AWS WAF robot challenge, not readable"
     },
     {
      "name": "TradingView",
-     "kind": "established",
-     "total": 35,
-     "evidence": "snippets"
-    },
-    {
-     "name": "DTN",
-     "kind": "established",
-     "total": 35,
-     "evidence": "snippets"
+     "url": "https://www.tradingview.com/symbols/CBOT-ZC1!/",
+     "kind": "startup",
+     "evidence": "not in the Oct 16 fetch index"
     },
     {
      "name": "CME Group",
+     "url": "https://www.cmegroup.com/markets/agriculture/grains/corn.html",
      "kind": "established",
-     "total": 33,
-     "evidence": "snippets"
+     "evidence": "not in the Oct 16 fetch index"
+    },
+    {
+     "name": "Investing.com US Corn",
+     "url": "https://www.investing.com/commodities/us-corn",
+     "kind": "established",
+     "total": 24,
+     "evidence": "fetched Oct 16; CFD 'real-time derived' quote, day stats, volume; phone not scored (out of 45)"
+    },
+    {
+     "name": "Farm Progress commodities",
+     "url": "https://www.farmprogress.com/commodities/corn",
+     "kind": "established",
+     "evidence": "fetch failed Oct 16 (HTTP 403)"
+    },
+    {
+     "name": "DTN markets",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/markets",
+     "kind": "established",
+     "total": 29,
+     "evidence": "fetched Oct 16; dated Quick Takes 10:34 AM CDT, WASDE and Crop Progress headlines, quote boxes not in copy; phone not scored (out of 45)"
+    },
+    {
+     "name": "FBN app",
+     "url": "https://www.fbn.com/marketing",
+     "kind": "startup",
+     "evidence": "not in the Oct 16 fetch index"
     }
    ]
   },
@@ -347,22 +405,50 @@
     "WASDE trade estimates",
     "USDA report expectations"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 39,
+   "last_run": "2026-10-16",
+   "ours_total": 42,
    "verdict": "close",
-   "report": "results/2026-10-15-whats-priced-in.md",
+   "report": "results/2026-10-16-whats-priced-in.md",
    "competitors": [
     {
-     "name": "DTN Preview/Review",
+     "name": "DTN report review (Oct 9)",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/09/october-wasdes-shocking-rise-corn",
      "kind": "established",
-     "total": 37,
-     "evidence": "snippets"
+     "total": 31,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
     },
     {
-     "name": "farmdoc daily",
+     "name": "DTN preview (Oct 7)",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/07/us-harvests-delayed-usda-gauge-crop",
+     "kind": "established",
+     "total": 29,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "Pro Farmer October WASDE preview (Oct 9)",
+     "url": "https://www.profarmer.com/news/agriculture-news/october-wasde-preview-key-metrics-watch-corn-soybeans-wheat-and-cotton",
+     "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "farmdoc daily (home page)",
+     "url": "https://farmdocdaily.illinois.edu/",
      "kind": "university",
-     "total": 37,
-     "evidence": "snippets"
+     "total": 24,
+     "evidence": "fetched Oct 16; phone not scored (out of 45); no preview or review page"
+    },
+    {
+     "name": "Farm Progress report reaction",
+     "url": "https://www.farmprogress.com/marketing/usda-yield-shocker-sends-corn-sinking-to-eight-week-low",
+     "kind": "established",
+     "evidence": "not readable: HTTP 403, no archive"
+    },
+    {
+     "name": "AgWeb report coverage",
+     "url": "https://www.agweb.com/news/usda-delivers-unexpected-blow-corn-bulls-corn-prices-tank",
+     "kind": "established",
+     "evidence": "not readable: HTTP 403, no archive"
     }
    ]
   },
@@ -371,95 +457,487 @@
     "crop insurance harvest price 2026",
     "projected vs harvest price"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 45,
+   "last_run": "2026-10-16",
+   "ours_total": 46,
    "verdict": "yes",
-   "report": "results/2026-10-15-harvest-price-tracker.md",
+   "report": "results/2026-10-16-harvest-price-tracker.md",
    "competitors": [
     {
-     "name": "farmdoc",
+     "name": "farmdoc daily, impacts of projected vs futures prices (Mar 13)",
+     "url": "https://farmdocdaily.illinois.edu/2026/03/impacts-of-differences-between-rma-projected-prices-and-futures-prices-on-the-level-and-frequency-of-crop-insurance-indemnity-payments.html",
      "kind": "university",
-     "total": 36,
-     "evidence": "snippets"
+     "total": 31,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
     },
     {
-     "name": "USDA RMA price discovery",
+     "name": "farmdoc daily, projected prices and volatility factors (Mar 3)",
+     "url": "https://farmdocdaily.illinois.edu/2026/03/projected-prices-and-volatility-factors-for-2026.html",
+     "kind": "university",
+     "total": 30,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "AFBF Market Intel, risk management options for 2026 (Mar 3)",
+     "url": "https://www.fb.org/market-intel/risk-management-options-for-2026-corn-soybeans-and-wheat",
+     "kind": "established",
+     "total": 24,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "ISU Ag Decision Maker A1-54",
+     "url": "https://www.extension.iastate.edu/agdm/crops/html/a1-54.html",
+     "kind": "university",
+     "evidence": "not readable: HTTP 403, no archive"
+    },
+    {
+     "name": "USDA RMA Price Discovery",
+     "url": "https://public-rma.fpac.usda.gov/apps/PriceDiscovery/",
      "kind": "government",
-     "total": 35,
-     "evidence": "snippets"
+     "evidence": "not fetched: no copy on references branch"
     }
    ]
   },
   "manure-value": {
-   "last_run": "2026-10-15",
-   "ours_total": 41,
-   "verdict": "close",
-   "report": "results/2026-10-15-manure-value.md",
-   "competitors": [],
+   "last_run": "2026-10-16",
+   "ours_total": 44,
+   "verdict": "yes",
+   "report": "results/2026-10-16-manure-value.md",
+   "competitors": [
+    {
+     "name": "Penn State Manure Nutrient Value Calculator (web)",
+     "url": "https://agsci.psu.edu/assets/extension/manure-nutrient-value-calculator/",
+     "kind": "university",
+     "total": 33,
+     "evidence": "fetched Oct 16; phone not scored (out of 45); saved file rendered: inputs start at 0, no viewport tag"
+    },
+    {
+     "name": "UNL Water, Calculating the Value of Nutrients in Manure (Sep 25, 2025)",
+     "url": "https://water.unl.edu/article/animal-manure-management/calculating-value-nutrients-manure",
+     "kind": "university",
+     "total": 33,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "UMN Extension What's manure worth? calculator",
+     "url": "https://apps.extension.umn.edu/agriculture/manure-management-and-air-quality/manure-application/calculator/",
+     "kind": "university",
+     "total": 29,
+     "evidence": "fetched Oct 16; phone not scored (out of 45); .txt empty, read from saved .html; defaults N $0.30 P $0.35 K $0.27"
+    },
+    {
+     "name": "ISU Iowa Pork Industry Center, Start with Nutrient Analysis (Sep 8, 2026)",
+     "url": "https://www.ipic.iastate.edu/news/getting-most-value-manure-start-nutrient-analysis",
+     "kind": "university",
+     "total": 29,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "UW Extension Manure Value Calculator spreadsheet (article)",
+     "url": "https://farms.extension.wisc.edu/articles/manure-value-calculator-spreadsheet-helps-farmers-determine-credit-for-fertilizer-nutrients",
+     "kind": "university",
+     "total": 27,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "Univ. of Maryland ONVC (resources page, Excel)",
+     "url": "https://extension.umd.edu/programs/agriculture-food-systems/program-areas/integrated-programs/agricultural-nutrient-management-program/additional-resources",
+     "kind": "university",
+     "total": 25,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "breakeven": {
-   "last_run": "2026-10-15",
-   "ours_total": 36,
+   "last_run": "2026-10-16",
+   "ours_total": 43,
    "verdict": "close",
-   "report": "results/2026-10-15-breakeven.md",
-   "competitors": [],
+   "report": "results/2026-10-16-breakeven.md",
+   "competitors": [
+    {
+     "name": "farmdoc daily, Illinois Crop Budgets for 2027",
+     "url": "https://farmdocdaily.illinois.edu/2026/09/illinois-crop-budgets-for-2027.html",
+     "kind": "university",
+     "total": 38,
+     "evidence": "fetched Oct 15 (shared ref farmdoc-budgets-2027); phone not scored (out of 45)"
+    },
+    {
+     "name": "farmdoc daily, Spring Revision to 2026 Illinois Crop Budgets",
+     "url": "https://farmdocdaily.illinois.edu/2026/05/spring-revision-to-2026-illinois-crop-budgets.html",
+     "kind": "university",
+     "total": 34,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "Purdue 2026 Crop Cost and Return Guide",
+     "url": "https://ag.purdue.edu/commercialag/home/paer-article/2026-purdue-crop-cost-and-return-guide",
+     "kind": "university",
+     "total": 35,
+     "evidence": "fetched Oct 16; January 2026 estimates; phone not scored (out of 45)"
+    },
+    {
+     "name": "AFBF Market Intel, Risk Management Options for 2026",
+     "url": "https://www.fb.org/market-intel/risk-management-options-for-2026-corn-soybeans-and-wheat",
+     "kind": "established",
+     "total": 24,
+     "evidence": "fetched Oct 16 (shared ref bench-harvest-price-tracker-4); phone not scored (out of 45)"
+    },
+    {
+     "name": "ISU Ag Decision Maker A1-20",
+     "url": "https://www.extension.iastate.edu/agdm/crops/html/a1-20.html",
+     "kind": "university",
+     "evidence": "not readable: fetch failed Oct 16 (HTTP 403, Wayback 429)"
+    },
+    {
+     "name": "MSU 2026 Corn Cost of Production projection tool",
+     "url": "https://www.canr.msu.edu/resources/2026-corn-projected-cost-of-production",
+     "kind": "university",
+     "evidence": "not readable: saved copy is an Incapsula block page"
+    },
+    {
+     "name": "Farm Progress, bring breakeven prices into budget discussion",
+     "url": "https://www.farmprogress.com/farm-business/bring-breakeven-prices-into-budget-discussion",
+     "kind": "established",
+     "evidence": "not readable: fetch failed Oct 16 (HTTP 403, no archive)"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "store-or-sell": {
-   "last_run": "2026-10-15",
-   "ours_total": 44,
-   "verdict": "yes, narrowly",
-   "report": "results/2026-10-15-store-or-sell.md",
-   "competitors": [],
+   "last_run": "2026-10-16",
+   "ours_total": 47,
+   "verdict": "yes",
+   "report": "results/2026-10-16-store-or-sell.md",
+   "competitors": [
+    {
+     "name": "Univ. of Kentucky, Large crops and low prices put pressure on grain storage",
+     "url": "https://graincrops.mgcafe.uky.edu/articles/large-crops-and-low-prices-put-pressure-grain-storage",
+     "kind": "university",
+     "total": 30,
+     "evidence": "fetched Oct 16; Oct 13, 2025 article; phone not scored (out of 45)"
+    },
+    {
+     "name": "K-State AgManager / UMN (Usset) marketing plans webinar",
+     "url": "https://agmanager.info/sites/default/files/pdf/Nelson_WTG_05-29-24.pdf",
+     "kind": "university",
+     "total": 23,
+     "evidence": "fetched Oct 16; May 29, 2024 PDF; phone not scored (out of 45)"
+    },
+    {
+     "name": "ISU Ag Decision Maker grain storage cost tools",
+     "url": "https://www.extension.iastate.edu/agdm/decisiontools.html",
+     "kind": "university",
+     "evidence": "not readable: fetch failed Oct 16 (HTTP 403, Wayback 429/timeout)"
+    },
+    {
+     "name": "ISU Grain Storage Alternatives: An Economic Comparison (A2-35)",
+     "url": "https://www.extension.iastate.edu/agdm/crops/html/a2-35.html",
+     "kind": "university",
+     "evidence": "not readable: fetch failed Oct 16 (HTTP 403, no archive)"
+    },
+    {
+     "name": "Farm Progress / Farm Futures store-vs-sell commentary",
+     "url": "https://www.farmprogress.com/commentary/sell-store-or-sell-and-re-own-",
+     "kind": "established",
+     "evidence": "not readable: fetch failed Oct 16 (HTTP 403, no archive)"
+    },
+    {
+     "name": "DTN cost of carry calculator",
+     "url": "https://prophetxhelp.dtn.com/cost-of-carry-calculator/",
+     "kind": "vendor",
+     "evidence": "not fetched: paid app"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "cash-rent": {
-   "last_run": "2026-10-15",
-   "ours_total": 44,
-   "verdict": "yes (county rent any state)",
-   "report": "results/2026-10-15-cash-rent.md",
-   "competitors": [],
+   "last_run": "2026-10-16",
+   "ours_total": 47,
+   "verdict": "yes",
+   "report": "results/2026-10-16-cash-rent.md",
+   "competitors": [
+    {
+     "name": "farmdoc daily, Illinois Cash Rents in 2026 and Outlook for 2027",
+     "url": "https://farmdocdaily.illinois.edu/2026/09/illinois-cash-rents-in-2026-and-outlook-for-2027.html",
+     "kind": "university",
+     "total": 39,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "UNL Nebraska Farm Real Estate Report 2026",
+     "url": "https://cap.unl.edu/realestate/",
+     "kind": "university",
+     "total": 37,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "North Dakota Land Dept, 2026 County Rents and Prices",
+     "url": "https://www.land.nd.gov/sites/www/files/documents/Surface/Rent%20Survey/2026%20County%20Rents%20and%20Prices%20North%20Dakota.pdf",
+     "kind": "government",
+     "total": 35,
+     "evidence": "fetched Oct 16 (PDF); phone not scored (out of 45)"
+    },
+    {
+     "name": "Pro Farmer, 2026 Average Iowa Cash Rent Eases",
+     "url": "https://www.profarmer.com/news/agriculture-news/2026-average-iowa-cash-rent-eases",
+     "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "USDA NASS Cash Rents by County",
+     "url": "https://www.nass.usda.gov/Surveys/Guide_to_NASS_Surveys/Cash_Rents_by_County/",
+     "kind": "government",
+     "total": 27,
+     "evidence": "fetched Oct 15 (shared ref nass-cash-rents-county); phone not scored (out of 45)"
+    },
+    {
+     "name": "ISU FM1851, Cash Rental Rates for Iowa 2026 Survey",
+     "url": "https://www.extension.iastate.edu/agdm/wholefarm/pdf/c2-10.pdf",
+     "kind": "university",
+     "evidence": "not readable: fetch failed (HTTP 403, Wayback 429)"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "farmland-atlas": {
-   "last_run": "2026-10-15",
+   "last_run": "2026-10-16",
    "ours_total": 46,
-   "verdict": "yes for county record (hub 41); no for current land value",
-   "report": "results/2026-10-15-farmland-atlas.md",
-   "competitors": [],
+   "verdict": "yes",
+   "report": "results/2026-10-16-farmland-atlas.md",
+   "competitors": [
+    {
+     "name": "ISU Land Value Survey portal",
+     "url": "https://farmland.card.iastate.edu/isu-land-value-survey-2025",
+     "kind": "university",
+     "total": 40,
+     "evidence": "fetched Oct 16 (read from saved HTML)"
+    },
+    {
+     "name": "USDA NASS Land Values 2026 Summary",
+     "url": "https://release.nass.usda.gov/reports/land0726.pdf",
+     "kind": "government",
+     "total": 30,
+     "evidence": "fetched Oct 16 (PDF)"
+    },
+    {
+     "name": "FBN AcreVision county farmland value reports",
+     "url": "https://www.fbn.com/acre-vision/farmland-value/IL/17053/ford-county-illinois-farmland-value-report",
+     "kind": "startup",
+     "evidence": "not fetched"
+    },
+    {
+     "name": "AcreValue",
+     "url": "https://www.acrevalue.com/map/",
+     "kind": "startup",
+     "evidence": "not fetched"
+    },
+    {
+     "name": "Acres.com",
+     "url": "https://www.acres.com/",
+     "kind": "startup",
+     "evidence": "not fetched"
+    },
+    {
+     "name": "UNL Nebraska Farm Real Estate survey 2026",
+     "url": "https://cap.unl.edu/realestate/",
+     "kind": "university",
+     "evidence": "not fetched"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "conditions": {
-   "last_run": "2026-10-15",
-   "ours_total": 40,
-   "verdict": "close",
-   "report": "results/2026-10-15-conditions.md",
-   "competitors": [],
+   "last_run": "2026-10-16",
+   "ours_total": 45,
+   "verdict": "yes",
+   "report": "results/2026-10-16-conditions.md",
+   "competitors": [
+    {
+     "name": "USDA NASS Crop Progress (weekly PDF)",
+     "url": "https://www.nass.usda.gov/Publications/Todays_Reports/reports/prog4026.pdf",
+     "kind": "government",
+     "total": 35,
+     "evidence": "fetched Oct 16 (issue of Oct 5)"
+    },
+    {
+     "name": "DTN weekly article",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/crops/article/2026/10/13/usda-crop-progress-corn-33-harvested",
+     "kind": "established",
+     "total": 35,
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "farmdoc daily condition model",
+     "url": "https://farmdocdaily.illinois.edu/2026/08/a-pre-and-post-report-look-at-the-2026-us-corn-yield.html",
+     "kind": "university",
+     "total": 37,
+     "evidence": "fetched Oct 16 (article of Aug 12)"
+    },
+    {
+     "name": "Farm Progress weekly",
+     "url": "https://www.farmprogress.com/grains/crop-progress-corn-quality-shifts-2-points-higher",
+     "kind": "established",
+     "evidence": "not readable (HTTP 403, no archive)"
+    },
+    {
+     "name": "Brownfield weekly conditions",
+     "url": "https://www.brownfieldagnews.com/news/54-of-u-s-corn-57-of-soybeans-good-to-excellent/",
+     "kind": "established",
+     "evidence": "not readable (HTTP 403, no archive)"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "hail-map": {
-   "last_run": "2026-10-15",
-   "ours_total": 43,
-   "verdict": "yes for free use; close vs paid",
-   "report": "results/2026-10-15-hail-map.md",
-   "competitors": [],
+   "last_run": "2026-10-16",
+   "ours_total": 44,
+   "verdict": "yes",
+   "report": "results/2026-10-16-hail-map.md",
+   "competitors": [
+    {
+     "name": "NOAA SPC storm reports",
+     "url": "https://www.spc.noaa.gov/climo/reports/today.html",
+     "kind": "government",
+     "total": 34,
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "HailFACTS $40 report",
+     "url": "https://store.anythingweather.com/hailfacts",
+     "kind": "vendor",
+     "total": 35,
+     "evidence": "fetched Oct 16 (store page)"
+    },
+    {
+     "name": "NOAA NCEI Storm Events",
+     "url": "https://www.ncdc.noaa.gov/stormevents/",
+     "kind": "government",
+     "evidence": "not readable (empty app shell)"
+    },
+    {
+     "name": "IEM LSR app",
+     "url": "https://mesonet.agron.iastate.edu/lsr/",
+     "kind": "university",
+     "evidence": "not fetched (app-only)"
+    },
+    {
+     "name": "Interactive Hail Maps / HailTrace",
+     "url": "https://www.interactivehailmaps.com/",
+     "kind": "vendor",
+     "evidence": "not fetched (app-only)"
+    },
+    {
+     "name": "Hail Yeah (app)",
+     "url": "https://apps.apple.com/app/id6761221797",
+     "kind": "startup",
+     "evidence": "not fetched (app store)"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "spray": {
-   "last_run": "2026-10-15",
-   "ours_total": 39,
+   "last_run": "2026-10-16",
+   "ours_total": 41,
    "verdict": "close",
-   "report": "results/2026-10-15-spray.md",
-   "competitors": [],
+   "report": "results/2026-10-16-spray.md",
+   "competitors": [
+    {
+     "name": "SDSU Mesonet Spray Tool",
+     "url": "https://climate.sdstate.edu/tools/spray/",
+     "kind": "university",
+     "total": 38,
+     "evidence": "fetched Oct 16; help text and legends, live readings need JS; phone not scored (out of 45)"
+    },
+    {
+     "name": "NDAWN inversion + app",
+     "url": "https://www.ndsu.edu/agriculture/ag-hub/ndawn-inversion",
+     "kind": "university",
+     "total": 35,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "Oklahoma Mesonet DRA",
+     "url": "https://www.mesonet.org/agriculture/drift-risk-advisor",
+     "kind": "government",
+     "evidence": "fetched Oct 16: empty app shell, not readable"
+    },
+    {
+     "name": "Purdue MRCC temperature inversion page",
+     "url": "https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion",
+     "kind": "university",
+     "total": 30,
+     "evidence": "fetched Oct 16; list of live inversion networks; phone not scored (out of 45)"
+    },
+    {
+     "name": "SDSU Extension spray tool guide",
+     "url": "https://extension.sdstate.edu/use-sd-spray-tool-inversion-detection-and-weather-pesticide-application",
+     "kind": "university",
+     "total": 31,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "Sprayers101 spraying weather",
+     "url": "https://sprayers101.com/spraying-weather/",
+     "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "yield-estimator": {
-   "last_run": "2026-10-15",
-   "ours_total": 39,
+   "last_run": "2026-10-16",
+   "ours_total": 40,
    "verdict": "close",
-   "report": "results/2026-10-15-yield-estimator.md",
-   "competitors": [],
+   "report": "results/2026-10-16-yield-estimator.md",
+   "competitors": [
+    {
+     "name": "Purdue Nielsen, Estimating Corn Grain Yield Prior to Harvest",
+     "url": "https://agry.purdue.edu/Ext/corn/news/timeless/YldEstMethod.html",
+     "kind": "university",
+     "total": 33,
+     "evidence": "fetched Oct 16; Aug 2021; phone not scored (out of 45)"
+    },
+    {
+     "name": "K-State eUpdate + soy app",
+     "url": "https://eupdate.agronomy.ksu.edu/article/estimating-corn-yield-potential-using-the-yield-component-method-600-1",
+     "kind": "university",
+     "evidence": "fetched Oct 16: eUpdate home page, not the article; not readable"
+    },
+    {
+     "name": "MSU estimating grain yields in corn",
+     "url": "https://www.canr.msu.edu/news/estimating_grain_yields_in_corn",
+     "kind": "university",
+     "evidence": "fetched Oct 16: empty copy; not readable"
+    },
+    {
+     "name": "Bayer/Channel estimating corn yield",
+     "url": "https://www.cropscience.bayer.us/articles/channel/estimating-corn-yield",
+     "kind": "vendor",
+     "total": 25,
+     "evidence": "fetched Oct 16; Aug 14, 2023; phone not scored (out of 45)"
+    },
+    {
+     "name": "Ohio State C.O.R.N.",
+     "url": "https://agcrops.osu.edu/newsletter/corn-newsletter/2015-25/estimating-corn-yields",
+     "kind": "university",
+     "evidence": "fetch failed (HTTP 403); not readable"
+    },
+    {
+     "name": "DTN easy formulas",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/news/article/2022/08/10/easy-formulas-help-estimate-corn",
+     "kind": "established",
+     "total": 26,
+     "evidence": "fetched Oct 16; 2022 update; phone not scored (out of 45)"
+    },
+    {
+     "name": "Pioneer app",
+     "url": "https://www.pioneer.com/us/agronomy/tools.html",
+     "kind": "vendor",
+     "evidence": "app only, not in the Oct 16 fetch"
+    }
+   ],
    "note": "competitor scores from search snippets; see report"
   },
   "basis": {
@@ -470,51 +948,55 @@
     "grain basis vs average",
     "why is basis so wide"
    ],
-   "last_run": "2026-10-15",
+   "last_run": "2026-10-16",
    "ours_total": 43,
-   "verdict": "yes (free national view); basis-map and basis/<state> are redirect stubs",
-   "report": "results/2026-10-15-basis.md",
+   "verdict": "yes",
+   "report": "results/2026-10-16-basis.md",
    "competitors": [
     {
-     "name": "Iowa Farm Bureau basis maps",
-     "kind": "advocacy",
-     "evidence": "snippets",
-     "total": 37
+     "name": "Purdue Crop Basis Tool",
+     "url": "https://ag.purdue.edu/commercialag/home/crop-basis-tool/",
+     "kind": "university",
+     "evidence": "app-only, not in the Oct 16 fetch"
     },
     {
-     "name": "Purdue Crop Basis Tool",
+     "name": "Purdue monthly basis update",
+     "url": "https://ag.purdue.edu/commercialag/home/resource/2026/07/july-crop-basis-update-strengthening-continues-but-seasonal-decreases-loom/",
      "kind": "university",
-     "evidence": "snippets",
-     "total": 35
+     "total": 34,
+     "evidence": "fetched Oct 16; July 20, 2026 issue; phone not scored (out of 45)"
     },
     {
      "name": "K-State AgManager basis maps",
+     "url": "https://agmanager.info/node/9370",
      "kind": "university",
-     "evidence": "snippets",
-     "total": 33
+     "total": 35,
+     "evidence": "fetched Oct 16; latest maps Oct 15, 2026; phone not scored (out of 45)"
+    },
+    {
+     "name": "Iowa Farm Bureau basis maps",
+     "url": "https://www.iowafarmbureau.com/Article/Weekly-corn-and-soybean-basis-maps-for-members",
+     "kind": "established",
+     "evidence": "app-only/members, not in the Oct 16 fetch"
     },
     {
      "name": "Barchart cash bids / cmdty basis indexes",
+     "url": "https://www.barchart.com/cmdty/indexes/grain",
      "kind": "established",
-     "evidence": "snippets",
-     "total": 33
+     "evidence": "fetched Oct 16: AWS WAF challenge, not readable"
     },
     {
      "name": "USDA AMS AgTransport basis dashboard",
+     "url": "https://agtransport.usda.gov/",
      "kind": "government",
-     "evidence": "snippets",
-     "total": 31
-    },
-    {
-     "name": "DTN national basis comments",
-     "kind": "established",
-     "evidence": "snippets",
-     "total": 26
+     "evidence": "app-only, not in the Oct 16 fetch"
     },
     {
      "name": "Iowa State CARD basis maps (retired)",
+     "url": "https://www.card.iastate.edu/tools/retired/basis-maps/",
      "kind": "university",
-     "evidence": "snippets"
+     "total": 23,
+     "evidence": "fetched Oct 16; updates suspended, map date Jan 21, 2011; phone not scored (out of 45)"
     }
    ]
   },
@@ -525,28 +1007,45 @@
     "anhydrous ammonia price",
     "fertilizer cost per acre corn"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 32,
-   "verdict": "no",
-   "report": "results/2026-10-15-fertilizer.md",
+   "last_run": "2026-10-16",
+   "ours_total": 39,
+   "verdict": "close",
+   "report": "results/2026-10-16-fertilizer.md",
    "competitors": [
     {
-     "name": "farmdoc daily fertilizer price articles",
-     "kind": "university",
-     "evidence": "snippets",
-     "total": 38
+     "name": "DTN Retail Fertilizer Trends",
+     "url": "https://www.dtnpf.com/agriculture/web/AG/crops/article/2026/04/22/6-fertilizer-prices-see-sizeable",
+     "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16; saved column is Apr 22, 2026; phone not scored (out of 45)"
     },
     {
-     "name": "DTN Retail Fertilizer Trends",
+     "name": "FarmWeek (Illinois Farm Bureau) DTN fertilizer repost",
+     "url": "https://www.farmweeknow.com/profitability/6-fertilizer-prices-see-sizeable-moves-higher/article_007e34c0-9295-4c5f-9d43-bed6dd438586.html",
      "kind": "established",
-     "evidence": "snippets",
-     "total": 32
+     "total": 25,
+     "evidence": "fetched Oct 16; Apr 2026 repost; phone not scored"
+    },
+    {
+     "name": "farmdoc / Farm Policy News fertilizer coverage",
+     "url": "https://farmpolicynews.illinois.edu/2023/10/fertilizer-prices-higher-anhydrous-climbs-6-dtn/",
+     "kind": "university",
+     "total": 22,
+     "evidence": "fetched Oct 16; Oct 2023 post; phone not scored"
     },
     {
      "name": "USDA AMS Illinois Production Cost Report",
+     "url": "https://www.ams.usda.gov/mnreports/gx_gr210.txt",
      "kind": "government",
-     "evidence": "snippets",
-     "total": 32
+     "total": 28,
+     "evidence": "fetched Oct 16; report dated Feb 24, 2022, text report discontinued; phone not scored"
+    },
+    {
+     "name": "USDA AMS Iowa Production Cost Report",
+     "url": "https://www.ams.usda.gov/mnreports/nw_gr210.txt",
+     "kind": "government",
+     "total": 28,
+     "evidence": "fetched Oct 16; dated Feb 8, 2022, moved to MARS 2863; phone not scored"
     }
    ]
   },
@@ -558,46 +1057,58 @@
     "mailbox milk price",
     "how is milk price calculated"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 40,
+   "last_run": "2026-10-16",
+   "ours_total": 41,
    "verdict": "close",
-   "report": "results/2026-10-15-milk-prices.md",
+   "report": "results/2026-10-16-milk-prices.md",
    "competitors": [
     {
-     "name": "USDA AMS Dairy Market News / FMMA announcements",
+     "name": "FMMA Central, Central Order 32 class price announcement",
+     "url": "https://www.fmmacentral.com/PDFdata/cp2609.pdf",
      "kind": "government",
-     "evidence": "snippets",
-     "total": 34
+     "total": 34,
+     "evidence": "fetched Oct 16; released Sep 30, 2026; phone not scored (out of 45)"
     },
     {
-     "name": "Center for Dairy Excellence",
-     "kind": "extension",
-     "evidence": "snippets",
-     "total": 33
+     "name": "USDA AMS Announcement of Class and Component Prices",
+     "url": "https://www.ams.usda.gov/mnreports/dymclassprices.pdf",
+     "kind": "government",
+     "total": 33,
+     "evidence": "fetched Oct 16; CLS-0926 Sep 30, 2026; phone not scored"
     },
     {
-     "name": "CME Group Class III/IV",
-     "kind": "established",
-     "evidence": "snippets",
-     "total": 30
+     "name": "USDA AMS Class III and IV history",
+     "url": "https://www.ams.usda.gov/mnreports/dymaclassiii.pdf",
+     "kind": "government",
+     "total": 30,
+     "evidence": "fetched Oct 16; released Sep 2, 2026, through August; phone not scored"
     },
     {
      "name": "Progressive Dairy (agproud.com)",
+     "url": "https://www.agproud.com/articles/54515-economic-update-february-class-iii-iv-milk-prices-higher",
      "kind": "established",
-     "evidence": "snippets",
-     "total": 30
+     "total": 24,
+     "evidence": "fetched Oct 16; copy is the news hub with an Oct 15, 2026 uniform price item, not the requested article; phone not scored"
     },
     {
-     "name": "UW-Madison dairy outlook",
+     "name": "Center for Dairy Excellence",
+     "url": "https://www.centerfordairyexcellence.org/?p=22587",
      "kind": "university",
-     "evidence": "snippets",
-     "total": 31
+     "total": 23,
+     "evidence": "fetched Oct 16; resolved to Sep 9, 2026 week in review, short summary; phone not scored"
     },
     {
      "name": "Dairy Herd (Farm Journal)",
+     "url": "https://www.dairyherd.com/markets/milk-prices/class-iii-futures-stay-mid-19s",
      "kind": "established",
-     "evidence": "snippets",
-     "total": 26
+     "total": 18,
+     "evidence": "fetched Oct 16; article dated Dec 16, 2021; phone not scored"
+    },
+    {
+     "name": "CME Group Class III/IV",
+     "url": "https://www.cmegroup.com/markets/agriculture/dairy/class-iii-milk.html",
+     "kind": "established",
+     "evidence": "not readable: app-only, not fetched"
     }
    ]
   },
@@ -608,52 +1119,47 @@
     "cattle prices today",
     "feeder cattle breakeven calculator"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 36,
+   "last_run": "2026-10-16",
+   "ours_total": 40,
    "verdict": "close",
-   "report": "results/2026-10-15-cattle-futures.md",
+   "report": "results/2026-10-16-cattle-futures-prices.md",
    "competitors": [
     {
-     "name": "farmdoc daily / Purdue finishing breakevens",
+     "name": "K-State Kansas feedlot returns (Tonsor)",
+     "url": "https://www.agmanager.info/sites/default/files/pdf/KSU_FeedlotReturns_Sep-2025.pdf",
      "kind": "university",
-     "evidence": "snippets",
-     "total": 36
+     "total": 30,
+     "evidence": "fetched Oct 16; edition dated Sep 12, 2025; phone not scored (out of 45)"
     },
     {
-     "name": "Barchart",
+     "name": "Barchart feeder cattle futures",
+     "url": "https://www.barchart.com/futures/quotes/GF*0/futures-prices",
      "kind": "established",
-     "evidence": "snippets",
-     "total": 33
-    },
-    {
-     "name": "DTN",
-     "kind": "established",
-     "evidence": "snippets",
-     "total": 32
-    },
-    {
-     "name": "K-State feedlot returns / OSU BEFLCALC",
-     "kind": "university",
-     "evidence": "snippets",
-     "total": 32
-    },
-    {
-     "name": "CME Group",
-     "kind": "established",
-     "evidence": "snippets",
-     "total": 31
-    },
-    {
-     "name": "TradingView",
-     "kind": "established",
-     "evidence": "snippets",
-     "total": 30
+     "evidence": "not readable: empty app shell (212 bytes)"
     },
     {
      "name": "Drovers",
+     "url": "https://www.drovers.com/news/cattle-finishers-face-uncharted-territory-2026-breakevens-surge-toward-250",
      "kind": "established",
-     "evidence": "snippets",
-     "total": 26
+     "evidence": "not readable: fetch failed HTTP 403, no archive"
+    },
+    {
+     "name": "CME Group live cattle",
+     "url": "https://www.cmegroup.com/markets/agriculture/livestock/live-cattle.html",
+     "kind": "established",
+     "evidence": "not readable: app-only, not fetched"
+    },
+    {
+     "name": "TradingView LE1!",
+     "url": "https://www.tradingview.com/symbols/CME-LE1!/",
+     "kind": "startup",
+     "evidence": "not readable: app-only, not fetched"
+    },
+    {
+     "name": "DTN livestock markets",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/markets",
+     "kind": "established",
+     "evidence": "not readable: not fetched"
     }
    ]
   },
@@ -664,39 +1170,49 @@
     "fund positions corn soybeans",
     "CFTC COT agriculture"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 40,
+   "last_run": "2026-10-16",
+   "ours_total": 43,
    "verdict": "yes",
-   "report": "results/2026-10-15-cot.md",
+   "report": "results/2026-10-16-cot.md",
    "competitors": [
     {
-     "name": "Barchart COT interactive charts",
-     "kind": "established",
-     "evidence": "snippets",
-     "total": 31
-    },
-    {
-     "name": "DTN Canada Markets COT commentary",
-     "kind": "established",
-     "evidence": "snippets",
-     "total": 30
-    },
-    {
      "name": "Tradingster",
+     "url": "https://www.tradingster.com/cot/futures/disagg/002602",
      "kind": "startup",
-     "evidence": "snippets",
-     "total": 28
+     "total": 30,
+     "evidence": "fetched Oct 16; corn futures-only as of Oct 6, 2026; phone not scored (out of 45)"
     },
     {
      "name": "CFTC Commitments of Traders",
+     "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
      "kind": "government",
-     "evidence": "snippets",
-     "total": 27
+     "total": 30,
+     "evidence": "fetched Oct 16; index page linking Oct 6, 2026 reports; phone not scored"
+    },
+    {
+     "name": "DTN Canada Markets COT commentary",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/news/article/2025/01/27/corn-topping-soon-necessarily",
+     "kind": "established",
+     "total": 25,
+     "evidence": "fetched Oct 16; article dated Jan 27, 2025; phone not scored"
+    },
+    {
+     "name": "Barchart COT interactive charts",
+     "url": "https://www.barchart.com/futures/commitment-of-traders",
+     "kind": "established",
+     "evidence": "not readable: app-only, not fetched"
     },
     {
      "name": "Frontier Futures (gated)",
+     "url": "https://www.ffutures.com/category/commitment-of-traders-analysis/",
      "kind": "vendor",
-     "evidence": "snippets"
+     "evidence": "not readable: client login, not fetched"
+    },
+    {
+     "name": "TradingView COT indicators",
+     "url": "https://www.tradingview.com/scripts/cot/",
+     "kind": "startup",
+     "evidence": "not readable: app-only, not fetched"
     }
    ]
   },
@@ -708,28 +1224,42 @@
     "crop progress release time",
     "cattle on feed report date"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 38,
+   "last_run": "2026-10-16",
+   "ours_total": 40,
    "verdict": "close",
-   "report": "results/2026-10-15-usda-calendar.md",
+   "report": "results/2026-10-16-usda-calendar.md",
    "competitors": [
     {
-     "name": "USDA NASS release calendar / PFEI schedule",
+     "name": "USDA NASS 2026 Agricultural Statistics Board Calendar (PDF)",
+     "url": "https://www.nass.usda.gov/Publications/Calendar/2026/2026ReleaseCalendar_12Months_11x17_Color.pdf",
      "kind": "government",
-     "evidence": "snippets",
-     "total": 32
+     "total": 31,
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "ESMIS Cattle on Feed",
+     "url": "https://esmis.nal.usda.gov/publication/cattle-feed",
+     "kind": "government",
+     "total": 30,
+     "evidence": "fetched Oct 16; phone and speed not scored (30 of 40)"
     },
     {
      "name": "USDA OCE WASDE schedule",
+     "url": "https://www.usda.gov/oce/commodity/wasde",
      "kind": "government",
-     "evidence": "snippets",
-     "total": 32
+     "evidence": "not readable (HTTP 403, wayback 429)"
+    },
+    {
+     "name": "CME Group econoday calendar",
+     "url": "https://www.cmegroup.com/education/events/econoday/675951",
+     "kind": "established",
+     "evidence": "not readable (HTTP 403)"
     },
     {
      "name": "TradingView WASDE Dates V2 script",
+     "url": "https://www.tradingview.com/script/aRC2eMLF-WASDE-Dates-V2/",
      "kind": "startup",
-     "evidence": "snippets",
-     "total": 24
+     "evidence": "not readable (no saved copy, app-only)"
     }
    ]
   },
@@ -740,58 +1270,46 @@
     "corn price today",
     "ag markets and weather"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 38,
+   "last_run": "2026-10-16",
+   "ours_total": 40,
    "verdict": "close",
-   "report": "results/2026-10-15-index.md",
+   "report": "results/2026-10-16-home.md",
    "competitors": [
     {
      "name": "DTN / Progressive Farmer",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/markets",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.dtnpf.com",
-     "total": 37
+     "evidence": "not readable (no saved copy)"
     },
     {
      "name": "Barchart Grains",
+     "url": "https://www.barchart.com/futures/grains",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.barchart.com",
-     "total": 36
+     "evidence": "not readable (saved copy is a WAF challenge shell)"
     },
     {
      "name": "FBN",
+     "url": "https://www.fbn.com/",
      "kind": "startup",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.fbn.com",
-     "total": 31
+     "evidence": "not readable (no saved copy, app-only)"
     },
     {
      "name": "Farm Progress",
+     "url": "https://www.farmprogress.com/commodities/corn",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.farmprogress.com",
-     "total": 29
+     "evidence": "not readable (no saved copy)"
     },
     {
      "name": "Successful Farming (agriculture.com)",
+     "url": "https://www.agriculture.com/markets",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.agriculture.com",
-     "total": 28
+     "evidence": "not readable (HTTP 403/402)"
     },
     {
      "name": "AgWeb (Farm Journal)",
+     "url": "https://www.agweb.com/",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.agweb.com",
-     "total": 28
+     "evidence": "not readable (HTTP 403, wayback 429)"
     }
    ],
    "bugs": [
@@ -804,48 +1322,47 @@
     "morning grain market report",
     "free farm market email"
    ],
-   "last_run": "2026-10-15",
+   "last_run": "2026-10-16",
    "ours_total": 37,
    "verdict": "close",
-   "report": "results/2026-10-15-daily.md",
+   "report": "results/2026-10-16-daily.md",
    "competitors": [
     {
-     "name": "Pro Farmer First Thing Today / Ahead of the Open",
+     "name": "Pro Farmer agriculture news (First Thing Today for members)",
+     "url": "https://www.profarmer.com/news/agriculture-news",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.profarmer.com",
-     "total": 35
-    },
-    {
-     "name": "Brownfield Ag News market analysis",
-     "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.brownfieldagnews.com",
-     "total": 31
+     "total": 28,
+     "evidence": "fetched Oct 16; phone and speed not scored (28 of 40)"
     },
     {
      "name": "Barchart Ag Market Commentary newsletter",
-     "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
      "url": "https://www.barchart.com/news/barchart-newsletters/ag-market-commentary",
-     "total": 30
+     "kind": "established",
+     "evidence": "not readable (saved copy is a WAF challenge shell)"
     },
     {
-     "name": "Morning Ag Clips",
+     "name": "Brownfield Ag News market analysis",
+     "url": "https://www.brownfieldagnews.com/markets/",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 28
+     "evidence": "not readable (HTTP 403)"
     },
     {
-     "name": "AgWeb daily newsletters",
-     "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 27
+     "name": "StoneX Daily Trade Talk",
+     "url": "https://subscribe.stonex.com/daily-trade-talk",
+     "kind": "vendor",
+     "evidence": "not readable (HTTP 404)"
+    },
+    {
+     "name": "Consus Consensus (Setzer)",
+     "url": "https://consusconsensus.substack.com",
+     "kind": "startup",
+     "evidence": "not readable (HTTP 403)"
+    },
+    {
+     "name": "Klarenbach Grain Report Daily Board",
+     "url": "https://www.grainreport.klarenbach.ca/p/a-new-daily-market-tool-for-klarenbach-readers",
+     "kind": "startup",
+     "evidence": "not readable (HTTP 404)"
     }
    ]
   },
@@ -855,40 +1372,49 @@
     "corn soybean decision tools",
     "farm management tools online"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 33,
+   "last_run": "2026-10-16",
+   "ours_total": 34,
    "verdict": "no",
-   "report": "results/2026-10-15-tools.md",
+   "report": "results/2026-10-16-tools.md",
    "competitors": [
     {
-     "name": "Purdue Corn/Soybean Field Scout apps",
+     "name": "UNL CropWatch Apps and Tools",
+     "url": "https://cropwatch.unl.edu/home/apps-tools/",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 36
+     "total": 29,
+     "evidence": "fetched Oct 16; 8 parts scored (phone, speed ?), out of 40"
     },
     {
-     "name": "UNL CropWatch Apps and Tools",
+     "name": "farmdoc Decision Tools",
+     "url": "https://farmdoc.illinois.edu/decision-tools",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://cropwatch.unl.edu/home/apps-tools/",
-     "total": 31
+     "total": 27,
+     "evidence": "fetched Oct 16; per-tool Last Updated dates; 8 parts scored, out of 40"
+    },
+    {
+     "name": "FasalBachao Farm Calculators",
+     "url": "https://peerpush.com/p/fasalbachao-farm-calculators",
+     "kind": "startup",
+     "total": 15,
+     "evidence": "fetched Oct 16; PeerPush listing only, not the tools; 7 parts scored, out of 35"
+    },
+    {
+     "name": "Ag Decision Maker decision tools (Iowa State)",
+     "url": "https://www.extension.iastate.edu/agdm/decisionaidsalpha.html",
+     "kind": "university",
+     "evidence": "not readable: HTTP 403, no archived copy"
     },
     {
      "name": "Ohio State Farm Office decision aids",
-     "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
      "url": "https://farmoffice.osu.edu/farm-management-tools/decision-aids",
-     "total": 31
+     "kind": "university",
+     "evidence": "not readable: HTTP 403, Wayback 429"
     },
     {
-     "name": "Iowa Soybean Association tools",
-     "kind": "advocacy",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 29
+     "name": "Farming Tool Suite (Product Hunt, Jun 2026)",
+     "url": "https://www.producthunt.com/p/freewww/farming-tool-suite",
+     "kind": "startup",
+     "evidence": "not readable: HTTP 403, no archived copy"
     }
    ]
   },
@@ -900,38 +1426,50 @@
     "soybean aphid threshold",
     "lime rate SMP buffer"
    ],
-   "last_run": "2026-10-15",
+   "last_run": "2026-10-16",
    "ours_total": 34,
-   "verdict": "no (close after the lime and rootworm fixes)",
-   "report": "results/2026-10-15-fast-facts.md",
+   "verdict": "no",
+   "report": "results/2026-10-16-fast-facts.md",
    "competitors": [
     {
-     "name": "Purdue Corn and Soybean Field Guide / Field Scout apps",
+     "name": "UW Extension A2809",
+     "url": "https://cdn.shopify.com/s/files/1/0145/8808/4272/files/A2809.pdf",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 37
+     "total": 27,
+     "evidence": "fetched Oct 16; full PDF read; all 10 parts scored"
     },
     {
      "name": "Iowa State Corn Nitrogen Rate Calculator (MRTN)",
+     "url": "https://www.cornnratecalc.org/",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 36
+     "total": 31,
+     "evidence": "fetched Oct 16; landing page plus method from the Illinois Extension article; 8 parts scored, out of 40"
     },
     {
-     "name": "Ohio State Corn N Rate Calculator",
+     "name": "Illinois Extension MRTN explainer (Feb 2026)",
+     "url": "https://extension.illinois.edu/blogs/nutrient-loss-reduction/2026-02-27-how-mrtn-works-and-economics-behind-nitrogen-rates",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 33
+     "total": 28,
+     "evidence": "fetched Oct 16; 8 parts scored, out of 40"
     },
     {
-     "name": "UW Extension A2809",
+     "name": "Ohio State Corn N Rate Calculator (Crescent-News repost)",
+     "url": "https://www.crescent-news.com/news/local_farm/new-ohio-state-tool-helps-farmers-manage-rising-nitrogen-fertilizer-costs/article_4f66a6d4-a627-4515-8a2d-abd146b215a9.html",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 28
+     "total": 23,
+     "evidence": "fetched Oct 16; news repost, no tool URL; 8 parts scored, out of 40"
+    },
+    {
+     "name": "MSU corn N guidelines",
+     "url": "https://www.canr.msu.edu/news/too_little_or_too_much_nitrogen_on_corn_msus_new_guidelines",
+     "kind": "university",
+     "evidence": "not readable: empty saved copy"
+    },
+    {
+     "name": "Purdue Corn and Soybean Field Guide / Field Scout apps",
+     "url": "https://ag.purdue.edu/department/btny/ppdl/",
+     "kind": "university",
+     "evidence": "saved page is the PPDL lab, not the app; not comparable"
     }
    ],
    "bugs": [
@@ -946,39 +1484,44 @@
     "USDA corn yield forecast vs private estimates",
     "do crop ratings predict yield"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 43,
-   "verdict": "yes on substance",
-   "report": "results/2026-10-15-conditions-yield.md",
+   "last_run": "2026-10-16",
+   "ours_total": 42,
+   "verdict": "yes",
+   "report": "results/2026-10-16-conditions-yield.md",
    "competitors": [
     {
-     "name": "USDA NASS Crop Production / WASDE",
+     "name": "USDA NASS October Crop Production board briefing",
+     "url": "https://www.nass.usda.gov/Newsroom/Executive_Briefings/2026/10-09-2026.pdf",
      "kind": "government",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 35
+     "total": 37,
+     "evidence": "fetched Oct 16 (Oct 9 PDF)"
     },
     {
-     "name": "Pro Farmer / AgWeb Crop Tour coverage",
-     "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.agweb.com/croptour",
-     "total": 32
-    },
-    {
-     "name": "StoneX monthly yield estimate",
-     "kind": "vendor",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 29
-    },
-    {
-     "name": "farmdoc / Irwin forecast-accuracy research",
+     "name": "farmdoc daily / Ibendahl condition model",
+     "url": "https://farmdocdaily.illinois.edu/2026/08/a-pre-and-post-report-look-at-the-2026-us-corn-yield.html",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 29
+     "total": 38,
+     "evidence": "fetched Oct 16 (article of Aug 12; copy bench-conditions-5)"
+    },
+    {
+     "name": "K-State wheat yield from ratings",
+     "url": "https://agmanager.info/sites/default/files/pdf/WheatYields_03-31-26.pdf",
+     "kind": "university",
+     "total": 37,
+     "evidence": "fetched Oct 16 (Mar 30 PDF; Kansas wheat method peer)"
+    },
+    {
+     "name": "StoneX monthly yield (Southeast AgNet summary)",
+     "url": "https://southeastagnet.com/2026/09/10/stonex-corn-yield-estimate-182-9-bushels-usda-crop-report/",
+     "kind": "established",
+     "total": 24,
+     "evidence": "fetched Oct 16 (Sep 10 item)"
+    },
+    {
+     "name": "Pro Farmer / AgWeb national forecast",
+     "url": "https://www.agweb.com/news/crops/pro-farmer-national-forecast-corn-falls-short-last-years-record-soybeans-eye-new-miles",
+     "kind": "established",
+     "evidence": "not readable (HTTP 403, no archive)"
     }
    ]
   },
@@ -988,33 +1531,42 @@
     "how accurate is the Pro Farmer crop tour",
     "crop tour vs USDA"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 42,
+   "last_run": "2026-10-16",
+   "ours_total": 44,
    "verdict": "yes",
-   "report": "results/2026-10-15-crop-tour.md",
+   "report": "results/2026-10-16-crop-tour.md",
    "competitors": [
     {
-     "name": "AgWeb / Pro Farmer Crop Tour hub",
+     "name": "DTN crops section page",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/crops",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
+     "total": 27,
+     "evidence": "fetched Oct 16 (headlines only)"
+    },
+    {
+     "name": "StoneX via Southeast AgNet",
+     "url": "https://southeastagnet.com/2026/09/10/stonex-corn-yield-estimate-182-9-bushels-usda-crop-report/",
+     "kind": "established",
+     "total": 24,
+     "evidence": "fetched Oct 16 (Sep 10 item)"
+    },
+    {
+     "name": "AgWeb / Pro Farmer Crop Tour hub",
      "url": "https://www.agweb.com/croptour",
-     "total": 34
+     "kind": "established",
+     "evidence": "not readable (HTTP 403, no archive)"
     },
     {
      "name": "Pro Farmer national estimate release",
+     "url": "https://www.agweb.com/news/crops/pro-farmer-national-forecast-corn-falls-short-last-years-record-soybeans-eye-new-miles",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "url": "https://www.profarmer.com",
-     "total": 34
+     "evidence": "not readable (HTTP 403, no archive)"
     },
     {
      "name": "AgroLatam (Knorr USDA August accuracy review)",
+     "url": "https://www.agrolatam.com/",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 25
+     "evidence": "not readable (empty home-page shell)"
     }
    ]
   },
@@ -1024,24 +1576,42 @@
     "corn price forecast track record",
     "are grain market calls accurate"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 40,
-   "verdict": "yes (no direct competitor found)",
-   "report": "results/2026-10-15-scorecard.md",
+   "last_run": "2026-10-16",
+   "ours_total": 41,
+   "verdict": "yes",
+   "report": "results/2026-10-16-scorecard.md",
    "competitors": [
     {
-     "name": "farmdoc / Irwin forecast-accuracy research",
+     "name": "farmdoc daily / Ibendahl model vs USDA (forecast-accuracy record)",
+     "url": "https://farmdocdaily.illinois.edu/2026/08/a-pre-and-post-report-look-at-the-2026-us-corn-yield.html",
      "kind": "university",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "total": 29
+     "total": 35,
+     "evidence": "fetched Oct 16 (article of Aug 12; copy bench-conditions-5)"
+    },
+    {
+     "name": "farmdoc AgMAS advisory pricing performance 1995-2004",
+     "url": "https://farmdoc.illinois.edu/publications/the-pricing-performance-of-market-advisory-services-in-corn-and-soybeans-over-1995-2004",
+     "kind": "university",
+     "total": 33,
+     "evidence": "fetched Oct 16 (publication page and abstract)"
+    },
+    {
+     "name": "OSU performance of market advisory firms",
+     "url": "https://extension.okstate.edu/programs/crop-marketing-and-risk-management/site-files/docs/performance-of-market-advisory-firms.pdf",
+     "kind": "university",
+     "evidence": "not readable (HTTP 403, no archive)"
+    },
+    {
+     "name": "AgMAS wheat study (AgEcon Search)",
+     "url": "https://ageconsearch.umn.edu/record/18928/files/cp00ji02.pdf",
+     "kind": "university",
+     "evidence": "not readable (HTML landing page, no PDF)"
     },
     {
      "name": "Pro Farmer Daily Advice Monitor",
+     "url": "https://www.profarmer.com/",
      "kind": "established",
-     "evidence": "snippets",
-     "last_checked": "2026-10-15",
-     "note": "paid; could not see whether a graded record is published; not scored"
+     "evidence": "not readable (member content, no copy)"
     }
    ]
   },
@@ -1052,45 +1622,36 @@
     "farm lease termination notice deadline <state>",
     "flex cash rent lease"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 36,
+   "last_run": "2026-10-16",
+   "ours_total": 39,
    "verdict": "close",
-   "report": "results/2026-10-15-cash-lease.md",
+   "report": "results/2026-10-16-cash-lease.md",
    "competitors": [
+    {
+     "name": "National Agricultural Law Center, Agricultural Leases: An Overview",
+     "url": "https://nationalaglawcenter.org/overview/agleases/",
+     "kind": "university",
+     "total": 30,
+     "evidence": "fetched Oct 16; undated, no state rules"
+    },
+    {
+     "name": "Peoples Company, Farmland Leasing: Termination Deadlines by State",
+     "url": "https://peoplescompany.com/blog/farmland-leasing-termination-deadlines-by-state",
+     "kind": "vendor",
+     "total": 22,
+     "evidence": "fetched Oct 16; Aug 19 2022, state data in a JPG, sales pitch"
+    },
     {
      "name": "AgLease101.org (NCFMEC)",
      "url": "https://aglease101.org",
      "kind": "university",
-     "total": 33,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; home page only, forms not fetched; partial 14 on 4 cells"
     },
     {
      "name": "ISU Ag Decision Maker leasing",
      "url": "https://www.extension.iastate.edu/agdm/",
      "kind": "university",
-     "total": 34,
-     "evidence": "snippets"
-    },
-    {
-     "name": "National Agricultural Law Center, Agricultural Leases overview",
-     "url": "https://nationalaglawcenter.org/overview/agleases/",
-     "kind": "university",
-     "total": 32,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Peoples Company termination deadlines by state",
-     "url": "https://peoplescompany.com/blog/farmland-leasing-termination-deadlines-by-state",
-     "kind": "vendor",
-     "total": 32,
-     "evidence": "snippets"
-    },
-    {
-     "name": "PlatoForms / DocHub fillable farm lease PDFs",
-     "url": "https://templates.platoforms.com/pdf/farm-land-lease-agreement-pdf",
-     "kind": "vendor",
-     "total": 21,
-     "evidence": "snippets"
+     "evidence": "not readable (HTTP 403, Wayback 429)"
     }
    ]
   },
@@ -1101,45 +1662,43 @@
     "foreign ownership farmland <state>",
     "AFIDA map"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 41,
+   "last_run": "2026-10-16",
+   "ours_total": 42,
    "verdict": "close",
-   "report": "results/2026-10-15-foreign-land.md",
+   "report": "results/2026-10-16-foreign-land.md",
    "competitors": [
     {
-     "name": "farmdoc daily / TIAA Center foreign-ownership mapping utility",
-     "url": "https://farmdocdaily.illinois.edu/?p=42961",
+     "name": "farmdoc daily / TIAA Center, Foreign Ownership of U.S. Agricultural Land",
+     "url": "https://farmdocdaily.illinois.edu/2026/09/foreign-ownership-of-us-agricultural-land.html",
      "kind": "university",
-     "total": 39,
-     "evidence": "snippets"
+     "total": 41,
+     "evidence": "fetched Oct 16; Sep 23 2026, confirmed-ownership 0.67%, owner-type table, China 1,938 direct / 247,659 all"
+    },
+    {
+     "name": "K-State AgManager, Foreign Holdings of Kansas Ag Land",
+     "url": "https://agmanager.info/node/37755",
+     "kind": "university",
+     "evidence": "fetched Oct 16; data through Dec 31 2024 with energy leases split; embedded map not in copy; partial 32 on 9 cells"
+    },
+    {
+     "name": "USDA FSA AFIDA page",
+     "url": "https://www.fsa.usda.gov/resources/economic-policy-analysis/afida",
+     "kind": "government",
+     "total": 29,
+     "evidence": "fetched Oct 16; filing page, no numbers, links reports and data"
+    },
+    {
+     "name": "Acres.com foreign-owned land map post",
+     "url": "https://www.acres.com/blog/map-highlight-foreign-owned-agricultural-land-map",
+     "kind": "startup",
+     "total": 27,
+     "evidence": "fetched Oct 16; no data year, layer behind sales contact"
     },
     {
      "name": "Iowa State CARD Foreign Interest Tool",
      "url": "https://farmland.card.iastate.edu/resource/foreign-interest-tool",
      "kind": "university",
-     "total": 38,
-     "evidence": "snippets"
-    },
-    {
-     "name": "USDA FSA AFIDA report and ArcGIS map",
-     "url": "https://www.fsa.usda.gov",
-     "kind": "government",
-     "total": 34,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Acres.com foreign-owned land layer",
-     "url": "https://www.acres.com/blog/map-highlight-foreign-owned-agricultural-land-map",
-     "kind": "vendor",
-     "total": 32,
-     "evidence": "snippets"
-    },
-    {
-     "name": "K-State AgManager, foreign holdings of Kansas ag land",
-     "url": "https://agmanager.info/node/37755",
-     "kind": "university",
-     "total": 31,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; description page only, tool not fetched; partial 26 on 7 cells"
     }
    ]
   },
@@ -1149,39 +1708,45 @@
     "rented vs owned farmland county map",
     "how much farmland is rented"
    ],
-   "last_run": "2026-10-15",
+   "last_run": "2026-10-16",
    "ours_total": 42,
    "verdict": "yes",
-   "report": "results/2026-10-15-land-tenure.md",
+   "report": "results/2026-10-16-land-tenure.md",
    "note": "land-tenure.html redirects to /farmland-atlas#l=ten_rent; scored the tenure layer",
    "competitors": [
     {
-     "name": "USDA ERS Charts of Note, 2022 rented share",
+     "name": "USDA ERS Charts of Note 109182, share of farmland rented holds steady at 39 percent",
      "url": "https://www.ers.usda.gov/data-products/charts-of-note/109182",
      "kind": "government",
      "total": 38,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; May 22 2024, cropland vs pasture split, static county map"
     },
     {
-     "name": "ISU Iowa Farmland Ownership and Tenure survey",
-     "url": "https://www.card.iastate.edu",
+     "name": "farmdoc daily, Projected Incomes on Owned vs Rented Farmland for 2026",
+     "url": "https://farmdocdaily.illinois.edu/2026/01/projected-incomes-on-owned-vs-rented-farmland-for-2026.html",
      "kind": "university",
-     "total": 36,
-     "evidence": "snippets"
+     "total": 37,
+     "evidence": "fetched Oct 16; adjacent, central Illinois income math checked"
     },
     {
      "name": "USDA ERS Farmland Ownership and Tenure topic",
      "url": "https://ers.usda.gov/topics/farm-economy/land-use-land-value-tenure/farmland-ownership-and-tenure",
      "kind": "government",
      "total": 35,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16; updated Feb 13 2026, substance is 2014 TOTAL"
     },
     {
-     "name": "AFBF Market Intel, to own or to rent",
-     "url": "https://www.fb.org/market-intel/agricultural-land-to-own-or-to-rent",
+     "name": "AFBF Market Intel, Agricultural Land: To Own or To Rent?",
+     "url": "https://www.fb.org/intel/markets/agricultural-land-to-own-or-to-rent",
      "kind": "established",
-     "total": 35,
-     "evidence": "snippets"
+     "total": 33,
+     "evidence": "fetched Oct 16; Jan 9 2025, tenure by crop and class, no county data"
+    },
+    {
+     "name": "ISU / CARD Farmland Portal (registered as Iowa tenure survey)",
+     "url": "https://farmland.card.iastate.edu/",
+     "kind": "university",
+     "evidence": "not readable as tenure source: saved URL is the land-value portal home; registry URL needs fixing"
     }
    ]
   },
@@ -1192,45 +1757,51 @@
     "tariffs corn soybeans 2026",
     "China soybean purchases 25 million tons"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 36,
+   "last_run": "2026-10-16",
+   "ours_total": 37,
    "verdict": "close",
-   "report": "results/2026-10-15-tariffs.md",
+   "report": "results/2026-10-16-tariffs.md",
    "competitors": [
+    {
+     "name": "NDSU Agricultural Trade Monitor (May 2026)",
+     "url": "https://cdn.brownfieldagnews.com/wp-content/uploads/2026/05/NDSU-Agricultural-Trade-Monitor-2026-05.pdf",
+     "kind": "university",
+     "total": 35,
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "S&P Global, trade truce extended (Sep 24, 2026)",
+     "url": "https://www.spglobal.com/energy/en/news-research/latest-news/agriculture/092426-us-says-trade-truce-with-china-extended-till-jan-10-2027-ahead-of-trump-xi-meet",
+     "kind": "established",
+     "total": 34,
+     "evidence": "fetched Oct 16 (Wayback copy)"
+    },
     {
      "name": "Farm Policy News (Univ. of Illinois)",
      "url": "https://farmpolicynews.illinois.edu",
      "kind": "university",
-     "total": 36,
-     "evidence": "snippets"
-    },
-    {
-     "name": "NDSU Agricultural Trade Monitor",
-     "url": "https://cdn.brownfieldagnews.com/wp-content/uploads/2026/05/NDSU-Agricultural-Trade-Monitor-2026-05.pdf",
-     "kind": "university",
      "total": 34,
-     "evidence": "snippets"
-    },
-    {
-     "name": "AFBF Market Intel",
-     "url": "https://www.fb.org/market-intel",
-     "kind": "established",
-     "total": 34,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16"
     },
     {
      "name": "Agri-Pulse, Tracking China's soybean purchases",
      "url": "https://www.agri-pulse.com/articles/23991-tracking-chinas-soybean-purchases",
      "kind": "established",
-     "total": 33,
-     "evidence": "snippets"
+     "total": 30,
+     "evidence": "fetched Oct 16; chart not in text"
     },
     {
-     "name": "NCGA trade updates",
-     "url": "https://corn.org/trade-update-5-22-26/",
-     "kind": "advocacy",
-     "total": 29,
-     "evidence": "snippets"
+     "name": "RFD-TV, China soybean pledge tracking questions",
+     "url": "https://www.rfdtv.com/china-soybean-pledge-raises-2026-sales-tracking-questions",
+     "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "AFBF Market Intel (section page)",
+     "url": "https://www.fb.org/market-intel",
+     "kind": "established",
+     "evidence": "fetched Oct 16; headlines only, article bodies not readable"
     }
    ]
   },
@@ -1240,39 +1811,42 @@
     "pre-harvest marketing crop insurance guaranteed bushels",
     "presell calculator APH coverage"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 35,
+   "last_run": "2026-10-16",
+   "ours_total": 38,
    "verdict": "close",
-   "report": "results/2026-10-15-presell-calculator.md",
+   "report": "results/2026-10-16-presell-calculator.md",
    "note": "presell-calculator.html redirects to /harvest-price-tracker#presell; scored the pre-sell step",
    "competitors": [
+    {
+     "name": "ADM/CRS Crop Insurance Worksheet (2021 PDF)",
+     "url": "https://admadvantage.com/wp-content/uploads/2021/04/Crop-Insurance-Worksheet-2021.pdf",
+     "kind": "vendor",
+     "total": 26,
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "ISU FM1853 Revenue Protection (store listing)",
+     "url": "https://store.extension.iastate.edu/Product/fm1853-pdf",
+     "kind": "university",
+     "evidence": "fetched Oct 16; listing only, publication not readable"
+    },
     {
      "name": "MSU Extension, how many bushels should I market",
      "url": "https://www.canr.msu.edu/news/high-grain-prices-how-many-bushels-should-i-market",
      "kind": "university",
-     "total": 33,
-     "evidence": "snippets"
+     "evidence": "not readable (empty copy)"
     },
     {
-     "name": "ISU Ag Decision Maker guaranteed-bushels guidance (FM1853)",
-     "url": "https://store.extension.iastate.edu/Product/fm1853-pdf",
-     "kind": "university",
-     "total": 31,
-     "evidence": "snippets"
-    },
-    {
-     "name": "ADM Investor Services crop insurance worksheet",
-     "url": "https://admadvantage.com/wp-content/uploads/2021/04/Crop-Insurance-Worksheet-2021.pdf",
-     "kind": "vendor",
-     "total": 26,
-     "evidence": "snippets"
-    },
-    {
-     "name": "Farm Progress / DTN over-contracting articles",
+     "name": "Farm Progress, falling short on contracted insurance bushels",
      "url": "https://www.farmprogress.com/weeds/falling-short-on-contracted-insurance-bushels-",
      "kind": "established",
-     "total": 24,
-     "evidence": "snippets"
+     "evidence": "not readable (HTTP 403)"
+    },
+    {
+     "name": "ISU Ag Decision Maker A1-54",
+     "url": "https://www.extension.iastate.edu/agdm/crops/html/a1-54.html",
+     "kind": "university",
+     "evidence": "not fetched this run"
     }
    ]
   },
@@ -1282,32 +1856,45 @@
     "storage crunch harvest 2026",
     "why is basis so wide this fall"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 38,
+   "last_run": "2026-10-16",
+   "ours_total": 40,
    "verdict": "close",
-   "report": "results/2026-10-15-storage-crunch.md",
+   "report": "results/2026-10-16-storage-crunch.md",
    "note": "storage-crunch.html redirects to /basis#storage; scored the storage section",
    "competitors": [
     {
      "name": "farmdoc daily, Enough Room for the Harvest? (Oct 7, 2026)",
      "url": "https://farmdocdaily.illinois.edu/?p=43062",
      "kind": "university",
-     "total": 40,
-     "evidence": "snippets"
+     "total": 41,
+     "evidence": "fetched Oct 16"
     },
     {
-     "name": "AFBF Market Intel, Grain storage remains tight",
-     "url": "https://www.fb.org/market-intel/grain-storage-remains-tight",
-     "kind": "established",
-     "total": 34,
-     "evidence": "snippets"
+     "name": "Purdue basis update (Aug 21, 2026)",
+     "url": "https://ag.purdue.edu/commercialag/home/wp-content/uploads/2026/08/20260821_Strine_BasisUpdate.pdf",
+     "kind": "university",
+     "total": 35,
+     "evidence": "fetched Oct 16"
     },
     {
-     "name": "High Plains Journal, storage capacity bulging",
+     "name": "High Plains Journal, storage capacity bulging (Jan 23, 2026)",
      "url": "https://hpj.com/?p=173509",
      "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "AFBF Market Intel, Grain storage remains tight (Oct 16, 2025)",
+     "url": "https://www.fb.org/market-intel/grain-storage-remains-tight",
+     "kind": "established",
      "total": 27,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16"
+    },
+    {
+     "name": "Univ. of Kentucky, large crops pressure storage",
+     "url": "https://graincrops.mgcafe.uky.edu/articles/large-crops-and-low-prices-put-pressure-grain-storage",
+     "kind": "university",
+     "evidence": "not fetched this run"
     }
    ]
   },
@@ -1318,38 +1905,41 @@
     "soybean yield by state history",
     "NASS quick stats corn yield"
    ],
-   "last_run": "2026-10-15",
-   "ours_total": 40,
-   "verdict": "yes (state level); close overall",
-   "report": "results/2026-10-15-usda-quick-stats.md",
+   "last_run": "2026-10-16",
+   "ours_total": 42,
+   "verdict": "yes",
+   "report": "results/2026-10-16-usda-quick-stats.md",
    "competitors": [
     {
-     "name": "USDA NASS Quick Stats",
-     "url": "https://quickstats.nass.usda.gov",
+     "name": "USDA NASS October Crop Production briefing (Oct 9, 2026)",
+     "url": "https://www.nass.usda.gov/Newsroom/Executive_Briefings/2026/10-09-2026.pdf",
      "kind": "government",
      "total": 34,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16 (refs/bench-conditions-yield-1)"
     },
     {
-     "name": "farmdoc FAST crop yield database",
-     "url": "https://farmdoc.illinois.edu/fast-tools/crop-yield-database",
-     "kind": "university",
-     "total": 34,
-     "evidence": "snippets"
+     "name": "DTN October WASDE report review",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/news/article/2026/10/09/october-wasdes-shocking-rise-corn",
+     "kind": "established",
+     "evidence": "fetched Oct 16 (refs/bench-whats-priced-in-3); 9 of 10 cells scored = 30, phone not readable"
     },
     {
      "name": "USDA NASS Charts and Maps",
      "url": "https://www.nass.usda.gov/Charts_and_Maps/",
      "kind": "government",
-     "total": 34,
-     "evidence": "snippets"
+     "evidence": "fetched Oct 16 (refs/bench-usda-quick-stats-3); 8 of 10 cells = 25"
     },
     {
-     "name": "DTN / Farm Progress USDA report summaries",
-     "url": "https://www.dtnpf.com",
-     "kind": "established",
-     "total": 34,
-     "evidence": "snippets"
+     "name": "farmdoc FAST crop yield database",
+     "url": "https://farmdoc.illinois.edu/fast-tools/crop-yield-database",
+     "kind": "university",
+     "evidence": "fetched Oct 16 (refs/bench-usda-quick-stats-2); stub copy, 6 of 10 cells = 19"
+    },
+    {
+     "name": "USDA NASS Quick Stats",
+     "url": "https://quickstats.nass.usda.gov",
+     "kind": "government",
+     "evidence": "not fetched (JS app); not readable"
     }
    ]
   },
@@ -1360,40 +1950,50 @@
     "when will my corn reach black layer",
     "GDD calculator by zip code"
    ],
-   "ours_total": 36,
-   "verdict": "no (close once black-layer bug fixed)",
-   "report": "results/2026-10-15-gdu-calculator.md",
+   "ours_total": 39,
+   "verdict": "close",
+   "report": "results/2026-10-16-gdu-calculator.md",
    "competitors": [
     {
-     "name": "U2U / MRCC Corn GDD tool",
+     "name": "Kansas Mesonet degree days",
+     "url": "https://mesonet.k-state.edu/agriculture/degreedays/",
      "kind": "university",
-     "total": 39,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "total": 23,
+     "evidence": "fetched Oct 16; form and method only, no computed values; 7 parts scored, out of 35"
+    },
+    {
+     "name": "Ag PhD GDU Calculator (iOS)",
+     "url": "https://apps.apple.com/np/app/gdu-calculator/id850528308",
+     "kind": "vendor",
+     "total": 18,
+     "evidence": "fetched Oct 16; App Store listing only, v1.6.0 Nov 2024; 6 parts scored, out of 30"
+    },
+    {
+     "name": "U2U / MRCC Corn GDD tool",
+     "url": "https://mrcc.purdue.edu/U2U/gdd/",
+     "kind": "university",
+     "evidence": "not readable: HTTP 404, no archived copy"
+    },
+    {
+     "name": "Pioneer (Corteva) GDU calculator / GrowingPoint",
+     "url": "https://www.pioneer.com/us/agronomy/tools.html",
+     "kind": "vendor",
+     "evidence": "not readable: HTTP 404, no archived copy"
+    },
+    {
+     "name": "Golden Harvest GDU guide (links Syngenta GreenCast GDD)",
+     "url": "https://www.goldenharvestseeds.com/agronomy/articles/gdu-calculator-for-corn-germination",
+     "kind": "vendor",
+     "evidence": "not readable: saved copy is an empty shell"
     },
     {
      "name": "NC State Climate Office corn GDD dashboard",
+     "url": "https://products.climate.ncsu.edu/ag/corn/",
      "kind": "university",
-     "total": 36,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "Pioneer (Corteva) GDU calculator",
-     "kind": "vendor",
-     "total": 35,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "Purdue Nielsen late-planting GDD calculator",
-     "kind": "university",
-     "total": 32,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not fetched this run"
     }
    ],
-   "last_run": "2026-10-15"
+   "last_run": "2026-10-16"
   },
   "urea": {
    "queries": [
@@ -1403,39 +2003,55 @@
     "is agrotain worth it"
    ],
    "ours_total": 40,
-   "verdict": "yes (free tools)",
-   "report": "results/2026-10-15-urea.md",
+   "verdict": "close",
+   "report": "results/2026-10-16-urea.md",
    "competitors": [
     {
-     "name": "Climate FieldView / WinField Nitrogen Advisor",
+     "name": "FS Cooperatives, Urea Loss in Dry Soil Conditions",
+     "url": "https://www.fscooperatives.com/learning-hub/crop-nutrients/urea-loss-in-dry-soil-conditions",
      "kind": "vendor",
-     "total": 37,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16 (refs/bench-urea-5); 8 of 10 cells = 26"
     },
     {
-     "name": "Montana State Soil Scoop / Fertilizer Facts",
+     "name": "Montana State Soil Scoop, Reducing N Fertilizer Loss to Air",
+     "url": "https://landresources.montana.edu/soilfertility/soilscoop/ss_uvol.html",
      "kind": "university",
-     "total": 34,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16 (refs/bench-urea-1); 9 of 10 cells = 30"
     },
     {
-     "name": "Corteva Nitrogen Loss Calculator",
-     "kind": "vendor",
+     "name": "Montana State EB0209 urea volatilization BMP",
+     "url": "https://landresources.montana.edu/soilfertility/documents/PDF/pub/UvolBMPEB0209.pdf",
+     "kind": "university",
      "total": 31,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16 (refs/bench-urea-2)"
+    },
+    {
+     "name": "Manitoba Agriculture, surface-applied N",
+     "url": "https://www.manitoba.ca/agriculture/crops/soil-fertility/what-is-happening-to-the-n.html",
+     "kind": "government",
+     "evidence": "fetched Oct 16 (refs/bench-urea-4); 9 of 10 cells = 27"
+    },
+    {
+     "name": "UNL N-LAT guide G2249",
+     "url": "https://extensionpubs.unl.edu/publication/g2249/2014/pdf/view/g2249-2014.pdf",
+     "kind": "university",
+     "total": 29,
+     "evidence": "fetched Oct 16 (refs/bench-urea-6)"
     },
     {
      "name": "Koch Agronomic Services knowledge center",
+     "url": "https://kochagronomicservices.com/knowledge-center/shallow-banding-unstabilized-urea-less-than-two-inches-deep-is-just-scratching-the-surface-of-nitrogen-protection",
      "kind": "vendor",
-     "total": 27,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16 (refs/bench-urea-3); article body missing, not readable"
+    },
+    {
+     "name": "Climate FieldView / WinField Nitrogen Advisor",
+     "url": "https://climate.com/",
+     "kind": "vendor",
+     "evidence": "not fetched (app only); not readable"
     }
    ],
-   "last_run": "2026-10-15"
+   "last_run": "2026-10-16"
   },
   "planting-date": {
    "queries": [
@@ -1444,40 +2060,49 @@
     "soil temperature for planting corn",
     "soybean planting date yield loss"
    ],
-   "ours_total": 33,
+   "ours_total": 32,
    "verdict": "no",
-   "report": "results/2026-10-15-planting-date.md",
+   "report": "results/2026-10-16-planting-date.md",
    "competitors": [
     {
-     "name": "Iowa State / IEM soil temperature tools",
+     "name": "Iowa State / IEM county 4-inch soil temperature maps",
+     "url": "https://mesonet.agron.iastate.edu/agclimate/soilt.php",
      "kind": "university",
-     "total": 38,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "UMN Extension planting date pages",
-     "kind": "university",
-     "total": 37,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "total": 33,
+     "evidence": "fetched Oct 16; page text read, map images not in copy; phone not scored (out of 45)"
     },
     {
      "name": "NC State Climate Office corn planting guidance",
+     "url": "https://products.climate.ncsu.edu/ag/corn/",
      "kind": "university",
-     "total": 35,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetch failed"
     },
     {
-     "name": "UW-Madison soybean planting date (Conley)",
+     "name": "FBN soil temperature blog",
+     "url": "https://www.fbn.com/community/blog/how-soil-temperature-can-help-you-determine-if-its-planting-time",
+     "kind": "startup",
+     "evidence": "fetched Oct 16: blog index, not the article"
+    },
+    {
+     "name": "Penn State Extension soil thresholds",
+     "url": "https://extension.psu.edu/soil-conditions-approaching-thresholds-for-planting",
      "kind": "university",
-     "total": 35,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16: category listing, not the article"
+    },
+    {
+     "name": "Iowa Farm Bureau soil temperature tool article",
+     "url": "https://www.iowafarmbureau.com/Article/Soil-temperature-tool-offers-planting-window-data",
+     "kind": "established",
+     "evidence": "fetched Oct 16: members-only teaser (Apr 8, 2024)"
+    },
+    {
+     "name": "UW-Madison Cool Bean",
+     "url": "https://coolbean.info/",
+     "kind": "university",
+     "evidence": "fetched Oct 16: Badger Crop Network front page, no planting-date content"
     }
    ],
-   "last_run": "2026-10-15"
+   "last_run": "2026-10-16"
   },
   "field-scout": {
    "queries": [
@@ -1487,32 +2112,47 @@
     "farm field lookup soil productivity"
    ],
    "ours_total": 38,
-   "verdict": "close (provisional; live readout not exercised)",
-   "report": "results/2026-10-15-field-scout.md",
+   "verdict": "close",
+   "report": "results/2026-10-16-field-scout.md",
    "competitors": [
     {
-     "name": "AcreValue",
+     "name": "Acres.com Land Cover (help article)",
+     "url": "https://support.acres.com/crop-history-layer",
      "kind": "startup",
-     "total": 38,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16 (refs/bench-field-scout-5); 6 of 10 cells = 22"
+    },
+    {
+     "name": "ISU GLSI CSR2 distribution map",
+     "url": "https://agron.iastate.edu/glsi/maps/corn-suitability-rating-2-csr2-distribution-across-iowa",
+     "kind": "university",
+     "evidence": "fetched Oct 16 (refs/bench-field-scout-6); 8 of 10 cells = 22"
+    },
+    {
+     "name": "AcreValue",
+     "url": "https://www.acrevalue.com/map/",
+     "kind": "startup",
+     "evidence": "not fetched (JS map); not readable"
     },
     {
      "name": "FBN AcreVision",
+     "url": "https://www.fbn.com/acre-vision",
      "kind": "startup",
-     "total": 36,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not fetched; not readable"
     },
     {
-     "name": "USDA CropScape + NRCS Web Soil Survey",
+     "name": "USDA CropScape",
+     "url": "https://nassgeodata.gmu.edu/CropScape/",
      "kind": "government",
-     "total": 33,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not fetched (JS map); not readable"
+    },
+    {
+     "name": "NRCS Web Soil Survey",
+     "url": "https://websoilsurvey.nrcs.usda.gov/app/",
+     "kind": "government",
+     "evidence": "not fetched (JS app); not readable"
     }
    ],
-   "last_run": "2026-10-15"
+   "last_run": "2026-10-16"
   },
   "pod-counts": {
    "queries": [
@@ -1523,24 +2163,50 @@
    ],
    "ours_total": 41,
    "verdict": "yes",
-   "report": "results/2026-10-15-pod-counts.md",
+   "report": "results/2026-10-16-pod-counts.md",
    "competitors": [
     {
-     "name": "Extension pod-count yield formulas (Purdue, ISU, OSU)",
-     "kind": "university",
-     "total": 36,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "name": "BMO Nesbitt Burns, historical accuracy of Pro Farmer crop tour",
+     "url": "https://nesbittburns.bmo.com/don.mcgugan/historical-accuracy-of-profarmer-crop-tour",
+     "kind": "vendor",
+     "total": 27,
+     "evidence": "fetched Oct 16; table read from saved HTML; phone not scored (out of 45)"
     },
     {
-     "name": "Pro Farmer Crop Tour coverage",
+     "name": "DTN simple formulas",
+     "url": "https://www.dtnpf.com/agriculture/web/ag/crops/article/2020/08/14/simple-formulas-can-help-determine",
      "kind": "established",
-     "total": 35,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "total": 27,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "Pro Farmer scout your fields",
+     "url": "https://www.profarmer.com/news/agriculture-news/scout-your-fields-too",
+     "kind": "established",
+     "total": 25,
+     "evidence": "fetched Oct 16 (2021 article); phone not scored (out of 45)"
+    },
+    {
+     "name": "Canterra how to estimate soybean yields",
+     "url": "https://canterra.com/blog/news/how-to-estimate-your-soybean-yields/",
+     "kind": "vendor",
+     "total": 24,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "K-State soybean yield app (eUpdate)",
+     "url": "https://eupdate.agronomy.ksu.edu/article/estimating-soybean-yield-potential-a-web-based-app-648-4",
+     "kind": "university",
+     "evidence": "fetched Oct 16: redirected to eUpdate front page, not readable"
+    },
+    {
+     "name": "AgWeb 3 steps (Pro Farmer method)",
+     "url": "https://www.agweb.com/news/crops/soybeans/3-steps-determine-soybean-productivity",
+     "kind": "established",
+     "evidence": "fetch failed (HTTP 403, no Wayback copy)"
     }
    ],
-   "last_run": "2026-10-15"
+   "last_run": "2026-10-16"
   },
   "drought-monitor": {
    "queries": [
@@ -1549,33 +2215,45 @@
     "drought in my county",
     "corn area in drought"
    ],
-   "ours_total": 31,
+   "ours_total": 33,
    "verdict": "no",
-   "report": "results/2026-10-15-drought-monitor.md",
+   "report": "results/2026-10-16-drought-monitor.md",
    "competitors": [
     {
      "name": "drought.gov county pages (NIDIS)",
+     "url": "https://www.drought.gov/states/iowa/county/story",
      "kind": "government",
-     "total": 44,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "total": 38,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "drought.gov current conditions map",
+     "url": "https://www.drought.gov/current-conditions",
+     "kind": "government",
+     "total": 34,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
     },
     {
      "name": "droughtmonitor.unl.edu (NDMC)",
+     "url": "https://droughtmonitor.unl.edu/CurrentMap.aspx",
      "kind": "university",
-     "total": 41,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16; text copy is an app shell, 5 of 10 cells scored from HTML (24/25)"
+    },
+    {
+     "name": "Local TV/radio weekly drought posts (WVUA23)",
+     "url": "https://www.wvua23.com/news/drought-monitor-chunk-of-west-alabama-remains-in-extreme-drought/article_48ea8d5b-1ea0-453b-926f-caf6650707d3.html",
+     "kind": "established",
+     "total": 23,
+     "evidence": "fetched Oct 16; article dated Oct 30, 2025; phone not scored"
     },
     {
      "name": "USDA OCE Agriculture in Drought",
+     "url": "https://www.usda.gov/sites/default/files/documents/AgInDrought.pdf",
      "kind": "government",
-     "total": 37,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not readable (HTTP 403, no archive copy)"
     }
    ],
-   "last_run": "2026-10-15"
+   "last_run": "2026-10-16"
   },
   "rain-county": {
    "queries": [
@@ -1584,33 +2262,50 @@
     "rainfall totals by zip code year to date",
     "is it wetter than normal this year <county>"
    ],
-   "ours_total": 44,
-   "verdict": "yes (county YTD); close vs radar-by-ZIP for one field",
-   "report": "results/2026-10-15-rain-county.md",
+   "ours_total": 43,
+   "verdict": "yes",
+   "report": "results/2026-10-16-rain-county.md",
    "competitors": [
     {
+     "name": "NWS Hastings Nebraska precipitation maps",
+     "url": "https://www.weather.gov/gid/NebraskaPrecipitation",
+     "kind": "government",
+     "total": 33,
+     "evidence": "fetched Oct 16; page text and map list read, map images not in copy; phone not scored (out of 45)"
+    },
+    {
+     "name": "NOAA CPC monthly graphics archive",
+     "url": "https://cpc.ncep.noaa.gov/products/analysis_monitoring/regional_monitoring/1-month-archive.shtml",
+     "kind": "government",
+     "total": 21,
+     "evidence": "fetched Oct 16; archive 1999-2015, last modified Nov 2015; phone not scored (out of 45)"
+    },
+    {
+     "name": "CoCoRaHS",
+     "url": "https://www.cocorahs.org/",
+     "kind": "government",
+     "evidence": "fetched Oct 16: empty shell, not readable"
+    },
+    {
      "name": "precip.ai",
+     "url": "https://precip.ai/",
      "kind": "startup",
-     "total": 38,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not in the Oct 16 fetch index (app-only)"
     },
     {
-     "name": "CoCoRaHS station climatology",
+     "name": "NWS climate / NOWData",
+     "url": "https://www.weather.gov/wrh/climate",
      "kind": "government",
-     "total": 38,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not in the Oct 16 fetch index (app-only)"
     },
     {
-     "name": "NWS climate / NOWData, state climate offices",
-     "kind": "government",
-     "total": 34,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "name": "HPRCC ACIS climate maps",
+     "url": "https://hprcc.unl.edu/maps.php",
+     "kind": "university",
+     "evidence": "fetch failed (HTTP 404, no Wayback copy)"
     }
    ],
-   "last_run": "2026-10-15"
+   "last_run": "2026-10-16"
   },
   "grain-emc": {
    "queries": [
@@ -1622,97 +2317,308 @@
     "when to run aeration fans",
     "will my fans dry corn tonight"
    ],
-   "ours_total": 45,
-   "verdict": "yes for corn and wheat (no soybeans yet)",
-   "report": "results/2026-10-15-grain-emc.md",
+   "ours_total": 46,
+   "verdict": "yes",
+   "report": "results/2026-10-16-grain-emc.md",
    "competitors": [
     {
-     "name": "Grain Aeration & Storage App (INTA + Iowa State, iOS)",
+     "name": "University of Arkansas EMC web calculator, spreadsheet and app",
+     "url": "https://grainmanagement.uada.edu/pages/emc.html",
      "kind": "university",
-     "total": 39,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not in the Oct 16 fetch index"
     },
     {
-     "name": "In-bin controllers (IntelliFarms BinManager, AGI/GSI, CTB/Brock, OPI)",
-     "kind": "vendor",
-     "total": 39,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "name": "University of Arkansas soybean drying and storage",
+     "url": "https://www.uaex.uada.edu/farm-ranch/crops-commercial-horticulture/Grain_drying_and_storage/soybean_drying_and_storage.aspx",
+     "kind": "university",
+     "total": 26,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
     },
     {
-     "name": "Clemson EMC Calculator",
-     "url": "https://precisionag.sites.clemson.edu/Calculators/Grain_Storage/EMC_Calc/",
+     "name": "NDSU soybean EMC table",
+     "url": "https://www.ag.ndsu.edu/news/newsreleases/2011/oct-10-2011/soybeans-may-need-rewetting/pdf-soybean-equilibrium-moisture-values.pdf/@@download/file/2011-10-13.6135210949.pdf",
      "kind": "university",
-     "total": 36,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "University of Minnesota Extension EMC tables",
-     "url": "https://extension.umn.edu/corn-harvest/managing-stored-grain-aeration",
-     "kind": "university",
-     "total": 32,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "Oklahoma State BAE-1116 Knowing When to Run Aeration Fans",
-     "url": "https://extension.okstate.edu/fact-sheets/print-publications/bae/aeration-management-knowing-when-to-run-aeration-fans-bae-1116.pdf",
-     "kind": "university",
-     "total": 31,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "total": 25,
+     "evidence": "fetched Oct 16; 2011 table; phone not scored (out of 45)"
     },
     {
      "name": "University of Kentucky EMC tables for grains",
      "url": "https://engr.uky.edu/sites/default/files/equilibrium%20moisture%20content%20for%20grains.pdf",
      "kind": "university",
-     "total": 30,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "University of Arkansas EMC web calculator, spreadsheet and app",
-     "url": "https://grainmanagement.uada.edu/pages/emc.html",
-     "kind": "university",
-     "total": 31,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "evidence": "not in the Oct 16 fetch index"
     },
     {
      "name": "PAMI EMC charts",
-     "url": "https://pami.ca/equilibrium-moisture-content-charts-grain-storage/",
+     "url": "https://pami.ca/wp-content/uploads/2021/10/Equilibrium-Moisture-Content-Charts-for-Grain-Storage-Management_rev2.pdf",
      "kind": "university",
-     "total": 26,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
+     "total": 31,
+     "evidence": "fetched Oct 16 (Wayback copy Aug 2025); phone not scored (out of 45)"
+    },
+    {
+     "name": "Clemson EMC Calculator",
+     "url": "https://precisionag.sites.clemson.edu/Calculators/Grain_Storage/EMC_Calc/",
+     "kind": "university",
+     "total": 31,
+     "evidence": "fetched Oct 16; static text only, numbers need JS; phone not scored (out of 45)"
     },
     {
      "name": "OPI Systems EMC calculator",
      "url": "https://opisystems.com/opi-emc-calculator/",
      "kind": "vendor",
-     "total": 26,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "Multi-Grain EMC Calculator (FBN forum post)",
-     "kind": "startup",
-     "total": 25,
-     "evidence": "snippets",
-     "last_checked": "2026-10-15"
-    },
-    {
-     "name": "BINcast (weathercentral.ca)",
-     "kind": "startup",
-     "total": null,
-     "evidence": "snippets; 2010-2014 coverage, status unknown",
-     "last_checked": "2026-10-15"
+     "evidence": "fetched Oct 16: captcha redirect, not readable"
     }
    ],
-   "last_run": "2026-10-15",
+   "last_run": "2026-10-16",
    "note": "rebuilt after the audit panel (first build about 42); competitor scores from search snippets"
+  },
+  "cattle-auction-prices": {
+   "last_run": "2026-10-16",
+   "ours_total": 40,
+   "verdict": "close",
+   "report": "results/2026-10-16-cattle-auction-prices.md",
+   "competitors": [
+    {
+     "name": "USDA AMS National Weekly Feeder & Stocker Cattle Summary",
+     "url": "https://www.ams.usda.gov/mnreports/LSWNFSS.pdf",
+     "kind": "government",
+     "total": 32,
+     "evidence": "fetched Oct 16; saved copy is week ending Apr 4, 2026; phone not scored (out of 45)"
+    },
+    {
+     "name": "cattle.com barn reports (Cattlemen's Livestock Auction, Dalhart TX)",
+     "url": "https://www.cattle.com/markets/barn_report_new.aspx?id=1714",
+     "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16; newest report on page 7/13/2023; phone not scored"
+    },
+    {
+     "name": "Oklahoma Dept of Agriculture Market Report",
+     "url": "https://ag.ok.gov/wp-content/uploads/2026/01/mkrp01132026.pdf",
+     "kind": "government",
+     "total": 28,
+     "evidence": "fetched Oct 16; Jan 13, 2026 issue; phone not scored"
+    },
+    {
+     "name": "USDA ESMIS Missouri Weekly Cattle Auction Summary",
+     "url": "https://esmis.nal.usda.gov/publication/missouri-weekly-cattle-auction-summary",
+     "kind": "government",
+     "evidence": "not readable: listing page only, newest release Aug 23, 2025"
+    },
+    {
+     "name": "CattleRange",
+     "url": "https://www.cattlerange.com/articles/2022/11/stocker-steer-prices-trends-outlook",
+     "kind": "established",
+     "evidence": "fetch failed"
+    },
+    {
+     "name": "USDA MyMarketNews",
+     "url": "https://mymarketnews.ams.usda.gov/",
+     "kind": "government",
+     "evidence": "fetch failed"
+    }
+   ]
+  },
+  "grain-shrink": {
+   "last_run": "2026-10-16",
+   "ours_total": 45,
+   "verdict": "yes",
+   "report": "results/2026-10-16-grain-shrink.md",
+   "competitors": [
+    {
+     "name": "UW-Madison Extension Determining Grain Shrinkage Rates",
+     "url": "https://fyi.extension.wisc.edu/energy/grain-drying-and-storage/determining-grain-shrinkage-rates",
+     "kind": "university",
+     "evidence": "fetched Oct 16: redirected to the Extension home page, not readable"
+    },
+    {
+     "name": "SDSU Extension corn moisture discount",
+     "url": "https://extension.sdstate.edu/corn-grain-moisture-discount-why-and-how-much",
+     "kind": "university",
+     "evidence": "not in the Oct 16 fetch index"
+    },
+    {
+     "name": "Purdue Converting Wet Corn Weight to Dry",
+     "url": "https://extension.entm.purdue.edu/newsletters/pestandcrop/article/converting-wet-corn-weight-to-dry-corn-weight-3/",
+     "kind": "university",
+     "total": 27,
+     "evidence": "fetched Oct 16; phone not scored (out of 45)"
+    },
+    {
+     "name": "Iowa State Ag Decision Maker A2-32 grain drying cost",
+     "url": "https://www.extension.iastate.edu/agdm/crops/html/a2-32.html",
+     "kind": "university",
+     "evidence": "fetch failed Oct 16 (HTTP 403; Wayback 429)"
+    },
+    {
+     "name": "Iowa State options for fall grain drying and marketing",
+     "url": "https://crops.extension.iastate.edu/cropnews/2022/10/options-fall-grain-drying-and-marketing",
+     "kind": "university",
+     "total": 31,
+     "evidence": "fetched Oct 16; Oct 20, 2022 article; phone not scored (out of 45)"
+    },
+    {
+     "name": "University of Kentucky Grain Shrinkage Factor Calculator",
+     "url": "",
+     "kind": "university",
+     "evidence": "no URL found; not fetched"
+    }
+   ]
+  },
+  "hay-prices": {
+   "last_run": "2026-10-16",
+   "ours_total": 41,
+   "verdict": "close",
+   "report": "results/2026-10-16-hay-prices.md",
+   "competitors": [
+    {
+     "name": "USDA AMS South Dakota Direct Hay Report (AMS_3183)",
+     "url": "https://www.ams.usda.gov/mnreports/AMS_3183.pdf",
+     "kind": "government",
+     "total": 36,
+     "evidence": "fetched Oct 16; report for week ending Oct 16, 2026; competitors.json calls it a national summary, it is SD; phone not scored (out of 45)"
+    },
+    {
+     "name": "USDA AMS Alabama Direct Hay Report (AMS_3050)",
+     "url": "https://www.ams.usda.gov/mnreports/AMS_3050.pdf",
+     "kind": "government",
+     "total": 34,
+     "evidence": "fetched Oct 16; report dated Oct 1, 2026; phone not scored"
+    },
+    {
+     "name": "Southeast AgNet hay report (repost of AMS 3050)",
+     "url": "https://southeastagnet.com/wp-content/uploads/2026/09/Hay-report-9-3-26.pdf",
+     "kind": "established",
+     "total": 28,
+     "evidence": "fetched Oct 16; Sep 2, 2026; phone not scored"
+    },
+    {
+     "name": "Hay & Forage Grower monthly alfalfa price column",
+     "url": "https://hayandforage.com/article-3036-Alfalfa-price-jumps-$6-during-April.html",
+     "kind": "established",
+     "total": 27,
+     "evidence": "fetched Oct 16; April column, year not in text (numbers fit April 2025); phone not scored"
+    },
+    {
+     "name": "Utah State alfalfa hay pricing fact sheet",
+     "url": "https://farmanalysis.usu.edu/static/hay_pricing/pdfs/factsheet.pdf",
+     "kind": "university",
+     "total": 26,
+     "evidence": "fetched Oct 16; data 2013-2022; phone not scored"
+    },
+    {
+     "name": "Farms.com USDA weekly hay market report",
+     "url": "https://m.farms.com/news/usda_us_weekly_hay_market_report-44572.aspx",
+     "kind": "established",
+     "evidence": "fetch failed"
+    },
+    {
+     "name": "USDA NASS Agricultural Prices report",
+     "url": "https://usda.library.cornell.edu/concern/publications/c821gj76b",
+     "kind": "government",
+     "evidence": "not fetched (no entry in references index)"
+    }
+   ]
+  },
+  "lrp": {
+   "last_run": "2026-10-16",
+   "ours_total": 43,
+   "verdict": "yes",
+   "report": "results/2026-10-16-lrp.md",
+   "competitors": [
+    {
+     "name": "K-State Beef Tips, Managing Feeder Cattle Price Risk",
+     "url": "https://www.k-state.edu/news/beef-tips/articles/2024/02/managing-feeder-cattle-price-risk.html",
+     "kind": "university",
+     "total": 27,
+     "evidence": "fetched Oct 16; Feb 28, 2024; phone not scored (out of 45)"
+    },
+    {
+     "name": "USDA RMA LRP Feeder Cattle Premium Calculation",
+     "url": "https://rma.usda.gov/policy-procedure/crop-policies/feeder-cattle-premium-calculation",
+     "kind": "government",
+     "evidence": "not readable: landing page, worksheet download not saved"
+    },
+    {
+     "name": "Utah State LRP Support Tool (UMN AgRisk listing)",
+     "url": "https://agrisk.umn.edu/Library/AMPRecord/livestock_risk_protection_lrp_support_tool",
+     "kind": "university",
+     "evidence": "not readable: listing only, tool not saved"
+    },
+    {
+     "name": "Ever.Ag",
+     "url": "https://www.ever.ag/",
+     "kind": "vendor",
+     "evidence": "not readable for LRP: company home page, no LRP content"
+    },
+    {
+     "name": "USDA RMA livestock reports (LRP daily rates)",
+     "url": "https://public-rma.fpac.usda.gov/apps/livestockreports/",
+     "kind": "government",
+     "evidence": "fetch failed"
+    },
+    {
+     "name": "Oklahoma State LRP for feeder cattle fact sheet",
+     "url": "https://extension.okstate.edu/fact-sheets/utilizing-livestock-risk-protection-lrp-for-feeder-cattle",
+     "kind": "university",
+     "evidence": "fetch failed"
+    }
+   ]
+  },
+  "nutrient-removal": {
+   "last_run": "2026-10-16",
+   "ours_total": 41,
+   "verdict": "close",
+   "report": "results/2026-10-16-nutrient-removal.md",
+   "competitors": [
+    {
+     "name": "SDSU Extension, Should We Sell Corn Stalks?",
+     "url": "https://extension.sdstate.edu/should-we-sell-corn-stalks",
+     "kind": "university",
+     "total": 30,
+     "evidence": "fetched Oct 16; cites Oct 2, 2026 fertilizer prices; phone not scored (out of 45)"
+    },
+    {
+     "name": "Iowa State ICM, Nutrient removal when harvesting corn stover",
+     "url": "https://crops.extension.iastate.edu/encyclopedia/nutrient-removal-when-harvesting-corn-stover",
+     "kind": "university",
+     "total": 28,
+     "evidence": "fetched Oct 16; 2007 article; phone not scored"
+    },
+    {
+     "name": "UNL CropWatch, Valuing Cornstalk Bales",
+     "url": "https://cropwatch.unl.edu/2021/valuing-cornstalk-bales",
+     "kind": "university",
+     "total": 28,
+     "evidence": "fetched Oct 16; Nov 2021; phone not scored"
+    },
+    {
+     "name": "Purdue Corny News Network, stover P and K",
+     "url": "https://www.agry.purdue.edu/ext/corn/news/articles.08/stovernutrients-1010.html",
+     "kind": "university",
+     "total": 27,
+     "evidence": "fetched Oct 16; 2008; phone not scored"
+    },
+    {
+     "name": "UNL CropWatch, Harvesting Crop Residue: What's it Worth?",
+     "url": "https://cropwatch.unl.edu/harvesting-crop-residue-whats-it-worth/",
+     "kind": "university",
+     "total": 26,
+     "evidence": "fetched Oct 16; 2009; phone not scored"
+    },
+    {
+     "name": "University of Kentucky Corn & Soybean News",
+     "url": "https://www.uky.edu/Ag/CornSoy/cornsoy7_8.htm",
+     "kind": "university",
+     "total": 25,
+     "evidence": "fetched Oct 16; Oct 2007; phone not scored"
+    },
+    {
+     "name": "Iowa State Estimating a Value for Corn Stover (PM 3053C)",
+     "url": "https://store.extension.iastate.edu/Product/Estimating-a-Value-for-Corn-Stover-PDF",
+     "kind": "university",
+     "evidence": "not readable: saved copy is the store page only (PDF, 2014, not saved)"
+    }
+   ]
   }
  }
 }

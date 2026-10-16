@@ -16,14 +16,14 @@
   <url><loc>https://agsist.com/nutrient-removal</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/hay-prices</loc><lastmod>2026-10-16</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/cattle-auction-prices</loc><lastmod>2026-10-16</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
-  <url><loc>https://agsist.com/lrp</loc><lastmod>2026-10-15</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/lrp</loc><lastmod>2026-10-16</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/lrp/record</loc><lastmod>2026-10-15</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/gdu-calculator</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/planting-date</loc><lastmod>2026-10-15</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/yield-estimator</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/field-scout</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/tools</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/arc-plc</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/arc-plc</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/prf</loc><lastmod>2026-10-15</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/prf/how-prf-works</loc><lastmod>2026-10-13</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/prf/alabama</loc><lastmod>2026-10-12</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -84,7 +84,7 @@
   <url><loc>https://agsist.com/wheat-futures-prices</loc><lastmod>2026-10-16</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/urea</loc><lastmod>2026-10-16</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://agsist.com/tariffs</loc><lastmod>2026-10-15</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://agsist.com/farm-bill</loc><lastmod>2026-10-15</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://agsist.com/farm-bill</loc><lastmod>2026-10-16</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://agsist.com/fertilizer</loc><lastmod>2026-10-16</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
 
   <!-- Elevator / Cash Bid Coverage -->
@@ -665,8 +665,11 @@
   <url><loc>https://agsist.com/daily/2026-10-10</loc><lastmod>2026-10-10</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-11</loc><lastmod>2026-10-11</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/rain-print</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://agsist.com/rain-gauge</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://agsist.com/gifts-for-farmers</loc><lastmod>2026-10-15</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/rain-gauge</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://agsist.com/gifts-for-farmers</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/rain-print-business</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/farmer-retirement-gifts</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://agsist.com/farm-anniversary-gifts</loc><lastmod>2026-10-16</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-12</loc><lastmod>2026-10-12</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-13</loc><lastmod>2026-10-13</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>
   <url><loc>https://agsist.com/daily/2026-10-14</loc><lastmod>2026-10-14</lastmod><changefreq>never</changefreq><priority>0.4</priority></url>

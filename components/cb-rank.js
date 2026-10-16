@@ -83,31 +83,157 @@ var CLASS_LABEL={hrw:'HRW',srw:'SRW',hrs:'Spring',sww:'Soft white',hdw:'Hard whi
 function classLabel(c){return CLASS_LABEL[c]!=null?CLASS_LABEL[c]:c;}
 
 /* ── Futures: which contract a row's basis is against ──────────────────── */
+/* TWIN OF scripts/build_state_basis_pages.py parse_contract(). The town pages
+   and the state basis pages read a board's futures month there; this page read
+   it here with its own two regexes, and they disagreed. A DTN board writes
+   Dec '26 corn as "@C6Z" (178 of 2,038 network shards on 2026-10-16), which
+   this function could not read, so a day-old DTN board could not be re-marked
+   to today's futures and fell below every board that could: at ZIP 54728
+   Rooney Grain (≈$4.12) lost Best corn to River Country Boyd (≈$4.10).
+   test/fixtures/contract-cases.json is run through both copies
+   (test/cb-rank.test.mjs), so a form one learns the other must learn too.
+     ticker   "ZCZ26", "ZCZ6", "KEN27", "MWOZ26"
+     DTN      "@C6Z" (Dec 2026 corn), "@KW7N" (Jul 2027 KC wheat)
+     month    "Dec 26", "December 2026", "Nov 26 Soybeans",
+              "Dec 26 KCBT Red Wheat", "Mar 27 MIAX Spring Wheat"
+   A bare month on a wheat row names no contract unless the commodity names
+   the class: Dec wheat is three different prices. A contract of another crop
+   (a corn row against ZS) is not read. A one-digit year is the decade of the
+   row's own year, rolled forward if that lands more than a year back. */
 var MCODE='FGHJKMNQUVXZ';
-var ROOT_OF={corn:['ZC'],soybeans:['ZS'],wheat:['ZW','KE']};
-/* "ZSX26", "ZWZ6", "KEZ26" as written; or "Dec 26" / "Nov 26 Soybeans" /
-   "Dec 2026" with the root taken from the crop -- for wheat only when the row
-   names its class, because Dec wheat is two different contracts. */
-function contractKey(b){
-  if(!b)return '';
-  var cat=b.category,roots=ROOT_OF[cat];if(!roots)return '';
-  var raw=String(b.symbol||b.basisMonth||'').trim().toUpperCase().replace(/\s+/g,' ');
-  var m=/^([A-Z]{2})([FGHJKMNQUVXZ])(\d{1,2})$/.exec(raw.replace(/ /g,''));
-  if(m){
-    if(roots.indexOf(m[1])<0)return '';      /* a corn row against a bean contract is not read */
-    return m[1]+m[2]+(m[3].length===1?'2'+m[3]:m[3]);
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var CROP_ROOT={corn:'ZC',soybeans:'ZS'};
+var AT_ROOT={C:'ZC',S:'ZS',W:'ZW',KW:'KE',MW:'MW'};
+var WHEAT_ROOTS={ZW:1,KE:1,MW:1,MWO:1};
+/* port of wheat_root(): the futures root a wheat row's commodity name points to */
+function wheatRoot(commodity){
+  var t=String(commodity||'').toLowerCase();
+  if(/\b(srw|soft red)\b/.test(t))return 'ZW';
+  if(/\b(hrs|dns|spring|dark northern)\b/.test(t))return 'MW';
+  if(/\b(hrww?|kc|kcbt|hard red winter)\b/.test(t))return 'KE';
+  return '';                                 /* "Winter Wheat" alone could be either */
+}
+function rootFits(root,crop){
+  if(CROP_ROOT[crop])return root===CROP_ROOT[crop];
+  if(crop==='wheat')return !!WHEAT_ROOTS[root];
+  return false;
+}
+function decadeYear(d,ref){
+  var y=Math.floor(ref/10)*10+d;
+  return y<ref-1?y+10:y;
+}
+/* fm: the futures month as the board wrote it; crop: corn|soybeans|wheat;
+   ref: the row's year. -> "ZCZ26", or '' when it names no contract we read. */
+function parseContract(fm,crop,ref,commodity){
+  if(typeof fm!=='string'||!fm)return '';
+  var s=fm.trim(),m,root,y;
+  if(!CROP_ROOT[crop]&&crop!=='wheat')return '';
+  if((m=/^(ZC|ZS|KE|ZW|MWO|MW)([FGHJKMNQUVXZ])(\d{1,2})$/.exec(s))){
+    root=m[1];
+    y=m[3].length===1?decadeYear(+m[3],ref):2000+(+m[3]);
+    return rootFits(root,crop)?root+m[2]+String(y%100).padStart(2,'0'):'';
   }
-  var t=/^([A-Z]{3})[A-Z]*\.?\s*'?(\d{2}|\d{4})\b/.exec(raw);
-  if(!t)return '';
-  var mi=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'].indexOf(t[1]);
+  if((m=/^@(KW|MW|C|S|W)(\d)([FGHJKMNQUVXZ])$/.exec(s))){
+    root=AT_ROOT[m[1]];y=decadeYear(+m[2],ref);
+    return rootFits(root,crop)?root+m[3]+String(y%100).padStart(2,'0'):'';
+  }
+  if(!(m=/^([A-Za-z]{3})[a-z]*\.?\s+(\d{2}|\d{4})\b([\s\S]*)$/.exec(s)))return '';
+  var mon=m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase(),mi=MONTHS.indexOf(mon);
   if(mi<0)return '';
-  var root=roots[0];
-  if(cat==='wheat'){
-    var wc=wheatClass(b.commodity);
-    root=wc==='srw'?'ZW':wc==='hrw'?'KE':'';
+  y=+m[2];if(y<100)y+=2000;
+  var rest=m[3].toLowerCase();
+  if(rest.indexOf('kcbt')>=0||rest.indexOf('kansas')>=0)root='KE';
+  else if(rest.indexOf('spring')>=0||rest.indexOf('miax')>=0||rest.indexOf('mgex')>=0)root='MW';
+  else if(rest.indexOf('wheat')>=0||(crop==='wheat'&&!rest.trim())){
+    root=commodity?wheatRoot(commodity):'';
     if(!root)return '';
   }
-  return root+MCODE.charAt(mi)+t[2].slice(-2);
+  else if(rest.indexOf('oat')>=0)return '';
+  else if(rest.indexOf('soy')>=0)root='ZS';
+  else if(crop==='corn')root='ZC';
+  else if(crop==='soybeans')root='ZS';
+  else return '';
+  return rootFits(root,crop)?root+MCODE.charAt(mi)+String(y%100).padStart(2,'0'):'';
+}
+/* A row's contract: its symbol as written, else its basis month. The year a
+   one-digit code belongs to is taken from the row's own time (Central). */
+function contractKey(b){
+  if(!b)return '';
+  var cat=b.category;
+  if(!CROP_ROOT[cat]&&cat!=='wheat')return '';
+  var day=centralDay(b.asOf),ref=day?+day.slice(0,4):+(centralDay(Date.now())||'').slice(0,4)||new Date().getFullYear();
+  return parseContract(String(b.symbol||''),cat,ref,b.commodity)||
+         parseContract(String(b.basisMonth||''),cat,ref,b.commodity);
+}
+/* ── The delivery a board posted, as the page prints it ────────────────────
+   Twin of scripts/build_cash_bid_pages.py delivery_text(); the ZIP search and
+   the town pages print one board the same way (test/fixtures/delivery-labels.json
+   runs through both). River Country Co-op posts "HAR 26" and "HAR 27": the town
+   page printed both raw, this page said "Fall 2026" for one and "HAR 27" for
+   the other. Now both say "Harvest 2026" and "Harvest 2027".
+     "(YYYY-MM)" the gradable adapter appends is the futures contract: dropped.
+     "Oct 26", "OCTOBER 2026", "10/01/2026", "Oct 01, 2026": "Oct 2026".
+     With the network's month (period "2026-10"): "October", "Dec corn" and a
+       whole-month range take its year; part of a month is "Oct 1-16, 2026".
+       A deadline ("By Oct 9") stays as written.
+     A season code in the board's own word: HAR -> Harvest, NC -> New crop,
+       Fall, OC -> Old crop; with no year on the label, the season's year.
+     Anything else as the board wrote it. */
+var SEASON_RE=/^(?:(harv(?:est)?(?:\s+del(?:ivery)?)?|har)|(n\/?c|new\s*crop|n\s+crop|new)|(fall)|(o\/?c|old\s*crop))\s*'?\s*(\d{4}|\d{2})?'?(?![\w\/])([\s\S]*)$/i;
+var SEASON_FIRST_RE=/^(\d{4}|\d{2})\s+(new\s*crop|fall|harvest|crop)\b([\s\S]*)$/i;
+var SEASON_WORD=['Harvest','New crop','Fall','Old crop'];
+var LAST_DAY=[31,29,31,30,31,30,31,31,30,31,30,31];
+var MON_START=/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?(?![a-z])/i;
+function yy(t){return t.length===2?2000+(+t):+t;}
+function titleMon(t){t=String(t||'');return t.charAt(0).toUpperCase()+t.slice(1,3).toLowerCase();}
+function deliveryText(delivery,period){
+  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s+/g,' ').trim();
+  var per=String(period||''),m,i;
+  if((m=/^([A-Za-z]{3})[A-Za-z]*\.?\s*'?(\d{2}|\d{4})$/.exec(lab))&&MONTHS.indexOf(titleMon(m[1]))>=0)
+    return titleMon(m[1])+' '+yy(m[2]);
+  if((m=/^(\d{1,2})\/0?1\/(\d{4})$/.exec(lab))&&+m[1]>=1&&+m[1]<=12)
+    return MONTHS[+m[1]-1]+' '+m[2];
+  if((m=/^([A-Za-z]{3})[A-Za-z]*\.?\s+0?1,?\s+(\d{4})$/.exec(lab))&&MONTHS.indexOf(titleMon(m[1]))>=0)
+    return titleMon(m[1])+' '+m[2];
+  var pm=/^(\d{4})-(\d{2})$/.exec(per);
+  if(pm&&+pm[2]>=1&&+pm[2]<=12){
+    var y=+pm[1],mo=+pm[2],MN=MONTHS[mo-1];
+    var r=/^(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})$/.exec(lab);
+    if(r&&titleMon(r[2])===MN&&titleMon(r[5])===MN&&+r[3]===y&&+r[6]===y){
+      var d1=+r[1],d2=+r[4],last=mo===2?(y%4===0?29:28):LAST_DAY[mo-1];
+      if(!(d1===1&&d2===last)&&d1>=1&&d1<=d2&&d2<=last)return MN+' '+d1+'-'+d2+', '+y;
+      return MN+' '+y;
+    }
+    if(!lab)return MN+' '+y;
+    var b=/^([A-Za-z]{3})[A-Za-z]*\.?\s*(?:'?(\d{4}|\d{2})'?)?(?![\w\/'])\s*([\s\S]*)$/.exec(lab);
+    if(b&&titleMon(b[1])===MN&&(!b[2]||yy(b[2])===y)&&
+       /^(?:[A-Za-z]+(?: [A-Za-z]+)*)?$/.test(b[3])&&!MON_START.test(b[3]))
+      return MN+' '+y+(b[3]?' '+b[3]:'');
+  }
+  var sy=/^(?:new|old)crop-(\d{4})$/.exec(per);
+  if((m=SEASON_RE.exec(lab))){
+    for(i=0;i<4&&!m[i+1];i++);
+    var rest=m[6].trim(),year=m[5]?yy(m[5]):null;
+    if(year==null&&sy&&!/\d/.test(rest))year=+sy[1];
+    var out=SEASON_WORD[i]+(year?' '+year:'');
+    if(rest)out+=/^[-,:]/.test(rest)?', '+rest.replace(/^[-,: ]+/,'').trim():' '+rest;
+    return out.trim();
+  }
+  if((m=SEASON_FIRST_RE.exec(lab))){
+    var w=m[2].toLowerCase(),rs=m[3].trim();
+    var word=w.indexOf('new')===0?'New crop':w==='harvest'?'Harvest':w==='fall'?'Fall':'Crop';
+    return word+' '+yy(m[1])+(rs?' '+rs:'');
+  }
+  if(!lab){
+    if(per==='spot')return 'Spot';
+    var pr=/^(\d{4})-(\d{2})\/(\d{4})-(\d{2})$/.exec(per);
+    if(pr&&+pr[2]>=1&&+pr[2]<=12&&+pr[4]>=1&&+pr[4]<=12){
+      var a_=MONTHS[+pr[2]-1],b_=MONTHS[+pr[4]-1];
+      return pr[1]===pr[3]?a_+'-'+b_+' '+pr[3]:a_+' '+pr[1]+'-'+b_+' '+pr[3];
+    }
+    if(sy)return (per.indexOf('new')===0?'New crop':'Old crop')+' '+sy[1];
+  }
+  return lab;
 }
 var FUT={},FUT_ROOTS={ZC:1,ZS:1,ZW:1,KE:1};
 /* data/prices.json -> {ZSX26:{price:12.9575,date:'2026-10-07'}}. Only dated
@@ -323,7 +449,7 @@ function cleanPlace(p){
 }
 
 var api={centralDay:centralDay,dayLabel:dayLabel,pairMonths:pairMonths,pairEnd:pairEnd,
-  wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,setFutures:setFutures,
+  wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,parseContract:parseContract,deliveryText:deliveryText,setFutures:setFutures,
   futureFor:futureFor,assess:assess,compare:compare,note:note,priceText:priceText,
   looksLikePoint:looksLikePoint,learnTowns:learnTowns,placeTown:placeTown,
   outlierCheck:outlierCheck,markOutliers:markOutliers,setStateMedians:setStateMedians,

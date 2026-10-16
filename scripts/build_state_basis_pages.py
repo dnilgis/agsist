@@ -200,13 +200,26 @@ def wheat_root(commodity):
     return None      # "Winter Wheat" alone could be either winter wheat
 
 
+def _root_fits(root, crop):
+    """A corn row against a bean contract names no contract this site reads.
+    Other crops (sorghum is passed as corn) keep whatever root they name."""
+    if crop in ("corn", "soybeans"):
+        return root == {"corn": "ZC", "soybeans": "ZS"}[crop]
+    if crop == "wheat":
+        return root not in ("ZC", "ZS")
+    return True
+
+
 def parse_contract(fm, crop, snap_year, commodity=None):
     """Futures month string as the board wrote it -> (root, month_index, year) or None.
 
     'ZCZ26', 'ZCZ6', 'KEN27', 'MWOZ26', 'Dec 26', 'December 2026',
     'Nov 26 Soybeans', 'Dec 26 KCBT Red Wheat', 'Mar 27 MIAX Spring Wheat'.
     A bare month for wheat ('Dec 26 Wheat') does not say which class's contract
-    it is, so it returns None rather than guessing."""
+    it is, so it returns None rather than guessing.
+
+    Twin of components/cb-rank.js parseContract(); test/fixtures/contract-cases.json
+    runs through both (test/cb-rank.test.mjs)."""
     if not fm or not isinstance(fm, str):
         return None
     s = fm.strip()
@@ -217,6 +230,8 @@ def parse_contract(fm, crop, snap_year, commodity=None):
         y = (snap_year // 10) * 10 + y if len(yy) == 1 else 2000 + y
         if len(yy) == 1 and y < snap_year - 1:
             y += 10
+        if not _root_fits(root, crop):
+            return None
         return root, MONTH_CODES.index(code), y
     # DTN / Barchart style: "@C6Z" = Dec 2026 corn, "@KW7N" = Jul 2027 KC wheat
     m = re.fullmatch(r"@(KW|MW|C|S|W)(\d)([FGHJKMNQUVXZ])", s)
@@ -225,8 +240,7 @@ def parse_contract(fm, crop, snap_year, commodity=None):
         y = (snap_year // 10) * 10 + int(m.group(2))
         if y < snap_year - 1:
             y += 10
-        if (crop in ("corn", "soybeans") and root != {"corn": "ZC", "soybeans": "ZS"}[crop]) or \
-                (crop == "wheat" and root in ("ZC", "ZS")):
+        if not _root_fits(root, crop):
             return None
         return root, MONTH_CODES.index(m.group(3)), y
     m = re.match(r"^([A-Za-z]{3})[a-z]*\.?\s+(\d{2}|\d{4})\b(.*)$", s)
@@ -256,6 +270,8 @@ def parse_contract(fm, crop, snap_year, commodity=None):
     elif crop == "soybeans":
         root = "ZS"
     else:
+        return None
+    if not _root_fits(root, crop):
         return None
     return root, MONTH_ABBR.index(mon), y
 

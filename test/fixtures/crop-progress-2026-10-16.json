@@ -1,0 +1,95 @@
+{
+ "updated": "2026-10-15",
+ "report_date": "2026-10-11",
+ "in_season": true,
+ "corn": {
+  "good_excellent": 56,
+  "report_date": "2026-10-11",
+  "good_excellent_prev_week": 54,
+  "good_excellent_prev_year": null,
+  "planting_pct": 97,
+  "planting_prev_year": 97,
+  "harvest_pct": 33,
+  "harvest_date": "2026-10-11",
+  "harvest_prev_year": null,
+  "mature_pct": 91,
+  "harvest_5yr_avg": 39
+ },
+ "soybeans": {
+  "good_excellent": 57,
+  "report_date": "2026-10-11",
+  "good_excellent_prev_week": 57,
+  "good_excellent_prev_year": null,
+  "planting_pct": 95,
+  "planting_prev_year": 93,
+  "harvest_pct": 46,
+  "harvest_date": "2026-10-11",
+  "harvest_prev_year": null,
+  "harvest_5yr_avg": 50
+ },
+ "winter_wheat": {
+  "good_excellent": 26,
+  "report_date": "2026-07-05",
+  "good_excellent_prev_year": 48,
+  "harvest_pct": 96,
+  "harvest_prev_year": 94
+ },
+ "spring_wheat": {
+  "good_excellent": 51,
+  "report_date": "2026-08-23",
+  "good_excellent_prev_year": 49,
+  "harvest_pct": 96,
+  "harvest_prev_year": 96
+ },
+ "progress": {
+  "corn_harvested": {
+   "date": "2026-10-11",
+   "pct": 33,
+   "prev_year": null,
+   "avg5": 39
+  },
+  "soybeans_harvested": {
+   "date": "2026-10-11",
+   "pct": 46,
+   "prev_year": null,
+   "avg5": 50
+  },
+  "winter_wheat_planted": {
+   "date": "2026-10-11",
+   "pct": 51,
+   "prev_year": null,
+   "avg5": 58
+  },
+  "winter_wheat_emerged": {
+   "date": "2026-10-11",
+   "pct": 27,
+   "prev_year": null,
+   "avg5": 32
+  },
+  "cotton_harvested": {
+   "date": "2026-10-11",
+   "pct": 31,
+   "prev_year": null,
+   "avg5": 29
+  },
+  "rice_harvested": {
+   "date": "2026-10-11",
+   "pct": 92,
+   "prev_year": null,
+   "avg5": null
+  },
+  "peanuts_harvested": {
+   "date": "2026-10-11",
+   "pct": 29,
+   "prev_year": null,
+   "avg5": 34
+  },
+  "sorghum_harvested": {
+   "date": "2026-10-11",
+   "pct": 40,
+   "prev_year": null,
+   "avg5": 48
+  }
+ },
+ "progress_method": "5-year average: AGSIST's arithmetic on the NASS weekly series, each of the five prior years interpolated to the same calendar date, then averaged; withheld if any year lacks a published week on both sides. Can differ from the NASS-printed average by a point."
+}

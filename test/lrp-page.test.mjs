@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
-import { bake, bakeRecord, backJson, faqList, pickHtml, methodHtml, answerHtml, readAll } from "../scripts/bake_lrp.mjs";
+import { bake, bakeRecord, backJson, exampleStatic, EXAMPLE, faqList, pickHtml, methodHtml, answerHtml, readAll } from "../scripts/bake_lrp.mjs";
 import { subsidy as btSubsidy } from "../scripts/lrp_backtest.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -550,4 +550,57 @@ test("/lrp/record is in the sitemap and llms.txt list, and its header and footer
     const re = new RegExp(`<!-- static-nav:${name}[\\s\\S]*?<!-- /static-nav:${name} -->`);
     assert.equal(RECORD.match(re)[0], PAGE.match(re)[0], name);
   }
+});
+
+test("futures wording: a mid-session quote is never called a close (Oct 16 bug)", () => {
+  const f = { name: "Jan 2027 feeder cattle futures", close: 338.52, date: "20261016" };
+  // read 15:45 UTC = 10:45 a.m. CDT Fri Oct 16, CME feeders trade until 1:05 p.m. CT
+  const fetched = "2026-10-16T15:45:00Z";
+  const live = L.futuresStamp(f, fetched, new Date("2026-10-16T16:00:00Z"));
+  assert.equal(live.kind, "delayed");
+  assert.match(live.text, /were at <b>\$338\.52<\/b> at 10:45 a\.m\. CT \(delayed about 15 minutes/);
+  assert.ok(!/closed/.test(live.text));
+  const old = L.futuresStamp(f, fetched, new Date("2026-10-16T19:30:00Z"));
+  assert.equal(old.kind, "intraday", "an old file read mid-session stays mid-session");
+  assert.match(old.text, /at 10:45 a\.m\. CT on Oct 16, mid-session, before the close/);
+  const bell = L.futuresStamp(f, "2026-10-16T18:10:00Z", new Date("2026-10-16T18:12:00Z"));
+  assert.equal(bell.kind, "unsettled", "1:10 p.m. CT: just after the 1:05 close");
+  const after = L.futuresStamp(f, "2026-10-16T19:00:00Z", new Date("2026-10-16T19:05:00Z"));
+  assert.equal(after.kind, "close");
+  assert.match(after.text, /closed at <b>\$338\.52<\/b> on Oct 16 \(a Yahoo Finance close, not a CME settlement\)/);
+  // read at 7 a.m. CT Oct 16 with Oct 15's close: that close, dated Oct 15
+  const pre = L.futuresStamp({ ...f, date: "20261015" }, "2026-10-16T12:00:00Z", new Date("2026-10-16T12:05:00Z"));
+  assert.equal(pre.kind, "close");
+  assert.match(pre.text, /on Oct 15/);
+  // Saturday read: Friday's close
+  assert.equal(L.futuresStamp(f, "2026-10-17T15:00:00Z", new Date("2026-10-17T15:10:00Z")).kind, "close");
+  // no read time: a close, the old wording, never "delayed"
+  assert.equal(L.futuresStamp(f, null).kind, "close");
+  const ui = read("components/lrp-ui.js");
+  assert.ok(!/' closed at <b>'/.test(ui), "the UI no longer types 'closed at' itself");
+  assert.match(ui, /L\.futuresStamp\(f, prices\.fetched\)/);
+});
+
+test("first screen: a dated example cost before any input, worked by hand", () => {
+  // Hand-worked from a fixed offer (RMA 2027 file for Oct 15, 2026, type 809, 13 weeks):
+  // top level 100%, coverage $371.870, cost $13.714 a cwt; subsidy 35% -> 13.714 x 0.65 = $8.9141 a cwt;
+  // 550 lb = 5.5 cwt -> $49.03 a head; 100 head -> $4,902.76, shown $4,903.
+  const T = { ry: "2027", sales_day: "2026-10-15", sed: "20261015", offers: [
+    { c: "0801", t: "809", len: 13, end: "20270114", w: ["1.00", "5.99"], r: [[950000, 353270, 16718, 5906], [1000000, 371870, 36878, 13714]] },
+  ] };
+  const h = exampleStatic(T);
+  assert.match(h, /Example, change it below/);
+  assert.match(h, /100 feeder steers at 550 lb, 13 weeks/);
+  assert.match(h, /top coverage 100%: a floor of \$371\.87 a cwt/);
+  assert.match(h, /after the 35% subsidy: <b>\$8\.914 a cwt, \$49\.03 a head<\/b>, \$4,903 for the 100 head/);
+  assert.match(h, /sales on Thu Oct 15, 2026/);
+  assert.match(h, /href="\/lrp\?a=feeder&amp;h=100&amp;w=550&amp;l=13&amp;k=steers"/);
+  // no 13-week weight-1 steer offer: says so, prints no number
+  const none = exampleStatic({ ...T, offers: [] });
+  assert.match(none, /RMA posted no 13-week offer for 550 lb feeder steers/);
+  assert.ok(!/\$\d/.test(none));
+  // the page carries the baked example from today's file, ahead of the form
+  assert.ok(PAGE.indexOf('id="lrp-example"') > 0 && PAGE.indexOf('id="lrp-example"') < PAGE.indexOf('id="lrp-ctl"'));
+  assert.ok(PAGE.includes(exampleStatic(TODAY)), "baked from data/lrp/today.json");
+  assert.equal(EXAMPLE.lb, 550);
 });

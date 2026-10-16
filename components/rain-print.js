@@ -2227,8 +2227,8 @@
     art.classList.remove('rp-empty');
     render();
     if (err && err.pick) { showPick(err.pick); setStatus('There\u2019s more than one ' + err.pick[0].name + '. Which one?' + ' Your ' + ST.year + ' print is still here.'); return; }
-    setStatus(keepWords(want, ST, err), true);
-    RETRY_SAMPLE = false;
+    // NOAA or the town lookup slow: a plain note with Try again, not the warning color (2026-10-16)
+    setStatus(keepWords(want, ST, err), !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
   }
   function failDraw(err) {
@@ -2245,8 +2245,8 @@
     showBuy(false);
     sampleLine(false);
     if (err && err.pick) { showPick(err.pick); setStatus('There\u2019s more than one ' + err.pick[0].name + '. Which one?'); return; }
-    setStatus(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.', true);
-    RETRY_SAMPLE = false;
+    // a slow NOAA is nobody's fault: said plainly, with Try again, not in the warning color (2026-10-16)
+    setStatus(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.', !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
   }
   // "Which Springfield?": one button per town, with its county
@@ -2290,7 +2290,7 @@
   }
   var PICKED = null;   // {q, hit}: the town the reader chose from a "which one?" list
   function geocode(q) { return PICKED && PICKED.q === q ? Promise.resolve(PICKED.hit) : geoFind(q); }
-  var reqToken = 0, RETRY_SAMPLE = false;
+  var reqToken = 0;
   function run(e, preset) {
     if (e) e.preventDefault();
     var next;
@@ -2542,15 +2542,12 @@
     }).catch(function (err) {
       if (err === 'stale') return;
       if (SAMPLE) {
-        // the sample failed: the empty box, and when NOAA or the town lookup is down, a word and Try again (panel 3 F2)
-        if (my === reqToken) {
-          clearSample();
-          if (err && err.retry) {
-            statusEl.textContent = 'NOAA\u2019s data service isn\u2019t answering right now, so the sample can\u2019t be drawn. Try again in a minute, or type your town.';
-            statusEl.classList.add('rp-bad');
-            RETRY_SAMPLE = true; $('rp-retry-row').hidden = false;
-          }
-        }
+        /* The sample failed. The reader pressed nothing, and the example print
+           in the page's HTML is still in the frame, so the page says nothing:
+           no error they didn't cause (2026-10-16, benchmark R1; was a red
+           "NOAA isn't answering" line on load). A slow NOAA shows only after
+           their own Draw, calmly, with Try again (failDraw). */
+        if (my === reqToken) clearSample();
         return;
       }
       if (err === 'blocked' || err === 'noart') return;
@@ -3838,7 +3835,7 @@
     // the button is about to vanish: keep the keyboard on the town box
     try { $('rp-place').focus({ preventScroll: true }); } catch (e) {}
     $('rp-retry-row').hidden = true;
-    if (RETRY_SAMPLE) { RETRY_SAMPLE = false; statusEl.classList.remove('rp-bad'); runSample(); } else run();
+    run();
   });
   doc.addEventListener('click', function (ev) {
     var t = ev.target;

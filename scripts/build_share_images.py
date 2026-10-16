@@ -183,6 +183,9 @@ LINES = {
     "lrp": ("LRP livestock insurance", "Today's LRP rates for cattle and hogs, and what RMA's record says."),
     "farm-bill": ("Farm bill", "Where the farm bill stands, House against Senate."),
     "cash-bids": ("Cash bids", "Corn, soybean and wheat bids at the elevators near your ZIP."),
+    "farmer-retirement-gifts": ("Gifts for farmers", "Their first and last crop year on the wall, a binder of stories, the farm from the air."),
+    "farm-anniversary-gifts": ("Gifts for farmers", "For a farm couple or a century farm: the year it started, on the wall."),
+    "rain-print-business": ("Rain Print for businesses", "Each customer's own year of rain, printed and framed. From 5 prints, shipping included."),
 }
 
 # Pages that borrow another page's card (drawn first, then pointed at).

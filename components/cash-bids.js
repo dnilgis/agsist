@@ -864,10 +864,15 @@ function delLabel(k){
   var p=k.split('-');
   return MONTHNAME[parseInt(p[1],10)-1].slice(0,3)+' '+p[0];
 }
-/* WHAT THE DELIVERY CELL PRINTS. One month name, from the same key the filter
-   uses, so "September (2026-11)" (board text with the pipeline's period bolted
-   on) can no longer read as two months. The board's own words go in title=. */
+/* WHAT THE DELIVERY CELL PRINTS. cbRank.deliveryText(), the same words the
+   town pages print for the same board ("HAR 27" is "Harvest 2027" on both),
+   so "September (2026-11)" (board text with the pipeline's period bolted on)
+   can no longer read as two months. A licensed-feed row that only carries a
+   window start falls back to the filter's month. The board's own words go in
+   title=. */
 function delShow(bid){
+  var t=window.cbRank?cbRank.deliveryText(bid.deliveryMonth,bid.deliveryPeriod):'';
+  if(t)return t;
   var k=delKey(bid);
   if(k)return delLabel(k);
   if(isHarvestSeason(bid))return 'Fall '+harvestYear();
@@ -1278,6 +1283,17 @@ function renderBestBids(elevators){
   var html='';
   /* One crop chosen at the top: only its row. */
   if(currentFilter!=='all')COMMS=COMMS.filter(function(c){return c.key===currentFilter;});
+  /* THE BASIS ON A BEST CARD FOLLOWS THE COLOR KEY. It was coloured by its
+     sign (formatBasis().cls), so every negative basis was red: at ZIP 54728
+     the best corn, soybean and wheat basis all showed red under a key that
+     says red is weaker than the middle of this search. Same rule as the list
+     (cb-glance.js toneFn over every board here); grey when it cannot say. */
+  var _btone=null;
+  if(window.CBGlance&&typeof CBGlance.toneFn==='function'){
+    var _all=[];
+    (elevators||[]).forEach(function(e){var cm=e&&e.commodities||{};Object.keys(cm).forEach(function(k){(cm[k]||[]).forEach(function(b){_all.push(b);});});});
+    _btone=CBGlance.toneFn(_all);
+  }
   COMMS.forEach(function(c){
     var cands=[];
     /* THE NEAREST MONTH AT EACH ELEVATOR, NOT THE HIGHEST NUMBER IT POSTS.
@@ -1317,7 +1333,7 @@ function renderBestBids(elevators){
       var ago=bbcAgo(best.asOf);
       html+='<div class="bbc-pricecol"><div class="bbc-comm">'+commTxt+'</div>';
       html+='<div class="bbc-price">'+(top.rk.remark?escH(cbRank.priceText(top.rk,fmtPx)):'$'+fmtPx(pp))+'</div>';
-      html+='<div class="bbc-basis '+bf.cls+'">basis '+bf.str+'</div></div>';
+      html+='<div class="bbc-basis '+((_btone&&_btone(best))||'flat')+'">basis '+bf.str+'</div></div>';
       html+='<div class="bbc-body">';
       html+='<div class="bbc-name" title="'+escH(topElev.facility)+'">'+escH(topElev.facility)+'</div>';
       if(cs||topElev.distance!=null)html+='<span class="bbc-city bbc-where">'+escH(cs)+(topElev.distance!=null?(cs?'\u00a0\u00b7 ':'')+'<span class="bbc-dist">'+topElev.distance.toFixed(0)+' mi</span>':'')+'</span>';
