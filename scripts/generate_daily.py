@@ -2813,6 +2813,21 @@ def render_dateline_html(briefing, date_iso):
     return '<p class="dv3-dateline">' + " &middot; ".join(parts) + '</p>'
 
 
+def render_corrections_html(corrections):
+    """Dated correction notes, newest last, from the archive JSON's
+    'corrections' list [{date: YYYY-MM-DD, text}]. Added by hand when a
+    published issue had something wrong (/editorial-standards#corrections);
+    the generator never writes one."""
+    items = []
+    for c in corrections or []:
+        if not isinstance(c, dict) or not str(c.get("text") or "").strip():
+            continue
+        d = str(c.get("date") or "")
+        label = f"Correction, {_short_date(d)}" if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) else "Correction"
+        items.append(f'<p class="dv3-correction"><strong>{html_esc(label)}:</strong> {html_esc(c["text"])}</p>')
+    return ('<aside class="dv3-corrections" aria-label="Corrections">' + "".join(items) + '</aside>') if items else ""
+
+
 def render_transparency_links_html():
     links = " &middot; ".join(f'<a href="{h}">{t}</a>' for h, t in TRANSPARENCY_LINKS)
     return f'<nav class="dv3-trust" aria-label="About this briefing">{links}</nav>'
@@ -3950,6 +3965,9 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-dateline{{font-size:.82rem;color:var(--text-muted);line-height:1.6;margin:0 0 .85rem}}
 .dv3-dateline a{{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}}
 .dv3-dateline time{{white-space:nowrap}}
+.dv3-corrections{{margin:-1rem 0 1.5rem;padding:.75rem 1rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:6px;background:var(--surface)}}
+.dv3-correction{{margin:.2rem 0;font-size:.84rem;line-height:1.55;color:var(--text-dim)}}
+.dv3-correction strong{{color:var(--text)}}
 .dv3-trust{{display:flex;flex-wrap:wrap;justify-content:center;gap:.25rem .5rem;font-size:.74rem;color:var(--text-muted);margin:-1.25rem 0 2rem}}
 .dv3-trust a{{color:var(--text-muted);display:inline-block;padding:.6rem .15rem}}
 .dv3-trust a:hover{{color:var(--gold)}}
@@ -3996,6 +4014,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     {share_html}
     {archive_nav_html}
     <div class="dv3-source">{source}{compiled_html}</div>
+    {render_corrections_html(briefing.get("corrections"))}
     {render_transparency_links_html()}
   </article>
   <div class="dv3-after">
