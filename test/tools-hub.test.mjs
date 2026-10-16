@@ -42,3 +42,24 @@ test("no tool card calls delayed futures or posted bids live", () => {
   assert.ok(!/\bLive\b/i.test(cards), "a card still says live");
   assert.match(cards, /each with how long ago it was posted/);
 });
+
+test("in Oct and Nov the grain storage group moves ahead of crop tracking on the page", async () => {
+  const m = html.match(/<script>\(function\(\)\{var m=new Date\(\)\.getMonth\(\);if\(m!==9&&m!==10\)return;[\s\S]*?<\/script>/);
+  assert.ok(m, "the seasonal reorder script is on the page");
+  // run it against the page's own groups with the clock on Oct 16 and Jul 16
+  const vm = await import("node:vm");
+  for (const [iso, want] of [["2026-10-16T15:00:00Z", ["Selling, costs and programs", "Grain storage", "Crop tracking"]], ["2026-07-16T15:00:00Z", ["Selling, costs and programs", "Crop tracking"]]]) {
+    const labels = groups().map((g) => ({ textContent: g.label, grid: { label: g.label } }));
+    const order = [];
+    labels.forEach((l) => order.push(l, l.grid));
+    const parent = { insertBefore(a, b) { order.splice(order.indexOf(a), 1); order.splice(order.indexOf(b), 0, a); } };
+    labels.forEach((l) => { l.parentNode = parent; Object.defineProperty(l, "nextElementSibling", { get: () => order[order.indexOf(l) + 1] }); });
+    const T = Date.parse(iso);
+    class D extends Date { constructor(...a) { super(...(a.length ? a : [T])); } }
+    vm.runInNewContext(m[0].replace(/^<script>|<\/script>$/g, ""), { Date: D, document: { querySelectorAll: () => labels } });
+    const seq = order.filter((x) => x.textContent).map((x) => x.textContent);
+    assert.deepEqual(seq.slice(0, want.length), want, iso);
+    assert.equal(order.length, labels.length * 2);
+    for (const l of labels) assert.equal(order[order.indexOf(l) + 1], l.grid, "each label keeps its grid");
+  }
+});

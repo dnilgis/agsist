@@ -416,6 +416,10 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
         <span class="tag">Shrink · Drying charge · Overdry</span>
       </a>
     </div>
+    <!-- Oct and Nov: the grain storage cards come before crop tracking (2026-10-16
+         audit: in harvest the page led with hail, GDU, scouting and planting).
+         The markup keeps the view-count order; this moves the group on the page. -->
+    <script>(function(){var m=new Date().getMonth();if(m!==9&&m!==10)return;var ls=document.querySelectorAll('.cat-label'),st=null,ct=null;for(var i=0;i<ls.length;i++){var t=ls[i].textContent.trim();if(t==='Grain storage')st=ls[i];if(t==='Crop tracking')ct=ls[i];}if(!st||!ct)return;var g=st.nextElementSibling;ct.parentNode.insertBefore(st,ct);ct.parentNode.insertBefore(g,ct);})();</script>
 
     <h2 class="tool-more-hd">Everything else on the site</h2>
     <p class="tool-more-sub">The cards above are the tools people use most. These are the rest.</p>
