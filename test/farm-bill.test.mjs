@@ -118,7 +118,8 @@ test("the twelve titles and the CBO line items load from data behind one button"
 test("the page got lighter", () => {
   // 91,261 bytes on Oct 14 with the titles and ledger inline. The picker and the
   // 90-day strip were added on top, so the cap is just under where it started.
-  assert.ok(Buffer.byteLength(html) < 88500, `farm-bill.html is ${Buffer.byteLength(html)} bytes`);
+  // Oct 16: the Oct 1 cards and the sources moved into folds and repeated status copy went, so 86,000.
+  assert.ok(Buffer.byteLength(html) < 86000, `farm-bill.html is ${Buffer.byteLength(html)} bytes`);
 });
 
 test("visible FAQ and FAQ JSON-LD match word for word", () => {
@@ -146,4 +147,32 @@ test("no em dashes in the page or its data", () => {
 
 test("the phone compare cards label the Senate side with its bill number", () => {
   assert.match(html, /\.cmp-row \.cv\.s::before\{content:"Senate · S\. 5526"\}/);
+});
+
+test("Oct 16 accuracy fixes: forward pricing, the COOL vote, loan caps, wheat", () => {
+  const all = body + JSON.stringify(data);
+  assert.doesNotMatch(all, /forward pricing permanent|make Dairy Forward Pricing permanent/i, "forward pricing runs through 2031, not permanently");
+  const dairy = FB.renderOperation(data, "dairy");
+  assert.match(dairy, /through 2031<\/b>, not permanently/);
+  const cattle = FB.renderOperation(data, "livestock");
+  assert.match(cattle, /country-of-origin labeling/);
+  assert.match(cattle, /17&ndash;6/);
+  assert.match(cattle, /NSAC Aug 6 markup recap/, "the vote carries its source");
+  const riders = data.compare.find((r) => r.k === "Contentious riders");
+  assert.match(riders.s, /country-of-origin labeling amendment, 17&ndash;6/);
+  assert.doesNotMatch(riders.s, /specialty crops, and fertilizer passed/, "the unsourced Aug 6 list is gone");
+  const loans = data.compare.find((r) => r.k === "Farm loan limits");
+  assert.match(loans.h, /\$3M/); assert.match(loans.h, /\$3\.5M/); assert.match(loans.h, /NALC/);
+  const wheat = data.byOperation.wheat.lines.map((l) => l.t).join(" ");
+  assert.doesNotMatch(wheat, /money export-promotion money/);
+  assert.match(wheat, /more than doubles export-promotion money/);
+  for (const k of ["afbf", "nsac", "nalc"]) assert.match(data.byOperation._sources[k], /href="https:\/\//);
+});
+
+test("long background sits in folds; the phone page stays short", () => {
+  const oct1 = body.slice(body.indexOf('id="oct1"'), body.indexOf("</section>", body.indexOf('id="oct1"')));
+  assert.match(oct1, /<details class="fold">[\s\S]*class="o1-grid"/, "Oct 1 cards are in a fold");
+  assert.match(oct1, /January 1, 2027/, "the cliff date stays in the visible lede");
+  assert.match(body, /<details class="fold">\s*<summary><span class="fold-title">Sources<\/span>/);
+  assert.doesNotMatch(body, /class="lede-more"/);
 });
