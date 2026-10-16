@@ -161,7 +161,8 @@ test("storage: farmdoc's conclusion is printed beside the ratios", () => {
 
 test("storage: Wisconsin is a floor, at least 1.03x, cut not rounded", () => {
   const h = storageHtml(STORE);
-  assert.match(h, /Wisconsin <span class="st-note">no figure for wheat<\/span><span class="st-in">124 stocks \+ 684 crop, 780 bins<\/span><\/td><td class="num">at least 1\.03&times;/);
+  // 2026-10-16: the note names the missing figure (Sept 1 stocks), not just the crop
+  assert.match(h, /Wisconsin<\/button> <span class="st-note">no Sept 1 stocks figure for wheat<\/span><span class="st-in">124 stocks \+ 684 crop, 780 bins<\/span><\/td><td class="num">at least 1\.03&times;/);
   assert.doesNotMatch(h, /at least 1\.04/);
   const noRatio = h.match(/No ratio where NASS has no state figure[^<]*/)[0];
   assert.doesNotMatch(noRatio, /Wisconsin/);
