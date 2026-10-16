@@ -39,6 +39,12 @@ BASE = "https://agtransport.usda.gov/resource/{}.json"
 UA = {"User-Agent": "AGSIST/1.0 (+https://agsist.com)"}
 OUT_DIR = "data/transport"
 HIST_WEEKS = 26
+# 2026-10-16 audit: /basis compared today's state basis with USDA's normal for
+# the newest AgTransport week (Sep 25 on Oct 16). Each basis series now also
+# carries the same-week normal for the weeks after its newest posting, so the
+# page can use the normal for the week a reader is in. USDA runs up to a few
+# weeks behind; eight weeks ahead covers that with room.
+NORM_AHEAD = 8
 AVG_YEARS = 5
 # Plausible basis band, $/bu vs futures. USDA's weekly regional basis sits
 # well inside +/-$3 for every series this file carries; +/-$5 leaves room for
@@ -274,8 +280,24 @@ def one_week_per_group(rows, held, raw_rows, key_fields=("commodity", "market_na
     return out, weeks
 
 
-def series_stats(rows, key_fields, value_field, date_field="date"):
-    """rows -> {series_key: {latest, latest_date, avg5, delta, hist[]}}"""
+def norms_ahead(byw, latest_date, weeks):
+    """[[date, avg5, n], ...] for the `weeks` weeks after latest_date, each the
+    same-week mean over the five ISO years before that week's own ISO year.
+    The date is latest_date + 7k (USDA's posting weekday); weeks with no prior
+    year on file are left out."""
+    out = []
+    d0 = datetime.strptime(latest_date[:10], "%Y-%m-%d")
+    for k in range(1, weeks + 1):
+        d = (d0 + timedelta(days=7 * k)).strftime("%Y-%m-%d")
+        y, w = iso_year_week(d)
+        a, n = same_week_avg_n(byw, w, y, "v")
+        if a is not None:
+            out.append([d, a, n])
+    return out
+
+
+def series_stats(rows, key_fields, value_field, date_field="date", ahead=0):
+    """rows -> {series_key: {latest, latest_date, avg5, delta, hist[], norms[]}}"""
     grouped = defaultdict(list)
     for r in rows:
         try:
@@ -299,6 +321,8 @@ def series_stats(rows, key_fields, value_field, date_field="date"):
             "delta": round(latest - avg5, 3) if avg5 is not None else None,
             "hist": [[d, round(v, 3)] for d, v in pts[-HIST_WEEKS:]],
         }
+        if ahead:
+            out["|".join(k)]["norms"] = norms_ahead(byw, latest_date, ahead)
     return out
 
 
@@ -346,7 +370,8 @@ def build(fetch=get_json):
     raw_rows = basis_rows
     basis_rows, held, thresholds = apply_holds(basis_rows)
     basis_rows, weeks = one_week_per_group(basis_rows, held, raw_rows)
-    basis = series_stats(basis_rows, ["commodity", "market_name", "market_type"], "basis")
+    basis = series_stats(basis_rows, ["commodity", "market_name", "market_type"], "basis",
+                         ahead=NORM_AHEAD)
     barge = series_stats(barge_rows, ["location"], "rate")
 
     cost_latest = max(cost_rows, key=lambda r: r["date"])
@@ -466,6 +491,23 @@ def selftest():
     s6 = series_stats(cut6, ["commodity", "market_name", "market_type"], "basis")
     assert s6["Corn|Iowa|Elevator Bid"]["latest"] == -0.432 and s6["Corn|Kansas|Elevator Bid"]["latest"] == -0.352
     assert {x["date"] for x in s6.values()} == {"2026-09-25"}, "one week per table"
+    # normals for the weeks after the newest posting (hand-worked): Iowa corn
+    # posted through 2025-09-26 (ISO 2025-W39); prior years carry -0.30 except
+    # week 42, which is -0.10 in 2020-2024. Week 42 of 2025 is 2025-10-17 = 3
+    # weeks on; its normal is the 2020-2024 mean of week 42 = -0.10, n = 5.
+    nr = []
+    for y in range(2020, 2026):
+        for wk_ in range(1, 53):
+            d = datetime.strptime(f"{y}-W{wk_:02d}-5", "%G-W%V-%u").strftime("%Y-%m-%d")
+            if y == 2025 and d > "2025-09-26":
+                continue
+            nr.append({"date": d, "market_name": "Iowa", "market_type": "Elevator Bid", "commodity": "Corn",
+                       "basis": -0.10 if wk_ == 42 else -0.30})
+    sn = series_stats(nr, ["commodity", "market_name", "market_type"], "basis", ahead=NORM_AHEAD)[k]
+    assert sn["date"] == "2025-09-26" and len(sn["norms"]) == NORM_AHEAD, sn["norms"]
+    assert sn["norms"][2] == ["2025-10-17", -0.1, 5], sn["norms"][2]
+    assert sn["norms"][0] == ["2025-10-03", -0.3, 5] and sn["avg5"] == -0.3, sn["norms"][0]
+    assert "norms" not in series_stats(nr, ["commodity", "market_name", "market_type"], "basis")[k], "barge: no norms"
     # fail-loud path: empty dataset must raise
     try:
         build(fetch=lambda ds, p: [])
