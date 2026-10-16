@@ -262,6 +262,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-sws button{flex:1 1 0;border:0;padding:0;margin:0 1px 0 0;cursor:pointer;min-width:0;height:14px}
 @media (pointer:coarse){ .fa-sws,.fa-sws button{height:24px} }
 .fa-cls-out{font-size:.74rem;color:var(--text)}.fa-cls-out:empty{display:none}
+.fa-natline{flex-basis:100%;margin:0;font-size:.88rem;line-height:1.5;color:var(--text-dim)}.fa-natline b{color:var(--text);font-size:1rem}
 .fa-legend2{margin-top:-.2rem}.fa-legend2:empty{display:none}
 .fa-scale{align-self:flex-start;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:#111;background:var(--gold-fill,var(--gold));border-radius:4px;padding:.1rem .4rem;margin-bottom:.2rem}
 #fa-method a{color:var(--gold);text-decoration:underline}
@@ -983,6 +984,19 @@ function loadSide(k){
   }
   return S.p;
 }
+/* the national answer beside the legend on the rented layer (benchmark Oct 16: it sat 2.7 phone screens down).
+   rented / (owned + rented), census land in farms; 2022: 345,889,019 / 880,100,848 = 39.3% */
+function tenNatLine(){
+  var T=SIDE.tenure.d, N=T&&T.national, sh=function(p){ return p&&p[0]!=null&&p[1]!=null&&p[0]+p[1]>0?p[1]/(p[0]+p[1]):null; };
+  if(!N) return '';
+  var ys=(T.years||[]).map(String), last=ys[ys.length-1], first=ys[0], a=sh(N[last]), b=sh(N[first]);
+  if(a==null) return '';
+  var st=(STATE&&T.states&&T.states[STATE])?sh(T.states[STATE].y&&T.states[STATE].y[last]):null;
+  return '<p class="fa-natline"><b>'+(100*a).toFixed(1)+'%</b> of U.S. farmland was rented in '+last+' ('+Math.round(N[last][1]/1e6)+' of '+Math.round((N[last][0]+N[last][1])/1e6)+' million acres)'
+    +(b!=null?'; '+(100*b).toFixed(1)+'% in '+first:'')
+    +(st!=null?'. '+esc(STATE_NAMES[STATE]||STATE)+': '+(100*st).toFixed(1)+'%':'')+'. Census of Agriculture.</p>';
+}
+window.AgTenureData=function(){ return loadSide('tenure').then(function(S){ return S.ok?S.d:null; }); };
 function tenShare(f,y){ var T=SIDE.tenure.d, c=T&&T.counties&&T.counties[f], p=c&&c.y&&c.y[y]; if(!p||p[0]==null||p[1]==null||p[0]+p[1]<=0) return null; return p[1]/(p[0]+p[1]); }
 function afidaAcres(f){
   var A=SIDE.afida; if(!A.ok||!PATHS[f]) return null;     // an off-map code is not a county AFIDA could report
@@ -1059,6 +1073,7 @@ function paint(){
   html2+='<span><span class="miss"></span>withheld or not published</span><span class="fa-mono">'+(local?inN:vals.length)+' of '+tot+' counties'+(local?' in '+esc(STATE_NAMES[STATE]||STATE):'')+'</span>';
   html2+='<span class="fa-note">'+(L.div?(K.hasNeg&&K.hasPos?'Blue is below zero, orange above. ':K.hasNeg?'Blue is below zero; no county is above it. ':'Orange is above zero. '):'')+(L.pivot!=null&&K.br.indexOf(L.pivot)>=0?'The colors change at '+shortv(L,L.pivot)+', where claims matched premium. ':'')+(K.zero?'Zero is its own class. ':'')+(local?'Colors are set for '+esc(STATE_NAMES[STATE]||STATE)+' alone; other states are grey. ':'')+(K.even?'Each color holds about the same number of counties':'The colors split the counties at the values shown')+(L.key==='heat_decade'?', across every decade together':'')+'. Tap or point at a color to see its counties. <a href="/farmland-atlas/methods#m-map">How the colors and ranks work</a></span>';
   if(L.side==='rentrev') html2+=rrevLegend(byF,inScope);
+  if(L.key==='ten_rent') html=tenNatLine()+html;
   leg.innerHTML=html; $('fa-legend2').innerHTML=html2;
   wireLegend();
   markLegend();
@@ -2274,7 +2289,7 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 <script>/* the tenure fold loads its own file only when opened (this page is already over 200 KB) */
 (function(){var d=document.getElementById('fa-tenure');if(!d)return;
 function go(){if(!d.open||d.getAttribute('data-on'))return;d.setAttribute('data-on','1');var box=document.getElementById('fa-tenure-box');
-var s=document.createElement('script');s.src='/components/atlas-tenure.js?v=1';s.onload=function(){window.AgTenure.mount(box).then(function(){if(!box.querySelector('table'))d.removeAttribute('data-on');});};
+var s=document.createElement('script');s.src='/components/atlas-tenure.js?v=2';s.onload=function(){window.AgTenure.mount(box).then(function(){if(!box.querySelector('table'))d.removeAttribute('data-on');});};
 s.onerror=function(){box.textContent='The tenure section did not load. Close and open it to try again.';d.removeAttribute('data-on');};document.head.appendChild(s);}
 d.addEventListener('toggle',go);if(/(^|[#&])l=ten_rent(&|$)/.test(location.hash)){d.open=true;}})();
 </script>
