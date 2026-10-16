@@ -1,0 +1,37 @@
+# Benchmark fertilizer: farmdoc / Farm Policy News fertilizer coverage
+# https://farmpolicynews.illinois.edu/2023/10/fertilizer-prices-higher-anhydrous-climbs-6-dtn/
+# fetched 2026-10-16T15:29:46Z, sha256 24cadd61c0baf26f6b7d2f95a999680977bbaa5e989baa67d86ff1fb1e910133
+
+Fertilizer Prices Higher, Anhydrous Climbs 6%- DTN | Farm Policy News | Illinois
+
+DTN writer Todd Neeley reported yesterday that, “Retail prices of all eight major fertilizers continued to climb in the third week of October, with anhydrous leading the way while farmers continued to hit the fields.
+
+“Anhydrous climbed 6% on average to $809 per ton, the only significant jump this week. DTN surveys retail fertilizer sellers weekly to establish price estimates. DTN considers a price change of 5% or higher a significant move.
+
+“DTN Retail Fertilizer Trends,” by Todd Neeley, DTN- Progressive Farmer (October 25, 2023).
+
+“The average price of MAP increased by about 4% to $791 this week. UAN32’s price jumped by 3% to $418.”
+
+Neeley indicated that, “Three fertilizers reported increases of 1% from last month, with urea at $574 per ton, UAN28 at $356 and DAP at $709.
+
+“There were two fertilizers that showed small gains — potash at $504 per ton and 10-34-0 at $612.”
+
+Illinois Production Cost Summary. USDA- Agricultural Marketing Service (October 19, 2023).
+
+The DTN article added that, “All fertilizers are now lower by double digits compared to one year ago. MAP is 20% lower, DAP is 24% less expensive, 10-34-0 is 19% lower, urea is 30% less expensive, both UAN28 and UAN32 are 38% lower, potash is 42% lower and anhydrous is 43% less expensive compared to a year prior.”
+
+Elsewhere, Reuters writer Victoria Klesty reported late last week that, “Fertiliser maker Yara International reported on Friday a bigger-than-expected drop in third-quarter earnings as falling prices squeezed margins, and warned it may cut production.
+
+“Yara, which last year capped its European ammonia production due to a surge in gas costs, said it had produced at almost full capacity during the third quarter and would optimise production in response to market conditions.”
+
+Klesty noted that, “Yara said gas costs for the fourth quarter of 2023 were estimated to be $520 million lower than a year earlier.
+
+“Gas is a key feedstock to make ammonia, a fertiliser that provides plants with nitrogen necessary to build proteins and to bind the sun’s energy through photosynthesis.
+
+“Prices of urea, made from ammonia and the most commonly used fertiliser globally, have increased since the end of June, although gas prices have roughly doubled in the same period.”
+
+More narrowly regarding natural gas, Bloomberg writer Sophie Caronello reported earlier this week that, “With winter in the Northern Hemisphere right around the corner and the conflict between Israel and Hamas ratcheting up, volatility is returning to the natural gas market, one that the International Gas Union describes as ‘undersupplied.’ While the supply picture is much better than last year in Europe, prices there are still at historically high levels.”
+
+And Financial Times writers Alice Hancock and Javier Espinoza reported late last week that, “Brussels is weighing whether to prolong an emergency gas price cap introduced in February amid fears that the conflict in the Middle East and sabotage of a Baltic pipeline could push up prices again this winter.”
+
+The article pointed out that, “Senior EU diplomats and officials told the FT that despite the fall in energy prices and EU gas storage being at record highs, supplies this winter could be affected by the Israel-Hamas war and potential acts of sabotage to gas infrastructure.”

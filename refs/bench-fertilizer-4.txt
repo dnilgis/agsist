@@ -1,0 +1,38 @@
+# Benchmark fertilizer: USDA AMS Illinois Production Cost Report
+# https://www.ams.usda.gov/mnreports/gx_gr210.txt
+# fetched 2026-10-16T15:29:48Z, sha256 5564c63d8f4ccb2866586462aab2af4ce3e07a56b680bb60833dc05e1d63d29f
+
+GX_GR210
+Springfield, IL Thu, Feb 24, 2022 USDA-IL Dept of Ag Market News
+
+Illinois Production Cost Report (Bi-weekly)
+
+***This text report will be discontinued on February 24, 2022. The new pdf report
+can be viewed at: https://www.ams.usda.gov/mnreports/ams_3195.pdf ***
+
+Production costs items state wide: cash prices bulk, FOB distributor,
+per ton unless otherwise stated. Fertilizer in granular form unless
+noted.
+
+Product Offer Average Change
+Anhydrous ammonia 1460.00-1550.00 1503.50 UP 5.00
+
+Urea 46-0-0 875.00-900.00 889.00 DN 8.33
+
+Liquid Nitrogen 28% spread 552.00-630.00 579.63 UP 2.63
+
+DAP(Diammonium Phosphate 18%N 46%P) 850.00-885.00 860.00 UNCH
+
+MAP (Monoammonium Phosphate 11%N 52%P) 825.00-920.00 881.00 UP 4.00
+
+Potash (Potassium) 770.00-830.00 808.33 UP 1.83
+
+Farm Diesel Fuel per gal <1000 gallons 3.40-3.54 3.46 UP 0.14
+
+Source: USDA-IL Dept of Ag Market News Service, Springfield, IL
+Rachel Hettrick 217-782-4925 AGR.MarketNews@Illinois.gov
+In state only toll free 888-458-4787
+www.ams.usda.gov/mnreports/gx_gr210.txt
+www.ams.usda.gov/LPSMarketNewsPage
+
+933C RH

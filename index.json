@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:28:55Z",
+ "run_utc": "2026-10-16T15:29:49Z",
  "sources": [
   {
    "bytes": null,
@@ -2066,6 +2066,131 @@
    ],
    "status": "new",
    "text_chars": 2110
+  },
+  {
+   "bytes": 202931,
+   "sha256": "eb40183925f979111c24152d15ee359cceea6c08bf207eacfabec0b390f4659f",
+   "fetched_utc": "2026-10-16T15:29:42Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-fertilizer-1.html",
+   "final_url": null,
+   "content_type": "text/html;charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fertilizer-1",
+   "url": "https://www.dtnpf.com/agriculture/web/AG/crops/article/2026/04/22/6-fertilizer-prices-see-sizeable",
+   "title": "Benchmark fertilizer: DTN Retail Fertilizer Trends",
+   "why": "/fertilizer competitor benchmark Oct 16, 2026 (established)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:29:41Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 3415
+  },
+  {
+   "bytes": 335942,
+   "sha256": "7c3086b61a49f53c1c4037f20037ddb8c462492e02fcd7aa86d6db811f781748",
+   "fetched_utc": "2026-10-16T15:29:44Z",
+   "pages": null,
+   "etag": "W/74b97f9ef118fd85be5913bf3ab1a25c",
+   "last_modified": "Tue, 28 Apr 2026 21:42:24 GMT",
+   "saved_as": "refs/bench-fertilizer-2.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fertilizer-2",
+   "url": "https://www.farmweeknow.com/profitability/6-fertilizer-prices-see-sizeable-moves-higher/article_007e34c0-9295-4c5f-9d43-bed6dd438586.html",
+   "title": "Benchmark fertilizer: FarmWeek (Illinois Farm Bureau) DTN fertilizer repost",
+   "why": "/fertilizer competitor benchmark Oct 16, 2026 (established)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:29:43Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1896
+  },
+  {
+   "bytes": 112474,
+   "sha256": "24cadd61c0baf26f6b7d2f95a999680977bbaa5e989baa67d86ff1fb1e910133",
+   "fetched_utc": "2026-10-16T15:29:46Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-fertilizer-3.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fertilizer-3",
+   "url": "https://farmpolicynews.illinois.edu/2023/10/fertilizer-prices-higher-anhydrous-climbs-6-dtn/",
+   "title": "Benchmark fertilizer: farmdoc / Farm Policy News fertilizer coverage",
+   "why": "/fertilizer competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:29:45Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 3392
+  },
+  {
+   "bytes": 1397,
+   "sha256": "5564c63d8f4ccb2866586462aab2af4ce3e07a56b680bb60833dc05e1d63d29f",
+   "fetched_utc": "2026-10-16T15:29:48Z",
+   "pages": null,
+   "etag": "\"575-63ecfdab8fc33-gzip\"",
+   "last_modified": "Mon, 15 Sep 2025 04:58:28 GMT",
+   "saved_as": "refs/bench-fertilizer-4.html",
+   "final_url": null,
+   "content_type": "text/plain",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fertilizer-4",
+   "url": "https://www.ams.usda.gov/mnreports/gx_gr210.txt",
+   "title": "Benchmark fertilizer: USDA AMS Illinois Production Cost Report",
+   "why": "/fertilizer competitor benchmark Oct 16, 2026 (government)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:29:48Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1084
+  },
+  {
+   "bytes": 1774,
+   "sha256": "e7d74bdbe9aa2cddca852910e48bf54aff1b8b5e99e243809e26f68f8f24b673",
+   "fetched_utc": "2026-10-16T15:29:49Z",
+   "pages": null,
+   "etag": "\"6ee-63ecfd9d6be53-gzip\"",
+   "last_modified": "Mon, 15 Sep 2025 04:58:14 GMT",
+   "saved_as": "refs/bench-fertilizer-5.html",
+   "final_url": null,
+   "content_type": "text/plain",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fertilizer-5",
+   "url": "https://www.ams.usda.gov/mnreports/nw_gr210.txt",
+   "title": "Benchmark fertilizer: USDA AMS Iowa Production Cost Report",
+   "why": "/fertilizer competitor benchmark Oct 16, 2026 (government)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:29:49Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1322
   }
  ]
 }

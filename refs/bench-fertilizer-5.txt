@@ -1,0 +1,44 @@
+# Benchmark fertilizer: USDA AMS Iowa Production Cost Report
+# https://www.ams.usda.gov/mnreports/nw_gr210.txt
+# fetched 2026-10-16T15:29:49Z, sha256 e7d74bdbe9aa2cddca852910e48bf54aff1b8b5e99e243809e26f68f8f24b673
+
+NW_GR210
+Des Moines, IA Tue, Feb 08, 2022 USDA Market News
+
+***Note: Beginning next week, Tuesday, February 22, 2022, this report is moving
+to the MARS platform and can be found at the new web address:
+https://mymarketnews.ams.usda.gov/viewReport/2863***
+
+Iowa Production Cost Report (Bi-weekly)
+Propane and Farm Diesel prices are current.
+Production costs items state wide: cash prices bulk, FOB distributor,
+per ton unless otherwise stated. Fertilizer in granular form unless noted.
+
+Product Offer Average Change
+Anhydrous ammonia 1,430.00-1,551.00 1519.00 UP 7.00
+
+Urea 46-0-0 735.00-953.00 871.40 DN 43.93
+
+Liquid Nitrogen 28% spread NA NA NA
+32% spread 640.00-708.00 669.33 DN 1.17
+
+Lime (Applied) NA NA NA
+
+DAP(Diammonium Phosphate 18%N 46%P) 830.00-855.00 842.50 DN 30.83
+
+MAP (Monoammonium Phosphate 11%N 52%P) 850.00-961.00 918.50 DN 24.30
+
+Potash (Red) (0-0-60) 770.00-859.00 804.80 DN 17.91
+
+Potash (White) (0-0-62) NA NA NA
+
+Propane (LP Gas) per gal <1000 gallons 1.75-2.19 1.98 UP 0.03
+
+Farm Diesel Fuel per gal <1000 gallons 3.12-3.65 3.32 UP 0.34
+
+Source: USDA Market News Service Des Moines, IA
+Emily Bollhoefer 515-284-4460 Desm.LPGMN@ams.usda.gov
+������� 24 Hour recorded market information 515-284-4830
+������� www.ams.usda.gov/mnreports/NW_GR210.txt
+������� www.ams.usda.gov/LPSMarketNewsPage
+950C EMB
