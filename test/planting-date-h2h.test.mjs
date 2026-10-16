@@ -1,9 +1,8 @@
 /* /planting-date in a real browser, the 2026-10-15 head-to-head fixes.
  *
- *   1. The GDU-before-frost card says plainly when the hybrid in the box
- *      falls short. The default (108-day corn, central WI) needs 2,626 on the
- *      page's own line, and a May 1 planting gets 2,139 to Sep 18, so the page
- *      must say it does not reach black layer before that frost date.
+ *   1. The GDU-before-frost card sets the hybrid's rating next to the GDUs a
+ *      May 1 planting gets (2,626 and 2,139 to Sep 18 by default) and makes no
+ *      maturity call: its inputs are rough zone averages (Oct 16 benchmark).
  *   2. The card says its fall frost dates are approximate and unchecked
  *      against a station (the spring ones run about 13 days early), and
  *      prints no raw "&asymp;" (the note is set as text).
@@ -52,36 +51,71 @@ async function open(browser, port, width = 1280) {
 const txt = (pg, sel) => pg.$eval(sel, (e) => e.textContent.trim());
 async function type(pg, sel, v) { await pg.fill(sel, String(v)); await pg.dispatchEvent(sel, "input"); }
 
-test("the default hybrid is called short of black layer before the zone frost", { skip }, async () => {
+// Oct 16 benchmark: the old maturity verdict told southern WI and MN growers their typical
+// 108-day hybrid never reaches black layer, on frost and heat-unit inputs the page itself calls
+// rough. Until those come from a station, the card sets the two numbers side by side and makes
+// no maturity call in any zone.
+test("no maturity call in any zone: the default hybrid gets numbers, not a verdict", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { pg, errors } = await open(browser, port);
     const v = await txt(pg, "#cmp-verdict");
-    assert.match(v, /108-day/);
-    assert.match(v, /does not reach black layer/);
-    assert.match(v, /2,626/);
+    // Central WI: May 1 to Sep 18 = 31x7.5 + 30x15.5 + 31x21.5 + 31x19.5 + 17x10 = 2,138.5.
     assert.match(v, /2,139/);
-    assert.match(v, /487 short/);
+    assert.match(v, /108-day hybrid is rated about 2,626/); // 108 x 22 + 250
     assert.match(v, /Sep 18/);
+    assert.match(v, /not a maturity call/);
+    assert.match(v, /nearest station/);
+    const zones = await pg.$$eval("#pd-zone option", (os) => os.map((o) => o.value));
+    assert.ok(zones.length >= 4);
+    for (const z of zones) {
+      await pg.selectOption("#pd-zone", z);
+      await pg.dispatchEvent("#pd-zone", "change");
+      const t = await txt(pg, "#cmp-verdict");
+      assert.doesNotMatch(t, /does not reach|short\b|reaches black layer|will not mature/, z + ": " + t);
+      assert.match(t, /approximate numbers/);
+    }
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
 
-test("a hybrid that fits says which planting dates make it", { skip }, async () => {
+test("southern WI and MN: the hint's own 108-day hybrid is not called short", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { pg } = await open(browser, port);
-    // 85-day: 85 x 22 + 250 = 2,120. May 1 gets 2,139, May 10 gets 2,071.
-    await type(pg, "#pd-rm", 85);
-    const v = await txt(pg, "#cmp-verdict");
-    assert.match(v, /2,120/);
-    assert.match(v, /May 1/);
-    assert.match(v, /May 10.*short|short.*May 10/);
-    // 75-day: 1,900. Jun 1 gets 465 + 666.5 + 604.5 + 170 = 1,906, the lowest of the four.
-    await type(pg, "#pd-rm", 75);
-    assert.match(await txt(pg, "#cmp-verdict"), /every planting date/);
+    const zones = await pg.$$eval("#pd-zone option", (os) => os.map((o) => [o.value, o.textContent]));
+    const south = zones.filter(([, t]) => /south/i.test(t));
+    assert.ok(south.length >= 2, "southern WI and MN zones exist");
+    for (const [z] of south) {
+      await pg.selectOption("#pd-zone", z);
+      await pg.dispatchEvent("#pd-zone", "change");
+      const t = await txt(pg, "#cmp-verdict");
+      assert.match(t, /2,626/);
+      assert.doesNotMatch(t, /short|does not reach/);
+    }
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("soybean penalty prints the 0.2 to 0.5 bu/a/day range, worked by hand", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg } = await open(browser, port);
+    await pg.click("#pill-bean");
+    await pg.waitForFunction(() => /Soybean Yield Penalty/.test(document.getElementById("penalty-section").textContent));
+    const rows = await pg.$$eval("#penalty-section tbody tr", (trs) => trs.map((tr) => [...tr.cells].map((c) => c.textContent.trim())));
+    const row = (d) => rows.find((r) => r[0] === d);
+    // May 5: 4 days. 0.2 x 4 = 0.8, 0.5 x 4 = 2.0. 55 - 2.0 = 53, 55 - 0.8 = 54.2. 53/55 = 96%, 54.2/55 = 99%.
+    assert.equal(row("May 5")[2], "-0.8 to -2.0 bu/a");
+    assert.equal(row("May 5")[3], "~53–54 bu/ac");
+    assert.equal(row("May 5")[1], "96–99%");
+    // Jun 15: 45 days. 9.0 to 22.5 bu. 55 - 22.5 = 32.5 -> 33 (toFixed rounds half away here), 46. 59% to 84%.
+    assert.equal(row("Jun 15")[2], "-9.0 to -22.5 bu/a");
+    assert.equal(row("Jun 15")[1], "59–84%");
+    assert.match(row("Jun 15")[4], /middle 18\.0/);
+    assert.equal(row("May 1")[2], "-");
   } finally { await browser.close(); srv.close(); }
 });
 

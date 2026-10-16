@@ -224,7 +224,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
          (name + " logged " + f"{total:,}" + " National Weather Service hail reports over the last " +
           str(n_yrs) + " years, " + ("meaningful but not hail-alley volume." if total >= 60 else
           "a comparatively quiet record by national standards."))) +
-        " The table ranks the counties. To check one address, use the map\u2019s search: it lists every dated report within 25 miles.</p>")
+        " The table ranks the counties. To check one address, use the map\u2019s search: it lists every dated report within 10 miles (5 or 25 if you pick).</p>")
 
     # Key Figures — complete standalone sentences, because that is what
     # writers and AI engines lift verbatim (see: insurance lead-gen pages

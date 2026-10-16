@@ -1019,9 +1019,12 @@ def seed_conditions(today):
         seeds["condharvtable"] = f'<tr><td style="color:#8a948f">No current harvest numbers: {why}</td></tr>'
         season = cond_season(today, False)
         seeds["condharvlead"] = ""
-    seeds["condlede"] = COND_LEDE[season]
     # state table: the page script's table, corn tab, worst first
     pkg = ((cj or {}).get("crops") or {}).get("corn")
+    # The lede names the first year the ratings actually have at this week (2001 in mid-October,
+    # not the 2000 the query starts at), so it never contradicts the table note below it.
+    fy0 = missing_years(pkg)[0] if pkg else None
+    seeds["condlede"] = COND_LEDE[season].replace("since 2000", f"since {fy0}" if fy0 else "on record")
     we = _iso_date((pkg or {}).get("week_ending"))
     if pkg and pkg.get("states") and not _stale(we, today, "conditions"):
         rows = sorted(pkg["states"].items(), key=lambda kv: kv[1].get("pctile", 0))

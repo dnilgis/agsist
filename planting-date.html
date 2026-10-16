@@ -315,7 +315,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
       <div class="pd-card-title" id="cmp-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> GDU accumulation by planting date: central WI average</div>
       <p style="font-size:0.787rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem">Estimated total GDU accumulation from each planting date to the zone's 50% first-fall-frost date, for four different planting dates. Earlier planting = more heat units captured before frost. Uses WI 30-year normal GDU accumulation rates.</p>
       <div class="cmp-grid" id="cmp-grid"></div>
-      <p id="cmp-verdict" style="font-size:0.85rem;color:var(--text);line-height:1.5;margin:.75rem 0 0;font-weight:600"></p>
+      <p id="cmp-verdict" style="font-size:0.85rem;color:var(--text);line-height:1.5;margin:.75rem 0 0"></p>
       <div class="f-hint" style="margin-top:.65rem" id="cmp-note"></div>
     </div>
   </div>
@@ -471,8 +471,11 @@ var CORN_PENALTY = [
 // the 55 bu/a base minus 0.4 bu/a per day of planting delay past May 1 (UW-Madison, Conley:
 // about 0.4 bu/a/day past May 1; 0.2-0.5 bu/a/day after Apr 25). Straight line, no loss
 // counted before May 1. Same dates the page has always covered; none added.
+// The 0.4 is a single figure from one article; the same article gives 0.2-0.5 and it was not
+// re-read at the source for this page, so every row prints the 0.2-0.5 range and keeps 0.4
+// only as the midpoint for colour and the middle estimate.
 // https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/
-var BEAN_BASE = 55, BEAN_LOSS_PER_DAY = 0.4;
+var BEAN_BASE = 55, BEAN_LOSS_PER_DAY = 0.4, BEAN_LOSS_LO = 0.2, BEAN_LOSS_HI = 0.5;
 var BEAN_PENALTY = [
   {label:'Apr 25', days:0},
   {label:'May 1',  days:0},
@@ -488,9 +491,10 @@ var BEAN_PENALTY = [
 ].map(function(r){
   var loss = BEAN_LOSS_PER_DAY * r.days, bu = BEAN_BASE - loss;
   r.bu = bu; r.lossBu = loss; r.pct = Math.round(bu / BEAN_BASE * 100);
+  r.lossLo = BEAN_LOSS_LO * r.days; r.lossHi = BEAN_LOSS_HI * r.days;
   r.note = r.days===0
     ? (r.label==='Apr 25' ? 'No loss counted before May 1 in this approximation (UW-Madison sees 0.2–0.5 bu/a/day after Apr 25)' : 'Base: no delay past May 1')
-    : r.days+' days past May 1 × 0.4 bu/a/day ≈ '+loss.toFixed(1)+' bu/a'+(r.extra?', '+r.extra:'');
+    : r.days+' days past May 1 × 0.2–0.5 bu/a/day ≈ '+r.lossLo.toFixed(1)+' to '+r.lossHi.toFixed(1)+' bu/a (middle '+loss.toFixed(1)+')'+(r.extra?', '+r.extra:'');
   return r;
 });
 
@@ -585,8 +589,8 @@ function renderWindowBars(){
   ] : [
     {label:'Optimal',     dates:'Apr 25 \u2013 May 1',  pct:100, cls:'green', tip:'No delay past May 1. Plant when the field is fit and soil \u226550\u00b0F.'},
     {label:'Good',        dates:'May 1 \u2013 May 15',  pct:70,  cls:'gold',  tip:'Yield falls about 0.4 bu/a per day of planting delay past May 1 (UW-Madison; 0.2\u20130.5 bu/a/day after Apr 25).'},
-    {label:'Acceptable',  dates:'May 15 \u2013 Jun 1',  pct:45,  cls:'gold',  tip:'About 6 to 12 bu/a below May 1 on the 55 bu base, at 0.4 bu/a/day (approximation).'},
-    {label:'Late',        dates:'After Jun 1',           pct:20,  cls:'red',   tip:'More than 12 bu/a below May 1 on the same approximation. Check your insurance final planting date.'},
+    {label:'Acceptable',  dates:'May 15 \u2013 Jun 1',  pct:45,  cls:'gold',  tip:'About 3 to 16 bu/a below May 1 on the 55 bu base, at 0.2 to 0.5 bu/a/day (approximation).'},
+    {label:'Late',        dates:'After Jun 1',           pct:20,  cls:'red',   tip:'More than 6 to 16 bu/a below May 1 on the same range. Check your insurance final planting date.'},
   ];
 
   var barsHtml = windows.map(function(w){
@@ -606,7 +610,7 @@ function renderWindowBars(){
   } else {
     rowsHtml = '<div class="r-row"><span class="r-lbl">Optimal window</span><span class="r-val green">By May 1</span></div>'
       +'<div class="r-row"><span class="r-lbl">Soil temp target</span><span class="r-val gold">\u226550\u00b0F at 2" depth</span></div>'
-      +'<div class="r-row"><span class="r-lbl">Yield loss</span><span class="r-val">~0.4 bu/a/day past May 1 (UW-Madison)</span></div>'
+      +'<div class="r-row"><span class="r-lbl">Yield loss</span><span class="r-val">~0.2\u20130.5 bu/a/day past May 1 (UW-Madison)</span></div>'
       +'<div class="r-row"><span class="r-lbl">SDS</span><span class="r-val">Early planting can raise pressure</span></div>'
       +'<div class="f-hint">Yield falls about 0.4 bu/a per day of planting delay past May 1 (UW-Madison; 0.2\u20130.5 bu/a/day after Apr 25). Early planting can raise SDS pressure; manage it with variety choice and seed treatment.</div>';
   }
@@ -627,9 +631,11 @@ function renderPenaltyTable(){
     var cls = d.pct===100?'opt':d.pct>=95?'':d.pct>=88?'warn':d.pct>=78?'hi':'hl';
     var pctStr, lossStr, estYield;
     if(d.bu!=null){ // soybean: computed from bu/a, approximation
-      pctStr = d.pct+'%';
-      lossStr = d.lossBu>0 ? '-'+d.lossBu.toFixed(1)+' bu/a' : '-';
-      estYield = d.bu.toFixed(0);
+      if(d.days>0){
+        pctStr = Math.round((maxYield-d.lossHi)/maxYield*100)+'–'+Math.round((maxYield-d.lossLo)/maxYield*100)+'%';
+        lossStr = '-'+d.lossLo.toFixed(1)+' to -'+d.lossHi.toFixed(1)+' bu/a';
+        estYield = (maxYield-d.lossHi).toFixed(0)+'–'+(maxYield-d.lossLo).toFixed(0);
+      } else { pctStr = '100%'; lossStr = '-'; estYield = maxYield.toFixed(0); }
     } else if(d.lo!=null){ // a published range, printed as a range
       pctStr = '~'+d.lo+'–'+d.hi+'%';
       lossStr = '-'+(100-d.hi)+' to -'+(100-d.lo)+'%';
@@ -649,7 +655,7 @@ function renderPenaltyTable(){
 
   var foot = crop==='corn'
     ? 'Est. yield based on bu/ac corn at 200 bu/ac baseline. Actual varies by hybrid, field, and weather. Source: UW-Extension &amp; UMN Extension agronomic guidelines. Jun 10 row: <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn" target="_blank" rel="noopener">UMN Extension</a> trials, % of maximum yield for a Jun 9 planting: 69% (Lamberton 1988&ndash;2003) and 79% (Lamberton, Morris, Waseca 2009&ndash;11); optimum roughly Apr 21&ndash;May 10.'
-    : 'Approximation, not a trial table: a 55 bu/ac base minus 0.4 bu/a per day of planting delay past May 1, a straight line. Yield falls about 0.4 bu/a per day of planting delay past May 1 (<a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison, Conley</a>; 0.2&ndash;0.5 bu/a/day after Apr 25). Actual loss varies by year, variety and field.';
+    : 'Approximation, not a trial table: a 55 bu/ac base minus 0.2 to 0.5 bu/a per day of planting delay past May 1, a straight line; the row colour uses the 0.4 middle. Yield falls about 0.4 bu/a per day of planting delay past May 1 (<a href="https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/" target="_blank" rel="noopener">UW-Madison, Conley</a>; 0.2&ndash;0.5 bu/a/day after Apr 25). Actual loss varies by year, variety and field.';
   var html = '<div class="pd-card" style="margin-top:0"><div class="pd-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> '+label+' Yield Penalty by Planting Date</div>'
     +'<div style="overflow-x:auto"><table class="pen-table">'
     +'<thead><tr><th>Planting Date</th><th>% of Max Yield</th><th>Yield Loss</th><th>Est. Yield</th><th>Notes</th></tr></thead>'
@@ -695,23 +701,18 @@ function renderGDUCompare(){
       +'</div>';
   }).join('');
 
-  // Verdict for the hybrid in the box, on the page's own numbers: which planting dates get its
-  // target before the zone's 50% first-fall-frost date. Says plainly when none do.
+  // No maturity call. The frost dates are zone approximations the page itself calls early and
+  // unchecked, the heat units are a Wisconsin monthly average with no April rate, and the target
+  // is a line through two seed-company figures. On those inputs a 108-day hybrid (typical for
+  // south-central WI) came out "short" in every zone, which farmers there disprove every fall.
+  // Until frost and heat units come from the reader's station, the card only sets the two
+  // numbers side by side and sends the reader to the station and the seed rating.
   var vEl = document.getElementById('cmp-verdict');
   if(vEl){
     var vtxt = '';
     if(gduTarget!==null){
-      var stage = crop==='corn' ? 'black layer' : 'R8';
-      var who = crop==='corn' ? 'A '+rm+'-day hybrid' : 'An MG '+rm+' variety';
-      var ok = dates.filter(function(x){ return x.gdu >= gduTarget; });
-      var short = dates.filter(function(x){ return x.gdu < gduTarget; });
-      if(ok.length===0){
-        vtxt = who+' needs about '+gduTarget.toLocaleString()+' GDUs and does not reach '+stage+' before '+fz.fall50+' from any of these dates on these numbers. May 1 planting gets about '+dates[0].gdu.toLocaleString()+', '+(gduTarget-dates[0].gdu).toLocaleString()+' short.';
-      } else if(short.length===0){
-        vtxt = who+' needs about '+gduTarget.toLocaleString()+' GDUs and reaches '+stage+' before '+fz.fall50+' from every planting date here on these numbers.';
-      } else {
-        vtxt = who+' needs about '+gduTarget.toLocaleString()+' GDUs. On these numbers it reaches '+stage+' before '+fz.fall50+' if planted by '+ok[ok.length-1].d+'; '+short.map(function(x){return x.d+' is '+(gduTarget-x.gdu).toLocaleString()+' short';}).join(', ')+'.';
-      }
+      var who = crop==='corn' ? 'a '+rm+'-day hybrid is rated about ' : 'an MG '+rm+' variety needs about ';
+      vtxt = 'On these approximate numbers, a May 1 planting gets about '+dates[0].gdu.toLocaleString()+' GDUs before the median first fall frost ('+fz.fall50+'), and '+who+gduTarget.toLocaleString()+(crop==='corn'?' to black layer':' to R8')+'. That is not a maturity call: the frost dates and heat units here are rough zone averages, not your station. Check your nearest station\u2019s frost date and your seed\u2019s own GDU rating.';
     }
     vEl.textContent = vtxt;
     vEl.hidden = !vtxt;

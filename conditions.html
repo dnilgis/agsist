@@ -21,14 +21,14 @@
   <link rel="manifest" href="/manifest.json">
 
   <title>USDA Crop Conditions: Corn 56% Good-Excellent | AGSIST</title>
-  <meta name="description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
+  <meta name="description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against its own record for this week.">
   <link rel="canonical" href="https://agsist.com/conditions">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
   <meta property="og:title" content="USDA Crop Conditions: Corn 56% Good-Excellent | AGSIST">
-  <meta property="og:description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
+  <meta property="og:description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against its own record for this week.">
 <meta name="twitter:title"       content="USDA Crop Conditions: Corn 56% Good-Excellent | AGSIST">
-<meta name="twitter:description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against the same week since 2000 as a percentile rank.">
+<meta name="twitter:description" content="US corn is 56% good to excellent; soybeans 57%. Every state's rating ranked against its own record for this week.">
   <meta property="og:url" content="https://agsist.com/conditions">
   <meta property="og:image" content="https://agsist.com/img/og/conditions.jpg?v=f1519b38">
   <meta property="og:image:alt" content="US corn is 56% good to excellent, week ending Oct 11, 2026.">
@@ -40,7 +40,7 @@
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","@id":"https://agsist.com/conditions#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Crop Conditions","item":"https://agsist.com/conditions"}]}</script>
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this the worst crop we’ve ever had?", "acceptedAnswer": {"@type": "Answer", "text": "Check your state’s rank above. If it says 3 of 27, it’s genuinely historic. If it says 14 of 27, it’s a middling year that feels worse because it’s yours."}}, {"@type": "Question", "name": "Why does my county look worse than my state’s number?", "acceptedAnswer": {"@type": "Answer", "text": "State ratings average enormous areas; your county, and your farm, can sit far from that average. The rank tells you how the state-level picture compares historically, not what your back forty looks like."}}, {"@type": "Question", "name": "Do conditions predict yield?", "acceptedAnswer": {"@type": "Answer", "text": "Loosely and late. Correlation strengthens as the season ages. Early-summer G+E is a weak predictor; by dent stage it means much more. That relationship (with its R²) is on the Conditions vs Yield page."}}, {"@type": "Question", "name": "Where do the numbers come from?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS Crop Progress, published Monday afternoons in season, back to 2000 for this comparison. Fetched, ranked, and refreshed automatically every Monday night; source linked below."}}]}
+  {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this the worst crop we’ve ever had?", "acceptedAnswer": {"@type": "Answer", "text": "Check your state’s rank above. If it says 3 of 27, it’s genuinely historic. If it says 14 of 27, it’s a middling year that feels worse because it’s yours."}}, {"@type": "Question", "name": "Why does my county look worse than my state’s number?", "acceptedAnswer": {"@type": "Answer", "text": "State ratings average enormous areas; your county, and your farm, can sit far from that average. The rank tells you how the state-level picture compares historically, not what your back forty looks like."}}, {"@type": "Question", "name": "Do conditions predict yield?", "acceptedAnswer": {"@type": "Answer", "text": "Loosely and late. Correlation strengthens as the season ages. Early-summer G+E is a weak predictor; by dent stage it means much more. That relationship (with its R²) is on the Conditions vs Yield page."}}, {"@type": "Question", "name": "Where do the numbers come from?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS Crop Progress, published Monday afternoons in season. Each state is compared with every year USDA rated it at the same week; the query starts in 2000, and this fall no state has a 2000 rating at this week, so the records start in 2001 or later. Fetched, ranked, and refreshed automatically every Monday night; source linked below."}}]}
   </script>
 
   <style>
@@ -122,6 +122,19 @@
       .cd-ver select{margin-bottom:10px}
     }
     #cd-table th{white-space:nowrap} #cd-table th:last-child{white-space:normal;min-width:200px}
+    /* Phones (Oct 16 benchmark): the ranking table was 603 px in a 320 px box, so Rank and the bar sat off
+       screen. Under 480 px each state is one card row: state, G+E now, own avg, rank on the first line,
+       the bar on the second. No sideways swipe. */
+    @media(max-width:480px){
+      .tblscroll table#cd-table{min-width:0;display:block}
+      #cd-table tbody,#cd-table caption{display:block}
+      #cd-table tr{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;column-gap:.7rem;row-gap:.2rem;align-items:center;padding:7px 8px;border-bottom:1px solid rgba(132,160,168,.12)}
+      #cd-table th,#cd-table td{display:block;padding:0;border:none;min-width:0}
+      #cd-table th{font-size:.62rem;letter-spacing:.04em;white-space:normal}
+      #cd-table tr>:nth-child(5){grid-column:1/-1}
+      #cd-table th:last-child{min-width:0}
+      #cd-table .cd-strip{width:100%;max-width:300px;height:auto;display:block}
+    }
   
 .tblscroll table{margin:0;min-width:520px}
 /* 2026-10-08 light theme: this page was built dark-only, and loader.js now
@@ -210,9 +223,9 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
 
 <main class="cd-wrap" id="main">
   <header class="cd-hero">
-    <p class="cd-kicker page-kicker">USDA Crop Progress &middot; every Monday &middot; ranked against 2000&ndash;present</p>
-    <h1>Crop conditions ranked against every year since 2000</h1>
-    <p class="cd-sub page-lede"><!--SEED:condlede-->Harvest pace first: how far each state&rsquo;s <strong>corn and soybean harvest</strong> is ahead of or behind its <strong>five-year average</strong>, from Monday&rsquo;s USDA Crop Progress. Below that, each state&rsquo;s Good+Excellent share, ranked against the same week of every year USDA rated it since 2000.<!--/SEED--></p>
+    <p class="cd-kicker page-kicker">USDA Crop Progress &middot; every Monday &middot; ranked against every year USDA rated it</p>
+    <h1>Crop conditions ranked against every year on record</h1>
+    <p class="cd-sub page-lede"><!--SEED:condlede-->Harvest pace first: how far each state&rsquo;s <strong>corn and soybean harvest</strong> is ahead of or behind its <strong>five-year average</strong>, from Monday&rsquo;s USDA Crop Progress. Below that, each state&rsquo;s Good+Excellent share, ranked against the same week of every year USDA rated it since 2001.<!--/SEED--></p>
   </header>
 
   <p class="cd-week" id="cd-week"><!--SEED:condweek-->Week ending Oct 11, 2026 (USDA NASS): US corn <b>56%</b> good-to-excellent, soybeans <b>57%</b>. Harvested: corn 33% (avg 39%), soybeans 46% (avg 50%).<!--/SEED--></p>
@@ -250,7 +263,7 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
       <p class="cd-seed"><!--SEED:condstats-->USDA Crop Progress, week ending Oct 11, 2026: US corn <strong>56%</strong> good-to-excellent (54% the week before); soybeans <strong>57%</strong> (57%). Corn harvest 33% done vs a 39% five-year average. 26 corn states rated for the week ending Oct 11, 2026, each ranked against the same week of every year USDA rated it, 2001&ndash;present (rank 1 = worst on record). No state has a rating at this week in 2000, 2012 or 2025 in the USDA file, so those years are not in the comparison.<!--/SEED--></p>
       <div class="cd-tabs" role="tablist" id="cd-tabs"></div>
       <div class="tblscroll"><table class="cd-tbl" id="cd-table"><!--SEED:condtable--><caption>Corn, week ending Oct 11, 2026 &middot; worst first</caption><tr><th>State</th><th style="text-align:right">G+E now</th><th style="text-align:right">Own avg</th><th style="text-align:right">Rank (1 = worst)</th></tr><tr><td>WY</td><td class="num">31%</td><td class="num">81%</td><td class="num">1 of 12</td></tr><tr><td>NC</td><td class="num">14%</td><td class="num">51%</td><td class="num">2 of 24</td></tr><tr><td>ND</td><td class="num">30%</td><td class="num">60%</td><td class="num">2 of 24</td></tr><tr><td>NE</td><td class="num">48%</td><td class="num">67%</td><td class="num">3 of 24</td></tr><tr><td>SD</td><td class="num">35%</td><td class="num">61%</td><td class="num">3 of 24</td></tr><tr><td>UT</td><td class="num">72%</td><td class="num">82%</td><td class="num">1 of 12</td></tr><tr><td>CO</td><td class="num">36%</td><td class="num">59%</td><td class="num">5 of 24</td></tr><tr><td>TX</td><td class="num">35%</td><td class="num">49%</td><td class="num">5 of 23</td></tr><tr><td>MI</td><td class="num">51%</td><td class="num">58%</td><td class="num">6 of 24</td></tr><tr><td>WI</td><td class="num">58%</td><td class="num">65%</td><td class="num">6 of 24</td></tr><tr><td>KS</td><td class="num">40%</td><td class="num">48%</td><td class="num">7 of 24</td></tr><tr><td>NM</td><td class="num">59%</td><td class="num">67%</td><td class="num">4 of 12</td></tr><tr><td>IL</td><td class="num">60%</td><td class="num">64%</td><td class="num">9 of 24</td></tr><tr><td>MN</td><td class="num">61%</td><td class="num">64%</td><td class="num">9 of 24</td></tr><tr><td>DE</td><td class="num">51%</td><td class="num">56%</td><td class="num">6 of 11</td></tr><tr><td>IN</td><td class="num">64%</td><td class="num">60%</td><td class="num">15 of 24</td></tr><tr><td>KY</td><td class="num">79%</td><td class="num">70%</td><td class="num">14 of 24</td></tr><tr><td>OH</td><td class="num">69%</td><td class="num">59%</td><td class="num">15 of 24</td></tr><tr><td>WV</td><td class="num">63%</td><td class="num">53%</td><td class="num">8 of 12</td></tr><tr><td>IA</td><td class="num">71%</td><td class="num">66%</td><td class="num">16 of 24</td></tr><tr><td>TN</td><td class="num">81%</td><td class="num">67%</td><td class="num">16 of 24</td></tr><tr><td>PA</td><td class="num">78%</td><td class="num">66%</td><td class="num">17 of 24</td></tr><tr><td>MT</td><td class="num">68%</td><td class="num">60%</td><td class="num">8 of 12</td></tr><tr><td>MO</td><td class="num">66%</td><td class="num">53%</td><td class="num">18 of 24</td></tr><tr><td>NJ</td><td class="num">91%</td><td class="num">64%</td><td class="num">11 of 12</td></tr><tr><td>NY</td><td class="num">87%</td><td class="num">70%</td><td class="num">11 of 11</td></tr><!--/SEED--></table></div>
-      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Rank counts up from the worst: rank 1 of N = the lowest G+E this week has ever seen in that state’s record. The denominator is per state: most go back to 2000, but USDA only began reporting some states in 2014, so their comparison starts there. The average column is each state’s own, over the years it actually has. The bar shows how far this week sits from that state&rsquo;s own average for the same week, in G+E percentage points: red below, green above, every row on the same scale. States with under 10 comparable years are left out rather than thinly ranked.</p>
+      <p style="font-size:13.4px;color:#8a948f;margin:10px 0 0">Rank counts up from the worst: rank 1 of N = the lowest G+E this week has ever seen in that state’s record. The denominator is per state: most start in 2001 at this week (none has a 2000 rating here), but USDA only began reporting some states in 2014, so their comparison starts there. The average column is each state’s own, over the years it actually has. The bar shows how far this week sits from that state&rsquo;s own average for the same week, in G+E percentage points: red below, green above, every row on the same scale. States with under 10 comparable years are left out rather than thinly ranked.</p>
     </div>
   </section>
 
@@ -272,7 +285,7 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
       <details><summary>Is this the worst crop we&rsquo;ve ever had?</summary><p>Check your state&rsquo;s rank above. If it says 3 of 27, it&rsquo;s genuinely historic. If it says 14 of 27, it&rsquo;s a middling year that feels worse because it&rsquo;s yours.</p></details>
       <details><summary>Why does my county look worse than my state&rsquo;s number?</summary><p>State ratings average enormous areas; your county, and your farm, can sit far from that average. The rank tells you how the state-level picture compares historically, not what your back forty looks like.</p></details>
       <details><summary>Do conditions predict yield?</summary><p>Loosely and late. Correlation strengthens as the season ages. Early-summer G+E is a weak predictor; by dent stage it means much more. That relationship (with its R²) is on the Conditions vs Yield page.</p></details>
-      <details><summary>Where do the numbers come from?</summary><p>USDA NASS Crop Progress, published Monday afternoons in season, back to 2000 for this comparison. Fetched, ranked, and refreshed automatically every Monday night; source linked below.</p></details>
+      <details><summary>Where do the numbers come from?</summary><p>USDA NASS Crop Progress, published Monday afternoons in season. Each state is compared with every year USDA rated it at the same week; the query starts in 2000, and this fall no state has a 2000 rating at this week, so the records start in 2001 or later. Fetched, ranked, and refreshed automatically every Monday night; source linked below.</p></details>
     </div>
   </section>
 

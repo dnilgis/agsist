@@ -442,7 +442,7 @@ def seo_conditions(c):
         lead += f"; soybeans {soy:g}%"
     return (f"USDA Crop Conditions: Corn {ge:g}% Good-Excellent{SUFFIX}",
             f"{lead}. Every state's rating ranked "
-            f"against the same week since 2000 as a percentile rank.")
+            f"against its own record for this week.")
 
 
 def _px(prices, key):

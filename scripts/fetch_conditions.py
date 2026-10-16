@@ -149,7 +149,7 @@ def main():
     if not KEY:
         raise SystemExit("FATAL: NASS_API_KEY not set")
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-           "source": "USDA NASS Quick Stats weekly crop condition, 2000-present",
+           "source": "USDA NASS Quick Stats weekly crop condition, queried from 2000; each state ranks against the years it has at this week",
            "note": ("Good+Excellent share vs the same week of year across history. "
                     "Rank 1 = worst on record for this week. States with under 10 "
                     "comparable years are omitted rather than thinly ranked."),

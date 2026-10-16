@@ -1482,6 +1482,22 @@
     {"id": "isu-agdm-a2-31", "kind": "html",
      "url": "https://www.extension.iastate.edu/agdm/crops/html/a2-31.html",
      "title": "Iowa State Ag Decision Maker A2-31: Estimating the cost for drying corn",
-     "why": "/harvest-or-wait: LP gallons per bushel per point, electricity, and the field drydown discussion"}
+     "why": "/harvest-or-wait: LP gallons per bushel per point, electricity, and the field drydown discussion"},
+    {"id": "uw-soy-pivot-mid-may", "kind": "html",
+     "url": "https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/",
+     "title": "UW-Madison (Conley): Agronomic pivot points for mid-May planted soybeans",
+     "why": "/planting-date: soybean yield loss per day of planting delay (0.4, range 0.2-0.5 bu/a/day)"},
+    {"id": "umn-corn-planting-date", "kind": "html",
+     "url": "https://extension.umn.edu/corn-planting/planting-date-considerations-corn",
+     "title": "UMN Extension: Planting date considerations for corn",
+     "why": "/planting-date: Jun 9 planting 69-79% of max yield"},
+    {"id": "epa-dicamba", "kind": "html",
+     "url": "https://www.epa.gov/pesticides/dicamba",
+     "title": "EPA: dicamba registration (2026 OTT labels)",
+     "why": "/spray: 2026 OTT dicamba label cutoff date; the page blocks after June 30 until the label date is read"},
+    {"id": "mrcc-inversion-networks", "kind": "html",
+     "url": "https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion",
+     "title": "MRCC: Monitoring temperature inversions (state networks)",
+     "why": "/spray: which states link a measured inversion network"}
 ]
 }
