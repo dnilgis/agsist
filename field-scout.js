@@ -1167,18 +1167,27 @@
     while (Array.isArray(ll) && ll.length && Array.isArray(ll[0])) ll = ll[0];
     return ll;
   }
-  function polyAcres(poly){
-    // Spherical excess (same approach as Leaflet.GeometryUtil / geodesy):
-    // sum over edges of (λ2-λ1)·(2+sinφ1+sinφ2), times R²/2.
-    var pts=latlngs(poly), R=6378137, area=0, d2r=Math.PI/180;
-    if(pts.length<3) return 0;
+  function polyAcres(poly){ return acresOfRing(latlngs(poly)); }
+  // FS-ACRES-BEGIN (test/field-scout-to50.test.mjs runs this block on its own)
+  // Area on the WGS84 ellipsoid, not a sphere: each latitude goes to its authalic (equal-area)
+  // latitude, then the equal-area trapezoid sum runs on the authalic sphere. That is exact for
+  // edges along parallels and meridians, and far inside a hundredth of an acre for any field.
+  // (The sphere at the equator's radius used before read 0.07% to 0.16% high: 640.46 ac for
+  // a one-mile square section at 41.5 N.)
+  var WGS_A=6378137, WGS_F=1/298.257223563, WGS_E2=WGS_F*(2-WGS_F), WGS_E=Math.sqrt(WGS_E2);
+  function authQ(sinp){ return (1-WGS_E2)*( sinp/(1-WGS_E2*sinp*sinp) - (1/(2*WGS_E))*Math.log((1-WGS_E*sinp)/(1+WGS_E*sinp)) ); }
+  var WGS_QP=authQ(1), WGS_RQ=WGS_A*Math.sqrt(WGS_QP/2);
+  function acresOfRing(pts){
+    if(!pts || pts.length<3) return 0;
+    var d2r=Math.PI/180, area=0;
     for(var i=0;i<pts.length;i++){
       var p1=pts[i], p2=pts[(i+1)%pts.length];
-      area += (p2.lng-p1.lng)*d2r * (2 + Math.sin(p1.lat*d2r) + Math.sin(p2.lat*d2r));
+      var s1=authQ(Math.sin(p1.lat*d2r))/WGS_QP, s2=authQ(Math.sin(p2.lat*d2r))/WGS_QP;   // sin of the authalic latitude
+      area += (p2.lng-p1.lng)*d2r * (s1+s2);
     }
-    area = Math.abs(area * R*R / 2.0);   // m²
-    return area * 0.000247105;            // → acres
+    return Math.abs(area*WGS_RQ*WGS_RQ/2) / 4046.8564224;   // m2 to acres (international acre)
   }
+  // FS-ACRES-END
   function polyCentroid(poly){
     var pts=latlngs(poly), lat=0, lng=0;
     pts.forEach(function(p){ lat+=p.lat; lng+=p.lng; });
