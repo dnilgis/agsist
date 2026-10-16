@@ -409,19 +409,39 @@
   }
 
   /* The comparison: the station's 1991-2020 monthly averages (mm), each spread
-     evenly over its month's days, as ACIS normal rows [date, inches]. Null when
-     the station has none (fewer than 20 whole years in some month). */
+     evenly over its month's days, as ACIS normal rows [date, inches]. A station
+     without its own (fewer than 20 whole years in some month: every CoCoRaHS
+     gauge, which started in 2013) borrows the nearest station's within
+     NORMAL_KM, and the print says whose (normalFrom). None near: it fails, and
+     the page says there's no comparison line, as for a US station with no normal. */
+  var NORMAL_KM = 40, NORM_FROM = {};
+  function normalFor(ix, s) {
+    if (s.nm && s.nm.length === 12) return { s: s, km: 0, own: true };
+    var best = null;
+    ix.list.forEach(function (o) {
+      if (!o.nm || o.nm.length !== 12) return;
+      var km = haversine(s.la, s.lo, o.la, o.lo);
+      if (km <= NORMAL_KM && (!best || km < best.km)) best = { s: o, km: km, own: false };
+    });
+    return best;
+  }
   function normalJson(F, sid, year) {
-    return stationMeta(F, sid).then(function (s) {
-      if (!s || !s.nm || s.nm.length !== 12) throw new Error('no normal');
-      var rows = [], d0 = Date.UTC(year, 0, 1), n = ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) ? 366 : 365;
+    return stationIndex(F).then(function (ix) {
+      var s = null;
+      for (var i = 0; i < ix.list.length; i++) if (ix.list[i].id === sid) { s = ix.list[i]; break; }
+      var pick = s ? normalFor(ix, s) : null;
+      if (!pick) { NORM_FROM[sid] = null; throw new Error('no normal'); }
+      NORM_FROM[sid] = { own: pick.own, id: pick.s.id, name: niceName(pick.s.n, pick.s.src), km: pick.km, years: pick.s.ny };
+      var nm = pick.s.nm, rows = [], d0 = Date.UTC(year, 0, 1), n = ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) ? 366 : 365;
       for (var k = 0; k < n; k++) {
         var dt = new Date(d0 + k * 86400000), m = dt.getUTCMonth(), dim = new Date(Date.UTC(year, m + 1, 0)).getUTCDate();
-        rows.push([dt.toISOString().slice(0, 10), fmtIn(IN(s.nm[m]) / dim)]);
+        rows.push([dt.toISOString().slice(0, 10), fmtIn(IN(nm[m]) / dim)]);
       }
-      return { data: rows, years: s.ny };
+      return { data: rows };
     });
   }
+  // whose normals the comparison is: {own, id, name, km, years}, null (none near), undefined (not asked yet)
+  function normalFrom(sid) { return NORM_FROM[sid]; }
 
   // ---------------------------------------------------------------- words
   /* FR-REVIEW: the page's French. Plain Canadian French, to be read by a native speaker before launch. */
@@ -518,7 +538,7 @@
     PROV: PROV, POSTAL_PROV: POSTAL_PROV, parseQuery: parseQuery, isCanadian: isCanadian, provOf: provOf, defaultsFor: defaultsFor,
     placeShort: placeShort, placeLong: placeLong, fsaTown: fsaTown, geoPick: geoPick, geoAsk: geoAsk,
     isSid: isSid, niceName: niceName, nearby: nearby, stations: stations, stationIndex: stationIndex, stationMeta: stationMeta, setIndex: setIndex,
-    yearLines: yearLines, rowsByDate: rowsByDate, acisRows: acisRows, yearJson: yearJson, porJson: porJson, porRows: porRows, normalJson: normalJson,
+    yearLines: yearLines, rowsByDate: rowsByDate, acisRows: acisRows, yearJson: yearJson, porJson: porJson, porRows: porRows, normalJson: normalJson, normalFrom: normalFrom, normalFor: normalFor,
     words: words, kmText: kmText, gaugeLine: gaugeLine, recordLabel: recordLabel, localizeRecords: localizeRecords,
     LICENCE_URL: LICENCE_URL, LICENCE_URL_FR: LICENCE_URL_FR, S3: S3, T: T
   };

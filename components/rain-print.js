@@ -151,7 +151,7 @@
 
   function defaults() {
     return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [], gift: false,
-      style: 'r1', dedication: '', normals: false, records: false, logo: '', logoInk: true };
+      style: 'r1', dedication: '', normals: false, records: false, logo: '', logoInk: true, units: '', lang: '' };
   }
   // a stored logo's id (subs worker v5.23): 12 characters of lowercase Crockford base32
   function cleanLogo(v) {
@@ -184,7 +184,17 @@
     s.logo = cleanLogo(x.logo);
     // ink color unless the design says its own colors
     s.logoInk = !s.logo || !(x.logoInk === false || x.logoInk === '0' || x.logoInk === 0);
+    // units and language (2026-10-16, Canada): '' is the place's own default (inches and English in the US; see locOf)
+    s.units = x.units === 'mm' || x.units === 'in' ? x.units : '';
+    s.lang = x.lang === 'fr' || x.lang === 'en' ? x.lang : '';
     return s;
+  }
+  /* What the print is drawn in: the design's own choice, else the place's default
+     (Canada: mm and cm, French in Quebec; components/rp-canada.js). ca: the design's
+     station or town is Canadian; prov: its two-letter province. */
+  function locOf(s, ca, prov) {
+    var d = ca && root.AgRpCanada ? root.AgRpCanada.defaultsFor(prov) : { units: 'in', lang: 'en' };
+    return { units: s.units || d.units, lang: s.lang || d.lang };
   }
 
   /* Today's date in Chetek (America/Chicago), as YYYY-MM-DD. The year a reader
@@ -525,19 +535,22 @@
      stamp when no short link can be had. A v1 code ("1|...|LPCS|name|day|label...")
      still opens: as R1, or R2 if its layout was Waveform. A logo (2026-10-14)
      adds 13 letters to the key field: i (the print's ink) or c (its own colors)
-     and the 12-letter id, so LPCSX becomes LPCSXi<id>. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
+     and the 12-letter id, so LPCSX becomes LPCSXi<id>. Units and language (2026-10-16, Canada) add one
+     capital letter at the end of the key field when either is chosen (LOCF: A to H for the eight pairs
+     besides "the place's default for both"), so a plain US code is exactly as before. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
      as a client_reference_id (200 at most).
      A gift order (this year, delivered in January) is the same code with GIFT-
      in front, so Sig sees it in Stripe without decoding anything. A v1 code
      always starts with M (base64 of "1|"), so the prefix cannot be mistaken
      for part of a code. */
-  var GIFT_PREFIX = 'GIFT-', XFLAG = 'abcdefgh';
+  var GIFT_PREFIX = 'GIFT-', XFLAG = 'abcdefgh', LOCF = 'ABCDEFGH', LOC_U = ['', 'in', 'mm'], LOC_L = ['', 'en', 'fr'];
+  function locLetter(s) { var k = LOC_U.indexOf(s.units) * 3 + LOC_L.indexOf(s.lang); return k > 0 ? LOCF[k - 1] : ''; }
   function encodeCode(x) {
     var s = normalize(x);
     if (!s.place || !s.year) return '';
     var x5 = XFLAG[(s.style === 'r2' ? 4 : 0) + (s.normals ? 1 : 0) + (s.records ? 2 : 0)];
     var f = ['2', s.place, s.station, String(s.year), LAYOUT[s.layout] + PALETTE[s.palette] + CMP[s.cmp] + SIZE[s.size] + x5 +
-      (s.logo ? (s.logoInk ? 'i' : 'c') + s.logo : ''), s.name];
+      (s.logo ? (s.logoInk ? 'i' : 'c') + s.logo : '') + locLetter(s), s.name];
     s.markers.forEach(function (m) { f.push(dayIndex(s.year, m.date).toString(36), m.label); });
     while (f.length > 6 && f[f.length - 1] === '' && f[f.length - 2] === '') f.length -= 2;
     if (s.dedication) f.push(s.dedication);
@@ -554,7 +567,12 @@
     if ((f[0] !== '1' && !v2) || f.length < 6) return null;
     if (v2 && (f.length - 6) % 2) { ded = f.pop(); if (!ded) return null; }
     if ((f.length - 6) % 2) return null;
-    var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1, logo = '', logoInk = true;
+    var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1, logo = '', logoInk = true, units = '', lang = '';
+    if (v2 && (k.length === 6 || k.length === 19) && LOCF.indexOf(k[k.length - 1]) >= 0) {
+      var li = LOCF.indexOf(k[k.length - 1]) + 1;
+      units = LOC_U[Math.floor(li / 3)]; lang = LOC_L[li % 3];
+      k = k.slice(0, -1);
+    }
     if (v2 && k.length === 18) {
       logo = cleanLogo(k.slice(6));
       if (!logo || logo !== k.slice(6) || 'ic'.indexOf(k[5]) < 0) return null;
@@ -575,7 +593,7 @@
     var s = normalize({ place: f[1], station: f[2], year: year, layout: LAYOUT_R[k[0]], palette: PALETTE_R[k[1]],
       cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers, gift: gift,
       style: v2 ? (x5 & 4 ? 'r2' : 'r1') : null, dedication: ded, normals: v2 && (x5 & 1) === 1, records: v2 && (x5 & 2) === 2,
-      logo: logo, logoInk: logoInk });
+      logo: logo, logoInk: logoInk, units: units, lang: lang });
     return s.place ? s : null;
   }
 
@@ -594,6 +612,8 @@
     if (s.normals) q.set('normals', '1');
     if (s.records) q.set('records', '1');
     if (s.logo) { q.set('logo', s.logo); q.set('logoInk', s.logoInk ? '1' : '0'); }
+    if (s.units) q.set('u', s.units);
+    if (s.lang) q.set('lang', s.lang);
     s.markers.forEach(function (m, i) { q.set('m' + (i + 1), m.date + (m.label ? ' ' + m.label : '')); });
     if (s.gift) q.set('gift', '1');
     return q.toString();
@@ -618,7 +638,7 @@
     return normalize({ place: q.get('place'), station: q.get('station'), year: q.get('year'), layout: q.get('layout'),
       palette: q.get('palette'), size: q.get('size'), cmp: cmp, name: q.get('name'), markers: markers, gift: q.get('gift'),
       style: q.get('style'), dedication: q.get('dedication'), normals: dflt('normals', cmp === 'normal'), records: dflt('records', true),
-      logo: q.get('logo'), logoInk: q.get('logoInk') });
+      logo: q.get('logo'), logoInk: q.get('logoInk'), units: q.get('u'), lang: q.get('lang') });
   }
   // URLSearchParams leaves * as it is, and the worker's design_url rule has no * (2026-10-14, panel 3)
   function designUrl(x) { return SITE + '?' + String(toParams(x)).replace(/\*/g, '%2A'); }
@@ -885,7 +905,8 @@
     LIVE.forEach(function (x) { if (/sdate=por/.test(x.url)) keep.push(x); else { x.stopped = true; try { x.ctl.abort(); } catch (e) {} } });
     LIVE = keep;
   }
-  function safeFetch(url) {
+  // opts (2026-10-16): a HEAD or a byte range, for the Canadian station files (components/rp-canada.js)
+  function safeFetch(url, opts) {
     var who = /open-meteo/.test(url) ? 'The town lookup' : 'NOAA\u2019s data service';
     var ctl = typeof AbortController === 'function' ? new AbortController() : null, timedOut = false;
     var live = ctl ? { ctl: ctl, url: url, stopped: false } : null;
@@ -894,7 +915,7 @@
     var timer = setTimeout(function () { timedOut = true; if (ctl) ctl.abort(); }, FETCH_MS);
     var slow = function () { var e = new Error(who + ' is slow right now and didn\u2019t answer in ' + (FETCH_MS / 1000) + ' seconds. Try again in a minute.'); e.retry = true; return e; };
     var race = new Promise(function (res, rej) { setTimeout(function () { if (!ctl) rej(slow()); }, FETCH_MS + 50); });
-    var f = fetch(url, ctl ? { signal: ctl.signal } : undefined).then(function (r) {
+    var f = fetch(url, ctl || opts ? Object.assign({}, opts || {}, ctl ? { signal: ctl.signal } : {}) : undefined).then(function (r) {
       clearTimeout(timer); gone();
       if (!r.ok) { var e = new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.'); e.retry = true; e.status = r.status; throw e; }
       // an answer that isn't data (a proxy's or an outage page) says so in words, not as a script error (panel 3 F7)
@@ -911,12 +932,21 @@
   }
   // the town lookup; the page keeps the reader's own pick from a "which one?" list (PICKED) in front of it
   var GEO_CACHE = new Map();   // query -> the town found (a redraw doesn't ask again)
+  var GEO_LANG = 'en';         // the language a Canadian town lookup answers its errors in (the page sets it)
   function geoFind(q) {
     var key = String(q).trim().toLowerCase();
     if (GEO_CACHE.has(key)) return Promise.resolve(GEO_CACHE.get(key));
     return geoAsk(q).then(function (hit) { GEO_CACHE.set(key, hit); return hit; });
   }
+  /* CANADA (2026-10-16). A town with a province ("Regina, SK"), a postal code or a
+     Canadian station id goes to components/rp-canada.js, which answers in the same
+     shapes as Open-Meteo and RCC-ACIS do for a US town; everything after that is
+     this file's own rules. Without that file loaded, nothing changes. */
+  function CA() { return root.AgRpCanada || null; }
+  function isCanada(placeOrSid) { var c = CA(); return !!c && (c.isSid(placeOrSid) || c.isCanadian(placeOrSid)); }
+  function caEnv(year) { return { currentYear: CURRENT_YEAR, today: TODAY, stale: STALE_DAYS, open: year ? lastYearOpen(year) : false }; }
   function geoAsk(q) {
+    if (CA() && CA().isCanadian(q)) return CA().geoAsk(q, safeFetch, GEO_LANG);
     var g = geocodeQuery(q);
     var u = 'https://geocoding-api.open-meteo.com/v1/search?count=10&countryCode=US&name=' + encodeURIComponent(g.town);
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
@@ -937,10 +967,12 @@
      fails leaves snowOk null (not known), never false. */
   function spans(r, y0, y1) { return !!(r && r[0] && r[1] && r[0] <= y0 && r[1] >= y1); }
   var STN_CACHE = new Map();   // lat|lon|year -> the station list
-  function stations(lat, lon, year) {
-    var key = (+lat).toFixed(3) + '|' + (+lon).toFixed(3) + '|' + year;
+  // ca: the town is in Canada (its geocode said so): the Canadian station list instead of ACIS
+  function stations(lat, lon, year, ca) {
+    var key = (+lat).toFixed(3) + '|' + (+lon).toFixed(3) + '|' + year + (ca ? '|ca' : '');
     if (STN_CACHE.has(key)) return Promise.resolve(STN_CACHE.get(key));
-    return stationsAsk(lat, lon, year).then(function (list) { STN_CACHE.set(key, list); return list; });
+    var ask = ca && CA() ? CA().stations(safeFetch, lat, lon, year, caEnv(year)) : stationsAsk(lat, lon, year);
+    return ask.then(function (list) { STN_CACHE.set(key, list); return list; });
   }
   function stationsAsk(lat, lon, year) {
     var d = 0.6;
@@ -1092,7 +1124,8 @@
     var open = lastYearOpen(year), key = sid + '|' + year + (open ? '|open' : '');
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow,maxt,mint', meta: 'name,state,ll' });
-    return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
+    var ask = CA() && CA().isSid(sid) ? CA().yearJson(safeFetch, sid, year, caEnv(year)) : safeFetch(u).then(function (r) { return r.json(); });
+    return ask.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error('That station has no rain record for this year. Pick another one under Weather station.');
       var days = [];
       j.data.forEach(function (row) {
@@ -1122,7 +1155,8 @@
   function stationExtremes(sid) {
     if (EXT_CACHE.has(sid)) return Promise.resolve(EXT_CACHE.get(sid));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: 'por', edate: 'por', elems: 'pcpn,avgt' });
-    return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
+    var ask = CA() && CA().isSid(sid) ? CA().porJson(safeFetch, sid) : safeFetch(u).then(function (r) { return r.json(); });
+    return ask.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error(j.error || 'no data');
       var maxDaily = 0, curYear = null, curYearTotal = 0, curMonth = null, curMonthTotal = 0, maxAnnual = 0, maxMonthly = 0;
       var yearFrom = null, yearTo = null, maxTemp = null, minTemp = null, sum = new Map(), count = new Map();
@@ -1163,7 +1197,8 @@
       var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'pcpn', normal: code }] });
       return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); });
     };
-    return ask('91').then(function (j) { return j && !j.error && Array.isArray(j.data) ? j : ask(1); }).then(function (j) {
+    var first = CA() && CA().isSid(sid) ? CA().normalJson(safeFetch, sid, year) : ask('91').then(function (j) { return j && !j.error && Array.isArray(j.data) ? j : ask(1); });
+    return first.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error(j.error || 'no data');
       var byDate = new Map();
       j.data.forEach(function (row) { var v = parsePcpn(row[1]).v; if (v !== null) byDate.set(row[0].slice(5), v); });
@@ -1336,7 +1371,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, daily: daily, stations: stations, geoFind: geoFind };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
