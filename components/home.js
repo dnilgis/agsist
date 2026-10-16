@@ -128,15 +128,20 @@ try {
       sp.textContent='Rank since '+String(c.first_week||'2010').slice(0,4)+': '+t;sp.title=(c.crowd&&c.crowd.word?c.crowd.word+': ':'')+'net as a share of open interest, against every week since '+String(c.first_week||'2010').slice(0,4);
     });
   }
-  function renderCOT(data){
-    window.AGSIST_COT._d=data;placeCOT(data);
-    COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
+  /* The crowding badges and rank lines: drawn again once cot-analysis.json
+     arrives (it loads when the COT card comes near the screen; see below). */
+  function cxPaint(data){
     badge(document.getElementById('cot-verdict'),COT_ROWS.filter(function(r){return r.v==='g';}),data,'Grains');
     badge(document.getElementById('cot-verdict-lv'),COT_ROWS.filter(function(r){return r.v==='l';}),data,'Live cattle');
     /* both quiet: one short line instead of two right-aligned badges */
     (function(){var g=document.getElementById('cot-verdict'),l=document.getElementById('cot-verdict-lv');
       if(g&&l&&!g.hidden&&!l.hidden&&/none crowded$/.test(g.textContent)&&/none crowded$/.test(l.textContent)){g.textContent='No market crowded';l.hidden=true;}})();
     rankRows(data);
+  }
+  function renderCOT(data){
+    window.AGSIST_COT._d=data;placeCOT(data);
+    COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
+    cxPaint(data);
     var dateEl=document.getElementById('cot-date');
     if(dateEl&&data.report_date){
       var _rds=String(data.report_date);
@@ -158,13 +163,25 @@ try {
       })();
     }
   }
+  /* 2026-10-16: cot-analysis.json is about 100 KB for a few crowding words,
+     so it loads only when the COT card comes within reach of the screen (on
+     a phone the card sits in a closed fold, so most visits never pull it).
+     Until then the rows show with no badge; nothing is guessed. */
+  function lazyCX(d){
+    var w=document.getElementById('cot-widget'),done=false;
+    function go(){if(done)return;done=true;
+      fetch('/data/cot-analysis.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(a){if(!a)return;COT_CX=a;cxPaint(window.AGSIST_COT._d||d);});}
+    if(!w||!('IntersectionObserver' in window)){go();return;}
+    var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();go();}},{rootMargin:'600px 0px'});
+    io.observe(w);
+  }
   /* WAVE3-L: a failed or malformed cot.json is one line, not ten rows of
      placeholders. */
   /* data/cot-analysis.json carries the one crowding measure (cot_analysis.py
      `crowd`); it is used only when it is for the same week as cot.json. */
   AG.json('/data/cot.json').then(function(d){
     if(!d||typeof d!=='object'||!COT_ROWS.some(function(r){return d[r.k]&&d[r.k].net!=null;}))throw new Error('cot malformed');return d;
-  }).then(function(d){return fetch('/data/cot-analysis.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(a){COT_CX=a;return d;});}).then(renderCOT,function(){
+  }).then(function(d){renderCOT(d);lazyCX(d);},function(){
     window.AGSIST_COT.failed=true;
     var verdict=document.getElementById('cot-verdict');if(verdict)verdict.hidden=true;var _cw=document.getElementById('cot-widget');if(_cw)_cw.classList.add('cot-na');
     var rows=document.getElementById('cot-rows');if(rows)rows.innerHTML='<p class="cot-fail" role="status">CFTC positions did not load.</p>';
