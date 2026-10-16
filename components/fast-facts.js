@@ -686,6 +686,8 @@ function initStateStats(){
   if(stateInited)return;
   stateInited=true;
   var sel=document.getElementById('ff-state-select');
+  var mine=savedState();
+  if(sel&&mine&&sel.querySelector('option[value="'+mine+'"]'))sel.value=mine;
   var activeState=(sel&&sel.value)||'IA';
   function renderState(code){
     var content=document.getElementById('state-content');if(!content)return;
