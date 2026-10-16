@@ -2,7 +2,8 @@ name: Drought county week
 
 # Writes data/drought/county-week.json for the county box on drought-monitor.html:
 # this week's Drought Monitor percent of each county in D0-D4, last week, and
-# four weeks back. USDM county statistics API (NDMC), read by
+# four weeks back, with drought streaks; and data/drought/summary.json, NDMC's own
+# share of the Lower 48 and each state (the page headline). USDM statistics API (NDMC), read by
 # scripts/fetch_drought_county_week.py. The page shows a plain "not loaded yet"
 # line until this file exists, and the script writes nothing it cannot check.
 #
@@ -47,7 +48,7 @@ jobs:
       - name: Save the probe's raw files to the raw branch
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: bash scripts/push_raw.sh "drought-county-week probe" data/drought/probe
-      - name: Fetch and write data/drought/county-week.json
+      - name: Fetch and write data/drought/county-week.json and summary.json
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
         run: python scripts/fetch_drought_county_week.py
       - name: Commit if changed (race-tolerant)
@@ -55,7 +56,7 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          FILES="data/drought/county-week.json"
+          FILES="data/drought/county-week.json data/drought/summary.json"
           rm -rf /tmp/dw && mkdir -p /tmp/dw
           for f in $FILES; do
             [ -e "$f" ] && cp -r --parents "$f" /tmp/dw/ || true

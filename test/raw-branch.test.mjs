@@ -43,7 +43,7 @@ const PROBES = {
   'fertilizer-ams': ['data/fert-ams-raw', 'FILES="data/fertilizer-ams.json data/fertilizer-ams-history.json"'],
   'hay-ams': ['data/hay-ams-raw', 'FILES="data/hay/ams-hay.json data/hay-ams-raw/listing.json"'],
   'hay-prices': ['data/hay-raw', 'FILES="data/hay"'],
-  'drought-county-week': ['data/drought/probe', 'FILES="data/drought/county-week.json"'],
+  'drought-county-week': ['data/drought/probe', 'FILES="data/drought/county-week.json data/drought/summary.json"'],
 };
 
 const tracked = (p) => git(['ls-files', '--', p]).split('\n').filter(Boolean);

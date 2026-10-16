@@ -717,7 +717,7 @@
    "why_quiet": "Every elevator the bid network knows, read or not. The town page builder lists the ones it cannot read, with a link for the elevator to ask to post its own bids, and Sig's elevator desk matches each request against it. Unreachable means the town pages leave that list out and the desk says to check by hand; nothing breaks."
   },
   {
-   "path": "data/drought/county-week.json",
+   "path": "data/drought/summary.json",
    "pages": [
     "drought-monitor.html"
    ],
