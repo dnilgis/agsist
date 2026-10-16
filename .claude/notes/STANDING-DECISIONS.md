@@ -96,6 +96,7 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - Rain Print opens with the 30-year normals AND remarkable days on for every new visitor and every hand-written link (story links, county pages, emails). Tool-made links and d= codes open exactly as made.
 - Fertilizer: Sig's hand-typed dealer sheet is gone for good. Every fertilizer price on the site comes ONLY from the co-ops in scripts/coop_fert_sources.json (4 Kansas co-ops Sig sent), read each weekday. No USDA blending, no USDA Illinois box on /fertilizer, no co-op discovery crawler. More sources come from links Sig sends (reminder set for the week of Oct 19).
 - One shared price file (data/fertilizer-prices.json); no page may type its own fertilizer price (test/fert-price-guard.test.mjs).
+- (Oct 16) Price sheets Sig receives by email (e.g. Synergy Cooperative) may be entered from the sheet into data/fert-sheets/, shown separately with the sheet date and season; booking/prepay prices never feed today's middle price.
 - Harvest price tracker lives under Markets as "Harvest price tracker".
 - LRP: calculator first on /lrp; stats and tests on /lrp/record. Sells nothing, never routes to agents. 25,000 head limit counts every endorsement together (each class its own 25,000).
 - Stripe: payment-link redirects, shipping, glass description and descriptor done (Oct 15). Still open: STRIPE_READ_KEY secret and an 85-cent test order (refund returns the $19 minus Stripe's fee).
