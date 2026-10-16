@@ -13,8 +13,8 @@
  *     Otherwise the card shows the co-op count and the range in words.
  *   * Every co-op is named and linked to its own page. Prices are what the
  *     co-op posts; the copy says to call and confirm.
- *   * No USDA figure is drawn here or blended into any price: the USDA box
- *     on the page is a separate Illinois reference (Sig, 2026-10-15).
+ *   * Only the co-ops' own prices. No other source is drawn or blended in
+ *     (Sig, 2026-10-15 and 16).
  */
 (function (root) {
   'use strict';
@@ -148,7 +148,7 @@
         if (c && r) far.push(esc(c.name) + '&rsquo;s ' + esc(p.name) + ' (' + money(r.cash) + ')');
       });
     });
-    return far.length ? '<p class="fert-coop-ams">Far from the other co-ops: ' + far.join('; ') +
+    return far.length ? '<p class="fert-coop-note">Far from the other co-ops: ' + far.join('; ') +
       '. Counted, but the middle price is shown so one sheet does not pull the figure.</p>' : '';
   }
 
@@ -178,7 +178,7 @@
     var n = newest(d), reg = regionOf(d);
     return 'Every price on this page is from <strong>' + esc(reg || 'co-op') + '</strong> co-ops: the middle cash price of ' +
       count(d.coops_current, 'co-op', 'co-ops') + (n ? ', posted through <strong>' + esc(shortDate(n, true)) + '</strong>' : '') + '.' +
-      ' The USDA box lower down is an Illinois reference only. Read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true)) + '.';
+      ' Read ' + esc(shortDate(String(d.generated || '').slice(0, 10), true)) + '.';
   }
 
   /* The top of the page: the co-op price cards. '' when there is nothing real. */
@@ -187,19 +187,19 @@
     if (!d) return '';
     var coops = byId(d), reg = regionOf(d);
     return '<h2 class="fert-related-title" id="fert-coops-h">What ' + esc(reg || '') + (reg ? ' ' : '') + 'co-ops are posting</h2>' +
-      '<p class="fert-ams-sub">Read each weekday from the co-ops&rsquo; own websites. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p>' +
+      '<p class="fert-coops-sub">Read each weekday from the co-ops&rsquo; own websites. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p>' +
       '<div class="fert-cards">' + d.summary.map(function (p) { return card(p, coops); }).join('') + '</div>' +
       farNote(d, coops) +
-      '<p class="fert-coop-ams">Prices from ' + credits(d) + '. <a href="#fert-coops-more-h">Every co-op and every posted price</a>.</p>';
+      '<p class="fert-coop-note">Prices from ' + credits(d) + '. <a href="#fert-coops-more-h">Every co-op and every posted price</a>.</p>';
   }
 
-  /* Lower down: the USDA line, the co-op table, every posted price. */
+  /* Lower down: the co-op table and every posted price. */
   function more(data) {
     var d = valid(data);
     if (!d) return '';
     return '<h2 class="fert-related-title" id="fert-coops-more-h">Where the co-op prices come from</h2>' +
       coopTable(d) +
-      '<p class="fert-coop-ams">Rows over ' + esc(d.stale_days) + ' days old are listed below but not counted.</p>' +
+      '<p class="fert-coop-note">Rows over ' + esc(d.stale_days) + ' days old are listed below but not counted.</p>' +
       detail(d);
   }
 

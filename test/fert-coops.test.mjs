@@ -62,7 +62,6 @@ test("far from the others is said, not hidden", () => {
 test("no USDA figure is drawn in the co-op section or its top line", () => {
   const all = FC.section(FEED) + FC.bar(FEED);
   assert.ok(!/\$770|USDA Illinois avg|Against the USDA/.test(all), "a USDA number in the co-op section");
-  assert.match(FC.bar(FEED), /The USDA box lower down is an Illinois reference only/);
   assert.equal(FC.amsLine, undefined, "the USDA comparison line is gone");
 });
 
@@ -83,7 +82,7 @@ test("fertilizer.html loads the component and the file, sections hidden until dr
 });
 
 test("the top: hero line names the newest posted date and the co-op count; cards say how many co-ops", () => {
-  assert.equal(FC.bar(FEED), "Every price on this page is from <strong>Kansas</strong> co-ops: the middle cash price of four co-ops, posted through <strong>Oct 12, 2026</strong>. The USDA box lower down is an Illinois reference only. Read Oct 15, 2026.");
+  assert.equal(FC.bar(FEED), "Every price on this page is from <strong>Kansas</strong> co-ops: the middle cash price of four co-ops, posted through <strong>Oct 12, 2026</strong>. Read Oct 15, 2026.");
   assert.equal(FC.bar(null), "");
   const t = FC.top(FEED);
   assert.match(t, /middle of 4 co-ops/);

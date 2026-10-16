@@ -107,12 +107,13 @@ test("nothing reads the old dealer sheet", () => {
   assert.deepEqual(bad, []);
 });
 
-/* Sig, 2026-10-15: prices come only from the co-op pages he sent. The USDA
-   AMS file may be read only by /fertilizer's reference box. */
-test("only /fertilizer's reference box reads the USDA file; nothing else blends it in", () => {
+/* Sig, 2026-10-15: prices come only from the co-op pages he sent; 2026-10-16:
+   the USDA AMS Illinois report is off /fertilizer. No page or browser script
+   reads the USDA file (fertilizer-ams.yml may still keep it as a background
+   data file). */
+test("no page or script reads the USDA file; nothing blends it in", () => {
   const bad = [];
   for (const f of PAGES.concat(SCRIPTS)) {
-    if (["fertilizer.html", "components/fert-sources.js"].includes(f)) continue;
     if (/fertilizer-ams\.json/.test(read(f))) bad.push(f);
   }
   for (const f of ["scripts/build_fert_prices.py", "scripts/bake_fert_defaults.py", "scripts/bake_manure_value.mjs", "scripts/fert_after_prices.sh"]) {

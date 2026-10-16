@@ -49,7 +49,7 @@
       "@type":"WebPage",
       "url":"https://agsist.com/fertilizer",
       "name":"Fertilizer Prices Today: Urea, Anhydrous, UAN, DAP & Potash | AGSIST",
-      "description":"US fertilizer prices for anhydrous, urea, UAN, DAP, potash and more: the middle cash price farm co-ops post on their own websites, read each weekday and credited by name. Every price carries its co-ops, region and date. The USDA AMS Illinois average is shown separately, as a reference only.",
+      "description":"US fertilizer prices for anhydrous, urea, UAN, DAP, potash and more: the middle cash price farm co-ops post on their own websites, read each weekday and credited by name. Every price carries its co-ops, region and date.",
       "isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},
       "breadcrumb":{
         "@type":"BreadcrumbList",
@@ -85,7 +85,7 @@
         {
           "@type":"Question",
           "name":"What is the difference between NOLA barge prices and the prices on this page?",
-          "acceptedAnswer":{"@type":"Answer","text":"NOLA barge prices reflect fertilizer trading at New Orleans barge terminals and are a benchmark for the wholesale market. The prices on this page are retail prices co-ops post for farmers; the USDA box is a separate Illinois distributor average, shown for reference. What you pay is your own dealer's delivered price."}
+          "acceptedAnswer":{"@type":"Answer","text":"NOLA barge prices reflect fertilizer trading at New Orleans barge terminals and are a benchmark for the wholesale market. The prices on this page are retail cash prices co-ops post for farmers. What you pay is your own dealer's delivered price."}
         },
         {
           "@type":"Question",
@@ -145,16 +145,16 @@
 .fpc-asof{color:var(--gold,#d4a23f);}
 .fpc-loc{font-size:0.757rem;color:var(--text-muted);margin-top:.12rem}
 .fpc-src{display:block;font-size:0.745rem;color:var(--text-muted);font-weight:400;margin-top:.1rem}
-.fert-ams-sub{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:0 0 .65rem}
-.fert-ams-sub a{color:var(--gold)}
+.fert-coops-sub{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:0 0 .65rem}
+.fert-coops-sub a{color:var(--gold)}
 /* What co-ops are posting (components/fert-coops.js) */
 #fert-coops{margin-bottom:1.25rem}
 .fcp-range{font-size:1.35rem}
 .fert-coop-card .fpc-sym{white-space:nowrap;font-size:.7rem}
 .fert-coop-card .fpc-name{min-width:0}
 .fert-coop-card .fpc-head{flex-wrap:wrap;gap:.25rem}
-.fert-coop-ams{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem}
-.fert-coop-ams a,.fert-coop-src a,.fert-coop-table a{color:var(--gold)}
+.fert-coop-note{font-size:.85rem;color:var(--text-dim);line-height:1.55;margin:0 0 .75rem}
+.fert-coop-note a,.fert-coop-src a,.fert-coop-table a{color:var(--gold)}
 .fert-coop-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 .75rem}
 .fert-coop-table td{font-size:.8rem;vertical-align:top}
 .fert-coop-table td.prod{font-weight:600}
@@ -347,7 +347,6 @@
   </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the fertilizer prices. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=fertilizer&amp;utm_source=fertilizer&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
-  <section id="fert-ams" aria-labelledby="fert-ams-h" hidden></section>
 
   <h2 class="fert-related-title" style="margin-top:.25rem">Cost per pound of nutrient</h2>
   <div class="fert-nutrient">
@@ -400,7 +399,7 @@
     </div>
     <div class="fe-card">
       <h3>What the NOLA barge price means</h3>
-      <p>NOLA barge prices reflect fertilizer trading at New Orleans barge terminals and are a benchmark for the wholesale market. The prices on this page are retail prices co-ops post for farmers; the USDA box is a separate Illinois distributor average, shown for reference. What you pay is your own dealer's delivered price.</p>
+      <p>NOLA barge prices reflect fertilizer trading at New Orleans barge terminals and are a benchmark for the wholesale market. The prices on this page are retail cash prices co-ops post for farmers. What you pay is your own dealer's delivered price.</p>
     </div>
     <div class="fe-card">
       <h3>Timing fertilizer purchases</h3>
@@ -439,15 +438,14 @@
 <h2 class="agf-t" id="agf-t">Common questions</h2>
 <details><summary>What is the price of urea fertilizer today?</summary><div class="agf-a">Urea prices move with natural gas costs, global supply and seasonal demand. AGSIST shows the middle cash price that farm co-ops post on their own websites, read each weekday, with the co-ops named and the date each posted. Today those co-ops are in one state, so the price is theirs, not a national one. Call the co-op to confirm before you buy.</div></details>
 <details><summary>How does natural gas price affect fertilizer costs?</summary><div class="agf-a">Natural gas is the primary feedstock for nitrogen fertilizers including urea and ammonium sulfate. Higher Henry Hub natural gas prices commonly flow through to urea prices over the following weeks to months as production costs pass through the supply chain.</div></details>
-<details><summary>What is the difference between NOLA barge prices and the prices on this page?</summary><div class="agf-a">NOLA barge prices reflect fertilizer trading at New Orleans barge terminals and are a benchmark for the wholesale market. The prices on this page are retail prices co-ops post for farmers; the USDA box is a separate Illinois distributor average, shown for reference. What you pay is your own dealer's delivered price.</div></details>
+<details><summary>What is the difference between NOLA barge prices and the prices on this page?</summary><div class="agf-a">NOLA barge prices reflect fertilizer trading at New Orleans barge terminals and are a benchmark for the wholesale market. The prices on this page are retail cash prices co-ops post for farmers. What you pay is your own dealer's delivered price.</div></details>
 <details><summary>When is the best time to buy fertilizer for corn?</summary><div class="agf-a">Historically, fall and early winter (October-December) have offered lower urea and phosphate prices ahead of spring planting demand. However, price timing is difficult: natural gas price direction, global supply disruptions, and tariff policy can override seasonal patterns. Locking in a portion of needs in fall while leaving flexibility for spring is a common approach.</div></details>
 </section>
 <!--FAQ:END-->
 
   <div class="fert-source">
     Prices are the middle cash price farm co-ops post on their own websites, read each weekday by a script, with each co-op named and linked above.
-    The <a href="https://mymarketnews.ams.usda.gov/viewReport/3195" target="_blank" rel="noopener">USDA AMS Illinois Production Cost Report</a>
-    box is a separate reference (biweekly, public) and feeds no number on this site. Nothing on this page is typed in by hand.
+    Nothing on this page is typed in by hand.
     Not a quote. Call to confirm before you buy. &middot;
     <a href="/">&#x2190; AGSIST Dashboard</a> &middot;
     Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
@@ -470,8 +468,8 @@
 <!-- FIX: defer on all bottom scripts -->
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=26" defer></script>
-<script src="/components/fert-sources.js?v=4"></script>
-<script src="/components/fert-coops.js?v=2"></script>
+<script src="/components/fert-sources.js?v=5"></script>
+<script src="/components/fert-coops.js?v=3"></script>
 
 <script>
 (function(){
@@ -596,21 +594,17 @@ function initCalc(){
   runCalc();
 }
 
-/* The USDA AMS file does not exist until fertilizer-ams.yml has run; a miss is quiet and the page draws nothing for it. */
-/* Three files, all written on a runner, none typed by hand:
-   data/fertilizer-coops.json (co-op posted prices, scripts/fetch_coop_fert.py),
-   data/fertilizer-ams.json (USDA AMS Illinois report, scripts/fetch_fert_ams.py),
+/* Two files, both written on a runner, none typed by hand:
+   data/fertilizer-coops.json (co-op posted prices, scripts/fetch_coop_fert.py) and
    data/fertilizer-prices.json (the one list every page prices from,
-   scripts/build_fert_prices.py: co-op prices only; the USDA file is drawn as its own reference box and feeds no number). A missing
-   file draws nothing for its part; the calculator says what has no price. */
+   scripts/build_fert_prices.py, co-op prices only). A missing file draws
+   nothing for its part; the calculator says what has no price. */
 function getJ(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
-Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-ams.json'),getJ('/data/fertilizer-prices.json')]).then(function(res){
-  var co=res[0],FS=window.FertSources,FC=window.FertCoops,ams=FS?FS.validAms(res[1]):null,prices=res[2];
+Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-prices.json')]).then(function(res){
+  var co=res[0],FS=window.FertSources,FC=window.FertCoops,prices=res[1];
   var bar=document.getElementById('fert-coop-bar'),bh=FC?FC.bar(co):'';
-  if(bar)bar.innerHTML=bh||'Co-op prices did not load, so this page has no fertilizer price right now. The USDA box lower down is a separate Illinois reference.';
+  if(bar)bar.innerHTML=bh||'Co-op prices did not load, so this page has no fertilizer price right now.';
   var top=document.getElementById('fert-coops'),th=FC?FC.top(co):'';if(top&&th){top.innerHTML=th;top.hidden=false;}
-  var box=document.getElementById('fert-ams');
-  if(box&&ams){box.innerHTML=FS.amsBox(ams,Date.now());box.hidden=false;}
   var more=document.getElementById('fert-coops-more'),mh=FC?FC.more(co):'';if(more&&mh){more.innerHTML=mh;more.hidden=false;}
   if(!prices||!prices.prices)throw new Error('no-prices');
   var fvn=document.getElementById('fv-note');if(fvn)fvn.textContent=FS.coverNote(prices);

@@ -4,12 +4,11 @@
  *    price per product into data/fertilizer-prices.json, which the cheapest
  *    box, the nutrient table and the fertility bill read. Every row labeled
  *    with its co-ops, region and date.
- *  - the USDA AMS Illinois report is drawn as its own box, labeled a
- *    reference, and feeds no number.
+ *  - no USDA AMS Illinois figure on the page at all (Sig, 2026-10-16: "remove
+ *    the illinois report from the fert page"): no box, no copy, no fetch.
  *  - the hand-typed dealer sheet (data/fertilizer.json, its history,
  *    scripts/update_fertilizer.py, fertilizer-update.yml) is gone, and
  *    nothing may read it.
- *  - the USDA box quotes the report: its date, link, average and range.
  * (Until 2026-10-15 this file tested the dealer sheet merged with AMS; those
  * tests went with the sheet.)
  */
@@ -27,19 +26,6 @@ const HTML = read("fertilizer.html");
 const require = createRequire(import.meta.url);
 const FS = require(ROOT + "components/fert-sources.js");
 
-/* made-up AMS file in the shape fetch_fert_ams.py writes; never a USDA figure */
-const AMS = {
-  source: "USDA AMS Illinois Production Cost Report (Bi-weekly)", report_id: "3195",
-  url: "https://www.ams.usda.gov/mnreports/ams_3195.pdf", page: "https://mymarketnews.ams.usda.gov/viewReport/3195",
-  report_date: "2026-10-02", terms: null,
-  products: [
-    { key: "anhydrous", name: "Anhydrous ammonia", symbol: "82-0-0", low: 901, high: 999, avg: 950.1, unit: "$/ton" },
-    { key: "uan28", name: "UAN 28%", symbol: "28-0-0", low: 401, high: 499, avg: 450.2, unit: "$/ton" },
-    { key: "urea", name: "Urea", symbol: "46-0-0", low: 601, high: 699, avg: 650.4, unit: "$/ton" },
-    { key: "dap", name: "DAP", symbol: "18-46-0", low: 801, high: 899, avg: 850.5, unit: "$/ton" },
-    { key: "potash", name: "Potash", symbol: "0-0-60", low: 401, high: 499, avg: 450.6, unit: "$/ton" },
-  ],
-};
 /* made-up price list in the shape build_fert_prices.py writes */
 const CO = (n, k, sym, price) => ({ key: k, name: n, symbol: sym, price, unit: "$/ton", as_of: "2026-10-06", src: "coop", n: 4,
   region: "Kansas", src_label: "Kansas co-ops, middle of 4, posted Oct 6, 2026" });
@@ -59,16 +45,11 @@ function engine() {
   return ctx;
 }
 
-test("no price file, or nothing real in it: no rows, and nothing drawn for USDA", () => {
+test("no price file, or nothing real in it: no rows", () => {
   for (const bad of [null, {}, { prices: [] }, { prices: [{ key: "urea", name: "Urea", symbol: "46-0-0", price: 0, as_of: "2026-10-06" }] },
     { prices: [{ key: "urea", name: "Urea", symbol: "46-0-0", price: 650, as_of: "Oct 6" }] }]) {
     assert.deepEqual(FS.rows(bad), [], JSON.stringify(bad));
     assert.equal(FS.coverNote(bad), "No product has a live price right now.");
-  }
-  for (const bad of [null, {}, { report_date: "2026-10-02", products: [] }, { report_date: "Oct 2", products: AMS.products },
-    { report_date: "2026-10-02", products: [{ key: "urea", symbol: "46-0-0", low: 601, high: 699, avg: 950 }] }]) {
-    assert.equal(FS.validAms(bad), null, JSON.stringify(bad));
-    assert.equal(FS.amsBox(bad, Date.now()), "", "nothing is drawn for a missing or broken AMS file");
   }
 });
 
@@ -82,23 +63,13 @@ test("rows come from the shared price list as written, every row says whose and 
     "Urea, Anhydrous ammonia, UAN 28%, UAN 32%, DAP and Potash: Kansas co-ops&rsquo; middle cash price. Each price names its co-ops, region and date.");
 });
 
-test("the USDA box quotes the report: its date, its link, average and range, no other figure", () => {
-  const box = FS.amsBox(AMS, Date.parse("2026-10-15T12:00:00Z"));
-  assert.match(box, /USDA Illinois average, Oct 2, 2026/);
-  assert.match(box, /mymarketnews\.ams\.usda\.gov\/viewReport\/3195/);
-  assert.match(box, /ams_3195\.pdf/);
-  assert.match(box, /\$950<\/div>/);
-  assert.match(box, /range \$901 to \$999/);
-  assert.doesNotMatch(box, /days ago/, "13 days old is not flagged");
-  assert.match(FS.amsBox(AMS, Date.parse("2026-11-20T12:00:00Z")), /49 days ago/);
-  assert.doesNotMatch(box, /UAN 32%/, "a product the report did not give is not shown");
-  // The real Oct 2 report gives UAN 32 one price (530 to 530): say so instead of "range $530 to $530".
-  const one = clone(AMS); one.products = one.products.map((p) => p.key === "dap" ? { ...p, low: 930, high: 930, avg: 930 } : p);
-  one.terms = "Distributor (Dollars Per Ton)";
-  const oneBox = FS.amsBox(one, Date.parse("2026-10-15T12:00:00Z"));
-  assert.match(oneBox, /one price reported/);
-  assert.doesNotMatch(oneBox, /range \$930 to \$930/);
-  assert.match(oneBox, /Its prices are labeled &ldquo;Distributor \(Dollars Per Ton\)&rdquo;\./);
+test("no USDA AMS Illinois figure on /fertilizer: no box, no copy, no fetch, no code to draw one", () => {
+  assert.ok(!HTML.includes("fertilizer-ams"), "the page loads the USDA file");
+  assert.ok(!/id="fert-ams"/.test(HTML), "the USDA box is back");
+  const text = HTML.replace(/<!--[\s\S]*?-->/g, " ").replace(/href="[^"]*"/g, " ");
+  assert.doesNotMatch(text, /USDA AMS|Illinois|ams\.usda\.gov|Production Cost Report/i);
+  assert.equal(FS.validAms, undefined);
+  assert.equal(FS.amsBox, undefined);
 });
 
 test("the fertility bill prices from the shared list, with the math checked by hand", () => {
@@ -124,20 +95,16 @@ test("the fertility bill prices from the shared list, with the math checked by h
   assert.ok(noK.missing.includes("potash source"));
 });
 
-test("the page wires the three files in and draws nothing for a missing one", () => {
+test("the page wires the two files in and draws nothing for a missing one", () => {
   assert.match(HTML, /<script src="\/components\/fert-sources\.js\?v=\d+"><\/script>/);
-  assert.match(HTML, /<section id="fert-ams" aria-labelledby="fert-ams-h" hidden><\/section>/);
   assert.match(HTML, /<section id="fert-coops" aria-labelledby="fert-coops-h" hidden><\/section>/);
-  for (const f of ["fertilizer-coops", "fertilizer-ams", "fertilizer-prices"]) assert.ok(HTML.includes(`getJ('/data/${f}.json')`), f);
+  for (const f of ["fertilizer-coops", "fertilizer-prices"]) assert.ok(HTML.includes(`getJ('/data/${f}.json')`), f);
   assert.match(HTML, /function getJ\(u\)\{return fetch\(u\)\.then\(function\(r\)\{return r\.ok\?r\.json\(\):null;\}\)\.catch\(function\(\)\{return null;\}\);\}/,
     "a missing file is quiet, not an error");
   assert.match(HTML, /var rows=FS\.rows\(prices\);/, "the calculator runs on the shared list");
   assert.match(HTML, /provTag\(l,l\.asof\)/, "each bill line names its source");
   assert.match(HTML, /provTag\(p,p\.as_of\)/, "each table row names its source");
-  // the USDA box says it is a reference only
-  assert.match(FS.amsBox(AMS, Date.parse("2026-10-15T12:00:00Z")), /Reference only\./);
-  // co-op prices lead the page: the co-op cards come before the USDA box
-  assert.ok(HTML.indexOf('id="fert-coops"') < HTML.indexOf('id="fert-ams"'));
+  // co-op prices lead the page
   assert.ok(HTML.indexOf('id="fert-coops"') < HTML.indexOf('id="fert-verdict"'));
 });
 
