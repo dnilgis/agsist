@@ -55,11 +55,14 @@ test("soybean aphid threshold runs through R5, timing and FAQ agree", () => {
   assert.ok(html.includes("https://extension.umn.edu/soybean-pest-management/scouting-soybean-aphid"));
 });
 
-test("K-Mag is 0-0-22 with 22% S and 10.8% Mg everywhere it is printed or used", () => {
-  const fert = JSON.parse(readFileSync(join(ROOT, "data/fertilizer.json"), "utf8"));
-  const k = fert.prices.find((p) => p.name === "K-Mag Premium");
-  assert.equal(k.symbol, "0-0-22-22S-10.8Mg");
-  assert.match(js, /\{obj:kmag,\s+pct:0\.22,/);
+/* 2026-10-15: K-Mag lost its price (the hand-typed dealer sheet that carried
+ * it is gone and no live source prices it), so its pill and the price-file
+ * check went with it. Its analysis is still printed in the reference table
+ * and must stay right; and no K-Mag price may come back without a source. */
+test("K-Mag is 0-0-22 with 22% S and 10.8% Mg where it is printed, and is never priced", () => {
+  assert.ok(!/\bkmag\b|K-Mag Premium/i.test(js), "fast-facts.js prices K-Mag again");
+  const fert = JSON.parse(readFileSync(join(ROOT, "data/fertilizer-prices.json"), "utf8"));
+  assert.ok(!fert.prices.some((p) => /k-?mag/i.test(p.name)), "a K-Mag price in the shared file");
   assert.ok(html.includes('<td class="tl">K-Mag (0-0-22)</td><td class="ze">0</td><td class="ze">0</td><td class="hi">22</td><td>22% S, 10.8% Mg</td>'));
   assert.ok(html.includes("https://cropnutrition.com/wp-content/uploads/2024/04/2025_K-Mag_Granular_Data_Sheet.pdf"));
 });

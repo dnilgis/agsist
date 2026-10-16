@@ -89,7 +89,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Share images",
@@ -491,7 +490,6 @@
     "Dairy prices",
     "Fetch Export Sales",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
     "lrp",
@@ -545,7 +543,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
@@ -648,7 +645,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
@@ -711,7 +707,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
@@ -810,40 +805,36 @@
    "why_quiet": "USDA FAS publishes export sales on Thursday mornings. Its workflow only fires Thursday and Friday."
   },
   {
-   "path": "data/fertilizer-ams.json",
+   "path": "data/fertilizer-coops.json",
    "pages": [
     "fertilizer.html"
    ],
    "written_by": [
-    "Fertilizer USDA AMS series"
+    "Fertilizer co-op posted prices"
    ],
    "touched_by": [
-    "Fertilizer USDA AMS series",
-    "Rebuild Feed Manifest"
+    "Fertilizer co-op posted prices"
    ],
-   "cadence": "3 launches on a fixed schedule at about 10am, 3pm, 8pm Central",
+   "cadence": "1 launch weekdays at about 8am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
-    "23 20 * * 5",
-    "23 1 * * 6",
-    "23 15 * * 1"
+    "41 13 * * 1-5"
    ],
-   "max_gap_hours": 101.0,
-   "quiet": "weekly",
-   "why_quiet": "USDA AMS posts the Illinois Production Cost Report every other week, usually on a Friday. Its workflow checks Friday and Monday."
+   "max_gap_hours": 72.0,
+   "quiet": null,
+   "why_quiet": null
   },
   {
-   "path": "data/fertilizer.json",
+   "path": "data/fertilizer-prices.json",
    "pages": [
     "fertilizer.html",
-    "index.html",
     "urea.html"
    ],
    "written_by": [
-    "Fertilizer \u2014 update dealer prices"
+    "Fertilizer co-op posted prices"
    ],
    "touched_by": [
     "ARC/PLC refresh",
@@ -853,20 +844,22 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
+    "Fertilizer co-op posted prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Share images",
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "on demand",
+   "cadence": "1 launch weekdays at about 8am Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
-   "crons": [],
-   "max_gap_hours": null,
+   "crons": [
+    "41 13 * * 1-5"
+   ],
+   "max_gap_hours": 72.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -971,7 +964,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",
@@ -1750,7 +1742,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Share images",
@@ -1856,7 +1847,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Rebuild Feed Manifest",
@@ -2041,7 +2031,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Share images",
@@ -2197,7 +2186,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Rebuild Feed Manifest",
@@ -2349,7 +2337,6 @@
     "Fetch Crop Progress",
     "Dairy prices",
     "Bake farm-bill page",
-    "Fertilizer \u2014 update dealer prices",
     "Harvest price tracker",
     "Build Price Stats (5-year percentile)",
     "Share images",

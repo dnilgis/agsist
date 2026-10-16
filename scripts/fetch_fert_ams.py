@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 AGSIST -- data/fertilizer-ams.json for fertilizer.html: the public USDA price
-series that sits next to Sig's dealer sheet.
+series beside the co-op posted prices (see scripts/build_fert_prices.py).
 
 Source (public domain, no key, no login):
   USDA AMS Livestock, Poultry, and Grain Market News, Springfield IL,

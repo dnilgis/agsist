@@ -1,0 +1,89 @@
+name: Fertilizer co-op posted prices
+
+# Writes data/fertilizer-coops.json (and appends price changes to
+# data/fertilizer-coops-history.json) for the "What co-ops are posting" section
+# of fertilizer.html: the retail prices farm co-ops post on their own websites.
+# The co-ops are listed in scripts/coop_fert_sources.json; the reader is
+# scripts/fetch_coop_fert.py (one parser per page layout). The sandbox cannot
+# reach co-op sites; a runner can.
+#
+# It then rebuilds data/fertilizer-prices.json, the one fertilizer price list
+# every page reads, and rebakes the pages that carry a price
+# (scripts/fert_after_prices.sh).
+#
+# Weekdays, morning Central. One request at a time with a pause between, a
+# handful of pages a day. Nothing new, no commit.
+#
+# The co-ops are the ones Sig sent (Oct 15). Nothing searches for more: a new
+# co-op is a line Sig adds to scripts/coop_fert_sources.json by hand.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 13 * * 1-5'    # weekdays, morning Central
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fertilizer-coops
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # The price sheet parser reads pdftotext -layout columns; pypdf is the
+      # fallback only.
+      - name: Install pdftotext and pypdf
+        run: |
+          command -v pdftotext || (sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils)
+          pip install pypdf==6.20.1
+      - name: Selftest
+        run: |
+          python scripts/fetch_coop_fert.py --selftest
+          python scripts/build_fert_prices.py --selftest
+          python scripts/bake_fert_defaults.py --selftest
+      - name: Fetch and write data/fertilizer-coops.json
+        run: python scripts/fetch_coop_fert.py
+
+      # Share cards for /fertilizer and /manure-value (scripts/fert_after_prices.sh).
+      - name: Install pillow for the share cards
+        continue-on-error: true
+        run: pip install --quiet pillow==12.3.0
+
+      # The commit loop re-runs scripts/fert_after_prices.sh after every reset,
+      # so data/fertilizer-prices.json and the baked pages (fertilizer,
+      # breakeven, manure-value, fast-facts) always match both source files on
+      # the branch being pushed, whichever fertilizer workflow pushed last.
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json"
+          BAKED="data/fertilizer-prices.json fertilizer.html breakeven.html manure-value.html fast-facts.html img/og"
+          rm -rf /tmp/fcoop && mkdir -p /tmp/fcoop
+          for f in $FILES; do
+            [ -e "$f" ] && cp --parents "$f" /tmp/fcoop/ || true
+          done
+          [ -n "$(ls -A /tmp/fcoop)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/fcoop/data/. data/
+            bash scripts/fert_after_prices.sh
+            for f in $FILES $BAKED; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Fertilizer co-op posted prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

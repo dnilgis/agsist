@@ -413,61 +413,7 @@ fetch('/data/export-sales.json')
 })();
 } catch (e) { blockFailed(e); }
 
-/* ---- former inline block 6 ---- */
-try {
-(function(){
-'use strict';
-
-/* 2026-10-06 EARN: off the homepage; nothing to fill. */
-if(document.getElementById('fert-grid'))fetch('/data/fertilizer.json')
-  .then(function(r){if(!r.ok)throw new Error('no-fert');return r.json();})
-  .then(function(data){
-    /* r7-prices 2026-10-01: one row per product with its own quote date;
-       a quote older than 45 days is not shown as current, it is counted
-       and dated under the table. "Midwest dealer" and "per ton" are said
-       once. NH3, UAN and DAP are not in fertilizer.json, so they are not
-       shown. */
-    var dateEl=document.getElementById('fert-date');if(dateEl)dateEl.textContent='Updated '+fmtDate(data.updated);
-    /* wave1-E: the source as the file names it, not a line typed here. */
-    /* WAVE3-L: the file's source up to its first dash; the per-row date
-       note after it is said by the table itself. */
-    var srcEl=document.getElementById('fert-src-note');if(srcEl)srcEl.textContent=(data.source?String(data.source).split(/\s+[\u2014\u2013-]\s+/)[0].replace(/[.,\s]+$/,''):'Dealer quotes')+', dollars per ton.';
-    var grid=document.getElementById('fert-grid');if(!grid||!data.prices||!data.prices.length)return;
-    function age(iso){var t=new Date((iso||'')+'T12:00:00').getTime();return isNaN(t)?null:Math.floor((Date.now()-t)/86400000);}
-    var fresh=[],old=[];
-    data.prices.forEach(function(p){if(p.price==null)return;var a=age(p.as_of||data.updated);if(a==null||a>45)old.push(p);else fresh.push(p);});
-    grid.classList.add('r7-fert');
-    /* short date in the table: "Sep 1", with the year only when it is not this year */
-    var thisYr=new Date().getFullYear(),stale=[];
-    function sd(iso){var d=new Date((iso||'')+'T12:00:00');if(isNaN(d))return '-';return d.toLocaleDateString('en-US',d.getFullYear()===thisYr?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'});}
-    /* WAVE3-L: when every row shares one quote date and one comparison
-       date, both go in the column headings and the rows carry none. */
-    var asOne=fresh.length>1&&fresh.every(function(p){return (p.as_of||data.updated)===(fresh[0].as_of||data.updated)&&p.prev_as_of===fresh[0].prev_as_of;})&&!!fresh[0].prev_as_of;
-    if(asOne)grid.classList.add('r7-fert3');else grid.classList.remove('r7-fert3');
-    var h=asOne
-      ?'<div class="r7-fh" aria-hidden="true"><span>Product</span><span>Per ton, '+esc(sd(fresh[0].as_of||data.updated))+'</span><span>Change since '+esc(sd(fresh[0].prev_as_of))+'</span></div>'
-      :'<div class="r7-fh" aria-hidden="true"><span>Product</span><span>Per ton</span><span>Change</span><span>Quoted</span></div>';
-    h+=fresh.map(function(p){
-      var chg=p.prev!=null?p.price-p.prev:null;
-      var cls=chg==null?'nc':chg>0?'up':chg<0?'dn':'nc';
-      var cs=chg==null?'':chg===0?'unch':(chg>0?'\u25b2 +$':'\u25bc \u2212$')+Math.abs(chg);
-      /* wave1-E: the change names the quote it is measured from (prev_as_of,
-         written by update_fertilizer.py); a quote over 30 days old says so. */
-      var since=(!asOne&&chg!=null&&p.prev_as_of)?'<small class="r7-fs">since '+esc(sd(p.prev_as_of))+'</small>':'';
-      var a30=age(p.as_of||data.updated);if(a30!=null&&a30>30)stale.push(p.name);
-      return '<div class="r7-fr"><span class="r7-fn">'+esc(p.name)+' <small>'+esc(p.symbol||'')+'</small></span><span class="r7-fp">$'+esc(String(p.price))+'</span><span class="r7-fc fert-chg-val '+cls+'">'+esc(cs)+since+'</span>'+(asOne?'':'<span class="r7-fd">'+esc(sd(p.as_of||data.updated))+'</span>')+'</div>';
-    }).join('');
-    if(!fresh.length)h+='<div class="r7-fnote">Not loaded yet.</div>';
-    if(stale.length)h+='<div class="r7-fnote">'+(stale.length===fresh.length?(stale.length===1?'This quote is over 30 days old.':'All quotes are over 30 days old.'):esc(stale.join(', '))+(stale.length===1?' is':' are')+' over 30 days old.')+'</div>';
-    if(old.length){
-      var ds={};old.forEach(function(p){ds[fmtDate(p.as_of||data.updated)]=1;});
-      h+='<div class="r7-fnote">'+old.length+(old.length===1?' older quote':' older quotes')+' not shown ('+esc(old.map(function(p){return p.name;}).join(', '))+', last quoted '+esc(Object.keys(ds).join(', '))+').</div>';
-    }
-    grid.innerHTML=h;
-  })
-  .catch(function(){var d=document.getElementById('fert-date');if(d)d.textContent='Price data unavailable';var g=document.getElementById('fert-grid');if(g)g.innerHTML='';});
-})();
-} catch (e) { blockFailed(e); }
+/* ---- former inline block 6: the homepage fertilizer card, removed 2026-10-15 (index.html has no #fert-grid since 2026-10-06; prices live on /fertilizer) ---- */
 
 /* ---- former inline block 7 ---- */
 try {

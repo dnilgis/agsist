@@ -1,11 +1,14 @@
 /* /fast-facts calculators in a real browser, checked against hand math.
  *
- *   Lime cost: the dealer quote in data/fertilizer.json is pelletized lime
- *   (SuperCal 98G). The page used to multiply tons of ordinary 75% aglime by
- *   that price: SMP 6.5 to pH 6.8 is 1.7 t CaCO3 = 2.3 t of 75% aglime, and it
- *   printed "$646/ac at $285/ton pelletized". The pelletized price now only
- *   prices the 98% pelletized option; aglime is priced only at the reader's
- *   own $/ton.
+ *   Lime cost: the page once multiplied tons of ordinary 75% aglime by a
+ *   pelletized lime quote ("$646/ac at $285/ton pelletized"). Since 2026-10-15
+ *   there is no lime price at all: the hand-typed dealer sheet that carried
+ *   one is gone and no live source prices lime, so every lime option is
+ *   priced only at the reader's own $/ton.
+ *
+ *   Fertilizer prices come from data/fertilizer-prices.json
+ *   (scripts/build_fert_prices.py): the co-op posted prices Sig sent, only. The
+ *   files below are made up in that shape; none is a real price.
  *
  * Needs Playwright and Chromium; skipped where they are missing.
  *
@@ -28,8 +31,8 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 const FERT = {
   updated: "2026-09-01",
   prices: [
-    { name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01" },
-    { name: "Pell Lime", symbol: "SuperCal 98G", price: 285, as_of: "2026-07-20" },
+    { key: "urea", name: "Urea", symbol: "46-0-0", price: 590, unit: "$/ton", as_of: "2026-09-01", src: "coop", n: 4, region: "Kansas",
+      src_label: "Kansas co-ops, middle of 4, posted Sep 1, 2026", short_label: "Kansas co-ops, Sep 1" },
   ],
 };
 
@@ -52,7 +55,8 @@ async function open(browser, port, path, opts = {}) {
   pg.on("pageerror", (e) => errors.push(String(e)));
   await pg.route("**/*", async (r) => {
     const u = r.request().url();
-    if (u.includes("/data/fertilizer.json")) {
+    if (u.includes("/data/fertilizer-prices.json")) {
+      if (opts.fail) return r.fulfill({ status: 404, body: "" });
       if (opts.fertDelay) await new Promise((ok) => setTimeout(ok, opts.fertDelay));
       return r.fulfill({ contentType: "application/json", body: JSON.stringify(opts.fert || FERT) });
     }
@@ -64,7 +68,7 @@ async function open(browser, port, path, opts = {}) {
 }
 const cost = (pg) => pg.textContent("#lime-cost");
 
-test("lime cost never prices aglime at the pelletized lime quote", { skip }, async () => {
+test("lime cost is priced only at the reader's own $/ton, for every lime", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -83,12 +87,15 @@ test("lime cost never prices aglime at the pelletized lime quote", { skip }, asy
     // 90% CCE: 1.7/0.90 = 1.889 t x $40 = $75.56 -> $76.
     await pg.selectOption("#lime-cce", "90");
     assert.equal(await cost(pg), "$76/ac at your $40/ton");
-    // 98% pelletized with no price typed uses the dated pelletized quote:
-    // 1.7/0.98 = 1.7347 t x $285 = $494.39 -> $494.
+    // 98% pelletized with no price typed: no live lime price exists, so no number.
     await pg.fill("#lime-price", "");
     await pg.selectOption("#lime-cce", "98");
-    assert.equal(await cost(pg), "$494/ac at $285/ton pelletized, dealer quote Jul 20, 2026");
-    // Back to 60% aglime: the pelletized price must not come back.
+    assert.equal(await cost(pg), "Type your $/ton to see cost");
+    // 98% pelletized at the reader's $300: 1.7/0.98 = 1.7347 t x $300 = $520.41 -> $520.
+    await pg.fill("#lime-price", "300");
+    assert.equal(await cost(pg), "$520/ac at your $300/ton");
+    await pg.fill("#lime-price", "");
+    // 60% aglime: still no number without the reader's price.
     await pg.selectOption("#lime-cce", "60");
     assert.equal(await cost(pg), "Type your $/ton to see cost");
     // No lime needed.
@@ -98,9 +105,10 @@ test("lime cost never prices aglime at the pelletized lime quote", { skip }, asy
   } finally { await browser.close(); srv.close(); }
 });
 
-/* N:Corn ratio: the urea auto-fill wrote the dealer price into the box but did
- * not redraw, so when the fertilizer sheet landed after the first draw the
- * result kept the 560 default ($0.61/lb N). Hand math at $590 urea:
+/* N:Corn ratio: the urea auto-fill wrote the price into the box but did not
+ * redraw, so when the price file landed after the first draw the result kept
+ * the old 560 default ($0.61/lb N). There is no default now (the box is empty
+ * until the posted price loads). Hand math at $590 urea:
  * 590 / (2000 x 0.46) = $0.641/lb N; at $4.25 corn the ratio is 0.151. */
 test("N:corn ratio redraws when the urea price fills the box, even when the sheet arrives late", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
@@ -129,34 +137,58 @@ test("Fast Facts never calls delayed futures live, names Sonalan's active right"
   assert.ok(html.includes("Treflan (trifluralin), Sonalan (ethalfluralin)"));
 });
 
-test("a fertilizer pill quoted on another day than the sheet shows its own date", { skip }, async () => {
+test("every fertilizer pill names its source and date, and the arithmetic is written out", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const fert = { updated: "2026-09-01", prices: [
-      { name: "Urea", symbol: "46-0-0", price: 590, as_of: "2026-09-01" },
-      { name: "K-Mag Premium", symbol: "0-0-20-22S-11Mg", price: 650, as_of: "2026-07-20" } ] };
+    const fert = { updated: "2026-10-06", prices: [
+      { key: "urea", name: "Urea", symbol: "46-0-0", price: 622.98, as_of: "2026-10-06", src: "coop", n: 4, region: "Kansas",
+        src_label: "Kansas co-ops, middle of 4, posted Oct 6, 2026", short_label: "Kansas co-ops, Oct 6" },
+      { key: "uan32", name: "UAN 32%", symbol: "32-0-0", price: 451.05, as_of: "2026-09-24", src: "coop", n: 1, region: "Kansas",
+        src_label: "Farmers Coop, Kansas, posted Sep 24, 2026", short_label: "Farmers Coop, Sep 24" } ] };
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
     const syms = await pg.$$eval(".fert-pill-sym", (els) => els.map((e) => e.textContent));
-    assert.deepEqual(syms, ["46-0-0", "0-0-20-22S-11Mg · Jul 20"]);
+    assert.deepEqual(syms, ["46-0-0 · Kansas co-ops, Oct 6", "32-0-0 · Farmers Coop, Sep 24"]);
+    const how = await pg.$$eval("#fert-deriv li", (els) => els.map((e) => e.textContent));
+    // 622.98 / 920 = 0.6772 -> $0.68; 451.05 / 640 = 0.7048 -> $0.70
+    assert.equal(how[0], "Urea $623 / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026).");
+    assert.equal(how[1], "UAN 32% $451 / (2,000 lb x 32% N) = $0.70 a lb of N (Farmers Coop, Kansas, posted Sep 24, 2026).");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
 
-/* K-Mag is 0-0-22 (22% K2O guaranteed minimum, 2025 K-Mag Granular data
- * sheet). The pill used to divide by 20%, which priced its potash 10% high:
- * $650/ton read $1.625/lb K2O instead of $1.477. */
-test("the K-Mag pill prices potash at 22% K2O", { skip }, async () => {
+/* Potash is priced at the grade its source names: a sheet quoting white
+ * potash 0-0-62 gives $516.36 / (2000 x 0.62) = $0.4164/lb K2O,
+ * not the 0-0-60 figure. (Was: the K-Mag pill at 22% K2O; K-Mag has no live
+ * price source and is gone.) */
+test("the potash pill prices K2O at the grade its source names", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const fert = { updated: "2026-09-01", prices: [
-      { name: "K-Mag Premium", symbol: "0-0-22-22S-10.8Mg", price: 650, as_of: "2026-09-01" } ] };
+    const fert = { updated: "2026-10-02", prices: [
+      { key: "potash", name: "Potash", symbol: "0-0-62", price: 516.36, as_of: "2026-10-02", src: "coop", n: 1, region: "Kansas",
+        src_label: "Test Coop, Kansas, posted Oct 2, 2026" } ] };
     const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
     await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 1);
     const label = await pg.$eval(".fert-pill", (e) => e.getAttribute("aria-label"));
-    assert.equal(label, "K-Mag Premium $650/ton: $1.477/lb K2O");
+    assert.equal(label, "Potash $516/ton, Test Coop, Kansas, posted Oct 2, 2026: $0.416/lb K2O");
+    assert.equal(await pg.inputValue("#eco-k-pplb"), "0.42");
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* No price file: the boxes stay empty and say so. Never a stale default. */
+test("with no price file, no fertilizer number appears and the page says why", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, errors } = await open(browser, port, "/fast-facts#economics", { fail: true });
+    await pg.waitForTimeout(800);
+    assert.equal(await pg.inputValue("#nc-fertprice"), "");
+    assert.equal(await pg.textContent("#nc-nlb"), "-");
+    for (const id of ["#eco-n-pplb", "#eco-p-pplb", "#eco-k-pplb"]) assert.equal(await pg.inputValue(id), "", id);
+    assert.match(await pg.textContent("#eco-price-note"), /No live price for N, P₂O₅, K₂O right now/);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });

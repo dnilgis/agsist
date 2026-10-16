@@ -28,6 +28,15 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const HTML = readFileSync(ROOT + "breakeven.html", "utf8");
+/* The corn defaults the calculator opens with. Since 2026-10-15 the
+ * fertilizer line is baked each weekday from live posted prices
+ * (scripts/bake_fert_defaults.py from data/fertilizer-prices.json), so the
+ * opening total moves with fertilizer prices: the hand math below is written
+ * against TOTAL (it was $905 with the old typed $175 fertilizer default). An
+ * empty fertilizer default (no live price) counts as 0, as the page does. */
+const CORN = Object.fromEntries([...HTML.slice(HTML.indexOf("CROP_DEFAULTS")).match(/\bcorn:\{([^}]*)\}/)[1].matchAll(/(\w+):'?([\d.]*)'?/g)].map((m) => [m[1], m[2] === "" ? 0 : Number(m[2])]));
+const TOTAL = ["seed", "fertilizer", "chemicals", "insurance", "machinery", "labor", "land", "overhead"].reduce((a, k) => a + CORN[k], 0);
+const usd = (v) => (v >= 0 ? "+$" : "-$") + Math.abs(Math.round(v)).toLocaleString("en-US");
 
 /* The board, fixed, so the arithmetic below is exact. fetched is "now" so
    the page does not call the file stale. */
@@ -78,8 +87,9 @@ test("the crop-year pick switches the board price to next year's contract and la
   try {
     const { pg, errors } = await open(browser, port);
     assert.equal(await pg.inputValue("#price"), "4.7875");
-    assert.equal(await txt(pg, "#breakeven"), "$5.03/bu, above your price");
-    assert.equal(await txt(pg, "#profit"), "-$43/ac", "180 x 4.7875 - 905 = -43.25");
+    assert.equal(CORN.yield, 180);
+    assert.equal(await txt(pg, "#breakeven"), `$${(TOTAL / 180).toFixed(2)}/bu, above your price`);
+    assert.equal(await txt(pg, "#profit"), usd(180 * 4.7875 - TOTAL) + "/ac", "180 x 4.7875 - total");
     const opts = await pg.$$eval("#be-year option", (o) => o.map((x) => x.textContent));
     assert.deepEqual(opts, ["Dec '26 corn (2026 crop)", "Dec '27 corn (2027 crop)"]);
     assert.equal(await pg.isVisible("#be-year"), true);
@@ -88,7 +98,7 @@ test("the crop-year pick switches the board price to next year's contract and la
 
     await pg.selectOption("#be-year", "1");
     assert.equal(await pg.inputValue("#price"), "5.0975", "the board price follows the contract");
-    assert.equal(await txt(pg, "#profit"), "+$13/ac", "180 x 5.0975 - 905 = +12.55");
+    assert.equal(await txt(pg, "#profit"), usd(180 * 5.0975 - TOTAL) + "/ac", "180 x 5.0975 - total");
     assert.match(await txt(pg, "#yr-note"), /Planning the 2027 crop: the cost lines below are still this page.s example\. Put in your 2027 costs\./);
 
     await pg.selectOption("#crop", "soybeans");
@@ -120,17 +130,19 @@ test("other revenue lowers the break-even, adds to profit, and the grid agrees",
     assert.doesNotMatch(await txt(pg, "#be-sub"), /other revenue/);
     await type(pg, "#basis", "-0.30");
     await type(pg, "#other", "30");
-    assert.equal(await txt(pg, "#costPerBu"), "$5.03/bu", "cost per bushel is still the full $905");
-    assert.equal(await txt(pg, "#breakeven"), "$4.86/bu, above your price", "(905 - 30) / 180 = 4.861");
-    assert.equal(await txt(pg, "#be-sub"), "After $30/ac other revenue. Before it: $5.03/bu.");
-    assert.equal(await txt(pg, "#futNeeded"), "$5.16/bu", "4.861 + 0.30");
-    assert.equal(await txt(pg, "#profit"), "-$67/ac", "180 x 4.4875 + 30 - 905 = -67.25");
-    assert.equal(await txt(pg, "#yieldNeeded"), "195 bu/ac", "875 / 4.4875 = 194.98");
-    assert.equal(await txt(pg, "#farmTotal"), "-$33,625", "500 x -67.25");
-    assert.equal(await txt(pg, "#mb-be"), "$4.86/bu", "the phone bar shows the same break-even");
-    assert.equal(await txt(pg, "#sens-table .sens-current"), "-$67", "the outlined cell is the headline profit");
+    const be = (TOTAL - 30) / 180, prof = 180 * 4.4875 + 30 - TOTAL;
+    assert.ok(prof < 0, "the hand case below is a loss at these defaults");
+    assert.equal(await txt(pg, "#costPerBu"), `$${(TOTAL / 180).toFixed(2)}/bu`, "cost per bushel is still the full total");
+    assert.equal(await txt(pg, "#breakeven"), `$${be.toFixed(2)}/bu, above your price`, "(total - 30) / 180");
+    assert.equal(await txt(pg, "#be-sub"), `After $30/ac other revenue. Before it: $${(TOTAL / 180).toFixed(2)}/bu.`);
+    assert.equal(await txt(pg, "#futNeeded"), `$${(be + 0.30).toFixed(2)}/bu`, "break-even + 0.30 basis");
+    assert.equal(await txt(pg, "#profit"), usd(prof) + "/ac", "180 x 4.4875 + 30 - total");
+    assert.equal(await txt(pg, "#yieldNeeded"), `${Math.ceil((TOTAL - 30) / 4.4875 - 1e-9)} bu/ac`, "(total - 30) / 4.4875, rounded up");
+    assert.equal(await txt(pg, "#farmTotal"), usd(500 * prof), "500 acres x the acre profit");
+    assert.equal(await txt(pg, "#mb-be"), `$${be.toFixed(2)}/bu`, "the phone bar shows the same break-even");
+    assert.equal(await txt(pg, "#sens-table .sens-current"), usd(prof), "the outlined cell is the headline profit");
     await type(pg, "#other", "");
-    assert.equal(await txt(pg, "#breakeven"), "$5.03/bu, above your price", "blank is 0, not an error");
+    assert.equal(await txt(pg, "#breakeven"), `$${(TOTAL / 180).toFixed(2)}/bu, above your price`, "blank is 0, not an error");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
@@ -161,7 +173,7 @@ test("your county fills rent and the paired trend yield, says where they came fr
     assert.ok(note.includes(`Yield ${yld} bu/ac: the county’s 15-year trend projected to ${ty}, a straight line through NASS`), note);
     assert.ok(note.includes("A fit, not a forecast"), note);
     assert.equal(await pg.$eval("#co-note a", (a) => a.getAttribute("href")), "/arc-plc/iowa");
-    const total = 905 - 250 + rent;
+    const total = TOTAL - 250 + rent;
     assert.equal(await txt(pg, "#costPerBu"), `$${(total / yld).toFixed(2)}/bu`);
     assert.deepEqual(srv.hits.filter((h) => h.startsWith("/data/cash-rent/")), ["/data/cash-rent/IA.json"]);
 

@@ -1,0 +1,261 @@
+{
+ "note": "Built by scripts/build_fert_prices.py from data/fertilizer-coops.json only: the middle cash price of the co-ops that post each product (two co-ops: their average; one: that co-op, named). Nothing typed by hand, no other source blended in.",
+ "updated": "2026-10-12",
+ "prices": [
+  {
+   "key": "urea",
+   "name": "Urea",
+   "symbol": "46-0-0",
+   "price": 622.98,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 4,
+   "low": 608.0,
+   "high": 840.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 6, 2026",
+   "short_label": "Kansas co-ops, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "anhydrous",
+   "name": "Anhydrous ammonia",
+   "symbol": "82-0-0",
+   "price": 832.1,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 4,
+   "low": 817.0,
+   "high": 965.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 6, 2026",
+   "short_label": "Kansas co-ops, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "uan28",
+   "name": "UAN 28%",
+   "symbol": "28-0-0",
+   "price": 415.33,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 4,
+   "low": 400.0,
+   "high": 490.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 6, 2026",
+   "short_label": "Kansas co-ops, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "uan32",
+   "name": "UAN 32%",
+   "symbol": "32-0-0",
+   "price": 451.05,
+   "unit": "$/ton",
+   "as_of": "2026-09-24",
+   "src": "coop",
+   "n": 1,
+   "low": 451.05,
+   "high": 451.05,
+   "region": "Kansas",
+   "coops": [
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Farmers Coop, Kansas, posted Sep 24, 2026",
+   "short_label": "Farmers Coop, Sep 24",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "dap",
+   "name": "DAP",
+   "symbol": "18-46-0",
+   "price": 928.77,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 4,
+   "low": 820.0,
+   "high": 970.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 6, 2026",
+   "short_label": "Kansas co-ops, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "map",
+   "name": "MAP",
+   "symbol": "11-52-0",
+   "price": 980.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-12",
+   "src": "coop",
+   "n": 2,
+   "low": 980.0,
+   "high": 980.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "src_label": "Kansas co-ops, average of 2, posted Oct 12, 2026",
+   "short_label": "Kansas co-ops, Oct 12",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "potash",
+   "name": "Potash",
+   "symbol": "0-0-60",
+   "price": 470.4,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 4,
+   "low": 460.0,
+   "high": 500.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 6, 2026",
+   "short_label": "Kansas co-ops, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "ams",
+   "name": "AMS",
+   "symbol": "21-0-0-24S",
+   "price": 509.25,
+   "unit": "$/ton",
+   "as_of": "2026-09-24",
+   "src": "coop",
+   "n": 1,
+   "low": 509.25,
+   "high": 509.25,
+   "region": "Kansas",
+   "coops": [
+    "farmerscoop-columbus-ks"
+   ],
+   "src_label": "Farmers Coop, Kansas, posted Sep 24, 2026",
+   "short_label": "Farmers Coop, Sep 24",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "10-34-0",
+   "name": "10-34-0",
+   "symbol": "10-34-0",
+   "price": 640.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 1,
+   "low": 640.0,
+   "high": 640.0,
+   "region": "Kansas",
+   "coops": [
+    "mulvane-ks"
+   ],
+   "src_label": "Mulvane Cooperative Union, Kansas, posted Oct 6, 2026",
+   "short_label": "Mulvane Cooperative Union, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  },
+  {
+   "key": "thiosul",
+   "name": "Thio-Sul",
+   "symbol": "12-0-0-26S",
+   "price": 420.0,
+   "unit": "$/ton",
+   "as_of": "2026-10-06",
+   "src": "coop",
+   "n": 2,
+   "low": 390.0,
+   "high": 450.0,
+   "region": "Kansas",
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "src_label": "Kansas co-ops, average of 2, posted Oct 6, 2026",
+   "short_label": "Kansas co-ops, Oct 6",
+   "url": "https://agsist.com/fertilizer#fert-coops-more-h"
+  }
+ ],
+ "per_lb": {
+  "n": {
+   "usd": 0.6772,
+   "from": "urea",
+   "as_of": "2026-10-06",
+   "how": "urea $622.98 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026)"
+  },
+  "p": {
+   "usd": 0.7991,
+   "from": "map",
+   "as_of": "2026-10-12",
+   "how": "MAP $980.00 a ton, less 220 lb of N at the urea price ($149), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 12, 2026)"
+  },
+  "k": {
+   "usd": 0.392,
+   "from": "potash",
+   "as_of": "2026-10-06",
+   "how": "potash $470.40 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (Kansas co-ops, middle of 4, posted Oct 6, 2026)"
+  }
+ },
+ "programs": {
+  "corn": {
+   "yield": 180,
+   "n_lb": 162,
+   "p_lb": 67,
+   "k_lb": 43,
+   "per_acre": 180,
+   "as_of": "2026-10-12"
+  },
+  "soybeans": {
+   "yield": 55,
+   "n_lb": 0,
+   "p_lb": 44,
+   "k_lb": 72,
+   "per_acre": 63,
+   "as_of": "2026-10-12"
+  },
+  "wheat": {
+   "yield": 70,
+   "n_lb": 84,
+   "p_lb": 35,
+   "k_lb": 21,
+   "per_acre": 93,
+   "as_of": "2026-10-12"
+  }
+ },
+ "notes": [],
+ "generated": "2026-10-16T00:23:30Z"
+}

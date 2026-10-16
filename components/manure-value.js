@@ -1,4 +1,4 @@
-/* components/manure-value.js -- what manure is worth at dealer fertilizer
+/* components/manure-value.js -- what manure is worth at today's posted fertilizer
  * prices, per 1,000 gallons or per ton, per acre and for the whole field.
  * The headline is the value of ALL the N, P2O5 and K2O in the manure. Beside
  * it is the part a crop can use the first year. A reader's own manure test
@@ -12,7 +12,7 @@
  * Pure parts (TYPES, nutrientPrices, perUnit, fieldValue, bakeValues) run with no
  * document, so node can test the copy the browser runs. The DOM part mounts
  * a calculator into every [data-mv-calc] and refreshes every [data-mv] number
- * from /data/fertilizer.json on load.
+ * from /data/fertilizer-prices.json on load.
  *
  * Source: UW Extension A2809, "Nutrient Application Guidelines for Field,
  * Vegetable, and Fruit Crops in Wisconsin" (Laboski and Peters, R-11-2012;
@@ -29,14 +29,21 @@
  *         turn a reader's test (total pounds) into first-year pounds.
  *   n2    second-year N, 10% of total N (Table 9.1), rounded.
  *
- * Prices: data/fertilizer.json, Midwest dealer quotes, each with its date.
+ * Prices: data/fertilizer-prices.json (scripts/build_fert_prices.py): each
+ * product's middle cash price posted by co-ops, or where the co-ops do not
+ * cover it the USDA AMS Illinois average; each row with its source and date.
+ * Nothing typed by hand. A product with no live price gives "no price".
  *   N     urea 46-0-0:      $/ton / (2000 x 0.46)
- *   P2O5  MAP 12-40-0-10S:  ($/ton - 240 lb N x N $/lb) / (2000 x 0.40)
- *         MAP carries 240 lb of N a ton. Charging the whole ton to P made
- *         phosphate look about 20% dearer than it is. The N is credited at
- *         the urea price. The 200 lb of sulfur is not credited, so P still
- *         runs a little high.
- *   K2O   potash 0-0-60:    $/ton / (2000 x 0.60)
+ *   P2O5  MAP 11-52-0, or DAP 18-46-0 when MAP has no price:
+ *         ($/ton - N lb a ton x N $/lb) / (2000 x P2O5 share)
+ *         MAP carries 220 lb of N a ton, DAP 360. Charging the whole ton to P
+ *         makes phosphate look dearer than it is, so the N is credited at the
+ *         urea price.
+ *   K2O   potash 0-0-60 (or the grade the source names): $/ton / (2000 x K2O share)
+ *
+ * Until 2026-10-15 these came from a hand-typed dealer sheet (with MAP +
+ * sulfur 12-40-0-10S for P). That sheet is gone: every price here now has a
+ * live source.
  */
 (function (w) {
   'use strict';
@@ -79,40 +86,48 @@
     for (var i = 3; i < a.length; i++) { var m = /([\d.]+)\s*S$/i.exec(a[i]); if (m) g.S = +m[1]; }
     return g;
   }
-  function find(data, name, pred) {
-    var list = (data && data.prices) || [], i, g;
-    for (i = 0; i < list.length; i++) if (list[i].name === name) return list[i];
-    for (i = 0; i < list.length; i++) { g = grade(list[i].symbol); if (g && pred(g)) return list[i]; }
+  function byKey(data, key) {
+    var list = (data && data.prices) || [];
+    for (var i = 0; i < list.length; i++) if (list[i].key === key) return list[i];
     return null;
   }
   function ok(p) { return p && typeof p.price === 'number' && isFinite(p.price) && p.price > 0; }
+  function srcOf(p) {
+    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, label: p.src_label || null, src: p.src || null, region: p.region || null };
+  }
 
-  /* $/lb of N, P2O5 and K2O from fertilizer.json. A product with no usable
-     quote gives null for its nutrient, never zero. */
+  /* $/lb of N, P2O5 and K2O from fertilizer-prices.json. A product with no
+     usable price gives null for its nutrient, never zero. */
   function nutrientPrices(data) {
-    var urea = find(data, 'Urea', function (g) { return g.N > 0 && !g.P && !g.K && !g.S; });
-    var map = find(data, 'MAP + Sulfur', function (g) { return g.P > 0 && g.N > 0; });
-    var pot = find(data, 'Potash', function (g) { return g.K > 0 && !g.N && !g.P; });
-    var out = { n: null, p: null, k: null, pRaw: null, mapNlb: null, mapNcredit: null, src: {} };
+    var urea = byKey(data, 'urea');
+    var phos = ok(byKey(data, 'map')) ? byKey(data, 'map') : byKey(data, 'dap');
+    var pot = byKey(data, 'potash');
+    var out = { n: null, p: null, k: null, pRaw: null, pNlb: null, pNcredit: null, src: {} };
     if (ok(urea)) {
       var gu = grade(urea.symbol) || { N: 46 };
       out.n = urea.price / (2000 * gu.N / 100);
-      out.src.n = { name: urea.name, symbol: urea.symbol, price: urea.price, as_of: urea.as_of || data.updated || null };
+      out.src.n = srcOf(urea);
+      out.src.n.share = gu.N;
     }
-    if (ok(map)) {
-      var gm = grade(map.symbol) || { N: 12, P: 40 };
-      out.pRaw = map.price / (2000 * gm.P / 100);
-      out.mapNlb = 2000 * gm.N / 100;
-      out.src.p = { name: map.name, symbol: map.symbol, price: map.price, as_of: map.as_of || data.updated || null };
-      if (out.n != null) {                       // no N price, no credit: print nothing rather than guess
-        out.mapNcredit = out.mapNlb * out.n;
-        out.p = (map.price - out.mapNcredit) / (2000 * gm.P / 100);
+    if (ok(phos)) {
+      var gm = grade(phos.symbol);
+      if (gm && gm.P > 0) {
+        out.pRaw = phos.price / (2000 * gm.P / 100);
+        out.pNlb = 2000 * gm.N / 100;
+        out.src.p = srcOf(phos);
+        out.src.p.share = gm.P;
+        out.src.p.nShare = gm.N;
+        if (out.n != null) {                       // no N price, no credit: print nothing rather than guess
+          out.pNcredit = out.pNlb * out.n;
+          out.p = (phos.price - out.pNcredit) / (2000 * gm.P / 100);
+        }
       }
     }
     if (ok(pot)) {
       var gk = grade(pot.symbol) || { K: 60 };
       out.k = pot.price / (2000 * gk.K / 100);
-      out.src.k = { name: pot.name, symbol: pot.symbol, price: pot.price, as_of: pot.as_of || data.updated || null };
+      out.src.k = srcOf(pot);
+      out.src.k.share = gk.K;
     }
     return out;
   }
@@ -213,23 +228,46 @@
 
   /* Every number the pages print from prices, by key. The bake script writes
      these into the HTML; the page rewrites them from live data on load. One
-     function for both, so they cannot disagree. Missing price -> 'no quote'.
+     function for both, so they cannot disagree. Missing price -> 'no price'.
        all-<type>            all the nutrients, per ton or 1,000 gal
        all-ton-<type>        the same per ton
        fy-<type>-<timing>    the first-year part, per ton or 1,000 gal
        fy-ton-<type>-<timing>
        ex-*                  the worked example (EXAMPLE) */
+  /* The arithmetic behind each $/lb, in words, with the source and date. */
+  function derivation(pr) {
+    var s = pr.src, out = { n: NQ, p: NQ, k: NQ };
+    function src(x) { return x.label ? ' (' + x.label + ')' : (x.as_of ? ' (' + day(x.as_of) + ')' : ''); }
+    if (s.n && pr.n != null) out.n = 'Urea ' + s.n.symbol + ' at ' + money(s.n.price) + ' a ton' + src(s.n) + ' / (2,000 lb x ' + s.n.share + '% N) = ' + money(pr.n) + ' a lb of N.';
+    if (s.p && pr.pRaw != null) {
+      var plb = Math.round(2000 * s.p.share / 100);
+      out.p = s.p.name + ' ' + s.p.symbol + ' at ' + money(s.p.price) + ' a ton' + src(s.p) +
+        (pr.p != null ? ', less its ' + Math.round(pr.pNlb) + ' lb of N at the urea price (' + money(pr.pNcredit, 0) + '), / ' + plb + ' lb of P2O5 = ' + money(pr.p) + ' a lb of P2O5.'
+          : ' / ' + plb + ' lb of P2O5 = ' + money(pr.pRaw) + ' a lb, with no N credit (urea has no price).');
+    }
+    if (s.k && pr.k != null) out.k = 'Potash ' + s.k.symbol + ' at ' + money(s.k.price) + ' a ton' + src(s.k) + ' / (2,000 lb x ' + s.k.share + '% K2O) = ' + money(pr.k) + ' a lb of K2O.';
+    return out;
+  }
+  var NQ = 'no price';
+
   function bakeValues(data) {
-    var pr = nutrientPrices(data), v = {}, NQ = 'no quote';
+    var pr = nutrientPrices(data), v = {};
     v['price-n'] = pr.n != null ? money(pr.n) : NQ;
     v['price-p'] = pr.p != null ? money(pr.p) : NQ;
     v['price-p-raw'] = pr.pRaw != null ? money(pr.pRaw) : NQ;
     v['price-k'] = pr.k != null ? money(pr.k) : NQ;
-    v['map-ncredit'] = pr.mapNcredit != null ? money(pr.mapNcredit, 0) : NQ;
+    v['p-ncredit'] = pr.pNcredit != null ? money(pr.pNcredit, 0) : NQ;
+    v['p-nlb'] = pr.pNlb != null ? String(Math.round(pr.pNlb)) : NQ;
+    v['p-prod'] = pr.src.p ? pr.src.p.name + ' ' + pr.src.p.symbol : NQ;
+    v['p-name'] = pr.src.p ? pr.src.p.name : 'MAP or DAP';
+    v['region-co-op'] = pr.src.n && pr.src.n.region ? pr.src.n.region + ' co-op' : 'co-op';
+    var dv = derivation(pr);
     ['n', 'p', 'k'].forEach(function (x) {
       var s = pr.src[x];
       v['ton-' + x] = s ? money(s.price, 0) : NQ;
       v['asof-' + x] = s && s.as_of ? day(s.as_of) : NQ;
+      v['src-' + x] = s && s.label ? s.label : NQ;
+      v['deriv-' + x] = dv[x];
     });
     function perTonOf(t, x) { return x == null ? NQ : money(t.liquid ? x / TONS_PER_KGAL : x); }
     TYPES.forEach(function (t) {
@@ -265,7 +303,7 @@
   }
 
   var API = { TYPES: TYPES, TIMING: TIMING, PK_PCT: PK_PCT, TONS_PER_KGAL: TONS_PER_KGAL, LB_PER_GAL: LB_PER_GAL, EXAMPLE: EXAMPLE,
-              type: type, timing: timing, grade: grade, cleanTest: cleanTest, nutrientPrices: nutrientPrices, perUnit: perUnit,
+              type: type, timing: timing, grade: grade, cleanTest: cleanTest, nutrientPrices: nutrientPrices, derivation: derivation, perUnit: perUnit,
               perTon: perTon, fieldValue: fieldValue, money: money, day: day, bakeValues: bakeValues };
   w.AgManure = API;
 
@@ -304,7 +342,7 @@
           '<label class="mvc-f"><span>$ per lb N</span><input data-k="pn" type="number" inputmode="decimal" min="0" step="0.01"></label>' +
           '<label class="mvc-f"><span>$ per lb P&#8322;O&#8325;</span><input data-k="pp" type="number" inputmode="decimal" min="0" step="0.01"></label>' +
           '<label class="mvc-f"><span>$ per lb K&#8322;O</span><input data-k="pk" type="number" inputmode="decimal" min="0" step="0.01"></label>' +
-        '</div><p class="mvc-hint" data-o="price-src">Loading dealer prices&hellip;</p></details>' +
+        '</div><p class="mvc-hint" data-o="price-src">Loading prices&hellip;</p></details>' +
       '<div class="mvc-out" aria-live="polite">' +
         '<div class="mvc-big"><span data-o="big-h">All the nutrients in the manure</span><strong data-o="unit">&nbsp;</strong><small data-o="unit-sub"></small></div>' +
         '<table class="mvc-t"><thead><tr><th scope="col">Nutrient</th><th scope="col">lb an acre</th><th scope="col">$ an acre</th><th scope="col" data-o="field-h">Field</th></tr></thead><tbody>' +
@@ -327,7 +365,7 @@
     function set(k, html) { var el = q('[data-o="' + k + '"]'); if (el) el.innerHTML = html; }
     function prices() {
       function pv(k) { var el = q('[data-k="' + k + '"]'), s = el ? el.value : ''; if (s === '') return null;
-        if (el.getAttribute('data-full') && el.getAttribute('data-shown') === s) return +el.getAttribute('data-full');  // the dealer price, unrounded
+        if (el.getAttribute('data-full') && el.getAttribute('data-shown') === s) return +el.getAttribute('data-full');  // the posted price, unrounded
         var x = parseFloat(s); return isFinite(x) && x >= 0 ? x : null; }
       return { n: pv('pn'), p: pv('pp'), k: pv('pk') };
     }
@@ -383,11 +421,10 @@
     function fill(pr) {
       [['pn', pr.n], ['pp', pr.p], ['pk', pr.k]].forEach(function (a) { var el = q('[data-k="' + a[0] + '"]'); if (el && a[1] != null) { el.value = a[1].toFixed(2); el.setAttribute('data-shown', el.value); el.setAttribute('data-full', String(a[1])); } });
       var s = [];
-      if (pr.src.n) s.push('N from urea ' + money(pr.src.n.price, 0) + ' a ton (' + day(pr.src.n.as_of) + ')');
-      if (pr.src.p) s.push('P&#8322;O&#8325; from MAP 12-40-0-10S ' + money(pr.src.p.price, 0) + ' a ton (' + day(pr.src.p.as_of) + '), with its 240 lb of N credited at the urea price');
-      if (pr.src.k) s.push('K&#8322;O from potash ' + money(pr.src.k.price, 0) + ' a ton (' + day(pr.src.k.as_of) + ')');
-      set('price-src', s.length ? 'Midwest dealer quotes: ' + s.join('; ') + '. Type your own dealer&rsquo;s prices to redo it.' : 'Dealer prices did not load. Type your own prices.');
-      set('price-sum', pr.n != null ? '(N ' + money(pr.n) + ', P ' + (pr.p != null ? money(pr.p) : 'no quote') + ', K ' + (pr.k != null ? money(pr.k) : 'no quote') + ' a lb)' : '');
+      var dv = derivation(pr);
+      ['n', 'p', 'k'].forEach(function (x) { if (dv[x] !== NQ) s.push(dv[x].replace(/&/g, '&amp;').replace(/</g, '&lt;')); });
+      set('price-src', s.length ? s.join(' ') + ' Type your own prices to redo it.' : 'Prices did not load. Type your own prices.');
+      set('price-sum', pr.n != null ? '(N ' + money(pr.n) + ', P ' + (pr.p != null ? money(pr.p) : NQ) + ', K ' + (pr.k != null ? money(pr.k) : NQ) + ' a lb)' : '');
     }
     root._mvFill = function (pr) { fill(pr); run(); };
     run();
@@ -404,8 +441,8 @@
   function start() {
     var roots = d.querySelectorAll('[data-mv-calc]');
     Array.prototype.forEach.call(roots, function (r) { mount(r); });
-    var get = w.AG && w.AG.json ? w.AG.json('/data/fertilizer.json')
-      : fetch('/data/fertilizer.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+    var get = w.AG && w.AG.json ? w.AG.json('/data/fertilizer-prices.json')
+      : fetch('/data/fertilizer-prices.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
     get.then(function (data) {
       var pr = nutrientPrices(data);
       Array.prototype.forEach.call(roots, function (r) { if (r._mvFill) r._mvFill(pr); });
