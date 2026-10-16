@@ -595,59 +595,18 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
+<script src="/components/gdu-stages.js?v=1"></script>
 <script>
 (function(){
 'use strict';
 
 /* ─── DATA ─────────────────────────────────────────────────────────── */
-// Purdue NCH-40 Table 3 (Neild & Newman), the source this table always came from,
-// reproduced in the Illinois Agronomy Handbook ch.2. Cumulative GDU FROM PLANTING,
-// 86/50 modified, for a 2700-GDU hybrid.
-//   https://www.extension.purdue.edu/extmedia/nch/nch-40.html
-//   https://dli.grainger.uiuc.edu/aces_dli/02AGRON.PDF
-// Previously this array mixed three incompatible systems and invented two values:
-//   V3 200  was NCH-40's V2        V5 350  was NCH-40's V4
-//   V8 700  was Bayer's number against NCH-40's 610
-//   V10 900 (prose row) was Bayer's V12; NCH-40's V10 is 740
-//   R2 1560 and R3 1750 appear in NO published source at all
-//   the 2450 late-dent row was missing entirely, leaving a 510-GDU hole to R6
-// R4 1925 and R5 2190 were NOT wrong: NCH-40 uses pre-Ritchie names and prints them as
-// "R3 Dough" and "R4 Denting". Mapped by stage name they are correct under modern
-// Abendroth naming, so the silage-window worry was a false alarm. Left as they were.
-// NCH-40 publishes no milk-stage value, so R3 is gone rather than guessed.
-var CORN_STAGES=[
-  {s:'VE', gdu:120,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Emergence'},
-  {s:'V2', gdu:200,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'2nd leaf collar'},
-  {s:'V4', gdu:345,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Ear shoots forming'},
-  {s:'V6', gdu:475,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Growing point above soil'},
-  {s:'V8', gdu:610,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Kernel rows set'},
-  {s:'V10',gdu:740,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Rapid growth'},
-  {s:'V12',gdu:870,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Ear size being set'},
-  // VT is a range, not one number. NCH-40 / UKY AGR-202 print 1135 and R1 1400, but tassels
-  // usually emerge only 1-3 days before silking (UW-Madison), and other guides put VT near 1,300.
-  // gdu is the low end (used for stage order); hi is the top of the range shown to the reader.
-  {s:'VT', gdu:1135, hi:1350, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Tasseling (GDU varies by source; check the field)'},
-  {s:'R1', gdu:1400, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-flower"/></svg>', desc:'Silking'},
-  {s:'R2', gdu:1660, key:false, icon:'', desc:'Blister'},
-  {s:'R4', gdu:1925, key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Dough stage'},
-  {s:'R5', gdu:2190, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Dent stage'},
-  {s:'R5.5',gdu:2450,key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg>', desc:'Full dent, milk line moving'},
-  {s:'R6', gdu:2700, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-check"/></svg>', desc:'Black layer'},
-];
-var BEAN_STAGES=[
-  {s:'VE', gdu:130,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Emergence'},
-  {s:'V1', gdu:200,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'First trifoliate'},
-  {s:'V3', gdu:400,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Third trifoliate'},
-  {s:'V5', gdu:600,  key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg>', desc:'Fifth trifoliate'},
-  {s:'R1', gdu:800,  key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-flower"/></svg>', desc:'First flower'},
-  {s:'R2', gdu:1000, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-flower"/></svg>', desc:'Full bloom'},
-  {s:'R3', gdu:1200, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Pod set'},
-  {s:'R4', gdu:1400, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Full pod'},
-  {s:'R5', gdu:1600, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Seed fill'},
-  {s:'R6', gdu:1750, key:false, icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg>', desc:'Full seed'},
-  {s:'R7', gdu:1900, key:true,  icon:'', desc:'Beginning maturity'},
-  {s:'R8', gdu:2000, key:true,  icon:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-check"/></svg>', desc:'Full maturity'},
-];
+// The corn and soybean stage table lives in components/gdu-stages.js (sources
+// and the history of its fixes are there). /fast-facts reads the same file.
+function spIcon(n){return n?'<svg class="ic-sp" aria-hidden="true"><use href="#sp-'+n+'"/></svg>':'';}
+function withIcons(a){return a.map(function(o){var c={};for(var k in o)c[k]=o[k];c.icon=spIcon(o.icon);return c;});}
+var CORN_STAGES=withIcons(window.AgGduStages.corn);
+var BEAN_STAGES=withIcons(window.AgGduStages.bean);
 // May-Sep avg GDU/day (WI). SHARED TABLE: /planting-date carries the same constant with
 // identical values (its "GDUs by planting date" card counts from this table). If you change
 // a value here, change it there too. Days per month for May-Sep are in WI_DAYS.
