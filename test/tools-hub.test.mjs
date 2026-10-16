@@ -63,3 +63,38 @@ test("in Oct and Nov the grain storage group moves ahead of crop tracking on the
     for (const l of labels) assert.equal(order[order.indexOf(l) + 1], l.grid, "each label keeps its grid");
   }
 });
+
+/* Oct 16 benchmark: phone cards showed only a name and a tag; the GDU card
+ * still said Wisconsin normals; fertilizer cards said "dealer" where the
+ * prices come from co-ops; Pod counts and Rain by county were missing from
+ * the page body. */
+test("every card has one short phone line, and phones show it", () => {
+  const cards = [...html.matchAll(/<a href="([^"]+)" class="tool-card">([\s\S]*?)<\/a>/g)];
+  assert.ok(cards.length >= 29);
+  for (const [, href, body] of cards) {
+    const m = body.match(/<div class="short">([^<]+)<\/div>/);
+    assert.ok(m, `${href} has a short line`);
+    assert.ok(m[1].length <= 30, `${href} short line fits a phone card: ${m[1]}`);
+    assert.ok(body.indexOf('class="name"') < body.indexOf('class="short"'), `${href}: short line under the name`);
+  }
+  const phone = html.match(/@media \(max-width: 600px\) \{([\s\S]*?)\n    \}/)[1];
+  assert.match(phone, /\.tool-card \.short \{ display: block;/);
+  assert.match(html, /\.tool-card \.short \{ display: none; \}/, "wide screens keep the full description instead");
+});
+
+test("card text matches the pages it links", () => {
+  const card = (href) => html.match(new RegExp(`<a href="${href}" class="tool-card">([\\s\\S]*?)</a>`))[1];
+  assert.ok(!/Wisconsin/.test(card("/gdu-calculator")), "GDU card no longer says Wisconsin normals");
+  assert.match(card("/gdu-calculator"), /1991-2020 normal/);
+  for (const h of ["/fertilizer", "/manure-value", "/nutrient-removal"]) {
+    assert.ok(!/dealer/i.test(card(h)), `${h} card says co-op, not dealer`);
+    assert.match(card(h), /co-op posted/i, h);
+  }
+  assert.ok(!html.includes("—") && !html.includes("&mdash;"), "no em dashes");
+});
+
+test("Pod counts and Rain by county are in the page body", () => {
+  const body = html.slice(html.indexOf('<main'), html.indexOf('<div id="site-footer">'));
+  assert.ok(body.includes('href="/pod-counts"'), "pod counts");
+  assert.ok(body.includes('href="/rain"'), "rain by county");
+});
