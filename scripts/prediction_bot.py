@@ -761,10 +761,97 @@ def grade_open(calls, today, fetch=yahoo_closes, late=False):
             c["rose"] = round(px[xd], 4) > round(c["entry"], 4)
             c["status"] = "graded"
             c["graded_on"] = today.isoformat()
+            c.pop("mark", None)
         elif CC.sessions_between(xd, today) > 5:
             c["status"] = "ungradeable"
             c["note"] = f"no {c['ticker']} settlement for {xd} in the feed"
     return calls
+
+
+def mark_open(calls, today, fetch=yahoo_closes, late=False):
+    """Where each open call stands: the latest close of its own contract after
+    the entry day, as {"date", "close"}. NOT A GRADE. The grade uses the exit
+    day's close only, and nothing here is ever counted in the record. After
+    6:55 PM CT today's bar holds evening trades, so it is left out then.
+    A feed that does not answer leaves the last mark as it was."""
+    for c in calls:
+        if c.get("status") != "open":
+            c.pop("mark", None)
+            continue
+        md = date.fromisoformat(c["made"])
+        px, _ = fetch([c["ticker"]], md)
+        days = [d for d in px if md < d and (d < today or (d == today and not late))]
+        if days:
+            d = max(days)
+            c["mark"] = {"date": d.isoformat(), "close": px[d]}
+    return calls
+
+
+def next_entry(deep, today):
+    """The next report's entry close on or after today, and whether a federal
+    holiday pushed it past the first weekday after CFTC's release (Columbus
+    Day 2026 moved the Oct 6 report's entry from Mon Oct 12 to Tue Oct 13).
+    The page prints it, and --watch checks a call was made on it."""
+    b = (deep or {}).get("commodities", {}).get("corn")
+    if not b or not b.get("dates"):
+        return None
+    a = date.fromisoformat(b["dates"][-1])
+    for k in range(0, 3):
+        as_of = a + timedelta(weeks=k)
+        if CAL.release_unknown(as_of):
+            continue
+        ed = live_entry_day(as_of)
+        if ed >= today:
+            rel = CAL.release_date(as_of)
+            plain = rel + timedelta(days=1)
+            while plain.weekday() > 4:
+                plain += timedelta(days=1)
+            held = [plain + timedelta(days=i) for i in range((ed - plain).days)
+                    if CAL.is_federal_holiday(plain + timedelta(days=i))]
+            return {"report": as_of.isoformat(), "day": ed.isoformat(),
+                    "after_holiday": held[0].isoformat() if held else None}
+    return None
+
+
+def entry_watch(state, deep, today, now_hm):
+    """Crops with no call and no recorded reason on an entry day, from 5:30 PM
+    CT on. That is the last fire in winter (23:41 UTC = 5:41 PM CST) and the
+    third of four in summer (5:41 PM CDT), which leaves an hour to dispatch
+    the workflow by hand before the 6:55 PM cutoff. Empty when all is well. The Oct 6,
+    2026 report (entry Tue Oct 13, after Columbus Day) got no call because
+    GitHub started both evening runs 2.5 hours late; nothing said so until
+    the next run two days later wrote "missed"."""
+    if now_hm < (17, 30) or not CC.is_trading_day(today):
+        return []
+    have = {c["id"] for c in state.get("calls", [])}
+    seen = {(s.get("crop"), s.get("report")) for s in state.get("skipped", [])}
+    out = []
+    for crop in CROPS:
+        b = (deep or {}).get("commodities", {}).get(crop["key"]) or {}
+        r = latest_usable_report(b, today) if b else None
+        if r is None:
+            continue
+        as_of = date.fromisoformat(b["dates"][r])
+        if live_entry_day(as_of) != today:
+            continue
+        if f"{crop['key']}-{as_of.isoformat()}" in have or (crop["key"], as_of.isoformat()) in seen:
+            continue
+        out.append(f"{crop['key']}-{as_of.isoformat()}")
+    return out
+
+
+def cmd_watch():
+    from zoneinfo import ZoneInfo
+    now = datetime.now(ZoneInfo("America/Chicago"))
+    deep = load_json(DEEP_PATH) or {}
+    state = load_json(OUT_PATH, {}) or {}
+    miss = entry_watch(state, deep, now.date(), (now.hour, now.minute))
+    if miss:
+        print(f"::error title=Prediction bot::today ({now.date()}) is an entry close and no call was "
+              f"made for {', '.join(miss)}. Dispatch predictions.yml before 6:55 PM CT, or the calls are missed.")
+        return 1
+    print(f"{now.date()} {now:%H:%M} CT: nothing missing")
+    return 0
 
 
 def action_label(live_all):
@@ -828,6 +915,7 @@ def build_output(state, deep, bt=None):
         "action_text": action_text(latest, live["all"], bt_all),
         "calls": calls,
         "skipped": state.get("skipped", [])[-120:],
+        "next_entry": next_entry(deep, _today_ct()),
         "backtest": bt,
     }
     return out
@@ -915,6 +1003,7 @@ def cmd_live():
     skipped = state.get("skipped", [])
     settle_entries(calls, today)
     grade_open(calls, today, late=late)
+    mark_open(calls, today, late=late)
     have = {c["id"] for c in calls}
     seen = {(s.get("crop"), s.get("report")) for s in skipped}
     start = date.fromisoformat(LIVE_START)
@@ -955,8 +1044,11 @@ def cmd_live():
                 # a feed that has not posted yet: the retry fire may still make it
                 print(f"  {cid}: not yet -- {why}")
             else:
+                # entry_day: the one date a reader needs (the close the call
+                # belonged to); `date` stays the day the bot wrote this down.
                 skipped.append({"crop": crop["key"], "report": as_of.isoformat(),
-                                "date": today.isoformat(), "reason": why})
+                                "date": today.isoformat(), "entry_day": ed.isoformat(),
+                                "reason": why})
                 print(f"  {cid}: no call -- {why}")
     state["calls"] = calls
     state["skipped"] = skipped
@@ -965,6 +1057,14 @@ def cmd_live():
     out = build_output(state, deep, backtest_block(deep))
     write(out)
     return 0
+
+
+def _today_ct():
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/Chicago")).date()
+    except Exception:  # noqa: BLE001
+        return (datetime.now(timezone.utc) - timedelta(hours=6)).date()
 
 
 def write(out):
@@ -1357,6 +1457,50 @@ def selftest():
     grade_open(cs, date(2026, 11, 20), fetch=lambda s, st: ({}, None))
     ck("missing exit settlement goes ungradeable", cs[0]["status"], "ungradeable")
 
+    # Where an open call stands (2026-10-16): the latest close after entry,
+    # never today's bar after 6:55 PM CT, never on a graded call. Hand values:
+    # Dec corn entered 497.25 on Oct 5; Oct 15 close 478.25 = 19.0 cents under.
+    feed = {date(2026, 10, 5): 497.25, date(2026, 10, 14): 480.0, date(2026, 10, 15): 478.25,
+            date(2026, 10, 16): 476.0}
+    cs = [dict(call, made="2026-10-05", status="open")]
+    mark_open(cs, date(2026, 10, 16), fetch=lambda s, st: (feed, s[0]), late=True)
+    ck("mark: latest close before an evening run's today", cs[0]["mark"], {"date": "2026-10-15", "close": 478.25})
+    mark_open(cs, date(2026, 10, 16), fetch=lambda s, st: (feed, s[0]), late=False)
+    ck("mark: today's close before the evening reopen", cs[0]["mark"], {"date": "2026-10-16", "close": 476.0})
+    mark_open(cs, date(2026, 10, 17), fetch=lambda s, st: ({}, None))
+    ck("mark: a silent feed keeps the last mark", cs[0]["mark"]["date"], "2026-10-16")
+    ck("mark: never the entry day itself",
+       mark_open([dict(call, made="2026-10-05", status="open")], date(2026, 10, 6),
+                 fetch=lambda s, st: ({date(2026, 10, 5): 497.25}, s[0]))[0].get("mark"), None)
+    cs[0]["status"] = "graded"
+    mark_open(cs, date(2026, 11, 3), fetch=lambda s, st: (feed, s[0]))
+    ck("mark: dropped once graded", "mark" in cs[0], False)
+
+    # The next entry, holiday-aware. Oct 6, 2026 report: CFTC releases Fri
+    # Oct 9; Mon Oct 12 is Columbus Day (CME open, federal offices closed),
+    # so the entry is Tue Oct 13. The Sep 29 report: Fri Oct 2, entry Mon Oct 5.
+    one = lambda d: {"commodities": {"corn": {"dates": [d]}}}
+    ck("next entry after Columbus Day", next_entry(one("2026-10-06"), date(2026, 10, 10)),
+       {"report": "2026-10-06", "day": "2026-10-13", "after_holiday": "2026-10-12"})
+    ck("next entry, plain week", next_entry(one("2026-09-29"), date(2026, 10, 3)),
+       {"report": "2026-09-29", "day": "2026-10-05", "after_holiday": None})
+    ck("next entry rolls to the following report once today is past",
+       next_entry(one("2026-09-29"), date(2026, 10, 6))["day"], "2026-10-13")
+
+    # The watch: on the Oct 13 entry close, from 5:30 PM CT on, a
+    # crop with neither a call nor a recorded reason is an alarm.
+    dd13 = {"commodities": {"corn": {"dates": ["2026-09-29", "2026-10-06"]}}}
+    ck("watch: Oct 13 evening, no call -> alarm", entry_watch({}, dd13, date(2026, 10, 13), (18, 41)),
+       ["corn-2026-10-06"])
+    ck("watch: before 5:30 PM CT, quiet", entry_watch({}, dd13, date(2026, 10, 13), (16, 41)), [])
+    ck("watch: the winter last fire (5:41 PM CST) alarms", entry_watch({}, dd13, date(2026, 10, 13), (17, 41)),
+       ["corn-2026-10-06"])
+    ck("watch: call made, quiet",
+       entry_watch({"calls": [{"id": "corn-2026-10-06"}]}, dd13, date(2026, 10, 13), (18, 41)), [])
+    ck("watch: a recorded no-call reason, quiet",
+       entry_watch({"skipped": [{"crop": "corn", "report": "2026-10-06"}]}, dd13, date(2026, 10, 13), (18, 41)), [])
+    ck("watch: not an entry day, quiet", entry_watch({}, dd13, date(2026, 10, 14), (18, 41)), [])
+
     print()
     if fails:
         print(f"{len(fails)} FAILED: {fails}")
@@ -1371,9 +1515,12 @@ def main():
     g.add_argument("--selftest", action="store_true")
     g.add_argument("--backtest", action="store_true")
     g.add_argument("--live", action="store_true")
+    g.add_argument("--watch", action="store_true")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
+    if a.watch:
+        return cmd_watch()
     if a.backtest:
         return cmd_backtest()
     return cmd_live()

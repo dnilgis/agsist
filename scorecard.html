@@ -65,6 +65,8 @@
        Squeezed to ~80px it made rows 900px tall; give it a reading width and let the table scroll.
        The fade on the right edge says there is more to the side; JS drops it at the end. */
     .pb-table td:last-child{min-width:16.25rem}
+    #pb-latest td:nth-child(6){min-width:12rem}
+    #pb-latest td:nth-child(5){white-space:nowrap}
     .pb-wrap.pb-fade{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 2.5rem),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 2.5rem),transparent)}
     .pb-table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:520px}
     .pb-table th{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);text-align:left;font-weight:700;padding:.45rem .5rem;border-bottom:1px solid var(--border)}
@@ -139,9 +141,11 @@
       <h2>Latest calls</h2>
       <p id="pb-latest-when" class="pb-note"><!--SEED:pb:pb-latest-when-->Made at the Oct 5, 2026 close.<!--/SEED--></p>
       <div class="pb-wrap"><table class="pb-table" id="pb-latest" aria-describedby="pb-latest-when">
-        <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry close</th><th scope="col">Grades on</th><th scope="col">Why</th></tr></thead>
-        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.9725</td><td>Nov 2, 2026</td><td>The bot’s own rule: funds in the top tenth of 3 years (97th percentile of the last 156 reports)</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Nov '26</td><td class="num">$12.8075</td><td>Nov 2, 2026</td><td>The bot’s own rule: funds in the top tenth of 3 years (96th percentile of the last 156 reports)</td></tr><tr><td>Chicago wheat</td><td><span class="pb-up">Up</span></td><td>Dec '26</td><td class="num">$6.9225</td><td>Nov 2, 2026</td><td>13-week trend up (87th percentile of the last 156 reports)</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$7.4225</td><td>Nov 2, 2026</td><td>The bot’s own rule: funds in the top tenth of 3 years (92nd percentile of the last 156 reports)</td></tr><!--/SEED--></tbody>
+        <thead><tr><th scope="col">Crop</th><th scope="col">Call</th><th scope="col">Contract</th><th scope="col" class="num">Entry close</th><th scope="col">Grades on</th><th scope="col">Where it stands (not graded)</th><th scope="col">Why</th></tr></thead>
+        <tbody><!--SEED:pb:latest--><tr><td>Corn</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$4.9725</td><td>Nov 2, 2026</td><td>Shows after the bot’s next run</td><td>The bot’s own rule: funds in the top tenth of 3 years (97th percentile of the last 156 reports)</td></tr><tr><td>Soybeans</td><td><span class="pb-down">Down</span></td><td>Nov '26</td><td class="num">$12.8075</td><td>Nov 2, 2026</td><td>Shows after the bot’s next run</td><td>The bot’s own rule: funds in the top tenth of 3 years (96th percentile of the last 156 reports)</td></tr><tr><td>Chicago wheat</td><td><span class="pb-up">Up</span></td><td>Dec '26</td><td class="num">$6.9225</td><td>Nov 2, 2026</td><td>Shows after the bot’s next run</td><td>13-week trend up (+2.5% over 13 weeks). Funds at the 87th percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides</td></tr><tr><td>KC wheat</td><td><span class="pb-down">Down</span></td><td>Dec '26</td><td class="num">$7.4225</td><td>Nov 2, 2026</td><td>Shows after the bot’s next run</td><td>The bot’s own rule: funds in the top tenth of 3 years (92nd percentile of the last 156 reports)</td></tr><!--/SEED--></tbody>
       </table></div>
+      <p class="pb-note">Where it stands is the latest close of the same contract, read by the bot after each run. It is not a grade: a call is graded on its grading day&rsquo;s close only, and nothing in that column is ever counted.</p>
+      <p class="pb-note" id="pb-next"><!--SEED:pb:pb-next--><!--/SEED--></p>
 
       <h2>By crop</h2>
       <div class="pb-wrap"><table class="pb-table" id="pb-bycrop">
@@ -226,6 +230,24 @@
     function dollars(c){if(c==null)return '-';var s=(c/100).toFixed(4).replace(/0+$/,'');if(s.split('.')[1].length<2)s=(c/100).toFixed(2);return '$'+s;}
     function ord(x){var v=x%100;if(v>=11&&v<=13)return x+'th';return x+({1:'st',2:'nd',3:'rd'}[x%10]||'th');}
     function luck(p){if(p==null)return '-';if(p<0.01)return 'under 1 in 100';return 'about '+Math.round(p*100)+' in 100';}
+    /* Why and where-it-stands: the same words as _pb_why / _pb_stand in scripts/seed_static.py. */
+    function cents(x){return Math.abs(x).toFixed(2).replace(/\.?0+$/,'');}
+    function why(c){var s=SIGNAL[c.signal]||c.signal||'';
+      if(/^trend_/.test(c.signal)){
+        if(c.trend_pct!=null)s+=' ('+(c.trend_pct>0?'+':'')+c.trend_pct.toFixed(1)+'% over 13 weeks)';
+        if(c.cot_pct!=null)s+='. Funds at the '+ord(Math.round(c.cot_pct))+' percentile of the last 156 reports, not in the top or bottom tenth, so the trend decides';
+      }else if(c.cot_pct!=null)s+=' ('+ord(Math.round(c.cot_pct))+' percentile of the last 156 reports)';
+      return s;}
+    function stand(c){
+      if(c.status==='graded')return c.outcome==='hit'?'Graded: right':'Graded: wrong';
+      if(c.status!=='open')return '-';
+      var m=c.mark;if(!m||m.close==null||c.entry==null)return 'Shows after the bot\u2019s next run';
+      var d=Math.round((m.close-c.entry)*100)/100,head=dollars(m.close)+' on '+fdate(m.date).replace(/, \d{4}$/,'')+', ';
+      if(d===0)return head+'level with entry (a tie grades as a miss)';
+      var right=(c.direction==='up'&&d>0)||(c.direction==='down'&&d<0);
+      return head+cents(d)+' cents '+(d<0?'under':'over')+' entry: '+(right?'right side so far':'wrong side so far');}
+    function nextLine(ne){if(!ne||!ne.day)return '';
+      return 'Next calls: at the '+fdate(ne.day)+' close, on the '+fdate(ne.report)+' report.'+(ne.after_holiday?' '+fdate(ne.after_holiday)+' is a federal holiday, so the entry moves to the next business day.':'');}
     function dirSpan(d){return d==='up'?'<span class="pb-up">Up</span>':(d==='down'?'<span class="pb-down">Down</span>':'-');}
     function verdictLine(r,label,R){
       if(!r)return {v:'-',line:'',luck:''};
@@ -278,7 +300,8 @@
       var lt=(d.latest||{}),lc=lt.calls||[];
       $('pb-latest-when').textContent=lt.date?('Made at the '+fdate(lt.date)+' close.'):'No live call yet. The first calls are made at the '+fdate(d.first_live_call||d.live_start)+' close.';
       var tb=$('pb-latest').querySelector('tbody');
-      tb.innerHTML=lc.length?lc.map(function(c){return '<tr><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td>'+fdate(c.exit_day)+'</td><td>'+esc(SIGNAL[c.signal]||c.signal)+(c.cot_pct!=null?' ('+ord(Math.round(c.cot_pct))+' percentile of the last 156 reports)':'')+'</td></tr>';}).join(''):'<tr><td colspan="6">No calls yet.</td></tr>';
+      tb.innerHTML=lc.length?lc.map(function(c){return '<tr><td>'+esc(labels[c.crop]||c.crop)+'</td><td>'+dirSpan(c.direction)+'</td><td>'+esc(c.contract)+'</td><td class="num">'+dollars(c.entry)+'</td><td>'+fdate(c.exit_day)+'</td><td>'+esc(stand(c))+'</td><td>'+esc(why(c))+'</td></tr>';}).join(''):'<tr><td colspan="7">No calls yet.</td></tr>';
+      $('pb-next').textContent=nextLine(d.next_entry);
 
       var lr=(d.live||{}).records||{},br=bt.records||{};
       var cb=$('pb-bycrop').querySelector('tbody');
@@ -303,7 +326,18 @@
         var bb=$('pb-more-btn');if(bb)bb.addEventListener('click',render);}
       render();
       var sk=(d.skipped||[]).slice(-12).reverse();
-      $('pb-skipped').innerHTML=sk.length?sk.map(function(s){return esc(fdate(s.date))+', '+esc(labels[s.crop]||s.crop)+': '+esc(s.reason);}).join('<br>'):'None so far.';
+      /* One date per miss: the entry close the call belonged to (2026-10-16:
+         the line printed the day the miss was written down, Oct 15, beside
+         an entry close of Oct 13 and a report of Oct 6). Crops missed at the
+         same close share one line. */
+      var grp=[],byKey={};
+      sk.forEach(function(s){var m=/entry close on (\d{4}-\d{2}-\d{2})/.exec(s.reason||''),ed=s.entry_day||(m&&m[1])||s.date,miss=/^missed/.test(s.reason||'');
+        var key=ed+'|'+s.report+'|'+(miss?'missed':s.reason);
+        if(!byKey[key]){byKey[key]={ed:ed,report:s.report,miss:miss,reason:s.reason,crops:[]};grp.push(byKey[key]);}
+        byKey[key].crops.push(s.crop);});
+      var order=(d.crops||[]).map(function(c){return c.key;});
+      grp.forEach(function(g){g.crops=g.crops.sort(function(a,b){return order.indexOf(a)-order.indexOf(b);}).map(function(k){return labels[k]||k;});});
+      $('pb-skipped').innerHTML=grp.length?grp.map(function(g){return '<b>'+esc(fdate(g.ed))+' close</b> ('+esc(fdate(g.report))+' report): '+esc(g.crops.join(', '))+'. '+esc(g.miss?'Missed: the bot did not run at that close, and a call is never made late.':g.reason.charAt(0).toUpperCase()+g.reason.slice(1)+'.');}).join('<br>'):'None so far.';
     }).catch(function(){
       ['pb-live-verdict','pb-bt-verdict'].forEach(function(id){$(id).textContent='Could not load the record right now.';});
       var lb=$('pb-log').querySelector('tbody');
