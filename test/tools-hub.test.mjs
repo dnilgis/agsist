@@ -13,7 +13,7 @@ function groups() {
   const out = [];
   const re = /<div class="cat-label">([^<]+)<\/div>\s*<div class="tools-grid">([\s\S]*?)\n    <\/div>/g;
   let m;
-  while ((m = re.exec(html))) out.push({ label: m[1], hrefs: [...m[2].matchAll(/<a href="([^"]+)" class="tool-card">/g)].map((x) => x[1]) });
+  while ((m = re.exec(html))) out.push({ label: m[1], hrefs: [...m[2].matchAll(/<a href="([^"]+)" class="tool-card"[^>]*>/g)].map((x) => x[1]) });
   return out;
 }
 
@@ -38,7 +38,7 @@ test("tool groups and the cards in each run by 90-day views, new pages last", ()
 });
 
 test("no tool card calls delayed futures or posted bids live", () => {
-  const cards = [...html.matchAll(/<a href="[^"]+" class="tool-card">([\s\S]*?)<\/a>/g)].map((m) => m[1]).join("\n");
+  const cards = [...html.matchAll(/<a href="[^"]+" class="tool-card"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => m[1]).join("\n");
   assert.ok(!/\bLive\b/i.test(cards), "a card still says live");
   assert.match(cards, /each with how long ago it was posted/);
 });
@@ -69,7 +69,7 @@ test("in Oct and Nov the grain storage group moves ahead of crop tracking on the
  * prices come from co-ops; Pod counts and Rain by county were missing from
  * the page body. */
 test("every card has one short phone line, and phones show it", () => {
-  const cards = [...html.matchAll(/<a href="([^"]+)" class="tool-card">([\s\S]*?)<\/a>/g)];
+  const cards = [...html.matchAll(/<a href="([^"]+)" class="tool-card"[^>]*>([\s\S]*?)<\/a>/g)];
   assert.ok(cards.length >= 29);
   for (const [, href, body] of cards) {
     const m = body.match(/<div class="short">([^<]+)<\/div>/);
@@ -83,7 +83,7 @@ test("every card has one short phone line, and phones show it", () => {
 });
 
 test("card text matches the pages it links", () => {
-  const card = (href) => html.match(new RegExp(`<a href="${href}" class="tool-card">([\\s\\S]*?)</a>`))[1];
+  const card = (href) => html.match(new RegExp(`<a href="${href}" class="tool-card"[^>]*>([\\s\\S]*?)</a>`))[1];
   assert.ok(!/Wisconsin/.test(card("/gdu-calculator")), "GDU card no longer says Wisconsin normals");
   assert.match(card("/gdu-calculator"), /1991-2020 normal/);
   for (const h of ["/fertilizer", "/manure-value", "/nutrient-removal"]) {
