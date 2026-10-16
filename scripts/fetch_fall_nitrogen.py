@@ -151,7 +151,9 @@ def hourly_means(points):
             continue
         d = (t - datetime.timedelta(minutes=30)).date()
         by.setdefault(d, []).append(v)
-    return {d: sum(vs) / len(vs) for d, vs in by.items() if len(vs) >= MIN_HOURS}
+    # A day whose hours are all the same number is a stuck sensor or a
+    # missing value sent as 0 C (seen on Kansas Mesonet stations, Oct 2026).
+    return {d: sum(vs) / len(vs) for d, vs in by.items() if len(vs) >= MIN_HOURS and len(set(vs)) > 1}
 
 
 def miles(lat1, lon1, lat2, lon2):
@@ -187,6 +189,9 @@ def series(readings, today):
         vals.append(None if v is None else round(v, 1))
     if sum(1 for v in vals[-7:] if v is not None) < 5:
         raise Refuse("fewer than 5 of the last 7 days")
+    have = [v for v in vals if v is not None]
+    if len(have) >= 7 and max(have) - min(have) < 0.1:
+        raise Refuse("the same %.1f F every day (stuck sensor)" % have[0])
     prev = None
     for v in vals:
         if v is not None and prev is not None and abs(v - prev) > JUMP_F:
@@ -602,6 +607,35 @@ def cross_check(net, mine, others):
     return med
 
 
+OUTLIER_MI = 60
+OUTLIER_F = 15.0
+
+
+def drop_outliers(stations, log=print):
+    """Leave out a station whose newest reading is more than OUTLIER_F from
+    the median of at least 2 other stations within OUTLIER_MI (newest dates
+    within a day). A broken sensor (a Kansas station read -8 C at 10 cm in
+    mid-October 2026) shows up this way; real field-to-field spread does not."""
+    keep, gone = [], []
+    for s in stations:
+        ls, d0 = s["t"][-1], day(s["last"])
+        near = []
+        for o in stations:
+            if o is s or o["t"][-1] is None or ls is None:
+                continue
+            if abs((day(o["last"]) - d0).days) <= 1 and miles(s["lat"], s["lon"], o["lat"], o["lon"]) <= OUTLIER_MI:
+                near.append(o["t"][-1])
+        if len(near) >= 2:
+            near.sort()
+            med = near[len(near) // 2] if len(near) % 2 else (near[len(near) // 2 - 1] + near[len(near) // 2]) / 2
+            if abs(ls - med) > OUTLIER_F:
+                gone.append(s["id"])
+                log("  %s left out: %.1f F against %.1f F at %d stations nearby" % (s["id"], ls, med, len(near)))
+                continue
+        keep.append(s)
+    return keep, gone
+
+
 # ---------------------------------------------------------------- build
 def build(results, today, now_utc, prev=None, points=None, log=print):
     """results: {net: [stations] or Refuse}. Carries a failed network's last
@@ -627,6 +661,7 @@ def build(results, today, now_utc, prev=None, points=None, log=print):
         if s["id"] not in seen:
             seen.add(s["id"])
             uniq.append(s)
+    uniq, gone = drop_outliers(uniq, log)
     if len(uniq) < MIN_STATIONS:
         raise Refuse("only %d stations passed (need %d)" % (len(uniq), MIN_STATIONS))
     doc = {
@@ -635,6 +670,7 @@ def build(results, today, now_utc, prev=None, points=None, log=print):
         "max_miles": MAX_MI,
         "max_age_days": MAX_AGE_DAYS,
         "networks": nets,
+        "left_out_vs_neighbors": gone,
         "net_labels": NET_LABEL,
         "state_names": NAMES,
         "stations": uniq,
@@ -1002,6 +1038,16 @@ def selftest():
                                  dict(s, id="SCAN:2", net="SCAN", last=iso(D(9)))]})
     check("failed network carries fresh stations only", d["networks"]["SCAN"]["carried"] == 1 and len(d["stations"]) == MIN_STATIONS + 1)
     refuses("too few stations", lambda: build({"USCRN": many[:3]}, today, "x", log=lambda m: None))
+
+    # Stuck sensors and outliers (both seen in the first real Kansas read).
+    refuses("stuck at 32.0 F all 10 days", lambda: series({D(i): 32.0 for i in range(10)}, today))
+    flat = [(datetime.datetime(2026, 10, 15, h), 32.0) for h in range(1, 24)] + [(datetime.datetime(2026, 10, 16, 0), 32.0)]
+    check("a day of identical hours does not count", hourly_means(flat) == {})
+    grid = [dict(s, id="K:%d" % i, lat=39.0 + i * 0.1, lon=-96.6, last=iso(today), t=s["t"][:-1] + [65.0 + i]) for i in range(4)]
+    bad = dict(grid[0], id="K:roth", lat=39.15, t=grid[0]["t"][:-1] + [17.5])
+    kept, gone = drop_outliers(grid + [bad], log=lambda m: None)
+    check("outlier left out, neighbors kept", gone == ["K:roth"] and len(kept) == 4)
+    check("a lone station is never judged", drop_outliers([bad], log=lambda m: None)[1] == [])
 
     # Cross-check: a network reading in the wrong unit is refused.
     base = [dict(s, lat=41.5 + i * 0.1, lon=-93.3, last=iso(today), t=s["t"][:-1] + [48.0]) for i in range(4)]
