@@ -834,6 +834,77 @@ def harvest_table(cp, key, crop, rd):
     return "".join(h)
 
 
+# 2026-10-16 audit: the page opened "Every drought summer..." in October with
+# harvest pace buried under the condition ranks. In Oct and Nov (when USDA has
+# harvest numbers on this week) the lede and a top block lead with harvest pace
+# by state vs the five-year average; the summer lede runs Jun-Sep only.
+COND_LEDE = {
+    "harvest": ("Harvest pace first: how far each state&rsquo;s <strong>corn and soybean harvest</strong> is "
+                "ahead of or behind its <strong>five-year average</strong>, from Monday&rsquo;s USDA Crop Progress. "
+                "Below that, each state&rsquo;s Good+Excellent share, ranked against the same week of every "
+                "year USDA rated it since 2000."),
+    "summer": ("Every drought summer the coffee shop decides the crop is &ldquo;the worst ever.&rdquo; Sometimes "
+               "it is. Usually it isn&rsquo;t. Below: each state&rsquo;s <strong>Good+Excellent share this "
+               "week</strong>, ranked against <strong>the same week of every year USDA rated it since "
+               "2000</strong>, so &ldquo;how bad&rdquo; gets a number."),
+    "off": ("Each state&rsquo;s <strong>Good+Excellent share</strong> from USDA&rsquo;s weekly Crop Progress, "
+            "ranked against <strong>the same week of every year USDA rated it since 2000</strong>. USDA rates "
+            "crops from late spring into fall; between seasons the last ratings on file are shown."),
+}
+# the big corn and soybean states, in the order a reader looks for them
+HARVEST_LEAD_STATES = ["IA", "IL", "NE", "MN", "IN", "SD", "OH", "ND", "KS", "MO", "WI", "MI"]
+
+
+def cond_season(today, has_harvest):
+    """'harvest' in Oct-Nov when this week's harvest numbers are in,
+    'summer' Jun-Sep, else 'off'."""
+    m = int(today[5:7])
+    if m in (10, 11) and has_harvest:
+        return "harvest"
+    return "summer" if 6 <= m <= 9 else "off"
+
+
+def harvest_lead(cp, rd):
+    """Top-of-page block for harvest season: corn and soybeans harvested vs
+    the five-year average for the big states on this week's report."""
+    sts = (cp or {}).get("states") or {}
+
+    def cell(st, key):
+        s = (sts.get(st) or {}).get(key) or {}
+        if s.get("pct") is None or _iso_date(s.get("date")) != rd:
+            return None
+        return s["pct"], s.get("avg5")
+
+    def td(c):
+        if c is None:
+            return '<td class="num" style="color:#8a948f">&ndash;</td>'
+        pct, av = c
+        if av is None:
+            return f'<td class="num">{pct:g}%</td>'
+        g = pct - av
+        cls = " lo" if g <= -10 else (" hi" if g >= 10 else "")
+        gs = f"{g:+g}".replace("-", "&minus;")
+        return f'<td class="num">{pct:g}% <span class="cd-hl-gap{cls}">{gs}</span></td>'
+
+    rows = []
+    for st in HARVEST_LEAD_STATES:
+        c, s = cell(st, "corn_harvested"), cell(st, "soybeans_harvested")
+        if c is None and s is None:
+            continue
+        rows.append(f"<tr><td>{_e(STATE_NAMES.get(st, st))}</td>{td(c)}{td(s)}</tr>")
+    if not rows:
+        return ""
+    return ('<section class="cd-panel cd-hl" aria-labelledby="cd-hl-t">'
+            '<div class="cd-panel-hd"><span class="cd-panel-t" id="cd-hl-t">Harvest pace by state vs average</span>'
+            f'<span class="cd-fresh">week ending {rd.isoformat()}</span></div><div class="cd-panel-b">'
+            f'<div class="tblscroll"><table class="cd-tbl"><caption>Percent harvested, week ending {_mdy(rd)}, '
+            'and points ahead (+) or behind (&minus;) the five-year average</caption>'
+            '<tr><th>State</th><th style="text-align:right">Corn</th><th style="text-align:right">Soybeans</th></tr>'
+            + "".join(rows) +
+            '</table></div><p class="cd-hl-more">Every state USDA reported: <a href="#harvest">full harvest '
+            'table</a>. A dash means USDA did not report that crop for that state this week.</p></div></section>')
+
+
 def seed_conditions(today):
     cp = _load_json("data/crop-progress.json")
     cj = _load_json("data/conditions/conditions.json")
@@ -895,6 +966,10 @@ def seed_conditions(today):
         if nst:
             hline += f" {nst} corn states reported this week."
         seeds["condharvline"] = hline
+        has_h = any(((prog.get(k) or {}).get("pct") is not None and _iso_date((prog.get(k) or {}).get("date")) == rd)
+                    for k in ("corn_harvested", "soybeans_harvested"))
+        season = cond_season(today, has_h)
+        seeds["condharvlead"] = harvest_lead(cp, rd) if season == "harvest" else ""
         seeds["condharvtable"] = htab or f'<tr><td style="color:#8a948f">No state harvest numbers for the week ending {_mdy(rd)}</td></tr>'
     else:
         why = ("USDA is between seasons" if cp and not cp.get("in_season") else
@@ -904,6 +979,9 @@ def seed_conditions(today):
         wk = f"No current national rating: {why}."
         seeds["condharvline"] = f"No current harvest numbers: {why}."
         seeds["condharvtable"] = f'<tr><td style="color:#8a948f">No current harvest numbers: {why}</td></tr>'
+        season = cond_season(today, False)
+        seeds["condharvlead"] = ""
+    seeds["condlede"] = COND_LEDE[season]
     # state table: the page script's table, corn tab, worst first
     pkg = ((cj or {}).get("crops") or {}).get("corn")
     we = _iso_date((pkg or {}).get("week_ending"))
