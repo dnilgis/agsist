@@ -1,0 +1,51 @@
+# Benchmark grain-shrink: Purdue Converting Wet Corn Weight to Dry
+# https://extension.entm.purdue.edu/newsletters/pestandcrop/article/converting-wet-corn-weight-to-dry-corn-weight-3/
+# fetched 2026-10-16T15:40:47Z, sha256 77cf4568ff65261d73897fcc1d4ded731b0c25a96d02f80e2176d8e999b96a60
+
+Converting Wet Corn Weight To Dry Corn Weight | Purdue University Pest&Crop newsletter
+
+Corn is often harvested at grain moisture contents higher than the 15% moisture typically desired by grain buyers. Wetter grain obviously weighs more than drier grain and so grain buyers will “shrink” the weight of “wet” grain (greater than 15% moisture) to the equivalent weight of “dry” grain (15% moisture) and then divide that weight by 56 to calculate the market bushels of grain they will purchase from the grower.
+
+The two sources of weight loss due to mechanical drying are 1) the weight of the moisture (water) removed by the drying process and 2) the anticipated weight loss resulting from the loss of dry matter that occurs during the grain drying and handling processes (e.g., broken kernels, fines, foreign materials). An exact value for the handling loss, sometimes called “invisible shrink”, is difficult to predict and can vary significantly from one grain buyer to another. For a lengthier discussion on grain weight shrinkage due to mechanical drying, see Hicks & Cloud, 1991.
+
+The simple weight loss due to the removal of grain moisture represents the greatest percentage of the total grain weight shrinkage due to drying and is easily calculated using a handheld calculator or a smartphone calculator app. In general terms, you first convert the “wet” weight (greater than 15% moisture) to absolute dry weight (0% moisture). Then you convert the absolute dry weight back to a market-standard “dry” weight at 15% grain moisture.
+
+Concept:
+
+- The initial percent dry matter content depends on the initial grain moisture content. For example, if the initial grain moisture content is 20%, then the initial percent dry matter content is 80% (e.g., 100% – 20%).
+
+- If the desired ending grain moisture content is 15% (the typical market standard), then the desired ending percent dry matter content is 85% (100% – 15%).
+
+- Multiply the weight of the “wet” grain by the initial percent dry matter content, then divide the result by the desired ending percent dry matter content.
+
+Example:
+
+- 100,000 lbs of grain at 20% moisture = 80,000 lbs of absolute dry matter (i.e., 100,000 x 0.80).
+
+- 80,000 lbs of absolute dry matter = 94,118 lbs of grain at 15% moisture (i.e., 80,000 / 0.85).
+
+- 94,118 lbs of grain at 15% moisture = 1681 bu of grain at 15% moisture (i.e., 94,118 / 56).
+
+One take-home reminder from this little exercise is the fact that the grain trade allows you to sell water in the form of grain moisture… up to a maximum market-standard 15% grain moisture content (or 14% for long term storage). Take advantage of this fact and maximize your “sellable” grain weight by delivering corn grain to the elevator at moisture levels no lower than 15% moisture content. In other words, if you deliver corn to the elevator at grain moisture contents lower than 15%, you will be paid for fewer bushels than you otherwise could be paid for.
+
+Related reading
+
+Glewen, Keith, Paul Jasa, & Jenny Rees. 2020. Plan Harvest to Deliver Soybeans at the Optimum Moisture. Cropwatch, Univ Nebraska Extension. http://cropwatch.unl.edu/2017/plan-harvest-deliver-soybean-optimum-moisture [URL accessed Sep 2020]
+
+Hicks, D.R. and H.A. Cloud. 1991. Calculating Grain Weight Shrinkage in Corn Due to Mechanical Drying. National Corn Handbook Publication NCH-61. https://www.extension.purdue.edu/extmedia/nch/nch-61.html [URL accessed Sep 2020]
+
+Nielsen, RL (Bob). 2018. Corn Grain Test Weight. Corny News Network, Purdue Extension. http://www.kingcorn.org/news/timeless/TestWeight.html [URL accessed Sep 2020]
+
+Article Categories:
+
+- Agronomy Tips
+
+Article Tags:
+
+- converting weight
+
+- dry corn
+
+- wet corn
+
+Share This Article

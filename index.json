@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:39:45Z",
+ "run_utc": "2026-10-16T15:41:03Z",
  "sources": [
   {
    "bytes": null,
@@ -2861,6 +2861,102 @@
    ],
    "status": "new",
    "text_chars": 1
+  },
+  {
+   "bytes": 206004,
+   "sha256": "522113d78c289a1d131fe65f6126b793b88011ec66ab38f4e8698718a427b9d6",
+   "fetched_utc": "2026-10-16T15:40:45Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-grain-shrink-1.html",
+   "final_url": "https://extension.wisc.edu/?ss_redir=1",
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-grain-shrink-1",
+   "url": "https://fyi.extension.wisc.edu/energy/grain-drying-and-storage/determining-grain-shrinkage-rates",
+   "title": "Benchmark grain-shrink: UW-Madison Extension Determining Grain Shrinkage Rates",
+   "why": "/grain-shrink competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:40:44Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 6966
+  },
+  {
+   "bytes": 68229,
+   "sha256": "77cf4568ff65261d73897fcc1d4ded731b0c25a96d02f80e2176d8e999b96a60",
+   "fetched_utc": "2026-10-16T15:40:47Z",
+   "pages": null,
+   "etag": "\"f923-65de6ed541e3b\"",
+   "last_modified": "Thu, 15 Oct 2026 20:31:05 GMT",
+   "saved_as": "refs/bench-grain-shrink-3.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-grain-shrink-3",
+   "url": "https://extension.entm.purdue.edu/newsletters/pestandcrop/article/converting-wet-corn-weight-to-dry-corn-weight-3/",
+   "title": "Benchmark grain-shrink: Purdue Converting Wet Corn Weight to Dry",
+   "why": "/grain-shrink competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:40:46Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 3719
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "bench-grain-shrink-4",
+   "url": "https://www.extension.iastate.edu/agdm/crops/html/a2-32.html",
+   "title": "Benchmark grain-shrink: Iowa State Ag Decision Maker A2-32 grain drying cost",
+   "why": "/grain-shrink competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:40:48Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback/python: HTTP 429; wayback/python: HTTP 429; wayback/curl: HTTP 429",
+   "status": "failed"
+  },
+  {
+   "bytes": 49487,
+   "sha256": "16e21d545cc6115d2030668127148075c39fc79e807a6837872918cd9f5a536c",
+   "fetched_utc": "2026-10-16T15:41:03Z",
+   "pages": null,
+   "etag": "\"1792163847\"",
+   "last_modified": "Fri, 16 Oct 2026 15:17:27 GMT",
+   "saved_as": "refs/bench-grain-shrink-5.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-grain-shrink-5",
+   "url": "https://crops.extension.iastate.edu/cropnews/2022/10/options-fall-grain-drying-and-marketing",
+   "title": "Benchmark grain-shrink: Iowa State options for fall grain drying and marketing",
+   "why": "/grain-shrink competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:41:03Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 7726
   }
  ]
 }

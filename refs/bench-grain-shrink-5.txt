@@ -1,0 +1,122 @@
+# Benchmark grain-shrink: Iowa State options for fall grain drying and marketing
+# https://crops.extension.iastate.edu/cropnews/2022/10/options-fall-grain-drying-and-marketing
+# fetched 2026-10-16T15:41:03Z, sha256 16e21d545cc6115d2030668127148075c39fc79e807a6837872918cd9f5a536c
+
+Options for Fall Grain Drying and Marketing | Integrated Crop Management
+
+-
+
+-
+
+-
+
+Options for Fall Grain Drying and Marketing
+
+October 20, 2022
+
+Content Author: Kristina TeBockhorst, Brian Dougherty, Tony Mensing
+
+With harvest in full swing and while conditions have generally been good for in-field drying this fall there are still some corn fields in areas of the state with moisture levels in the low to mid 20s.
+
+The in-field drying rate is influenced by temperature, humidity, and rainfall. With more seasonable and lower temperatures, our drying rates decrease. Weekly drying is estimated at 4.5 moisture points per week in September, 2.5 in October, 1.0 in November, and 0.5 points per week in December. The corn drydown calculator can help farmers determine how much in-field drying to expect this fall, especially when evaluating whether it’s practical to leave corn in the field or harvest wetter corn now. If you choose to wait and leave corn in the field, do keep a close eye on stalk quality and integrity.
+
+Caption: Grain drying options are a balancing act that includes weather, economics and what the grain will be used for.
+
+As you make harvesting and grain drying decisions this fall, keep in mind that the drying cost of a high temperature dryer increases around 14% with every 20-degree decrease in average outdoor temperature.
+
+Natural air drying in an aerated bin is another option, but the higher the initial grain moisture content is, the higher the airflow rate needs to be. Trying to natural air-dry corn that is over 22% moisture content runs a high risk of spoilage before the corn is dry.
+
+When evaluating the trade-offs between selling wet grain vs. drying it yourself, compare your drying system cost and shrinkage loss to your buyer’s moisture discount factor or drying charge and shrink factor. Below are some examples that walk you through if you sell corn as is, dry on-farm before selling, or store on-farm and choose to sell later.
+
+Selling corn as-is
+
+Consider an example where a seller has 1,000 bushels of 20% moisture corn with a 56 lb/bushel test weight and a current corn price of $6.50 per bushel.
+
+If the buyer assesses a moisture price discount of 2.0% for each moisture point above 15%, the discount would be 5 moisture points times 2.0% per point, for a total discount of 10%. The discount would be $6.50 times 10%, or $0.65 per bushel. In this case, the seller would receive $5.85 per bushel ($6.50 - $0.65) for a net revenue of $5,850 if they sold their wet corn as-is.
+
+The buyer may instead use a combination of drying charge and shrink factor. If the buyer is charging a drying fee of $0.05 per wet bushel per point of moisture removed, the drying charge would be $0.05 per bushel times 5 moisture points times 1,000 wet bushels, or $250. If the buyer uses a shrinkage factor of 1.4% per point above 15%, this will result in a shrink of 70 bushels, or 1.4% times 5 moisture points times 1,000 wet bushels, leaving 930 bushels of dry grain. The net revenue would be 930 bushels times $6.50/bushel minus the $250 drying charge, for a total of $5,795.
+
+Drying on-farm before selling
+
+Consider the drying cost per bushel of your system as well as the shrinkage loss from the drying process. Using the Ag Decision Maker spreadsheet Corn Drying and Shrink Comparison (A2-32) with a propane cost of $1.50 per gallon and electricity cost of $0.14 per kilowatt-hour, we can estimate a high temperature drying system cost of around $0.04 per bushel per point of moisture removed. At $0.04 per bushel times 5 moisture points times 1,000 bushels, the drying cost would be $200.
+
+Drying shrinkage loss is mostly due to water loss, but also includes handling (dry matter) weight loss. A 56,000-pound load of 20% moisture corn consists of 11,200 pounds of water and 44,800 pounds of dry matter. After drying 5 moisture points there will be 52,706 pounds (44,800 pounds divided by 0.85). Assuming a handling loss of 1%, handling shrink is 560 pounds. Dry weight to sell is 52,146 pounds, or 931 bushels (52,706 minus 560). There will also be additional transportation costs to haul grain to the on-farm drying system. Using an estimate of $0.01 per bushel per mile would add an additional $40 cost for transportation. The net revenue then becomes $5,811 (931 bushels times $6.50/bushel minus $200 drying cost minus $40 additional hauling cost). Factor in additional drying costs if planning to store for more than 6 months at a lower moisture content.
+
+To make an accurate comparison for your own farm, ask your buyer for moisture discounts or drying charges and shrink factors. Use your actual costs for propane and electricity. You can estimate propane needs for a high temperature dryer by taking 0.018 gallons times bushels dried times moisture points removed. While 0.018 gallons is an average propane usage estimate, this may range from 0.010 to 0.025 gallons per bushel per point of moisture removed depending on the drying system and outdoor temperature.
+
+Storing on-farm for later sale
+
+If grain is held on-farm for later sale, the costs associated with holding the grain need to be considered. Ag Decision Maker File A2-33 Cost of Storing Grain can help determine storage costs of storing grain on-farm vs commercially.
+
+For on-farm storage, allowable storage time must also be considered. Table 1 shows the maximum storage life for corn at different temperatures. These storage times are for the entire life of the corn and if exceeded may result in noticeable deterioration in grain quality. The listed times are for clean corn having about 30% mechanical damage. Research shows that with 40% mechanical damage, the allowable storage time is cut in half.
+
+Holding wet corn in unaerated bins or transport vehicles can use a significant amount of the storage life potential. Wet corn should be placed in an aerated bin immediately after harvest. If corn is held wet temporarily, maintaining uniformly cold grain temperature is critical to prevent spoilage. A good rule of thumb is to plan to market grain with half of the allowable storage time remaining.
+
+Table 1. Corn maximum allowable storage time in days
+
+Grain temp Moisture Content
+
+Degrees F 15 18 20 22 24 26 28 30
+
+30 2200 640 320 190 127 94 74 61
+
+40 1000 290 142 84 56 41 32 27
+
+50 450 125 63 35 25 18 14 12
+
+60 200 55 28 17 11 8 7 5
+
+70 110 30 16 9 6 5 4 3
+
+80 60 17 9 5 4 3 2 2
+
+Evaluating these different options with the resources linked below can help you determine which option is the best fit for your operation.
+
+Resources
+
+- Iowa Grain Quality Initiative Grain Storage Resources
+
+- Forecast and Assessment of Cropping sysTemS (FACTS) corn drydown calculator
+
+- Estimating the Cost for Drying Corn, A2-31, William Edwards, 2014.
+
+- Corn Drying and Shrink and Grain Bid Price Comparisons, A2-32, William Edwards, 2014.
+
+- Cost of Storing Grain, A2-33, William Edwards, 2015.
+
+- University of Nebraska Grain Moisture Weight Price Estimator
+
+- University of Minnesota Natural Air Corn Drying
+
+Links to this article are strongly encouraged, and this article may be republished without further permission if published as written and if credit is given to the author, Integrated Crop Management News, and Iowa State University Extension and Outreach. If this article is to be used in any other manner, permission from the author is required. This article was originally published on October 20, 2022. The information contained within may not be the most current and accurate depending on when it is accessed.
+
+Authored by
+
+Kristina TeBockhorst
+
+Brian Dougherty
+
+Tony Mensing
+
+- Field Agricultural Engineer
+
+Crops:
+
+-
+Corn
+
+Topic:
+
+-
+Crop Production
+
+-
+Grain Storage
+
+Tags:
+
+- Corn
+
+- corn moisture
+
+- corn harvest
