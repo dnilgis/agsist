@@ -31,11 +31,13 @@ jobs:
         env:
           NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
         run: python scripts/fetch_tenure.py
+      - name: Field Scout slices
+        run: python scripts/build_field_scout_data.py
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/tenure 2>/dev/null || true
+          git add -A data/tenure data/field-scout 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: census land tenure (owned vs rented acres)"
           git pull --rebase --autostash origin main || true
