@@ -1,0 +1,5 @@
+# Benchmark home: Barchart Grains
+# https://www.barchart.com/futures/grains
+# fetched 2026-10-16T16:16:10Z, sha256 08e1532ad4fec926201c506c7bf5569f75151e78f1896f0d7c978605e8c76420
+
+

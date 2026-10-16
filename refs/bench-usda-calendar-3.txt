@@ -1,0 +1,183 @@
+# Benchmark usda-calendar: ESMIS Cattle on Feed
+# https://esmis.nal.usda.gov/publication/cattle-feed
+# fetched 2026-10-16T16:15:59Z, sha256 f9e50018313dd0577a1d8dc88b4303de8b68c12e55f164e9f8031dfa09e81ad6
+
+Cattle on Feed | Economics, Statistics, and Market Information Systemdot gov iconhttps iconUSDA Logo
+
+-
+
+-
+
+Cattle on Feed
+
+This file contains the monthly total number of cattle and calves on feed, placements, marketings, and other disappearances; by class and feedlot capacity for selected states; number of feedlots and fed cattle marketings by size groups for selected states. Data is organized by state and by U.S.
+
+Agency
+
+National Agricultural Statistics Service
+
+Frequency of Release
+
+Monthly
+
+Upcoming releases
+
+Oct 23 2026 3:00 PM
+, Nov 20 2026 3:00 PM
+, Dec 18 2026 3:00 PM
+
+Category
+
+Livestock
+
+Keywords
+
+feed, calves, marketing, feedlots, cattle
+
+Related ESMIS Publication
+
+Cattle - Final Estimates
+
+Overview of the U. S. Cattle Industry
+
+Cattle
+
+Releases
+
+Date
+Download
+Operations
+
+Sep 18 2026
+
+Sep 18 2026
+- pdfSep 18 2026
+- txtSep 18 2026
+- zip
+
+- View
+
+Aug 21 2026
+
+Aug 21 2026
+- pdfAug 21 2026
+- txtAug 21 2026
+- zip
+
+- View
+
+Jul 24 2026
+
+Jul 24 2026
+- pdfJul 24 2026
+- txtJul 24 2026
+- zip
+
+- View
+
+Jun 18 2026
+
+Jun 18 2026
+- pdfJun 18 2026
+- txtJun 18 2026
+- zip
+
+- View
+
+May 22 2026
+
+May 22 2026
+- pdfMay 22 2026
+- txtMay 22 2026
+- zip
+
+- View
+
+Apr 17 2026
+
+Apr 17 2026
+- pdfApr 17 2026
+- txtApr 17 2026
+- zip
+
+- View
+
+Mar 20 2026
+
+Mar 20 2026
+- pdfMar 20 2026
+- txtMar 20 2026
+- zip
+
+- View
+
+Feb 20 2026
+
+Feb 20 2026
+- pdfFeb 20 2026
+- txtFeb 20 2026
+- zip
+
+- View
+
+Jan 23 2026
+
+Jan 23 2026
+- pdfJan 23 2026
+- txtJan 23 2026
+- zip
+
+- View
+
+Dec 19 2025
+
+Dec 19 2025
+- pdfDec 19 2025
+- txtDec 19 2025
+- zip
+
+- View
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Latest Release
+
+Date
+Download
+
+Sep 18 2026
+
+Cattle on Feed - Sep 18 2026
+- pdfCattle on Feed - Sep 18 2026
+- txtCattle on Feed - Sep 18 2026
+- zip
+
+Contact office name
+
+National Agricultural Statistics Service
+
+Contact email
+
+nass@nass.usda.gov

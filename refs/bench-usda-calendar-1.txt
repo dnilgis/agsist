@@ -1,0 +1,259 @@
+# Benchmark usda-calendar: USDA NASS release calendar / PFEI schedule
+# https://www.nass.usda.gov/Publications/Calendar/2026/2026ReleaseCalendar_12Months_11x17_Color.pdf
+# fetched 2026-10-16T16:15:41Z, sha256 b18abe835a69c6b9fb27cb5407f00848948d4960daa3da9b1aa8e0ce342f839a
+
+                                                   2026 Agricultural Statistics Board Calendar
+                    Monday                                 Tuesday                       Wednesday                              Thursday                                         Friday                                  Monday                              Tuesday                       Wednesday                           Thursday                            Friday
+                                                                                                                         1 HOLIDAY                                    2 Slaughter Weekly                                                                                               1 Broiler Hatchery                 2 Slaughter Weekly           3 HOLIDAY
+                                                                                                                                                                          Cotton System                                                                                                   Cotton System                      Dairy Products
+                                                                                                                                                                          Fats & Oils                                                                                                     Fats & Oils                        Peanut Prices
+                                                                                                                                                                          Grain Crushings                                                                                                 Grain Crushings
+                                                                                                                                                                          Peanut Prices
+
+           5                                       6 Dairy Products                  7 State Stories                 ◆ 8 Slaughter Weekly                             9 Peanut Prices                            6 Crop Progress                 ▲ 7                                   8 Broiler Hatchery                 9 Slaughter Weekly           10 Crop Production                ⬤
+                                                                                        Broiler Hatchery                                                                                                                                                                                                                                                  Peanut Prices
+January
+
+
+
+
+           12 Crop Production                  ⬤   13                                14 Broiler Hatchery                 15 Slaughter Weekly                       16 Peanut Prices                              13 Turkey Hatchery                  14                                15 Agricultural Chemical Usage 16 Slaughter Weekly              17 Peanut Prices
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                         July
+                Crop Production - Ann.                                                                                                                                                                               Crop Progress               ▲                                         - Fruits
+                Grain Stocks                                                                                                                                                                                                                                                              Broiler Hatchery
+                Winter Wheat/Canola Seedings
+                Cotton Ginnings                ◆                                                                                                                                                                                                                                          Catfish Production
+                Rice Stocks
+                Turkey Hatchery
+
+           19 HOLIDAY                              20 Chickens and Eggs              21 Broiler Hatchery                 22 Slaughter Weekly                       23 Cotton Ginnings                        ◆   20 Chickens and Eggs                21                                22 Broiler Hatchery                23 Slaughter Weekly          24 Cattle                         ◼
+                                                                                                                             Livestock Slaughter                          Cattle on Feed                     ◼       Crop Progress               ▲                                        Milk Production                    Livestock Slaughter          Cattle on Feed
+                                                                                                                                                                          Coffee                                                                                                                                                                          Cold Storage
+                                                                                                                                                                          Cold Storage                                                                                                                                                                    Farm Production Expenditures
+                                                                                                                                                                          Milk Production
+                                                                                                                                                                          Peanut Prices
+                                                                                                                                                                                                                                                                                                                                                          Peanut Prices
+                                                                                                                                                                          Poultry Slaughter                                                                                                                                                               Poultry Slaughter
+
+           26                                      27 Peanut Stocks and Processing 28 Broiler Hatchery                   29 Slaughter Weekly                       30 Agricultural Prices                    ◼   27 Peanut Stocks and Processing 28                                    29 Broiler Hatchery                30 Slaughter Weekly          31 Agricultural Prices            ◼
+                                                                                                                                                                          Cattle                                     Crop Progress               ▲                                                                                                        Cash Rents- State
+                                                                                                                                                                          Egg Products                                                                                                                                                                    Egg Products
+                                                                                                                                                                          Peanut Prices                                                                                                                                                                   Land Values
+                                                                                                                                                                          Sheep and Goats                                                                                                                                                                 Peanut Prices
+
+
+           2 Cotton System                         3                                 4 State Stories                 ◆ 5 Slaughter Weekly                         6       North American Potatoes                3 Cotton System                     4                                 5 Broiler Hatchery                 6 Slaughter Weekly           7 Peanut Prices
+                Fats & Oils                                                             Broiler Hatchery                 Dairy Products                                   Peanut Prices                              Fats & Oils                                                                                             Dairy Products
+                Flour Milling                                                                                                                                                                                        Flour Milling
+                Grain Crushings                                                                                                                                                                                      Grain Crushings
+                                                                                                                                                                                                                     Honey Bee Colonies
+                                                                                                                                                                                                                     Crop Progress               ▲
+
+           9 Capacity of Refrigerated              10 Crop Production            ⬤ 11 Broiler Hatchery                   12 Slaughter Weekly                      13 Cost of Pollination                         10 Crop Progress                ▲ 11                                  12 Crop Production            ⬤ 13 Slaughter Weekly             14 Peanut Prices
+                 Warehouses                             Cotton Ginnings          ◆                                           Turkey Hatchery                              Farms and Land in Farms                                                                                         Cotton Ginnings            ◆
+                Catfish Production                                                                                           Vegetables - Ann.                            Peanut Prices                                                                                                   Broiler Hatchery
+                                                                                                                                                                                                                                                                                          Turkey Hatchery
+February
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                         August
+           16 HOLIDAY                              17 Chickens and Eggs - Ann.       18 Broiler Hatchery                 19 Slaughter Weekly                      20 Cattle on Feed                          ◼   17 Crop Progress                ▲ 18                                  19 Broiler Hatchery                20 Rice Stocks            ◆ 21 Cattle on Feed                  ◼
+                                                                                        Potato Stocks                        Livestock Slaughter                          Milk Production                                                                                                 Mushrooms                          Slaughter Weekly            CE: Cash Rents
+                                                                                                                                                                          Peanut Prices                                                                                                                                      Livestock Slaughter         Milk Production
+                                                                                                                                                                          Poultry Slaughter                                                                                                                                                              Peanut Prices
+
+
+           23 Chickens and Eggs                    24 Cold Storage                   25 Broiler Hatchery                 26 2024 Census of                        27 Agricultural Prices                     ◼   24 Chickens and Eggs                25 Poultry Slaughter              26 Broiler Hatchery                27 Slaughter Weekly          28 Peanut Prices
+                                                                                                                               Horticultural Specialties                  Cold Storage - Ann.                        Cold Storage                                                         Peanut Stocks and Processing       Citrus Fruits
+                                                                                                                             Crop Values                                  Egg Products                               Crop Progress               ▲                                        U.S. and Canadian Cattle
+                                                                                                                             Floriculture Crops                           Peanut Prices
+                                                                                                                             Peanut Stocks and Processing                 Poultry Slaughter - Ann.
+                                                                                                                                                                                                                                                                                          U.S. and Canadian Hogs
+                                                                                                                             Slaughter Weekly                             Trout Production
+
+                                                                                                                                                                                                                 31 Agricultural Prices          ◼
+                                                                                                                                                                                                                     Egg Products
+                                                                                                                                                                                                                     Crop Progress               ▲
+
+
+
+
+           2 Cotton System                         3                                 4 State Stories               ◆ 5 CE: Barley, Oats, Winter                       6 Peanut Prices                                                                1 Cotton System                   2 Broiler Hatchery                 3 Slaughter Weekly           4 Peanut Prices
+                Cotton System - Ann.                                                    Broiler Hatchery                 Wheat, Durum Wheat,                                                                                                              Fats & Oils                                                        Dairy Products
+                Fats & Oils                                                             U.S. and Canadian Cattle and     Spring Wheat                                                                                                                     Grain Crushings
+                Fats & Oils - Ann.                                                       Sheep                         Dairy Products                                                                                                                     Grain Crushings - Ann.
+                Grain Crushings                                                         U.S. and Canadian Hogs         Slaughter Weekly
+
+           9                                       10 Crop Production            ⬤ 11 Broiler Hatchery                   12 Tenure, Ownership and       13 Honey                                                 7 HOLIDAY                           8 Crop Progress               ▲ 9 Broiler Hatchery                   10 Slaughter Weekly          11 Crop Production                ⬤
+                                                        Cotton Ginnings          ◆    Price Reactions after USDA             Transition of Agricultural    North American Grain and                                                                                                                                                                       Cotton Ginnings                ◆
+                                                                                       Crop Reports                          Land (TOTAL)            ◆      Oilseed Crushings                                                                                                                                                                             Peanut Prices
+                                                                                      Price Reactions After USDA                                           Peanut Prices
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                         September
+                                                                                                                            Slaughter Weekly
+                                                                                       Livestock Reports                                                                  Turkey Hatchery
+March
+
+
+
+
+           16 Hop Stocks                           17                                18 Broiler Hatchery                 19 Slaughter Weekly                       20 Cattle on Feed                         ◼   14 Livestock Historical Track       15                                16 Broiler Hatchery                17 Slaughter Weekly          18 Cattle on Feed                 ◼
+                                                                                                                             Livestock Slaughter                          Milk Production                             Records                                                                                                                             Hop Stocks
+                                                                                                                                                                          Peanut Prices                              Turkey Hatchery                                                                                                                      Peanut Prices
+                                                                                                                                                                                                                     Crop Progress               ▲
+
+
+           23 Chickens and Eggs                    24 Cold Storage                   25 Broiler Hatchery                 26 Hogs and Pigs               ◼ 27 Egg Products                                        21 Chickens and Eggs                22 Cotton Ginnings            ◆ 23 Broiler Hatchery                  24 Hogs and Pigs          ◼ 25 Cold Storage
+                                                                                                                             Slaughter Weekly                Peanut Prices                                           Crop Progress               ▲        Milk Production                                                    Slaughter Weekly             Peanut Prices
+                                                                                                                             Peanut Stocks and Processing    Poultry Slaughter                                                                                                                                               Livestock Slaughter          Peanut Stocks and Processing
+                                                                                                                                                                                                                                                                                                                                                          Potatoes
+                                                                                                                                                                                                                                                                                                                                                          Poultry Slaughter
+                                                                                                                                                                                                                                                                                                                                                          Turkeys Raised
+
+           30 Agricultural Prices              ◼ 31 Grain Stocks                 ⬤                                                                                                                               28 Crop Progress                ▲ 29 Agricultural Prices          ◼ 30 Grain Stocks                 ⬤
+                                                    Prospective Plantings                                                                                                                                                                                                               Small Grains Summary
+                                                    Rice Stocks                  ◆                                                                                                                                                                                                      Broiler Hatchery
+                                                                                                                                                                                                                                                                                        Egg Products
+
+
+
+                                                                                     1 State Stories                 ◆ 2 Slaughter Weekly                             3                                                                                                                                                   1 Slaughter Weekly           2 Peanut Prices
+                                                                                        Broiler Hatchery                 Dairy Products                                                                                                                                                                                      Cotton System
+                                                                                        Cotton System                    Peanut Prices                                                                                                                                                                                       Fats & Oils
+                                                                                        Fats & Oils                                                                                                                                                                                                                          Grain Crushings
+                                                                                        Grain Crushings
+
+           6 Crop Progress                     ▲ 7 Hatchery Production - Ann.        8 Broiler Hatchery                  9 Crop Production                  ⬤ 10 Peanut Prices                                   5 Dairy Products                    6                                 7 Broiler Hatchery                 8 Slaughter Weekly           9 Crop Production                 ⬤
+                                                                                        Crop Production Historical           Slaughter Weekly                                                                        Crop Progress               ▲                                                                                                        Cotton Ginnings                ◆
+                                                                                         Track Records
+                                                                                                                                                                                                                                                                                                                                                          Peanut Prices
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                                                         October
+           13 Turkey Hatchery                      14                                15 Broiler Hatchery                 16 Slaughter Weekly                       17 Cattle on Feed                         ◼   12 HOLIDAY                          13 Turkey Hatchery                14 Broiler Hatchery                15 Slaughter Weekly          16 Peanut Prices
+April
+
+
+
+
+                Crop Progress                  ▲                                                                             National Hemp Report                         Peanut Prices                                                                   Crop Progress            ▲
+                                                                                                                                                                          Potato Stocks
+
+
+
+           20 Chickens and Eggs                    21                                22 Broiler Hatchery                 23 Slaughter Weekly                       24 Cold Storage                               19 Crop Progress                ▲ 20 Chickens and Eggs                21 Broiler Hatchery                22 Cotton Ginnings        ◆ 23 Cattle on Feed                  ◼
+                Crop Progress                  ▲                                        Livestock Slaughter - Ann.           Livestock Slaughter                          Dairy Products - Ann.                                                                                                                              Rice Stocks                 Cold Storage
+                                                                                        Milk Production                                                                   Peanut Prices                                                                                                                                      Slaughter Weekly            Peanut Prices
+                                                                                                                                                                          Poultry Slaughter                                                                                                                                  Livestock Slaughter         Poultry Slaughter
+                                                                                                                                                                                                                                                                                                                             Milk Production
+
+           27 Peanut Stocks and Processing 28                                        29 Broiler Hatchery                 30 Agricultural Prices               ◼                                                  26 Crop Progress                ▲ 27 Peanut Stocks and Processing 28 Broiler Hatchery                    29 Slaughter Weekly          30 Agricultural Prices            ◼
+                Crop Progress                  ▲                                        Egg Products                         Slaughter Weekly
+                                                                                                                             Meat Animals - PDI
+                                                                                                                                                                                                                                                                                                                                                          Egg Products
+                                                                                                                             Milk - PDI                                                                                                                                                                                                                   Peanut Prices
+                                                                                                                             Poultry - Production and Value
+
+
+
+                                                                                                                                                                      1 Cotton System                            2 Cotton System                     3                                 4 Broiler Hatchery                 5 Slaughter Weekly            6 Peanut Prices
+                                                                                                                                                                          Fats & Oils                                Fats & Oils                                                                                             Dairy Products
+                                                                                                                                                                          Flour Milling
+                                                                                                                                                                          Flour Milling - Ann.                       Flour Milling
+                                                                                                                                                                          Grain Crushings                            Grain Crushings
+                                                                                                                                                                          Noncitrus Fruits and Nuts - Ann.           Crop Progress               ▲
+                                                                                                                                                                          Peanut Prices
+
+           4 Crop Progress                     ▲ 5 CE: Corn, Soybeans,               6 Broiler Hatchery                  7 Slaughter Weekly                           8 Agricultural Chemical Usage              9 Crop Progress                 ▲ 10 Crop Production              ⬤ 11 HOLIDAY                           12 Slaughter Weekly          13 Peanut Prices
+                                                    Sorghum                             Dairy Products                                                                     - Field Crops                                                              Cotton Ginnings              ◆                                         Broiler Hatchery              Turkey Hatchery
+                                                                                                                                                                          Peanut Prices
+                                                                                                                                                                                                                                                                                                                                                                                         November
+
+
+
+
+           11 Crop Progress                    ▲ 12 Crop Production              ⬤ 13 Broiler Hatchery             14 Slaughter Weekly                             15 Peanut Prices                              16 Crop Progress                ▲ 17                                  18 Broiler Hatchery                19 Slaughter Weekly          20 Cattle on Feed                 ◼
+May
+
+
+
+
+                                                    Cotton Ginnings - Ann.       ◆    North American Flour Milling                                                                                                                                                                                                           Livestock Slaughter           Milk Production
+                                                    CE: Cattle & Sheep                 Products Summary                                                                                                                                                                                                                                                    Peanut Prices
+                                                    CE: Cotton
+                                                    Turkey Hatchery
+
+           18 Crop Progress                    ▲ 19 Chickens and Eggs                20 Broiler Hatchery                 21 Slaughter Weekly                       22 Cattle on Feed                         ◼   23 Cotton Ginnings              ◆ 24 Cold Storage                     25 Broiler Hatchery                26 HOLIDAY                   27 Slaughter Weekly
+                                                                                                                             Livestock Slaughter                          CE: All Rice, Peanuts                      Chickens and Eggs                                                     Peanut Stocks and Processing                                    Peanut Prices
+                                                                                                                                                                          Cold Storage                               Crop Progress               ▲                                         Poultry Slaughter
+                                                                                                                                                                          Milk Production
+                                                                                                                                                                          Peanut Prices
+                                                                                                                                                                          Poultry Slaughter
+
+           25 HOLIDAY                              26 Crop Progress              ▲ 27 Broiler Hatchery                   28 Slaughter Weekly                       29 Agricultural Prices                    ◼   30 Agricultural Prices          ◼
+                                                                                                                             Peanut Stocks and Processing                 Egg Products                               Egg Products
+                                                                                                                                                                          Peanut Prices                              Crop Progress               ▲
+
+
+
+
+           1 Cotton System                         2                                 3 Broiler Hatchery                  4 Slaughter Weekly                           5 Peanut Prices                                                                1 Cotton System                   2 Broiler Hatchery                 3 Slaughter Weekly           4 Peanut Prices
+                Fats & Oils                                                                                                  Dairy Products                                                                                                               Fats & Oils                                                        Dairy Products
+                Grain Crushings                                                                                                                                                                                                                           Grain Crushings
+                Crop Progress                  ▲
+
+
+           8 Crop Progress                     ▲ 9                                   10 Broiler Hatchery                 11 Crop Production                 ⬤ 12 Peanut Prices
+                                                                                                                                                                                                                 7                                   8                                 9 Broiler Hatchery                 10 Crop Production        ⬤ 11 Cost of Pollination
+                                                                                                                                                                                                                                                                                                                             Cotton Ginnings        ◆    North American Potatoes
+                                                                                                                             Slaughter Weekly                                                                                                                                                                                                            Peanut Prices
+                                                                                                                                                                                                                                                                                                                             Slaughter Weekly
+                                                                                                                                                                                                                                                                                                                                                                                         December
+
+
+
+
+           15 Turkey Hatchery                      16                                17 Broiler Hatchery                 18 Cattle on Feed                  ◼ 19 HOLIDAY                                         14 Turkey Hatchery                  15                                16 Broiler Hatchery                17 Slaughter Weekly          18 Cattle on Feed               ◼
+June
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                                          CE: Barley, Oats, Winter Wheat,
+                Crop Progress                  ▲                                        Floriculture Crops                   Slaughter Weekly                                                                                                                                                                                                               Durum Wheat, Spring Wheat
+                                                                                                                             Peanut Prices                                                                                                                                                                                                                National Hop Report
+                                                                                                                             Potato Stocks                                                                                                                                                                                                                Peanut Prices
+                                                                                                                                                                                                                                                                                                                                                          Potato Stocks
+
+           22 Chickens and Eggs                    23                                24 Broiler Hatchery                 25 Hogs and Pigs                   ◼ 26 Peanut Prices                                   21 Chickens and Eggs                22 Cotton Ginnings            ◆ 23 Hogs and Pigs                ◼ 24 Slaughter Weekly             25 HOLIDAY
+                Milk Production                                                                                              Slaughter Weekly                    Peanut Stocks and Processing                                                             Milk Production               Broiler Hatchery                  Livestock Slaughter
+                Crop Progress                  ▲                                                                             Cold Storage                        Poultry Slaughter                                                                                                      Cold Storage                      Peanut Prices
+                                                                                                                             Livestock Slaughter                                                                                                                                        Poultry Slaughter
+
+
+                                                                                                                                                                                                                 28 Peanut Stocks and Processing 29                                    30 Agricultural Prices        ◼ 31 Peanut Prices
+           29 Agricultural Prices              ◼ 30 Acreage                      ⬤
+                Crop Progress                  ▲                                                                                                                                                                                                                                          Broiler Hatchery                Slaughter Weekly
+                                                    Grain Stocks                                                                                                                                                                                                                          Egg Products
+                                                    Rice Stocks                  ◆
+                                                    Egg Products
+
+
+
+
+                                  12:00 p.m. Principal Federal                                                                 12:00 p.m.                                                             3:00 p.m. Principal Federal                                                                    4:00 p.m.                                  Remaining reports
+                      ⬤                                                                                              ◆                                                                  ◼                                                                                                ▲
+                                  Economic Indicator Release                                                                   Release                                                                Economic Indicator Release                                                                     Release                                    are issued at 3 p.m.
+      United States Department of Agriculture                                                           ■     National Agricultural Statistics Service                                                               ■        Washington, DC 20250                                  ■         (800) 727-9540                      ■          www.nass.usda.gov
+
