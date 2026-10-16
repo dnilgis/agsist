@@ -1,0 +1,21 @@
+{
+ "urls": [
+  "https://www.ams.usda.gov/market-news/hay-reports",
+  "https://www.ams.usda.gov/market-news/livestock-poultry-grain-hay"
+ ],
+ "reports": {
+  "Kansas Direct Hay Report": "2885",
+  "California Direct Hay Report": "2904",
+  "Colorado Direct Hay Report": "2905",
+  "Missouri Direct Hay Report": "2929",
+  "Nebraska Direct Hay Report": "2935",
+  "New Mexico Direct Hay Report": "2939",
+  "Alabama Direct Report (Bi-Weekly)": "3050",
+  "Idaho Direct Hay Report": "3056",
+  "Oregon Direct Hay Report": "3057",
+  "Washington-Oregon (Columbia Basin) Direct Hay Report": "3058",
+  "Oklahoma Direct Hay Report": "3095",
+  "South Dakota Direct Hay Report": "3183",
+  "Wyoming Direct Hay Report": "3236"
+ }
+}

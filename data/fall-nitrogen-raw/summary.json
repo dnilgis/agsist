@@ -1,0 +1,194 @@
+{
+ "run_utc": "2026-10-16T17:52:56Z",
+ "uscrn_files": [
+  "CRND0103-2026-IA_Des_Moines_17_E.txt",
+  "CRND0103-2026-IL_Champaign_9_SW.txt",
+  "CRND0103-2026-IL_Shabbona_5_NNE.txt",
+  "CRND0103-2026-IN_Bedford_5_WNW.txt",
+  "CRND0103-2026-KS_Manhattan_6_SSW.txt",
+  "CRND0103-2026-KS_Oakley_19_SSW.txt",
+  "CRND0103-2026-MI_Chatham_1_SE.txt",
+  "CRND0103-2026-MI_Gaylord_9_SSW.txt",
+  "CRND0103-2026-MN_Goodridge_12_NNW.txt",
+  "CRND0103-2026-MN_Sandstone_6_W.txt",
+  "CRND0103-2026-MO_Chillicothe_22_ENE.txt",
+  "CRND0103-2026-MO_Joplin_24_N.txt",
+  "CRND0103-2026-MO_Salem_10_W.txt",
+  "CRND0103-2026-ND_Jamestown_38_WSW.txt",
+  "CRND0103-2026-ND_Medora_7_E.txt",
+  "CRND0103-2026-ND_Northgate_5_ESE.txt",
+  "CRND0103-2026-NE_Harrison_20_SSE.txt",
+  "CRND0103-2026-NE_Lincoln_11_SW.txt",
+  "CRND0103-2026-NE_Lincoln_8_ENE.txt",
+  "CRND0103-2026-NE_Whitman_5_ENE.txt",
+  "CRND0103-2026-OH_Wooster_3_SSE.txt",
+  "CRND0103-2026-SD_Aberdeen_35_WNW.txt",
+  "CRND0103-2026-SD_Buffalo_13_ESE.txt",
+  "CRND0103-2026-SD_Pierre_24_S.txt",
+  "CRND0103-2026-SD_Sioux_Falls_14_NNE.txt",
+  "CRND0103-2026-WI_Necedah_5_WNW.txt"
+ ],
+ "scan_stations": 31,
+ "isusm_stations": 29,
+ "ksmeso_stations": 130,
+ "USCRN": {
+  "ok": true,
+  "stations": 23,
+  "sample": [
+   {
+    "id": "USCRN:54902",
+    "net": "USCRN",
+    "name": "Des Moines 17 E, IA",
+    "st": "IA",
+    "lat": 41.56,
+    "lon": -93.29,
+    "depth": "10 cm (3.9 in)",
+    "stat": "daily mean",
+    "last": "2026-10-15",
+    "t": [
+     62.1,
+     62.6,
+     62.2,
+     62.6,
+     63.5,
+     63.9,
+     64.8,
+     64.9,
+     64.0,
+     63.1
+    ]
+   },
+   {
+    "id": "USCRN:54808",
+    "net": "USCRN",
+    "name": "Champaign 9 SW, IL",
+    "st": "IL",
+    "lat": 40.05,
+    "lon": -88.37,
+    "depth": "10 cm (3.9 in)",
+    "stat": "daily mean",
+    "last": "2026-10-15",
+    "t": [
+     61.9,
+     62.8,
+     63.0,
+     63.1,
+     62.8,
+     63.9,
+     65.1,
+     67.6,
+     68.4,
+     67.3
+    ]
+   }
+  ]
+ },
+ "SCAN": {
+  "ok": true,
+  "stations": 30,
+  "sample": [
+   {
+    "id": "SCAN:2001",
+    "net": "SCAN",
+    "name": "Rogers Farm #1, NE",
+    "st": "NE",
+    "lat": 40.8462,
+    "lon": -96.4663,
+    "depth": "4 in",
+    "stat": "daily mean",
+    "last": "2026-10-15",
+    "t": [
+     63.0,
+     62.0,
+     64.0,
+     65.0,
+     65.0,
+     66.0,
+     65.0,
+     61.0,
+     60.0,
+     57.0
+    ]
+   },
+   {
+    "id": "SCAN:2002",
+    "net": "SCAN",
+    "name": "Crescent Lake #1, MN",
+    "st": "MN",
+    "lat": 45.4152,
+    "lon": -93.9479,
+    "depth": "4 in",
+    "stat": "daily mean",
+    "last": "2026-10-15",
+    "t": [
+     58.0,
+     56.0,
+     55.0,
+     56.0,
+     59.0,
+     61.0,
+     60.0,
+     58.0,
+     56.0,
+     54.0
+    ]
+   }
+  ]
+ },
+ "ISUSM": {
+  "ok": false,
+  "why": "Refuse: https://mesonet.agron.iastate.edu/cgi-bin/request/isusm.py?mode=daily&format=comma&todisk=no&sts=2026-10-04&ets=2026-10-16&station=AEEI4&station=AHDI4&station=AHTI4&station=AKCI4&station=AMFI4&station=BNKI4&station=BOOI4&station=CAMI4&station=CHAI4&station=CIRI4&station=CNAI4&station=CRFI4&station=CSII4&station=DOCI4&station=DONI4&station=FRUI4&station=GREI4&station=GVNI4&station=KNAI4&station=MCSI4&station=NASI4&station=NWLI4&station=OKLI4&station=OSTI4&station=REFI4&station=SBEI4&station=TPOI4&station=WMNI4&station=WTPI4&vars=soil04t failed: HTTP 422"
+ },
+ "KSMESO": {
+  "ok": true,
+  "stations": 80,
+  "sample": [
+   {
+    "id": "KSMESO:Alma 5SE",
+    "net": "KSMESO",
+    "name": "Alma 5SE, KS",
+    "st": "KS",
+    "lat": 38.9661,
+    "lon": -96.2063,
+    "depth": "10 cm (3.9 in)",
+    "stat": "daily mean",
+    "last": "2026-10-16",
+    "t": [
+     65.6,
+     67.2,
+     68.2,
+     68.2,
+     67.9,
+     67.9,
+     69.1,
+     69.7,
+     66.6,
+     65.7
+    ]
+   },
+   {
+    "id": "KSMESO:Ashland 8S",
+    "net": "KSMESO",
+    "name": "Ashland 8S, KS",
+    "st": "KS",
+    "lat": 37.0648,
+    "lon": -99.7511,
+    "depth": "10 cm (3.9 in)",
+    "stat": "daily mean",
+    "last": "2026-10-16",
+    "t": [
+     66.2,
+     66.8,
+     66.7,
+     66.9,
+     67.8,
+     68.7,
+     71.1,
+     73.0,
+     68.9,
+     65.7
+    ]
+   }
+  ]
+ }
+}
