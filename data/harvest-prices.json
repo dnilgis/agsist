@@ -1,6 +1,6 @@
 {
  "crop_year": 2026,
- "updated": "2026-10-15",
+ "updated": "2026-10-16",
  "source": "CBOT futures settlements averaged per RMA Commodity Exchange Price Provisions",
  "commodities": [
   {
@@ -17,7 +17,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 4.92,
+    "running_avg": 4.91,
     "window": "October",
     "series": [
      {
@@ -72,12 +72,17 @@
      },
      {
       "d": "2026-10-15",
-      "s": 4.7825,
-      "p": true,
+      "s": 4.78,
       "a": 4.92
+     },
+     {
+      "d": "2026-10-16",
+      "s": 4.7425,
+      "p": true,
+      "a": 4.91
      }
     ],
-    "days_counted": 11,
+    "days_counted": 12,
     "days_total": 22
    }
   },
@@ -95,7 +100,7 @@
    "harvest": {
     "status": "running",
     "price": null,
-    "running_avg": 12.85,
+    "running_avg": 12.83,
     "window": "October",
     "series": [
      {
@@ -150,12 +155,17 @@
      },
      {
       "d": "2026-10-15",
-      "s": 12.6425,
-      "p": true,
+      "s": 12.63,
       "a": 12.85
+     },
+     {
+      "d": "2026-10-16",
+      "s": 12.605,
+      "p": true,
+      "a": 12.83
      }
     ],
-    "days_counted": 11,
+    "days_counted": 12,
     "days_total": 22
    }
   }
@@ -222,15 +232,20 @@
     },
     {
      "d": "2026-10-15",
-     "s": 4.7825,
-     "p": true,
+     "s": 4.78,
      "a": 4.92
+    },
+    {
+     "d": "2026-10-16",
+     "s": 4.7425,
+     "p": true,
+     "a": 4.91
     }
    ],
-   "days_counted": 11,
+   "days_counted": 12,
    "status": "running",
    "price": null,
-   "running_avg": 4.92
+   "running_avg": 4.91
   },
   {
    "key": "ZSX26.CBT|2026-10-01|2026-10-31",
@@ -293,15 +308,20 @@
     },
     {
      "d": "2026-10-15",
-     "s": 12.6425,
-     "p": true,
+     "s": 12.63,
      "a": 12.85
+    },
+    {
+     "d": "2026-10-16",
+     "s": 12.605,
+     "p": true,
+     "a": 12.83
     }
    ],
-   "days_counted": 11,
+   "days_counted": 12,
    "status": "running",
    "price": null,
-   "running_avg": 12.85
+   "running_avg": 12.83
   }
  ]
 }
