@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Harvest corn now or wait? Drying cost vs field loss calculator | AGSIST</title>
+  <meta name="description" content="Harvest now or let corn dry in the field: the drying bill today against the bill after 7 to 14 days of drydown, with your LP price, your bid and your own field loss.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/harvest-or-wait">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Harvest now or wait: what drying costs against what the field loses">
+  <meta property="og:description"  content="Harvest now or let corn dry in the field: the drying bill today against the bill after 7 to 14 days of drydown, with your LP price, your bid and your own field loss.">
+  <meta property="og:url"          content="https://agsist.com/harvest-or-wait">
+  <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Harvest now or wait: what drying costs against what the field loses.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta name="twitter:title"       content="Harvest now or wait: what drying costs against what the field loses">
+  <meta name="twitter:description" content="Harvest now or let corn dry in the field: the drying bill today against the bill after 7 to 14 days of drydown, with your LP price, your bid and your own field loss.">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .hw{max-width:780px;margin:0 auto;padding:1rem 1rem 4rem}
+    .hw .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
+    .hw h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .hw .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .9rem}
+    .hw h2{font-size:1.2rem;line-height:1.3;margin:2.2rem 0 .7rem;color:var(--text)}
+    .hw h3{font-size:1rem;margin:1.4rem 0 .5rem;color:var(--text)}
+    .hw p,.hw li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
+    .hw p{margin:0 0 1rem}
+    .hw a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
+    .hw b{color:var(--text)}
+    .hw-lede{font-size:1rem!important;color:var(--text)!important}
+    .hw-in{display:flex;flex-wrap:wrap;gap:.6rem .9rem;margin:0 0 .6rem;align-items:flex-end}
+    .hw-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
+    .hw-in input,.hw-in select{width:6.4rem;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .hw-in select{width:auto;font-family:inherit;font-size:.92rem}
+    .hw-in input[aria-invalid="true"]{border-color:var(--red)}
+    .hw-in .wide{width:8rem}
+    .hw-box{background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:.6rem .8rem;margin:0 0 .8rem}
+    .hw-box>p{margin:.25rem 0;font-size:.86rem}
+    .hw-box h2{font-size:.92rem;margin:.1rem 0 .5rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted)}
+    .hw-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .hw-btn.go{background:var(--gold);color:#111;border-color:var(--gold)}
+    .hw-btn.sm{min-height:36px;padding:0 .7rem;font-size:.85rem;font-weight:600}
+    .hw-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .7rem}
+    .hw-seg button{flex:1 1 0;min-height:44px;padding:0 .4rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
+    .hw-seg button+button{border-left:1px solid var(--border)}
+    .hw-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+    .hw-rad{display:flex;flex-direction:column;gap:.35rem;margin:.2rem 0 .5rem}
+    .hw-rad label{display:block;position:relative;padding:.35rem 0 .35rem 30px;font-size:.92rem;line-height:2.3;color:var(--text-dim)}
+    .hw-rad input[type=radio]{position:absolute;left:0;top:.75rem;width:20px;height:20px;margin:0}
+    .hw-rad input[type=number]{width:5.4rem;min-height:38px;padding:0 .45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem}
+    .hw-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.85rem 1rem .9rem;margin:0 0 .7rem}
+    .hw-answer.v-wait{border-left-color:var(--green)} .hw-answer.v-now{border-left-color:var(--gold)} .hw-answer.v-even{border-left-color:var(--blue,var(--border))}
+    .hw-v{display:block;font-size:clamp(1.3rem,5.6vw,1.8rem);font-weight:800;line-height:1.18;color:var(--text);margin:0 0 .4rem}
+    .hw-answer p{margin:.3rem 0 0;font-size:.94rem;line-height:1.5;color:var(--text)}
+    .hw-answer p.fine{font-size:.82rem;color:var(--text-muted)}
+    .hw-est{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:5px;padding:.05rem .35rem;margin:0 0 .4rem}
+    .hw-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));gap:.5rem;margin:.6rem 0 0}
+    .hw-kv div{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem}
+    .hw-kv b{display:block;font-family:'JetBrains Mono',monospace;font-size:1.05rem}
+    .hw-kv span{font-size:.76rem;color:var(--text-muted)}
+    .hw-src{font-size:.84rem!important;color:var(--text-muted)!important}
+    .hw-status{font-size:.86rem;color:var(--text-muted);margin:.3rem 0 0}
+    .hw-status.err{color:var(--red)}
+    .hw-status:empty{display:none}
+    .hw details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
+    .hw details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
+    .hw-t{border-collapse:collapse;width:100%;font-size:.88rem;margin:.2rem 0 .8rem}
+    .hw-t th,.hw-t td{padding:.4rem .5rem;border-bottom:1px solid var(--border);text-align:right}
+    .hw-t th:first-child{text-align:left;white-space:nowrap}
+    .hw-t thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .hw-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+    .hw-t tr.pick td,.hw-t tr.pick th{background:var(--surface2,var(--surface))}
+    .hw-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .hw .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .hw-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+    .hw-faq details:last-child{border-bottom:1px solid var(--border)}
+    .hw-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+    .hw-faq details p{margin:.6rem 0 .2rem}
+    .hw .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 0}
+    .hw .srcs li{font-size:.86rem}
+    @media(max-width:420px){.hw-in input{width:5.6rem}.hw-seg button{font-size:.84rem}}
+    @media print{#site-header,#site-footer,.skip,.breadcrumb,.hw-faq,.hw-rel,details.box:not([open]),.hw-btn,.hw-seg{display:none!important}html,body,main{background:#fff!important;color:#000!important}.hw p,.hw li,.hw b,.hw-v{color:#000!important}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/harvest-or-wait#app","name":"Harvest now or wait: corn drying cost vs field loss","url":"https://agsist.com/harvest-or-wait","description":"Harvest now or let corn dry in the field: the drying bill today against the bill after 7 to 14 days of drydown, with your LP price, your bid and your own field loss.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-16","dateModified":"2026-10-16","inLanguage":"en-US"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Harvest now or wait","item":"https://agsist.com/harvest-or-wait"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How fast does corn dry down in the field?","acceptedAnswer":{"@type":"Answer","text":"About 4.5 points a week in September, 2.5 in October, 1 in November and 0.5 in December. That is NDSU's table (Hellevang, 2009), and Iowa State used the same rates in 2022. NDSU also puts October at 0.3 to 0.4 points a day and November at 0.15 to 0.2. Their example: 35% corn on October 11 dries to about 27% by November 1 and about 22% by December 1. The weekly rates give 27.7% and 23.5%."}},{"@type":"Question","name":"How much LP does it take to dry a point of corn?","acceptedAnswer":{"@type":"Answer","text":"Iowa State's average is 0.018 gallons a bushel a point in a high-temperature dryer, anywhere from 0.010 to 0.025 depending on the dryer and the weather. Taking 5 points out of 1,000 bushels is about 90 gallons. Purdue's GQ-3 table works out to 0.017 to 0.020 gallons a bushel a point drying to 15%."}},{"@type":"Question","name":"When does waiting on field drydown stop paying?","acceptedAnswer":{"@type":"Answer","text":"When the corn stops drying or the field starts losing more than the drying saves. Corn dries toward the air's equilibrium moisture, which NDSU puts near 16% in October, 19% in November and 20% in December, and it dries slower each week. NDSU says field drying is normally cheaper than the dryer until mid to late October and the dryer is cheaper after that."}},{"@type":"Question","name":"What field loss should I put in?","acceptedAnswer":{"@type":"Answer","text":"Yours. Stalk strength, lodging, ear drop, deer and the weather decide it, and they differ field to field. Leave it blank and the page shows the loss that would eat the drying savings. Purdue's GQ-3 example: drying 28% corn to 15% instead of 22% corn cost $7.02 an acre more in fuel and electricity at 130 bushels, so a field loss of 3.5 bushels an acre at $2 corn would pay for drying the wetter corn."}},{"@type":"Question","name":"Does the weather forecast change the estimate?","acceptedAnswer":{"@type":"Answer","text":"Not yet. The page shows the forecast heat for each of the next 14 days, but the moisture estimate uses the published monthly rates or your own rate. Some guides predict drydown from growing degree days; the page will use that once we have read the rule in the original publication."}},{"@type":"Question","name":"Where does the bid come from?","acceptedAnswer":{"@type":"Answer","text":"Type your own, or enter your ZIP and the page uses the nearest elevator's posted corn bid from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest corn futures settle less that state's median basis, labeled as such."}}]}]}</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="hw">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Harvest now or wait</nav>
+      <h1>Harvest now or wait: what drying costs against what the field loses</h1>
+      <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
+      <p class="hw-lede">Every point corn dries on the stalk is a point you do not pay to dry. Every day it stands, some of it can go on the ground. Put in your corn, your fuel and your bid, and the page shows the drying bill now and after 7, 10 or 14 days. How much the field loses is your call; the page tells you how much it can lose before waiting stops paying.</p>
+
+      <div class="hw-in">
+        <label>Moisture now, %<input id="hw-m" type="number" inputmode="decimal" step="0.1" min="15" max="40" value="25"></label>
+        <label>Yield, bu/ac dry<input id="hw-y" type="number" inputmode="decimal" step="1" min="20" max="400" value="200"></label>
+        <label>Acres left<input id="hw-ac" type="number" inputmode="decimal" step="1" min="1" placeholder="optional"></label>
+        <label>Dry to, %<input id="hw-to" type="number" inputmode="decimal" step="0.1" min="12" max="18" value="15.5"></label>
+      </div>
+
+      <div class="hw-box">
+        <h2>Drying cost</h2>
+        <div class="hw-rad" role="radiogroup" aria-label="Drying cost">
+          <label><input type="radio" name="hw-cost" value="lp" checked> LP at $<input id="hw-lp" type="number" inputmode="decimal" step="0.01" min="0" max="10" placeholder="1.60" aria-label="LP price, dollars a gallon"> a gallon, burning <input id="hw-gal" type="number" inputmode="decimal" step="0.001" min="0.005" max="0.05" value="0.018" aria-label="Gallons per bushel per point"> gal a bushel a point</label>
+          <label><input type="radio" name="hw-cost" value="point"> <input id="hw-cpp" type="number" inputmode="decimal" step="0.1" min="0" max="20" placeholder="4.0" aria-label="Drying cost, cents a wet bushel a point"> &cent; a wet bushel a point (your dryer, or the elevator's drying charge)</label>
+        </div>
+        <p class="hw-src">0.018 gallons is Iowa State's average for a high-temperature dryer; they give 0.010 to 0.025 depending on the dryer and the weather.</p>
+      </div>
+
+      <div class="hw-box">
+        <h2>Your bid and your weather</h2>
+        <div class="hw-in" style="margin:0">
+          <label>Bid, $/bu<input id="hw-bid" type="number" inputmode="decimal" step="0.01" min="0" placeholder="4.00"></label>
+          <label>ZIP<input id="hw-zip" class="wide" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="ZIP code" maxlength="5"></label>
+          <button type="button" id="hw-zipgo" class="hw-btn go">Get my bid and forecast</button>
+          <label>Or your state's median basis<select id="hw-state" aria-label="State for the default bid"><option value="">Pick a state</option></select></label>
+        </div>
+        <p id="hw-bidsrc" class="hw-src">Type your bid, or let the page fill one in.</p>
+        <p id="hw-status" class="hw-status" role="status"></p>
+      </div>
+
+      <div class="hw-box">
+        <h2>Field loss, your number</h2>
+        <div class="hw-in" style="margin:0">
+          <label>Bushels an acre lost a week<input id="hw-loss" type="number" inputmode="decimal" step="0.1" min="0" max="50" placeholder="your guess"></label>
+          <label>Your own drydown, points a week<input id="hw-own" type="number" inputmode="decimal" step="0.1" min="0" max="10" placeholder="optional"></label>
+        </div>
+        <p class="hw-src">Leave field loss blank and the page shows how much loss waiting can stand. Stalk quality, lodging, ear drop and the weather decide the real number; you know your field.</p>
+      </div>
+
+      <div class="hw-seg" role="group" aria-label="Days to wait"><button type="button" data-days="7" aria-pressed="false">Wait 7 days</button><button type="button" data-days="10" aria-pressed="true">Wait 10 days</button><button type="button" data-days="14" aria-pressed="false">Wait 14 days</button></div>
+
+      <div id="hw-answer" class="hw-answer" aria-live="polite" aria-atomic="true">
+        <span class="hw-est">Estimate</span>
+        <h2 id="hw-verdict" class="hw-v" style="margin-top:0">Enter your moisture, yield and drying cost.</h2>
+        <p id="hw-sub"></p>
+        <div id="hw-kv" class="hw-kv"></div>
+        <p id="hw-fine" class="fine"></p>
+        <noscript><p>The calculator needs JavaScript. The rates, the fuel table and the math below work without it.</p></noscript>
+      </div>
+
+      <h2 id="days">Day by day</h2>
+      <div class="hw-tw"><table class="hw-t" id="hw-table"><caption class="sr-only">Estimated moisture and drying cost for each day you wait</caption>
+        <thead><tr><th scope="col">Day</th><th scope="col">Forecast heat, GDD</th><th scope="col">Moisture, est.</th><th scope="col">Drying, $/ac</th><th scope="col">Saved vs today</th><th scope="col">Loss that eats it, bu/ac</th></tr></thead>
+        <tbody id="hw-rows"><tr><td colspan="6" style="text-align:left;font-family:inherit;color:var(--text-muted)">Fills in from your numbers.</td></tr></tbody>
+      </table></div>
+      <p id="hw-drysrc" class="hw-src">Moisture by the monthly drydown rates below. The forecast heat column fills in once you enter a ZIP.</p>
+
+      <details class="box" id="hw-mathbox">
+        <summary>Show the math</summary>
+        <div id="hw-math" class="eq">Enter your numbers.</div>
+      </details>
+
+      <h2 id="drydown">How fast corn dries in the field</h2>
+      <p>NDSU's grain drying engineer Ken Hellevang put the usual field drying by month in a table, and Iowa State used the same rates in 2022. Standing corn dries toward the air's equilibrium moisture and slows as it gets close, so the page stops at that month's number.</p>
+      <div class="hw-tw"><table class="hw-t"><caption class="sr-only">Field drydown of standing corn by month</caption><thead><tr><th scope="col">Month</th><th scope="col">Points a week</th><th scope="col">Points a day</th><th scope="col">Dries toward, %</th></tr></thead><tbody>
+<!--HW:CAL-->
+<tr><th scope="row">September</th><td>4.5</td><td>0.64</td><td>15</td></tr>
+<tr><th scope="row">October</th><td>2.5</td><td>0.36</td><td>16</td></tr>
+<tr><th scope="row">November</th><td>1.0</td><td>0.14</td><td>19</td></tr>
+<tr><th scope="row">December</th><td>0.5</td><td>0.07</td><td>20</td></tr>
+<!--/HW:CAL-->
+      </tbody></table></div>
+      <p class="hw-src">NDSU also says standing corn dries about 0.3 to 0.4 points a day in October and 0.15 to 0.2 in November in normal weather, and that field drying is normally cheaper than the dryer until mid to late October, the dryer after that.</p>
+      <p>Some extension guides predict drydown from growing degree days instead of the calendar. The page reads your 14-day temperature forecast and shows the heat each day, but does not turn it into moisture until we have read those rules in the original publication. Until then the estimate is the calendar rate, or your own rate if you enter one.</p>
+
+      <h2 id="fuel">What a point of drying costs</h2>
+      <p>Iowa State's rule of thumb: <b>gallons of LP = 0.018 x bushels dried x points removed.</b> Purdue's fact sheet GQ-3 lists the heat a column dryer needs per bushel. An LP gallon holds 92,000 BTU, so fuel a bushel is the BTU divided by 92,000, times the price.</p>
+      <div class="hw-tw"><table class="hw-t"><caption class="sr-only">Purdue GQ-3: BTU and LP gallons per bushel to dry corn to 15%</caption><thead><tr><th scope="col">From, %</th><th scope="col">BTU a bushel to 15%</th><th scope="col">LP gal a bushel</th><th scope="col">Gal a bushel a point</th></tr></thead><tbody>
+<!--HW:GQ3-->
+<tr><th scope="row">22%</th><td>12,589</td><td>0.137</td><td>0.0195</td></tr>
+<tr><th scope="row">24%</th><td>15,447</td><td>0.168</td><td>0.0187</td></tr>
+<tr><th scope="row">26%</th><td>18,118</td><td>0.197</td><td>0.0179</td></tr>
+<tr><th scope="row">28%</th><td>20,624</td><td>0.224</td><td>0.0172</td></tr>
+<tr><th scope="row">30%</th><td>22,978</td><td>0.250</td><td>0.0167</td></tr>
+<!--/HW:GQ3-->
+      </tbody></table></div>
+      <p class="hw-src">GQ-3 Table 1, column dryer at 100 cfm a bushel and 180&deg;F air. Purdue's example: 28% to 15% with LP at 60 cents is 20,624 x 0.60 / 92,000 = 13.5 cents a bushel. The per-point column lands close to Iowa State's 0.018. Electricity for fans and augers is extra; GQ-3 figured 0.7 cents a bushel. Iowa State adds that a high-temperature dryer uses about 14% more for every 20 degrees colder the outside air, so a point dried in November costs more than one dried in October.</p>
+
+      <h2 id="questions">Questions</h2>
+      <div class="hw-faq">
+<!--HW:FAQ-->
+        <details><summary>How fast does corn dry down in the field?</summary><p>About 4.5 points a week in September, 2.5 in October, 1 in November and 0.5 in December. That is NDSU&#x27;s table (Hellevang, 2009), and Iowa State used the same rates in 2022. NDSU also puts October at 0.3 to 0.4 points a day and November at 0.15 to 0.2. Their example: 35% corn on October 11 dries to about 27% by November 1 and about 22% by December 1. The weekly rates give 27.7% and 23.5%.</p></details>
+        <details><summary>How much LP does it take to dry a point of corn?</summary><p>Iowa State&#x27;s average is 0.018 gallons a bushel a point in a high-temperature dryer, anywhere from 0.010 to 0.025 depending on the dryer and the weather. Taking 5 points out of 1,000 bushels is about 90 gallons. Purdue&#x27;s GQ-3 table works out to 0.017 to 0.020 gallons a bushel a point drying to 15%.</p></details>
+        <details><summary>When does waiting on field drydown stop paying?</summary><p>When the corn stops drying or the field starts losing more than the drying saves. Corn dries toward the air&#x27;s equilibrium moisture, which NDSU puts near 16% in October, 19% in November and 20% in December, and it dries slower each week. NDSU says field drying is normally cheaper than the dryer until mid to late October and the dryer is cheaper after that.</p></details>
+        <details><summary>What field loss should I put in?</summary><p>Yours. Stalk strength, lodging, ear drop, deer and the weather decide it, and they differ field to field. Leave it blank and the page shows the loss that would eat the drying savings. Purdue&#x27;s GQ-3 example: drying 28% corn to 15% instead of 22% corn cost $7.02 an acre more in fuel and electricity at 130 bushels, so a field loss of 3.5 bushels an acre at $2 corn would pay for drying the wetter corn.</p></details>
+        <details><summary>Does the weather forecast change the estimate?</summary><p>Not yet. The page shows the forecast heat for each of the next 14 days, but the moisture estimate uses the published monthly rates or your own rate. Some guides predict drydown from growing degree days; the page will use that once we have read the rule in the original publication.</p></details>
+        <details><summary>Where does the bid come from?</summary><p>Type your own, or enter your ZIP and the page uses the nearest elevator&#x27;s posted corn bid from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest corn futures settle less that state&#x27;s median basis, labeled as such.</p></details>
+<!--/HW:FAQ-->
+      </div>
+
+      <h2>Sources</h2>
+      <ul class="srcs">
+        <li>Hellevang, NDSU: <a href="https://www.ndsu.edu/agriculture/sites/default/files/2021-05/Post%20Harvest%20Tips%20for%20Later%20Maturing%20Corn%20Oct2009.pdf">Post-harvest tips for later maturing corn</a> (2009). The field drying and equilibrium moisture table by month; points a day in October and November; the 35% corn example.</li>
+        <li>TeBockhorst, Dougherty and Mensing, Iowa State ICM: <a href="https://crops.extension.iastate.edu/cropnews/2022/10/options-fall-grain-drying-and-marketing">Options for fall grain drying and marketing</a> (Oct 20, 2022). Weekly drydown by month; 0.018 gallons of LP a bushel a point (0.010 to 0.025); 14% more fuel per 20 degrees colder.</li>
+        <li>Uhrig and Maier, Purdue: <a href="https://www.extension.purdue.edu/extmedia/gq/gq-3.html">Costs of drying high-moisture corn</a>, Grain Quality Fact Sheet 3 (1992). BTU a bushel by moisture, 92,000 BTU a gallon of LP, and the break-even field loss.</li>
+      </ul>
+      <p class="hw-src">Bids: the nearest posted bid comes from the same elevator boards as <a href="/cash-bids">cash bids near me</a>. The state default is the futures settle less the state's median basis from <a href="/basis">the basis page</a>. Forecast temperatures: <a href="https://open-meteo.com/">Open-Meteo</a>, the same service the <a href="/gdu-calculator">GDU calculator</a> uses. Every number here is an estimate; your moisture tester and your fuel bill are the real ones.</p>
+
+      <h2>Related</h2>
+      <ul class="rel hw-rel">
+        <li><a href="/grain-shrink">Grain shrink: wet or too dry</a></li>
+        <li><a href="/grain-emc">Grain EMC: fans on or off</a></li>
+        <li><a href="/gdu-calculator">GDU calculator</a></li>
+        <li><a href="/store-or-sell">Sell now or store?</a></li>
+        <li><a href="/cash-bids">Cash bids near me</a></li>
+      </ul>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/bids-network.js?v=5" defer></script>
+  <script src="/components/grain-shrink.js?v=1" defer></script>
+  <script src="/components/harvest-wait.js?v=1" defer></script>
+  <script src="/components/harvest-wait-ui.js?v=1" defer></script>
+</body>
+</html>
