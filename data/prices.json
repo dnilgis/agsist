@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-10-15T23:46:13Z",
+  "fetched": "2026-10-16T00:01:12Z",
   "ok": 77,
   "failed": 1,
   "stale_keys": [
@@ -76,6 +76,11 @@
       "wk52_lo": 398.5,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 478.25,
+      "last_time": "2026-10-16T00:00:51Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 478.25
       }
@@ -90,6 +95,11 @@
       "wk52_lo": 425.75,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 478.25,
+      "last_time": "2026-10-16T00:00:51Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 478.25
       }
@@ -104,6 +114,11 @@
       "wk52_lo": 1006.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1264.25,
+      "last_time": "2026-10-16T00:00:51Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1264.25
       }
@@ -118,6 +133,11 @@
       "wk52_lo": 1055.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1264.25,
+      "last_time": "2026-10-16T00:00:52Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1264.25
       }
@@ -132,6 +152,11 @@
       "wk52_lo": 495.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 669.25,
+      "last_time": "2026-10-16T00:00:52Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 669.25
       }
@@ -146,6 +171,11 @@
       "wk52_lo": 483.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 712.25,
+      "last_time": "2026-10-16T00:00:52Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 712.25
       }
@@ -160,6 +190,11 @@
       "wk52_lo": 257.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 395.5,
+      "last_time": "2026-10-16T00:00:55Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 395.5
       }
@@ -188,6 +223,11 @@
       "wk52_lo": 9.245,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 17.285,
+      "last_time": "2026-10-16T00:00:55Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 17.28499984741211
       }
@@ -202,6 +242,11 @@
       "wk52_lo": 425.75,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 478.25,
+      "last_time": "2026-10-16T00:00:55Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 478.25
       }
@@ -216,6 +261,11 @@
       "wk52_lo": 441.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 491.0,
+      "last_time": "2026-10-16T00:00:55Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 491.0
       }
@@ -230,6 +280,11 @@
       "wk52_lo": 450.5,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 498.0,
+      "last_time": "2026-10-16T00:00:55Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 498.0
       }
@@ -244,6 +299,11 @@
       "wk52_lo": 457.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 503.5,
+      "last_time": "2026-10-16T00:00:56Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 503.5
       }
@@ -258,6 +318,11 @@
       "wk52_lo": 453.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 498.0,
+      "last_time": "2026-10-16T00:00:56Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 498.0
       }
@@ -272,6 +337,11 @@
       "wk52_lo": 460.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 510.0,
+      "last_time": "2026-10-16T00:00:56Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 510.0
       }
@@ -286,6 +356,11 @@
       "wk52_lo": 462.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 509.5,
+      "last_time": "2026-10-16T00:00:56Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 509.5
       }
@@ -300,6 +375,11 @@
       "wk52_lo": 1055.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1264.25,
+      "last_time": "2026-10-16T00:00:57Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1264.25
       }
@@ -314,6 +394,11 @@
       "wk52_lo": 1067.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1279.25,
+      "last_time": "2026-10-16T00:00:57Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1279.25
       }
@@ -328,6 +413,11 @@
       "wk52_lo": 1068.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1288.0,
+      "last_time": "2026-10-16T00:00:57Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1288.0
       }
@@ -342,6 +432,11 @@
       "wk52_lo": 1073.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1296.75,
+      "last_time": "2026-10-16T00:00:57Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1296.75
       }
@@ -356,6 +451,11 @@
       "wk52_lo": 1078.5,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1302.75,
+      "last_time": "2026-10-16T00:00:57Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1302.75
       }
@@ -370,6 +470,11 @@
       "wk52_lo": 1076.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1286.0,
+      "last_time": "2026-10-16T00:00:58Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1286.0
       }
@@ -384,6 +489,11 @@
       "wk52_lo": 1057.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1251.25,
+      "last_time": "2026-10-16T00:00:58Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1251.25
       }
@@ -398,6 +508,11 @@
       "wk52_lo": 1054.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1241.0,
+      "last_time": "2026-10-16T00:00:58Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1241.0
       }
@@ -423,6 +538,11 @@
       "wk52_lo": 557.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 669.25,
+      "last_time": "2026-10-16T00:00:59Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 669.25
       }
@@ -437,6 +557,11 @@
       "wk52_lo": 572.5,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 683.75,
+      "last_time": "2026-10-16T00:00:59Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 683.75
       }
@@ -451,6 +576,11 @@
       "wk52_lo": 582.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 689.5,
+      "last_time": "2026-10-16T00:00:59Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 689.5
       }
@@ -465,6 +595,11 @@
       "wk52_lo": 583.5,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 690.0,
+      "last_time": "2026-10-16T00:00:59Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 690.0
       }
@@ -479,6 +614,11 @@
       "wk52_lo": 593.5,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 695.5,
+      "last_time": "2026-10-16T00:01:00Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 695.5
       }
@@ -493,6 +633,11 @@
       "wk52_lo": 607.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 705.25,
+      "last_time": "2026-10-16T00:01:00Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 705.25
       }
@@ -507,6 +652,11 @@
       "wk52_lo": 564.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 712.25,
+      "last_time": "2026-10-16T00:01:00Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 712.25
       }
@@ -521,6 +671,11 @@
       "wk52_lo": 580.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 724.0,
+      "last_time": "2026-10-16T00:01:00Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 724.0
       }
@@ -535,6 +690,11 @@
       "wk52_lo": 588.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 729.0,
+      "last_time": "2026-10-16T00:01:01Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 729.0
       }
@@ -558,11 +718,11 @@
       "_orig": {
         "ticker": "LE=F",
         "close": 227.2,
-        "open": 224.625,
-        "netChange": 2.575,
-        "pctChange": 1.1464,
+        "open": 223.89999,
+        "netChange": 3.30001,
+        "pctChange": 1.4739,
         "close_date": "2026-10-15",
-        "prev_date": "2026-10-13"
+        "prev_date": "2026-10-14"
       }
     },
     "feeders": {
@@ -632,7 +792,7 @@
       "prev_date": "2026-10-13",
       "settled": true,
       "last": 17.13,
-      "last_time": "2026-10-15T23:46:05Z",
+      "last_time": "2026-10-16T00:01:02Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -856,6 +1016,11 @@
       "wk52_lo": 305.75,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 395.5,
+      "last_time": "2026-10-16T00:01:05Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 395.5
       }
@@ -870,6 +1035,11 @@
       "wk52_lo": 309.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 401.25,
+      "last_time": "2026-10-16T00:01:06Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 401.25
       }
@@ -895,6 +1065,11 @@
       "wk52_lo": 299.1,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 359.79999,
+      "last_time": "2026-10-16T00:01:06Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 359.79998779296875
       }
@@ -909,6 +1084,11 @@
       "wk52_lo": 300.6,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 357.60001,
+      "last_time": "2026-10-16T00:01:06Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 357.6000061035156
       }
@@ -923,6 +1103,11 @@
       "wk52_lo": 303.9,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 355.70001,
+      "last_time": "2026-10-16T00:01:07Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 355.70001220703125
       }
@@ -937,6 +1122,11 @@
       "wk52_lo": 48.53,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 67.18,
+      "last_time": "2026-10-16T00:01:07Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 67.18000030517578
       }
@@ -951,6 +1141,11 @@
       "wk52_lo": 48.64,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 67.35,
+      "last_time": "2026-10-16T00:01:07Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 67.3499984741211
       }
@@ -965,6 +1160,11 @@
       "wk52_lo": 48.93,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 67.55,
+      "last_time": "2026-10-16T00:01:07Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 67.55000305175781
       }
@@ -981,7 +1181,7 @@
       "prev_date": "2026-10-13",
       "settled": true,
       "last": 15.3,
-      "last_time": "2026-10-15T23:46:10Z",
+      "last_time": "2026-10-16T00:01:08Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -998,7 +1198,7 @@
       "prev_date": "2026-10-13",
       "settled": true,
       "last": 17.13,
-      "last_time": "2026-10-15T23:46:10Z",
+      "last_time": "2026-10-16T00:01:08Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -1015,7 +1215,7 @@
       "prev_date": "2026-10-13",
       "settled": true,
       "last": 17.18,
-      "last_time": "2026-10-15T23:46:10Z",
+      "last_time": "2026-10-16T00:01:08Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -1032,7 +1232,7 @@
       "prev_date": "2026-10-13",
       "settled": true,
       "last": 17.19,
-      "last_time": "2026-10-15T23:46:10Z",
+      "last_time": "2026-10-16T00:01:08Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -1047,6 +1247,11 @@
       "wk52_lo": 274.5,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 359.79999,
+      "last_time": "2026-10-16T00:01:09Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 359.79998779296875
       },
@@ -1071,6 +1276,11 @@
       "wk52_lo": 47.51,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 67.18,
+      "last_time": "2026-10-16T00:01:09Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 67.18000030517578
       }
@@ -1086,8 +1296,8 @@
       "close_date": "2026-10-14",
       "prev_date": "2026-10-13",
       "settled": true,
-      "last": 96.1,
-      "last_time": "2026-10-15T23:46:11Z",
+      "last": 96.18,
+      "last_time": "2026-10-16T00:01:09Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -1104,7 +1314,7 @@
       "prev_date": "2026-10-13",
       "settled": true,
       "last": 3.215,
-      "last_time": "2026-10-15T23:46:11Z",
+      "last_time": "2026-10-16T00:01:09Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -1120,8 +1330,8 @@
       "close_date": "2026-10-14",
       "prev_date": "2026-10-13",
       "settled": true,
-      "last": 4181.0,
-      "last_time": "2026-10-15T23:46:11Z",
+      "last": 4178.7998,
+      "last_time": "2026-10-16T00:01:10Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
@@ -1137,18 +1347,18 @@
       "close_date": "2026-10-14",
       "prev_date": "2026-10-13",
       "settled": true,
-      "last": 57.325,
-      "last_time": "2026-10-15T23:46:12Z",
+      "last": 57.285,
+      "last_time": "2026-10-16T00:01:10Z",
       "last_date": "2026-10-16",
       "last_net": null,
       "settle_pending": "2026-10-15"
     },
     "dollar": {
       "ticker": "DX-Y.NYB",
-      "close": 102.044,
+      "close": 102.047,
       "open": 102.55,
-      "netChange": -0.506,
-      "pctChange": -0.4934,
+      "netChange": -0.503,
+      "pctChange": -0.4905,
       "wk52_hi": 102.95,
       "wk52_lo": 95.55,
       "close_date": "2026-10-15",
@@ -1178,36 +1388,36 @@
     },
     "bitcoin": {
       "ticker": "BTC-USD",
-      "close": 82105.97656,
+      "close": 82117.0,
       "open": 81562.49219,
-      "netChange": 543.48437,
-      "pctChange": 0.6663,
+      "netChange": 554.50781,
+      "pctChange": 0.6799,
       "wk52_hi": 116273.3125,
       "wk52_lo": 57747.7656,
-      "close_date": "2026-10-15",
+      "close_date": "2026-10-16",
       "prev_date": "2026-10-14"
     },
     "ripple": {
       "ticker": "XRP-USD",
-      "close": 1.3323,
+      "close": 1.3338,
       "open": 1.3298,
-      "netChange": 0.0025,
-      "pctChange": 0.188,
+      "netChange": 0.004,
+      "pctChange": 0.3008,
       "wk52_hi": 2.6934,
       "wk52_lo": 0.9884,
-      "close_date": "2026-10-15",
+      "close_date": "2026-10-16",
       "prev_date": "2026-10-14"
     },
     "kaspa": {
       "ticker": "KAS-USD",
-      "close": 0.03599,
-      "open": 0.03698,
-      "netChange": -0.00099,
-      "pctChange": -2.6771,
+      "close": 0.03698,
+      "open": 0.0386,
+      "netChange": -0.00162,
+      "pctChange": -4.1969,
       "wk52_hi": 0.0627,
       "wk52_lo": 0.025,
-      "close_date": "2026-10-15",
-      "prev_date": "2026-10-14"
+      "close_date": "2026-10-14",
+      "prev_date": "2026-10-13"
     },
     "corn-nearby": {
       "ticker": "ZCZ26.CBT",
@@ -1219,6 +1429,11 @@
       "wk52_lo": 425.75,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 478.25,
+      "last_time": "2026-10-16T00:00:55Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 478.25
       },
@@ -1235,6 +1450,11 @@
       "wk52_lo": 1055.0,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 1264.25,
+      "last_time": "2026-10-16T00:00:57Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 1264.25
       },
@@ -1251,6 +1471,11 @@
       "wk52_lo": 557.25,
       "close_date": "2026-10-15",
       "prev_date": "2026-10-14",
+      "settled": true,
+      "last": 669.25,
+      "last_time": "2026-10-16T00:00:59Z",
+      "last_date": "2026-10-16",
+      "last_net": 0.0,
       "settles": {
         "2026-10-15": 669.25
       },
