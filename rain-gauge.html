@@ -59,12 +59,16 @@
   .rg-hero>.rg-side{grid-area:side;min-width:0}.rg-hero>.rg-form{grid-area:form}
   #main .rg .rg-hero>h1{font-size:clamp(1.9rem,6.6vw,2.9rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 .65rem;text-wrap:balance}
   .rg-lede{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.1rem;max-width:46ch}
+  /* on a phone the form sits under the render: one jump to it (Oct 16) */
+  .rg-jump{display:block;width:max-content;margin-top:.8rem;padding:.55rem 1rem;min-height:44px;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
+  .rg-jump:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
   .rg-fig{margin:0 -16px 0;position:relative}
   .rg-fig img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover}
   .rg-fig figcaption{padding:.45rem 16px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
   .rg-cbadge{position:absolute;top:12px;left:12px;padding:.2rem .55rem;border-radius:var(--r-pill);background:rgba(10,12,13,.62);color:#f2efe6;font-family:var(--font-mono);font-size:var(--fs-2xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;backdrop-filter:blur(4px)}
   /* on a phone the badge covered the funnel; the caption and the label above the title already say prototype */
   @media(max-width:899px){.rg-cbadge{display:none}}
+  @media(min-width:900px){.rg-jump{display:none}}
   .rg-status{display:flex;gap:.7rem;align-items:flex-start;margin:1.1rem 0 1rem;padding:.75rem .9rem;border:1px solid var(--border);border-left:3px solid var(--brand-fill);border-radius:var(--r-8);background:var(--surface);line-height:1.5;font-size:var(--fs-sm);color:var(--text-dim)}
   .rg-status b{color:var(--text)}
   @media(min-width:900px){
@@ -198,7 +202,7 @@
     <div class="rg-hero">
       <p class="rg-tag">Prototype design</p>
       <h1>A rain gauge that keeps its own log</h1>
-      <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field.</p>
+      <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field. <a class="rg-jump" href="#rg-form-1" data-rg-jump>Get on the waitlist</a></p>
       <div class="rg-side">
       <figure class="rg-fig">
         <span class="rg-cbadge" aria-hidden="true">Prototype design</span>
@@ -209,7 +213,7 @@
       </div>
       <form class="rg-form" id="rg-form-1" data-n="1" novalidate aria-labelledby="rg-form-h-1">
           <h2 class="rg-form-h" id="rg-form-h-1">Get on the waitlist</h2>
-          <p class="rg-form-lead">Everyone on the waitlist hears first and gets the first-batch price. No price is set yet.</p>
+          <p class="rg-form-lead">Everyone on the waitlist hears first and gets the first-batch price. No price is set yet; the first batch will be priced barely over what it costs me to make. Free to join.</p>
           <div class="rg-grid">
             <label class="field rg-email"><span>Email</span><input type="email" id="rg-email-1" name="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
             <label class="field rg-zip"><span>ZIP <i>(optional)</i></span><input type="text" id="rg-zip-1" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}"></label>
@@ -477,6 +481,13 @@
           })
           .catch(function () { finish(); go.disabled = false; say('That did not go through. Check your connection and try again.', false); });
       });
+    });
+  })();
+  // the phone's jump to the waitlist form (Oct 16)
+  (function () {
+    var j = document.querySelector('[data-rg-jump]');
+    if (j) j.addEventListener('click', function () {
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_gauge_waitlist_jump', { page: location.pathname }); } catch (e) {}
     });
   })();
   </script>
