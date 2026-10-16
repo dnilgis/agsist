@@ -209,8 +209,11 @@ function loadGrainPrices(){
     updateEcoCosts();
   }).catch(function(){calcNC();});
 }
+/* The reader's state: their last pick here ('fut' = futures only), else the
+   state of their saved location. '' when neither is known: the box then asks
+   rather than guessing (Sig, Oct 16: state basis by default). */
 function savedState(){
-  try{var s=localStorage.getItem('agsist-ff-state');if(s!==null)return s;}catch(e){}
+  try{var s=localStorage.getItem('agsist-ff-state');if(s)return s;}catch(e){}
   try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');if(w&&/^[A-Z]{2}$/.test(w.state||''))return w.state;}catch(e){}
   return '';
 }
@@ -226,15 +229,18 @@ function loadBasis(){
       var o=document.createElement('option');o.value=c;o.textContent=st.name;sel.appendChild(o);
     });
     var pick=savedState();
-    if(pick&&BASIS[pick])sel.value=pick;
+    if(pick==='fut'||(pick&&BASIS[pick]))sel.value=pick;
     fillCorn();
   }).catch(function(){});
 }
+/* Corn = Dec futures less the state's median elevator basis. No state
+   picked yet: the box stays empty and asks for one. */
 function fillCorn(){
   var box=document.getElementById('nc-corn');
   if(box&&!cornTyped&&CORN.fut!=null){
-    var st=document.getElementById('ans-state'), b=st&&BASIS[st.value];
-    box.value=(CORN.fut+(b?b.median:0)).toFixed(2);
+    var st=document.getElementById('ans-state'), v=st?st.value:'', b=BASIS[v];
+    box.value=b?(CORN.fut+b.median).toFixed(2):(v==='fut'?CORN.fut.toFixed(2):'');
+    box.placeholder=box.value?'':'pick state';
   }
   calcNC();
 }
@@ -341,7 +347,8 @@ function calcNC(){
   t('nc-nlb','$'+pplb.toFixed(2));
   if(!(corn>0)){
     t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');t('ans-range','');t('ans-cost','');
-    t('ans-line','Type your corn price per bushel.');t('ans-src','');
+    var sv=(g('ans-state')||{}).value||'';
+    t('ans-line',!cornTyped&&sv===''?'Pick your state: the corn price is December futures less your state\u2019s elevator basis this week. Or pick Futures only, or type your own corn price.':'Type your corn price per bushel.');t('ans-src','');
     return;
   }
   var ratio=pplb/corn;
@@ -364,7 +371,9 @@ function calcNC(){
   var WHO={hi_corn:'corn after corn or a forage legume on high-yield loamy soil',hi_soy:'corn after soybeans or small grain on high-yield loamy soil',
     med_corn:'corn after corn or a forage legume on medium-yield loamy soil',med_soy:'corn after soybeans or small grain on medium-yield loamy soil',
     sand_irr:'corn on irrigated sand, any previous crop',sand_dry:'corn on dryland sand, any previous crop'};
-  var line=form+' at $'+Math.round(ton)+'/ton is '+money(pplb)+' a lb of N. Against $'+corn.toFixed(2)+' corn that is a '+ratio.toFixed(3)+' ratio, so A2809’s '+colTxt+' column: '+r.rate+' lb N for '+WHO[rowKey()]+'.';
+  var bs=BASIS[(g('ans-state')||{}).value];
+  var cornWhat=(!cornTyped&&bs&&CORN.fut!=null)?' ('+(CORN.label==='nearby'?'nearby':CORN.label)+' futures $'+CORN.fut.toFixed(2)+(bs.median<0?' less ':' plus ')+bs.name+' basis $'+Math.abs(bs.median).toFixed(2)+')':'';
+  var line=form+' at $'+Math.round(ton)+'/ton is '+money(pplb)+' a lb of N. Against $'+corn.toFixed(2)+' corn'+cornWhat+' that is a '+ratio.toFixed(3)+' ratio, so A2809’s '+colTxt+' column: '+r.rate+' lb N for '+WHO[rowKey()]+'.';
   if(r.off)line+=' Your ratio is past the table’s '+(ratio<0.05?'0.05':'0.20')+' end, so this is the nearest column, not a reading off the chart.';
   t('ans-line',line);
   // Where each number came from.
