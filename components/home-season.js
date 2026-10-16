@@ -754,7 +754,7 @@
         el.innerHTML=(stamp?'<span class="s7-stamp">'+stamp+'</span>':'')+'Today’s briefing. Tap to read it.';
         el.setAttribute('data-s7','hidden-stale');
       } else {
-        el.innerHTML=(stamp?'<span class="s7-stamp">Morning snapshot, '+stamp+'</span>':'')+esc(txt);
+        el.innerHTML=(stamp?'<span class="s7-stamp">'+(/\bPM\b/.test(stamp)?'Snapshot, ':'Morning snapshot, ')+stamp+'</span>':'')+esc(txt);
         el.setAttribute('data-s7','stamped');
       }
       /* The full briefing: if its headline or lead treats a released report
@@ -812,6 +812,11 @@
   });
 
   /* ---------- run ---------- */
-  insurance();cropModules();report();rent();prf();
+  /* rma-prices.json is about 430 KB; the insurance cell loads it only when
+     it comes within reach of the screen (most phone visits never scroll
+     that far). Same draw, later. */
+  (function(){var c=cells.insurance;if(!c||!('IntersectionObserver' in window)){insurance();return;}
+    var io=new IntersectionObserver(function(es){if(es.some(function(e){return e.isIntersecting;})){io.disconnect();insurance();}},{rootMargin:'800px 0px'});io.observe(c);})();
+  cropModules();report();rent();prf();
   if(!hasLoc())setTimeout(paintWx,0);
 })();

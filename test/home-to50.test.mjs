@@ -219,3 +219,8 @@ test("install banner: none on desktop, built on a phone's third visit", { skip }
     assert.deepEqual(ph.errors, []);
   } finally { await browser.close(); srv.close(); }
 });
+
+test("briefing strip says Morning snapshot only for a morning stamp", () => {
+  const src = readFileSync(join(ROOT, "components/home-season.js"), "utf8");
+  assert.match(src, /\/\\bPM\\b\/\.test\(stamp\)\?'Snapshot, ':'Morning snapshot, '/);
+});
