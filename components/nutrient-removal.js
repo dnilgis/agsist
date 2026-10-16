@@ -88,7 +88,7 @@
       return r && good(r.price) && grade(r.symbol) && /^\d{4}-\d{2}-\d{2}$/.test(r.as_of || '');
     }).map(function (r) {
       return { key: r.key, name: r.name, symbol: r.symbol, price: r.price, as_of: r.as_of,
-        label: r.src_label || r.as_of, g: grade(r.symbol) };
+        label: r.src_label || r.as_of, region: r.region || null, g: grade(r.symbol) };
     });
     var out = { n: null, p: null, k: null };
     rows.forEach(function (r) {                        // N: straight N only
@@ -166,13 +166,14 @@
   function lbs(v) { return (Math.round(v * 10) / 10).toLocaleString('en-US'); }
 
   /* The how-it-was-figured lines, the same words the page prints. */
+  function prod(r) { return r.name === r.symbol ? r.name : r.name + ' ' + r.symbol; }
   function derivation(pr) {
     var o = {};
-    o.n = pr.n ? pr.n.row.name + ' ' + pr.n.row.symbol + ' at ' + money(pr.n.row.price) + ' a ton (' + pr.n.row.label + ') / (2,000 lb x ' + pr.n.row.g.N + '% N) = ' + money(pr.n.usd) + ' a lb of N.' : 'Nitrogen: no price in the list.';
-    o.p = pr.p ? pr.p.row.name + ' ' + pr.p.row.symbol + ' at ' + money(pr.p.row.price) + ' a ton (' + pr.p.row.label + ')' +
-      (pr.p.nLb ? ', less its ' + Math.round(pr.p.nLb) + ' lb of N at ' + money(pr.n.usd) + ' (' + money(pr.p.credit) + ')' : '') +
+    o.n = pr.n ? prod(pr.n.row) + ' at ' + money(pr.n.row.price) + ' a ton (' + pr.n.row.label + ') / (2,000 lb x ' + pr.n.row.g.N + '% N) = ' + money(pr.n.usd) + ' a lb of N.' : 'Nitrogen: no price in the list.';
+    o.p = pr.p ? prod(pr.p.row) + ' at ' + money(pr.p.row.price) + ' a ton (' + pr.p.row.label + ')' +
+      (pr.p.nLb ? ', less its ' + Math.round(pr.p.nLb) + ' lb of N at the ' + pr.n.row.name.toLowerCase() + ' price (' + money(pr.p.credit) + ')' : '') +
       ', / ' + Math.round(20 * pr.p.row.g.P) + ' lb of P2O5 = ' + money(pr.p.usd) + ' a lb of P2O5.' : 'Phosphate: no price in the list.';
-    o.k = pr.k ? pr.k.row.name + ' ' + pr.k.row.symbol + ' at ' + money(pr.k.row.price) + ' a ton (' + pr.k.row.label + ') / (2,000 lb x ' + pr.k.row.g.K + '% K2O) = ' + money(pr.k.usd) + ' a lb of K2O.' : 'Potash: no price in the list.';
+    o.k = pr.k ? prod(pr.k.row) + ' at ' + money(pr.k.row.price) + ' a ton (' + pr.k.row.label + ') / (2,000 lb x ' + pr.k.row.g.K + '% K2O) = ' + money(pr.k.usd) + ' a lb of K2O.' : 'Potash: no price in the list.';
     return o;
   }
 
@@ -199,6 +200,8 @@
     box.innerHTML = items;
     var dv = derivation(pr), math = $('#nr-math');
     if (math) math.innerHTML = ['n', 'p', 'k'].map(function (x) { return '<li>' + esc(dv[x]) + '</li>'; }).join('');
+    var regs = ['p', 'k'].filter(function (x) { return pr[x] && pr[x].row.region; }).map(function (x) { return pr[x].row.region; });
+    all('[data-nr="region"]').forEach(function (el) { el.textContent = regs.length && regs[0] === regs[regs.length - 1] ? regs[0] + ' co-ops' : 'co-ops'; });
     all('[data-nr="asof"]').forEach(function (el) {
       var dates = ['p', 'k'].filter(function (x) { return pr[x]; }).map(function (x) { return pr[x].row.as_of; }).sort();
       el.textContent = dates.length ? day(dates[dates.length - 1]) : 'no date';
