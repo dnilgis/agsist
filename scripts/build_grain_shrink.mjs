@@ -41,7 +41,7 @@ export const FAQ = [
   ["Is a moisture discount the same as shrink?",
    "Not quite. Some buyers knock a share off the price instead of the bushels: Iowa State's example takes 2% of the price per point over 15%, 11% for 20.5% corn. Paid on wet bushels, that comes to the same dollars as a flat 2% a point shrink with no drying charge, so enter it that way."],
   ["Where does the bid come from?",
-   "Type your own, or enter your ZIP and the page uses the nearest elevator's posted bid for that grain from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest futures settle less that state's median basis, labeled as such. Sorghum has no state basis yet, so it needs your ZIP or your own bid."]
+   "Type your own, or enter your ZIP and the page uses the nearest elevator's posted bid for that grain from the same boards as the cash bids page. If that board was posted before today and states its futures month, the page re-marks it to today's futures the way the cash bids page does and shows the posted price beside it. With no ZIP, pick a state and the page uses the latest futures price less that state's median basis: the settle once it is recorded, otherwise the delayed quote with the time it was read. Sorghum has no state basis yet, so it needs your ZIP or your own bid."]
 ];
 
 function water() {

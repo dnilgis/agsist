@@ -193,7 +193,14 @@
     for (var k in q) {
       if (!Object.prototype.hasOwnProperty.call(q, k)) continue;
       var t = q[k] && q[k].ticker;
-      if (t && t.split('.')[0] === contract && num(q[k].close)) return { key: k, close: q[k].close / 100, date: q[k].close_date || null };
+      if (t && t.split('.')[0] === contract && num(q[k].close)) {
+        var d = q[k].close_date || null, st = q[k].settles;
+        /* A settle only when the file records one for that day at that price.
+           A close_date of today with no recorded settle is a delayed quote
+           read mid-session (474.25 at 10:01 am CT on Oct 16, 2026). */
+        var settled = !!(d && st && num(st[d]) && st[d] === q[k].close);
+        return { key: k, close: q[k].close / 100, date: d, settled: settled, read: settled ? null : (prices.fetched || null) };
+      }
     }
     return null;
   }
@@ -209,10 +216,59 @@
     var fq = quoteFor(prices, best.c.contract);
     if (!fq) return null;
     return {
-      bid: r(fq.close + best.c.median, 4), futures: fq.close, futuresDate: fq.date, contract: best.c.contract,
+      bid: r(fq.close + best.c.median, 4), futures: fq.close, futuresDate: fq.date, settled: fq.settled, futuresRead: fq.read, contract: best.c.contract,
       label: best.c.label || best.c.contract, basis: best.c.median, n: best.c.n, state: st, stateName: s.name || st,
       cls: best.k, asOf: basis.generated || null
     };
+  }
+
+  /* How the futures price is named: "settle Oct 15" only for a recorded
+     settle; otherwise "delayed, Oct 16 10:01 am CT" from the file's read time.
+     A quote with neither is "delayed" and no time is made up. */
+  function ctStamp(iso) {
+    var d = new Date(iso); if (!iso || isNaN(d)) return '';
+    try {
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) + ' ' +
+        d.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }).toLowerCase() + ' CT';
+    } catch (e) { return ''; }
+  }
+  function futuresWhen(q) {
+    if (!q) return '';
+    if (q.settled && q.date) {
+      var d = new Date(String(q.date).slice(0, 10) + 'T12:00:00Z');
+      return isNaN(d) ? 'settle' : 'settle ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+    }
+    var t = ctStamp(q.read);
+    return t ? 'delayed, ' + t : 'delayed';
+  }
+
+  /* THE ZIP BID, ON THE SAME RULE AS /cash-bids (components/cb-rank.js).
+     A board posted before today (Central) is yesterday's market. If it states
+     its futures month and data/prices.json holds a later price for that
+     contract, the bid is re-marked to basis + that price and shown with "≈"
+     beside what the elevator posted; otherwise the posted price stands,
+     flagged "not updated for today's futures". The ranking module decides;
+     this only hands it the row. rank: window.cbRank (or the vm copy in tests).
+     n: a bids-network row; sym: the board's own futuresMonth, or ''. */
+  function zipBid(n, sym, rank, now) {
+    if (!n || !num(n.cashPrice)) return null;
+    var out = { price: n.cashPrice, posted: n.cashPrice, remark: null, old: false, note: '', text: '' };
+    if (!rank || typeof rank.assess !== 'function') return out;
+    var row = {
+      via: 'direct', asOf: n.pricedAt || n.checkedAt || '', category: n.crop, commodity: n.commodity || n.crop,
+      symbol: sym || '', basis: n.basis
+    };
+    var bc = num(n.basisCents) ? n.basisCents : null;
+    /* cb-rank re-marks only inside a plausible band; here that is a dollar
+       either side of what the board posted, so a garbled basis is never
+       carried into a price. */
+    var rk = rank.assess(row, { cash: n.cashPrice, basisC: bc, band: [Math.max(0.01, n.cashPrice - 1), n.cashPrice + 1], now: now });
+    if (!rk || rk.exclude) return out;
+    out.price = rk.price != null ? rk.price : n.cashPrice;
+    out.remark = rk.remark; out.old = !!rk.old;
+    out.note = typeof rank.note === 'function' ? rank.note(rk) : '';
+    out.text = typeof rank.priceText === 'function' ? rank.priceText(rk) : '';
+    return out;
   }
 
   /* The nearest elevator's row for this crop from a bids-network snapshot. */
@@ -225,7 +281,7 @@
   var api = {
     CROPS: CROPS, num: num, r: r, waterShrink: waterShrink, waterFactor: waterFactor, totalShrink: totalShrink,
     handlingIn: handlingIn, dryingPerBu: dryingPerBu, wet: wet, farm: farm, overdry: overdry,
-    quoteFor: quoteFor, defaultBid: defaultBid, nearestBid: nearestBid
+    quoteFor: quoteFor, defaultBid: defaultBid, nearestBid: nearestBid, futuresWhen: futuresWhen, zipBid: zipBid
   };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.AgShrink = api;

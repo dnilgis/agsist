@@ -7,8 +7,10 @@
  *
  * The bid: typed by the reader, or the nearest posted bid to their ZIP from
  * the elevator network (components/bids-network.js, the same reader the
- * futures pages and /store-or-sell use), or, with no ZIP, the futures settle
- * less the state's median basis (data/basis-states.json). Each is labeled for
+ * futures pages and /store-or-sell use), re-marked to today's futures on the
+ * /cash-bids rule (components/cb-rank.js) when the board is a day old, or,
+ * with no ZIP, the latest futures price (a settle, or delayed with its read
+ * time) less the state's median basis (data/basis-states.json). Each is labeled for
  * what it is. Nothing is filled in that the data does not carry.
  *
  * The reader's elevator settings live in localStorage (agsist-shrink); the
@@ -115,6 +117,7 @@
     var p2 = fetch('/data/basis-states.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
     return Promise.all([p1, p2]).then(function (a) {
       st.prices = a[0]; st.basis = a[1];
+      if (window.cbRank && st.prices) { try { window.cbRank.setFutures(st.prices); } catch (e) {} }
       fillStates();
     });
   }
@@ -141,11 +144,18 @@
     if (st.snap) {
       var n = S.nearestBid(st.snap, c);
       if (n) {
-        var where = esc(n.facility || 'Elevator') + (n.town || n.city ? ', ' + esc(String(n.town || n.city).replace(/,\s*[A-Z]{2}$/, '')) : '') + (n.state ? ' ' + esc(n.state) : '');
-        setBid(n.cashPrice, 'zip', 'Nearest posted ' + esc(word) + ' bid: <b>' + where + '</b>' +
-          (n.distance != null ? ', ' + (n.distance < 1 ? 'under a mile' : Math.round(n.distance) + ' miles') + ' from ' + esc(st.zip) : '') +
-          (delivWord(n) ? ', for ' + esc(delivWord(n)) : '') +
-          (n.pricedAt ? '. Posted ' + esc(ctTime(n.pricedAt)) : '') + '. Call before you haul.');
+        zipLine(n, word, '');
+        /* A day-old board may state its futures month in its own file; with
+           it, the bid re-marks to today's futures the way /cash-bids does. */
+        var z = S.zipBid(n, '', window.cbRank, Date.now());
+        if (z && z.old && NET && n.sourceId) {
+          var seq = st.seq;
+          NET.sourceFile(n.sourceId).then(function (f) {
+            if (seq !== st.seq || st.bidFrom !== 'zip' || st.crop !== c) return;
+            var sym = boardSymbol(f, n);
+            if (sym) { zipLine(n, word, sym); render(); }
+          }).catch(function () {});
+        }
         render(); return;
       }
     }
@@ -154,7 +164,7 @@
     st.defBid = d;
     if (d) {
       setBid(d.bid, 'state', 'State estimate, not a posted bid: ' + esc(d.label) + ' futures ' + money(d.futures) +
-        (d.futuresDate ? ' (settle ' + esc(mdy(d.futuresDate)) + ')' : '') + ' ' + (d.basis < 0 ? 'less' : 'plus') + ' the ' + esc(d.stateName) + ' median basis of ' +
+        ' (' + esc(S.futuresWhen({ settled: d.settled, date: d.futuresDate, read: d.futuresRead })) + ') ' + (d.basis < 0 ? 'less' : 'plus') + ' the ' + esc(d.stateName) + ' median basis of ' +
         cents(Math.abs(d.basis)) + ' across ' + d.n + ' elevators' + (d.cls.indexOf('wheat_') === 0 ? ' (' + d.cls.slice(6).toUpperCase() + ' wheat)' : '') +
         (d.asOf ? ', ' + esc(mdy(d.asOf)) : '') + '. Your ZIP gets the nearest real bid.');
     } else {
@@ -164,6 +174,37 @@
       setBid(null, '', why + 'Type your bid to see dollars.');
     }
     render();
+  }
+  /* The futures month the board itself states for this row, or ''. Only when
+     every matching row (same commodity, delivery and cash) agrees. */
+  function boardSymbol(f, n) {
+    var rows = (f && Array.isArray(f.bids) ? f.bids : []).filter(function (b) {
+      return b && b.cash === n.cashPrice && String(b.delivery || '') === String(n.delivery || '') &&
+        String(b.commodity || '').toLowerCase() === String(n.commodity || '').toLowerCase();
+    });
+    var syms = {};
+    rows.forEach(function (b) { if (b.futuresMonth) syms[String(b.futuresMonth).toUpperCase()] = 1; });
+    var k = Object.keys(syms);
+    return k.length === 1 ? k[0] : '';
+  }
+  /* "Read" when the time is only when AGSIST read the board, "Posted" when
+     the board moved then (the /cash-bids rule, readTimeOnly). */
+  function readOnly(n) {
+    if (!n.pricedAt) return true;
+    var p = Date.parse(n.pricedAt), c = Date.parse(n.checkedAt || '');
+    return !isFinite(p) || (isFinite(c) && p === c);
+  }
+  function zipLine(n, word, sym) {
+    var z = S.zipBid(n, sym, window.cbRank, Date.now()) || { price: n.cashPrice };
+    var where = esc(n.facility || 'Elevator') + (n.town || n.city ? ', ' + esc(String(n.town || n.city).replace(/,\s*[A-Z]{2}$/, '')) : '') + (n.state ? ' ' + esc(n.state) : '');
+    var t = n.pricedAt || n.checkedAt;
+    var line = 'Nearest posted ' + esc(word) + ' bid: <b>' + where + '</b>' +
+      (n.distance != null ? ', ' + (n.distance < 1 ? 'under a mile' : Math.round(n.distance) + ' miles') + ' from ' + esc(st.zip) : '') +
+      (delivWord(n) ? ', for ' + esc(delivWord(n)) : '') +
+      (t ? '. ' + (readOnly(n) ? 'Read ' : 'Posted ') + esc(ctTime(t)) : '') + '.';
+    if (z.remark) line += ' On today\'s futures that is <b>' + esc(z.text) + '</b> (' + esc(z.note) + '); the page uses ' + esc(z.text) + ', as the cash bids page does.';
+    else if (z.old) line += ' Not updated for today\'s futures; the page uses the posted price.';
+    setBid(z.price, 'zip', line + ' Call before you haul.');
   }
   function lookupZip() {
     var z = String($('gs-zip').value || '').trim();
