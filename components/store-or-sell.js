@@ -204,7 +204,7 @@
   function wheatNote(fm) {
     if (!fm || !fm.wheat) return '';
     return fm.wheat === 'KE' ? ' Nearby wheat bids price off Kansas City, so this is the KC HRW spread.'
-      : ' This is the Chicago SRW spread' + (state.zip && state.models ? (exchNow() === 'ZW' ? ': nearby wheat bids price off Chicago.' : ': no wheat bid we read near ' + state.zip + ' names its futures.') : '. Enter your ZIP to use the futures your elevators price wheat off.');
+      : ' This is the Chicago SRW spread' + (state.zip && state.models ? (exchNow() === 'ZW' ? ': nearby wheat bids price off Chicago.' : ': no wheat bid we read near ' + state.zip + ' names its futures.') : '.');
   }
   var MW_TEXT = 'Nearby wheat bids price off Minneapolis spring wheat futures. AGSIST has no Minneapolis quotes, so there is no board carry to show; the Chicago SRW spread is a different wheat. Your elevator\u2019s own later bids are the number to use.';
   function exchNow() {
