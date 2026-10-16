@@ -28,7 +28,7 @@
   'use strict';
   var doc = root.document;
   var fig = doc && doc.getElementById('rc-print');
-  root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf };   // for test/rain-county-print.test.mjs
+  root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf };   // for test/rain-county-print.test.mjs
   if (!fig || !fig.dataset) return;
   var D = fig.dataset;
   var ART = '/components/rain-print-art.js?v=12', ENGINE = '/components/rain-print.js?v=43';
@@ -93,13 +93,36 @@
     return RP.closeOpenS(out);
   }
 
-  var state = null;   // {RP, days, d, preview}
+  /* The usual-year line (2026-10-16). data-mn is NOAA's normal for each month, summed over the
+     days this station reported (the page's own month table), data-usual their sum. Each month's
+     figure is spread over that month's reported days, so the month and year usuals the print
+     shows are NOAA's own sums; a day with no report adds nothing, as on the page. Null (no line)
+     when anything fails to match: a month with a usual but no reported day, a sum that is not the
+     page's usual, or no data at all. */
+  function usualOf(days, mnText, usual) {
+    if (!mnText) return null;
+    var mn = String(mnText).split(',').map(Number);
+    if (!mn.length || mn.some(function (v) { return !isFinite(v) || v < 0; })) return null;
+    var rep = mn.map(function () { return 0; });
+    days.forEach(function (x) { if (x.v !== null && x.v !== undefined && x.m < mn.length) rep[x.m]++; });
+    for (var m = 0; m < mn.length; m++) if (mn[m] > 0 && !rep[m]) return null;
+    var daily = days.map(function (x) {
+      return x.v === null || x.v === undefined || x.m >= mn.length || !rep[x.m] ? 0 : mn[x.m] / rep[x.m];
+    });
+    var cum = [], run = 0;
+    daily.forEach(function (v) { run += v; cum.push(run); });
+    if (Math.abs(run - (+usual)) > 0.02) return null;
+    return { normal: daily.slice(), daily: daily, cum: cum, total: run };
+  }
+
+  var state = null;   // {RP, days, d, preview, ov}
   function draw(style) {
     var A = root.AgRainArt, S = state, year = +D.year;
     var svg = A.render({
       style: style, year: year, place: D.place, name: '', dedication: '',
       days: S.days, D: S.d, showDry: S.RP.showDry(S.d), axisLen: S.preview ? (isLeap(year) ? 366 : 365) : S.d.n,
-      ov: null, ovNote: '', showNormals: false, markers: [], records: [], qr: null,
+      ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Usual: NOAA 1991 to 2020 normals, on the days reported' : 'Usual: NOAA 30-year normals, on the days reported') : '',
+      showNormals: !!S.ov, markers: [], records: [], qr: null,
       preview: S.preview ? { last: S.days[S.days.length - 1].date } : null,
       gauge: D.gauge || '', logo: null, watermark: false, bleed: 0, idPrefix: 'rc'
     });
@@ -123,7 +146,7 @@
       // the print must be this page's year: the same days, the same total
       if (days.length !== +D.days || Math.abs(d.total - +D.total) > 0.011) return;
       if (d.missing > MISS_BLOCK || days.length < MIN_DAYS) return;
-      state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365) };
+      state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
       draw('r1');
       fig.classList.add('rc-print-on');
       var cap = fig.querySelector('.rc-cap-print'), old = fig.querySelector('.rc-cap-chart');

@@ -794,7 +794,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
       <div class="risk-badge moderate" id="risk-badge"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg> Loading…</div>
       <div class="risk-verdict" id="risk-verdict">Getting your local conditions…</div>
       <div class="risk-location" id="risk-location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Detecting location</div>
-      <p class="risk-method method-note" style="font-size:.72rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.5">Higher score = more N lost to the air. Under 30 is lower risk; over 55, protect it or wait. <b>Method:</b> weighted estimate, temp 35%, humidity 25%, wind 20%, rain 20% (the forecast amount for today and tomorrow when it is &frac14; inch or more, otherwise the 48-hour chance), adjusted for your soil pH and residue; an AGSIST rule of thumb with our own bands, not a validated model &middot; <b>Sources:</b> Open-Meteo forecast; rain thresholds from Hargrove 1988 and Ferguson et al. 1984; loss figures, timing and the residue rain need from Montana State University (<a href="https://landresources.montana.edu/soilfertility/soilscoop/ss_uvol.html" target="_blank" rel="noopener">Soil Scoop</a>, <a href="https://landresources.montana.edu/soilfertility/documents/PDF/pub/UvolBMPEB0209.pdf" target="_blank" rel="noopener">EB0209</a>) &middot; Reviewed by Sigurd Lindquist, CCA</p>
+      <p class="risk-method method-note" style="font-size:.72rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.5">Higher score = more N lost to the air. Under 30 is lower risk; over 55, protect it or wait. <b>Method:</b> weighted estimate, temp 35%, humidity 25%, wind 20%, rain 20% (the forecast amount for today and tomorrow when it is &frac14; inch or more, otherwise the 48-hour chance), adjusted for your soil pH and residue, then for the soil surface (dry 0.6, moist 1.0, wet 1.2, from the forecast&rsquo;s 0 to 1 cm soil moisture or your pick; Montana State calls surface moisture likely the most important condition); an AGSIST rule of thumb with our own bands, not a validated model &middot; <b>Sources:</b> Open-Meteo forecast; rain thresholds from Hargrove 1988 and Ferguson et al. 1984; loss figures, timing and the residue rain need from Montana State University (<a href="https://landresources.montana.edu/soilfertility/soilscoop/ss_uvol.html" target="_blank" rel="noopener">Soil Scoop</a>, <a href="https://landresources.montana.edu/soilfertility/documents/PDF/pub/UvolBMPEB0209.pdf" target="_blank" rel="noopener">EB0209</a>) &middot; Reviewed by Sigurd Lindquist, CCA</p>
     </div>
   </div>
 </section>
@@ -826,7 +826,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
         <div id="tg-text">Below freezing: urease works very slowly, so loss starts slowly, but Montana State trials still averaged 18% and up to 44% loss from urea broadcast between October and April. Risk score is capped at 8. NBPT still helps; runoff on slopes is a second concern.</div>
       </div>
       <div id="factor-section" style="display:none">
-        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate.</div></div>
+        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil surface now<select id="in-surf" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="" selected>From the forecast</option><option value="dry">Dry: a granule would not dissolve</option><option value="moist">Moist soil or heavy dew</option><option value="wet">Wet, or snow on it</option></select></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate. What you see on the surface overrides the forecast&rsquo;s soil moisture.</div></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
           <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">Risk factor breakdown</div>
           <button id="btn-change-loc" style="font-size:0.78rem;color:var(--text-muted);background:none;border:none;text-decoration:underline;cursor:pointer;min-height:44px">Change location</button>
@@ -841,7 +841,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <div class="factor" id="f-humid">
             <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></span>Atmospheric Humidity</div><span class="factor-score low" id="fs-humid">LOW</span></div>
             <div class="factor-val" id="fv-humid">--%</div>
-            <div class="factor-desc" id="fd-humid">Relative humidity used as a proxy for surface moisture; actual soil surface moisture is not measured here. Moist (not saturated) surfaces accelerate urease activity. Dry air slows dissolution; very humid air correlates with wet surfaces where volatilization continues.</div>
+            <div class="factor-desc" id="fd-humid">Humidity of the air. The surface itself is its own card (forecast 0 to 1 cm soil moisture, or what you pick above). Moist (not saturated) surfaces accelerate urease activity. Dry air slows dissolution; very humid air correlates with wet surfaces where volatilization continues.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-humid" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-wind">
@@ -849,6 +849,12 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
             <div class="factor-val" id="fv-wind">-- mph</div>
             <div class="factor-desc" id="fd-wind">Wind continuously disperses the ammonia layer above the soil surface, maintaining the concentration gradient that pulls more N into the air.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-wind" style="width:0%"></div></div>
+          </div>
+          <div class="factor" id="f-surf">
+            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></span>Soil Surface</div><span class="factor-score note" id="fs-surf">NOTE</span></div>
+            <div class="factor-val" id="fv-surf">--</div>
+            <div class="factor-desc" id="fd-surf">Montana State calls surface soil moisture likely the most important risk condition. Urea on a dry surface can sit undissolved for a week or more with little loss; on a moist or wet surface it dissolves and starts losing.</div>
+            <div class="factor-bar"><div class="factor-bar-fill" id="fb-surf" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-rain">
             <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg></span>Rain Forecast</div><span class="factor-score low" id="fs-rain">LOW</span></div>
@@ -1092,6 +1098,48 @@ function setRainFactor(rn){
   setFactor('rain',UREA_POP&&UREA_POP.h48?pop+'% max, 48 h':pop+'% this hour',rDesc,rR,rR);
 }
 function appendRainLine(rn){var v=document.getElementById('risk-verdict');var l=rainLine(rn);if(v&&l)v.textContent+=l;}
+// Soil surface (2026-10-16). Montana State EB0209, Table 2: moist soil or heavy dew is high risk, dry soil lower
+// risk, "with soil moisture likely being the most important risk condition"; urea on a dry surface "can remain
+// undissolved for at least a week with no volatilization loss" (Fig. 3); trial losses were 30 to 44% on wet or snowy
+// surfaces that dried slowly against 10 to 20% on a dry surface with only light rain after. The score is multiplied
+// by 0.6 on a dry surface, 1.0 moist, 1.2 wet: an AGSIST rule of thumb set from those ranges, not a model.
+// The forecast's 0 to 1 cm soil moisture (Open-Meteo, m3/m3, a model estimate) is read as dry under 0.15, moist
+// 0.15 to 0.30, wet 0.30 and over (rough bands: near wilting point and near field capacity for a loam). What the
+// farmer picks for the surface right now overrides it. No reading and no pick: multiplier 1, said so.
+var UREA_HOURLY=null;
+var SURF={dry:{mult:0.6,lab:'Dry'},moist:{mult:1.0,lab:'Moist'},wet:{mult:1.2,lab:'Wet'}};
+function surfClass(sm){if(sm==null||isNaN(sm))return null;return sm<0.15?'dry':sm<0.30?'moist':'wet';}
+function surfNow(){
+  var e=document.getElementById('in-surf'),pick=e&&SURF[e.value]?e.value:null;
+  var sm=null,h=UREA_HOURLY,c=UREA_CUR||{};
+  if(h&&h.time&&h.soil_moisture_0_to_1cm){var now=String(c.time||'').slice(0,13),idx=-1;for(var i=0;i<h.time.length;i++){if(String(h.time[i]).slice(0,13)<=now)idx=i;else break;}if(idx>=0){var v=h.soil_moisture_0_to_1cm[idx];if(typeof v==='number'&&isFinite(v))sm=v;}}
+  var cls=pick||surfClass(sm);
+  return{cls:cls,sm:sm,picked:!!pick,mult:cls?SURF[cls].mult:1};
+}
+function surfDay(date){
+  var h=UREA_HOURLY;if(!h||!h.time||!h.soil_moisture_0_to_1cm||!date)return{cls:null,mult:1};
+  var t=0,n=0;for(var i=0;i<h.time.length;i++){if(String(h.time[i]).slice(0,10)===date){var v=h.soil_moisture_0_to_1cm[i];if(typeof v==='number'&&isFinite(v)){t+=v;n++;}}}
+  var cls=n?surfClass(t/n):null;return{cls:cls,mult:cls?SURF[cls].mult:1};
+}
+function renderSurf(sf){
+  var fs=document.getElementById('fs-surf'),fv=document.getElementById('fv-surf'),fd=document.getElementById('fd-surf'),fb=document.getElementById('fb-surf');
+  var src=sf.picked?'your pick':(sf.sm!=null?'forecast 0 to 1 cm soil moisture '+sf.sm.toFixed(2)+' m³/m³, a model estimate':'');
+  var c=!sf.cls?{cls:'note',lab:'NOT IN FORECAST',val:'Pick it above',w:50,col:'var(--risk-mod)',d:'This forecast has no soil moisture for your spot, so the score leaves the surface out (multiplier 1). Pick what you see above. Montana State calls surface moisture likely the most important risk condition.'}
+    :sf.cls==='dry'?{cls:'low',lab:'LOWER (dry)',val:'Dry ('+src+')',w:25,col:'var(--risk-low)',d:'A dry surface: Montana State found urea on dry soil can sit undissolved for a week or more with no loss, and trial losses were 10 to 20% on a dry surface with only light rain after. Dew or a light shower starts it. The score multiplies by 0.6 here, a rule of thumb.'}
+    :sf.cls==='moist'?{cls:'hig',lab:'HIGH (moist)',val:'Moist ('+src+')',w:65,col:'var(--risk-high)',d:'Moist soil or heavy dew dissolves the granule and starts the loss: Montana State lists it first among high-risk conditions. The score multiplies by 1.0 here.'}
+    :{cls:'ext',lab:'HIGHEST (wet)',val:'Wet ('+src+')',w:85,col:'var(--risk-extreme)',d:'A wet or snowy surface that dries slowly gave the largest losses in Montana State trials, 30 to 44% of the N. Avoid it unless half an inch of rain or tillage will move the urea in. The score multiplies by 1.2 here, a rule of thumb.'};
+  if(fs){fs.className='factor-score '+c.cls;fs.textContent=c.lab;}
+  if(fv)fv.textContent=c.val;
+  if(fd)fd.textContent=c.d;
+  if(fb){fb.style.width=c.w+'%';fb.style.background=c.col;}
+}
+function appendSurfLine(sf,tempF){
+  var v=document.getElementById('risk-verdict');if(!v||!sf.cls||tempF<32)return;
+  var how=sf.picked?'You picked a ':'The forecast reads a ';
+  v.textContent+=sf.cls==='dry'?' '+how+'dry surface: urea on dry soil can sit undissolved for a week or more with little loss (Montana State), so the score is lower; dew or a light shower starts it.'
+    :sf.cls==='wet'?' '+how+'wet surface: the worst start, 30 to 44% loss in Montana State trials when it dried slowly.'
+    :' '+how+'moist surface: the granule will dissolve and start losing.';
+}
 function soilTempOverride(airF){var e=document.getElementById('in-soil');if(e&&e.value!==''){var v=parseFloat(e.value);if(!isNaN(v))return Math.round(v);}return airF;}
 function saveFieldInputs(){try{var o={ph:(document.getElementById('in-ph')||{}).value,till:(document.getElementById('in-till')||{}).value,soil:(document.getElementById('in-soil')||{}).value};localStorage.setItem('agsist-urea-field',JSON.stringify(o));}catch(e){}}
 function restoreFieldInputs(){try{var s=localStorage.getItem('agsist-urea-field');if(!s)return;var o=JSON.parse(s);var p=document.getElementById('in-ph');if(p&&o.ph)p.value=o.ph;var t=document.getElementById('in-till');if(t&&o.till)t.value=o.till;var so=document.getElementById('in-soil');if(so&&o.soil!=null)so.value=o.soil;}catch(e){}}
@@ -1127,7 +1175,7 @@ function renderResidue(){
   if(fd)fd.textContent=c.d;
   if(fb){fb.style.width=c.w+'%';fb.style.background=c.col;}
 }
-function renderScore(){if(!UREA_CUR)return;var c=UREA_CUR,airF=Math.round(c.temperature_2m),tempF=soilTempOverride(airF);var tR=tempRisk(tempF),hR=humidRisk(c.relative_humidity_2m),wR=windRisk(Math.round(c.wind_speed_10m)),rn=rainNow(),rR=rn.rR;updateGauge(Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult())),tempF);appendRainLine(rn);rainAdvice(rn,tempF);renderResidue();if(tempF!==airF){setFactor('temp',tempF+'°F soil',soilTempDesc(tempF),tR,tR);}else{setFactor('temp',airF+'°F',tempDesc(airF),tR,tR);}if(UREA_DAILY)buildForecastStrip(UREA_DAILY,phMult(),tillMult());}
+function renderScore(){if(!UREA_CUR)return;var c=UREA_CUR,airF=Math.round(c.temperature_2m),tempF=soilTempOverride(airF);var tR=tempRisk(tempF),hR=humidRisk(c.relative_humidity_2m),wR=windRisk(Math.round(c.wind_speed_10m)),rn=rainNow(),rR=rn.rR,sf=surfNow();updateGauge(Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult()*sf.mult)),tempF);appendSurfLine(sf,tempF);appendRainLine(rn);rainAdvice(rn,tempF);renderResidue();renderSurf(sf);if(tempF!==airF){setFactor('temp',tempF+'°F soil',soilTempDesc(tempF),tR,tR);}else{setFactor('temp',airF+'°F',tempDesc(airF),tR,tR);}if(UREA_DAILY)buildForecastStrip(UREA_DAILY,phMult(),tillMult());}
 function tempRisk(f){
   if(f<32)return 2;
   if(f<40)return 5;
@@ -1207,10 +1255,10 @@ function compositeScore(tR,hR,wR,rR){
 
 // One forecast-strip day. A confirmed incorporating rain (>=0.5") sets the day score to the
 // rain value (8) directly — temperature no longer matters once the urea is in the soil.
-function dayRisk(tMax,tMin,pop,precipMm,ph,till){
+function dayRisk(tMax,tMin,pop,precipMm,ph,till,surf){
   if(tMax==null||tMin==null||isNaN(tMax)||isNaN(tMin))return null;
   var tAvg=(tMax+tMin)/2,rR=rainRiskDaily(pop,precipMm);
-  var score=precipMm/25.4>=0.5?rR:Math.round(Math.min(100,(tempRisk(tAvg)*0.55+rR*0.45)*(ph||1)*(till||1)));
+  var score=precipMm/25.4>=0.5?rR:Math.round(Math.min(100,(tempRisk(tAvg)*0.55+rR*0.45)*(ph||1)*(till||1)*(surf||1)));
   var gated=applyTempGate(score,tAvg);
   return{score:score,gated:gated,level:scoreToLevel(gated),tAvg:tAvg};
 }
@@ -1286,13 +1334,13 @@ function updateGauge(rawScore,tempF){
   if(tempF<32){verdictText=(soilEntered()?'Soil surface is frozen':'Air is below freezing')+', urease works very slowly, so loss starts slowly. But Montana State trials averaged 18% and up to 44% loss from urea broadcast between October and April, highest on a moist or snowy surface that stayed dry after. NBPT still helps, and frozen ground adds runoff risk on slopes.';}
   else if(tempF<40){verdictText='Very cold conditions: urease activity is slow, so loss starts slowly, though it is not zero. Watch for soil thaw and warming temperatures; risk will climb quickly once temps exceed 50°F.';}
   else if(tempF<50){verdictText='Cool conditions: urease activity is low but present. Risk is manageable. NBPT is good insurance if temperatures are forecast to warm above 65°F in the coming days.';}
-  else{var verdicts={low:'Conditions are favorable for surface urea application. Minimal nitrogen loss expected in the next 24–48 hours.',moderate:'Moderate volatilization risk. Consider stabilizer or wait for a better window. Monitor forecast closely.',high:'High N-loss risk. Do not apply without NBPT stabilizer. Look for a cooler or wetter window in the coming days.',extreme:'Extreme risk. Do not apply surface urea. Conditions favour high losses; Montana State trials measured up to 44% on a wet surface that dried slowly. Wait for conditions to change or use injection.'};verdictText=verdicts[level];}
+  else{var verdicts={low:'Conditions are favorable for surface urea application. Minimal nitrogen loss expected in the next 24–48 hours.',moderate:'Moderate volatilization risk. Consider stabilizer or wait for a better window. Monitor forecast closely.',high:'High N-loss risk. Do not apply without NBPT stabilizer. Look for a cooler day, a dry surface, or spread just ahead of a half-inch rain.',extreme:'Extreme risk. Do not apply surface urea. Conditions favour high losses; Montana State trials measured up to 44% on a wet surface that dried slowly. Wait for conditions to change or use injection.'};verdictText=verdicts[level];}
   if(verdict)verdict.textContent=verdictText;
   var rb=document.getElementById('rec-box');var rh=document.getElementById('rec-head');var rt=document.getElementById('rec-text');var recHead,recText;
   if(tempF<32){recHead='<svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Below Freezing: Not an Application Window';recText='Loss starts slowly in the cold, but urea broadcast between October and April averaged 18% and up to 44% loss in Montana State trials, highest on a moist or snowy surface. If you must apply, NBPT still helps. Frozen ground also risks runoff on slopes. Re-check as soil thaws and temps approach 50°F.';if(rb)rb.className='rec-box low';if(rh){rh.className='rec-head cold';rh.innerHTML=recHead;}}
   else if(tempF<40){recHead='<svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Cold: Low Volatilization Risk';recText='Urease activity is slow, so loss starts slowly. If you need to apply now, NBPT still helps, especially if the urea will sit on the surface through thaw-and-dry cycles. Risk increases quickly once temperatures exceed 50°F.';if(rb)rb.className='rec-box low';if(rh){rh.className='rec-head low';rh.innerHTML=recHead;}}
   else if(tempF<50){recHead='<svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg> Cool: Manageable Risk';recText='Conditions are cool enough that volatilization risk is low but not negligible. NBPT is worthwhile if temperatures are forecast to rise above 65°F in the coming days or if no rain is expected within 48 hours.';if(rb)rb.className='rec-box low';if(rh){rh.className='rec-head low';rh.innerHTML=recHead;}}
-  else{var recHeads={low:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-check"/></svg> Good Window',moderate:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Use Caution',high:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> High Risk: Use Stabilizer',extreme:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-octagon-alert"/></svg> Do Not Apply'};var recs={low:'Conditions are favorable. Apply urea normally. Watch the 48-hour forecast. If temperatures rise above 65°F or light rain (under ½") is expected, reassess.',moderate:'Risk is present but manageable. Best practice: apply NBPT-coated urea or treat with Agrotain stabilizer. If forecast shows ½"+ rain within 48 hours, standard urea is acceptable.',high:'Significant nitrogen loss likely without protection. Use NBPT stabilizer. Alternatively, delay application and monitor the 5-day forecast for a lower-risk window.',extreme:'Do not surface-apply urea today. Either wait for a cooler or wetter window, or, if application cannot wait, treat with NBPT stabilizer, knowing losses will still be elevated. Injecting below the surface, or switching to UAN placed with a coulter, also avoids the loss if you have the equipment.'};recHead=recHeads[level];recText=recs[level];if(rb)rb.className='rec-box '+level;if(rh){rh.className='rec-head '+level;rh.innerHTML=recHead;}}
+  else{var recHeads={low:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-check"/></svg> Good Window',moderate:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Use Caution',high:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> High Risk: Use Stabilizer',extreme:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-octagon-alert"/></svg> Do Not Apply'};var recs={low:'Conditions are favorable. Apply urea normally. Watch the 48-hour forecast. If temperatures rise above 65°F or light rain (under ½") is expected, reassess.',moderate:'Risk is present but manageable. Best practice: apply NBPT-coated urea or treat with Agrotain stabilizer. If forecast shows ½"+ rain within 48 hours, standard urea is acceptable.',high:'Significant nitrogen loss likely without protection. Use NBPT stabilizer. Alternatively, delay application and monitor the 5-day forecast for a lower-risk window.',extreme:'Do not surface-apply urea today. Wait for a cooler day or a dry surface, or spread just ahead of a half-inch rain; if application cannot wait, treat with NBPT stabilizer, knowing losses will still be elevated. Injecting below the surface, or switching to UAN placed with a coulter, also avoids the loss if you have the equipment.'};recHead=recHeads[level];recText=recs[level];if(rb)rb.className='rec-box '+level;if(rh){rh.className='rec-head '+level;rh.innerHTML=recHead;}}
   if(rt)rt.textContent=recText;
 }
 
@@ -1310,7 +1358,8 @@ function buildForecastStrip(dailyData,ph,till){
     // Use actual precipitation_sum (mm) when available for accurate incorporation assessment
     // This is more precise than probability alone: ½" threshold is the key incorporation cutoff
     var precipMm=dailyData.precipitation_sum&&dailyData.precipitation_sum[i]!=null?dailyData.precipitation_sum[i]:0;
-    var dr=dayRisk(tMax,tMin,pop,precipMm,ph,till); // uses actual mm totals, not just probability
+    var sd=i===0?surfNow():surfDay(dailyData.time[i]);
+    var dr=dayRisk(tMax,tMin,pop,precipMm,ph,till,sd.mult); // uses actual mm totals, not just probability
     var el=document.createElement('div');
     el.className='fc-day';
     if(!dr){
@@ -1323,7 +1372,7 @@ function buildForecastStrip(dailyData,ph,till){
     var gated=dr.gated,level=dr.level;
     var precipInches=precipMm/25.4;
     var precipNote=precipMm>0?(' · '+precipInches.toFixed(2)+'"'):'';
-    el.title=name+': '+Math.round(tMax)+'°/'+Math.round(tMin)+'°F · '+pop+'% rain'+precipNote+' · '+scoreToLabel(gated);
+    el.title=name+': '+Math.round(tMax)+'°/'+Math.round(tMin)+'°F · '+pop+'% rain'+precipNote+(sd.cls?' · surface '+sd.cls:'')+' · '+scoreToLabel(gated);
     el.innerHTML='<div class="fc-day-name">'+name+'</div><div class="fc-day-icon">'+(WX_ICONS[dailyData.weather_code[i]]||'<svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg>')+'</div><div class="fc-day-risk '+level+'">'+levelAbbr(level)+'</div><div class="fc-day-temp">'+Math.round(tMax)+'°/'+Math.round(tMin)+'°</div>';
     strip.appendChild(el);
   }
@@ -1334,9 +1383,9 @@ function loadWeather(lat,lon,label){
   document.getElementById('factor-section').style.display='block';
   document.getElementById('risk-location').innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> '+(label||'Your Location');
   // precipitation_sum added to daily — used in rainRiskDaily() for accurate incorporation assessment
-  var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&hourly=precipitation_probability&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5';
+  var url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&hourly=precipitation_probability,soil_moisture_0_to_1cm&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=5';
   fetch(url).then(function(r){return r.json();}).then(function(d){
-    UREA_CUR=d.current;UREA_DAILY=d.daily;UREA_POP=popNext48(d);
+    UREA_CUR=d.current;UREA_DAILY=d.daily;UREA_POP=popNext48(d);UREA_HOURLY=d.hourly||null;
     var c=d.current;
     var airF=Math.round(c.temperature_2m),tempF=airF;
     var humid=c.relative_humidity_2m;
@@ -1346,8 +1395,8 @@ function loadWeather(lat,lon,label){
     var hR=humidRisk(humid);
     var wR=windRisk(wind);
     var rn=rainNow(),rR=rn.rR;
-    var rawTotal=Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult()));
-    updateGauge(rawTotal,tempF);appendRainLine(rn);rainAdvice(rn,tempF);renderResidue();
+    var sf=surfNow(),rawTotal=Math.round(Math.min(100,compositeScore(tR,hR,wR,rR)*phMult()*tillMult()*sf.mult));
+    updateGauge(rawTotal,tempF);appendSurfLine(sf,tempF);appendRainLine(rn);rainAdvice(rn,tempF);renderResidue();renderSurf(sf);
     if(tempF!==airF)setFactor('temp',tempF+'°F soil',soilTempDesc(tempF),tR,tR);else setFactor('temp',tempF+'°F',tempDesc(tempF),tR,tR);
     var hDesc=humid<30?'Dry air. Urea dissolution slow, but light rain or dew can still activate the enzyme. Watch for moisture events.':humid<50?'Low-moderate humidity. Some slowing from dryness. Monitor.':humid<70?'Moderate humidity. Optimal zone for urease activity. Risk is elevated.':humid<85?'Humid air, surface likely moist. Urease has favorable conditions. Risk is running.':'Saturated air, surface likely wet. Urease stays active; volatilization continues.';
     setFactor('humid',humid+'% RH',hDesc,hR,hR);
@@ -1381,7 +1430,7 @@ document.getElementById('urea-zip').addEventListener('keydown',function(e){if(e.
 document.getElementById('btn-change-loc').addEventListener('click',function(){document.getElementById('zip-row').style.display='flex';document.getElementById('loc-setup').style.display='block';});
 
 restoreFieldInputs();
-['in-ph','in-till','in-soil'].forEach(function(id){var e=document.getElementById(id);if(e){e.addEventListener('change',function(){saveFieldInputs();renderScore();});if(id==='in-soil')e.addEventListener('input',function(){saveFieldInputs();renderScore();});}});
+['in-ph','in-till','in-soil','in-surf'].forEach(function(id){var e=document.getElementById(id);if(e){e.addEventListener('change',function(){saveFieldInputs();renderScore();});if(id==='in-soil')e.addEventListener('input',function(){saveFieldInputs();renderScore();});}});
 setTimeout(function(){
   try{var saved=localStorage.getItem('agsist-wx-loc');if(saved){var p=JSON.parse(saved);loadWeather(p.lat,p.lon,p.label);return;}}catch(e){}
   requestGeo();
