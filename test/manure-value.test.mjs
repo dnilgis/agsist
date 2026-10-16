@@ -375,8 +375,24 @@ test("prices carry their quote date, never 'today's'", () => {
   }
   const mv = read("manure-value.html");
   const data = JSON.parse(read("data/fertilizer-prices.json"));
-  const when = M.day(M.nutrientPrices(data).src.n.as_of);
-  assert.ok(mv.includes(`<h1>What manure is worth at <span data-mv="asof-n">${when}</span> fertilizer prices</h1>`), "the H1 names the quote date");
+  const src = M.nutrientPrices(data).src;
+  const when = M.span([src.n, src.p, src.k]);
+  assert.ok(mv.includes(`<h1>What manure is worth at fertilizer prices posted <span data-mv="asof-span">${when}</span></h1>`), "the H1 names the quote dates");
+  // 2026-10-16: one date line. Every date the page prints for its prices sits inside the span,
+  // and no "through <date>" names a day older than the newest price used.
+  const vis = mv.replace(/<!--[\s\S]*?-->/g, " ").replace(/<(script|style)\b[\s\S]*?<\/\1>/g, " ");
+  assert.ok(!/posted through/.test(vis), "no 'posted through' line left");
+  assert.ok(!/USDA AMS Illinois/.test(vis), "no USDA fallback sentence (co-op prices only, Sig 2026-10-16)");
+});
+
+test("the date span: oldest sheet to newest, by hand", () => {
+  assert.equal(M.span([{ as_of: "2026-10-06", oldest: "2026-09-24" }, { as_of: "2026-10-12", oldest: "2026-10-06" }, { as_of: "2026-10-06" }]),
+    "Sep 24 to Oct 12, 2026");
+  assert.equal(M.span([{ as_of: "2026-10-06" }, { as_of: "2026-10-06", oldest: "2026-10-06" }]), "Oct 6, 2026");
+  assert.equal(M.span([{ as_of: "2027-01-04", oldest: "2026-12-28" }]), "Dec 28, 2026 to Jan 4, 2027");
+  assert.equal(M.span([null, { as_of: "bad" }]), "", "no dated price: no date");
+  const v = M.bakeValues(SEP1);
+  assert.equal(v["asof-span"], "Aug 28 to Sep 1, 2026", "SEP1: DAP Aug 28, urea and potash Sep 1");
 });
 
 // 2026-10-16 audit: N is priced at urea; one line gives the anhydrous figure

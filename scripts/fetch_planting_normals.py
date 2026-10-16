@@ -122,6 +122,29 @@ def parse_date_cell(v, season):
     return hits.pop() if len(hits) == 1 else None
 
 
+NAME_UPPER = {"UW", "UMN", "MN", "WI", "NWS", "WSO", "WFO", "RS", "DNR", "HQ", "WWTP", "SP", "NE", "NW", "SE", "SW", "N", "S", "E", "W", "US"}
+NAME_LOWER = {"of", "du", "de", "and"}
+
+
+def proper_name(n):
+    """NCEI capitals to a readable name: acronyms stay capitals ("UW Arboretum"), joining
+    words lower case ("Fond du Lac"), "3SW" split to "3 SW". components/planting-date.js
+    stationName() does the same for files written before this existed."""
+    n = re.sub(r"(\d)(NE|NW|SE|SW|N|S|E|W)\b", r"\1 \2", str(n or ""), flags=re.I)
+    out, first = [], True
+    for w in re.split(r"(\s+|/|-)", n):
+        if not re.search(r"[A-Za-z]", w):
+            out.append(w); continue
+        if w.upper() in NAME_UPPER:
+            out.append(w.upper())
+        elif not first and w.lower() in NAME_LOWER:
+            out.append(w.lower())
+        else:
+            out.append(w[:1].upper() + w[1:].lower())
+        first = False
+    return "".join(out)
+
+
 def find_col(header, pattern):
     rx = re.compile(pattern, re.I)
     # NCEI puts meas_flag_<col>, comp_flag_<col> and years_<col> beside every value column,
@@ -235,7 +258,7 @@ def station_record(sid, ann_text, dly_text):
         return None, probs + ["coordinates outside the lower 48"]
     name = re.sub(r",\s*[A-Z]{2}\s+US$", "", str(meta.get("NAME") or sid)).strip()
     name = re.sub(r"\bAP\b", "AIRPORT", re.sub(r"\bRGNL\b", "REGIONAL", name))
-    rec = {"id": sid, "n": name.title(),
+    rec = {"id": sid, "n": proper_name(name),
            "lat": round(lat, 4), "lon": round(lon, 4)}
     el = num(meta.get("ELEVATION"))
     if el is not None:
@@ -490,6 +513,11 @@ def selftest():
     rp, pp = station_record("USW00014922", (RD / "USW00014922-annual.csv").read_text(), (RD / "USW00014922-daily.csv").read_text())
     ok(rp is not None and rp["s32"] == ["04-08", "04-23", "05-07"] and rp["f32"] == ["10-01", "10-18", "10-31"], "real Minneapolis 32 F dates: %s" % ((rp and [rp["s32"], rp["f32"]]),))
     ok(rp is not None and abs(rp["g"][6] - 138.5) <= 0.5, "Minneapolis Apr GDD 138.5")
+    for raw, want in (("UW ARBORETUM - MADISON", "UW Arboretum - Madison"), ("FOND DU LAC 2 SW", "Fond du Lac 2 SW"),
+                      ("ST PAUL 3SW", "St Paul 3 SW"), ("U OF MN ST PAUL", "U of MN St Paul"),
+                      ("COLLEGEVILLE ST JOHN'S", "Collegeville St John's"), ("DULUTH NWS", "Duluth NWS"),
+                      ("PARK FALLS DNR HQ", "Park Falls DNR HQ")):
+        ok(proper_name(raw) == want, "name %r -> %r (%r)" % (raw, want, proper_name(raw)))
     print("selftest: %d failure(s)" % fails)
     return 1 if fails else 0
 

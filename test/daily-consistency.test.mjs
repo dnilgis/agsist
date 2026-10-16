@@ -14,8 +14,8 @@ const py = (args, input) => execFileSync("python3", args, { cwd: ROOT, encoding:
 
 test("consistency check: selftest, and the published Oct 16 issue is caught", () => {
   assert.match(py(["scripts/briefing_consistency.py", "--selftest"]), /briefing_consistency selftest ok/);
-  const f = join(ROOT, "data/daily-archive/2026-10-16.json");
-  if (!existsSync(f)) return;
+  // the issue as first published at 5:47 am (the live archive file is regenerated later the same day)
+  const f = join(ROOT, "test/fixtures/daily/2026-10-16-first-publish.json");
   const found = JSON.parse(py(["scripts/briefing_consistency.py", f]));
   const kinds = found.filter((x) => x.field === "watch_list" && x.index === 0).map((x) => x.kind).sort();
   assert.deepEqual(kinds, ["fund_flow", "trigger"], "the short-covering watch item, half a cent from its trigger");

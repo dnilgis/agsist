@@ -1,0 +1,316 @@
+{
+  "headline": "Corn and beans ease back as harvest pressure builds",
+  "lead": "Corn is at $4.75½ overnight, down 2¾ cents from Thursday's $4.78¼ settle, and beans are off 6 cents at $12.58¼. Fund selling has picked up as combines roll and bushels keep piling into the bins. Basis stays at seasonal lows with harvest in full swing.",
+  "teaser": "Corn and beans slip again as fund selling meets a big harvest.",
+  "one_number": {
+    "value": "8",
+    "unit": "straight monthly cuts to 2026 beef output",
+    "context": "USDA's October WASDE marked the eighth straight downgrade to beef production, a sign the cow herd has stopped shrinking but hasn't started growing."
+  },
+  "sections": [
+    {
+      "title": "Grain slips on fund selling",
+      "body": "- Corn is at **$4.75½** overnight, down from Thursday's $4.78¼, with wheat off 9¼ cents at $6.60.\n- AgWeb reports more fund selling hit corn and beans as harvest pressure builds across the Belt.\n- Some traders are questioning whether USDA's 181.2 bushel corn yield estimate is too high, which would cut the other way.",
+      "so_what": "Funds are selling into the harvest, not waiting for the yield debate to settle.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Cattle and feeders firm overnight",
+      "body": "- Live cattle are at **$225.95** overnight, up 0.9% from Thursday's $223.90, and feeders gained 0.7% to $343.38.\n- Beef magazine notes October's WASDE marked the eighth straight monthly cut to 2026 beef production.\n- Hogs sit flat at $75.55 and milk firmed slightly to $15.26.",
+      "so_what": "A herd that's stopped shrinking still isn't growing, and cattle keep finding support.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Crude heads for a weekly gain",
+      "body": "- WTI is at **$95.73** overnight, down 2.3% from Thursday's $97.97, but still on track for a weekly gain.",
+      "so_what": "Diesel stays the tighter, pricier story even as crude itself eases back today.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    }
+  ],
+  "outside_the_pit": [
+    {
+      "title": "Bill would widen cattle insurance to rebuild the herd",
+      "body": "A House bill, the More Beef, Lower Prices Act, would add bred cattle, replacement heifers and cull cows to USDA's livestock risk protection program starting crop year 2027.",
+      "tag": "POLICY"
+    }
+  ],
+  "watch_list": [
+    {
+      "time": "Ongoing",
+      "desc": "Corn back under $4.75 would say harvest supply is beating the fund short-covering bounce."
+    },
+    {
+      "time": "Ongoing",
+      "desc": "Crude holding above $95 through the weekend would confirm the Hormuz premium is sticking, not fading."
+    },
+    {
+      "time": "Monday 3:00 p.m. CT",
+      "desc": "Crop Progress report; a faster-than-expected harvest pace could add more pressure on corn and beans."
+    }
+  ],
+  "source_summary": "CME/CBOT overnight quotes, USDA WASDE, AgWeb, feedstuffs.com, beefmagazine.com, oilprice.com",
+  "date": "Friday, October 16, 2026",
+  "meta": {
+    "market_mood": "mixed",
+    "heat_section": 0,
+    "overnight_surprises_count": 0,
+    "word_count": 328,
+    "news_coverage": {
+      "ok": 13,
+      "total": 17,
+      "items": 73,
+      "dark": [
+        "nass.usda.gov",
+        "brownfieldagnews.com",
+        "dairyherd.com",
+        "porkbusiness.com"
+      ]
+    }
+  },
+  "locked_prices": {
+    "corn": 4.755,
+    "corn-dec": 4.755,
+    "beans": 12.5825,
+    "beans-nov": 12.5825,
+    "wheat": 6.6,
+    "oats": 3.9675,
+    "cattle": 225.95,
+    "feeders": 343.375,
+    "hogs": 75.55,
+    "milk": 15.26,
+    "meal": 356.60001,
+    "soyoil": 66.81,
+    "crude": 95.73,
+    "natgas": 3.187,
+    "gold": 4203.8999,
+    "silver": 57.95,
+    "dollar": 101.586,
+    "sp500": 7744.06006,
+    "bitcoin": 82089.14062
+  },
+  "locked_changes": {
+    "corn": {
+      "prev": 4.7825,
+      "pct": -0.575
+    },
+    "corn-dec": {
+      "prev": 4.7825,
+      "pct": -0.575
+    },
+    "beans": {
+      "prev": 12.6425,
+      "pct": -0.4746
+    },
+    "beans-nov": {
+      "prev": 12.6425,
+      "pct": -0.4746
+    },
+    "wheat": {
+      "prev": 6.6925,
+      "pct": -1.3821
+    },
+    "oats": {
+      "prev": 3.955,
+      "pct": 0.3161
+    },
+    "cattle": {
+      "prev": 223.9,
+      "pct": 0.9156
+    },
+    "feeders": {
+      "prev": 340.95,
+      "pct": 0.7112
+    },
+    "hogs": {
+      "prev": 75.55,
+      "pct": 0.0
+    },
+    "milk": {
+      "prev": 15.2,
+      "pct": 0.3947
+    },
+    "meal": {
+      "prev": 359.8,
+      "pct": -0.8894
+    },
+    "soyoil": {
+      "prev": 67.18,
+      "pct": -0.5508
+    },
+    "crude": {
+      "prev": 97.97,
+      "pct": -2.2864
+    },
+    "natgas": {
+      "prev": 3.236,
+      "pct": -1.5142
+    },
+    "gold": {
+      "prev": 4170.1001,
+      "pct": 0.8105
+    },
+    "silver": {
+      "prev": 56.837,
+      "pct": 1.9582
+    },
+    "dollar": {
+      "prev": 102.0,
+      "pct": -0.4059
+    },
+    "sp500": {
+      "prev": 7718.9399,
+      "pct": 0.3254
+    },
+    "bitcoin": {
+      "prev": 82141.4609,
+      "pct": -0.0637
+    }
+  },
+  "board": {
+    "fetched": "2026-10-16T10:46:09Z",
+    "quote_session": "2026-10-16",
+    "prev_close_session": "2026-10-15"
+  },
+  "harvest_clock": {
+    "asof": "2026-10-15",
+    "updated": "2026-10-16T00:29:24Z",
+    "source": "USDA RMA Price Discovery",
+    "url": "/harvest-price-tracker",
+    "start": "2026-10-01",
+    "end": "2026-10-31",
+    "crops": [
+      {
+        "crop": "Corn",
+        "contract": "Dec '26",
+        "harvest": 4.92,
+        "projected": 4.62,
+        "pct": 6.5,
+        "days_done": 11,
+        "days_total": 22,
+        "days_left": 11,
+        "start": "2026-10-01",
+        "end": "2026-10-31",
+        "n_states": 31,
+        "all_states": false,
+        "rma_harvest": 4.93,
+        "through": "2026-10-15",
+        "source": "settles"
+      },
+      {
+        "crop": "Soybeans",
+        "contract": "Nov '26",
+        "harvest": 12.85,
+        "projected": 11.09,
+        "pct": 15.9,
+        "days_done": 11,
+        "days_total": 22,
+        "days_left": 11,
+        "start": "2026-10-01",
+        "end": "2026-10-31",
+        "n_states": 25,
+        "all_states": false,
+        "rma_harvest": 12.87,
+        "through": "2026-10-15",
+        "source": "settles"
+      }
+    ],
+    "lines": [
+      "Corn harvest price so far: $4.92 vs $4.62 projected (+6.5%), 11 of 22 trading days in.",
+      "Soybeans harvest price so far: $12.85 vs $11.09 projected (+15.9%), 11 of 22 trading days in."
+    ],
+    "note": "Average of the daily CBOT settles through Oct 15, figured the way USDA RMA does. RMA posts corn at $4.93. RMA posts soybeans at $12.87. Window and projected price: USDA RMA, as of Oct 15. Oct 1-31 window, most states."
+  },
+  "chart_series": {
+    "corn": [
+      5.005,
+      5.0025,
+      5.0425,
+      5.025,
+      5.0075,
+      4.81,
+      4.8125,
+      4.815,
+      4.8,
+      4.755
+    ],
+    "soybeans": [
+      12.89,
+      12.8625,
+      13.0375,
+      12.9425,
+      12.9375,
+      12.8275,
+      12.83,
+      12.905,
+      12.7325,
+      12.5825
+    ]
+  },
+  "chart_dates": [
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16"
+  ],
+  "chart_window": "Oct 5 - Oct 16",
+  "quote_strip": {
+    "asof": "2026-10-16T10:46:09Z",
+    "session": "2026-10-16",
+    "vs_session": "2026-10-15",
+    "quotes": [
+      {
+        "key": "corn-dec",
+        "name": "Corn",
+        "contract": "Dec '26",
+        "last": 4.755,
+        "prev": 4.7825,
+        "pct": -0.575
+      },
+      {
+        "key": "beans-nov",
+        "name": "Soybeans",
+        "contract": "Nov '26",
+        "last": 12.5825,
+        "prev": 12.6425,
+        "pct": -0.4746
+      },
+      {
+        "key": "wheat",
+        "name": "Wheat",
+        "contract": "nearby",
+        "last": 6.6,
+        "prev": 6.6925,
+        "pct": -1.3821
+      }
+    ]
+  },
+  "sponsor": {
+    "active": false,
+    "label": "SPONSOR · 1 SLOT",
+    "advertiser": "AGSIST",
+    "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
+    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+    "cta_text": "Become the sponsor",
+    "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+    "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
+    "is_house_ad": true
+  },
+  "issue_number": 217,
+  "generated_at": "2026-10-16T10:47:49.880541+00:00",
+  "generator_version": "5.5.0",
+  "surprise_count": 0,
+  "surprises": [],
+  "price_validation_clean": true,
+  "market_closed": false,
+  "market_status_reason": "open",
+  "otp_week_ahead": false
+}

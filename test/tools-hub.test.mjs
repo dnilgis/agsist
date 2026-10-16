@@ -168,3 +168,10 @@ test("page stays light: no new outside script, under 55 KB", () => {
   const srcs = [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map((m) => m[1]);
   assert.deepEqual(srcs, ["/components/util.js?v=17", "/components/loader.js?v=19"]);
 });
+
+test("Planting Date card does not promise county windows everywhere", () => {
+  const c = html.match(/<a href="\/planting-date" class="tool-card"[^>]*>([\s\S]*?)<\/a>/)[1];
+  assert.ok(!/windows by county/i.test(c), "no 'windows by county' claim");
+  assert.match(c, /Wisconsin and Minnesota only/, "frost odds scoped to WI and MN");
+  assert.match(c, /<div class="short">Soil temp and planting dates<\/div>/);
+});

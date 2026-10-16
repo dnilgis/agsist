@@ -58,7 +58,7 @@
 
   function byId(d) { var m = {}; d.coops.forEach(function (c) { m[c.id] = c; }); return m; }
 
-  /* The dates the co-ops show. An undated price is counted, never dated. */
+  /* The dates the co-ops show. An undated price is listed, never counted (the reader leaves it out). */
   function dateSpan(p) {
     var s = !isDate(p.newest) ? '' : 'newest posted ' + shortDate(p.newest) + (p.oldest !== p.newest ? ', oldest ' + shortDate(p.oldest) : '');
     var u = p.undated > 0 ? (p.undated === p.n ? (p.n === 1 ? 'no date shown' : 'no dates shown') : p.undated + ' with no date shown') : '';
@@ -113,6 +113,7 @@
   function rowWhy(r) {
     var w = [];
     if (r.stale) w.push(r.age_days != null ? r.age_days + ' days old, not counted' : 'no date, not counted');
+    else if (!isDate(r.date) && r.product !== 'other' && r.cash != null) w.push('no date shown, not counted');
     if (r.flags && r.flags.length) w.push(r.flags.join('; ') + ', not counted');
     if (r.far_from_others) w.push('far from the other co-ops; counted, the middle price is used');
     if (r.product === 'other' && !r.stale) w.push('not summarized');

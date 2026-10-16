@@ -148,6 +148,7 @@ function serve() {
 }
 async function open(browser, port, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: opts.viewport || { width: 1280, height: 900 } });
+  if (opts.storage) await ctx.addInitScript((kv) => { for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v); }, opts.storage);
   const pg = await ctx.newPage();
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
@@ -169,20 +170,31 @@ test("the top box gives the A2809 rate at the posted price and next year's corn"
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg, errors } = await open(browser, port);
+    // The reader's saved location is in Iowa (geo.js keeps it under agsist-wx-loc).
+    const { pg, errors } = await open(browser, port, { storage: { "agsist-wx-loc": JSON.stringify({ state: "IA", zip: "50010" }) } });
     await pg.waitForFunction(() => document.getElementById("ans-rate").textContent !== "-" && document.querySelector("#ans-state option[value=IA]"));
-    // Anhydrous first when a co-op posts it: 820 / 1640 = $0.50; corn $5.00 -> 0.100.
+    // State basis by default: Dec futures $5.00 less Iowa's -$0.40 = $4.60.
+    // Anhydrous first when a co-op posts it: 820 / 1640 = $0.50; 0.50 / 4.60 = 0.1087 -> 0.10.
+    assert.equal(await pg.inputValue("#ans-state"), "IA");
     assert.equal(await pg.inputValue("#nc-fert"), "82");
     assert.equal(await pg.inputValue("#nc-fertprice"), "820");
-    assert.equal(await pg.inputValue("#nc-corn"), "5.00");
+    assert.equal(await pg.inputValue("#nc-corn"), "4.60");
     assert.equal(await txt(pg, "#nc-nlb"), "$0.50");
-    assert.equal(await txt(pg, "#nc-ratio"), "0.100");
+    assert.equal(await txt(pg, "#nc-ratio"), "0.109");
+    assert.match(await txt(pg, "#ans-line"), /Against \$4\.60 corn \(Dec '\d\d futures \$5\.00 less Iowa basis \$0\.40\)/);
+    assert.match(await txt(pg, "#ans-src"), /less \$0\.40, the median Iowa corn basis this week \(50 elevators, against Dec '26\)/);
     assert.equal(await txt(pg, "#nc-col"), "0.10");
     assert.equal(await txt(pg, "#ans-rate"), "120");
     assert.equal(await txt(pg, "#ans-range"), "Profitable range 105–130");
     assert.equal(await txt(pg, "#ans-cost"), "N cost $60/ac at $0.50/lb");
     assert.match(await txt(pg, "#ans-src"), /Anhydrous: Test co-ops, middle of 3, posted Oct 6, 2026/);
     assert.match(await txt(pg, "#ans-src"), /corn futures \$5\.00, CBOT close Oct 16, delayed/);
+    // Futures only: $5.00, 0.50 / 5.00 = 0.100, still the 0.10 column.
+    await pg.selectOption("#ans-state", "fut");
+    assert.equal(await pg.inputValue("#nc-corn"), "5.00");
+    assert.equal(await txt(pg, "#nc-ratio"), "0.100");
+    assert.equal(await txt(pg, "#ans-rate"), "120");
+    assert.equal(await pg.evaluate(() => localStorage.getItem("agsist-ff-state")), "fut");
     // The same cell is marked in the full table.
     assert.equal(await pg.$eval('#nc-table tr[data-row="hi_soy"] td.act strong', (e) => e.textContent), "120");
     // The cost builder takes the same rate and price, and the corn soil test's
@@ -195,7 +207,7 @@ test("the top box gives the A2809 rate at the posted price and next year's corn"
     assert.match(await txt(pg, "#eco-total"), /^\$[\d.]+\/ac so far$/);
     // States with fewer elevators than the file's minimum are not offered.
     assert.equal(await pg.$("#ans-state option[value=AL]"), null);
-    // Iowa basis: 5.00 - 0.40 = 4.60; 0.50 / 4.60 = 0.109 -> 0.10. After corn: 165.
+    // Back to Iowa basis: 0.50 / 4.60 = 0.109 -> 0.10. After corn: 165.
     await pg.selectOption("#ans-state", "IA");
     await pg.selectOption("#ans-prev", "corn");
     assert.equal(await pg.inputValue("#nc-corn"), "4.60");
@@ -230,7 +242,7 @@ test("no fertilizer file: the box shows no rate and asks for a price", { skip },
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg, errors } = await open(browser, port, { noFert: true });
+    const { pg, errors } = await open(browser, port, { noFert: true, storage: { "agsist-ff-state": "fut" } });
     await pg.waitForFunction(() => document.getElementById("nc-corn").value !== "");
     await pg.waitForTimeout(300);
     assert.equal(await txt(pg, "#ans-rate"), "-");
@@ -244,13 +256,33 @@ test("phone 390 px: the rate is on the first screen, nothing scrolls sideways, t
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg, errors } = await open(browser, port, { viewport: { width: 390, height: 844 } });
+    const { pg, errors } = await open(browser, port, { viewport: { width: 390, height: 844 }, storage: { "agsist-ff-state": "IA" } });
     await pg.waitForFunction(() => document.getElementById("ans-rate").textContent !== "-");
     const box = await pg.$eval("#ans-rate", (e) => e.getBoundingClientRect().bottom);
     assert.ok(box < 844, "rate below the first screen: " + box);
     assert.equal(await pg.evaluate(() => document.documentElement.scrollWidth), 390);
     const w = await pg.$eval("#nc-table", (e) => e.getBoundingClientRect().width);
     assert.ok(w <= 390 - 16, "N table wider than the phone: " + w);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("no state known: the box asks for one instead of guessing, then uses its basis", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, errors } = await open(browser, port);
+    await pg.waitForFunction(() => document.querySelector("#ans-state option[value=IA]") && document.getElementById("nc-fertprice").value !== "");
+    await pg.waitForTimeout(300);
+    assert.equal(await pg.inputValue("#ans-state"), "");
+    assert.equal(await pg.inputValue("#nc-corn"), "");
+    assert.equal(await txt(pg, "#ans-rate"), "-");
+    assert.match(await txt(pg, "#ans-line"), /^Pick your state: the corn price is December futures less your state’s elevator basis this week/);
+    // Iowa: 5.00 - 0.40 = 4.60; 820 / 1640 / 4.60 = 0.109 -> 0.10 -> 120, after soybeans, high-yield loam.
+    await pg.selectOption("#ans-state", "IA");
+    assert.equal(await pg.inputValue("#nc-corn"), "4.60");
+    assert.equal(await txt(pg, "#ans-rate"), "120");
+    assert.equal(await pg.evaluate(() => localStorage.getItem("agsist-ff-state")), "IA");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });

@@ -228,7 +228,8 @@ def a_card(page, kicker, foot, alt, **kw):
 def card_manure_value():
     h = rd("manure-value.html")
     big = re.search(r'class="mv-num"[^>]*>(?:\s*<[^>]+>)*\s*(\$[\d,]+\.\d\d)', h)
-    when = re.search(r"fertilizer prices posted through (\w+ \d+, \d{4})", text(h)).group(1)
+    # the page's one date line (2026-10-16): "posted Sep 24 to Oct 12, 2026" or "posted Oct 6, 2026"
+    when = re.search(r"fertilizer prices posted ((?:\w+ \d+(?:, \d{4})? to )?\w+ \d+, \d{4})", text(h)).group(1)
     tab = re.search(r"<table.*?</table>", h, re.S).group(0)
     rows, group = {}, None
     for tr in re.findall(r"<tr.*?</tr>", tab, re.S):
@@ -257,8 +258,8 @@ def card_manure_value():
                           ("Chicken, solid", "Poultry", "Chicken"), ("Dairy, solid", "Dairy", "over 20%")):
         v, u = pick(pre, has)
         table.append((lab, v, u))
-    return a_card("manure-value", "Manure value", f"Fertilizer prices of {when}",
-                  f"All the nutrients in liquid dairy manure are worth {hero} per 1,000 gallons at {when} fertilizer prices.",
+    return a_card("manure-value", "Manure value", f"Fertilizer prices posted {when}",
+                  f"All the nutrients in liquid dairy manure are worth {hero} per 1,000 gallons at fertilizer prices posted {when}.",
                   big=hero, unit="per 1,000 gal of liquid dairy manure",
                   ctx="All the N, P and K, UW typical totals, at co-op posted fertilizer prices.",
                   table=table, table_title="Other manure")
@@ -324,7 +325,7 @@ def card_fertilizer():
             rows.append((lab, f"${by[key]['price']:,.0f}", "/ton"))
     when = mdy(u["as_of"])
     return a_card("fertilizer", "Fertilizer prices", f"Co-op posted prices through {when}",
-                  f"Urea ${u['price']:,.0f} a ton, {who}, posted through {when}.",
+                  f"Urea ${u['price']:,.0f} a ton, {u['src_label']}.",   # its own date range (2026-10-16)
                   big=f"${u['price']:,.0f}", unit=f"a ton of urea, {who}", ctx="Call the co-op to confirm.",
                   table=rows, table_title="Also a ton")
 

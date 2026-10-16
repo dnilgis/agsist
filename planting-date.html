@@ -310,8 +310,9 @@ html[data-theme="light"]{--pd-red:#b3432c}
 
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the planting date guide. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=planting-date&amp;utm_source=planting-date&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
 
-<section class="pd-card" aria-labelledby="pd-zone-h">
+<section class="pd-card" id="pd-zone-card" aria-labelledby="pd-zone-h">
   <h2 class="pd-card-title" id="pd-zone-h"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> No ZIP? Rough zone averages</h2>
+  <p class="f-hint" id="pd-zone-why"></p>
   <div class="f-group">
     <label class="f-label" for="pd-zone">Zone</label>
     <select class="f-input" id="pd-zone">
@@ -413,6 +414,6 @@ html[data-theme="light"]{--pd-red:#b3432c}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/planting-date.js?v=2" defer></script>
+<script src="/components/planting-date.js?v=3" defer></script>
 </body>
 </html>
