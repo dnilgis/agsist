@@ -1,0 +1,1797 @@
+# Benchmark drought-monitor: drought.gov county pages (NIDIS)
+# https://www.drought.gov/states/iowa/county/story
+# fetched 2026-10-16T15:28:44Z, sha256 4c864cee3f7c99e32b78a61ff5f37516fb76f62f0cd16eab8ec6707053280aa9
+
+Story County Conditions | Drought.govDrought.gov Facebook accountDrought.gov Instagram accountDrought.gov LinkedIn accountDrought.gov X accountDrought.gov YouTube accountDrought.gov Facebook accountDrought.gov Instagram accountDrought.gov LinkedIn accountDrought.gov Twitter accountDrought.gov Youtube accountDrought.gov Facebook account.Drought.gov Instagram account.Drought.gov LinkedIn account.Drought.gov X account.Drought.gov YouTube account.
+
+-
+
+-
+
+-
+
+Drought Conditions for Story County
+
+-
+
+-
+
+-
+
+Get notified when conditions change
+
+Sign Up for Alerts
+
+0
+
+people in Story County are affected by drought
+
+Change of
+
+No change
+
+since last week
+
+Change of
+
+No change
+
+since last month
+
+0%
+
+of people in Story County are affected by drought
+
+Change of
+
+No change
+
+since last week
+
+Change of
+
+No change
+
+since last month
+
+14th
+
+wettest September on record, over the past 132 years
+
+Change of
+
+3.35
+
+Change of
+
+inches from normal
+
+4th
+
+wettest year to date over the past 132 years (January-September 2026)
+
+Change of
+
+15.91
+
+Change of
+
+inches from normal
+
+Learn more about these stats
+
+Current Conditions for Story County
+
+U.S. Drought Monitor
+30-Day Precipitation
+30-Day Temperature
+
+The U.S. Drought Monitor depicts the location and intensity of drought across the country using 5 classifications: Abnormally Dry (D0), showing areas that may be going into or are coming out of drought, and four levels of drought (D1–D4).
+
+The U.S. Drought Monitor is a joint effort of the National Drought Mitigation Center, U.S. Department of Agriculture, and National Oceanic and Atmospheric Administration.
+
+Source(s):
+
+NDMC, NOAA, USDA
+
+This map shows precipitation for the past 30 days as a percentage of the historical average (1991–2020) for the same time period. Green/blue shades indicate above-normal precipitation, while brown shades indicate below-normal precipitation.
+
+Source(s):
+
+UC Merced
+
+This map shows the average maximum daily temperature for the past 30 days compared to the historical average (1991–2020) for the same 30 days. Negative values (blue hues) indicate colder than normal temperatures, and positive values (red hues) indicate warmer than normal temperatures.
+
+Source(s):
+
+UC Merced
+
+A drought index combines multiple drought indicators (e.g., precipitation, temperature, soil moisture) to depict drought conditions. For some products, like the U.S. Drought Monitor, authors combine their analysis of drought indicators with input from local observers. Other drought indices, like the Standardized Precipitation Index (SPI), use an objective calculation to describe the severity, location, timing, and/or duration of drought.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Air temperature can have wide-ranging effects on natural processes. Warmer air temperatures increase evapotranspiration—which is the combination of evaporation from the soil and bodies of water and transpiration from plants—and lower soil moisture.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought & Dryness Categories
+
+% of Story County
+
+0
+
+Abnormally Dry
+
+Abnormally Dry (D0) indicates a region that is going into or coming out of drought. View typical impacts by state.
+
+0
+
+Moderate Drought
+
+Moderate Drought (D1) is the first of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+0
+
+Severe Drought
+
+Severe Drought (D2) is the second of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+0
+
+Extreme Drought
+
+Extreme Drought (D3) is the third of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+0
+
+Exceptional Drought
+
+Exceptional Drought (D4) is the most intense drought category, according to the U.S. Drought Monitor. View typical impacts by state.
+
+0
+
+Total Area in Drought (D1–D4)
+
+Percentage of this county that is currently in drought (D1–D4), according to the U.S. Drought Monitor.
+
+Precipitation Shown as a Percentage of Normal Conditions
+
+<25% of Normal
+
+Precipitation was only 0% to 25% of the historical average for this location, compared to the same date range from 1991–2020.
+
+25%–50% of Normal
+
+Precipitation was 25% to 50% of the historical average for this location, compared to the same date range from 1991–2020.
+
+50%–75% of Normal
+
+Precipitation was 50% to 75% of the historical average for this location, compared to the same date range from 1991–2020.
+
+75%–100% of Normal
+
+Precipitation was 75% to 100% of the historical average for this location, compared to the same date range from 1991–2020.
+
+100%
+
+100%–150% of Normal
+
+Precipitation was 100% to 150% of the historical average for this location, compared to the same date range from 1991–2020.
+
+150%–200% of Normal
+
+Precipitation was 150% to 200% of the historical average for this location, compared to the same date range from 1991–2020.
+
+200%–300% of Normal
+
+Precipitation was 200% to 300% of the historical average for this location, compared to the same date range from 1991–2020.
+
+>300% of Normal
+
+Precipitation was greater than 300% of the historical average for this location, compared to the same date range from 1991–2020.
+
+Departure from Normal Max Temperature (°F)
+
+>8°F Below Normal
+
+The average maximum temperature was more than 8°F colder than normal for this location.
+
+6–8°F Below Normal
+
+The average maximum temperature was 6–8°F colder than normal for this location.
+
+4–6°F Below Normal
+
+The average maximum temperature was 4–6°F colder than normal for this location.
+
+3–4°F Below Normal
+
+The average maximum temperature was 3–4°F colder than normal for this location.
+
+1–3°F Below Normal
+
+The average maximum temperature was 1–3°F colder than normal for this location.
+
+0–1°F Below Normal
+
+The average maximum temperature was 0–1°F colder than normal for this location.
+
+0
+
+0–1°F Above Normal
+
+The average maximum temperature was 0–1°F warmer than normal for this location.
+
+1–3°F Above Normal
+
+The average maximum temperature was 1–3°F warmer than normal for this location.
+
+3–4°F Above Normal
+
+The average maximum temperature was 3–4°F warmer than normal for this location.
+
+4–6°F Above Normal
+
+The average maximum temperature was 4–6°F warmer than normal for this location.
+
+6–8°F Above Normal
+
+The average maximum temperature was 6–8°F warmer than normal for this location.
+
+>8°F Above Normal
+
+The average maximum temperature was more than 8°F warmer than normal for this location.
+
+The U.S. Drought Monitor depicts the location and intensity of drought across the country using 5 classifications: Abnormally Dry (D0), showing areas that may be going into or are coming out of drought, and four levels of drought (D1–D4).
+
+The U.S. Drought Monitor is a joint effort of the National Drought Mitigation Center, U.S. Department of Agriculture, and National Oceanic and Atmospheric Administration.
+
+This map shows precipitation for the past 30 days as a percentage of the historical average (1991–2020) for the same time period. Green/blue shades indicate above-normal precipitation, while brown shades indicate below-normal precipitation.
+
+This map shows the average maximum daily temperature for the past 30 days compared to the historical average (1991–2020) for the same 30 days. Negative values (blue hues) indicate colder than normal temperatures, and positive values (red hues) indicate warmer than normal temperatures.
+
+Source(s):
+
+NDMC, NOAA, USDA
+
+Source(s):
+
+UC Merced
+
+Source(s):
+
+UC Merced
+
+The U.S. Drought Monitor map is released every Thursday morning, with data valid through Tuesday at 7 am Eastern.
+
+Precipitation data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+Temperature data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+A drought index combines multiple drought indicators (e.g., precipitation, temperature, soil moisture) to depict drought conditions. For some products, like the U.S. Drought Monitor, authors combine their analysis of drought indicators with input from local observers. Other drought indices, like the Standardized Precipitation Index (SPI), use an objective calculation to describe the severity, location, timing, and/or duration of drought.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Air temperature can have wide-ranging effects on natural processes. Warmer air temperatures increase evapotranspiration—which is the combination of evaporation from the soil and bodies of water and transpiration from plants—and lower soil moisture.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Data Valid:
+10/13/26
+
+Data Valid:
+10/12/26
+
+Data Valid:
+10/12/26
+
+View More National Drought Maps
+
+Learn More
+
+Learn More
+
+Learn More
+
+Learn more about these data
+
+Recent Precipitation and Temperature Conditions
+
+Precipitation Conditions
+
+7-Day
+30-Day % Normal
+60-Day % Normal
+
+Inches of Precipitation
+
+This location received less than 0.01 inch of precipitation during this 7-day period.
+
+This location received 0.01–0.5 inch of precipitation during this 7-day period.
+
+This location received 0.5–1 inch of precipitation during this 7-day period.
+
+This location received 1–2 inches of precipitation during this 7-day period.
+
+This location received 2–4 inches of precipitation during this 7-day period.
+
+This location received 4–6 inches of precipitation during this 7-day period.
+
+This location received 6–8 inches of precipitation during this 7-day period.
+
+This location received more than 8 inches of precipitation during this 7-day period.
+
+Precipitation Shown as a Percentage of Normal Conditions
+
+<25% of Normal
+
+Precipitation was only 0% to 25% of the historical average for this location, compared to the same date range from 1991–2020.
+
+25%–50% of Normal
+
+Precipitation was 25% to 50% of the historical average for this location, compared to the same date range from 1991–2020.
+
+50%–75% of Normal
+
+Precipitation was 50% to 75% of the historical average for this location, compared to the same date range from 1991–2020.
+
+75%–100% of Normal
+
+Precipitation was 75% to 100% of the historical average for this location, compared to the same date range from 1991–2020.
+
+100%
+
+100%–150% of Normal
+
+Precipitation was 100% to 150% of the historical average for this location, compared to the same date range from 1991–2020.
+
+150%–200% of Normal
+
+Precipitation was 150% to 200% of the historical average for this location, compared to the same date range from 1991–2020.
+
+200%–300% of Normal
+
+Precipitation was 200% to 300% of the historical average for this location, compared to the same date range from 1991–2020.
+
+>300% of Normal
+
+Precipitation was greater than 300% of the historical average for this location, compared to the same date range from 1991–2020.
+
+Precipitation Shown as a Percentage of Normal Conditions
+
+<25% of Normal
+
+Precipitation was only 0% to 25% of the historical average for this location, compared to the same date range from 1991–2020.
+
+25%–50% of Normal
+
+Precipitation was 25% to 50% of the historical average for this location, compared to the same date range from 1991–2020.
+
+50%–75% of Normal
+
+Precipitation was 50% to 75% of the historical average for this location, compared to the same date range from 1991–2020.
+
+75%–100% of Normal
+
+Precipitation was 75% to 100% of the historical average for this location, compared to the same date range from 1991–2020.
+
+100%
+
+100%–150% of Normal
+
+Precipitation was 100% to 150% of the historical average for this location, compared to the same date range from 1991–2020.
+
+150%–200% of Normal
+
+Precipitation was 150% to 200% of the historical average for this location, compared to the same date range from 1991–2020.
+
+200%–300% of Normal
+
+Precipitation was 200% to 300% of the historical average for this location, compared to the same date range from 1991–2020.
+
+>300% of Normal
+
+Precipitation was greater than 300% of the historical average for this location, compared to the same date range from 1991–2020.
+
+This map shows total precipitation (in inches) for the past 7 days. Dark blue shades indicate the highest precipitation amounts.
+
+This map shows precipitation for the past 30 days as a percentage of the historical average (1991–2020) for the same time period. Green/blue shades indicate above-normal precipitation, while brown shades indicate below-normal precipitation.
+
+This map shows precipitation for the past 60 days as a percentage of the historical average (1991–2020) for the same time period. Green/blue shades indicate above-normal precipitation, while brown shades indicate below-normal precipitation.
+
+Source(s):
+
+UC Merced
+
+Source(s):
+
+UC Merced
+
+Source(s):
+
+UC Merced
+
+Precipitation data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+Precipitation data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+Precipitation data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Data Valid:
+10/12/26
+
+Data Valid:
+10/12/26
+
+Data Valid:
+10/12/26
+
+Learn More
+
+Learn More
+
+Learn More
+
+Temperature Conditions
+
+7-Day Avg
+7-Day Anomaly
+30-Day Anomaly
+
+Maximum Temperature (°F)
+
+<0°F
+
+The 7-day average daily maximum temperature is below 0°F.
+
+0–10°F
+
+The 7-day average daily maximum temperature is between 0–10°F.
+
+10–20°F
+
+The 7-day average daily maximum temperature is between 10–20°F.
+
+20–30°F
+
+The 7-day average daily maximum temperature is between 20–30°F.
+
+30–40°F
+
+The 7-day average daily maximum temperature is between 30–40°F.
+
+40–60°F
+
+The 7-day average daily maximum temperature is between 40–60°F.
+
+60
+
+60–70°F
+
+The 7-day average daily maximum temperature is between 60–70°F.
+
+70–80°F
+
+The 7-day average daily maximum temperature is between 70–80°F.
+
+80–90°F
+
+The 7-day average daily maximum temperature is between 80–90°F.
+
+90–100°F
+
+The 7-day average daily maximum temperature is between 90–100°F.
+
+>100°F
+
+The 7-day average daily maximum temperature is between greater than 100°F.
+
+Departure from Normal Max Temperature (°F)
+
+>8°F Below Normal
+
+The average maximum temperature was more than 8°F colder than normal for this location.
+
+6–8°F Below Normal
+
+The average maximum temperature was 6–8°F colder than normal for this location.
+
+4–6°F Below Normal
+
+The average maximum temperature was 4–6°F colder than normal for this location.
+
+3–4°F Below Normal
+
+The average maximum temperature was 3–4°F colder than normal for this location.
+
+1–3°F Below Normal
+
+The average maximum temperature was 1–3°F colder than normal for this location.
+
+0–1°F Below Normal
+
+The average maximum temperature was 0–1°F colder than normal for this location.
+
+0
+
+0–1°F Above Normal
+
+The average maximum temperature was 0–1°F warmer than normal for this location.
+
+1–3°F Above Normal
+
+The average maximum temperature was 1–3°F warmer than normal for this location.
+
+3–4°F Above Normal
+
+The average maximum temperature was 3–4°F warmer than normal for this location.
+
+4–6°F Above Normal
+
+The average maximum temperature was 4–6°F warmer than normal for this location.
+
+6–8°F Above Normal
+
+The average maximum temperature was 6–8°F warmer than normal for this location.
+
+>8°F Above Normal
+
+The average maximum temperature was more than 8°F warmer than normal for this location.
+
+Departure from Normal Max Temperature (°F)
+
+>8°F Below Normal
+
+The average maximum temperature was more than 8°F colder than normal for this location.
+
+6–8°F Below Normal
+
+The average maximum temperature was 6–8°F colder than normal for this location.
+
+4–6°F Below Normal
+
+The average maximum temperature was 4–6°F colder than normal for this location.
+
+3–4°F Below Normal
+
+The average maximum temperature was 3–4°F colder than normal for this location.
+
+1–3°F Below Normal
+
+The average maximum temperature was 1–3°F colder than normal for this location.
+
+0–1°F Below Normal
+
+The average maximum temperature was 0–1°F colder than normal for this location.
+
+0
+
+0–1°F Above Normal
+
+The average maximum temperature was 0–1°F warmer than normal for this location.
+
+1–3°F Above Normal
+
+The average maximum temperature was 1–3°F warmer than normal for this location.
+
+3–4°F Above Normal
+
+The average maximum temperature was 3–4°F warmer than normal for this location.
+
+4–6°F Above Normal
+
+The average maximum temperature was 4–6°F warmer than normal for this location.
+
+6–8°F Above Normal
+
+The average maximum temperature was 6–8°F warmer than normal for this location.
+
+>8°F Above Normal
+
+The average maximum temperature was more than 8°F warmer than normal for this location.
+
+This map shows the average maximum daily temperature (°F) for the last 7 days. Blue hues indicate cooler temperatures, while red hues indicate warmer temperatures.
+
+This map shows the average maximum daily temperature for the past 7 days compared to the historical average (1991–2020) for the same 7 days. Negative values (blue hues) indicate colder than normal temperatures, and positive values (red hues) indicate warmer than normal temperatures.
+
+This map shows the average maximum daily temperature for the past 30 days compared to the historical average (1991–2020) for the same 30 days. Negative values (blue hues) indicate colder than normal temperatures, and positive values (red hues) indicate warmer than normal temperatures.
+
+Source(s):
+
+UC Merced
+
+Source(s):
+
+UC Merced
+
+Source(s):
+
+UC Merced
+
+Temperature data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+Temperature data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+Temperature data are updated daily, with a delay of 3 to 4 days to allow for data collection and quality control.
+
+Air temperature can have wide-ranging effects on natural processes. Warmer air temperatures increase evapotranspiration—which is the combination of evaporation from the soil and bodies of water and transpiration from plants—and lower soil moisture.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Air temperature can have wide-ranging effects on natural processes. Warmer air temperatures increase evapotranspiration—which is the combination of evaporation from the soil and bodies of water and transpiration from plants—and lower soil moisture.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Air temperature can have wide-ranging effects on natural processes. Warmer air temperatures increase evapotranspiration—which is the combination of evaporation from the soil and bodies of water and transpiration from plants—and lower soil moisture.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Data Valid:
+10/12/26
+
+Data Valid:
+10/12/26
+
+Data Valid:
+10/12/26
+
+Learn More
+
+Learn More
+
+Learn More
+
+Learn more about these data
+
+Water Supply in Story County
+
+Provisional
+
+1-Day Average Streamflow
+1-Month Precipitation Outlooks
+
+This map shows 1-day average streamflow conditions for yesterday compared to historical conditions for the same day of the year. Both 1-day and historical streamflow values are calculated as mean discharge (cubic feet per second) over a 24-hour period. Only streamgages with 30 or more years of data are included in this map.
+
+Click on a streamgage to view current data from the U.S. Geological Survey. These streamflow data are provisional and subject to revision.
+
+Source(s):
+
+U.S. Geological Survey
+
+This map shows the probability (percent chance) of above-normal, near-normal, or below-normal precipitation over the next calendar month.
+
+Source(s):
+
+CPC
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can alter the ecological balance of natural systems and harm fish, wildlife, and plant species, as well as the benefits that these ecosystems provide to human communities. The environmental consequences of drought include losses in plant growth; increases in fire and insect outbreaks; altered rates of carbon, nutrient, and water cycling; and local species extinctions.
+
+Learn More
+
+Because energy and water are so interdependent, the availability and predictability of water resources can directly affect energy systems. Energy professionals need information on current drought conditions and outlooks in order to make informed decisions on cooling, alternative water supplies, pricing, and infrastructure security.
+
+Learn More
+
+During drought conditions that result in low water levels on rivers and other waterways, port and maritime navigation and transportation operations may be limited due to a reduction in available routes and cargo-carrying capacity, resulting in increased costs. In addition, higher temperatures that often coexist with drought can impact roads, airport runways, and rail lines.
+
+Learn More
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Snow drought is a period of abnormally low snowpack for the time of year. Snowpack typically acts as a natural reservoir, providing water throughout the drier summer months. Lack of snowpack storage, or a shift in timing of snowmelt, can be a challenge for drought planning.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Streamflow Conditions
+
+Record Mean Daily Low
+
+Estimated streamflow is the lowest mean daily value recorded at this gauge on this day of the year. Learn more.
+
+Much Below Normal (<10th Percentile)
+
+Estimated streamflow is in the 0–10th percentile of historical streamflow values recorded at this gauge on this day of the year. Learn more.
+
+Below Normal (10th–25th Percentile)
+
+Estimated streamflow is in the 10th–25th percentile of historical streamflow values recorded at this gauge on this day of the year. Learn more.
+
+Normal (25th–75th Percentile)
+
+Estimated streamflow is in the 25th–75th percentile of historical streamflow values recorded at this gauge on this day of the year. Learn more.
+
+Above Normal (75th–90th Percentile)
+
+Estimated streamflow is in the 75th–90th percentile of historical streamflow values recorded at this gauge on this day of the year. Learn more.
+
+Much Above Normal (>90th Percentile)
+
+Estimated streamflow is in the 90th–100th percentile of historical streamflow values recorded at this gauge on this day of the year. Learn more.
+
+Record Mean Daily High
+
+Estimated streamflow is the highest mean daily value ever measured at this gauge on this day of the year. Learn more.
+
+Not Ranked
+
+A flow category has not been computed for this gauge, for example due to insufficient historical data or no current streamflow estimates.
+
+Probability of Below-Normal Precipitation
+
+33%–40% Chance of Below Normal
+
+There is an 33%–40% chance of below-normal precipitation during this period.
+
+40%–50% Chance of Below Normal
+
+There is an 40%–50% chance of below-normal precipitation during this period.
+
+50%–60% Chance of Below Normal
+
+There is an 50%–60% chance of below-normal precipitation during this period.
+
+60%–70% Chance of Below Normal
+
+There is an 60%–70% chance of below-normal precipitation during this period.
+
+70%–80% Chance of Below Normal
+
+There is an 70%–80% chance of below-normal precipitation during this period.
+
+80%–90% Chance of Below Normal
+
+There is an 80%–90% chance of below-normal precipitation during this period.
+
+>90% Chance of Below Normal
+
+There is a >90% chance of below-normal precipitation during this period.
+
+100%
+
+Probability of Above-Normal Precipitation
+
+33%–40% Chance of Above Normal
+
+There is an 33%–40% chance of above-normal precipitation during this period.
+
+40%–50% Chance of Above Normal
+
+There is an 40%–50% chance of above-normal precipitation during this period.
+
+50%–60% Chance of Above Normal
+
+There is an 50%–60% chance of above-normal precipitation during this period.
+
+60%–70% Chance of Above Normal
+
+There is an 60%–70% chance of above-normal precipitation during this period.
+
+70%–80% Chance of Above Normal
+
+There is an 70%–80% chance of above-normal precipitation during this period.
+
+80%–90% Chance of Above Normal
+
+There is an 80%–90% chance of above-normal precipitation during this period.
+
+>90% Chance of Above Normal
+
+There is a >90% chance of above-normal precipitation during this period.
+
+100%
+
+Probability of Near-Normal Precipitation
+
+33%–40% of Near Normal
+
+There is an 33%–40% chance of near-normal precipitation during this period.
+
+40%–50% of Near Normal
+
+There is an 40%–50% chance of near-normal precipitation during this period.
+
+50%
+
+This map shows 1-day average streamflow conditions for yesterday compared to historical conditions for the same day of the year. Both 1-day and historical streamflow values are calculated as mean discharge (cubic feet per second) over a 24-hour period. Only streamgages with 30 or more years of data are included in this map.
+
+Click on a streamgage to view current data from the U.S. Geological Survey. These streamflow data are provisional and subject to revision.
+
+This map shows the probability (percent chance) of above-normal, near-normal, or below-normal precipitation over the next calendar month.
+
+Source(s):
+
+U.S. Geological Survey
+
+Source(s):
+
+CPC
+
+This map updates daily on Drought.gov, showing mean daily streamflow values from the previous day. View the most recent real-time streamflow data from USGS.
+
+The Climate Prediction Center updates its monthly precipitation outlook on the last day of every calendar month.
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can alter the ecological balance of natural systems and harm fish, wildlife, and plant species, as well as the benefits that these ecosystems provide to human communities. The environmental consequences of drought include losses in plant growth; increases in fire and insect outbreaks; altered rates of carbon, nutrient, and water cycling; and local species extinctions.
+
+Learn More
+
+Because energy and water are so interdependent, the availability and predictability of water resources can directly affect energy systems. Energy professionals need information on current drought conditions and outlooks in order to make informed decisions on cooling, alternative water supplies, pricing, and infrastructure security.
+
+Learn More
+
+During drought conditions that result in low water levels on rivers and other waterways, port and maritime navigation and transportation operations may be limited due to a reduction in available routes and cargo-carrying capacity, resulting in increased costs. In addition, higher temperatures that often coexist with drought can impact roads, airport runways, and rail lines.
+
+Learn More
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Snow drought is a period of abnormally low snowpack for the time of year. Snowpack typically acts as a natural reservoir, providing water throughout the drier summer months. Lack of snowpack storage, or a shift in timing of snowmelt, can be a challenge for drought planning.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Data Valid:
+10/14/26
+
+Updates Monthly:
+10/15/26
+
+USGS streamflow map details and information:
+
+Learn More
+
+Learn More
+
+Provisional
+
+0
+
+percent of streamflow sites that are below normal in {{STATE_NAME_CLEAN}}
+
+0
+
+percent of streamflow sites that are above normal in {{STATE_NAME_CLEAN}}
+
+0
+
+percent area of {{STATE_NAME_CLEAN}} with above normal precipitation probability this month
+
+0
+
+percent area of {{STATE_NAME_CLEAN}} with below normal precipitation probability this month
+
+Learn more about these data
+
+Public Health in Story County
+
+AirNow Air Quality Index
+Heat Advisories
+
+The U.S. Air Quality Index (AQI) is designed to communicate whether air quality is healthy or unhealthy. This map displays the AQI at sensors across the U.S. alongside the current U.S. Drought Monitor, as of 10 a.m. Eastern.
+
+Source(s):
+
+AirNow
+
+This map shows current National Weather Service Heat Advisories, Excessive Heat Watches, and Excessive Heat Warnings for counties across the U.S.
+
+- Heat Advisories and Excessive Heat Warnings are issued within 12 hours of the onset of extremely dangerous heat conditions, based on the maximum heat index (typically >100°F or >105°F, respectively, but this varies by location).
+
+- Excessive Heat Watches are issued when conditions are favorable for an excessive heat event in the next 24 to 72 hours, but its occurrence and timing is still uncertain.
+
+Learn more about these warnings on Weather.gov.
+
+Source(s):
+
+National Weather Service
+
+Drought can cause significant human health outcomes that can challenge public health departments, emergency managers, and healthcare providers. Drought can lead to decreased water quantity and quality, increased incidence of illness or disease, increased mortality rates, and adverse mental health outcomes as livelihoods are challenged.
+
+Learn More
+
+During drought conditions, fuels for wildfire, such as grasses and trees, can dry out and become more flammable. Drought can also increase the probability of ignition and the rate at which fire spreads. Temperature, soil moisture, humidity, wind speed, and fuel availability (vegetation) are all factors that interact to influence the frequency of large wildfires.
+
+Learn More
+
+Air temperature can have wide-ranging effects on natural processes. Warmer air temperatures increase evapotranspiration—which is the combination of evaporation from the soil and bodies of water and transpiration from plants—and lower soil moisture.
+
+Learn More
+
+Extreme weather events can interact or cascade—where one disaster event triggers or changes the probability of another event. For example, drought conditions can increase the probability of large-scale wildfires, and droughts are often accompanied by extreme heat. By including drought in multi-hazard planning, a community can consolidate its resources and develop coordinated responses before a disaster.
+
+Learn More
+
+Drought can cause significant human health outcomes that can challenge public health departments, emergency managers, and healthcare providers. Drought can lead to decreased water quantity and quality, increased incidence of illness or disease, increased mortality rates, and adverse mental health outcomes as livelihoods are challenged.
+
+Learn More
+
+Air Quality
+
+AQI 0 to 50: Good
+
+Air quality is satisfactory, and air pollution poses little or no risk. Learn more.
+
+AQI 51 to 100: Moderate
+
+Air quality is acceptable. However, there may be a risk for some people, particularly those who are unusually sensitive to air pollution. Learn more.
+
+AQI 101 to 150: Unhealthy for Sensitive Groups
+
+Members of sensitive groups may experience health effects. The general public is less likely to be affected. Learn more.
+
+AQI 151 to 200: Unhealthy
+
+Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects. Learn more.
+
+AQI 201 to 300: Very Unhealthy
+
+Health alert: The risk of health effects is increased for everyone. Learn more.
+
+AQI >301: Hazardous
+
+Health warning of emergency conditions: everyone is more likely to be affected. Learn more.
+
+U.S. Drought Monitor
+
+D0 - Abnormally Dry
+
+Abnormally Dry (D0) indicates a region that is going into or coming out of drought, according to the U.S. Drought Monitor. View typical impacts by state.
+
+D1 – Moderate Drought
+
+Moderate Drought (D1) is the first of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+D2 – Severe Drought
+
+Severe Drought (D2) is the second of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+D3 – Extreme Drought
+
+Extreme Drought (D3) is the third of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+D4 – Exceptional Drought
+
+Exceptional Drought (D4) is the most intense drought category, according to the U.S. Drought Monitor. View typical impacts by state.
+
+National Weather Service Heat Warnings
+
+Excessive Heat Watch
+
+Heat Watches are issued when conditions are favorable for an excessive heat event in the next 24 to 72 hours. A Watch is used when the risk of a heat wave has increased, but its occurrence and timing is still uncertain. Learn more from the National Weather Service.
+
+Heat Advisory
+
+A Heat Advisory is issued within 12 hours of the onset of extremely dangerous heat conditions. The general rule is when the maximum heat index temperature is expected to be 100°F or higher for at least 2 days, and nighttime air temperatures will not drop below 75°F. However, these criteria vary across the country, especially for areas that are not used to dangerous heat conditions. Learn more from the National Weather Service.
+
+Excessive Heat Warning
+
+An Excessive Heat Warning is issued within 12 hours of the onset of extremely dangerous heat conditions. The general rule is when the maximum heat index temperature is expected to be 105°F or higher for at least 2 days, and nighttime air temperatures will not drop below 75°F. However, these criteria vary across the country, especially for areas not used to extreme heat conditions. Learn more from the National Weather Service.
+
+The U.S. Air Quality Index (AQI) is designed to communicate whether air quality is healthy or unhealthy. This map displays the AQI at sensors across the U.S. alongside the current U.S. Drought Monitor, as of 10 a.m. Eastern.
+
+This map shows current National Weather Service Heat Advisories, Excessive Heat Watches, and Excessive Heat Warnings for counties across the U.S.
+
+- Heat Advisories and Excessive Heat Warnings are issued within 12 hours of the onset of extremely dangerous heat conditions, based on the maximum heat index (typically >100°F or >105°F, respectively, but this varies by location).
+
+- Excessive Heat Watches are issued when conditions are favorable for an excessive heat event in the next 24 to 72 hours, but its occurrence and timing is still uncertain.
+
+Learn more about these warnings on Weather.gov.
+
+Source(s):
+
+AirNow
+
+Source(s):
+
+National Weather Service
+
+On Drought.gov, Air Quality Index maps are updated daily at 10 a.m. Eastern. View hourly air quality information from AirNow.
+
+This map is updated daily on Drought.gov. To see the latest heat advisories, watches, and warnings from the National Weather Service, visit Weather.gov.
+
+Drought can cause significant human health outcomes that can challenge public health departments, emergency managers, and healthcare providers. Drought can lead to decreased water quantity and quality, increased incidence of illness or disease, increased mortality rates, and adverse mental health outcomes as livelihoods are challenged.
+
+Learn More
+
+During drought conditions, fuels for wildfire, such as grasses and trees, can dry out and become more flammable. Drought can also increase the probability of ignition and the rate at which fire spreads. Temperature, soil moisture, humidity, wind speed, and fuel availability (vegetation) are all factors that interact to influence the frequency of large wildfires.
+
+Learn More
+
+Air temperature can have wide-ranging effects on natural processes. Warmer air temperatures increase evapotranspiration—which is the combination of evaporation from the soil and bodies of water and transpiration from plants—and lower soil moisture.
+
+Learn More
+
+Extreme weather events can interact or cascade—where one disaster event triggers or changes the probability of another event. For example, drought conditions can increase the probability of large-scale wildfires, and droughts are often accompanied by extreme heat. By including drought in multi-hazard planning, a community can consolidate its resources and develop coordinated responses before a disaster.
+
+Learn More
+
+Drought can cause significant human health outcomes that can challenge public health departments, emergency managers, and healthcare providers. Drought can lead to decreased water quantity and quality, increased incidence of illness or disease, increased mortality rates, and adverse mental health outcomes as livelihoods are challenged.
+
+Learn More
+
+Data Valid:
+10/15/26
+
+Data Valid:
+10/16/26
+
+Learn More
+
+Learn More
+
+No
+
+Heat Warning issued by the National Weather Service
+
+No
+
+Air Quality Warning issued by the National Weather Service
+
+No
+
+in {{COUNTY_NAME}}
+
+Learn more about these data
+
+Soil Moisture and Vegetation Conditions in Story County
+
+Soil Moisture (SPoRT-LIS)
+Soil Moisture (Crop-CASMA)
+Vegetation Health
+
+An accurate depiction of soil moisture conditions can provide valuable insights for agricultural monitoring, weather prediction, and drought and flood early warning.
+
+This map shows the moisture content of the top 1 meter of soil compared to historical conditions from 1981–2013, based on NASA's Short-term Prediction and Transition Center – Land Information System (SPoRT-LIS).
+
+Red and orange hues indicate drier soils, while greens and blues indicate greater soil moisture.
+
+Source(s):
+
+NASA
+
+An accurate depiction of soil moisture conditions can provide valuable insights for agricultural monitoring, weather prediction, and drought and flood early warning.
+
+This map shows the moisture content of the top 1 meter of soil, according to NASA's Crop Condition and Soil Moisture Analytics tool (Crop-CASMA). It relies on remotely sensed soil moisture data derived from NASA missions.
+
+Soil moisture is shown as a deviation from average soil moisture conditions from 2015–present. Brown hues indicate below-average soil moisture, and blue hues indicate above-average soil moisture.
+
+Source(s):
+
+NASA, USDA, George Mason University
+
+The Vegetation Health Index is a proxy characterizing vegetation health or a combined estimation of moisture and thermal conditions. Vegetation health is often used to estimate crop condition and anticipated yield. Values below 40 (pink/orange shades) indicate different levels of vegetation stress, and losses of crop and pasture production might be expected. Values above 60 (green/blue shades) indicate favorable conditions.
+
+Source(s):
+
+NOAA STAR
+
+Soil moisture plays an important role in drought and flood forecasting, agricultural monitoring, forest fire prediction, water supply management, and other natural resource activities. Soil moisture observations can forewarn of impending drought or flood conditions before other more standard indicators are triggered.
+
+Learn More
+
+Flash drought is the rapid onset or intensification of drought. Unlike slow-evolving drought, which is caused by a decline in precipitation, flash drought occurs when low precipitation is accompanied by abnormally high temperatures, high winds, and/or changes in radiation. These sometimes-rapid changes can quickly raise evapotranspiration rates and remove available water from the landscape.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought can result in reduced growth rates, increased stress on vegetation, and alterations or transformations to the plant community and/or the entire ecosystem. During periods of drought, plants increase their demand for water through increased evapotranspiration and longer growing seasons.
+
+Learn More
+
+Soil moisture plays an important role in drought and flood forecasting, agricultural monitoring, forest fire prediction, water supply management, and other natural resource activities. Soil moisture observations can forewarn of impending drought or flood conditions before other more standard indicators are triggered.
+
+Learn More
+
+A drought index combines multiple drought indicators (e.g., precipitation, temperature, soil moisture) to depict drought conditions. For some products, like the U.S. Drought Monitor, authors combine their analysis of drought indicators with input from local observers. Other drought indices, like the Standardized Precipitation Index (SPI), use an objective calculation to describe the severity, location, timing, and/or duration of drought.
+
+Learn More
+
+Flash drought is the rapid onset or intensification of drought. Unlike slow-evolving drought, which is caused by a decline in precipitation, flash drought occurs when low precipitation is accompanied by abnormally high temperatures, high winds, and/or changes in radiation. These sometimes-rapid changes can quickly raise evapotranspiration rates and remove available water from the landscape.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought can result in reduced growth rates, increased stress on vegetation, and alterations or transformations to the plant community and/or the entire ecosystem. During periods of drought, plants increase their demand for water through increased evapotranspiration and longer growing seasons.
+
+Learn More
+
+0–100 cm Soil Moisture Percentile
+
+0–2nd Percentile
+
+Soil moisture at 0–100cm depth is in the bottom 2% (0–2nd percentile) of historical measurements for this day of the year. Learn more.
+
+2nd–5th Percentile
+
+Soil moisture at 0–100cm depth falls between the 2nd to 5th percentile of historical measurements for this day of the year. Learn more.
+
+5th–10th Percentile
+
+Soil moisture at 0–100cm depth falls between the 5th to 10th percentile of historical measurements for this day of the year. Learn more.
+
+10th–20th Percentile
+
+Soil moisture at 0–100cm depth falls between the 10th to 20th percentile of historical measurements for this day of the year. Learn more.
+
+20th–30th Percentile
+
+Soil moisture at 0–100cm depth falls between the 20th to 30th percentile of historical measurements for this day of the year. Learn more.
+
+30th–70th Percentile
+
+Soil moisture at 0–100cm depth falls between the 30th to 70th percentile of historical measurements for this day of the year. Learn more.
+
+70
+
+70th–80th Percentile
+
+Soil moisture at 0–100cm depth falls between the 70th to 80th percentile of historical measurements for this day of the year. Learn more.
+
+80th–90th Percentile
+
+Soil moisture at 0–100cm depth falls between the 80th to 90th percentile of historical measurements for this day of the year. Learn more.
+
+90th–95th Percentile
+
+Soil moisture at 0–100cm depth falls between the 90th to 95th percentile of historical measurements for this day of the year. Learn more.
+
+95th–98th Percentile
+
+Soil moisture at 0–100cm depth falls between the 95th to 98th percentile of historical measurements for this day of the year. Learn more.
+
+98th–100th Percentile
+
+Soil moisture at 0–100cm depth is in the top 2% (98th to 100th percentile) of historical measurements for this day of the year. Learn more.
+
+100
+
+Soil Moisture Anomaly
+
+0%
+
+Unfavorable Conditions
+
+48
+
+Favorable Conditions
+
+100
+
+An accurate depiction of soil moisture conditions can provide valuable insights for agricultural monitoring, weather prediction, and drought and flood early warning.
+
+This map shows the moisture content of the top 1 meter of soil compared to historical conditions from 1981–2013, based on NASA's Short-term Prediction and Transition Center – Land Information System (SPoRT-LIS).
+
+Red and orange hues indicate drier soils, while greens and blues indicate greater soil moisture.
+
+An accurate depiction of soil moisture conditions can provide valuable insights for agricultural monitoring, weather prediction, and drought and flood early warning.
+
+This map shows the moisture content of the top 1 meter of soil, according to NASA's Crop Condition and Soil Moisture Analytics tool (Crop-CASMA). It relies on remotely sensed soil moisture data derived from NASA missions.
+
+Soil moisture is shown as a deviation from average soil moisture conditions from 2015–present. Brown hues indicate below-average soil moisture, and blue hues indicate above-average soil moisture.
+
+The Vegetation Health Index is a proxy characterizing vegetation health or a combined estimation of moisture and thermal conditions. Vegetation health is often used to estimate crop condition and anticipated yield. Values below 40 (pink/orange shades) indicate different levels of vegetation stress, and losses of crop and pasture production might be expected. Values above 60 (green/blue shades) indicate favorable conditions.
+
+Source(s):
+
+NASA
+
+Source(s):
+
+NASA, USDA, George Mason University
+
+Source(s):
+
+NOAA STAR
+
+This map updates daily with data from NASA's Short-term Prediction and Transition Center – Land Information System (SPoRT-LIS).
+
+Data are updated daily, with a 3-day delay.
+
+The Vegetation Health Index map updates weekly.
+
+Soil moisture plays an important role in drought and flood forecasting, agricultural monitoring, forest fire prediction, water supply management, and other natural resource activities. Soil moisture observations can forewarn of impending drought or flood conditions before other more standard indicators are triggered.
+
+Learn More
+
+Flash drought is the rapid onset or intensification of drought. Unlike slow-evolving drought, which is caused by a decline in precipitation, flash drought occurs when low precipitation is accompanied by abnormally high temperatures, high winds, and/or changes in radiation. These sometimes-rapid changes can quickly raise evapotranspiration rates and remove available water from the landscape.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought can result in reduced growth rates, increased stress on vegetation, and alterations or transformations to the plant community and/or the entire ecosystem. During periods of drought, plants increase their demand for water through increased evapotranspiration and longer growing seasons.
+
+Learn More
+
+Soil moisture plays an important role in drought and flood forecasting, agricultural monitoring, forest fire prediction, water supply management, and other natural resource activities. Soil moisture observations can forewarn of impending drought or flood conditions before other more standard indicators are triggered.
+
+Learn More
+
+A drought index combines multiple drought indicators (e.g., precipitation, temperature, soil moisture) to depict drought conditions. For some products, like the U.S. Drought Monitor, authors combine their analysis of drought indicators with input from local observers. Other drought indices, like the Standardized Precipitation Index (SPI), use an objective calculation to describe the severity, location, timing, and/or duration of drought.
+
+Learn More
+
+Flash drought is the rapid onset or intensification of drought. Unlike slow-evolving drought, which is caused by a decline in precipitation, flash drought occurs when low precipitation is accompanied by abnormally high temperatures, high winds, and/or changes in radiation. These sometimes-rapid changes can quickly raise evapotranspiration rates and remove available water from the landscape.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought can result in reduced growth rates, increased stress on vegetation, and alterations or transformations to the plant community and/or the entire ecosystem. During periods of drought, plants increase their demand for water through increased evapotranspiration and longer growing seasons.
+
+Learn More
+
+Data Valid:
+10/15/26
+
+Data Valid:
+10/10/26
+
+Data Valid:
+10/12/26
+
+NASA SPoRT-LIS soil moisture map details and information: learn more:
+
+Learn More
+
+Learn More
+
+Learn More
+
+Learn more ›
+
+Future Conditions for Story County
+
+Quantitative Precipitation Forecast
+
+1-Day
+7-Day
+
+Predicted Inches of Precipitation
+
+Less than 0.01 inch
+
+0.01 to 0.1 inch
+
+0.1 to 0.25 inch
+
+0.25 to 0.5 inch
+
+0.5 to 0.75 inch
+
+0.75 to 1 inch
+
+1 to 1.25 inches
+
+1.25 to 1.5 inches
+
+1.5 to 1.75 inches
+
+1.75
+
+1.75 to 2 inches
+
+1.5 to 2 inches
+
+2 to 2.5 inches
+
+2.5 to 3 inches
+
+3 to 4 inches
+
+4 to 5 inches
+
+5 to 7 inches
+
+7 to 10 inches
+
+10 to 15 inches
+
+15 to 20 inches
+
+More than 20 inches
+
+Predicted Inches of Precipitation
+
+Less than 0.01 inch
+
+0.01 to 0.1 inch
+
+0.1 to 0.25 inch
+
+0.25 to 0.5 inch
+
+0.5 to 0.75 inch
+
+0.75 to 1 inch
+
+1 to 1.25 inches
+
+1.25 to 1.5 inches
+
+1.5 to 1.75 inches
+
+1.75
+
+1.75 to 2 inches
+
+1.5 to 2 inches
+
+2 to 2.5 inches
+
+2.5 to 3 inches
+
+3 to 4 inches
+
+4 to 5 inches
+
+5 to 7 inches
+
+7 to 10 inches
+
+10 to 15 inches
+
+15 to 20 inches
+
+More than 20 inches
+
+This map shows the amount of liquid precipitation (in inches) expected to fall over the next 1 day, according to the National Weather Service.
+
+This map shows the amount of liquid precipitation (in inches) expected to fall over the next 7 days, according to the National Weather Service.
+
+Source(s):
+
+National Weather Service Weather Prediction Center
+
+Source(s):
+
+National Weather Service Weather Prediction Center
+
+The Quantitative Precipitation Forecast maps on Drought.gov are updated once a day and are valid from 7 a.m. Eastern that day.
+
+The Quantitative Precipitation Forecast maps on Drought.gov are updated once a day and are valid from 7 a.m. Eastern that day.
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Flash drought is the rapid onset or intensification of drought. Unlike slow-evolving drought, which is caused by a decline in precipitation, flash drought occurs when low precipitation is accompanied by abnormally high temperatures, high winds, and/or changes in radiation. These sometimes-rapid changes can quickly raise evapotranspiration rates and remove available water from the landscape.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Drought is defined as the lack of precipitation over an extended period of time, usually for a season or more, that results in a water shortage. Changes in precipitation can substantially disrupt crops and livestock, influence the frequency and intensity of severe weather events, and affect the quality and quantity of water available for municipal and industrial use.
+
+Learn More
+
+Flash drought is the rapid onset or intensification of drought. Unlike slow-evolving drought, which is caused by a decline in precipitation, flash drought occurs when low precipitation is accompanied by abnormally high temperatures, high winds, and/or changes in radiation. These sometimes-rapid changes can quickly raise evapotranspiration rates and remove available water from the landscape.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+Data Valid:
+10/15/26–10/16/26
+
+Last Updated:
+10/15/26
+
+Data Valid:
+10/15/26–10/22/26
+
+Last Updated:
+10/15/26
+
+Learn More
+
+Learn More
+
+U.S. Drought Outlooks
+
+Monthly
+Seasonal
+
+Drought Is Predicted To...
+
+Drought Persists
+
+During this time period, NOAA's Climate Prediction Center predicts that drought conditions will persist.
+
+Drought Improves
+
+During this time period, NOAA's Climate Prediction Center predicts that existing drought conditions will improve (but not be removed).
+
+Drought Is Removed
+
+During this time period, NOAA's Climate Prediction Center predicts that drought will be removed.
+
+Drought Develops
+
+During this time period, NOAA's Climate Prediction Center predicts that drought will develop.
+
+No Drought Present
+
+According to NOAA's Climate Prediction Center, there is no drought, and is drought development is not predicted.
+
+Drought Is Predicted To...
+
+Drought Persists
+
+During this time period, NOAA's Climate Prediction Center predicts that drought conditions will persist.
+
+Drought Improves
+
+During this time period, NOAA's Climate Prediction Center predicts that existing drought conditions will improve (but not be removed).
+
+Drought Is Removed
+
+During this time period, NOAA's Climate Prediction Center predicts that drought will be removed.
+
+Drought Develops
+
+During this time period, NOAA's Climate Prediction Center predicts that drought will develop.
+
+No Drought Present
+
+According to NOAA's Climate Prediction Center, there is no drought, and is drought development is not predicted.
+
+The Monthly Drought Outlook predicts whether drought will develop, remain, improve, or be removed in the next calendar month.
+
+The Seasonal Drought Outlook predicts whether drought will develop, remain, improve, or be removed in the next 3 months or so.
+
+Source(s):
+
+Climate Prediction Center
+
+Source(s):
+
+Climate Prediction Center
+
+The Climate Prediction Center issues its Monthly Drought Outlooks on the last day of the calendar month.
+
+The Climate Prediction Center issues its Seasonal Drought Outlooks on the third Thursday of each calendar month. Sometimes, the map is adjusted on the last day of the month to maintain consistency with the Monthly Drought Outlook.
+
+Snow drought is a period of abnormally low snowpack for the time of year. Snowpack typically acts as a natural reservoir, providing water throughout the drier summer months. Lack of snowpack storage, or a shift in timing of snowmelt, can be a challenge for drought planning.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+During drought conditions, fuels for wildfire, such as grasses and trees, can dry out and become more flammable. Drought can also increase the probability of ignition and the rate at which fire spreads. Temperature, soil moisture, humidity, wind speed, and fuel availability (vegetation) are all factors that interact to influence the frequency of large wildfires.
+
+Learn More
+
+Snow drought is a period of abnormally low snowpack for the time of year. Snowpack typically acts as a natural reservoir, providing water throughout the drier summer months. Lack of snowpack storage, or a shift in timing of snowmelt, can be a challenge for drought planning.
+
+Learn More
+
+Periods of drought can lead to inadequate water supply, threatening the health, safety, and welfare of communities. Streamflow, groundwater, reservoir, and snowpack data are key to monitoring and forecasting water supply.
+
+Learn More
+
+Drought can reduce the water availability and water quality necessary for productive farms, ranches, and grazing lands, resulting in significant negative direct and indirect economic impacts to the agricultural sector. Monitoring agricultural drought typically focuses on examining levels of precipitation, evaporative demand, soil moisture, and surface/groundwater quantity and quality.
+
+Learn More
+
+During drought conditions, fuels for wildfire, such as grasses and trees, can dry out and become more flammable. Drought can also increase the probability of ignition and the rate at which fire spreads. Temperature, soil moisture, humidity, wind speed, and fuel availability (vegetation) are all factors that interact to influence the frequency of large wildfires.
+
+Learn More
+
+Data Valid:
+10/01/26–10/31/26
+
+Last Updated:
+09/30/26
+
+Data Valid:
+10/15/26–01/31/27
+
+Last Updated:
+10/15/26
+
+Learn More
+
+Learn More
+
+Learn more about these data
+
+Historical Conditions for Story County
+
+2000–Present
+1895–Present
+0 –2025
+
+Time Period (Years):
+
+Start Year
+
+to
+
+End Year
+
+Show Category:
+
+U.S. Drought Monitor
+
+D0 - Abnormally Dry
+
+Abnormally Dry (D0) indicates a region that is going into or coming out of drought, according to the U.S. Drought Monitor. View typical impacts by state.
+
+D1 – Moderate Drought
+
+Moderate Drought (D1) is the first of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+D2 – Severe Drought
+
+Severe Drought (D2) is the second of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+D3 – Extreme Drought
+
+Extreme Drought (D3) is the third of four drought categories (D1–D4), according to the U.S. Drought Monitor. View typical impacts by state.
+
+D4 – Exceptional Drought
+
+Exceptional Drought (D4) is the most intense drought category, according to the U.S. Drought Monitor. View typical impacts by state.
+
+The U.S. Drought Monitor (2000–present) depicts the location and intensity of drought across the country. Every Thursday, authors from NOAA, USDA, and the National Drought Mitigation Center produce a new map based on their assessments of the best available data and input from local observers. The map uses five categories: Abnormally Dry (D0), showing areas that may be going into or are coming out of drought, and four levels of drought (D1–D4). Learn more.
+
+Time Period (Years):
+
+Start Year
+
+to
+
+End Year
+
+Show Category:
+
+Dry Conditions
+
+D4 (SPI of -2.0 or less)
+
+The 9-month Standardized Precipitation Index (SPI) value for this location is -2.0 or less, indicating exceptional drought (D4) conditions.
+
+D3 (SPI of -1.9 to -1.6)
+
+The Standardized Precipitation Index (SPI) value for this location is between -1.9 to -1.6, indicating extreme drought (D3) conditions.
+
+D2 (SPI of -1.5 to -1.3)
+
+The Standardized Precipitation Index (SPI) value for this location is between -1.5 to -1.3, indicating severe drought (D2) conditions.
+
+D1 (SPI of -1.2 to -0.8)
+
+The Standardized Precipitation Index (SPI) value for this location is between -1.2 to -0.8, indicating moderate drought (D1) conditions.
+
+D0 (SPI of -0.7 to -0.5)
+
+The Standardized Precipitation Index (SPI) value for this location is between -0.7 to -0.5, indicating abnormally dry (D0) conditions.
+
+Wet Conditions
+
+W0 (SPI of 0.5 to 0.7)
+
+The Standardized Precipitation Index (SPI) value for this location is between 0.5 to 0.7, indicating abnormally wet (W0) conditions.
+
+W1 (SPI of 0.8 to 1.2)
+
+The Standardized Precipitation Index (SPI) value for this location is between 0.8 to 1.2, indicating moderate wet (W1) conditions.
+
+W2 (SPI of 1.3 to 1.5)
+
+The Standardized Precipitation Index (SPI) value for this location is between 1.3 to 1.5, indicating severe wet (W2) conditions.
+
+W3 (SPI of 1.6 to 1.9)
+
+The Standardized Precipitation Index (SPI) value for this location is between 1.6 to 1.9, indicating extreme wet (W3) conditions.
+
+W4 (SPI of 2.0 or more)
+
+The Standardized Precipitation Index (SPI) value for this location is 2.0 or greater, indicating exceptional wet (W4) conditions.
+
+Drought results from an imbalance between water supply and water demand. The Standardized Precipitation Index (SPI) measures water supply, specifically precipitation. SPI captures how observed precipitation (rain, hail, snow) deviates from the climatological average over a given time period—in this case, over the 9 months leading up to the selected date. Red hues indicate drier conditions, while blue hues indicate wetter conditions. Data are available monthly from 1895–present. Learn more.
+
+Time Period (Years):
+
+Start Year
+
+to
+
+End Year
+
+Show Category:
+
+Dry Conditions
+
+D4 (PMDI of -5.0 or less)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is -5.0 or less, indicating exceptional drought (D4) conditions.
+
+D3 (PMDI of -4.9 to -4.0)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is -4.9 to -4.0, indicating extreme drought (D3) conditions.
+
+D2 (PMDI of -3.9 to -3.0)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is -3.9 to -3.0, indicating severe drought (D2) conditions.
+
+D1 (PMDI of -2.9 to -2.0)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is -2.9 to -2.0, indicating moderate drought (D1) conditions.
+
+D0 (PMDI of -1.9 to -1.0)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is -1.9 to -1.0, indicating abnormally dry (D0) conditions.
+
+Wet Conditions
+
+W0 (PMDI of 1.0 to 1.9)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is 1.0 to 1.9, indicating abnormally wet (W0) conditions.
+
+W1 (PMDI of 2.0 to 2.9)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is 2.0 to 2.9, indicating moderate wet (W1) conditions.
+
+W2 (PMDI of 3.0 to 3.9)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is 3.0 to 3.9, indicating severe wet (W2) conditions.
+
+W3 (PMDI of 4.0 to 4.9)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is 4.0 to 4.9, indicating extreme wet (W3) conditions.
+
+W4 (PMDI of 5.0 or greater)
+
+Tree rings were used to reconstruct a Palmer Modified Drought Index (PMDI) value for each June–August, estimating relative dryness. The PMDI value for this location is 5.0 or greater, indicating exceptional wet (W4) conditions.
+
+In paleoclimatology, proxy climate data (e.g., tree rings, ocean sediments) can allow us to reconstruct past climate conditions before we had widespread instrumental records. The Living Blended Drought Atlas, shown here, estimates average drought conditions each summer (June–August) as far back as the year 0 by combining tree-ring reconstructions and instrumental records. Red hues indicate drier conditions, while blue hues indicate wetter conditions.
+
+Learn more about these data
+
+Learn more about these data
+
+Learn more about these data

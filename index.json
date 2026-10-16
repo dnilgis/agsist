@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T03:47:44Z",
+ "run_utc": "2026-10-16T15:28:55Z",
  "sources": [
   {
    "bytes": null,
@@ -1945,6 +1945,127 @@
    ],
    "status": "new",
    "text_chars": 3384
+  },
+  {
+   "bytes": 121160,
+   "sha256": "836e9779df4d0c0f19599b5cc4738026d37e460fadb6010d886b72ba679f43f1",
+   "fetched_utc": "2026-10-16T15:28:41Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-drought-monitor-1.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-drought-monitor-1",
+   "url": "https://droughtmonitor.unl.edu/CurrentMap.aspx",
+   "title": "Benchmark drought-monitor: droughtmonitor.unl.edu (NDMC)",
+   "why": "/drought-monitor competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:28:40Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 134
+  },
+  {
+   "bytes": 637797,
+   "sha256": "4c864cee3f7c99e32b78a61ff5f37516fb76f62f0cd16eab8ec6707053280aa9",
+   "fetched_utc": "2026-10-16T15:28:44Z",
+   "pages": null,
+   "etag": "W/\"1792163475-gzip\"",
+   "last_modified": "Fri, 16 Oct 2026 15:11:15 GMT",
+   "saved_as": "refs/bench-drought-monitor-2.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-drought-monitor-2",
+   "url": "https://www.drought.gov/states/iowa/county/story",
+   "title": "Benchmark drought-monitor: drought.gov county pages (NIDIS)",
+   "why": "/drought-monitor competitor benchmark Oct 16, 2026 (government)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:28:43Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 74452
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "bench-drought-monitor-3",
+   "url": "https://www.usda.gov/sites/default/files/documents/AgInDrought.pdf",
+   "title": "Benchmark drought-monitor: USDA OCE Agriculture in Drought",
+   "why": "/drought-monitor competitor benchmark Oct 16, 2026 (government)",
+   "kind": "pdf",
+   "checked_utc": "2026-10-16T15:28:45Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback: no archived copy",
+   "status": "failed"
+  },
+  {
+   "bytes": 386559,
+   "sha256": "9c462dacfb1b83a4e2a9cad3518efcce68a9d3e30ca56ed4f89b13812c40b975",
+   "fetched_utc": "2026-10-16T15:28:53Z",
+   "pages": null,
+   "etag": "W/\"1792164210-gzip\"",
+   "last_modified": "Fri, 16 Oct 2026 15:23:30 GMT",
+   "saved_as": "refs/bench-drought-monitor-4.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-drought-monitor-4",
+   "url": "https://www.drought.gov/current-conditions",
+   "title": "Benchmark drought-monitor: drought.gov current conditions map",
+   "why": "/drought-monitor competitor benchmark Oct 16, 2026 (government)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:28:52Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 41597
+  },
+  {
+   "bytes": 283276,
+   "sha256": "eabd849ab137a864608a92dc238944df8e40d21ee98d2d9114880de0138166f5",
+   "fetched_utc": "2026-10-16T15:28:55Z",
+   "pages": null,
+   "etag": "W/e36945e9b0d3a57ad2e9b1e725210210",
+   "last_modified": "Thu, 30 Oct 2025 16:08:04 GMT",
+   "saved_as": "refs/bench-drought-monitor-5.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-drought-monitor-5",
+   "url": "https://www.wvua23.com/news/drought-monitor-chunk-of-west-alabama-remains-in-extreme-drought/article_48ea8d5b-1ea0-453b-926f-caf6650707d3.html",
+   "title": "Benchmark drought-monitor: Local TV/radio weekly drought posts (e.g. WVUA23)",
+   "why": "/drought-monitor competitor benchmark Oct 16, 2026 (established)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:28:54Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 2110
   }
  ]
 }
