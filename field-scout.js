@@ -1573,7 +1573,7 @@
       var wk=0; if(d.daily&&d.daily.precipitation_sum){ var ps=d.daily.precipitation_sum; for(var pi=0;pi<ps.length-1;pi++){ wk+=(ps[pi]||0); } }  // last entry is today's FORECAST — not observed rain
       window.__fsWx = {
         temp:Math.round(cur.temperature_2m), hum:Math.round(cur.relative_humidity_2m),
-        wind:Math.round(cur.wind_speed_10m), wk:wk.toFixed(2)
+        wind:Math.round(cur.wind_speed_10m), wk:wk.toFixed(2), at:(cur.time||null)
       };
       FIELD.weather = window.__fsWx; recomputeInsight();
       renderWx();
@@ -1597,7 +1597,8 @@
         if(lvl!=null) cat = droughtLabel(lvl);
       }
       var ap = d && d.approx ? d.approx : null;     // the worker fell back to the county's dominant category
-      window.__fsDr={cat:cat, approx:ap}; FIELD.drought={cat:cat, approx:ap}; recomputeInsight(); renderWx();
+      var wk = d ? (d.mapWeek || d.MapDate || d.mapDate || d.ValidStart || d.validStart || null) : null;   // the USDM map week, when the service says
+      window.__fsDr={cat:cat, approx:ap, wk:wk}; FIELD.drought={cat:cat, approx:ap, wk:wk}; recomputeInsight(); renderWx();
     }).catch(function(){ if(gen!==fieldGen) return; window.__fsDr={cat:null}; if(FIELD)FIELD.drought={cat:null}; recomputeInsight(); renderWx(); });
   }
   function droughtLabel(lvl){
@@ -1804,8 +1805,21 @@
         html += '<div class="fs-src" style="margin-top:.6rem">Drought status unavailable.</div>';
       }
     }
+    var srcs=[];
+    if(wx && !wx.err) srcs.push('Open-Meteo, now'+(wx.at?' ('+esc(wxTime(wx.at))+' local)':''));
+    if(dr && dr.cat!=null) srcs.push('US Drought Monitor'+(usdmWeek(dr.wk)?', map of '+esc(usdmWeek(dr.wk)):', this week\u2019s map'));
+    if(srcs.length) html += '<div class="fs-src" style="margin-top:.5rem">'+srcs.join(' &middot; ')+'</div>';
     setBody('fs-wx', html);
   }
+  // Open-Meteo's current.time is local to the field ("2026-10-16T14:15"): print "2:15 PM".
+  function wxTime(t){ var m=/T(\d{2}):(\d{2})/.exec(String(t||'')); if(!m) return ''; var h=+m[1]; return (h%12||12)+':'+m[2]+' '+(h<12?'AM':'PM'); }
+  // USDM dates come as "2026-10-06", "2026-10-06T00:00:00" or "20261006": print "Oct 6".
+  function usdmWeek(v){
+    var s=String(v||''), m=/^(\d{4})-?(\d{2})-?(\d{2})/.exec(s); if(!m) return '';
+    var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1];
+    return M ? M+' '+(+m[3]) : '';
+  }
+  window.__fsFmt = { wxTime:wxTime, usdmWeek:usdmWeek };
   function stat(v,l){ return '<div class="fs-stat"><div class="fs-stat-v">'+v+'</div><div class="fs-stat-l">'+l+'</div></div>'; }
 
   // ── Hail history → FIELD + Risk Profile section ─────────────────────
