@@ -233,6 +233,19 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
 .hpc-leg:first-of-type{border-top:0;}
 .hpc-l{font-size:.82rem;color:var(--pd-mut);}
 .hpc-v{font-family:var(--pd-mono);font-weight:700;font-size:1.05rem;white-space:nowrap;}
+.hpg{margin:.5rem 0 .2rem;}
+.hpg svg{display:block;width:100%;height:auto;}
+.hpg-proj{stroke:var(--pd-mut);stroke-width:1.2;stroke-dasharray:4 3;}
+.hpg-s{fill:none;stroke:var(--pd-gold2);stroke-width:1;opacity:.55;}
+.hpg-a{fill:none;stroke:var(--pd-green);stroke-width:2;}
+.hpg-d{fill:var(--pd-gold2);}
+.hpg-d.hpg-p{fill:var(--pd-p1);stroke:var(--pd-gold2);stroke-width:1.4;}
+.hpg-t{fill:var(--pd-mut);font-family:var(--pd-mono);font-size:10px;}
+.hpg-k{display:flex;flex-wrap:wrap;gap:.3rem .9rem;font-size:.78rem;color:var(--pd-mut);margin-top:.2rem;}
+.hpg-k span{display:inline-flex;align-items:center;gap:.35rem;}
+.hpg-k i{display:inline-block;width:14px;height:0;border-top:2px solid var(--pd-green);}
+.hpg-k i.hpg-kd{width:7px;height:7px;border:0;border-radius:50%;background:var(--pd-gold2);}
+.hpg-k i.hpg-kp{border-top:2px dashed var(--pd-mut);}
 .hpc-math{font-size:.85rem;color:var(--pd-txt,inherit);line-height:1.45;margin:.15rem 0 .35rem;}
 .hp-sub{font-size:1.05rem;color:var(--pd-mut);margin:-.35rem 0 .4rem;}
 .hpc-v.hpc-pend{font-family:Inter,sans-serif;font-weight:600;font-size:.82rem;
@@ -335,11 +348,11 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
 
   <div class="hp-cards" id="pd-cards">
   <!--SEED:hpcards-->
-      <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price so far: running average, Oct 1 to 15 (11 of 22 days, Oct 15 provisional)</span><span class="hpc-v">$4.92</span></div><div class="hpc-math">For the harvest price to finish below the $4.62 projected price, the 11 settles left would have to average $4.31 or less, 47¢ under the latest ($4.78¼ on Oct 15, provisional).</div></div>
-      <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price so far: running average, Oct 1 to 15 (11 of 22 days, Oct 15 provisional)</span><span class="hpc-v">$12.85</span></div><div class="hpc-math">For the harvest price to finish below the $11.09 projected price, the 11 settles left would have to average $9.31 or less, $3.33 under the latest ($12.64¼ on Oct 15, provisional).</div></div>
+      <div class="hp-card-s"><div class="hpc-t">Corn · Dec '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$4.62</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price so far: running average, Oct 1 to 15 (11 of 22 days, Oct 15 provisional)</span><span class="hpc-v">$4.92</span></div><div class="hpc-math">For the harvest price to finish below the $4.62 projected price, the 11 settles left would have to average $4.31 or less, 47¢ under the latest ($4.78¼ on Oct 15, provisional).</div><figure class="hpg"><svg viewBox="0 0 300 132" role="img" aria-label="Corn Dec &#39;26: 11 daily settles, Oct 1 to 15, Oct 15 provisional, running average $4.92, projected price $4.62"><line x1="40" x2="292" y1="105.0" y2="105.0" class="hpg-proj"/><polyline points="40.0,28.0 52.0,36.6 64.0,37.6 76.0,17.0 88.0,28.5 100.0,31.8 112.0,71.0 124.0,64.8 136.0,65.3 148.0,69.1 160.0,73.9" class="hpg-s"/><polyline points="40.0,28.5 52.0,32.3 64.0,34.2 76.0,30.4 88.0,30.4 100.0,30.4 112.0,36.1 124.0,40.0 136.0,41.9 148.0,45.7 160.0,47.6" class="hpg-a"/><circle cx="40.0" cy="28.0" r="2.8" class="hpg-d"/><circle cx="52.0" cy="36.6" r="2.8" class="hpg-d"/><circle cx="64.0" cy="37.6" r="2.8" class="hpg-d"/><circle cx="76.0" cy="17.0" r="2.8" class="hpg-d"/><circle cx="88.0" cy="28.5" r="2.8" class="hpg-d"/><circle cx="100.0" cy="31.8" r="2.8" class="hpg-d"/><circle cx="112.0" cy="71.0" r="2.8" class="hpg-d"/><circle cx="124.0" cy="64.8" r="2.8" class="hpg-d"/><circle cx="136.0" cy="65.3" r="2.8" class="hpg-d"/><circle cx="148.0" cy="69.1" r="2.8" class="hpg-d"/><circle cx="160.0" cy="73.9" r="2.8" class="hpg-d hpg-p"/><text x="36" y="14.0" class="hpg-t" text-anchor="end">$5.12</text><text x="36" y="112.0" class="hpg-t" text-anchor="end">$4.58</text><text x="40" y="127" class="hpg-t">Oct 1</text><text x="292" y="127" class="hpg-t" text-anchor="end">Oct 31</text></svg><figcaption class="hpg-k"><span><i class="hpg-kd"></i>daily settle (hollow: provisional)</span><span><i class="hpg-ka"></i>running average</span><span><i class="hpg-kp"></i>projected $4.62</span></figcaption></figure></div>
+      <div class="hp-card-s"><div class="hpc-t">Soybeans · Nov '26 · 2026 crop year</div><div class="hpc-leg"><span class="hpc-l">Projected price (February · final)</span><span class="hpc-v">$11.09</span></div><div class="hpc-leg"><span class="hpc-l">Harvest price so far: running average, Oct 1 to 15 (11 of 22 days, Oct 15 provisional)</span><span class="hpc-v">$12.85</span></div><div class="hpc-math">For the harvest price to finish below the $11.09 projected price, the 11 settles left would have to average $9.31 or less, $3.33 under the latest ($12.64¼ on Oct 15, provisional).</div><figure class="hpg"><svg viewBox="0 0 300 132" role="img" aria-label="Soybeans Nov &#39;26: 11 daily settles, Oct 1 to 15, Oct 15 provisional, running average $12.85, projected price $11.09"><line x1="40" x2="292" y1="105.0" y2="105.0" class="hpg-proj"/><polyline points="40.0,25.6 52.0,28.3 64.0,27.1 76.0,17.0 88.0,19.5 100.0,24.1 112.0,22.0 124.0,23.9 136.0,25.8 148.0,28.7 160.0,34.6" class="hpg-s"/><polyline points="40.0,25.6 52.0,27.0 64.0,27.0 76.0,24.3 88.0,23.4 100.0,23.4 112.0,23.4 124.0,23.4 136.0,23.8 148.0,24.3 160.0,25.2" class="hpg-a"/><circle cx="40.0" cy="25.6" r="2.8" class="hpg-d"/><circle cx="52.0" cy="28.3" r="2.8" class="hpg-d"/><circle cx="64.0" cy="27.1" r="2.8" class="hpg-d"/><circle cx="76.0" cy="17.0" r="2.8" class="hpg-d"/><circle cx="88.0" cy="19.5" r="2.8" class="hpg-d"/><circle cx="100.0" cy="24.1" r="2.8" class="hpg-d"/><circle cx="112.0" cy="22.0" r="2.8" class="hpg-d"/><circle cx="124.0" cy="23.9" r="2.8" class="hpg-d"/><circle cx="136.0" cy="25.8" r="2.8" class="hpg-d"/><circle cx="148.0" cy="28.7" r="2.8" class="hpg-d"/><circle cx="160.0" cy="34.6" r="2.8" class="hpg-d hpg-p"/><text x="36" y="14.0" class="hpg-t" text-anchor="end">$13.19</text><text x="36" y="112.0" class="hpg-t" text-anchor="end">$10.93</text><text x="40" y="127" class="hpg-t">Oct 1</text><text x="292" y="127" class="hpg-t" text-anchor="end">Oct 31</text></svg><figcaption class="hpg-k"><span><i class="hpg-kd"></i>daily settle (hollow: provisional)</span><span><i class="hpg-ka"></i>running average</span><span><i class="hpg-kp"></i>projected $11.09</span></figcaption></figure></div>
       <div class="hp-seed-note">The official harvest price is USDA RMA&rsquo;s: the average of the daily settles of the contract above across the window, released after it closes. The running average is the same math on the days so far, rebuilt each trading evening. Ours counts through Oct 15. RMA posts its own running figure after each day; when it covers fewer days than ours the two can differ by a cent or two, and RMA&rsquo;s is the official one. Oct 15 is Yahoo Finance&rsquo;s close that afternoon, which can sit a tick off the exchange settle; the next evening&rsquo;s run replaces it with the settle.</div>
+      <div class="method-note"><b>Method</b> &middot; Running average of the contract&rsquo;s daily settles across RMA&rsquo;s window so far, the same math RMA uses for the final harvest price. &middot; <b>Sources</b> &middot; CBOT daily settles as Yahoo Finance reports them (Oct 15 is Yahoo&rsquo;s afternoon close, not yet the settle); USDA RMA Price Discovery for the window and the official price. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
       <!--/SEED:hpcards-->
-      <div class="method-note"><b>Method</b> &middot; Running average of the contract&rsquo;s daily settles across RMA&rsquo;s window so far, the same math RMA uses for the final harvest price. &middot; <b>Sources</b> &middot; CBOT settles; USDA RMA Price Discovery for the window and the official price. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
   </div>
 
   <div data-signup-ask="Get AGSIST Daily: your local top bid and the markets, free, every morning" data-source="page:harvest-price-tracker" data-reports="1"></div>
@@ -492,7 +505,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
   "url":"https://agsist.com/harvest-price-tracker",
   "creator":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about","jobTitle":"Certified Crop Adviser (CCA)"},
   "isAccessibleForFree":true,
-  "dateModified":"2026-10-15",
+  "dateModified":"2026-10-16",
   "temporalCoverage":"2011/2026",
   "variableMeasured":["Projected price","Harvest price"],
   "keywords":["crop insurance","projected price","harvest price","Revenue Protection","corn","soybeans","RMA"]
@@ -525,7 +538,12 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       selects the picker but is never written back to storage, and nothing
       downstream of that write may persist it either. */
 (function(){
-  var SRC='/data/rma-prices.json', KEY='agsist-pd-state';
+  /* 2026-10-16: the whole mirror (430 KB) loaded before anyone picked a
+     state. Now a 30 KB index (state names, the map's corn windows, today's
+     discovery rows, Iowa's rows for the corn and soybean cards) loads first,
+     and one state's rows load when that state is picked. Both are cut from
+     data/rma-prices.json by scripts/split_rma_prices.py, rows verbatim. */
+  var SRC='/data/rma-prices/index.json', KEY='agsist-pd-state';
   var LEAD={Corn:1,Soybeans:2};
   // Crops RMA prices per POUND rather than per bushel. Verified against the feed
   // itself: every crop in this list tops out under $0.40, every crop outside it
@@ -540,7 +558,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   var MON=['January','February','March','April','May','June','July','August',
            'September','October','November','December'];
   var $=function(id){return document.getElementById(id);};
-  var ROWS=[], BYST={}, TODAY=new Date();
+  var IDX=null, NAMES={}, BYST={}, LOADING={}, TODAY=new Date();
   TODAY.setHours(12,0,0,0);
 
   function d(s){ var p=String(s).split('-'); return new Date(+p[0],+p[1]-1,+p[2],12,0,0); }
@@ -572,6 +590,23 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     return hit.length===1?hit[0].d:null;
   }
   
+  /* 2026-10-16 ONE RUNNING NUMBER. The H1 and cards print our running
+     average ($4.92 through Oct 15); the calculator printed RMA's ($4.93
+     through Oct 14) with no day count, a scroll apart. While a corn or soybean
+     window is open the calculator now uses the same average as the H1, with
+     its days, and names RMA's figure once beside it as the official one. Only
+     for "All" types (High Amylose corn has its own price on the same window)
+     and only when the two sit within 3% of each other. */
+  function runH(g){
+    if(!g||!isOpen(g)||realType(g.type)) return null;
+    var hc=hpCount(g.crop,g.hs,g.he); if(!hc||!(hc.avg>0)) return null;
+    if(g.h!=null&&Math.abs(hc.avg-g.h)/g.h>0.03) return null;
+    return hc;
+  }
+  function runWords(hc){
+    var pv=hc.ser[hc.ser.length-1].p;
+    return 'average of '+hc.n+(hc.total?' of '+hc.total:'')+' trading days through '+shortd(hc.last)+(pv?', '+shortd(hc.last)+' provisional':'');
+  }
   function unit(r){ return CENT[r.crop]?'lb':'bu'; }
   function unitOf(g){
     // Fail loud rather than mislabel: a price under $1 cannot be per bushel, and a
@@ -783,6 +818,26 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     }catch(e){}
 
     $('pd-clear').hidden = !code;
+    if(code && NAMES[code] && !BYST[code]){
+      // this state's rows are not here yet: say so, fetch them, come back
+      $('pd-your').innerHTML='<p class="pd-note">Loading RMA&rsquo;s windows for '+esc(NAMES[code])+'&hellip;</p>';
+      if(!LOADING[code]){
+        LOADING[code]=fetch('/data/rma-prices/'+code+'.json',{cache:'no-cache'}).then(function(r){
+          if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(j){
+          if(!j||!j.rows) throw new Error('empty'); BYST[code]=j.rows;
+        }).catch(function(){ BYST[code]=null; });
+      }
+      LOADING[code].then(function(){
+        if($('pd-state').value!==code) return;
+        if(BYST[code]===null){
+          delete LOADING[code]; delete BYST[code];
+          $('pd-your').innerHTML='<p class="pd-note">RMA&rsquo;s windows for '+esc(NAMES[code])+' did not load. Pick the state again to retry.</p>';
+          return;
+        }
+        setState(code,false);
+      });
+      return;
+    }
     var groups = code ? group(BYST[code]||[]) : [];
 
     if(!code){
@@ -799,7 +854,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     $('pd-fallback').hidden=true;
     $('pd-verdict-more').hidden=true; $('pd-cards').hidden=true;
 
-    var name=(BYST[code]&&BYST[code][0]&&BYST[code][0].state)||code;
+    var name=NAMES[code]||code;
     if(!groups.length){
       $('pd-your').innerHTML='<div class="pd-sect">'+esc(name)+'</div>'+
         '<p class="pd-note">RMA publishes no revenue price discovery for '+esc(name)+
@@ -904,7 +959,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     $('pd-psout').textContent=f1(per)+' '+cu+'/ac'+(tot?' ('+Math.round(tot).toLocaleString('en-US')+' '+cu+')':'');
     // RP is a revenue guarantee, not a price floor: the bushels are figured at
     // the higher of the projected and harvest price (harvest capped at 200%).
-    var hx=(g.h!=null&&g.h>g.p)?Math.min(g.h,2*g.p):null, live=hx!=null&&isOpen(g);
+    var rh=runH(g), H=rh?rh.avg:g.h;
+    var hx=(H!=null&&H>g.p)?Math.min(H,2*g.p):null, live=hx!=null&&isOpen(g);
     var gtee=per*(hx!=null?hx:g.p);
     // a more cautious mark, 75% of APH, shown only when it is under the guarantee
     var cau=cov>0.75?aph*0.75:0;
@@ -946,23 +1002,25 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     sub.innerHTML=aph.toLocaleString('en-US')+(cu?' '+cu:'')+' × '+(cov*100).toFixed(0)+
       '% × <b class="pd-num">'+money(g.p,unitOf(g))+'</b>, '+esc(label(g))+
       ' projected price, locked '+shortd(g.ps)+'–'+shortd(g.pe)+'.';
-    if(g.h!=null && g.h>g.p){
+    var rh=runH(g), H=rh?rh.avg:g.h, rt=rh&&g.h!=null?rmaThrough(g):null;
+    var rmaNote=(rh&&g.h!=null)?' RMA&rsquo;s own running figure'+(rt?', through '+shortd(rt):'')+', is <b class="pd-num">'+money(g.h,unitOf(g))+'</b>; RMA&rsquo;s is the official one.':'';
+    if(H!=null && H>g.p){
       // RP values production at the harvest price only up to 200% of the
       // projected price (RMA).
-      var hx=Math.min(g.h,2*g.p), v2=aph*cov*hx, p=(hx-g.p)/g.p*100, live=isOpen(g), sw=stWord(g);
+      var hx=Math.min(H,2*g.p), v2=aph*cov*hx, p=(hx-g.p)/g.p*100, live=isOpen(g), sw=stWord(g);
       box.className='pd-out2 up';
       box.innerHTML='<b class="pd-num">$'+Math.round(v2).toLocaleString('en-US')+' /ac</b>'+
         '<span>at the '+sw+' harvest price of <b class="pd-num">'+
-        money(g.h,unitOf(g))+'</b>, up <b>+'+p.toFixed(1)+'%</b>, or <b class="pd-num">$'+
+        money(H,unitOf(g))+'</b>'+(rh?' ('+runWords(rh)+')':'')+', up <b>+'+p.toFixed(1)+'%</b>, or <b class="pd-num">$'+
         Math.round(v2-val).toLocaleString('en-US')+' /ac</b>.'+
-        (g.h>2*g.p?' The harvest price counts only up to 200% of the projected price ('+money(2*g.p,unitOf(g))+').':'')+
-        (live?' That average is still moving.':'')+'</span>';
-    }else if(g.h!=null){
+        (H>2*g.p?' The harvest price counts only up to 200% of the projected price ('+money(2*g.p,unitOf(g))+').':'')+
+        (live?' That average is still moving.':'')+rmaNote+'</span>';
+    }else if(H!=null){
       box.className='pd-out2 flat';
-      box.innerHTML='<b>No change</b><span>The harvest average is '+
-        Math.abs((g.h-g.p)/g.p*100).toFixed(1)+'% below the projected price, so your '+
+      box.innerHTML='<b>No change</b><span>The harvest average'+(rh?' ('+runWords(rh)+')':'')+' is '+
+        Math.abs((H-g.p)/g.p*100).toFixed(1)+'% below the projected price, so your '+
         'guarantee stays at <b class="pd-num">$'+Math.round(val).toLocaleString('en-US')+
-        ' /ac</b>. Revenue Protection (with harvest price) revises up only. Harvest Price Exclusion and Yield Protection do not raise the guarantee.</span>';
+        ' /ac</b>. Revenue Protection (with harvest price) revises up only. Harvest Price Exclusion and Yield Protection do not raise the guarantee.'+rmaNote+'</span>';
     }else{
       box.className='pd-out2 flat';
       box.innerHTML='<b>Not set yet</b><span>'+esc(label(g))+' harvest discovery '+
@@ -993,8 +1051,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     {t:'November or later', c:'#5b8fc9', m:function(g){return d(g.hs).getMonth()>=10;}}
   ];
   function cornWindow(code){
-    var gs=group(BYST[code]||[]).filter(function(g){return g.crop==='Corn';});
-    return gs.length?gs[0]:null;
+    var w=IDX&&IDX.map&&IDX.map[code];
+    return (w&&w.length===2)?{hs:w[0],he:w[1]}:null;
   }
   function paintMap(sel){
     var wrap=$('pd-map'); if(!wrap) return;
@@ -1029,7 +1087,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   /* Rewrite the baked blocks from the loaded data and TODAY, so a page cached
      or baked days ago never shows a stale count, date or "pending". */
   function refreshBaked(){
-    var disc=ROWS.filter(function(r){return r.h_status==='In Discovery' && r.h_end && d(r.h_end)>=TODAY;});
+    var disc=((IDX&&IDX.disc)||[]).filter(function(r){return r.h_status==='In Discovery' && r.h_end && d(r.h_end)>=TODAY;});
     var box=$('pd-disc');
     if(box){
       var byKey={}, combos={}, earliest='';
@@ -1065,7 +1123,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     }
     // corn and soybean blocks: status from the Iowa windows, not from the baked text
     ['Corn','Soybeans'].forEach(function(crop){
-      var ref=group(BYST.IA||[]).filter(function(g){return g.crop===crop;})[0];
+      var ref=group((IDX&&IDX.ref_rows)||[]).filter(function(g){return g.crop===crop;})[0];
       var blk=document.querySelector('#pd-fallback .pd-crop[data-bake="'+crop+'"]');
       var card=null;
       Array.prototype.forEach.call(document.querySelectorAll('#pd-fallback .hp-card-s'),function(c){
@@ -1092,20 +1150,16 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     });
   }
 
-  function boot(rows){
-    ROWS=rows;
-    BYST={};
-    rows.forEach(function(r){
-      if(!r.st||!r.state) return;
-      var k=FIPS[String(r.st)]||String(r.st);
-      (BYST[k]=BYST[k]||[]).push(r);
-    });
-    var codes=Object.keys(BYST).sort(function(a,b){
-      return BYST[a][0].state.localeCompare(BYST[b][0].state); });
+  function boot(idx){
+    IDX=idx; NAMES=idx.states||{};
+    BYST={}; LOADING={};
+    if(idx.ref_state&&idx.ref_rows&&idx.ref_rows.length) BYST[idx.ref_state]=idx.ref_rows;
+    var codes=Object.keys(NAMES).sort(function(a,b){
+      return NAMES[a].localeCompare(NAMES[b]); });
     refreshBaked();
     var sel=$('pd-state');
     sel.innerHTML='<option value="">Choose your state</option>'+codes.map(function(c){
-      return '<option value="'+esc(c)+'">'+esc(BYST[c][0].state)+'</option>'; }).join('');
+      return '<option value="'+esc(c)+'">'+esc(NAMES[c])+'</option>'; }).join('');
 
     // A stored choice is a choice. A weather location is a guess: it selects,
     // it does not persist, and setState is told so explicitly.
@@ -1116,11 +1170,11 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
         var wx=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');
         var abbr=wx&&(wx.state||wx.st||wx.abbr);
         if(abbr) for(var i=0;i<codes.length;i++){
-          if(BYST[codes[i]][0].state===abbr||codes[i]===abbr){ guess=codes[i]; break; }
+          if(NAMES[codes[i]]===abbr||codes[i]===abbr){ guess=codes[i]; break; }
         }
       }catch(e){}
     }
-    if(BYST[chosen]) setState(chosen,false); else if(guess) setState(guess,false);
+    if(NAMES[chosen]) setState(chosen,false); else if(guess) setState(guess,false);
     else setState('',false);
 
     sel.addEventListener('change',function(){ setState(sel.value,true);
@@ -1138,8 +1192,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   fetch(SRC,{cache:'no-cache'}).then(function(r){
     if(!r.ok) throw new Error(r.status); return r.json();
   }).then(function(j){ return hpP.then(function(h){ HP=h; return j; }); }).then(function(j){
-    if(!j||!j.rows||!j.rows.length) throw new Error('empty');
-    boot(j.rows);
+    if(!j||!j.states||!Object.keys(j.states).length) throw new Error('empty');
+    boot(j);
   }).catch(function(){
     // No file, no personalisation. A broken picker is worse than no picker,
     // so it is hidden and the calculator says the data did not load.
