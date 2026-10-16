@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-16T08:37:18Z",
+ "generated": "2026-10-16T10:27:00Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1690,
-  "towns": 1324
+  "elevators": 1720,
+  "towns": 1344
  },
  "states": {
   "AL": {
@@ -29,23 +29,23 @@
   },
   "IA": {
    "elevators": 298,
-   "towns": 204
+   "towns": 205
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 205,
-   "towns": 148
+   "elevators": 210,
+   "towns": 151
   },
   "IN": {
-   "elevators": 61,
-   "towns": 47
+   "elevators": 63,
+   "towns": 48
   },
   "KS": {
-   "elevators": 250,
-   "towns": 179
+   "elevators": 255,
+   "towns": 181
   },
   "KY": {
    "elevators": 9,
@@ -60,35 +60,35 @@
    "towns": 17
   },
   "MN": {
-   "elevators": 154,
-   "towns": 130
+   "elevators": 155,
+   "towns": 131
   },
   "MO": {
-   "elevators": 27,
-   "towns": 26
+   "elevators": 28,
+   "towns": 27
   },
   "MT": {
    "elevators": 7,
    "towns": 7
   },
   "ND": {
-   "elevators": 47,
-   "towns": 43
+   "elevators": 48,
+   "towns": 44
   },
   "NE": {
-   "elevators": 188,
-   "towns": 141
+   "elevators": 199,
+   "towns": 149
   },
   "NY": {
-   "elevators": 1,
-   "towns": 1
+   "elevators": 2,
+   "towns": 2
   },
   "OH": {
-   "elevators": 78,
+   "elevators": 77,
    "towns": 69
   },
   "OK": {
-   "elevators": 76,
+   "elevators": 77,
    "towns": 65
   },
   "OR": {
@@ -112,7 +112,7 @@
    "towns": 4
   },
   "TX": {
-   "elevators": 17,
+   "elevators": 18,
    "towns": 12
   },
   "WA": {
@@ -120,8 +120,8 @@
    "towns": 8
   },
   "WI": {
-   "elevators": 77,
-   "towns": 70
+   "elevators": 79,
+   "towns": 71
   },
   "WY": {
    "elevators": 1,
