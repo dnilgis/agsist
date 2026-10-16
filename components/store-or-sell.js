@@ -158,8 +158,59 @@
   /* Storage and interest count from this month once the crop is in the
      bin (storesell.js boardHold), the way the elevator mode counts from its
      spot month; the carry is still contract to contract. */
-  function futuresModel(prices, crop) {
-    return SS.boardHold(crop, prices && prices.quotes || {});
+  /* WHICH WHEAT (2026-10-16 audit). The board carry for wheat was always
+     Chicago SRW, while most wheat bids in the network price off KC HRW or
+     Minneapolis spring wheat. The nearest wheat bids that name their class
+     or contract decide: KC (KE) -> the KC HRW spread from the kcwheat-*
+     contracts on file; Minneapolis (MW) -> no board number, because AGSIST
+     has no Minneapolis quotes and the Chicago spread is a different wheat;
+     otherwise the Chicago spread, called that. Pure; exported for the test. */
+  var KC_RX = /\b(KE|KW)[FGHJKMNQUVXZ]?\d{0,2}\b|KCBT|\bKC\b|kansas city|hard red winter|\bHRW\b/i;
+  var MW_RX = /\bMW[FGHJKMNQUVXZ]?\d{0,2}\b|MGEX|MIAX|minneapolis|spring|\bHRS\b|\bDNS\b|dark northern/i;
+  var ZW_RX = /\bZW[FGHJKMNQUVXZ]?\d{0,2}\b|\bSRW\b|soft red|chicago/i;
+  function wheatExch(rows) {
+    for (var i = 0; i < (rows || []).length; i++) {
+      var r = rows[i] || {}, t = [r.commodity, r.symbol, r.basisMonth, r.delivery].join(' ');
+      if (MW_RX.test(t)) return 'MW';
+      if (KC_RX.test(t)) return 'KE';
+      if (ZW_RX.test(t)) return 'ZW';
+    }
+    return '';
+  }
+  /* The KC contracts under the wheat keys, so the one board rule
+     (storesell.js boardHold, wheat's Dec/Mar/May window) reads them. */
+  function kcQuotes(q) {
+    var out = {};
+    Object.keys(q || {}).forEach(function (k) {
+      var m = /^kcwheat-([a-z]{3}\d{2})$/.exec(k);
+      if (m) out['wheat-' + m[1]] = q[k];
+    });
+    return out;
+  }
+  function futuresModel(prices, crop, exch) {
+    var q = prices && prices.quotes || {};
+    if (crop !== 'wheat') return SS.boardHold(crop, q);
+    if (exch === 'MW') return null;
+    var fm = SS.boardHold('wheat', exch === 'KE' ? kcQuotes(q) : q);
+    if (fm) fm.wheat = exch === 'KE' ? 'KE' : 'ZW';
+    return fm;
+  }
+  /* "KC HRW wheat futures" / "Chicago SRW wheat futures" / "corn futures" */
+  function boardWord(fm) {
+    if (fm && fm.wheat === 'KE') return 'KC HRW wheat futures';
+    if (fm && fm.wheat === 'ZW') return 'Chicago SRW wheat futures';
+    return CROP_WORD[state.crop] + ' futures';
+  }
+  function wheatNote(fm) {
+    if (!fm || !fm.wheat) return '';
+    return fm.wheat === 'KE' ? ' Nearby wheat bids price off Kansas City, so this is the KC HRW spread.'
+      : ' This is the Chicago SRW spread' + (state.zip && state.models ? (exchNow() === 'ZW' ? ': nearby wheat bids price off Chicago.' : ': no wheat bid we read near ' + state.zip + ' names its futures.') : '. Enter your ZIP to use the futures your elevators price wheat off.');
+  }
+  var MW_TEXT = 'Nearby wheat bids price off Minneapolis spring wheat futures. AGSIST has no Minneapolis quotes, so there is no board carry to show; the Chicago SRW spread is a different wheat. Your elevator\u2019s own later bids are the number to use.';
+  function exchNow() {
+    if (state.crop !== 'wheat' || !state.read || !state.read.length) return '';
+    return wheatExch(state.read.slice().sort(function (a, b) { return (a.row.distance || 0) - (b.row.distance || 0); })
+      .map(function (x) { return x.row; }));
   }
   /* "Oct '26 to Jul '27, 9 months" for the storage count. */
   function spanText(fm) {
@@ -175,7 +226,9 @@
   function render() {
     var inp = inputs(), ans = $('sos-answer'), where = $('sos-where'), note = $('sos-note');
     var list = (state.models || []).filter(function (x) { return x.model && !x.model.failed && x.model.later && x.model.later.length; });
-    var fm = state.futures;
+    var exch = exchNow();
+    var fm = state.prices ? futuresModel(state.prices, state.crop, exch) : null;
+    state.futures = fm;
     var top = list[0] || null;
     $('sos-costs-note').textContent = 'Using ' + SS.costNote(inp, null, null);
     if (top) {
@@ -201,7 +254,7 @@
         ans.textContent = SS.holdLine({ to: fm.to.label.slice(0, 3), carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp });
         ans.className = 'sos-line ' + tone(nf);
         where.innerHTML = esc(state.zip ? (state.models === null ? 'Reading the elevators near ' + state.zip + '… ' : noLaterText()) : 'Enter your ZIP for your elevator’s own posted bids. Until then, this is the board. ') +
-          esc('Carry from ' + fm.from.label + ' to ' + fm.to.label + ' ' + CROP_WORD[state.crop] + ' futures, ' + (fm.date ? 'closes of ' + fm.date : 'latest closes') + '. ') +
+          esc('Carry from ' + fm.from.label + ' to ' + fm.to.label + ' ' + boardWord(fm) + ', ' + (fm.date ? 'closes of ' + fm.date : 'latest closes') + '.' + wheatNote(fm) + ' ') +
           esc(fm.fromToday ? 'Storage and interest from now: ' + spanText(fm) + '. A bid for delivery now is priced off ' + fm.from.label + ', so the months until then earn no carry but still cost you.'
                            : 'Storage and interest ' + spanText(fm) + '.') +
           fartherText();
@@ -209,6 +262,12 @@
           'Interest is figured on the ' + fm.from.label + ' futures price, ' + SS.cashQ(fm.spot) + '; on a lower cash price it would be a little less.' +
           (SS.lockNote('futures', nf, fm.to.label) ? ' ' + SS.lockNote('futures', nf, fm.to.label) : '');
         drawMath(fm.spot, fm.carry, fm.months, inp, fm.from.label + ' futures', fm.to.label + ' futures', spanText(fm));
+      } else if (exch === 'MW' && state.prices) {
+        ans.textContent = 'No board carry for Minneapolis wheat.';
+        ans.className = 'sos-line';
+        where.innerHTML = esc(noLaterText()) + fartherText();
+        note.textContent = MW_TEXT;
+        drawMath(null);
       } else {
         ans.textContent = state.zip && state.models === null ? 'Reading the elevators near ' + state.zip + '…' : state.noWindow ? noWindowText() : 'Prices did not load. Try again in a minute.';
         ans.className = 'sos-line';
@@ -216,7 +275,7 @@
         drawMath(null);
       }
     }
-    drawFutures(fm, inp);
+    drawFutures(fm, inp, exch);
   }
 
   function drawTable(m, p, inp) {
@@ -266,11 +325,12 @@
     return 'No board carry to show right now: fewer than two ' + CROP_WORD[state.crop] + ' contracts in this crop year still trade.' +
       (state.zip || short ? '' : ' Enter your ZIP for your elevator’s own posted bids.');
   }
-  function drawFutures(fm, inp) {
+  function drawFutures(fm, inp, exch) {
     var el = $('sos-futures');
+    if (!fm && exch === 'MW' && state.prices) { el.textContent = MW_TEXT; return; }
     if (!fm) { el.textContent = state.noWindow ? noWindowText(true) : 'Futures prices did not load.'; return; }
     el.innerHTML = '<b>' + esc(SS.holdLine({ to: fm.to.label.slice(0, 3), carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp })) + '</b> ' +
-      esc(fm.from.label + ' ' + SS.cashQ(fm.spot) + ' to ' + fm.to.label + ' ' + SS.cashQ(fm.spot + fm.carry) + '; storage and interest ' + spanText(fm) + '. ') +
+      esc((fm.wheat ? (fm.wheat === 'KE' ? 'KC HRW ' : 'Chicago SRW spread: ') : '') + fm.from.label + ' ' + SS.cashQ(fm.spot) + ' to ' + fm.to.label + ' ' + SS.cashQ(fm.spot + fm.carry) + '; storage and interest ' + spanText(fm) + '.' + wheatNote(fm) + ' ') +
       'Futures carry assumes your basis does not change; your elevator’s posted later bids are what it actually pays. ' +
       '<a href="/' + (state.crop === 'soybeans' ? 'soybean' : state.crop) + '-futures-prices">' + esc(CROP_WORD[state.crop].replace(/^./, function (c) { return c.toUpperCase(); })) + ' futures →</a>';
   }
@@ -300,7 +360,7 @@
     state.farther = null; state.read = [];
     state.pick = null;
     pushUrl();
-    loadFutures().then(function (p) { if (seq !== state.seq) return; state.futures = futuresModel(p, state.crop);
+    loadFutures().then(function (p) { if (seq !== state.seq) return; state.prices = p;
       state.noWindow = !!(p && p.quotes) && !SS.carryWindow(state.crop, p.quotes); render(); });
     if (!state.zip) return;
     loadElevators(seq).then(function (res) {
@@ -336,5 +396,6 @@
     });
     run();
   }
+  window.AgsistStoreOrSell = { wheatExch: wheatExch, kcQuotes: kcQuotes, futuresModel: futuresModel };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
