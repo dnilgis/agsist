@@ -198,5 +198,6 @@
   "surprises": [],
   "price_validation_clean": true,
   "market_closed": true,
-  "market_status_reason": "holiday"
+  "market_status_reason": "holiday",
+  "first_published_at": "2026-07-03T12:59:54+00:00"
 }
