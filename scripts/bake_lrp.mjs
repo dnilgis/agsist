@@ -398,6 +398,31 @@ export function byHtml(v) {
 
 /* -------------------------------------------------------------- write */
 
+/* The first-screen example: a dated cost before any input. 100 feeder
+   steers at 550 lb (RMA type 809, steers weight 1), 13 weeks, the top
+   coverage that sales day offered, premium after today's subsidy. Labeled
+   an example, with the sales day it came from; a missing offer says so. */
+export const EXAMPLE = { head: 100, lb: 550, comm: "0801", type: "809", len: 13, cls: "steers" };
+export function exampleStatic(today) {
+  const d = L.salesDay(today), E = EXAMPLE, cwt = E.lb / 100;
+  const day = `${d.dayShort}, ${d.day.slice(0, 4)}`;
+  const o = today.offers.find((x) => x.c === E.comm && x.t === E.type && x.len === E.len);
+  const inRange = o && cwt >= +o.w[0] && cwt <= +o.w[1];
+  if (!o || !inRange) {
+    return `<p class="lrp-ex-k">Example</p><p>RMA posted no ${E.len}-week offer for ${E.lb} lb feeder steers for sales on ${day}. Pick your own animal below.</p>`;
+  }
+  const top = L.offerRow(o.r.reduce((m, r) => (r[0] > m[0] ? r : m)));
+  const h = L.forHerd(top, cwt, E.head);
+  const sub = top.subsidy == null ? "" : ` after the ${Math.round(top.subsidy * 100)}% subsidy`;
+  const prem = top.yourPerCwt == null ? "not figured (no subsidy rate for that level)"
+    : `<b>${money(top.yourPerCwt, 3)} a cwt, ${money(h.premHead)} a head</b>, ${money(h.premAll, 0)} for the ${E.head} head`;
+  const q = L.toQuery({ a: "feeder", h: String(E.head), w: String(E.lb), l: E.len, k: E.cls });
+  return `<p class="lrp-ex-k">Example, change it below</p>` +
+    `<p><b>${E.head} feeder steers at ${E.lb} lb, ${E.len} weeks</b> (end date ${ymdLong(o.end)}), top coverage ${L.levelPct(top.level)}: a floor of ${money(top.coverage)} a cwt. ` +
+    `Your premium${sub}: ${prem}.</p>` +
+    `<p class="src">From RMA&rsquo;s offers for sales on ${day}, ${esc(L.typeName(E.comm, E.type, today.ry, o.w).toLowerCase())}. Not a quote for your cattle. <a href="/lrp${q.replace(/&/g, "&amp;")}">Load this example</a></p>`;
+}
+
 function put(h, name, body) {
   const re = new RegExp(`<!--lrp:${name}-->[\\s\\S]*?<!--/lrp:${name}-->`);
   if (!re.test(h)) throw new Error(`${PAGE}: no <!--lrp:${name}--> marker`);
@@ -415,6 +440,7 @@ export function bake(h, bt, meta, today, sob = null) {
   const v = values(bt, meta, today, sob);
   h = put(h, "jsonld", jsonld(v));
   h = put(h, "when", whenHtml(today));
+  h = put(h, "example", exampleStatic(today));
   h = put(h, "offers0", offersStatic(today));
   h = put(h, "first", firstYears(meta, today));
   h = put(h, "back", backJson(bt));
