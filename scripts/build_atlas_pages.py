@@ -328,6 +328,26 @@ def state_survey(W, st, census_year):
     return out
 
 
+def load_uni_surveys(root="."):
+    """{ST: {name, org, date, what, url}} from data/atlas/state-land-surveys.json: newer local
+    surveys a state university or agency runs. Linked, never copied. {} when absent."""
+    try:
+        d = json.load(open(os.path.join(root, DATA, "state-land-surveys.json"), encoding="utf-8"))
+    except Exception:
+        return {}
+    return d.get("states") or {}
+
+
+def uni_survey_note(W, st):
+    """One dated line naming the state's own survey, theirs not ours. '' when none is on file."""
+    u = (getattr(W, "usurvey", None) or {}).get(st)
+    if not u or not all(u.get(k) for k in ("name", "org", "date", "url")):
+        return ""
+    return ('<p class="note">Newer local survey: <a href="%s" rel="noopener">%s</a>, %s, released %s%s. '
+            'Their numbers, on their page; this page does not copy them.</p>'
+            % (esc(u["url"]), esc(u["name"]), esc(u["org"]), esc(u["date"]), (": " + esc(u["what"])) if u.get("what") else ""))
+
+
 def survey_facts(ss, stn):
     """Fact rows for the state survey: always named as the state's, never the county's."""
     h = fact("%s cropland, %d state survey" % (stn, ss["year"]), money(ss["cropland"]) + "/ac",
@@ -397,6 +417,7 @@ class World:
         self.rrev = load_rent_revenue(root)
         self.ytrend = load_yield_trends(root)
         self.svalue = load_state_values(root)
+        self.usurvey = load_uni_surveys(root)
         self.thin = set()     # county pages with few figures: noindex, out of the sitemap
         self.by_state = {}
         for f, c in self.C.items():
@@ -1284,7 +1305,9 @@ def county_page(W, f, d, stamp):
     if ri:
         keys += key("Cash rent, irrigated", money(ri["value"]), "/ac", "%s county average" % ri["year"], st_irr, money, st)
     ss = state_survey(W, st, V.get("latest_year") if ok(V) else get(W.atlas, "national", "value", "year"))
-    vsub = val_sub() + ((" · %s cropland %d: %s (state survey)" % (st, ss["year"], money(ss["cropland"]))) if ss else "")
+    # same definition beside the census value: farm real estate is land and buildings, as the census asks.
+    # Cropland alone sat here until Oct 16, 2026 and read as "my county is 43% below the state".
+    vsub = val_sub() + ((" · %s farm real estate %d: %s (land and buildings, state survey)" % (st, ss["year"], money(ss["real_estate"]))) if ss and ss.get("real_estate") else "")
     keys += key("Land and buildings", money(V["latest"]) if ok(V) and V.get("latest") is not None else None, "/ac", vsub, st_val, money, st)
     rtv = get(V, "rent_to_value", "pct")
     if not ri:
@@ -1408,6 +1431,7 @@ def county_page(W, f, d, stamp):
         S2 += ('<p class="note">The census value is this county\'s, from %s. The survey figures are the %s average for %d, from the USDA NASS Land Values report. '
                'NASS publishes that survey by state, not by county, so this page does not scale one into the other.</p>'
                % (V.get("latest_year") if ok(V) else "the census", esc(stn), ss["year"]))
+    S2 += uni_survey_note(W, st)
 
     S3 = "<h2>Corn yield</h2>"
     if ok(Y):
@@ -1744,6 +1768,7 @@ def state_page(W, st):
     ss = state_survey(W, st, get(W.atlas, "national", "value", "year"))
     if ss:
         facts += survey_facts(ss, stn)
+    facts += uni_survey_note(W, st)
     crumb_vis, crumb_ld = crumbs([("AGSIST", "/"), ("Farmland Atlas", "/farmland-atlas"), ("By state", f"/{OUT}/states/"), (stn, None)])
     smap, smbr = state_map(W, st, recs)
     title = next((t for t in (f"{stn} Farmland Values by County: Land Value, Yield & Risk",
@@ -2082,6 +2107,12 @@ def selftest():
     check("state survey not newer than census: none", state_survey(_W, "RI", 2022) is None and state_survey(_W, "IL", 2022) is None)
     sf_ = survey_facts(ss_, "Iowa")
     check("state survey facts", "Iowa cropland, 2026 state survey" in sf_ and "$10,700/ac" in sf_ and "+2.9% from 2025" in sf_ and "USDA NASS Land Values, state average" in sf_ and "Iowa farm real estate, 2026" in sf_)
+    class _U:
+        usurvey = {"IA": {"name": "ISU Land Value Survey 2025", "org": "Iowa State University", "date": "Dec 9, 2025", "url": "https://x/"},
+                   "NE": {"name": "n", "org": "o", "url": "https://y/"}}
+    check("uni survey line: dated, linked, theirs", "released Dec 9, 2025" in uni_survey_note(_U, "IA") and 'href="https://x/"' in uni_survey_note(_U, "IA")
+          and "does not copy them" in uni_survey_note(_U, "IA"))
+    check("uni survey line: no date, no line", uni_survey_note(_U, "NE") == "" and uni_survey_note(_U, "IL") == "" and uni_survey_note(_W, "IA") == "")
     check("recent yield stale", recent_yield({"last_year": 2020, "hist": {str(y): 1 for y in range(2016, 2021)}}, 2026) is None)
     # bars: a gap year is a gap, not a zero
     svg = bars_svg({2000: 5, 2001: 6, 2003: 7}, "t", lambda v: str(v))

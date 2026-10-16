@@ -1,0 +1,14 @@
+{
+  "about": "Newer local land value or rent surveys run by a state university or agency, linked (not copied) from that state's Farmland Atlas county and state pages. Each row was read from the saved copy on the references branch on the date in 'checked'. Add a state only after reading its survey page; never guess a date.",
+  "states": {
+    "IA": {"name": "ISU Land Value Survey 2025", "org": "Iowa State University", "date": "Dec 9, 2025",
+           "what": "county land values, high, medium and low quality land", "url": "https://farmland.card.iastate.edu/isu-land-value-survey-2025",
+           "ref": "bench-farmland-atlas-1", "checked": "2026-10-16"},
+    "NE": {"name": "Nebraska Farm Real Estate Market Survey, 2026 final", "org": "University of Nebraska-Lincoln", "date": "Jun 30, 2026",
+           "what": "land values and cash rents by district and land class", "url": "https://cap.unl.edu/realestate/",
+           "ref": "bench-cash-rent-4", "checked": "2026-10-16"},
+    "ND": {"name": "2026 County Rents and Prices", "org": "North Dakota Department of Trust Lands", "date": "Apr 2026",
+           "what": "county cash rents and the price of rented land", "url": "https://www.land.nd.gov/sites/www/files/documents/Surface/Rent%20Survey/2026%20County%20Rents%20and%20Prices%20North%20Dakota.pdf",
+           "ref": "bench-cash-rent-5", "checked": "2026-10-16"}
+  }
+}
