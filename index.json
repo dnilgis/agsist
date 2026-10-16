@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:35:26Z",
+ "run_utc": "2026-10-16T15:36:17Z",
  "sources": [
   {
    "bytes": null,
@@ -2446,6 +2446,156 @@
    ],
    "status": "new",
    "text_chars": 4014
+  },
+  {
+   "bytes": 10585,
+   "sha256": "de894efd78058e1fe5ccb814dfa0d35696a03071fd96b156520966045e645ab9",
+   "fetched_utc": "2026-10-16T15:36:07Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-fast-facts-1.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fast-facts-1",
+   "url": "https://www.cornnratecalc.org/",
+   "title": "Benchmark fast-facts: Iowa State Corn Nitrogen Rate Calculator (MRTN)",
+   "why": "/fast-facts competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:36:06Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 686
+  },
+  {
+   "bytes": 960,
+   "sha256": "0ee1dd9ecadaf68be82db1c04a55ab88359776994baf31dedccb951183cacb3b",
+   "fetched_utc": "2026-10-16T15:36:08Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-fast-facts-2.html",
+   "final_url": null,
+   "content_type": "text/html",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fast-facts-2",
+   "url": "https://www.canr.msu.edu/news/too_little_or_too_much_nitrogen_on_corn_msus_new_guidelines",
+   "title": "Benchmark fast-facts: MSU corn N guidelines",
+   "why": "/fast-facts competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:36:08Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1
+  },
+  {
+   "bytes": 42871,
+   "sha256": "4e304e9a2da2e6b5ff8f31d47400334606807ddb2c0dfb27505a5282662e9727",
+   "fetched_utc": "2026-10-16T15:36:10Z",
+   "pages": null,
+   "etag": "\"1792164970\"",
+   "last_modified": "Fri, 16 Oct 2026 15:36:10 GMT",
+   "saved_as": "refs/bench-fast-facts-3.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fast-facts-3",
+   "url": "https://extension.illinois.edu/blogs/nutrient-loss-reduction/2026-02-27-how-mrtn-works-and-economics-behind-nitrogen-rates",
+   "title": "Benchmark fast-facts: Illinois Extension MRTN explainer (Feb 2026)",
+   "why": "/fast-facts competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:36:10Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 7039
+  },
+  {
+   "bytes": 296769,
+   "sha256": "027509293e40c9b93a73623235c06d8fdbf3441b6a00f45c95e05510f833dd1d",
+   "fetched_utc": "2026-10-16T15:36:13Z",
+   "pages": null,
+   "etag": "W/9f3adae97f0f991a06b85690f084a6fa",
+   "last_modified": "Sat, 18 Apr 2026 01:00:00 GMT",
+   "saved_as": "refs/bench-fast-facts-4.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fast-facts-4",
+   "url": "https://www.crescent-news.com/news/local_farm/new-ohio-state-tool-helps-farmers-manage-rising-nitrogen-fertilizer-costs/article_4f66a6d4-a627-4515-8a2d-abd146b215a9.html",
+   "title": "Benchmark fast-facts: Ohio State Corn N Rate Calculator",
+   "why": "/fast-facts competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:36:12Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 6909
+  },
+  {
+   "bytes": 100439,
+   "sha256": "32d162cd126ccd50b769618f6b606bb6f57bfa6afcb50815213bd1d6cf466dee",
+   "fetched_utc": "2026-10-16T15:36:14Z",
+   "pages": null,
+   "etag": "\"18857-65de9d71751cf\"",
+   "last_modified": "Thu, 15 Oct 2026 23:59:37 GMT",
+   "saved_as": "refs/bench-fast-facts-5.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fast-facts-5",
+   "url": "https://ag.purdue.edu/department/btny/ppdl/",
+   "title": "Benchmark fast-facts: Purdue Corn and Soybean Field Guide / Field Scout apps",
+   "why": "/fast-facts competitor benchmark Oct 16, 2026 (university)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:36:14Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1944
+  },
+  {
+   "bytes": 16985024,
+   "sha256": "e7bf5321cb4c530c7ea403b911f63bcf89246381396bb2c37473b4919f29c4f1",
+   "fetched_utc": "2026-10-16T15:36:17Z",
+   "pages": 94,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-fast-facts-6.pdf",
+   "final_url": null,
+   "content_type": "application/pdf",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-fast-facts-6",
+   "url": "https://cdn.shopify.com/s/files/1/0145/8808/4272/files/A2809.pdf",
+   "title": "Benchmark fast-facts: UW Extension A2809",
+   "why": "/fast-facts competitor benchmark Oct 16, 2026 (university)",
+   "kind": "pdf",
+   "checked_utc": "2026-10-16T15:36:16Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 396890
   }
  ]
 }

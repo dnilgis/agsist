@@ -1,0 +1,23 @@
+# Benchmark fast-facts: Iowa State Corn Nitrogen Rate Calculator (MRTN)
+# https://www.cornnratecalc.org/
+# fetched 2026-10-16T15:36:07Z, sha256 de894efd78058e1fe5ccb814dfa0d35696a03071fd96b156520966045e645ab9
+
+Home :: Nitrogen Rate Calculator
+
+CORN NITROGEN
+
+RATE CALCULATOR
+
+Finding the Maximum Return To N and Most Profitable N Rate
+
+A Regional (Corn Belt) Approach to Nitrogen Rate Guidelines
+
+This web site provides a process to calculate economic return to N application with different nitrogen and corn prices and to find profitable N rates directly from recent N rate research data. The method used follows a regional approach for determining corn N rate guidelines that is implemented in several Corn Belt states.
+
+START HERE
+
+Choose how you want to calculate N rates, using one set of prices or using mulitple prices.
+
+SINGLE PRICE MULTIPLE PRICE
+
+In association with these Universities

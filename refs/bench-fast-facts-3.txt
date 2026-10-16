@@ -1,0 +1,130 @@
+# Benchmark fast-facts: Illinois Extension MRTN explainer (Feb 2026)
+# https://extension.illinois.edu/blogs/nutrient-loss-reduction/2026-02-27-how-mrtn-works-and-economics-behind-nitrogen-rates
+# fetched 2026-10-16T15:36:10Z, sha256 4e304e9a2da2e6b5ff8f31d47400334606807ddb2c0dfb27505a5282662e9727
+
+How MRTN works and the economics behind nitrogen rates | Nutrient Loss Reduction | Illinois Extension | Illinois
+
+Home
+Blogs
+Nutrient Loss Reduction
+How MRTN works and the economics behind nitrogen rates
+
+Nutrient Loss Reduction
+
+How MRTN works and the economics behind nitrogen rates
+
+Published
+
+February 27, 2026
+
+Rachel Curry
+
+Nicole Haverback
+
+Luke Zwilling
+
+In episode 79, University of Illinois soil fertility specialist John Jones, agricultural economist Gary Schnitkey, and Illinois Corn Growers Association water quality specialist Laura Gentry share highlights from a live panel discussion recorded during the December Farm Assets Conference. The panel focuses on nitrogen rate decisions, how the Corn Nitrogen Rate Calculator works, and why maximizing profit, not yield, should guide fertilizer management. They also discuss how nitrogen rates influence nutrient loss and what farm-level data shows about applications above the economic optimum.
+
+This is the first in a two-part series highlighting key takeaways from that conversation.
+
+Throughout the discussion, Schnitkey returned to one central message:
+
+“Maximize profits, not yields.”
+
+How the N Rate Calculator works
+
+Jones began by explaining the Corn Nitrogen Rate Calculator, often referred to as the MRTN calculator (Maximum Return to Nitrogen). The tool is built from hundreds of nitrogen response trials across Illinois and the broader Corn Belt, many conducted as on-farm strip trials.
+
+According to Jones, the calculator uses four inputs:
+
+-
+Region of Illinois
+
+-
+Previous crop
+
+-
+Price of corn
+
+-
+Price of nitrogen fertilizer
+
+The tool does not use a yield goal.
+
+Jones explained that researchers have not found a strong relationship between yield level and the optimum nitrogen rate. While higher-yielding corn removes more nitrogen, Illinois soils often mineralize additional nitrogen to meet that demand.
+
+“The soil keeps up in many cases,” Jones noted, adding that modern hybrids have also become more efficient at using available nitrogen.
+
+Understanding MRTN and the profitable range
+
+The calculator generates a Maximum Return to Nitrogen rate, the point where the last pound of nitrogen applied is paid for by the last bushel produced. Jones emphasized that the tool also provides a profitable range, typically about 12 to 14 pounds on either side of the MRTN value. These rates are within $1 per acre of the maximum return.
+
+MRTN reflects total nitrogen applied per acre, regardless of source. Nitrogen from anhydrous ammonia, UAN, or nitrogen applied with MAP or DAP all count toward the total.
+
+Jones also noted that the database behind the calculator is updated annually. Trials more than 10 years old have recently been removed to better reflect current hybrids and production systems.
+
+Profit versus yield
+
+Schnitkey focused on the economic side of nitrogen decisions. In many Illinois trials, he explained, the yield difference between the nitrogen rate that maximizes yield and the rate that maximizes profit is often only one to two bushels per acre. Those extra bushels rarely cover the cost of additional nitrogen, especially in years with tighter margins and higher fertilizer prices.
+
+In a commodity-based system, Schnitkey said, producers differentiate themselves primarily through cost control.
+
+“If you’re above the profit-maximizing level,” he explained, “you’re likely above in all of them,” referring not only to nitrogen but often to additional inputs and passes as well.
+
+Efficiency and nutrient loss
+
+Jones pointed out that how efficiently crops use fertilizer is closely linked to how much nutrient is lost. Studies show that when nitrogen is applied at lower rates, losses don’t increase very much. But once nitrogen is applied above the economically optimal rate, nutrient losses start to increase much more quickly. That overlap supports the goals of the Illinois Nutrient Loss Reduction Strategy: improving water quality while maintaining farm profitability.
+
+In Part 2, we’ll look more closely at nitrogen timing, “insurance nitrogen,” and what farm-level data shows about application rates above MRTN.
+
+Explore more
+
+To listen to the entire discussion, go to Episode 79 of the Illinois Nutrient Loss Reduction Podcast.
+
+-
+Corn Nitrogen Rate Calculator (MRTN)
+
+-
+Precision Conservation Management
+
+-
+Episode 76: Addressing nutrient loss through conservation: Precision Conservation Management
+
+-
+Blog: Addressing nutrient loss through conservation: Precision Conservation Management
+
+About the Authors
+
+Rachel Curry is an Agriculture and Agribusiness Educator specializing in agriculture and watershed education, and she is part of the Illinois Extension's Nutrient Loss Reduction Strategy implementation team. She holds a B.A. in Environmental Studies from Knox College and an M.S. in Environmental Science and Soil Science from Iowa State University, focusing on soil fertility. Her work centers on education and outreach related to the Illinois Nutrient Loss Reduction Strategy, promoting agricultural conservation practices that reduce nutrient loss while enhancing water quality and soil health across Illinois.
+
+Nicole Haverback serves as a Watershed Outreach Associate and is an Illinois Extension team member implementing the Nutrient Loss Reduction Strategy. She holds a B.S. in Agricultural and Rural Policy Studies from Iowa State University. In her role, Nicole coordinates watershed management efforts aimed at reducing nutrient losses in two nitrate-nitrogen priority watersheds, offers expertise on best management practices to minimize nutrient loss, and leads outreach initiatives promoting agricultural conservation practices outlined in the Illinois Nutrient Loss Reduction Strategy.
+
+Luke Zwilling serves as a Watershed Outreach Associate and is an Illinois Extension team member implementing the Nutrient Loss Reduction Strategy. He grew up on a farm in Jasper County and earned a B.S. in Agriculture and Biological Engineering from University of Illinois. Luke coordinates watershed-based activities to reduce nutrient loss in two phosphorus priority watersheds, provides expertise on best management practices for nutrient loss reduction, and conducts outreach on agricultural conservation practices in the Illinois Nutrient Loss Reduction Strategy.
+
+About the blog
+
+At Illinois Extension, we’re working to improve water quality at home and downstream. Every month, our Watershed Outreach Associates will bring you stories highlighting agricultural conservation practices, current research projects and results, and from the field farmer interviews. The Nutrient Loss Reduction blog covers conservation practices recommended by the Illinois Nutrient Loss Reduction Strategy, timely updates, farm safety, and new decision tools to help farmers and producers reduce the nutrients leaving their fields.
+
+Nutrient Loss Reduction
+
+Keywords
+
+Commercial Agriculture
+
+Sustainable Agriculture
+
+Agriculture
+
+Regenerative Agriculture
+
+Conservation
+
+Corn
+
+Soybeans
+
+Environment
+
+Water Quality
+
+Join the mailing list

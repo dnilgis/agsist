@@ -1,0 +1,5 @@
+# Benchmark fast-facts: MSU corn N guidelines
+# https://www.canr.msu.edu/news/too_little_or_too_much_nitrogen_on_corn_msus_new_guidelines
+# fetched 2026-10-16T15:36:08Z, sha256 0ee1dd9ecadaf68be82db1c04a55ab88359776994baf31dedccb951183cacb3b
+
+
