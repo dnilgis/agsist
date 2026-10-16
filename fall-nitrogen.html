@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Is it cold enough for fall anhydrous? Soil temperature by county | AGSIST</title>
+  <meta name="description" content="Measured soil temperature near 4 inches at the station nearest your county, its last 7 days, and the 50&deg;F line Iowa State, Nebraska, K-State, Illinois and Minnesota use for fall anhydrous.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/fall-nitrogen">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="Is it cold enough for fall anhydrous? Soil temperature by county">
+  <meta property="og:description"  content="Measured soil temperature near 4 inches at the station nearest your county, its last 7 days, and the 50&deg;F line extension uses for fall anhydrous.">
+  <meta property="og:url"          content="https://agsist.com/fall-nitrogen">
+  <meta property="og:image" content="https://agsist.com/img/og/fall-nitrogen.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Fall anhydrous: soil temperature at 4 inches by county, against the 50 degree line.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/fall-nitrogen.jpg">
+  <meta name="twitter:title"       content="Is it cold enough for fall anhydrous? Soil temperature by county">
+  <meta name="twitter:description" content="Measured soil temperature near 4 inches at the station nearest your county, its last 7 days, and the 50&deg;F line extension uses for fall anhydrous.">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .fn{max-width:780px;margin:0 auto;padding:1rem 1rem 4rem}
+    .fn .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
+    .fn h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .fn .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .6rem}
+    .fn h2{font-size:1.15rem;line-height:1.3;margin:2rem 0 .6rem;color:var(--text)}
+    .fn h3{font-size:1rem;margin:1.1rem 0 .3rem;color:var(--text)}
+    .fn p,.fn li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
+    .fn p{margin:0 0 1rem}
+    .fn a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
+    .fn b{color:var(--text)}
+    .fn-pick{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;margin:0 0 .4rem}
+    .fn-pick[hidden]{display:none}
+    .fn-pick label{display:flex;flex-direction:column;gap:.2rem;font-size:.8rem;color:var(--text-muted);font-weight:600}
+    .fn-pick input,.fn-pick select{min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem}
+    .fn-pick input{width:7rem;font-family:'JetBrains Mono',monospace}
+    .fn-pick select{max-width:14rem}
+    .fn-pick button{min-height:44px;padding:0 1rem;border:1px solid var(--border);border-radius:8px;background:var(--gold);color:#111;font:inherit;font-weight:700;cursor:pointer}
+    .fn-pick button.fn-ghost{background:var(--surface);color:var(--text)}
+    .fn-or{align-self:center;font-size:.85rem;color:var(--text-muted);padding:0 .2rem}
+    .fn-status{font-size:.86rem!important;min-height:1.3em;margin:0 0 .6rem!important;color:var(--text-muted)!important}
+    .fn-status.fn-err{color:var(--text)!important;border-left:3px solid var(--gold);padding-left:.5rem}
+    .fn-empty{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:1rem 1.1rem;color:var(--text-dim)}
+    .fn-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.8rem 1rem .6rem;margin:0 0 .4rem}
+    .fn-answer.fn-cold{border-left-color:var(--green)}
+    .fn-answer p{margin:0 0 .4rem}
+    .fn-k{font-size:.85rem!important;color:var(--text-muted)!important;font-weight:700}
+    .fn-head{font-size:1.1rem!important;font-weight:800;color:var(--text)!important;margin:0 0 .1rem!important}
+    .fn-big{font-size:clamp(2rem,9vw,2.7rem)!important;font-weight:800;line-height:1.1!important;color:var(--text)!important;font-family:'JetBrains Mono',monospace;margin:0 0 .2rem!important}
+    .fn-big span{font-size:.42em;font-weight:600;color:var(--text-muted);font-family:var(--font-body,inherit)}
+    .fn-sub{font-size:.94rem!important;color:var(--text)!important}
+    .fn-fine{font-size:.84rem!important;color:var(--text-muted)!important}
+    .fn-rule{border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem!important}
+    .fn-chart svg{display:block;width:100%;height:auto;overflow:visible}
+    .fn-line{fill:none;stroke:var(--text);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+    .fn-dot{fill:var(--text);stroke:var(--surface);stroke-width:1.5}
+    .fn-dot.fn-under{fill:var(--green)}
+    .fn-fifty{stroke:var(--gold);stroke-width:1.5;stroke-dasharray:5 4}
+    .fn-ax{fill:var(--text-muted);font-size:11px;font-family:'JetBrains Mono',monospace}
+    .fn-ax.fn-gold{fill:var(--gold);font-weight:700}
+    .fn-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .fn-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .6rem}
+    .fn-t caption{text-align:left;font-size:.85rem;color:var(--text-muted);padding:0 0 .3rem}
+    .fn-t th,.fn-t td{padding:.45rem .4rem;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
+    .fn-t th:first-child{text-align:left}
+    .fn-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .fn-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+    .fn-rules{list-style:none;padding:0;margin:0}
+    .fn-rules li{border-top:1px solid var(--border);padding:.7rem 0}
+    .fn-rules li:last-child{border-bottom:1px solid var(--border)}
+    .fn-rules b{display:block}
+    .fn details.fn-all{border:1px solid var(--border);border-radius:10px;padding:.6rem .9rem;margin:.4rem 0 1rem}
+    .fn details.fn-all summary{cursor:pointer;font-weight:700;color:var(--text);min-height:32px}
+    .fn-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+    .fn-faq details:last-child{border-bottom:1px solid var(--border)}
+    .fn-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+    .fn-faq details p{margin:.6rem 0 .2rem}
+    .fn .src{font-size:.84rem;color:var(--text-muted);margin-top:1.5rem}
+    .fn .src li{font-size:.84rem;color:var(--text-muted)}
+    @media(max-width:420px){.fn-t{font-size:.82rem}.fn-t th,.fn-t td{padding:.4rem .25rem}.fn-pick select{max-width:100%}}
+  </style>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/fall-nitrogen#page", "name": "Is it cold enough for fall anhydrous? Soil temperature by county", "url": "https://agsist.com/fall-nitrogen", "description": "Measured soil temperature near 4 inches at the station nearest your county, its last 7 days, and the 50 degree line extension uses for fall anhydrous.", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-16", "inLanguage": "en-US"}, {"@type": "Dataset", "@id": "https://agsist.com/fall-nitrogen#data", "name": "Soil temperature near 4 inches, daily, fall nitrogen states", "description": "Daily mean soil temperature at 4 in (or 10 cm) from NOAA USCRN, USDA NRCS SCAN, the Iowa State Soil Moisture Network and the Kansas Mesonet, last 10 days per station, with the nearest station within 50 miles of each county in 12 Midwest and Plains states.", "url": "https://agsist.com/fall-nitrogen", "isBasedOn": ["https://www.ncei.noaa.gov/access/crn/", "https://www.nrcs.usda.gov/resources/data-and-reports/soil-climate-analysis-network", "https://mesonet.agron.iastate.edu/agclimate/", "https://mesonet.k-state.edu/"], "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/fall-nitrogen.json"}, "isAccessibleForFree": true}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"}, {"@type": "ListItem", "position": 3, "name": "Fall nitrogen soil temperature", "item": "https://agsist.com/fall-nitrogen"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "When is it cold enough to apply fall anhydrous?", "acceptedAnswer": {"@type": "Answer", "text": "Iowa State, Nebraska and K-State all say to wait until soil at 4 inches is below 50 degrees F and trending cooler. Illinois uses the daily high of bare soil at 4 inches. Minnesota's best management practices use 6 inches. One cold morning is not enough; the soil has to stay there."}}, {"@type": "Question", "name": "Why 50 degrees?", "acceptedAnswer": {"@type": "Answer", "text": "Soil microbes turn ammonium into nitrate, and nitrate can leach or be lost to the air when soils are wet. That work slows a lot as soil cools below 50 degrees F. It does not stop, so later and colder is still better."}}, {"@type": "Question", "name": "Can I start at 55 degrees with a nitrification inhibitor?", "acceptedAnswer": {"@type": "Answer", "text": "Older Nebraska CropWatch advice put the line at 55 degrees F when a nitrification inhibitor goes on with the ammonia. The current Iowa State, K-State and Nebraska pages cited here still give 50 degrees and suggest an inhibitor on top of waiting, not as a reason to start sooner."}}, {"@type": "Question", "name": "Where should fall nitrogen not go on at all?", "acceptedAnswer": {"@type": "Answer", "text": "Sandy and other coarse soils, organic soils and very poorly drained soils, in the guidance from Illinois, Kansas and Nebraska. Illinois says no fall N for corn south of a line near Illinois Route 16. In Minnesota, fall nitrogen is restricted by rule from September 1 in vulnerable groundwater areas and some drinking water supply areas."}}, {"@type": "Question", "name": "Why is my county blank?", "acceptedAnswer": {"@type": "Answer", "text": "No station on this page is within 50 miles of the middle of the county, or the nearest one has not reported in the last 3 days. The page does not fill the gap with a model or a guess."}}, {"@type": "Question", "name": "Is the station reading the same as my field?", "acceptedAnswer": {"@type": "Answer", "text": "No. Residue, moisture, soil color and texture all change soil temperature. Bare ground warms and cools faster than ground under residue or sod. Use the station to see the trend, then check your own field with a soil thermometer at 4 inches in the afternoon."}}]}]}</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="fn">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Fall nitrogen</nav>
+      <h1>Is it cold enough for fall anhydrous?</h1>
+      <p class="by">Sigurd Lindquist, Certified Crop Adviser (CCA), Chetek, Wisconsin</p>
+      <p>Extension says to wait on fall anhydrous until soil at 4 inches stays below 50&deg;F. Pick your county or type a ZIP. You get the measured soil temperature at the nearest station, its last 7 days and how far away it is. No station within 50 miles, no number.</p>
+
+      <div class="fn-pick" id="fn-pick" hidden>
+        <label>ZIP <input id="fn-zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="50010"></label>
+        <button type="button" id="fn-zipgo">Show</button>
+        <span class="fn-or">or</span>
+        <label>State <select id="fn-st"><option value="">Pick a state</option></select></label>
+        <label>County <select id="fn-co" disabled><option value="">Pick a county</option></select></label>
+      </div>
+      <p class="fn-status" id="fn-status" aria-live="polite"></p>
+
+      <section id="fn-live" aria-live="polite">
+<!--FALLN:STATIC-->
+<p class="fn-empty"><b>Soil readings load after the first station read.</b> This page reads NOAA, USDA and state mesonet soil stations each morning and evening from September through December. Until the first read passes its checks, it shows no temperatures at all.</p>
+<!--/FALLN:STATIC-->
+      </section>
+
+      <h2 id="rules">What extension says, state by state</h2>
+      <ul class="fn-rules">
+        <li id="rule-IA"><b>Iowa</b><span class="fn-rt">Iowa State: wait until soil at 4 in is below 50&deg;F and trending cooler. North Iowa usually gets there in early November; central and south Iowa in the second and third weeks of November.</span> <a href="https://www.extension.iastate.edu/news/wait-soil-temps-remain-below-50-degrees-apply-anhydrous-ammonia">Iowa State Extension</a></li>
+        <li id="rule-IL"><b>Illinois</b><span class="fn-rt">Illinois Agronomy Handbook: apply fall N once the daily high of bare soil at 4 in is below 50&deg;F. No fall N for corn south of a line near Illinois Route 16, and none on sandy, organic or very poorly drained soils. This page shows the daily mean, which runs cooler than the daily high, so a mean under 50&deg;F does not meet the Illinois rule by itself.</span> <a href="https://www.ifca.com/files/Fall%20N%20Timing%20Illinois%20Agronomy%20Handbook.pdf">Handbook excerpt</a></li>
+        <li id="rule-MN"><b>Minnesota</b><span class="fn-rt">Minnesota&rsquo;s nitrogen best management practices: wait until soil at 6 in stays below 50&deg;F. From September 1, fall nitrogen is restricted by rule on vulnerable groundwater land (coarse soils, shallow bedrock, karst) and in some drinking water supply areas. Check the MDA map before you apply.</span> <a href="https://www.mda.state.mn.us/part-1-groundwater-protection-rule">MDA Groundwater Protection Rule</a> &middot; <a href="https://www.mda.state.mn.us/nfr">restriction map</a> &middot; <a href="https://www.mda.state.mn.us/protecting/soilprotection/soiltemp">MDA 6 in soil stations</a></li>
+        <li id="rule-KS"><b>Kansas</b><span class="fn-rt">K-State: on silt loam and heavier soils, wait until soil at 4 in is below 50&deg;F. No fall N on sandy soils prone to leaching. K-State suggests a nitrification inhibitor with fall ammonia and notes much of Kansas can stay above 50&deg;F well into late fall.</span> <a href="https://eupdate.agronomy.ksu.edu/article/considerations-for-fall-applications-of-anhydrous-ammonia-670-1">K-State Agronomy eUpdate</a></li>
+        <li id="rule-NE"><b>Nebraska</b><span class="fn-rt">Nebraska CropWatch: wait until soil at 4 in is below 50&deg;F and trending cooler, and keep fall ammonia off coarse soils. Your Natural Resources District may restrict fall nitrogen in a groundwater management area; ask before you apply.</span> <a href="https://cropwatch.unl.edu/delay-anhydrous-until-temperatures-drop">UNL CropWatch</a></li>
+        <li id="rule-other"><b>Indiana, Michigan, Missouri, North Dakota, Ohio, South Dakota, Wisconsin</b><span class="fn-rt">This page has not checked your state&rsquo;s own fall nitrogen guidance yet. The 50&deg;F at 4 in line is the one Iowa State, Nebraska and K-State use. Ask your extension office or agronomist what applies to your ground.</span></li>
+      </ul>
+
+      <h2 id="how">How this page reads the soil</h2>
+      <p>Every number is a measured daily mean from a soil sensor, never a model. The stations come from four networks: NOAA&rsquo;s Climate Reference Network (10 cm, 3.9 in), USDA NRCS&rsquo;s Soil Climate Analysis Network (4 in), the Iowa State Soil Moisture Network (4 in) and the Kansas Mesonet (10 cm). The depth of each station is printed next to its reading.</p>
+      <p>For a county, the page uses the station closest to the middle of the county, up to 50 miles away. For a ZIP, the station closest to the ZIP. A station drops off the page when its newest reading is more than 3 days old, when it has fewer than 5 of the last 7 days, or when a reading jumps more than 18&deg;F in a day (a sensor problem, not weather).</p>
+      <p><b>Below 50&deg;F all week</b> means every one of the station&rsquo;s last 7 daily readings was under 50&deg;F. That is the condition extension describes. It is not a forecast. A warm week can push the soil back over 50&deg;F, and your field is not the station.</p>
+      <details class="fn-all" id="fn-all" hidden><summary>Every station, newest reading</summary><div id="fn-all-body"></div></details>
+
+      <h2 id="questions">Questions</h2>
+      <div class="fn-faq">
+        <details><summary>When is it cold enough to apply fall anhydrous?</summary><p>Iowa State, Nebraska and K-State all say to wait until soil at 4 inches is below 50&deg;F and trending cooler. Illinois uses the daily high of bare soil at 4 inches. Minnesota&rsquo;s best management practices use 6 inches. One cold morning is not enough; the soil has to stay there.</p></details>
+        <details><summary>Why 50 degrees?</summary><p>Soil microbes turn ammonium into nitrate, and nitrate can leach or be lost to the air when soils are wet. That work slows a lot as soil cools below 50&deg;F. It does not stop, so later and colder is still better.</p></details>
+        <details><summary>Can I start at 55 degrees with a nitrification inhibitor?</summary><p>Older Nebraska CropWatch advice put the line at 55&deg;F when a nitrification inhibitor goes on with the ammonia. The current Iowa State, K-State and Nebraska pages cited here still give 50&deg;F and suggest an inhibitor on top of waiting, not as a reason to start sooner.</p></details>
+        <details><summary>Where should fall nitrogen not go on at all?</summary><p>Sandy and other coarse soils, organic soils and very poorly drained soils, in the guidance from Illinois, Kansas and Nebraska. Illinois says no fall N for corn south of a line near Illinois Route 16. In Minnesota, fall nitrogen is restricted by rule from September 1 in vulnerable groundwater areas and some drinking water supply areas.</p></details>
+        <details><summary>Why is my county blank?</summary><p>No station on this page is within 50 miles of the middle of the county, or the nearest one has not reported in the last 3 days. The page does not fill the gap with a model or a guess.</p></details>
+        <details><summary>Is the station reading the same as my field?</summary><p>No. Residue, moisture, soil color and texture all change soil temperature. Bare ground warms and cools faster than ground under residue or sod. Use the station to see the trend, then check your own field with a soil thermometer at 4 inches in the afternoon.</p></details>
+      </div>
+
+      <div class="src">
+        <p>Guidance: <a href="https://www.extension.iastate.edu/news/wait-soil-temps-remain-below-50-degrees-apply-anhydrous-ammonia">Iowa State Extension</a>; <a href="https://www.ifca.com/files/Fall%20N%20Timing%20Illinois%20Agronomy%20Handbook.pdf">Illinois Agronomy Handbook, fall N timing</a>; <a href="https://www.mda.state.mn.us/part-1-groundwater-protection-rule">Minnesota Department of Agriculture, Groundwater Protection Rule</a>; <a href="https://eupdate.agronomy.ksu.edu/article/considerations-for-fall-applications-of-anhydrous-ammonia-670-1">K-State Agronomy</a>; <a href="https://cropwatch.unl.edu/delay-anhydrous-until-temperatures-drop">Nebraska CropWatch</a>; <a href="https://water.unl.edu/article/animal-manure-management/science-behind-50-degree-soil-and-nitrogen-application/">Nebraska Water, the science behind 50 degrees</a>.</p>
+        <p>Soil data: <a href="https://www.ncei.noaa.gov/access/crn/">NOAA U.S. Climate Reference Network</a>; <a href="https://www.nrcs.usda.gov/resources/data-and-reports/soil-climate-analysis-network">USDA NRCS Soil Climate Analysis Network</a>; <a href="https://mesonet.agron.iastate.edu/agclimate/">Iowa State Soil Moisture Network (Iowa Environmental Mesonet)</a>; <a href="https://mesonet.k-state.edu/">Kansas Mesonet</a>. Data file: <a href="/data/fall-nitrogen.json">/data/fall-nitrogen.json</a>.</p>
+      </div>
+
+      <h2>Related</h2>
+      <ul class="rel">
+        <li><a href="/urea">Urea loss risk</a></li>
+        <li><a href="/fertilizer">Fertilizer prices</a></li>
+        <li><a href="/manure-value">Manure value</a></li>
+        <li><a href="/nutrient-removal">Nutrient removal value</a></li>
+        <li><a href="/spray">Spray advisory</a></li>
+      </ul>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script>
+/*falln:start*/
+var FN_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function fnMiles(a, b, c, d) {
+  var r = 3958.8, p1 = a * Math.PI / 180, p2 = c * Math.PI / 180, dp = p2 - p1, dl = (d - b) * Math.PI / 180;
+  var h = Math.sin(dp / 2) * Math.sin(dp / 2) + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) * Math.sin(dl / 2);
+  return 2 * r * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+function fnDate(iso) { var p = String(iso).split('-'); return FN_MON[+p[1] - 1] + ' ' + (+p[2]); }
+function fnAgeDays(iso, now) {
+  var t = Date.parse(iso + 'T12:00:00Z'); if (!isFinite(t)) return Infinity;
+  var n = new Date(now), today = Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate()) + 432e5;
+  return Math.round((today - t) / 864e5);
+}
+// One station's last 7 days. Mirrors read() in scripts/fetch_fall_nitrogen.py.
+function fnRead(s, now, maxAge) {
+  var t = s.t || [], week = t.slice(-7).filter(function (v) { return typeof v === 'number'; });
+  var latest = null, first = null, i;
+  for (i = t.length - 1; i >= 0; i--) if (typeof t[i] === 'number') { latest = t[i]; break; }
+  var w = t.slice(-7); for (i = 0; i < w.length; i++) if (typeof w[i] === 'number') { first = w[i]; break; }
+  var below = week.filter(function (v) { return v < 50; }).length;
+  var age = fnAgeDays(s.last, now), stale = age > (maxAge == null ? 3 : maxAge);
+  var state = latest === null ? null : latest >= 50 ? 'warm' : (below === week.length && week.length >= 5 ? 'holding' : 'dipping');
+  return {latest: latest, change: latest === null || first === null ? null : Math.round((latest - first) * 10) / 10,
+    below: below, n: week.length, state: stale ? 'stale' : state, age: age};
+}
+function fnTrend(c) {
+  if (c === null) return '';
+  if (Math.abs(c) < 1) return 'about flat over the last 7 days';
+  return (c < 0 ? 'down ' : 'up ') + Math.round(Math.abs(c)) + '°F over the last 7 days';
+}
+function fnNearest(lat, lon, stations, maxMi) {
+  var best = null;
+  (stations || []).forEach(function (s, i) {
+    var d = fnMiles(lat, lon, s.lat, s.lon);
+    if (d <= maxMi && (!best || d < best.mi)) best = {i: i, mi: d};
+  });
+  return best;
+}
+function fnNearestCounty(lat, lon, counties) {
+  var best = null;
+  Object.keys(counties || {}).forEach(function (f) {
+    var c = counties[f], d = fnMiles(lat, lon, c[2], c[3]);
+    if (!best || d < best.mi) best = {fips: f, mi: d};
+  });
+  return best && best.mi <= 40 ? best : null;
+}
+// The answer for one place, as plain data. place: {fips} or {lat, lon, label}.
+function fnView(d, place, now) {
+  if (!d || !d.stations || !d.stations.length || !place) return null;
+  var max = d.max_miles || 50, pick = null, label = '', st = '', county = null;
+  if (place.fips) {
+    county = d.counties && d.counties[place.fips];
+    if (!county) return null;
+    label = county[0] + ' County, ' + county[1]; st = county[1];
+    if (county.length > 5) pick = {i: county[4], mi: county[5]};
+  } else {
+    if (!isFinite(place.lat) || !isFinite(place.lon)) return null;
+    pick = fnNearest(place.lat, place.lon, d.stations, max);
+    if (pick) pick.mi = Math.round(pick.mi);
+    var nc = fnNearestCounty(place.lat, place.lon, d.counties);
+    county = nc ? d.counties[nc.fips] : null;
+    st = county ? county[1] : '';
+    label = place.label + (county ? ' (' + county[0] + ' County, ' + county[1] + ')' : '');
+  }
+  if (!pick) return {blank: true, label: label, st: st, max: max};
+  var s = d.stations[pick.i];
+  if (!s) return null;
+  var r = fnRead(s, now, d.max_age_days);
+  var head = {
+    warm: 'Not below 50°F yet',
+    dipping: 'Below 50°F, not for a full week yet',
+    holding: 'Below 50°F every day this week',
+    stale: 'No fresh reading from the nearest station'
+  }[r.state] || 'No reading';
+  var why = {
+    warm: 'Extension says wait until soil at 4 in stays below 50°F.',
+    dipping: 'One cold snap is not enough. Extension wants it below 50°F and staying there.',
+    holding: 'That is the soil condition extension describes for fall anhydrous: below 50°F and staying there. It is not a forecast. A warm spell can push it back up, so check the forecast and your own field.',
+    stale: 'It last reported ' + fnDate(s.last) + '. This page does not guess.'
+  }[r.state] || '';
+  return {blank: false, label: label, st: st || s.st, station: s, mi: pick.mi, read: r, head: head, why: why,
+    trend: fnTrend(r.change), cold: r.state === 'holding'};
+}
+// State rows for the summary table. Mirrors summary() in the fetcher.
+function fnStates(d, now) {
+  var by = {}, out = [];
+  (d.stations || []).forEach(function (s) { (by[s.st] = by[s.st] || []).push(s); });
+  Object.keys(by).forEach(function (st) {
+    var r = by[st].map(function (s) { return fnRead(s, now, d.max_age_days); });
+    var lat = r.filter(function (x) { return x.latest !== null && x.state !== 'stale'; }).map(function (x) { return x.latest; });
+    out.push({st: st, name: (d.state_names && d.state_names[st]) || st, n: by[st].length,
+      holding: r.filter(function (x) { return x.state === 'holding'; }).length,
+      warm: r.filter(function (x) { return x.state === 'warm'; }).length,
+      lo: lat.length ? Math.min.apply(null, lat) : null, hi: lat.length ? Math.max.apply(null, lat) : null});
+  });
+  return out.sort(function (a, b) { return a.name < b.name ? -1 : 1; });
+}
+// Daily readings against the 50 F line. Returns SVG markup.
+function fnSpark(t, last, w, h) {
+  var vals = t || [], n = vals.length, lo = 50, hi = 50;
+  vals.forEach(function (v) { if (typeof v === 'number') { lo = Math.min(lo, v); hi = Math.max(hi, v); } });
+  lo = Math.floor(lo - 3); hi = Math.ceil(hi + 3);
+  var padL = 34, padR = 10, padT = 8, padB = 20;
+  var x = function (k) { return padL + (w - padL - padR) * k / Math.max(1, n - 1); };
+  var y = function (v) { return padT + (h - padT - padB) * (1 - (v - lo) / (hi - lo)); };
+  var path = '', on = false, dots = '';
+  vals.forEach(function (v, k) {
+    if (typeof v === 'number') {
+      path += (on ? 'L' : 'M') + x(k).toFixed(1) + ',' + y(v).toFixed(1); on = true;
+      dots += '<circle cx="' + x(k).toFixed(1) + '" cy="' + y(v).toFixed(1) + '" r="3" class="fn-dot' + (v < 50 ? ' fn-under' : '') + '"/>';
+    } else on = false;
+  });
+  var end = Date.parse(last + 'T12:00:00Z'), lab = '';
+  [0, n - 1].forEach(function (k) {
+    var dt = new Date(end - (n - 1 - k) * 864e5);
+    lab += '<text x="' + x(k).toFixed(1) + '" y="' + (h - 4) + '" text-anchor="' + (k ? 'end' : 'start') + '" class="fn-ax">' + FN_MON[dt.getUTCMonth()] + ' ' + dt.getUTCDate() + '</text>';
+  });
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true" focusable="false">' +
+    '<line x1="' + padL + '" x2="' + (w - padR) + '" y1="' + y(50).toFixed(1) + '" y2="' + y(50).toFixed(1) + '" class="fn-fifty"/>' +
+    '<text x="' + (padL - 5) + '" y="' + (y(50) + 4).toFixed(1) + '" text-anchor="end" class="fn-ax fn-gold">50°</text>' +
+    '<text x="' + (padL - 5) + '" y="' + (padT + 8) + '" text-anchor="end" class="fn-ax">' + hi + '°</text>' +
+    '<text x="' + (padL - 5) + '" y="' + (h - padB) + '" text-anchor="end" class="fn-ax">' + lo + '°</text>' +
+    '<path d="' + path + '" class="fn-line"/>' + dots + lab + '</svg>';
+}
+/*falln:end*/
+(function () {
+  var live = document.getElementById('fn-live');
+  if (!live || !window.fetch) return;
+  var DATA = null, PLACE = null, seq = 0;
+  var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); };
+  var RULE = {IA: 'rule-IA', IL: 'rule-IL', MN: 'rule-MN', KS: 'rule-KS', NE: 'rule-NE'};
+  function status(t, err) { var s = $('fn-status'); s.textContent = t || ''; s.className = 'fn-status' + (err ? ' fn-err' : ''); }
+  function save() { try { localStorage.setItem('agsist-falln', JSON.stringify(PLACE)); } catch (e) {} }
+  function ruleLine(st) {
+    var id = RULE[st] || 'rule-other', li = $(id);
+    var name = (DATA.state_names && DATA.state_names[st]) || '';
+    if (!li) return '';
+    var rt = li.querySelector('.fn-rt');
+    return '<p class="fn-fine fn-rule"><b>' + (RULE[st] ? esc(name) + ':' : 'Your state:') + '</b> ' +
+      esc((rt ? rt.textContent : '').replace(/\s+/g, ' ').trim()) + ' <a href="#' + id + '">Sources</a></p>';
+  }
+  function summaryTable() {
+    var rows = fnStates(DATA, Date.now()), h = '<table class="fn-t"><caption>Soil near 4 in, by state, newest daily readings</caption><thead><tr><th scope="col">State</th><th scope="col">Stations</th><th scope="col">Below 50&deg;F all week</th><th scope="col">50&deg;F or warmer now</th><th scope="col">Range now</th></tr></thead><tbody>';
+    rows.forEach(function (r) {
+      h += '<tr><th scope="row">' + esc(r.name) + '</th><td>' + r.n + '</td><td>' + r.holding + '</td><td>' + r.warm + '</td><td>' +
+        (r.lo === null ? '' : Math.round(r.lo) + ' to ' + Math.round(r.hi) + '&deg;F') + '</td></tr>';
+    });
+    return '<div class="fn-tw">' + h + '</tbody></table></div>';
+  }
+  function render() {
+    var h = '';
+    if (PLACE) {
+      var v = fnView(DATA, PLACE, Date.now());
+      if (v && v.blank) {
+        h += '<div class="fn-answer"><p class="fn-k">' + esc(v.label) + '</p><p class="fn-head">No station within ' + v.max + ' miles</p>' +
+          '<p class="fn-sub">This page leaves it blank rather than fill it from a model. Check your own field with a soil thermometer at 4 in, or your state&rsquo;s network below.</p>' + (v.st ? ruleLine(v.st) : '') + '</div>';
+      } else if (v) {
+        var s = v.station, r = v.read;
+        h += '<div class="fn-answer' + (v.cold ? ' fn-cold' : '') + '" id="fn-answer"><p class="fn-k">' + esc(v.label) + '</p>' +
+          '<p class="fn-head">' + esc(v.head) + '</p>';
+        if (r.state !== 'stale' && r.latest !== null) {
+          h += '<p class="fn-big">' + Math.round(r.latest) + '&deg;F<span> on ' + esc(fnDate(s.last)) + '</span></p>' +
+            '<p class="fn-sub">' + esc(v.trend ? v.trend[0].toUpperCase() + v.trend.slice(1) + '. ' : '') +
+            r.below + ' of the last ' + r.n + ' days below 50&deg;F.</p>' +
+            '<div class="fn-chart" role="img" aria-label="' + esc('Daily soil temperature at ' + s.name + ', last ' + s.t.length + ' days, against the 50 degree line') + '">' + fnSpark(s.t, s.last, 640, 150) + '</div>';
+        }
+        h += '<p class="fn-sub">' + esc(v.why) + '</p>' +
+          '<p class="fn-fine">Station: ' + esc(s.name) + ' (' + esc((DATA.net_labels && DATA.net_labels[s.net]) || s.net) + '), ' + v.mi + ' mi away. Soil at ' + esc(s.depth) + ', ' + esc(s.stat) + '.</p>' +
+          ruleLine(v.st) + '</div>';
+      }
+    }
+    h += '<h2 id="states">Where the soil is, state by state</h2>' + summaryTable() +
+      '<p class="fn-fine">Readings updated ' + esc(String(DATA.updated_utc).slice(0, 10)) + '. &ldquo;Below 50&deg;F all week&rdquo; means all of a station&rsquo;s last 7 daily readings were under 50&deg;F.</p>';
+    live.innerHTML = h;
+  }
+  function allStations() {
+    var b = $('fn-all-body'); if (!b || b.getAttribute('data-done')) return;
+    var h = '<div class="fn-tw"><table class="fn-t"><caption>Newest daily mean, depth and the last 7 days</caption><thead><tr><th scope="col">Station</th><th scope="col">Depth</th><th scope="col">Newest</th><th scope="col">Days under 50&deg;F</th></tr></thead><tbody>';
+    DATA.stations.forEach(function (s) {
+      var r = fnRead(s, Date.now(), DATA.max_age_days);
+      h += '<tr><th scope="row">' + esc(s.name) + '</th><td>' + esc(s.depth) + '</td><td>' + (r.latest === null || r.state === 'stale' ? 'old' : Math.round(r.latest) + '&deg;F ' + esc(fnDate(s.last))) + '</td><td>' + r.below + ' of ' + r.n + '</td></tr>';
+    });
+    b.innerHTML = h + '</tbody></table></div>';
+    b.setAttribute('data-done', '1');
+  }
+  function fillStates() {
+    var sel = $('fn-st'), seen = {};
+    Object.keys(DATA.counties || {}).forEach(function (f) { seen[DATA.counties[f][1]] = 1; });
+    Object.keys(seen).sort(function (a, b) { return (DATA.state_names[a] || a) < (DATA.state_names[b] || b) ? -1 : 1; }).forEach(function (st) {
+      var o = document.createElement('option'); o.value = st; o.textContent = DATA.state_names[st] || st; sel.appendChild(o);
+    });
+  }
+  function fillCounties(st, pick) {
+    var sel = $('fn-co');
+    sel.innerHTML = '<option value="">Pick a county</option>';
+    var list = Object.keys(DATA.counties || {}).filter(function (f) { return DATA.counties[f][1] === st; })
+      .sort(function (a, b) { return DATA.counties[a][0] < DATA.counties[b][0] ? -1 : 1; });
+    list.forEach(function (f) {
+      var c = DATA.counties[f], o = document.createElement('option');
+      o.value = f; o.textContent = c[0] + (c.length > 5 ? '' : ' (no station within ' + (DATA.max_miles || 50) + ' mi)');
+      sel.appendChild(o);
+    });
+    sel.disabled = !st;
+    if (pick) sel.value = pick;
+  }
+  function setCounty(f) {
+    var c = DATA.counties && DATA.counties[f];
+    if (!c) return false;
+    $('fn-st').value = c[1]; fillCounties(c[1], f);
+    PLACE = {fips: f}; status(''); save(); render(); return true;
+  }
+  function byZip(z) {
+    z = String(z || '').replace(/\D/g, '').slice(0, 5);
+    if (z.length !== 5) { status('Enter a 5-digit ZIP.', true); return; }
+    $('fn-zip').value = z; status('Looking up ' + z + '...');
+    var my = ++seq;
+    var getJSON = function (u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); };
+    getJSON(ZIPS + z.slice(0, 2) + '.json').then(function (t) {
+      var p = t && t[z];
+      if (Array.isArray(p) && isFinite(+p[0]) && isFinite(+p[1]) && !(+p[0] === 0 && +p[1] === 0)) return {lat: +p[0], lon: +p[1]};
+      throw new Error('not in table');
+    }).catch(function () {
+      return getJSON('https://geocoding-api.open-meteo.com/v1/search?name=' + z + '&count=1&language=en&format=json&countryCode=US').then(function (d) {
+        var r = d && d.results && d.results[0]; if (!r) throw new Error('none'); return {lat: r.latitude, lon: r.longitude};
+      });
+    }).then(function (p) {
+      if (my !== seq) return;
+      PLACE = {lat: p.lat, lon: p.lon, label: 'ZIP ' + z, zip: z};
+      $('fn-st').value = ''; fillCounties('', null);
+      status(''); save(); render();
+    }).catch(function () { if (my === seq) status('Could not find ZIP ' + z + '. Check it and try again.', true); });
+  }
+  fetch('/data/fall-nitrogen.json', {cache: 'no-cache'}).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!d || !d.stations || !d.stations.length) return;
+    DATA = d;
+    $('fn-pick').hidden = false; $('fn-all').hidden = false;
+    fillStates();
+    $('fn-st').addEventListener('change', function () { fillCounties(this.value, null); });
+    $('fn-co').addEventListener('change', function () { if (this.value) setCounty(this.value); });
+    $('fn-zipgo').addEventListener('click', function () { byZip($('fn-zip').value); });
+    $('fn-zip').addEventListener('keydown', function (e) { if (e.key === 'Enter') byZip(this.value); });
+    $('fn-all').addEventListener('toggle', allStations);
+    var q = new URLSearchParams(location.search), saved = null;
+    try { saved = JSON.parse(localStorage.getItem('agsist-falln') || 'null'); } catch (e) {}
+    if (q.get('county') && setCounty(q.get('county'))) return;
+    if (q.get('zip')) { render(); byZip(q.get('zip')); return; }
+    if (saved && saved.fips && setCounty(saved.fips)) return;
+    if (saved && isFinite(saved.lat)) { PLACE = saved; if (saved.zip) $('fn-zip').value = saved.zip; }
+    render();
+  }).catch(function () {});
+})();
+  </script>
+</body>
+</html>

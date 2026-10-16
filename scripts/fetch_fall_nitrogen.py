@@ -490,7 +490,7 @@ def county_points(geo):
 
 
 def assign(points, stations):
-    """{fips: [name, st]} or [name, st, station index, miles] when a station
+    """{fips: [name, st, lat, lon]} plus [station index, miles] when a station
     is within MAX_MI of the county's center."""
     out = {}
     for fips, (name, st, lat, lon) in sorted(points.items()):
@@ -499,7 +499,7 @@ def assign(points, stations):
             d = miles(lat, lon, s["lat"], s["lon"])
             if d <= MAX_MI and (best is None or d < best[1]):
                 best = (i, d)
-        out[fips] = [name, st] + ([best[0], int(round(best[1]))] if best else [])
+        out[fips] = [name, st, lat, lon] + ([best[0], int(round(best[1]))] if best else [])
     return out
 
 
@@ -531,7 +531,7 @@ def build(results, today, now_utc, prev=None, points=None, log=print):
     if len(uniq) < MIN_STATIONS:
         raise Refuse("only %d stations passed (need %d)" % (len(uniq), MIN_STATIONS))
     doc = {
-        "about": "Measured soil temperature near 4 in for /fall-nitrogen. t is the last %d daily values in F, oldest first, ending on 'last'; null means the station sent nothing that day. counties: fips -> [name, state] or [name, state, station index, miles]." % DAYS,
+        "about": "Measured soil temperature near 4 in for /fall-nitrogen. t is the last %d daily values in F, oldest first, ending on 'last'; null means the station sent nothing that day. counties: fips -> [name, state, lat, lon] (center of the county) plus [station index, miles] when a station is within max_miles." % DAYS,
         "updated_utc": now_utc,
         "max_miles": MAX_MI,
         "max_age_days": MAX_AGE_DAYS,
@@ -659,7 +659,7 @@ def main_run():
             print("::warning::fall-nitrogen %s: %s" % (net, r))
     write_all(doc)
     print("wrote %s: %d stations, %d counties with a station within %d mi" % (
-        OUT, len(doc["stations"]), sum(1 for v in doc["counties"].values() if len(v) > 2), MAX_MI))
+        OUT, len(doc["stations"]), sum(1 for v in doc["counties"].values() if len(v) > 4), MAX_MI))
     return 0
 
 
@@ -823,8 +823,8 @@ def selftest():
     pts = {"19169": ("Story", "IA", 42.04, -93.47), "19193": ("Woodbury", "IA", 42.39, -96.05)}
     sts = [{"lat": 41.56, "lon": -93.29}, {"lat": 42.0, "lon": -93.7}]
     a = assign(pts, sts)
-    check("county gets nearest station", a["19169"][2] == 1 and a["19169"][3] < 15)
-    check("county with no station within 50 mi stays blank", a["19193"] == ["Woodbury", "IA"])
+    check("county gets nearest station", a["19169"][4] == 1 and a["19169"][5] < 15)
+    check("county with no station within 50 mi stays blank", a["19193"] == ["Woodbury", "IA", 42.39, -96.05])
     sq = [[[-94, 42], [-93, 42], [-93, 43], [-94, 43], [-94, 42]]]
     cp = county_points({"features": [{"id": "19001", "properties": {"name": "Sq", "st": "IA"},
                                        "geometry": {"type": "Polygon", "coordinates": sq}}]})
