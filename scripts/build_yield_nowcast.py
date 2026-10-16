@@ -34,7 +34,18 @@ HONESTY RULES:
     final USDA yield gets written next to them in January. Misses stay.
   - Off-season / stale ratings (>21 days): the script refuses to write
     a new nowcast (exit 0) — the page keeps showing the last dated one.
-  - Under 10 states or under 12 backtest years: exit 1 (fail loud).
+  - Under 10 states: exit 1 (fail loud).
+  - Too few backtest years AT THIS WEEK: late in the season (ISO week >=
+    LATE_WEEK) that is a known fact of the history, not a fault: NASS stops
+    rating as harvest finishes, and an early-harvest year (2012) or a report
+    gap (Oct 2013 shutdown) has no rating that late. 2026-10-16: the week
+    ending Oct 11 (ISO 41) left corn 9 expanding-window years, under the 10
+    the band needs. The script then writes NO new nowcast: the last good one
+    stays, and a `held_back` record says which ratings week was refused, how
+    many years it had and how many it needed (exit 0). The page says the
+    model reads the last week with enough history. The gate reads the record
+    and stops re-running that week. Earlier in the season the same shortfall
+    is a fault and still exits 1.
 
 Inputs (all repo-local, refreshed by their own workflows):
   data/cond-yield/pairs.json        PREFERRED history: 2000+ same-week
@@ -59,6 +70,16 @@ OUT = "data/yield-nowcast.json"
 MIN_STATES = 10
 MIN_YEARS = 12
 STALE_DAYS = 21
+LATE_WEEK = 38      # ISO week from which a thin same-week history is expected
+
+
+class ThinHistory(SystemExit):
+    """Too few backtest years at this ratings week. A SystemExit, so any
+    caller that does not handle it still fails loud."""
+
+    def __init__(self, crop, years, need, msg):
+        super().__init__(msg)
+        self.crop, self.years, self.need = crop, years, need
 
 ST_ABBR = {
     'Alabama': 'AL', 'Arkansas': 'AR', 'Colorado': 'CO', 'Connecticut': 'CT',
@@ -234,11 +255,13 @@ def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
     panel_years = set(p[0] for pairs in panel.values() for p in pairs)
     us_years = sorted(y for y in us if y in panel_years and y < date.today().year)
     if len(us_years) < MIN_YEARS:
-        raise SystemExit(f"FATAL {crop}: only {len(us_years)} backtest years (need {MIN_YEARS})")
+        raise ThinHistory(crop, len(us_years), MIN_YEARS,
+                          f"FATAL {crop}: only {len(us_years)} backtest years (need {MIN_YEARS})")
 
     errors_loyo = loyo_errors(panel, arows, us, us_years)
     if len(errors_loyo) < MIN_YEARS - 2:
-        raise SystemExit(f"FATAL {crop}: backtest produced only {len(errors_loyo)} years")
+        raise ThinHistory(crop, len(errors_loyo), MIN_YEARS - 2,
+                          f"FATAL {crop}: backtest produced only {len(errors_loyo)} years")
     loyo_mae, loyo_band = mae_p80([e for _, e, _ in errors_loyo])
 
     # ── PUBLISHED band: expanding-window backtest at this week ──
@@ -249,7 +272,8 @@ def run_crop(crop, cond, fit_states, nass_dir="data/nass"):
     # beside it (loyo_*) for transparency, not published as the band.
     errs = expanding_errors(panel, arows, us, us_years)
     if len(errs) < MIN_YEARS - 2:
-        raise SystemExit(f"FATAL {crop}: expanding-window backtest produced only {len(errs)} years")
+        raise ThinHistory(crop, len(errs), MIN_YEARS - 2,
+                          f"FATAL {crop}: expanding-window backtest produced only {len(errs)} years")
     mae, band80 = mae_p80([e for _, e, _ in errs])
     held = [h for h, _, _ in errs]
 
@@ -327,6 +351,32 @@ def append_history(hist, r, generated):
     return out
 
 
+def held_back_record(prev, we, err, recorded):
+    """The file as it was, plus a record of the refused week. The published
+    numbers, `generated` and history are left exactly as they were: they
+    describe the last week that had enough history, and say so by their own
+    week_ending. Returns None when this is not the expected late-season case."""
+    wk = date.fromisoformat(we).isocalendar()[1]
+    if wk < LATE_WEEK or not (prev or {}).get("crops"):
+        return None
+    last = prev["crops"].get("corn", {}).get("week_ending")
+    out = dict(prev)
+    out["held_back"] = {
+        "week_ending": we,
+        "iso_week": wk,
+        "crop": err.crop,
+        "backtest_years": err.years,
+        "need": err.need,
+        "last_good_week": last,
+        "recorded": recorded,
+        "reason": (f"No nowcast from the ratings for the week ending {we}: only {err.years} past "
+                   f"years had {err.crop} ratings that late in the season, and the error band needs "
+                   f"{err.need}. The figures shown are from the week ending {last}, the last ratings "
+                   f"week with enough history."),
+    }
+    return out
+
+
 def main(force_stale=False):
     cond_all = json.load(open("data/conditions/conditions.json"))["crops"]
     fits = json.load(open("data/cond-yield/fit.json"))["crops"]
@@ -373,8 +423,21 @@ def main(force_stale=False):
         "crops": {},
         "history": prev.get("history", {"corn": [], "soybeans": []}),
     }
+    results = {}
     for crop in CROPS:
-        r = run_crop(crop, cond_all[crop], list(fits[crop]["states"]))
+        try:
+            results[crop] = run_crop(crop, cond_all[crop], list(fits[crop]["states"]))
+        except ThinHistory as err:
+            # Both crops or neither: the page, the gate and the direction
+            # lock all read one ratings week for the whole file.
+            held = held_back_record(prev if prev.get("crops") else None, we, err, out["generated"])
+            if held is None:
+                raise
+            json.dump(held, open(OUT, "w"), indent=1)
+            print(f"::notice::{held['held_back']['reason']}")
+            print(f"{err} -- late-season refusal recorded in {OUT}; last nowcast kept. exit 0")
+            return
+    for crop, r in results.items():
         out["crops"][crop] = r
         out["history"][crop] = append_history(out["history"].get(crop, []), r, out["generated"])
         print(f"  {crop}: {r['nowcast']} ±{r['band80']} bu/ac  (trend {r['trend']}, "
@@ -478,6 +541,51 @@ def _selftest():
     # linfit sanity
     a, b = linfit([1, 2, 3], [2, 4, 6])
     chk(abs(b - 2) < 1e-9 and abs(a) < 1e-9, "linfit exact on a perfect line")
+    # late-season short history: refused and recorded, last nowcast kept
+    prev = {"generated": "g0", "crops": {"corn": {"week_ending": "2026-10-04", "nowcast": 180.6}},
+            "history": {"corn": [{"week_ending": "2026-10-04", "nowcast": 180.6, "band80": 6.9}]}}
+    thin_err = ThinHistory("corn", 9, 10, "FATAL corn: expanding-window backtest produced only 9 years")
+    hb = held_back_record(prev, "2026-10-11", thin_err, "t3")
+    chk(hb is not None and hb["crops"] == prev["crops"] and hb["history"] == prev["history"]
+        and hb["generated"] == "g0", "late-season thin week keeps the last nowcast untouched")
+    chk(hb["held_back"]["week_ending"] == "2026-10-11" and hb["held_back"]["backtest_years"] == 9
+        and hb["held_back"]["need"] == 10 and hb["held_back"]["last_good_week"] == "2026-10-04",
+        "the refusal records the week, the years it had and the years it needed")
+    chk("only 9 past years" in hb["held_back"]["reason"] and "\u2014" not in hb["held_back"]["reason"],
+        "the refusal says why in plain words")
+    chk(held_back_record(prev, "2026-07-12", thin_err, "t3") is None,
+        "mid-season thin history is a fault, not a refusal (still exits 1)")
+    chk(held_back_record(None, "2026-10-11", thin_err, "t3") is None,
+        "no previous nowcast to keep: still exits 1")
+    chk(isinstance(thin_err, SystemExit), "an unhandled ThinHistory still fails loud")
+    # ...and run_crop really raises it for a short-history week
+    import os
+    import tempfile
+    d = tempfile.mkdtemp()
+    st_names = [n for n in ST_ABBR][:12]
+    yrs_short = [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2014, 2015, 2016]
+    rows_y = [{"state": n, "values": {str(y): 150.0 + (y - 2000) + i for y in range(2001, 2026)}}
+              for i, n in enumerate(st_names)]
+    rows_a = [{"state": n, "values": {str(y): 1000 for y in range(2001, 2027)}} for n in st_names]
+    for f, rows in (("corn-yield.json", rows_y), ("corn-acres.json", rows_a)):
+        json.dump({"rows": rows}, open(os.path.join(d, f), "w"))
+    json.dump({"values": {str(y): 160.0 + y - 2010 for y in range(2010, 2026)}},
+              open(os.path.join(d, "corn-yield-us.json"), "w"))
+    cond_thin = {"week_ending": "2026-10-11",
+                 "states": {ST_ABBR[n]: {"ge": 60, "hist": [[y, 50 + (y % 7)] for y in yrs_short]}
+                            for n in st_names}}
+    cwd = os.getcwd()
+    try:
+        os.chdir(d)       # no data/cond-yield/pairs.json here: local panel path
+        run_crop("corn", cond_thin, [ST_ABBR[n] for n in st_names], nass_dir=d)
+        raised = None
+    except ThinHistory as e:
+        raised = e
+    finally:
+        os.chdir(cwd)
+    chk(raised is not None and raised.need in (MIN_YEARS, MIN_YEARS - 2),
+        f"a short-history week raises ThinHistory ({raised})")
+
     print("SELFTEST " + ("OK" if ok else "FAILED"))
     sys.exit(0 if ok else 1)
 
