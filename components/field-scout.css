@@ -623,3 +623,15 @@
 /* 2026-10-06: these panels stay dark in light mode, so gold inside them
    stays the bright gold (the page around them takes the darker text gold). */
 [data-theme="light"] .fs-stage{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f;--pd-gold:#d4a23f;--ib-gold:#d4a23f;--ib-gold2:#d4a23f;--wp-gold2:#e6b042;--as-gold2:#e6b042}
+
+/* First screen (Oct 16): a finished read is one tap away on the map itself; on a phone the
+   map gets shorter once a field is up so the bottom line and four numbers sit under it. */
+.fs-invite-acts{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:16px; pointer-events:auto; animation:fsRise .7s .12s cubic-bezier(.2,.7,.2,1) both; }
+.fs-invite-btn{ min-height:44px; padding:.6rem 1rem; border-radius:8px; border:1px solid var(--brand,#daa520); background:var(--brand-fill,var(--brand,#daa520)); color:#0a1206; font-family:var(--font-mono,'JetBrains Mono',monospace); font-size:.8rem; font-weight:800; letter-spacing:.01em; cursor:pointer; }
+.fs-invite-btn--alt{ background:var(--fs-glass-bg-strong,rgba(10,18,6,.9)); color:var(--text); }
+.fs-invite-btn[hidden]{ display:none; }
+.fs-invite-btn:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
+@media(max-width:720px){
+  html.fs-has-field .fs-stage{ height:48vh; height:48dvh; min-height:320px; }
+}
+.fs-search input{ min-width:0; width:100%; }  /* the input's default size pushed Go past the map edge at 390 px */

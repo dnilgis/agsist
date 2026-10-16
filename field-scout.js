@@ -148,6 +148,28 @@
       if(a) ga('presell_click', {});
     });
     renderSavedFields();
+    wireInviteActs();
+    // On a phone the map gets shorter once a field is up, so the bottom line shows under it
+    // without a scroll (components/field-scout.css, .fs-has-field). Keep Leaflet in step.
+    try{
+      var stg=document.querySelector('.fs-stage');
+      if(stg && window.ResizeObserver){
+        var _lastH=stg.offsetHeight, _refitT=null;
+        new ResizeObserver(function(){
+          var h=stg.offsetHeight; if(h===_lastH) return; _lastH=h;
+          try{ map.invalidateSize(); }catch(e){}
+          // Refit after the commit's own zoom animation ends (its last frame would undo an earlier fit).
+          // On a phone the search bar sits on top and the dock at the bottom: keep the field between them.
+          clearTimeout(_refitT);
+          _refitT=setTimeout(function(){
+            try{
+              var ph=window.innerWidth<=720;
+              if(activePoly && !(FIELD&&FIELD._dragged)) map.fitBounds(activePoly.getBounds(), { paddingTopLeft:[30, ph?76:30], paddingBottomRight:[30, ph?118:30], maxZoom:16, animate:false });
+            }catch(e){}
+          }, 420);
+        }).observe(stg);
+      }
+    }catch(e){}
     if(!restoreFromLink() && !fromAtlasLink()) tryAutoLocate();
   }
 
@@ -623,6 +645,8 @@
     drawnLayer.addLayer(activePoly);
     map.fitBounds(activePoly.getBounds(), { padding:[40,40] });
     document.getElementById('fs-clear').disabled = false;
+    var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.add('has-field');
+    dismissInvite();
     runAll(activePoly);
   }
   function renderSavedFields(){
@@ -664,6 +688,17 @@
       box.appendChild(div);
     });
     return true;
+  }
+  // The first screen offers a finished read in one tap: the example field, or, on a device
+  // that has saved fields, the last one saved (kept in this browser only).
+  function wireInviteActs(){
+    var ex=document.getElementById('fs-demo2'); if(ex) ex.addEventListener('click', loadDemoField);
+    var last=document.getElementById('fs-last'); if(!last) return;
+    var f=loadSavedFields()[0];
+    if(!f || !f.pts || f.pts.length<3){ last.hidden=true; return; }
+    last.textContent='Open '+String(f.name||'your field').slice(0,28)+' again';
+    last.hidden=false;
+    last.addEventListener('click', function(){ openSavedField(f.id); ga('field_reopen_invite', {}); });
   }
   function tryAutoLocate(){
     if(window.AGSIST_STATE && window.AGSIST_STATE.lat && window.AGSIST_STATE.lon){
@@ -1097,7 +1132,7 @@
     var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
     map.setView([42.3450,-93.3900], 15);
     commitField(poly, 'demo');
-    if(window.innerWidth<=820) setTimeout(jumpToRead, 1400);  // let the scan land first
+    // No jump on a phone: the map shortens once the field is up and the bottom line sits right under it.
     ga('field_demo', {});
   }
 
@@ -1172,11 +1207,11 @@
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
-      notesSectionHTML() +
       '<div class="fs-section fs-insight-section" id="fs-insight-wrap" hidden>'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"></div>'+
-      '</div>';
+      '</div>' +
+      notesSectionHTML();
     var D=document.getElementById('fs-deck');
     if(D){
       D.hidden=false;
