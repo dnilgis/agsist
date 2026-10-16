@@ -425,7 +425,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     </div>
 
     <!-- Maturity Estimates -->
-    <div class="gdu-card" style="margin-bottom:1.1rem">
+    <div class="gdu-card" id="gdu-mat-card" style="margin-bottom:1.1rem">
       <div class="gdu-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Maturity Projection</div>
       <div class="mat-grid">
         <div class="mat-card"><div class="mat-card-lbl">GDU Target</div><div class="mat-card-val" id="r-target">-</div><div class="mat-card-sub" id="r-target-sub">to maturity</div></div>
@@ -433,8 +433,8 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
         <div class="mat-card"><div class="mat-card-lbl">Days Left</div><div class="mat-card-val" id="r-days-left">-</div><div class="mat-card-sub" id="r-days-left-sub">at Wisconsin rates</div></div>
       </div>
       <div class="r-row" style="margin-top:.6rem"><span class="r-lbl">Progress to maturity</span><span class="r-val gold" id="r-pct">-</span></div>
-      <div class="r-row"><span class="r-lbl" id="r-mat-lbl">Est. black layer, Wisconsin rates</span><span class="r-val green" id="r-mat-date">-</span></div>
-      <div class="r-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">-</span></div>
+      <div class="r-row" id="r-mat-row"><span class="r-lbl" id="r-mat-lbl">Est. black layer, Wisconsin rates</span><span class="r-val green" id="r-mat-date">-</span></div>
+      <div class="r-row" id="r-frost-row"><span class="r-lbl">Frost risk</span><span class="r-val" id="r-frost-verdict">-</span></div>
       <div class="f-hint" id="r-mat-note" style="margin-top:.5rem"></div>
       <button id="g-share-btn" type="button" style="margin-top:.7rem;width:100%;padding:.55rem;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;letter-spacing:.04em;cursor:pointer;min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-link"/></svg> Copy shareable link to this field</button>
       <div class="f-hint" id="g-share-status" style="text-align:center;margin-top:.3rem" role="status" aria-live="polite"></div>
@@ -584,6 +584,21 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
 </div>
 
+<script>
+/* 2026-10-16 audit: September to November the questions are "is it at black
+   layer?" and "will frost beat it?", so the maturity card, with black layer
+   and frost on its first lines, comes before the season gauge, and the lede
+   says so. The rest of the year the page is as written. */
+(function(){
+  var m=new Date().getMonth(); if(m<8||m>10) return;
+  var card=document.getElementById('gdu-mat-card'), gauge=document.querySelector('.gauge-wrap');
+  if(card&&gauge&&gauge.parentNode===card.parentNode) gauge.parentNode.insertBefore(card,gauge);
+  var grid=card&&card.querySelector('.mat-grid'), mat=document.getElementById('r-mat-row'), fr=document.getElementById('r-frost-row');
+  if(grid&&mat&&fr){ card.insertBefore(mat,grid); card.insertBefore(fr,grid); mat.style.marginTop='0'; fr.style.marginBottom='.6rem'; }
+  var ld=document.querySelector('.gdu-hero .page-lede');
+  if(ld) ld.textContent='Is it at black layer, and will frost beat it? Black layer date and frost risk first, then heat units since planting and crop stage, from real daily weather at your ZIP.';
+})();
+</script>
 </main>
 <div id="site-footer">
 <!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->

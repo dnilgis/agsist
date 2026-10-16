@@ -958,6 +958,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 .season-section{margin-bottom:2rem}
 .season-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
 .season-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem}
+.season-card.season-now{border-color:var(--gold)}.season-now-tag{margin-left:.35rem;padding:.05rem .4rem;border-radius:10px;background:var(--gold);color:var(--bg);font-size:0.7rem;letter-spacing:.06em}
 .season-card-month{font-size:0.77rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
 .season-card-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
 .season-card-body{font-size:0.795rem;color:var(--text-dim);line-height:1.65}
@@ -1705,13 +1706,28 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="fold-body">
         <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">Application windows by month for corn and soybean producers. Timing and conditions shift year to year. Use this as a planning reference and always confirm current conditions before application.</p>
         <div class="season-grid">
-          <div class="season-card"><div class="season-card-month">April</div><div class="season-card-title">Burndown &amp; Pre-Emerge Corn</div><div class="season-card-body">Burndown glyphosate/2,4-D on cereal rye and winter annuals. Pre-emerge corn (atrazine, acetochlor). Variable temps: watch for frost. Inversion risk high on cold, calm nights.</div><span class="season-card-tag tag-pre">PRE</span> <span class="season-card-tag tag-burn">BURNDOWN</span></div>
-          <div class="season-card"><div class="season-card-month">May</div><div class="season-card-title">Pre-emerge beans and post corn</div><div class="season-card-body">Pre-emerge soybean programs (PPO + chlorimuron). POST corn V2&ndash;V5. Wind and temp stabilizing. Watch for rapid temperature swings: prime inversion risk period in cool, dry springs.</div><span class="season-card-tag tag-pre">PRE</span> <span class="season-card-tag tag-post">POST</span></div>
-          <div class="season-card"><div class="season-card-month">June</div><div class="season-card-title">POST soybeans and residual layby</div><div class="season-card-body">POST soybean V1&ndash;V3 before canopy closure. Dicamba window (V2&ndash;R1). Waterhemp pressure peaks. Hot, windy days: afternoon applications high risk for dicamba volatilization.</div><span class="season-card-tag tag-post">POST</span></div>
-          <div class="season-card"><div class="season-card-month">July</div><div class="season-card-title">Corn fungicide and late POST</div><div class="season-card-body">Corn fungicide window VT&ndash;R1. Late POST soybean before R1. Peak heat risk. Early morning applications critical: OTT dicamba is prohibited when the forecast high is 95&deg;F+ and limited to 50% of acres at 85&ndash;94&deg;F. Scout for escape weeds.</div><span class="season-card-tag tag-post">POST</span> <span class="season-card-tag tag-fung">FUNGICIDE</span></div>
-          <div class="season-card"><div class="season-card-month">August</div><div class="season-card-title">Soybean fungicide and layby</div><div class="season-card-body">Soybean fungicide R3 if disease pressure warrants. Monitoring for late season escapes. Minimal herbicide opportunities as canopy is closed. Still watch inversion risk on warm, clear nights.</div><span class="season-card-tag tag-fung">FUNGICIDE</span></div>
-          <div class="season-card"><div class="season-card-month">Sept&ndash;Oct</div><div class="season-card-title">Harvest aid and cover crop burndown</div><div class="season-card-body">Harvest aid soybeans (paraquat, sodium chlorate). Cover crop burndown post-harvest. Cool temps return: inversions common in calm fall nights. Watch for early frost timing and label restrictions.</div><span class="season-card-tag tag-burn">BURNDOWN</span></div>
+          <div class="season-card" data-m="4"><div class="season-card-month">April</div><div class="season-card-title">Burndown &amp; Pre-Emerge Corn</div><div class="season-card-body">Burndown glyphosate/2,4-D on cereal rye and winter annuals. Pre-emerge corn (atrazine, acetochlor). Variable temps: watch for frost. Inversion risk high on cold, calm nights.</div><span class="season-card-tag tag-pre">PRE</span> <span class="season-card-tag tag-burn">BURNDOWN</span></div>
+          <div class="season-card" data-m="5"><div class="season-card-month">May</div><div class="season-card-title">Pre-emerge beans and post corn</div><div class="season-card-body">Pre-emerge soybean programs (PPO + chlorimuron). POST corn V2&ndash;V5. Wind and temp stabilizing. Watch for rapid temperature swings: prime inversion risk period in cool, dry springs.</div><span class="season-card-tag tag-pre">PRE</span> <span class="season-card-tag tag-post">POST</span></div>
+          <div class="season-card" data-m="6"><div class="season-card-month">June</div><div class="season-card-title">POST soybeans and residual layby</div><div class="season-card-body">POST soybean V1&ndash;V3 before canopy closure. Dicamba window (V2&ndash;R1). Waterhemp pressure peaks. Hot, windy days: afternoon applications high risk for dicamba volatilization.</div><span class="season-card-tag tag-post">POST</span></div>
+          <div class="season-card" data-m="7"><div class="season-card-month">July</div><div class="season-card-title">Corn fungicide and late POST</div><div class="season-card-body">Corn fungicide window VT&ndash;R1. Late POST soybean before R1. Peak heat risk. Early morning applications critical: OTT dicamba is prohibited when the forecast high is 95&deg;F+ and limited to 50% of acres at 85&ndash;94&deg;F. Scout for escape weeds.</div><span class="season-card-tag tag-post">POST</span> <span class="season-card-tag tag-fung">FUNGICIDE</span></div>
+          <div class="season-card" data-m="8"><div class="season-card-month">August</div><div class="season-card-title">Soybean fungicide and layby</div><div class="season-card-body">Soybean fungicide R3 if disease pressure warrants. Monitoring for late season escapes. Minimal herbicide opportunities as canopy is closed. Still watch inversion risk on warm, clear nights.</div><span class="season-card-tag tag-fung">FUNGICIDE</span></div>
+          <div class="season-card" data-m="9,10,11"><div class="season-card-month">Sept&ndash;Oct</div><div class="season-card-title">Harvest aid and cover crop burndown</div><div class="season-card-body">Harvest aid soybeans (paraquat, sodium chlorate). Cover crop burndown post-harvest. Cool temps return: inversions common in calm fall nights. Watch for early frost timing and label restrictions.</div><span class="season-card-tag tag-burn">BURNDOWN</span></div>
         </div>
+        <script>
+        /* 2026-10-16 audit: the calendar ran April first in every month. The
+           card for this month now leads (September to November: harvest aid
+           and fall burndown; December to March: April burndown, the next
+           window), marked "Now". */
+        (function(){
+          var m=new Date().getMonth()+1, cards=document.querySelectorAll('.season-card[data-m]'), hit=null;
+          for(var i=0;i<cards.length;i++){ if((','+cards[i].getAttribute('data-m')+',').indexOf(','+m+',')>=0) hit=cards[i]; }
+          if(!hit&&(m===12||m<=3)) hit=document.querySelector('.season-card[data-m="4"]');
+          if(!hit) return;
+          var g=hit.parentNode; g.insertBefore(hit,g.firstChild);
+          hit.classList.add('season-now');
+          var mo=hit.querySelector('.season-card-month'); if(mo) mo.insertAdjacentHTML('beforeend',' <span class="season-now-tag">'+(m===12||m<=3?'Next':'Now')+'</span>');
+        })();
+        </script>
           </div>
         </details>
       </div>

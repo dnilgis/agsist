@@ -458,6 +458,18 @@
 (function(){
 'use strict';
 var Y=window.AgYield;
+/* 2026-10-16 audit: in September to November the combine is rolling, so the
+   number is a field estimate to set beside the yield monitor, and the page
+   says so. The rest of the year the copy is unchanged. */
+var FALL=(function(){var m=new Date().getMonth();return m>=8&&m<=10;})();
+var ONE=FALL?'Field estimate':'Est. Yield';
+if(FALL){
+  ['c-yield-lab','b-yield-lab'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ONE;});
+  var kk=document.querySelector('.ye-hero .ye-eyebrow');
+  if(kk&&kk.lastChild&&kk.lastChild.nodeType===3)kk.lastChild.nodeValue=' Field estimate: count before you cut';
+  var ld=document.querySelector('.ye-hero .page-lede');
+  if(ld)ld.textContent='Harvest is on: a field estimate from your own counts in rows you have not cut yet, ear counts for corn and pod counts for soybeans, to set beside the yield monitor.';
+}
 
 /* TAB SYSTEM */
 var tabs=document.querySelectorAll('.ye-tab');
@@ -560,7 +572,7 @@ function calcCorn(){
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   sites.corn[cur.corn]=readSite('corn');
   var n=sites.corn.length;
-  s('c-yield-lab',n>1?'Field average':'Est. Yield');
+  s('c-yield-lab',n>1?'Field average':ONE);
   var why=gate([['c-ear-count','Ears'],['c-kernel-rows','Kernel rows'],['c-kernels-row','Kernels per row']]);
   var ys=sites.corn.map(function(o){
     if(!SITE_FIELDS.corn.every(function(id){return inRange(o,id);}))return null;
@@ -619,7 +631,7 @@ function calcBean(){
   function s(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
   sites.bean[cur.bean]=readSite('bean');
   var n=sites.bean.length;
-  s('b-yield-lab',n>1?'Field average':'Est. Yield');
+  s('b-yield-lab',n>1?'Field average':ONE);
   var why=gate([['b-plant-count','Plants'],['b-pods-plant','Pods per plant'],['b-seeds-pod','Seeds per pod'],['b-seeds-lb','Seeds per pound']]);
   var slb=fld('b-seeds-lb'), slbOk=slb!=null&&inRange({'b-seeds-lb':slb},'b-seeds-lb');
   var ys=sites.bean.map(function(o){
