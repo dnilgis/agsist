@@ -197,6 +197,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .crop-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:13px 14px;margin-bottom:14px;display:none}
 .crop-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:6px}
 .crop-title{font-size:0.795rem;font-weight:700;color:var(--gold)}
+.moved-line{font-size:.9rem;line-height:1.5;color:var(--text-dim);margin:.5rem 0 0;max-width:62rem}.moved-line b{color:var(--text);font-weight:600}.moved-line .ml-src{display:block;font-size:.75rem;color:var(--text-muted);margin-top:.15rem}.moved-line .ml-src a{color:var(--gold)}
 .crop-asof{font-size:0.755rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace}
 .crop-section{margin-bottom:12px}
 .crop-section:last-child{margin-bottom:0}
@@ -425,6 +426,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
   <!--SEED:nc--><div class="nc-line" id="nc-line" style="display:none"></div><!--/SEED-->
   <p class="px-seed-note" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Nearby Nov '26 soybeans last traded near <strong>$12.57¼</strong> &middot; as of Oct 16, 8:31 a.m. CT.<!--/SEED--></p>
+  <!--SEED:moved--><p class="moved-line" id="moved-line"><b>Latest from USDA:</b> Oct 9 WASDE (2026/27, change from Sep): soybean yield 53.1 bu/acre, up 0.3; ending stocks 315 million bu, up 5. Nov '26 settled 4½¢ higher that day ($12.87½ to $12.92, CBOT settles). Crop Progress, week ending Oct 11: 46% of soybeans harvested (5-yr avg 50%). <span class="ml-src">Sources: USDA WASDE, CBOT settles, NASS Crop Progress; 5-yr avg is AGSIST's arithmetic on the NASS weeks. <a href="/whats-priced-in">Report track record</a></span></p><!--/SEED-->
   <div class="seed-tbl-wrap"><!--SEED:pxtable--><table class="seed-tbl"><caption>Last trade &middot; as of Oct 16, 8:31 a.m. CT &middot; Yahoo Finance, delayed (not CME settlements) &middot; quotes above refresh every 15 minutes in session</caption><thead><tr><th scope="col">Contract</th><th scope="col" class="num">Last</th><th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th></tr></thead><tbody><tr><td>Nearby Nov '26</td><td class="num">$12.57¼</td><td class="num">−7¢ (−0.55%)</td><td class="num">$10.55½&ndash;$13.35¼</td></tr></tbody></table><!--/SEED--></div>
 
   <div class="qa">

@@ -2141,6 +2141,20 @@ def futures_hero_seeds(page, prices, now=None):
     return out
 
 
+def moved_seed(page, today):
+    """The page's dated line of what USDA last printed and the board that day
+    (moved_line.py), from the data files on disk. Facts side by side only."""
+    import moved_line as ML
+    crop = page.split("-")[0]
+    if crop not in ML.CROPS:
+        return ""
+    tdate = _iso_date(today)
+    if not tdate:
+        return ML.moved_html(crop, None, None, None, None, None)
+    return ML.moved_html(crop, _load_json("data/wasde.json"), _load_json("data/whats-priced-in.json"),
+                         _load_json("data/harvest-prices.json"), _load_json("data/crop-progress.json"), tdate)
+
+
 def seed_futures_pages(prices, today):
     """The four futures pages: price seed, note, last-close/last-trade table and
     (grains) meta description. Callable on its own so the futures seeds can be
@@ -2225,6 +2239,9 @@ def seed_futures_pages(prices, today):
         for tag, val in futures_hero_seeds(page, prices).items():
             t, c6 = seed_between(t, tag, val)
             changed = changed or c6
+        # the dated "latest from USDA" line under the hero (scripts/moved_line.py)
+        t, c7 = seed_between(t, "moved", moved_seed(page, today))
+        changed = changed or c7
         t, c3 = stamp_datemodified(t, today)
         if changed or c3:
             open(page, "w", encoding="utf-8").write(t)
