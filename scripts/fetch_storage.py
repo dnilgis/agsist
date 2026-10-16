@@ -266,11 +266,225 @@ def shape_fall(stocks, fall, cap, last_prod_by_crop, year):
                        "September 1 and already in the stocks.")}
 
 
+# ---------------------------------------------------------------- history
+# 2026-10-16: HOW FAST EACH STATE CLEARS THE PRESSURE. farmdoc daily (Dhakal and
+# Janzen, Oct 7, 2026) compares each fall's storage pressure with December 1
+# capacity use, 2000-2025. Same two numbers here, per state and for the US:
+#   pressure(y) = (Sept 1 stocks of all six grains + corn, soybean and sorghum
+#                  final production of y) / Dec 1 capacity of y
+#   use(y)      = Dec 1 stocks of all six grains / Dec 1 capacity of y
+# A state-year counts only when every crop that was at least MIN_SHARE of that
+# year's grain has the stocks figure (the same rule as this fall's table), and
+# a value outside a sane band is dropped and counted, never clipped.
+# Output: data/storage/history.json, loaded by the page only when a reader opens
+# a state's history (components/storage-detail.js), never with the page.
+HIST_OUT = "data/storage/history.json"
+STOCK_REFS = {"sep": "FIRST OF SEP", "dec": "FIRST OF DEC"}
+CROP_OF = dict(zip(PROD, ["CORN", "SOYBEANS", "WHEAT", "SORGHUM", "BARLEY", "OATS"]))
+P_BAND = (0.10, 3.0)      # pressure outside this is a data fault, not a fall
+U_BAND = (0.02, 2.0)
+MIN_YEARS = 10            # fewer usable falls than this: no averages printed
+# farmdoc daily's published 2000-2025 averages (Oct 7, 2026, read from the saved
+# copy on the references branch, bench-storage-crunch-1). If our arithmetic on
+# NASS's numbers lands far from theirs, something is wrong with the pull, and
+# the history file is not written.
+FARMDOC_CHECK = {"IL": {"p": 1.03, "u": 0.81}}
+FARMDOC_US_DROP = 0.27
+CHECK_TOL = 0.08
+
+
+def collect_history(fetch, year):
+    """-> stocks {ref: {st: {yr: {CROP: bu}}}} for STATE and NATIONAL ('US'),
+    us_prod {yr: {CROP: (bu, period)}} (finals for past years, latest for this
+    year), us_cap {yr: [on, off]}."""
+    stocks = {k: defaultdict(lambda: defaultdict(dict)) for k in STOCK_REFS}
+    dupes = 0
+    for key, ref in STOCK_REFS.items():
+        for agg in ("STATE", "NATIONAL"):
+            for crop, sd in STOCKS.items():
+                rows = fetch({"short_desc": sd, "agg_level_desc": agg, "source_desc": "SURVEY",
+                              "year__GE": str(FIRST_YEAR), "reference_period_desc": ref})
+                print(f"  history {key} stocks {crop.lower()} {agg.lower()}: {len(rows)} rows")
+                for r in rows:
+                    v = val(r)
+                    st = "US" if agg == "NATIONAL" else r.get("state_alpha")
+                    yr = str(r.get("year"))
+                    if v is None or not st or not yr or str(r.get("reference_period_desc") or ref) != ref:
+                        continue
+                    if crop in stocks[key][st][yr]:
+                        dupes += 1
+                        continue
+                    stocks[key][st][yr][crop] = v
+                time.sleep(2)
+    if dupes:
+        print(f"  !! {dupes} duplicate stocks rows ignored (kept first)")
+    us_prod = defaultdict(dict)
+    for c, sd in FALL.items():
+        rows = fetch({"short_desc": sd, "agg_level_desc": "NATIONAL", "source_desc": "SURVEY",
+                      "year__GE": str(FIRST_YEAR)})
+        print(f"  history US production {sd.split(' -')[0].lower()}: {len(rows)} rows")
+        for r in rows:
+            v, yr, ref = val(r), str(r.get("year")), str(r.get("reference_period_desc") or "")
+            if v is None or ref not in FORECAST_ORDER:
+                continue
+            have = us_prod[yr].get(c)
+            if int(yr) < year and ref != "YEAR":
+                continue            # a past year counts its final only
+            if have is None or FORECAST_ORDER.index(ref) > FORECAST_ORDER.index(have[1]):
+                us_prod[yr][c] = (v, ref)
+        time.sleep(2)
+    us_cap = defaultdict(lambda: [None, None])
+    for which, sd in CAP.items():
+        rows = fetch({"short_desc": sd, "agg_level_desc": "NATIONAL", "source_desc": "SURVEY",
+                      "year__GE": str(FIRST_YEAR), "reference_period_desc": CAP_REF})
+        print(f"  history US capacity {which}-farm: {len(rows)} rows")
+        for r in rows:
+            v = val(r)
+            if v is not None:
+                us_cap[str(r.get("year"))][0 if which == "on" else 1] = v
+        time.sleep(2)
+    return stocks, us_prod, us_cap
+
+
+def pct(xs, q):
+    """q-th percentile, linear between ranks (numpy's default)."""
+    s = sorted(xs)
+    if not s:
+        return None
+    k = (len(s) - 1) * q
+    lo = int(k)
+    hi = min(lo + 1, len(s) - 1)
+    return s[lo] + (s[hi] - s[lo]) * (k - lo)
+
+
+def summarize(ys, ps, us, this_p):
+    """Averages, 10th-90th ranges, drawdown and a leave-one-out check of the
+    'usual drop' line. None when fewer than MIN_YEARS falls have both numbers."""
+    both = [(y, p, u) for y, p, u in zip(ys, ps, us) if p is not None and u is not None]
+    if len(both) < MIN_YEARS:
+        return {"n": len(both), "withheld": f"only {len(both)} falls with both figures (need {MIN_YEARS})"}
+    P = [b[1] for b in both]
+    U = [b[2] for b in both]
+    D = [p - u for p, u in zip(P, U)]
+    n = len(both)
+    mean = lambda a: sum(a) / len(a)
+    # leave-one-out: predict each year's Dec 1 use as its pressure minus the
+    # average drop of the OTHER years; how far off was that, in points?
+    errs = [abs(both[i][2] - (both[i][1] - (sum(D) - D[i]) / (n - 1))) for i in range(n)]
+    r3 = lambda x: None if x is None else round(x, 3)
+    out = {"n": n, "first": both[0][0], "last": both[-1][0],
+           "p_avg": r3(mean(P)), "p10": r3(pct(P, .1)), "p90": r3(pct(P, .9)),
+           "u_avg": r3(mean(U)), "u10": r3(pct(U, .1)), "u90": r3(pct(U, .9)),
+           "drop_avg": r3(mean(D)), "drop10": r3(pct(D, .1)), "drop90": r3(pct(D, .9)),
+           "loo_mae": r3(mean(errs)), "loo_max": r3(max(errs))}
+    if this_p is not None:
+        out["this_p"] = r3(this_p)
+        out["below"] = sum(1 for p in P if p < this_p)       # past falls with less pressure
+        out["if_usual"] = r3(this_p - mean(D))
+        out["if_slow"] = r3(this_p - pct(D, .1))
+    return out
+
+
+def shape_history(stocks, prod_by_crop, cap, us_prod, us_cap, year, crunch):
+    """prod_by_crop: {st: {yr: {CROP: bu}}} state finals (all six grains).
+    cap: {st: {yr: [on, off]}}. crunch: this fall's block (or None)."""
+    years = [str(y) for y in range(FIRST_YEAR, year)]
+    dropped = defaultdict(int)
+    states = {}
+    sts = sorted(set(stocks["sep"]) | set(stocks["dec"]))
+    for st in sts:
+        if st in ("US", "OT"):
+            continue
+        ps, us = [], []
+        for yr in years:
+            on, off = (cap.get(st, {}).get(yr) or [None, None])
+            tot = (on or 0) + (off or 0)
+            grown = prod_by_crop.get(st, {}).get(yr, {})
+            gt = sum(grown.values())
+            if on is None or tot <= 0 or not gt:
+                ps.append(None); us.append(None); continue
+            need = [c for c, v in grown.items() if v / gt >= MIN_SHARE]
+            sep, dec = stocks["sep"][st].get(yr, {}), stocks["dec"][st].get(yr, {})
+            p = u = None
+            if all(c in sep for c in need):
+                p = (sum(sep.values()) + sum(grown.get(c, 0) for c in FALL)) / tot
+                if not (P_BAND[0] <= p <= P_BAND[1]):
+                    dropped["pressure out of band"] += 1
+                    p = None
+            if all(c in dec for c in need):
+                u = sum(dec.values()) / tot
+                if not (U_BAND[0] <= u <= U_BAND[1]):
+                    dropped["use out of band"] += 1
+                    u = None
+            ps.append(None if p is None else round(p, 3))
+            us.append(None if u is None else round(u, 3))
+        if not any(x is not None for x in ps + us):
+            continue
+        this = (((crunch or {}).get("states") or {}).get(st) or {}).get("ratio")
+        c20, c_last = cap.get(st, {}).get(str(year - 6)), cap.get(st, {}).get(str(year - 1))
+        rec = {"p": ps, "u": us, "stats": summarize(years, ps, us, this)}
+        if c20 and c_last and c20[0] is not None and c_last[0] is not None:
+            rec["cap"] = {str(year - 6): round(sum(c20)), str(year - 1): round(sum(c_last))}
+        states[st] = rec
+    # the US line: national rows only, no share rule (NASS publishes every crop)
+    ps, us = [], []
+    for yr in years:
+        on, off = us_cap.get(yr) or [None, None]
+        tot = (on or 0) + (off or 0)
+        sep, dec = stocks["sep"]["US"].get(yr, {}), stocks["dec"]["US"].get(yr, {})
+        crop = {c: v[0] for c, v in us_prod.get(yr, {}).items() if v[1] == "YEAR"}
+        ok = tot > 0 and all(c in sep for c in ("CORN", "SOYBEANS", "WHEAT")) and all(c in crop for c in ("CORN", "SOYBEANS"))
+        p = (sum(sep.values()) + sum(crop.get(c, 0) for c in FALL)) / tot if ok else None
+        u = sum(dec.values()) / tot if tot > 0 and all(c in dec for c in ("CORN", "SOYBEANS", "WHEAT")) else None
+        p = p if p is not None and P_BAND[0] <= p <= P_BAND[1] else None
+        u = u if u is not None and U_BAND[0] <= u <= U_BAND[1] else None
+        ps.append(None if p is None else round(p, 3))
+        us.append(None if u is None else round(u, 3))
+    us_this = ((crunch or {}).get("us") or {}).get("ratio")
+    usrec = {"p": ps, "u": us, "stats": summarize(years, ps, us, us_this)}
+    return {"years": years, "states": states, "us": usrec, "dropped": dict(dropped)}
+
+
+def shape_us_fall(stocks, us_prod, us_cap, year):
+    """This fall for the US as a whole: Sept 1 stocks + latest corn, soybean and
+    sorghum figure, over the latest US Dec 1 capacity. None when a piece is missing."""
+    sep = stocks["sep"]["US"].get(str(year), {})
+    fall = {c: v for c, v in us_prod.get(str(year), {}).items() if c in FALL}
+    caps = [y for y, (on, off) in us_cap.items() if on is not None and off is not None and int(y) < year]
+    if not caps or not all(c in sep for c in ("CORN", "SOYBEANS", "WHEAT")) or not all(c in fall for c in ("CORN", "SOYBEANS")):
+        return None
+    cy = max(caps)
+    tot = sum(us_cap[cy])
+    held = sum(sep.values()) + sum(v[0] for v in fall.values())
+    r = held / tot
+    if not (P_BAND[0] <= r <= P_BAND[1]):
+        return None
+    return {"stocks": {k: round(v) for k, v in sep.items()}, "fall": {k: [round(v[0]), v[1]] for k, v in fall.items()},
+            "cap": round(tot), "cap_year": cy, "total": round(held), "ratio": round(r, 3)}
+
+
+def history_checks(h):
+    """Our arithmetic against farmdoc's published averages. -> list of failures."""
+    bad = []
+    for st, want in FARMDOC_CHECK.items():
+        s = (h["states"].get(st) or {}).get("stats") or {}
+        for k in ("p", "u"):
+            got = s.get(k + "_avg")
+            if got is None or abs(got - want[k]) > CHECK_TOL:
+                bad.append(f"{st} average {'pressure' if k == 'p' else 'Dec 1 use'} {got} vs farmdoc {want[k]}")
+    d = h["us"]["stats"].get("drop_avg")
+    if d is None or abs(d - FARMDOC_US_DROP) > CHECK_TOL:
+        bad.append(f"US average drop {d} vs farmdoc {FARMDOC_US_DROP}")
+    return bad
+
+
 def main():
     if "--selftest" in sys.argv:
         return selftest()
     if not KEY:
         raise SystemExit("FATAL: NASS_API_KEY not set")
+    if "--probe" in sys.argv:
+        return probe()
     cap, prod, prod_n = collect(api_get)
     if not cap:
         raise SystemExit("FATAL: zero capacity rows — refusing to write")
@@ -301,14 +515,66 @@ def main():
                     "'OT' combined-small-states rows are in the national total but never ranked. "
                     "Ratio over 1.0 = the state grew more grain than it can store."),
            "latest_year": latest, "states": states, "national": national}
+    # History and the US line. Any fault here leaves the history file as it
+    # was and still writes this fall's table (the page says history is missing).
+    hist = None
+    try:
+        hs, us_prod, us_cap = collect_history(api_get, year)
+        if crunch:
+            usf = shape_us_fall(hs, us_prod, us_cap, year)
+            if usf:
+                crunch["us"] = usf
+                sumcap = national["cap"].get(usf["cap_year"])
+                if sumcap and abs(sumcap - usf["cap"]) / usf["cap"] > 0.05:
+                    print(f"::warning::US capacity {usf['cap']:,} vs sum of states {sumcap:,} differ by more than 5%")
+            else:
+                print("  no US line this fall: a national figure is missing")
+        by_crop = defaultdict(lambda: defaultdict(dict))
+        for sd, crop in CROP_OF.items():
+            for st, yrs in LAST_BY_CROP.get(sd, {}).items():
+                for yr, v in yrs.items():
+                    by_crop[st][yr][crop] = v
+        hist = shape_history(hs, by_crop, cap, us_prod, us_cap, year, crunch)
+        bad = history_checks(hist)
+        if bad:
+            print("::warning::history not written, it does not match farmdoc's published averages: " + "; ".join(bad))
+            hist = None
+    except SystemExit as e:
+        print(f"::warning::history skipped: {e}")
+    except Exception as e:  # noqa: BLE001
+        print(f"::warning::history skipped: {type(e).__name__}: {e}")
     if crunch:
         out["crunch"] = crunch
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(out, open(OUT, "w"), separators=(",", ":"))
+    if hist:
+        hist = {"generated": out["generated"], "fall_year": (crunch or {}).get("year"),
+                "method": ("pressure = (Sept 1 stocks of corn, soybeans, wheat, sorghum, barley and oats + that year's "
+                           "final corn, soybean and sorghum crop) / Dec 1 on-farm plus off-farm capacity; Dec 1 use = "
+                           "Dec 1 stocks of the same six grains / the same capacity. USDA NASS Quick Stats. A state-year "
+                           "counts only when every crop that was at least 2% of its grain has a stocks figure. Ranges "
+                           "are the 10th and 90th percentile, linear between ranks."), **hist}
+        json.dump(hist, open(HIST_OUT, "w"), separators=(",", ":"))
+        s = hist["states"].get("IL", {}).get("stats", {})
+        print(f"wrote {HIST_OUT}: {len(hist['states'])} states; IL pressure {s.get('p_avg')} Dec 1 {s.get('u_avg')} "
+              f"(farmdoc 1.03 / 0.81); US drop {hist['us']['stats'].get('drop_avg')} (farmdoc 0.27); dropped {hist['dropped']}")
     r = {st: s["ratio"].get(latest) for st, s in states.items() if s["ratio"].get(latest)}
     top = max(r, key=r.get)
     print(f"wrote {OUT}: {len(states)} states, latest {latest}, "
           f"tightest {top} at {r[top]:.2f}x capacity")
+
+
+def probe():
+    """Pull only the history series and print what came back. Writes nothing."""
+    year = datetime.now(timezone.utc).year
+    hs, us_prod, us_cap = collect_history(api_get, year)
+    for key in STOCK_REFS:
+        for st in ("IL", "IA", "US"):
+            yrs = sorted(hs[key][st])
+            print(f"  {key} {st}: {len(yrs)} years {yrs[:1]}..{yrs[-1:]}; {yrs[-1:] and hs[key][st][yrs[-1]]}")
+    for yr in (str(year - 1), str(year)):
+        print(f"  US crop {yr}: {us_prod.get(yr)}")
+    print(f"  US capacity: {dict(list(sorted(us_cap.items()))[-3:])}")
 
 
 def selftest():
@@ -380,6 +646,81 @@ def selftest():
     assert cr["states"]["IA"]["ratio"] == round(3710 / 3600, 3) and cr["states"]["IA"]["total"] == 3710, cr["states"]["IA"]
     # KS grew a big wheat crop and NASS gave it no wheat stocks: no ratio, and it says why
     assert "ratio" not in cr["states"]["KS"] and "wheat" in cr["states"]["KS"]["why"], cr["states"]["KS"]
+    # history: hand-worked. IL 2000-2011, capacity 60 + 40 = 100 every year,
+    # crop corn 80 + soy 20, Sept 1 stocks corn 10+i + soy 5, Dec 1 stocks 70 + 10.
+    # pressure(i) = (15 + i + 100) / 100 = 1.15 + 0.01i, use = 0.80.
+    # Averages: pressure 1.205, use 0.80, drop 0.405; 10th pct of pressure:
+    # rank 11 * 0.1 = 1.1 -> 1.16 + 0.1 * 0.01 = 1.161. Leave-one-out error for
+    # year i is |0.06 - 0.01i * 12/11|, mean 0.0327, worst 0.06 (i = 0 and 11).
+    # This fall 1.20: 5 past falls below it (1.15..1.19); usual drop -> 0.795.
+    yrs = [str(y) for y in range(2000, 2012)]
+    hst = {"sep": defaultdict(lambda: defaultdict(dict)), "dec": defaultdict(lambda: defaultdict(dict))}
+    pbc = defaultdict(lambda: defaultdict(dict))
+    hcap = defaultdict(dict)
+    for i, y in enumerate(yrs):
+        hst["sep"]["IL"][y] = {"CORN": 10 + i, "SOYBEANS": 5}
+        hst["dec"]["IL"][y] = {"CORN": 70, "SOYBEANS": 10}
+        pbc["IL"][y] = {"CORN": 80, "SOYBEANS": 20}
+        hcap["IL"][y] = [60, 40]
+        # KS grows wheat (50%) but NASS gave it no wheat stocks: no pressure, no use
+        hst["sep"]["KS"][y] = {"CORN": 10}
+        hst["dec"]["KS"][y] = {"CORN": 10}
+        pbc["KS"][y] = {"CORN": 50, "WHEAT": 50}
+        hcap["KS"][y] = [50, 50]
+        # US: national rows, cap 1000; pressure (100 + 900) / 1000 = 1.0, use 0.7
+        hst["sep"]["US"][y] = {"CORN": 60, "SOYBEANS": 20, "WHEAT": 20}
+        hst["dec"]["US"][y] = {"CORN": 500, "SOYBEANS": 100, "WHEAT": 100}
+    # a capacity typo (1 bu) in 2005 would make MO 115x: dropped and counted, not printed
+    for y in yrs:
+        hst["sep"]["MO"][y] = {"CORN": 10}
+        hst["dec"]["MO"][y] = {"CORN": 5}
+        pbc["MO"][y] = {"CORN": 100}
+        hcap["MO"][y] = [50, 50] if y != "2005" else [1, 0]
+    usp = {y: {"CORN": (800, "YEAR"), "SOYBEANS": (100, "YEAR")} for y in yrs}
+    usc = {y: [600, 400] for y in yrs}
+    h = shape_history(hst, pbc, hcap, usp, usc, 2012, {"states": {"IL": {"ratio": 1.20}}})
+    s = h["states"]["IL"]["stats"]
+    assert h["states"]["IL"]["p"][0] == 1.15 and h["states"]["IL"]["p"][11] == 1.26, h["states"]["IL"]["p"]
+    assert (s["n"], s["p_avg"], s["u_avg"], s["drop_avg"], s["p10"]) == (12, 1.205, 0.8, 0.405, 1.161), s
+    assert (s["loo_mae"], s["loo_max"], s["below"], s["if_usual"]) == (0.033, 0.06, 5, 0.795), s
+    assert "KS" not in h["states"], "a state missing a big crop's stocks got a history"
+    assert h["states"]["MO"]["p"][5] is None and h["dropped"]["pressure out of band"] == 1, h["dropped"]
+    assert h["us"]["p"][0] == 1.0 and h["us"]["u"][0] == 0.7 and h["us"]["stats"]["drop_avg"] == 0.3, h["us"]
+    assert history_checks(h), "farmdoc check passed on made-up numbers"
+    # under MIN_YEARS falls: averages withheld with the reason
+    w = summarize(yrs[:9], [1.0] * 9, [0.7] * 9, 1.1)
+    assert "p_avg" not in w and "only 9 falls" in w["withheld"], w
+    # this fall's US line: 2012 stocks 100 + crop 900 over the 2011 capacity 1000
+    hst["sep"]["US"]["2012"] = {"CORN": 60, "SOYBEANS": 20, "WHEAT": 20}
+    usp["2012"] = {"CORN": (800, "YEAR - SEP FORECAST"), "SOYBEANS": (100, "YEAR - SEP FORECAST")}
+    uf = shape_us_fall(hst, usp, usc, 2012)
+    assert uf["ratio"] == 1.0 and uf["cap_year"] == "2011", uf
+    # collect_history: a past year keeps its final, never a forecast; this year keeps the latest
+    def fake_hist(params):
+        sd, agg = params["short_desc"], params["agg_level_desc"]
+        if "STOCKS" in sd:
+            assert params["reference_period_desc"] in ("FIRST OF SEP", "FIRST OF DEC")
+            if sd.startswith("CORN"):
+                st = {} if agg == "NATIONAL" else {"state_alpha": "IL"}
+                return [dict(st, year=2025, Value="100", reference_period_desc=params["reference_period_desc"]),
+                        dict(st, year=2025, Value="999", reference_period_desc=params["reference_period_desc"])]
+            return []
+        if "CAPACITY" in sd:
+            return [{"year": 2025, "Value": "500"}]
+        if sd.startswith("CORN"):
+            return [{"year": 2025, "Value": "700", "reference_period_desc": "YEAR - NOV FORECAST"},
+                    {"year": 2025, "Value": "650", "reference_period_desc": "YEAR"},
+                    {"year": 2026, "Value": "600", "reference_period_desc": "YEAR - SEP FORECAST"},
+                    {"year": 2026, "Value": "610", "reference_period_desc": "YEAR - OCT FORECAST"}]
+        return []
+    _t.sleep = lambda s: None
+    try:
+        hs, up, uc = collect_history(fake_hist, 2026)
+    finally:
+        _t.sleep = real_sleep
+    assert hs["sep"]["IL"]["2025"] == {"CORN": 100} and hs["dec"]["US"]["2025"] == {"CORN": 100}, "duplicate stocks row summed"
+    assert up["2025"]["CORN"] == (650, "YEAR") and up["2026"]["CORN"] == (610, "YEAR - OCT FORECAST"), dict(up)
+    assert uc["2025"] == [500, 500]
     print(f"SELFTEST OK — ref-period pins, OT exclusion (rank) + inclusion (national), "
           f"(D) skip, ratio math (IA {ia['ratio']['2024']}x)")
 

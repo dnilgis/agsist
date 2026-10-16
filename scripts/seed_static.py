@@ -1369,11 +1369,23 @@ def seed_basis(today):
             nrm = "" if s.get("avg5") is None else (_basis_money(s["avg5"]) + (f" n={s['avg5_n']} yrs" if s.get("avg5_n") is not None else ""))
             h.append(f"<tr><td>{_e(name)}</td><td class=\"num\">{now}</td><td class=\"num\">{nrm}</td><td class=\"num\">{vs}</td></tr>")
         seeds["basistable"] = "".join(h)
-    seeds["storage"] = storage_html(_load_json("data/storage/storage.json"), today)
+    seeds["storage"] = storage_html(_load_json("data/storage/storage.json"), today,
+                                    _load_json("data/storage/history.json"), storage_basis(j, today))
     return _write_seeds("basis.html", seeds)
 
 
 # --- storage (the "why basis is wide" section of /basis) -----------------------
+def storage_basis(j, today):
+    """{USDA region: (corn basis now, vs 5-yr normal, week)} for the regions
+    the basis table prints for its week, never a held or late week. {} when the
+    basis table itself is withheld."""
+    wk, rows, _ = basis_summary(j)
+    if not rows or _stale(wk, today, "basis"):
+        return {}
+    return {name: (s["latest"], s.get("delta"), wk) for name, s, age in rows
+            if age == 0 and s.get("latest") is not None}
+
+
 FARMDOC = ("farmdoc daily (Dhakal and Janzen, &ldquo;Enough Room for the Harvest? Grain Storage Pressure in the "
            "Corn Belt,&rdquo; Oct 7, 2026)")
 FARMDOC_URL = "https://farmdocdaily.illinois.edu/wp-content/uploads/2026/10/fdd100726.pdf"
@@ -1387,11 +1399,94 @@ ST_NAME = {"AL": "Alabama", "AR": "Arkansas", "CO": "Colorado", "GA": "Georgia",
            "UT": "Utah", "FL": "Florida", "NV": "Nevada", "NJ": "New Jersey", "WV": "West Virginia"}
 
 
-def storage_html(d, today):
+def _why_text(r, yr):
+    """'NASS has no state figure for soybeans, wheat' says which crop, not which
+    figure. Split it: a crop with no Sept 1 stocks figure, a crop with no crop figure."""
+    w = str(r.get("why") or "")
+    pre = "NASS has no state figure for "
+    if not w.startswith(pre):
+        return _e(w)
+    crops = [c.strip() for c in w[len(pre):].split(",") if c.strip()]
+    stk = [c for c in crops if c.upper() not in (r.get("stocks") or {})]
+    crop = [c for c in crops if c not in stk]
+    parts = []
+    if stk:
+        parts.append("no Sept 1 stocks figure for " + ", ".join(stk))
+    if crop:
+        parts.append(f"no {yr} crop figure for " + ", ".join(crop))
+    return _e("; ".join(parts))
+
+
+def _pts(x):
+    return _jsround(abs(x) * 100)
+
+
+def storage_hist_text(name, h):
+    """One state's past falls, in words. Twin of components/storage-detail.js
+    histText(); test/storage-section.test.mjs holds the two to the same output."""
+    if not h:
+        return ""
+    if h.get("withheld"):
+        return f"<p class=\"st-h\">Past falls in {_e(name)}: not enough history to say ({_e(h['withheld'])}).</p>"
+    out = (f"<p class=\"st-h\">Past falls in {_e(name)} ({h['first']} to {h['last']}, {h['n']} with full figures): "
+           f"the September pressure averaged {_fixed(h['p_avg'], 2)}&times; and December 1 use "
+           f"{_fixed(h['u_avg'], 2)}&times;, so moving and using grain took off {_pts(h['drop_avg'])} points by "
+           f"December (most years {_pts(h['drop10'])} to {_pts(h['drop90'])}).")
+    if h.get("this_p") is not None:
+        above = f"all {h['n']}" if h["below"] == h["n"] else f"{h['below']} of those {h['n']}"
+        out += (f" This fall&rsquo;s {_fixed(h['this_p'], 2)}&times; is above {above}. At the "
+                f"usual pace December 1 use would land near {_fixed(h['if_usual'], 2)}&times;; at the pace of the "
+                f"slowest tenth of years, {_fixed(h['if_slow'], 2)}&times;. Tried on past years, that usual-pace "
+                f"rule missed December by {_pts(h['loo_mae'])} points on average, {_pts(h['loo_max'])} at worst.")
+    return out + "</p>"
+
+
+def _mbn(x):
+    return f"{int(x):,}"
+
+
+def storage_card(st, v, hs, have_hist, meta):
+    """The reader's state, from one entry of the section's data blob (numbers
+    only; this formats them). Twin of components/storage-detail.js card();
+    test/storage-section.test.mjs holds the two to the same output.
+    v: {n name, r ratio text, k rank | f floor note, s stocks, c crop, b bins
+    (million bu), bn/bd corn basis now / vs normal (cents), cp [bins yr-6,
+    bins yr-1], w why-no-ratio}. meta: {year, n rows, wk basis week}."""
+    name, yr = _e(v["n"]), meta["year"]
+    if v.get("r") is None:
+        out = f"<p class=\"st-you-h\"><b>{name}:</b> no ratio this fall. {v.get('w') or ''}.</p>"
+    else:
+        rank = (f"{_ordinal(v['k'])} most crowded of {meta['n']}" if v.get("k")
+                else f"a floor: {v.get('f')}, which can only push it higher")
+        held = (f"{_mbn(v['s'])} million bu in the bins on Sept 1 + " if v.get("s") else "") + \
+               f"{_mbn(v['c'])} million bu of {yr} crop, against {_mbn(v['b'])} million bu of bin space"
+        out = (f"<p class=\"st-you-h\"><b>{name}: {v['r']}&times;</b> <span>{rank}</span></p><p>{held}.</p>")
+    if v.get("bd") is not None:
+        c = v["bd"]
+        vs = "right at" if c == 0 else f"{abs(c)}&cent; {'under' if c < 0 else 'over'}"
+        out += (f"<p>Corn basis in USDA&rsquo;s {name} region, week of {meta['wk']}: {pricefmt.basis(v['bn'])}, {vs} "
+                f"its 5-year normal for that week. Bins are one cause; freight and local demand are the others.</p>")
+    if v.get("cp"):
+        a, b = v["cp"]
+        pa = 100 * (b / a - 1)
+        out += (f"<p>Bin space: {_mbn(b)} million bu on Dec 1, {yr - 1}, {'+' if pa >= 0 else '&minus;'}"
+                f"{_fixed(abs(pa), 1)}% from Dec 1, {yr - 6} (NASS).</p>")
+    if hs is not None:
+        out += storage_hist_text(v["n"], hs)
+    elif not have_hist and v.get("r") is not None:
+        out += (f"<p class=\"st-h\">How fast {name} has cleared the pressure in past falls (NASS December 1 "
+                f"stocks, 2000 to {yr - 1}) fills in after our next NASS pull.</p>")
+    return out
+
+
+def storage_html(d, today, hist=None, basis=None):
     """This fall's grain against bin space. Computed only from the pipeline's
     fall block for THIS year (Sept 1 stocks + this year's crop / capacity);
     until NASS's numbers are pulled, farmdoc's published finding is cited
-    with its date instead, and last year's crop-only ratio is not shown."""
+    with its date instead, and last year's crop-only ratio is not shown.
+    hist: data/storage/history.json (used only when it comes from the same
+    NASS pull as the table). basis: {region name: (now, delta, week)} for corn,
+    USDA's regions posted in the basis table's week."""
     yr = int(today[:4])
     lead = ("<p>Basis has to pay for space. When the grain that has to be held this fall is more than the bins "
             "can take, elevators bid less to slow it down or pay to ship it out, and that comes out of your basis.</p>")
@@ -1403,6 +1498,12 @@ def storage_html(d, today):
                 f"<p>Our own state-by-state version of that math (USDA NASS September 1 stocks plus the latest {yr} "
                 f"crop forecast, over on-farm plus off-farm capacity) fills in here once our next NASS pull "
                 f"lands. Until then this section shows no state numbers of its own.</p>")
+    basis = basis or {}
+    # history only from the same pull as the table: two vintages never meet
+    if hist and hist.get("generated") == d.get("generated") and hist.get("fall_year") == cr.get("year"):
+        hst = hist
+    else:
+        hst = None
     rows = [(st, r) for st, r in cr["states"].items() if r.get("ratio") is not None]
     rows.sort(key=lambda x: -x[1]["ratio"])
     short = [st for st, r in rows if r["ratio"] > 1]
@@ -1428,43 +1529,135 @@ def storage_html(d, today):
                         for p in per) or "forecast"
     mb = lambda x: _commas(round(x / 1e6)) if x else "-"
     floor2 = lambda x: int(x * 100) / 100
+    nat = (d.get("national") or {}).get("cap") or {}
+    blob = {}
+
+    def extras(st):
+        e = {}
+        c = (d.get("states") or {}).get(st, {}).get("cap") or {}
+        a, b = c.get(str(yr - 6)), c.get(str(yr - 1))
+        if a and b and a[0] is not None and b[0] is not None:
+            e["cp"] = [round(sum(a) / 1e6), round(sum(b) / 1e6)]
+        bb = basis.get(ST_NAME.get(st, st))
+        if bb and bb[1] is not None:
+            e["bn"], e["bd"] = _jsround(bb[0] * 100), _jsround(bb[1] * 100)
+        return e
+
+    def entry(st, r, rtxt, stocks, fall, **kw):
+        e = {"n": ST_NAME.get(st, st), "r": rtxt, "s": round(stocks / 1e6), "c": round(fall / 1e6),
+             "b": round(r["cap"] / 1e6), **kw}
+        e.update(extras(st))
+        return e
 
     def tr(st, ratio_txt, stocks, fall, cap, note=""):
         # on a phone the three input columns fold into one line under the state
-        name = _e(ST_NAME.get(st, st)) + (f" <span class=\"st-note\">{note}</span>" if note else "")
+        name = (f"<button type=\"button\" class=\"st-b\" data-st=\"{st}\">{_e(ST_NAME.get(st, st))}</button>"
+                + (f" <span class=\"st-note\">{note}</span>" if note else ""))
         held_txt = (f"{mb(stocks)} stocks + " if stocks else "") + f"{mb(fall)} crop"
         return (f"<tr><td>{name}<span class=\"st-in\">{held_txt}, {mb(cap)} bins</span></td>"
                 f"<td class=\"num\">{ratio_txt}</td><td class=\"num st-c\">{mb(stocks)}</td>"
                 f"<td class=\"num st-c\">{mb(fall)}</td><td class=\"num st-c\">{mb(cap)}</td></tr>")
-    trs = "".join(tr(st, f"{r['ratio']:.2f}&times;", sum(r['stocks'].values()),
-                     sum(v[0] for v in r['fall'].values()), r['cap']) for st, r in rows)
+
+    trs = ""
+    for i, (st, r) in enumerate(rows):
+        s, f = sum(r['stocks'].values()), sum(v[0] for v in r['fall'].values())
+        trs += tr(st, f"{_fixed(r['ratio'], 2)}&times;", s, f, r['cap'])
+        blob[st] = entry(st, r, _fixed(r['ratio'], 2), s, f, k=i + 1)
     if floors:
         trs += ("<tr class=\"st-sub\"><td colspan=\"5\">Missing a NASS figure, so a floor: the grain NASS did "
                 "publish is already more than the bins</td></tr>")
-        trs += "".join(tr(st, f"at least {floor2(held / r['cap']):.2f}&times;", sum((r.get('stocks') or {}).values()),
-                          sum(v[0] for v in (r.get('fall') or {}).values()), r['cap'],
-                          _e(r["why"].replace("NASS has no state figure for ", "no figure for ")))
-                       for st, r, held in floors)
+        for st, r, held in floors:
+            s, f = sum((r.get('stocks') or {}).values()), sum(v[0] for v in (r.get('fall') or {}).values())
+            why = _why_text(r, yr)
+            trs += tr(st, f"at least {floor2(held / r['cap']):.2f}&times;", s, f, r['cap'], why)
+            blob[st] = entry(st, r, f"at least {floor2(held / r['cap']):.2f}", s, f, f=why)
     none = sorted(ST_NAME.get(st, st) for st, r in cr["states"].items()
                   if r.get("ratio") is None and r.get("why") and st not in {f[0] for f in floors})
-    out = (lead + f"<p>This fall, <strong>{len(short)} of {len(rows)}</strong> states with full NASS figures have "
-           f"more grain to hold than bin space: September 1 stocks plus the {yr} corn, soybean and sorghum crop "
-           f"({_e(per_txt)}), over on-farm plus off-farm capacity. Over 1.00&times; means more grain than bins.</p>")
+    for st, r in cr["states"].items():
+        if st not in blob and r.get("why"):
+            w = _why_text(r, yr)
+            blob[st] = {"n": ST_NAME.get(st, st), "r": None, "w": w[:1].upper() + w[1:], **extras(st)}
+    wks = {v[2] for v in basis.values()}
+    meta = {"year": yr, "n": len(rows), "wk": _md(min(wks)) if len(wks) == 1 else ""}
+    if not meta["wk"]:
+        for v in blob.values():
+            v.pop("bd", None), v.pop("bn", None)
+    hs_of = lambda st: (((hst or {}).get("states") or {}).get(st) or {}).get("stats") if hst else None
+
+    # the answer first: how many states, the most crowded, the US
+    us = cr.get("us")
+    top = rows[0] if rows else None
+    out = (f"<p class=\"st-ans\"><strong>{len(short)} of {len(rows)}</strong> states with full NASS figures have "
+           f"more grain to hold this fall than bins")
+    if top:
+        out += f"; {_e(ST_NAME.get(top[0], top[0]))} is most crowded at {_fixed(top[1]['ratio'], 2)}&times;"
+    out += ". "
+    if us and us.get("ratio") is not None:
+        out += (f"The US as a whole: <strong>{_fixed(us['ratio'], 2)}&times;</strong> ({mb(us['total'])} million bu "
+                f"to hold, {mb(us['cap'])} of bins).</p>")
+    elif yr == 2026:
+        out += ("The US as a whole has room: grain to hold is about 99% of bin space (farmdoc daily, on "
+                "NASS&rsquo;s September forecast). The pinch is local.</p>")
+    else:
+        out += "</p>"
+    # the reader's state (Iowa until the page knows better; the script swaps it)
+    pick = "IA" if "IA" in blob else (rows[0][0] if rows else None)
+    if pick:
+        out += (f"<div class=\"st-you\" id=\"st-you\" aria-live=\"polite\" data-st=\"{pick}\">"
+                f"{storage_card(pick, blob[pick], hs_of(pick), bool(hst), meta)}</div>")
+    out += lead[:-4] + (f" Grain to hold is September 1 stocks plus the {yr} corn, soybean and sorghum crop "
+                        f"({_e(per_txt)}); over 1.00&times; means more than the bins.</p>")
     if yr == 2026:
         # farmdoc's own conclusion, read 2026-10-15; it is about this year only
         out += (f"<p>That does not mean the bins run out. {FARMDOC} looked at how fast each state has cleared the "
                 f"pressure from September to December in past years and concluded that, on current production "
                 f"expectations, a storage crunch is unlikely in 2026. It can still pinch in some places, because bins, "
                 f"stocks and crops are spread unevenly. <a href=\"{FARMDOC_URL}\">Read their study</a>.</p>")
+    ush = (hst or {}).get("us", {}).get("stats") if hst else None
+    if ush and ush.get("drop_avg") is not None:
+        out += (f"<p>Our own count of the same history, USDA NASS December 1 stocks: in {ush['first']} to "
+                f"{ush['last']} the US took off {_pts(ush['drop_avg'])} points of pressure by December 1 on average "
+                f"(most years {_pts(ush['drop10'])} to {_pts(ush['drop90'])}). Tap a state for its own.</p>")
     out += (f"<div class=\"tblscroll\"><table class=\"bs-tbl bs-st\"><caption>Million bushels &middot; most crowded first"
-            f"</caption><tr><th>State</th><th style=\"text-align:right\">Grain vs bins</th>"
+            f" &middot; tap a state</caption><tr><th>State</th><th style=\"text-align:right\">Grain vs bins</th>"
             f"<th class=\"st-c\" style=\"text-align:right\">Sept 1 stocks</th><th class=\"st-c\" style=\"text-align:right\">{yr} fall crop</th>"
             f"<th class=\"st-c\" style=\"text-align:right\">Capacity</th></tr>{trs}</table></div>")
     if none:
         out += f"<p>No ratio where NASS has no state figure for a crop the state grows: {_e(', '.join(none))}.</p>"
-    out += (f"<p>Same measure as {FARMDOC}. Wheat, barley and oats are harvested by September 1, so they count once, "
-            f"in the stocks. Source: USDA NASS Quick Stats, Grain Stocks and Crop Production.</p>")
+    a, b = nat.get(str(yr - 11)), nat.get(str(yr - 6))
+    c = nat.get(str(yr - 1))
+    if a and b and c:
+        out += (f"<p>Bin space has nearly stopped growing. Added up across the states, on-farm plus off-farm capacity "
+                f"rose {_fixed(100 * (c / b - 1), 1)}% from December {yr - 6} to December {yr - 1}, after "
+                f"{_fixed(100 * (b / a - 1), 1)}% in the five years before (NASS).</p>")
+    gen = _iso_date(d.get("generated"))
+    out += ("<details class=\"st-math\"><summary>Show the math and sources</summary>"
+            f"<p>Grain vs bins = (September 1, {yr} stocks of corn, soybeans, wheat, sorghum, barley and oats, on- and "
+            f"off-farm) + ({yr} corn, soybean and sorghum crop, {_e(per_txt)}), divided by on-farm plus off-farm "
+            f"storage capacity on December 1, {yr - 1}, the latest NASS count. Wheat, barley and oats are harvested by "
+            f"September 1, so they count once, in the stocks. A state gets a ratio only when NASS publishes a state "
+            f"figure for every crop that was at least 2% of its grain last year. Figures are rounded to the million "
+            f"bushels, so they may not add exactly.</p>"
+            f"<p>Same measure as {FARMDOC}. Their article came out before NASS&rsquo;s October crop report and used "
+            f"the September forecast; this table uses the newer figures, so the order of the states can differ a "
+            f"little from theirs.</p>")
+    out += ("<p>Past falls: pressure in each year uses that year&rsquo;s final crop and that December&rsquo;s "
+            "capacity; December 1 use = December 1 stocks of the same six grains over the same capacity. Ranges are "
+            "the 10th to 90th percentile. The usual-pace line subtracts the state&rsquo;s average drop from this "
+            "fall&rsquo;s pressure; it is a rule of thumb, tested by leaving each past year out in turn.</p>")
+    out += (f"<p>Source: USDA NASS Quick Stats, Grain Stocks and Crop Production"
+            + (f", pulled {_mdy(gen)}" if gen else "") + ". Built by <code>scripts/fetch_storage.py</code>; "
+            "the data: <a href=\"/data/storage/storage.json\">storage.json</a>"
+            + (", <a href=\"/data/storage/history.json\">history.json</a>" if hst else "") + ". "
+            "Reviewed by Sigurd Lindquist, CCA.</p></details>")
+    out += ("<script type=\"application/json\" id=\"st-data\">"
+            + json.dumps({**meta, "gen": d.get("generated"), "states": blob}, separators=(",", ":")).replace("</", "<\\/")
+            + "</script>")
     return out
+
+
+def _ordinal(n):
+    return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
 
 
 # --- /elevators ----------------------------------------------------------------
