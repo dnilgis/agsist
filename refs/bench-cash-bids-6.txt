@@ -1,0 +1,266 @@
+# Benchmark cash-bids: Elevator/co-op sites via Agvance Grower360 / Barchart widgets
+# https://helpcenter.agvance.net/home/grower360-cash-bids
+# fetched 2026-10-16T15:38:32Z, sha256 1b8a925a4f524cbb6f238fb49f795649bd6c1fd4e9076bd3cf9a5cf3c70f623c
+
+Grower360 Cash Bids | Agvance Help Center
+
+-
+
+-
+
+-
+
+-
+
+Home
+
+-
+
+Glossary
+
+-
+
+Agvance Solutions Newsletter
+
+-
+
+Release Notes
+
+-
+
+Education
+
+-
+
+Calendar of Upcoming Education Opportunities
+
+-
+
+Educational Pathways
+
+-
+
+University Courses
+
+-
+
+eLearnings
+
+-
+
+Webinars
+
+-
+
+Agvance Micros
+
+-
+
+Knowledge Base
+
+-
+
+Agvance SKY
+
+-
+
+Mobile Apps
+
+-
+
+Accounting
+
+-
+
+Agronomy
+
+-
+
+Energy
+
+-
+
+Grain
+
+-
+
+Hub
+
+-
+
+General
+
+-
+
+Grower360
+
+-
+
+Agvance SKY Workflows
+
+-
+
+Video Library
+
+-
+
+Professional Services
+
+- Training
+
+- Business Process Review
+
+- Sending Data via LeapFILE
+
+- SKY Bucks
+
+- Traveling to an SSI Office
+
+-
+
+Product Roadmap
+
+-
+
+Forms
+
+-
+
+Agvance Website
+
+-
+
+Contact Support
+
+-
+
+Agvance Status
+
+- Home
+
+-
+
+- Knowledge Base
+
+-
+
+- Grower360
+
+-
+
+- Grower360 Overview Page
+
+Grower360 Cash Bids
+
+Last Modified on 07/26/2023 2:39 pm CDT
+
+Cash Bids information displays when Agvance Grain is used and Cash Bid information is set up using an active subscription to DTN or Barchart. For more information on setting up cash bid information to display in Grower360, see Cash Bid Setup.
+
+Cash bid information can be viewed by Commodity, Location, or Bid Criteria, depending on how future pricing is set up in Agvance.
+
+All available current Cash Bids display on the Overview page. Scrolling to the left displays additional available bids. Selecting View Details on a cash bid commodity card displays cash bid details for both current and previous periods.
+
+These cards automatically refresh every minute and the last updated date and time displays under the card.
+
+Related Articles
+
+-
+
+Grower360 Grain - Agvance SKY Admin
+
+-
+
+View Cash Bids
+
+-
+
+Grower360 Integrations - Agvance SKY Admin
+
+-
+
+Overview Page - Grower360
+
+How would you rate this article?
+
+Thank you for your feedback!
+
+Name
+
+Email
+
+Submit
+
+Thank you! Your comment has been submitted.
+
+Most Popular
+
+-
+
+Education
+
+-
+
+Gilbarco Passport Interface User Guide
+
+-
+
+Contact Support
+
+-
+See more...
+
+Newest
+
+-
+
+New
+Product October 2026
+
+-
+
+New
+October 2026
+
+-
+
+New
+Order October 2026
+
+-
+See more...
+
+Recently Updated
+
+-
+
+Updated
+Purchase Invoices - Agvance SKY Product
+
+-
+
+Updated
+Map - Agvance SKY Energy
+
+-
+
+Updated
+Route Management - Agvance SKY Energy
+
+-
+See more...
+
+Shortcuts
+
+-
+Product Roadmap
+
+-
+Energy Force Help Center
+
+-
+Agvance Website
+
+-
+Energy Force Website
+
+Copyright © 2020 – 2021 Your Company, LLC. All rights reserved.

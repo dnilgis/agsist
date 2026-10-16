@@ -1,0 +1,5 @@
+# Benchmark cash-bids: Barchart cash grain prices
+# https://www.barchart.com/cmdty/data/grain-prices
+# fetched 2026-10-16T15:37:03Z, sha256 54257dccb19ba431c56b233b95063e1746828579d06249f874d107403780f7ba
+
+
