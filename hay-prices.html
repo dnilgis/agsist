@@ -276,9 +276,11 @@ function haySpark(months, vals, w, h, big) {
   }
   function chart(id, months, vals, label) {
     return '<div class="hp-chart" id="' + id + '" role="img" tabindex="0" aria-label="' + esc(label) + ', monthly, ' + esc(hayMonthLabel(months[0])) + ' to ' + esc(hayMonthLabel(months[months.length - 1])) + '. Use the arrow keys to read each month." data-chart="' + id + '">' +
-      haySpark(months, vals, 640, 190, true) + '</div><p class="hp-tip" id="' + id + '-tip">Touch or hover the line to read a month.</p>';
+      haySpark(months, vals, CW, 190, true) + '</div><p class="hp-tip" id="' + id + '-tip">Touch or hover the line to read a month.</p>';
   }
+  var CW = 640;
   function render() {
+    CW = Math.max(300, Math.min(760, Math.round(live.clientWidth || 640)));
     var v = hayView(DATA, KEY, SORT, Date.now(), LB);
     setButtons();
     if (!v) return;
@@ -307,7 +309,7 @@ function haySpark(months, vals, w, h, big) {
       if (open) h += '<tr class="hp-open"><td colspan="' + (LB ? 5 : 4) + '">' + chart('hp-c-' + r.st, v.months, r.hist, v.label + ' in ' + r.name + ', dollars a ton') + '</td></tr>';
     });
     h += '</tbody></table></div>';
-    h += '<p class="hp-fine">' + v.rows.length + ' states with a ' + esc(v.label.toLowerCase()) + ' price from NASS in the last three years. Blank means NASS put out no number; it is never a zero.</p>';
+    h += '<p class="hp-fine">' + v.rows.length + ' states have ' + esc(v.label.toLowerCase()) + ' prices from NASS in the last three years. Blank means NASS put out no number; it is never a zero.</p>';
     live.innerHTML = h;
     wire();
   }
@@ -317,7 +319,7 @@ function haySpark(months, vals, w, h, big) {
       var s = DATA.series[KEY], vals = st ? s.states[st] : s.us, n = DATA.months.length, k = n - 1;
       var tip = document.getElementById(id + '-tip'), svg = el.querySelector('svg'), cross = el.querySelector('.hp-cross');
       if (!svg) return;
-      var padL = 44, padR = 6, w = 640;
+      var padL = 44, padR = 6, w = CW;
       function show(i) {
         k = Math.max(0, Math.min(n - 1, i));
         var xx = padL + (w - padL - padR) * k / (n - 1);
@@ -349,6 +351,11 @@ function haySpark(months, vals, w, h, big) {
     var focusSel = b.hasAttribute('data-st') ? '[data-st="' + b.getAttribute('data-st') + '"]' : b.hasAttribute('data-sort') ? '[data-sort="' + b.getAttribute('data-sort') + '"]' : null;
     render();
     if (focusSel) { var f = live.querySelector(focusSel); if (f) f.focus(); }
+  });
+  var rz = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(rz);
+    rz = setTimeout(function () { if (DATA && Math.abs((live.clientWidth || 0) - CW) > 40) render(); }, 200);
   });
   setButtons();
   fetch('/data/hay/hay-prices.json', {cache: 'no-cache'}).then(function (r) { return r.ok ? r.json() : null; })
