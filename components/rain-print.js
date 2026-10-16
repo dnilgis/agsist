@@ -2899,7 +2899,7 @@
     var arr = januaryGift() || (SETTLE && canOrder()) || (GIFT && GIFT.usable) ? '' : arriveText(OJ().j, PICK, TODAY);
     // the prices at the top and the shipping line follow the country (Canada: data/rain-print.json canada)
     var OJj = OJ().j || {};
-    PRODUCTS.forEach(function (id) { var el = doc.querySelector('[data-price="' + id + '"]'); if (el && typeof OJj[id] === 'number') el.textContent = (caOrder() ? 'US' : '') + money(OJj[id]); });
+    PRODUCTS.forEach(function (id) { Array.prototype.forEach.call(doc.querySelectorAll('[data-price="' + id + '"]'), function (el) { if (typeof OJj[id] === 'number') el.textContent = (caOrder() ? 'US' : '') + money(OJj[id]); }); });
     if (OJj.ships_within) $('rp-ships').textContent = OJj.ships_within;
     $('rp-arrive').textContent = arr;
     $('rp-arrive').hidden = !arr;
