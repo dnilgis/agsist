@@ -1,0 +1,77 @@
+name: Hay prices
+
+# Writes data/hay/hay-prices.json for /hay-prices and stamps the newest month
+# into hay-prices.html: USDA NASS prices received for alfalfa, other and all
+# hay, $ per ton, monthly by state (Agricultural Prices, through Quick Stats).
+# Read by scripts/fetch_hay_prices.py. The page shows an empty state until the
+# file exists. A failed check writes nothing and fails the job.
+#
+# FIRST RUN: dispatch this once with "probe" ticked. It saves a trimmed copy of
+# what NASS returned and a summary to data/hay-raw/ and commits them, so the
+# series names, units and counts can be checked before trusting a number.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the raw NASS rows and a summary to data/hay-raw/ and commit them"
+        type: boolean
+        default: false
+  schedule:
+    # Agricultural Prices comes out near the end of each month, 3 pm Eastern.
+    # Read the last days of the month and the first of the next; a run with
+    # nothing new changes nothing.
+    - cron: '23 20 27-31 * *'
+    - cron: '23 14 1,2 * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hay-prices
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: python scripts/fetch_hay_prices.py --selftest
+      - name: Probe (raw source capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_hay_prices.py --probe
+      - name: Fetch and write data/hay/hay-prices.json
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+        run: python scripts/fetch_hay_prices.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/hay data/hay-raw hay-prices.html"
+          rm -rf /tmp/hp && mkdir -p /tmp/hp
+          for f in $FILES; do
+            [ -e "$f" ] && cp -r --parents "$f" /tmp/hp/ || true
+          done
+          [ -n "$(ls -A /tmp/hp)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            cp -r /tmp/hp/. ./
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update hay prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
