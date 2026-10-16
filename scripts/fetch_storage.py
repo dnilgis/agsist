@@ -575,6 +575,21 @@ def probe():
     for yr in (str(year - 1), str(year)):
         print(f"  US crop {yr}: {us_prod.get(yr)}")
     print(f"  US capacity: {dict(list(sorted(us_cap.items()))[-3:])}")
+    # the same arithmetic and gate the real run uses, printed, nothing written
+    cap, prod, _ = collect(api_get)
+    by_crop = defaultdict(lambda: defaultdict(dict))
+    for sd, crop in CROP_OF.items():
+        for st, yrs in LAST_BY_CROP.get(sd, {}).items():
+            for yr, v in yrs.items():
+                by_crop[st][yr][crop] = v
+    usf = shape_us_fall(hs, us_prod, us_cap, year)
+    h = shape_history(hs, by_crop, cap, us_prod, us_cap, year, {"us": usf} if usf else None)
+    print(f"  US this fall: {usf}")
+    for st in ("IL", "IA", "MN", "ND", "MO", "KY", "US"):
+        s = (h["us"] if st == "US" else h["states"].get(st, {})).get("stats")
+        print(f"  history {st}: {s}")
+    print(f"  dropped: {h['dropped']}; states with history: {len(h['states'])}")
+    print(f"  farmdoc gate: {history_checks(h) or 'PASS'}")
 
 
 def selftest():
@@ -721,6 +736,28 @@ def selftest():
     assert hs["sep"]["IL"]["2025"] == {"CORN": 100} and hs["dec"]["US"]["2025"] == {"CORN": 100}, "duplicate stocks row summed"
     assert up["2025"]["CORN"] == (650, "YEAR") and up["2026"]["CORN"] == (610, "YEAR - OCT FORECAST"), dict(up)
     assert uc["2025"] == [500, 500]
+    # real NASS rows, from the Oct 16, 2026 probe log (run 38980153113):
+    # US Sept 1, 2026 stocks 2,095,057,000 corn + 315,133,000 soy + 1,845,743,000
+    # wheat + 34,952,000 sorghum + 130,731,000 barley + 67,467,000 oats = 4,489,083,000;
+    # 2026 crop 16,033,944,000 + 4,561,605,000 + 291,075,000 = 20,886,624,000;
+    # Dec 1, 2025 capacity 13,618,000,000 + 11,870,800,000 = 25,488,800,000.
+    # (4,489,083,000 + 20,886,624,000) / 25,488,800,000 = 0.99555 -> 0.996
+    # (farmdoc, on the September forecast: "about 99%").
+    real = {"sep": {"US": {"2026": {"CORN": 2095057000.0, "SOYBEANS": 315133000.0, "WHEAT": 1845743000.0,
+                                     "SORGHUM": 34952000.0, "BARLEY": 130731000.0, "OATS": 67467000.0}}}}
+    rp = {"2026": {"CORN": (16033944000.0, "YEAR"), "SOYBEANS": (4561605000.0, "YEAR"), "SORGHUM": (291075000.0, "YEAR")}}
+    rc = {"2023": [13597000000.0, 11843900000.0], "2024": [13593000000.0, 11839900000.0], "2025": [13618000000.0, 11870800000.0]}
+    ru = shape_us_fall(real, rp, rc, 2026)
+    assert ru["total"] == 25375707000 and ru["cap"] == 25488800000 and ru["ratio"] == 0.996 and ru["cap_year"] == "2025", ru
+    # Illinois Dec 1, 2025 stocks 2,043,732,000 corn + 569,666,000 soy + 42,382,000
+    # wheat = 2,655,780,000 over 3,170,000,000 bins = 0.8378 -> 0.838 (crop shares
+    # below only drive the 2% rule: corn, soy and wheat all need a stocks figure)
+    rs = {"sep": defaultdict(lambda: defaultdict(dict)), "dec": defaultdict(lambda: defaultdict(dict))}
+    rs["dec"]["IL"]["2025"] = {"CORN": 2043732000.0, "SOYBEANS": 569666000.0, "WHEAT": 42382000.0}
+    rs["dec"]["US"]["2025"] = {}
+    rh = shape_history(rs, {"IL": {"2025": {"CORN": 10, "SOYBEANS": 5, "WHEAT": 1}}},
+                       {"IL": {"2025": [1890000000.0, 1280000000.0]}}, {}, {}, 2026, None)
+    assert rh["states"]["IL"]["u"][-1] == 0.838 and rh["states"]["IL"]["p"][-1] is None, rh["states"]["IL"]
     print(f"SELFTEST OK — ref-period pins, OT exclusion (rank) + inclusion (national), "
           f"(D) skip, ratio math (IA {ia['ratio']['2024']}x)")
 
