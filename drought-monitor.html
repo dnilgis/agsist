@@ -53,6 +53,7 @@
       "name": "US Drought Monitor This Week: Map, Your County, Crops | AGSIST",
       "description": "Weekly US drought conditions for corn, soybean, and wheat production regions. National, state, and regional views updated every Thursday.",
       "dateModified": "2026-10-16",
+      "author": { "@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about" },
       "isPartOf": { "@type": "WebSite", "url": "https://agsist.com/" },
       "breadcrumb": {
         "@type": "BreadcrumbList",
@@ -119,6 +120,8 @@ button,a,[role="button"] { touch-action: manipulation; }
 /* Hero */
 .dm-hero { padding: 1.2rem 0 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
 .dm-hero h1 { font-family:var(--font-display); font-size: 1.7rem; font-weight: 800; text-transform: uppercase; color: var(--text); margin: 0 0 .3rem; }
+#main .dm-hero p.dm-by { font-size: .78rem; color: var(--text-muted); margin: .25rem 0 0; }
+#main .dm-hero p.dm-by a { color: inherit; }
 #main .dm-hero p.dm-lede { font-size: .88rem; margin-top: .1rem; }
 .dm-hero p { color: var(--text-dim); font-size: .85rem; line-height: 1.6; max-width: 600px; margin: 0; }
 .dm-answer { font-size: 1.05rem; line-height: 1.5; color: var(--text); margin: .2rem 0 .5rem; max-width: 640px; }
@@ -279,6 +282,7 @@ button,a,[role="button"] { touch-action: manipulation; }
     <h1>US Drought Monitor</h1>
     <p class="dm-answer" id="dm-answer" aria-live="polite">NDMC&rsquo;s share of the Lower 48 in drought shows here after each Thursday read. The map below is this week&rsquo;s.</p>
     <p class="page-lede dm-lede">This week&rsquo;s map, your county&rsquo;s numbers, and what each category means for crops.</p>
+    <p class="dm-by">By <a href="/about">Sigurd Lindquist, Certified Crop Adviser (CCA)</a>, Chetek, Wisconsin. The drought numbers are NDMC&rsquo;s.</p>
     <div class="dm-hero-meta">
       <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div><script>fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d){var v=document.getElementById("dm-valid"),h=window.AgAsOf?AgAsOf.html(d,"drought",{prefix:"Map valid"}):"";if(h)v.innerHTML=" · "+h;else v.textContent=" · map valid "+d;window.__dmValid=d;var mv=document.getElementById("dm-map-valid");if(mv)mv.textContent=", valid "+d;}}).catch(function(){});</script>
       <div class="dm-next-update" id="dm-next-update">Next update: -</div>
