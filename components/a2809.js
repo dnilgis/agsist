@@ -1,9 +1,12 @@
 /* components/a2809.js -- UW Extension A2809 (Laboski and Peters), "Nutrient
    application guidelines for field, vegetable, and fruit crops in Wisconsin",
-   the tables /fast-facts uses for P and K and for lime. Typed from the
+   the tables /fast-facts uses for corn N, for P and K and for lime. Typed from the
    Mar 2026 web edition (https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf,
    copy read Oct 16, 2026); its text matches the 2012 printing on these tables.
 
+   Corn N:
+     Table 6.1  MRTN rate and profitable range by soil, previous crop and
+                N:corn price ratio (Wisconsin trials)
    P and K:
      Table 7.1  soil test P categories, by crop demand level and soil group
      Table 7.2  soil test K categories, by crop demand level and soil group
@@ -152,8 +155,44 @@ function lime(o){
     tons:tons, step:step, rule:rule, capped:capped, mult:mult};
 }
 
+/* ─── Corn N, Table 6.1: total lb N/a (starter included) by soil, previous
+   crop and N:corn price ratio. Each cell is [MRTN rate, low, high]; the
+   low-high range is every rate within $1/a of the MRTN return (figured at
+   $4 corn). The rate for a ratio does not change with price level. ─── */
+var N_RATIOS=[0.05,0.10,0.15,0.20];
+var N_CORN={
+  hi_corn:{soil:'Loamy, high yield potential', prev:'Corn, forage legumes, legume vegetables, green manures',
+    cells:[[190,170,210],[165,155,180],[150,140,160],[135,125,150]]},
+  hi_soy:{soil:'Loamy, high yield potential', prev:'Soybean, small grains',
+    cells:[[140,125,160],[120,105,130],[105,95,115],[90,80,105]]},
+  med_corn:{soil:'Loamy, medium yield potential', prev:'Corn, forage legumes, legume vegetables, green manures',
+    cells:[[145,130,160],[125,115,140],[115,105,125],[105,95,110]]},
+  med_soy:{soil:'Loamy, medium yield potential', prev:'Soybean, small grains',
+    cells:[[130,110,150],[100,85,120],[85,70,95],[70,60,80]]},
+  sand_irr:{soil:'Sands and loamy sands, irrigated', prev:'All crops',
+    cells:[[215,200,230],[200,185,210],[185,175,195],[175,165,185]]},
+  sand_dry:{soil:'Sands and loamy sands, not irrigated', prev:'All crops',
+    cells:[[140,130,150],[130,120,140],[120,110,130],[110,100,120]]}
+};
+/* The A2809 column for a ratio: the nearest of 0.05, 0.10, 0.15, 0.20.
+   A2809 prints only these four columns, so nothing is read between them;
+   a ratio past either end uses the end column and says so (off:true). */
+function nColumn(ratio){
+  if(!(ratio>0))return null;
+  var i=ratio<0.075?0:ratio<0.125?1:ratio<0.175?2:3;
+  return {i:i, ratio:N_RATIOS[i], off:ratio<0.05||ratio>0.20};
+}
+/* nRate({row:'hi_soy', ratio}) -> {rate, lo, hi, col, off, soil, prev} or null */
+function nRate(o){
+  var r=N_CORN[o.row], c=nColumn(+o.ratio);
+  if(!r||!c)return null;
+  var cell=r.cells[c.i];
+  return {rate:cell[0], lo:cell[1], hi:cell[2], col:c.ratio, off:c.off, soil:r.soil, prev:r.prev};
+}
+
 var api={P_CATS:P_CATS, K_CATS:K_CATS, CROPS:CROPS, P_COLS:P_COLS, K_COLS:K_COLS, CAT_NAMES:CAT_NAMES,
-  LIME:LIME, DEPTH:DEPTH, category:category, rowFor:rowFor, pk:pk, lime:lime};
+  LIME:LIME, DEPTH:DEPTH, category:category, rowFor:rowFor, pk:pk, lime:lime,
+  N_RATIOS:N_RATIOS, N_CORN:N_CORN, nColumn:nColumn, nRate:nRate};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 else root.AgA2809=api;
 })(typeof window!=='undefined'?window:this);

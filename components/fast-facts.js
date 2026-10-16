@@ -19,7 +19,7 @@ function switchTab(tab){
   ffEvent('tab_view',{section:t});
 }
 tabs.forEach(function(b){b.addEventListener('click',function(){switchTab(b);if(history&&history.replaceState){try{history.replaceState(null,'','#'+b.dataset.tab);}catch(e){}}
-  // tabs are sticky now — jump the reader to the top of the fresh panel so a deep
+  // tabs are sticky now: jump the reader to the top of the fresh panel so a deep
   // scroll position from the last tab doesn't strand them mid-table
   var p=document.getElementById('tab-'+b.dataset.tab);
   if(p){var y=p.getBoundingClientRect().top+window.pageYOffset-70;if(Math.abs(window.pageYOffset-y)>40)window.scrollTo({top:Math.max(0,y),behavior:'smooth'});}
@@ -33,7 +33,7 @@ document.addEventListener('keydown',function(e){
   else if(e.key==='End')n=arr[arr.length-1];
   if(n){e.preventDefault();n.focus();}
 });
-/* calculator usage tracking — panel-level, once per session */
+/* calculator usage tracking: panel-level, once per session */
 var _ffCalcFired={};
 function _ffTrackCalc(e){var el=e.target;if(!el||!el.closest)return;var panel=el.closest('.ff-panel');if(!panel||!panel.id||_ffCalcFired[panel.id])return;_ffCalcFired[panel.id]=1;ffEvent('calc_use',{calculator:panel.id.replace('tab-','')});}
 document.addEventListener('input',_ffTrackCalc,true);
@@ -59,7 +59,9 @@ var PRICES={};
    middle cash price posted by the co-ops Sig sent, nothing else. Every row
    names its co-ops, region and date, and every
    $/lb shown here says how it was worked out. Lime and K-Mag have no live
-   source, so they are not priced here (the lime calculator takes your $/ton). */
+   source, so they are not priced here (the lime calculator takes your $/ton).
+   AG.json (components/util.js) makes one request per file for the whole page. */
+function getJSON(u){return (window.AG&&AG.json)?AG.json(u):fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
 /* Short source with its region: "Kansas co-ops, Oct 6" / "USDA Illinois, Oct 2". */
 function fertShort(p){
   if(p&&p.short_label)return p.short_label;
@@ -68,23 +70,26 @@ function fertShort(p){
   return (p&&p.src==='coop'?(p.region?p.region+' co-ops':'co-ops'):'USDA Illinois')+(when?', '+when:'');
 }
 function fertGrade(sym){if(!sym)return null;var a=String(sym).trim().split('-');if(a.length<3)return null;var n=parseFloat(a[0]),pp=parseFloat(a[1]),k=parseFloat(a[2]);if(isNaN(n)||isNaN(pp)||isNaN(k))return null;return {N:n,P:pp,K:k};}
+/* The posted N rows by % N, for the N box at the top: {82:{row,price}, 46:...}. */
+var N_POSTED={};
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function loadFertPrices(){
-  fetch('/data/fertilizer-prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
+  getJSON('/data/fertilizer-prices.json').then(function(data){
     if(!data||!data.prices)return;
     function key(k){return data.prices.find(function(p){return p.key===k&&p.price>0;})||null;}
     var el=document.getElementById('fert-date');
     if(el&&data.updated){var d=new Date(data.updated+'T12:00:00');el.textContent='Posted through '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'. Co-op posted cash prices, each named with its region. Call to confirm.';
       if((Date.now()-d.getTime())/864e5>30){el.style.color='var(--gold)';}}
-    var urea=key('urea'), potash=key('potash'), ams=key('ams'), phos=key('map')||key('dap');
+    var urea=key('urea'), potash=key('potash'), ams=key('ams'), phos=key('map')||key('dap'), aa=key('anhydrous');
     var wrap=document.getElementById('fert-pills');
     if(!wrap)return;
     wrap.innerHTML='';
     var pillDefs=[
+      {obj:aa,     nut:'N', ncPct:'82', label:'N'},
       {obj:urea,   nut:'N', ncPct:'46', label:'N'},
-      {obj:ams,    nut:'N', ncPct:'21', label:'N'},
-      {obj:key('anhydrous'), nut:'N', ncPct:'82', label:'N'},
       {obj:key('uan28'), nut:'N', ncPct:'28', label:'N'},
       {obj:key('uan32'), nut:'N', ncPct:'32', label:'N'},
+      {obj:ams,    nut:'N', ncPct:'21', label:'N'},
       {obj:phos,   nut:'P', ncPct:'', label:'P2O5'},
       {obj:potash, nut:'K', ncPct:'', label:'K2O'}
     ];
@@ -94,39 +99,46 @@ function loadFertPrices(){
       var p=pd.obj, g=fertGrade(p.symbol); if(!g||!(g[pd.nut]>0))return;
       var pct=g[pd.nut]/100, pplb=(p.price/2000/pct);
       var price=Math.round(p.price);
+      if(pd.nut==='N'&&pd.ncPct&&+pd.ncPct===g.N)N_POSTED[pd.ncPct]={row:p,price:price};
       deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+' ('+p.src_label+').');
       var btn=document.createElement('button');
       btn.className='fert-pill';
       btn.setAttribute('type','button');
       btn.setAttribute('aria-pressed','false');
       btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+p.src_label+': $'+pplb.toFixed(3)+'/lb '+pd.label);
-      btn.innerHTML='<span class="fert-pill-icon"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg></span>'
-        +'<span class="fert-pill-body"><span class="fert-pill-name">'+p.name+'</span>'
-        +'<span class="fert-pill-sym">'+p.symbol+' · '+fertShort(p)+'</span></span>'
+      btn.innerHTML='<span class="fert-pill-body"><span class="fert-pill-name">'+esc(p.name)+' <span class="fert-pill-g">'+esc(p.symbol)+'</span></span>'
+        +'<span class="fert-pill-sym">'+esc(fertShort(p))+'</span></span>'
         +'<span class="fert-pill-price">$'+price+'</span>';
       btn.addEventListener('click',function(){
         document.querySelectorAll('.fert-pill').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');});
         btn.classList.add('active');btn.setAttribute('aria-pressed','true');
         if(pd.nut==='N'&&pd.ncPct){
-          var fertSel=document.getElementById('nc-fert');
-          if(fertSel){for(var i=0;i<fertSel.options.length;i++){if(fertSel.options[i].value===pd.ncPct){fertSel.value=pd.ncPct;break;}}}
-          var fpEl=document.getElementById('nc-fertprice');if(fpEl)fpEl.value=price;
-          calcNC();
+          setNForm(pd.ncPct,price);
+          var top=document.getElementById('ff-ans');
+          if(top&&top.scrollIntoView){try{top.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){}}
         }
       });
       wrap.appendChild(btn);
     });
     var dv=document.getElementById('fert-deriv');
-    if(!dv){dv=document.createElement('ul');dv.id='fert-deriv';dv.className='fert-deriv';wrap.parentNode.insertBefore(dv,wrap.nextSibling);}
-    dv.innerHTML=deriv.map(function(x){return '<li>'+x.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</li>';}).join('');
-    // Auto-fill N:Corn ratio from urea (primary N source)
+    if(!dv){
+      var how=document.createElement('details');how.className='fert-how';
+      how.innerHTML='<summary>How each $/lb is worked out</summary>';
+      dv=document.createElement('ul');dv.id='fert-deriv';dv.className='fert-deriv';
+      how.appendChild(dv);wrap.parentNode.insertBefore(how,wrap.nextSibling);
+    }
+    dv.innerHTML=deriv.map(function(x){return '<li>'+esc(x)+'</li>';}).join('');
+    // The N box at the top starts on anhydrous when a co-op posts it, else urea.
+    var first=N_POSTED['82']?'82':(N_POSTED['46']?'46':null);
+    if(first){
+      var fertSel=document.getElementById('nc-fert');
+      var fpEl=document.getElementById('nc-fertprice');
+      if(fpEl&&!nTyped&&(!fertSel||fertSel.value===first||!N_POSTED[fertSel.value]))setNForm(first,N_POSTED[first].price);
+      else calcNC();
+    } else calcNC();
     if(urea){
       var pplbU=urea.price/2000/0.46;
-      var fpEl=document.getElementById('nc-fertprice');if(fpEl)fpEl.value=Math.round(urea.price);
-      var fertSel=document.getElementById('nc-fert');
-      if(fertSel){for(var i=0;i<fertSel.options.length;i++){if(fertSel.options[i].value==='46'){fertSel.value='46';break;}}}
       loadNFertPrice(pplbU,'Urea 46% ('+fertShort(urea)+')',Math.round(urea.price));
-      calcNC();// the box changed under the calculator; redraw with the posted price
     }
     // P2O5 from MAP or DAP with its N credited at the urea price
     // (components/manure-value.js, the one copy of this math, shared with /manure-value).
@@ -147,42 +159,88 @@ function loadFertPrices(){
       PRICES['MOP_PPLB']=kpplb;
       updateEcoCosts();
     }
-  }).catch(function(){});
+  }).catch(function(){calcNC();});
 }
 function loadNFertPrice(pplb,name,ton){
-  var el=document.getElementById('nc-n-pplb-display');
   var lbl=document.getElementById('eco-n-source-label');if(lbl)lbl.textContent=name;
   var enil=document.getElementById('eco-n-pplb');if(enil)enil.value=pplb.toFixed(2);
   PRICES['N_PPLB']=pplb;
   var eup=document.getElementById('eco-urea-price');if(eup)eup.textContent='$'+ton;
   updateEcoCosts();
 }
-loadFertPrices();
+/* Pick an N form in the top box and fill its posted price (when there is one). */
+function setNForm(pct,price){
+  var fertSel=document.getElementById('nc-fert'), fpEl=document.getElementById('nc-fertprice');
+  if(fertSel){for(var i=0;i<fertSel.options.length;i++){if(fertSel.options[i].value===String(pct)){fertSel.value=String(pct);break;}}}
+  if(fpEl){fpEl.value=price!=null?price:'';}
+  nTyped=false;
+  calcNC();
+}
 
-/* ─── LOAD GRAIN PRICES ─────────────────────────────────────────────── */
+/* ─── CORN PRICE FOR THE N RATIO ───────────────────────────────────────
+   N bought now feeds next year's crop, so from August on the box uses
+   next December's futures (this December's before August). The reader can
+   add the median corn basis of AGSIST elevators in a state this week
+   (data/basis-states.json), or type a price. */
+var CORN={fut:null,label:'',date:'',nearby:null};
+var BASIS={};          /* state code -> {name, median, n, label} */
+var cornTyped=false, nTyped=false;
+function newCropKey(now){
+  var y=now.getFullYear(), m=now.getMonth();
+  var yy=String((m>=7?y+1:y)%100); if(yy.length<2)yy='0'+yy;
+  return {key:'corn-dec'+yy, label:"Dec '"+yy};
+}
 function loadGrainPrices(){
-  fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
+  getJSON('/data/prices.json').then(function(data){
     if(!data||!data.quotes)return;
     var q=data.quotes;
     function fmtGrain(v){return v!=null?AG.px.price(v):'--';}   /* components/util.js */
-    var ecp=document.getElementById('eco-corn-price');var ncb=document.getElementById('nc-corn');
+    var ecp=document.getElementById('eco-corn-price');
     if(q.corn&&q.corn.close){
       if(ecp)ecp.textContent=fmtGrain(q.corn.close);
-      if(ncb){ncb.value=(parseFloat(q.corn.close)/100).toFixed(2);calcNC();}
-      var lb=document.getElementById('nc-live-badge');if(lb)lb.style.display='inline-flex';
+      CORN.nearby=parseFloat(q.corn.close)/100;
       var elb=document.getElementById('eco-live-badge');if(elb)elb.style.display='inline-flex';
     }
-    var ebp=document.getElementById('eco-bean-price');if(q.beans&&q.beans.close&&ebp)ebp.textContent=fmtGrain(q.beans.close); /* key is 'beans' in prices.json — 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
+    var nc=newCropKey(new Date()), row=q[nc.key];
+    if(row&&row.close){CORN.fut=parseFloat(row.close)/100;CORN.label=nc.label;CORN.date=row.close_date||'';}
+    else if(q.corn&&q.corn.close){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=q.corn.close_date||'';}
+    fillCorn();
+    var ebp=document.getElementById('eco-bean-price');if(q.beans&&q.beans.close&&ebp)ebp.textContent=fmtGrain(q.beans.close); /* key is 'beans' in prices.json: 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
     var ewp=document.getElementById('eco-wheat-price');if(q.wheat&&q.wheat.close&&ewp)ewp.textContent=fmtGrain(q.wheat.close);
     updateEcoCosts();
+  }).catch(function(){calcNC();});
+}
+function savedState(){
+  try{var s=localStorage.getItem('agsist-ff-state');if(s!==null)return s;}catch(e){}
+  try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');if(w&&/^[A-Z]{2}$/.test(w.state||''))return w.state;}catch(e){}
+  return '';
+}
+function loadBasis(){
+  getJSON('/data/basis-states.json').then(function(d){
+    var sel=document.getElementById('ans-state');
+    if(!d||!d.states||!sel)return;
+    var codes=Object.keys(d.states).filter(function(c){var cr=d.states[c].crops&&d.states[c].crops.corn;return cr&&cr.median!=null&&cr.n>=(d.min_n||3);});
+    codes.sort(function(a,b){return d.states[a].name<d.states[b].name?-1:1;});
+    codes.forEach(function(c){
+      var st=d.states[c], cr=st.crops.corn;
+      BASIS[c]={name:st.name, median:cr.median, n:cr.n, label:cr.label};
+      var o=document.createElement('option');o.value=c;o.textContent=st.name;sel.appendChild(o);
+    });
+    var pick=savedState();
+    if(pick&&BASIS[pick])sel.value=pick;
+    fillCorn();
   }).catch(function(){});
 }
-loadGrainPrices();
+function fillCorn(){
+  var box=document.getElementById('nc-corn');
+  if(box&&!cornTyped&&CORN.fut!=null){
+    var st=document.getElementById('ans-state'), b=st&&BASIS[st.value];
+    box.value=(CORN.fut+(b?b.median:0)).toFixed(2);
+  }
+  calcNC();
+}
 
-/* ─── TODAY'S CALL + PRICE STRIP + WEEK CARD (2026-07-20) ───────────────
-   Verdict-first opener. Same math as the N:corn calculator below (MRTN columns),
-   computed from the same two feeds. If either feed fails, the blocks stay hidden —
-   an honest blank beats a fake number. */
+/* ─── STRIP + WEEK CARD ─────────────────────────────────────────────── */
 (function(){
   function isoWeekNow(){
     var d=new Date(), t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
@@ -190,52 +248,20 @@ loadGrainPrices();
     var y0=new Date(Date.UTC(t.getUTCFullYear(),0,1));
     return Math.ceil(((t-y0)/864e5+1)/7);
   }
-  Promise.all([
-    fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
-    fetch('/data/fertilizer-prices.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
-  ]).then(function(res){
-    var pj=res[0], fj=res[1];
+  getJSON('/data/prices.json').catch(function(){return null;}).then(function(pj){
     var q=pj&&pj.quotes?pj.quotes:{};
     function g(id){return document.getElementById(id);}
     function dollarsBu(v){return v!=null?'$'+(parseFloat(v)/100).toFixed(2):null;}
     var corn=q.corn&&q.corn.close?parseFloat(q.corn.close)/100:null;
     var beans=q.beans&&q.beans.close?dollarsBu(q.beans.close):null;
     var wheat=q.wheat&&q.wheat.close?dollarsBu(q.wheat.close):null;
-    var urea=null, uRow=null, fertStale=false;
-    if(fj&&fj.prices){
-      uRow=fj.prices.find(function(p){return p.key==='urea'&&p.price>0;})||null;
-      if(uRow){
-        urea=Math.round(uRow.price);
-        var fd=new Date(uRow.as_of+'T12:00:00');
-        fertStale=!isNaN(fd)&&(Date.now()-fd.getTime())/864e5>30;
-      }
-    }
-    // price strip — show it if we got ANY of the four
-    if(corn||beans||wheat||urea){
+    if(corn||beans||wheat){
       if(corn) g('fft-corn').textContent='$'+corn.toFixed(2);
       if(beans) g('fft-beans').textContent=beans;
       if(wheat) g('fft-wheat').textContent=wheat;
-      if(urea){ g('fft-urea').textContent='$'+urea; var un=g('fft-urea-n'); un.textContent=fertShort(uRow)+(fertStale?', aging':''); if(fertStale) un.className='n warn'; }
       g('ff-strip').hidden=false;
     }
-    // verdict needs both legs
-    if(corn&&urea){
-      var pplb=urea/920;                       // $/lb N at 46%
-      var ratio=pplb/corn;
-      var word,cls,advice;
-      if(ratio<0.075){word='N is cheap';cls='ff-tv-green';advice='the cheap-N column of the MRTN tables: <a href="#nitrogen" data-jump="nitrogen">push rates to the HIGH end &rarr;</a>';}
-      else if(ratio<0.125){word='N is normal';cls='ff-tv-gold';advice='the typical column of the MRTN tables: <a href="#nitrogen" data-jump="nitrogen">use the middle N rates &rarr;</a>';}
-      else if(ratio<0.175){word='N is getting pricey';cls='ff-tv-gold';advice='an above-average N cost: <a href="#nitrogen" data-jump="nitrogen">lean to the lower N rates &rarr;</a>';}
-      else{word='N is expensive';cls='ff-tv-red';advice='the priciest column of the MRTN tables: <a href="#nitrogen" data-jump="nitrogen">use the LOW end of the N rates &rarr;</a>';}
-      g('ffv-num').textContent=ratio.toFixed(2);
-      g('ffv-num').className='ff-today-num '+cls;
-      g('ffv-word').textContent=word;
-      g('ffv-word').className='ff-today-word '+cls;
-      g('ffv-line').innerHTML='Urea at <strong>$'+urea+'/ton</strong> / 920 lb of N is <strong>$'+pplb.toFixed(2)+' a pound of N</strong> against <strong>$'+corn.toFixed(2)+' corn</strong>: a '+ratio.toFixed(2)+' ratio. That’s '+advice;
-      g('ffv-src').textContent='Corn: CBOT close · urea: '+uRow.src_label+(fertStale?' (aging, call to confirm)':'')+' · same math as the calculator below';
-      g('ff-today').hidden=false;
-    }
-    // week card — editorial staging guide, hedged to "most of the Corn Belt"
+    // week card: what most of the Corn Belt is doing, hedged
     var wk=isoWeekNow();
     var W={
       16:['planting is rolling','Corn planters are rolling across the Belt. Check soil temp ≥50°F and scout for black cutworm as fields green.',['stages']],
@@ -251,60 +277,124 @@ loadGrainPrices();
       36:['corn R5–R6 · beans R6','Push-test stalks: rots pick lodging candidates. Line up dry-down logistics.',['stages']],
       38:['maturity: black layer','Corn hitting black layer. Moisture checks beat calendar dates for harvest order.',['stages']],
       40:['harvest','Combines rolling. Watch bin moisture targets and shrink math.',['stages']],
-      42:['harvest wrap-up','Fall anhydrous below 50°F soil only; patience pays in spring N.',['stages']]
+      42:['harvest wrap-up','Soil sampling season: plan P and K from the new tests.',['pk']]
     };
     var pick=null; for(var k in W){ if(wk>=+k&&wk<=+k+1) pick=W[k]; }
     if(pick){
+      var lt={pest:'Thresholds &rarr;',pk:'P and K by soil test &rarr;'}[pick[2][0]]||'Stage guide &rarr;';
+      var link='<a href="#'+pick[2][0]+'" data-jump="'+pick[2][0]+'">'+lt+'</a>';
       g('ffw-num').textContent='WEEK '+wk;
-      g('ffw-txt').innerHTML='Most of the Corn Belt: <strong>'+pick[0]+'</strong>. '+pick[1]+' <a href="#'+pick[2][0]+'" data-jump="'+pick[2][0]+'">'+(pick[2][0]==='pest'?'Thresholds &rarr;':'Stage guide &rarr;')+'</a>';
+      g('ffw-txt').innerHTML='Most of the Corn Belt: <strong>'+pick[0]+'</strong>. '+pick[1]+' '+link;
       g('ff-week').hidden=false;
     }
-    // jump links switch the tab properly (hash alone only works on first load)
-    document.querySelectorAll('[data-jump]').forEach(function(a){
-      a.addEventListener('click',function(e){
-        var b=document.getElementById('tab-btn-'+a.getAttribute('data-jump'));
-        if(b){ e.preventDefault(); b.click(); }
-      });
-    });
+    bindJumps();
   });
 })();
+/* jump links switch the tab properly (hash alone only works on first load) */
+function bindJumps(){
+  document.querySelectorAll('[data-jump]').forEach(function(a){
+    if(a._ffj)return;a._ffj=1;
+    a.addEventListener('click',function(e){
+      var b=document.getElementById('tab-btn-'+a.getAttribute('data-jump'));
+      if(b){ e.preventDefault(); b.click(); }
+    });
+  });
+}
+bindJumps();
 
-/* ─── N:CORN RATIO CALCULATOR ──────────────────────────────────────── */
+/* ─── CORN N RATE AT TODAY'S PRICES (top box) ───────────────────────────
+   N:corn ratio = $/lb N / $/bu corn; the rate is the A2809 Table 6.1 cell
+   (components/a2809.js) for the soil, the last crop and the nearest
+   printed ratio column. */
+function rowKey(){
+  var soil=(document.getElementById('ans-soil')||{}).value||'hi';
+  var prev=(document.getElementById('ans-prev')||{}).value||'soy';
+  if(soil==='sand_irr'||soil==='sand_dry')return soil;
+  return soil+'_'+(prev==='corn'?'corn':'soy');
+}
+function money(v){return '$'+(Math.round(v*100)/100).toFixed(2);}
 function calcNC(){
-  var corn=parseFloat(document.getElementById('nc-corn').value)||0;
-  var fertSel=document.getElementById('nc-fert');
+  function g(id){return document.getElementById(id);}
+  function t(id,v){var e=g(id);if(e)e.textContent=v;}
+  var fertSel=g('nc-fert');if(!fertSel)return;
+  var corn=parseFloat(g('nc-corn').value)||0;
   // The Custom option carries value="0", and 0 is falsy, so `||46` swallowed it and
   // the next line could never fire. Every custom blend was priced as urea at 46% N.
   var isCustom=fertSel.value==='0';
-  var pct=isCustom?parseFloat(document.getElementById('nc-custom-pct').value)
-                 :parseFloat(fertSel.value);
+  var pct=isCustom?parseFloat(g('nc-custom-pct').value):parseFloat(fertSel.value);
   if(!isFinite(pct)||pct<=0)pct=isCustom?0:46;
-  document.getElementById('nc-custom-wrap').style.display=(fertSel.value==='0')?'flex':'none';
-  var ton=parseFloat(document.getElementById('nc-fertprice').value)||0;
-  if(!(ton>0)){
-    // No live price loaded and none typed: say so rather than price at a made-up number.
-    document.getElementById('nc-nlb').textContent='-';document.getElementById('nc-ratio').textContent='-';
-    document.getElementById('nc-col').textContent='-';document.getElementById('nc-interp').textContent='Type a fertilizer price per ton (the posted price fills in when it loads).';
+  g('nc-custom-wrap').style.display=isCustom?'flex':'none';
+  var soilSel=g('ans-soil'), prevSel=g('ans-prev');
+  var sandy=soilSel&&/^sand/.test(soilSel.value);
+  if(prevSel){prevSel.disabled=!!sandy;prevSel.title=sandy?'A2809 uses one rate for all previous crops on sands':'';}
+  var fall=g('ans-fall');if(fall){var m=new Date().getMonth();fall.hidden=!(fertSel.value==='82'&&m>=8&&m<=10);}
+  var ton=parseFloat(g('nc-fertprice').value)||0;
+  ['nth-05','nth-10','nth-15','nth-20'].forEach(function(id){var th=g(id);if(th)th.classList.remove('act');});
+  document.querySelectorAll('#nc-table td.act').forEach(function(td){td.classList.remove('act');});
+  if(!(ton>0)||!(pct>0)){
+    // No posted price for this form and none typed: say so rather than price at a made-up number.
+    t('nc-nlb','-');t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');t('ans-range','');t('ans-cost','');
+    t('ans-line',ton>0?'Type the % N of your product.':'Type your N price per ton (a co-op posted price fills in when there is one for this form).');
+    t('ans-src','');
     return;
   }
-  var pplb=pct>0?ton/(2000*pct/100):0;
-  var ratio=(corn>0&&pct>0)?pplb/corn:0;
-  var col,interp;
-  if(ratio<0.075){col='0.05';interp='Low N:Corn ratio: use high-end MRTN rates';}
-  else if(ratio<0.125){col='0.10';interp='Typical ratio: moderate MRTN rates';}
-  else if(ratio<0.175){col='0.15';interp='Above-average N cost: consider lower end';}
-  else{col='0.20';interp='High N:Corn ratio: use low MRTN rates';}
-  document.getElementById('nc-nlb').textContent='$'+pplb.toFixed(2);
-  document.getElementById('nc-ratio').textContent=ratio.toFixed(3);
-  document.getElementById('nc-col').textContent=col;
-  document.getElementById('nc-interp').textContent=interp;
-  ['nth-05','nth-10','nth-15','nth-20'].forEach(function(id){
-    var th=document.getElementById(id);if(th)th.classList.toggle('act',th.id==='nth-'+col.replace('0.',''));
-  });
+  var pplb=ton/(2000*pct/100);
+  t('nc-nlb','$'+pplb.toFixed(2));
+  if(!(corn>0)){
+    t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');t('ans-range','');t('ans-cost','');
+    t('ans-line','Type your corn price per bushel.');t('ans-src','');
+    return;
+  }
+  var ratio=pplb/corn;
+  var A=window.AgA2809, r=A?A.nRate({row:rowKey(),ratio:ratio}):null;
+  t('nc-ratio',ratio.toFixed(3));
+  if(!r){t('nc-col','-');return;}
+  var colTxt=r.col.toFixed(2);
+  t('nc-col',colTxt);
+  var thId='nth-'+colTxt.replace('0.','');var th=g(thId);if(th)th.classList.add('act');
+  var ci=A.N_RATIOS.indexOf(r.col);
+  var tr=document.querySelector('#nc-table tr[data-row="'+rowKey()+'"]');
+  if(tr&&tr.children[ci+1])tr.children[ci+1].classList.add('act');
+  t('ans-rate',String(r.rate));
+  t('ans-range','Profitable range '+r.lo+'–'+r.hi);
+  t('ans-cost','N cost $'+Math.round(r.rate*pplb)+'/ac at '+money(pplb)+'/lb');
+  var form=isCustom?(pct+'% N product'):fertSel.options[fertSel.selectedIndex].text.replace('Amm. nitrate','Ammonium nitrate');
+  var WHO={hi_corn:'corn after corn or a forage legume on high-yield loamy soil',hi_soy:'corn after soybeans or small grain on high-yield loamy soil',
+    med_corn:'corn after corn or a forage legume on medium-yield loamy soil',med_soy:'corn after soybeans or small grain on medium-yield loamy soil',
+    sand_irr:'corn on irrigated sand, any previous crop',sand_dry:'corn on dryland sand, any previous crop'};
+  var line=form+' at $'+Math.round(ton)+'/ton is '+money(pplb)+' a lb of N. Against $'+corn.toFixed(2)+' corn that is a '+ratio.toFixed(3)+' ratio, so A2809’s '+colTxt+' column: '+r.rate+' lb N for '+WHO[rowKey()]+'.';
+  if(r.off)line+=' Your ratio is past the table’s '+(ratio<0.05?'0.05':'0.20')+' end, so this is the nearest column, not a reading off the chart.';
+  t('ans-line',line);
+  // Where each number came from.
+  var src=[];
+  var posted=N_POSTED[fertSel.value];
+  if(!nTyped&&posted&&Math.round(ton)===posted.price)src.push(form+': '+posted.row.src_label);
+  else src.push('N price: yours');
+  var st=g('ans-state'), b=st&&BASIS[st.value];
+  if(cornTyped)src.push('corn price: yours');
+  else if(CORN.fut!=null){
+    var cl=(CORN.label==='nearby'?'nearby':CORN.label)+' corn futures $'+CORN.fut.toFixed(2)+(CORN.date?', CBOT close '+fmtDay(CORN.date):'')+', delayed';
+    if(b)cl+=(b.median<0?' less ':' plus ')+'$'+Math.abs(b.median).toFixed(2)+', the median '+b.name+' corn basis this week ('+b.n+' elevators, against '+b.label+')';
+    src.push(cl);
+  }
+  t('ans-src',src.join(' · '));
 }
-['nc-corn','nc-fert','nc-fertprice','nc-custom-pct'].forEach(function(id){
-  var el=document.getElementById(id);if(el)el.addEventListener('input',calcNC);
+function fmtDay(iso){var d=new Date(iso+'T12:00:00');return isNaN(d)?iso:d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+['nc-fertprice','nc-custom-pct'].forEach(function(id){
+  var el=document.getElementById(id);if(el)el.addEventListener('input',function(){if(id==='nc-fertprice')nTyped=true;calcNC();});
 });
+(function(){
+  var fs=document.getElementById('nc-fert');
+  if(fs)fs.addEventListener('change',function(){var p=N_POSTED[fs.value];setNForm(fs.value,p?p.price:null);});
+  var cb=document.getElementById('nc-corn');
+  if(cb)cb.addEventListener('input',function(){cornTyped=cb.value!=='';if(!cornTyped)fillCorn();else calcNC();});
+  var st=document.getElementById('ans-state');
+  if(st)st.addEventListener('change',function(){try{localStorage.setItem('agsist-ff-state',st.value);}catch(e){}cornTyped=false;fillCorn();});
+  ['ans-soil','ans-prev'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('change',calcNC);});
+})();
+loadFertPrices();
+loadGrainPrices();
+loadBasis();
 calcNC();
 
 /* ─── ECO COST BUILDER ────────────────────────────────────────────── */
@@ -576,45 +666,6 @@ document.getElementById('spray-go')&&document.getElementById('spray-go').addEven
     }).catch(function(){});
 });
 
-/* ─── SCOUTING ADVISOR ──────────────────────────────────────────────── */
-var SCOUT_DB={
-  'VE_V3:VE_V2':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Black Cutworm',thresh:'3+ cut plants per 100 (treat immediately)'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',text:'Stand establishment: count plants per 1/1000 ac row length',thresh:'Replant threshold: <24,000 plants/ac'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Wireworm / seedcorn maggot',thresh:'Any stand reduction in wet cold soils'}],
-  'V4_V6:V3_V5':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Black Cutworm',thresh:'3+ cut plants per 100'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid (first arrival)',thresh:'Not threshold yet: monitor for early colonies'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Rootworm egg hatch (soil temp 50\u00b0F at 4")',thresh:'Flag continuous corn fields'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Bean leaf beetle',thresh:'20-30% defoliation threshold'}],
-  'V7_V9:R1_R2':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid',thresh:'250 per plant on over 80% of plants, increasing; threshold runs through R5'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'European Corn Borer',thresh:'1 egg mass or fresh feeding per 5 plants'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Japanese beetle (corn & soybean)',thresh:'Corn: 3+/ear, silks clipped under 1", pollination not done'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Gray Leaf Spot: watch warm humid nights',thresh:'Treat if GLS on or above ear leaf before silking'}],
-  'VT_R1:R3_R4':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Corn rootworm adult silk clipping',thresh:'5+ beetles/plant in the first week of pollen shed, or silks clipped to 1/2" on 25-50% of plants'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid: critical window',thresh:'250/plant on over 80% of plants, increasing; threshold runs through R5'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Corn earworm / Western Bean Cutworm',thresh:'8% egg mass infestation pre-tassel'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Spider mite: check field edges in hot dry weather',thresh:'25-50% stippling with active mites'}],
-  'R2_R3:R5_R6':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Spider mite: high risk in hot dry conditions',thresh:'25-50% leaf stippling with active mites present'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean aphid: R5 is the last stage the threshold covers',thresh:'No set threshold at R6; early R6 only for very large populations on stressed plants'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Northern Corn Leaf Blight / NCLB',thresh:'Fungicide if NCLB on/below ear leaf by VT/R1'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg>',text:'Yield estimate: ear length/girth method',thresh:'Count every 2 weeks from R3 forward'}],
-  'R4_R6:R7':[{icon:'<svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg>',text:'Harvest timing: corn at black layer',thresh:'Corn at 30-35% moisture for ear snap/combine harvest'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg>',text:'Soybean harvest timing',thresh:'Beans at R7 (1 mature pod) = safe to harvest when dry'},
-    {icon:'<svg class="ic" aria-hidden="true"><use href="#i-droplet"/></svg>',text:'Aflatoxin / Vomitoxin risk in stressed corn',thresh:'Test before delivery if drought or ear rot observed'}]
-};
-function updateScout(){
-  var cs=document.getElementById('scout-corn-stage').value;
-  var bs=document.getElementById('scout-bean-stage').value;
-  var el=document.getElementById('scout-list');if(!el)return;
-  if(!cs&&!bs){el.innerHTML='<span class="scout-empty">Select growth stages above to see priority scouting items for this week.</span>';return;}
-  var key=(cs||'any')+':'+(bs||'any');
-  var items=SCOUT_DB[key]||SCOUT_DB[(cs||'any')+':VE_V2']||SCOUT_DB['VT_R1:R3_R4']||[];
-  if(items.length===0){el.innerHTML='<span class="scout-empty">No specific alerts for this stage combination; general scouting recommended.</span>';return;}
-  el.innerHTML=items.map(function(item){
-    return '<div class="scout-item"><span class="scout-item-icon">'+item.icon+'</span><span class="scout-item-text">'+item.text+'<span class="scout-item-thresh">'+item.thresh+'</span></span></div>';
-  }).join('');
-}
-['scout-corn-stage','scout-bean-stage'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',updateScout);});
-
 /* ─── CROP STAGES TIMELINE ──────────────────────────────────────────── */
 var stagesInited=false;
 function initStages(){
@@ -719,11 +770,5 @@ function initStateStats(){
   }).catch(function(){renderState(activeState);});
   if(sel){sel.addEventListener('change',function(){activeState=sel.value;renderState(activeState);});}
 }
-
-/* ─── SOURCE FOOTER ─────────────────────────────────────────────────── */
-var srcEl=document.querySelector('.ff-source');
-if(!srcEl){var s2=document.createElement('div');s2.className='ff-source';
-  s2.innerHTML='Sources: <a href="https://cropsandsoils.extension.wisc.edu/nutrient-application-guidelines-for-field-vegetable-and-fruit-crops-in-wisconsin-a2809" target="_blank" rel="noopener">UW-Extension A2809</a> &middot; <a href="https://extension.umn.edu" target="_blank" rel="noopener">UMN Extension</a> &middot; <a href="https://www.nass.usda.gov/" target="_blank" rel="noopener">USDA NASS</a> &middot; Live prices from AGSIST data feed &middot; <a href="/">&#x2190; AGSIST Dashboard</a> &middot; <a href="tel:+17157972428">715-797-2428</a>';
-  document.querySelector('.ff-page')&&document.querySelector('.ff-page').appendChild(s2);}
 
 })();
