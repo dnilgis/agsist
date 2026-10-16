@@ -1996,8 +1996,7 @@
   {
    "path": "data/rma-planting-dates.json",
    "pages": [
-    "index.html",
-    "planting-date.html"
+    "index.html"
    ],
    "written_by": [],
    "touched_by": [

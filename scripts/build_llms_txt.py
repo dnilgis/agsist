@@ -114,7 +114,7 @@ PAGES = [
         ("/spray", "Spray Conditions", "can I spray today, by the hour, plus a tank-mix calculator"),
         ("/urea", "Urea Volatilization Risk", "nitrogen loss risk for surface-applied urea in the days ahead"),
         ("/gdu-calculator", "GDU Calculator", "growing degree units from planting, crop stage and black layer"),
-        ("/planting-date", "Planting Date Calculator", "corn and soybean planting windows and final planting dates"),
+        ("/planting-date", "Planting Date Calculator", "soil temperature and 5-day soil forecast at your ZIP, nearest NOAA station frost odds, county final planting dates, and yield loss by planting week (UMN, UW)"),
         ("/drought-monitor", "Drought Monitor", "this week's US Drought Monitor map and what each category means for crops"),
         ("/rain-print", "Rain Print", "one year of daily rain at the nearest weather station, drawn as wall art with your farm name and dates; free to make, prints for sale"),
         ("/gifts-for-farmers", "Gifts for Farmers", "Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links"),
