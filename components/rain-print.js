@@ -995,7 +995,9 @@
   function spans(r, y0, y1) { return !!(r && r[0] && r[1] && r[0] <= y0 && r[1] >= y1); }
   var STN_CACHE = new Map();   // lat|lon|year -> the station list
   // ca: the town is in Canada (its geocode said so): the Canadian station list instead of ACIS
+  var NEXT_CA = false;   // the page's next station list is Canadian (run() sets it from the town found)
   function stations(lat, lon, year, ca) {
+    if (ca === undefined) { ca = NEXT_CA; NEXT_CA = false; }
     var key = (+lat).toFixed(3) + '|' + (+lon).toFixed(3) + '|' + year + (ca ? '|ca' : '');
     if (STN_CACHE.has(key)) return Promise.resolve(STN_CACHE.get(key));
     var ask = ca && CA() ? CA().stations(safeFetch, lat, lon, year, caEnv(year)) : stationsAsk(lat, lon, year);
@@ -1259,7 +1261,11 @@
     return milesText(miles(m.km)) + ' from ' + m.city;
   }
   // the station line on the art itself: name and distance, both styles
-  function gaugeLine(m) { return 'Weather station: ' + gaugeWords(m) + ', ' + distText(m); }
+  function gaugeLine(m) {
+    // a Canadian station: km, its province, its own words (m.lang: the print's language, set by the page)
+    if (m && m.ca && root.AgRpCanada) return root.AgRpCanada.gaugeLine(m, m.lang || 'en');
+    return 'Weather station: ' + gaugeWords(m) + ', ' + distText(m);
+  }
   function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
 
   /* THE GIFT CARD'S PREVIEW (2026-10-14, Sig). rp-gift.html shows the print so
@@ -1478,6 +1484,7 @@
     // the US story links don't help a Canadian draw
     if ($('rp-stories')) $('rp-stories').hidden = ca;
     var lc = LOC();
+    if (META && META.ca) META.lang = lc.lang;
     radios('rp-units').forEach(function (r) { r.checked = ca && r.value === lc.units; });
     radios('rp-lang').forEach(function (r) { r.checked = ca && r.value === lc.lang; });
     GEO_LANG = ca ? lc.lang : 'en';
@@ -1538,8 +1545,6 @@
   function printMarkers() { return DATA ? markersOn(ST.markers, META.year, DATA.d.n) : []; }
   // "Chetek, Wisconsin": the state written out on the print
   function placeLong() { return META && META.ca && CA() ? CA().placeLong(META.city, META.prov, LOC().lang) : placeLongOf(META); }
-  // the station line on the print, both countries
-  function gaugeArt(m) { return m.ca && CA() ? CA().gaugeLine(m, LOC().lang) : gaugeLine(m); }
   /* The reader's days with no words of their own print as their date: in French, "3 mai". */
   function locMarkers(list) {
     if (!FR()) return list;
@@ -1588,8 +1593,8 @@
       style: ST.style, year: META.year, place: placeLong(), name: ex ? EXAMPLE.name : ST.name, dedication: ex ? EXAMPLE.dedication : ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: locMarkers(ex ? markersOn(exampleMarkers(META.year), META.year, DATA.d.n) : printMarkers()),
-      records: ST.records && !STUCK ? (CA() && META && META.ca ? CA().localizeRecords(recordsFor(), LOC()) : recordsFor()) : [], qr: qrInfo(o.serial, o.qrMatrix), preview: PREVIEW ? { last: PREVIEW.last } : null,
-      gauge: META ? gaugeArt(META) : '', logo: logoArt(), loc: META && META.ca ? LOC() : null,
+      records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial, o.qrMatrix), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      gauge: META ? gaugeLine(META) : '', logo: logoArt(), loc: META && META.ca ? LOC() : null,
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
     var svg = root.AgRainArt.render(input);
@@ -1640,7 +1645,8 @@
           dailyElems: ['pcpn', 'avgt', 'snow', 'maxt', 'mint'], porElems: ['pcpn', 'avgt'] }, {});
       } catch (e) { RECS = []; }
     }
-    return RECS;
+    // a Canadian print: its remarkable days in its units and language (components/rp-canada.js)
+    return CA() && META && META.ca ? CA().localizeRecords(RECS, LOC()) : RECS;
   }
 
   // ---------------------------------------------------------------- the logo
@@ -2622,7 +2628,8 @@
       var gCa = g.country_code === 'CA' || isCanada(ST.station);
       setStatus(gCa ? L('Looking for weather stations near ', 'Recherche des stations météo près de ') + g.name + '…' : 'Looking for NOAA stations near ' + g.name + (g.admin1 ? ', ' + g.admin1 : '') + '…');
       // a county link searches around its own station, so that station is in the list
-      return stations(ll ? ll.lat : g.latitude, ll ? ll.lon : g.longitude, ST.year, gCa);
+      NEXT_CA = gCa;
+      return stations(ll ? ll.lat : g.latitude, ll ? ll.lon : g.longitude, ST.year);
     }).then(function (list) {
       if (my !== reqToken) throw 'stale';
       // distances on the page are from the town, wherever the search was centered
@@ -2688,9 +2695,8 @@
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
         var w = s.ca && CA() ? CA().snowWord(seen && seen[s.sid], s.snowOk, LOC().lang) : snowWord(s, seen);
-        var dist = s.ca && CA() ? CA().kmText(s.km, LOC().lang) : milesText(miles(s.km));
-        var vr = s.valid_daterange && s.valid_daterange[0] ? ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4) : '';
-        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + dist + vr + (w ? ', ' + w : '') + '</option>';
+        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + (s.ca && CA() ? CA().kmText(s.km, LOC().lang) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4)
+          : milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4)) + (w ? ', ' + w : '') + '</option>';
       }).join('');
       sel.value = chosen.sid;
       var caM = !!(chosen.ca || (CA() && CA().isSid(chosen.sid)));
