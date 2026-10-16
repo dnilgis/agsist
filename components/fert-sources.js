@@ -48,7 +48,7 @@
     function list(xs) { return xs.length < 3 ? xs.join(' and ') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1]; }
     var groups = {}, order = [];
     r.forEach(function (x) {
-      var g = (x.region || 'Co-op') + ' co-ops&rsquo; middle cash price';
+      var g = (x.region || 'Co-op') + ' co-ops\u2019 middle cash price';   // set as textContent: a real apostrophe, not an entity (2026-10-16)
       if (!groups[g]) { groups[g] = []; order.push(g); }
       groups[g].push(x.name);
     });
