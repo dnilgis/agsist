@@ -93,7 +93,7 @@
   }
   function ok(p) { return p && typeof p.price === 'number' && isFinite(p.price) && p.price > 0; }
   function srcOf(p) {
-    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, label: p.src_label || null, src: p.src || null, region: p.region || null };
+    return { key: p.key, name: p.name, symbol: p.symbol, price: p.price, as_of: p.as_of || null, oldest: p.oldest || p.as_of || null, label: p.src_label || null, src: p.src || null, region: p.region || null };
   }
 
   /* $/lb of N, P2O5 and K2O from fertilizer-prices.json. A product with no
@@ -223,6 +223,23 @@
     return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : '';
   }
 
+  /* One date line for the whole page: the oldest to the newest posting
+     date of the N, P and K prices the values use (2026-10-16: the headline
+     said "through Oct 6" while MAP was posted Oct 12). */
+  function span(srcs) {
+    var lo = null, hi = null;
+    srcs.forEach(function (x) {
+      if (!x || !/^\d{4}-\d{2}-\d{2}$/.test(x.as_of || '')) return;
+      var o = /^\d{4}-\d{2}-\d{2}$/.test(x.oldest || '') && x.oldest < x.as_of ? x.oldest : x.as_of;
+      if (lo == null || o < lo) lo = o;
+      if (hi == null || x.as_of > hi) hi = x.as_of;
+    });
+    if (!hi) return '';
+    if (lo === hi) return day(hi);
+    var a = day(lo), b = day(hi);
+    return lo.slice(0, 4) === hi.slice(0, 4) ? a.slice(0, -6) + ' to ' + b : a + ' to ' + b;
+  }
+
   /* The worked example on /manure-value: liquid dairy manure on 80 acres. */
   var EXAMPLE = { type: 'dairy_liq_4_11', timing: '1to3day', rate: 6000, acres: 80 };
 
@@ -275,6 +292,7 @@
     v['p-name'] = pr.src.p ? pr.src.p.name : 'MAP or DAP';
     v['region-co-op'] = pr.src.n && pr.src.n.region ? pr.src.n.region + ' co-op' : 'co-op';
     v['nh3-note'] = nh3Note(data, pr);
+    v['asof-span'] = span([pr.src.n, pr.src.p, pr.src.k]) || NQ;
     var dv = derivation(pr);
     ['n', 'p', 'k'].forEach(function (x) {
       var s = pr.src[x];
@@ -318,7 +336,7 @@
 
   var API = { TYPES: TYPES, TIMING: TIMING, PK_PCT: PK_PCT, TONS_PER_KGAL: TONS_PER_KGAL, LB_PER_GAL: LB_PER_GAL, EXAMPLE: EXAMPLE,
               type: type, timing: timing, grade: grade, cleanTest: cleanTest, nutrientPrices: nutrientPrices, derivation: derivation, perUnit: perUnit,
-              perTon: perTon, fieldValue: fieldValue, money: money, day: day, bakeValues: bakeValues };
+              perTon: perTon, fieldValue: fieldValue, money: money, day: day, span: span, bakeValues: bakeValues };
   w.AgManure = API;
 
   /* ───────────── DOM: the calculator and live numbers ───────────── */

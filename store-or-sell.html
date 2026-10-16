@@ -121,7 +121,7 @@
     <details id="sos-others-wrap" hidden><summary>Other elevators near you</summary><ul class="sos-others" id="sos-others"></ul></details>
     <details><summary>What the board pays to store</summary><p class="sos-note" id="sos-futures" style="margin-bottom:.8rem">Loading futures prices.</p></details>
     <details><summary>Show the math</summary><pre class="sos-math" id="sos-math"></pre>
-      <p class="sos-fine" style="margin-bottom:.8rem">Net = carry &minus; storage &times; months &minus; price now &times; rate &times; months / 12 &minus; shrink &times; later price. Carry is the elevator&rsquo;s later posted bid minus its bid for delivery now, both read from the same board at the same time. A month in next year&rsquo;s crop is new crop, not storage, and is left out. When the answer is the board, storage and interest count from this month once the crop is in, because a bid for delivery now is priced off the nearest contract. Bids from the AGSIST elevator network; futures are Yahoo Finance daily closes, not CME settlements. For planning only; call the elevator before you count on a bid.</p><div class="method-note">Reviewed by Sigurd Lindquist, CCA</div>
+      <p class="sos-fine" style="margin-bottom:.8rem">Net = carry &minus; storage &times; months &minus; price now &times; rate &times; months / 12 &minus; shrink &times; later price. Carry is the elevator&rsquo;s later posted bid minus its bid for delivery now, both read from the same board at the same time. A month in next year&rsquo;s crop is new crop, not storage, and is left out. When the answer is the board, storage and interest count from this month once the crop is in, because a bid for delivery now is priced off the nearest contract. Bids from the AGSIST elevator network; futures are Yahoo Finance delayed quotes, labeled as closes only once read after the 1:20 pm CT day close, and never CME settlements. For planning only; call the elevator before you count on a bid.</p><div class="method-note">Reviewed by Sigurd Lindquist, CCA</div>
     </details>
     <h2>Common questions</h2>
     <details class="sos-faq"><summary>How do I know if storing grain pays?</summary><p>Take the elevator's posted bid for the later month, subtract its bid for delivery now: that is the carry. Then take off what holding costs you: storage for each month, interest on the money the grain is worth today, and any shrink. If what is left is above zero, storing pays at today's bids. This page does that arithmetic with your elevator's own posted bids.</p></details>
@@ -151,6 +151,6 @@
   <script src="/components/util.js?v=17"></script>
   <script src="/components/bids-network.js?v=5"></script>
   <script src="/components/storesell.js?v=7"></script>
-  <script src="/components/store-or-sell.js?v=5"></script>
+  <script src="/components/store-or-sell.js?v=6"></script>
 </body>
 </html>

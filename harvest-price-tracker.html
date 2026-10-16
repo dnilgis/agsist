@@ -191,7 +191,9 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
 .pd-ps-cau{display:block;margin-top:.5rem}
 .pd-ps{margin-top:1rem;scroll-margin-top:80px;}
 .pd-ps h3{font-size:1.08rem;margin:0 0 .35rem;}
-.pd-ps .pd-r3{grid-template-columns:1fr 2fr;}
+.pd-ps .pd-r3{grid-template-columns:minmax(0,22rem);}
+.pd-ps-ex{margin-top:.6rem}
+.pd-ps-ex .pd-ex-k{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pd-mut);margin-bottom:.25rem}
 
 /* ── baked fallback cards. fetch_harvest_prices.py owns this markup;
       never hand-edit between the SEED markers, edit the script. ────────── */
@@ -430,6 +432,7 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
         <input id="pd-acres" type="number" inputmode="decimal" min="0" max="100000" placeholder="e.g. 500"></div>
     </div>
     <div class="pd-out" id="pd-psbox" hidden><b id="pd-psout"></b><span id="pd-pssub"></span></div>
+    <div class="pd-out pd-ps-ex" id="pd-psex" hidden><span class="pd-ex-k">Example, not your farm</span><b id="pd-psex-out"></b><span id="pd-psex-sub"></span></div>
     <p class="pd-note"><b>RP protects revenue, not delivery.</b> If you sell ahead more than your guaranteed bushels and then raise a short crop, you may have to buy bushels back at a higher price. The harvest price feature softens that, but it does not erase it. Basis is not covered, because the guarantee is built on futures. This is the arithmetic, not marketing or insurance advice.</p>
   </div>
 
@@ -953,7 +956,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   // guarantee above has no answer, so it never shows a number the box above does not.
   function presell(aph,cov,cu,g){
     var box=$('pd-psbox'); if(!box) return;
-    if(!(aph>0)||!(cov>0)||!g||!cu){ box.hidden=true; return; }
+    if(!(aph>0)||!(cov>0)||!g||!cu){ box.hidden=true; presellExample(true); return; }
+    presellExample(false);
     var per=aph*cov, f1=function(n){return n.toLocaleString('en-US',{maximumFractionDigits:1});};
     var ac=Number(String($('pd-acres').value).trim());
     var tot=(ac>0&&ac<=100000)?per*ac:0;
@@ -976,6 +980,35 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       (cau?'<span class="pd-ps-cau"><strong>A more cautious mark: '+f1(cau)+' '+cu+'/ac</strong>'+
         (tot?' ('+Math.round(cau*ac).toLocaleString('en-US')+' '+cu+')':'')+
         ', 75% of your APH. It leaves room for a short crop before you are selling bushels you may not raise.</span>':'');
+    box.hidden=false;
+  }
+
+  /* 2026-10-16: the step opened empty until a state was picked. A worked example fills it, always
+     labeled, computed here from the files the page already loaded: Iowa's corn row in
+     data/rma-prices/index.json (ref_rows) and the running harvest average the H1 uses (runH). APH 200
+     and 80% are example numbers. The short-crop line (sell 160, raise 120) is RP arithmetic:
+     indemnity = guarantee - bushels raised x harvest price; it is shown only while there is a
+     harvest price to count with. Hidden whenever the reader's own number shows. */
+  var EX={aph:200,cov:0.80,sold:160,raised:120};
+  function presellExample(show){
+    var box=$('pd-psex'); if(!box) return;
+    var g=null;
+    if(show&&IDX&&IDX.ref_state==='IA'&&IDX.ref_rows) g=group(IDX.ref_rows).filter(function(x){ return x.crop==='Corn'&&!realType(x.type); })[0]||null;
+    if(!g||!(g.p>0)||unitOf(g)!=='bu'){ box.hidden=true; return; }
+    var per=EX.aph*EX.cov, rh=runH(g), H=rh?rh.avg:g.h, Hc=H!=null?Math.min(H,2*g.p):null;
+    var price=Hc!=null&&Hc>g.p?Hc:g.p, gtee=per*price, f0=function(n){ return '$'+Math.round(n).toLocaleString('en-US'); };
+    var hWords=Hc==null?'':(rh?'the running harvest price, '+runWords(rh):(isDone(g)?'the final harvest price':'RMA&rsquo;s running harvest price'));
+    $('pd-psex-out').textContent=per.toLocaleString('en-US')+' bu/ac';
+    var t='Iowa corn, '+EX.aph+' bu APH, '+(EX.cov*100).toFixed(0)+'% coverage: '+EX.aph+' &times; '+(EX.cov*100).toFixed(0)+'% = '+per+
+      ' bu an acre stand behind a revenue guarantee of <b class="pd-num">'+f0(gtee)+' /ac</b> ('+per+' &times; <b class="pd-num">'+money(price,'bu')+'</b>, '+
+      (price===g.p?'the projected price'+(Hc!=null?', since the harvest price is below it':''):hWords)+').';
+    if(Hc!=null){
+      var ind=Math.max(0,gtee-EX.raised*Hc);
+      t+=' Sell '+EX.sold+' ahead and raise '+EX.raised+': RP pays about <b class="pd-num">'+f0(ind)+' /ac</b> ('+f0(gtee)+' minus '+EX.raised+' &times; '+money(Hc,'bu')+
+        (price===g.p?'':', at today&rsquo;s running figure; the final price is set when October ends')+
+        '), and you buy back '+(EX.sold-EX.raised)+' bu at the cash price. Basis is not covered.';
+    }
+    $('pd-psex-sub').innerHTML=t+' Pick your state above for your own numbers.';
     box.hidden=false;
   }
 

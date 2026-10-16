@@ -577,7 +577,10 @@ def summarize(coops):
         picks = []
         for c in coops:
             for r in c["rows"]:
-                if r["product"] == key and r["cash"] is not None and not r["stale"] and not r["flags"]:
+                # 2026-10-16: a price with no date is listed, never counted. The page
+                # says every price carries its date, and a middle that took in
+                # Two Rivers' undated DAP "close out" could not be dated honestly.
+                if r["product"] == key and r["cash"] is not None and not r["stale"] and not r["flags"] and r["date"]:
                     picks.append((c, r))
                     break
         if not picks:
@@ -591,7 +594,7 @@ def summarize(coops):
                 if others and abs(r["cash"] - others) / others > FAR_FROM_OTHERS:
                     r["far_from_others"] = True
                     far.append(c["id"])
-        # dates the co-ops show; an undated price is counted apart, never given a date
+        # dates the co-ops show (every counted price has one; undated stays 0)
         dates = sorted(r["date"] for _, r in picks if r["date"])
         out.append({"key": key, "name": PRODUCTS[key][0], "symbol": SYMBOL[key], "n": len(vals),
                     "median": med, "low": min(vals), "high": max(vals),
@@ -915,8 +918,9 @@ def selftest():
     ck("summary: far-from-others is not judged from two co-ops", summ["thiosul"]["far"] == [])
     ck("summary: 'other' products never summarized", "other" not in summ)
     ck("summary: dates span 2026-09-24 to 2026-10-06", summ["urea"]["oldest"] == "2026-09-24" and summ["urea"]["newest"] == "2026-10-06")
-    ck("summary: the undated DAP is counted as undated, not given today's date",
-       summ["dap"]["undated"] == 1 and summ["dap"]["newest"] == "2026-10-06" and summ["urea"]["undated"] == 0)
+    ck("summary: the undated DAP is listed, not counted, and never given today's date",
+       summ["dap"]["undated"] == 0 and "tworivers-ks" not in summ["dap"]["coops"] and summ["dap"]["n"] == 3
+       and summ["dap"]["newest"] == "2026-10-06" and summ["urea"]["undated"] == 0)
     ck("states counted", doc["states"] == {"KS": 4} and doc["coops_current"] == 4)
 
     # a bad per-unit figure keeps the row out of the summary

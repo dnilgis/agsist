@@ -189,11 +189,42 @@
   }
   function futuresModel(prices, crop, exch) {
     var q = prices && prices.quotes || {};
-    if (crop !== 'wheat') return SS.boardHold(crop, q);
-    if (exch === 'MW') return null;
-    var fm = SS.boardHold('wheat', exch === 'KE' ? kcQuotes(q) : q);
-    if (fm) fm.wheat = exch === 'KE' ? 'KE' : 'ZW';
+    var fm = null;
+    if (crop !== 'wheat') fm = SS.boardHold(crop, q);
+    else if (exch !== 'MW') {
+      fm = SS.boardHold('wheat', exch === 'KE' ? kcQuotes(q) : q);
+      if (fm) fm.wheat = exch === 'KE' ? 'KE' : 'ZW';
+    }
+    if (fm) fm.fetched = prices && prices.fetched || null;
     return fm;
+  }
+  /* The words for when the board quotes are from (2026-10-16 benchmark: it said "closes of
+     2026-10-16" for quotes read at 11:01 am CT, mid-session). A quote is a close only when it was
+     read after the 1:20 pm CT day close on its own date, or on a later day. Otherwise it is a
+     delayed quote, said with the time it was read. No read time: the date only, never "closes". */
+  var MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function ctParts(iso) {
+    var d = new Date(iso);
+    if (!iso || isNaN(d)) return null;
+    try {
+      var o = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(d).forEach(function (x) { o[x.type] = x.value; });
+      return { date: o.year + '-' + o.month + '-' + o.day, min: (+o.hour % 24) * 60 + (+o.minute) };
+    } catch (e) { return null; }
+  }
+  function dayWords(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    return m ? MON3[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : '';
+  }
+  function quoteWhen(date, fetched) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return 'latest quotes';
+    var r = ctParts(fetched);
+    if (!r) return 'quotes of ' + dayWords(date);
+    if (r.date > date || (r.date === date && r.min >= 13 * 60 + 20)) return 'closes of ' + dayWords(date);
+    var h = Math.floor(r.min / 60), mm = ('0' + r.min % 60).slice(-2);
+    return 'delayed quotes read ' + ((h % 12) || 12) + ':' + mm + (h < 12 ? ' am' : ' pm') + ' CT ' + dayWords(r.date).replace(/, \d{4}$/, '') +
+      ', before the close';
   }
   /* "KC HRW wheat futures" / "Chicago SRW wheat futures" / "corn futures" */
   function boardWord(fm) {
@@ -254,7 +285,7 @@
         ans.textContent = SS.holdLine({ to: fm.to.label.slice(0, 3), carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp });
         ans.className = 'sos-line ' + tone(nf);
         where.innerHTML = esc(state.zip ? (state.models === null ? 'Reading the elevators near ' + state.zip + '… ' : noLaterText()) : 'Enter your ZIP for your elevator’s own posted bids. Until then, this is the board. ') +
-          esc('Carry from ' + fm.from.label + ' to ' + fm.to.label + ' ' + boardWord(fm) + ', ' + (fm.date ? 'closes of ' + fm.date : 'latest closes') + '.' + wheatNote(fm) + ' ') +
+          esc('Carry from ' + fm.from.label + ' to ' + fm.to.label + ' ' + boardWord(fm) + ', ' + quoteWhen(fm.date, fm.fetched) + '.' + wheatNote(fm) + ' ') +
           esc(fm.fromToday ? 'Storage and interest from now: ' + spanText(fm) + '. A bid for delivery now is priced off ' + fm.from.label + ', so the months until then earn no carry but still cost you.'
                            : 'Storage and interest ' + spanText(fm) + '.') +
           fartherText();
@@ -396,6 +427,6 @@
     });
     run();
   }
-  window.AgsistStoreOrSell = { wheatExch: wheatExch, kcQuotes: kcQuotes, futuresModel: futuresModel };
+  window.AgsistStoreOrSell = { wheatExch: wheatExch, kcQuotes: kcQuotes, futuresModel: futuresModel, quoteWhen: quoteWhen };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

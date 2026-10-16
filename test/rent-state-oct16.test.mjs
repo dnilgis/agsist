@@ -93,3 +93,22 @@ test("Clayton County, IA: per-bushel and share-of-gross give the same $266", () 
   const cl = ground.c.find((x) => x[0] === "Clayton");
   assert.deepEqual(cl.slice(1, 3), [266, 224.2]);
 });
+
+// 2026-10-16 (gaps1): the data files carry no NASS state average yet (the cash-rent
+// workflow has not run since collect_state_avg was added). Until it does, the hero
+// word must say it is the middle county's, never read as the state's.
+test("no state average on file: the hero word names the middle county, never a bare 'RENT ...'", () => {
+  const r = JSON.parse(py(`print(json.dumps([b.reconcile_verdict('RENT HELD FLAT', None, have_sa=False),
+  b.reconcile_verdict('RENT EASED', None, have_sa=False), b.reconcile_verdict('NOT ENOUGH MATCHED COUNTIES', None, have_sa=False)]))`));
+  assert.deepEqual(r, ["MIDDLE COUNTY HELD FLAT", "MIDDLE COUNTY EASED", "NOT ENOUGH MATCHED COUNTIES"]);
+  const noSa = JSON.parse(py(`print(json.dumps([b.slug(b.STATE_NAMES[k]) + '.html' for k, d in b.load_states().items() if not d.get('state_avg')]))`));
+  assert.ok(noSa.includes("illinois.html"), "Illinois has no state average on file today");
+  for (const f of noSa) {
+    const h = read("rent/" + f);
+    assert.doesNotMatch(h, /letter-spacing:\.05em;color:#[0-9a-f]{6}">RENT /, f + ": bare RENT verdict with no state average on file");
+    assert.match(h, /not USDA NASS&rsquo;s statewide average, which is not on this page yet/, f);
+  }
+  const il = read("rent/illinois.html");
+  assert.match(il, />MIDDLE COUNTY HELD FLAT</);
+  assert.doesNotMatch(il, />RENT HELD FLAT</);
+});

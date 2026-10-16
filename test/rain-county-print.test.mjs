@@ -80,3 +80,47 @@ test("county pages load the same Rain Print engine and art versions as /rain-pri
     assert.ok(cp.includes("/components/" + f + "?v=" + want), f + " should be ?v=" + want + " in rain-county-print.js");
   }
 });
+
+// 2026-10-16 (gaps1): the usual-year line. The page carries NOAA's normal for each month summed
+// over the days the station reported (data-mn, the month table's own numbers); the print spreads
+// each over that month's reported days. By hand: Jan 3 days all reported, Jan usual 0.30 ->
+// 0.10 a day; Feb 2 days, one missing, Feb usual 0.20 -> 0.20 on the reported day, 0 on the
+// missing one; year usual 0.50.
+test("usualOf: month usuals spread over reported days, by hand", () => {
+  const { usualOf } = ctx.AgRainCountyPrint;
+  const days = [{ m: 0, v: 0 }, { m: 0, v: 0.5 }, { m: 0, v: 0 }, { m: 1, v: null }, { m: 1, v: 0.1 }];
+  const o = usualOf(days, "0.30,0.20", "0.50");
+  assert.deepEqual(o.daily.map((v) => +v.toFixed(4)), [0.1, 0.1, 0.1, 0, 0.2]);
+  assert.ok(Math.abs(o.total - 0.5) < 1e-9);
+  assert.equal(usualOf(days, "0.30,0.20", "0.60"), null, "a sum that is not the page's usual: no line");
+  assert.equal(usualOf([{ m: 0, v: 0 }, { m: 1, v: null }], "0.30,0.20", "0.50"), null, "a month with a usual and no reported day: no line");
+  assert.equal(usualOf(days, "", "0.50"), null, "no data: no line");
+});
+
+test("every shipped county page with a usual draws the line, and its month usuals are the page's", () => {
+  const { usualOf } = ctx.AgRainCountyPrint;
+  const dir = join(ROOT, "data/rain");
+  if (!existsSync(join(dir, "daily"))) return;
+  const names = JSON.parse(execFileSync("python3", ["-c",
+    "import sys,json;sys.path.insert(0,'scripts');import build_county_rain as B;import glob,os\n" +
+    "out={}\nfor f in glob.glob('rain/*/*.html'):\n  h=open(f).read()\n  import re\n  m=re.search(r'data-st=\"([a-z]{2})\" data-fips=\"(\\d+)\"[^>]*?data-mn=\"([^\"]+)\" data-usual=\"([^\"]+)\"',h)\n  if m: out[m.group(1)+m.group(2)]=[m.group(3),m.group(4)]\nprint(json.dumps(out))"],
+    { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 26 }));
+  let drawn = 0, n = 0;
+  for (const f of readdirSync(join(dir, "daily"))) {
+    const dd = JSON.parse(readFileSync(join(dir, "daily", f), "utf8"));
+    const st = JSON.parse(readFileSync(join(dir, f), "utf8"));
+    for (const [fips, rec] of Object.entries(dd.counties)) {
+      const pg = names[f.slice(0, 2) + fips];
+      if (!pg) continue;
+      n++;
+      const days = daysOf(RP, dd.year, rec), o = usualOf(days, pg[0], pg[1]);
+      assert.ok(o, `${f} ${fips}: no usual line though the page has a usual`);
+      const mn = pg[0].split(",").map(Number), sums = mn.map(() => 0);
+      days.forEach((x, i) => { sums[x.m] += o.daily[i]; });
+      mn.forEach((v, m) => assert.ok(Math.abs(sums[m] - v) < 0.006, `${f} ${fips} month ${m + 1}: ${sums[m]} vs ${v}`));
+      assert.ok(Math.abs(o.total - st.counties[fips].usual) <= 0.02, `${f} ${fips}: year usual`);
+      drawn++;
+    }
+  }
+  assert.ok(n > 1000 && drawn === n, `${drawn} of ${n}`);
+});
