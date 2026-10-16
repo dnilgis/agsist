@@ -1,0 +1,518 @@
+# Benchmark rain-county: NWS Hastings precipitation maps
+# https://www.weather.gov/gid/NebraskaPrecipitation
+# fetched 2026-10-16T16:24:53Z, sha256 41a7b96df762b09ba3941479213b7373d73b83433189284ec089a968d99f9ca0
+
+Nebraska Precipitation Maps
+
+-
+
+HOME
+
+-
+
+FORECAST
+
+-
+Local
+
+-
+Graphical
+
+-
+Aviation
+
+-
+Marine
+
+-
+Rivers and Lakes
+
+-
+Hurricanes
+
+-
+Severe Weather
+
+-
+Fire Weather
+
+-
+Sunrise/Sunset
+
+-
+Long Range Forecasts
+
+-
+Climate Prediction
+
+-
+Space Weather
+
+-
+
+PAST WEATHER
+
+-
+Past Weather
+
+-
+Astronomical Data
+
+-
+Certified Weather Data
+
+-
+
+SAFETY
+
+-
+
+INFORMATION
+
+-
+Wireless Emergency Alerts
+
+-
+Weather-Ready Nation
+
+-
+Brochures
+
+-
+Cooperative Observers
+
+-
+Daily Briefing
+
+-
+Damage/Fatality/Injury Statistics
+
+-
+Forecast Models
+
+-
+GIS Data Portal
+
+-
+NOAA Weather Radio
+
+-
+Publications
+
+-
+SKYWARN Storm Spotters
+
+-
+StormReady
+
+-
+TsunamiReady
+
+-
+Service Change Notices
+
+-
+
+EDUCATION
+
+-
+
+NEWS
+
+-
+
+SEARCH
+
+-
+
+-
+
+ABOUT
+
+-
+About NWS
+
+-
+Organization
+
+-
+For NWS Employees
+
+-
+National Centers
+
+-
+Careers
+
+-
+Contact Us
+
+-
+Glossary
+
+-
+Social Media
+
+-
+NWS Transformation
+
+News Headlines
+
+- Fall 2026 Frost/Freeze Info Page (average/extreme first frost/freeze dates, etc...FROST LOOKING LIKELY FRI NIGHT-SAT AM (Oct. 17)
+
+LOADING...
+
+Hastings, NE
+
+Weather Forecast Office
+
+Nebraska Precipitation Maps
+
+Weather.gov
+> Hastings, NE
+> Nebraska Precipitation Maps
+
+-
+
+Current Hazards
+
+-
+Experimental Graphical Hazardous Weather Outlook
+
+-
+Storm and Precipitation Reports
+
+-
+Outlooks
+
+-
+Submit a Storm Report
+
+-
+
+Current Conditions
+
+-
+Local Ice Accumulation Reports
+
+-
+Satellite
+
+-
+Local Snowfall Reports
+
+-
+Observed Precipitation
+
+-
+Snowfall Analysis
+
+-
+Observations
+
+-
+Local Storm Reports
+
+-
+
+Radar
+
+-
+Local Enhanced Radar
+
+-
+Local Standard Radar (low bandwidth)
+
+-
+Regional Standard Radar (low bandwidth)
+
+-
+
+Forecasts
+
+-
+Experimental Heat Risk
+
+-
+Fire Weather
+
+-
+Experimental Probabilistic Quantitative Precipitation Forecast
+
+-
+Winter Weather
+
+-
+Forecast Discussion
+
+-
+Hourly Forecasts
+
+-
+Wet-Bulb Globe Temperature
+
+-
+
+Rivers and Lakes
+
+-
+National Water Prediction Service (NWPS)
+
+-
+
+Climate and Past Weather
+
+-
+Drought
+
+-
+Event Summaries
+
+-
+Local
+
+-
+NOAA Climate Service
+
+-
+
+Local Programs
+
+-
+Publications
+
+-
+Blog
+
+-
+Archived Weather Events
+
+-
+Tornado History
+
+-
+Student Opportunities
+
+-
+About Our Office
+
+-
+NOAA Weather Radio
+
+-
+Text Products
+
+-
+Observations
+
+-
+Local Area Precip Maps
+
+-
+Archived Local Area Precip Maps
+
+-
+Local Area Snow Maps
+
+-
+Nebraska Precip And Snow Maps
+
+Nebraska Precipitation & Snow Maps
+
+These maps should update daily by mid morning. Please check timestamps in bottom right of each image.
+
+Click images to expand.
+
+Data Sources: National Weather Service AHPS and NOHRSC
+
+24 Hour
+48 Hour
+72 Hour
+
+Last 7 Days
+Last 30 Days
+Last 90 Days
+
+Percent of Normal
+
+Last 7 Days
+
+Percent of Normal
+
+Last 30 Days
+
+Percent of Normal
+
+Last 90 Days
+
+Month to Date
+
+Year to Date
+
+Percent of Normal
+
+Since October 1st
+
+Percent of Normal
+
+24 Hour Snow
+48 Hour Snow
+72 Hour Snow
+
+Month To Date Snow
+30 Day Total Snow
+
+Season Total Snow
+Departure From Normal
+
+More Maps:
+
+Archive of Monthly & Annual Precip Maps
+
+NWS Hastings Area Precipitation Analysis
+
+NWS Hastings Area Snow Maps
+
+Follow us on X
+
+Follow us on Facebook
+
+Follow us on YouTube
+
+GID RSS Feed
+
+Hazardous Weather
+
+Submit A Storm Report
+
+Storm Prediction Center
+
+Local Storm Reports
+
+Experimental Graphical Hazardous Weather Outlook
+
+Forecasts
+
+Area Forecast Discussion
+
+Fire Weather
+
+Aviation Weather Center
+
+Experimental Probabilistic Precip Amount Forecast
+
+Winter Weather
+
+Winter Storm Severity Index
+
+Experimental Winter Storm Outlook
+
+Wet Bulb Globe Temp
+
+Activity Planner
+
+Current Conditions
+
+Current Area Observations
+
+Text Products
+
+Satellite
+
+Rivers and Lakes
+
+Local 24 Hour Precip Maps
+
+Local Archived Precip Maps
+
+NWPS Precipitation Analysis
+
+Local Snowfall Maps
+
+Snowfall Analysis
+
+Snow Cover
+
+Climate
+
+Local Database (NOWData)
+
+Local Climate Webpage
+
+Hastings/G. Island Records
+
+Local Historical Tornado Info
+
+U.S. Drought Monitor
+
+Grand Island - Daily
+
+Grand Island - Monthly
+
+Hastings - Daily
+
+Hastings - Monthly
+
+Kearney - Daily
+
+Kearney - Monthly
+
+Ord - Daily
+
+Ord - Monthly
+
+Weather Safety
+
+Thunderstorm Safety
+
+Lightning Safety
+
+Flood Safety
+
+Winter Weather Safety
+
+Other Weather Safety
+
+Additional Items
+
+NOAA Weather Radio
+
+Cooperative Observers
+
+CoCoRaHs
+
+Archived Weather Events
+
+NWS Enterprise Resources
+
+US Dept of Commerce
+
+National Oceanic and Atmospheric Administration
+
+National Weather Service
+
+Hastings, NE
+
+6365 North Osborne Drive West
+
+Hastings, NE 68901-9163
+
+402-462-4287
+
+Comments? Questions? Please Contact Us.
+
+Disclaimer
+
+Information Quality
+
+Help
+
+Glossary
+
+Privacy Policy
+
+Freedom of Information Act (FOIA)
+
+About Us
+
+Career Opportunities

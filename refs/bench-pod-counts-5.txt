@@ -1,0 +1,85 @@
+# Benchmark pod-counts: Canterra how to estimate soybean yields
+# https://canterra.com/blog/news/how-to-estimate-your-soybean-yields/
+# fetched 2026-10-16T16:24:42Z, sha256 866c6f50a188457d3d514a93bd3df8598ae6d02900a94b15973258ae9dcf5ede
+
+How to Estimate Your Soybean Yields | CANTERRA SEEDS
+
+-
+
+-
+
+-
+
+-
+
+There are numerous factors that affect soybean yields - management factors, weather, variety choice. But an estimate of your yield can be calculated by looking at the number of pods, seed size and number of seeds per pod.
+
+Here is a calculation that will allow you to estimate your soybean yield.
+
+Pods x Seeds per Pod / Seed Size = Estimated bushels per acre
+
+Number of Pods
+
+Count the number of pods in 1/10,000th of an acre. This works out to 21" and the following number of rows:
+
+- 1 row for 30" row spacing
+
+- 2 rows at 15" spacing
+
+- 4 rows at 7.5" spacing
+
+Seeds per Pod
+
+The starting point is 2.5 seeds per pod as an average, since pods can have anywhere from 1-4 seeds in them. This is a conservative estimate.
+
+Seed Size Factor
+
+Here the starting point is 18, which is fairly representative of 3,000 seeds per lb. If you expect larger seeds use a smaller factor, 15, and if you expect smaller seeds, possibly due to poor seed filling from lack of rain or other stress, use a larger factor like 21.
+
+So to use the formula above, the calculation could be:
+
+300 x 2.5 / 18 = 41.6 bu/ac
+
+Want to try our handy calculator to estimate your soybean yield? Click on the image below to give it a try.
+
+Source: www.soybeanstation.org
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-

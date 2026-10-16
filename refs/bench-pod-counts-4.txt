@@ -1,0 +1,91 @@
+# Benchmark pod-counts: DTN simple formulas
+# https://www.dtnpf.com/agriculture/web/ag/crops/article/2020/08/14/simple-formulas-can-help-determine
+# fetched 2026-10-16T16:24:40Z, sha256 b958f95c3f0b335fd533e8635bdfaf1dce71415d1119b2098cc375b2b4f29b1c
+
+Simple Formulas Can Help Determine Corn and Soybean Yields
+
+By
+
+Pamela Smith
+,
+Crops Technology Editor
+
+Connect with Pamela:
+
+@PamSmithDTN
+
+Counting kernels is one way to get an idea of how yields stack up this year. (DTN photo by Pamela Smith)
+
+DECATUR, Ill. (DTN) -- Crop tours and USDA reports are starting to heat up as the calendar races toward harvest. Yield checks are a good way to see how your corn and soybean yields measure up.
+
+The week kicks off the DTN/Progressive Farmer 2020 Digital Yield Tour, powered by Gro Intelligence. The tour takes an in-depth look at how this year's corn and soybean crop is progressing using real-time yield maps, which are generated with satellite imagery, rainfall data, temperature maps and other public data.
+
+Yield checks, like virtual tours, are a snapshot in time to assess potential of the crop. There are several different formulas used to figure yields, but here is a popular and simple approach:
+
+CORN
+
+1. Measure and record the row spacing (inches) used in the field.
+
+2. Walk past the end rows into the bulk of the field, then walk about 35 paces down the rows before taking a sample. You are looking for a representative sample of the field.
+
+3. Measure or step off 30 feet down the row. If you are doing a lot of sampling, a rope cut to length helps. Count all ears in the two adjacent rows. Divide that number by two and record it.
+
+4. Pull the fifth, eighth and 11th ears from plants in one row of the sampling area.
+
+5. Measure length of the portion of each ear that successfully developed kernels (do not include tip backed areas). Calculate the average ear length of the three ears in inches and record it.
+
+6. Count the number of kernel rows on each ear. Calculate the average kernel row number and record it. Kernel row number should be an even number.
+
+7. Grain yield is calculated by multiplying the average ear count by the average ear length by the average kernel row number, then dividing by the row spacing. Example: (43.5 ears x 6 inches x 15.3 rows) divided by 30-inch rows = 133 bu/ac yield estimate.
+
+P[L1] D[0x0] M[300x250] OOP[F] ADUNIT[] T[]
+
+A good time to start doing yield checks is at dough or beginning dent stage. This formula doesn't reflect test weight. Crop uniformity also influences the accuracy of any yield estimation technique. The less uniform the field, the greater the number of samples that should be taken to estimate yield for the field. There is a fine line between fairly sampling disparate areas of the field and sampling randomly within a field so as not to unfairly bias the yield estimates up or down.
+
+For more information on alternative formulas:
+
+https://www.agry.purdue.edu/…
+
+https://cropwatch.unl.edu/…
+
+http://corn.agronomy.wisc.edu/…
+
+SOYBEANS
+
+There is not a reliable method to convert pod counts to bushels per acre.
+
+"On the ground" plot tours compare pod counts across various years and then make an estimate of how yields will move accordingly.
+
+Here's one quick way to get a soybean sample:
+
+1. Go to a representative area of the field, away from end rows. Walk 35 steps down the row and lay out a 3-foot plot.
+
+2. Count all the plants in that 3-foot plot.
+
+3. Pull three plants at random.
+
+3. Count all pods on each plant. Ignore pods less than 1/4 inch in length at the top of the plant.
+
+4. Average pod counts for the three plants.
+
+5. Yield is calculated by multiplying the number of plants in 3 feet by the average number of pods per plant. To get pods in 3-by-3-foot square, multiply by 36. Divide by row spacing. Example: Number of plants in 3 feet (14) x Average number of pods per plant (35) = Pods in 3 fee (490) x 36 (makes it a square) = 17,640/row spacing (15) = 1,176 pods in a 3-by-3-foot square.
+
+For other formulas for estimating soybeans:
+
+https://agcrops.osu.edu/…
+
+https://www.agry.purdue.edu/…
+
+https://www.ag.ndsu.edu/…
+
+For an infographic describing DTN in-field sampling go to: https://www.dtn.com/….
+
+To see all the tour articles and related DTN stories about the 2020 crop, visit our tour site at: https://spotlights.dtnpf.com/….
+
+Follow the tour through #DigitalYieldTour20
+
+Pamela Smith can be reached at pamela.smith@dtn.com
+
+Follow her on Twitter @PamSmithDTN
+
+(c) Copyright 2020 DTN, LLC. All rights reserved.

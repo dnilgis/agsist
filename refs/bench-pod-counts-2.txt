@@ -1,0 +1,47 @@
+# Benchmark pod-counts: Pro Farmer scout your fields
+# https://www.profarmer.com/news/agriculture-news/scout-your-fields-too
+# fetched 2026-10-16T16:24:34Z, sha256 3d9337aeff6ea34d538e5db6623d3f782d23e8c38d18b5900b926457c33eed91
+
+Scout your fields, too - Pro Farmer
+
+Pro Farmer/News/Agriculture News
+
+Scout your fields, too
+
+While we’re scouting fields across the Corn Belt Aug. 16-19 on the Pro Farmer Crop Tour, you can scout your own fields.
+
+By Pro Farmer Editors
+
+•
+
+August 13, 2021 02:10 PM
+
+episode4scouting.JPG
+
+While we’re scouting fields across the Corn Belt Aug. 16-19 on the Pro Farmer Crop Tour, you can scout your own fields. That will allow you to compare your results to those we find in other areas of the Corn Belt. Follow the steps below.
+
+In each corn field, get past the end rows and then take 35 paces into the field, then:
+
+- At the 35th pace, lay out a 30-foot plot and count all the ears that will make grain on two 30-foot rows.
+
+- From one of those two rows, pull the 5th, 8th and 11th ears. This gives us a consistently random process to select sample ears.
+
+- Measure the length of grain (in inches, rounded to the nearest one-quarter inch) on each ear.
+
+- Count the number of kernel rows around each ear.
+
+- Record the row width in the field.
+
+- To calculate the estimated yield, take the average number of ears in the two 30-foot rows TIMES the average length of grain per ear TIMES the average number of kernel rows around; DIVIDE the total by row width.
+
+- Example: (50 ears X 6.5 inches X 16.7 kernel rows) / 30-inch rows = 180.9. This example gives you an estimated yield at that spot in the field of 180.9 bu. per acre.
+
+In each soybean field, pick a ‘representative spot’ in the field, then:
+
+- Measure three-foot of row and count all the plants in that plot. Randomly select three plants. Count all the pods on those three plants and calculate the average number of pods per plant.
+
+- Multiply the average number of pods per plant by the number of plants in the three-foot plot. Multiply that number by 36, and divide by row width.
+
+- Example: (14 plants X 32 pods/plant X 36) / 15-inch rows = 1,075.2 pods in a 3’X3’ square. Compare your results to what we find on Tour.
+
+Pro Farmer Crop Tour
