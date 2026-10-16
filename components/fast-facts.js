@@ -468,14 +468,14 @@ function calcLime(){
   var note;
   if(!r.need){
     s('lime-base','0 ton');s('lime-ag','0 ton');
-    note='No lime: water pH is not more than 0.2 below the '+r.target.toFixed(1)+' target.';
+    note='No lime: pH not more than 0.2 below target';
   } else {
     s('lime-base',fmtT(r.base60));
     s('lime-ag',fmtT(r.tons));
-    if(r.capped)note='A2809 says never more than 12 ton/ac, even when the formula asks for more. Retest after 2 to 3 years.';
-    else if(r.rule==='sandy')note='Sand under 1% organic matter: A2809 says 1 ton when the formula is under 1.5.';
-    else if(r.rule==='min')note='The formula is under A2809\u2019s minimum (2 ton of 60\u201369 lime, about 1.5 of 80\u201389), so this is the minimum.';
-    else note='Rounded as A2809 says: 60\u201369 lime to the ton, higher-NI lime to the half ton.';
+    if(r.capped)note='Capped at 12 ton (A2809 max). Retest in 2\u20133 yrs';
+    else if(r.rule==='sandy')note='1 ton: sand under 1% OM (A2809)';
+    else if(r.rule==='min')note='A2809 minimum rate (formula is lower)';
+    else note='Rounded as A2809 says';
   }
   s('lime-note',note);
   if(costEl){
@@ -665,7 +665,7 @@ function initStages(){
       div.setAttribute('role','button');div.setAttribute('tabindex','0');
       var g=st.hi?st.gdu+'\u2013'+st.hi:String(st.gdu);
       div.setAttribute('aria-label',st.s+', '+g+' GDU from planting');
-      div.innerHTML='<div class="sv-dot"></div><div class="sv-lbl">'+st.s+'</div><div class="sv-gdu">'+g+'</div>';
+      div.innerHTML='<div class="sv-dot"></div><div class="sv-lbl">'+st.s+'</div><div class="sv-gdu">'+st.gdu+(st.hi?'+':'')+'</div>';
       div.addEventListener('click',function(){
         document.querySelectorAll('#'+markId+' .sv-mark').forEach(function(m){m.classList.remove('active');});
         div.classList.add('active');

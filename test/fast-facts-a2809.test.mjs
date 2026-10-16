@@ -255,7 +255,7 @@ test("the soil test, lime and GDU calculators show A2809's numbers in the browse
     assert.equal(await t("#lime-ag"), "2 ton");
     await pg.fill("#lime-wph", "6.2");
     assert.equal(await t("#lime-cost"), "None needed");
-    assert.match(await t("#lime-note"), /not more than 0\.2 below/);
+    assert.match(await t("#lime-note"), /not more than 0\.2 below target/);
 
     await pg.goto(`http://127.0.0.1:${port}/fast-facts#stages`);
     await pg.fill("#gdu-acc", "1000");
