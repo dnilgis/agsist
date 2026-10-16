@@ -2,7 +2,7 @@
 /* build_grain_emc.mjs: bakes the static parts of /grain-emc from the same
  * math the page runs (components/grain-emc.js), so a crawler, a printer and a
  * reader with no script see the same numbers the calculator gives:
- *   <!--EMC:CHART:corn--> and <!--EMC:CHART:wheat-->: the EMC charts
+ *   <!--EMC:CHART:corn-->, <!--EMC:CHART:soybeans--> and <!--EMC:CHART:wheat-->: the EMC charts
  *     (30 to 90 F down the side, 30 to 90% humidity across, % wet basis),
  *     each with its print-only title, how-to-read line, equation, note,
  *     QR code (components/qr.js, drawn here, a plain link to the page) and
@@ -42,6 +42,14 @@ const COPY = {
     note: "Extension tables for the same air (Minnesota, Kentucky, Arkansas) run up to about 2 points apart. Grain drying down settles a little wetter than grain taking on water in the same air. Bold: within half a point of a 15.5% target.",
     target: 15.5,
   },
+  soybeans: {
+    label: "Soybean",
+    title: "Soybean EMC chart: equilibrium moisture content, % wet basis",
+    howto: "Find the air temperature down the side and the relative humidity across the top. The cell is the moisture soybeans end up at in that air, % wet basis. Each cell gives two published fits, low over high; plan on the high one.",
+    eq: "Low: Modified Henderson, ASAE D245 soybean constants, 1-RH = exp(-30.5327e-5&middot;(T+134.136)&middot;M^1.2164). High: Modified Halsey, RH = exp(-exp(2.87-0.0054&middot;T)/M^1.38). T &deg;C, M % dry basis.",
+    note: "Low matches Minnesota Extension (60 F) and NDSU; high matches every cell of the Kentucky and Arkansas soybean tables. At 80 to 90% humidity the two split wide. Bold: within half a point of a 13% target.",
+    target: 13,
+  },
   wheat: {
     title: "Wheat EMC chart: equilibrium moisture content, % wet basis",
     howto: "Find the air temperature down the side and the relative humidity across the top. The cell is the moisture wheat ends up at in that air, % wet basis.",
@@ -52,7 +60,7 @@ const COPY = {
 };
 
 function chart(k) {
-  const c = COPY[k], name = E.GRAINS[k].name;
+  const c = COPY[k], name = c.label || E.GRAINS[k].name;
   const head = "<tr><th scope=\"col\" class=\"cr\">Air</th>" + RHS.map((r) => `<th scope="col">${r}%</th>`).join("") + "</tr>";
   const body = TEMPS.map((t) => {
     const cells = RHS.map((rh) => {
@@ -99,6 +107,7 @@ function fill(html, tag, inner) {
 
 export function bake(html) {
   html = fill(html, "CHART:corn", chart("corn"));
+  html = fill(html, "CHART:soybeans", chart("soybeans"));
   html = fill(html, "CHART:wheat", chart("wheat"));
   html = fill(html, "LIMITS", limits());
   return html;
