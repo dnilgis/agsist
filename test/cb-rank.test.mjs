@@ -49,8 +49,9 @@ const FNS = ["ppu", "plausible", "basisUnit", "basisCents", "basisUnusual", "not
   "deliverySort", "delKey", "getNearestBid", "preferPlain", "harvestYear", "harvestKeys",
   "isHarvestSeason", "inDelivery", "windowMonths", "netNormOperator", "netPlain", "netKey",
   "netIsTwin", "netMerge", "netOlder", "rankOf", "rankable", "wheatCls", "rankCmp",
-  "rankCands", "classGroups", "pickClass", "clsName", "townOf", "placeOf", "bannerName", "markBidOutliers"];
-const VARS = ["PPU_BAND", "BASIS_SANE", "NOT_PER_BUSHEL", "SPECIAL_GRADE", "NET_LEGAL", "NET_INHERIT"];
+  "rankCands", "classGroups", "pickClass", "clsName", "townOf", "placeOf", "bannerName", "markBidOutliers",
+  "delLabel", "delShow"];
+const VARS = ["MONTHNAME", "PPU_BAND", "BASIS_SANE", "NOT_PER_BUSHEL", "SPECIAL_GRADE", "NET_LEGAL", "NET_INHERIT"];
 
 function load() {
   const ctx = { console, Intl, Date, Math, JSON };
@@ -186,6 +187,24 @@ test("contract forms: one table, run through the town builder and this page alik
   assert.equal(cbRank.contractKey({ category: "wheat", commodity: "Wheat", symbol: "@KW6Z",
     basisMonth: "Dec 2026", asOf: "2026-10-15T20:40:00Z" }), "KEZ26");
   assert.equal(cbRank.contractKey({ category: "corn", symbol: "@C0Z", asOf: "2029-11-02T15:00:00Z" }), "ZCZ30");
+});
+
+test("one delivery labeler: the ZIP search and the town pages print a board alike (HAR 26, HAR 27)", () => {
+  const c = load();
+  const { cases } = JSON.parse(readFileSync(ROOT + "test/fixtures/delivery-labels.json", "utf8"));
+  assert.ok(cases.length >= 40);
+  const py = JSON.parse(execFileSync("python3", ["-I", "-c",
+    "import sys,json;sys.path.insert(0,sys.argv[1]);import build_cash_bid_pages as B\n" +
+    "print(json.dumps([B.delivery_label({'delivery':d,'period':p}) for d,p,_ in json.load(open(sys.argv[2]))['cases']]))",
+    ROOT + "scripts", ROOT + "test/fixtures/delivery-labels.json"], { encoding: "utf8" }));
+  cases.forEach(([d, p, want], i) => {
+    assert.equal(py[i], want, `town page: ${d} | ${p}`);
+    assert.equal(c.cbRank.deliveryText(d, p), want, `cbRank: ${d} | ${p}`);
+    /* and the cell the ZIP search draws goes through it */
+    assert.equal(c.delShow({ deliveryMonth: d, deliveryPeriod: p, deliveryStart: "" }), want, `delShow: ${d} | ${p}`);
+  });
+  /* River Country Co-op, Bloomer: no raw code, and no em dash anywhere in the table */
+  assert.ok(!cases.some(([, , w]) => /—/.test(w)));
 });
 
 test("a day-old DTN board is re-marked like any other (54728: Rooney over River Country Boyd)", () => {

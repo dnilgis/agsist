@@ -165,6 +165,76 @@ function contractKey(b){
   return parseContract(String(b.symbol||''),cat,ref,b.commodity)||
          parseContract(String(b.basisMonth||''),cat,ref,b.commodity);
 }
+/* ── The delivery a board posted, as the page prints it ────────────────────
+   Twin of scripts/build_cash_bid_pages.py delivery_text(); the ZIP search and
+   the town pages print one board the same way (test/fixtures/delivery-labels.json
+   runs through both). River Country Co-op posts "HAR 26" and "HAR 27": the town
+   page printed both raw, this page said "Fall 2026" for one and "HAR 27" for
+   the other. Now both say "Harvest 2026" and "Harvest 2027".
+     "(YYYY-MM)" the gradable adapter appends is the futures contract: dropped.
+     "Oct 26", "OCTOBER 2026", "10/01/2026", "Oct 01, 2026": "Oct 2026".
+     With the network's month (period "2026-10"): "October", "Dec corn" and a
+       whole-month range take its year; part of a month is "Oct 1-16, 2026".
+       A deadline ("By Oct 9") stays as written.
+     A season code in the board's own word: HAR -> Harvest, NC -> New crop,
+       Fall, OC -> Old crop; with no year on the label, the season's year.
+     Anything else as the board wrote it. */
+var SEASON_RE=/^(?:(harv(?:est)?(?:\s+del(?:ivery)?)?|har)|(n\/?c|new\s*crop|n\s+crop|new)|(fall)|(o\/?c|old\s*crop))\s*'?\s*(\d{4}|\d{2})?'?(?![\w\/])([\s\S]*)$/i;
+var SEASON_FIRST_RE=/^(\d{4}|\d{2})\s+(new\s*crop|fall|harvest|crop)\b([\s\S]*)$/i;
+var SEASON_WORD=['Harvest','New crop','Fall','Old crop'];
+var LAST_DAY=[31,29,31,30,31,30,31,31,30,31,30,31];
+var MON_START=/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?(?![a-z])/i;
+function yy(t){return t.length===2?2000+(+t):+t;}
+function titleMon(t){t=String(t||'');return t.charAt(0).toUpperCase()+t.slice(1,3).toLowerCase();}
+function deliveryText(delivery,period){
+  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s+/g,' ').trim();
+  var per=String(period||''),m,i;
+  if((m=/^([A-Za-z]{3})[A-Za-z]*\.?\s*'?(\d{2}|\d{4})$/.exec(lab))&&MONTHS.indexOf(titleMon(m[1]))>=0)
+    return titleMon(m[1])+' '+yy(m[2]);
+  if((m=/^(\d{1,2})\/0?1\/(\d{4})$/.exec(lab))&&+m[1]>=1&&+m[1]<=12)
+    return MONTHS[+m[1]-1]+' '+m[2];
+  if((m=/^([A-Za-z]{3})[A-Za-z]*\.?\s+0?1,?\s+(\d{4})$/.exec(lab))&&MONTHS.indexOf(titleMon(m[1]))>=0)
+    return titleMon(m[1])+' '+m[2];
+  var pm=/^(\d{4})-(\d{2})$/.exec(per);
+  if(pm&&+pm[2]>=1&&+pm[2]<=12){
+    var y=+pm[1],mo=+pm[2],MN=MONTHS[mo-1];
+    var r=/^(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})$/.exec(lab);
+    if(r&&titleMon(r[2])===MN&&titleMon(r[5])===MN&&+r[3]===y&&+r[6]===y){
+      var d1=+r[1],d2=+r[4],last=mo===2?(y%4===0?29:28):LAST_DAY[mo-1];
+      if(!(d1===1&&d2===last)&&d1>=1&&d1<=d2&&d2<=last)return MN+' '+d1+'-'+d2+', '+y;
+      return MN+' '+y;
+    }
+    if(!lab)return MN+' '+y;
+    var b=/^([A-Za-z]{3})[A-Za-z]*\.?\s*(?:'?(\d{4}|\d{2})'?)?(?![\w\/'])\s*([\s\S]*)$/.exec(lab);
+    if(b&&titleMon(b[1])===MN&&(!b[2]||yy(b[2])===y)&&
+       /^(?:[A-Za-z]+(?: [A-Za-z]+)*)?$/.test(b[3])&&!MON_START.test(b[3]))
+      return MN+' '+y+(b[3]?' '+b[3]:'');
+  }
+  var sy=/^(?:new|old)crop-(\d{4})$/.exec(per);
+  if((m=SEASON_RE.exec(lab))){
+    for(i=0;i<4&&!m[i+1];i++);
+    var rest=m[6].trim(),year=m[5]?yy(m[5]):null;
+    if(year==null&&sy&&!/\d/.test(rest))year=+sy[1];
+    var out=SEASON_WORD[i]+(year?' '+year:'');
+    if(rest)out+=/^[-,:]/.test(rest)?', '+rest.replace(/^[-,: ]+/,'').trim():' '+rest;
+    return out.trim();
+  }
+  if((m=SEASON_FIRST_RE.exec(lab))){
+    var w=m[2].toLowerCase(),rs=m[3].trim();
+    var word=w.indexOf('new')===0?'New crop':w==='harvest'?'Harvest':w==='fall'?'Fall':'Crop';
+    return word+' '+yy(m[1])+(rs?' '+rs:'');
+  }
+  if(!lab){
+    if(per==='spot')return 'Spot';
+    var pr=/^(\d{4})-(\d{2})\/(\d{4})-(\d{2})$/.exec(per);
+    if(pr&&+pr[2]>=1&&+pr[2]<=12&&+pr[4]>=1&&+pr[4]<=12){
+      var a_=MONTHS[+pr[2]-1],b_=MONTHS[+pr[4]-1];
+      return pr[1]===pr[3]?a_+'-'+b_+' '+pr[3]:a_+' '+pr[1]+'-'+b_+' '+pr[3];
+    }
+    if(sy)return (per.indexOf('new')===0?'New crop':'Old crop')+' '+sy[1];
+  }
+  return lab;
+}
 var FUT={},FUT_ROOTS={ZC:1,ZS:1,ZW:1,KE:1};
 /* data/prices.json -> {ZSX26:{price:12.9575,date:'2026-10-07'}}. Only dated
    contracts (ZSX26.CBT), never a rolling front month (ZS=F), and nothing the
@@ -379,7 +449,7 @@ function cleanPlace(p){
 }
 
 var api={centralDay:centralDay,dayLabel:dayLabel,pairMonths:pairMonths,pairEnd:pairEnd,
-  wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,parseContract:parseContract,setFutures:setFutures,
+  wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,parseContract:parseContract,deliveryText:deliveryText,setFutures:setFutures,
   futureFor:futureFor,assess:assess,compare:compare,note:note,priceText:priceText,
   looksLikePoint:looksLikePoint,learnTowns:learnTowns,placeTown:placeTown,
   outlierCheck:outlierCheck,markOutliers:markOutliers,setStateMedians:setStateMedians,

@@ -864,10 +864,15 @@ function delLabel(k){
   var p=k.split('-');
   return MONTHNAME[parseInt(p[1],10)-1].slice(0,3)+' '+p[0];
 }
-/* WHAT THE DELIVERY CELL PRINTS. One month name, from the same key the filter
-   uses, so "September (2026-11)" (board text with the pipeline's period bolted
-   on) can no longer read as two months. The board's own words go in title=. */
+/* WHAT THE DELIVERY CELL PRINTS. cbRank.deliveryText(), the same words the
+   town pages print for the same board ("HAR 27" is "Harvest 2027" on both),
+   so "September (2026-11)" (board text with the pipeline's period bolted on)
+   can no longer read as two months. A licensed-feed row that only carries a
+   window start falls back to the filter's month. The board's own words go in
+   title=. */
 function delShow(bid){
+  var t=window.cbRank?cbRank.deliveryText(bid.deliveryMonth,bid.deliveryPeriod):'';
+  if(t)return t;
   var k=delKey(bid);
   if(k)return delLabel(k);
   if(isHarvestSeason(bid))return 'Fall '+harvestYear();
