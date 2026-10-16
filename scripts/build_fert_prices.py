@@ -19,8 +19,9 @@ forward: when the co-ops stop posting a product, it drops out and the pages
 say "no price".
 
 Rows carry key, name, symbol, price ($/ton), as_of (the newest date the
-co-ops show for it), src "coop", n, region, src_label ("Kansas co-ops,
-middle of 4, posted Oct 6, 2026"), short_label and the link. Also per_lb
+co-ops show for it), oldest (the oldest), src "coop", n, region,
+src_label ("Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026": the
+true range of the sheets in the middle), short_label and the link. Also per_lb
 (the $/lb of N, P2O5 and K2O, with the arithmetic in words) and programs
 (fertilizer $/acre for the break-even defaults, rates stated).
 
@@ -72,6 +73,23 @@ def short(iso):
     return "%s %d, %d" % (MON[d.month - 1], d.day, d.year)
 
 
+def span(lo, hi, year=True):
+    """The posting dates a figure rests on: "Oct 6, 2026" when every co-op
+    posted the same day, "Sep 24 to Oct 6, 2026" when the middle mixes
+    sheets (2026-10-16: the labels said "posted Oct 6" for a middle that
+    took in Sep 24 sheets). year=False drops the year (short labels)."""
+    if not lo or lo > hi:
+        lo = hi
+    a, b = short(lo), short(hi)
+    if lo == hi:
+        out = b
+    elif lo[:4] == hi[:4]:
+        out = a[:-6] + " to " + b
+    else:
+        out = a + " to " + b
+    return out[:-6] if not year and lo[:4] == hi[:4] else out
+
+
 def read_json(path):
     try:
         return json.loads(Path(path).read_text())
@@ -100,16 +118,16 @@ def build(coops, today=None):
         else:
             price = p["low"]
         reg = region([(by_id.get(c) or {}).get("state") or "?" for c in p.get("coops") or []])
-        when = short(p["newest"])
+        when = span(p.get("oldest") or p["newest"], p["newest"])
         if n == 1:
             c = by_id.get(p["coops"][0]) or {}
             label = "%s, %s, posted %s" % (c.get("name", "one co-op"), reg, when)
-            sl = "%s, %s" % (c.get("name", "one co-op"), when[:-6])
+            sl = "%s, %s" % (c.get("name", "one co-op"), span(p.get("oldest") or p["newest"], p["newest"], year=False))
         else:
             label = "%s co-ops, %s of %d, posted %s" % (reg, "average" if n == 2 else "middle", n, when)
-            sl = "%s co-ops, %s" % (reg, when[:-6])
+            sl = "%s co-ops, %s" % (reg, span(p.get("oldest") or p["newest"], p["newest"], year=False))
         rows[k] = {"key": k, "name": NAMES[k], "symbol": p["symbol"], "price": price, "unit": "$/ton",
-                   "as_of": p["newest"], "src": "coop", "n": n, "low": p["low"], "high": p["high"], "region": reg,
+                   "as_of": p["newest"], "oldest": p.get("oldest") or p["newest"], "src": "coop", "n": n, "low": p["low"], "high": p["high"], "region": reg,
                    "coops": p.get("coops") or [], "src_label": label, "short_label": sl,
                    "url": "https://agsist.com/fertilizer#fert-coops-more-h"}
     prices = [rows[k] for k in NAMES if k in rows]
@@ -213,9 +231,13 @@ def selftest():
     ck("every row is a co-op price", all(r["src"] == "coop" for r in d["prices"]))
     ck("urea: the middle of 4 co-ops (608, 615.95, 630, 840 -> 622.98)", by["urea"]["price"] == 622.98 and by["urea"]["n"] == 4)
     ck("urea dated by the newest co-op date", by["urea"]["as_of"] == "2026-10-06")
-    ck("label names the region, the count and the date",
-       by["urea"]["src_label"] == "Kansas co-ops, middle of 4, posted Oct 6, 2026" and by["urea"]["short_label"] == "Kansas co-ops, Oct 6")
-    ck("MAP: two co-ops, their average, said so", by["map"]["price"] == 980.0 and by["map"]["src_label"] == "Kansas co-ops, average of 2, posted Oct 12, 2026")
+    ck("label names the region, the count and the true date range (Sep 24 and Oct 6 sheets)",
+       by["urea"]["src_label"] == "Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026"
+       and by["urea"]["short_label"] == "Kansas co-ops, Sep 24 to Oct 6" and by["urea"]["oldest"] == "2026-09-24")
+    ck("one posting day: one date", by["10-34-0"]["src_label"] == "Mulvane Cooperative Union, Kansas, posted Oct 6, 2026")
+    ck("span across a new year names both years", span("2026-12-28", "2027-01-04") == "Dec 28, 2026 to Jan 4, 2027"
+       and span("2026-12-28", "2027-01-04", year=False) == "Dec 28, 2026 to Jan 4, 2027")
+    ck("MAP: two co-ops, their average, said so", by["map"]["price"] == 980.0 and by["map"]["src_label"] == "Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026")
     ck("Thio-Sul: two co-ops 390 and 450, average 420", by["thiosul"]["price"] == 420.0)
     ck("UAN 32: one co-op, its price, named", by["uan32"]["price"] == 451.05 and by["uan32"]["n"] == 1
        and by["uan32"]["src_label"] == "Test sheet co-op, Kansas, posted Sep 24, 2026")
@@ -228,7 +250,7 @@ def selftest():
     ck("P $/lb from MAP (it has a price) with 220 lb N credited", abs(pl["p"]["usd"] - (980 - 220 * 622.98 / 920) / 1040) < 1e-4 and pl["p"]["from"] == "map")
     ck("K $/lb from potash 0-0-60", abs(pl["k"]["usd"] - 470.4 / 1200) < 1e-4)
     ck("the arithmetic is written out with its label",
-       pl["n"]["how"] == "urea $622.98 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Oct 6, 2026)")
+       pl["n"]["how"] == "urea $622.98 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026)")
     cp = d["programs"]["corn"]
     want = round(162 * pl["n"]["usd"] + 67 * pl["p"]["usd"] + 43 * pl["k"]["usd"])
     ck("corn program: 162 N, 67 P2O5, 43 K2O at 180 bu, priced", (cp["n_lb"], cp["p_lb"], cp["k_lb"]) == (162, 67, 43) and cp["per_acre"] == want)
@@ -247,7 +269,7 @@ def selftest():
     w5 = build(with5, today)
     u5 = {r["key"]: r for r in w5["prices"]}["urea"]
     ck("Synergy urea 610 enters the middle: 608, 610, 615.95, 630, 840 -> 615.95", u5["price"] == 615.95 and u5["n"] == 5)
-    ck("two states named in the label", u5["src_label"] == "Kansas and Wisconsin co-ops, middle of 5, posted Oct 6, 2026")
+    ck("two states named in the label", u5["src_label"] == "Kansas and Wisconsin co-ops, middle of 5, posted Sep 24 to Oct 6, 2026")
     ck("N $/lb follows: 615.95 / 920", abs(w5["per_lb"]["n"]["usd"] - 615.95 / 920) < 1e-4)
     ck("no separate sheets list", "sheets" not in d and "sheets" not in w5)
     src = (ROOT / "scripts/build_fert_prices.py").read_text()

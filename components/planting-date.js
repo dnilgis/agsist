@@ -182,7 +182,7 @@ function renderFrostTable(zone){
     +'<tr><td>Last spring frost</td><td class="p10">'+d.spring10+'</td><td class="p50">'+d.spring50+'</td><td class="p90">'+d.spring90+'</td></tr>'
     +'<tr><td>First fall frost</td><td class="p10">'+d.fall10+'</td><td class="p50">'+d.fall50+'</td><td class="p90">'+d.fall90+'</td></tr>'
     +'</tbody></table>'
-    +'<p class="f-hint">Percentiles of the freeze date, not planting advice. These zone dates are approximate and run early: UW-Madison SSEC puts the Madison median last spring freeze near May 5 (1940-2024), 13 days after this table’s 50% date for southern Wisconsin. The freeze temperature behind them is not stated. Your ZIP gives your nearest NOAA station instead.</p>';
+    +'<p class="f-hint">Percentiles of the freeze date, not planting advice. These zone dates are approximate and run early: UW-Madison SSEC puts the Madison median last spring freeze near May 5 (1940-2024), 13 days after this table’s 50% date for southern Wisconsin. The freeze temperature behind them is not stated. A Wisconsin or Minnesota ZIP gives your nearest NOAA station instead.</p>';
   var el = $('frost-table-wrap'); if(el) el.innerHTML = html;
 }
 
@@ -388,24 +388,51 @@ function miles(lat1, lon1, lat2, lon2){
   return 2*R*Math.asin(Math.sqrt(a));
 }
 var MAX_MILES = 75;
+// Station names arrive title-cased from NCEI capitals ("Uw Arboretum", "Fond Du Lac 2 Sw").
+// Put the acronyms back in capitals, the small joining words in lower case.
+var NAME_UPPER = {UW:1,UMN:1,MN:1,WI:1,NWS:1,WSO:1,WFO:1,AP:1,RS:1,DNR:1,HQ:1,WWTP:1,SP:1,NE:1,NW:1,SE:1,SW:1,N:1,S:1,E:1,W:1,US:1};
+var NAME_LOWER = {of:1,du:1,de:1,and:1};
+function stationName(n){
+  var words = String(n||'').replace(/(\d)(NE|NW|SE|SW|N|S|E|W)\b/gi, '$1 $2').split(/(\s+|\/|-)/);
+  var seen = 0;
+  return words.map(function(w){
+    if(!/[A-Za-z]/.test(w)) return w;
+    var up = w.toUpperCase(), lo = w.toLowerCase(), first = seen++ === 0;
+    if(NAME_UPPER[up]) return up;
+    if(!first && NAME_LOWER[lo]) return lo;
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase().replace(/'S$/, "'s");
+  }).join('').replace(/'S\b/g, "'s");
+}
+// The rough zone card: shown before a ZIP and as the labeled fallback, hidden once a station answers.
+function zoneMode(mode){
+  var card = $('pd-zone-card'), h = $('pd-zone-h'), note = $('pd-zone-why');
+  if(!card) return;
+  card.hidden = mode === 'station';
+  if(h) h.lastChild.textContent = mode === 'fallback' ? ' Rough zone averages (no station for your ZIP)' : ' No ZIP? Rough zone averages';
+  if(note) note.textContent = mode === 'fallback'
+    ? 'Your ZIP has no station numbers, so these rough Wisconsin and Minnesota zone averages are shown instead. They are not your field: the frost dates run early and the heat units are a Wisconsin monthly average.'
+    : '';
+}
 function loadStation(){
   var box = $('pd-stn');
   return loadStationFiles().then(function(files){
     var all = [], meta = null;
     files.forEach(function(f){ if(f && f.stations){ meta = meta || f; all = all.concat(f.stations); } });
+    var inArea = !userState || userState === 'WI' || userState === 'MN';
     if(!all.length){
-      station = null;
+      station = null; zoneMode('fallback');
       box.innerHTML = '<h3>Frost odds at your nearest station</h3><div class="pd-empty"><strong>Station frost dates and heat units load after the first NOAA read.</strong> They come from NOAA’s 1991-2020 station normals and have not been pulled onto this site yet. Until then, the zone averages further down stand in; they run early.</div>';
       renderStationGDU(); return;
     }
     var best = null, bd = 1e9;
     all.forEach(function(s){ var d = miles(userLat, userLon, s.lat, s.lon); if(d < bd){ bd = d; best = s; } });
     if(bd > MAX_MILES){
-      station = null;
-      box.innerHTML = '<h3>Frost odds at your nearest station</h3><div class="pd-empty"><strong>No NOAA normals station in Wisconsin or Minnesota within '+MAX_MILES+' miles.</strong> This page covers those two states. The nearest is '+esc(best.n)+', '+fmt(bd)+' miles away, too far to stand in for your field.</div>';
+      station = null; zoneMode('fallback');
+      box.innerHTML = '<h3>Frost odds at your nearest station</h3><div class="pd-empty"><strong>Station frost dates and heat units cover Wisconsin and Minnesota so far.</strong> '+(userState && !inArea ? 'Your ZIP is in '+esc(userState)+'. ' : '')+'The nearest station with numbers is '+esc(stationName(best.n))+', '+fmt(bd)+' miles away, too far to stand in for your field. The zone averages further down are rough Wisconsin and Minnesota numbers, shown only as a fallback; they are not your field either.</div>';
       renderStationGDU(); return;
     }
-    station = best; stationMiles = bd;
+    station = best; stationMiles = bd; zoneMode('station');
+    best.n = stationName(best.n);
     var sp = best.s32.map(function(x){ return mdOfDoy(doyOfMD(x)); });
     var fa = best.f32.map(function(x){ return mdOfDoy(doyOfMD(x)); });
     var row28 = '';
@@ -415,7 +442,7 @@ function loadStation(){
             + '<tr><td>First fall 28°F</td><td>'+f28[0]+'</td><td class="p50">'+f28[1]+'</td><td>'+f28[2]+'</td></tr>';
     }
     box.innerHTML = '<h3>Frost odds at '+esc(best.n)+'</h3>'
-      +'<p class="stn-meta">NOAA normals station '+esc(best.id)+', '+fmt(bd)+' mi from you'+(best.el!=null?', '+fmt(best.el)+' ft':'')+'. 1991-2020.'+(bd>40?' That is a fair distance: low ground and lake effect can move these dates.':'')+'</p>'
+      +'<p class="stn-meta">NOAA normals station '+esc(best.id)+', '+fmt(bd)+' mi from you'+(best.el!=null?', '+fmt(best.el)+' ft':'')+'. 1991-2020.'+(bd>40?' That is a fair distance: low ground and lake effect can move these dates.':'')+(userState && !inArea?' Your ZIP is in '+esc(userState)+'; station numbers cover Wisconsin and Minnesota so far, so this is the nearest one across the line.':'')+'</p>'
       +'<table class="frost-table stn-table"><thead><tr><th></th><th>Early</th><th class="p50">Median</th><th>Late</th></tr></thead><tbody>'
       +'<tr><td>Last spring 32°F</td><td>'+sp[0]+'</td><td class="p50">'+sp[1]+'</td><td>'+sp[2]+'</td></tr>'
       +'<tr><td>First fall 32°F</td><td>'+fa[0]+'</td><td class="p50">'+fa[1]+'</td><td>'+fa[2]+'</td></tr>'+row28

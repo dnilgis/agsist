@@ -39,6 +39,9 @@ anything to do:
          otherwise once every two hours (minute 0-14 of even UTC hours) for
          five days after the week ends, so a slow Quick Stats load is retried
          instead of waiting a week. Nothing runs once the output is caught up.
+         condyield also stops when yield-nowcast.json records the input week
+         as held_back (a late-season week with too little history, refused on
+         purpose; 2026-10-16 it failed every 15 minutes instead).
 
 A manual Run workflow, a push and a repository_dispatch always go.
 
@@ -254,6 +257,8 @@ BEHIND = {
     "condyield": ("data/yield-nowcast.json", ("crops", "corn", "week_ending"),
                   "data/conditions/conditions.json", ("crops", "corn", "week_ending"), "conditions"),
 }
+# A week the output deliberately refused (held_back) counts as handled.
+REFUSED = {"condyield": ("data/yield-nowcast.json", ("held_back", "week_ending"))}
 RETRY_DAYS = 5      # retry window after the week ends (Sunday) -> through Friday
 STALE_DAYS = 21     # same off-season rule as build_yield_nowcast.py
 
@@ -270,9 +275,10 @@ def week_at(path, keys):
         return None
 
 
-def decide_behind(event, now, have, want, upstream_done):
+def decide_behind(event, now, have, want, upstream_done, refused=None):
     """(go, reason). have = the week the output is on, want = the week its input
-    is on; upstream_done = this run was started by the job that writes the input."""
+    is on; upstream_done = this run was started by the job that writes the input;
+    refused = a week the output recorded as deliberately not built."""
     if event in ALWAYS_GO:
         return 1, "%s always runs" % event
     if want is None:
@@ -282,6 +288,8 @@ def decide_behind(event, now, have, want, upstream_done):
         return 0, "input is on %s, %d days old: off-season" % (want, age)
     if have is not None and have >= want:
         return 0, "already on the week ending %s" % want
+    if refused is not None and refused >= want:
+        return 0, "the week ending %s was refused and recorded (held_back); nothing to retry" % want
     if upstream_done:
         return 1, "input just moved to %s (output on %s)" % (want, have)
     if age > RETRY_DAYS:
@@ -337,8 +345,10 @@ def main(argv):
     if a.mode in BEHIND:
         hf, hk, wf, wk, up = BEHIND[a.mode]
         trig = os.environ.get("TRIGGER_WORKFLOW", "")
+        rf = REFUSED.get(a.mode)
         emit(*decide_behind(event, now, week_at(hf, hk), week_at(wf, wk),
-                            event == "schedule" or (event == "workflow_run" and trig == up)))
+                            event == "schedule" or (event == "workflow_run" and trig == up),
+                            week_at(*rf) if rf else None))
         return 0
     if a.mode != "tick" or not a.workflow or not a.cron:
         p.error("tick needs --workflow and at least one --cron")
@@ -478,6 +488,16 @@ def selftest():
           "behind: unreadable input, no run")
     check(decide_behind("workflow_dispatch", T("2026-10-14 03:00"), w11, w11, False)[0] == 1,
           "behind: manual always goes")
+    # 2026-10-16: the Oct 11 week had too little late-season history and the
+    # build failed every 15 minutes off each "conditions" completion.
+    check(decide_behind("workflow_run", T("2026-10-16 22:43"), w4, w11, True, w11)[0] == 0,
+          "behind: a recorded refusal of this week stops the re-runs")
+    check(decide_behind("workflow_run", T("2026-10-19 02:07"), w4, D("2026-10-18"), True, w11)[0] == 1,
+          "behind: a refusal of last week does not block the next week")
+    check(decide_behind("workflow_dispatch", T("2026-10-16 22:43"), w4, w11, False, w11)[0] == 1,
+          "behind: manual still goes after a refusal")
+    check(decide_behind("workflow_run", T("2026-10-16 22:43"), w4, w11, True, None)[0] == 1,
+          "behind: no refusal recorded, a failure keeps failing loud")
 
     print("\n%d failed" % len(fails) if fails else "\nall cron_gate checks passed")
     return 1 if fails else 0
