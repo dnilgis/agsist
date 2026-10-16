@@ -1,0 +1,119 @@
+# Benchmark tools: UNL CropWatch Apps and Tools
+# https://cropwatch.unl.edu/home/apps-tools/
+# fetched 2026-10-16T15:35:04Z, sha256 7347a6a926c2819175ae0db03fb62ac12571b66bc286585a0da84b4ff8eda5d1
+
+Mobile Apps & Tools | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Grain Storage & Harvest Management
+
+Use the tool
+
+Grain Bin Volume Calculator
+
+This interactive tool is designed to estimate the volume of grain in a round bin. Users input the bin diameter and grain depth, and the tool calculates the volume in cubic feet and bushels.
+
+Use the tool
+
+Harvest Moisture Calculator
+
+An interactive, web-based tool for producers to estimate yield-adjusted moisture weight for corn and soybean and guide harvest decisions.
+
+Irrigation & Water Management
+
+Use the tool
+
+ET/GDD Tool
+
+This web-based tool provides location-specific heat unit accumulation and reference evapotranspiration estimates for all major crops grown in Nebraska. Users enter their location, crop type, planting date and climate data; the tool calculates accumulated heat units (GDD) and crop evapotranspiration rates to inform irrigation scheduling and crop development monitoring.
+
+Use the app
+
+ACREE App
+
+Built from the trusted web dashboard used by the Peer Learning Agricultural Network (PLAN), this app is field-friendly, intuitive, and designed for Nebraska growers managing pivot and irrigated acres. ACREE delivers field-specific irrigation insights to your mobile device — tap into real-time weather data, field sensor readings and weekly crop water use reports for on-the-go decisions during the growing season.
+
+Use the tool
+
+Irricost
+
+This Excel-based tool will help producers calculate the costs of owning and operating a center pivot system.
+
+Use the tool
+
+CornSoyWater
+
+CornSoyWater is a free, web and mobile decision support tool designed for irrigators growing corn or soybeans. With user-provided field details (like crop type, planting date, rooting depth), the tool pulls in real-time weather data — such as precipitation and seven-day forecasts — to model soil water status and crop water use. It integrates crop-growth models to track development and water dynamics from planting through harvest, helping users irrigate smarter without frequent field checks.
+
+Use the tool
+
+Irrigation Meter Calculator
+
+The Irrigation Meter Calculator helps irrigators quickly figure out how many inches of water per acre applied using the irrigation system’s meter readings. Just choose the meter type, enter the start and end numbers, and the acres irrigated, and the tool does the math. It’s a simple way to track water use and support better irrigation decisions.
+
+Use the tool
+
+CropSmart
+
+CropSmart is a data-driven irrigation scheduling platform for corn and soybean production that uses real-time weather, rainfall and soil moisture data to help guide irrigation decisions. The tool creates a digital twin of a producer’s field to track crop water use, soil moisture balance and water movement within the root zone
+
+Crop Management Tools
+
+Use the tool
+
+Nitrogen Tool
+
+An easy-to-use digital tool to help ag producers determine the appropriate application of nitrogen for individual fields and yield goals. Users can input specifics for individual fields, including soil characteristics, soil nitrate sampling data, organic matter, irrigation practices and economic information. In addition to the nitrogen rate recommendation, the software provides breakdowns of product needed per acre, total product needed for the field and product costs.
+
+Use the app
+
+Wheat Variety App
+
+An interactive, web-based application for viewing the UNL Crop Variety and Hybrid Testing Program's wheat variety trial results. The tool features an automated map, which can be fully customized by entering information on region, harvest year, variety, tillage and irrigation to create a unique PDF report for the user.
+
+Use the tool
+
+Cover Crop Biomass Calculator
+
+The biomass calculator allows users to estimate cover crop biomass production, transpiration and biomass N uptake for a selected cover crop species, location, planting and termination date. The estimates are simulated using the APSIM crop model, an open access computer platform recognized for its ability to represent a range of cropping systems.
+
+Use the tool
+
+Farm Stat
+
+Farm Stat helps farmers and agronomists analyze on-farm research data through a user-friendly interface. It performs statistical analyses, such as variance analysis, and provides clear conclusions about the effectiveness of different treatments. Users can input data manually or via Excel and save their analysis results to revisit later. Training videos, guides and templates assist with using the tool effectively. It's a valuable resource for improving agricultural decision-making.
+
+Use the tool
+
+Sugar Beet Seed Spacing Calculator
+
+Estimate sugarbeet seed needs for individual fields, varieties or an entire crop using row spacing and either seed spacing or target plant population. The calculator can account for expected emergence and allows users to calculate and print results for multiple field and variety combinations.
+
+Use the app
+
+AgriTools App
+
+AgriTools provides easy access to location-specific climate and weather information important to the agricultural industry in Nebraska. Data from the High Plains Regional Climate Center, National Weather Service, and Nebraska State Climate Office allows the user to view recent data and forecasts for their current location or other desired locations. AgriTools also provides quick access to related University of Nebraska-Lincoln Extension apps and websites.
+
+Use the tool
+
+Soybean Defoliation Scouting
+
+This tool helps producers estimate soybean defoliation by entering leaf-area loss from field samples. The spreadsheet calculates average defoliation for comparison with treatment thresholds and includes a visual guide for estimating leaf-area loss.
+
+Financial & Budget Tools
+
+Use the tool
+
+Agricultural Budget Calculator
+
+This tool aids producers in determining cost of production and projected cash and economic returns for farm or ranch enterprises. Crops may be entered individually or field by field, and/or by dryland or irrigated enterprise acres, as well as individual field operations. Then, all separate enterprise budgets (field by field or dryland and irrigated) completed for a particular crop are added together for a projected cost of production and estimated returns for a calendar year.

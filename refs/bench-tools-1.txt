@@ -1,0 +1,115 @@
+# Benchmark tools: farmdoc Decision Tools
+# https://farmdoc.illinois.edu/decision-tools
+# fetched 2026-10-16T15:35:00Z, sha256 8c3eac26942b9e03d7c316f77a28380a73e1911a99e8a4e9cfac280ffbe9309e
+
+Decision Tools - farmdoc
+
+US Average Farm Price Received Database
+
+Last Updated: March 29, 2026
+
+Average farm price received data, for multiple commodities, in the US for the period 1960 to present. File is Microsoft Excel format.
+
+lllinois Average Farm Price Received Database
+
+Last Updated: March 29, 2026
+
+Average farm price received data, for multiple commodities, in the state of Illinois for the period 1960 to present. File is Microsoft Excel format.
+
+Farmland Values and Returns by State Through Time
+
+Last Updated: August 11, 2025
+
+This utility provides a quick and convenient means to visually compare aggregate state level farmland and cropland information with returns and levels based on USDA data. It is maintained at the TIAA Center for Farmland Research at the University of Illinois and is updated annually after the release of USDA survey information on farmland values and rental statistics.…
+
+Farmland and Cropland Index and Return Utility
+
+Last Updated: August 11, 2025
+
+This utility allows a user to estimate the current value of farmland based on an earlier valuation, or estimate a prior date valuation based on current values. This utility is useful for establishing historic basis, and to estimate realized rates of return through time. The utility uses USDA state level data on cropland and farm real estate values to calculate the rates of return over selected intervals and to index know farmland and cropland values to their analogs at different dates.…
+
+Farmland Correlation With Other Assets by Holding Interval
+
+Last Updated: February 11, 2025
+
+This utility allows a user to consider the impact of holding period definitions on the relationship between farmland returns and major alternative asset classes as well as to inflation.…
+
+Crop Insurance Evaluator
+
+Last Updated: March 1, 2024
+
+The Crop Insurance Evaluator tool provides helpful information to producers comparing costs and risk reductions across their available crop insurance alternatives.
+
+Crop Insurance Premium Calculator
+
+Last Updated: March 1, 2024
+
+The 2024 iFarm Crop insurance Premium Calculator allows users to develop highly customized estimates of their crop insurance premiums, and compare revenue and yield guarantees across all available crop insurance products and elections for their actual farm case.
+
+Returns to Alternative Investments by Holding Interval
+
+Last Updated: August 31, 2023
+
+This utility allows a novel view of returns across all possible combinations of purchase and sales dates for farmland in more than 30 states, as well as a collection of important alternative investment classes. A set of technical features related to risk and convergence in the volatility through time is provided as well.…
+
+US AG Sector Balance Sheet Data Through Time With Lender Shares
+
+Last Updated: March 1, 2023
+
+Based on USDA data, the composition of the US Ag Sector balance sheet is provided along with formatted graphs to show important financial ratios and lender shares through time.…
+
+Cover Crop Analyzer
+
+Last Updated: February 4, 2021
+
+The cover crop project seeks to provide farmers with a practical web-based decision support tool designed to help manage cover crops in their fields. The project makes use of existing research to demonstrate the potential for cover crops, as well as providing useful information for decision making and management of this practice. It will also seek to apply future research on cover crops as results are incorporated into updates and new iterations of the tool. This remains a work in progress with a goal towards adapting with the science.
+
+Price Distribution Tool
+
+Last Updated: February 8, 2021
+
+The iFARM Price Distribution Tool uses current option market prices to derive estimates of the probability distribution of prices at the expiration of an underlying corn and soybean futures contracts.
+
+Agricultural Supply and Demand Database
+
+Last Updated: October 16, 2020
+
+Values for a number of important supply, demand, and price variables for crops and livestock since 1975. File is Microsoft Excel format.
+
+Illinois Society of Farm Managers and Rural Appraisers Representative Parcel Transfer Information
+
+Last Updated: September 1, 2020
+
+This utility provides a powerful comparison of land market transactions through time by region of Illinois. Property characteristics can be used to sort the type of property and track actual sales data through time.…
+
+Illinois Regional Basis Data – Soybeans
+
+Last Updated: July 23, 2020
+
+Historical soybean basis for seven regions in Illinois. Basis and cash prices are reported weekly from 1975. File is in Microsoft Excel format.
+
+Illinois Regional Basis Data – Corn
+
+Last Updated: July 23, 2020
+
+Historical corn basis for seven regions in Illinois. Basis and cash prices are reported weekly from 1975. File is in Microsoft Excel format.
+
+Selected Market Data – Corn
+
+Last Updated: June 11, 2020
+
+Current and historical values of factors important for developing supply, demand, and price expectations for corn. File is Microsoft Excel format.
+
+Selected Market Data – Soybeans
+
+Last Updated: June 11, 2020
+
+Current and historical values of factors important for developing supply, demand, and price expectations for corn and soybeans. File is Microsoft Excel format.
+
+Land Purchase Evaluation Tool
+
+Last Updated: August 1, 2019
+
+A comprehensive tool to evaluate returns characteristics associated with the purchase of real assets. Financial structure terms, transactions costs, and holding period differences are reflected along with a budgeting tool to assess the sensitivity to important conditions of the purchase are involved.…
+
+Load more
