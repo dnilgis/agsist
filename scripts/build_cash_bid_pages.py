@@ -113,6 +113,28 @@ DATED_VIA = {"deadline-inferred-year", "day-range-inferred-year", "month-day-yea
 
 
 # ---------------------------------------------------------------- helpers
+WHEAT_EXCH = {"KE": "KC", "ZW": "Chicago", "MW": "MIAX", "MWO": "MIAX"}
+
+
+def con_label(c):
+    """The futures month a basis is against, as a town page prints it. Wheat
+    names its exchange, because Dec wheat is three contracts: "KC Dec '26",
+    "Chicago Dec '26". Corn and soybeans: "Dec '26"."""
+    ex = WHEAT_EXCH.get(c[0])
+    return (ex + " " if ex else "") + contract_label(c)
+
+
+def cash_c(v):
+    """A cash bid on a town or state page, to the cent: $13.4275 -> "$13.43"
+    (half up, like the boards round). 293 town pages printed four places on
+    2026-10-15; the live page keeps the board's own decimals."""
+    if not isinstance(v, (int, float)):
+        return pricefmt.cash(v)
+    n = float(v)
+    r = pricefmt._js_round(abs(n) * 100 + 1e-7) / 100
+    return pricefmt.cash(-r if n < 0 else r)
+
+
 def url_slug(s):
     s = re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
     return s if s and s != "index" else (s or "town") + "-town"
@@ -365,7 +387,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         basis = b.get("basis")
         basis = round(float(basis), 4) if isinstance(basis, (int, float)) else None
         con = parse_contract(b.get("futuresMonth"), crop if crop in ("corn", "soybeans") else
-                             ("corn" if crop == "sorghum" else crop), gen.year)
+                             ("corn" if crop == "sorghum" else crop), gen.year, b.get("commodity"))
         bd["rows"].append({
             "crop": crop, "commodity": (b.get("commodity") or "").strip(), "label": delivery_label(b),
             "dm": delivery_month(b.get("period"), crop, snap_ct), "period": str(b.get("period") or ""),
@@ -851,7 +873,7 @@ def share_prices(tops, n=3):
     cs = [c for c in CROPS if c in tops][:n]
     if not cs:
         return "", None
-    return (", ".join(f"{CROP_LABEL[c].lower()} {pricefmt.cash(tops[c][0])}" for c in cs),
+    return (", ".join(f"{CROP_LABEL[c].lower()} {cash_c(tops[c][0])}" for c in cs),
             min(tops[c][1] for c in cs))
 
 
@@ -1058,7 +1080,7 @@ def nearby_section(t, center, live_all, snap_ct, has_own):
     for d, b in pick:
         g = b["glance"]
         cs = [c for c in ("corn", "soybeans") if c in g] or [c for c in CROPS if c in g][:1]
-        prices = " &middot; ".join(f'{CROP_LABEL[c]} {pricefmt.cash(g[c][0])} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
+        prices = " &middot; ".join(f'{CROP_LABEL[c]} {cash_c(g[c][0])} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
                                    for c in cs)
         p = b["posted"].astimezone(CT)
         dist = dist_text(d)
@@ -1113,8 +1135,8 @@ def board_section(bd, snap_ct):
         else:
             bas = money_basis(r["basis"])
             if r["contract"]:
-                bas += f'<br><span class="mut">vs {contract_label(r["contract"])}</span>'
-        trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">{pricefmt.cash(r["cash"])}</td>'
+                bas += f'<br><span class="mut">vs {con_label(r["contract"])}</span>'
+        trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">{cash_c(r["cash"])}</td>'
                    f'<td class="n">{bas}</td></tr>')
         if r.get("odd"):
             trs.append(f'<tr class="cbt-odd"><td colspan="4">{odd_note(r)}</td></tr>')
@@ -1218,7 +1240,7 @@ def _basis_plain(r, vs=True):
     if r["basis"] is None:
         return ""
     b = pricefmt.basis(r["basis"] * 100)
-    return b + (f" vs {contract_label(r['contract'])}" if vs and r["contract"] else "")
+    return b + (f" vs {con_label(r['contract'])}" if vs and r["contract"] else "")
 
 
 def _posted_days(rows):
@@ -1240,7 +1262,7 @@ def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
     parts, prev = [], None
     for i, c in enumerate(cs):
         r, name = picks[c]
-        p = f"{CROP_LABEL[c].lower()} {pricefmt.cash(r['cash'])}"
+        p = f"{CROP_LABEL[c].lower()} {cash_c(r['cash'])}"
         if name != prev:
             p += f" at {name}"
         p += f" for {_mon_word(r['dm'], snap_ct)}" + (" delivery" if i == 0 else "")
@@ -1321,7 +1343,7 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
     crop = CROP_LABEL[c].lower()
     r, name = picks[c]
     qs = []
-    a1 = (f"The top {crop} bid we read in {place} is {pricefmt.cash(r['cash'])} a bushel at {name} for "
+    a1 = (f"The top {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name} for "
           f"{_mon_word(r['dm'], snap_ct)} delivery, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
     qs.append((f"What is {crop} paying in {town} today?", a1))
     if r["basis"] is not None:
@@ -1334,7 +1356,7 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
         d, b = near[0]
         g = b["glance"]
         pc = [x for x in ("corn", "soybeans") if x in g] or [x for x in CROPS if x in g][:1]
-        prices = " and ".join(f"{CROP_LABEL[x].lower()} {pricefmt.cash(g[x][0])}" for x in pc)
+        prices = " and ".join(f"{CROP_LABEL[x].lower()} {cash_c(g[x][0])}" for x in pc)
         p = b["posted"].astimezone(CT)
         a3 = (f"The nearest other elevator with a current bid is {b['name']} in {b['town']}, {b['state']}, "
               f"{dist_text(d).replace('mi', 'miles')} straight-line from {center[2]}. It posted {prices} on "
@@ -1459,8 +1481,11 @@ def build_town_page(t, ctx):
     live_b = sorted((b for b in t["boards"].values() if b["rows"]), key=order)
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
     secs, times, crops, nrows, shown, any_hold, held_all = [], [], set(), 0, [], False, []
-    for bd in live_b:
+    held_first = False
+    for i_bd, bd in enumerate(live_b):
         h, rows, ts, held = board_section(bd, snap_ct)
+        if held and i_bd == 0:
+            held_first = True
         any_hold = any_hold or bool(held)
         if held:
             held_all.append((head_name(bd), held))
@@ -1541,7 +1566,10 @@ def build_town_page(t, ctx):
                       f"we list in {esc(t['name'])}; its card says how far.")
     hold_note = ""
     ss = "/store-or-sell" + (f"?zip={z}" if z else "")
-    top_html = top_holds(held_all, ss)
+    # the box sits right under the first card: when that card is the only one
+    # with a hold line (every one-elevator town), it already says it once
+    only_first = bool(live_b) and held_first and len(held_all) == 1
+    top_html = "" if only_first else top_holds(held_all, ss)
     center = town_center(t, z, ctx.get("zip_coord"))
     near_html = nearby_section(t, center, ctx.get("live_all"), snap_ct, indexable)
     cmp_lines, cmp_text = state_compare(picks, (ctx.get("summaries") or {}).get(st), sname)
@@ -1698,7 +1726,7 @@ def best_card(g, r, town_paths):
     where = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
     bas = (f'basis {money_basis(r["basis"])} vs {contract_label(r["contract"])}' if r["contract"]
            else f'basis {money_basis(r["basis"])}, futures month not named')
-    return (f'<div class="cbt-stat"><div class="v">{pricefmt.cash(r["cash"])}</div>'
+    return (f'<div class="cbt-stat"><div class="v">{cash_c(r["cash"])}</div>'
             f'<div class="l">Top {SB.CROP_LABEL[g].lower()} bid, nearest delivery ({esc(dtext(r))})</div>'
             f'<div class="s">{esc(r["operator"])}, {where} &middot; {bas} &middot; posted {fmt_day(r["priced"])}. '
             f'Call to confirm.</div></div>')
@@ -1780,7 +1808,7 @@ def top_bid_table(g, near, town_paths):
         tl = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
         con = f'<br><span class="mut">vs {contract_label(r["contract"])}</span>' if r["contract"] else ""
         trs.append(f'<tr><td>{esc(r["operator"])}<br><span class="mut">{tl}</span></td>'
-                   f'<td>{esc(dtext(r))}</td><td class="n">{pricefmt.cash(r["cash"])}</td>'
+                   f'<td>{esc(dtext(r))}</td><td class="n">{cash_c(r["cash"])}</td>'
                    f'<td class="n">{money_basis(r["basis"])}{con}</td></tr>')
     n = len([r for r in rs if r["start"] == first])
     ym_ = f"{MONTH_ABBR[int(first[5:7]) - 1]} {first[:4]}"
@@ -2377,6 +2405,10 @@ def selftest():
     summ = {"IA": {"soybeans": {"contracts": [{"contract": ("ZS", 10, 2026), "median": -0.63, "n": 40}]}}}
     assert flag_odd(tw2) == 0 and flag_odd(tw2, summ) == 1
     assert share_prices({}) == ("", None)
+    assert con_label(("KE", 11, 2026)) == "KC Dec '26" and con_label(("ZC", 11, 2026)) == "Dec '26"
+    assert parse_contract("December 2026", "wheat", 2026, "Hard Red Winter Wheat") == ("KE", 11, 2026)
+    assert cash_c(13.4275) == "$13.43" and cash_c(12.475) == "$12.48" and cash_c(4.2) == "$4.20" \
+        and cash_c(4.2125) == "$4.21" and cash_c(4.205) == "$4.21", "town pages print to the cent"
     # the delivery point goes with the company's name (Cedar Rapids, 2026-10-15)
     lc = {"operator": "Linn Coop Oil Company", "city": "Ingredion", "town": "Cedar Rapids", "how": "zip"}
     assert head_name(lc) == "Linn Coop Oil Company (Ingredion, Cedar Rapids)"

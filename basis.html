@@ -435,7 +435,19 @@
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function money(v){ return AG.px.basis(v*100); }   /* −65¢, +5¢, even (components/util.js) */
   function cents(v){ return v===0?'0¢':(v>0?'+':'−')+Math.abs(v)+'¢'; }
-  function day(iso){ var d=new Date(iso); if(isNaN(d)) return ''; return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]+' '+d.getUTCDate()+', '+d.getUTCFullYear(); }
+  /* The day in Central time, the grain trade's clock: after 7 pm CT a UTC day
+     already read tomorrow while the bids said today. A plain "2026-09-25"
+     (USDA's week) is a calendar day and is printed as it is. */
+  function day(iso){
+    var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
+    if(m) return M[+m[2]-1]+' '+(+m[3])+', '+m[1];
+    var d=new Date(iso); if(isNaN(d)) return '';
+    try{
+      var p={}; new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'numeric',day:'numeric'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;});
+      return M[+p.month-1]+' '+(+p.day)+', '+p.year;
+    }catch(e){ return ''; }
+  }
   var LAB={corn:'Corn',soybeans:'Soybeans'}, USDA=null;
   /* USDA'S NORMAL BESIDE THE STATE NUMBER (2026-10-15). Where USDA tracks the
      state, its 5-year normal for the same week sits next to our number, with

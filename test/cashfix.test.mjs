@@ -26,6 +26,12 @@ function liftFn(src, name) {
   }
   return src.slice(i, j + 1);
 }
+function liftPy(src, name) {
+  const i = src.indexOf("\ndef " + name + "(");
+  assert.ok(i >= 0, `no def ${name}()`);
+  const j = src.indexOf("\n\n\n", i + 1);
+  return src.slice(i, j < 0 ? undefined : j);
+}
 function liftVar(src, name) {
   const m = new RegExp("var " + name + "=[\\s\\S]*?;\\n").exec(src);
   assert.ok(m, `no var ${name}`);
@@ -99,4 +105,46 @@ test("page-title elevator names are fixed the same way on the live page and the 
   assert.match(liftFn(JS, "groupElevators"), /cbRank\.displayName\(b\.facility\)/);
   /* and the town builder imports the same module */
   assert.match(read("scripts/build_cash_bid_pages.py"), /from elevator_names import clean_place, display_name/);
+});
+
+test("basis.html prints the day in Central time; a USDA week date as written", () => {
+  const BH = read("basis.html");
+  const ctx = { Intl, Date };
+  vm.createContext(ctx);
+  vm.runInContext(liftFn(BH, "day"), ctx);
+  /* 01:47 UTC Oct 16 is 8:47 pm Oct 15 in Chicago, when the bids say Oct 15 */
+  assert.equal(ctx.day("2026-10-16T01:47:13Z"), "Oct 15, 2026");
+  assert.equal(ctx.day("2026-10-16T15:00:00Z"), "Oct 16, 2026");
+  assert.equal(ctx.day("2026-09-25"), "Sep 25, 2026", "a calendar day moved back a day");
+  assert.equal(ctx.day("nonsense"), "");
+});
+
+test('HRW wheat basis names its exchange ("KC Dec \'26"), live page and town pages', () => {
+  const ctx = { console };
+  ctx.window = ctx;
+  vm.createContext(ctx);
+  vm.runInContext(read("components/cb-rank.js") + "\n" + liftFn(JS, "wheatExch"), ctx);
+  const w = (symbol, commodity) => ctx.wheatExch({ category: "wheat", symbol, commodity });
+  /* Pine Bluffs WY: "Hard Red Winter Wheat" against "December 2026" */
+  assert.equal(w("December 2026", "Hard Red Winter Wheat"), "KC");
+  assert.equal(w("KEZ26", "Wheat"), "KC");
+  assert.equal(w("@KW6Z", "Wheat"), "KC");
+  assert.equal(w("ZWZ6", "Wheat (Soft Red Winter)"), "Chicago");
+  assert.equal(w("MWOZ26", "Wheat, HRS"), "MIAX");
+  assert.equal(w("December 2026", "Wheat"), "", "a bare month on an unnamed wheat is not guessed");
+  const PY = read("scripts/build_cash_bid_pages.py");
+  assert.match(PY, /WHEAT_EXCH = \{"KE": "KC", "ZW": "Chicago", "MW": "MIAX", "MWO": "MIAX"\}/);
+  assert.match(PY, /vs \{con_label\(r\["contract"\]\)\}/);
+  assert.match(PY, /gen\.year, b\.get\("commodity"\)\)/, "the town builder does not pass the commodity name");
+});
+
+test("town pages: prices to the cent, one Hold line in a one-elevator town", () => {
+  const PY = read("scripts/build_cash_bid_pages.py");
+  const cashC = liftPy(PY, "cash_c");
+  assert.equal((PY.match(/pricefmt\.cash\(/g) || []).length, (cashC.match(/pricefmt\.cash\(/g) || []).length,
+    "a town-page price printed with the board's own decimals, not through cash_c()");
+  assert.match(PY, /only_first = bool\(live_b\) and held_first and len\(held_all\) == 1/);
+  assert.match(PY, /top_html = "" if only_first else top_holds\(held_all, ss\)/);
+  /* the arithmetic is the builder's own selftest (cash_c, con_label, flag_odd) */
+  execFileSync("python3", [ROOT + "scripts/build_cash_bid_pages.py", "--selftest"], { cwd: ROOT, stdio: "pipe" });
 });

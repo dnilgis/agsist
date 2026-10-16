@@ -503,6 +503,15 @@ function futuresOf(bid){
    and "Dec 26 KCBT Red Wheat", whose exchange is kept because KC and Chicago
    December are two different prices. Only a real month name is shortened;
    anything else is passed through as written. */
+/* "KC" / "Chicago" / "MIAX" for a wheat row's contract, '' when the row does
+   not say (a bare month on a board that names no class). */
+function wheatExch(bid){
+  var sym=String(bid&&bid.symbol||'').toUpperCase();
+  var at=/^@(KW|MW|W)\d[FGHJKMNQUVXZ]$/.exec(sym);
+  var root=at?{KW:'KE',MW:'MW',W:'ZW'}[at[1]]:(window.cbRank?cbRank.contractKey(bid).slice(0,2):'');
+  if(!root&&/^(KE|ZW|MW)/.test(sym))root=sym.slice(0,2);
+  return {KE:'KC',ZW:'Chicago',MW:'MIAX'}[root]||'';
+}
 function contractLabel(bid){
   var m=String(bid.basisMonth||'').trim();
   /* Barchart sends no month name, only the ticker (ZCZ26). Spell the month
@@ -1782,7 +1791,11 @@ function renderBids(bids,keepLimit){
           /* "Nov '26 Soybeans" under the Soybeans heading says the crop twice;
              the crop word goes (a wheat class, "KCBT Red Wheat", stays). */
           var cl=contractLabel(bid).replace(/\s+(corn|soybeans?|beans)$/i,'');
-          if(cl&&cl.toLowerCase()!==String(del).toLowerCase())ctag='<span class="bid-fut-tag" title="Basis quoted against '+escH(bid.symbol)+'">&rarr; '+escH(cl)+'</span>';
+          /* Wheat says which exchange: Dec wheat is KC, Chicago or MIAX, and
+             a -50c HRW basis against Chicago is a different bid. */
+          var wx=bid.category==='wheat'?wheatExch(bid):'';
+          if(wx&&cl&&!/\b(kc|kcbt|chicago|cbot|miax|mgex|spring|red wheat)\b/i.test(cl))cl=wx+' '+cl;
+          if(cl&&(wx||cl.toLowerCase()!==String(del).toLowerCase()))ctag='<span class="bid-fut-tag" title="Basis quoted against '+escH(bid.symbol)+'">&rarr; '+escH(cl)+'</span>';
         }
         var bhi='';
         if(bhSym(bid)&&bid.deliveryMonth){_bhRows.push({bid:bid,elev:elev});bhi=' data-bh-i="'+(_bhRows.length-1)+'"';}
