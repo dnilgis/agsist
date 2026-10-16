@@ -29,7 +29,7 @@ var CROPS={
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
     carry:'corn',
-    tiles:[{key:newCropKey('corn','dec'),alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'wheat',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{key:newCropKey('corn','dec'),alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{root:'beans',name:'Soybeans',sym:'ZS',p:'p-beans',c:'c-beans',g:true},{root:'wheat',name:'Wheat',sym:'ZW',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
     labels:function(lbl){
       setTxt('lbl-corn',lbl);
@@ -91,7 +91,7 @@ var CROPS={
     key:'beans',label:'Soybean',root:'ZS',stats:'soybean',ga:'soybeans',progressKey:'soybeans',
     emoji:'',
     carry:'soybeans',
-    tiles:[{key:newCropKey('beans','nov'),alt:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true,lbl:'lbl-beansnov'},{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'meal',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{key:'soyoil',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{key:newCropKey('beans','nov'),alt:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true,lbl:'lbl-beansnov'},{root:'corn',name:'Corn',sym:'ZC',p:'p-corn',c:'c-corn',g:true},{root:'meal',name:'Soybean meal',sym:'ZM',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{root:'soyoil',name:'Soybean oil',sym:'ZL',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-beans','c-beans'],
     labels:function(lbl,nearby){
       setTxt('hero-contract',lbl);
@@ -123,7 +123,7 @@ var CROPS={
         setEl('crush-val',(BC.crush>=0?'+':'\u2212')+'$'+Math.abs(BC.crush).toFixed(2)+'/bu');
         var cz=document.getElementById('cz'+BC.band);
         if(cz)cz.classList.add('active');
-        setEl('crush-sub',BC.months+': meal $'+BC.meal.close.toFixed(0)+'/short ton, oil '+BC.oil.close.toFixed(2)+'\u00a2/lb, beans '+grain$(front.close)+'/bu');
+        setEl('crush-sub',BC.months+': meal $'+BC.meal.close.toFixed(2)+'/short ton, oil '+BC.oil.close.toFixed(2)+'\u00a2/lb, beans '+grain$(front.close)+'/bu');
       }else if(cw){cw.style.display='none';}
     },
     read:function(q,data,front,lbl,nearby){
@@ -154,7 +154,7 @@ var CROPS={
     // carryWindow, from the dated contracts on file (Dec '26 to May '27 on
     // 2026-10-11). Jul '27 on is next year's crop: plotted, never in the carry.
     carry:'wheat',
-    tiles:[{key:'corn',p:'p-corn',c:'c-corn',g:true},{key:'beans',p:'p-beans',c:'c-beans',g:true},{key:'oats',p:'p-oats',c:'c-oats',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{root:'corn',name:'Corn',sym:'ZC',p:'p-corn',c:'c-corn',g:true},{root:'beans',name:'Soybeans',sym:'ZS',p:'p-beans',c:'c-beans',g:true},{root:'oats',name:'Oats',sym:'ZO',p:'p-oats',c:'c-oats',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-wheat','c-wheat'],
     labels:function(lbl){
       setTxt('lbl-wheat','SRW Wheat · '+lbl);
@@ -176,34 +176,52 @@ var CROPS={
       // plus the deferred card: the next live contract after the nearby (wheatDeferred), labeled from its ticker
       var dfr=wheatDeferred(q,front);
       if(dfr)setTxt('l-wheat-def',(contractLabel(q[dfr])||'Deferred')+' (deferred)');
-      [{key:'kcwheat',card:'cc-kcwheat',p:'p-kcwheat',c:'c-kcwheat'},{key:'mplswheat',card:'cc-mplswheat',p:'p-mplswheat',c:'c-mplswheat'},{key:dfr,card:'cc-wheat-def',p:'p-wheat-def',c:'c-wheat-def'}].forEach(function(m){
-        var d=m.key?q[m.key]:null;var cardEl=document.getElementById(m.card);
+      /* Class cards and class spreads read the SAME quotes (2026-10-16). The KC
+         card showed KE=F ($7.02¼) beside a spread figured from KEZ26 ($7.01½),
+         so subtracting the two cards gave 44¼¢ against a printed 43½¢. Each
+         class card shows the month the pipeline's same-month spread uses
+         (data.spreads, fetch_prices class_spreads), else that class's nearby;
+         the spread is figured from the quotes on the cards. */
+      var SPR=(data&&data.spreads)||{};
+      function classQ(cls){
+        var s=SPR[cls];
+        if(s&&s.cents!=null&&s.class_key&&q[s.class_key]&&q[s.class_key].close!=null)
+          return {d:q[s.class_key],label:s.month||contractLabel(q[s.class_key]),chi:q[s.chicago_key]||null,month:s.month||null};
+        var r=nearbyOf(q,cls);return r?{d:r.d,label:r.label,chi:null,month:null}:null;
+      }
+      var KE=classQ('kcwheat'),MW=classQ('mplswheat');
+      [{r:KE,card:'cc-kcwheat',p:'p-kcwheat',c:'c-kcwheat',name:'KC HRW',sym:'KE'},{r:MW,card:'cc-mplswheat',p:'p-mplswheat',c:'c-mplswheat',name:'Minneapolis HRS',sym:'MWE'},{r:dfr?{d:q[dfr]}:null,card:'cc-wheat-def',p:'p-wheat-def',c:'c-wheat-def'}].forEach(function(m){
+        var d=m.r?m.r.d:null;var cardEl=document.getElementById(m.card);
         if(!d||d.close==null){if(cardEl)cardEl.style.display='none';return;}
-        if(cardEl)cardEl.style.display='';
+        if(cardEl){cardEl.style.display='';if(m.name){var le=cardEl.querySelector('.cc-lbl');if(le)le.textContent=m.name+' '+(m.r.label||'most-active')+' ('+m.sym+')';}}
         setEl(m.p,grain$(d.close));
         var ch=chgTxt(d.netChange,d.pctChange,d.roll);setEl(m.c,ch.t,ch.c);
       });
-      // Wheat class spreads (most-active vs most-active), cents/bu: only when keys exist
+      // Wheat class spreads: same delivery month only, from the quotes on the cards
     (function(){
       var card=document.getElementById('cls-spread-card');
       if(!card)return;
-      var zw=q.wheat,ke=q.kcwheat,mwe=q.mplswheat,any=false,notes=[];
+      var any=false,notes=[],months=[];
       var keRow=document.getElementById('cs-kezw-row'),keVal=document.getElementById('cs-kezw');
-      if(keRow&&keVal&&ke&&ke.close!=null&&zw&&zw.close!=null){
-        var d1=ke.close-zw.close;
-        keVal.textContent=AG.px.move(d1,{sign:true});
-        keRow.style.display='flex';any=true;
+      if(keRow&&keVal&&KE&&KE.month&&KE.chi&&KE.chi.close!=null){
+        var d1=KE.d.close-KE.chi.close;
+        keVal.textContent=amt(d1,{sign:true});
+        var kl=keRow.querySelector('.xl');if(kl)kl.textContent='KC HRW − Chicago SRW, '+KE.month;
+        keRow.style.display='flex';any=true;months.push(KE.month);
         notes.push(d1>=0?'KC over Chicago: the market is pricing HRW quality/protein over SRW':'KC under Chicago: the market is pricing SRW over HRW right now');
       }else if(keRow){keRow.style.display='none';}
       var mweRow=document.getElementById('cs-mweke-row'),mweVal=document.getElementById('cs-mweke');
-      if(mweRow&&mweVal&&mwe&&mwe.close!=null&&ke&&ke.close!=null){
-        var d2=mwe.close-ke.close;
-        mweVal.textContent=AG.px.move(d2,{sign:true});
+      if(mweRow&&mweVal&&MW&&KE&&MW.month&&MW.month===KE.month){
+        var d2=MW.d.close-KE.d.close;
+        mweVal.textContent=amt(d2,{sign:true});
+        var ml=mweRow.querySelector('.xl');if(ml)ml.textContent='Mpls HRS − KC HRW, '+MW.month;
         mweRow.style.display='flex';any=true;
         notes.push(d2>=0?'Minneapolis over KC: the protein premium for spring wheat is intact':'Minneapolis under KC: spring wheat trading below HRW');
       }else if(mweRow){mweRow.style.display='none';}
       var interpEl=document.getElementById('cs-interp');
       if(interpEl)interpEl.textContent=notes.join('. ')+(notes.length?'.':'');
+      var srcEl=card.querySelector('.cls-spread-src');
+      if(srcEl&&months.length)srcEl.textContent='Same delivery month for both classes ('+months[0]+'), from the quotes on the cards above';
       card.style.display=any?'block':'none';
     })();
       if(front&&front.close!=null){
@@ -260,6 +278,8 @@ var CROPS={
   }
 };
 
+/* the pure helpers, for test/futures-one-quote.test.mjs */
+window.AgsistFuturesPure={nearbyOf:nearbyOf,amt:amt,wheatProgressRows:wheatProgressRows};
 var CROP=CROPS[window.AGSIST_FUTURES];
 if(!CROP)return;
 var CROP_KEY=CROP.key;
@@ -272,6 +292,37 @@ function fwdContracts(q){var SS=window.AgsistStoreSell;return SS&&SS.forwardCurv
 
 /* ── small shared helpers ─────────────────────────────────────────────────── */
 function setTxt(id,t){var e=document.getElementById(id);if(e)e.textContent=t;}
+/* ONE QUOTE PER CONTRACT (2026-10-16). Every card that names a market reads
+   that market's dated nearby: the <root>-nearby alias (fetch_prices
+   add_nearby), else the nearest dated month on file (the fetcher writes only
+   live months), else the continuous series, labeled most-active. The corn
+   page's wheat card read ZW=F (-10 1/2) while the wheat page read ZWZ26
+   (-11 1/4) at the same refresh. {d, label} or null; label null means the
+   continuous series. Twin: scripts/seed_static.py nearby_of. */
+var MONS3=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function nearbyOf(q,root){
+  if(!q||!root)return null;
+  var n=q[root+'-nearby'];
+  if(n&&n.close!=null)return {d:n,label:n.contract||contractLabel(n)||null};
+  var re=new RegExp('^'+root+'-([a-z]{3})(\\d{2})$'),best=null,bi=Infinity,bl=null;
+  for(var k in q){
+    var m=re.exec(k),x=q[k],mi=m?MONS3.indexOf(m[1]):-1;
+    if(mi<0||!x||x.close==null)continue;
+    var i=(+m[2])*12+mi;
+    if(i<bi){bi=i;best=x;bl=m[1].charAt(0).toUpperCase()+m[1].slice(1)+" '"+m[2];}
+  }
+  if(best)return {d:best,label:bl};
+  var c=q[root];return (c&&c.close!=null)?{d:c,label:null}:null;
+}
+/* A gap or spread given in cents: under a dollar in cents (43½¢), a dollar
+   or more in dollars ($1.48¼), never "148¼¢". o.sign
+   prefixes + or a true minus. */
+function amt(c,o){
+  o=o||{};
+  var q4=AG.px.quarters(c);
+  if(Math.abs(q4)>=400)return (o.sign?(q4>0?'+':'\u2212'):'')+AG.px.price(Math.abs(c),{style:o.style});
+  return AG.px.move(o.sign?c:Math.abs(c),o);
+}
 /* Wheat's deferred contract: the next live dated contract after the front
    (the nearby), from the forward curve (storesell.js forwardCurve: GRAIN
    calendar, dead from the 15th). Mar '27 while Dec '26 is the nearby, May '27
@@ -593,36 +644,52 @@ function loadCropProgress(){
 }
 
 
-// ============ CROP PROGRESS (USDA NASS): wheat: winter + spring rows ============
+// ============ CROP PROGRESS (USDA NASS): wheat, what is in season now ============
+/* 2026-10-16: on Oct 16 the card showed "Spring wheat: 51% good/excellent,
+   report 2026-08-23", seven weeks old and the wrong crop for October. A row now
+   shows only when its report is 10 days old or less (one weekly report plus a
+   holiday delay), and the fall rows come from the national progress block:
+   winter wheat planted and emerged against the 5-year average. Pure: rows from
+   crop-progress.json and a clock. */
+var WHEAT_PROGRESS_MAX_DAYS=10;
+function cpAgeDays(ds,nowMs){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(ds||'');if(!m)return null;return Math.floor((nowMs-Date.UTC(+m[1],+m[2]-1,+m[3]))/864e5);}
+/* "2026-10-11" -> "Oct 11, 2026" */
+function isoMDY(x){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(x||'');return m?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+(+m[3])+', '+m[1]:'';}
+function wheatProgressRows(d,nowMs){
+  if(!d)return [];
+  var rows=[],P=d.progress||{},ww=d.winter_wheat||{},sw=d.spring_wheat||{};
+  function fresh(ds){var a=cpAgeDays(ds,nowMs);return a!=null&&a>=0&&a<=WHEAT_PROGRESS_MAX_DAYS;}
+  function pr(key,lbl){var x=P[key];if(x&&x.pct!=null&&fresh(x.date))rows.push({lbl:lbl,val:x.pct+'%',prevYr:x.prev_year,avg5:x.avg5,date:x.date});}
+  pr('winter_wheat_planted','Winter wheat planted');
+  pr('winter_wheat_emerged','Winter wheat emerged');
+  if(ww.good_excellent!=null&&fresh(ww.report_date))rows.push({lbl:'Winter wheat condition',val:ww.good_excellent+'% good/excellent',prevYr:ww.good_excellent_prev_year,date:ww.report_date});
+  if(ww.harvest_pct!=null&&ww.harvest_pct<100&&fresh(ww.report_date))rows.push({lbl:'Winter wheat harvested',val:ww.harvest_pct+'%',prevYr:ww.harvest_prev_year,date:ww.report_date});
+  if(sw.good_excellent!=null&&fresh(sw.report_date))rows.push({lbl:'Spring wheat condition',val:sw.good_excellent+'% good/excellent',prevYr:sw.good_excellent_prev_year,date:sw.report_date});
+  if(sw.harvest_pct!=null&&sw.harvest_pct<100&&fresh(sw.report_date))rows.push({lbl:'Spring wheat harvested',val:sw.harvest_pct+'%',prevYr:sw.harvest_prev_year,date:sw.report_date});
+  return rows;
+}
 function wheatCropProgress(){
   fetch('/data/crop-progress.json',{cache:'no-store'})
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){
-      var card=document.getElementById('crop-card');
+      var card=document.getElementById('crop-card'),box=document.getElementById('cp-rows');
       if(!card)return;
-      if(!d){card.style.display='none';return;}
-      var ww=d.winter_wheat,sw=d.spring_wheat,shown=false;
-      /* each row carries its own report date; a row older than 60 days is not shown at all (a dash and a stale date read as broken) */
-      function ageDays(ds){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(ds||'');if(!m)return null;return Math.floor((Date.now()-Date.UTC(+m[1],+m[2]-1,+m[3]))/864e5);}
-      function rowHtml(lbl,val,prev,ds){
-        var age=ageDays(ds);
-        if(age!=null&&age>60)return null;
-        return '<span>'+lbl+': <span class="v">'+val+'</span>'+(prev!=null?' (prev yr '+prev+'%)':'')+'</span>'+(ds?'<span class="crop-asof">report '+ds+'</span>':'');
-      }
-      var wEl=document.getElementById('cp-winter');
-      var wHtml=(wEl&&ww&&ww.harvest_pct!=null)?rowHtml('Winter wheat',ww.harvest_pct+'% harvested',ww.harvest_prev_year,ww.report_date):null;
-      if(wHtml){
-        wEl.innerHTML=wHtml;wEl.style.display='flex';shown=true;
-      }else if(wEl){wEl.style.display='none';}
-      var sEl=document.getElementById('cp-spring');
-      var sHtml=(sEl&&sw&&sw.good_excellent!=null)?rowHtml('Spring wheat',sw.good_excellent+'% good/excellent',sw.good_excellent_prev_year,sw.report_date):null;
-      if(sHtml){
-        sEl.innerHTML=sHtml;sEl.style.display='flex';shown=true;
-      }else if(sEl){sEl.style.display='none';}
-      if(!shown){card.style.display='none';return;}
-      card.style.display='block';
+      var rows=wheatProgressRows(d,Date.now());
+      if(!rows.length||!box){card.style.display='none';return;}
+      var anyAvg=false,dates={};
+      box.innerHTML=rows.map(function(r){
+        var ex=[];
+        if(r.avg5!=null){ex.push('5-yr avg '+r.avg5+'%');anyAvg=true;}
+        if(r.prevYr!=null)ex.push('last year '+r.prevYr+'%');
+        dates[r.date]=1;
+        return '<div class="crop-row"><span>'+esc(r.lbl)+': <span class="v">'+esc(r.val)+'</span>'+(ex.length?' ('+esc(ex.join(', '))+')':'')+'</span></div>';
+      }).join('');
+      var ds=Object.keys(dates).sort();
       var asof=document.getElementById('crop-asof');
-      if(asof)asof.textContent='';
+      if(asof)asof.textContent=ds.length?'Week ending '+isoMDY(ds[ds.length-1]):'';
+      var avgNote=document.getElementById('cp-avg-note');
+      if(avgNote)avgNote.style.display=anyAvg?'':'none';
+      card.style.display='block';
     })
     .catch(function(){var c=document.getElementById('crop-card');if(c)c.style.display='none';});
 }
@@ -880,7 +947,7 @@ function computeScorecard(){
   if(rp&&rp.floor!=null){
     var _bq=(fq&&fq.close!=null)?fq.close/100:null;
     var _gap=(_bq!=null)?(rp.floor-_bq):null;
-    factors.push({lbl:'RP projected price',val:AG.px.priceDollars(rp.floor),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?(AG.px.quarters(_gap*100)===0?'level with today’s board':AG.px.move(Math.abs(_gap)*100)+' '+(_gap>0?'above':'below')+' today’s board'):('projected '+(rp.window||'')+' avg'))});
+    factors.push({lbl:'RP projected price',val:AG.px.priceDollars(rp.floor),cls:(_gap!=null?(_gap>=0?'up':'dn'):'nu'),meter:(_gap!=null?Math.max(0,Math.min(100,50+_gap*40)):100),det:(_gap!=null?(AG.px.quarters(_gap*100)===0?'level with today’s board':amt(_gap*100)+' '+(_gap>0?'above':'below')+' today’s board'):('projected '+(rp.window||'')+' avg'))});
   }
   // composite descriptive situation (NOT a recommendation)
   var sit='';
@@ -1698,7 +1765,7 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
     var inputs=readStoreInputs();
     var line=SS.holdLine({to:last.label,carry:spread,months:months,spot:first.price,kind:'futures',inputs:inputs});
     interpTxt='<strong>'+esc(line)+'</strong> '
-      +esc(first.label+' to '+last.label+' futures: the later month pays '+AG.px.move(Math.abs(spread)*100,{style:'slash'})+(spread>=0?' more.':' less.'))+' '
+      +esc(first.label+' to '+last.label+' futures: the later month pays '+amt(spread*100,{style:'slash'})+(spread>=0?' more.':' less.'))+' '
       +esc(SS.costNote(inputs,months,first.price,FULLMON[(first.idx-1)%12]))
       +esc(binNote(first))
       +' Futures carry assumes your basis stays where it is; your elevator’s posted later bids show the carry it actually pays. '
@@ -1796,7 +1863,7 @@ AG.json('/data/prices.json')
     window.__agsistHeroQ=front;
     CROP.labels(heroLabel,F.nearby);
     if(front&&front.close!=null){setEl(CROP.heroTile[0],grain$(front.close));var hcT=chgTxt(front.netChange,front.pctChange,front.roll);setEl(CROP.heroTile[1],hcT.t,hcT.c);}
-    CROP.tiles.forEach(function(m){var d=q[m.key]||(m.alt&&q[m.alt]);if(!d||d.close==null)return;if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
+    CROP.tiles.forEach(function(m){var r=m.root?nearbyOf(q,m.root):null,d=m.root?(r&&r.d):(q[m.key]||(m.alt&&q[m.alt]));if(!d||d.close==null)return;if(m.root){var pe=document.getElementById(m.p),le0=pe&&pe.parentNode.querySelector('.cc-lbl');if(le0)le0.textContent=m.name+' '+(r.label||'most-active')+' ('+m.sym+')';}if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
 
     if(front&&front.close!=null){
       setEl('hero-price',grain$(front.close));
