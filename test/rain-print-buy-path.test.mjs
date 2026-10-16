@@ -248,17 +248,24 @@ test("typing a name redraws a few times, not once a letter, and the address bar 
     await idle(page);
     await page.waitForTimeout(800);
     await page.evaluate(() => {
-      window.__rs = 0; window.__draws = 0;
+      window.__rs = 0; window.__draws = 0; window.__keys = [];
       const rs = history.replaceState.bind(history); history.replaceState = (...a) => { window.__rs++; return rs(...a); };
       new MutationObserver(() => window.__draws++).observe(document.getElementById("rp-art"), { childList: true });
+      document.getElementById("rp-name").addEventListener("input", () => window.__keys.push(performance.now()), true);
     });
     await page.click("#rp-name");
     await page.keyboard.type("The Olson Family Farm", { delay: 40 });
-    const mid = await page.evaluate(() => [window.__rs, window.__draws]);
-    await page.waitForTimeout(900);
-    const [rs, draws] = await page.evaluate(() => [window.__rs, window.__draws]);
-    assert.ok(mid[1] <= 4 && draws <= 5, "21 letters, at most a handful of redraws: " + draws);
-    assert.ok(rs >= 1 && rs <= 2, "the address written once the typing stopped: " + rs);
+    // wait for the page to settle instead of a fixed pause: a busy machine can take longer than 900 ms
+    await page.waitForFunction(() => /name=The\+Olson\+Family\+Farm/.test(location.search) && /The Olson Family Farm/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 15000 });
+    await page.waitForTimeout(700);
+    const [rs, draws, keys] = await page.evaluate(() => [window.__rs, window.__draws, window.__keys]);
+    // A pause between letters longer than the debounce earns one redraw (150 ms) or one address write (400 ms).
+    // On an idle machine there are none, so the bounds are the old ones: one draw, one write.
+    // Under load a keystroke can stall; count the stalls that actually happened instead of assuming none.
+    const gaps = (ms) => keys.slice(1).filter((t, i) => t - keys[i] > ms).length;
+    assert.equal(keys.length, 21, "every letter typed");
+    assert.ok(draws <= 2 + gaps(150), "21 letters, " + draws + " redraws, " + gaps(150) + " pauses over 150 ms");
+    assert.ok(rs >= 1 && rs <= 1 + gaps(400), "the address written once the typing stopped: " + rs + " writes, " + gaps(400) + " pauses over 400 ms");
     assert.match(page.url(), /name=The\+Olson\+Family\+Farm/);
     assert.match(await page.innerHTML("#rp-art"), /The Olson Family Farm/);
     // straight to checkout after typing: the review sheet shows every letter

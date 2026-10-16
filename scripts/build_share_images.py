@@ -35,6 +35,7 @@ set's builder writes the URL into every page; this script draws the image.
   yield/*     -> img/og/yield.jpg     (scripts/build_state_yield_pages.py)
   prf/*       -> img/og/prf.jpg       (scripts/build_prf_card.py)
   daily/*     -> data/social/card-<date>.jpg (scripts/build_social_card.py)
+lrp/record.html gets its own card, img/og/lrp-record.jpg (SUB_PAGES); --only lrp draws both.
 img/og/agsist.jpg is the plain fallback card.
 
 Never fails a data workflow: a page whose data cannot be read gets its title
@@ -252,6 +253,31 @@ def card_manure_value():
 
 
 def card_lrp():
+    """/lrp leads with today's offers (2026-10-16), so its card does too: the
+    page's own baked table of the top coverage RMA offered (scripts/bake_lrp.mjs),
+    read from lrp.html so the card and the page never disagree. The record and
+    the tests have their own card on /lrp/record (card_lrp_record)."""
+    h = rd("lrp.html")
+    m = re.search(r"<!--lrp:offers0-->(.*?)<!--/lrp:offers0-->", h, re.S)
+    day = re.search(r"<caption>Top coverage RMA offered for sales on (\w+ \w+ \d+, \d{4})</caption>", m.group(1)).group(1)
+    rows = {}
+    for tr in re.findall(r"<tr>.*?</tr>", m.group(1), re.S):
+        cells = [text(c) for c in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", tr, re.S)]
+        if len(cells) == 4 and cells[2].startswith("$"):
+            rows[cells[0].split(",")[0]] = cells[1:]
+    lv, cov, prem = rows["Feeder steers"]
+    table = [(lab, rows[k][2], "a cwt")
+             for k, lab in (("Feeder steers", "Feeder steers"), ("Fed steers and heifers", "Fed cattle"), ("Hogs", "Hogs")) if k in rows]
+    when = day.split(" ", 1)[1]     # "Oct 15, 2026"
+    return a_card("lrp", "LRP calculator", f"RMA's offers for sales on {when}",
+                  f"LRP for sales on {when}: {lv} coverage at {cov} a cwt on feeder steers, 13 weeks, "
+                  f"costs {prem} a cwt after the subsidy.",
+                  big=prem, unit=f"a cwt for a {cov} floor on feeder steers",
+                  ctx=f"{lv} coverage, 13 weeks, after the subsidy. Your premium per head is on the page.",
+                  table=table, table_title="Premium, top level, 13 wk")
+
+
+def card_lrp_record():
     b = js("data/lrp/bt.json")
     n, kept = b["family_size"], len(b["kept"])
     ymd = lambda x: date(int(x[:4]), int(x[4:6]), int(x[6:8]))
@@ -263,9 +289,9 @@ def card_lrp():
         if r and r["years"] >= b["method"]["min_years"]:
             v = r["net"]
             rows.append((lab, ("\u2212" if v < -0.005 else "") + f"${abs(v):.2f}", "per $100"))
-    ctx = ("No lower coverage level beat 95 to 100% by more than luck. Today's premium per head is on the page." if kept == 0
-           else "Today's rates and your premium per head, after the subsidy.")
-    return a_card("lrp", "LRP livestock insurance", f"RMA daily files, {md(first)}, {first.year} to {mdy(asof)}",
+    ctx = ("No lower coverage level beat 95 to 100% by more than luck." if kept == 0
+           else "Which coverage levels held up, and how every level did.")
+    return a_card("lrp/record", "LRP record", f"RMA daily files, {md(first)}, {first.year} to {mdy(asof)}",
                   f"{kept} of {n} LRP tests held up on RMA's record since {first.year}."
                   + (" No lower coverage level beat 95 to 100% by more than luck." if kept == 0 else ""),
                   big=f"{kept} of {n}", unit="tests held up on RMA's record", ctx=ctx,
@@ -765,6 +791,9 @@ SETS = {
         "alt": "Corn, soybean and wheat yield by year for every state, from USDA."},
 }
 SET_SOURCES = {"agsist": None, "rent": None, "yield": None}
+# Pages under a folder that get their own card: card name -> page (no .html).
+SUB_PAGES = {"lrp-record": "lrp/record"}
+SETS["lrp-record"] = card_lrp_record
 
 
 def rain_state_sets():
@@ -893,6 +922,8 @@ def build(only=None, strict=False):
     names = set(pages) | set(SETS)
     if only:
         only = set(only)
+        if "lrp" in only:       # the LRP workflow: /lrp and /lrp/record
+            only.add("lrp-record")
         if "rain" in only:      # the county rain workflow: the national card and every state's
             only |= {n for n in SETS if n.startswith("rain-") and len(n) == 7}
         names &= only
@@ -918,6 +949,9 @@ def build(only=None, strict=False):
         img_rel = f"img/og/{name}.jpg"
         if write_if_changed(os.path.join(ROOT, img_rel), data):
             changed.append(img_rel)
+        if name in SUB_PAGES:
+            _write_page(SUB_PAGES[name], img_rel, data, clean_alt(spec["alt"]), changed)
+            continue
         if name in SETS or name in IMAGE_ONLY:
             continue
         _write_page(name, img_rel, data, clean_alt(spec["alt"]), changed)

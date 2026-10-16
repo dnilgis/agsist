@@ -248,6 +248,12 @@ jobs:
           if [ -f lrp.html ]; then node scripts/bake_lrp.mjs || echo "::warning::bake_lrp.mjs failed"; fi
           python scripts/check_site_budget.py
 
+      # Share images for /lrp (today's offers) and /lrp/record, redrawn in the
+      # commit loop below from the freshly baked pages (scripts/build_share_images.py).
+      - name: Pillow for the share images
+        continue-on-error: true
+        run: pip install --quiet pillow==12.3.0
+
       - name: Commit to main
         run: |
           set -e
@@ -264,8 +270,11 @@ jobs:
             # script still reads today.json live.
             if [ -f lrp.html ]; then
               node scripts/bake_lrp.mjs || echo "::warning::bake_lrp.mjs failed; lrp.html not rebaked"
+              # a share card never holds back the data
+              python3 scripts/build_share_images.py --only lrp || echo "::warning::LRP share images not redrawn"
               git add lrp.html
               [ -f lrp/record.html ] && git add lrp/record.html
+              git add img/og/lrp.jpg img/og/lrp-record.jpg 2>/dev/null || true
             fi
             git add -A "$P"
             if git diff --cached --quiet; then echo "no change"; exit 0; fi

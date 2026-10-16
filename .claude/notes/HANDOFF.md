@@ -23,6 +23,8 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - The sandbox cannot reach USDA, RMA, NOAA (RCC-ACIS) or most co-op sites. GitHub runners can: fetch there.
 - Helpers: write a brief file first (rules in `.claude/notes/helper-rules.md`), one helper per worktree, never two in the same one.
 
+- Browser tests skip unless Playwright is at /home/user/node_modules: `cd /home/user && npm i --no-save playwright@1.56.1`.
+
 ## Where things live
 - `references` branch (never deployed): primary sources (refs/<id>.txt, index.json, refs.yml fetches them),
   Sig's uploads in manual/ (RMA LRP handbook text; Bing AI performance exports in manual/bing-ai-performance/2026-10-16/).
@@ -41,8 +43,6 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 ## Open items
 - Sig: STRIPE_READ_KEY secret (restricted, read Charges + Checkout Sessions); the $19 test order (costs ~85 cents after refund);
   submit sitemaps in Search Console; Rain Print gift-guide pitches by Oct 31.
-- LRP share image (og:image) still describes the old page.
-- One Rain Print timing test ("typing a name redraws a few times") is load-sensitive; make it robust.
 - Bunge Ladoga (Haw Creek) email bid reader in dnilgis/bids (waits on Sig's Gmail app password).
 - Possible: soybeans in the EMC calculator (Kentucky Table 2, Arkansas FSA1074 Table B).
 
