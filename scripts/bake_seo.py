@@ -851,7 +851,11 @@ def seo_fertilizer(c):
     named = [(short, cur[k][0], cur[k][1]) for k, short in FERT_TITLE_ORDER if k in cur]
     if not named:
         return FERT_PLAIN
-    regs = sorted({r.get("region") for _, r, _ in named if r.get("src") == "coop" and r.get("region")})
+    # a row's region may already name two states ("Kansas and Wisconsin"):
+    # split it so the states are each named once
+    regs = sorted({x for _, r, _ in named if r.get("src") == "coop" and r.get("region")
+                   for x in re.split(r", (?:and )?| and ", r["region"]) if x})
+    regs = [", ".join(regs[:-1]) + " and " + regs[-1]] if len(regs) > 2 else regs
     who = (" and ".join(regs) + " Co-op") if regs else "Co-op"
     title = None
     for n in range(len(named), 0, -1):
@@ -1632,6 +1636,13 @@ def selftest():
         {"key": "map", "price": 980.0, "as_of": "2026-10-12", "src": "coop", "region": "Kansas"}]},
         today=date(2026, 10, 16))
     t2, d2 = seo_fertilizer(rng)
+    two = dict(rng, fertilizer={"prices": [
+        {"key": "urea", "price": 615.95, "as_of": "2026-10-06", "src": "coop", "region": "Kansas and Wisconsin"},
+        {"key": "anhydrous", "price": 832.1, "as_of": "2026-10-06", "src": "coop", "region": "Kansas"}]})
+    t3, d3 = seo_fertilizer(two)
+    ck("fertilizer: a two-state region names each state once (Synergy, WI, 2026-10-16)",
+       t3.startswith("Kansas and Wisconsin Co-op Fertilizer") and d3.startswith("Kansas and Wisconsin co-op cash prices")
+       and "Kansas and Kansas" not in t3 + d3, (t3, d3))
     ck("fertilizer: the date range is the named prices' own, not a product left out of them",
        "posted Sep 24 to Oct 6, 2026" in d2 and "Oct 12" not in d2, d2)
     ck("fertilizer: newest price 31 days old gives the plain title (30-day rule)",

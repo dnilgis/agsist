@@ -162,8 +162,11 @@ test("fertilizer: the lede says Kansas co-ops and the posting date range; the ti
     { key: "bad", price: null, as_of: "2026-01-01" }] };
   assert.equal(ctx.ledeWhen(doc), "Right now: Kansas co-ops only, posted Sep 24 to Oct 12, 2026.");
   assert.equal(ctx.ledeWhen({ prices: [] }), "", "no price, no lede line");
+  // a row whose region already names two states (Synergy, WI, 2026-10-16): each state once
+  assert.equal(ctx.ledeWhen({ prices: [doc.prices[1], { key: "urea", price: 615.95, as_of: "2026-10-06", src: "coop", region: "Kansas and Wisconsin" }] }),
+    "Right now: Kansas and Wisconsin co-ops only, posted Sep 24 to Oct 6, 2026.");
   const title = /<title>([^<]*)<\/title>/.exec(F)[1];
-  assert.ok(/^Kansas Co-op Fertilizer/.test(title) || !/\$\d/.test(title), title);
+  assert.ok(/^Kansas( and Wisconsin)? Co-op Fertilizer/.test(title) || !/\$\d/.test(title), title);
   execFileSync("python3", [ROOT + "scripts/bake_seo.py", "--selftest"], { cwd: ROOT, stdio: "pipe" });
 });
 

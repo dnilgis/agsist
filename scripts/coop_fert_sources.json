@@ -1,5 +1,5 @@
 {
- "note": "Co-ops that post retail fertilizer prices on their own site. One line per co-op; the layout names the parser in scripts/fetch_coop_fert.py (html-table: a price table on a Barchart/AgriCharts co-op page; pdf-sheet: a dated price sheet PDF). cash_from names the column the co-op itself labels as its cash price. Town is filled only from the co-op's own site. Added by hand after scripts/fetch_coop_fert.py --discover found the page.",
+ "note": "Co-ops that post retail fertilizer prices on their own site. One line per co-op; the layout names the parser in scripts/fetch_coop_fert.py (html-table: a price table on a Barchart/AgriCharts co-op page; pdf-sheet: a dated price sheet PDF; sheet: prices the co-op sent Sig, typed into the line's rows with their date, no fetch). cash_from names the column the co-op itself labels as its cash price. Town is filled only from the co-op's own site. Added by hand after scripts/fetch_coop_fert.py --discover found the page.",
  "coops": [
   {
    "id": "tworivers-ks",
@@ -40,6 +40,30 @@
    "layout": "pdf-sheet",
    "cash_from": "cash_pickup",
    "cash_label": "3% cash pickup"
+  },
+  {
+   "id": "synergy-wi",
+   "name": "Synergy Cooperative",
+   "town": null,
+   "state": "WI",
+   "url": null,
+   "layout": "sheet",
+   "cash_from": "cash",
+   "entered": "2026-10-16, from the co-op's list dated Oct 1, 2026 (Northwest Wisconsin) that Sig received; products the list shows as n/a are left out",
+   "rows": [
+    {
+     "raw": "46-0-0",
+     "cash": 610,
+     "charge": 628,
+     "date": "2026-10-01"
+    },
+    {
+     "raw": "N-EDGE EZ (~ESN 44-0-0)",
+     "cash": 800,
+     "charge": 824,
+     "date": "2026-10-01"
+    }
+   ]
   }
  ]
 }

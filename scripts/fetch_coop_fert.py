@@ -25,10 +25,20 @@ WHERE THE CO-OPS COME FROM
                 The entry may give "index" (a page on the co-op's site that
                 links the current sheet); the newest dated sheet linked there
                 is read, else "url".
+    sheet       a price list the co-op sent Sig rather than posts (Sig, Oct 16:
+                "just publish prices as a new coop"). Its rows are typed into
+                the config line itself: "rows": [{raw, cash, charge, date}].
+                No fetch. The rows go through the same checks as every other
+                co-op (bands, cash not above charge, the 60-day stale rule);
+                "url" may be null when no co-op page was verified, and the
+                page then names the co-op without a link.
 
 Modes:
   (default)    fetch every co-op, parse, check, write data/fertilizer-coops.json
                and append changes to data/fertilizer-coops-history.json.
+  --sheets-only  no network: rebuild only the "sheet" co-ops from the config
+               and carry every other co-op's last read exactly as it is on
+               file (re-aged to today). For a config change to a sheet co-op.
   --selftest   offline tests on test/fixtures/coop-fert/.
 
 WHAT THIS FILE WILL NOT DO
@@ -421,6 +431,49 @@ def pdf_rows(text, today):
     return rows, sheet_date, problems
 
 
+# ---------------------------------------------------------------- sheet (typed into the config)
+def sheet_rows(cfg, today):
+    """sheet layout: the rows typed into the co-op's config line ->
+    (rows, sheet date or None, problems). A row with no label, a price that is
+    not a number, or a date that is missing, not a date or after today is left
+    out with a problem, never patched. n/a on the co-op's list is simply not
+    entered. The sheet date is the one date every row shares, else none."""
+    rows, problems = [], []
+    for i, r in enumerate(cfg.get("rows") or []):
+        raw = r.get("raw") if isinstance(r, dict) else None
+        if not isinstance(raw, str) or not raw.strip():
+            problems.append("row %d has no product name" % (i + 1))
+            continue
+        raw = clean(raw)
+        try:
+            d = datetime.date.fromisoformat(r.get("date") or "")
+        except (TypeError, ValueError):
+            problems.append("%s: no date" % raw)
+            continue
+        if d > today:
+            problems.append("%s: dated after today" % raw)
+            continue
+        prices, bad = {}, False
+        for b in ("cash", "charge"):
+            v = r.get(b)
+            if v is None:
+                continue
+            if isinstance(v, bool) or not isinstance(v, (int, float)):
+                problems.append("%s: %s %r is not a number" % (raw, b, v))
+                bad = True
+                continue
+            prices[b] = float(v)
+        if bad or not prices:
+            if not bad:
+                problems.append("%s: no price" % raw)
+            continue
+        rows.append({"raw": raw, "prices": prices, "per_unit": None, "cwt": None, "date": d, "date_text": None, "notes": []})
+    if not rows and not problems:
+        problems.append("no rows in the config line")
+    dates = {r["date"] for r in rows}
+    return rows, (dates.pop() if len(dates) == 1 else None), problems
+
+
 # ---------------------------------------------------------------- checks
 def cash_of(row, cash_from):
     """(cash $/ton, basis) by the co-op's own label; None when not posted."""
@@ -501,7 +554,7 @@ def build_coop(cfg, parsed, prev, today):
         out["stale"] = a is None or a > STALE_DAYS
         rows.append(out)
     return {"id": cfg["id"], "name": cfg["name"], "town": cfg.get("town"), "state": cfg["state"],
-            "url": cfg["url"], "source_url": parsed.get("source_url") or cfg["url"], "layout": cfg["layout"],
+            "url": cfg.get("url"), "source_url": parsed.get("source_url") or cfg.get("url"), "layout": cfg["layout"],
             "cash_label": cfg.get("cash_label") or BASIS_LABEL.get(cfg.get("cash_from") or "cash"),
             "posted": parsed["page_date"].isoformat() if parsed.get("page_date") else None,
             "rows": rows, "dropped": dropped, "problems": parsed["problems"]}
@@ -583,6 +636,9 @@ def newest_pdf(index_html, base, today):
 
 def read_coop(cfg, today, fetcher):
     """-> parsed dict or (None, error)."""
+    if cfg["layout"] == "sheet":
+        rows, d, problems = sheet_rows(cfg, today)
+        return {"rows": rows, "page_date": d, "problems": problems, "source_url": cfg.get("url")}, None
     if cfg["layout"] == "html-table":
         raw, err = fetcher(cfg["url"])
         if raw is None:
@@ -612,9 +668,11 @@ def read_coop(cfg, today, fetcher):
     return None, "unknown layout %r" % cfg["layout"]
 
 
-def compose(cfgs, results, existing, now):
+def compose(cfgs, results, existing, now, carry=False):
     """results: {id: (parsed or None, err)}. Keeps a co-op's last good rows on
-    a failed read (their dates still age them out)."""
+    a failed read (their dates still age them out). carry=True (--sheets-only):
+    a co-op with no result keeps its last read as is (ok, note, fetched), only
+    re-aged; it was not read, so it did not fail."""
     today = now.date()
     prev = {c["id"]: c for c in json.loads(json.dumps((existing or {}).get("coops") or []))}  # never edit the caller's copy
     coops = []
@@ -633,6 +691,10 @@ def compose(cfgs, results, existing, now):
             for r in c["rows"]:
                 r["age_days"] = age_days(r, today)
                 r["stale"] = r["age_days"] is None or r["age_days"] > STALE_DAYS
+                r.pop("far_from_others", None)  # judged again below
+            if carry and cfg["id"] not in results:
+                coops.append(c)
+                continue
             c["ok"] = False
             c["note"] = err or "; ".join((parsed or {}).get("problems") or []) or "no rows read"
         else:
@@ -680,19 +742,21 @@ def append_history(hist, doc, now):
     return hist
 
 
-def run(root, now=None, fetcher=None):
+def run(root, now=None, fetcher=None, sheets_only=False):
     root = Path(root)
     now = now or datetime.datetime.now(datetime.timezone.utc)
     cfgs = read_json(root / CONFIG)["coops"]
     fetcher = fetcher or (lambda u: (time.sleep(PAUSE), get(u))[1])
     results = {}
     for cfg in cfgs:
+        if sheets_only and cfg["layout"] != "sheet":
+            continue
         try:
             results[cfg["id"]] = read_coop(cfg, now.date(), fetcher)
         except Exception as e:  # noqa: BLE001 one co-op must not stop the rest
             results[cfg["id"]] = (None, "%s: %s" % (type(e).__name__, e))
     existing = read_json(root / OUT)
-    doc = compose(cfgs, results, existing, now)
+    doc = compose(cfgs, results, existing, now, carry=sheets_only)
     if not doc["coops"]:
         return {"wrote": False, "why": "no co-op read and none on file", "results": results, "doc": doc}
     atomic_write(root / OUT, doc)
@@ -705,10 +769,11 @@ def run(root, now=None, fetcher=None):
 
 
 # ---------------------------------------------------------------- fixture feed
-def fixture_doc(now=None):
+def fixture_doc(now=None, sheets=False):
     """The feed as a run on the saved fixtures would write it (the three co-op
     pages plus the price sheet as a fourth, test-only co-op). Used by the
-    selftest and by test/fert-coops.test.mjs."""
+    selftest and by test/fert-coops.test.mjs. sheets=True adds the config's
+    "sheet" co-ops (Synergy) as a run would (test/fert-synergy.test.mjs)."""
     now = now or datetime.datetime(2026, 10, 15, 14, tzinfo=datetime.timezone.utc)
     today = now.date()
     fx = ROOT / FIX_DIR
@@ -724,6 +789,10 @@ def fixture_doc(now=None):
             results[c["id"]] = ({"rows": rws, "page_date": one_date(txt, today), "problems": pr, "source_url": c["url"]}, None)
     rws, d, pr = pdf_rows((fx / "agricharts-1041_2026-9-24.txt").read_text(), today)
     results["sheet"] = ({"rows": rws, "page_date": d, "problems": pr, "source_url": cfgs[-1]["url"]}, None)
+    if sheets:
+        for c in cfgs:
+            if c["layout"] == "sheet":
+                results[c["id"]] = read_coop(c, today, None)
     return compose(cfgs, results, None, now)
 
 
@@ -904,6 +973,65 @@ def selftest():
     idx = '<a href="https://s3.amazonaws.com/media.agricharts.com/sites/1041/2026-9-24.pdf">a</a><a href="/x/2026-10-8.pdf">b</a><a href="/x/2027-1-1.pdf">c</a>'
     ck("newest dated sheet, future sheet ignored",
        newest_pdf(idx, "https://farmerscoop.coop/fert", today) == ("https://farmerscoop.coop/x/2026-10-8.pdf", datetime.date(2026, 10, 8)))
+    # sheet layout: rows typed into the config line, same checks as any co-op
+    syn = cf.get("synergy-wi")
+    ck("config: Synergy Cooperative, WI, no town, no url, sheet layout",
+       syn is not None and syn["name"] == "Synergy Cooperative" and syn["state"] == "WI" and syn["town"] is None
+       and syn["url"] is None and syn["layout"] == "sheet")
+    sp, serr = read_coop(syn, today, lambda u: (_ for _ in ()).throw(AssertionError("sheet must not fetch")))
+    ck("sheet: no fetch, two rows, dated Oct 1, no problems",
+       serr is None and len(sp["rows"]) == 2 and sp["page_date"] == datetime.date(2026, 10, 1) and sp["problems"] == [])
+    sb = build_coop(syn, sp, None, today)
+    sr = {r["raw"]: r for r in sb["rows"]}
+    ck("sheet: urea cash 610 charge 628, dated from its row, current",
+       sr["46-0-0"]["product"] == "urea" and sr["46-0-0"]["cash"] == 610.0 and sr["46-0-0"]["prices"] == {"cash": 610.0, "charge": 628.0}
+       and sr["46-0-0"]["date"] == "2026-10-01" and sr["46-0-0"]["date_from"] == "row" and not sr["46-0-0"]["stale"] and not sr["46-0-0"]["flags"])
+    ck("sheet: the ESN-type product is shown as other, never summarized", sr["N-EDGE EZ (~ESN 44-0-0)"]["product"] == "other")
+    ck("sheet: no url, no source url", sb["url"] is None and sb["source_url"] is None and sb["posted"] == "2026-10-01")
+    r8 = dict(results)
+    r8["synergy-wi"] = (sp, None)
+    d8 = compose(allc, r8, None, now)
+    s8 = {s["key"]: s for s in d8["summary"]}
+    ck("sheet co-op counts toward the urea middle: 608, 610, 615.95, 630, 840 -> 615.95",
+       s8["urea"]["n"] == 5 and s8["urea"]["median"] == 615.95 and "synergy-wi" in s8["urea"]["coops"] and s8["urea"]["low"] == 608.0)
+    ck("sheet co-op state counted", d8["states"] == {"KS": 4, "WI": 1})
+    ck("sheet: 'other' still not summarized", "other" not in s8)
+    def sheet_with(rows):
+        return dict(syn, rows=rows)
+    sx, _ = read_coop(sheet_with([{"raw": "46-0-0", "cash": 628, "charge": 610, "date": "2026-10-01"}]), today, None)
+    bx = build_coop(syn, sx, None, today)
+    ck("sheet: cash above charge is flagged, not counted", bx["rows"][0]["flags"] == ["cash price above the charge price"])
+    sx, _ = read_coop(sheet_with([{"raw": "46-0-0", "cash": 61, "charge": 628, "date": "2026-10-01"}]), today, None)
+    bx = build_coop(syn, sx, None, today)
+    ck("sheet: a typo $61 urea is dropped and logged, charge kept",
+       any("$61.00" in x for x in bx["dropped"]) and bx["rows"][0]["prices"] == {"charge": 628.0} and bx["rows"][0]["cash"] is None)
+    sx, _ = read_coop(sheet_with([{"raw": "46-0-0", "cash": 610, "charge": 628, "date": "2026-08-01"}]), today, None)
+    ck("sheet: a row past 60 days is stale like any co-op", build_coop(syn, sx, None, today)["rows"][0]["stale"] is True)
+    late8 = compose(allc, r8, None, datetime.datetime(2026, 12, 1, 14, tzinfo=datetime.timezone.utc))
+    ck("sheet: Oct 1 rows are out of the summary on Dec 1 (61 days)",
+       "synergy-wi" not in {s["key"]: s for s in late8["summary"]}.get("urea", {}).get("coops", []))
+    for bad_rows, why in [([{"raw": "46-0-0", "cash": "610", "date": "2026-10-01"}], "not a number"),
+                          ([{"raw": "46-0-0", "cash": 610, "date": "2026-11-01"}], "dated after today"),
+                          ([{"raw": "46-0-0", "cash": 610}], "no date"),
+                          ([{"raw": "", "cash": 610, "date": "2026-10-01"}], "no product name"),
+                          ([{"raw": "46-0-0", "cash": None, "charge": None, "date": "2026-10-01"}], "no price"),
+                          ([{"raw": "46-0-0", "cash": True, "date": "2026-10-01"}], "not a number")]:
+        rx, _, px = sheet_rows(sheet_with(bad_rows), today)
+        ck("sheet: refused, %s" % why, rx == [] and any(why in x for x in px))
+    rx, dx, _ = sheet_rows(sheet_with([{"raw": "46-0-0", "cash": 610, "date": "2026-10-01"},
+                                       {"raw": "DAP", "cash": 900, "date": "2026-10-02"}]), today)
+    ck("sheet: two dates on one list, no single sheet date", len(rx) == 2 and dx is None)
+    # --sheets-only: carries every other co-op exactly as read
+    r9 = {"synergy-wi": (sp, None)}
+    d9 = compose(allc, r9, doc, now, carry=True)
+    c9 = {c["id"]: c for c in d9["coops"]}
+    ck("sheets-only: the web co-ops are carried, ok and fetched unchanged",
+       all(c9[k]["ok"] is True and c9[k]["fetched"] == co[k]["fetched"] and c9[k]["rows"] == co[k]["rows"]
+           for k in ("tworivers-ks", "mccune-ks", "mulvane-ks", "sheet")))
+    ck("sheets-only: Synergy added, the urea middle is the same as a full read",
+       "synergy-wi" in c9 and {s["key"]: s for s in d9["summary"]}["urea"]["median"] == 615.95)
+    ck("sheets-only: without carry a co-op not read is a failed read",
+       {c["id"]: c for c in compose(allc, r9, doc, now)["coops"]}["mccune-ks"]["ok"] is False)
     import check_site_budget
     ck("history cap matches scripts/check_site_budget.py FILE_KB", check_site_budget.FILE_KB.get(HIST) == HIST_MAX_KB)
 
@@ -918,9 +1046,9 @@ def main(argv):
     if "--selftest" in argv:
         return selftest()
     if "--fixture-feed" in argv:
-        print(json.dumps(fixture_doc()))
+        print(json.dumps(fixture_doc(sheets="--with-sheets" in argv)))
         return 0
-    info = run(ROOT)
+    info = run(ROOT, sheets_only="--sheets-only" in argv)
     for cid, (parsed, err) in info["results"].items():
         if err:
             print("::warning::co-op fertilizer %s: %s" % (cid, err))

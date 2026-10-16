@@ -1,13 +1,14 @@
 {
  "source": "Posted retail fertilizer prices on co-op websites",
- "generated": "2026-10-16T17:40:54Z",
+ "generated": "2026-10-16T20:01:15Z",
  "stale_days": 60,
  "min_median": 2,
  "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). Rows dated over 60 days ago, rows whose per-unit or cwt figure does not match, and products the reader cannot name are shown but not summarized. One price per co-op per product: the first listed. Middle price from 2 co-ops up (from 2 it is their average); one co-op is named.",
- "coops_total": 4,
- "coops_current": 4,
+ "coops_total": 5,
+ "coops_current": 5,
  "states": {
-  "KS": 4
+  "KS": 4,
+  "WI": 1
  },
  "summary": [
   {
@@ -33,8 +34,8 @@
    "key": "urea",
    "name": "Urea",
    "symbol": "46-0-0",
-   "n": 4,
-   "median": 622.98,
+   "n": 5,
+   "median": 615.95,
    "low": 608.0,
    "high": 840.0,
    "oldest": "2026-09-24",
@@ -44,7 +45,8 @@
     "tworivers-ks",
     "mccune-ks",
     "mulvane-ks",
-    "farmerscoop-columbus-ks"
+    "farmerscoop-columbus-ks",
+    "synergy-wi"
    ],
    "far": [
     "mulvane-ks"
@@ -1005,6 +1007,62 @@
    "dropped": [],
    "problems": [],
    "fetched": "2026-10-16T17:40:54Z",
+   "ok": true,
+   "note": null
+  },
+  {
+   "id": "synergy-wi",
+   "name": "Synergy Cooperative",
+   "town": null,
+   "state": "WI",
+   "url": null,
+   "source_url": null,
+   "layout": "sheet",
+   "cash_label": "cash",
+   "posted": "2026-10-01",
+   "rows": [
+    {
+     "product": "urea",
+     "raw": "46-0-0",
+     "prices": {
+      "cash": 610.0,
+      "charge": 628.0
+     },
+     "cash": 610.0,
+     "cash_basis": "cash",
+     "per_unit": null,
+     "cwt": null,
+     "date": "2026-10-01",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 15,
+     "stale": false
+    },
+    {
+     "product": "other",
+     "raw": "N-EDGE EZ (~ESN 44-0-0)",
+     "prices": {
+      "cash": 800.0,
+      "charge": 824.0
+     },
+     "cash": 800.0,
+     "cash_basis": "cash",
+     "per_unit": null,
+     "cwt": null,
+     "date": "2026-10-01",
+     "date_from": "row",
+     "date_text": null,
+     "notes": [],
+     "flags": [],
+     "age_days": 15,
+     "stale": false
+    }
+   ],
+   "dropped": [],
+   "problems": [],
+   "fetched": "2026-10-16T20:01:15Z",
    "ok": true,
    "note": null
   }
