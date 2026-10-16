@@ -378,3 +378,18 @@ test("prices carry their quote date, never 'today's'", () => {
   const when = M.day(M.nutrientPrices(data).src.n.as_of);
   assert.ok(mv.includes(`<h1>What manure is worth at <span data-mv="asof-n">${when}</span> fertilizer prices</h1>`), "the H1 names the quote date");
 });
+
+// 2026-10-16 audit: N is priced at urea; one line gives the anhydrous figure
+// from the same shared price file.
+test("anhydrous note: N at anhydrous, by hand, from the shared file only", () => {
+  const withNh3 = { ...SEP1, prices: [...SEP1.prices,
+    { key: "anhydrous", name: "Anhydrous ammonia", symbol: "82-0-0", price: 820, as_of: "2026-09-01", src: "coop",
+      src_label: "Kansas co-ops, middle of 4, posted Sep 1, 2026" }] };
+  // urea 590 / 920 = $0.6413; NH3 820 / 1640 = $0.50; 1 - 0.50/0.6413 = 22%
+  const v = M.bakeValues(withNh3);
+  assert.equal(v["nh3-note"], "N is priced at urea, $0.64 a lb. At anhydrous ammonia, $820 a ton (Kansas co-ops, middle of 4, posted Sep 1, 2026), N is $0.50 a lb, 22% less.");
+  assert.equal(M.bakeValues(SEP1)["nh3-note"], "", "no anhydrous price, no line");
+  const html = read("manure-value.html");
+  assert.match(html, /<p class="fine" data-mv="nh3-note">N is priced at urea, \$[\d.]+ a lb\. At anhydrous ammonia, \$[\d,]+ a ton/, "baked on the page");
+  assert.ok(!/—/.test(v["nh3-note"]), "no em dash");
+});
