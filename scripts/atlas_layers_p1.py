@@ -278,7 +278,22 @@ def drought_layer(d, half=50.0, ran=False, this_year=None):
                     "maps": sum(full[y]["maps"] for y in last5)}
     if this_year and this_year in years and this_year not in full:
         out["partial_year"] = {"year": this_year, **years[this_year]}
+    # A FINISHED YEAR THE FILE IS SHORT OF IS NAMED, NOT SKIPPED. 2026-10-16:
+    # every county held "2024: 1 map" after a refetch overwrote the year, and
+    # every "since 2000" total quietly covered 25 years. Whatever prints a
+    # total from first_year to last_full_year prints these with it.
+    out["missing_years"] = [y for y in range(out["first_year"], out["last_full_year"] + 1) if y not in full]
     return out
+
+
+def years_covered(first, last, missing):
+    """'2000-2025' or '2000-2025 except 2024' (en dash), for every label that
+    prints a drought total. missing: the finished years left out."""
+    span = "%s\u2013%s" % (first, last)
+    missing = sorted(int(y) for y in (missing or []))
+    if not missing:
+        return span
+    return span + " except " + (", ".join(str(y) for y in missing[:-1]) + " and " + str(missing[-1]) if len(missing) > 1 else str(missing[0]))
 
 
 # ---------------------------------------------------------------- energy
@@ -391,7 +406,9 @@ def national_p1(counties, this_fy=None):
             if d.get("status") == "ok" and d["series"].get(latest_full, {}).get("d2", 0) >= HALF_YEAR_WEEKS:
                 half_latest += 1
         worst = max(cw, key=cw.get)
-        out["drought"] = {"counties": n_d, "half_pct": next(c["drought"]["half_pct"] for c in counties.values() if (c.get("drought") or {}).get("status") == "ok"),
+        first_d = min(int(y) for y in cw)
+        missing_d = [y for y in range(first_d, int(latest_full) + 1) if y not in {int(k) for k in cw}]
+        out["drought"] = {"counties": n_d, "first_year": first_d, "missing_years": missing_d, "half_pct": next(c["drought"]["half_pct"] for c in counties.values() if (c.get("drought") or {}).get("status") == "ok"),
                           "county_weeks_d2_by_year": dict(sorted(cw.items())), "worst_year": {"year": worst, "county_weeks_d2": cw[worst]},
                           "latest_full_year": latest_full, "counties_half_year_or_more_latest": half_latest}
     # energy
@@ -497,7 +514,9 @@ def seed_p1(n, money, pct_of_unit):
     d = n.get("drought")
     if d:
         w = d["worst_year"]
-        parts.append(f'<p>Drought: summed over {d["counties"]} counties, the year with the most county-weeks with at least half the county in severe drought or worse since 2000 was {w["year"]} ({w["county_weeks_d2"]:,} county-weeks). In {d["latest_full_year"]}, the latest full year, {d["counties_half_year_or_more_latest"]} counties spent half the year or more in that condition.</p>')
+        gap = (f' (full years {years_covered(d.get("first_year", 2000), d["latest_full_year"], d.get("missing_years"))}: '
+               f'the Atlas copy of {" and ".join(str(y) for y in d["missing_years"])} is incomplete, so it is not counted)') if d.get("missing_years") else ""
+        parts.append(f'<p>Drought: summed over {d["counties"]} counties, the year with the most county-weeks with at least half the county in severe drought or worse since 2000{gap} was {w["year"]} ({w["county_weeks_d2"]:,} county-weeks). In {d["latest_full_year"]}, the latest full year, {d["counties_half_year_or_more_latest"]} counties spent half the year or more in that condition.</p>')
     else:
         parts.append('<p>Drought: not yet measured.</p>')
     e = n.get("energy")
@@ -575,6 +594,12 @@ def selftest():
     assert D["weeks"] == {"counted": 105, "d2": 30, "d3": 10, "share_d2_pct": 28.6, "share_d3_pct": 9.5}, D["weeks"]
     assert D["worst_year"] == {"year": 2012, "d2": 30, "d3": 10} and D["years_half_or_more"] == [2012] and D["last_full_year"] == 2013
     assert D["partial_year"] == {"year": 2026, "maps": 20, "d2": 5, "d3": 0} and D["last5"]["d2"] == 30
+    assert D["missing_years"] == []
+    # the 2024 hole: one map in a finished year is named, not counted and not skipped silently
+    Dh = drought_layer({"2023": {"maps": 52, "d2": 2, "d3": 0}, "2024": {"maps": 1, "d2": 0, "d3": 0}, "2025": {"maps": 52, "d2": 0, "d3": 0}}, ran=True, this_year=2026)
+    assert Dh["missing_years"] == [2024] and Dh["weeks"]["counted"] == 104 and Dh["last5"]["maps"] == 104, Dh
+    assert years_covered(2000, 2025, [2024]) == "2000\u20132025 except 2024" and years_covered(2000, 2025, []) == "2000\u20132025"
+    assert years_covered(2000, 2025, [2024, 2019]) == "2000\u20132025 except 2019 and 2024"
     assert drought_layer({"2026": {"maps": 20, "d2": 5, "d3": 0}}, ran=True)["status"].startswith("withheld")
     # October: the running year has 41 maps, past the full-year gate, and still is not a full year
     Do = drought_layer({"2025": {"maps": 52, "d2": 0, "d3": 0}, "2026": {"maps": 41, "d2": 30, "d3": 5}}, ran=True, this_year=2026)
@@ -598,6 +623,11 @@ def selftest():
     assert N["value"]["median_per_acre"] == 8550 and N["value"]["counties_with_rent_to_value"] == 1 and N["value"]["median_rent_to_value_pct"] == 2.48
     assert N["crp"]["acres"] == 20050 and N["crp"]["expiring_next3_acres"] == 5000 and N["crp"]["counties_over_10pct"] == 1
     assert N["drought"]["county_weeks_d2_by_year"] == {2012: 30, 2013: 26} and N["drought"]["worst_year"]["year"] == 2012 and N["drought"]["counties_half_year_or_more_latest"] == 1
+    assert N["drought"]["missing_years"] == [] and N["drought"]["first_year"] == 2012
+    Nh = national_p1({"1": {"drought": Dh}, "2": {"drought": Dh}})
+    assert Nh["drought"]["missing_years"] == [2024], Nh["drought"]
+    th = " ".join(seed_p1(Nh, lambda x: "$%s" % x, lambda x: x))
+    assert "since 2000 (full years 2023\u20132025 except 2024: the Atlas copy of 2024 is incomplete, so it is not counted)" in th, th
     assert N["energy"]["solar_mw"] == 10 and N["energy"]["wind_mw"] == 100 and N["energy"]["counties_with_proposed"] == 1
     assert N["wells"]["NE"]["irrigation_active"] == 60 and "KS" not in N["wells"]
     sm = summarize_p1(cs["31001"])
