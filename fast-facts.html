@@ -286,7 +286,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   .ff-tab{font-size:0.755rem;padding:.35rem .6rem;}
 }
 
-/* ── Corn N rate at today's prices (top box, 2026-10-16) ── */
+/* ── Corn N rate at posted prices (top box, 2026-10-16) ── */
 .ff-ans{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;background:var(--surface);padding:.85rem 1rem 1rem;margin:0 0 .8rem;}
 .ff-ans-t{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0;}
 .ff-ans-out{display:flex;align-items:flex-end;gap:.4rem 1rem;flex-wrap:wrap;margin:.3rem 0 .2rem;}
@@ -311,6 +311,9 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .fert-how{margin:.5rem 0 0;font-size:.78rem;color:var(--text-dim);}
 .fert-how summary{cursor:pointer;color:var(--gold);font-weight:700;min-height:32px;display:flex;align-items:center;}
 .fert-pill-g{font-family:'JetBrains Mono',monospace;font-weight:400;color:var(--text-muted);font-size:0.72rem;}
+.ff-toc{font-size:.82rem;color:var(--text-muted);line-height:1.9;margin:1.5rem 0 0;padding-top:.8rem;border-top:1px solid var(--border);}
+.ff-toc a{color:var(--gold);text-decoration:none;font-weight:600;}
+.ff-toc b{color:var(--text-dim);}
 .ff-src-list{font-size:.8rem;color:var(--text-dim);line-height:1.55;padding-left:1.1rem;margin:.4rem 0 0;}
 .ff-src-list li{margin:.25rem 0;}
 .ff-src-list a{color:var(--gold);text-decoration:none;}
@@ -441,20 +444,20 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-hero">
   <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Free reference tables, with current prices</div>
   <h1>Fast Facts: farm reference tables</h1>
-  <p class="page-lede">How much N to put on corn at today's prices, then P and K by soil test, manure, lime, crop stages, pest thresholds and conversions.</p>
+  <p class="page-lede">How much N to put on corn at posted prices, then P and K by soil test, manure, lime, crop stages, pest thresholds and conversions.</p>
   <div class="ff-meta">By <strong>Sigurd Lindquist, Certified Crop Adviser (CCA)</strong> &middot; checked Oct 16, 2026 &middot; rates from UW Extension A2809 (Wisconsin) unless a table names another source &middot; <a href="#ff-sources">Sources</a></div>
 </div>
 
-<!-- Corn N rate at today's prices: A2809 Table 6.1 (components/a2809.js) at the
+<!-- Corn N rate at posted prices: A2809 Table 6.1 (components/a2809.js) at the
      posted N price and new-crop corn. Fills in from data/fertilizer-prices.json,
      data/prices.json and data/basis-states.json; empty boxes say so, never a made-up price. -->
 <section class="ff-ans" id="ff-ans" aria-labelledby="ff-ans-t">
-  <h2 class="ff-ans-t" id="ff-ans-t"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Corn N rate at today's prices</h2>
+  <h2 class="ff-ans-t" id="ff-ans-t"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Corn N rate at posted prices</h2>
   <div class="ff-ans-out" aria-live="polite">
     <div class="ff-ans-big"><span id="ans-rate">-</span><span class="u">lb N/ac</span></div>
     <div class="ff-ans-side"><div id="ans-range"></div><div id="ans-cost"></div></div>
   </div>
-  <p class="ff-ans-line" id="ans-line">Loading today's N and corn prices&hellip;</p>
+  <p class="ff-ans-line" id="ans-line">Loading posted N and corn prices&hellip;</p>
   <div class="ff-ans-in">
     <div class="ff-cf"><label class="ff-cl" for="ans-soil">Soil, yield potential</label><select class="ff-cs" id="ans-soil"><option value="hi">Loamy, high</option><option value="med">Loamy, medium</option><option value="sand_irr">Sand, irrigated</option><option value="sand_dry">Sand, dryland</option></select></div>
     <div class="ff-cf"><label class="ff-cl" for="ans-prev">Last crop</label><select class="ff-cs" id="ans-prev"><option value="soy">Soy, small grain</option><option value="corn">Corn, legume</option></select></div>
@@ -506,7 +509,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div class="fert-pills" id="fert-pills"><span style="font-size:0.78rem;color:var(--text-muted)">Loading prices&hellip;</span></div>
 </div>
 <div class="ff-h2" id="n-table">Corn N Rates by Soil and Price Ratio (A2809 Table 6.1)</div>
-<p class="ff-sub">Total lb N/ac, starter included. The big number is the rate with the most return to N (MRTN); under it, every rate within $1/ac of that return. N:corn ratio = $ per lb of N &divide; $ per bu of corn. The column for today's prices is marked; the box at the top works it out.</p>
+<p class="ff-sub">Total lb N/ac, starter included. The big number is the rate with the most return to N (MRTN); under it, every rate within $1/ac of that return. N:corn ratio = $ per lb of N &divide; $ per bu of corn. The column for the prices in the box at the top is marked.</p>
 <div class="ff-warn"><strong>Which end of the range (A2809):</strong> upper end if residue covers more than half the soil at planting or all the N comes from manure; low end on loamy soils over 10% organic matter, or when N is likely left over from last year (or use the high end less a PPNT credit); high end on any soil under 2% organic matter; middle to low end for corn after small grains on loamy soil and on sands with 2 to 9.9% organic matter.</div>
 <div class="ff-tw ff-tw-n" tabindex="0" role="region" aria-label="Corn N rates table"><table class="ff-t" id="nc-table">
 <thead>
@@ -1162,6 +1165,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <div style="grid-column:1/-1;color:var(--text-muted);font-size:0.795rem;padding:1rem 0">Loading state data&hellip;</div>
 </div>
 </div><!-- /tab-statestats -->
+
+<nav class="ff-toc" aria-label="All sections">
+  <b>All sections:</b> <a href="#nitrogen">Nitrogen</a> &middot; <a href="#economics">Economics</a> &middot; <a href="#pk">P and K</a> &middot; <a href="#removal">Crop removal</a> &middot; <a href="#manure">Manure</a> &middot; <a href="#soilhealth">Soil health</a> &middot; <a href="#stages">Crop stages</a> &middot; <a href="#pest">Pest and weed</a> &middot; <a href="#reference">Reference</a> &middot; <a href="#statestats">State stats</a> &middot; <a href="/manure-value">Manure value</a>
+</nav>
 
 <!--FAQ:START-->
 <style>

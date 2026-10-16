@@ -106,8 +106,8 @@ function loadFertPrices(){
       btn.setAttribute('type','button');
       btn.setAttribute('aria-pressed','false');
       btn.setAttribute('aria-label',p.name+' $'+price+'/ton, '+p.src_label+': $'+pplb.toFixed(3)+'/lb '+pd.label);
-      btn.innerHTML='<span class="fert-pill-body"><span class="fert-pill-name">'+esc(p.name)+' <span class="fert-pill-g">'+esc(p.symbol)+'</span></span>'
-        +'<span class="fert-pill-sym">'+esc(fertShort(p))+'</span></span>'
+      btn.innerHTML='<span class="fert-pill-body"><span class="fert-pill-name">'+esc(p.name)+'</span>'
+        +'<span class="fert-pill-sym">'+esc(p.symbol)+' · '+esc(fertShort(p))+'</span></span>'
         +'<span class="fert-pill-price">$'+price+'</span>';
       btn.addEventListener('click',function(){
         document.querySelectorAll('.fert-pill').forEach(function(x){x.classList.remove('active');x.setAttribute('aria-pressed','false');});
@@ -302,7 +302,7 @@ function bindJumps(){
 }
 bindJumps();
 
-/* ─── CORN N RATE AT TODAY'S PRICES (top box) ───────────────────────────
+/* ─── CORN N RATE AT POSTED PRICES (top box) ───────────────────────────
    N:corn ratio = $/lb N / $/bu corn; the rate is the A2809 Table 6.1 cell
    (components/a2809.js) for the soil, the last crop and the nearest
    printed ratio column. */
@@ -674,7 +674,7 @@ function initStages(){
      uses). Only the notes below are this page's own, by stage name. */
   var CORN_NOTES={
     VE:['Coleoptile through the soil surface.','Check soil temp \u226550\u00b0F. Scout for stand establishment and black cutworm.'],
-    V2:['2nd leaf collar visible. Growing point still below soil.','Count stand. Black cutworm: 3+ cut plants/100.'],
+    V2:['2nd leaf collar visible. Growing point still below soil.','Count stand. Black cutworm: treat at 5% of plants damaged with larvae 6th instar or smaller (UW L023).'],
     V4:['4th leaf collar. Ear shoots being started.','Side-dress N window: V4\u2013V6.'],
     V6:['Growing point above soil.','Side-dress window closing. Post herbicide cutoffs on many labels: read yours.'],
     V8:['8 leaf collars. Kernel row number being set.','Scout for European corn borer. Fungicide watch if conditions favor disease.'],
@@ -700,7 +700,7 @@ function initStages(){
     R5:['Beginning seed. 1/8" seed in a pod on one of the top 4 nodes.','Last stage the 250/plant aphid threshold covers. Spider mite watch in dry heat.'],
     R6:['Full seed. A green seed fills the pod cavity.','Harvest planning begins.'],
     R7:['Beginning maturity. One mature-color pod on the main stem.',''],
-    R8:['Full maturity. 95% of pods at mature color.','Harvest under 15% moisture; shatter losses climb when beans wait.']
+    R8:['Full maturity. 95% of pods at mature color.','Shatter losses climb when ripe beans wait in the field.']
   };
   var G=window.AgGduStages;
   if(!G)return;
