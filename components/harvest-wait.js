@@ -103,10 +103,11 @@
     var out = [], m = m0;
     for (var i = 0; i <= days; i++) {
       var d = new Date(d0.getTime() + i * 864e5), mo = d.getUTCMonth() + 1;
-      var wk = CAL.weekly[mo], floor = CAL.emc[mo];
-      if (!num(wk)) return null;
-      var rate = num(own) && own >= 0 ? own : wk;
-      if (i > 0 && m > floor) m = Math.max(floor, m - rate / 7);
+      var wk = CAL.weekly[mo], floor = num(CAL.emc[mo]) ? CAL.emc[mo] : null;
+      var mine = num(own) && own >= 0;
+      if (!num(wk) && !mine) return null;
+      var rate = mine ? own : wk;
+      if (i > 0 && (floor == null || m > floor)) m = Math.max(floor == null ? 0 : floor, m - rate / 7);
       out.push({ date: ymd(d), month: mo, rate: rate, floor: floor, m: m });
     }
     return out;
