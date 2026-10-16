@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T18:31:23Z",
+ "run_utc": "2026-10-16T19:35:10Z",
  "sources": [
   {
    "bytes": null,
@@ -8327,6 +8327,52 @@
    ],
    "status": "new",
    "text_chars": 8326
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "asabe-d245-7-listing",
+   "url": "https://standards.globalspec.com/std/14462453/d245-7",
+   "title": "ASABE D245.7 (2021) Moisture Relationships of Plant-based Agricultural Products: standard listing and edition history",
+   "why": "/grain-emc: the D245 edition the soybean and corn constants come from (the standard text is paywalled at elibrary.asabe.org; no free copy found Oct 16, 2026)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T19:35:01Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback: no archived copy",
+   "status": "failed"
+  },
+  {
+   "bytes": 56255,
+   "sha256": "abf7c59cf340644ea93774e6d6f034b54c200699bc8203e0929594406ca38bb3",
+   "fetched_utc": "2026-10-16T19:35:10Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/grainjournal-d245-7.html",
+   "final_url": null,
+   "content_type": "text/html; charset=UTF-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "grainjournal-d245-7",
+   "url": "https://www.grainjournal.com/article/244875/asabe-revises-data-document-for-calculating-moisture-content-of-stored-agricultural-products",
+   "title": "Grain Journal: ASABE revises D245 data document for moisture content of stored products",
+   "why": "/grain-emc: what changed from D245.6 to D245.7 (updated values, corrected equations)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T19:35:08Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 2689
   },
   {
    "bytes": 358369,
