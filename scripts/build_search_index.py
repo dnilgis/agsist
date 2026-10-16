@@ -94,6 +94,7 @@ PAGES = [
     ("/grain-emc", "Grain EMC: fans on or off", "When to run aeration fans, EMC charts", "emc equilibrium moisture content chart aeration fans dry wet grain humidity bin corn soybean soybeans beans wheat natural air drying cooling"),
     ("/grain-shrink", "Grain shrink: wet or too dry", "Shrink, drying charges and overdry loss", "grain shrink moisture discount drying charge wet corn overdry soybeans dry beans 13 percent 15.5 elevator settlement calculator sorghum wheat"),
     ("/nutrient-removal", "Nutrient removal value", "P and K in stalks, silage, straw and hay", "nutrient removal value phosphorus potassium p2o5 k2o corn stalks stover bales baling silage straw hay alfalfa sell selling fertilizer replace"),
+    ("/hay-prices", "Hay prices by state", "Alfalfa and other hay, $/ton", "hay prices alfalfa grass hay bale ton price per ton state usda nass forage"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
     ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),
     ("/rent/", "Cash rent by state", "Rent by county", "cash rent rents rental county land acre lease"),

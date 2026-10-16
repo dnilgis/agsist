@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 86,
- "with_known_cadence": 86,
+ "count": 87,
+ "with_known_cadence": 87,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -991,6 +991,30 @@
    "max_gap_hours": 72.0,
    "quiet": "seasonal",
    "why_quiet": "Harvest prices are averaged only inside RMA's discovery windows (October for corn and soybeans in most states; the file's own windows list names each one). Between windows the file sits still. The projected price was final in February."
+  },
+  {
+   "path": "data/hay/hay-prices.json",
+   "pages": [
+    "hay-prices.html"
+   ],
+   "written_by": [
+    "Hay prices"
+   ],
+   "touched_by": [
+    "Hay prices"
+   ],
+   "cadence": "2 launches every day at about 9am, 3pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 20 27-31 * *",
+    "23 14 1,2 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/markets.json",
