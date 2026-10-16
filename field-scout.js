@@ -74,7 +74,6 @@
   // ── Boot ────────────────────────────────────────────────────────────
   function init() {
     if (typeof L === 'undefined') { showFatal('Map library failed to load. Check your connection and refresh.'); return; }
-    if (typeof L.Draw === 'undefined' || !L.Draw.Polygon) { showFatal('The field-drawing tool failed to load. Refresh the page; if it persists, your network may be blocking unpkg.com.'); return; }
 
     map = L.map('fs-map', { zoomControl:true, attributionControl:true }).setView([41.878, -93.0977], 6); // Iowa-ish center
     map.on('dragstart', function(){ if(FIELD) FIELD._dragged=true; });   // the user moved it: stop auto-fitting
@@ -109,14 +108,9 @@
 
     drawnLayer = new L.FeatureGroup().addTo(map);
 
-    drawControl = new L.Draw.Polygon(map, {
-      allowIntersection:false,
-      shapeOptions:{ color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 }
-    });
-
-    map.on(L.Draw.Event.CREATED, function (e) {
-      commitField(e.layer, 'draw');
-    });
+    // The tracing tool (Leaflet.draw, vendored on agsist.com) loads on the first "Trace exact"
+    // tap, not with the page: most fields start from a tap, and a slow or blocked load can
+    // only ever cost the trace, never the map, the pin or the search (ensureDraw below).
     // Floating trace toolbar (Undo point / Finish) rides along while drawing —
     // Leaflet.draw's double-click-to-finish is near impossible on a phone.
     map.on('draw:drawstart', function(){ tracing=true; showTracebar(true); dismissInvite(); });
@@ -154,6 +148,28 @@
       if(a) ga('presell_click', {});
     });
     renderSavedFields();
+    wireInviteActs();
+    // On a phone the map gets shorter once a field is up, so the bottom line shows under it
+    // without a scroll (components/field-scout.css, .fs-has-field). Keep Leaflet in step.
+    try{
+      var stg=document.querySelector('.fs-stage');
+      if(stg && window.ResizeObserver){
+        var _lastH=stg.offsetHeight, _refitT=null;
+        new ResizeObserver(function(){
+          var h=stg.offsetHeight; if(h===_lastH) return; _lastH=h;
+          try{ map.invalidateSize(); }catch(e){}
+          // Refit after the commit's own zoom animation ends (its last frame would undo an earlier fit).
+          // On a phone the search bar sits on top and the dock at the bottom: keep the field between them.
+          clearTimeout(_refitT);
+          _refitT=setTimeout(function(){
+            try{
+              var ph=window.innerWidth<=720;
+              if(activePoly && !(FIELD&&FIELD._dragged)) map.fitBounds(activePoly.getBounds(), { paddingTopLeft:[30, ph?76:30], paddingBottomRight:[30, ph?118:30], maxZoom:16, animate:false });
+            }catch(e){}
+          }, 420);
+        }).observe(stg);
+      }
+    }catch(e){}
     if(!restoreFromLink() && !fromAtlasLink()) tryAutoLocate();
   }
 
@@ -325,7 +341,7 @@
     // (data/hail/events-YYYY.json) — one source of truth, dates included.
     var yNowH = new Date().getFullYear();
     var yrsH = [yNowH-4, yNowH-3, yNowH-2, yNowH-1, yNowH];
-    Promise.all(yrsH.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); }))
+    _hailFilesNear(c, yrsH)
       .then(function(files){
         var got = files.filter(Boolean);
         if(!got.length) throw new Error('no event files');
@@ -344,12 +360,46 @@
       }).catch(function(){ btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); flashHint('Hail history unavailable right now'); syncSheet(); });
   }
 
+  // Leaflet.draw on demand, from agsist.com's own copy (vendor/leaflet-draw-1.0.4).
+  var DRAW_JS='/vendor/leaflet-draw-1.0.4/leaflet.draw.js', DRAW_CSS='/vendor/leaflet-draw-1.0.4/leaflet.draw.css';
+  var _drawWait=null;
+  function drawReady(){ return typeof L!=='undefined' && L.Draw && L.Draw.Polygon; }
+  function ensureDraw(cb){
+    if(drawControl) return cb(true);
+    if(!_drawWait){
+      _drawWait=[];
+      var finish=function(){
+        var ok=!!drawReady();
+        if(ok && !drawControl){
+          drawControl = new L.Draw.Polygon(map, {
+            allowIntersection:false,
+            shapeOptions:{ color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 }
+          });
+          map.on(L.Draw.Event.CREATED, function (e) { commitField(e.layer, 'draw'); });
+        }
+        var w=_drawWait; _drawWait=null; w.forEach(function(f){ f(ok); });
+      };
+      if(drawReady()){ _drawWait.push(cb); return finish(); }
+      try{
+        var ln=document.createElement('link'); ln.rel='stylesheet'; ln.href=DRAW_CSS; document.head.appendChild(ln);
+        var sc=document.createElement('script'); sc.src=DRAW_JS; sc.async=true;
+        sc.onload=finish; sc.onerror=finish;
+        document.head.appendChild(sc);
+      }catch(e){ _drawWait.push(cb); return finish(); }
+    }
+    _drawWait.push(cb);
+  }
+  window.__fsEnsureDraw = ensureDraw;
+
   function wireControls() {
     var pinBtn=document.getElementById('fs-pin'); if(pinBtn) pinBtn.addEventListener('click', armPinDrop);
     document.getElementById('fs-draw').addEventListener('click', function(){
       // Tracing at county scale draws a "field" the size of a county — make them zoom first.
       if(map && map.getZoom() < 11){ flashHint('Zoom in to your field first, then trace it'); return; }
-      drawControl.enable();
+      ensureDraw(function(ok){
+        if(!ok){ flashHint('The tracing tool didn\u2019t load. Tap your field instead and drag the corners to fit.', 7000); return; }
+        drawControl.enable();
+      });
     });
     document.getElementById('fs-clear').addEventListener('click', clearField);
     var so=document.getElementById('fs-startover'); if(so) so.addEventListener('click', function(){ clearField(); flashHint('Tap the map to drop a fresh field'); });
@@ -595,6 +645,8 @@
     drawnLayer.addLayer(activePoly);
     map.fitBounds(activePoly.getBounds(), { padding:[40,40] });
     document.getElementById('fs-clear').disabled = false;
+    var dk=document.querySelector('.fs-dock'); if(dk) dk.classList.add('has-field');
+    dismissInvite();
     runAll(activePoly);
   }
   function renderSavedFields(){
@@ -636,6 +688,17 @@
       box.appendChild(div);
     });
     return true;
+  }
+  // The first screen offers a finished read in one tap: the example field, or, on a device
+  // that has saved fields, the last one saved (kept in this browser only).
+  function wireInviteActs(){
+    var ex=document.getElementById('fs-demo2'); if(ex) ex.addEventListener('click', loadDemoField);
+    var last=document.getElementById('fs-last'); if(!last) return;
+    var f=loadSavedFields()[0];
+    if(!f || !f.pts || f.pts.length<3){ last.hidden=true; return; }
+    last.textContent='Open '+String(f.name||'your field').slice(0,28)+' again';
+    last.hidden=false;
+    last.addEventListener('click', function(){ openSavedField(f.id); ga('field_reopen_invite', {}); });
   }
   function tryAutoLocate(){
     if(window.AGSIST_STATE && window.AGSIST_STATE.lat && window.AGSIST_STATE.lon){
@@ -851,7 +914,7 @@
     if(prev.pDep!=null && cur.pDep!=null){
       var dd=+(cur.pDep-prev.pDep).toFixed(1);
       if(Math.abs(dd)>=0.3){
-        if(dd<0) out.push('&#9650; The field got drier: rain ran <strong>'+Math.abs(dd)+'&Prime; further below normal</strong> since your last look.');
+        if(dd<0) out.push('&#9650; The field got drier: rain ran <strong>'+Math.abs(dd)+'&Prime; further below the 5-yr average</strong> since your last look.');
         else out.push('&#9660; The field caught rain: running <strong>'+dd+'&Prime; wetter</strong> than at your last look.');
       }
     }
@@ -902,8 +965,11 @@
   var BOX_DIMS = { 20:[402.336,201.168], 40:[402.336,402.336], 80:[402.336,804.672], 160:[804.672,804.672] };
   function boxRing(lat, lng, ac){
     var d=BOX_DIMS[ac]||BOX_DIMS[40];
-    var dLat=(d[1]/2)/111320;
-    var dLng=(d[0]/2)/(111320*Math.max(0.2,Math.cos(lat*Math.PI/180)));
+    // meters to degrees with the ellipsoid's own radii at this latitude, so a 40 reads 40.00 ac
+    var sp=Math.sin(lat*Math.PI/180), w=1-0.0066943799901413165*sp*sp;
+    var M=6378137*(1-0.0066943799901413165)/Math.pow(w,1.5), N=6378137/Math.sqrt(w);
+    var dLat=(d[1]/2)/M*180/Math.PI;
+    var dLng=(d[0]/2)/(N*Math.max(0.2,Math.cos(lat*Math.PI/180)))*180/Math.PI;
     return [[lat+dLat,lng-dLng],[lat+dLat,lng+dLng],[lat-dLat,lng+dLng],[lat-dLat,lng-dLng]];
   }
   var ghostPoly=null, ghostBar=null;
@@ -1069,7 +1135,7 @@
     var poly=L.polygon(ring, { color:'#daa520', weight:3, fillColor:'#daa520', fillOpacity:0.15 });
     map.setView([42.3450,-93.3900], 15);
     commitField(poly, 'demo');
-    if(window.innerWidth<=820) setTimeout(jumpToRead, 1400);  // let the scan land first
+    // No jump on a phone: the map shortens once the field is up and the bottom line sits right under it.
     ga('field_demo', {});
   }
 
@@ -1104,18 +1170,27 @@
     while (Array.isArray(ll) && ll.length && Array.isArray(ll[0])) ll = ll[0];
     return ll;
   }
-  function polyAcres(poly){
-    // Spherical excess (same approach as Leaflet.GeometryUtil / geodesy):
-    // sum over edges of (λ2-λ1)·(2+sinφ1+sinφ2), times R²/2.
-    var pts=latlngs(poly), R=6378137, area=0, d2r=Math.PI/180;
-    if(pts.length<3) return 0;
+  function polyAcres(poly){ return acresOfRing(latlngs(poly)); }
+  // FS-ACRES-BEGIN (test/field-scout-to50.test.mjs runs this block on its own)
+  // Area on the WGS84 ellipsoid, not a sphere: each latitude goes to its authalic (equal-area)
+  // latitude, then the equal-area trapezoid sum runs on the authalic sphere. That is exact for
+  // edges along parallels and meridians, and far inside a hundredth of an acre for any field.
+  // (The sphere at the equator's radius used before read 0.07% to 0.16% high: 640.46 ac for
+  // a one-mile square section at 41.5 N.)
+  var WGS_A=6378137, WGS_F=1/298.257223563, WGS_E2=WGS_F*(2-WGS_F), WGS_E=Math.sqrt(WGS_E2);
+  function authQ(sinp){ return (1-WGS_E2)*( sinp/(1-WGS_E2*sinp*sinp) - (1/(2*WGS_E))*Math.log((1-WGS_E*sinp)/(1+WGS_E*sinp)) ); }
+  var WGS_QP=authQ(1), WGS_RQ=WGS_A*Math.sqrt(WGS_QP/2);
+  function acresOfRing(pts){
+    if(!pts || pts.length<3) return 0;
+    var d2r=Math.PI/180, area=0;
     for(var i=0;i<pts.length;i++){
       var p1=pts[i], p2=pts[(i+1)%pts.length];
-      area += (p2.lng-p1.lng)*d2r * (2 + Math.sin(p1.lat*d2r) + Math.sin(p2.lat*d2r));
+      var s1=authQ(Math.sin(p1.lat*d2r))/WGS_QP, s2=authQ(Math.sin(p2.lat*d2r))/WGS_QP;   // sin of the authalic latitude
+      area += (p2.lng-p1.lng)*d2r * (s1+s2);
     }
-    area = Math.abs(area * R*R / 2.0);   // m²
-    return area * 0.000247105;            // → acres
+    return Math.abs(area*WGS_RQ*WGS_RQ/2) / 4046.8564224;   // m2 to acres (international acre)
   }
+  // FS-ACRES-END
   function polyCentroid(poly){
     var pts=latlngs(poly), lat=0, lng=0;
     pts.forEach(function(p){ lat+=p.lat; lng+=p.lng; });
@@ -1144,11 +1219,11 @@
     R.hidden=false;
     R.innerHTML =
       fieldHead(acres, c) +
-      notesSectionHTML() +
       '<div class="fs-section fs-insight-section" id="fs-insight-wrap" hidden>'+
         '<div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">'+ICONS.read+'</span>The Read on This Field</div>'+
         '<div class="fs-section-body" id="fs-insight"></div>'+
-      '</div>';
+      '</div>' +
+      notesSectionHTML();
     var D=document.getElementById('fs-deck');
     if(D){
       D.hidden=false;
@@ -1469,10 +1544,60 @@
         (rr.text?'<p class="fs-cline" style="margin-top:.55rem"><strong>'+esc(rr.text)+'</strong>'+(rr.predicted?', '+rr.nextYear+' is likely '+(rr.predicted===1?'corn':'soybeans')+' on that pattern.':'.')+'</p>':'')+
         cropChips()+
         '<div class="fs-src" style="margin-top:.6rem">USDA Cropland Data Layer · the crop at the field\u2019s center point each year</div>'+
-        '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>';
+        '<div class="fs-caveat">CDL is satellite-classified (~85&ndash;90% accurate per pixel) and sampled at the field\u2019s center point, so a single odd year may be a classification miss rather than a real planting.</div>'+
+        '<div id="fs-rot-spread"></div>';
         setBody('fs-rot', html);
+        rotationSpread(poly, gen, recent);
       })
       .catch(function(){ if(gen!==fieldGen) return; setErr('fs-rot','The USDA crop-history service isn\u2019t responding right now: a temporary government-server hiccup, not your field. Redraw in a few minutes.'); });
+  }
+
+  // ── 2b. One pixel can't see a split field. Read the same CDL years at up to four more
+  // points inside the outline (each a quarter of the way out from the center) and say how
+  // often they agree with each other. The chips above stay the center read.
+  function spreadPoints(ring, c){
+    var lats=ring.map(function(p){ return p.lat; }), lngs=ring.map(function(p){ return p.lng; });
+    var dy=(Math.max.apply(null,lats)-Math.min.apply(null,lats))*0.25, dx=(Math.max.apply(null,lngs)-Math.min.apply(null,lngs))*0.25;
+    var rr=ring.map(function(p){ return [p.lng, p.lat]; });
+    return [[c.lat+dy,c.lng-dx],[c.lat+dy,c.lng+dx],[c.lat-dy,c.lng+dx],[c.lat-dy,c.lng-dx]]
+      .filter(function(q){ return _hmPointInRing(q[0], q[1], rr); });
+  }
+  // years[] oldest first; reads[] = one {year: code} map per point that answered (center first)
+  function spreadSummary(years, reads){
+    var agree=0, split=[];
+    years.forEach(function(y){
+      var n={}, k=0;
+      reads.forEach(function(r){ if(r[y]==null) return; var l=crop(r[y]).l; n[l]=(n[l]||0)+1; k++; });
+      var ls=Object.keys(n); if(!k) return;
+      if(ls.length===1) agree++;
+      else split.push({ year:y, parts:ls.sort(function(a,b){ return n[b]-n[a]; }).map(function(l){ return { l:l, n:n[l] }; }) });
+    });
+    return { points:reads.length, years:agree+split.length, agree:agree, split:split };
+  }
+  window.__fsSpread = { summary:spreadSummary, points:spreadPoints };
+  function rotationSpread(poly, gen, recent){
+    if(!poly || polyAcres(poly) < 8) return;
+    var c=polyCentroid(poly), pts=spreadPoints(latlngs(poly), c);
+    if(pts.length<2) return;
+    var years=recent.map(function(x){ return x.year; });
+    var center={}; recent.forEach(function(x){ center[x.year]=x.code; });
+    Promise.all(pts.map(function(q){
+      return fetchT(FS_WORKER+'/cdl?lat='+q[0].toFixed(5)+'&lon='+q[1].toFixed(5)+'&years=10', 20000)
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){ var m={}, h=d&&!d.error?(d.history&&d.history.length?d.history:d.rotation):null; if(!h||!h.length) return null; h.forEach(function(x){ m[x.year]=x.code; }); return m; })
+        .catch(function(){ return null; });
+    })).then(function(rs){
+      if(gen!==fieldGen) return;
+      var reads=[center].concat(rs.filter(Boolean));
+      var el=document.getElementById('fs-rot-spread'); if(!el || reads.length<3) return;
+      var S=spreadSummary(years, reads);
+      if(!S.years) return;
+      if(FIELD && FIELD.rotation) FIELD.rotation.spread=S;
+      var line='<strong>Checked at '+S.points+' points across the field:</strong> '+(S.agree===S.years?'all agree in every year on record.':'they agree in '+S.agree+' of '+S.years+' years.');
+      if(S.split.length) line+=' '+S.split.slice(-3).map(function(sp){ return sp.year+': '+sp.parts.map(function(p){ return esc(p.l.toLowerCase())+' '+p.n; }).join(', '); }).join('; ')+'.';
+      if(S.split.length) line+=' A split year is a split field, a waterway or edge, or a pixel miss.';
+      el.innerHTML='<p class="fs-cline" style="margin-top:.55rem">'+line+'</p>';
+    });
   }
 
   // ── 3. WEATHER (Open-Meteo) ─────────────────────────────────────────
@@ -1498,7 +1623,7 @@
       var wk=0; if(d.daily&&d.daily.precipitation_sum){ var ps=d.daily.precipitation_sum; for(var pi=0;pi<ps.length-1;pi++){ wk+=(ps[pi]||0); } }  // last entry is today's FORECAST — not observed rain
       window.__fsWx = {
         temp:Math.round(cur.temperature_2m), hum:Math.round(cur.relative_humidity_2m),
-        wind:Math.round(cur.wind_speed_10m), wk:wk.toFixed(2)
+        wind:Math.round(cur.wind_speed_10m), wk:wk.toFixed(2), at:(cur.time||null)
       };
       FIELD.weather = window.__fsWx; recomputeInsight();
       renderWx();
@@ -1522,7 +1647,8 @@
         if(lvl!=null) cat = droughtLabel(lvl);
       }
       var ap = d && d.approx ? d.approx : null;     // the worker fell back to the county's dominant category
-      window.__fsDr={cat:cat, approx:ap}; FIELD.drought={cat:cat, approx:ap}; recomputeInsight(); renderWx();
+      var wk = d ? (d.mapWeek || d.MapDate || d.mapDate || d.ValidStart || d.validStart || null) : null;   // the USDM map week, when the service says
+      window.__fsDr={cat:cat, approx:ap, wk:wk}; FIELD.drought={cat:cat, approx:ap, wk:wk}; recomputeInsight(); renderWx();
     }).catch(function(){ if(gen!==fieldGen) return; window.__fsDr={cat:null}; if(FIELD)FIELD.drought={cat:null}; recomputeInsight(); renderWx(); });
   }
   function droughtLabel(lvl){
@@ -1591,7 +1717,7 @@
   function seasonHtml(s, cumMap, cur, prior){
     var fmtDate=function(iso){ var d=new Date(iso+'T00:00'); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); };
     var depTxt=function(v,unit){ var a=Math.abs(v).toFixed(unit==='in'?1:0);
-      if(Math.abs(v) < (unit==='in'?0.25:15)) return '<span style="color:#9aa">≈ normal</span>';
+      if(Math.abs(v) < (unit==='in'?0.25:15)) return '<span style="color:#9aa">≈ '+s.n+'-yr avg</span>';
       var up=v>0, col=(unit==='in')?(up?'#4aab4c':'#d9534f'):(up?'#4aab4c':'#e0a32e');
       return '<span style="color:'+col+'">'+(up?'+':'−')+a+(unit==='in'?'″':'')+' vs '+s.n+'-yr avg</span>'; };
     var rainBlock='<div class="fs-stat"><div class="fs-stat-v">'+s.pNow.toFixed(1)+'″</div>'+
@@ -1605,11 +1731,11 @@
     else if(hot&&wet) seasonSay='Warm and well-watered, fast development with moisture to back it. About the best combination there is.';
     else if(cool&&wet) seasonSay='A cool, wet season: development is running behind, and low ground may be struggling with the surplus.';
     else if(cool&&dry) seasonSay='Cool and dry: slow development, but the moisture deficit bites less at this pace.';
-    else if(hot) seasonSay='Heat is running ahead of normal on near-normal rain; development is ahead of the calendar.';
-    else if(cool) seasonSay='Heat units are lagging on near-normal rain. Expect development a few days behind a typical year.';
-    else if(wet) seasonSay='Rain is running ahead of normal at a normal heat pace: moisture is banked, not a limiting factor so far.';
-    else if(dry) seasonSay='Rain is running behind normal at a normal heat pace, not acute yet, but the deficit is the number to watch.';
-    else seasonSay='Both rain and heat are tracking close to this spot\u2019s normal, an unremarkable season in the best sense.';
+    else if(hot) seasonSay='Heat is running ahead of the last '+s.n+' years on about average rain; development is ahead of the calendar.';
+    else if(cool) seasonSay='Heat units are lagging the last '+s.n+' years on about average rain. Expect development a few days behind.';
+    else if(wet) seasonSay='Rain is running ahead of the last '+s.n+' years at an average heat pace: moisture is banked, not a limiting factor so far.';
+    else if(dry) seasonSay='Rain is running behind the last '+s.n+' years at an average heat pace, not acute yet, but the deficit is the number to watch.';
+    else seasonSay='Both rain and heat are tracking close to this spot\u2019s last '+s.n+' years, an unremarkable season in the best sense.';
     return '<div class="fs-stats" style="grid-template-columns:1fr 1fr">'+rainBlock+gduBlock+'</div>'+
       '<div class="fs-vigor-say" style="margin:.55rem 0 .2rem">'+seasonSay+'</div>'+
       spark +
@@ -1729,8 +1855,21 @@
         html += '<div class="fs-src" style="margin-top:.6rem">Drought status unavailable.</div>';
       }
     }
+    var srcs=[];
+    if(wx && !wx.err) srcs.push('Open-Meteo, now'+(wx.at?' ('+esc(wxTime(wx.at))+' local)':''));
+    if(dr && dr.cat!=null) srcs.push('US Drought Monitor'+(usdmWeek(dr.wk)?', map of '+esc(usdmWeek(dr.wk)):', this week\u2019s map'));
+    if(srcs.length) html += '<div class="fs-src" style="margin-top:.5rem">'+srcs.join(' &middot; ')+'</div>';
     setBody('fs-wx', html);
   }
+  // Open-Meteo's current.time is local to the field ("2026-10-16T14:15"): print "2:15 PM".
+  function wxTime(t){ var m=/T(\d{2}):(\d{2})/.exec(String(t||'')); if(!m) return ''; var h=+m[1]; return (h%12||12)+':'+m[2]+' '+(h<12?'AM':'PM'); }
+  // USDM dates come as "2026-10-06", "2026-10-06T00:00:00" or "20261006": print "Oct 6".
+  function usdmWeek(v){
+    var s=String(v||''), m=/^(\d{4})-?(\d{2})-?(\d{2})/.exec(s); if(!m) return '';
+    var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1];
+    return M ? M+' '+(+m[3]) : '';
+  }
+  window.__fsFmt = { wxTime:wxTime, usdmWeek:usdmWeek };
   function stat(v,l){ return '<div class="fs-stat"><div class="fs-stat-v">'+v+'</div><div class="fs-stat-l">'+l+'</div></div>'; }
 
   // ── Hail history → FIELD + Risk Profile section ─────────────────────
@@ -1747,6 +1886,54 @@
       .then(function(r){ if(!r.ok) throw new Error('ev '+y); return r.json(); })
       .then(function(d){ _hailEvCache[y]=d; return d; });
   }
+  // Closed years come from 2 x 2 degree cells (data/field-scout/hail/, built from the same
+  // events files by scripts/build_field_scout_data.py): the 1 to 4 cells within 40 miles
+  // instead of every report in the country. The current year, and any year the cells were
+  // not built for, still reads the national file. A cell that fails to load sends its years
+  // back to the national files, so a failed read is never counted as "no hail".
+  var _hailIdx=null;
+  function _hailIndex(){
+    if(!_hailIdx) _hailIdx=fetch('/data/field-scout/hail/index.json')
+      .then(function(r){ if(!r.ok) throw new Error('idx'); return r.json(); })
+      .catch(function(){ _hailIdx=null; return null; });
+    return _hailIdx;
+  }
+  var _hailCellCache={};
+  function _hailCell(k){
+    if(!_hailCellCache[k]) _hailCellCache[k]=fetch('/data/field-scout/hail/'+k+'.json')
+      .then(function(r){ if(!r.ok) throw new Error('cell '+k); return r.json(); })
+      .catch(function(e){ delete _hailCellCache[k]; throw e; });
+    return _hailCellCache[k];
+  }
+  function _hailCellsNear(lat, lng, miles, size){
+    var dLat=miles/69.0, dLng=miles/(69.0*Math.max(0.2, Math.cos(lat*Math.PI/180)));
+    var out=[];
+    for(var a=Math.floor((lat-dLat)/size)*size; a<=Math.floor((lat+dLat)/size)*size; a+=size)
+      for(var b=Math.floor((lng-dLng)/size)*size; b<=Math.floor((lng+dLng)/size)*size; b+=size)
+        out.push(a+'_'+b);
+    return out;
+  }
+  function _hailFilesNear(c, yrs){
+    function national(list){ return Promise.all(list.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); })); }
+    return _hailIndex().then(function(ix){
+      var cov = (ix && ix.years && ix.cell) ? yrs.filter(function(y){ return ix.years.indexOf(y)>=0; }) : [];
+      if(!cov.length) return national(yrs);
+      var have={}; (ix.cells||[]).forEach(function(k){ have[k]=1; });
+      var keys=_hailCellsNear(c.lat, c.lng, 41, ix.cell).filter(function(k){ return have[k]; });
+      var cellsP=Promise.all(keys.map(_hailCell)).then(function(cells){
+        var by={}; cov.forEach(function(y){ by[y]={ year:y, ev:[] }; });
+        cells.forEach(function(cl){ (cl.ev||[]).forEach(function(e){ if(by[e[4]]) by[e[4]].ev.push(e); }); });
+        return by;
+      }, function(){ return null; });
+      var rest=yrs.filter(function(y){ return cov.indexOf(y)<0; });
+      return Promise.all([cellsP, national(rest)]).then(function(r){
+        if(!r[0]) return national(yrs);
+        var restBy={}; rest.forEach(function(y,i){ restBy[y]=r[1][i]; });
+        return yrs.map(function(y){ return r[0][y] || restBy[y] || null; });
+      });
+    });
+  }
+  window.__fsHailInternals = { cellsNear:_hailCellsNear, filesNear:_hailFilesNear };
   function _hvsMi(a,b,c,d){ var R=3958.8,p=Math.PI/180,x=(c-a)*p,y=(d-b)*p,
     s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*p)*Math.cos(c*p)*Math.sin(y/2)*Math.sin(y/2);
     return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s)); }
@@ -1920,7 +2107,7 @@
     fetchMeshIndex();
     var yNow = new Date().getFullYear();
     var yrs = [yNow-4, yNow-3, yNow-2, yNow-1, yNow];
-    Promise.all(yrs.map(function(y){ return _hailYearFile(y).catch(function(){ return null; }); }))
+    _hailFilesNear(c, yrs)
       .then(function(files){
         if(gen !== fieldGen) return;
         var got = files.filter(Boolean);
@@ -2064,6 +2251,8 @@
         snap.bids.forEach(function(r){
           var k = fsKey(r.facility, r.city, r.state);
           if(!by[k]){ by[k]={ company:r.facility, location:r.branch||'', city:r.town||r.city, state:r.state, distance:r.distance, _net:true, bids:[] }; order.push(k); }
+          var pa=r.pricedAt||r.checkedAt||null;   // when this board's prices last changed (else last read)
+          if(pa && (!by[k].posted || pa>by[k].posted)) by[k].posted=pa;
           var d = fsPeriodDates(r.period);
           // The board's own label can be a code ("Yc", "Sww"); the crop key is what the network knows.
           var nm = r.commodity||'';
@@ -2122,7 +2311,7 @@
       .then(function(g){
         if(gen !== fieldGen) return;
         var zip = g && g.address ? (g.address.postcode||'').slice(0,5) : '';
-        if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it, common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
+        if(!zip){ if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0,noZip:1}; recomputeInsight(); } setBody('fs-bids','<div class="fs-src">This field sits far enough from a mapped ZIP that we can\u2019t pull nearby bids for it, common for remote parcels. Try the cash-bids page directly for your area.</div>'); return; }
         return Promise.all([fsFromNetwork(zip), fsFromLicensed(zip)])
           .then(function(x){
             if(gen!==fieldGen) return;
@@ -2130,7 +2319,7 @@
             renderBids(fsMerge(x[0].rows, x[1].rows), zip, gen);
           });
       })
-      .catch(function(){ if(gen!==fieldGen) return; if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0}; recomputeInsight(); } setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
+      .catch(function(){ if(gen!==fieldGen) return; if(FIELD){ FIELD.bids={corn:null,bean:null,zip:'',count:0,err:1}; recomputeInsight(); } setErr('fs-bids','Couldn\u2019t reach the cash-bid feed just now.'); });
   }
   window.__fsBidsInternals = { fsKey:fsKey, fsPeriodDates:fsPeriodDates, fsMerge:fsMerge, loadBids:loadBids };
   function bidDate(v){ if(!v) return null; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v)); return m?new Date(+m[1],+m[2]-1,+m[3]):null; }
@@ -2141,6 +2330,16 @@
     if(d) return MON3[d.getMonth()]+' \u2019'+String(d.getFullYear()).slice(2);
     var m=/^([A-Za-z]{3})(\d{2})$/.exec(b.deliveryMonth||''); return m?m[1]+' \u2019'+m[2]:'';
   }
+  // "Oct 15", or "today", in Central time, the way the cash-bids pages print it.
+  function postedDay(iso){
+    var d=new Date(iso); if(!iso || isNaN(d)) return '';
+    try{
+      var o={month:'short', day:'numeric', timeZone:'America/Chicago'};
+      var day=d.toLocaleDateString('en-US', o), today=new Date().toLocaleDateString('en-US', o);
+      return day===today ? 'today' : day;
+    }catch(e){ return ''; }
+  }
+  window.__fsPostedDay = postedDay;
   function renderBids(d, zip, gen){
     if(gen!==fieldGen) return;
     // Mirrors cash-bids.html flatten() exactly: handles both the nested shape
@@ -2157,7 +2356,8 @@
             delivery:b.delivery||b.deliveryStart||b.delivery_start||b.deliveryPeriod||b.delivery_end_formatted||'',
             dEnd:bidDate(b.delivery_end||b.deliveryEnd), dStart:bidDate(b.delivery_start||b.deliveryStart), mon:bidMon(b),
             cur:String(b.currency||item.currency||'USD').toUpperCase(),
-            cash:parseFloat(b.cashprice||b.cashPrice), basis:(b.basis!=null&&b.basis!=='')?parseFloat(b.basis):null });
+            cash:parseFloat(b.cashprice||b.cashPrice), basis:(b.basis!=null&&b.basis!=='')?parseFloat(b.basis):null,
+            posted:item.posted||null });
         });
       } else if(item.commodity||item.commodityName||item.cashprice!==undefined||item.cashPrice!==undefined){
         flat.push({ elev:item.company||item.name||item.facility||item.locationName||'Elevator',
@@ -2227,7 +2427,8 @@
       var bTxt = bC!=null ? (Math.abs(bC%1)>=0.05 ? Math.abs(bC).toFixed(1) : String(Math.round(Math.abs(bC)))) : '';
       var basis = bC!=null ? '<span class="fs-bid-basis" style="color:'+(bC>=0?'#4aab4c':'#d9534f')+'">'+(bC>=0?'+':'\u2212')+bTxt+'\u00a2</span>' : '';
       var dlv = x.mon ? ' · '+esc(x.mon)+' delivery' : (x.delivery ? ' · '+esc(String(x.delivery).slice(0,18)) : '');
-      return '<div class="fs-bid-row"><div class="fs-bid-el">'+esc(x.commodity)+' <small>'+esc(x.elev)+(x.dist?' · '+Math.round(x.dist)+' mi':'')+dlv+'</small></div>'+
+      var pd=postedDay(x.posted);
+      return '<div class="fs-bid-row"><div class="fs-bid-el">'+esc(x.commodity)+' <small>'+esc(x.elev)+(x.dist?' · '+Math.round(x.dist)+' mi':'')+dlv+(pd?' · posted '+esc(pd):'')+'</small></div>'+
         '<div style="text-align:right"><div class="fs-bid-px">$'+x.cash.toFixed(2)+'</div>'+basis+'</div></div>';
     }).join('');
     setBody('fs-bids', html +
@@ -2325,7 +2526,8 @@
       '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
       '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="3" fill="'+color+'"/>'+endTxt+'</svg>';
     var ax='<span class="fs-spark-ax" style="left:0;transform:none">'+ixDate(vals[0].date)+'</span>';
-    ticks.forEach(function(tk){ if(tk.frac>0.1 && tk.frac<0.9) ax+='<span class="fs-spark-ax" style="left:'+(tk.frac*100).toFixed(1)+'%">'+tk.label+'</span>'; });
+    // month labels keep clear of the first and last date labels (they ran together at 390 px: "May 10Jun")
+    ticks.forEach(function(tk){ if(tk.frac>0.18 && tk.frac<0.82) ax+='<span class="fs-spark-ax" style="left:'+(tk.frac*100).toFixed(1)+'%">'+tk.label+'</span>'; });
     ax+='<span class="fs-spark-ax" style="left:auto;right:0;transform:none">'+ixDate(vals[vals.length-1].date)+'</span>';
     return svg+'<div class="fs-spark-axis">'+ax+'</div>';
   }
@@ -2480,6 +2682,8 @@
     var bidV, bidSub;
     if(!b){ bidV=null; bidSub=null; }                                    // still loading -> ...
     else if(bid && bid.cash!=null){ bidV='$'+(+bid.cash).toFixed(2); bidSub = (bid===b.bean?'cash beans':'cash corn')+(bid.mon?' \u00b7 '+bid.mon:''); }
+    else if(b.err){ bidV='-'; bidSub='feed didn\u2019t answer'; }     // a failed read is not "no elevator"
+    else if(b.noZip){ bidV='-'; bidSub='no ZIP here'; }
     else { bidV='-'; bidSub='none nearby'; }                       // loaded, no elevator
     renderPeek({acres:acres, nccpi:nccpiV, vig:vigSub, dr:(d?(d.cat==null?'no answer':(d.cat==='None'?'None':d.cat)):null), bid:bidV!=='-'?bidV:null, bidSub:bidSub});
     el.innerHTML =
@@ -2855,12 +3059,11 @@
     });
   }
   function loadHoodCard(gen, abbr, cty, stFull){
-    Promise.all([
-      getJSON('/data/tenure/tenure.json').catch(function(){ return null; }),
-      getJSON('/data/afida/county.json').catch(function(){ return null; })
-    ]).then(function(res){
+    // One state's slice of the national tenure and AFIDA files (scripts/build_field_scout_data.py),
+    // records unchanged: about 30 KB instead of 1.4 MB.
+    getJSON('/data/field-scout/county/'+encodeURIComponent(abbr)+'.json').catch(function(){ return null; }).then(function(sl){
       if(gen!==fieldGen) return;
-      var t=res[0], a=res[1], html='', got=false;
+      var t=sl&&sl.tenure, a=sl&&sl.afida, html='', got=false;
       var fips=FIELD.county&&FIELD.county.fips;
       function findByName(obj){ var hit=null; if(!obj) return null;
         Object.keys(obj).some(function(k){ var v=obj[k]; if(v&&normCty(v.n)===normCty(cty)&&(v.st===abbr||v.st===stFull)){ hit={k:k,v:v}; return true; } return false; });
@@ -2963,9 +3166,9 @@
     function pacePhrase(){
       if(!se||se.gDep==null) return null;
       var dd=Math.abs(Math.round(se.gDep/GDU_PER_DAY));
-      if(se.gDep>=100) return 'running about '+dd+' day'+(dd===1?'':'s')+' ahead of a normal year (at a typical midsummer pace)';
-      if(se.gDep<=-100) return 'running about '+dd+' day'+(dd===1?'':'s')+' behind a normal year (at a typical midsummer pace)';
-      return 'tracking close to the normal pace';
+      if(se.gDep>=100) return 'running about '+dd+' day'+(dd===1?'':'s')+' ahead of the '+se.n+'-year average (at a typical midsummer pace)';
+      if(se.gDep<=-100) return 'running about '+dd+' day'+(dd===1?'':'s')+' behind the '+se.n+'-year average (at a typical midsummer pace)';
+      return 'tracking close to the '+se.n+'-year average pace';
     }
 
     // Depth #3 (dollars + a Monday action): translate a corn-on-corn yield drag into a
@@ -3073,7 +3276,7 @@
           detail:'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> its '+se.n+'-year average.',
           watch:'Watch the forecast; a return to normal rainfall still recovers this.' });
       } else if(wetEnough && cool){
-        lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above normal and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
+        lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above the '+se.n+'-year average and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
       } else if(wetEnough){
         lines.push('Rain is running '+se.pDep.toFixed(1)+'″ above its '+se.n+'-year average so far this season.');
       }
@@ -3168,7 +3371,7 @@
       if(ixLast.ndwi!=null && ixLast.ndwi>=0.2 && ixPatchy && se && se.pDep!=null && se.pDep>=2){
         push({ sev:2, act:true, topic:'wet', tag:'saturated ground in the weak zones',
           title:'the wet spots are likely drowning the weak zones; walk the low ground',
-          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above normal on rain, and vigor is uneven across the field: the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
+          detail:'The surface-water read (NDWI '+(+ixLast.ndwi).toFixed(2)+') is running <strong>very wet</strong>, the season is '+se.pDep.toFixed(1)+'\u2033 above the '+se.n+'-year average on rain, and vigor is uneven across the field: the classic drowned-low-spot signature.'+(s&&s.poorDrainPct!=null&&s.poorDrainPct>=25?' The soil survey agrees: <strong>'+s.poorDrainPct+'%</strong> of this ground maps as poorly drained.':'')+' <span class="fs-src">source: Sentinel-2 NDWI + Open-Meteo season rainfall</span>',
           watch:'Check the low corners; <a href="#" class="fs-god-link" data-god="ndvi">the Crop-vigor layer</a> shows which zones are lagging.' });
       }
     }
