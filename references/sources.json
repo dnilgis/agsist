@@ -1332,6 +1332,22 @@
     {"id": "usc-7-9032", "kind": "html",
      "url": "https://www.law.cornell.edu/uscode/text/7/9032",
      "title": "7 U.S.C. 9032: term of marketing assistance loans",
-     "why": "/commodity-loan: nine month loan term"}
+     "why": "/commodity-loan: nine month loan term"},
+    {"id": "uw-soy-pivot-mid-may", "kind": "html",
+     "url": "https://cropsandsoils.extension.wisc.edu/articles/agronomic-pivot-points-for-mid-may-planted-soybeans/",
+     "title": "UW-Madison (Conley): Agronomic pivot points for mid-May planted soybeans",
+     "why": "/planting-date: soybean yield loss per day of planting delay (0.4, range 0.2-0.5 bu/a/day)"},
+    {"id": "umn-corn-planting-date", "kind": "html",
+     "url": "https://extension.umn.edu/corn-planting/planting-date-considerations-corn",
+     "title": "UMN Extension: Planting date considerations for corn",
+     "why": "/planting-date: Jun 9 planting 69-79% of max yield"},
+    {"id": "epa-dicamba", "kind": "html",
+     "url": "https://www.epa.gov/pesticides/dicamba",
+     "title": "EPA: dicamba registration (2026 OTT labels)",
+     "why": "/spray: 2026 OTT dicamba label cutoff date; the page blocks after June 30 until the label date is read"},
+    {"id": "mrcc-inversion-networks", "kind": "html",
+     "url": "https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion",
+     "title": "MRCC: Monitoring temperature inversions (state networks)",
+     "why": "/spray: which states link a measured inversion network"}
 ]
 }
