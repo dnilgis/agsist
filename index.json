@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T15:56:11Z",
+ "run_utc": "2026-10-16T15:56:56Z",
  "sources": [
   {
    "bytes": null,
@@ -2266,6 +2266,31 @@
    ],
    "status": "new",
    "text_chars": 9871
+  },
+  {
+   "bytes": 41382,
+   "sha256": "d9e59c54fd9cd38c893ceecec3af66db0653348230008adc2044974d65557f71",
+   "fetched_utc": "2026-10-16T15:56:56Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-planting-date-5.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-planting-date-5",
+   "url": "https://www.iowafarmbureau.com/Article/Soil-temperature-tool-offers-planting-window-data",
+   "title": "Benchmark planting-date: Iowa Farm Bureau soil temperature tool article",
+   "why": "/planting-date competitor benchmark Oct 16, 2026 (established)",
+   "kind": "html",
+   "checked_utc": "2026-10-16T15:56:55Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 610
   },
   {
    "bytes": null,
