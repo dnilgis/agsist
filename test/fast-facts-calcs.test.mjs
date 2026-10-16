@@ -53,6 +53,10 @@ function serve() {
 }
 async function open(browser, port, path, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1280, height: 900 } });
+  // Since 2026-10-16 the N box asks for a state before it fills a corn price
+  // (state basis by default). These tests are about the N price, so the reader
+  // has already picked "Futures only" (test/fast-facts-nrate.test.mjs covers the ask).
+  await ctx.addInitScript(() => localStorage.setItem("agsist-ff-state", "fut"));
   const pg = await ctx.newPage();
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
