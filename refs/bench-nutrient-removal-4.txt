@@ -1,0 +1,169 @@
+# Benchmark nutrient-removal: UNL Harvesting Crop Residue: What's it Worth?
+# https://cropwatch.unl.edu/harvesting-crop-residue-whats-it-worth/
+# fetched 2026-10-16T15:42:00Z, sha256 205f76a8d6e0b623b0d61dd923c29a8ba555861adcda434c64b5d4a47c92fddd
+
+Harvesting Crop Residue: What's it Worth? | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Harvesting Crop Residue: What's it Worth?
+
+January 9, 2009
+
+The plant material left in the field after harvest is a valuable resource. With an increasing demand for harvested crop residue, many producers may wonder whether they should bale and sell their crop residue or leave it in the field. Residue has value, both as soil cover, and as a nutrient source and producers should consider several factors when assessing whether to harvest it.
+
+Factors to Consider
+
+Cost of harvesting the residue. Based on a custom baling price of $11.50 per big round bale, residue harvesting costs can range from $60 to $70 per acre, depending on how many bales per acre. If the average bale weighs 1200 lbs, the cost is $20/ton.
+
+Value of removed nutrients. A ton of corn residue contains about 17 lbs of nitrogen (N), 4 lbs of phosphate (P2O5), 50 lbs of potash (K2O), and 3 lbs of sulfur (S). Depending on fertilizer nutrient prices and the need for that nutrient based on soil test levels, the value of the nutrients removed could be $20/ton (see Table 1). At this value, removing three to four tons of residue per acre (five to six round bales) would remove $60-$80 of nutrients.
+
+Table 1. Fertilizer value of nutrients in one ton of corn residue.*
+
+Element
+
+Concentration in residue (%)
+
+Pounds per ton
+
+Fertilizer nutrient price ($/lb)**
+
+Value of nutrients in residue ($/ton)
+
+a
+
+b
+
+c = (b/100) x 2000
+
+d
+
+E = c x d
+
+N
+
+0.800
+
+16.0
+
+$0.60
+
+$9.60
+
+P2O5
+
+0.20
+
+4.0
+
+$0.70
+
+$2.80
+
+K2O
+
+1.45
+
+29
+
+$0.25
+
+$7.25
+
+S
+
+0.17
+
+3.4
+
+$0.25
+
+$0.85
+
+Total Value
+
+$20.50
+
+* Substitute current prices in column d and multiply by column c to get value of each nutrient per ton of corn residue.
+
+Erosion control. Maintaining crop residue on the soil surface is important to control runoff and water and wind erosion of soil. The amount of residue required varies, depending on soil type, slope, crop rotation, tillage system and existing conservation practices. Leaving one ton of residue per acre is generally sufficient to keep water erosion to less than five tons per acre per year if the slope is less than 2% and no-till is practiced. Under tilled conditions with a slope of more than 5%, more than five tons of residue per acre may be required. Leaving two tons per acare may be sufficient to adequately control wind erosion in no-till wheat-based rotations while more than four tons per acre will be required on tilled row crop rotations.
+
+Producers with highly erodible land (HEL) fields should contact their local Natural Resources Conservation Service office to review their Conservation Plan and discuss the potential impact of harvesting crop residue before they remove any crop residue from the field.
+
+Soil Organic Matter/Soil Health. Removing crop residues will affect soil organic matter which contributes to nutrient availability, soil water holding capacity, and the formation and stability of soil aggregates. This eventually affects infiltration, aeration and drainage. Soil organic matter is also important for soil microbial life. Excessive removal of residues will ultimately result in soil deterioration and declining yields. While the nutrients removed can be replaced, the functions of soil organic matter are not so easily mitigated. In conservation and no-till systems two to three tons of residue per acre should remain in the field; with more intensive grazing, greater amounts should be left.
+
+Impact on Available Water and Crop Water Use Efficiency. Leaving crop residues on the soil surface reduces the effect of raindrop impact and runoff and improves water infiltration. Residue cover also reduces evaporation, leaving more water available for plant uptake. Crop residues also trap snow, keeping it evenly distributed across the field and resulting in more uniform soil moisture conditions and soil temperatures the next spring.
+
+In 2008 former UNL Extension Irrigation Specialist Norman Klocke reported on Kansas research showing that leaving the residue in place resulted in a savings of 3.5 inches of soil water. In a dryland situation, each additional inch of available water could translate into 12 bushels of corn per acre for a total of about 40 additional bushels of corn per acre. Alternatively, saving that 3.5 inches of water could significantly reduce irrigation costs. With irrigation costs averaging from $7 to $10 per acre-inch, the resulting savings would be $25 to $35 per acre.
+
+Manure Application and Cover Crops. Nutrients and organic material removed in crop residue harvest can be replaced with manure application. It requires about two tons of feedlot manure to replace the organic material removed in one ton of crop residue. In addition, manure won't offer the same benefits as crop residue related to reduced evaporation and snow capture.
+
+A cover crop will mitigate some of the effects of crop residue removal but will not replace removed nutrients except possibly nitrogen through nitrogen fixation or reduced leaching of nitrate-N. Cover crops use water and will often result in reduced yield of dryland crops or increased irrigation.
+
+Estimating the amount of crop residue to harvest. If your average yield for continuous corn yield is 200 bu/acre, approximately 5 ton/acre of crop residue are produced (1 ton / 40 bu X 200 bu). If more crop residue is needed for water erosion control, for example 2.5 ton/acre/year, compared with wind erosion control or other constraints, than this 2.5 ton is subtracted from the 5 ton produced. If the harvest is once every two years, multiply the difference by 2. Therefore, the difference (5 - 2.5 = 2.5) multiplied by 2, or 5 ton/acre can be harvested once every two years.
+
+Charles Wortmann
+UNL Extension Soils Specialist
+
+Worksheet 1. Estimate the cost of crop residue harvest ($/ton). Example is of corn residue harvest in a rainfed situation.
+
+Costs
+
+Example of costs, $/ton
+
+Actual Field
+
+Nutrients removed/ton
+
+20.00
+
+Lime equivalent value
+
+0.60
+
+Yield loss
+
+5 bu @ $5.00 = $25.00
+
+Soil loss from wind and water erosion
+
+6.00
+
+Increased irrigation*
+
+—
+
+Raking, baling, transporting
+
+24.00
+
+Total
+
+$75.60/ton
+
+*Increased irrigation to compensate for increased water deficit due to more evaporation and less trapping of snow.
+
+-
+
+-
+
+-
+
+Subscribe to CropWatch
+
+Online Master of Science in Agronomy
+
+With a focus on industry applications and research, the online program is designed with maximum flexibility for today's working professionals.
+
+Learn More
+
+Explore our full collection of CropWatch articles.
+Explore Articles

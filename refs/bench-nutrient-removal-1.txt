@@ -1,0 +1,94 @@
+# Benchmark nutrient-removal: Iowa State nutrient removal when harvesting corn stover
+# https://crops.extension.iastate.edu/encyclopedia/nutrient-removal-when-harvesting-corn-stover
+# fetched 2026-10-16T15:41:54Z, sha256 462dc0e29ea1cc431b999d062078369249e629b67e1525fdc16c10f0f8123b55
+
+Nutrient removal when harvesting corn stover | Integrated Crop Management
+
+-
+
+-
+
+-
+
+Nutrient removal when harvesting corn stover
+
+Increasing demand to use corn plant biomass for producing energy and various products has spurred interest in harvesting corn stover and specific plant components in addition to grain. Harvesting more biomass means increased carbon (C) and other nutrient removal from fields. What is the nutrient removal when different corn plant components are harvested?
+
+Corn Plant Nutrient Content
+
+Most producers in Iowa are familiar with harvesting corn for grain, but less familiar with other plant biomass removal. Those harvesting corn silage are aware of the increase in phosphorus (P) and especially potassium (K) removal, and fertilization guidelines consider this increase. For example, with corn silage based on a bushel grain equivalent, the pounds of P as P2O5 goes from 0.32 to 0.44 and the pounds of K as K2O goes from 0.22 to 1.10, respectively, for corn grain and corn silage (15% grain moisture content, ISU Extension publication PM 1688).
+
+For corn stover the pounds per ton are 4.8 lb P2O5 and 18.0 lb K2O (15% stover moisture content, publication PM 1688). That data indicate there is considerable K in the non-grain part of the corn plant. Calculating the P and K removal in harvested stover is somewhat complicated as nutrients can be leached (especially K) from leaves and corn stalks with rainfall after grain harvest. The effect of rainfall on K is much more important than for P because all plant K is in a soluble inorganic form (K+) while most P is in organic forms of low solubility. Therefore, the concentration of nutrients at plant maturity will typically be higher than found for baled stover because it often rains after grain harvest. Also, the frequency and amount of rainfall will affect the concentration remaining. Costs for replacing removed nutrients will vary depending upon prevailing prices and stover removal amounts.
+
+Corn biomass also contains other plant nutrients. Examples for nitrogen (N), P, K, calcium (Ca), magnesium (Mg), and sulfur (S) are shown in Table 1. There is variation in concentration due to differing data sources, hybrids, fertilization levels, etc. While there may typically be adequate supply of nutrients like K, Ca, and Mg from Iowa soils, stover harvest can lead to removal of large amounts of “basic cations” (K+, Ca+2, and Mg+2) and result in accelerated decrease in soil pH. Of course fertilization, liming, or manuring soils aids in replacement of these nutrients.
+
+Dry Matter and Nutrient Composition in Corn Plant Components
+
+Silage harvest results in almost complete removal of aboveground plant biomass. Baling corn stover typically does not remove as much plant biomass and amounts removed vary greatly across fields, years, and desired removal level. Also, there may be interest in specific plant component removal, such as targeting corn cobs. Table 1 lists the various corn plant components, the associated dry matter, and the nutrient composition from N rate trials at 14 site-years in Iowa. While not measured in those trials, cob composition for P would be approximately 1.1 lb P2O5/ton cobs and for K 14 lb K2O/ton cobs (both dry matter based). The corn grain harvest index averaged 51% (percent of the total aboveground biomass as grain on a dry matter basis at maturity). The grain harvest index can be used to estimate non-grain biomass from grain yield. For example, at a grain yield of 200 bu/acre (at 15% moisture standard, the per bu grain dry matter is 47.6 lb) the grain dry matter is 9,520 lb/acre and the non-grain (vegetation plus cob) dry matter is 9,150 lb/acre.
+
+Summary
+
+Harvesting corn plant components in addition to grain does result in greater removal of plant nutrients. Effects of increased P and K removal on nutrient application needs are immediate and should to be accounted for in fertilization plans. Effects on needs of other nutrients such as N and S, liming requirements to maintain desirable soil pH levels, soil organic C, and several physical, chemical, and biological soil properties are less apparent in the short-term but have consequence in the long term. Therefore, consideration of the impact on nutrient cycling, nutrient removal, and soil resources should be a part of the decision process regarding harvesting corn biomass. Additional information on nutrient management related to stover harvest can be found in publication PM 3052C, available from the ISU Extension and Outreach Extension Store.
+
+Table 1. Corn nutrient composition at plant maturity by plant part.
+
+Nutrient Grain Vegetation Cob
+
+- - - - - - lb/ton (DM) - - - - - -
+
+C 795 840 787
+
+N 24 12 10
+
+P (P2O5) 12 3 --
+
+K (K2O) 8 22 --
+
+Ca 2 9 --
+
+Mg 2 6 --
+
+S 2 1 --
+
+Zn 0.030 0.031 --
+
+Mn 0.006 0.069 --
+
+Cu 0.004 0.015 --
+
+B 0.009 0.015 --
+
+Fe 0.047 0.281 --
+
+From 14 site years in 2006-2007.
+
+DM, dry matter. J.E. Sawyer and D.W. Barker.
+
+This article originally appeared on pages 251-253 of the IC-498(22) -- August 6, 2007 issue.
+
+Authored by:
+
+John Sawyer
+
+- Retired Nitrogen Soil Fertility Specialist and Professor
+
+Dr. John Sawyer is a former professor of agronomy and a former extension specialist in soil fertility and nutrient management at Iowa State University. He earned a Ph.D. in Agronomy from University of Illinois. His research includes fertilizer and limestone needs of agronomic crops, manure nutrient utilization, site-specific systems, and impact of soil management and nutrient application on water quality. Dr. Sawyer is an ARCPACS Certified Professional Agronomist, ARCPACS Certified Professional Soil Scientist, and Certified Crop Adviser.
+
+Crops:
+
+-
+Corn
+
+-
+Forage and Biomass
+
+Topics:
+
+-
+Soil Fertility
+
+Tags:
+
+- harvesting corn stover
+
+- nutrient removal

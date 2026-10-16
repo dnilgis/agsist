@@ -1,0 +1,472 @@
+# Benchmark nutrient-removal: University of Kentucky Corn & Soybean News stover bale value
+# https://www.uky.edu/Ag/CornSoy/cornsoy7_8.htm
+# fetched 2026-10-16T15:42:05Z, sha256 3d83feff9d3d274f2a96ea5110d2c3eeba9f2bb32f3f76a75c8c49576a69cad5
+
+Corn and Soybean Newsletter, October 2007
+
+Corn & Soybean News
+
+October, 2007, Volume 7, Issue 8
+
+printer-friendly version
+
+Grain Crops Extension Home
+
+Corn and Soybean News Home
+
+Cooperating
+Departments: Agricultural Economics, Biosystems and Agricultural Engineering,
+Entomology, Plant and Soil Sciences, Plant Pathology
+
+Editor:
+Chad
+Lee
+
+In this
+Issue:
+
+1.
+
+Nutrient
+Removal of Corn Stover & Soybean Hay
+
+2.
+
+Insect
+Control in Stored Grain
+
+3.
+
+Low Soil
+pH Values in Dry Soils
+
+4.
+
+Grain
+Crop Management: Early Bird Series
+
+1.
+
+Nutrient Removal of Corn Stover & Soybean Hay
+
+Lloyd Murdock and Greg
+Schwab, Plant and Soil Sciences
+
+The dry weather has
+made hay supplies short, prompting many farmers to look to corn stover and
+whole soybeans as forage sources. Grain producers want to know how much
+nutrient removal is occurring and the cost of the removal.
+
+Corn
+Stover
+
+A yield of 150 to 175
+bu/ac results in about 8,000 lbs/acre of corn stover. The total nutrients in this 8,000 pounds is
+N = 55, P2O5 = 27 and K2O = 115 pounds per
+acre. If one calculates that a large
+round bale of corn stover is about 1,200 lbs then the nutrient removal will
+be about N = 8, P2O5 = 4 and K2O = 17
+lbs/bale. Calculating the cost of
+nutrients per bale using nutrient prices of N = $0.40/lb, P2O5
+= $0.30/lb and K2O = $0.25/lb results in 2 different
+figures. Most people use only P2O5
+and K2O costs because the nitrogen in the stover would
+likely be lost via denitrification, but P and K would normally be recycled as
+the residue decomposes resulting in a nutrient removal cost of about $5.50
+per bale. If nitrogen is also
+calculated into the costs, it becomes about $8.50 per bale.
+
+Soybean
+Hay
+
+Soybeans baled for hay
+removes all parts of the plant and the amount of nutrients removed in the hay
+depends on the stage of growth and the amount of vegetative growth. In the calculations below, two growth
+stages have been assumed for nutrient removal purposes. The R3 (beginning pod) and the R5
+(beginning seed) growth stages because they seem to approximate the growth
+stage and amount of pod fill in the severe drought areas. The costs of the nutrients removed were
+calculated using P2O5 = $0.30/lb and K2O =
+$0.25/lb.
+
+Table 1. Nutrient removal and value of nutrients removed from soybean. Values
+presented in this table assume average soybean yields.
+
+Soybean
+
+Growth Stage
+
+Nutrients Removed (lb/a)
+
+Value of Nutrients
+
+($/A)
+
+P2O5
+
+K2O
+
+P2O5
+
+K2O
+
+Total
+
+R3 (beginning pod)
+
+15
+
+25
+
+4.50
+
+6.25
+
+11.00
+
+R5 (beginning seed)
+
+25
+
+55
+
+7.50
+
+13.75
+
+21.25
+
+return to top
+
+· Corn stover and soybean
+hay will remove extra P and K.
+
+· Know these costs when
+marketing corn stover or soybean hay.
+
+2.
+
+Insect Control in Corn Storage
+
+Doug Johnson,
+Entomology
+
+There continue to be
+questions concerning insect control in stored corn storage. At this time of year it is too late to
+employ many of the important strategies. But let’s have a quick review.
+
+First and foremost:
+“store clean dry grain in clean dry bins”.
+This will solve the vast majority of problems. Below find a checklist of good storage
+techniques.
+
+UK-IPM
+Checklist for Controlling Insects in Stored Corn
+
+Doug Johnson,
+Extension Entomologist and Sam McNeill, Extension Agricultural Engineer, University
+of Kentucky
+
+Before Harvest /
+Pre-Binning
+
+-
+
+Clean all equipment used to handle
+grain (Examples: combines, carts, trucks, receiving pits/hoppers)
+thoroughly to remove old grain, trash, and debris that might contaminate
+the new crop.
+
+-
+
+Use pressurized air/water.
+
+-
+
+Remove all old grain from inside
+storage bins. Use a shovel, broom and vacuum. Every kernel counts!
+
+-
+
+Check for holes and cracks in bin
+roofs and walls. Seal them to prevent leaks and entry of insects and
+rodents. (Look closely around ladders, roof vents and other openings).
+
+-
+
+Treat the interior floor and bin
+walls with an approved insecticide.
+
+-
+
+Remove spilled grain around
+pits/hoppers, and storage bins.
+
+-
+
+Mow, spray or remove
+weeds/grass/vegetation around storage bins.
+
+-
+
+Treat the outside base of bins and
+the surrounding area with an approved insecticide.
+
+-
+
+Fumigate the space beneath the
+perforated bin flooring. Warning!!! Fumigation is complicated and
+dangerous. If possible, hire a commercial fumigator. Restricted use
+pesticide certification is required for purchasing the fumigants.
+Specialized training from a commercial applicator is strongly
+recommended. Specialized equipment, including gas masks, self-contained
+breathing apparatus, and fumigant gas detection equipment is required
+for safe, effective and economical applications. Obtain and read the
+product label and manufacturer's instructions.
+
+During Harvest /
+Binning
+
+-
+
+Operate combine(s) to minimize
+grain damage, trash and fines or clean grain mechanically.
+
+-
+
+Store corn at 15, 14 or 13%
+moisture when holding for 6, 9, or more than 9 months, respectively.
+
+-
+
+Consider applying a grain
+“protectant” to the bulk grain mass after drying and cooling. Do NOT
+apply before heated air drying or to hot grain!!
+
+-
+
+Consider applying a “cap out”
+treatment to the grain surface (Do not apply if a protectant is used).
+
+Post-Harvest / After Binning
+
+-
+
+Use “pitfall" traps to
+monitor insect activity. Use three traps per bin. Check traps weekly in
+August and September. In colder months trap for four days each month.
+
+-
+
+If insects are detected have them
+identified and classified as primary or secondary feeders. Be especially
+interested in the true “weevils”.
+
+-
+
+If insects are numerous enough to
+result in a discount or you are planning to hold the grain into the next
+warm season consider having the grain fumigated.
+
+-
+
+Monitor grain temperature and moisture
+monthly.
+
+-
+
+In September, run fans to cool
+corn to near 60oF.
+
+-
+
+In October, run fans to cool corn
+to near 50oF.
+
+-
+
+In November, run fans to cool corn
+to near 40oF.
+
+-
+
+After cooling to 40oF, seal fans
+with plastic to prevent air movement in the bin.
+
+-
+
+Operate fans any time the need
+arises to control temperature or moisture.
+
+Insecticides and
+Fumigants Recommended for Corn
+
+Do not use malathion for any treatments. Most forms of malathion
+are no longer labeled for use and the product no longer provides adequate
+insect control. See: ENT-16 Insecticide Recommendations for Corn.
+
+Empty
+bins - applied to walls
+and floor: Tempo7 SC Ultra. (DO NOT APPLY TO GRAIN!), Actellic® 5E, or
+Insecto. Do not use the same product
+for empty bin and grain “protectant” treatments.
+
+Under Floor Fumigants - Chloro-pic (Can not currently be shipped in small
+containers, you may find that your local dealer has some on hand or in large
+e.g 200 lb. bottles), Methyl-Bromide, Phostoxin® / Fumtoxin®. THESE PRODUCTS ARE EXTREMELY DANGEROUS
+AND REQUIRE SPECIAL EQUIPMENT AND TRAINING!
+
+Protectant -
+applied directly to the bulk grain: Actellic® 5E. Insecto may be used as a
+“protectant”, but some buyers will not accept grain treated with this
+material. Be sure of your market. (If
+grain is handled and stored properly this is not generally economically
+advisable.)
+
+Cap out treatment applied to the top 4" of grain - (Do not make this application if a protectant has been
+applied to the bulk grain): Actellic® 5E and Insecto for beetles and moths or
+products containing Bacillus thuringiensis, e.g. Dipel7, Javelin7, Sok-B.t.7
+etc. for Indian meal moth.
+
+For more information about crop and livestock pests, visit
+"Insect Management Recommendations".
+
+return to top
+
+· Store clean dry grain in
+clean dry bins.
+
+· Follow the checklists for
+each stage of storage.
+
+3.
+
+Low Soil pH Values this Fall
+
+Lloyd Murdock, Paula
+Howe, Greg Schwab and Frank Sikora, Plant and Soil Sciences and Regulatory
+Services
+
+Soil samples taken
+from abnormally dry soils likely will result in soil test pH values being lower
+than actual soil pH values. Soluble salts have accumulated near the soil
+surface under dry conditions causing the pH to be lowered. Typically, a combination of plant uptake
+and adequate rainfall to percolate through the soil is sufficient to keep the
+soluble salt content in the field soils low enough that pH’s on fall soil
+samples are not noticeably low. The
+drought has greatly reduced plant growth (thereby lowering the total amount
+of salts taken up by the plants), and lack of rainfall to leach high levels
+of salts deeper into the soil causing pH’s to be abnormally lowered.
+
+In 1991, a similar
+condition existed, causing Ken Wells and Grant Thomas (former UK Agronomy
+Professors) to check soil samples from two Jessamine County drought-stricken
+tobacco fields. The samples were split
+with the pH measured on one-half of the sample as taken and the other half
+was leached to remove soluble salts before the pH reading. The soil pH
+rebounded after leaching of soluble salts from the sample. This will also occur in the field when we
+get normal rainfall.
+
+Table 1. Soil pH results from soil samples taken under dry conditions in
+1991.
+
+Field
+
+Soil
+pH of Sample
+
+as
+Taken
+
+Soil
+pH after Leaching
+
+of
+Soluble Salts
+
+1
+
+5.96
+
+6.66
+
+2
+
+5.82
+
+6.75
+
+There are two ways to
+handle this problem.
+
+1)
+The samples with very low pH’s compared to previous
+samples can be resampled in late February or March after we have saturated
+the profile.
+
+2)
+When soil pH is measured in a salt
+solution it is usually about 0.5 units lower than pH measured in water, but the
+buffer pH will not be affected by these high salts. To calculate a lime recommendation, assume
+that the current water pH is about 0.5 units lower than normal and that the
+buffer pH has not been affected. Using
+the table in AGR-1 apply lime if needed this fall using the estimated water
+pH and the actual buffer pH.
+
+return to
+top
+
+· Dry soils results in lower
+reported water pH values.
+
+· Buffer pH values should
+be accurate.
+
+4.
+
+Crop
+Management: Early Bird Series
+
+Chad
+Lee, Plant and Soil Sciences
+
+While
+commodity prices are higher, the cost of production is also increasing rapidly,
+making the final net profit a challenge. Producers need to maximize their
+pre-pay dollars.
+
+Three
+meetings across Kentucky will be targeting issues relating to pre-pay
+decisions on seed, seed treatments, foliar fungicides, hybrids, varieties and
+fertilizer options. In addition, each of these meetings will include a topic
+on grain storage options. The locations, dates and contact information follows:
+
+Sedalia, Sedalia Restaurant: Thursday, November 15, 2007: contact Lincoln
+Martin, (270) 527-3285.
+
+Owensboro, Daviess County Extension Office: Friday, November 16, 2007: contact
+Clint Hardy, (270) 685-8480.
+
+Shelbyville, Shelby County Extension Office: Tuesday, November 20, 2007: contact
+Brittany Edelson, (502) 633-4593.
+
+The
+meetings are scheduled to begin at 9:00 am and will conclude between 2:30 and
+3:00 pm. Lunch will be sponsored by the Kentucky Soybean Board and the
+Kentucky Corn Growers Association.
+
+Pesticide
+education credits and certified crop advisor continuing education credits
+will be sought.
+
+return to top
+
+· Make the most of pre-pay
+dollars.
+
+Copyright © 2007 University of Kentucky, College of Agriculture, Kentucky Cooperative Extension Service
+
+An Equal Opportunity University
+Please contact
+
+Chad Lee for questions or permission to
+reprint information from this website.

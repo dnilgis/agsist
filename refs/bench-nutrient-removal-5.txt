@@ -1,0 +1,87 @@
+# Benchmark nutrient-removal: SDSU Should We Sell Corn Stalks
+# https://extension.sdstate.edu/should-we-sell-corn-stalks
+# fetched 2026-10-16T15:42:02Z, sha256 6caabb072c1c8646c83c55cb9867119d275a51b352f7aa7b2ad5eea0d3dec288
+
+Should We Sell Corn Stalks?South Dakota State University extension logoSouth Dakota State University extension logoFacebook logoX logoYouTube logoInstagram logo
+
+-
+
+Should We Sell Corn Stalks?
+
+Grazing and baling corn stalks is a typical farm practice for many producers. Using the stover and fallen grain has feed value. Cows return manure and organic matter to the field, and stover bales can be used as part of low-cost winter feed rations for the cow herd.
+
+Approximately 1 ton of stover is produced per 40 bushels of dry (10% moisture) corn. Grazing and baling generally removes 50 to 80% of the stover on the ground.
+
+Reasons for Stover Removal
+
+(Credit: Heather Gessner, SDSU Extension)
+
+Low-cost feed and winter feed are some of the reasons for grazing and baling corn stover. Extending the grazing season and keeping cows out of feed yards allows manure to be naturally replaced in the field without equipment.
+
+Non-cattle producers may also consider removing some stover from the field to warm the soil sooner in the spring. If the corn crop averaged 180 bushels per acre, there would be 4.5 tons of stover on the soil. The stover can be a blanket, keeping the spring sun from warming the soil and delaying planting.
+
+Removing some of the stover may also make planting more manageable in the spring due to a reduction in ‘trash’ on the ground, especially in high-yielding corn fields.
+
+Considerations
+
+Erosion should be considered before baling corn stover. Highly erodible fields, either from wind or water runoff, should be analyzed carefully before the stover is removed.
+
+Another consideration is nutrient removal. Some nutrients are in the stover; if they are removed via grazing and baling, they must be replenished for the next crop. Additionally, fields low in organic matter may not be the best candidate for baling. Soil tests should be used to identify the nutrient needs of the next crop. Table 1 shows the typical nutrient contents in stover and their values per ton and total per ton.
+
+Based on those numbers, every ton of stover removed removes $27.80 in replacement nutrient value. If 180 bushels of corn were grown, resulting in 4.5 tons of stover per acre, and 50% of the stover was removed (2.25 tons), the nutrient value removed would be $62.56 per acre.
+
+Table 1. Fertilizer value in one ton of corn residue.
+
+Element Pounds Per-Ton Nutrient Price Nutrient Value Per-Ton
+
+Nitrogen (N) 17 $0.62 $10.53
+
+Phosphorus Pentoxide (P2O5) 4 $0.78 $3.13
+
+Potassium Oxide (K2O) 34 $0.38 $12.89
+
+Sulfur (S) 3 $0.42 $1.25
+
+Total Value - - $27.80
+
+*Nutrient price will vary. Check with your local supplier.
+
+The daily grazing rate allows flexibility for the landowner and the cattle owner, as they can monitor the amount of stover removed. As cattle generally consume dropped ears of corn and husks first, they can be removed before they move on to the leaves and stalks. If baling the acres, the amount of stover removed will depend on the equipment used. Baling alone will not remove as much of the stover as raking and baling or using a stalk chopper combined with raking and baling.
+
+The value received for grazing corn stover runs $0.50 to $2.00 per head per day, with many corn owners charging $1.50 per head per day. Corn stover prices have ranged from $25 to $100 per ton, depending on the year. Prices are lower when other, better-quality forages are available, however, in drought years we expect to see prices trending upward as cornstalk bales are more often needed as forage rather than bedding.
+
+Decision Making
+
+The landowner must compare the cost of nutrients removed from the field versus the income potential from selling the stalks. They will also want to consider the value of an earlier planting date and reduced stover to plant through.
+
+Grazing and baling corn stalks may have financial and agronomic benefits for the landowner and provide feed resources for cattle producers. Based on corn yield, nutrient costs, the amount of stover removed, and the value of the harvested product, determine the correct amount of stover removal for the field.
+
+References and Additional Resources
+
+- Estimating a Value for Corn Stover. Edwards, William. Iowa State University.
+
+- Corn Stover Removal: Nutrient value of stover and impacts on soil properties. Rees, Jenny, Marty Schmer, Charles Wortmann. UNL CropWatch, December 7, 2017.
+
+- Crop residue removal: impacts on yield. Rees, Jenny, Marty Schmer, and Charles Wortmann. December 8, 2018.
+
+- Sellars, S. (2026, February 25). Crop budgets. South Dakota State University Extension.
+
+- Elliott, M., & Cho, W. (2021, October 13). Interactive grain report tool. South Dakota State University Extension.
+
+- FertilizerPrice.com. (2026, October 2). Fertilizer prices this week: USDA market data for October 2, 2026.
+
+Related Topics
+
+Harvesting Corn, Beef Nutrition, Beef Marketing and Economics, Farm Business Management
+
+NANP Leads the Way: Putting AI to Work in Feed Management
+
+Artificial intelligence is rapidly changing agriculture, but its value on the farm depends on whether it can help producers make better decisions. The National Animal Nutrition Program has been working to turn AI-based approaches into practical tools that can help livestock producers reduce feed losses and improve profitability.
+
+A Roadmap to Becoming a USDA-NRCS Technical Service Provider for Feed Management
+
+Agricultural professionals with expertise in livestock nutrition and feeding systems may become certified USDA-NRCS Technical Service Providers to assist producers with developing and implementing feed management conservation plans.
+
+Crop Insurance
+
+The SDSU Extension crop insurance team is here to answer all questions related to crop insurance endorsements, as well as to provide information and materials needed to make crop insurance decisions.

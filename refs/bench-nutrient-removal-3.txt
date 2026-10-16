@@ -1,0 +1,134 @@
+# Benchmark nutrient-removal: UNL CropWatch Valuing Cornstalk Bales
+# https://cropwatch.unl.edu/2021/valuing-cornstalk-bales
+# fetched 2026-10-16T15:41:58Z, sha256 0b2f9560dba0688068afef8ce9dd7856b7b974498bd61ef59f8b93b6a5404221
+
+Valuing Cornstalk Bales | CropWatch | Nebraska
+
+-
+
+-
+
+-
+
+-
+
+-
+
+November 30, 2021
+
+Valuing Cornstalk Bales
+
+By Ben Beckman - Extension Educator, Jenny Brhel - Former Extension Educator, Brad Schick - Former Extension Educator
+
+Cornstalk residue with downed ears baled and ready to use. (CropWatch file photo by Jenny Rees)
+
+With dry conditions still plaguing much of the state, baling corn residue following harvest might be an optional roughage source if hay supply is getting tight. Crop input prices are also increasing, causing producers and landowners to wonder what value should be put on baling corn residue.
+
+Figuring out the true value of cornstalk bales can be a bit tricky, but breaking down the costs can help arrive at some numbers for consideration.
+
+First, look at the value of nutrients removed from the field that may need to be replaced. For every 40 bu/ac of corn, approximately one ton of residue is produced. Each ton of corn residue contains 17 lb N, 4 lb P2O5, 37 lb K, and 3 lb S. With rising fertilizer prices, stalks this fall will contain up to $34 worth of nitrogen, potassium, phosphorus and sulfur per ton.
+
+Do all those nutrients need to be replaced? Not necessarily for each field. With most Nebraska fields at sufficient K levels, we mostly consider replacing the other nutrients.
+
+The nitrogen replacement may also be flexible due to potential increased mineralization that can occur due to the change in C:N ratio with residue removal. Thirty-six studies over 239 site-years showed a 3% average yield increase when residue was removed versus not removed, in locations where water was not a limiting factor. The yield increases are hypothesized to be from more even plant stands and/or from increased soil mineralization.
+
+At South Central Ag Lab near Clay Center, eight years of residue removal also showed increased yields in spite of a net negative nitrogen balance by removing residue (more nitrogen removed with the residue than what was applied for the crop). Using manure as an amelioration treatment in that study increased both the grain yield and the grain nitrogen content when residue was removed (Schmer, et al.).
+
+For purposes of this article, we provide an estimation of total costs based on different options of nutrient replacement.
+
+High Cost* Medium Cost Low Cost
+
+Cost of nutrient removal per ton =
+$34
+$20
+$3.19
+
++ Cost of labor and equipment =
+$25
+$23
+$20.00
+
+Cost per ton of corn stalk bale =
+$59
+$43
+$23.19
+
+*High cost includes replacement of all nutrients. Medium cost has potassium replacement omitted. Low cost has potassium and nitrogen replacement omitted.
+
+Baling stalks is harder on equipment than putting up grass or alfalfa hay. This additional labor and equipment cost comes in at around $20-25 per ton. Adding everything up, we accumulate around $23 to $59 in cost per ton of residue removed.
+
+One last cost to consider is the opportunity cost of selling corn residue versus keeping it and feeding it out. The current USDA-AMS Nebraska Hay Report has cornstalk bales priced at $60 per ton. This is above the cost we’ve calculated to produce a bale, so by not selling, an additional $1-37 is left sitting on the table. Are we saying go bale up all your cornstalks and sell them right away? No. We share specific field recommendations at the end of this article. Factors like erosion control, soil health impacts and other ecosystem services are hard to calculate and could potentially raise the cost per ton quite a bit depending on how you value them. Additionally, from a feed perspective, unless a cheaper alternative is available, the value of a cornstalk bale may be hard to replace in a ration. We’ll dive into this next.
+
+From a nutritional standpoint, cornstalk bales are typically even lower quality than straw. Even if being selective with what we harvest by only baling the two to three rows behind the combine, we can only count on around 5% crude protein and up to 45% total digestible nutrients (TDN). With these nutritional values, diets will likely need to consist of additional protein, probably in the form of distillers grains.
+
+To find the value, we need to compare a cornstalk/distillers grain diet with what it would be replacing. Dr. William Edwards, Iowa State emeritus ag economist, solved this problem on a worksheet. For his example, the original diet consisted of 2.6-ton alfalfa-brome hay and 0.3 ton dry distillers grain. One-ton cornstalks replaces 1.16-ton of hay and requires an additional 0.22-ton distillers grain.
+
+If mixed hay is going for $150 per ton (as fed) and dry distillers grain at $200 per ton (as fed), the stalk value would be 1.16 x $150 (hay value) minus 0.22 x $200 (distillers grain value), which comes out to $130 per ton.
+
+Value of 1.16 ton hay ($150 per ton) =
+$174
+
+– Value of 0.22 ton distillers grain ($200 per ton) =
+$44
+
+Nutrient value of 1 ton cornstalk bale =
+$130
+
+– Cost of grinding =
+$13
+
+Cornstalk Bale Feed Value =
+$117 per ton
+
+The stalk and cob in corn residue are unpalatable and will not be consumed by cattle unless the bale is ground. Thus, cornstalk bales are usually ground, reducing the value to the end user by $10-15 per ton. In the end, this drops our cornstalk value to $117 per ton. This value can serve as a breakeven price when deciding to purchase corn residue bales to change feed rations versus using a traditional hay ration.
+
+By using this formula, we are able to calculate a potential value cornstalks have as a feedstuff. One final factor to consider is market demand. When feeds are limited, the natural market fluctuations are out of our control and demand can raise market values higher than we might estimate through basic calculations. This opportunity cost of buying or selling on the market should also be considered as we make crop production and feeding decisions. Of course, regional differences will occur, so change the values for dry distillers grain and hay to match your local prices.
+
+Another wrinkle in this discussion is the cost of transport. This simple calculation doesn’t factor it in simply because distances, and thus cost, will differ dramatically depending on where you are located. If the cost of trucking distillers grain or cornstalk bales in is more than the value provided, of course other options need to be considered.
+
+So, is cornstalk harvest worth it? While there are always additional variables and costs to consider, a quick comparison shows that this year, even with fertilizer prices up, cornstalk bales may be a reasonable option to explore.
+
+One final consideration — not all fields are good candidates for corn residue baling, as soil loss due to wind and water erosion may occur. UNL recommendations based on research include the following:
+
+- Use reduced tillage (no-till or strip till) on fields where residue is removed.
+
+- Only harvest corn residue when fields yield over 180 bu/acre.
+
+- Avoid fields or areas with slopes greater than 5%.
+
+- Avoid removing more than 2 tons/acre of residue and maintain at least 2.4 tons/acre of residue.
+
+- In continuous corn, harvest cornstalks every other year. In corn-soybean, harvest cornstalks every four years.
+
+- Consider applying manure or use a cover crop after baling cornstalks for amelioration.
+
+Sources
+
+Edwards, William. Estimating a Value for Corn Stover, https://www.extension.iastate.edu/agdm/crops/html/a1-70.html, Iowa State University.
+
+Nebraska Direct Hay Report, USDA AMS Livestock, Poultry & Grain Market News, NE Department of Ag Market News, https://mymarketnews.ams.usda.gov/viewReport/2935.
+
+Rees, Jenny, Marty Schmer, Charles Wortmann. Dec. 7, 2017, Corn Stover Removal: Nutrient value of stover and impacts on soil properties. https://cropwatch.unl.edu/2017/corn-stover-removal-nutrient-value-stover-and-impacts-soil-properties, UNL CropWatch.
+
+Rees, Jenny, Marty Schmer, and Charles Wortmann. Dec. 8, 2018. Crop residue removal: impacts on yield. https://cropwatch.unl.edu/2017/residue-removal-impacts-yield, UNL CropWatch.
+
+Schmer, Marty, Virginia Jin, Richard Ferguson, and Brian Wienhold. 2020. Irrigation, carbon amelioration, nitrogen, and stover removal effects on continuous corn.
+
+https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=2414&context=agronomyfacpub, Agronomy Journal 112:2506–2518.
+
+-
+
+-
+
+-
+
+Subscribe to CropWatch
+
+Online Master of Science in Agronomy
+
+With a focus on industry applications and research, the online program is designed with maximum flexibility for today's working professionals.
+
+Learn More
+
+Explore our full collection of CropWatch articles.
+Explore Articles
