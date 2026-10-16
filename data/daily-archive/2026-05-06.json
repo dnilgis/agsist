@@ -198,5 +198,6 @@
   ],
   "price_validation_clean": true,
   "market_closed": false,
-  "market_status_reason": "open"
+  "market_status_reason": "open",
+  "first_published_at": "2026-05-06T12:58:30+00:00"
 }

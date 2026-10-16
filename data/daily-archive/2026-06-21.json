@@ -185,5 +185,6 @@
   "surprises": [],
   "price_validation_clean": false,
   "market_closed": true,
-  "market_status_reason": "weekend"
+  "market_status_reason": "weekend",
+  "first_published_at": "2026-06-21T13:01:24+00:00"
 }
