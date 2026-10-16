@@ -44,7 +44,6 @@ WHAT THIS FILE WILL NOT DO
 """
 import datetime
 import html
-import io
 import json
 import math
 import os
