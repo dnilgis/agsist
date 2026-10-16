@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 88,
- "with_known_cadence": 88,
+ "count": 90,
+ "with_known_cadence": 90,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -855,6 +855,30 @@
    "max_gap_hours": 143.4,
    "quiet": "weekly",
    "why_quiet": "USDA FAS publishes export sales on Thursday mornings. Its workflow only fires Thursday and Friday."
+  },
+  {
+   "path": "data/fall-nitrogen.json",
+   "pages": [
+    "fall-nitrogen.html"
+   ],
+   "written_by": [
+    "Fall nitrogen soil temperature"
+   ],
+   "touched_by": [
+    "Fall nitrogen soil temperature"
+   ],
+   "cadence": "2 launches every day at about 8am, 5pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 13 * 9-12 *",
+    "47 22 * 9-12 *"
+   ],
+   "max_gap_hours": 14.6,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/fertilizer-coops.json",
@@ -2013,6 +2037,29 @@
    "max_gap_hours": 24.0,
    "quiet": "seasonal",
    "why_quiet": "RMA price discovery runs in defined windows; outside them there is nothing to publish."
+  },
+  {
+   "path": "data/rma-prices/index.json",
+   "pages": [
+    "harvest-price-tracker.html"
+   ],
+   "written_by": [
+    "RMA price discovery"
+   ],
+   "touched_by": [
+    "RMA price discovery"
+   ],
+   "cadence": "1 launch every day at about 5pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "10 22 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
   },
   {
    "path": "data/site-usage.json",
