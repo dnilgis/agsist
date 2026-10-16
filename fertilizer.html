@@ -600,14 +600,14 @@ function ledeWhen(doc){
   var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],ds=[],regs={};
   (doc&&doc.prices||[]).forEach(function(r){
     if(!r||!validPrice(r.price)||!/^\d{4}-\d{2}-\d{2}$/.test(r.as_of||''))return;
-    ds.push(r.as_of);if(r.src==='coop'&&r.region)regs[r.region]=1;
+    ds.push(r.as_of);if(r.src==='coop'&&r.region)String(r.region).split(/, (?:and )?| and /).forEach(function(x){if(x)regs[x]=1;});
   });
   if(!ds.length)return '';
   ds.sort();
   function f(d,yr){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);return M[+m[2]-1]+' '+(+m[3])+(yr?', '+m[1]:'');}
   var lo=ds[0],hi=ds[ds.length-1],rs=Object.keys(regs).sort();
   var when=lo===hi?f(hi,true):f(lo,lo.slice(0,4)!==hi.slice(0,4))+' to '+f(hi,true);
-  return 'Right now: '+(rs.length?rs.join(' and ')+' co-ops only':'co-op prices')+', posted '+when+'.';
+  return 'Right now: '+(rs.length?(rs.length>2?rs.slice(0,-1).join(', ')+' and '+rs[rs.length-1]:rs.join(' and '))+' co-ops only':'co-op prices')+', posted '+when+'.';
 }
 function getJ(u){return fetch(u).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
 Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-prices.json')]).then(function(res){
