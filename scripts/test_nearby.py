@@ -87,6 +87,23 @@ def main():
     n5 = add_nearby(quotes5, SYMBOLS_AT(T(2026, 7, 28)), T(2026, 7, 28))
     chk(n5["corn"]["key"] == "corn-sep26", "corn-dec (undated alias) ignored as nearby candidate")
 
+    # --- every root with dated months gets one alias (2026-10-16) -------------
+    # The corn page's wheat card read ZW=F (-10 1/2) while the wheat page read
+    # ZWZ26 (-11 1/4): one contract, two quotes. Each card now reads the alias.
+    now6 = T(2026, 10, 16)
+    quotes6 = {"kcwheat": q(702.5), "kcwheat-dec26": q(701.5), "kcwheat-mar27": q(714.25),
+               "meal": q(356.6), "meal-dec26": q(356.5), "oats-dec26": q(399.0),
+               "soyoil-dec26": q(67.14), "feeders-oct26": q(343.7), "feeders-nov26": q(342.1),
+               "hogs-oct26": q(75.55), "milk-oct26": q(15.32), "milk-nov26": q(17.49)}
+    n6 = add_nearby(quotes6, SYMBOLS_AT(now6), now6)
+    chk(quotes6["kcwheat-nearby"]["close"] == 701.5 and n6["kcwheat"]["label"] == "Dec '26",
+        "kcwheat-nearby = KEZ26 701.5, not continuous KE=F 702.5")
+    chk(quotes6["meal-nearby"]["close"] == 356.5, "meal-nearby = Dec '26 meal, the crush leg")
+    chk(n6["feeders"]["key"] == "feeders-oct26" and n6["hogs"]["key"] == "hogs-oct26"
+        and n6["milk"]["key"] == "milk-oct26" and n6["oats"]["key"] == "oats-dec26"
+        and n6["soyoil"]["key"] == "soyoil-dec26", "livestock, milk, oats and oil name their month")
+    chk("mplswheat" not in n6, "no MGEX months on file -> no alias")
+
     # --- label helper ----------------------------------------------------------
     chk(_month_label("wheat-dec27") == "Dec '27", "_month_label wheat-dec27")
     chk(_month_label("corn-dec") is None, "_month_label undated alias -> None")
