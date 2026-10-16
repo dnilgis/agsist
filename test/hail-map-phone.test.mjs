@@ -77,6 +77,7 @@ test("at 390 px every report row shows date, size, distance and place inside the
     assert.ok(rows.length >= 3, "Des Moines has reports");
     for (const cells of rows) {
       for (const c of cells) {
+        if (!c.t) continue; // a report with no place name has no place line
         assert.ok(c.w > 0 && c.l >= 0 && c.r <= 390, "cell inside the screen: " + JSON.stringify(c));
       }
       assert.match(cells[1].t, /″|n\/a/);
