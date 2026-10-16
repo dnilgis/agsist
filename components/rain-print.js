@@ -151,7 +151,7 @@
 
   function defaults() {
     return { place: '', station: '', year: null, layout: 'staircase', palette: 'paper', size: '12x18', cmp: 'none', name: '', markers: [], gift: false,
-      style: 'r1', dedication: '', normals: false, records: false, logo: '', logoInk: true };
+      style: 'r1', dedication: '', normals: false, records: false, logo: '', logoInk: true, units: '', lang: '' };
   }
   // a stored logo's id (subs worker v5.23): 12 characters of lowercase Crockford base32
   function cleanLogo(v) {
@@ -184,7 +184,17 @@
     s.logo = cleanLogo(x.logo);
     // ink color unless the design says its own colors
     s.logoInk = !s.logo || !(x.logoInk === false || x.logoInk === '0' || x.logoInk === 0);
+    // units and language (2026-10-16, Canada): '' is the place's own default (inches and English in the US; see locOf)
+    s.units = x.units === 'mm' || x.units === 'in' ? x.units : '';
+    s.lang = x.lang === 'fr' || x.lang === 'en' ? x.lang : '';
     return s;
+  }
+  /* What the print is drawn in: the design's own choice, else the place's default
+     (Canada: mm and cm, French in Quebec; components/rp-canada.js). ca: the design's
+     station or town is Canadian; prov: its two-letter province. */
+  function locOf(s, ca, prov) {
+    var d = ca && root.AgRpCanada ? root.AgRpCanada.defaultsFor(prov) : { units: 'in', lang: 'en' };
+    return { units: s.units || d.units, lang: s.lang || d.lang };
   }
 
   /* Today's date in Chetek (America/Chicago), as YYYY-MM-DD. The year a reader
@@ -341,6 +351,30 @@
       unit = dest === 'one' ? r.one[id] : r.prices[id];
     }
     return { unit: unit, total: Math.round(Math.round(unit * 100) * qty) / 100 };
+  }
+  /* ORDERS FROM CANADA (2026-10-16). data/rain-print.json "canada" holds the one
+     switch: ships (true opens prints and framed prints to Canadian addresses).
+     Until then a Canadian design orders the digital file only (no shipping, the
+     same price and checkout), and the print cards say so. With ships on, the
+     prices are canada.print12x18 / framed12x18 (US dollars, delivered; null keeps
+     the US price), the checkout is canada.payment_links (null: the order request
+     form, which emails Sig), and the shipping line, transit days and Christmas
+     dates are Canada's own (no Christmas date unless canada sets one).
+     -> the prices object the order step reads, and blocked: the products a
+     Canadian design can't order yet. */
+  function orderPrices(prices, ca) {
+    if (!prices || !ca) return { j: prices, blocked: [] };
+    var c = prices.canada || {}, j = Object.assign({}, prices), links = prices.payment_links || {};
+    j.print_christmas_cutoff = null; j.framed_christmas_cutoff = null;
+    if (c.ships !== true) return { j: j, blocked: ['print12x18', 'framed12x18'] };
+    var cl = c.payment_links || {};
+    j.payment_links = { digital: links.digital || null, print12x18: cl.print12x18 || null, framed12x18: cl.framed12x18 || null };
+    ['print12x18', 'framed12x18'].forEach(function (id) { if (typeof c[id] === 'number' && c[id] > 0) j[id] = c[id]; });
+    if (c.transit_business_days) j.transit_business_days = c.transit_business_days;
+    if (c.ships_within) j.ships_within = c.ships_within;
+    if (c.print_christmas_cutoff) j.print_christmas_cutoff = c.print_christmas_cutoff;
+    if (c.framed_christmas_cutoff) j.framed_christmas_cutoff = c.framed_christmas_cutoff;
+    return { j: j, blocked: [] };
   }
   function bizRange(r) { return r.to === null ? r.from + ' or more' : r.from === r.to ? String(r.from) : r.from + '\u2013' + r.to; }
   /* Index of the last day with a reading of its own (v not null and not an S
@@ -525,19 +559,22 @@
      stamp when no short link can be had. A v1 code ("1|...|LPCS|name|day|label...")
      still opens: as R1, or R2 if its layout was Waveform. A logo (2026-10-14)
      adds 13 letters to the key field: i (the print's ink) or c (its own colors)
-     and the 12-letter id, so LPCSX becomes LPCSXi<id>. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
+     and the 12-letter id, so LPCSX becomes LPCSXi<id>. Units and language (2026-10-16, Canada) add one
+     capital letter at the end of the key field when either is chosen (LOCF: A to H for the eight pairs
+     besides "the place's default for both"), so a plain US code is exactly as before. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
      as a client_reference_id (200 at most).
      A gift order (this year, delivered in January) is the same code with GIFT-
      in front, so Sig sees it in Stripe without decoding anything. A v1 code
      always starts with M (base64 of "1|"), so the prefix cannot be mistaken
      for part of a code. */
-  var GIFT_PREFIX = 'GIFT-', XFLAG = 'abcdefgh';
+  var GIFT_PREFIX = 'GIFT-', XFLAG = 'abcdefgh', LOCF = 'ABCDEFGH', LOC_U = ['', 'in', 'mm'], LOC_L = ['', 'en', 'fr'];
+  function locLetter(s) { var k = LOC_U.indexOf(s.units) * 3 + LOC_L.indexOf(s.lang); return k > 0 ? LOCF[k - 1] : ''; }
   function encodeCode(x) {
     var s = normalize(x);
     if (!s.place || !s.year) return '';
     var x5 = XFLAG[(s.style === 'r2' ? 4 : 0) + (s.normals ? 1 : 0) + (s.records ? 2 : 0)];
     var f = ['2', s.place, s.station, String(s.year), LAYOUT[s.layout] + PALETTE[s.palette] + CMP[s.cmp] + SIZE[s.size] + x5 +
-      (s.logo ? (s.logoInk ? 'i' : 'c') + s.logo : ''), s.name];
+      (s.logo ? (s.logoInk ? 'i' : 'c') + s.logo : '') + locLetter(s), s.name];
     s.markers.forEach(function (m) { f.push(dayIndex(s.year, m.date).toString(36), m.label); });
     while (f.length > 6 && f[f.length - 1] === '' && f[f.length - 2] === '') f.length -= 2;
     if (s.dedication) f.push(s.dedication);
@@ -554,7 +591,12 @@
     if ((f[0] !== '1' && !v2) || f.length < 6) return null;
     if (v2 && (f.length - 6) % 2) { ded = f.pop(); if (!ded) return null; }
     if ((f.length - 6) % 2) return null;
-    var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1, logo = '', logoInk = true;
+    var k = f[4] || '', x5 = v2 ? XFLAG.indexOf(k[4]) : -1, logo = '', logoInk = true, units = '', lang = '';
+    if (v2 && (k.length === 6 || k.length === 19) && LOCF.indexOf(k[k.length - 1]) >= 0) {
+      var li = LOCF.indexOf(k[k.length - 1]) + 1;
+      units = LOC_U[Math.floor(li / 3)]; lang = LOC_L[li % 3];
+      k = k.slice(0, -1);
+    }
     if (v2 && k.length === 18) {
       logo = cleanLogo(k.slice(6));
       if (!logo || logo !== k.slice(6) || 'ic'.indexOf(k[5]) < 0) return null;
@@ -575,7 +617,7 @@
     var s = normalize({ place: f[1], station: f[2], year: year, layout: LAYOUT_R[k[0]], palette: PALETTE_R[k[1]],
       cmp: CMP_R[k[2]], size: SIZE_R[k[3]], name: f[5], markers: markers, gift: gift,
       style: v2 ? (x5 & 4 ? 'r2' : 'r1') : null, dedication: ded, normals: v2 && (x5 & 1) === 1, records: v2 && (x5 & 2) === 2,
-      logo: logo, logoInk: logoInk });
+      logo: logo, logoInk: logoInk, units: units, lang: lang });
     return s.place ? s : null;
   }
 
@@ -594,6 +636,8 @@
     if (s.normals) q.set('normals', '1');
     if (s.records) q.set('records', '1');
     if (s.logo) { q.set('logo', s.logo); q.set('logoInk', s.logoInk ? '1' : '0'); }
+    if (s.units) q.set('u', s.units);
+    if (s.lang) q.set('lang', s.lang);
     s.markers.forEach(function (m, i) { q.set('m' + (i + 1), m.date + (m.label ? ' ' + m.label : '')); });
     if (s.gift) q.set('gift', '1');
     return q.toString();
@@ -618,7 +662,7 @@
     return normalize({ place: q.get('place'), station: q.get('station'), year: q.get('year'), layout: q.get('layout'),
       palette: q.get('palette'), size: q.get('size'), cmp: cmp, name: q.get('name'), markers: markers, gift: q.get('gift'),
       style: q.get('style'), dedication: q.get('dedication'), normals: dflt('normals', cmp === 'normal'), records: dflt('records', true),
-      logo: q.get('logo'), logoInk: q.get('logoInk') });
+      logo: q.get('logo'), logoInk: q.get('logoInk'), units: q.get('u'), lang: q.get('lang') });
   }
   // URLSearchParams leaves * as it is, and the worker's design_url rule has no * (2026-10-14, panel 3)
   function designUrl(x) { return SITE + '?' + String(toParams(x)).replace(/\*/g, '%2A'); }
@@ -776,7 +820,8 @@
      "NOAA co-op station 471667", never the raw pair. Names come in caps:
      "CAMERON 2 NE" reads "Cameron, 2 mi NE", "RICE LAKE MUNI AP" reads
      "Rice Lake Municipal Airport". */
-  function sidPlain(sid) {
+  function sidPlain(sid, lang) {
+    if (root.AgRpCanada && root.AgRpCanada.isSid(sid)) return root.AgRpCanada.sidPlain(sid, lang);
     var p = String(sid || '').trim().split(/\s+/);
     if (/^US1/.test(p[0])) return 'volunteer gauge ' + p[0];
     return (p[1] === '2' ? 'NOAA co-op station ' : 'NOAA station ') + p[0];
@@ -785,6 +830,8 @@
   /* {name, off}: "CAMERON 2 NE" is {name: "Cameron", off: "2 mi NE"}. */
   function stationParts(raw) {
     var s = String(raw || '').trim().replace(/\s+/g, ' ');
+    // a name already in mixed case (a Canadian station, named by components/rp-canada.js) stays as it is
+    if (/[a-z]/.test(s)) return { name: s, off: '' };
     var m = /^(.*?) (\d+(?:\.\d+)?) ?([NSEW]{1,3})$/.exec(s), off = '';
     if (m) { s = m[1]; off = m[2] + ' mi ' + m[3]; }
     return { name: s.split(' ').map(function (w) {
@@ -885,7 +932,8 @@
     LIVE.forEach(function (x) { if (/sdate=por/.test(x.url)) keep.push(x); else { x.stopped = true; try { x.ctl.abort(); } catch (e) {} } });
     LIVE = keep;
   }
-  function safeFetch(url) {
+  // opts (2026-10-16): a HEAD or a byte range, for the Canadian station files (components/rp-canada.js)
+  function safeFetch(url, opts) {
     var who = /open-meteo/.test(url) ? 'The town lookup' : 'NOAA\u2019s data service';
     var ctl = typeof AbortController === 'function' ? new AbortController() : null, timedOut = false;
     var live = ctl ? { ctl: ctl, url: url, stopped: false } : null;
@@ -894,7 +942,7 @@
     var timer = setTimeout(function () { timedOut = true; if (ctl) ctl.abort(); }, FETCH_MS);
     var slow = function () { var e = new Error(who + ' is slow right now and didn\u2019t answer in ' + (FETCH_MS / 1000) + ' seconds. Try again in a minute.'); e.retry = true; return e; };
     var race = new Promise(function (res, rej) { setTimeout(function () { if (!ctl) rej(slow()); }, FETCH_MS + 50); });
-    var f = fetch(url, ctl ? { signal: ctl.signal } : undefined).then(function (r) {
+    var f = fetch(url, ctl || opts ? Object.assign({}, opts || {}, ctl ? { signal: ctl.signal } : {}) : undefined).then(function (r) {
       clearTimeout(timer); gone();
       if (!r.ok) { var e = new Error(who + ' didn\u2019t answer (error ' + r.status + '). Try again in a minute.'); e.retry = true; e.status = r.status; throw e; }
       // an answer that isn't data (a proxy's or an outage page) says so in words, not as a script error (panel 3 F7)
@@ -911,12 +959,21 @@
   }
   // the town lookup; the page keeps the reader's own pick from a "which one?" list (PICKED) in front of it
   var GEO_CACHE = new Map();   // query -> the town found (a redraw doesn't ask again)
+  var GEO_LANG = 'en';         // the language a Canadian town lookup answers its errors in (the page sets it)
   function geoFind(q) {
     var key = String(q).trim().toLowerCase();
     if (GEO_CACHE.has(key)) return Promise.resolve(GEO_CACHE.get(key));
     return geoAsk(q).then(function (hit) { GEO_CACHE.set(key, hit); return hit; });
   }
+  /* CANADA (2026-10-16). A town with a province ("Regina, SK"), a postal code or a
+     Canadian station id goes to components/rp-canada.js, which answers in the same
+     shapes as Open-Meteo and RCC-ACIS do for a US town; everything after that is
+     this file's own rules. Without that file loaded, nothing changes. */
+  function CA() { return root.AgRpCanada || null; }
+  function isCanada(placeOrSid) { var c = CA(); return !!c && (c.isSid(placeOrSid) || c.isCanadian(placeOrSid)); }
+  function caEnv(year) { return { currentYear: CURRENT_YEAR, today: TODAY, stale: STALE_DAYS, open: year ? lastYearOpen(year) : false }; }
   function geoAsk(q) {
+    if (CA() && CA().isCanadian(q)) return CA().geoAsk(q, safeFetch, GEO_LANG);
     var g = geocodeQuery(q);
     var u = 'https://geocoding-api.open-meteo.com/v1/search?count=10&countryCode=US&name=' + encodeURIComponent(g.town);
     return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
@@ -937,10 +994,14 @@
      fails leaves snowOk null (not known), never false. */
   function spans(r, y0, y1) { return !!(r && r[0] && r[1] && r[0] <= y0 && r[1] >= y1); }
   var STN_CACHE = new Map();   // lat|lon|year -> the station list
-  function stations(lat, lon, year) {
-    var key = (+lat).toFixed(3) + '|' + (+lon).toFixed(3) + '|' + year;
+  // ca: the town is in Canada (its geocode said so): the Canadian station list instead of ACIS
+  var NEXT_CA = false;   // the page's next station list is Canadian (run() sets it from the town found)
+  function stations(lat, lon, year, ca) {
+    if (ca === undefined) { ca = NEXT_CA; NEXT_CA = false; }
+    var key = (+lat).toFixed(3) + '|' + (+lon).toFixed(3) + '|' + year + (ca ? '|ca' : '');
     if (STN_CACHE.has(key)) return Promise.resolve(STN_CACHE.get(key));
-    return stationsAsk(lat, lon, year).then(function (list) { STN_CACHE.set(key, list); return list; });
+    var ask = ca && CA() ? CA().stations(safeFetch, lat, lon, year, caEnv(year)) : stationsAsk(lat, lon, year);
+    return ask.then(function (list) { STN_CACHE.set(key, list); return list; });
   }
   function stationsAsk(lat, lon, year) {
     var d = 0.6;
@@ -1092,7 +1153,8 @@
     var open = lastYearOpen(year), key = sid + '|' + year + (open ? '|open' : '');
     if (DAILY_CACHE.has(key)) return Promise.resolve(DAILY_CACHE.get(key));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: year + '-01-01', edate: lastDayOf(year), elems: 'pcpn,avgt,snow,maxt,mint', meta: 'name,state,ll' });
-    return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
+    var ask = CA() && CA().isSid(sid) ? CA().yearJson(safeFetch, sid, year, caEnv(year)) : safeFetch(u).then(function (r) { return r.json(); });
+    return ask.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error('That station has no rain record for this year. Pick another one under Weather station.');
       var days = [];
       j.data.forEach(function (row) {
@@ -1122,7 +1184,8 @@
   function stationExtremes(sid) {
     if (EXT_CACHE.has(sid)) return Promise.resolve(EXT_CACHE.get(sid));
     var u = 'https://data.rcc-acis.org/StnData?' + new URLSearchParams({ sid: sid, sdate: 'por', edate: 'por', elems: 'pcpn,avgt' });
-    return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
+    var ask = CA() && CA().isSid(sid) ? CA().porJson(safeFetch, sid) : safeFetch(u).then(function (r) { return r.json(); });
+    return ask.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error(j.error || 'no data');
       var maxDaily = 0, curYear = null, curYearTotal = 0, curMonth = null, curMonthTotal = 0, maxAnnual = 0, maxMonthly = 0;
       var yearFrom = null, yearTo = null, maxTemp = null, minTemp = null, sum = new Map(), count = new Map();
@@ -1163,7 +1226,8 @@
       var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'pcpn', normal: code }] });
       return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); });
     };
-    return ask('91').then(function (j) { return j && !j.error && Array.isArray(j.data) ? j : ask(1); }).then(function (j) {
+    var first = CA() && CA().isSid(sid) ? CA().normalJson(safeFetch, sid, year) : ask('91').then(function (j) { return j && !j.error && Array.isArray(j.data) ? j : ask(1); });
+    return first.then(function (j) {
       if (j.error || !Array.isArray(j.data)) throw new Error(j.error || 'no data');
       var byDate = new Map();
       j.data.forEach(function (row) { var v = parsePcpn(row[1]).v; if (v !== null) byDate.set(row[0].slice(5), v); });
@@ -1197,7 +1261,11 @@
     return milesText(miles(m.km)) + ' from ' + m.city;
   }
   // the station line on the art itself: name and distance, both styles
-  function gaugeLine(m) { return 'Weather station: ' + gaugeWords(m) + ', ' + distText(m); }
+  function gaugeLine(m) {
+    // a Canadian station: km, its province, its own words (m.lang: the print's language, set by the page)
+    if (m && m.ca && root.AgRpCanada) return root.AgRpCanada.gaugeLine(m, m.lang || 'en');
+    return 'Weather station: ' + gaugeWords(m) + ', ' + distText(m);
+  }
   function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
 
   /* THE GIFT CARD'S PREVIEW (2026-10-14, Sig). rp-gift.html shows the print so
@@ -1237,8 +1305,8 @@
         });
       }
       if (!g) throw new Error('The town lookup didn’t answer.');
-      return stations(g.latitude, g.longitude, s.year).then(function (list) {
-        if (!list.length) throw new Error('No NOAA station near ' + g.name + ' is reporting for ' + s.year + '.');
+      return stations(g.latitude, g.longitude, s.year, g.country_code === 'CA').then(function (list) {
+        if (!list.length) throw new Error('No weather station near ' + g.name + ' is reporting for ' + s.year + '.');
         // the page's own pick, snowfall rule and all (a design with a station never gets here)
         return pickStation(list, s.year, daily, { lat: g.latitude }).then(function (r) { picked = r.picked; chosen = r.chosen; });
       });
@@ -1248,10 +1316,14 @@
       if (picked.d.missing > MISS_BLOCK) throw new Error('The station has ' + picked.d.missing + ' unrecorded days so far.');
       if (preview && days.length < GIFT_MIN_DAYS) throw new Error(days.length ? 'Only ' + days.length + ' days of ' + s.year + ' are in so far.' : 'No days of ' + s.year + ' are in yet.');
       var town = g || { name: parts0(s.place), admin1: '', approx: true };
-      var stateAbbr = abbrFor(String(town.admin1 || '').toLowerCase()) || picked.meta.state || chosen.state || '';
+      var caD = !!(CA() && CA().isSid(chosen.sid));
+      var stateAbbr = caD ? String((g && g.prov) || picked.meta.state || chosen.state || '').toUpperCase() : abbrFor(String(town.admin1 || '').toLowerCase()) || picked.meta.state || chosen.state || '';
       var km = g ? haversine(g.latitude, g.longitude, chosen.ll[1], chosen.ll[0]) : 0;
       var meta = { approx: !g, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr,
         year: s.year, km: km, city: town.name, sid: chosen.sid };
+      // a Canadian design draws in its own units and language, with its own place and station words (the page's rules)
+      var loc = caD ? locOf(s, true, stateAbbr.toLowerCase()) : null;
+      if (caD) { meta.ca = true; meta.prov = stateAbbr.toLowerCase(); meta.src = picked.meta.src || ''; }
       var cmp = s.cmp === 'normal' ? stationNormal(chosen.sid, s.year) : s.cmp === 'station' ? stationExtremes(chosen.sid) : null;
       // opts.noQr: the gift card has its own QR for the card; a second square for the design only confuses (panel 3 D8)
       // the design's logo, as the page draws it (a card whose logo doesn't load still draws, without it)
@@ -1264,20 +1336,21 @@
         var byDate = s.cmp === 'normal' ? res[0] : ext && ext.avgByDate && ext.avgByDate.size ? ext.avgByDate : null;
         if (byDate) {
           ov = overlayDaily(days, byDate);
-          if (ov) ov.label = s.cmp === 'normal' ? 'NOAA 30-year normal' : ext.yearFrom + ' to ' + ext.yearTo + ' station average (' + ext.years + ' years)';
+          if (ov) ov.label = s.cmp === 'normal' ? (caD ? '1991\u20132020 average' : 'NOAA 30-year normal') : ext.yearFrom + ' to ' + ext.yearTo + ' station average (' + ext.years + ' years)';
         }
         var qr = null;
         if (!opts.noQr) try { qr = root.AgQR ? { matrix: standardMatrix(), serial: '' } : null; } catch (e) { qr = null; }
         var stuck = s.cmp === 'normal' && res[0] ? stuckRun(days, res[0]) : null;
         var last = days[days.length - 1].date;
         var svg = root.AgRainArt.render({
-          style: s.style, year: s.year, place: placeLongOf(meta), name: s.name, dedication: s.dedication,
+          style: s.style, year: s.year, place: caD ? CA().placeLong(meta.city, meta.prov, loc.lang) : placeLongOf(meta), name: s.name, dedication: s.dedication, loc: loc,
           days: days, D: picked.d, showDry: showDry(picked.d) && !stuck, axisLen: preview ? (isLeap(s.year) ? 366 : 365) : picked.d.n,
-          ov: ov, ovNote: cmpNoteFor(s.cmp, ext), showNormals: s.normals, markers: markersOn(s.markers, s.year, picked.d.n),
-          records: [], qr: qr, preview: preview ? { last: last, later: opts.later || '' } : null, gauge: gaugeLine(meta), logo: res[2] || null,
+          ov: ov, ovNote: caD ? (s.cmp === 'normal' && CA().normalFrom(chosen.sid) ? (CA().normalFrom(chosen.sid).own ? CA().words(loc.lang).usualNote() : (loc.lang === 'fr' ? 'Année normale : moyenne 1991\u20132020 à ' : 'A usual year: the 1991\u20132020 average at ') + CA().normalFrom(chosen.sid).name) : '') : cmpNoteFor(s.cmp, ext),
+          showNormals: s.normals, markers: markersOn(s.markers, s.year, picked.d.n),
+          records: [], qr: qr, preview: preview ? { last: last, later: opts.later || '' } : null, gauge: caD ? CA().gaugeLine(meta, loc.lang) : gaugeLine(meta), logo: res[2] || null,
           watermark: false, bleed: 0, idPrefix: opts.idPrefix || 'gc'
         });
-        return { svg: svg, last: last, year: s.year, place: placeLongOf(meta), station: chosen.sid, days: days.length, preview: preview };
+        return { svg: svg, last: last, year: s.year, place: caD ? CA().placeLong(meta.city, meta.prov, loc.lang) : placeLongOf(meta), station: chosen.sid, days: days.length, preview: preview };
       });
     });
   }
@@ -1336,7 +1409,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan };
+    parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
 
@@ -1396,6 +1469,62 @@
   function ga(n, p) { try { if (root.gaEvent) root.gaEvent(n, p); else if (root.gtag) root.gtag('event', n, p); } catch (e) {} }
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
 
+  /* ---------- Canada on the page (2026-10-16; components/rp-canada.js) ----------
+     caPage: the design is Canadian (its drawn station, its town or its station id).
+     LOC(): what the print and these words are in (locOf). FR(): French page words.
+     L(en, fr): the words for the page in the design's language. */
+  function caPage() { return META && !DRAWING ? !!META.ca : isCanada(ST.place) || isCanada(ST.station) || !!(META && META.ca && META.sid === ST.station); }
+  /* The units and language switches, the page's French, and the line about ordering
+     from Canada: shown for a Canadian design, put away for a US one. */
+  function syncCa() {
+    var ca = caPage() && !SAMPLE, box = $('rp-ca');
+    if (!box) return;
+    box.hidden = !ca;
+    $('rp-ca-hint').hidden = ca;
+    // the US story links don't help a Canadian draw
+    if ($('rp-stories')) $('rp-stories').hidden = ca;
+    var lc = LOC();
+    if (META && META.ca) META.lang = lc.lang;
+    radios('rp-units').forEach(function (r) { r.checked = ca && r.value === lc.units; });
+    radios('rp-lang').forEach(function (r) { r.checked = ca && r.value === lc.lang; });
+    GEO_LANG = ca ? lc.lang : 'en';
+    if (CA()) CA().applyPage(doc, lc.lang, ca);
+    var c = (PRICES && PRICES.canada) || {}, note = $('rp-ca-ship');
+    if (note) {
+      var open = c.ships === true;
+      note.textContent = !ca ? '' : open ? L('Prices are in US dollars and include shipping to Canada. GST/HST is collected on delivery.', 'Les prix sont en dollars américains, livraison au Canada comprise. La TPS/TVH est perçue à la livraison.') + L('', ' Le paiement et les courriels de commande sont en anglais.')
+        : L('Shipping prints and framed prints to Canada starts soon. The digital file works today: $19 US, by email within 1 business day.', 'L’envoi des tirages et des tirages encadrés au Canada commence bientôt. Le fichier numérique est offert dès maintenant : 19 $ US, par courriel en 1 jour ouvrable.') +
+          L('', ' Le paiement et les courriels de commande sont en anglais.');
+      note.hidden = !ca;
+    }
+    // a Canadian design can't pick what doesn't ship there yet
+    var blocked = OJ().blocked;
+    radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) {
+      var no = blocked.indexOf(r.value) >= 0;
+      r.disabled = no;
+      var lab = r.closest('label');
+      if (lab) lab.classList.toggle('rp-prod-off', no);
+    });
+    Array.prototype.forEach.call($('ro-choice').options, function (o) { o.disabled = blocked.indexOf(o.value) >= 0; });
+    if (blocked.indexOf($('ro-choice').value) >= 0) $('ro-choice').value = 'digital';
+    if (blocked.indexOf(PICK) >= 0) setPick('digital');
+  }
+  function caProv() { return (META && META.prov) || ((CA() && CA().parseQuery(ST.place)) || {}).prov || ''; }
+  function LOC() { return locOf(ST, caPage(), caProv()); }
+  function FR() { return caPage() && LOC().lang === 'fr'; }
+  function L(en, fr) { return FR() ? fr : en; }
+  function caWords() { return CA() ? CA().words(LOC().lang) : null; }
+  // what "a usual year" is at a Canadian station: its own 1991-2020 averages, or the nearest station's (named)
+  function caUsual(sid) {
+    var f = CA() && CA().normalFrom(sid), fr = FR();
+    if (!f) return '';
+    if (f.own) return caWords().usualNote();
+    return (fr ? 'Année normale : moyenne 1991\u20132020 à ' : 'A usual year: the 1991\u20132020 average at ') + f.name + ', ' + CA().kmText(f.km, LOC().lang) + (fr ? ' plus loin' : ' away');
+  }
+  function caOrder() { return caPage(); }
+  function OJ() { return orderPrices(PRICES, caOrder()); }
+  function blockedPick(id) { return OJ().blocked.indexOf(id) >= 0; }
+
   // ---------- derived ----------
   function overlayKey() { return ST.cmp === 'normal' ? 'normal30' : ST.cmp === 'station' ? 'full' : ''; }
   // The chosen comparison as daily amounts + running total, aligned to the year, or null.
@@ -1403,8 +1532,8 @@
     var key = overlayKey();
     if (!key || !DATA) return null;
     var byDate, label;
-    if (key === 'normal30' && NORM30) { byDate = NORM30; label = 'NOAA 30-year normal'; }
-    else if (key === 'full' && EXT && EXT.avgByDate.size) { byDate = EXT.avgByDate; label = EXT.yearFrom + ' to ' + EXT.yearTo + ' station average (' + EXT.years + ' years)'; }
+    if (key === 'normal30' && NORM30) { byDate = NORM30; label = META && META.ca ? caUsual(META.sid).replace(/^[^:]*: /, '') : 'NOAA 30-year normal'; }
+    else if (key === 'full' && EXT && EXT.avgByDate.size) { byDate = EXT.avgByDate; label = EXT.yearFrom + L(' to ', ' à ') + EXT.yearTo + L(' station average (', ', moyenne de la station (') + EXT.years + L(' years)', ' ans)'); }
     else return null;
     var o = overlayDaily(DATA.days, byDate);
     if (!o) return null;
@@ -1415,7 +1544,16 @@
   function fmtDate(iso) { if (!iso) return ''; var p = iso.split('-').map(Number); return MON[p[1] - 1].toUpperCase() + ' ' + p[2]; }
   function printMarkers() { return DATA ? markersOn(ST.markers, META.year, DATA.d.n) : []; }
   // "Chetek, Wisconsin": the state written out on the print
-  function placeLong() { return placeLongOf(META); }
+  function placeLong() { return META && META.ca && CA() ? CA().placeLong(META.city, META.prov, LOC().lang) : placeLongOf(META); }
+  /* The reader's days with no words of their own print as their date: in French, "3 mai". */
+  function locMarkers(list) {
+    if (!FR()) return list;
+    var MF = root.AgRainArt && root.AgRainArt.MON_FR, EN = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d+)$/;
+    return list.map(function (m) {
+      var x = EN.exec(m.label || '');
+      return x && MF ? Object.assign({}, m, { label: (x[2] === '1' ? '1er' : x[2]) + ' ' + MF[MON3.indexOf(x[1])] }) : m;
+    });
+  }
 
   /* The maker's mark: a real QR code (components/qr.js, level M), square to the
      page, warm gray on the paper. On everything a buyer sees before paying (the
@@ -1439,7 +1577,13 @@
     return MAKER && m && +m[1] > 0 ? 'No. ' + String(+m[1]).padStart(4, '0') : '';
   })();
 
-  function cmpNote() { return cmpNoteFor(ST.cmp, EXT); }
+  function cmpNote() {
+    if (META && META.ca) {
+      if (ST.cmp === 'normal') return caUsual(META.sid);
+      if (ST.cmp === 'station' && EXT) return L('A usual year: this station\u2019s average, ', 'Année normale : moyenne de cette station, ') + EXT.yearFrom + L(' to ', ' à ') + EXT.yearTo;
+    }
+    return cmpNoteFor(ST.cmp, EXT);
+  }
   /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix,
      example (the page's own preview only: the example words in place of the reader's, while SHOW_EX)}. */
   function buildSvg(o) {
@@ -1448,9 +1592,9 @@
     var input = {
       style: ST.style, year: META.year, place: placeLong(), name: ex ? EXAMPLE.name : ST.name, dedication: ex ? EXAMPLE.dedication : ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
-      ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: ex ? markersOn(exampleMarkers(META.year), META.year, DATA.d.n) : printMarkers(),
+      ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: locMarkers(ex ? markersOn(exampleMarkers(META.year), META.year, DATA.d.n) : printMarkers()),
       records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial, o.qrMatrix), preview: PREVIEW ? { last: PREVIEW.last } : null,
-      gauge: META ? gaugeLine(META) : '', logo: logoArt(),
+      gauge: META ? gaugeLine(META) : '', logo: logoArt(), loc: META && META.ca ? LOC() : null,
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
     var svg = root.AgRainArt.render(input);
@@ -1501,7 +1645,8 @@
           dailyElems: ['pcpn', 'avgt', 'snow', 'maxt', 'mint'], porElems: ['pcpn', 'avgt'] }, {});
       } catch (e) { RECS = []; }
     }
-    return RECS;
+    // a Canadian print: its remarkable days in its units and language (components/rp-canada.js)
+    return CA() && META && META.ca ? CA().localizeRecords(RECS, LOC()) : RECS;
   }
 
   // ---------------------------------------------------------------- the logo
@@ -1726,7 +1871,9 @@
       cmp: $('rp-cmp').value, name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
       normals: $('rp-normals').checked, records: $('rp-records').checked,
       // the logo is not a box: its id rides along from the design, the color switch is read
-      logo: ST.logo, logoInk: pick('rp-logo-ink', ST.logoInk ? '1' : '0') !== '0' });
+      logo: ST.logo, logoInk: pick('rp-logo-ink', ST.logoInk ? '1' : '0') !== '0',
+      // units and language: the reader's own switch (a Canadian design only; a US town drops them)
+      units: isCanada($('rp-place').value) || isCanada(ST.station) ? ST.units : '', lang: isCanada($('rp-place').value) || isCanada(ST.station) ? ST.lang : '' });
   }
   // The year list: this year first (a gift, delivered in January), then every finished year.
   function giftYearLabel() { return fill((PRICES && PRICES.gift_year_label) || '{year} (ships January {next})'); }
@@ -1870,6 +2017,7 @@
     if (!d || dayIndex(yy, d) < 0) return '';
     // this year's gift: a day past the preview isn't drawn yet, and it is on the print made in January (2026-10-15)
     if (PREVIEW && ST.gift && yy === ST.year && d > PREVIEW.last) return 'On the January print: ' + (w ? w + ', ' : '') + shortDate(d) + '. The preview stops at ' + shortDate(PREVIEW.last) + '.';
+    if (FR()) { var pf = d.split('-').map(Number); return 'Sur le tirage : ' + (w ? w + ', ' : '') + (pf[2] === 1 ? '1er' : pf[2]) + ' ' + (root.AgRainArt ? root.AgRainArt.MON_FR[pf[1] - 1] : MON3[pf[1] - 1]); }
     return 'On the print: ' + (w ? w + ', ' : '') + shortDate(d);
   }
   function rowProblems() {
@@ -2075,7 +2223,8 @@
         ? (gift ? 'A gift card to print by email within 1 business day. The file comes in January, once the full year is in.'
           : settle ? 'A PNG and a PDF by email once the full year is in.' : 'A PNG and a PDF by email within 1 business day of paying.')
         : (SUB_BASE[id] + ' ' + (gift ? 'A gift card to print by email within 1 business day; the ' + (id === 'framed12x18' ? 'framed print' : 'print') + ' ships in January.'
-          : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, PRICES && PRICES[CUTOFF_KEY[id]]))).trim();
+          : settle ? 'Made once NOAA has all of ' + ST.year + ' in, with a proof first.' : cutoffNote(TODAY, OJ().j && OJ().j[CUTOFF_KEY[id]]))).trim();
+      if (blockedPick(id)) el.textContent = L('Shipping to Canada starts soon.', 'Envoi au Canada bientôt.');
     });
   }
 
@@ -2083,8 +2232,9 @@
      dates from data/rain-print.json, and what they allow for. October 1
      through December 25 only. */
   function syncXmas() {
-    var J = PRICES || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) return;
+    var J = OJ().j || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
+    // no dates (a Canadian design: no Christmas promise unless data/rain-print.json canada sets one): no Christmas lines
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) { $('rp-xmas-top').hidden = true; $('rp-xmas-why').hidden = true; return; }
     var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
@@ -2104,10 +2254,29 @@
   // and, when the pick traded miles for a snowfall record (or looked and found none): "Picked over a gauge 1.9 mi away because it records snowfall too."
   function gaugeHtml(m) {
     var w = pickWhy(m.why, m.year);
+    if (m.ca && CA()) {
+      var lg = LOC().lang, fr = lg === 'fr';
+      w = !m.why ? '' : m.why.over ? (fr ? 'Choisie plutôt qu’une station à ' : 'Picked over a station ') + CA().kmText(m.why.over.km, lg) + (fr ? ' parce qu’elle mesure aussi la neige.' : ' away because it records snowfall too.')
+        : m.why.none ? (fr ? 'Aucune station à proximité n’a de relevés de neige complets pour ' : 'No station nearby kept a full snowfall record for ') + m.year + (fr ? ', donc le tirage ne montre pas de neige.' : ', so the print draws no snow.') : '';
+      var dist = m.approx ? caWords().near + ' ' + m.city : CA().kmText(m.km, lg) + ' ' + caWords().from + ' ' + m.city;
+      return '<b>' + esc(m.name + (m.state ? ', ' + m.state : '')) + '</b>, ' + esc(dist) + ' (' + esc(sidPlain(m.sid, lg)) + ')' + (w ? '. <span class="rp-why" id="rp-why">' + esc(w.replace(/\.$/, '')) + '</span>' : '') +
+        (STATIONS.length > 1 ? (w ? '.' : '') + ' <a href="#rp-station" class="rp-chg" id="rp-chg">' + L('Change station', 'Changer de station') + '</a>' : '');
+    }
     return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' + (w ? '. <span class="rp-why" id="rp-why">' + esc(w.replace(/\.$/, '')) + '</span>' : '') +
       (STATIONS.length > 1 ? (w ? '.' : '') + ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
   }
+  /* The credit a Canadian print carries on the page (ECCC Data Servers End-use Licence, section 3). */
+  function caCredit() {
+    var fr = FR(), src = META && META.src, w = caWords();
+    return esc(w.source(src)) + ' (<a href="' + (fr ? CA().LICENCE_URL_FR : CA().LICENCE_URL) + '" rel="noopener">' + (fr ? 'licence' : 'licence') + '</a>)' +
+      (META && META.postal ? L('. Postal areas: GeoNames (CC BY 4.0)', '. Codes postaux : GeoNames (CC BY 4.0)') : '') + '.';
+  }
   function usualWords() {
+    if (META && META.ca) {
+      if (ST.cmp === 'normal') { var u = caUsual(META.sid); return u ? u + L(', counted only on the days the station reported.', ', comptée seulement les jours où la station a fait un relevé.') : ''; }
+      if (ST.cmp === 'station' && EXT) return L('A usual year here means this station\u2019s own average, ', 'Ici, une année normale est la moyenne de cette station, ') + EXT.yearFrom + L(' to ', ' à ') + EXT.yearTo + L(', counted only on the days it reported.', ', comptée seulement les jours où elle a fait un relevé.');
+      return '';
+    }
     if (ST.cmp === 'normal') return 'A usual year here means NOAA\u2019s 30-year normal for this station, counted only on the days it reported.';
     if (ST.cmp === 'station' && EXT) return 'A usual year here means this station\u2019s own average, ' + EXT.yearFrom + ' to ' + EXT.yearTo + ', counted only on the days it reported.';
     return '';
@@ -2128,12 +2297,54 @@
     art.innerHTML = '<p class="rp-placeholder">' + esc(NOART) + '</p>';
     art.classList.add('rp-empty');
     $('rp-stats-wrap').hidden = true;
-    $('rp-source').innerHTML = 'The print will come from this weather station: ' + gaugeHtml(m) +
-      '. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.';
+    $('rp-source').innerHTML = (m.ca ? L('The print will come from this weather station: ', 'Le tirage viendra de cette station météo : ') : 'The print will come from this weather station: ') + gaugeHtml(m) +
+      (m.ca ? '. ' + caCredit() : '. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.');
     setDesignRefs();
     showBuy(true);
   }
 
+  /* A Canadian print's line under the art and its year in numbers, in its units and
+     language (the same facts as the US lines above them, said the same way). */
+  function caText(D, m, OV, later) {
+    var fr = FR(), mm = LOC().units === 'mm';
+    var nf = function (v, d) { var t = (+v).toFixed(d); return fr ? t.replace('.', ',') : t; };
+    var rain = function (inch, day) { return mm ? nf(inch * 25.4, day ? 1 : 0) + ' mm' : nf(inch, 2) + ' in'; };
+    var snow = function (inch) { return mm ? nf(inch * 2.54, 0) + ' cm' : nf(inch, 1) + ' in'; };
+    // the year's snowfall from the days themselves (as the print does), not from inches already rounded to a tenth
+    var snowRaw = D.snow === null || D.snow === undefined ? null : DATA.days.reduce(function (t, x) { return x.v === null || x.v === undefined || !(x.s > 0) ? t : t + x.s; }, 0);
+    var dayW = function (iso) { var p = String(iso).split('-').map(Number); return fr ? (p[2] === 1 ? '1er' : p[2]) + ' ' + ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'][p[1] - 1] : longDate(iso); };
+    var u = usualWords();
+    if (PREVIEW) $('rp-preview-line').innerHTML = fr ? '<b>Aperçu jusqu’au ' + esc(dayW(PREVIEW.last)) + '.</b> Le tirage final montre toute l’année.' : '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
+    $('rp-source').innerHTML = esc(caWords().gauge) + (fr ? ' : ' : ': ') + gaugeHtml(m) + '. ' +
+      (fr ? (D.n - D.missing) + ' jours sur ' + D.n + ' ont un relevé' + (PREVIEW ? ' jusqu’ici, du 1er janvier au ' + esc(dayW(PREVIEW.last)) : '') +
+          (D.missing ? '; la station n’a rien envoyé pour ' + D.missing + (D.missing === 1 ? ' jour, laissé en blanc' : ' jours, laissés en blanc') + ', jamais dessinés comme secs' : '') + '. '
+        : (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') +
+          (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, left as a gap' : ' days, left as gaps') + ', not drawn as dry' : '') + '. ') +
+      (D.unsplit ? (fr ? D.unsplit + (D.unsplit === 1 ? ' jour a été relevé' : ' jours ont été relevés') + ' avec un total plus tard; ce total est dessiné le jour du relevé. ' : D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ') : '') +
+      (PREVIEW && OV ? L('The comparison covers the same days. ', 'La comparaison couvre les mêmes jours. ') : '') +
+      (STUCK ? '<b>' + esc(m.name) + (fr ? ' a relevé 0 pendant ' + STUCK.n + ' jours de suite, quand cette période reçoit d’habitude ' + rain(STUCK.usual) + '. Le pluviomètre était peut-être bloqué, donc le tirage laisse de côté la période sèche et les journées remarquables.</b> '
+        : ' reported 0 for ' + STUCK.n + ' days in a row, ' + esc(longDate(STUCK.from)) + ' to ' + esc(longDate(STUCK.to)) + ', when that stretch usually gets ' + rain(STUCK.usual) + '. The gauge may have been stuck, so the print leaves off the dry stretch and the remarkable days.</b> ') : '') +
+      (later ? L((later === 1 ? 'Your date after ' : 'Your dates after ') + esc(longDate(PREVIEW.last)) + ' will be on the finished print. ', (later === 1 ? 'Votre date après le ' : 'Vos dates après le ') + esc(dayW(PREVIEW.last)) + ' seront sur le tirage final. ') : '') +
+      (u ? esc(u) + ' ' : '') + caCredit() +
+      (ST.records && PREVIEW ? L(' Remarkable days are marked once the year is over.', ' Les journées remarquables sont ajoutées une fois l’année finie.') : '') +
+      (ST.records && !PREVIEW && root.AgRainRecords && !EXT_WAIT && !(EXT && EXT.rows) ? L(' The station history didn’t load, so the year and month records are left off.', ' L’historique de la station n’a pas chargé, donc les records de l’année et du mois sont laissés de côté.') : '') +
+      (ST.records && SKIPPED.length ? L(' Left off the print for space: ', ' Laissé de côté faute de place : ') + esc(SKIPPED.join(', ')) + '.' : '') +
+      (ST.cmp !== 'none' && !OV && !(EXT_WAIT && ST.cmp === 'station') && !(NORM_WAIT && ST.cmp === 'normal') ? ' <b>' + esc(ST.cmp === 'normal' ? caWords().noNormal : L('The station history didn’t load, so there’s no comparison line.', 'L’historique de la station n’a pas chargé, donc pas de ligne de comparaison.')) + '</b>' : '');
+    var rows = fr ? [
+      [PREVIEW ? 'Précipitations jusqu’ici' : 'Précipitations', rain(D.total) + ' (pluie et neige fondue)'],
+      ['Neige', snowRaw !== null ? snow(snowRaw) : 'pas de relevés de neige complets à cette station'], ['Jours de pluie ou de neige', D.wet], ['Plus longue période sèche', D.dryMax.len + ' jours'],
+      ['Journée la plus arrosée', D.max.v > 0 ? dayW(D.max.date) + ', ' + rain(D.max.v, true) : D.wet ? 'inconnue : un relevé de plusieurs jours pourrait en cacher une plus grosse' : 'pas de pluie mesurable'],
+      ['Jours de traces', D.trace], ['Jours sans relevé', D.missing],
+      ['Comparé avec', OV ? OV.label + ', ' + rain(OV.total) + (PREVIEW ? ' (mêmes jours)' : '') : 'rien']
+    ] : [
+      [PREVIEW ? 'Precipitation so far' : 'Precipitation', rain(D.total) + ' (rain and melted snow)'],
+      ['Snowfall', snowRaw !== null ? snow(snowRaw) : 'no full snowfall record at this station'], ['Days with rain or snow', D.wet], ['Longest dry stretch', D.dryMax.len + ' days'],
+      ['Wettest day', D.max.v > 0 ? fmtDate(D.max.date) + ', ' + rain(D.max.v, true) : D.wet ? 'not known: a report that covers several days could hold a bigger one' : 'no measurable rain'],
+      ['Trace days', D.trace], ['Days with no report', D.missing],
+      ['Compared with', OV ? OV.label + ', ' + rain(OV.total) + (PREVIEW ? ' (same days)' : '') : 'nothing']
+    ];
+    $('rp-stats').innerHTML = rows.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(String(r[1])) + '</dd></div>'; }).join('');
+  }
   function render() {
     if (!DATA || BLOCKED) return;
     // the maker sees the serial on screen; nobody else ever does
@@ -2149,6 +2360,8 @@
     var dist = distText(m);
     var later = PREVIEW ? ST.markers.filter(function (x) { return x.date > PREVIEW.last; }).length : 0;
     if (PREVIEW) $('rp-preview-line').innerHTML = '<b>Preview through ' + esc(longDate(PREVIEW.last)) + '.</b> The print you get shows the full year.';
+    if (m.ca && CA()) caText(D, m, OV, later);
+    else {
     $('rp-source').innerHTML = 'Weather station: ' + gaugeHtml(m) + '. ' +
       (D.n - D.missing) + ' of ' + D.n + ' days recorded' + (PREVIEW ? ' so far, January 1 through ' + esc(longDate(PREVIEW.last)) : '') + (D.missing ? '; the station sent no report on ' + D.missing + (D.missing === 1 ? ' day, left as a gap' : ' days, left as gaps') + ', not drawn as dry' : '') + '. ' +
       (D.unsplit ? D.unsplit + (D.unsplit === 1 ? ' day was' : ' days were') + ' reported together in a later total; that total is drawn on the day it was reported. ' : '') +
@@ -2171,7 +2384,9 @@
       ['Compared with', OV ? OV.label + ', ' + f2(OV.total) + ' in' + (PREVIEW ? ' (same days)' : '') : 'nothing']
     ];
     $('rp-stats').innerHTML = rows.map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + esc(String(r[1])) + '</dd></div>'; }).join('');
+    }
     $('rp-stats-wrap').hidden = false;
+    syncCa();
     setDesignRefs();
     showBuy(true);
     sampleLine(!!SAMPLE);
@@ -2357,7 +2572,8 @@
       var mode = yearMode(ST.year, TODAY);
       if (mode === 'future') throw new Error(ST.year + ' hasn\u2019t happened yet. Pick ' + CURRENT_YEAR + ' to give this year as a gift, or an earlier year.');
       ST.gift = mode === 'gift';
-      setStatus('Finding ' + ST.place + '…');
+      GEO_LANG = LOC().lang;
+      setStatus(L('Finding ', 'Recherche de ') + ST.place + '…');
       // Only a link that names its station (a county rain page) gets the shorter tries.
       var tries = ST.station ? shorterPlaces(ST.place) : [];
       /* A design that names its station but carries no ?ll= (a shared code,
@@ -2409,8 +2625,10 @@
       // a ZIP or a picked town: the print, the link and the order name the town found
       // "Ames IA" with no comma: the box and the order say "Ames, IA" once the town is found
       if (geocodeQuery(ST.place).zip || (ST.place.indexOf(',') < 0 && !g.approx && geocodeQuery(ST.place).st)) { ST.place = cleanText(placeLabel(g), LIMITS.place); $('rp-place').value = ST.place; }
-      setStatus('Looking for NOAA stations near ' + g.name + (g.admin1 ? ', ' + g.admin1 : '') + '…');
+      var gCa = g.country_code === 'CA' || isCanada(ST.station);
+      setStatus(gCa ? L('Looking for weather stations near ', 'Recherche des stations météo près de ') + g.name + '…' : 'Looking for NOAA stations near ' + g.name + (g.admin1 ? ', ' + g.admin1 : '') + '…');
       // a county link searches around its own station, so that station is in the list
+      NEXT_CA = gCa;
       return stations(ll ? ll.lat : g.latitude, ll ? ll.lon : g.longitude, ST.year);
     }).then(function (list) {
       if (my !== reqToken) throw 'stale';
@@ -2418,6 +2636,8 @@
       if (ll) list = list.map(function (s) { return Object.assign({}, s, { km: haversine(g.latitude, g.longitude, s.ll[1], s.ll[0]) }); }).sort(function (a, b) { return a.km - b.km; });
       STATIONS = list;
       var noStation = function () {
+        if (g.country_code === 'CA') return new Error(ST.gift ? L('No weather station within 70 km of ', 'Aucune station météo à moins de 70 km de ') + g.name + L(' is reporting for ' + ST.year + ' from January 1 on. Try a bigger town nearby.', ' n’a de relevés pour ' + ST.year + ' depuis le 1er janvier. Essayez une plus grande ville proche.')
+          : L('No weather station within 70 km of ', 'Aucune station météo à moins de 70 km de ') + g.name + L(' has all of ' + ST.year + ' on record. Try a bigger town nearby, or another year.', ' n’a toute l’année ' + ST.year + '. Essayez une plus grande ville proche, ou une autre année.'));
         return new Error(ST.gift ? 'No NOAA station near ' + g.name + ' is reporting for ' + ST.year + ' from January 1 on. Try a bigger town nearby.'
           : 'No NOAA station near ' + g.name + ' has all of ' + ST.year + ' on record. Try a bigger town nearby, or another year.');
       };
@@ -2460,7 +2680,7 @@
         autoPick = true;
         var readNow = function (sid, y) { return my === reqToken ? daily(sid, y).catch(function (er) { readErr = er; throw er; }) : Promise.reject('stale'); };
         return pickStation(pool, ST.year, readNow, { lat: g.latitude, onTry: function (s, kind) {
-          setStatus(kind === 'snow' ? 'Checking ' + stationName(s.name) + ', which records snowfall too…' : 'Reading ' + stationName(s.name) + ' for ' + ST.year + '…');
+          setStatus(kind === 'snow' ? L('Checking ', 'Vérification de ') + stationName(s.name) + L(', which records snowfall too…', ', qui mesure aussi la neige…') : L('Reading ', 'Lecture de ') + stationName(s.name) + L(' for ', ' pour ') + ST.year + '…');
         } }).then(function (r) {
           if (my !== reqToken) throw 'stale';
           picked = r.picked; chosen = r.chosen; why = r.why;
@@ -2474,12 +2694,17 @@
       if (!picked) { var none = new Error('None of the stations near ' + g.name + ' sent back ' + ST.year + '. Try again in a minute.'); none.retry = true; none.status = readErr && readErr.status; throw none; }
       ST.station = chosen.sid;
       sel.innerHTML = STATIONS.map(function (s) {
-        var w = snowWord(s, seen);
-        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4) + (w ? ', ' + w : '') + '</option>';
+        var w = s.ca && CA() ? CA().snowWord(seen && seen[s.sid], s.snowOk, LOC().lang) : snowWord(s, seen);
+        return '<option value="' + esc(s.sid) + '">' + esc(stationName(s.name)) + ', ' + (s.ca && CA() ? CA().kmText(s.km, LOC().lang) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4)
+          : milesText(miles(s.km)) + ', ' + s.valid_daterange[0][0].slice(0, 4) + '\u2013' + s.valid_daterange[0][1].slice(0, 4)) + (w ? ', ' + w : '') + '</option>';
       }).join('');
       sel.value = chosen.sid;
-      var stateAbbr = abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
+      var caM = !!(chosen.ca || (CA() && CA().isSid(chosen.sid)));
+      var stateAbbr = caM ? String(g.prov || picked.meta.state || '').toUpperCase() : abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
       META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid, why: autoPick ? why : null };
+      // a Canadian print: its province, its source (ECCC or CoCoRaHS) and a postal lookup for the credits; the toggles show
+      if (caM) { META.ca = true; META.prov = stateAbbr.toLowerCase(); META.src = picked.meta.src || chosen.src || ''; META.postal = g.postal || ''; }
+      syncCa();
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
         blockPrint(stationName(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. ' +
@@ -2500,7 +2725,7 @@
       var yearLen = isLeap(ST.year) ? 366 : 365, notIn = !ST.gift && lastYearOpen(ST.year) && picked.days.length < yearLen;
       PREVIEW = ST.gift || notIn ? { last: picked.days[picked.days.length - 1].date, yearLen: yearLen } : null;
       SETTLE = notIn || (!ST.gift && settlingByDate(ST.year));
-      setStatus('Reading the 30-year normal at ' + stationName(META.name) + '…');
+      setStatus(META.ca ? L('Reading the 1991\u20132020 averages…', 'Lecture des moyennes 1991\u20132020…') : 'Reading the 30-year normal at ' + stationName(META.name) + '…');
       /* The station's full record (every year it has kept) is the big download
          and only the station-average comparison and the year and month records
          need it, so the print draws without waiting for it and draws again when
@@ -2521,7 +2746,7 @@
       if (ST.cmp !== 'station' && !NORM_CACHE.has(chosen.sid + '|' + ST.year)) {
         NORM30 = null; STUCK = null; NORM_WAIT = true;
         render();
-        if (!SAMPLE) { setStatus('Drawn. Adding the 30-year normal from ' + stationName(META.name) + '\u2026'); if (e && !e.auto) { showArt(); artShown = true; } }
+        if (!SAMPLE) { setStatus(META.ca ? L('Drawn. Adding the usual year\u2026', 'Dessiné. Ajout de l’année normale\u2026') : 'Drawn. Adding the 30-year normal from ' + stationName(META.name) + '\u2026'); if (e && !e.auto) { showArt(); artShown = true; } }
       }
       return Promise.all([ST.cmp === 'station' ? por : null, normP]);
     }).then(function (res) {
@@ -2562,6 +2787,7 @@
   // the status line once a print is up
   function drawnStatus() {
     if (!DATA || !META) return;
+    if (META.ca && FR()) { setStatus('Dessiné à partir des relevés de ' + META.name + '.' + (PREVIEW ? ' Aperçu jusqu’au ' + PREVIEW.last.slice(8).replace(/^0/, '') + ' ' + ((root.AgRainArt && root.AgRainArt.MON_FR) || MON3)[+PREVIEW.last.slice(5, 7) - 1] + '.' : '')); return; }
     setStatus('Drawn from the records at ' + stationName(META.name) + '.' +
       (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : '') +
       (EXT_WAIT && ST.records && !PREVIEW ? ' Still reading the station\u2019s full history for the remarkable days\u2026' : ''));
@@ -2623,13 +2849,14 @@
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
       if (o) o.textContent = giftYearLabel();
       syncBiz();
+      syncCa();
       syncAddress();
       syncPick();
       if (PAID) showPaid(PAID, PAID_SAVED, true);
     }).catch(function () { if (PAID) showPaid(PAID, PAID_SAVED, true); });
   }
   function payLink(id) {
-    var l = PRICES && PRICES.payment_links && PRICES.payment_links[id];
+    var J = OJ().j, l = J && J.payment_links && J.payment_links[id];
     return typeof l === 'string' && /^https:\/\/[^\s"<>]+$/.test(l) ? l : '';
   }
   /* THE ORDER (2026-10-14, the approved flow). Step 3 is one picker, framed
@@ -2642,9 +2869,11 @@
      back to rain-print?paid=<product>&s=<session> (PAID below). */
   var PICK = 'framed12x18', NONAME_OK = false;
   var PICK_WORD = { framed12x18: 'Framed', print12x18: 'Print', digital: 'Digital file' };
-  function pickPrice(id) { var J = PRICES || {}; return typeof J[id] === 'number' ? money(J[id]) : ''; }
+  // a Canadian design reads "US$19": the prices are in US dollars
+  function pickPrice(id) { var J = OJ().j || {}; return typeof J[id] === 'number' ? (caOrder() ? 'US' : '') + money(J[id]) : ''; }
   function setPick(id) {
     if (PRODUCTS.indexOf(id) < 0) return;
+    if (blockedPick(id)) id = 'digital';   // not shipped to Canada yet (data/rain-print.json canada.ships)
     PICK = id;
     radios('rp-product').forEach(function (r) { r.checked = r.value === id; });
     radios('rp-pproduct').forEach(function (r) { r.checked = r.value === id; });
@@ -2667,7 +2896,11 @@
     $('rp-ships').hidden = PICK === 'digital';
     $('rp-madeby').textContent = MADE_BY[PICK === 'digital' ? 'file' : 'print'];
     // when it comes: this year's gift ships in January and a year NOAA hasn't finished waits, so those say so instead
-    var arr = januaryGift() || (SETTLE && canOrder()) || (GIFT && GIFT.usable) ? '' : arriveText(PRICES, PICK, TODAY);
+    var arr = januaryGift() || (SETTLE && canOrder()) || (GIFT && GIFT.usable) ? '' : arriveText(OJ().j, PICK, TODAY);
+    // the prices at the top and the shipping line follow the country (Canada: data/rain-print.json canada)
+    var OJj = OJ().j || {};
+    PRODUCTS.forEach(function (id) { Array.prototype.forEach.call(doc.querySelectorAll('[data-price="' + id + '"]'), function (el) { if (typeof OJj[id] === 'number') el.textContent = (caOrder() ? 'US' : '') + money(OJj[id]); }); });
+    if (OJj.ships_within) $('rp-ships').textContent = OJj.ships_within;
     $('rp-arrive').textContent = arr;
     $('rp-arrive').hidden = !arr;
     syncXmas();
@@ -2957,7 +3190,7 @@
     return 'added, ' + (ST.logoInk ? 'in the print\u2019s ink color' : 'in its own colors');
   }
   function syncSummary() {
-    var el = $('ro-summary'), id = $('ro-choice').value, J = PRICES || {};
+    var el = $('ro-summary'), id = $('ro-choice').value, J = OJ().j || {};
     if (!el || !canOrder()) { if (el) el.innerHTML = ''; return; }
     var paid = !!(GIFT && GIFT.usable);   // a gift card: already paid for (2026-10-13: the form asked a card holder to pay)
     var price = paid ? 'covered by your gift card' : typeof J[id] === 'number' ? money(J[id]) + (id === 'digital' ? '' : ', shipping included') : '';
@@ -3035,7 +3268,7 @@
   }
   // when it comes, in words, for the review sheet
   function whenWords(id) {
-    var file = id === 'digital', J = PRICES || {};
+    var file = id === 'digital', J = OJ().j || {};
     if (giftMode() && canOrder()) return 'This one is made in January, once the full year is in, and I send the ' + (file ? 'finished file' : 'proof') + ' then. Within 1 business day I email you a gift card to print.';
     if (SETTLE) return 'NOAA doesn\u2019t have all of ' + ST.year + ' in yet. I make this one once the full year is in, and send the ' + (file ? 'finished file' : 'proof') + ' then.';
     if (file) return 'A PNG and a PDF by email within 1 business day of paying.';
@@ -3135,8 +3368,9 @@
     $('ro-deliver-wrap').hidden = !(jan || plain);
     $('ro-notes').placeholder = jan || giftTicked() ? 'Need it by a certain day? Say so here.' : 'A gift? Need it by a certain day? Say so here.';
     var theirs = (jan || plain) && $('ro-deliver').value === 'recipient';
-    $('ro-address-label').textContent = jan ? 'Ship to (name, street, town, state, ZIP; theirs is fine)'
-      : plain && theirs ? 'Ship to them (their name, street, town, state, ZIP)' : 'Ship to (name, street, town, state, ZIP)';
+    var zip = caOrder() ? 'province, postal code' : 'state, ZIP';
+    $('ro-address-label').textContent = jan ? 'Ship to (name, street, town, ' + zip + '; theirs is fine)'
+      : plain && theirs ? 'Ship to them (their name, street, town, ' + zip + ')' : 'Ship to (name, street, town, ' + zip + ')';
     // a gift file sent straight to the person it is for needs their email
     var mail = theirs && !print;
     $('ro-gift-email-wrap').hidden = !mail;
@@ -3714,8 +3948,9 @@
      if it is closed (its month next), and says so (panel 5, 2026-10-15: a tap
      did nothing visible on a phone, and a 4th did nothing at all) */
   LABEL_PRESETS.forEach(function (w) {
-    var b = doc.createElement('button'); b.type = 'button'; b.textContent = w;
+    var b = doc.createElement('button'); b.type = 'button'; b.textContent = w; b.setAttribute('data-en', w);
     b.addEventListener('click', function () {
+      var w = b.textContent;   // the word as shown (French on a French design: components/rp-canada.js)
       endExample(); wordsEvent('day');
       for (var i = 1; i <= LIMITS.markers; i++) if (!$('rp-m' + i + 'l').value) {
         $('rp-m' + i + 'row').hidden = false; $('rp-m' + i + 'l').value = w; TOUCHED[i] = false;
@@ -3733,6 +3968,9 @@
   syncRows();
   syncCounts();
   radios('rp-style').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
+  // Canada: mm or inches, English or French (the choice rides in the design)
+  radios('rp-units').forEach(function (r) { r.addEventListener('change', function () { ST.units = r.value; restyle(); syncCa(); ga('rain_print_units', { units: r.value }); }); });
+  radios('rp-lang').forEach(function (r) { r.addEventListener('change', function () { ST.lang = r.value; restyle(); syncCa(); if (DATA && !BLOCKED) { render(); drawnStatus(); } ga('rain_print_lang', { lang: r.value }); }); });
   // the normals are NOAA's 30-year normal: showing them makes that the comparison, and another comparison turns them off
   $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
   $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });

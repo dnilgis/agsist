@@ -28,6 +28,17 @@
   "business_one_address_off": {"print12x18": 3, "framed12x18": 6},
   "business_quote_max": 100,
   "reprint_fee": 15,
+  "_canada": "Orders from Canada (components/rain-print.js orderPrices, 2026-10-16). A design whose town or station is Canadian orders the digital file today, at the price and checkout above (no shipping). ships is the one switch for prints and framed prints to Canada: false keeps them off for Canadian designs (the cards say shipping to Canada starts soon). true opens them at print12x18 / framed12x18 below (US dollars, shipping to Canada included; null keeps the US price), through payment_links below (a Stripe Payment Link that collects a Canadian address; null opens the order request form, which emails Sig, and he sends a payment link). ships_within replaces the US shipping line for those designs; transit_business_days feeds the arrival date; print_christmas_cutoff and framed_christmas_cutoff (YYYY-MM-DD or null) give Canada its own Christmas dates, and with null no Christmas date is shown for a Canadian design. Prices, carriers and terms are Sig's call; see the plan in the Rain Print Canada notes.",
+  "canada": {
+    "ships": false,
+    "print12x18": null,
+    "framed12x18": null,
+    "payment_links": {"print12x18": null, "framed12x18": null},
+    "ships_within": "Prints and framed prints ship to Canada within 3 business days after you approve the proof. GST/HST is collected on delivery.",
+    "transit_business_days": {"print12x18": 8, "framed12x18": 8},
+    "print_christmas_cutoff": null,
+    "framed_christmas_cutoff": null
+  },
   "full_year_from": "01-01",
   "gift_year_label": "{year} (ships January {next})",
   "gift_delivery": "A {year} print ships in January {next}, once the full year is in. A print or framed print gets a proof first, as with every order.",

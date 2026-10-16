@@ -1,0 +1,55 @@
+name: Rain Print Canada stations
+
+# Rebuilds data/rain-print-ca/stations.json for Rain Print in Canada
+# (components/rp-canada.js): the Canadian stations in NOAA's GHCN-Daily (ECCC
+# climate stations and CoCoRaHS Canada gauges), how whole each year's record
+# is, and each station's 1991-2020 monthly averages. Read from NOAA's public
+# S3 copy (noaa-ghcn-pds). Monthly: a new year's letter appears after Jan 31.
+# The page reads each year's days live from S3, so this list only ranks and
+# names the stations; a stale list never changes a total.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 9 3 * *'   # the 3rd of each month
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rp-canada-stations
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: python scripts/build_rp_canada.py --selftest
+      - name: Build data/rain-print-ca/stations.json
+        run: python scripts/build_rp_canada.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          F="data/rain-print-ca/stations.json"
+          rm -rf /tmp/rpca && mkdir -p /tmp/rpca && cp "$F" /tmp/rpca/
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            cp /tmp/rpca/stations.json "$F"
+            git add "$F"
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update Rain Print Canada stations $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
