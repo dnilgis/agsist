@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-16T18:22:10Z",
+ "run_utc": "2026-10-16T18:31:23Z",
  "sources": [
   {
    "bytes": null,
@@ -3726,20 +3726,20 @@
    "via": null,
    "archive_timestamp": null,
    "id": "bench-farm-bill-2",
-   "url": "https://www.congress.gov/crs-product/R48918",
+   "url": "https://crsreports.congress.gov/product/pdf/R/R48918",
    "title": "Benchmark farm-bill: Congressional Research Service (R48918)",
    "why": "/farm-bill competitor benchmark Oct 16, 2026 (government)",
-   "kind": "html",
-   "checked_utc": "2026-10-16T16:03:35Z",
-   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback/python: HTTP 429; wayback/python: HTTP 429; wayback/curl: HTTP 429",
+   "kind": "pdf",
+   "checked_utc": "2026-10-16T18:31:09Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback: no archived copy",
    "status": "failed"
   },
   {
-   "bytes": 136281,
-   "sha256": "65e69fc2b5ff7f90bea9fffd41d2244ed99515969406d127dc546649e91c9df2",
-   "fetched_utc": "2026-10-16T16:03:50Z",
+   "bytes": 136119,
+   "sha256": "f02fcf2ce3fb46c3d875133894550b07071c7fa62c54fbf10f65394473fe9b79",
+   "fetched_utc": "2026-10-16T18:31:18Z",
    "pages": null,
-   "etag": "W/\"21459-TplyXieAS+upNTjbUJ12KQPur9s\"",
+   "etag": "W/\"213b7-COZR45J50i29n+AhSIm8F4yscqo\"",
    "last_modified": null,
    "saved_as": "refs/bench-farm-bill-3.html",
    "final_url": null,
@@ -3747,42 +3747,42 @@
    "via": "direct",
    "archive_timestamp": null,
    "id": "bench-farm-bill-3",
-   "url": "https://www.agriculture.senate.gov/newsroom/rep/press/release/chairman-boozman-releases-updated-farm-bill-20-text-announces-business-meeting",
+   "url": "https://www.agriculture.senate.gov/agricultural-act-of-2026-farm-bill-20",
    "title": "Benchmark farm-bill: Senate Agriculture Committee",
    "why": "/farm-bill competitor benchmark Oct 16, 2026 (government)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:03:49Z",
+   "checked_utc": "2026-10-16T18:31:18Z",
    "error": null,
    "attempts": [
     "direct/python: ok 200"
    ],
    "status": "new",
-   "text_chars": 2398
+   "text_chars": 2139
   },
   {
-   "bytes": 111503,
-   "sha256": "083b792d556c5deec07aba4d7a9c17d2fc84b27b6f5825ea307fcd8854de862e",
-   "fetched_utc": "2026-10-16T16:03:52Z",
+   "bytes": 152294,
+   "sha256": "b01b4fd1157e2f95d2b5eeea6ab1bfa250f4697dc858c15ae02ebb518294644b",
+   "fetched_utc": "2026-10-16T18:31:20Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
    "saved_as": "refs/bench-farm-bill-4.html",
-   "final_url": "https://farmpolicynews.illinois.edu/2025/12/experts-lawmakers-split-on-2026-farm-bill-likelihood/",
+   "final_url": null,
    "content_type": "text/html; charset=UTF-8",
    "via": "direct",
    "archive_timestamp": null,
    "id": "bench-farm-bill-4",
-   "url": "https://farmpolicynews.illinois.edu/?p=33712",
+   "url": "https://farmpolicynews.illinois.edu/category/farm-bill/",
    "title": "Benchmark farm-bill: Farm Policy News",
    "why": "/farm-bill competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:03:51Z",
+   "checked_utc": "2026-10-16T18:31:19Z",
    "error": null,
    "attempts": [
     "direct/python: ok 200"
    ],
    "status": "new",
-   "text_chars": 4476
+   "text_chars": 5819
   },
   {
    "bytes": 136110,
@@ -3858,6 +3858,56 @@
    ],
    "status": "new",
    "text_chars": 3839
+  },
+  {
+   "bytes": 1422678,
+   "sha256": "a35a87a88c610b80ca40ecbb0fe795219464ec8fbdac3073843026c425578de1",
+   "fetched_utc": "2026-10-16T18:31:21Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": "Sat, 26 Sep 2026 07:33:44 GMT",
+   "saved_as": "refs/s5526-rs.html",
+   "final_url": null,
+   "content_type": "text/html",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "s5526-rs",
+   "url": "https://www.govinfo.gov/content/pkg/BILLS-119s5526rs/html/BILLS-119s5526rs.htm",
+   "title": "S. 5526, Agricultural Act of 2026, reported in the Senate (Sep 24, 2026), bill text",
+   "why": "/farm-bill: confirm the Thune beef country-of-origin labeling amendment is in the reported text and what it does; Dairy Forward Pricing end date; loan limits",
+   "kind": "html",
+   "checked_utc": "2026-10-16T18:31:21Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 1037888
+  },
+  {
+   "bytes": 1281538,
+   "sha256": "da1845f477d502c60d20a39d7114846850c80a61fbaf5355173829702df56813",
+   "fetched_utc": "2026-10-16T18:31:23Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": "Sat, 11 Jul 2026 08:18:02 GMT",
+   "saved_as": "refs/hr7567-eh.html",
+   "final_url": null,
+   "content_type": "text/html",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "hr7567-eh",
+   "url": "https://www.govinfo.gov/content/pkg/BILLS-119hr7567eh/html/BILLS-119hr7567eh.htm",
+   "title": "H.R. 7567, Farm, Food, and National Security Act of 2026, as passed by the House (Apr 30, 2026), bill text",
+   "why": "/farm-bill: House Dairy Forward Pricing end date, guaranteed and direct loan limits, any country-of-origin labeling section",
+   "kind": "html",
+   "checked_utc": "2026-10-16T18:31:23Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 960799
   },
   {
    "bytes": 91148,

@@ -1,35 +1,45 @@
 # Benchmark farm-bill: Farm Policy News
-# https://farmpolicynews.illinois.edu/?p=33712
-# fetched 2026-10-16T16:03:52Z, sha256 083b792d556c5deec07aba4d7a9c17d2fc84b27b6f5825ea307fcd8854de862e
+# https://farmpolicynews.illinois.edu/category/farm-bill/
+# fetched 2026-10-16T18:31:20Z, sha256 b01b4fd1157e2f95d2b5eeea6ab1bfa250f4697dc858c15ae02ebb518294644b
 
-Experts, Lawmakers Split on 2026 Farm Bill Likelihood | Farm Policy News | Illinois
+Farm Bill | Farm Policy News | Illinois
 
-E&E News’ Grace Yarrow reported that “House Republicans are planning to revive farm bill negotiations in January after failing to garner enough political will to pass a new deal by the end of the year, as they’d initially hoped.”
+As the latest extension of the 2018 Farm Bill expired Sept. 30, Congress remained without a new long-term agriculture policy despite years of negotiations and temporary extensions. While the U.S. House passed a new Farm Bill earlier this year and the Senate Agriculture Committee advanced its own version in September, lawmakers have yet to reach a final agreement.
 
-“House Agriculture Chair G.T. Thompson (R-Pa.) said in an interview that he wants to get a markup on the calendar ahead of a Jan. 30 funding deadline, though he acknowledged it may be too complicated to attach the farm bill to new spending legislation,” Yarrow reported. “The punt to January means Congress will have gone a third year without making needed updates to critical agriculture policies, creating fresh uncertainty for farmers who’ve been pummeled by high input costs, rising inflation and President Donald Trump’s tariff wars.”
+The Senate’s version of the farm bill isn’t expected to be put to a vote in the chamber before the election and instead senators and House lawmakers will informally conference to work out differences, Senate Agriculture Committee Chairman John Boozman (R-Ark.) said Thursday. “We’ll get together with the House and the Senate and discuss and figure out a path,” Boozman said.
 
-Courtesy of the House Ag Committee.
+The Senate Agriculture Committee advanced the 2026 farm bill on a 12-11 party-line vote Wednesday after resuming a recessed business meeting and rejecting an effort to reopen the bill for another amendment. The bill advanced after Sen. Mitch McConnell, R-Ky., returned to the committee following an extended absence.
 
-Lawmakers Say 2026 Five-Year Farm Bill Still Possible
+The Farm Bill will once again be in front of the Senate Agriculture Committee for a vote on Wednesday, with the return of Senator Mitch McConnell from a several month absence giving Republicans enough votes to advance the legislation out of committee if they remain unified.
 
-Agri-Pulse’s Kim Chipman, Lydia Johnson, Oliver Ward, and Noah Wicks reported that “House Agriculture Committee Chair Glenn ‘GT’ Thompson, R-Pa., is taking issue with suggestions that the days of full, five-year farm bills may be over. ‘I think that’s people who are naive and don’t have a great historical grasp on farm bill processes,‘ he told Agri-Pulse.”
+Senate Agriculture Chair John Boozman (R-Ark.) said he will reconvene committee members in September to vote again on his farm bill package after it failed to advance Thursday.
 
-Brownfield Ag News’ Carah Hart reported that “the chairman of the U.S. Senate Ag Committee says he’s optimistic lawmakers can make progress on a new farm bill in 2026. John Boozman from Arkansas says even in an election year it’s possible.”
+It’s now or never for the 2026 farm bill. That’s the urgent warning from Senate Agriculture Chairman John Boozman, R-Ark., as his committee prepares to take up a farm bill today. The proposed legislation addresses key ag items not updated since Congress last passed a full, five-year farm bill in 2018.
 
-“‘If you spend any time at all in farm country, it doesn’t take a genius to figure out that it’s difficult,'” Hart reported. “The One Big Beautiful Bill Act signed into law earlier this year included some farm bill provisions, but others couldn’t be addressed with reconciliation. He tells Brownfield that includes addressing loan limits. ‘All of those limits and things they don’t work anymore, so we’ve got to increase those. That doesn’t cost a lot of money. You know that’s the good news, but it can be very helpful to our farm community. Those are the things that we got to get straightened out.'”
+Progressive Farmer’s Jake Zajkowski reported that, “the House of Representatives passed a $95 billion budget resolution Wednesday along party lines that would direct up to $12 billion in aid to struggling farmers while providing $73 billion for defense and intelligence spending tied to the ongoing war with Iran.” “The resolution passed 216-214, with Reps. Warren […]
 
-Experts Doubt Full Five-Year Farm Bill in 2026
+Newsweek’s Billal Rahman reported that, “hard-line Republican lawmakers and conservative groups are criticizing a GOP-backed agricultural labor bill that would allow some undocumented farmworkers to obtain temporary legal status, arguing the measure amounts to amnesty.” “The proposed legislation has highlighted a split within the Republican Party, with more conservative members wanting a tougher response to […]
 
-Progressive Farmer’s Chris Clayton reported that former Farm Service Agency (FSA) director Jonathan Coppess “warned that Congress’ policy changes in the One Big Beautiful Bill Act have permanently severed the political link between food assistance and farm programs.”
+Politico’s Meredith Lee Hill and Kelsey Brugger reported that “House Republican leaders and White House officials are coalescing around a roughly $80 billion policy package as they prepare for a final summer push to enact party-line budget reconciliation legislation.” “House Armed Services Chair Mike Rogers (R-Ala.) said the bill would pump $67 billion into Pentagon […]
 
-“The reconciliation package — sometimes dubbed as ‘OB3’ — doubled spending on commodity subsidy programs while cutting food assistance to low-income households by more than $200 billion, a move he described as politically unprecedented,” Clayton reported. “‘In effect, we cut spending on SNAP to double subsidies to farmers,’ Coppess said. Highlighting how marrying food stamps to farm programs kept the farm bill going since the 1960s, that linkage has been broken.”
+Senate Agriculture Chair John Boozman (R-Ark.) released a farm bill proposal Tuesday that would make sweeping agriculture policy changes while excluding Democrats’ top demand, teeing up a partisan fight that could scuttle the package.
 
-“‘This is the end of the farm bill as we’ve known it,’ Coppess said. ‘For 50 years, the core deal has been food assistance paired with farm programs. That deal is now broken. OB3 is the fatal, final blow,‘” Clayton reported. “Diving into specific policies, Coppess said the farm policy changes in OB3, combined with a growing reliance on ad-hoc aid, are a bad mix of costly farm policies.”
+All eyes are shifting to the Senate following the House passage of a farm bill Thursday. Senate Agriculture Committee Chair John Boozman, R-Ark., is targeting the end of May or early June for a bill markup as Democrats prepare for fights on pesticides and food assistance.
 
-AgWeb’s Tyne Morgan reported in November that “the loss of urgency to pass a new, comprehensive five-year farm bill may be due to the fact Congress included key enhancements to the Farm Safety Net in the One Big Beautiful Bill earlier this year. The Farm Journal Ag Economists’ Monthly Monitor asked economists in July if that makes it more difficult or easier to pass a Farm Bill this year. 70% said yes. And in September, the Monthly Monitor asked when Congress will pass a new farm bill. Nearly 40% (39%) said a piecemeal approach for passing the farm bill is the new norm.”
+The House of Representatives on Thursday passed its newest version of the farm bill in a 224-200 vote without including provisions to allow for year-round E15 sales. The vote came after lawmakers also voted to strip provisions from the bill that would have benefited the pesticide industry.
 
-Current Farm Bill Status
+House Republican leadership and Ag Committee Chair Rep. Glenn ‘GT’ Thompson, R-Pa., have been testing support for the farm bill ahead of a floor vote, with early conversations suggesting the bill has broad appeal across the conference, even with fiscal conservatives.
 
-Farm Progress’ Joshua Baethge reported in mid-November that “after 43 days, the longest government shutdown in American history has ended. By a 222-209 vote, the House of Representatives approved a Senate bill passed earlier this week to end the government shutdown. The bill also extended the 2018 Farm Bill another year, though many of the original provisions had already been updated in the July budget reconciliation package.”
+House Republicans are looking to bring their farm bill for a floor vote the last week of April, according to four people close to the talks who were granted anonymity to discuss them.
 
-“The farm bill extension gives lawmakers until Sept. 30, 2026 to draft a new farm bill,” Baethge reported.
+Senate Agriculture Chair John Boozman said Monday he plans to soon take up a five-year farm bill, regardless of delays a similar bill may face in the House. Asked at an agriculture policy conference when he plans to move a measure through his committee, Boozman said, ‘Weeks, not months,’ but did not offer specifics.
+
+The House Agriculture Committee advanced the Republican-led farm bill in a 34-17 vote early Thursday after a marathon markup that was clouded by partisan fighting about the package.
+
+The House Agriculture Committee unveiled a draft farm bill Friday that would revamp a key international food aid program, boost risk management options for specialty crop growers and nullify California’s controversial Proposition 12 standards for animal welfare.
+
+A bipartisan group of former leaders of America’s major agricultural commodity associations and biofuels organizations, farmer leaders, and former senior USDA officials sent congressional ag leaders a letter on Tuesday warning about the deteriorating state of the farm economy, stating there is a risk of ‘widespread collapse of American agriculture.’
+
+House Agriculture Chair G.T. Thompson has tentatively scheduled a farm bill markup for the week of Feb. 23, according to three people familiar with the plans.
+
+The Agriculture Department has finalized some revisions to two major farm commodity programs, including rules for adding new base acres, but signup for the programs won’t be scheduled until after planting season at the earliest, according to a top USDA official.

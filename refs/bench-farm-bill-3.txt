@@ -1,8 +1,8 @@
 # Benchmark farm-bill: Senate Agriculture Committee
-# https://www.agriculture.senate.gov/newsroom/rep/press/release/chairman-boozman-releases-updated-farm-bill-20-text-announces-business-meeting
-# fetched 2026-10-16T16:03:50Z, sha256 65e69fc2b5ff7f90bea9fffd41d2244ed99515969406d127dc546649e91c9df2
+# https://www.agriculture.senate.gov/agricultural-act-of-2026-farm-bill-20
+# fetched 2026-10-16T18:31:18Z, sha256 f02fcf2ce3fb46c3d875133894550b07071c7fa62c54fbf10f65394473fe9b79
 
-[2026-07-31] Chairman Boozman Releases Updated Farm Bill 2.0 Text,...
+Agricultural Act of 2026: Farm Bill 2.0 | Senate Committee On...
 
 Skip to content
 
@@ -46,61 +46,71 @@ Skip to content
 
 Home Logo Link
 
--
-Newsroom
+farm bill 2.0
 
--
-Majority News
+Topline
 
-Published: July 31st, 2026
+An updated farm
+bill is long-overdue. Economic conditions have changed dramatically
+since the last farm bill became law in
+2018,
+and producers are anxiously awaiting action. The Agricultural
+Act of 2026 builds upon the investments in farm programs delivered through the Working
+Families Tax Cuts. A fully
+modernized farm bill means more certainty for America’s farm families, rural
+communities and food supply. The legislation also includes authorizing year-round sales of E15.
 
-Chairman Boozman Releases Updated Farm Bill 2.0 Text, Announces Business Meeting
+Click here
+to read the text.
 
-WASHINGTON – U.S. Senate Committee on Agriculture, Nutrition, and Forestry Chairman John Boozman (R-AR) released revised legislative text for Farm Bill 2.0, the Agricultural Act of 2026, that will deliver vital support to farmers, ranchers, foresters and rural communities. The updated bill, which the committee will mark up next week, includes new language authorizing year-round sales of E15 and extending the timeline for states to restore the integrity of SNAP benefits through improved administration that reduces payment error rates.
+Click here
+to read a summary of farm bill titles.
 
-“Farm Bill 2.0 is built for the people who feed America. Farm families are facing extremely challenging circumstances, with some deciding it’s not worth continuing their operations. This bill strengthens the future of agriculture, supports rural communities and provides farmers, ranchers and producers with indispensable resources and tools, all of which serve to ensure America’s food security for generations to come. Members on both sides of the aisle will find their priorities reflected in this bill. It also responds to concerns that states need additional time to strengthen administration of SNAP benefits and reduce payment error rates with a commonsense solution. We owe it to our dedicated farmers to move this legislation across the finish line and to the president’s desk to be signed into law. I look forward to next week’s markup,” Boozman said.
+Click here
+to read a section-by-section.
 
-Click HERE for legislative text.
+Click here
+to read a one-pager.
 
-Click HERE for a title-by-title summary.
+Farm Bill 2. 0 is designed to strengthen
+agriculture, support rural communities and ensure our nation’s agricultural
+legacy remains strong
+for generations
+to come. It is built for the people who feed
+America.
 
-Click HERE for a section-by-section.
+Built
+for Farmers
 
-Click HERE for an overview.
+Delivers stronger, more reliable
+support for farmers by improving risk management tools, modernizing
+conservation programs, expanding assistance to specialty crop producers,
+increasing drought flexibility, and creating new market opportunities for
+American-grown products.
 
-Business Meeting
+Built
+for Rural America
 
-Date: Thursday, August 6, 2026
+Farm Bill 2.0 improves quality of life
+in rural communities. These policies strengthen rural economies by expanding essential services and
+investing in critical infrastructure—from local processing and small business
+development to mental health care, safe drinking water and high-speed internet
+connectivity.
 
-Time: 9:30 a.m.
+Built
+for the Future
 
-Location: 318 Russell Senate Office Building
+Farm
+Bill 2.0 strengthens the foundation of American agriculture by equipping the
+next generation of producers with modernized financing tools and expanding
+investment in research, innovation, and extension services to address emerging
+agricultural priorities.
 
-What: Markup of the Agricultural Act of 2026
+Chairman Boozman: Farm Bill 2.0 Is Built for the People Who Feed America
 
-Watch: https://www.agriculture.senate.gov/hearings
-
-Media Guidance: Congressionally credentialed members planning to attend the hearing should RSVP to their respective gallery:
-
-Daily Press Gallery (202) 224-0241
-
-Periodical Press Gallery (202) 224-0265
-
-Press Photographer Gallery (202) 224-6548
-
-Radio TV Gallery (202) 224-6421
-
--
-
--
-
--
-
--
-
-Previous
-
-Next
+Click here
+to see where Chairman Boozman has traveled to help inform a modernized farm
+bill.
 
 -
 
