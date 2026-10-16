@@ -88,7 +88,7 @@ test("half an inch tomorrow: spread before the rain, with the chance", { skip },
   try {
     const { pg, errors } = await open(browser, port, { sums: [0, 15.24, 0, 0, 0], pmax: [20, 70, 20, 20, 20] });
     const v = await txt(pg, "#risk-verdict");
-    assert.match(v, /^Spread before the rain: 0\.60 in tomorrow forecast \(70% chance\)/);
+    assert.match(v, /^Spread before the rain: 0\.60 in forecast for tomorrow \(70% chance\)/);
     assert.doesNotMatch(v, /wetter window|Do not apply/);
     assert.equal(await txt(pg, "#rec-head"), "Spread Before the Rain");
     assert.doesNotMatch(await txt(pg, "#rec-text"), /delay|wetter/i);
@@ -105,7 +105,7 @@ test("no-till: 0.60 in is partial (1.5 in needed on residue); 1.6 in is enough",
     assert.match(await txt(a.pg, "#risk-verdict"), /1\.5 in within two days/);
     await a.ctx.close();
     const b = await open(browser, port, { sums: [0, 40.64, 0, 0, 0], till: "1.5" });
-    assert.match(await txt(b.pg, "#risk-verdict"), /^Spread before the rain: 1\.60 in tomorrow/);
+    assert.match(await txt(b.pg, "#risk-verdict"), /^Spread before the rain: 1\.60 in forecast for tomorrow/);
   } finally { await browser.close(); srv.close(); }
 });
 

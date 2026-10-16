@@ -1100,16 +1100,16 @@ function restoreFieldInputs(){try{var s=localStorage.getItem('agsist-urea-field'
 // with the chance shown, never "wait for a wetter window". Below freezing the cold-ground advice stands.
 function rainAdvice(rn,tempF){
   if(tempF<32||rn.inches==null||rn.inches<0.5)return;
-  var till=tillMult(),noTill=till>=1.5,need=noTill?1.5:0.5,amt=rn.inches.toFixed(2)+' in '+rn.day;
+  var till=tillMult(),noTill=till>=1.5,need=noTill?1.5:0.5,amt=rn.inches.toFixed(2)+' in forecast '+(rn.day==='today'?'today':'for tomorrow');
   var ch=(rn.chance!=null&&rn.chance!==undefined)?' ('+rn.chance+'% chance)':'';
   var v=document.getElementById('risk-verdict'),rh=document.getElementById('rec-head'),rt=document.getElementById('rec-text'),rb=document.getElementById('rec-box');
   var head,txt;
   if(rn.inches>=need){
     head='Spread Before the Rain';
-    txt='Spread before the rain: '+amt+' forecast'+ch+'. '+(noTill?'That is about the 1.5 in Montana State says it takes to move urea off residue':'On bare or tilled soil, half an inch moves urea into the soil (Montana State)')+', if it comes. If it misses, the urea sits exposed; NBPT covers that.'+(till===1?' Heavy residue needs about 1.5 in.':'');
+    txt='Spread before the rain: '+amt+ch+'. '+(noTill?'That is about the 1.5 in Montana State says it takes to move urea off residue':'On bare or tilled soil, half an inch moves urea into the soil (Montana State)')+', if it comes. If it misses, the urea sits exposed; NBPT covers that.'+(till===1?' Heavy residue needs about 1.5 in.':'');
   } else {
     head='Partial on Residue';
-    txt=amt+' forecast'+ch+'. On bare or tilled soil that would move urea in, but on heavy residue Montana State puts the need at about 1.5 in within two days, so count it as partial. Spread before it with NBPT, or wait for a bigger rain.';
+    txt=amt.charAt(0).toUpperCase()+amt.slice(1)+ch+'. On bare or tilled soil that would move urea in, but on heavy residue Montana State puts the need at about 1.5 in within two days, so count it as partial. Spread before it with NBPT, or wait for a bigger rain.';
   }
   if(v)v.textContent=txt;
   if(rh){rh.className='rec-head low';rh.textContent=head;}
