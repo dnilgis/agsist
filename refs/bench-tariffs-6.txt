@@ -1,0 +1,871 @@
+# Benchmark tariffs: NDSU Agricultural Trade Monitor
+# https://cdn.brownfieldagnews.com/wp-content/uploads/2026/05/NDSU-Agricultural-Trade-Monitor-2026-05.pdf
+# fetched 2026-10-16T16:21:34Z, sha256 79f2a700459452f41fd007736ad79b1554e9c15d5e25c3f2e73125e7753206cc
+
+NDSU Agricultural Trade Monitor
+
+May 2026
+
+
+
+A One-Year Retrospective Assessment of China’s
+2025/26 Retaliatory Tariffs on U.S.
+Agricultural Exports
+
+
+
+Shawn Arita, Sandro Steinbach, and
+Xiting Zhuang
+
+
+
+
+North Dakota State University
+Center for Agricultural Policy and Trade Studies
+
+
+Fargo, North Dakota
+>>> Highlights
+È China’s retaliatory tariffs reduced U.S. agricultural exports to China by an estimated $14.9
+   billion on an annualized basis over the one-year window from March 2025 through February
+   2026. The shortfall reflects the combined effect of the Fentanyl and Reciprocal tariff layers im-
+   posed since March 2025.
+
+È The estimate is based on an econometric assessment that isolates the tariff effect. The econo-
+   metric model controls for country-level importer and export supply and demand shocks, sea-
+   sonality, and global commodity trends to identify the effect of the tariff. This separates the por-
+   tion of the trade decline caused by the new Chinese tariffs from the portion caused by other
+   factors moving at the same time.
+
+È The impacts are broad-reaching across commodities. Soybeans account for approximately
+   $6.8 billion, or roughly half of the total. Beef and cotton each contribute about $1.3 billion, tree
+   nuts about $964 million, and corn another $333 million. The remainder is spread across coarse
+   grains, pork, poultry, dairy, and a long tail of specialty categories.
+
+È The tariff impact was largest in the middle of the period and has narrowed since the Novem-
+   ber 2025 Busan framework. The shortfall deepened sharply during the active-tariff months
+   from March through November 2025, when the Reciprocal tariff peaked at 125 percent be-
+   fore the May Geneva agreement, and has narrowed since the November Truce suspended the
+   heightened rates, though exports have not yet returned to 2024 levels.
+
+È The annualized losses exceed the 2018/2019 retaliation. The annualized trade losses for the
+   2018/19 round, measured on the same basis, were approximately $10.4 billion; the 2025/26
+   figure of $14.9 billion (in annualized losses) is roughly 43 percent larger.
+
+È Production concentration shapes the geographic pattern. Iowa, California, and Illinois each
+   show the largest absolute exposure at approximately $1.2 billion, followed by Texas, Kansas,
+   Nebraska, Minnesota, Missouri, Indiana, South Dakota, Ohio, Arkansas, and North Dakota. The
+   Corn Belt and Great Plains dominate through soybeans and coarse grains, while California’s ex-
+   posure reflects the tree-nut channel and Texas enters through cotton, beef, and coarse grains.
+
+È The estimates measure lost exports to China, not lost exports overall. A portion of shipments
+   that did not go to China in 2025 was sold into other markets instead, with U.S. agricultural ex-
+
+
+
+
+                                                                                                          1
+   ports to several other destinations rising during the year. The $14.9 billion figure is the size of
+   the China-specific export loss, not a measure of net harm to U.S. farmers, which is smaller after
+   accounting for redirected sales.
+
+È Recent trade negotiations produced a new framework with specific bilateral commitments.
+   The May 14–15, 2026 U.S.–China summit produced a framework that includes renewed export
+   registrations for U.S. beef plants, resumed access for U.S. poultry from states deemed free of
+   highly pathogenic avian influenza, and a mutual commitment to pursue further reciprocal tariff
+   reductions on agricultural products. The summit also established two new bilateral bodies, a
+   U.S.–China Board of Trade and a Board of Investment, to manage commerce going forward.
+
+È The new framework, if fully implemented, would represent a substantial volume of bilateral
+   trade. On May 17, the White House announced a Chinese commitment to purchase at least
+   $17 billion of U.S. agricultural products annually in 2026 (prorated), 2027, and 2028, on top
+   of the existing Busan commitment of at least 25 million metric tons of U.S. soybeans annually.
+   Combined with the soybean commitment valued at $11 to $13 billion at current prices, the an-
+   nounced $17 billion non-soybean target implies a floor of roughly $28 to $30 billion in annual
+   U.S. agricultural shipments to China across 2026 through 2028.
+
+
+
+
+                                                                                                         2
+>>> China Tariffs on U.S. Agriculture
+China is one of the largest single-country destinations for U.S. agricultural exports. In 2024, U.S.
+agricultural exports to China reached approximately $24.5 billion, with soybeans the single largest
+commodity at roughly half of that total. The tariff environment changed substantially in 2025, with
+China imposing new Fentanyl-related retaliatory tariffs on a broad set of U.S. agricultural commodi-
+ties in March 2025 and a higher Reciprocal-tariff layer that escalated in April before being scaled
+back under the May 2025 Geneva agreement. The October 30 Busan summit produced a frame-
+work that, effective November 10, 2025, extended a one-year suspension of the heightened Re-
+ciprocal surcharges (leaving a 10 percent Reciprocal rate in place) and led China to suspend its ad-
+ditional retaliatory tariffs on many U.S. agricultural products tied to the U.S. fentanyl action. These
+new 2025 rates applied alongside pre-existing tariff rates that had been in effect throughout the
+2021 to 2024 baseline period (Exhibit 1).
+
+
+
+                                 Retaliatory Tariffs on Fentanyl and Reciprocal Tariffs.
+
+
+
+
+Exhibit 1: China’s 2025 Retaliatory Tariff Rates on U.S. Agricultural Imports by Calendar Month.
+Note: The Reciprocal tariff applies a flat rate to all products and the Fentanyl tariff applies a 10 to 15 percent rate to a targeted
+set of agricultural commodities. The shaded band on the Fentanyl line shows the 10 to 15 percent range across targeted com-
+modities.
+Source: NDSU using the official Chinese tariff schedule.
+
+
+
+
+                                                                                                                                        3
+This report describes the change in U.S. agricultural exports to China from late 2024 through Febru-
+ary 2026 and identifies the commodities and producing regions where the change in shipment pat-
+terns was most pronounced. The analysis describes the realized trade pattern over the first twelve
+months following the policy change. Other channels of trade adjustment, including changes in ex-
+ports from other origin countries to China and possible redirection of U.S. exports to other destina-
+tion markets, are outside the scope of this report.
+
+
+
+
+Trade Background
+
+
+U.S. agricultural exports to China have moved through several distinct phases over the past quar-
+ter century, and 2025 stands out as the steepest year-on-year decline in the series. Exports grew
+from approximately $1.7 billion in 2000 to a peak near $38 billion in 2022 (Exhibit 2). The expan-
+sion included a sharp two-year dip during the 2018–2019 round of Chinese retaliation, followed by
+a recovery to the 2022 peak supported by the January 2020 Phase One purchase commitments and
+a substantial rebuild of Chinese feed demand after the 2018–2019 African Swine Fever epidemic.
+
+
+
+
+                                                                                                        4
+              U.S. Agricultural Exports to China in 2025 Fell to the Lowest Level Since 2007.
+
+
+
+
+                                                                                                         
+                          '
+   $ $
+
+
+
+
+                                                                                                                     
+
+
+
+
+                                                                      '
+
+
+Exhibit 2: U.S. Agricultural Exports to China, 2000–2025.
+Note: Bars in grey identify the 2018–2019 round of Chinese retaliatory tariffs. The bar in burgundy identifies the 2025 round.
+Source: NDSU using U.S. Census Bureau data (all agricultural products).
+
+
+
+
+The 2025 trade year ended that pattern. Total U.S. agricultural exports to China fell from $24.5 bil-
+lion in 2024 to $8.4 billion in 2025, a decline of roughly two-thirds and the steepest year-on-year
+drop in the series. The 2025 level is below the 2018 trough and the lowest annual reading since
+2007.
+
+
+The contraction is broad-based at the commodity level (Exhibit 3). Soybeans account for the largest
+absolute decline, falling from $12.6 billion in 2024 to $3.1 billion in 2025. Several other major com-
+modity groups fell by 80 percent or more, including corn, wheat, coarse grains other than corn,
+tree nuts, and cotton. Livestock and processed categories declined by smaller percentages but still
+meaningful magnitudes, including beef, poultry, hides and skins, pork, hay, and dairy. Of the major
+commodity groups, only seafood products posted a modest year-on-year increase.
+
+
+
+
+                                                                                                                                 5
+                             The 2025 Decline in U.S. Exports to China Was Broad-Based.
+
+
+
+                                                                                                              
+
+               $                                                                                                   
+
+
+        $&     &$                                                                                                
+
+                                                                                                                   
+
+
+                       $ $                                                                                         
+
+
+         $ &       &                                                                                             
+
+
+                        $&                                                                                      
+
+
+               &                                                                                                 
+
+
+                         &                                                                                      
+
+
+                   $     &                                                                                      
+
+                                                                                                                   
+
+                                                                                                                
+
+
+                   &                                                                                             
+
+
+                        $&                                                                                         
+
+                                                                                                                
+
+
+
+                                                            * $&   $
+
+
+Exhibit 3: U.S. Agricultural Exports to China by Commodity, 2024 Versus 2025.
+Note: Commodities shown are the fourteen largest commodity categories by 2024 export value to China that recorded a year-
+on-year decline in 2025. Percent change values shown at right are the 2025-to-2024 change in calendar-year export value.
+“Coarse grains” refers to grains other than corn, predominantly sorghum. Seafood products (the only major category with year-
+on-year growth) are excluded.
+Source: NDSU using U.S. Census Bureau data (all agricultural products).
+
+
+
+
+The bilateral collapse stands out against a backdrop of trade growth on both sides (Exhibit 4). U.S.
+agricultural exports rose to most other major destinations during 2025, with Canada the principal
+exception following its own retaliatory tariffs. On the Chinese side, imports from most other major
+sources rose or held roughly stable. The U.S.–China bilateral line moved in the opposite direction by
+a wide margin, with U.S. exports to China falling sharply on both U.S. and Chinese accounting.
+
+
+
+
+                                                                                                                                6
+             U.S.–China Agricultural Exports Collapsed While Other Trade Flows Held Up in 2025.
+
+                                                                ) 1   $ 2,1 . 1   7 (),
+
+
+                        (   $% )   %                                                                  $% )    $
+
+               4)$                                                                               6)
+
+
+              ,                                                                     ,)1     1 1 0
+
+
+              (),                                                                         ( ) ,
+
+
+               . ,                                                                        201    )
+
+
+                  21(                                                                 ,     , 0)
+
+
+                   )                                                                 3           ,
+
+
+              )3 ,                                                                          200)
+
+
+       () )..), 0                                                                         ) 1,
+
+
+            ) 1,                                                                            ,
+
+
+       1(      , 0                                                                              ,$
+
+
+        ,    , 0)                                                                               ()
+
+
+                   ,5                                                                       ,1),
+
+
+
+                                       )$2 12   4. 10 5   01), 1) ,                                     (),   )$2 12   ) . 10 5 0 2 $
+
+
+
+Exhibit 4: U.S. Exports by Destination and Chinese Imports by Source, 2024 Versus 2025.
+Note: Bars show calendar-year agricultural trade values for 2024 and 2025 across the twelve largest destinations for U.S. ex-
+ports (left panel) and the twelve largest sources for Chinese imports (right panel). The percent change at right of each pair is the
+2024-to-2025 change. The U.S.–China bilateral counterpart is highlighted in both panels. U.S. reported exports to China are
+different than China reported imports of U.S. ag imports due to mirror-data discrepancies.
+Source: NDSU using U.S. Census Bureau data and Chinese customs data.
+
+
+
+
+The 2025 bilateral collapse coincides with the new Chinese retaliatory tariffs, but other factors
+moved at the same time: a record U.S. corn crop, strong global cotton supplies, and soybean price
+weakness. The structural gravity framework introduced next isolates the portion of the bilateral col-
+lapse attributable to the new tariffs after controlling for these confounding influences.
+
+
+
+
+Econometric Assessment of China's Retaliatory Tariffs
+
+
+This retrospective analysis uses a structural gravity model, a workhorse trade-economics framework
+that compares observed bilateral trade flows against the flows that would be expected absent a
+policy change, to estimate the impact of the 2025/26 Chinese retaliatory tariffs on U.S. agricultural
+exports to China. The model isolates how much U.S. agricultural exports to China fell because of the
+
+
+
+
+                                                                                                                                        7
+tariffs, separating that effect from other factors moving in global agricultural trade at the same time.
+
+
+The model is identified through within-pair variation across time and product-importer cells. For
+each month from January 2021 through February 2026, it includes bilateral trade values across 60
+agricultural commodity groups. A multi-dimensional fixed-effects structure absorbs confounding
+influences: exporter-by-importer-by-product-by-calendar-month effects hold constant the time-
+invariant features of each trading relationship and the seasonal pattern of each commodity; exporter-
+by-year effects absorb annual supply shocks, including the record 2025 U.S. corn crop; importer-
+by-year effects absorb annual demand shocks; product-by-year effects absorb global commodity-
+specific price trends including soybean and cotton market shifts; and calendar-month-by-year ef-
+fects absorb aggregate monthly shocks. The destruction coefficient is then identified from the dif-
+ferential movement of U.S.–China flows for tariffed commodities, relative to other exporter-importer-
+product cells over the same window, after these confounders are netted out. The fixed-effects struc-
+ture follows the published benchmark established by Grant, Arita, Emlinger, Johansson, and Xie
+(2021) and Carter and Steinbach (2020).
+
+
+The dollar shortfall is constructed by multiplying each commodity’s estimated proportional decline
+by its 2024 baseline export value to China and summing across commodities, yielding the $14.9
+billion total. For the 2018–2019 comparison, the same model is re-estimated on January 2015
+through December 2019 data using 2017 as the baseline, allowing a like-for-like comparison of the
+two rounds.
+
+
+A working paper providing the full technical documentation, including specification details, robust-
+ness tests, alternative base-year sensitivities, and the parallel 2018–2019 estimation, is available at
+https://www.capts-ndsu.com/ndsu-ag-trade-monitor.
+
+
+
+
+Estimated Losses of $14.9 Billion in U.S.-China Ag Exports
+
+
+Applied to a 2024 baseline of $24.5 billion in U.S. agricultural exports to China, the product-level
+shortfalls add up to an annualized shortfall of approximately $14.9 billion. The shift is concentrated
+by commodity. Exhibit 5 ranks the affected commodities by estimated annualized shortfall in dollar
+terms.
+
+
+
+
+                                                                                                           8
+Soybeans account for the largest single share at approximately $6.8 billion, or roughly half of the
+total. Beef and cotton each contribute about $1.3 billion, tree nuts about $964 million, and corn
+another $333 million. Together, these five commodities account for approximately $10.7 billion, or
+72 percent of the annualized shortfall. Coarse grains other than corn contribute $869 million, pork
+$409 million, poultry $311 million, hides and skins $164 million, dairy products $147 million, hay
+$143 million, and a long tail of specialty and processed products together account for the remainder.
+
+
+
+                      Retaliatory Tariffs Reduced U.S.–China Ag exports by $14.9 Billion.
+
+
+
+
+Exhibit 5: Annualized Shortfalls in U.S. Agricultural Shipments to China by Commodity.
+Note: The sample is restricted to commodities with a 2024 export baseline to China above $50 million.
+Source: NDSU using USDA GATS bilateral trade data.
+
+
+
+
+The pattern divides across three broad sector groups. Bulk and row crops account for most of the
+dollar magnitude, with soybeans, cotton, coarse grains, and corn together accounting for over $9
+
+
+
+
+                                                                                                        9
+billion of the shortfall. Livestock and meat products contribute about $2.4 billion, led by beef, pork,
+poultry, and dairy. Specialty and processed products contribute about $1.3 billion, led by tree nuts.
+
+
+The aggregate dollar figure is consistent with the realized change in trade values reported in cus-
+toms data. U.S. Census Bureau data put total U.S. agricultural exports to China at approximately
+$8.4 billion in calendar 2025, down from approximately $24.5 billion in 2024. The roughly $16 bil-
+lion difference between the two calendar years is broadly consistent with the $14.9 billion annual-
+ized shortfall estimated here, with the larger calendar-year gap reflecting additional anticipation ef-
+fects in late 2024 and the deeper contraction during the peak tariff months. Glauber (2026) reports
+a similar calendar-year decline from independent customs data. The gravity estimate refines that
+descriptive figure by isolating the portion attributable to the new tariffs from the contemporaneous
+corn, cotton, and soybean supply and price shocks discussed above.
+
+
+
+
+Comparison with the 2018/19 Round of Chinese Retaliation
+
+
+China’s 2025/26 retaliation is the second major round of Chinese retaliatory tariffs on U.S. agricul-
+tural exports in less than a decade. The 2018/19 round produced an annualized shortfall of approx-
+imately $10.4 billion against the 2017 baseline; the 2025 round produces $14.9 billion against the
+2024 baseline, roughly 43 percent larger.
+
+
+The two rounds produce comparable event-study trajectories when aligned on their tariff-effective
+anchors (Exhibit 6). The 2018–2019 destruction coefficient builds quickly after the first retaliatory
+tariff list; the 2025 coefficient builds more slowly because the contraction started before any tar-
+iff was formally announced, but the eventual troughs are similar in depth. The 2018/19 path re-
+bounded visibly following the January 2020 Phase One agreement, although that agreement was a
+partial resolution rather than a full tariff rollback. The current round has yet to show a comparable
+rebound: the 2025–2026 marketing-year contracting cycle had largely locked Chinese soybean and
+corn purchases with Brazil and Argentina before the November Truce, a residual Fentanyl-related
+tariff layer remains in force under the Truce, and the Truce itself is structured as a one-year suspen-
+sion expiring in November 2026 rather than a permanent removal, creating contracting-side uncer-
+tainty.
+
+
+
+
+                                                                                                          10
+                Evolving Retaliatory Tariff Impacts on US Ag Exports: 2018/19 vs 2025/26.
+
+
+
+
+Exhibit 6: Event-Study Path of the U.S.–China Destruction Coefficient, 2018/19 Vs. 2025/26 Rounds.
+Note: Event time is measured in months relative to each round’s anchor (July 2018 first retaliatory tariff list for the 2018 to 2019
+round, March 2025 fentanyl tariff effective for the 2025 round). Coefficients come from a PPML gravity model with bilateral-
+product-calendar-month, exporter-year, importer-year, product-year, and time fixed effects, clustered by importer-product-
+month. Months with event time at or below 5 are pooled as the silent reference period. Source: NDSU using USDA FAS GATS
+data and authors’ calculations.
+
+
+The post-Truce window is only three months long, but the data show the path has stopped declin-
+ing further since the November 2025 framework took effect, suggesting that the Truce has begun
+
+
+
+
+                                                                                                                                       11
+to stabilize bilateral trade even if a full rebound has not yet materialized. The 2018–2019 precedent
+is partially informative. Following the January 2020 Phase One agreement, bilateral exports recov-
+ered through 2020 and 2021 and reached a record near $38 billion by 2022, although much of the
+2021–2022 run-up reflected the rebuilding of Chinese feed demand after African Swine Fever. Ex-
+hibit 7 summarizes commodity-level differences between the two rounds.
+
+
+
+                Differences in Ag Export Losses to China Between 2018/19 and 2025/26.
+
+
+
+
+Exhibit 7: Annualized Shortfalls by Commodity, 2018–2019 Versus 2025.
+Note: Bars show annualized shortfall in U.S. exports to China for the top twelve commodities by either-year value. The
+2018–2019 shortfall is computed against the 2017 calendar-year baseline, and the 2025 shortfall against the 2024 calendar-
+year baseline. Commodities marked “new in 2025” were not on the 2018–2019 targeted list at a comparable scale.
+Source: NDSU using USDA GATS bilateral trade data.
+
+
+The $14.9 billion figure measures lost exports to China, not lost exports overall, and the Highlights
+summarize the partial offset through gains in other destination markets. Producer welfare losses are
+also reduced by domestic price absorption, increased non-export use, government storage, and sub-
+stitution into other markets. The $14.9 billion export shortfall is an upper bound on net producer
+
+
+
+
+                                                                                                                             12
+harm rather than a measure of it; quantifying the share recouped through alternative markets is the
+subject of forthcoming research. Looking forward, the underlying bilateral demand and supply com-
+plementarities that made China the largest single-country destination for U.S. agricultural exports
+for most of the past two decades remain intact, and the 2018–2019 precedent shows that bilateral
+flows can recover after retaliation eases.
+
+
+
+
+State-Level Exposure
+
+
+U.S. agricultural production is geographically concentrated, so the commodity-level shortfalls in
+shipments to China translate into different levels of exposure across states. Each commodity’s es-
+timated annualized shortfall is allocated across states in proportion to their USDA NASS 2024 pro-
+duction shares, yielding the geographic pattern in Exhibit 8. These allocations measure exposure to
+the national bilateral shortfall through each state’s production mix and do not capture realized state
+income losses, which additionally depend on within-state buyer composition, basis movements, and
+other absorption channels.
+
+
+
+          Substantial Losses in the Corn Belt and Great Plains, as well as California and Texas.
+
+
+
+
+Exhibit 8: State-Level Exposure to the Change in U.S. Agricultural Shipments to China in 2025.
+Note: Each state’s exposure is the sum across commodity groups of the state’s 2024 production share multiplied by the estimated
+2025 commodity-level shipment shortfall to China. Albers Equal-Area projection of the lower-48 contiguous states.
+Source: NDSU using USDA GATS bilateral trade data and USDA NASS state production shares.
+
+
+
+
+                                                                                                                                  13
+The top of the distribution concentrates in the Corn Belt, Great Plains, California, and Texas. Iowa
+shows the largest single-state exposure at approximately $1.2 billion, followed closely by Califor-
+nia ($1.2B) and Illinois ($1.2B). Texas ($907M), Kansas ($881M), Nebraska ($710M), Minnesota
+($669M), Missouri ($657M), Indiana ($607M), South Dakota ($546M), Ohio ($494M), Arkansas
+($481M), and North Dakota ($419M) round out the top thirteen. The top ten states together ac-
+count for over half of the allocated aggregate exposure. California’s high ranking reflects the tree-
+nut channel (Carter, Steinbach, and Yildirim, 2026). Texas enters the top tier through cotton, beef,
+and coarse grains.
+
+
+
+
+China's New Purchase Commitments and the May 2026 Framework
+
+
+The May 14–15, 2026 summit between U.S. and Chinese officials in Beijing produced a new frame-
+work that builds on the November 2025 Busan baseline. China renewed export registrations for
+U.S. beef plants, moved to resume imports of U.S. poultry from states deemed free of highly pathogenic
+avian influenza, and, according to U.S. and Chinese readouts, agreed with Washington to pursue fur-
+ther reciprocal tariff reductions on farm products. On May 17, a White House fact sheet announced
+that China had committed to purchase at least $17 billion of U.S. agricultural products annually in
+2026 (prorated), 2027, and 2028, on top of the existing Busan commitment of at least 25 million
+metric tons of U.S. soybeans annually in 2026, 2027, and 2028. The summit also established two
+new bodies, a U.S.–China Board of Trade and a Board of Investment, to manage bilateral commerce
+going forward.
+
+
+USTR indicated publicly that the $17 billion target is in addition to the 25 million metric ton soy-
+bean commitment. Combined with $11 to $13 billion of soybean exports (valued at current Gulf
+FOB prices for 25 million metric tons), the framework would imply total annual U.S. agricultural
+shipments to China of at least $28 to $30 billion depending on soybean pricing (Exhibit 9). Both lay-
+ers of the commitment are stated as floors rather than caps. At full execution, the announced floor
+would exceed the 2024 export level by approximately $4 to $5 billion, more than the $14.9 billion
+annualized shortfall; whether realized shipments reach the floor will depend on implementation.
+
+
+
+
+                                                                                                         14
+                     U.S. Ag-Export Losses to China and 2026–2028 Commitment Floor.
+
+
+
+
+Exhibit 9: U.S. Agricultural Exports to China: 2024 Calendar Year, 2025 Actual Exports, Estimated Annualized
+Losses From Retaliatory Tariffs, and the Annualized 2026–2028 Commitment Floor.
+Note: The 2025 estimated annual losses bar shows the $14.9 billion annualized PPML gravity estimate of the export decline
+attributable to the 2025 tariff environment. The 2026–2028 column shows the annualized minimum implied by the May 17,
+2026 framework, with the $17 billion non-soybean target stated as a floor (“at least”) and the 25 million metric ton soybean
+commitment valued at $11 to $13 billion at prevailing Gulf FOB prices; the whisker shows the implied range of total annual
+shipments. Realized shipments could run higher than the announced floor.
+Source: NDSU using USDA GATS bilateral trade data, White House May 17, 2026 fact sheet, and Busan November 2025 frame-
+work.
+
+
+For context on what implementation might look like, the January 2020 Phase One agreement that
+followed the 2018–2019 round of Chinese retaliation provides a useful precedent. Phase One was
+followed by a period of robust recovery in bilateral agricultural trade, with U.S. exports to China
+reaching a record near $38 billion by 2022, well above the at least $28 to $30 billion implied by
+the 2026 framework. That recovery was supported in part by strong Chinese feed demand tied to
+the rebuilding of China’s hog sector after the 2018–2019 African Swine Fever epidemic, a tailwind
+that is not present in the current cycle. Phase One also fell short of its headline two-year targets in
+aggregate, although agricultural realization was meaningfully higher than for manufactured goods
+and energy: China reached approximately 83 percent of its covered agricultural commitment over
+2020–2021 on a U.S. export accounting basis, against roughly 58 percent for all covered goods and
+services (Bown, 2022). Realized 2026 outcomes will likewise depend on implementation, the pace
+of state-buyer execution, and the broader macroeconomic and commodity-market environment
+over the commitment window.
+
+
+
+
+                                                                                                                               15
+Scope and Limitations
+
+
+The estimates describe the realized change in U.S. bilateral shipments to China associated with the
+2025 tariff environment, based on twelve months of post-policy data, including three months fol-
+lowing the November 2025 agreement. The estimates represent an average over a short window
+and may differ from longer-run patterns. As discussed above, the bilateral figures measure lost ex-
+ports to China and do not net out shipments redirected to other destinations or supply adjustments
+by competing origin countries. A companion analysis covering these other channels of trade adjust-
+ment is in preparation.
+
+
+
+
+                                                                                                      16
+>>> Latest Trade Figures and Tables
+
+
+
+
+Exhibit 10: Fertilizer Spot Prices on the U.S. Gulf Coast.
+Source: NDSU using data from Bloomberg.
+
+
+
+
+                                                             17
+Exhibit 11: US Commodity Export Performance: 2025 vs. 5-Year Range (in Volumes).
+
+Source: NDSU using data from the U.S. Census Bureau.
+
+
+
+
+                                                                                   18
+Exhibit 12: U.S. Agricultural Export Growth Year-To-Date by Product Group and Country/Region.
+
+Source: NDSU using data from the U.S. Census Bureau.
+
+
+
+
+                                                                                                19
+Exhibit 13: U.S. Agricultural Exports by Region, in Million USD.
+
+Source: NDSU using data from the U.S. Census Bureau.
+
+
+
+
+Exhibit 14: Value of U.S. Agricultural Exports by Commodity, in Million USD.
+
+Source: NDSU using data from the U.S. Census Bureau.
+
+
+
+
+                                                                               20
+     Exhibit 15: U.S. Export Shipments to World, Year-Over-Year Change.
+     Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+21
+     Exhibit 16: U.S. Exports Shipments to China, Year-Over-Year Change.
+     Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+22
+     Exhibit 17: U.S. Net Contract Export Sales to World, Year-Over-Year Change.
+     Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+23
+     Exhibit 18: U.S. Net Contract Export Sales to China, Year-Over-Year Change.
+     Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+24
+Exhibit 19: U.S. Export Shipments to World, in Metric Tons.
+Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+Exhibit 20: U.S. Export Shipments to China, in Metric Tons.
+Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+                                                                      25
+Exhibit 21: U.S. Net Contract Export Sales to World, in Metric Tons.
+Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+Exhibit 22: U.S. Net Contract Export Sales to China, in Metric Tons.
+Source: NDSU using data from the USDA Foreign Agricultural Service.
+
+
+
+
+                                                                       26
+   Accumulated Export Shipments – Soybeans to World                   Accumulated Export Shipments – Soybeans to China
+
+
+
+
+     Accumulated Export Shipments – Corn to World                       Accumulated Export Shipments – Corn to China
+
+
+
+
+     Accumulated Export Shipments – Beef to World                       Accumulated Export Shipments – Beef to China
+
+
+
+
+     Accumulated Export Shipments – Pork to World                       Accumulated Export Shipments – Pork to China
+
+Exhibit 23: Accumulated Export Shipments.
+
+Source: NDSU using data from the USDA Foreign Agricultural Service.                                                      27
+  Weekly Net Contract Export Sales – Soybeans to World                Weekly Net Contract Export Sales – Soybeans to China
+
+
+
+
+    Weekly Net Contract Export Sales – Corn to World                    Weekly Net Contract Export Sales – Corn to China
+
+
+
+
+    Weekly Net Contract Export Sales – Beef to World                    Weekly Net Contract Export Sales – Beef to China
+
+
+
+
+    Weekly Net Contract Export Sales – Pork to World                    Weekly Net Contract Export Sales – Pork to China
+
+Exhibit 24: Weekly Net Contracted Export Sales.
+
+Source: NDSU using data from the USDA Foreign Agricultural Service.                                                          28
+References
+
+
+Bown, C. P. (2022). China Bought None of the Extra $200 Billion of US Exports in Trump’s Trade
+Deal. PIIE Realtime Economics blog, February 8, 2022, Peterson Institute for International Eco-
+nomics. https://www.piie.com/blogs/realtime-economics/2022/china-bought-non
+e-extra-200-billion-us-exports-trumps-trade-deal
+
+
+Carter, C. A. and Steinbach, S. (2020). The Impact of Retaliatory Tariffs on Agricultural and Food
+Trade. NBER Working Paper 27147, National Bureau of Economic Research. https://www.nb
+er.org/papers/w27147
+
+
+Carter, C. A., Steinbach, S., and Yildirim, Y. (2026). 2025 U.S.–China Trade Conflict Harms California
+Agriculture. ARE Update, 29(3): 1–5. https://giannini.ucop.edu/filer/file/1772215182/21
+582/
+
+
+Glauber, J. W. (2026). Evaluating the Impact of Tariffs on U.S. Agriculture a Year After Liberation Day.
+American Enterprise Institute, April 2026. https://www.aei.org/research-products/report
+/evaluating-the-impact-of-tariffs-on-us-agriculture-a-year-after-liberation-d
+ay/
+
+
+Grant, J. H., Arita, S., Emlinger, C., Johansson, R., and Xie, C. (2021). Agricultural Exports and Retal-
+iatory Trade Actions: An Empirical Assessment of the 2018/2019 Trade Conflict. Applied Economic
+Perspectives and Policy, 43(2):619–640. https://doi.org/10.1002/aepp.13138
+
+
+U.S. Department of Agriculture, Foreign Agricultural Service (2026). Global Agricultural Trade Sys-
+tem (GATS). Online database. https://apps.fas.usda.gov/gats/
+
+
+Zhuang, X., Arita, S., and Steinbach, S. (2026). The Cost of China’s 2025 Tariff Retaliation for U.S.
+Agriculture. CAPTS Working Paper, Center for Agricultural Policy and Trade Studies, North Dakota
+State University. https://www.capts-ndsu.com/ndsu-ag-trade-monitor
+
+
+
+
+                                                                                                            29
+Recommended Citation
+
+
+Arita, S., Steinbach, S., and Zhuang, X. (2026). A One-Year Retrospective Assessment of China’s 2025/26
+Retaliatory Tariffs on U.S. Agricultural Exports. NDSU Agricultural Trade Monitor 2026-05. Center for
+Agricultural Policy and Trade Studies, North Dakota State University. May 20, 2026.
+
+
+
+
+NDSU Agricultural Trade Monitor
+
+
+Copyright © 2026 Center for Agricultural Policy and Trade Studies at North Dakota State University.
+
+
+The NDSU Agricultural Trade Monitor is a research-based publication developed for informational and
+analytical purposes. The views and interpretations expressed are those of the authors and do not
+necessarily reflect those of North Dakota State University, its affiliated centers, or any sponsoring
+institutions. Reproduction or distribution is permitted with appropriate citation of the source.
+
+
+
+
+                                                                                                          30
+About the Center for Agricultural Policy and Trade Studies
+
+The Center for Agricultural Policy and Trade Studies at North Dakota State University is the pre-
+mier hub for applied economic research on agricultural trade, policy, and risk management in North
+Dakota and the Upper Midwest. Through its flagship products like the NDSU Agricultural Trade Mon-
+itor, the Center provides timely insights for producers, agribusinesses, and policymakers on evolving
+agricultural trade and policy developments.
+
+
+
+About the Authors
+
+                     Shawn Arita, Ph.D.
+
+                     Shawn is the Associate Director of the Agricultural Risk Policy Center at North
+                     Dakota State University. His research provides timely insights for policymakers,
+                     producer groups, and trade analysts navigating the impacts of supply chain
+                     shocks on global agricultural markets.
+
+
+
+                     Xiting Zhuang
+
+                     Xiting is a research analyst at the Center for Agricultural Policy and Trade
+                     Studies at North Dakota State University. Her work focuses on applied trade
+                     analysis and gravity-model estimation of trade policy effects on U.S. agricul-
+                     ture.
+
+
+
+                     Sandro Steinbach, Dr. Sc.
+
+                     Sandro is the Director of the Center for Agricultural Policy and Trade Studies
+                     at North Dakota State University. He works on trade, policy, and risk issues
+                     affecting U.S. agriculture, leading research and policy analysis that supports
+                     agricultural producers and policymakers.
+
+
+
+
+                                                                                                        31
+                                                        Website   LinkedIn
+
+
+Richard H. Barry Hall 400, Fargo, ND   capts@ndsu.edu     GLOBE      LINKEDIN
+

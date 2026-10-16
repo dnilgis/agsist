@@ -1,0 +1,1290 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" class="scroll-smooth"
+  lang="en"
+  x-data="{darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system')}"
+  x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+  x-bind:class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}">
+<head>
+	  		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta charset="utf-8">
+        
+							<title>Farm Bureau Intel Markets | Section Home | American Farm Bureau Federation</title>
+			<meta name="description" content="Breaks down complex market trends, economic data and industry shocks to deliver meaningful insights and provide context beyond the numbers."/>
+						<link rel="canonical" href="https://www.fb.org/intel/markets" />
+			<meta property="og:type" content="article" />
+			<meta property="og:title" content="Farm Bureau Intel Markets | Section Home | American Farm Bureau Federation"/>
+			<meta property="og:description" content="Breaks down complex market trends, economic data and industry shocks to deliver meaningful insights and provide context beyond the numbers."/>
+										<meta property="og:image" content="https://www.fb.org/assets/imgz/social-fb-logo-sky-field.jpg" />
+				<meta property="og:image:width" content="1200" />
+				<meta property="og:image:height" content="630" />
+			
+			<meta name="twitter:card" content="summary_large_image" />
+			<meta name="twitter:site" content="@farmbureau" />
+			<meta name="twitter:creator" content="@farmbureau" />
+			<meta name="twitter:title" content="Farm Bureau Intel Markets | Section Home | American Farm Bureau Federation" />
+			<meta name="twitter:description" content="Breaks down complex market trends, economic data and industry shocks to deliver meaningful insights and provide context beyond the numbers." />
+
+			
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+	  <meta name="referrer" content="origin-when-cross-origin" />
+ 
+    <link rel="stylesheet" href="https://use.typekit.net/bry7nlx.css">
+
+    
+                
+     
+     
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/ico/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/ico/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/ico/favicon-16x16.png">
+<link rel="manifest" href="/assets/ico/site.webmanifest">
+<link rel="mask-icon" href="/assets/ico/safari-pinned-tab.svg" color="#FFFFFF">
+<link rel="shortcut icon" href="/assets/ico/favicon.ico">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="msapplication-config" content="/assets/ico/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">	
+	  <script defer src="https://www.fb.org/js/collapse@3.9.5/collapse.3.9.5.min.js"></script>  
+	  <script defer src="https://www.fb.org/js/alpine@3.9.5/alpine.3.9.5.min.js"></script>  
+
+    
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1FVMT18VD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Q1FVMT18VD');
+    </script>
+	
+<link href="/css/critical/latest-index_c.min.css?v=1792001014" rel="stylesheet preload" as="style">
+<link href="/css/nice.css?v=1792001002" rel="stylesheet"></head>
+
+<body id="dabod" class="intel-body body-bb voa-min-width">
+
+	 
+
+<div x-data="{ 'showOverlayMenu': false }" x-cloak @keydown.escape="showOverlayMenu = false">
+
+<div id="menuHere" class="">
+<p class="font-sol text-3xs-px">MENU</p>
+</div>
+
+<div id="topnav" class="w-full flex flex-row items-center px-2 bb-red bg-white dark:bg-black z-30 print:hidden">
+
+  <a href="https://www.fb.org/">
+	<div class="logos ml-1 md:ml-4">
+				<svg id="dahome" class="inline fb-logo-top-mobile" data-name="fb-logo-top-mobile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104.22 49.19"><defs><style>.als-1{fill:#231f20;fill-rule:evenodd}</style></defs><g id="Symbols"><g id="Group-35"><path id="Fill-1" class="als-1" d="M58.75 25.13h24.13c17.43 0 17.06 24-.25 24H52.28Z"/><path id="Fill-3" class="als-1" d="m24 49.19 4.32-15.85c.85-3.18 5.26-8.2 11.55-8.2h15.72s-2.89 11-3.88 14.62c-1.5 5.65-6.06 9.43-13 9.43Z"/><path id="Fill-5" class="als-1" d="M65.51 0s14.92.05 25.7.05c16.14 0 15.48 22.28 0 22.28h-31.7Z"/><path id="Fill-7" class="als-1" d="M13.23.06h49.11l-6 22.27H40.49c-8.81 0-13.84 5.65-15.35 11.42-2.35 9-4 15.44-4 15.44H0Z"/><path id="Fill-33" class="als-1" d="M100.7 43h-1.19v1.42h1.16c.64 0 1-.14 1-.72s-.32-.7-1-.7Zm-1.76-.53h1.75c1 0 1.59.29 1.59 1.17a1.06 1.06 0 0 1-.57 1c.71.38.42 1.68.71 2v.11h-.63c-.07-.14-.07-.16-.18-1.26 0-.45-.22-.56-.94-.56h-1.16v1.82h-.57Zm1.56-1a3.19 3.19 0 1 0 3.16 3.18 3.18 3.18 0 0 0-3.16-3.18Zm-3.71 3.19a3.72 3.72 0 1 1 3.72 3.74 3.74 3.74 0 0 1-3.72-3.74Z"/></g></g></svg>
+	</div></a>
+
+	<div class="toplinks absolute right-2 bb-blue">
+		<div class="flex flex-row justify-items-end h-[30px] lg:w-[560px] xl:w-[600px] relative bb-red">
+
+			<a href="https://www.fb.org/about/who-we-are" class="font-sol font-semibold text-xs-px xl:text-sm-px leading-none mr-4 xl:mr-8 hidden lg:block relative top-[5px] h-[20px] w-[140px] xl:w-[300px] text-black dark:text-white hover:text-red dark:hover:text-red bb-pink">WHO WE ARE</a>
+			<a href="https://www.fb.org/about/what-we-do" class="font-sol font-semibold text-xs-px xl:text-sm-px leading-none mr-4 xl:mr-8 hidden lg:block relative top-[5px] h-[20px] w-[140px] xl:w-[300px] text-black dark:text-white hover:text-red dark:hover:text-red bb-pink">WHAT WE DO</a>
+			<a href="https://www.fb.org/about/get-involved" class="font-sol font-semibold text-xs-px xl:text-sm-px leading-none mr-4 xl:mr-12 hidden lg:block relative top-[5px] h-[20px] w-[140px] xl:w-[300px] text-black dark:text-white hover:text-red dark:hover:text-red bb-pink">GET INVOLVED</a>
+
+			<a href="https://www.fb.org/search" class="block">
+				<svg id="mag" style="top:-0.1rem;" class="block relative mr-2" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="13.8068" cy="13.8068" r="7.18184" stroke="black" stroke-width="2"/>
+				<line x1="19.3119" y1="18.9203" x2="23.5227" y2="23.1311" stroke="black" stroke-width="2" stroke-linecap="round"/>
+				</svg>
+			</a>
+
+			<div>
+				<a @click="showOverlayMenu = true" class="scroll-lock block">
+					<svg id="hamberg" style="top:-0.1rem;" class="block relative mr-2 md:mr-6" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<line x1="7" y1="10" x2="25" y2="10" stroke="black" stroke-width="2" stroke-linecap="round"/>
+					<line x1="7" y1="16" x2="25" y2="16" stroke="black" stroke-width="2" stroke-linecap="round"/>
+					<line x1="7" y1="22" x2="25" y2="22" stroke="black" stroke-width="2" stroke-linecap="round"/>
+					</svg>
+				</a> 
+			</div>
+
+		</div><!-- / flex row -->
+
+
+	</div><!-- /toplinks -->
+</div>	
+          		<!-- OVERLAY MENU -->
+							<div 
+									x-show="showOverlayMenu"
+									class="overlay"
+									@click.away="showModal = false"
+									x-transition:enter="ease-in duration-300"
+									x-transition:enter-start="opacity-0"
+									x-transition:enter-end="opacity-100"
+									x-cloak>
+												
+
+<div id="nav-overlay" class="w-full bb-green">
+
+  <div id="topnav" class="w-full flex flex-row items-center px-2 bb-red bg-white sm:bg-sand-light dark:bg-black z-40">
+
+    <a href="https://www.fb.org/">
+    <div class="logos ml-1 md:ml-4">
+				<svg id="dahome" class="inline fb-logo-top-mobile" data-name="fb-logo-top-mobile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104.22 49.19"><defs><style>.als-1{fill:#231f20;fill-rule:evenodd}</style></defs><g id="Symbols"><g id="Group-35"><path id="Fill-1" class="als-1" d="M58.75 25.13h24.13c17.43 0 17.06 24-.25 24H52.28Z"/><path id="Fill-3" class="als-1" d="m24 49.19 4.32-15.85c.85-3.18 5.26-8.2 11.55-8.2h15.72s-2.89 11-3.88 14.62c-1.5 5.65-6.06 9.43-13 9.43Z"/><path id="Fill-5" class="als-1" d="M65.51 0s14.92.05 25.7.05c16.14 0 15.48 22.28 0 22.28h-31.7Z"/><path id="Fill-7" class="als-1" d="M13.23.06h49.11l-6 22.27H40.49c-8.81 0-13.84 5.65-15.35 11.42-2.35 9-4 15.44-4 15.44H0Z"/><path id="Fill-33" class="als-1" d="M100.7 43h-1.19v1.42h1.16c.64 0 1-.14 1-.72s-.32-.7-1-.7Zm-1.76-.53h1.75c1 0 1.59.29 1.59 1.17a1.06 1.06 0 0 1-.57 1c.71.38.42 1.68.71 2v.11h-.63c-.07-.14-.07-.16-.18-1.26 0-.45-.22-.56-.94-.56h-1.16v1.82h-.57Zm1.56-1a3.19 3.19 0 1 0 3.16 3.18 3.18 3.18 0 0 0-3.16-3.18Zm-3.71 3.19a3.72 3.72 0 1 1 3.72 3.74 3.74 3.74 0 0 1-3.72-3.74Z"/></g></g></svg>
+    </div></a>
+
+    <div class="flex flex-1 justify-items-start">
+      <button type="button" class="scroll-unlock cursor-pointer absolute top-5 right-6 md:right-10" @click="showOverlayMenu = false"> 
+      <img id="closex" src="https://www.fb.org/assets/imgz/icon-close-x-circle.png" style="height:26px;"></button> 
+    </div><!-- / -->
+
+</div><!-- /topnav -->
+
+<div id="offset"></div>
+<div class="voa-width bb-red">
+
+<div class="bg-sand-dark dark:bg-sand-darkmode w-full mt-4 p-6 flex">
+		<form class="search block w-full sm:w-3/4 m-auto" action="https://www.fb.org/search">
+        <div class="flex flex-col md:flex-row">
+          <div class="w-full md:w-3/4 text-center">
+    				<input type="search" name="q" placeholder="Enter Search Term" class="styled" style="background-color:#f7f6f2;">
+          </div>
+          <div class="w-full md:w-1/4 mt-[6px] md:mt-0 md:ml-[2px] text-center">
+        		<input type="submit" value="Search" class="search-submit">
+          </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+
+<div class="voa-width hidden sm:block bb-red">
+<div class="grid grid-flow-row text-center sm:text-left sm:grid-flow-cols sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-6 mt-10"><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/news" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >NEWS</a><div class="block pl-4"><a 
+                 href="/farm-bureau-news"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Farm Bureau® News</a></div><div class="block pl-4"><a 
+                 href="/newsline"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Newsline</a></div><div class="block pl-4"><a 
+                 href="/in-the-news"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">In the News</a></div><div class="block pl-4"><a 
+                 href="/news-release"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">News Release</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/intel" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >FARM BUREAU INTEL</a><div class="block pl-4"><a 
+                 href="/intel/consumer"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Consumer</a></div><div class="block pl-4"><a 
+                 href="/intel/markets"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Markets</a></div><div class="block pl-4"><a 
+                 href="/intel/policy"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Policy</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/about/farmbureaupresident" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >FROM THE DESK OF</a><div class="block pl-4"><a 
+                 href="/the-zipline"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">The Zipline</a></div><div class="block pl-4"><a 
+                 href="/about/farmbureaupresident#pvd-insights"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Weekly Insights</a></div><div class="block pl-4"><a 
+                 href="/about/farmbureaupresident#pvd-videos"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Videos</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/event" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >EVENTS</a><div class="block pl-4"><a 
+                 href="https://convention.fb.org"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                   target="_blank" rel="noopener"">2027 American Farm Bureau Convention</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/advocacy" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >ADVOCACY</a><div class="block pl-4"><a 
+                 href="/advocacy/vote2024"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">iFarmiVote</a></div><div class="block pl-4"><a 
+                 href=""                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                 hidden                 ">Take Action</a><div x-data="{ open: false }" :class="open ? 'avrir block' : 'cerrado block'"><button x-on:click="open = !open" class="mb-4"><div class="inline-block text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light float-left text-left leading-none">Take Action
+                        <span :class="open ? 'rotated' : 'straight'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span></div></button><div x-show="open" 
+                          x-transition:enter="transition ease-out duration-300"
+                          x-transition:enter-start="opacity-0 scale-90"
+                          x-transition:enter-end="opacity-100 scale-100"><a href="https://www.votervoice.net/FarmBureau/campaigns/139424/Respond?TrackingID=voa" class="inline-block ml-4 mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Trade: Protect American Beef Production</a><a href="https://www.votervoice.net/iframes/FarmBureau/Campaigns/139026/Respond?TrackingID=voa" class="inline-block ml-4 mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Farm Economy: America’s Farmers and Ranchers are at an Economic Breaking Point</a><a href="https://www.votervoice.net/iframes/FarmBureau/Campaigns/138080/respond?TrackingID=voa" class="inline-block ml-4 mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Endangered Species Act: Protect Ranchers &amp; Rural Communities by Supporting S. 1306</a></div></div></div><div class="block pl-4"></div><div x-data="{ open: false }" :class="open ? 'avrir block' : 'cerrado block'"><button x-on:click="open = !open" class="mb-4"><div class="inline-block text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light float-left text-left leading-none pl-4">Grassroots
+                    <span :class="open ? 'rotated' : 'straight'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span></div></button><div x-show="open" 
+                      x-transition:enter="transition ease-out duration-300"
+                      x-transition:enter-start="opacity-0 scale-90"
+                      x-transition:enter-end="opacity-100 scale-100"><a href="/advocacy/grassroots-and-political-advocacy" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Grassroots Advocacy</a><a href="/action-center" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Action Center</a><a href="/advocacy/grassroots-and-political-advocacy/advocates-tool-kit" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Be a Successful Advocate</a><a href="/advocacy/grassroots-and-political-advocacy/sign-up-for-action-alerts" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Sign up for Action Alerts</a><a href="/advocacy/grassroots-and-political-advocacy/119th-congress-briefing-booklet" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >119th Congress Briefing Booklet</a></div></div><div class="block pl-4"><a 
+                 href="/advocacy/legal-advocacy-in-the-courts"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Legal Advocacy</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/initiative" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >INITIATIVES</a><div class="block pl-4"><a 
+                 href="https://www.fb.org/initiative/farm250"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">FARM 250</a></div><div class="block pl-4"><a 
+                 href="/initiative/stillfarming"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">#StillFarming</a></div><div class="block pl-4"><a 
+                 href="/initiatives/ag-innovation-challenge"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                   target="_blank" rel="noopener"">Ag Innovation Challenge</a></div><div class="block pl-4"><a 
+                 href="/initiative/pal-partners-in-advocacy-leadership"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Partners in Advocacy Leadership</a></div><div class="block pl-4"><a 
+                 href="/initiative/farm-dog-of-the-year"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Farm Dog of the Year</a></div><div class="block pl-4"></div><div x-data="{ open: false }" :class="open ? 'avrir block' : 'cerrado block'"><button x-on:click="open = !open" class="mb-4"><div class="inline-block text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light float-left text-left leading-none pl-4">Farm State of Mind
+                    <span :class="open ? 'rotated' : 'straight'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span></div></button><div x-show="open" 
+                      x-transition:enter="transition ease-out duration-300"
+                      x-transition:enter-start="opacity-0 scale-90"
+                      x-transition:enter-end="opacity-100 scale-100"><a href="/initiative/farm-state-of-mind" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Farm State of Mind Homepage</a><a href="https://www.fb.org/fsom-alliance" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Farm State of Mind Alliance</a></div></div><div class="block pl-4"><a 
+                 href="/initiative/county-activities-of-excellence"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">County Activities of Excellence</a></div><div class="block pl-4"></div><div x-data="{ open: false }" :class="open ? 'avrir block' : 'cerrado block'"><button x-on:click="open = !open" class="mb-4"><div class="inline-block text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light float-left text-left leading-none pl-4">Safety &amp; Health Network
+                    <span :class="open ? 'rotated' : 'straight'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span></div></button><div x-show="open" 
+                      x-transition:enter="transition ease-out duration-300"
+                      x-transition:enter-start="opacity-0 scale-90"
+                      x-transition:enter-end="opacity-100 scale-100"><a href="/initiative/farm-bureau-safety-health-network" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Safety &amp; Health Homepage</a><a href="/initiative/farm-bureau-safety-health-network/think-f-a-s-t" class="inline-block ml-4 mr-2 mb-4 pl-2 text-green hover:underline hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light text-left" >Think F.A.S.T</a></div></div><div class="block pl-4"><a 
+                 href="/initiative/afbf-veteran-farmer-award-of-excellence"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Veteran Farmer Award of Excellence</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/program" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >PROGRAMS</a><div class="block pl-4"><a 
+                 href="/programs/young-farmers-ranchers"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Young Farmers &amp; Ranchers</a></div><div class="block pl-4"><a 
+                 href="/program/promotion-and-engagement"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Promotion &amp; Engagement</a></div><div class="block pl-4"><a 
+                 href="/program/womens-leadership"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Women’s Leadership</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/leadership-development" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >LEADERSHIP DEVELOPMENT</a><div class="block pl-4"><a 
+                 href="/leadership-development#fbu"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Farm Bureau University</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/who-we-are" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >ABOUT</a><div class="block pl-4"><a 
+                 href="/about/who-we-are"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Who We Are</a></div><div class="block pl-4"><a 
+                 href="/about/what-we-do"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">What We Do</a></div><div class="block pl-4"><a 
+                 href="/about/get-involved"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Get Involved</a></div><div class="block pl-4"><a 
+                 href="/about/meet-our-leadership"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Meet our Leadership</a></div><div class="block pl-4"><a 
+                 href="/newsroom/fast-facts"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Fast Facts About Ag</a></div><div class="block pl-4"><a 
+                 href="/about/staff-directory"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Staff Directory</a></div><div class="block pl-4"><a 
+                 href="/careers-internships"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Careers</a></div></div><!-- /da grid item --><div class="bb-blue voa-bg-sand-supalight"><!-- da grid item --><a href="/about/get-involved#join" 
+        class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4 mb-4 block"
+    >JOIN</a><div class="block pl-4"><a 
+                 href="/get-involved#join"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Become a Member</a></div><div class="block pl-4"><a 
+                 href="/about/benefits"                  
+                 class="inline-block mb-4 text-green hover:text-red hover:underline dark:text-white dark:hover:text-white dark:hover:underline text-xs font-light 
+                                  ">Member Benefits</a></div></div><!-- /da grid item --></div><!-- /grid -->
+
+<a href="https://www.fb.org/issue" class="text-black font-semibold dark:text-sand-dark hover:text-red dark:hover:text-white dark:hover:underline text-sm text-center sm:text-left tracking-wide uppercase mb-2 mt-10 block">ISSUES</a>
+
+	<div class="grid grid-flow-row sm:grid-flow-cols sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 my-4"><a href="/issue/farm-policy/farm-bill" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Farm Bill</a><a href="/issue/trade" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Trade</a><a href="/issue/healthier-america" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Healthier America</a><a href="/issue/sustainability" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Sustainability</a><a href="/issue/regulatory-reform" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Regulatory Reform</a><a href="/issue/infrastructure/rural-broadband" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Rural Broadband</a><a href="/issue/labor" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Labor</a><a href="/issue/fertilizer" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Fertilizer</a><a href="/issue/right-to-repair" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Right to Repair</a><a href="/issue" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-white hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">VIEW ALL</a></div>
+<a href="https://www.fb.org/issue#topics" class="text-black font-semibold dark:text-sand-dark hover:text-red dark:hover:text-white dark:hover:underline text-sm text-center sm:text-left tracking-wide uppercase mb-2 mt-10 block">TRENDING TOPICS</a>
+
+	<div class="grid grid-flow-row sm:grid-flow-cols sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 my-4"><a href="https://www.fb.org/topic/farm-economy" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Farm Economy</a><a href="/topic/labor" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Farm Labor</a><a href="/issue/farm-policy/farm-bill" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Farm Bill</a><a href="/issue/trade" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">Trade</a><a href="/topic/usmca" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">USMCA</a><a href="https://www.fb.org/issue/E15" class="font-sol font-body text-sm text-center text-brown hover:text-white bg-sand-dark hover:bg-black dark:text-white dark:hover:text-black dark:bg-sand-darkmode dark:hover:bg-white p-2 px-4">E15</a></div>
+</div><!-- /voa-width -->
+
+
+
+
+<div class="block sm:hidden bb-red">
+
+<div class="block mt-6">
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">NEWS</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/news" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">news Home</a>
+                          
+                              <a href="/farm-bureau-news" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Farm Bureau® News</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/newsline" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Newsline</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/in-the-news" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">In the News</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/news-release" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">News Release</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">FARM BUREAU INTEL</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/intel" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">farm bureau intel Home</a>
+                          
+                              <a href="/intel/consumer" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Consumer</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/intel/markets" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Markets</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/intel/policy" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Policy</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">FROM THE DESK OF</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/about/farmbureaupresident" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">from the desk of Home</a>
+                          
+                              <a href="/the-zipline" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">The Zipline</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/about/farmbureaupresident#pvd-insights" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Weekly Insights</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/about/farmbureaupresident#pvd-videos" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Videos</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">EVENTS</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/event" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">events Home</a>
+                          
+                              <a href="https://convention.fb.org" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm  target="_blank" rel="noopener"">2027 American Farm Bureau Convention</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">ADVOCACY</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/advocacy" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">advocacy Home</a>
+                          
+                              <a href="/advocacy/vote2024" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">iFarmiVote</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="https://www.fb.org/action-center" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Action Center</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="https://www.fb.org/advocacy/grassroots-and-political-advocacy" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Grassroots</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/advocacy/legal-advocacy-in-the-courts" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Legal Advocacy</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">INITIATIVES</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/initiative" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">initiatives Home</a>
+                          
+                              <a href="https://www.fb.org/initiative/farm250" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">FARM 250</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/initiative/stillfarming" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">#StillFarming</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/initiatives/ag-innovation-challenge" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm  target="_blank" rel="noopener"">Ag Innovation Challenge</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/initiative/pal-partners-in-advocacy-leadership" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Partners in Advocacy Leadership</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/initiative/farm-dog-of-the-year" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Farm Dog of the Year</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="https://www.fb.org/initiative/farm-state-of-mind" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Farm State of Mind</a>
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/initiative/county-activities-of-excellence" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">County Activities of Excellence</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="https://www.fb.org/initiative/farm-bureau-safety-health-network" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Safety & Health Network</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/initiative/afbf-veteran-farmer-award-of-excellence" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Veteran Farmer Award of Excellence</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">PROGRAMS</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/program" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">programs Home</a>
+                          
+                              <a href="/programs/young-farmers-ranchers" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Young Farmers &amp; Ranchers</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/program/promotion-and-engagement" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Promotion &amp; Engagement</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/program/womens-leadership" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Women’s Leadership</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">LEADERSHIP DEVELOPMENT</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/leadership-development" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">leadership development Home</a>
+                          
+                              <a href="/leadership-development#fbu" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Farm Bureau University</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">ABOUT</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/who-we-are" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">about Home</a>
+                          
+                              <a href="/about/who-we-are" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Who We Are</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/about/what-we-do" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">What We Do</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/about/get-involved" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Get Involved</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/about/meet-our-leadership" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Meet our Leadership</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/newsroom/fast-facts" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Fast Facts About Ag</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/about/staff-directory" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Staff Directory</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/careers-internships" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Careers</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+                  <div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+      <button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+      <div class="m-auto flex xs:block">
+        <p class="inline-block text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">JOIN</p>
+        <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+      </div>      
+      </button>
+
+        <div x-show="open" 
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 scale-90"
+          x-transition:enter-end="opacity-100 scale-100">
+
+                                <div class="block text-center">
+                          <a href="/about/get-involved#join" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm capitalize">join Home</a>
+                          
+                              <a href="/get-involved#join" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Become a Member</a>                         
+                          </div>
+                        <div class="block text-center">
+                          
+                              <a href="/about/benefits" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm ">Member Benefits</a>                         
+                          </div>
+                                </div><!-- /show -->
+        </div><!-- /x-data -->
+
+    </div><!-- /block -->
+
+
+
+<div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+<button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+<div class="m-auto flex xs:block">
+  <a class="inline-block  text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">ISSUES</a>
+  <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+</div>      
+</button>
+
+<div x-show="open" 
+  x-transition:enter="transition ease-out duration-300"
+  x-transition:enter-start="opacity-0 scale-90"
+  x-transition:enter-end="opacity-100 scale-100">
+  <div class="block text-center">
+        <a href="/issue/farm-policy/farm-bill" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Farm Bill</a>
+    
+
+        <a href="/issue/trade" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Trade</a>
+    
+
+        <a href="/issue/healthier-america" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Healthier America</a>
+    
+
+        <a href="/issue/sustainability" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Sustainability</a>
+    
+
+        <a href="/issue/regulatory-reform" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Regulatory Reform</a>
+    
+
+        <a href="/issue/infrastructure/rural-broadband" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Rural Broadband</a>
+    
+
+        <a href="/issue/labor" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Labor</a>
+    
+
+        <a href="/issue/fertilizer" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Fertilizer</a>
+    
+
+        <a href="/issue/right-to-repair" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Right to Repair</a>
+            <a href="/issue" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">MORE</a>
+    
+
+      </div>
+  </div><!-- /show -->
+</div><!-- /x-data -->
+
+
+<div x-data="{ open: false }" :class="open ? 'avrir' : 'cerradomob'">
+<button x-on:click="open = !open" class="w-full bg-sand-dark dark:bg-sand-darkmode flex p-2 xs:p-4 mb-2">
+<div class="m-auto flex xs:block">
+  <p class="inline-block  text-black dark:text-sand-dark text-2xs xs:text-sm tracking-wide uppercase block float-left">TRENDING TOPICS</p>
+  <span :class="open ? 'rotated' : 'straightmob'"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg></span>
+</div>      
+</button>
+
+<div x-show="open" 
+  x-transition:enter="transition ease-out duration-300"
+  x-transition:enter-start="opacity-0 scale-90"
+  x-transition:enter-end="opacity-100 scale-100">
+  <div class="block text-center">
+        <a href="https://www.fb.org/topic/farm-economy" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Farm Economy</a>
+            <a href="/topic/labor" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Farm Labor</a>
+            <a href="/issue/farm-policy/farm-bill" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Farm Bill</a>
+            <a href="/issue/trade" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">Trade</a>
+            <a href="/topic/usmca" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">USMCA</a>
+            <a href="https://www.fb.org/issue/E15" class="block mb-4 text-green hover:text-red dark:text-white dark:hover:text-white dark:hover:underline text-sm">E15</a>
+                      </div>
+  </div><!-- /show -->
+</div><!-- /x-data -->
+
+</div><!-- /voa-width -->
+
+
+</div><!-- /nav-overlay -->
+
+
+							</div> 
+
+</div><!-- / CLOSE x-directive -->
+	<div id="offset"></div>
+  
+
+ 
+
+<div class="h-20px lg:h-40px"></div>
+
+
+<div id="page-tools" class="voa-width flex flex-row justify-between items-start h-auto md:h-40px  mb-0 md:mb-2  bb-red print:hidden" style="min-height:40px;">
+
+    <div class="justify-start my-auto min-w-0 flex-1 pr-2">
+
+
+            <!-- /if entry defined -->
+
+	          	              <div style="padding-left:36px; text-indent:-36px; line-height:0.8;">
+	                <a href="https://www.fb.org/" class="inline">
+	                <svg class="lil-barn inline relative top-[-3px]" width="16" height="16" viewBox="0 0 101 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+	                <path fill-rule="evenodd" clip-rule="evenodd" d="M100.667 39L84 16.776L50.6667 0.109344L17.3333 16.776L0.666656 39V50.1093H6.22399V100.109H95.1093V50.1093H100.667V39ZM42.3333 39V22.3333H59V39H42.3333ZM50.6667 77.8907L75.6667 94.5573H25.6667L50.6667 77.8907ZM50.6667 72.3333L25.6667 55.6667H75.6667L50.6667 72.3333ZM47.8907 75.1093L22.8907 91.776V58.4427L47.8907 75.1093ZM53.4428 75.1093L78.4428 58.4427V91.776L53.4428 75.1093Z" />
+                </svg></a> <span class="inline relative font-sol font-light text-2xs text-black dark:text-white mx-1 top-[-2px]">&gt;</span>
+                                  	                    <a href="https://www.fb.org/intel" class="font-sol font-semibold text-2xs-px md:text-sm-px text-black dark:text-white hover:text-red dark:hover:text-red">Farm Bureau Intel</a><span class="inline relative font-sol font-light text-2xs text-black dark:text-white mx-1 top-[-2px]">&gt;</span>                  	                    <a href="https://www.fb.org/intel/markets" class="font-sol font-semibold text-2xs-px md:text-sm-px text-black dark:text-white hover:text-red dark:hover:text-red">Markets</a>                  	                	              </div>
+	           <!-- /if templateType -->
+
+
+
+
+
+    </div><!-- /justify start -->
+
+
+    <div class="flex flex-row justify-end flex-none my-auto">
+            <button type="button" id="prinIt" class="hidden md:block mr-4" title="Print this page" aria-label="Print this page">
+              <img src="https://www.fb.org/assets/imgz/icon-print.svg" class="page-tool-icon w-18px" alt="">
+            </button>
+            <button type="button" id="textBigger" class="hidden md:block mr-2" title="Increase text size" aria-label="Increase text size">
+              <img src="https://www.fb.org/assets/imgz/icon-text-larger.svg" class="page-tool-icon w-34px" alt="">
+            </button>
+            <button type="button" id="textSmaller" class="hidden md:block mr-2" title="Decrease text size" aria-label="Decrease text size">
+              <img src="https://www.fb.org/assets/imgz/icon-text-smaller.svg" class="page-tool-icon w-34px" alt="">
+            </button>
+            
+                        <button x-on:click="darkMode = 'light'" type="button" aria-label="Use light color mode" title="Use light color mode">
+              <svg xmlns="http://www.w3.org/2000/svg"
+              x-bind:class="{'border-2 border-sage-dark': darkMode === 'light'}"
+              class="w-22px mr-4 text-gray-700 rounded-full cursor-pointer bg-gray-50 hover:bg-red" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <span class="sr-only">Use light color mode</span>
+            </button>
+
+                        <button x-on:click="darkMode = 'dark'" type="button" aria-label="Use dark color mode" title="Use dark color mode">
+              <svg xmlns="http://www.w3.org/2000/svg"
+              x-bind:class="{'border-2 border-sage-dark': darkMode === 'dark'}"
+              class="w-22px mr-4 text-gray-100  bg-gray-700 rounded-full cursor-pointer hover:bg-red dark:hover:bg-black" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+              </svg>
+              <span class="sr-only">Use dark color mode</span>
+            </button>
+
+
+            <div class="flex flex-wrap items-center my-auto"  x-data="{ show: false }">
+
+              <div class="relative">
+                <button class="block sharebtn relative z-10" type="button" title="Share this page" aria-label="Share this page" aria-haspopup="true" aria-controls="page-tools-share-menu" @click="show = !show" :aria-expanded="show ? 'true' : 'false'" :class="{ 'active': show }">
+	                    <img src="https://www.fb.org/assets/imgz/icon-share.svg" class="page-tool-icon w-34px mr-2" alt="">
+                </button>
+
+                <div id="page-tools-share-menu" class="sharebtn-dropdown absolute right-0 mt-0 w-36 bg-white rounded-sm overflow-hidden shadow-lg z-20 border border-gray-100" x-show="show">
+                                      <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.fb.org/intel/markets" target="_blank" title="Share on Facebook" class="flex px-4 py-2 text-sm text-gray-800 border-b hover:bg-blue-100">
+                                      <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" class="w-5 h-5 mr-4 text-blue-500" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-3 7h-1.924c-.615 0-1.076.252-1.076.889v1.111h3l-.238 3h-2.762v8h-3v-8h-2v-3h2v-1.923c0-2.022 1.064-3.077 3.461-3.077h2.539v3z"/></svg>                  
+                    <span class="text-gray-600 text-2xs-px">Facebook</span>
+                  </a>
+                                      <a href="https://twitter.com/intent/tweet?url=https://www.fb.org/intel/markets" target="_blank" title="Share on Twitter" class="flex px-4 py-2 text-sm text-gray-800 border-b hover:bg-blue-100">
+                                      <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter-square" class="w-5 h-5 mr-4 text-blue-500" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-48.9 158.8c.2 2.8.2 5.7.2 8.5 0 86.7-66 186.6-186.6 186.6-37.2 0-71.7-10.8-100.7-29.4 5.3.6 10.4.8 15.8.8 30.7 0 58.9-10.4 81.4-28-28.8-.6-53-19.5-61.3-45.5 10.1 1.5 19.2 1.5 29.6-1.2-30-6.1-52.5-32.5-52.5-64.4v-.8c8.7 4.9 18.9 7.9 29.6 8.3a65.447 65.447 0 0 1-29.2-54.6c0-12.2 3.2-23.4 8.9-33.1 32.3 39.8 80.8 65.8 135.2 68.6-9.3-44.5 24-80.6 64-80.6 18.9 0 35.9 7.9 47.9 20.7 14.8-2.8 29-8.3 41.6-15.8-4.9 15.2-15.2 28-28.8 36.1 13.2-1.4 26-5.1 37.8-10.2-8.9 13.1-20.1 24.7-32.9 34z"></path></svg>
+                    <span class="text-gray-600 text-2xs-px">Twitter</span>
+                  </a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://www.fb.org/intel/markets" target="_blank" title="Share on LinkedIn" class="flex px-4 py-2 text-sm text-gray-800 border-b hover:bg-blue-100">
+                    <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="linkedin" class="w-5 h-5 mr-4 text-blue-500" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg>
+                    <span class="text-gray-600 text-2xs-px">LinkedIn</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+
+
+    </div>
+</div>
+
+
+  <div class="bg-white-rain-light-hard-stop mt-4 mb-4">
+
+  <div class="voa-width">
+    <a href="https://www.fb.org/intel/markets/drones-taking-off-in-ag" class="group">
+    <div class="flex flex-col md:flex-row">
+            <div class="w-full md:w-1/2 bb-red flex">
+                <img src="https://www.fb.org/imgz/Analysis/_w900/MI_Pull-Quote_U.S.-Acres-Sprayed-by-Drones-up-59-from-2024.png" class="m-auto md:m-none" fetchpriority="high">
+      </div>
+      <div class="w-full md:w-1/2 bb-red flex flex-col">
+        <div class="m-auto bb-red py-4 md:pl-4 md:py-10 xl:py-6 xl:pl-6 2xl:p-20 relative">
+                <h2 class="font-mac text-2xl xl:text-4xl font-bold leading-tight xl:leading-snug text-black dark:text-white group-hover:text-black dark:group-hover:text-white">Drones Taking Off in Ag</h2>
+          <p class="font-body uppercase text-2xs font-light mt-4  text-black dark:text-white group-hover:text-black dark:group-hover:text-white"> Oct 15, 2026</p>
+          <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-black dark:group-hover:text-white font-light absolute bottom-2 xl:-bottom-4">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+        </div>
+      </div><!-- /w -->
+    </div></a><!-- /flex -->
+
+  </div><!-- /width -->
+</div><!-- /bg -->
+
+
+  <div class="voa-width bb-yellow relative">
+
+    <div id="promo-sidebar" class="lg:w-1/3 xl:w-1/2 lg:px-4 lg:mb-0 relative lg:absolute right-0 top-0 bb-red flex flex-col">
+    
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+
+  
+  
+  
+  
+      <div class="hidden lg:flex flex-col items-start justify-center pt-10 pl-10 xl:pt-12 xl:pl-12">
+    <div class="w-full xl:w-2/3">
+      <img
+        src="https://www.fb.org/assets/imgz/fb-intel-markets-logo-440.webp"
+        srcset="https://www.fb.org/assets/imgz/fb-intel-markets-logo-220.webp 220w, https://www.fb.org/assets/imgz/fb-intel-markets-logo-440.webp 440w, https://www.fb.org/assets/imgz/fb-intel-markets-logo-660.webp 660w"
+        sizes="(min-width: 1280px) 340px, 40vw"
+        width="340"
+        height="126"
+        alt="Farm Bureau Intel Markets"
+        class="mb-4 ml-0 w-[340px] max-w-full">
+    </div>
+    <div class="w-full xl:w-2/3 text-left">
+      <p class="voa-body-copy text-2xs">
+      Breaks down complex market trends, economic data and industry shocks to deliver meaningful insights and provide context beyond the numbers.
+      </p>
+      <p class="voa-body-copy text-2xs hidden md:flex text-left">
+        Get Farm Bureau Intel delivered right to your inbox.
+      </p>
+      <a href="https://mailchi.mp/fb/farm-bureau-intel-subscribers" target="_blank" class="voa-button blue hidden md:flex" style="margin-left:0; min-width:224px;">
+        <p class="xl:hidden" style="font-size:80%; line-height:1.15;">Subscribe to<br>Farm Bureau Intel</p>
+        <p class="hidden xl:block" style="font-size:80%;">Subscribe to Farm Bureau Intel</p>
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="rounder" opacity="0.5" cx="16" cy="16" r="16" fill=""></circle>
+        <circle class="rounder" cx="16" cy="16" r="16" fill=""></circle>
+        <path class="pointer" fill-rule="evenodd" clip-rule="evenodd" d="M16.3904 24.3904C15.8697 23.8697 15.8697 23.0255 16.3904 22.5048L22.9901 15.9052L16.3904 9.3055C15.8697 8.7848 15.8697 7.94058 16.3904 7.41988C16.9111 6.89918 17.7554 6.89918 18.2761 7.41988L24.8757 14.0195C25.9171 15.0609 25.9171 16.7494 24.8757 17.7908L18.2761 24.3904C17.7554 24.9111 16.9111 24.9111 16.3904 24.3904Z" fill=""></path>
+        <path class="pointer" fill-rule="evenodd" clip-rule="evenodd" d="M25.3333 15.9999C25.3333 16.7363 24.7363 17.3333 23.9999 17.3333L7.99992 17.3332C7.26354 17.3332 6.66658 16.7363 6.66658 15.9999C6.66658 15.2635 7.26354 14.6666 7.99992 14.6666L23.9999 14.6666C24.7363 14.6666 25.3333 15.2635 25.3333 15.9999Z" fill=""></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+  
+
+ 
+  
+
+ 
+  
+
+
+
+
+      
+  </div>
+
+
+
+    <div class="grid grid-flow-row gap-4 md:auto-rows-fr bb-black">
+  
+    <a href="https://www.fb.org/intel/markets/a-look-at-irs-section-180-tax-deductions" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/_w530/MI_Pull-Quote_A-Look-at-IRS-Section-180-Tax-Deductions.jpg" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">A Look at IRS Section 180 Tax Deductions </h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Oct 13, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/u-s-china-trade-framework-what-we-know-now" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/MarketIntel/MI-Graphics/_w530/MI_Pull-Quote_U.S.-China-Trade-Framework-What-We-Know-Now_draft-1.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">U.S.-China Trade Framework: What We Know Now</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Oct 8, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/reviewing-state-level-farm-income-and-production-expenses" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/MarketIntel/MI-Graphics/_w530/MI_Pull-Quote_Hog-Market-at-a-Crossroads.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">Reviewing State-Level Farm Income and Production Expenses</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Oct 7, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/hog-market-at-a-crossroads-profits-persist-but-demand-signals-caution-for-2027" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/_w530/MI_Pull-Quote_Hog-Market-at-a-Crossroads_final_2026-10-02-143745_ulnf.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">Hog Profits Persist, but Demand Signals Caution</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Oct 2, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/diesel-costs-increase-for-harvest" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/_w530/MI_Pull-Quote_Diesel-Costs-Increase-for-Harvest_final.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">Diesel Costs Increase for Harvest  </h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Oct 1, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+    </div><!-- /grid -->
+  </div><!-- /voa-width -->
+
+
+
+
+
+
+
+
+
+  <div class="voa-width mt-4 bb-yellow relative">
+  <div class="grid grid-flow-row gap-4 md:auto-rows-fr bb-black">
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/increased-beef-imports-have-not-lowered-prices-for-consumers" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/MarketIntel/MI-Graphics/_w530/MI_Pull-Quote_Increased-Beef-Imports-Have-Not-Delivered-Price-Relief-For-Consumers_draft-3.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">Increased Beef Imports Have Not Lowered Prices For Consumers</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Sep 23, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/diesel-prices-surge-as-global-supplies-tighten" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/_w530/MI_Pull-Quote_Diesel-Prices-Surge-as-Global-Supplies-Tighten_draft-1.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">Diesel Prices Surge as Global Supplies Tighten</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Sep 17, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/hormuz-price-shocks-outpace-higher-crop-prices" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/MarketIntel/MI-Graphics/_w530/MI_Pull-Quote_Prices-and-Input-Costs.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">Hormuz Price Shocks Outpace Higher Crop Prices</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Sep 15, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/the-farm-economy-has-changed-since-2018" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/MarketIntel/MI-Graphics/_w530/MI_Pull-Quote_The-Farm-Economy-Has-Changed-Since-2018.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">The Farm Economy Has Changed Since 2018</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Sep 14, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+  
+    <a href="https://www.fb.org/intel/markets/financing-the-farm-a-look-at-usda-farm-loan-programs" class="w-full lg:w-2/3 xl:w-1/2 group flex flex-col sm:flex-row bb-green border border-rain-light hover:bg-rain-light dark:hover:bg-blue-darkmode relative"><!-- grid-item -->
+                  <div class="w-full sm:w-1/2 flex bb-red">
+            <img src="https://www.fb.org/imgz/Analysis/MarketIntel/MI-Graphics/_w530/MI_Pull-Quote_Financing-the-Farm-A-Look-at-USDA-Farm-Loan-Programs.png" class="p-4 m-auto">
+          </div><!-- /w --> 
+          <div class="w-full sm:w-1/2 flex bb-red">
+          <div class="my-auto px-4 pb-2 sm:p-4">
+                                    <h2 class="font-mac text-sm xl:text-md font-bold leading-tight text-black dark:text-white group-hover:text-red dark:group-hover:text-white">Financing the Farm: A Look at USDA Farm Loan Programs</h2>
+              <p class="font-body uppercase text-2xs font-light mt-4 text-black dark:text-white group-hover:text-red dark:group-hover:text-white"> Sep 9, 2026</p>
+              <p class="invisible md:no-touch-hover:group-hover:visible font-body text-4xs text-red dark:text-red dark:group-hover:text-white font-light absolute bottom-0 right-1">READ MORE <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px] w-[10px] arrow-green dark:invert"></p>
+          </div> 
+        </div><!-- /w --> 
+    </a><!-- /grid-item -->
+
+  
+
+
+<nav aria-label="Page navigation">
+  <ul class="inline-flex space-x-2">
+     
+    
+    <li><span class="flex items-center justify-center w-10 h-10 transition-colors duration-150 border border-r-0 rounded-full focus:shadow-outline text-white dark:text-black bg-rain-dark border-rain-dark" aria-current="page" aria-label="Current page, page 1">1</span></li>
+
+        <li><a href="https://www.fb.org/intel/markets/p2" class="flex items-center justify-center w-10 h-10 transition-colors duration-150 rounded-full focus:shadow-outline text-rain-dark dark:text-white dark:hover:text-black hover:bg-rain-light" aria-label="Go to page 2">2</a></li>
+        <li><a href="https://www.fb.org/intel/markets/p3" class="flex items-center justify-center w-10 h-10 transition-colors duration-150 rounded-full focus:shadow-outline text-rain-dark dark:text-white dark:hover:text-black hover:bg-rain-light" aria-label="Go to page 3">3</a></li>
+        <li><a href="https://www.fb.org/intel/markets/p4" class="flex items-center justify-center w-10 h-10 transition-colors duration-150 rounded-full focus:shadow-outline text-rain-dark dark:text-white dark:hover:text-black hover:bg-rain-light" aria-label="Go to page 4">4</a></li>
+        <li><a href="https://www.fb.org/intel/markets/p5" class="flex items-center justify-center w-10 h-10 transition-colors duration-150 rounded-full focus:shadow-outline text-rain-dark dark:text-white dark:hover:text-black hover:bg-rain-light" aria-label="Go to page 5">5</a></li>
+        <li><a href="https://www.fb.org/intel/markets/p6" class="flex items-center justify-center w-10 h-10 transition-colors duration-150 rounded-full focus:shadow-outline text-rain-dark dark:text-white dark:hover:text-black hover:bg-rain-light" aria-label="Go to page 6">6</a></li>
+    
+         <li><a href="https://www.fb.org/intel/markets/p2" class="flex items-center justify-center w-10 h-10 transition-colors duration-150 rounded-full focus:shadow-outline text-rain-dark bg-white dark:bg-black hover:bg-rain-light dark:hover:bg-rain-light dark:hover:text-black" aria-label="Go to next page">
+      <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" fill-rule="evenodd"></path></svg></a>
+    </li>
+       </ul>
+</nav>
+    
+</div><!-- /grid -->
+</div><!--/ width -->
+
+
+
+
+
+  <div id="footer-promo" style="background-color:&#x23;aebcd9" class="print:hidden mt-8">
+    <a class="js-promo-link" href="https&#x3A;&#x2F;&#x2F;convention.fb.org" target="_blank" rel="noopener" data-promo-event="promo_click" data-promo-internal="true" data-promo-position="sitewide-footer" data-promo-campaign="Convention-2027"><img src="https&#x3A;&#x2F;&#x2F;www.fb.org&#x2F;imgz&#x2F;SiteWidePromos&#x2F;_siteWidePromoFooterWebp&#x2F;261504&#x2F;261001-Annual-footer-banner.webp" class="w-full" alt="Farm&#x20;Bureau&#x20;Convention&#x20;2027"></a>
+  </div>
+
+  <script>
+  (function() {
+    const link = document.querySelector('#footer-promo .js-promo-link');
+    if (!link) return;
+
+    link.addEventListener('click', function(event) {
+      if (!window.gtag) return;
+      event.preventDefault();
+
+      let opened = false;
+      const openLink = function() {
+        if (opened) return;
+        opened = true;
+        window.open(link.href, '_blank', 'noopener');
+      };
+
+      window.gtag('event', 'promo_click', {
+        internal_promo: true,
+        internal_position: 'sitewide-footer',
+        promo_campaign: link.dataset.promoCampaign,
+        event_callback: openLink,
+        event_timeout: 1000
+      });
+      setTimeout(openLink, 1200);
+    });
+  })();
+  </script>
+<div id="issues" class="bg-sand-light dark:bg-sand-darkmode print:hidden">
+<div class="voa-width py-10">
+	<div class="flex flex-col lg:flex-row">
+		<div class="w-full lg:w-1/2 xl:w-2/5">
+			<p class="text-2xs-px font-normal text-black dark:text-white uppercase">Top Issues</p>
+
+
+      <div class="grid grid-cols-1 gap-4 xs:grid-cols-2 mt-4 md:my-4">
+        <a href="/issue/farm-policy/farm-bill" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Farm Bill</a>
+        <a href="/issue/trade" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Trade</a>
+        <a href="/issue/healthier-america" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Healthier America</a>
+        <a href="/issue/sustainability" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Sustainability</a>
+        <a href="/issue/regulatory-reform" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Regulatory Reform</a>
+        <a href="/issue/infrastructure/rural-broadband" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Rural Broadband</a>
+        <a href="/issue/labor" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Labor</a>
+        <a href="/issue/fertilizer" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Fertilizer</a>
+        <a href="/issue/right-to-repair" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Right to Repair</a>
+      </div>
+    <a class="flex-none text-2xs-px mb-8 mt-2 md:mt-0 lg:mb-0 voa-text-butt text-black dark:text-white block relative bottom-0 p-0 block" href="https://www.fb.org/issue">VIEW ALL <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px]"></a>
+      		</div>
+
+		<div class="hidden xl:block xl:w-1/5">
+			<img class="block h-280px" src="https://www.fb.org/assets/imgz/vine.svg" style="margin-left:33%">
+		</div>
+
+		<div class="w-full lg:w-1/2 xl:w-2/5">
+			<p class="text-2xs-px font-normal text-black dark:text-white uppercase">Trending Topics</p>
+      			<div class="grid grid-cols-1 gap-4 xs:grid-cols-2 mt-4 md:my-4">
+                <a href="https://www.fb.org/topic/farm-economy" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Farm Economy</a>
+                <a href="/topic/labor" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Farm Labor</a>
+                <a href="/issue/farm-policy/farm-bill" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Farm Bill</a>
+                <a href="/issue/trade" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">Trade</a>
+                <a href="/topic/usmca" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">USMCA</a>
+                <a href="https://www.fb.org/issue/E15" class=" font-mac font-bold leading-none text-sm-px sm:text-xl-px md:text-2xl-px text-green dark:text-sage-dark hover:text-red dark:hover:text-red">E15</a>
+        			</div>
+			<a class="flex-none text-2xs-px mt-2 md:mt-0 voa-text-butt text-black dark:text-white block relative bottom-0 p-0 block" href="https://www.fb.org/issue#topics">VIEW ALL <img src="https://www.fb.org/assets/imgz/icon-arrow-thin-right.svg" class="inline-block relative top-[-2px]"></a>
+		</div>
+	</div>
+
+</div><!-- /width -->
+</div><!-- /issues /bg-color -->
+
+<div id="footer" class="w-full bg-brown dark:bg-brown-darkmode pb-20 print:hidden">
+<div class="voa-width flex flex-col">
+	<div class="w-full h-20px md:h-100px"></div>
+
+			<div class="flex flex-col md:grid md:grid-cols-6 md:grid-rows-2 lg:grid-rows-1">
+
+				<div class="col-span-2 bb-yellow">
+					<a href="https://www.fb.org/"><svg class="inline w-78px mb-10" id="fb-logo-bottom" data-name="fb-logo-bottom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104.22 49.19"><defs><style>.xls-1{fill:#FFFFFF;fill-rule:evenodd}</style></defs><g id="Symbols"><g id="Group-35"><path id="Fill-1" class="xls-1" d="M58.75 25.13h24.13c17.43 0 17.06 24-.25 24H52.28Z"/><path id="Fill-3" class="xls-1" d="m24 49.19 4.32-15.85c.85-3.18 5.26-8.2 11.55-8.2h15.72s-2.89 11-3.88 14.62c-1.5 5.65-6.06 9.43-13 9.43Z"/><path id="Fill-5" class="xls-1" d="M65.51 0s14.92.05 25.7.05c16.14 0 15.48 22.28 0 22.28h-31.7Z"/><path id="Fill-7" class="xls-1" d="M13.23.06h49.11l-6 22.27H40.49c-8.81 0-13.84 5.65-15.35 11.42-2.35 9-4 15.44-4 15.44H0Z"/><path id="Fill-33" class="xls-1" d="M100.7 43h-1.19v1.42h1.16c.64 0 1-.14 1-.72s-.32-.7-1-.7Zm-1.76-.53h1.75c1 0 1.59.29 1.59 1.17a1.06 1.06 0 0 1-.57 1c.71.38.42 1.68.71 2v.11h-.63c-.07-.14-.07-.16-.18-1.26 0-.45-.22-.56-.94-.56h-1.16v1.82h-.57Zm1.56-1a3.19 3.19 0 1 0 3.16 3.18 3.18 3.18 0 0 0-3.16-3.18Zm-3.71 3.19a3.72 3.72 0 1 1 3.72 3.74 3.74 3.74 0 0 1-3.72-3.74Z"/></g></g></svg></a>
+					<p class="text-2xs-px font-sans text-white mb-6">
+						Front Desk: <a href="tel:202-406-3600" class="underline text-white hover:text-red">(202) 406-3600</a><br>
+						General Inquiries: <a href="mailto:info@fb.org" class="underline text-white hover:text-red">info@fb.org</a><br>
+						Media Inquiries: <a href="mailto:media@fb.org" class="underline text-white hover:text-red">media@fb.org</a>
+					</p>
+
+					<p class="text-2xs-px font-sans text-white mb-10">
+					600 Maryland Avenue SW<br>
+					Suite 1000 Washington DC 20024
+					</p>
+				</div>
+
+
+				<div class="col-span-2 lg:col-span-1 bb-yellow">
+						<a href="https://www.fb.org/news" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">News</a>
+						<a href="https://www.fb.org/the-zipline" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">The Zipline</a>
+							<a href="https://www.fb.org/intel" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Farm Bureau Intel</a>
+						<div class="hidden md:block lg:hidden">
+              <a href="https://www.fb.org/about/who-we-are" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Who We Are</a>
+              <a href="https://www.fb.org/about/what-we-do" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">What We Do</a>
+              <a href="https://www.fb.org/about/get-involved" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Get Involved</a>
+                            <a href="https://www.fb.org/" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Contact</a>
+						</div>
+				</div>
+				<div class="col-span-2 lg:col-span-1 bb-yellow">
+					<a href="https://www.fb.org/issue" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Issues</a>
+					<a href="https://www.fb.org/event" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Events</a>
+					<a href="https://www.fb.org/advocacy" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Advocacy</a>
+					<a href="https://www.fb.org/initiative" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Initiatives</a>
+					<a href="https://www.fb.org/program" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Programs</a>
+					<a href="https://www.fb.org/careers-internships" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Careers</a>
+				</div>
+				<div class="col-span-2 col-start-3 lg:col-start-auto lg:col-span-1 bb-yellow">
+					<div class="block md:hidden lg:block">
+					<a href="https://www.fb.org/about/who-we-are" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Who We Are</a>
+					<a href="https://www.fb.org/about/what-we-do" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">What We Do</a>
+					<a href="https://www.fb.org/about/get-involved" class="font-sol block lg:text-lg-px 2xl:text-xl-px mb-4 text-white hover:text-rain-dark">Get Involved</a>
+															</div>
+				</div>
+				<div class="col-span-2 lg:col-span-1 bb-yellow">
+                        <a href="/about/get-involved" target="">
+<div class="voa-button sand">
+  <p>JOIN</p>
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle class="rounder" opacity="0.5" cx="16" cy="16" r="16" fill=""/>
+  <circle class="rounder" cx="16" cy="16" r="16" fill=""/>
+  <path class="pointer" fill-rule="evenodd" clip-rule="evenodd" d="M16.3904 24.3904C15.8697 23.8697 15.8697 23.0255 16.3904 22.5048L22.9901 15.9052L16.3904 9.3055C15.8697 8.7848 15.8697 7.94058 16.3904 7.41988C16.9111 6.89918 17.7554 6.89918 18.2761 7.41988L24.8757 14.0195C25.9171 15.0609 25.9171 16.7494 24.8757 17.7908L18.2761 24.3904C17.7554 24.9111 16.9111 24.9111 16.3904 24.3904Z" fill=""/>
+  <path class="pointer" fill-rule="evenodd" clip-rule="evenodd" d="M25.3333 15.9999C25.3333 16.7363 24.7363 17.3333 23.9999 17.3333L7.99992 17.3332C7.26354 17.3332 6.66658 16.7363 6.66658 15.9999C6.66658 15.2635 7.26354 14.6666 7.99992 14.6666L23.9999 14.6666C24.7363 14.6666 25.3333 15.2635 25.3333 15.9999Z" fill=""/>
+  </svg>
+</div></a>
+
+            			</div>
+
+			</div><!-- /grid -->
+
+      <div class="flex flex-col md:flex-row mt-10">
+      <div class="w-full md:w-1/2">
+  			<p class="text-3xs-px font-sans text-white leading-2">
+	  		© 2026 American Farm Bureau Federation ® | <a href="https://www.fb.org/about/privacy" class="underline text-white hover:text-red">Privacy Policy</a> | <a href="https://www.fb.org/about/legal" class="underline text-white hover:text-red">Terms & Conditions</a><br>
+		  	</p>
+      </div>
+      <div class="w-full md:w-1/2 flex flex-row justify-start md:justify-end gap-2 md:pr-28 lg:pr-2 xl:pr-12 2xl:pr-4 mt-4 md:mt-0">
+
+<a href="https://www.facebook.com/FarmBureau" target="_blank">
+<svg width="20" height="20" viewBox="0 0 99 98" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M49.1005 0C21.9901 0 0 21.9451 0 49C0 76.0549 21.9901 98 49.1005 98C76.2108 98 98.201 76.0549 98.201 49C98.201 21.9451 76.2108 0 49.1005 0ZM68.4269 24.7215H62.6852C57.0323 24.7215 55.2565 28.2363 55.2565 31.8397V40.3755H67.8942L65.8817 53.519H55.2565V85.3291H40.9911V53.519H29.4188V40.3755H40.9911V30.3629C40.9911 18.962 47.7982 12.6709 58.2162 12.6709C63.218 12.6709 68.4269 13.557 68.4269 13.557V24.7511V24.7215Z" fill="white"/>
+</svg></a>
+
+<a href="https://x.com/farmbureau" target="_blank" rel="noopener" aria-label="American Farm Bureau Federation on X">
+<svg width="20" height="20" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<path fill="white" d="M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z"/>
+<path fill="black" fill-rule="nonzero" d="M318.64 157.549h33.401l-72.973 83.407 85.85 113.495h-67.222l-52.647-68.836-60.242 68.836h-33.423l78.052-89.212-82.354-107.69h68.924l47.59 62.917 55.044-62.917zm-11.724 176.908h18.51L205.95 176.493h-19.86l120.826 157.964z"/>
+</svg></a>
+
+<a href="https://www.instagram.com/farmbureau/" target="_blank">
+<svg width="20" height="20" viewBox="0 0 99 98" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M49.975 39.6371C44.7956 39.6371 40.5929 43.8312 40.5929 49C40.5929 54.1688 44.7956 58.3629 49.975 58.3629C55.1544 58.3629 59.3571 54.1688 59.3571 49C59.3571 43.8312 55.1544 39.6371 49.975 39.6371Z" fill="white"/>
+<path d="M61.6064 24.8692H37.8405C31.0629 24.8692 25.558 30.3629 25.558 37.1266V60.8439C25.558 67.6076 31.0629 73.1013 37.8405 73.1013H61.6064C68.384 73.1013 73.8889 67.6076 73.8889 60.8439V37.1266C73.8889 30.3629 68.384 24.8692 61.6064 24.8692ZM49.975 63.5907C41.8952 63.5907 35.3248 57.0338 35.3248 48.9705C35.3248 40.9072 41.8952 34.3502 49.975 34.3502C58.0548 34.3502 64.6252 40.9072 64.6252 48.9705C64.6252 57.0338 58.0548 63.5907 49.975 63.5907ZM65.4835 36.8312C63.5598 36.8312 61.9911 35.2658 61.9911 33.346C61.9911 31.4262 63.5598 29.8608 65.4835 29.8608C67.4073 29.8608 68.9759 31.4262 68.9759 33.346C68.9759 35.2658 67.4073 36.8312 65.4835 36.8312Z" fill="white"/>
+<path d="M49.7382 0C22.6279 0 0.637756 21.9451 0.637756 49C0.637756 76.0549 22.6279 98 49.7382 98C76.8486 98 98.8387 76.0549 98.8387 49C98.8387 21.9451 76.8486 0 49.7382 0ZM79.4826 60.8439C79.4826 70.6793 71.462 78.6835 61.6064 78.6835H37.8405C27.9848 78.6835 19.9642 70.6793 19.9642 60.8439V37.1266C19.9642 27.2911 27.9848 19.2869 37.8405 19.2869H61.6064C71.462 19.2869 79.4826 27.2911 79.4826 37.1266V60.8439Z" fill="white"/>
+</svg></a>
+
+<a href="https://www.tiktok.com/@farmbureau" target="_blank">
+<svg width="20" height="20" viewBox="0 0 99 98" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M49.6005 0C22.4901 0 0.5 21.9451 0.5 49C0.5 76.0549 22.4901 98 49.6005 98C76.7108 98 98.7009 76.0549 98.7009 49C98.7009 21.9451 76.7108 0 49.6005 0ZM77.8651 42.8565C77.3324 42.9156 76.7996 42.9451 76.2965 42.9451C70.4956 42.9451 65.109 40.0211 61.9126 35.2068V61.6118C61.9126 72.3924 53.1521 81.1055 42.379 81.1055C31.6059 81.1055 22.8453 72.3629 22.8453 61.6118C22.8453 50.8608 31.6059 42.1181 42.379 42.1181C42.7933 42.1181 43.1781 42.1477 43.5924 42.1772V51.7764C43.1781 51.7173 42.7933 51.6582 42.379 51.6582C36.874 51.6582 32.405 56.1181 32.405 61.6118C32.405 67.1055 36.874 71.5654 42.379 71.5654C47.8839 71.5654 52.7673 67.2236 52.7673 61.7299L52.8561 16.9241H62.0606C62.9189 25.1646 69.5781 31.6034 77.8651 32.2236V42.9156V42.8565Z" fill="white"/>
+</svg></a>
+
+<a href="https://www.linkedin.com/company/american-farm-bureau-federation/" target="_blank">
+<svg width="20" height="20" id="Layer_1" style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="67px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;"/></svg></a>
+
+<a href="https://www.youtube.com/user/farmbureautv" target="_blank">
+<svg width="20" height="20" viewBox="0 0 99 98" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M60.2584 48.5865L44.809 40.1983C44.1875 39.8439 41.9973 40.2869 41.9973 41.0253V57.3882C41.9973 58.097 44.1578 58.5696 44.7794 58.2152L60.9391 50.2405C61.5902 49.8861 60.9391 48.9409 60.2584 48.5865Z" fill="white"/>
+<path d="M49.1005 0C21.9902 0 0 21.9451 0 49C0 76.0549 21.9902 98 49.1005 98C76.2109 98 98.201 76.0549 98.201 49C98.201 21.9451 76.2109 0 49.1005 0ZM82.1005 57.3587C82.1005 65.1266 75.7965 71.4177 68.0126 71.4177H31.9938C24.21 71.4177 17.9059 65.1266 17.9059 57.3587V40.6414C17.9059 32.8734 24.21 26.5823 31.9938 26.5823H68.0126C75.7965 26.5823 82.1005 32.8734 82.1005 40.6414V57.3587Z" fill="white"/>
+</svg></a>
+
+
+      </div>
+      </div><!-- /flex -->
+
+
+</div><!-- /flex -->		
+</div><!-- /footer -->
+
+
+
+
+
+<!-- ******************************************
+NICE WORLD INDUSTRIES | 2022 
+*************************************** -->
+<script src="/js/functions.js?v=1792000817"></script></body>
+</html>
+<!-- Cached by Blitz on 2026-10-15T17:22:46-04:00 -->

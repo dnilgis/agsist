@@ -1,0 +1,5 @@
+# Benchmark presell-calculator: MSU Extension, how many bushels should I market
+# https://www.canr.msu.edu/news/high-grain-prices-how-many-bushels-should-i-market
+# fetched 2026-10-16T16:21:36Z, sha256 7e336952cf54df034992eddc9a2795e43f7a61ab8e39235cda45b3d16e3f5e56
+
+

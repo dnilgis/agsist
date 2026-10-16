@@ -1,0 +1,74 @@
+# Benchmark presell-calculator: ADM Investor Services crop insurance worksheet
+# https://admadvantage.com/wp-content/uploads/2021/04/Crop-Insurance-Worksheet-2021.pdf
+# fetched 2026-10-16T16:21:42Z, sha256 26d567457088526d1152d214f02c4b6f31607482549cda746f04e0852dbad50a
+
+                                               ADM/CRS Crop Insurance Worksheet
+                                                                 (applicable for Revenue Protection policies)
+
+
+
+Step 1                                           Your APH (actual production history)                             0      bushels per acre
+
+                                                 Your Crop Insurance Coverage Level                       x       0      %
+The Basics
+                                                 Guaranteed Bushels per Acre                              =       0.00   bushels per acre
+
+
+                                                 Forward Contracted Bushels                                              bushels per acre
+
+                                                 Avg. Price of Contracted Bushels                         x $            per bushel
+                                                 Forward Contracted Revenue                               = $ 0.00       per acre
+
+
+Step 2                                           S P R I N G R E V E N U E G UA R A N T E E
+                                                 Spring Price (Feb Avg.)                                      $          per bushel
+Estimate your revenue
+guarantee                                        Guaranteed Bushels per Acre                              x       0.00   bushels per acre
+
+                                                 Spring Revenue Guarantee                                 = $ 0.00       per acre
+
+
+                                                 FALL REVENUE GUARANTEE
+                                                 Harvest Price (Oct Avg.)                                     $          per bushel
+
+                                                 Guaranteed Bushels per Acre                              x       0.00   bushels per acre
+                                                 Fall Revenue Guarantee                                   = $ 0.00       per acre
+
+
+Step 3                                           Revenue Guarantee (greater of spring or fall)                $ 0.00     per acre
+                                                 Actual Yield (                bpa)
+Could you receive an                             x Harvest Price ($                   /bu)                - $ 0.00       per acre
+insurance payment?                               Indemnity Payment Received                               = $ 0.00       per acre
+                                                 (if your revenue guarantee is greater than
+                                                 actual yield x harvest price)
+
+
+
+Step 4                                           Actual Forward Contracted Revenue**                          $          per acre
+                                                 Fall Contracted Revenue
+What is your gross                               (if you had any additional bushels to sell at harvest)
+revenue?                                              Remaining Bushels to Sell
+                                                      (Actual bpa - Forward Contracted bpa
+** If Actual Yield   >                                =        bpa) x Harvest Price ($         /bu)
+Forward Contracted Bushels:                                                                               + $ 0.00       per acre
+Use Forward Contracted                                        or
+Revenue from Step 1.
+                                                 Cancellation Payment
+                                                 (if you sold more bushels than you grew)
+                                                      Harvest Price ($       )
+** If Actual Yield   <                                - Contract Price ($       )
+Forward Contracted Bushels:                           + Cancellation Fee ($        )
+(Actual Yield ____ bpa) x (Avg.                       x bpa to Cancel (       bpa)
+Price of Forward Contracted                           (Forward Contracted bpa - Actual bpa)
+                                                                                                          - $ 0.00       per acre
+Bushels ____ )                                   Indemnity Payment Received (if applicable)               + $ 0.00       per acre
+
+                                                 GROSS REVENUE                                            = $ 0.00       per acre
+
+
+
+
+Contact your local ADM representative or visit ADMadvantage.com
+ADM Products and Services vary by location. Subject to Terms and Conditions in ADM-provided contract.
+Please see contract for details. © 2021 Archer Daniels Midland Company | 20001-4/21
+
