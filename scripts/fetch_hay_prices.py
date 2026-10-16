@@ -281,7 +281,7 @@ def static_html(d):
     i, j = d["months"].index(lm), d["months"].index(ya)
     lines = []
     al, ot = d["series"].get("alfalfa"), d["series"].get("other")
-    s = "In %s, farmers got %s a ton for alfalfa hay on the US average" % (d["latest_label"], money(al["us"][i]))
+    s = "In %s, farmers got %s a ton for alfalfa hay on average across the US" % (d["latest_label"], money(al["us"][i]))
     if is_num(al["us"][j]):
         s += " (%s a year earlier)" % money(al["us"][j])
     if ot and is_num(ot["us"][i]):
