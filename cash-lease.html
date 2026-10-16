@@ -152,7 +152,37 @@
       /* the light-theme rules below set panel borders with higher specificity; paper gets none */
       .cl-panel,.lease{border:none !important;box-shadow:none !important;border-radius:0 !important}
     }
+    /* ---- notice to end the lease (one shared view for every state) ---- */
+    .cl-law{display:inline-block;margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:.78em}
+    .cl-law a,.cl-nwhen a{color:var(--gold)}
+    .cl-ngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 14px;margin:12px 0}
+    .cl-ngrid label{display:flex;flex-direction:column;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+    .cl-ngrid input,.cl-ngrid select{font:inherit;font-family:var(--font-body,system-ui,sans-serif);font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--text,#e6ebe9);background:transparent;border:1px solid #3a4345;border-radius:6px;padding:8px 10px;min-height:40px}
+    .cl-ngrid select option{color:#000}
+    .cl-nwhen{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.95rem;line-height:1.65;color:var(--text-muted,#8a948f);margin:14px 0}
+    .cl-nwhen strong{color:var(--gold)}
+    .cl-nwhen .cl-ndate{font-family:var(--font-display);font-size:1.5rem;color:var(--text,#e6ebe9);display:block;margin:2px 0}
+    .cl-nwhen ul{margin:6px 0 0;padding-left:20px}
+    .notice-paper{background:#fff;color:#111;border-radius:6px;padding:28px 30px;line-height:1.6;font-size:.95rem;max-width:720px;margin:6px auto 0}
+    .notice-paper h2{text-align:center;font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;margin:0 0 18px;color:#111}
+    .notice-paper p{margin:0 0 12px}
+    .notice-paper .np-b{border-bottom:1px solid #111;padding:0 4px}
+    .notice-paper .np-sig{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px}
+    .notice-paper .np-line{border-bottom:1px solid #111;height:30px}
+    .notice-paper .np-lbl{font-size:.72rem;letter-spacing:.06em;color:#444;margin-top:3px;font-family:'JetBrains Mono',monospace}
+    .notice-paper .np-box{border:1px solid #111;padding:10px 12px;margin-top:22px;font-size:.88rem}
+    .notice-paper .np-foot{margin-top:18px;font-size:.7rem;color:#555;text-align:center;font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
+    @media (max-width:640px){.notice-paper{padding:18px 14px}.notice-paper .np-sig{grid-template-columns:1fr}.cl-ngrid input,.cl-ngrid select{font-size:16px}}
+    @media print{
+      .cl-notice-panel{display:none !important}
+      body.cl-printing-notice main > *:not(.cl-notice-panel){display:none !important}
+      body.cl-printing-notice .cl-notice-panel{display:block !important}
+      body.cl-printing-notice .cl-notice-panel .cl-notice-lede,body.cl-printing-notice .cl-ngrid,
+      body.cl-printing-notice #cl-n-fill,body.cl-printing-notice .cl-nwhen,body.cl-printing-notice .cl-actions{display:none !important}
+      body.cl-printing-notice .notice-paper{padding:0;max-width:none;font-size:11.5pt;line-height:1.55}
+    }
     .lease-print-foot,.lease-pg-foot,.lease-pg-head{display:none}
+    .cl-jump{margin:.7rem 0 0;font-size:.92rem}.cl-jump a{color:var(--gold)}
     .cl-by{font-size:.8rem;color:var(--text-dim,#8a948f);margin:.6rem 0 0}
     .cl-by a{color:var(--gold);text-decoration:none}
   /* 2026-10-08 light theme: this page was built dark-only, and loader.js now
@@ -235,6 +265,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     <p class="cl-kicker page-kicker">Lease paperwork &middot; Keep it simple</p>
     <h1>A farm lease you can actually read</h1>
     <p class="cl-sub page-lede">Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree, and a terrible way to remember. Below: <strong>every lease type explained</strong>, and a <strong>fillable, printable two-page cash lease</strong> that says what it means. It takes about five minutes, and you both sign it.</p>
+    <p class="cl-jump"><a href="#lease-form">Fill in the lease</a> &middot; <a href="#notice">Notice to end a lease, and the date to serve it by</a></p>
     <p class="cl-by">By <a href="/about">Sigurd Lindquist</a>, Certified Crop Adviser (CCA) &middot; state notice rules rechecked Oct 15, 2026</p>
   </header>
 
@@ -387,6 +418,27 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     </div>
   </section>
 
+  <section class="cl-panel cl-notice-panel" id="notice" aria-labelledby="cl-notice-t">
+    <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-notice-t">Ending a lease: the notice, and the date to serve it by</span></div>
+    <div class="cl-panel-b">
+      <p class="cl-src cl-notice-lede" style="margin-top:0">Pick your state and the day the lease ends. You get the date the written notice has to be in their hands by, how to deliver it, and a one-page notice to print and sign. It uses the state you picked above.</p>
+      <div class="cl-ngrid">
+        <label>Who is ending it<select id="cl-n-dir" data-n="dir"><option value="owner">Owner, to the tenant</option><option value="tenant">Tenant, to the owner</option></select></label>
+        <label>State<select id="cl-n-st" data-n="st"></select></label>
+        <label>Lease ends on<input type="date" id="cl-n-end" data-n="end"></label>
+        <label>Your name<input id="cl-n-from" data-n="from" autocomplete="name" placeholder="who signs the notice"></label>
+        <label>Your address<input id="cl-n-from_addr" data-n="from_addr" placeholder="mailing address"></label>
+        <label>Sent to<input id="cl-n-to" data-n="to" placeholder="the other party"></label>
+        <label>Their address<input id="cl-n-to_addr" data-n="to_addr" placeholder="mailing address"></label>
+        <label>The land<input id="cl-n-land" data-n="land" placeholder="acres, county, legal or common description"></label>
+      </div>
+      <button class="cl-btn cl-btn--ghost" id="cl-n-fill" type="button">Use the names from the lease above</button>
+      <div class="cl-nwhen" id="cl-n-when" role="status" aria-live="polite"><strong>Pick a state and the day the lease ends</strong> to see the serve-by date.</div>
+      <div class="notice-paper" id="cl-notice-paper" aria-label="Notice preview"></div>
+      <div class="cl-actions"><button class="cl-btn" id="cl-n-print" type="button">Print the notice</button></div>
+    </div>
+  </section>
+
   <div class="cl-warn"><strong>Check your state&rsquo;s termination deadline.</strong> Several states set a hard statutory date by which written notice must be delivered or a farm lease automatically continues another year. Iowa&rsquo;s September&nbsp;1 deadline is the best known. Your extension office or attorney can tell you your state&rsquo;s rule in one phone call.</div>
 
   <div class="cl-warn"><strong>This is an educational sample, not legal advice.</strong> The 10-day late-rent period and the 90-day notice are sample defaults: change them to match your deal. It covers the plain terms most simple cash leases share, and deliberately nothing exotic. Farm lease law is state law: notice deadlines, oral-lease rules, landlord lien rights, and crop-share specifics all vary. Have your own attorney read it before you sign.</div>
@@ -435,16 +487,16 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
        (absent = no farm-specific deadline widely cited)
      Statutes change. This is information, not legal advice. */
   var RULES={
-    IA:{n:'Iowa',t:'firm',d:'Written termination notice must be served on or before SEPTEMBER 1, or the farm tenancy automatically continues for another crop year on the same terms (Iowa Code 562.6). This applies to oral and written leases, including a written lease that states its own end date. The only way around notice is a separate, later written agreement to end the lease. Iowa Code 562.7 sets how notice must be served. Two exceptions in 562.6: a tenancy under 40 acres whose main use is an animal feeding operation, and a tenant in default. Since 2013, other tracts under 40 acres are covered like any farm.'},
-    IL:{n:'Illinois',t:'firm',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
-    KS:{n:'Kansas',t:'firm',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January).'},
-    NE:{n:'Nebraska',t:'firm',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year, in practice by SEPTEMBER 1. This comes from court rulings (Moudry v. Parkos, 1984), not a statute. Written leases: the lease controls.'},
-    SD:{n:'South Dakota',t:'firm',d:'ORAL leases only (SDCL ch. 43-32): an oral farm lease renews automatically unless written termination notice is given by SEPTEMBER 1, signed and delivered (certified mail or in hand). A written lease runs on its own terms.'},
-    IN:{n:'Indiana',t:'firm',d:'Written notice at least 3 MONTHS before the end of the lease (roughly end of November for a Feb-end term).'},
-    MN:{n:'Minnesota',t:'cited',d:'Commonly cited: written notice about 3 MONTHS before the lease ends (industry guides reference ~September 30).'},
-    MO:{n:'Missouri',t:'cited',d:'Commonly cited: written notice at least 60 DAYS before the end of the lease year, unless the lease sets its own terms.'},
-    WI:{n:'Wisconsin',t:'cited',d:'Commonly cited: written notice about 90 DAYS before the lease ends (~September 30 for a year-end term).'},
-    AR:{n:'Arkansas',t:'cited',d:'ORAL leases only (Ark. Code 18-16-105, \u201cTermination of oral lease of farmlands\u201d): written notice by JUNE 30, sent certified mail, one of the earliest deadlines anywhere. A written lease runs on its own terms.'},
+    IA:{n:'Iowa',t:'firm',s:'Iowa Code 562.6',u:'https://www.legis.iowa.gov/docs/code/562.6.pdf',d:'Written termination notice must be served on or before SEPTEMBER 1, or the farm tenancy automatically continues for another crop year on the same terms (Iowa Code 562.6). This applies to oral and written leases, including a written lease that states its own end date. The only way around notice is a separate, later written agreement to end the lease. Iowa Code 562.7 sets how notice must be served. Two exceptions in 562.6: a tenancy under 40 acres whose main use is an animal feeding operation, and a tenant in default. Since 2013, other tracts under 40 acres are covered like any farm.'},
+    IL:{n:'Illinois',t:'firm',s:'735 ILCS 5/9-206',u:'https://www.ilga.gov/legislation/ilcs/fulltext.asp?DocName=073500050K9-206',d:'Year-to-year tenancy: written notice at least 4 MONTHS before the end of the lease year (for a Feb-end lease year, late October).'},
+    KS:{n:'Kansas',t:'firm',s:'K.S.A. 58-2506',u:'https://www.ksrevisor.org/statutes/chapters/ch58/058_025_0006.html',d:'Written notice at least 30 DAYS BEFORE MARCH 1 for farm tenancies (roughly end of January), and the notice names March 1 as the end.'},
+    NE:{n:'Nebraska',t:'firm',s:'Moudry v. Parkos (Neb. 1984), a court ruling',d:'Verbal/year-to-year leases: notice 6 months before the end of the lease year, in practice by SEPTEMBER 1. This comes from court rulings (Moudry v. Parkos, 1984), not a statute. Written leases: the lease controls.'},
+    SD:{n:'South Dakota',t:'firm',s:'SDCL ch. 43-32',u:'https://sdlegislature.gov/Statutes/43-32',d:'ORAL leases only (SDCL ch. 43-32): an oral farm lease renews automatically unless written termination notice is given by SEPTEMBER 1, signed and delivered (certified mail or in hand). A written lease runs on its own terms.'},
+    IN:{n:'Indiana',t:'firm',s:'Ind. Code 32-31-1-2',u:'https://law.justia.com/codes/indiana/title-32/article-31/chapter-1/section-32-31-1-2/',d:'Year-to-year tenancy: written notice at least 3 MONTHS before the end of the lease year (roughly end of November for a Feb-end term).'},
+    MN:{n:'Minnesota',t:'cited',s:'Minn. Stat. 504B.135',u:'https://www.revisor.mn.gov/statutes/cite/504B.135',d:'Commonly cited: written notice about 3 MONTHS before the lease ends (industry guides reference ~September 30). Guides point to Minn. Stat. 504B.135, the general rule for ending a tenancy at will, not a farm statute.'},
+    MO:{n:'Missouri',t:'cited',s:'RSMo 441.050',u:'https://revisor.mo.gov/main/OneSection.aspx?section=441.050',d:'Commonly cited: written notice at least 60 DAYS before the end of the lease year, unless the lease sets its own terms. Guides point to RSMo 441.050, the year-to-year tenancy rule.'},
+    WI:{n:'Wisconsin',t:'cited',s:'Wis. Stat. 704.19',u:'https://docs.legis.wisconsin.gov/statutes/statutes/704/19',d:'Commonly cited: written notice about 90 DAYS before the lease ends (~September 30 for a year-end term). Guides point to Wis. Stat. 704.19, the notice rule for periodic tenancies.'},
+    AR:{n:'Arkansas',t:'cited',s:'Ark. Code 18-16-105',d:'ORAL leases only (Ark. Code 18-16-105, \u201cTermination of oral lease of farmlands\u201d): written notice by JUNE 30, sent certified mail, one of the earliest deadlines anywhere. A written lease runs on its own terms.'},
     KY:{n:'Kentucky',t:'cited',d:'No farm statute found. Guides commonly cite written notice about 6 MONTHS before the lease ends, sent certified mail, but they disagree on the date (anywhere from July 1 to September 1 for a calendar-year lease). Put the deadline in the lease and check with a Kentucky attorney.'},
     MS:{n:'Mississippi',t:'cited',d:'Commonly cited: written notice about 2 MONTHS before the end of the lease year.'},
     LA:{n:'Louisiana',t:'cited',d:'Commonly cited: written notice at least 30 DAYS before the lease ends.'},
@@ -452,18 +504,48 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     ND:{n:'North Dakota',t:'cited',d:'Commonly cited: written notice at least 30 DAYS before the lease ends.'},
     PA:{n:'Pennsylvania',t:'cited',d:'No farm statute found. The 15 DAYS often cited is the general landlord-tenant notice to quit, not a farm renewal rule, and summaries disagree (some say 30 days for a lease over one year). Put the deadline in the lease and check with a Pennsylvania attorney.'},
     NY:{n:'New York',t:'cited',d:'Commonly cited: written notice about 90 DAYS before expiration, certified mail.'},
-    TN:{n:'Tennessee',t:'cited',d:'Written notice at least 6 MONTHS before a year-to-year lease ends: by JUNE 30 for a lease that ends December 31, so mail it well before. This comes from a court ruling (Smith v. Holt, 1945, not a farm case), not a statute, and UT Extension says the rule for oral farm leases is unclear. A written lease that states its end date needs no notice. Check with a Tennessee attorney.'},
+    TN:{n:'Tennessee',t:'cited',s:'Smith v. Holt (Tenn. 1945), a court ruling',d:'Written notice at least 6 MONTHS before a year-to-year lease ends: by JUNE 30 for a lease that ends December 31, so mail it well before. This comes from a court ruling (Smith v. Holt, 1945, not a farm case), not a statute, and UT Extension says the rule for oral farm leases is unclear. A written lease that states its end date needs no notice. Check with a Tennessee attorney.'},
     MI:{n:'Michigan',t:'none',d:'No single farm deadline widely cited; the lease’s own terms control; industry guides suggest written notice by ~September 30.'},
-    OH:{n:'Ohio',t:'firm',d:'ORC 5301.71: for ANY farm lease, written OR oral, that carries no termination date and no notice deadline of its own, written notice is due ON OR BEFORE SEPTEMBER 1. A lease that spells out its own termination controls; one that does not falls under the statute.'},
+    OH:{n:'Ohio',t:'firm',s:'Ohio Rev. Code 5301.71',u:'https://codes.ohio.gov/ohio-revised-code/section-5301.71',d:'ORC 5301.71: for ANY farm lease, written OR oral, that carries no termination date and no notice deadline of its own, written notice is due ON OR BEFORE SEPTEMBER 1. A lease that spells out its own termination controls; one that does not falls under the statute.'},
     CA:{n:'California',t:'cited',d:'Leases over one year must be WRITTEN to be enforceable; put the termination deadline in the lease itself (industry guides suggest ~July 1).'},
     TX:{n:'Texas',t:'none',d:'Practices vary too much to summarize here; put the deadline in the lease and confirm with a local attorney.'}
   };
   var STATES='AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY'.split(' ');
+  var NAMES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+  function stName(ab){ return NAMES[ab]||ab; }
+  /* serveBy:start (test/cash-lease-notice.test.mjs evaluates this block)
+     How each state's deadline counts back from the day the lease ends.
+       mo: N months before the end    dd: N days before the end
+       fix: [month, day], the last such date before the end
+       oral: the rule covers oral leases only
+     A state with no entry has no date we can compute: the lease's own notice terms rule. */
+  var NOTICE={IA:{fix:[9,1]},IL:{mo:4},KS:{dd:30,mar1:true},NE:{mo:6},SD:{fix:[9,1],oral:true},IN:{mo:3},
+    MN:{mo:3},MO:{dd:60},WI:{dd:90},AR:{fix:[6,30],oral:true},MS:{mo:2},LA:{dd:30},NC:{dd:30},ND:{dd:30},
+    NY:{dd:90},TN:{mo:6},OH:{fix:[9,1]}};
+  function isoOf(d){ return d.getUTCFullYear()+'-'+('0'+(d.getUTCMonth()+1)).slice(-2)+'-'+('0'+d.getUTCDate()).slice(-2); }
+  function serveBy(ab, endIso, leaseDays){
+    var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(endIso||''); if(!m) return null;
+    var y=+m[1], mo=+m[2]-1, da=+m[3], end=new Date(Date.UTC(y,mo,da));
+    if(end.getUTCMonth()!==mo) return null;
+    var r=NOTICE[ab], d, how;
+    if(r&&r.mo){
+      var t=new Date(Date.UTC(y,mo-r.mo,1)), last=new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth()+1,0)).getUTCDate();
+      d=new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),Math.min(da,last))); how=r.mo+' months before it ends';
+    } else if(r&&r.dd){ d=new Date(end.getTime()-r.dd*864e5); how=r.dd+' days before it ends'; }
+    else if(r&&r.fix){
+      d=new Date(Date.UTC(y,r.fix[0]-1,r.fix[1])); if(d>=end) d=new Date(Date.UTC(y-1,r.fix[0]-1,r.fix[1]));
+      how='the fixed date in the state rule';
+    } else if(leaseDays>0){ d=new Date(end.getTime()-leaseDays*864e5); how=leaseDays+' days before it ends, from your lease (section 11)'; r={lease:true}; }
+    else return {iso:null,state:true};
+    return {iso:isoOf(d), early:isoOf(new Date(d.getTime()-7*864e5)), how:how, oral:!!(r&&r.oral), lease:!!(r&&r.lease),
+      mar1:!!(r&&r.mar1)&&!(mo===2&&da===1)};
+  }
+  /* serveBy:end */
   var TIER_LBL={firm:'Deadline set by law (widely documented)',cited:'Commonly cited: confirm the current rule with an attorney',none:'No single deadline widely cited'};
 
   function stateRuleText(ab){
     var r=RULES[ab];
-    if(r){var q=r.t==='firm'?'widely documented':(r.t==='none'?'no statutory deadline we can point to':'as commonly summarized');return 'For '+r.n+': '+r.d+' ('+q+', verify before relying; statutes change.)';}
+    if(r){var q=r.t==='firm'?'widely documented':(r.t==='none'?'no statutory deadline we can point to':'as commonly summarized');return 'For '+r.n+': '+r.d+(r.s?' Law: '+r.s+'.':'')+' ('+q+', verify before relying; statutes change.)';}
     return 'No farm-specific statutory deadline is widely cited for this state. This lease’s own notice terms (§11) and general landlord–tenant law control. Confirm with your extension office or attorney.';
   }
   function applyState(ab, alsoField){
@@ -474,9 +556,10 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     var r=RULES[ab];
     if(card){
       card.hidden=false;
-      card.innerHTML='<strong>'+(r?(r.n+', '+TIER_LBL[r.t]):(ab+', no widely-cited farm deadline'))+':</strong> '
+      card.innerHTML='<strong>'+(r?(r.n+', '+TIER_LBL[r.t]):(stName(ab)+', no widely-cited farm deadline'))+':</strong> '
         + (r?r.d:'The lease’s own notice terms and general landlord–tenant law control. Confirm locally.')
-        + ' <span style="font-size:.78em;opacity:.8">Compiled from industry &amp; extension summaries, reviewed 2026-07-18; Iowa, Kentucky, Pennsylvania and Tennessee rechecked 2026-10-15. Statutes change. Not legal advice.</span>';
+        + (r&&r.s?' <span class="cl-law">Law: '+(r.u?'<a href="'+r.u+'" rel="noopener">'+r.s+'</a>':r.s)+'</span>':'')
+        + ' <span style="font-size:.78em;opacity:.8">Compiled from industry &amp; extension summaries, reviewed 2026-07-18; Iowa, Kentucky, Pennsylvania and Tennessee rechecked 2026-10-15; statute links added 2026-10-16, read the section itself before relying on it. Statutes change. Not legal advice.</span>';
     }
     if(rp&&rt){ rp.style.display='block'; rt.textContent=stateRuleText(ab); }
     var sf=document.querySelector('[data-k="state"]');
@@ -553,7 +636,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   var sel=document.getElementById('cl-state-sel');
   if(sel){
     sel.innerHTML='<option value="">Pick your state…</option>'+STATES.map(function(ab){
-      return '<option value="'+ab+'">'+(RULES[ab]?RULES[ab].n:ab)+'</option>';}).join('');
+      return '<option value="'+ab+'">'+stName(ab)+'</option>';}).join('');
     sel.addEventListener('change', function(){
       applyState(this.value, true);
       try{ localStorage.setItem(KEY+'-st', this.value); }catch(e){}
@@ -580,6 +663,83 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     try{ localStorage.removeItem(KEY); }catch(e){}
     totals();
   });
+
+  // ---- notice to end the lease: one view for every state, printed on its own ----
+  var NKEY=KEY+'-notice', nf=document.querySelectorAll('[data-n]');
+  var nst=document.getElementById('cl-n-st');
+  var MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function longDate(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||''); return m?MON[+m[2]-1]+' '+(+m[3])+', '+m[1]:''; }
+  function esc(t){ return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function nval(k){ var f=document.querySelector('[data-n="'+k+'"]'); return f?String(f.value||'').trim():''; }
+  function blank(v,w){ return v?'<span class="np-b">'+esc(v)+'</span>':'<span class="np-b">'+'&nbsp;'.repeat(w||24)+'</span>'; }
+  function nsave(){ var d={}; nf.forEach(function(f){ if(f.value) d[f.dataset.n]=f.value; }); try{ localStorage.setItem(NKEY,JSON.stringify(d)); }catch(e){} }
+  function nrender(){
+    var ab=nval('st'), end=nval('end'), owner=nval('dir')!=='tenant';
+    var ld=numOf('notice_days',3650).v;
+    var when=document.getElementById('cl-n-when'), r=RULES[ab], sb=ab?serveBy(ab,end,ld):null;
+    if(when){
+      if(!ab||!end){ when.innerHTML='<strong>Pick a state and the day the lease ends</strong> to see the serve-by date.'; }
+      else if(!sb){ when.innerHTML='<strong>That end date does not read as a date.</strong> Pick it from the calendar.'; }
+      else {
+        var tier=r?TIER_LBL[r.t]:'No single deadline widely cited';
+        var h='<strong>'+esc(stName(ab))+': '+esc(tier)+'</strong>';
+        if(sb.iso){
+          h+='<span class="cl-ndate">Serve by '+longDate(sb.iso)+'</span>'
+           +'The lease ends '+longDate(end)+'; this is '+esc(sb.how)+'. Aim to have it in their hands by '+longDate(sb.early)+': some states count the day it arrives, not the day you mail it.';
+          if(sb.oral) h+=' <br>This deadline is for <b>oral</b> leases. A written lease runs on its own terms.';
+          if(sb.mar1) h+=' <br>Kansas notice has to name March 1 as the end of the tenancy. Your end date is not March 1.';
+          if(sb.lease) h+=' <br>No state farm deadline we can point to, so this uses the notice days written in your lease.';
+        } else {
+          h+='<span class="cl-ndate">No date we can count for you</span>No farm notice deadline we can point to for this state. Your lease&rsquo;s own notice terms rule: put the number of days in section 11 above and this will count it.';
+        }
+        if(r&&r.s) h+=' <br>Law: '+(r.u?'<a href="'+r.u+'" rel="noopener">'+esc(r.s)+'</a>':esc(r.s))+'.';
+        h+='<ul><li>Put it in writing and sign it.</li><li>Deliver it in hand and have them sign and date the receipt line, or send it certified mail with a return receipt.'+(ab==='IA'?' Iowa Code 562.7 lists the ways notice can be served.':'')+'</li><li>Keep a copy and the receipt.</li></ul>'
+         +'<span style="font-size:.8em;opacity:.85">Educational, not legal advice. Statutes change, and a written lease can set its own terms. Check with an attorney before a deadline you cannot miss.</span>';
+        when.innerHTML=h;
+      }
+    }
+    var paper=document.getElementById('cl-notice-paper'); if(!paper) return;
+    var who=owner?'Owner':'Tenant', other=owner?'Tenant':'Owner';
+    paper.innerHTML='<h2>NOTICE TO END FARM LEASE</h2>'
+      +'<p>Date: '+blank('',22)+'</p>'
+      +'<p>To ('+other+'): '+blank(nval('to'),34)+'<br>Address: '+blank(nval('to_addr'),40)+'</p>'
+      +'<p>From ('+who+'): '+blank(nval('from'),34)+'<br>Address: '+blank(nval('from_addr'),40)+'</p>'
+      +'<p>Land: '+blank(nval('land'),48)+(ab?', '+esc(stName(ab)):'')+'</p>'
+      +'<p>This is written notice that the farm lease on the land above ends on '+blank(end?longDate(end):'',22)
+      +' and will not continue or renew for another year. '
+      +(owner?'Possession of the land returns to the Owner at the end of that day.':'I will give up possession of the land at the end of that day.')+'</p>'
+      +'<div class="np-sig"><div><div class="np-line"></div><div class="np-lbl">'+who.toUpperCase()+' &middot; SIGNATURE</div></div>'
+      +'<div><div class="np-line"></div><div class="np-lbl">PRINTED NAME</div></div></div>'
+      +'<div class="np-box"><b>How this was delivered</b> (check one)<br>&#9744; In hand on '+blank('',14)+' &nbsp; &#9744; Certified mail, return receipt, no. '+blank('',20)+' mailed on '+blank('',12)
+      +'<div class="np-sig" style="margin-top:20px"><div><div class="np-line"></div><div class="np-lbl">RECEIVED BY ('+other.toUpperCase()+')</div></div><div><div class="np-line"></div><div class="np-lbl">DATE RECEIVED</div></div></div></div>'
+      +'<p class="np-foot">agsist.com/cash-lease &middot; educational sample, not legal advice &middot; keep a copy</p>';
+  }
+  if(nst){
+    nst.innerHTML='<option value="">Pick your state&hellip;</option>'+STATES.map(function(ab){ return '<option value="'+ab+'">'+stName(ab)+'</option>'; }).join('');
+  }
+  (function(){ var d; try{ d=JSON.parse(localStorage.getItem(NKEY)||'{}'); }catch(e){ d={}; }
+    nf.forEach(function(f){ if(d[f.dataset.n]!=null) f.value=d[f.dataset.n]; }); })();
+  if(nst&&!nst.value&&sel&&sel.value) nst.value=sel.value;
+  if(sel) sel.addEventListener('change',function(){ if(nst){ nst.value=this.value; nsave(); nrender(); } });
+  nf.forEach(function(f){ f.addEventListener('input',function(){ nsave(); nrender(); }); f.addEventListener('change',function(){ nsave(); nrender(); }); });
+  var nd=$('[data-k="notice_days"]'); if(nd) nd.addEventListener('input',nrender);
+  var nfill=document.getElementById('cl-n-fill');
+  if(nfill) nfill.addEventListener('click',function(){
+    var owner=nval('dir')!=='tenant', g=function(k){ var f=$('[data-k="'+k+'"]'); return f?String(f.value||'').trim():''; };
+    var pairs=owner?[['from','owner'],['from_addr','owner_addr'],['to','tenant'],['to_addr','tenant_addr']]:[['from','tenant'],['from_addr','tenant_addr'],['to','owner'],['to_addr','owner_addr']];
+    pairs.forEach(function(p){ var f=document.querySelector('[data-n="'+p[0]+'"]'); if(f&&g(p[1])) f.value=g(p[1]); });
+    var land=[g('acres')?g('acres')+' acres':'', g('county')?g('county')+' County':'', g('farm_name')].filter(Boolean).join(', ');
+    var lf=document.querySelector('[data-n="land"]'); if(lf&&land) lf.value=land;
+    nsave(); nrender();
+  });
+  var np=document.getElementById('cl-n-print');
+  if(np) np.addEventListener('click',function(){
+    document.body.classList.add('cl-printing-notice');
+    try{ gaEvent('lease_notice_print',{state:nval('st')}); }catch(e){}
+    window.print();
+  });
+  window.addEventListener('afterprint',function(){ document.body.classList.remove('cl-printing-notice'); });
+  nrender();
 })();
 </script>
 </body>
