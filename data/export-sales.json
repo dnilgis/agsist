@@ -1,71 +1,71 @@
 {
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "marketing_year": "2026/27",
   "note": "USDA FAS ESR API \u2014 api.fas.usda.gov/api/esr",
   "corn": {
-    "weekly_net_mt": 769468,
-    "cumulative_mt": 19543106,
+    "weekly_net_mt": 1122442,
+    "cumulative_mt": 20665548,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-01",
+    "report_date": "2026-10-08",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 29411131,
-    "prev_year_week": "2025-10-02",
-    "vs_prev_year_pct": -33.6
+    "prev_year_cumulative_mt": 30737741,
+    "prev_year_week": "2025-10-09",
+    "vs_prev_year_pct": -32.8
   },
   "soybeans": {
-    "weekly_net_mt": 549377,
-    "cumulative_mt": 22785229,
+    "weekly_net_mt": 574878,
+    "cumulative_mt": 23360107,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-01",
+    "report_date": "2026-10-08",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 12664254,
-    "prev_year_week": "2025-10-02",
-    "vs_prev_year_pct": 79.9
+    "prev_year_cumulative_mt": 13449257,
+    "prev_year_week": "2025-10-09",
+    "vs_prev_year_pct": 73.7
   },
   "wheat": {
-    "weekly_net_mt": 451562,
-    "cumulative_mt": 10109265,
+    "weekly_net_mt": 319901,
+    "cumulative_mt": 10429166,
     "usda_target_mt": null,
     "pct_of_target": null,
-    "report_date": "2026-10-01",
+    "report_date": "2026-10-08",
     "marketing_year": "2026/27",
-    "prev_year_cumulative_mt": 14844128,
-    "prev_year_week": "2025-10-02",
-    "vs_prev_year_pct": -31.9,
+    "prev_year_cumulative_mt": 15458027,
+    "prev_year_week": "2025-10-09",
+    "vs_prev_year_pct": -32.5,
     "classes": {
       "hrw": {
         "label": "HRW",
-        "weekly_net_mt": 87755,
-        "cumulative_mt": 2183257,
-        "prev_year_cumulative_mt": 5850482
+        "weekly_net_mt": 66659,
+        "cumulative_mt": 2249916,
+        "prev_year_cumulative_mt": 6040747
       },
       "srw": {
         "label": "SRW",
-        "weekly_net_mt": 12387,
-        "cumulative_mt": 1482442,
-        "prev_year_cumulative_mt": 2013609
+        "weekly_net_mt": 63141,
+        "cumulative_mt": 1545583,
+        "prev_year_cumulative_mt": 2080063
       },
       "hrs": {
         "label": "HRS",
-        "weekly_net_mt": 187593,
-        "cumulative_mt": 2975289,
-        "prev_year_cumulative_mt": 3611727
+        "weekly_net_mt": 138273,
+        "cumulative_mt": 3113562,
+        "prev_year_cumulative_mt": 3819859
       },
       "white": {
         "label": "White",
-        "weekly_net_mt": 143697,
-        "cumulative_mt": 3171235,
-        "prev_year_cumulative_mt": 3151536
+        "weekly_net_mt": 24328,
+        "cumulative_mt": 3195563,
+        "prev_year_cumulative_mt": 3297298
       },
       "durum": {
         "label": "Durum",
-        "weekly_net_mt": 20130,
-        "cumulative_mt": 297042,
-        "prev_year_cumulative_mt": 216774
+        "weekly_net_mt": 27500,
+        "cumulative_mt": 324542,
+        "prev_year_cumulative_mt": 220060
       }
     }
   },
-  "report_date": "2026-10-01"
+  "report_date": "2026-10-08"
 }
