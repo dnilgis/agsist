@@ -19,7 +19,7 @@
 <link rel="manifest"                            href="/manifest.json">
 
 <title>Kansas and Wisconsin Co-op Fertilizer per Ton: Urea $616 | AGSIST</title>
-<meta name="description" content="Kansas and Wisconsin co-op cash prices posted Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<meta name="description" content="Kansas and Wisconsin co-op cash prices posted Sep 24 to Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $936, potash $470. Cost per lb of N, P and K.">
 <meta name="keywords" content="fertilizer prices today, urea price per ton, anhydrous ammonia price, UAN price, DAP price, potash price, co-op fertilizer prices, nitrogen fertilizer cost, phosphate price, farm input prices, US fertilizer prices">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -28,18 +28,18 @@
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
 <meta property="og:title"        content="Kansas and Wisconsin Co-op Fertilizer per Ton: Urea $616 | AGSIST">
-<meta property="og:description"  content="Kansas and Wisconsin co-op cash prices posted Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
+<meta property="og:description"  content="Kansas and Wisconsin co-op cash prices posted Sep 24 to Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $936, potash $470. Cost per lb of N, P and K.">
 <meta property="og:url"          content="https://agsist.com/fertilizer">
-<meta property="og:image"        content="https://agsist.com/img/og/fertilizer.jpg?v=59f62671">
+<meta property="og:image"        content="https://agsist.com/img/og/fertilizer.jpg?v=4961be46">
 <meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt"    content="Urea $616 a ton, Kansas and Wisconsin co-ops, middle of 5, posted through Oct 6, 2026.">
+<meta property="og:image:alt"    content="Urea $616 a ton, Kansas and Wisconsin co-ops, middle of 5, posted Sep 24 to Oct 6, 2026.">
 <meta name="twitter:card"        content="summary_large_image">
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
 <meta name="twitter:title"       content="Kansas and Wisconsin Co-op Fertilizer per Ton: Urea $616 | AGSIST">
-<meta name="twitter:description" content="Kansas and Wisconsin co-op cash prices posted Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $929, potash $470. Cost per lb of N, P and K.">
-<meta name="twitter:image"       content="https://agsist.com/img/og/fertilizer.jpg?v=59f62671">
+<meta name="twitter:description" content="Kansas and Wisconsin co-op cash prices posted Sep 24 to Oct 6, 2026: urea $616/ton, anhydrous $832, DAP $936, potash $470. Cost per lb of N, P and K.">
+<meta name="twitter:image"       content="https://agsist.com/img/og/fertilizer.jpg?v=4961be46">
 
 <script type="application/ld+json">
 {
@@ -383,6 +383,7 @@
         <span class="ngc-price" id="natgas-price">--</span>
         <span class="ngc-unit">$/MMBtu Henry Hub</span>
       </div>
+      <div class="ngc-unit" id="natgas-when">NYMEX front-month futures</div>
       <div class="ngc-note">Natural gas is the primary feedstock for nitrogen fertilizers like urea and ammonium sulfate (AMS). A <strong>rise in natural gas</strong> commonly flows through to nitrogen fertilizer prices over the following weeks to months.</div>
     </div>
   </div>
@@ -463,7 +464,7 @@
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=26" defer></script>
 <script src="/components/fert-sources.js?v=5"></script>
-<script src="/components/fert-coops.js?v=4"></script>
+<script src="/components/fert-coops.js?v=5"></script>
 
 <script>
 (function(){
@@ -634,7 +635,9 @@ Promise.all([getJ('/data/fertilizer-coops.json'),getJ('/data/fertilizer-prices.j
 
 fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(function(data){
   if(!data)return;var q=data.quotes||{};
-  var ng=q.natgas||null;if(ng){var price=ng.close||ng.price||ng.last||null;var el=document.getElementById('natgas-price');if(el&&price!=null)el.textContent='$'+parseFloat(price).toFixed(3);}
+  // Henry Hub: the NG=F front-month quote, dated by its own close_date (2026-10-16: it showed no date at all).
+  var ng=q.natgas||null;if(ng){var price=ng.close||ng.price||ng.last||null;var el=document.getElementById('natgas-price');var nd=/^\d{4}-\d{2}-\d{2}$/.test(ng.close_date||'')?ng.close_date:null;
+    if(el&&price!=null&&nd){el.textContent='$'+parseFloat(price).toFixed(3);var nw=document.getElementById('natgas-when');if(nw)nw.textContent='NYMEX front-month futures, as of '+shortDate(nd);}}
   // Next live Dec corn: the dated contract dies Dec 15 (scripts/contract_calendar.py), so from then on
   // next year's Dec is the harvest contract. The dated key wins; the rolling corn-dec alias is used only
   // when its ticker names that same year (a prices.json written before the roll still points at the dead one).
