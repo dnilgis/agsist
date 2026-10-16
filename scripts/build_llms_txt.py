@@ -132,7 +132,7 @@ PAGES = [
         ("/harvest-price-tracker", "Harvest Price Tracker",
          "the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell"),
         ("/grain-bin-calculator", "Grain Bin Calculator", "bushels in a bin and moisture shrink"),
-        ("/grain-emc", "Grain EMC Calculator", "when to run aeration fans for corn or wheat: drying wet grain (against its own moisture), cooling (outside air 10 to 15 F under the grain) or holding dry grain, hour by hour for 3 days at your ZIP; printable corn and wheat EMC charts from published equations"),
+        ("/grain-emc", "Grain EMC Calculator", "when to run aeration fans for corn, soybeans or wheat: drying wet grain (against its own moisture), cooling (outside air 10 F or more under the grain) or holding dry grain, hour by hour for 3 days at your ZIP; printable corn, soybean and wheat EMC charts from published equations"),
         ("/grain-shrink", "Grain Shrink Calculator", "what wet corn, soybeans, wheat or sorghum nets after the elevator's shrink and drying charges, and the bushels and dollars given away delivering below base moisture (soybeans under 13%); at your bid, a ZIP's nearest posted bid, or a labeled state estimate"),
         ("/nutrient-removal", "Nutrient Removal Value Calculator", "pounds of P2O5 and K2O removed per ton, bale and acre when you bale corn stalks or small grain straw, chop silage, sell hay or haul grain (UW A2809 Table 4.2), priced at posted co-op fertilizer prices; N and S withheld until sourced"),
     ]),
