@@ -155,7 +155,7 @@ test("GDD: 86/50 day, and the GDD drydown rule stays off until its source is rea
 test("page: head, canonical, byline, JSON-LD, baked tables match the math", () => {
   assert.match(page, /<title>Harvest corn now or wait\? Drying cost vs field loss calculator \| AGSIST<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/harvest-or-wait">/);
-  assert.match(page, /<p class="by">Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /<p class="by">Sigurd Lindquist, CCA/);
   assert.equal((page.match(/<h1>/g) || []).length, 1);
   for (const m of page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) JSON.parse(m[1]);
   assert.equal(bake(page), page, "run node scripts/build_harvest_wait.mjs");

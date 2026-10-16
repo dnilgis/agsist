@@ -101,7 +101,7 @@ test("county rate from a state file", () => {
 test("page: head, canonical, byline, JSON-LD FAQ matches visible FAQ, not an eligibility check", () => {
   assert.match(page, /<title>CCC commodity loan calculator: marketing loan interest per bushel \| AGSIST<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/commodity-loan">/);
-  assert.match(page, /<p class="by">Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /<p class="by">Sigurd Lindquist, CCA/);
   const ld = JSON.parse(page.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage").mainEntity;
   const seen = [...page.matchAll(/<details><summary>([^<]+)<\/summary><p>([^<]+)<\/p><\/details>/g)]

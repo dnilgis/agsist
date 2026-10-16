@@ -30,7 +30,7 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const read = (f) => readFileSync(ROOT + f, "utf8");
-const BYLINE = /By <a href="\/about">Sigurd Lindquist<\/a>, Certified Crop Adviser \(CCA\)/;
+const BYLINE = /By <a href="\/about">Sigurd Lindquist<\/a>, CCA/;
 
 function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };

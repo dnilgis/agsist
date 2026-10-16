@@ -62,7 +62,7 @@ TZ = ZoneInfo("America/Chicago")
 LEAD_DAYS = 7          # the ask: "Remind me a week before"
 CATCHUP_DAYS = 3       # dropped fires: still due through deadline - 4
 FROM_NAME = "AGSIST"
-SIGNATURE = "Sigurd Lindquist, Certified Crop Adviser (CCA), AGSIST"
+SIGNATURE = "Sigurd Lindquist, CCA, AGSIST"
 FOOT_LINE = "AGSIST, free US farm markets, agsist.com"          # brief_email.render_text's footer
 POSTAL = "PO Box 243, Chetek, WI 54728"
 UTM = "utm_source=arcplc_reminder&utm_medium=email"

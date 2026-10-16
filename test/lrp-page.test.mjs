@@ -173,7 +173,7 @@ test("neutral page: no agent routing, no sales, no sponsor price, no em dashes",
 
 test("the byline sits at the bottom, not in the hero", () => {
   // the same byline and disclosure as /prf: an insurance page
-  const by = PAGE.indexOf('<p class="by"><!--lrp:by-->By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent.');
+  const by = PAGE.indexOf('<p class="by"><!--lrp:by-->By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent.');
   assert.ok(by > PAGE.indexOf('id="questions"'), "byline after the FAQ heading");
   const rby = RECORD.indexOf('<p class="by"><!--lrp:by-->By <a href="/about">Sigurd Lindquist</a>');
   assert.ok(RECORD.indexOf('id="method"') > 0 && rby > RECORD.indexOf('id="method"'), "the record page's byline after its method");

@@ -1810,7 +1810,7 @@ def method_html(D):
     irrigated answer is labeled as using it. Where it is above a practice&rsquo;s benchmark, no typical answer is given for that practice. The county page&rsquo;s Lower and Higher
     buttons use 85% and 115% of it.</li>
   </ul>
-  <div class="method-note"><b>Sources</b> &middot; FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
+  <div class="method-note"><b>Sources</b> &middot; FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. &middot; Reviewed by Sigurd Lindquist, CCA</div>
   <h3>Scenario prices ({len(yrs)} years)</h3>
   <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>{''.join(f'<th class="num">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' for y, k in cols)}</tr></thead><tbody>{rat}</tbody></table></div>
   <p class="ap-small">Season-average price used in each scenario year, $/bu.</p>
@@ -2446,7 +2446,7 @@ def bc_html(items):
 
 
 def byline_html(D):
-    return (f'<p class="ap-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA). '
+    return (f'<p class="ap-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. '
             f'{asof(D["updated"])}</p>')
 
 
@@ -3075,7 +3075,7 @@ def county_page(st, S, c, D, ch):
   </details>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
   <p class="ap-disc">An estimate, not a USDA determination. Source: <a href="{FSA_DATA}" rel="noopener">FSA ARC/PLC program data</a>. <a href="{OFFICE}" rel="noopener">Find your county office</a>.</p>
-  <div class="method-note"><b>Method</b> &middot; Each program&rsquo;s expected payment per base acre across past years&rsquo; price and county yield swings, centered on USDA&rsquo;s 2026/27 price; <a href="/arc-plc#method">the full method</a>. &middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>
+  <div class="method-note"><b>Method</b> &middot; Each program&rsquo;s expected payment per base acre across past years&rsquo; price and county yield swings, centered on USDA&rsquo;s 2026/27 price; <a href="/arc-plc#method">the full method</a>. &middot; Reviewed by Sigurd Lindquist, CCA</div>
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>
   <p class="ap-printonly ap-small">Printed from {share}</p>
 </main>

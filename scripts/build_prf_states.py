@@ -275,7 +275,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
     <p class="rp-promo" data-rain-print-promo="see" hidden></p><script src="/components/rain-print-promo.js?v=2" defer></script>
   </div>
@@ -434,7 +434,7 @@ def guide(meta, facts, states, BOOT):
     <h2 id="faq">Questions</h2>
     <div class="prf-faq">{faq_html}</div>
     </div>
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF by state"><a href="/prf">PRF calculator</a> {st_links}</nav>
   </div>
   </main>

@@ -1252,7 +1252,7 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 /* Method note: how a number is built, its sources, who reviewed it. Quiet:
    small muted text under a hairline, so it reads as a footnote to the card.
      <div class="method-note"><b>Method</b> ... · <b>Sources</b> ... ·
-       Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div> */
+       Reviewed by Sigurd Lindquist, CCA</div> */
 .method-note {
   margin-top: 1rem; padding-top: .7rem; border-top: 1px solid var(--border);
   font-family: var(--font-body); font-size: var(--fs-xs); line-height: 1.6; color: var(--text-muted);

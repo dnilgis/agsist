@@ -24,7 +24,7 @@ for (const slug of ["farmer-retirement-gifts", "farm-anniversary-gifts"]) {
     assert.match(HTML, /<meta name="robots" content="index, follow/);
     assert.match(HTML, new RegExp('<link rel="canonical"\\s+href="https://agsist\\.com/' + slug + '">'));
     assert.match(HTML, new RegExp('og:image"\\s+content="https://agsist\\.com/img/og/' + slug + "\\.jpg"));
-    assert.match(BODY, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+    assert.match(BODY, /Sigurd Lindquist, CCA/);
     const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
     const art = ld["@graph"].find((g) => g["@type"] === "Article");
     assert.equal(art.author.jobTitle, "Certified Crop Adviser (CCA)");

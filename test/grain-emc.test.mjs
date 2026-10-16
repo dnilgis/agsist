@@ -203,7 +203,7 @@ test("runs and best window", () => {
 test("page: title, H1, byline, voice, structured data and the FAQ word for word", () => {
   assert.match(page, /<title>Grain EMC calculator for corn, soybeans and wheat \| AGSIST<\/title>/);
   assert.match(page, /<h1>When to run aeration fans: will they dry your grain or wet it\?<\/h1>/);
-  assert.match(page, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /Sigurd Lindquist, CCA/);
   // Sig, Oct 15: no name in the hero; the byline sits at the bottom, after the credit line
   const h1At = page.indexOf("</h1>"), modeAt = page.indexOf('class="emc-seg emc-mode"'), byAt = page.indexOf('<p class="by">');
   assert.ok(byAt > page.indexOf('id="emc-credit"') && !page.slice(h1At, modeAt).includes("Sigurd"), "no byline in the hero");

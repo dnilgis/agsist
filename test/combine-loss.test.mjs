@@ -117,7 +117,7 @@ test("bad input returns nothing, not a number", () => {
 test("page: head, canonical, byline, JSON-LD FAQ matches the visible FAQ, sources cited", () => {
   assert.match(page, /<title>Combine loss calculator: beans and kernels behind the combine \| AGSIST<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/combine-loss">/);
-  assert.match(page, /<p class="by">Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /<p class="by">Sigurd Lindquist, CCA/);
   const blocks = [...page.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
   const faq = blocks[0]["@graph"].find((x) => x["@type"] === "FAQPage").mainEntity;
   const seen = [...page.matchAll(/<details><summary>([^<]+)<\/summary><p>([^<]+)<\/p><\/details>/g)]

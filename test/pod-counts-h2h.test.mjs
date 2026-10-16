@@ -14,7 +14,7 @@ test("the byline is visible next to the working-paper date", () => {
   const stamp = /<div class="pc-stamp">([\s\S]*?)<\/div>/.exec(HTML);
   assert.ok(stamp, "pc-stamp");
   assert.match(stamp[1], /Sigurd Lindquist/);
-  assert.match(stamp[1], /Certified Crop Adviser \(CCA\)/);
+  assert.match(stamp[1], /Sigurd Lindquist<\/a>, CCA/);
   assert.match(stamp[1], /19 August 2026/);
 });
 

@@ -625,7 +625,7 @@ def method_note(d):
     return ('<div class="method-note"><b>Method</b> &middot; Running average of the contract&rsquo;s daily settles '
             'across RMA&rsquo;s window so far, the same math RMA uses for the final harvest price. &middot; '
             '<b>Sources</b> &middot; ' + src + '; USDA RMA Price Discovery for the window and the official price. '
-            '&middot; Reviewed by Sigurd Lindquist, Certified Crop Adviser (CCA)</div>')
+            '&middot; Reviewed by Sigurd Lindquist, CCA</div>')
 
 
 # The page's title, description and H1 carry the running number while a

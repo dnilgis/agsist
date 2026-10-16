@@ -190,7 +190,7 @@ test("the live price file gives a P and a K price with a source and date", () =>
 test("page: head, byline, canonical, sources and honest empty states", () => {
   assert.match(html, /<title>[^<]*Nutrient Removal[^<]*\| AGSIST<\/title>/);
   assert.match(html, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/nutrient-removal">/);
-  assert.match(html, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(html, /Sigurd Lindquist, CCA/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /A2809-web\.pdf/);
   assert.match(html, /<script src="\/components\/nutrient-removal\.js\?v=\d+" defer><\/script>/);

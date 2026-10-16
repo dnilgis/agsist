@@ -60,7 +60,7 @@ import share_cards as SC  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://agsist.com"
 OG_DIR = os.path.join(ROOT, "img", "og")
-BYLINE = "Sigurd Lindquist, Certified Crop Adviser (CCA)"
+BYLINE = "Sigurd Lindquist, CCA"
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August",
                "September", "October", "November", "December"]

@@ -34,7 +34,7 @@ test("page: title, canonical, h1, byline, one script of its own", () => {
   assert.match(page, /<title>Feeder cattle sale barn prices near you[^<]*\| AGSIST<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/cattle-auction-prices">/);
   assert.equal((page.match(/<h1>/g) || []).length, 1);
-  assert.match(page, /Sigurd Lindquist, Certified Crop Adviser \(CCA\)/);
+  assert.match(page, /Sigurd Lindquist, CCA/);
   assert.match(page, /<script src="\/components\/cattle-auction\.js\?v=\d+" defer><\/script>/);
   assert.ok(page.length < 150 * 1024, "page under the 150 KB cap");
 });

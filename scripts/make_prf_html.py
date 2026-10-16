@@ -199,7 +199,7 @@ HTML = f"""<!DOCTYPE html>
 
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, a Certified Crop Adviser (CCA) who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent. {mk("built")}. {mk("check")}</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent. {mk("built")}. {mk("check")}</p>
 
     <div class="prf-prose">
     <h2 id="example">What PRF costs: a worked example</h2>
