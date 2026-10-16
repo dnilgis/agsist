@@ -492,18 +492,35 @@ test("D8: the gift card's preview carries no QR of its own and makes no short li
   assert.match(readFileSync(ROOT + "rp-gift.html", "utf8"), /previewArt\(C\.lock\.design_code, \{ idPrefix: 'gc', later: later\(s\.year\), noQr: true \}\)/);
 });
 
-test("F2: NOAA down on the first visit: the sample's empty box says why and offers Try again", { skip }, async () => {
+test("F2: NOAA down on the first visit: no error the reader didn't cause; their own Draw says so calmly, with Try again", { skip }, async () => {
   const srvOpts = { where: false };
   await withPage(async (page, base, errors) => {
-    await page.route(/data\.rcc-acis\.org/, (r) => r.fulfill({ status: 503, body: "down" }));
+    let asked = 0;
+    await page.route(/data\.rcc-acis\.org/, (r) => { asked++; return r.fulfill({ status: 503, body: "down" }); });
     await page.goto(base + "/rain-print.html");
+    // the sample tries NOAA and fails behind the example print
+    for (let i = 0; i < 60 && !asked; i++) await page.waitForTimeout(250);
+    assert.ok(asked > 0, "the sample asked NOAA");
+    await idle(page);
+    await page.waitForTimeout(500);
+    // 2026-10-16 (benchmark R1): nothing pressed, so nothing said; the example print stays up
+    assert.equal((await page.textContent("#rp-status")).trim(), "", "no status line on load");
+    assert.equal(await page.isVisible("#rp-retry-row"), false, "no Try again on load");
+    assert.equal(await page.$eval("#rp-status", (el) => el.classList.contains("rp-bad")), false);
+    assert.ok(await page.$("#rp-art .rp-ex img"), "the example print is still in the frame");
+    assert.ok(!/NOAA.{0,40}(answer|slow|reached)/.test(await page.innerText("body")), "no NOAA error anywhere on the page");
+    // the reader's own Draw: a plain note, not the warning color, and Try again
+    await page.fill("#rp-place", "Chetek, WI");
+    await page.click("#rp-go");
     await page.waitForFunction(() => !document.getElementById("rp-retry-row").hidden, null, { timeout: 30000 });
-    assert.match(await page.textContent("#rp-status"), /NOAA’s data service isn’t answering right now, so the sample can’t be drawn/);
-    // NOAA back: Try again draws the sample
+    assert.match(await page.textContent("#rp-status"), /Try again in a minute|try again/i);
+    assert.equal(await page.$eval("#rp-status", (el) => el.classList.contains("rp-bad")), false, "calm, not red");
+    // NOAA back: Try again draws the reader's town
     await page.unroute(/data\.rcc-acis\.org/);
     await page.click("#rp-retry");
     await page.waitForFunction(() => document.querySelector("#rp-art svg"), null, { timeout: 30000 });
-    assert.match(await page.textContent("#rp-sample-txt"), /^Sample: Chetek, WI/);
+    assert.match(await page.textContent("#rp-sample-txt"), /Chetek, WI/);
+    assert.ok(!/^Sample:/.test(await page.textContent("#rp-sample-txt")), "the reader's own print, not the sample");
     assert.deepEqual(errors, []);
   }, srvOpts);
 });
