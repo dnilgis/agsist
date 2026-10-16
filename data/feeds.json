@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 90,
- "with_known_cadence": 90,
+ "count": 91,
+ "with_known_cadence": 91,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -2180,6 +2180,35 @@
    "url": null,
    "crons": [
     "33 12 15 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/storage/storage.json",
+   "pages": [
+    "basis.html"
+   ],
+   "written_by": [
+    "storage"
+   ],
+   "touched_by": [
+    "conditions",
+    "Fetch Crop Progress",
+    "Dairy prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "storage"
+   ],
+   "cadence": "3 launches every day at about 2am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "35 7 20 1 *",
+    "35 7 1,14 10 *",
+    "35 7 14 11 *"
    ],
    "max_gap_hours": null,
    "quiet": null,
