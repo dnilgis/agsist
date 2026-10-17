@@ -1,0 +1,494 @@
+{
+  "id" : "ay2h-5hx3",
+  "name" : "PTAX-203 Additional PINs",
+  "assetType" : "dataset",
+  "attribution" : "Illinois Department of Revenue",
+  "averageRating" : 0,
+  "category" : "Government and Public Employees",
+  "createdAt" : 1744128199,
+  "description" : "Contains the PIN, lot size, and whether the PIN is split-parceled for any additional properties included in any declaration in the PTAX-203 data set where two or more properties are being transferred.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "domainCName" : "data.illinois.gov",
+  "downloadCount" : 197,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "licenseId" : "PUBLIC_DOMAIN",
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 41337894,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1747956960,
+  "publicationGroup" : 19849277,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1791716411,
+  "rowsUpdatedBy" : "rrdi-inip",
+  "tableId" : 19902388,
+  "totalTimesRated" : 0,
+  "viewCount" : 597,
+  "viewLastModified" : 1789611867,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1751048175,
+    "reviewedAutomatically" : false,
+    "state" : "approved",
+    "submissionId" : 6943603,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1751048157,
+    "targetAudience" : "public",
+    "workflowId" : 3886,
+    "reviewer" : {
+      "id" : "rrdi-inip",
+      "displayName" : "Kyri Kalpakidis"
+    },
+    "submissionDetails" : {
+      "permissionType" : "read"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1751048175,
+      "failureCount" : 0,
+      "startedAt" : 1751048175,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "dzhj-t7sg",
+      "displayName" : "Mark.Franklin"
+    }
+  }, {
+    "message" : "The `strict_permissions` flag must be on to enable internal approvals.",
+    "state" : "unsubmittable",
+    "targetAudience" : "internal",
+    "workflowId" : 4750
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 610418722,
+    "name" : "Declaration ID",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "declaration_id",
+    "position" : 1,
+    "renderTypeName" : "text",
+    "tableColumnId" : 157847900,
+    "cachedContents" : {
+      "non_null" : "631164",
+      "largest" : "20261010286172",
+      "null" : "0",
+      "top" : [ {
+        "item" : "20251202264664",
+        "count" : "1312"
+      }, {
+        "item" : "20251201649584",
+        "count" : "1304"
+      }, {
+        "item" : "20260301611789",
+        "count" : "717"
+      }, {
+        "item" : "20260401640122",
+        "count" : "482"
+      }, {
+        "item" : "20160301679894",
+        "count" : "442"
+      }, {
+        "item" : "20191101638769",
+        "count" : "401"
+      }, {
+        "item" : "20180404940066",
+        "count" : "395"
+      }, {
+        "item" : "20260310109037",
+        "count" : "380"
+      }, {
+        "item" : "20260304723173",
+        "count" : "378"
+      }, {
+        "item" : "20220501628914",
+        "count" : "358"
+      }, {
+        "item" : "20251001623340",
+        "count" : "344"
+      }, {
+        "item" : "20220205618566",
+        "count" : "341"
+      }, {
+        "item" : "20131201605932",
+        "count" : "330"
+      }, {
+        "item" : "20180809944797",
+        "count" : "330"
+      }, {
+        "item" : "20170701697443",
+        "count" : "330"
+      }, {
+        "item" : "20201105772220",
+        "count" : "329"
+      }, {
+        "item" : "20170501664138",
+        "count" : "326"
+      }, {
+        "item" : "20190101689249",
+        "count" : "318"
+      }, {
+        "item" : "20260601699865",
+        "count" : "303"
+      }, {
+        "item" : "20260402243636",
+        "count" : "300"
+      } ],
+      "smallest" : "20110601600416",
+      "count" : "631164",
+      "cardinality" : "631164"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 610418723,
+    "name" : "PIN",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "pin",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 157847901,
+    "cachedContents" : {
+      "non_null" : "631164",
+      "largest" : "PH518134",
+      "null" : "0",
+      "top" : [ {
+        "item" : "17102070350000",
+        "count" : "432"
+      }, {
+        "item" : "17102070340000",
+        "count" : "427"
+      }, {
+        "item" : "17032280160000",
+        "count" : "402"
+      }, {
+        "item" : "17032280370000",
+        "count" : "401"
+      }, {
+        "item" : "17032280040000",
+        "count" : "399"
+      }, {
+        "item" : "17102070370000",
+        "count" : "387"
+      }, {
+        "item" : "17102070380000",
+        "count" : "242"
+      }, {
+        "item" : "17102070360000",
+        "count" : "242"
+      }, {
+        "item" : "17102070390000",
+        "count" : "235"
+      }, {
+        "item" : "06332010140000",
+        "count" : "233"
+      }, {
+        "item" : "17164010340000",
+        "count" : "212"
+      }, {
+        "item" : "17032220180000",
+        "count" : "202"
+      }, {
+        "item" : "17032220200000",
+        "count" : "192"
+      }, {
+        "item" : "22264000020000",
+        "count" : "185"
+      }, {
+        "item" : "22263020020000",
+        "count" : "180"
+      }, {
+        "item" : "17221040120000",
+        "count" : "152"
+      }, {
+        "item" : "06331010010000",
+        "count" : "147"
+      }, {
+        "item" : "17101300120000",
+        "count" : "140"
+      }, {
+        "item" : "17101340010000",
+        "count" : "140"
+      }, {
+        "item" : "17101300050000",
+        "count" : "140"
+      } ],
+      "smallest" : "0",
+      "count" : "631164",
+      "cardinality" : "631164"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 610418724,
+    "name" : "Lot Size or Acreage",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "lot_size_or_acreage",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 157847892,
+    "cachedContents" : {
+      "non_null" : "594158",
+      "largest" : "z",
+      "null" : "37006",
+      "top" : [ {
+        "item" : "0",
+        "count" : "17056"
+      }, {
+        "item" : "100",
+        "count" : "14891"
+      }, {
+        "item" : "1000",
+        "count" : "11330"
+      }, {
+        "item" : ".25",
+        "count" : "10394"
+      }, {
+        "item" : "1200",
+        "count" : "9899"
+      }, {
+        "item" : "40",
+        "count" : "6229"
+      }, {
+        "item" : "3125",
+        "count" : "6187"
+      }, {
+        "item" : "1500",
+        "count" : "5545"
+      }, {
+        "item" : "1",
+        "count" : "5011"
+      }, {
+        "item" : "80",
+        "count" : "4136"
+      }, {
+        "item" : "20",
+        "count" : "3809"
+      }, {
+        "item" : "13301",
+        "count" : "3713"
+      }, {
+        "item" : "25x125",
+        "count" : "3405"
+      }, {
+        "item" : "200",
+        "count" : "3402"
+      }, {
+        "item" : "50",
+        "count" : "3096"
+      }, {
+        "item" : "500",
+        "count" : "2944"
+      }, {
+        "item" : "10",
+        "count" : "2814"
+      }, {
+        "item" : "common",
+        "count" : "2376"
+      }, {
+        "item" : "2500",
+        "count" : "2269"
+      }, {
+        "item" : "per survey",
+        "count" : "2009"
+      } ],
+      "smallest" : "",
+      "count" : "631164",
+      "cardinality" : "631164"
+    },
+    "format" : { }
+  }, {
+    "id" : 610418725,
+    "name" : "Lot Size Units",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "lot_size_units",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 157847898,
+    "cachedContents" : {
+      "non_null" : "596706",
+      "largest" : "Sq. Feet",
+      "null" : "34458",
+      "top" : [ {
+        "item" : "Sq. Feet",
+        "count" : "263673"
+      }, {
+        "item" : "Acres",
+        "count" : "208387"
+      }, {
+        "item" : "Dimensions",
+        "count" : "124646"
+      } ],
+      "smallest" : "Acres",
+      "count" : "631164",
+      "cardinality" : "631164"
+    },
+    "format" : { }
+  }, {
+    "id" : 610418727,
+    "name" : "Split Parcel",
+    "dataTypeName" : "text",
+    "description" : "",
+    "fieldName" : "split_parcel",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 158659830,
+    "cachedContents" : {
+      "non_null" : "631164",
+      "largest" : "1",
+      "null" : "0",
+      "top" : [ {
+        "item" : "0",
+        "count" : "594206"
+      }, {
+        "item" : "1",
+        "count" : "36958"
+      } ],
+      "smallest" : "0",
+      "count" : "631164",
+      "cardinality" : "631164"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "license" : {
+    "name" : "Public Domain"
+  },
+  "metadata" : {
+    "custom_fields" : {
+      "Organizations" : {
+        "Organization" : "Department of Revenue"
+      }
+    },
+    "rowLabel" : "Additional PIN",
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "r8f2-d2f5",
+    "createdAt" : 1726769441,
+    "displayName" : "Department of Revenue",
+    "screenName" : "Department of Revenue",
+    "type" : "team",
+    "members" : [ {
+      "id" : "xynw-4hr2",
+      "createdAt" : 1743515955,
+      "displayName" : "Darren Hackett",
+      "screenName" : "Darren Hackett",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "ea7e-mmau",
+      "createdAt" : 1723487056,
+      "displayName" : "David B",
+      "screenName" : "David B",
+      "teamId" : 1679010,
+      "teamRole" : "owner",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "dzhj-t7sg",
+      "createdAt" : 1743514877,
+      "displayName" : "Mark.Franklin",
+      "screenName" : "Mark.Franklin",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "327i-sqr8",
+      "createdAt" : 1744921763,
+      "displayName" : "Scott Larson",
+      "screenName" : "Scott Larson",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "f429-64sr",
+      "createdAt" : 1723488283,
+      "displayName" : "ShirishB",
+      "screenName" : "ShirishB",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    } ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "r8f2-d2f5",
+    "createdAt" : 1726769441,
+    "displayName" : "Department of Revenue",
+    "screenName" : "Department of Revenue",
+    "type" : "team",
+    "members" : [ {
+      "id" : "xynw-4hr2",
+      "createdAt" : 1743515955,
+      "displayName" : "Darren Hackett",
+      "screenName" : "Darren Hackett",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "ea7e-mmau",
+      "createdAt" : 1723487056,
+      "displayName" : "David B",
+      "screenName" : "David B",
+      "teamId" : 1679010,
+      "teamRole" : "owner",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "dzhj-t7sg",
+      "createdAt" : 1743514877,
+      "displayName" : "Mark.Franklin",
+      "screenName" : "Mark.Franklin",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "327i-sqr8",
+      "createdAt" : 1744921763,
+      "displayName" : "Scott Larson",
+      "screenName" : "Scott Larson",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    }, {
+      "id" : "f429-64sr",
+      "createdAt" : 1723488283,
+      "displayName" : "ShirishB",
+      "screenName" : "ShirishB",
+      "teamId" : 1679010,
+      "teamRole" : "member",
+      "type" : "interactive",
+      "flags" : [ "siteMember" ]
+    } ]
+  },
+  "tags" : [ "property tax" ],
+  "flags" : [ "default", "federated", "internalToPublicFederatedView", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

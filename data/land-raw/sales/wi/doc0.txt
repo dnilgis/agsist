@@ -1,0 +1,314 @@
+                                             Real Estate Transfer Return Data
+
+
+COLUMN                   COLUMN TITLE                                              COLUMN VALUES
+   A                        Sale Number            DLN 15 Characters
+
+   B                       Year Captured           YYYY
+
+   C                        Grantor Type           1=Individual, 2=Partnership, 3=Corporation, 4=Limited liability co, trust, other
+
+                                                   1=None, 2=Financial, 3=Partnership, 4=Family, 5=Corp-sharehold-subsidiary,
+   D              Grantor/Grantee Relationship     6= Other
+
+   E                    Weather Standards          1=Yes, 2=No
+
+                                                   1=Owner Occupancy, 3=Transfer Fee Exempt, 4=Seasonal Use, 5=Licensed
+                                                   Facilities, 6=Bankruptcy, 7=Non-Residential, 8=Energy Code Compliant, 9=No
+   F                     Energy Exclusion
+                                                   Majority Interest Change, 11=Other, 12=Pre-Existing Certificate of Compliance,
+                                                   13=Condo Exclusion
+
+   G                           Section             Valid Section Number
+
+   H                          Township             Valid Township Number
+
+    I                           Range              Valid Range Number
+
+   J                       Property Type           1=Land Only, 2=Land & Buildings, 3=Condominium, 4=Other
+
+                                                   1=Res Single family, (multi=<3), time share, 2=Commercial & multi=>4, 3=Mfg &
+   K                     Predominate Use           telco, 4=Agricultural, 5=Utility & Misc., 6=Forest Land, 7=Other (property
+                                                   classification for tax assessment completed by Co. or Local Official).
+
+   L                     Multi Family Unit         Number of Units
+
+   M              Ag Owner Less Than 5 Years       1=Yes, 2=No Blank=No
+
+   N                         Total Acres           Rounded to nearest whole acre
+
+   O                   Water Front Indicator       1=Yes, 2=No, Blank=No
+
+                                                   1=Original sale, 2=Gift, 3=Exchange, 4= Deed in satisfaction of land contract,
+   P                        Transfer Type
+                                                   5=Other
+
+
+
+ *Leading zeros may be excluded from dates                                1                                                    Wisconsin Department of Revenue
+                                             Real Estate Transfer Return Data
+
+
+COLUMN                   COLUMN TITLE                                               COLUMN VALUES
+   Q               Owner Interest Transferred      1=Full, 2=Partial, 3=Other
+
+   R                 Grantor Rights Retained       1=None, 2=Life estate, 3=Easement, 4=Other
+
+   S           Personal Property Value Excluded    Round to Dollars
+
+   T            Personal Property Value Exempt     Round to Dollars
+
+   U                  Total Real Estate Value      Round to Dollars
+
+   V                        Transfer Fee           (Total Value x .003) Dollars & Cents $xxxxx.xx
+
+   W              Transfer Exemption Number        1=Prior to the effective date of this subchapter (October 1, 1969)
+                                                   2=From the United States or from this state or from any instrumentality, agency or
+                                                   subdivision of either
+                                                   2g=By gift, to the United States or to this state or to any instrumentality, agency or
+                                                   subdivision of either
+                                                   2r=Under state law (sec.236.29(1) or (2) or 236.34(1)(c, Wis. Stats.), or for the
+                                                   purpose of a road, street or highway, to the United States or to this state or to any
+                                                   instrumentality, agency or subdivision of either
+                                                   3=Which, executed for nominal, inadequate or no consideration, confirms, corrects or
+                                                   reforms a conveyance previously recorded
+                                                   4=On sale for delinquent taxes or assessments
+                                                   5=On partition (means the division among several persons of real property including
+                                                   noncontiguous real property that belongs to them as co-owners. See state law
+                                                   (sec77.21 (1k), Wis. Stats.).
+                                                   6=Pursuant to mergers of entities. "Mergers of entities" means the merger or
+                                                   combination of two or more corporations, non-stock corporations, limited liability
+                                                   companies, limited partnerships, or other entities, or any combination thereof,
+                                                   under a plan of merger or a plan of consolidation permitted by the laws that
+                                                   govern the entities
+
+                                                   6d=Pursuant to partnerships filing or cancelling a statement of qualification under state law
+                                                   (sec. 178.0901, Wis. Stats.) or a corresponding statement under the law of another
+                                                   jurisdiction
+                                                   6m=Pursuant to the conversion of a business entity to another form of business entity
+                                                   under state law (sec.178.1141, 179.76, 180.1161, 181.1161, or 183.1207, Wis. Stats.) if
+                                                   after the conversion, the ownership interests in the new entity are identical with the
+                                                   ownership interests in the original entity immediately preceding the conversion.
+
+
+ *Leading zeros may be excluded from dates                                2                                                      Wisconsin Department of Revenue
+                                             Real Estate Transfer Return Data
+
+
+COLUMN                   COLUMN TITLE                                                 COLUMN VALUES
+                                                   6q=Pursuant to an interest exchange under state law (sec. 178.1131, Wis. Stats.)
+                                                   6t=Pursuant to a domestication under state law (sec. 178.1151, Wis. Stats.)
+                                                   7=By a subsidiary corporation to its parent for no consideration, nominal consideration
+   W              Transfer Exemption Number        or in sole consideration or cancellation, surrender or transfer of capital stock between
+                                                   parent and subsidiary corporation
+                                                   8=Between parent and child, stepparent and stepchild, parent and son-in-law or daughter-in-
+                                                   law for nominal or no consideration
+                                                   8m=Between spouse and spouse (effective September 1, 1996)
+                                                   8n=Between an individual and his or her domestic partner under Ch. 770
+                                                   9=Between agent and principal or from a trustee to a beneficiary without actual
+                                                   consideration
+                                                   10=Solely in order to provide or release security for a debt
+                                                   10m=Solely to designate a TOD beneficiary under s t a t e l a w ( s e c . 7 0 5 . 1 5 , W i s .
+                                                   Stats.)
+                                                   11=By will, descent or survivorship
+                                                   11m=By non-probate transfer on death under state law (sec. 705.15, W is. Stats.)
+                                                   12=Pursuant to or in lieu of condemnation.
+                                                   13=Of real estate having a value of $100 or less.
+                                                   14=Under a foreclosure or a deed in lieu of a foreclosure to a person holding a
+                                                   mortgage or to a seller under a land contract.
+                                                   15=Between a corporation and its shareholders if all of the stock is owned by persons
+                                                   who are related to each other as spouses, lineal ascendants, lineal descendants or
+                                                   siblings, whether by blood or by adoption, or as spouses of siblings, if the transfer is for
+                                                   no consideration except the assumption of debt or stock of the corporation and if the
+                                                   corporation owned the property for at least three years
+                                                   15m=Between a partnership and one or more partners if all of the partners are related to
+                                                   each other as spouses, lineal ascendants, lineal descendants or siblings, whether by
+                                                   blood or by adoption, or as spouses of siblings and if the transfer is for no consideration
+                                                   other than the assumption of debt or an interest in the partnership (effective July 1,
+                                                   1992).
+                                                   15s=Between a limited liability company and one or more of its members if all the
+                                                   members are related to each other as spouses, lineal ascendants, lineal descendants
+                                                   or siblings, whether by blood or by adoption, or as spouses of siblings and if the
+                                                   transfer is for no consideration other than the assumption of debt or an interest in the
+                                                   limited liability company (effective January 1, 1994)
+
+
+
+ *Leading zeros may be excluded from dates                                  3                                                         Wisconsin Department of Revenue
+                                             Real Estate Transfer Return Data
+
+
+COLUMN                   COLUMN TITLE                                                    COLUMN VALUES
+                                                   16=To a trust if a transfer from the grantor to the beneficiary of the trust would be
+   W              Transfer Exemption Number        exempt under this section.
+
+                                                   17=Of a deed executed in fulfillment of a land contract if the proper fee was paid when
+                                                   the land contract or an instrument evidencing the land contract was recorded.
+
+                                                   20=Made under s t a t e l a w ( s e c . 1 8 4 . 1 5 , W i s . S t a t s . )
+                                                   21=Of transmission facilities or land rights to the transmission company, as defined in
+                                                   state law sec. 196.485(1)(ge), sec. 196.485(5)(b) or (c) or (6)(a)1, Wis. Stats.), in
+                                                   as defined in sec. 196.485(1)(fe), Wis. Stats.
+
+                                                   1=Financial Institution-Conventional, 2=Financial Institution- Gov., 3 =Obtained From
+   X                      Financing Code           Seller, 4 =Assumed Existing Financing, 5 =Other 3rd Party Financing,
+                                                   6= No Financing Involved.
+
+   Y                    Document Number            County Document Number
+
+   Z                        Date Recorded          MMDDYYYY
+
+  AA                        Date Conveyed          MMDDYYYY
+
+  AB                          Deed Date            MMDDYYYY
+
+  AC                     Conveyance Code           1= Warranty Deed, 2= Land contract, 3= Quit Claim Deed, 4= Other
+
+  AD                    Parcel Identification      Municipal Parcel Number
+
+  AE                       Multi Grantors          1= Yes, 2= No
+
+  AF                    Grantor Last Name
+
+  AG                    Grantor First Name
+
+  AH                  Grantor Street Number
+
+  AI                     Grantor Address
+
+  AJ                         Grantor City
+
+
+
+ *Leading zeros may be excluded from dates                                   4                                                   Wisconsin Department of Revenue
+                                              Real Estate Transfer Return Data
+
+
+COLUMN                   COLUMN TITLE                                              COLUMN VALUES
+  AK                        Grantor State
+
+  AL                         Grantor Zip
+
+  AM                     Certification Date         MMDDYYYY
+
+  AN                       Multi Grantees           1= Yes, 2= No
+
+  AO                    Grantee Last Name
+
+  AP                    Grantee First Name
+
+  AQ                  Grantee Street Number
+
+  AR                      Grantee Address
+
+  AS                        Grantee City
+
+  AT                        Grantee State
+
+  AU                         Grantee Zip
+
+  AV                Grantee Certification Date      MMDDYYYY
+
+  AW               Grantee Primary Residence        1=Yes, 2=No
+
+  AX                      Tax Bill Grantee          1= Yes, 2= No, Blank=No
+
+  AY                            City YN             1=Yes, 2=No
+
+   AZ                         Village YN            1=Yes, 2=No
+
+  BA                           Town YN              1=Yes, 2=No
+
+  BB                          TVC Name              (City, Village, Town) Characters 26
+
+  BC                        County Name             Characters 21
+
+
+
+
+ *Leading zeros may be excluded from dates                                5                        Wisconsin Department of Revenue
+                                             Real Estate Transfer Return Data
+
+
+COLUMN                   COLUMN TITLE                                             COLUMN VALUES
+  BD                     Property Address          (Physical Property Address) Characters 56
+
+  BE                          Lot Size 1           Length in Feet
+
+  BF                           Lot Size            Width in Feet
+
+  BG               Managed Forest Land Acres       Rounded to Acres
+
+  BH                      Volume Jacket            County Recording Information
+
+   BI                        Page Image            County Recording Information
+
+   BJ                        Split Parcel          1=Yes, 2=No, Blank=No
+
+  BK                          Agent For            R=Grantor, E-Grantee, B=Both
+
+  BL                        Agent Name
+
+  BM                        Agent Street
+
+  BN                       Agent Address
+
+  BO                          Agent City
+
+  BP                         Agent State
+
+  BQ                          Agent Zip
+
+  BR                       Preparer Name
+
+  BS                 Grantor Type Other Note       Notes 33 Characters
+
+  BT             Grantor/Grantee Relation Other    Notes 33 Characters
+
+  BU                        Tax Bill Name          Name 45 Characters
+
+  BV                  Tax Bill Street Number       15 Characters
+
+
+
+
+ *Leading zeros may be excluded from dates                               6                        Wisconsin Department of Revenue
+                                            Real Estate Transfer Return Data
+
+
+                        COLUMN                                                COLUMN
+                         Tax Bill                 39
+
+ BX                         Tax Bill City
+
+ BY                        Tax Bill State
+
+ BZ                         Tax Bill Zip
+
+ CA                 W12 Document Number           Weatherization Document Number
+
+ CB                Property Type Other Note       Notes 39 Characters
+
+ CC                       Misc. Use Note          Notes 38 Characters
+
+ CD                Transfer Type Other Note       Notes 30 Characters
+
+ CE                Owner Interest Other Note      Notes 36 Characters
+
+ CF               Grantors Rights Other Note      Notes 30 Characters
+
+ CG              Previous Document Number         Exemption Previous Number (10)
+
+ CH              Conveyance Code Other Note       Notes 32 Characters
+
+  CI                    Misc. County TVC
+
+  CJ                        Multi TVC'S           1=Yes, 2=No
+
+ CK                      Water Front Feet         Feet of Waterfront
+
+
+
+
+*Leading zeros may be excluded from dates                               7              Wisconsin Department of Revenue
+
