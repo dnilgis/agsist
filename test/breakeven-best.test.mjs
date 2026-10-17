@@ -214,8 +214,8 @@ test("every cost line says where it came from; a budget region swaps the budget 
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { pg, errors } = await open(browser, port);
-    for (const id of ["seed", "chemicals", "insurance", "machinery", "labor", "overhead"]) assert.equal(await txt(pg, "#src-" + id), "Farmdoc 2027 budget, northern Illinois (Aug 2026).", id);
-    assert.equal(await txt(pg, "#src-land"), "Farmdoc 2027 budget: northern Illinois average cash rent.");
+    for (const id of ["seed", "chemicals", "insurance", "machinery", "labor", "overhead"]) assert.equal(await txt(pg, "#src-" + id), "From farmdoc\u2019s 2027 budget, northern Illinois (Aug 2026).", id);
+    assert.equal(await txt(pg, "#src-land"), "farmdoc\u2019s 2027 budget: northern Illinois average cash rent.");
     assert.match(await txt(pg, "#src-fertilizer"), /^213 lb N, 88 lb P₂O₅, 57 lb K₂O for 237 bu at co-op prices posted through [A-Z][a-z]{2} \d+, 2026\. Follows your yield\.$/);
     assert.match(await txt(pg, "#be-region-note"), /farmdoc daily, Illinois Crop Budgets for 2027, Table 1 \(Aug 2026 release, published Sep 1, 2026\)/);
     await type(pg, "#seed", "120");
@@ -226,7 +226,7 @@ test("every cost line says where it came from; a budget region swaps the budget 
     assert.equal(await pg.inputValue("#yield"), "245");
     assert.equal(await pg.inputValue("#land"), "321");
     assert.equal(await pg.inputValue("#fertilizer"), String(fertAt("corn", 245)), "fertilizer follows the yield");
-    assert.equal(await txt(pg, "#src-chemicals"), "Farmdoc 2027 budget, central Illinois, high-productivity (Aug 2026).");
+    assert.equal(await txt(pg, "#src-chemicals"), "From farmdoc\u2019s 2027 budget, central Illinois, high-productivity (Aug 2026).");
     await type(pg, "#fertilizer", "200");
     await type(pg, "#yield", "180");
     assert.equal(await pg.inputValue("#fertilizer"), "200", "a typed fertilizer is his and stops following");

@@ -49,7 +49,7 @@
   function budgetLine(c, k) { var r = region(); return r && r[c] && r[c][k] != null ? r[c][k] : null; }
   function regionTag() {
     var r = region(); if (!r) return '';
-    return 'farmdoc 2027 budget, ' + r.name + ' (Aug 2026)';
+    return 'from farmdoc\u2019s 2027 budget, ' + r.name + ' (Aug 2026)';
   }
   function fertFor(c, y) {
     if (!FERT || !FERT.r || !FERT.r[c] || !(y > 0)) return null;
@@ -60,7 +60,7 @@
   function defaultSrc(c) {
     var budget = c !== 'wheat' && region();
     BUDGET_KEYS.forEach(function (k) {
-      if (budget) setSrc(k, 'budget', k === 'land' ? 'farmdoc 2027 budget: ' + region().name + ' average cash rent' : k === 'yield' ? 'farmdoc 2027 budget: ' + region().name + ' trend yield' : regionTag());
+      if (budget) setSrc(k, 'budget', k === 'land' ? 'farmdoc\u2019s 2027 budget: ' + region().name + ' average cash rent' : k === 'yield' ? 'farmdoc\u2019s 2027 budget: ' + region().name + ' trend yield' : regionTag());
       else setSrc(k, 'example', 'this page\u2019s own example, not a published budget');
     });
     setSrc('fertilizer', FERT ? 'fert' : 'user', '');
@@ -75,7 +75,7 @@
       else if (s.k === 'fert') {
         var f = fertFor(c, y);
         t = f ? (c === 'soybeans' ? '' : f.lb[0] + ' lb N, ') + f.lb[1] + ' lb P\u2082O\u2085, ' + f.lb[2] + ' lb K\u2082O for ' + Math.round(y) + ' bu at co-op prices posted through ' + day(FERT.asof) + '. Follows your yield.' : '';
-      } else if (s.t) t = s.t.charAt(0).toUpperCase() + s.t.slice(1) + '.';
+      } else if (s.t) t = (/^farmdoc/.test(s.t) ? s.t : s.t.charAt(0).toUpperCase() + s.t.slice(1)) + '.';
       el.textContent = t; el.hidden = !t;
     });
   }
@@ -178,7 +178,7 @@
       var s = SRC[k] || {};
       if (s.k === 'user' || s.k === 'county') return;
       $(k).value = r[k];
-      setSrc(k, 'budget', k === 'land' ? 'farmdoc 2027 budget: ' + region().name + ' average cash rent' : k === 'yield' ? 'farmdoc 2027 budget: ' + region().name + ' trend yield' : regionTag());
+      setSrc(k, 'budget', k === 'land' ? 'farmdoc\u2019s 2027 budget: ' + region().name + ' average cash rent' : k === 'yield' ? 'farmdoc\u2019s 2027 budget: ' + region().name + ' trend yield' : regionTag());
     });
     syncRegionUI(); calcBreakeven();
   }
