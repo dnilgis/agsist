@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-16T18:23:25Z",
+ "updated": "2026-10-17T01:20:16Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, state hay reports",
  "note": "Confirmed trades as AMS reports them, $ per ton, by grade and bale type. Each report has its own date. Not blended with the NASS monthly prices in hay-prices.json.",
  "reports": [
@@ -151,7 +151,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -332,7 +332,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -342,7 +342,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -568,7 +568,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -1589,7 +1589,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -1599,7 +1599,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -1609,7 +1609,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -1619,7 +1619,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -1627,66 +1627,36 @@
    "state": "OK",
    "state_name": "Oklahoma",
    "title": "Oklahoma Direct Hay Report",
-   "heading": "Direct Hay Weighted Average Report for week ending 10/2/2026",
-   "date": "2026-10-02",
-   "week_ending": "2026-10-02",
-   "last_reported": "2026-09-14",
+   "heading": "Direct Hay Weighted Average Report for week ending 10/16/2026",
+   "date": "2026-10-16",
+   "week_ending": "2026-10-16",
+   "last_reported": "2026-09-28",
    "tons": {
     "hay": {
-     "week": 3240.0,
-     "last": 3660.0,
-     "year": 960.0
+     "week": 1440.0,
+     "last": 3240.0,
+     "year": 820.0
     },
     "total": {
-     "week": 3240.0,
-     "last": 3660.0,
-     "year": 960.0
+     "week": 1440.0,
+     "last": 3240.0,
+     "year": 820.0
     }
    },
-   "comment": "Compared to the last report, Demand for hay continues to be high. We have received some rain, but unfortunately it has been too late in the year. All types of hay are being moved to be prepared for fall and winter. Oklahoma is still seeking rain.",
+   "comment": "Compared to the last report, Demand for hay remains high. We continue to see all types of hay being moved in preparation for fall and winter. Hay movement has slowed down due to the rain.",
    "rows": [
     {
      "kind": "hay",
      "organic": false,
      "commodity": "Alfalfa",
-     "grade": "Good/Premium",
-     "basis": "trade",
-     "region": "Central",
-     "bale": "Large Square 4x4",
-     "qty": 80.0,
-     "lo": 240.0,
-     "hi": 240.0,
-     "avg": 240.0,
-     "freight": "F.O.B.",
-     "desc": ""
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Soybean",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Central",
-     "bale": "Large Round",
-     "qty": 720.0,
-     "lo": 150.0,
-     "hi": 150.0,
-     "avg": 150.0,
-     "freight": "F.O.B.",
-     "desc": ""
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Soybean",
      "grade": "Good",
      "basis": "trade",
      "region": "Central",
      "bale": "Large Square 4x4",
-     "qty": 640.0,
-     "lo": 150.0,
-     "hi": 150.0,
-     "avg": 150.0,
+     "qty": 120.0,
+     "lo": 225.0,
+     "hi": 225.0,
+     "avg": 225.0,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -1698,7 +1668,7 @@
      "basis": "trade",
      "region": "Northwest",
      "bale": "Large Round",
-     "qty": 840.0,
+     "qty": 600.0,
      "lo": 240.0,
      "hi": 240.0,
      "avg": 240.0,
@@ -1713,7 +1683,7 @@
      "basis": "trade",
      "region": "Northwest",
      "bale": "Large Round",
-     "qty": 960.0,
+     "qty": 720.0,
      "lo": 60.0,
      "hi": 60.0,
      "avg": 60.0,
@@ -1721,11 +1691,11 @@
      "desc": ""
     }
    ],
-   "per_bale_tables": 6,
+   "per_bale_tables": 9,
    "skipped": {
-    "ask": 8,
+    "ask": 6,
     "contract": 0,
-    "other_unit": 6
+    "other_unit": 9
    },
    "kind": "direct",
    "biweekly": false,
@@ -1735,7 +1705,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -1745,7 +1715,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -1836,7 +1806,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -2062,7 +2032,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -2072,7 +2042,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -2080,23 +2050,23 @@
    "state": "ID",
    "state_name": "Idaho",
    "title": "Idaho Direct Hay Report",
-   "heading": "Direct Hay Weighted Average Report for week ending 10/2/2026",
-   "date": "2026-10-01",
-   "week_ending": "2026-10-02",
-   "last_reported": "2026-09-14",
+   "heading": "Direct Hay Weighted Average Report for week ending 10/16/2026",
+   "date": "2026-10-16",
+   "week_ending": "2026-10-16",
+   "last_reported": "2026-09-28",
    "tons": {
     "hay": {
      "week": 3825.0,
-     "last": 3984.0,
-     "year": 800.0
+     "last": 3825.0,
+     "year": 6800.0
     },
     "total": {
      "week": 3825.0,
-     "last": 3984.0,
-     "year": 800.0
+     "last": 3825.0,
+     "year": 6800.0
     }
    },
-   "comment": "Compared to the last report, demand for all types of hay in Idaho is moderate. Demand for straw is picking up but there aren't a lot of trades yet with buyers shopping around. Movement has been slower this week in Idaho with mostly small loads being bought. prices for alfalfa are steady.",
+   "comment": "Demand for all types of hay in Idaho is moderate. Demand for straw is picking up but there aren't a lot of trades yet with buyers shopping around. Movement has been slower this week in Idaho with mostly small loads being bought. prices for alfalfa are steady.",
    "rows": [
     {
      "kind": "hay",
@@ -2203,7 +2173,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -2454,7 +2424,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -2680,7 +2650,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3036,7 +3006,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3046,7 +3016,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3056,7 +3026,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3066,7 +3036,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3076,7 +3046,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3086,7 +3056,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3096,7 +3066,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3106,7 +3076,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3116,7 +3086,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3126,7 +3096,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3136,7 +3106,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   },
   {
@@ -3146,7 +3116,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-16T18:23:25Z"
+    "checked": "2026-10-17T01:20:16Z"
    }
   }
  ]
