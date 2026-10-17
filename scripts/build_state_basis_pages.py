@@ -27,6 +27,8 @@ slips through either gate.
 WHAT COUNTS AS A FRESH NETWORK BID (all must hold)
   - row: sourceStatus "ok", stale false, currency USD, a US state
   - board in index.json with status "ok" and health "live"
+    (or: board and row "skipped", i.e. not asked this pass, with its last
+    successful read within HELD_SKIP_HOURS; see held_skip())
   - row pricedAt within FRESH_HOURS (72 h) of the snapshot's `generated` time.
     72 h, not 24: a board that did not move over a weekend is still Friday's
     posted price on Monday morning, and Friday 14:00 -> Monday 13:00 is 71 h.
@@ -965,8 +967,8 @@ def build_state_page(st, rows_all, summ, ctx):
   <a href="/cash-bids">/cash-bids</a> at that ZIP for every delivery month. {wow_note}</p>
   {table}
   <div class="bs-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
-  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was confirmed
-  live on the latest read and its price was posted within {FRESH_HOURS} hours of the snapshot, long enough
+  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
+  successfully in the last {HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours of the snapshot, long enough
   that a board unchanged over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic,
   identity-preserved) are excluded. Medians and ranges are printed only with at least {MIN_STAT} elevators on the
   same futures contract. Prices are a snapshot as of {fmt_ct(gen)} and will have moved since; call the elevator

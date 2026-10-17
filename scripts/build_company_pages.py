@@ -60,6 +60,8 @@ COMPANY_MIN = 3           # boards placed in a town before a company gets a page
 SUBDIR = "company"
 MAX_PAGE_KB = 120         # under the site's 150 KB cap for a generated page, with room
 SHOW_CROPS = ("corn", "soybeans", "wheat")
+NEARBY_MI = 40            # a company with no current bid lists elevators this close to its locations
+NEARBY_MAX = 8
 NAME_TAIL = re.compile(r"[\s,]*\b(inc|incorporated|llc|l\.l\.c|ltd|lp)\b\.?\s*$", re.I)
 
 CSS_EXTRA = (".cbc-t td{white-space:nowrap}.cbc-t td.l{white-space:normal;min-width:7.5em}"
@@ -229,6 +231,72 @@ def faq(co, cells, n_loc, n_live, states):
     return qs
 
 
+def nearby(co, towns, limit=NEARBY_MAX, radius=NEARBY_MI):
+    """[(miles, near location name, town, board, glance)] for the closest other
+    elevators with a current bid, within `radius` of any of the company's
+    located boards, nearest first; one row per board. Used only when the
+    company itself has no current bid, so the page still answers "where can I
+    get a bid around here"."""
+    pins = [(bd["pin"], t["name"]) for t, bd in co["locs"] if bd.get("pin")]
+    if not pins or not towns:
+        return []
+    found = []
+    for tk in sorted(towns):
+        t = towns[tk]
+        for bd in t["boards"].values():
+            if bd.get("operator") == co["name"] or not bd.get("pin") or not bd["rows"]:
+                continue
+            g = glance(bd)
+            if not g:
+                continue
+            mi, at = min((CB.miles(p[0], p[1], bd["pin"][0], bd["pin"][1]), nm) for p, nm in pins)
+            if mi <= radius:
+                found.append((mi, at, t, bd, g))
+    found.sort(key=lambda x: (x[0], x[3].get("operator") or "", x[2]["name"]))
+    return found[:limit]
+
+
+def why_none(co):
+    """One plain sentence on why no location of the company has a current bid,
+    from the reasons its boards carry (the town pages' words)."""
+    c = Counter()
+    for _, bd in co["locs"]:
+        for k, n in bd["why"].items():
+            c[k] += n
+    short = esc(co["short"])
+    top = next((k for k, _ in c.most_common() if k in CB.WHY), None)
+    if top in ("stale_or_unconfirmed", "board_not_live"):
+        return (f"{short} posts its bids online, but its bid board did not answer our latest reads, so we have no "
+                f"{short} bid we can stand behind right now. We check again through the day and the prices come "
+                f"back here as soon as a read goes through.")
+    if top == "price_older_than_cutoff":
+        return f"{short} has not posted a new bid in the last {CB.FRESH_HOURS} hours, so no price is shown."
+    if top == "delivery_expired_or_undated":
+        return f"The only {short} bids posted are for delivery periods that have already ended."
+    return f"No {short} board has a bid we could confirm right now."
+
+
+def nearby_html(co, ctx, crops):
+    near = nearby(co, ctx.get("towns"))
+    if not near:
+        return ""
+    snap_ct = ctx["snap_ct"]
+    trs = []
+    for mi, at, t, bd, g in near:
+        tp = f"/cash-bids/{CB.url_slug(STATE_NAMES[t['state']])}/{t['slug']}"
+        dist = "under 1 mi" if mi < 1 else f"{mi:.0f} mi"
+        stamp = CB.asof_time(min(r["priced"] for r in g.values()))
+        trs.append(f'<tr><td class="l"><a href="{tp}">{esc(bd.get("operator") or t["name"])}</a> '
+                   f'<span class="mut">{esc(t["name"])}, {dist} from {esc(at)}</span>{stamp}</td>'
+                   + "".join(_cell(g.get(c), snap_ct) for c in crops) + "</tr>")
+    ths = "".join(f'<th class="n">{CB.CROP_LABEL[c]}</th>' for c in crops)
+    return (f'<h2 id="nearby">Elevators near {esc(co["short"])} with a bid today</h2>'
+            f'<p class="cbt-sub">The closest elevators to a {esc(co["short"])} location that posted a current bid, '
+            f'within {NEARBY_MI} miles. These are other companies, not {esc(co["short"])}.</p>'
+            f'<div class="cbt-scroll"><table class="cbt-t cbc-t"><thead><tr><th>Elevator</th>{ths}</tr></thead>'
+            f'<tbody>{"".join(trs)}</tbody></table></div>')
+
+
 def build_page(co, ctx):
     snap_ct = ctx["snap_ct"]
     short, path = co["short"], co["path"]
@@ -296,9 +364,12 @@ def build_page(co, ctx):
              f'in {esc(st_txt)} that the AGSIST elevator network reads. The bids are read from {esc(short)}&rsquo;s '
              f'public bid board{site}. AGSIST is not affiliated with {esc(short)}. Cash is $/bu; under each price is '
              f'its delivery month and basis. Call the location before you haul.</p>')
+    near_html = ""
     if not indexable:
-        intro += (f'<div class="cbt-note"><b>No current bid.</b> No {esc(short)} board has a bid we could confirm '
-                  f'right now. Each location below says when it was last read.</div>')
+        near_html = nearby_html(co, ctx, crops)
+        intro += (f'<div class="cbt-note"><b>No current {esc(short)} bid.</b> {why_none(co)} Each location below '
+                  f'says when it was last read.' + (' <a href="#nearby">Elevators nearby with a bid today</a>.'
+                                                     if near_html else '') + '</div>')
     qs = faq(co, named, n_loc, n_live, states) if indexable else []
     jsonld = {"@context": "https://schema.org", "@graph": [
         CB.breadcrumb([("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"),
@@ -326,11 +397,12 @@ def build_page(co, ctx):
   {f'<p class="cbt-answer">{esc(ans)}</p>' if ans else ''}
   {intro}
   {jump}
+  {near_html}
   {''.join(secs)}
   {CB.faq_html(qs, short)}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each {esc(short)} location&rsquo;s
-  posted bid board directly; no third-party bid feed is used. A bid shows only if the board was confirmed on the latest
-  read, the price was posted in the last {CB.FRESH_HOURS} hours, and its delivery period has not ended. Each price is the
+  posted bid board directly; no third-party bid feed is used. A bid shows only if the board was read successfully in the
+  last {CB.SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {CB.FRESH_HOURS} hours, and its delivery period has not ended. Each price is the
   location&rsquo;s nearest delivery month for the grade it posts most; the town page has every month and the futures
   contract each basis is quoted against. A basis far off the elevators around it is left out here and flagged on the town
   page. This page is a snapshot rebuilt through the day.</div>
@@ -411,6 +483,8 @@ def _fixture():
     two-board company that gets no page; and a board in a third town."""
     gen, fresh = "2026-10-07T18:00:00Z", "2026-10-07T17:00:00Z"
     srcs, bids = [], []
+    PINS = {"Fremont": (41.433, -96.498), "Hooper": (41.611, -96.548), "Scribner": (41.664, -96.666),
+            "Ackworth": (41.367, -93.473)}
 
     def add(sid, op, st, city, zp, crop, cash, basis, fm="ZCZ26", period="2026-10", delivery="Oct 2026",
             stale=False, priced=fresh, commodity=None, website="https://www.acmecoop.example/bids"):
@@ -419,7 +493,7 @@ def _fixture():
                          "status": "ok", "health": "live" if not stale else "broken", "pricedAt": priced,
                          "checkedAt": "2026-10-06T17:30:00Z", "website": website})
         bids.append({"place": f"{op}||{city}|{st}", "operator": op, "city": city, "town": None, "state": st,
-                     "zip": zp, "currency": "USD", "commodity": commodity or crop.title(), "crop": crop,
+                     "zip": zp, "lat": PINS[city][0], "lon": PINS[city][1], "checkedAt": "2026-10-07T17:30:00Z", "currency": "USD", "commodity": commodity or crop.title(), "crop": crop,
                      "delivery": delivery, "period": period, "periodVia": "month-year", "periodPast": False,
                      "cash": cash, "basis": basis, "basisUnit": "per-bushel", "futuresMonth": fm,
                      "futuresCents": 777.77, "via": "scrape", "source": sid, "sourceStatus": "ok" if not stale else "broken",
@@ -509,8 +583,32 @@ def selftest():
                      now=CB.parse_ts("2026-10-07T19:00:00Z"))
         p = open(os.path.join(out, SUBDIR, "acme-co-op.html"), encoding="utf-8").read()
         assert 'content="noindex,follow"' in p and '<p class="cbt-answer">' not in p and "FAQPage" not in p
-        assert "<b>No current bid.</b>" in p
+        assert "<b>No current Acme Co-op bid.</b>" in p and "did not answer our latest reads" in p
+        # it still answers "where can I sell": the other boards near its locations, nearest first, never its own
+        assert '<h2 id="nearby">Elevators near Acme Co-op with a bid today</h2>' in p
+        nb = p[p.index('id="nearby"'):p.index('id="nebraska"')]
+        assert '<a href="/cash-bids/nebraska/fremont">Other 0</a> <span class="mut">Fremont, under 1 mi from Fremont' in nb
+        assert "Two Spot Grain" in nb and "Acme" not in nb.split("not Acme Co-op")[1], "own boards listed as nearby"
         assert "acme-co-op</loc>" not in open(sm, encoding="utf-8").read()
+    # a board skipped this pass (not asked, nothing wrong) counts when last read within HELD_SKIP_HOURS;
+    # refused or broken never does, nor a skip whose last good read is older
+    import build_state_basis_pages as SB
+    for status, ck, shows in (("skipped", "2026-10-07T14:00:00Z", True), ("skipped", "2026-10-07T11:30:00Z", False),
+                              ("refused", "2026-10-07T17:30:00Z", False), ("broken", "2026-10-07T17:30:00Z", False)):
+        merged, index = _fixture()
+        for b in merged["bids"]:
+            if b["source"] == "acme-hooper":
+                b["stale"], b["sourceStatus"], b["checkedAt"] = True, status, ck
+        for s_ in index["sources"]:
+            if s_["id"] == "acme-hooper":
+                s_["status"], s_["health"], s_["checkedAt"] = status, status, ck
+        with tempfile.TemporaryDirectory() as td:
+            out, sm = os.path.join(td, "cash-bids"), os.path.join(td, "sm.xml")
+            CB.build_all(merged, index, ZT, out_dir=out, root=".", sitemap=sm, min_towns=0,
+                         now=CB.parse_ts("2026-10-07T19:00:00Z"))
+            p = open(os.path.join(out, SUBDIR, "acme-co-op.html"), encoding="utf-8").read()
+            assert ("$3.80" in p) == shows, (status, ck)
+    assert SB.HELD_SKIP_HOURS == 6
     print("build_company_pages selftest ok")
 
 
