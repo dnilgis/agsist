@@ -1976,12 +1976,17 @@
   {
    "path": "data/rain-print.json",
    "pages": [
+    "cattle-futures-prices.html",
+    "corn-futures-prices.html",
     "farm-anniversary-gifts.html",
     "farmer-retirement-gifts.html",
     "gifts-for-farmers.html",
     "index.html",
+    "markets.html",
     "rain-gauge.html",
-    "rain-print.html"
+    "rain-print.html",
+    "soybean-futures-prices.html",
+    "wheat-futures-prices.html"
    ],
    "written_by": [],
    "touched_by": [
