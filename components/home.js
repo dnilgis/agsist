@@ -1753,7 +1753,11 @@ try {
   window.__r7paLabel=function(v){var o=document.querySelector('#pa-symbol option[value="'+v+'"]');return o?(o.getAttribute('data-short')||o.textContent):v;};
   pricesOnce().then(function(pd){
     var sel=$('pa-symbol'),dir=$('pa-direction'),tgt=$('pa-target'),now=$('r7-pa-now');if(!sel||!pd||!pd.quotes)return;
-    var q=pd.quotes,stamp=ctStamp(pd.fetched);
+    /* 2026-10-17: an expired month (Dec '26 after its last trade) rolls to the next live one, the
+       price-local.js roll every futures page uses; and the line is stamped with the quote's own
+       settle or trade time, not the time the file was read (it said Oct 17, 1:46 AM beside an Oct 16 settle). */
+    var PS=window.AgPxStamp,q=(PS&&PS.roll)?PS.roll(pd.quotes):pd.quotes;
+    function stampOf(x){return (PS&&PS.stamp)?PS.stamp(x,pd.fetched):ctStamp(pd.fetched);}
     /* 7b: a front-month option that is the same contract as a dated one is
        a duplicate; the dated one stays, because it does not roll. */
     [['corn','corn-dec'],['beans','beans-nov']].forEach(function(pr){var a=contractOf(q,pr[0]),b=contractOf(q,pr[1]);
@@ -1769,7 +1773,7 @@ try {
       tgt.placeholder=t.toFixed(2);
       /* Grains trade in quarter cents: $5.08\u00bd, not $5.08 (toFixed dropped the half). */
       var nowTxt=sel.value==='cattle'?'$'+p.toFixed(2):AG.px.price(x.close);
-      if(now){var mon=contractOf(q,sel.value);now.textContent='Now '+nowTxt+(mon?', '+mon:'')+(stamp?' · '+stamp:'');}}
+      if(now){var mon=contractOf(q,sel.value);var stamp=stampOf(x);now.textContent='Now '+nowTxt+(mon?', '+mon:'')+(stamp?' · '+stamp:'');}}
     sel.addEventListener('change',ex);dir.addEventListener('change',ex);ex();
   });
 

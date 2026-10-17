@@ -561,7 +561,7 @@
   function go(){
     if(window.BasisMap){ window.BasisMap.open(host,crop); return; }
     if(loading) return; loading=true;
-    var s=document.createElement('script'); s.src='/components/basis-map.js?v=1';
+    var s=document.createElement('script'); s.src='/components/basis-map.js?v=2';
     s.onload=function(){ loading=false; if(window.BasisMap) window.BasisMap.open(host,crop); };
     s.onerror=function(){ loading=false; host.innerHTML='<p class="bm-tip">The map did not load. The state table below has the same numbers.</p>'; };
     document.head.appendChild(s);

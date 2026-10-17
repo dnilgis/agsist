@@ -184,10 +184,24 @@ function setNForm(pct,price){
 var CORN={fut:null,label:'',date:'',nearby:null};
 var BASIS={};          /* state code -> {name, median, n, label} */
 var cornTyped=false, nTyped=false;
-function newCropKey(now){
-  var y=now.getFullYear(), m=now.getMonth();
-  var yy=String((m>=7?y+1:y)%100); if(yy.length<2)yy='0'+yy;
-  return {key:'corn-dec'+yy, label:"Dec '"+yy};
+/* The December the box wants is next year's from August on (Central time), this
+   year's before. The contract it uses is the first Dec on file at or after that
+   one that is still trading, by the same contract calendar every futures page
+   uses (components/price-local.js expired: corn is dead from the 15th of its
+   month). So a file that still carries an expired Dec never feeds the box. */
+function ctYM(now){
+  try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'numeric'}).formatToParts(now).forEach(function(x){p[x.type]=x.value;});
+    if(p.year&&p.month)return {y:+p.year,m:+p.month-1};}catch(e){}
+  return {y:now.getFullYear(),m:now.getMonth()};
+}
+function newCropKey(now,q){
+  var t=ctYM(now), want=(t.m>=7?t.y+1:t.y)%100, best=null;
+  var dead=function(x){return !!(x&&x.ticker&&window.AgPxStamp&&AgPxStamp.expired&&AgPxStamp.expired(x.ticker,now));};
+  Object.keys(q||{}).forEach(function(k){var mm=/^corn-dec(\d{2})$/.exec(k),x=q[k];
+    if(!mm||!x||!x.close||+mm[1]<want||dead(x))return;
+    if(!best||+mm[1]<best.yy)best={yy:+mm[1],key:k};});
+  var yy=String(best?best.yy:want); if(yy.length<2)yy='0'+yy;
+  return {key:best?best.key:'corn-dec'+yy, label:"Dec '"+yy};
 }
 function loadGrainPrices(){
   getJSON('/data/prices.json').then(function(data){
@@ -200,7 +214,7 @@ function loadGrainPrices(){
       CORN.nearby=parseFloat(q.corn.close)/100;
       var elb=document.getElementById('eco-live-badge');if(elb)elb.style.display='inline-flex';
     }
-    var nc=newCropKey(new Date()), row=q[nc.key];
+    var nc=newCropKey(new Date(),q), row=q[nc.key];
     if(row&&row.close){CORN.fut=parseFloat(row.close)/100;CORN.label=nc.label;CORN.date=row.close_date||'';}
     else if(q.corn&&q.corn.close){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=q.corn.close_date||'';}
     fillCorn();

@@ -254,7 +254,9 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
      livestock to the tick ($224.975/cwt), soybean oil in cents a pound,
      the dollar index and the S&P as index points with no "$". */
   var TICK={cattle:1,feeders:1,hogs:1},CENTS={soyoil:1},INDEX={dollar:1,sp500:1};
-  function num(v,key){return TICK[key]?AG.px.cash(v,{dollar:false}):(+v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  /* toFixed first (exact binary value, as seed_static.py _fixed and the homepage do): silver's 56.995 close is $56.99 on every page;
+     toLocaleString alone rounded the decimal text and printed $57.00 over the seeded $56.99 (audit N13, Oct 17) */
+  function num(v,key){return TICK[key]?AG.px.cash(v,{dollar:false}):Number((+v).toFixed(2)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
   function dollar$(v,key){if(v==null)return'-';var n=num(Math.abs(v),key);return (v<0?'\u2212':'')+(INDEX[key]||CENTS[key]?'':'$')+n+(CENTS[key]?'\u00a2':'');}
   function chgStr(net,pct,isGrain,key){if(net==null)return'-';if(isGrain)return AG.px.change(net,pct).t;var a=net>0?'▲':net<0?'▼':'';var s=net>0?'+':net<0?'\u2212':'';return (a?a+' ':'')+s+num(Math.abs(net),key)+(CENTS[key]?'\u00a2':'')+' ('+AG.px.pct(pct)+')';} /* cents first, percent second — reader request 2026-07-20 */
   var MK_NAMES={'corn':'Corn','corn-dec':'Dec corn','beans':'Soybeans','beans-nov':'Nov soybeans','wheat':'Wheat','oats':'Oats','cattle':'Live cattle','feeders':'Feeder cattle','hogs':'Lean hogs','milk':'Class III milk','crude':'Crude WTI','natgas':'Natural gas','meal':'Soybean meal','soyoil':'Soybean oil','gold':'Gold','silver':'Silver','dollar':'Dollar Index','sp500':'S&P 500'};
