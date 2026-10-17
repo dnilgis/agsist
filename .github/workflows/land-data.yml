@@ -24,8 +24,7 @@ on:
         description: "services, discover (services + county search), transfers, or all"
         type: string
         default: "services"
-  schedule:
-    - cron: '23 9 3 * *'    # monthly: recheck services and rebuild transfers
+  # schedule: monthly run waits for Sig's OK (proposed cron '23 9 3 * *')
 
 permissions:
   contents: write
