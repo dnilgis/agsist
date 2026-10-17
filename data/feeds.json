@@ -800,6 +800,7 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
+    "cash-bids.html",
     "index.html",
     "sponsor-kit.html"
    ],
