@@ -59,6 +59,7 @@
 .js .sk{animation:blink 1.4s ease-in-out infinite}
 .nc-line{font-size:0.785rem;color:var(--text-dim);margin:6px 0 10px;font-family:'JetBrains Mono',monospace}
 .nc-line strong{color:var(--text)}
+.nc-line a{color:var(--gold)}
 .seed-tbl-wrap table{width:100%;border-collapse:collapse;font-size:.85rem;margin:.4rem 0}.seed-tbl-wrap caption{font-size:1rem;color:var(--text-dim);text-align:left;padding:.2rem 0}.seed-tbl-wrap td,.seed-tbl-wrap th{padding:.25rem .5rem;border-bottom:1px solid var(--border,rgba(128,128,128,.25));text-align:left}
 .snap-card{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border-g);border-left:3px solid var(--green);border-radius:var(--card-r);padding:13px 16px;margin-bottom:14px}
 .snap-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:4px}
@@ -424,7 +425,7 @@ details.fold[hidden]{display:none}
 
   <div class="ph">
     <div class="ph-info">
-      <h1>Soybean futures prices today</h1>
+      <h1><!--BAKE:futures-h1-->CBOT soybean futures prices today, per bushel<!--/BAKE--></h1>
       <div class="ph-exch">CBOT &middot; CME Group &middot; <span id="hero-contract"><!--SEED:contract-->Nearby Nov '26<!--/SEED--></span> &middot; Local cash bids &middot; Refreshed in session</div>
     </div>
     <div class="ph-price">
@@ -437,6 +438,7 @@ details.fold[hidden]{display:none}
 
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
   <!--SEED:nc--><div class="nc-line" id="nc-line" style="display:none"></div><!--/SEED-->
+  <!--SEED:cornline--><div class="nc-line" id="corn-line">Corn Dec '26: <strong>$4.74¼</strong> <span class="dn">(−0.78%)</span> &middot; Oct 16 settle &middot; <a href="/corn-futures-prices">Corn futures</a></div><!--/SEED-->
   <p class="px-seed-note" style="font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim);margin:.35rem 0 0"><!--SEED:note-->Nearby Nov '26 soybeans settled at <strong>$12.61¼</strong> &middot; as of Oct 16.<!--/SEED--></p>
   <!--SEED:moved--><p class="moved-line" id="moved-line"><b>Latest from USDA:</b> Oct 9 WASDE (2026/27, change from Sep): soybean yield 53.1 bu/acre, up 0.3; ending stocks 315 million bu, up 5. Nov '26 settled 4½¢ higher that day ($12.87½ to $12.92, CBOT settles). Crop Progress, week ending Oct 11: 46% of soybeans harvested (5-yr avg 50%). <span class="ml-src">Sources: USDA WASDE, CBOT settles, NASS Crop Progress; 5-yr avg is AGSIST's arithmetic on the NASS weeks. <a href="/whats-priced-in">Report track record</a></span></p><!--/SEED-->
   <div class="seed-tbl-wrap"><!--SEED:pxtable--><table class="seed-tbl"><caption>Settle &middot; as of Oct 16 &middot; CBOT settles as Yahoo Finance posts them &middot; quotes above refresh every 15 minutes in session</caption><thead><tr><th scope="col">Contract</th><th scope="col" class="num">Settle</th><th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th></tr></thead><tbody><tr><td>Nearby Nov '26</td><td class="num">$12.61¼</td><td class="num">−1¾¢ (−0.14%)</td><td class="num">$10.55½&ndash;$13.35¼</td></tr></tbody></table><!--/SEED--></div>
@@ -840,7 +842,7 @@ details.fold[hidden]{display:none}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=28" defer></script>
 <script>window.AGSIST_FUTURES='soybean'</script>
-<script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=3"></script><script src="/components/futures.js?v=17"></script>
+<script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=3"></script><script src="/components/futures.js?v=18"></script>
 
 </body>
 </html>

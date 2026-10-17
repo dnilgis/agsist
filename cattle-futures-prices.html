@@ -71,7 +71,13 @@ details.fold[hidden]{display:none}
 </head>
 <body>
 <style id="ct-base">
-@media(max-width:520px){.ph{padding:.9rem 1rem;display:block}.ph-price{margin:.65rem 0 0;text-align:left;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.55rem}.ph-val{font-size:1.9rem}.ph-unit{order:2}.ph-chg{order:3;flex-basis:100%;margin-top:4px}}
+.ph-two{display:flex;gap:1.6rem;align-items:flex-start}
+.ph-q{text-align:right;min-width:0}
+.ph-name{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap}
+.ph-name span{font-weight:400;color:var(--text-dim)}
+.ph-stamp{font-size:.72rem;color:var(--text-dim);margin-top:3px;white-space:nowrap}
+.ph-stamp .px-stamp{color:inherit}
+@media(max-width:520px){.ph{padding:.9rem 1rem;display:block}.ph-price{margin:.65rem 0 0;text-align:left}.ph-two{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}.ph-q{text-align:left}.ph-val{font-size:1.55rem}.ph-two .ph-val.sk,.ph-two .ph-chg.sk{margin-left:0}.ph-chg{font-size:.8rem}.ph-stamp{white-space:normal}}
 .fut{max-width:1100px;margin:0 auto;padding:0 16px 2.5rem}
 .bc{font-size:0.787rem;color:var(--text-dim);margin:12px 0}
 .bc a{color:var(--gold);text-decoration:none}
@@ -212,13 +218,29 @@ details.fold[hidden]{display:none}
 
   <div class="ph">
     <div class="ph-info">
-      <h1>Live and feeder cattle futures prices today</h1>
-      <div class="ph-exch">CME Group · LE=F &amp; GF=F · Updated every 15 min</div>
+      <h1><!--BAKE:cattle-h1-->Feeder and live cattle futures prices today<!--/BAKE--></h1>
+      <div class="ph-exch">CME Group · GF=F &amp; LE=F · Updated every 15 min</div>
     </div>
-    <div class="ph-price">
-      <div class="ph-val sk" id="hero-price"><!--SEED:px-->$227.55<!--/SEED--></div>
-      <div class="ph-unit">$ / cwt · Live Cattle</div>
-      <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="up">▲ +$1.60 (+0.71%)</span><!--/SEED--></div>
+    <!-- 2026-10-17 search-terms check: feeder searches carry about 19,700 of this page's
+         ~19,900 search weight ("feeder cattle futures" 10,117, "cme feeder cattle futures"
+         3,149, "cme feeder cattle" 1,949), and feeders sat in small type under live cattle,
+         off the phone's first screen. Both are headline prices now, same size, each with its
+         own settle / last-trade stamp (AgPxStamp.html, as the status line). -->
+    <div class="ph-price ph-two">
+      <div class="ph-q" id="hero-gf">
+        <div class="ph-name">Feeder cattle <span id="hero-gf-ct"><!--SEED:gfct-->Oct '26<!--/SEED--></span></div>
+        <div class="ph-val sk" id="hero-gf-price"><!--SEED:gfpx-->$343.625<!--/SEED--></div>
+        <div class="ph-unit">$ / cwt · GF</div>
+        <div class="ph-chg sk" id="hero-gf-chg"><!--SEED:gfchg--><span class="up">▲ +$0.25 (+0.07%)</span><!--/SEED--></div>
+        <div class="ph-stamp" id="hero-gf-stamp"><!--SEED:gfstamp-->Oct 16 settle<!--/SEED--></div>
+      </div>
+      <div class="ph-q" id="hero-le">
+        <div class="ph-name">Live cattle <span id="hero-le-ct"><!--SEED:lect-->Oct '26<!--/SEED--></span></div>
+        <div class="ph-val sk" id="hero-price"><!--SEED:px-->$227.55<!--/SEED--></div>
+        <div class="ph-unit">$ / cwt · LE</div>
+        <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="up">▲ +$1.60 (+0.71%)</span><!--/SEED--></div>
+        <div class="ph-stamp" id="hero-le-stamp"><!--SEED:lestamp-->Oct 16 settle<!--/SEED--></div>
+      </div>
     </div>
   </div>
   <p class="ct-seednote"><!--SEED:note-->Live cattle settled at <strong>$227.55</strong> &middot; feeders near $343.625 &middot; $/cwt &middot; as of Oct 16 &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.<!--/SEED--></p>
@@ -665,9 +687,15 @@ details.fold[hidden]{display:none}
     var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
     if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgPxStamp&&le?dot+'CME futures \u00b7 '+AgPxStamp.html(le,d.fetched):window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
     else if(st)st.innerHTML=dot+'Live CME futures · updated through the trading day';
-    // hero price = live cattle
-    var hp=$('hero-price');if(hp&&le&&le.close!=null)hp.textContent=cwt(le.close);
-    var hc=$('hero-chg');if(hc&&le&&le.pctChange!=null){var hu=le.netChange>=0;hc.textContent=(hu?'▲ +':'▼ −')+(le.netChange!=null?'$'+cwtN(le.netChange)+' ':'')+'('+(hu?'+':'−')+Math.abs(le.pctChange).toFixed(2)+'%)';hc.className='ph-chg '+(hu?'up':'dn');}else if(hc){hc.textContent='';hc.classList.remove('sk');}
+    // hero prices: feeder cattle and live cattle, same size, each with its own stamp
+    function heroQ(q,px,ch,stp,ct){
+      var hp=$(px);if(hp&&q&&q.close!=null)hp.textContent=cwt(q.close);
+      var hc=$(ch);if(hc&&q&&q.pctChange!=null){var hu=q.netChange>=0;hc.textContent=(hu?'▲ +':'▼ −')+(q.netChange!=null?'$'+cwtN(q.netChange)+' ':'')+'('+(hu?'+':'−')+Math.abs(q.pctChange).toFixed(2)+'%)';hc.className='ph-chg '+(hu?'up':'dn');}else if(hc){hc.textContent='';hc.classList.remove('sk');}
+      var hs=$(stp);if(hs&&q&&window.AgPxStamp)hs.innerHTML=AgPxStamp.html(q,d.fetched);
+      var hn=$(ct),lab=q&&q.ticker&&window.AgPxStamp&&AgPxStamp.label?AgPxStamp.label(q.ticker):'';if(hn&&lab)hn.textContent=lab;
+    }
+    heroQ(gf,'hero-gf-price','hero-gf-chg','hero-gf-stamp','hero-gf-ct');
+    heroQ(le,'hero-price','hero-chg','hero-le-stamp','hero-le-ct');
     // feeder/live ratio
     if(le&&gf&&le.close&&gf.close){
       var r=gf.close/le.close;$('ct-ratio-val').textContent=r.toFixed(3)+' : 1';
