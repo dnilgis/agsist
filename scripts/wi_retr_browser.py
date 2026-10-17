@@ -23,6 +23,8 @@ import urllib.request
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36 AGSIST-land-data/1.0 (agsist.com; sig@farmers1st.com)"
 HOME = "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx"
+# data-home.aspx only redirects here; used when www.revenue.wi.gov does not answer
+TAP = "https://tap.revenue.wi.gov/RETRHistoric"
 PAUSE = 4.0          # seconds between page actions and between files
 
 
@@ -76,6 +78,16 @@ def get(url, tries=3):
             if i == tries - 1:
                 raise
             time.sleep(20 * (i + 1))
+
+
+def open_home(page, log):
+    """The historical screen's start, by DOR's link or, when www does not answer, the app link it redirects to."""
+    for url, tries in ((HOME, 2), (TAP, 3)):
+        try:
+            return goto(page, url, log, tries)
+        except Exception:  # noqa: BLE001
+            if url == TAP:
+                raise
 
 
 def goto(page, url, log, tries=3):
@@ -235,7 +247,7 @@ def _explore(out, log):
             log.append("   text: " + txt[:2500])
             return items
 
-        goto(page, HOME, log)
+        open_home(page, log)
         snap("01-home")
         try:
             log.append("tap robots.txt: %r" % get("https://tap.revenue.wi.gov/robots.txt")[:800])
