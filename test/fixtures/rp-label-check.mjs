@@ -23,8 +23,9 @@ import { readFileSync } from "node:fs";
 const M = JSON.parse(readFileSync(new URL("./rp-font-metrics.json", import.meta.url), "utf8"));
 const IDX = new Map([...M.chars].map((c, i) => [c, i]));
 const SAFE = { x0: 60, y0: 60, x1: 1740, y1: 1140 };
-const SOFT_STROKE = new Set(["#E4E6E1", "#D6D9D2", "#DCE6EE"]);
-const SOFT_FILL = new Set(["#FFFFFF", "#F3E2DF", "#DDE5EC"]);
+// Staircase A2 clean (2026-10-17): its gridline (#EEF0F2), the history threads (#DDD8D0) and the stone and blue fills behind the year are as light as the old ones
+const SOFT_STROKE = new Set(["#E4E6E1", "#D6D9D2", "#DCE6EE", "#EEF0F2", "#DDD8D0"]);
+const SOFT_FILL = new Set(["#FFFFFF", "#F3E2DF", "#DDE5EC", "#ECE6DE", "#EAEFF4"]);
 
 function variant(o) {
   const F = /Fraunces/.test(o.fam) ? "F" : "S";

@@ -539,7 +539,8 @@ test("previewArt: the card's print so far, through the last reported day, the mo
   const later = r.svg.match(/<g data-rp="later" aria-hidden="true"><rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"[^>]*\/>([\s\S]*?)<\/g>/);
   assert.ok(later, "the months still to come are washed pale");
   const x0 = +later[1], x1 = x0 + +later[2];
-  assert.ok(Math.abs(x0 - (196 + 282 * (1680 - 196) / 365)) < 0.01 && Math.abs(x1 - 1680) < 0.01, "from the day after Oct 9 to Dec 31 on the full calendar: " + x0 + " to " + x1);
+  // (Staircase A2 clean, 2026-10-17: the chart runs from 196 to 1590, the line ends' words to its right)
+  assert.ok(Math.abs(x0 - (196 + 282 * (1590 - 196) / 365)) < 0.01 && Math.abs(x1 - 1590) < 0.01, "from the day after Oct 9 to Dec 31 on the full calendar: " + x0 + " to " + x1);
   assert.match(later[3].replace(/<[^>]+>/g, "|"), /The rest of 2026\|+arrives in January/, "with the words in it");
   assert.ok(r.svg.indexOf('data-rp="later"') < r.svg.indexOf('data-rp="band"'), "the band stays on top of the wash");
   assert.match(r.svg, />Planted</, "a date already past is on it");

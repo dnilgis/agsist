@@ -82,6 +82,7 @@
     'Dark blue steps are rain, light blue steps are snow': 'Marches bleu foncé : pluie; marches bleu pâle : neige',
     'your year, rain and melted snow': 'votre année, pluie et neige fondue', 'your year, rain': 'votre année, pluie', 'your year': 'votre année',
     'a usual year by then': 'une année normale à cette date', 'a usual year, same days': 'une année normale, mêmes jours', 'a usual year': 'une année normale',
+    'this year': 'cette année', 'so far': 'jusqu’ici',
     'usual': 'normale', 'SNOWFALL': 'NEIGE', 'snow': 'neige', 'PREVIEW': 'APERÇU'
   };
   function tr(en) { return LOC.fr && FR[en] !== undefined ? FR[en] : en; }
@@ -183,7 +184,8 @@
     return out;
   }
   // 17 u after the 21 u words on Staircase's line, 16 u after Roots' 20 u and the 19 u row under the months
-  function dateSt(o) { o = st(o || {}); return Object.assign({}, o, { size: o.size >= 21 ? 17 : 16, w: 400, fill: C.mute, it: false, ls: 0 }); }
+  // (and under 16 u, the footnote voices of 2026-10-17, the date keeps its words' size)
+  function dateSt(o) { o = st(o || {}); return Object.assign({}, o, { size: o.size >= 21 ? 17 : o.size >= 16 ? 16 : o.size, w: 400, fill: o.size < 16 ? '#8A8F98' : C.mute, it: false, ls: 0 }); }
   function plain(s) { return String(s).replace(/\u0001([^\u0001\u0002]*)\u0002/g, ' $1'); }
   function W(s, o) {
     if (DATE_RE.test(String(s))) return runs(s, st(o || {})).reduce(function (t, r) { return t + W(r.s, r.o); }, 0);
@@ -672,7 +674,16 @@
         st0.size = Math.min(fit(lines[0], { size: 15 }, maxW, 12), fit(lines[1], { size: 15 }, maxW, 12));
       }
     }
-    var ys = lines.length === 1 ? [FOOT_Y] : [FOOT_Y - FOOT_GAP, FOOT_Y], svg = '', boxes = [];
+    /* Still too long at 12 u (the 2026-10-17 options add their sources here): packed at 12 u into as many
+       lines as it takes, up to three; a part that fits no line is cut at a word, never run off the paper. */
+    if (lines.some(function (t) { return W(t, { size: st0.size }) > maxW + 0.5; })) {
+      st0.size = 12;
+      var pk = [[]];
+      parts.forEach(function (t) { var cur = pk[pk.length - 1]; if (!cur.length || W(cur.concat([t]).join(SEP), st0) <= maxW) cur.push(t); else pk.push([t]); });
+      if (pk.length > 4) pk = pk.slice(0, 3).concat([pk.slice(3).reduce(function (a, l) { return a.concat(l); }, [])]);
+      lines = pk.map(function (l) { var t = l.join(SEP); while (W(t, st0) > maxW && t.indexOf(' ') > 0) t = t.slice(0, t.lastIndexOf(' ')); return t; });
+    }
+    var ys = lines.map(function (t, k) { return FOOT_Y - (lines.length - 1 - k) * FOOT_GAP; }), svg = '', boxes = [];
     lines.forEach(function (t, k) { svg += T(x, ys[k], t, st0); boxes.push(box(x, ys[k], t, st0)); });
     var u = boxes.reduce(function (A, B) { var x0 = Math.min(A.x, B.x), y0 = Math.min(A.y, B.y); return { x: x0, y: y0, w: Math.max(A.x + A.w, B.x + B.w) - x0, h: Math.max(A.y + A.h, B.y + B.h) - y0 }; });
     return { svg: G0('foot') + svg + G1, box: u, boxes: boxes, lines: lines.length, size: st0.size };
@@ -760,366 +771,585 @@
     return { y: best, x0: x0, x1: x1 };
   }
 
-  // ======================================================================= R1
-  // line weights that read across a room (panel 4, 2026-10-14; were 3.4 and 1.6)
-  var STAIR_W = 4.6, USUAL_W = 2.2;
-  /* A dry stretch is marked on the print from this many days (panel 4, 2026-10-14). The engine's showDry
-     (7 days) still decides whether there is one at all; the page may pass input.printDryMin to change this. */
+  // ======================================================================= the 2026-10-17 options, shared by both styles
+  /* Crop stages (input.crop), frost marks and the temperature ribbon (input.temp), every year behind your year
+     (input.hist, Staircase). The numbers are worked out before render (components/rain-print-extras.js); this
+     file only places and draws them. */
+  var X = { ink: '#1F2328', date: '#8A8F98', fact: '#5B616B', grid: '#EEF0F2', usualM: '#A3A8B0', red: '#B23A2E', stone: '#ECE6DE', ahead: '#EAEFF4', thread: '#DDD8D0' };
+  var CROP_INK = '#5B616B', GHOST_INK = '#CFCBC4', PLANT_H = 54;
+  // the footnote voices: 12 u words, the date after them in gray (Sig's typographer list, 2026-10-17)
+  var FACT = { size: 12, w: 400, fill: X.fact }, FACT_D = { size: 12, w: 400, fill: X.date };
+  // the dedication in plain italic: no swash or discretionary ligatures, at a text optical size (both styles)
+  var PLAIN_IT = "font-variation-settings:'opsz' 12;font-variant-ligatures:no-discretionary-ligatures;font-feature-settings:'swsh' 0,'dlig' 0";
+  function dedText(x, y, s, size, fill) {
+    return '<text x="' + n2(x) + '" y="' + n2(y) + '" font-family="' + esc(SERIF) + '" font-style="italic" font-weight="400" font-size="' + n2(size) + '" fill="' + fill +
+      '" style="' + PLAIN_IT + '">' + esc(s) + '</text>';
+  }
+  // words, then an optional date in its own voice on the same baseline
+  function tv(x, y, s, o, date, dO) {
+    var t = T(x, y, s, o);
+    if (date) t = t.replace('</text>', '<tspan font-size="' + n2(dO.size || o.size) + '" font-weight="' + (dO.w || 400) + '" fill="' + dO.fill + '"> ' + esc(date) + '</tspan></text>');
+    return t;
+  }
+  function wv(s, o, date, dO) { return W(s, o) + (date ? W(' ' + date, Object.assign({}, o, dO)) : 0); }
+  function bv(x, y, s, o, date, dO) {
+    var w = wv(s, o, date, dO), a = o.anchor || 'start', up = 0.77 * o.size, dn = 0.27 * o.size;
+    return { x: a === 'start' ? x : a === 'end' ? x - w : x - w / 2, y: y - up, w: w, h: up + dn };
+  }
+
+  /* One plant in line art, standing on the soil at (x, b) and growing up; h is a grown plant's height.
+     Corn: emerged, V6, silk (tassel and silks), dent (the ear filled), black layer (leaves down, ear angled).
+     Soybeans: emerged (two seed leaves), V3, flowering, seed fill (pods), maturing (pods, leaves gone).
+     Returns {svg, top (how high the ink reaches above b), half (half its width)}. */
+  // a quadratic curve as short straight pieces (absolute L only, so every reader of the SVG sees the same lines)
+  function qL(x0, y0, cx, cy, x1, y1) {
+    var d = '';
+    for (var k = 1; k <= 4; k++) { var t = k / 4, u = 1 - t; d += 'L' + n2(u * u * x0 + 2 * u * t * cx + t * t * x1) + ',' + n2(u * u * y0 + 2 * u * t * cy + t * t * y1); }
+    return d;
+  }
+  function plantArt(kind, key, x, b, ink, h) {
+    var p = [], top = 8, half = 6;
+    var L = function (d) { p.push('<path d="' + d + '"/>'); };
+    var leaf = function (y, side, len, droop) {
+      var ex = x + side * len, ey = b - y + (droop === undefined || droop === null ? -len * 0.35 : droop);
+      L('M' + n2(x) + ',' + n2(b - y) + qL(x, b - y, x + side * len * 0.55, b - y - len * 0.45, ex, ey));
+      half = Math.max(half, len + 1);
+    };
+    if (kind === 'corn') {
+      if (key === 'VE') { L('M' + n2(x) + ',' + n2(b) + 'V' + n2(b - 7)); leaf(6, 1, 5); leaf(5, -1, 4); top = 9; }
+      else if (key === 'V6') { L('M' + n2(x) + ',' + n2(b) + 'V' + n2(b - h * 0.45)); leaf(h * 0.12, -1, 9); leaf(h * 0.2, 1, 10); leaf(h * 0.3, -1, 10); leaf(h * 0.4, 1, 9); top = h * 0.45 + 4; }
+      else {
+        var dry = key === 'R6', droop = key === 'R5' || dry;
+        L('M' + n2(x) + ',' + n2(b) + 'V' + n2(b - h));
+        [0.18, 0.32, 0.46, 0.6, 0.74].forEach(function (f, k) { leaf(h * f, k % 2 ? 1 : -1, dry ? 9 : 12, droop ? (dry ? 9 : 3) : null); });
+        L('M' + n2(x) + ',' + n2(b - h) + 'l-4,-6M' + n2(x) + ',' + n2(b - h) + 'l4,-6M' + n2(x) + ',' + n2(b - h) + 'v-8');
+        var ey = b - h * 0.5;
+        // the ear at half height: silks at R1, filled at R5, angled down at black layer
+        if (key === 'R1') { L('M' + n2(x + 1) + ',' + n2(ey) + qL(x + 1, ey, x + 5, ey - 2, x + 5, ey - 9) + qL(x + 5, ey - 9, x + 5, ey - 13, x + 2, ey - 13));
+          L('M' + n2(x + 4) + ',' + n2(ey - 13) + qL(x + 4, ey - 13, x + 7, ey - 17, x + 10, ey - 16)); L('M' + n2(x + 4) + ',' + n2(ey - 13) + qL(x + 4, ey - 13, x + 8, ey - 14, x + 11, ey - 11)); }
+        else if (key === 'R5') L('M' + n2(x + 1) + ',' + n2(ey) + qL(x + 1, ey, x + 7, ey - 2, x + 7, ey - 11) + qL(x + 7, ey - 11, x + 7, ey - 15, x + 3, ey - 15) + 'Z');
+        else if (dry) L('M' + n2(x + 1) + ',' + n2(ey) + qL(x + 1, ey, x + 9, ey + 1, x + 11, ey + 8) + qL(x + 11, ey + 8, x + 5, ey + 11, x + 1, ey + 6) + 'Z');
+        top = h + 8; half = Math.max(half, 13);
+      }
+    } else {
+      var tri = function (cx, cy, r) {
+        [-1, 0, 1].forEach(function (k) { var a = -Math.PI / 2 + k * 0.9, ex = cx + Math.cos(a) * r, ey2 = cy + Math.sin(a) * r;
+          p.push('<ellipse cx="' + n2(ex) + '" cy="' + n2(ey2) + '" rx="' + n2(r * 0.55) + '" ry="' + n2(r * 0.9) + '" transform="rotate(' + n2(k * 50) + ' ' + n2(ex) + ' ' + n2(ey2) + ')"/>'); });
+      };
+      var bh = h * 0.6;
+      if (key === 'VE') { L('M' + n2(x) + ',' + n2(b) + 'V' + n2(b - 6)); p.push('<ellipse cx="' + n2(x - 3) + '" cy="' + n2(b - 7) + '" rx="3" ry="1.8"/><ellipse cx="' + n2(x + 3) + '" cy="' + n2(b - 7) + '" rx="3" ry="1.8"/>'); top = 9; half = 7; }
+      else if (key === 'V3') { L('M' + n2(x) + ',' + n2(b) + 'V' + n2(b - bh * 0.55)); tri(x, b - bh * 0.55, 3.2); L('M' + n2(x) + ',' + n2(b - bh * 0.3) + 'l-7,-4'); tri(x - 8, b - bh * 0.3 - 5, 2.6); top = bh * 0.55 + 7; half = 12; }
+      else {
+        L('M' + n2(x) + ',' + n2(b) + 'V' + n2(b - bh));
+        [[0.3, -1], [0.5, 1], [0.7, -1]].forEach(function (q) { L('M' + n2(x) + ',' + n2(b - bh * q[0]) + 'l' + n2(q[1] * 8) + ',-5'); if (key !== 'R7') tri(x + q[1] * 9, b - bh * q[0] - 7, 2.6); });
+        if (key !== 'R7') tri(x, b - bh - 4, 3);
+        if (key === 'R1') p.push('<circle cx="' + n2(x + 3) + '" cy="' + n2(b - bh * 0.45) + '" r="1.4"/>');
+        if (key === 'R5' || key === 'R7') [0.25, 0.45, 0.65].forEach(function (f) { var py = b - bh * f; L('M' + n2(x + 1) + ',' + n2(py) + qL(x + 1, py, x + 5, py + 1, x + 5, py + 6)); });
+        top = bh + 8; half = 13;
+      }
+    }
+    return { svg: '<g fill="none" stroke="' + ink + '" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round">' + p.join('') + '</g>', top: top, half: half };
+  }
+
+  /* The crop's stages on the horizontal axis (Staircase) or the ground line (Roots), the soil surface: each
+     stage's plant (when the buyer wants the drawings) or a small tick, and its words above it, in the footnote
+     voice. g = {xs(doy) the day's middle, base (the soil's y), room, inPlot(box), avoid: [x] (drop lines and
+     frost marks a plant must stand clear of), blocked(x0, x1) (snow on the ground there: Roots), minTop}.
+     Returns {svg (drawn behind the data), labels (drawn on top), foot: [words that found no room]}. */
+  function cropLayer(I, g) {
+    var c = I.crop, out = { back: '', front: '', foot: [] };
+    if (!c || !c.stages) return out;
+    var base = g.base, draw = !!c.drawings, room = g.room, back = [], front = [], PH = g.plantH || PLANT_H;
+    var fit = function (x, half) {
+      // a plant stands clear of drop lines and frost marks (3 u) and of snow on the ground: moved up to 10 u, else not drawn
+      var ok = function (cx) {
+        if (g.avoid.some(function (ax) { return Math.abs(ax - cx) < half + 3; })) return false;
+        return !(g.blocked && g.blocked(cx - half, cx + half));
+      };
+      for (var d = 0; d <= 10; d += 2) { if (ok(x + d)) return x + d; if (d && ok(x - d)) return x - d; }
+      return null;
+    };
+    if (draw && c.ghost) c.ghost.forEach(function (s) {
+      if (s.doy > c.harvest) return;
+      var a0 = plantArt(c.kind, s.key, 0, base, GHOST_INK, PH), x = fit(g.xs(s.doy), a0.half);
+      if (x === null) return;
+      back.push(plantArt(c.kind, s.key, x, base, GHOST_INK, PH).svg);
+    });
+    var st = c.stages.filter(function (s) { return s.doy <= c.harvest; });
+    var heads = st.map(function (s) {
+      var x = g.xs(s.doy), top = 9, at = x;
+      if (draw) {
+        var a0 = plantArt(c.kind, s.key, 0, base, CROP_INK, PH), fx = fit(x, a0.half);
+        if (fx !== null) {
+          var a = plantArt(c.kind, s.key, fx, base, CROP_INK, PH);
+          back.push(a.svg); top = a.top; at = fx;
+          room.add({ b: { x: fx - a.half, y: base - a.top, w: 2 * a.half, h: a.top }, own: 'crop', k: 'mark' });
+        }
+      }
+      if (!draw || at === x && top === 9) {
+        back.push(line(x, base - 1, x, base - 7, CROP_INK, 0.9));
+        room.seg(x, base - 1, x, base - 7, 0.9, 'crop', 'lead');
+      }
+      return { s: s, x: at, top: top };
+    });
+    /* The words: one tidy row over the plants (two or three rows when they crowd), each over its own plant
+       (rowSolve: the words span the plant's x), with a hairline down to it; a stage with no clean spot is said
+       in the foot line, never dropped. */
+    var maxTop = Math.max.apply(null, [9].concat(heads.map(function (h) { return h.top; })));
+    var items = heads.map(function (hd, k) {
+      var s = hd.s, note = c.note && c.note.key === s.key ? c.note.text : '', date = fmtDate(s.date);
+      var w1 = wv(s.label, FACT, date, FACT_D), w2 = note ? W(note, FACT) : 0;
+      return { xs: [hd.x], w: Math.max(w1, w2), k: k, hd: hd, note: note, date: date, own: 'crop:' + k };
+    });
+    // rows 18 apart; a stage with a note ("10 days ahead") is 15 taller, above its words
+    var r0 = base - maxTop - 12, rows = [0, 1, 2, 3, 4].map(function (k) { return r0 - k * 18; }), H = [0.77 * 12, 0.27 * 12];
+    var tall = function (it, b) { return it.note ? { x: b.x, y: b.y - 15, w: b.w, h: b.h + 15 } : b; };
+    var okAt = function (it, b) {
+      var bb = tall(it, b);
+      if (g.minTop !== undefined && bb.y < g.minTop) return false;
+      return g.inPlot(bb) && room.free(bb, it.own, false);
+    }, pairOk = function (A, ba, ra, B, bb, rb) {
+      if (hit(tall(A, ba), tall(B, bb), 8)) return false;
+      // a higher label's hairline down to its plant may not cut a lower label
+      var through = function (x, b) { return x > b.x - 4 && x < b.x + b.w + 4; };
+      if (ra > rb && through(A.xs[0], tall(B, bb))) return false;
+      if (rb > ra && through(B.xs[0], tall(A, ba))) return false;
+      return true;
+    }, bounds = [g.x0 || 62, g.x1 || 1738];
+    // a stage whose words fit nowhere on their own goes to the foot line; then, while the rest can't all fit, the widest one does
+    var live = items.filter(function (it) { return rowSolve([it], rows, okAt, pairOk, H, bounds); }), sol = null, solOf = {};
+    for (;;) {
+      sol = live.length ? rowSolve(live, rows, okAt, pairOk, H, bounds) : [];
+      if (sol) break;
+      var worst = live.slice().sort(function (p, q) { return q.w - p.w; })[0];
+      live = live.filter(function (it) { return it !== worst; });
+    }
+    live.forEach(function (it, j) { solOf[it.k] = sol[j]; });
+    items.forEach(function (it, k) {
+      var hd = it.hd, s = hd.s;
+      if (!solOf[k]) { out.foot.push(s.label + ' ' + it.date + (it.note ? ' (' + it.note.charAt(0).toLowerCase() + it.note.slice(1) + ')' : '')); return; }
+      var x = solOf[k].x, yb = rows[solOf[k].row], cx = x + it.w / 2;
+      var tb = bv(cx, yb, s.label, Object.assign({}, FACT, { anchor: 'middle' }), it.date, FACT_D);
+      room.text(it.note ? { x: x, y: tb.y - 15, w: it.w, h: tb.h + 15 } : tb, it.own);
+      if (it.note) front.push(T(cx, yb - 15, it.note, Object.assign({}, FACT, { fill: X.date, anchor: 'middle' })));
+      front.push(tv(cx, yb, s.label, Object.assign({}, FACT, { anchor: 'middle' }), it.date, FACT_D));
+      var y1 = yb + 0.27 * 12 + 3, y2 = base - hd.top - 3;
+      if (y2 - y1 > 10) front.push(line(hd.x, y1, hd.x, y2, '#C9CDD2', 0.7));
+    });
+    out.back = back.length ? G0('crop') + back.join('') + G1 : '';
+    out.front = front.length ? G0('crop') + front.join('') + G1 : '';
+    return out;
+  }
+  // a crop's foot line: what was counted, from where (the engine writes it; a stage that found no room joins it)
+  function cropFoot(I, more) {
+    var c = I.crop, f = [];
+    if (!c) return f;
+    (c.foot || []).forEach(function (t) { f.push(t); });
+    if (more && more.length) f.push((c.name || 'Crop') + ': ' + more.join(', '));
+    return f;
+  }
+
+  /* Frost marks (input.temp.frost, on by default): the last spring frost and the first fall frost, a tiny
+     mark on the date axis (or ground line) and its words in the footnote voice near it. */
+  function frostLayer(I, g) {
+    var t = I.temp, out = { svg: '', foot: [], xs: [] };
+    if (!t || !t.frost || !t.frost.length) return out;
+    var o = [];
+    t.frost.forEach(function (f, k) {
+      if (!(f.doy >= 0)) return;
+      var x = g.xs(f.doy), own = 'frost:' + k, words = f.key === 'last' ? 'Last frost' : 'First frost', date = fmtDate(f.date);
+      out.xs.push(x);
+      g.room.add({ b: { x: x - 4.5, y: g.base - 9, w: 9, h: 9 }, own: own, k: 'mark' });
+      var cands = [];
+      for (var dy = 14; dy <= 110; dy += 12) cands.push([0, -dy, 'middle'], [7, -dy, 'start'], [-7, -dy, 'end']);
+      if (g.below) for (var dy2 = 20; dy2 <= 80; dy2 += 12) cands.push([0, dy2, 'middle'], [7, dy2, 'start'], [-7, dy2, 'end']);
+      var pick = null;
+      for (var i = 0; i < cands.length && !pick; i++) {
+        var b = bv(x + cands[i][0], g.base + cands[i][1], words, Object.assign({}, FACT, { anchor: cands[i][2] }), date, FACT_D);
+        if (g.inPlot(b) && g.room.free(b, own, false)) pick = { x: x + cands[i][0], y: g.base + cands[i][1], a: cands[i][2], b: b };
+      }
+      o.push(G0(own) + '<path d="M' + n2(x - 4) + ',' + n2(g.base - 8) + 'L' + n2(x + 4) + ',' + n2(g.base - 8) + 'L' + n2(x) + ',' + n2(g.base - 1.5) + 'z" fill="' + X.fact + '"/>');
+      if (pick) { g.room.text(pick.b, own); o.push(tv(pick.x, pick.y, words, Object.assign({}, FACT, { anchor: pick.a }), date, FACT_D)); }
+      else out.foot.push(words + ' ' + date);
+      o.push(G1);
+    });
+    out.svg = o.join('');
+    return out;
+  }
+
+  /* The temperature ribbon (input.temp.ribbon, off by default): each day's high and low as a short upright
+     stroke in a thin band, colored by the day's middle temperature from cool gray-blue through warm stone to
+     rust. A day with no high or low is a gap. b = {x0 (left of day 0), w (a day), y0, h, side 'left' | 'right'}. */
+  var RIBBON_H = 36, RIB_STOPS = [[-20, [128, 149, 168]], [32, [169, 180, 189]], [58, [205, 191, 168]], [78, [200, 154, 114]], [100, [169, 88, 58]]];
+  function ribbonInk(t) {
+    var s = RIB_STOPS, i = 0;
+    if (t <= s[0][0]) i = 0; else if (t >= s[s.length - 1][0]) i = s.length - 2; else while (t > s[i + 1][0]) i++;
+    var a = s[i], b = s[i + 1], f = Math.max(0, Math.min(1, (t - a[0]) / (b[0] - a[0])));
+    var hx = function (v) { return ('0' + Math.round(v).toString(16)).slice(-2); };
+    return '#' + [0, 1, 2].map(function (k) { return hx(a[1][k] + (b[1][k] - a[1][k]) * f); }).join('').toUpperCase();
+  }
+  function ribbon(I, b) {
+    var r = I.temp && I.temp.ribbon;
+    if (!r || !r.scale) return '';
+    var sc = r.scale, yv = function (v) { return b.y0 + (sc.hi - v) * b.h / (sc.hi - sc.lo); }, sw = Math.max(0.8, b.w * 0.78), o = [];
+    for (var i = 0; i < r.hi.length && i < b.n; i++) {
+      var hi = r.hi[i], lo = r.lo[i];
+      if (hi === null || lo === null || hi === undefined || lo === undefined) continue;
+      var x = b.x0 + (i + 0.5) * b.w, ya = yv(Math.min(sc.hi, hi)), yb = yv(Math.max(sc.lo, lo));
+      if (yb - ya < 1.2) { ya -= 0.6; yb += 0.6; }
+      o.push('<line x1="' + n2(x) + '" y1="' + n2(ya) + '" x2="' + n2(x) + '" y2="' + n2(yb) + '" stroke="' + ribbonInk((hi + lo) / 2) + '"/>');
+    }
+    var deg = function (v) { return Math.round(v) + '°'; }, ts = { size: 11, fill: X.date, anchor: b.side === 'right' ? 'start' : 'end' }, tx = b.side === 'right' ? b.x1 + 8 : b.x0 - 12;
+    return G0('ribbon') + '<g stroke-width="' + n2(sw) + '" stroke-linecap="butt">' + o.join('') + '</g>' +
+      T(tx, b.y0 + 8, deg(sc.hi), ts) + T(tx, b.y0 + b.h, deg(sc.lo), ts) + G1;
+  }
+  function ribbonFoot(I) {
+    var r = I.temp && I.temp.ribbon;
+    return r && r.scale ? 'Band: each day’s high and low, ' + r.scale.lo + '°F to ' + r.scale.hi + '°F, gray-blue cold to rust hot' : '';
+  }
+
+  // ======================================================================= R1 "Staircase", A2 clean (Sig, 2026-10-17)
+  /* The typographer's list on one left edge: a two-line header ("32% less than a usual year" over "25.52 in
+     this year · 37.73 in a usual year"), two label voices (a marked day 15 u Medium in ink with its date in
+     gray; the station's facts 12 u Regular, gray footnotes below the line), the snow total in the foot line,
+     no gridline without its number, month totals 14 u tabular in ink with the usual total 11 u under it, the
+     dedication in plain italic. Warm stone (#ECE6DE) behind a usual year, the pale blue ahead of it; the year
+     as large as the name; word-only line ends ("your year", "usual") and the "12.21 in short" bracket.
+     Every year behind the year (input.hist) draws as warm gray threads behind it. */
+  var STAIR_W = 4.6, USUAL_W = 1.5;
   var PRINT_DRY_MIN = 14;
   function printDryMin(I) { var v = +I.printDryMin; return v > 0 && isFinite(v) ? v : PRINT_DRY_MIN; }
-  // wetHead: the biggest rain found no clean spot on the chart, so it is a line in the header, in red
-  function r1(I, wetHead) {
+  function r1(I, wetFoot) {
     var E = model(I), N = E.N, days = E.days, skipped = [];
-    var ML = 120, X0 = 196, X1 = 1680, PW = X1 - X0, w = PW / N;
-    var showN = E.showN;
-    // the chart starts just under the safe margin's top band and the name block gets the room at the foot (panel 4, 2026-10-14)
-    var PTOP = 92, PB = showN ? 742 : 790;
+    var hasRib = !!(I.temp && I.temp.ribbon && I.temp.ribbon.scale);
+    var X0 = 196, X1 = 1590, PTOP = 104, MB = 716, PB = hasRib ? MB - 52 : MB, w = (X1 - X0) / N;
     var xs = function (i) { return X0 + i * w; };
     var lastCum = function (i) { for (var k = i; k >= 0; k--) if (E.cum[k] !== null) return E.cum[k]; return 0; };
     var recs = recordPoints(E, I.records);
+    var hist = I.hist && I.hist.threads && I.hist.threads.length ? I.hist : null;
     var room = new Room(), o = [open(I, E)];
-    // month names tucked under the axis, so they belong to the chart; the dates' row (when a date can't sit on the line) under them
-    var MY = PB + 42, RY = MY + (showN ? 80 : 34);
+    var full = !E.preview || E.n >= N;
 
-    /* ---- the title block, bottom left (panel 4, 2026-10-14). With a name, the name is the biggest words on the
-       sheet (78 u, shrinking to fit), the place and year on one line under it, the buyer's line under that.
-       With no name, the place at 50 u over the year at 100 u. A logo goes first, at the left margin, centred
-       on the block, and the words start after it (TX). */
-    var title = [], lg = logoOf(I, 'r1'), TX = lg ? ML + lg.w + LOGO_GAP : ML;
-    // what "usual" means, wherever the print says "a usual year": a footnote, so it is in the foot line, not the header (panel 4)
-    var small = smallLine(E, ML, 1500, [E.cmp && E.ovNote ? E.ovNote : '']);
-    var lift = small && small.lines > 1 ? FOOT_GAP : 0;
-    if (small) small.boxes.forEach(function (b) { room.text(b, 'foot'); });
-    var lockW = 1530 - TX, lockTop, lockBase;
-    var dedSt = function (maxW) { return { fam: SERIF, it: true, w: 400, size: fit(E.dedication, { fam: SERIF, it: true, w: 400, size: 25 }, maxW, 14), fill: C.mute }; };
-    if (E.name) {
-      var nameSt = { fam: SERIF, w: 500, size: fit(E.name, { fam: SERIF, w: 500, size: 78 }, lockW, 40) };
-      var nY = E.dedication ? 1006 : 1022, pyY = nY + 50;
-      title.push([TX - 2, nY, E.name, nameSt]);
-      // place and year at 34 u: always smaller than the name, whatever its length
-      var pyS = { fam: SERIF, w: 400, size: 34 }, yyS = { fam: SERIF, w: 600, size: 34 }, yw = W(String(E.year), yyS) + 18;
-      pyS.size = yyS.size = Math.min(34, nameSt.size - 8, fit(E.place, pyS, lockW - yw, 22));
-      title.push([TX, pyY, E.place, pyS]);
-      title.push([TX + W(E.place, pyS) + 18, pyY, String(E.year), yyS]);
-      if (E.dedication) title.push([TX, pyY + 36, E.dedication, dedSt(lockW)]);
-      lockTop = nY - asc(E.name) * nameSt.size; lockBase = pyY;
-    } else {
-      var placeSt = { fam: SERIF, w: 400, size: fit(E.place, { fam: SERIF, w: 400, size: 50 }, lockW, 24) }, yearSt = { fam: SERIF, w: 600, size: 100 };
-      title.push([TX, 994, E.place, placeSt]);
-      title.push([TX - 4, 1090, String(E.year), yearSt]);
-      var dx = TX + W(String(E.year), yearSt) + 28;
-      if (E.dedication) title.push([dx, 1086, E.dedication, dedSt(1530 - dx)]);
-      lockTop = 994 - asc(E.place) * placeSt.size; lockBase = 1090;
-    }
-    // a foot line that took two lines lifts the block by one
-    if (lift) { title.forEach(function (t) { t[1] -= lift; }); lockTop -= lift; lockBase -= lift; }
-    title.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'title'); });
-    if (lg) {
-      lg.x = ML; lg.y = n2((lockTop + lockBase) / 2 - lg.h / 2);
-      room.add({ b: { x: lg.x, y: lg.y, w: lg.w, h: lg.h }, own: 'logo', k: 'mark' });
-    }
-    var qb = qrBox(I.qr, 1690, 1100);
-    if (qb) room.add({ b: qb, own: 'qr', k: 'mark' });
-
-    // ---- month labels, and with normals on, each month's total over its normal
-    var months = [];
-    E.starts.forEach(function (b, m) {
-      var cx = (xs(b) + xs(E.ends[m])) / 2;
-      months.push([cx, MY, monCap(m), { w: 500, size: 17, ls: 0.16, fill: C.ink, anchor: 'middle' }]);
-      if (showN && E.monthHas[m]) {
-        months.push([cx, MY + 26, rainNum(E.month[m], 'tot') + (m === 0 ? ' ' + rU() : ''), { w: 500, size: 19, fill: C.rain, anchor: 'middle' }]);
-        months.push([cx, MY + 48, (m === 0 ? tr('usual') + ' ' : '') + rainNum(E.mN[m], 'tot'), { size: 15, fill: C.mute, anchor: 'middle' }]);
-      }
-    });
-    months.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'months'); });
-    room.seg(X0, PB, X1, PB, 0.9 * PT, 'axis', 'axis');
-    E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) room.seg(xs(b), PB, xs(b), PB + 8, 0.75 * PT, 'axis', 'axis'); });
-
-    // snow is drawn above the line only (Sig, 2026-10-13): its steps on the staircase, in ice blue; nothing under the axis
-
-    /* ---- the dry stretch: a bracket under the months, its words under it. On the print a week without rain is
-       not news in most of the country: it is marked from printDryMin days (14 unless the page asks otherwise;
-       panel 4, 2026-10-14). The page's own stats keep the engine's rule. */
-    var dry = null, extraLines = [];
-    if (E.dry && E.dry.len >= printDryMin(I)) {
-      var da = xs(E.dry.s), db = xs(E.dry.e + 1);
-      dry = { a: da, b: db, text: E.dry.len + (LOC.fr ? ' jours secs' : ' dry days'), st: { size: 17, fill: C.mute, it: true } };
-      room.seg(da, RY - 24, da, RY - 18, 0.9, 'dry', 'lead'); room.seg(da, RY - 18, db, RY - 18, 0.9, 'dry', 'lead'); room.seg(db, RY - 24, db, RY - 18, 0.9, 'dry', 'lead');
-    }
-
-    // ---- the reader's dates: a dot on the line and a drop line to the axis; the words go on the line beside the dot (placed below)
-    var mst = { size: 21, w: 500, fill: C.ink };
-    var marks = E.markers.map(function (mk, k) { return { k: k, i: mk.i, x: xs(mk.i + 0.5), label: mk.label }; });
-    var dateRows = [RY, RY + 26, RY + 52];
-    var placedDates = [], labelOf = {};
-    // ---- the header: verdict and the small facts, upper left inside the plot (the early year sits low there)
+    // ---- the header, upper left on the one left edge: the verdict, then the key row
+    var hs = { fam: SERIF, w: 600, size: 30, fill: X.ink };
     var head = E.verdict || (LOC.fr ? E.TU + ' de ' : LOC.mm ? E.TU + ' of ' : E.T + ' inches of ') + E.liquid + E.soFar;
-    var facts = [];
-    if (E.snowText) facts.push(E.snowText + ' (' + E.snowKey + ')');
-    facts.push(E.daysText);
-    // what "usual" means is in the foot line (panel 4, 2026-10-14)
-    var factLine = facts.join('  ·  ');
-    // the headline stays under the name, whatever the name's length (the name is the biggest words on the sheet)
-    var hs = { fam: SERIF, w: 600, size: E.name ? Math.min(52, nameSt.size - 4) : 52 }, fs = { size: 21, fill: C.mute };
-    var yN = { fam: SERIF, w: 600, size: 40, fill: C.rain }, yL = { size: 19, w: 500, fill: C.rain };
-    var uN = { fam: SERIF, w: 400, size: 32, fill: C.mute }, uL = { size: 19, fill: C.mute };
-    var lineSt = { size: 19, w: 500, fill: C.rec };
-    var yLab = tr(E.full ? 'your year, rain and melted snow' : E.snowState === 'none' ? 'your year, rain' : 'your year') + E.soFar;
-    var uLab = tr(E.preview ? 'a usual year by then' : E.unrecorded ? 'a usual year, same days' : 'a usual year');
-    var nU = E.cmp ? rainAmt(E.normalRec, 'tot') : '';
-    // the key row keys two lines; with nothing to compare, the headline already says the total, so it goes (no total said twice)
-    var keyW = E.cmp ? 46 + W(E.TU, yN) + 10 + W(yLab, yL) + 40 + 46 + W(nU, uN) + 10 + W(uLab, uL) : 0;
-    var hLines = recs.lines.concat(extraLines).concat(wetHead ? [E.wetText] : []);
-    var hw = Math.max(W(head, hs), W(factLine, fs), keyW, Math.max.apply(null, [0].concat(hLines.map(function (t) { return W(t, lineSt); }))));
-    var keyH = E.cmp ? 62 : 6;   // facts baseline: 102 under the headline with the key row, 46 without
-    var hh = 62 + keyH + 56 + (hLines.length ? 28 + (hLines.length - 1) * 28 : 0) + 4;
-    function header(HX, TOP) {
-      var HY = TOP + 62, KY = HY + keyH, kx = HX, p = [T(HX, HY, head, hs)];
-      if (E.cmp) {
-        p.push(line(kx, KY - 12, kx + 34, KY - 12, C.rain, 4.6)); kx += 46;
-        p.push(T(kx, KY, E.TU, yN)); kx += W(E.TU, yN) + 10;
-        p.push(T(kx, KY, yLab, yL)); kx += W(yLab, yL);
-        kx += 40;
-        p.push('<path d="M' + n2(kx) + ',' + (KY - 12) + 'h34" stroke="' + C.mute + '" stroke-width="2.2" stroke-dasharray="9 6"/>'); kx += 46;
-        p.push(T(kx, KY, nU, uN)); kx += W(nU, uN) + 10;
-        p.push(T(kx, KY, uLab, uL));
-      }
-      p.push(T(HX, KY + 40, factLine, fs));
-      hLines.forEach(function (t, k) { p.push(T(HX, KY + 70 + k * 28, t, wetHead && t === E.wetText ? Object.assign({}, lineSt, { fill: C.accent }) : lineSt)); });
-      return p.join('');
-    }
-
-    // ---- the scale, and where the header can sit without the year's lines running through it
-    var top = Math.max(E.total, E.cmp ? E.normalRec : 0, 1);
-    /* metric: the steps are picked in mm (a round 50, 100 or 200 mm), then worked in inches like the rest */
-    var K = LOC.mm ? MM : 1, topK = top * K;
-    var stepK = LOC.mm ? (topK > 2000 ? 500 : topK > 1000 ? 200 : topK > 400 ? 100 : topK > 150 ? 50 : topK > 60 ? 20 : 10) : (top > 50 ? 10 : top > 12 ? 5 : top > 5 ? 2 : 1);
-    var step = stepK / K;
-    var dom0 = Math.ceil(topK / stepK - 1e-6) * stepK / K;
-    function geom(dom) {
-      var y = function (v) { return PB - v * (PB - PTOP) / dom; }, segs = [], prev = 0, pen = false;
-      var addH = function (x1, x2, yy) { var L = segs[segs.length - 1]; if (L && L[1] === yy && L[3] === yy && Math.abs(L[2] - x1) < 1e-6) L[2] = x2; else segs.push([x1, yy, x2, yy]); };
-      days.forEach(function (x, i) {
-        if (E.P[i] === null) { pen = false; return; }
-        var c = E.cum[i];
-        if (!pen || c !== prev) segs.push([xs(i), y(prev), xs(i), y(c)]);
-        pen = true;
-        addH(xs(i), xs(i + 1), y(c));
-        prev = c;
-      });
-      var nseg = [];
-      if (E.cmp) { var px = X0, py = PB; days.forEach(function (x, i) { var qx = xs(i + 1), qy = y(E.ncum[i]); nseg.push([px, py, qx, qy]); px = qx; py = qy; }); }
-      var dots = marks.map(function (mk) { return { x: mk.x, y: y(lastCum(mk.i)) }; });
-      var rings = recs.pts.map(function (r) { return { x: xs(r.i + 0.5), y: y(lastCum(r.i)) }; });
-      return { dom: dom, y: y, stair: segs, ncum: nseg, dots: dots, rings: rings };
-    }
-    function headClear(g, b) {
-      var bad = function (s) { return segRect(s, b, 8); };
-      if (g.stair.some(bad) || g.ncum.some(bad)) return false;
-      if (g.dots.some(function (d) { return segRect([d.x, d.y, d.x, PB], b, 8); })) return false;
-      if (g.rings.some(function (d) { return hit({ x: d.x - 6, y: d.y - 6, w: 12, h: 12 }, b, 6); })) return false;
-      return true;
-    }
-    var UL = { x: X0 + 28, top: PTOP }, LR = { x: X1 - 14 - hw, top: PB - 14 - hh + 4 };
-    var hbox = function (p) { return { x: p.x - 14, y: p.top - 4, w: hw + 28, h: hh }; };
-    var g = null, hp = null;
-    // upper left (Sig's rule), with room made above the line if it takes a little; then lower right; then as much room as it takes
-    for (var dm = dom0; dm <= dom0 * 1.5 + 1e-9 && !hp; dm += step) { var g1 = geom(dm); if (headClear(g1, hbox(UL))) { g = g1; hp = UL; } }
-    if (!hp && LR.x > X0 + 40) { var g2 = geom(dom0); if (headClear(g2, hbox(LR))) { g = g2; hp = LR; } }
-    for (var dm2 = dom0 * 1.5 + step; !hp && dm2 <= dom0 * 6; dm2 += step) { var g3 = geom(dm2); if (headClear(g3, hbox(UL))) { g = g3; hp = UL; } }
-    if (!hp) { g = geom(dom0); hp = UL; }
-    var dom = g.dom, y = g.y, headBox = hbox(hp);
+    var HY = PTOP + 18, KY = HY + 32;
+    var ks = { size: 15, w: 500, fill: C.rain }, us = { size: 15, w: 400, fill: C.mute }, sep = { size: 15, fill: C.soft };
+    var yTxt = E.TU + ' ' + tr(E.preview ? 'so far' : 'this year'), uTxt = E.cmp ? rainAmt(E.normalRec, 'tot') + ' ' + tr(E.preview ? 'a usual year by then' : E.unrecorded ? 'a usual year, same days' : 'a usual year') : '';
+    // with nothing to compare the headline already says the total: no key row (no total said twice)
+    var keyW = E.cmp ? 34 + W(yTxt, ks) + 36 + 34 + W(uTxt, us) : 0;
+    if (!E.cmp) KY = HY;
+    var histNote = hist && hist.note ? hist.note : '';
+    // the biggest rain with no clean spot on the chart is a red line in the header (never dropped)
+    var wetHeadY = wetFoot && E.wet ? KY + 24 : 0, NY = (wetHeadY || KY) + 22;
+    var HB = (histNote ? NY : wetHeadY || KY) + 6;
+    var wetHeadW = wetHeadY ? wv(colon(E.wetLabel) + rainAmt(E.wet.p, 'day'), { size: 15, w: 500 }, fmtDate(E.wet.date), { size: 15, w: 400 }) : 0;
+    var headBox = { x: X0 - 4, y: HY - 26, w: Math.max(W(head, hs), keyW, histNote ? W(histNote, FACT) : 0, wetHeadW) + 12, h: HB - HY + 30 };
     room.add({ b: headBox, own: 'head', k: 'mark' });
 
-    /* ---- everything the scale puts on the sheet, into the room. A gridline the
-       header box covers where it leaves the axis has no number either (a number
-       beside the headline reads as part of it); the unit goes on the highest
-       number still drawn. */
-    var tickVals = [];
-    for (var v = 0; v <= dom + 1e-9; v += step) {
-      var gy = y(v);
-      if (v > 0 && headBox.x < X0 + 40 && gy >= headBox.y - 8 && gy <= headBox.y + headBox.h + 8) continue;
-      tickVals.push(v);
+    // ---- the name block, the year as large as the name, one left edge (a logo, if any, first)
+    var NB = 905, title = [], lg = logoOf(I, 'r1'), TX = lg ? X0 + lg.w + LOGO_GAP : X0;
+    var nameSize = 64;
+    if (E.name) {
+      var nmS = { fam: SERIF, w: 500, size: 64, fill: X.ink }, yrS = { fam: SERIF, w: 400, size: 64, fill: X.ink }, gapX = 26;
+      while (nmS.size > 40 && W(E.name, nmS) + gapX + W(String(E.year), nmS) > 1370 - (TX - X0)) { nmS.size--; yrS.size = nmS.size; }
+      nameSize = nmS.size;
+      title.push([TX - 2, NB, E.name, nmS]);
+      title.push([TX - 2 + W(E.name, nmS) + gapX, NB, String(E.year), yrS]);
+    } else title.push([TX - 2, NB, String(E.year), { fam: SERIF, w: 400, size: 64, fill: X.ink }]);
+    var plS = { fam: SERIF, w: 400, size: fit(E.place, { fam: SERIF, w: 400, size: 22 }, 1370 - (TX - X0), 16), fill: X.ink };
+    title.push([TX, NB + 40, E.place, plS]);
+    var dedSize = E.dedication ? fit(E.dedication, { fam: SERIF, it: true, w: 400, size: 17 }, 1370 - (TX - X0), 13) : 0;
+    title.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'title'); });
+    if (E.dedication) room.text(box(TX, NB + 70, E.dedication, { fam: SERIF, it: true, size: dedSize }), 'title');
+    if (lg) {
+      var lockTop = NB - 0.77 * nameSize, lockBase = NB + 40;
+      lg.x = X0; lg.y = n2((lockTop + lockBase) / 2 - lg.h / 2);
+      room.add({ b: { x: lg.x, y: lg.y, w: lg.w, h: lg.h }, own: 'logo', k: 'mark' });
     }
-    var topTick = tickVals[tickVals.length - 1];
-    var tickNum = function (v) { return LOC.mm ? num(Math.round(v * MM), 0) : String(+v.toFixed(6)); };
-    var tickText = function (v) { return v === topTick && (v > 0 || tickVals.length === 1) ? tickNum(v) + ' ' + rU() : tickNum(v); };
-    for (v = 0; v <= dom + 1e-9; v += step) if (v > 0) room.seg(X0, y(v), X1, y(v), 0.7, 'axis', 'soft');
-    tickVals.forEach(function (v) { room.text(box(X0 - 14, y(v) + 5, tickText(v), { size: 15, anchor: 'end' }), 'axis'); });
-    g.stair.forEach(function (s) { room.add({ s: s, sw: STAIR_W, own: 'data', k: 'data' }); });
-    g.ncum.forEach(function (s) { room.add({ s: s, sw: USUAL_W, own: 'data', k: 'usual' }); });
-    // the preview's "so far" line stops under the header rather than run through it
-    var pvTop = E.preview && E.n < N && xs(E.n) > headBox.x - 6 && xs(E.n) < headBox.x + headBox.w + 6 ? headBox.y + headBox.h + 6 : PTOP;
-    if (E.preview && E.n < N) room.seg(xs(E.n), pvTop, xs(E.n), PB, 1, 'data', 'usual');
-    var wx = -1, wc0 = 0, wc1 = 0;
-    if (E.wi >= 0) { wx = xs(E.wi); wc1 = E.cum[E.wi]; wc0 = wc1 - E.wet.p; room.seg(wx, y(wc0), wx, y(wc1), 4.4, 'wet', 'data'); }
-    var ringAt = g.rings;
-    ringAt.forEach(function (rg, k) { room.add({ b: { x: rg.x - 6, y: rg.y - 6, w: 12, h: 12 }, own: 'rec:' + k, k: 'mark' }); });
-    // each date's dot, and its drop line from under the dot (and under any ring beside it) to the axis
-    marks.forEach(function (mk, k) {
-      mk.y = g.dots[k].y; mk.y0 = mk.y + 5;
-      // under its own dot, and under any dot or ring beside it (dates a day or two apart sit almost on each other)
-      for (var pass = 0; pass < 3; pass++) {
-        g.dots.forEach(function (d, j) { if (j !== k && Math.abs(d.x - mk.x) < 7 && d.y + 6.5 > mk.y0) mk.y0 = d.y + 7; });
-        ringAt.forEach(function (rg) { if (Math.abs(rg.x - mk.x) < 7.5 && rg.y + 7 > mk.y0) mk.y0 = rg.y + 7.5; });
-      }
-      room.add({ b: { x: mk.x - 5.3, y: mk.y - 5.3, w: 10.6, h: 10.6 }, own: 'mark:' + k, k: 'mark' });
-      if (mk.y0 < PB) room.seg(mk.x, mk.y0, mk.x, PB, 0.75, 'mark:' + k, 'lead');
-    });
-    var inPlot = function (b) { return b.x > X0 + 4 && b.x + b.w < X1 && b.y + b.h < PB - 6 && b.y > PTOP - 20; };
+    var QR_R = 1690, QR_B = 1081, qb = qrBox(I.qr, QR_R, QR_B);
+    if (qb) room.add({ b: qb, own: 'qr', k: 'mark' });
 
-    // ---- the biggest rain, in words, close to its red riser
-    var wetAt = null;
-    if (E.wi >= 0 && !wetHead) {
-      var wst = { w: 500, size: 23, fill: C.accent }, wmy = (y(wc0) + y(wc1)) / 2, s = E.wetText;
-      var wc = [];
-      [34, 64, 94, 124, 154].forEach(function (dy) { wc.push({ x: wx + 16, y: y(wc0) + dy, a: 'start' }); });
-      [-24, -54, -84].forEach(function (dy) { wc.push({ x: wx - 16, y: y(wc1) + dy, a: 'end' }); });
-      [34, 64, 94].forEach(function (dy) { wc.push({ x: wx - 16, y: y(wc0) + dy, a: 'end' }); });
-      wc = wc.concat(spots(wx, wmy, [], [16, 50, 100, 170]).map(function (c) { return c; }));
-      wetAt = choose(wc, function (c) {
-        var b = box(c.x, c.y, s, Object.assign({}, wst, { anchor: c.a }));
-        if (!inPlot(b)) return 0;
-        if (!room.free(b, 'wet', false)) return 0;
-        // the leader leaves the riser from its side, or from its top or foot (a date's drop line may run beside it)
-        var sgn = c.a === 'start' ? 1 : -1, ey = b.y + b.h / 2, ex = c.x - 4 * sgn;
-        var L = [[wx + 4 * sgn, wmy], [wx, y(wc1) - 7], [wx, y(wc0) + 7]].map(function (p) { return [p[0], p[1], ex, ey]; })
-          // and never through a remarkable day's ring or a reader's dot (either can sit at the top of the riser, the same day)
-          .filter(function (l) { return sgn * (l[2] - l[0]) >= 0 && room.clear(l, 'wet', 2) && !ringAt.concat(g.dots).some(function (rg) { return segRect(l, { x: rg.x - 6, y: rg.y - 6, w: 12, h: 12 }, 1); }); })[0];
-        if (!L) return 0;
-        c.b = b; c.L = L;
-        return room.free(b, 'wet', true) ? 2 : 1;
+    // ---- the scale: every labelled line clear of the header, no gridline without its number
+    var top = Math.max(E.total, E.cmp ? E.normalRec : 0, 1);
+    if (hist) hist.threads.forEach(function (h) { top = Math.max(top, h.cum[Math.min(h.cum.length, N) - 1] || 0); });
+    var K = LOC.mm ? MM : 1, topK = top * K;
+    var stepK = LOC.mm ? (topK > 2000 ? 500 : topK > 1000 ? 200 : topK > 400 ? 100 : topK > 150 ? 50 : topK > 60 ? 20 : 10) : (top > 60 ? 10 : top > 12 ? 5 : top > 5 ? 2 : 1);
+    var step = stepK / K, dom = Math.ceil(topK / stepK - 1e-6) * stepK / K;
+    var y = function (v) { return PB - v * (PB - PTOP) / dom; };
+    // the year and the usual year keep out of the header: the scale grows a step at a time until they do
+    var crossHead = function () {
+      var hb = { x: headBox.x, y: headBox.y, w: headBox.w, h: headBox.h }, bad = false, prev = 0;
+      days.forEach(function (x, i) {
+        if (bad || xs(i) > hb.x + hb.w + 8) return;
+        var c = E.cum[i] === null ? prev : E.cum[i];
+        if (y(Math.max(c, E.cmp ? E.ncum[i] : 0)) < hb.y + hb.h + 8) bad = true;
+        prev = c;
       });
-      if (wetAt) { room.text(wetAt.b, 'wet'); room.seg(wetAt.L[0], wetAt.L[1], wetAt.L[2], wetAt.L[3], 1, 'wet', 'lead'); }
-      else return r1(I, true);
-    }
+      return bad;
+    };
+    for (var grow = 0; grow < 40 && crossHead(); grow++) dom += step;
+    var ticks = [];
+    for (var v = 0; v <= dom + 1e-9; v += step) if (v === 0 || y(v) > HB + 18) ticks.push(v);
+    var topTick = ticks[ticks.length - 1];
+    var tickNum = function (v) { return LOC.mm ? num(Math.round(v * MM), 0) : String(+v.toFixed(6)); };
+    ticks.forEach(function (v) { if (v > 0) room.seg(X0, y(v), X1, y(v), 0.7, 'axis', 'soft'); room.text(box(X0 - 12, y(v) + 4.5, tickNum(v), { size: 13, anchor: 'end' }), 'axis'); });
+    room.seg(X0, PB, X1, PB, 0.9 * PT, 'axis', 'axis');
+    E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) room.seg(xs(b), PB, xs(b), PB + 7, 0.75 * PT, 'axis', 'axis'); });
 
-    /* ---- the reader's dates, on the line (panel 4, 2026-10-14: a marked day is the second thing the eye
-       finds after the name). The words sit beside the dot in ink at 21 u, before the remarkable days take
-       their spots; a date with no clean spot on the chart goes in a row under the months, never dropped. */
-    var rowMarks = [];
-    marks.forEach(function (mk, k) {
-      if (!mk.label) return;
-      var own = 'mark:' + k;
-      var first = [[14, -16, 'start'], [-14, -16, 'end'], [14, 34, 'start'], [-14, 34, 'end'], [16, -44, 'start'], [-16, -44, 'end'], [16, 62, 'start'], [-16, 62, 'end']];
-      var pick = choose(spots(mk.x, mk.y, first, [14, 40, 80, 130]), function (c) {
-        var b = box(c.x, c.y, mk.label, Object.assign({}, mst, { anchor: c.a }));
+    // ---- the year, as segments for the room and as a path
+    var d1 = '', prev = 0, pen = false;
+    days.forEach(function (x, i) {
+      if (E.P[i] === null) { pen = false; return; }
+      var c = E.cum[i];
+      if (!pen) { d1 += 'M' + n2(xs(i)) + ',' + n2(y(prev)); pen = true; }
+      if (c !== prev) room.seg(xs(i), y(prev), xs(i), y(c), STAIR_W, 'data', 'data');
+      room.seg(xs(i), y(c), xs(i + 1), y(c), STAIR_W, 'data', 'data');
+      d1 += 'L' + n2(xs(i)) + ',' + n2(y(c)) + 'L' + n2(xs(i + 1)) + ',' + n2(y(c));
+      prev = c;
+    });
+    var np = '';
+    if (E.cmp) {
+      var px = X0, py = PB; np = 'M' + X0 + ',' + PB;
+      days.forEach(function (x, i) { var qx = xs(i + 1), qy = y(E.ncum[i]); room.seg(px, py, qx, qy, USUAL_W, 'data', 'usual'); np += 'L' + n2(qx) + ',' + n2(qy); px = qx; py = qy; });
+    }
+    var pvTop = PTOP;
+    if (E.preview && E.n < N) { if (xs(E.n) > headBox.x - 6 && xs(E.n) < headBox.x + headBox.w + 6) pvTop = headBox.y + headBox.h + 6; room.seg(xs(E.n), pvTop, xs(E.n), PB, 1, 'data', 'usual'); }
+    var inPlot = function (b) { return b.x > X0 + 4 && b.x + b.w < X1 - 2 && b.y + b.h < PB - 6 && b.y > HB + 4; };
+    var inPlotLow = function (b) { return b.x > X0 + 4 && b.x + b.w < X1 - 2 && b.y + b.h < PB - 2 && b.y > HB + 4; };
+
+    // ---- marked days: the only dark labels, above the line, each with a drop line to the axis
+    var mO = { size: 15, w: 500, fill: X.ink }, mD = { size: 15, w: 400, fill: X.date };
+    var marks = E.markers.map(function (mk, k) { return { k: k, i: mk.i, x: xs(mk.i + 0.5), y: y(lastCum(mk.i)), words: mk.words, date: mk.date, label: mk.label }; });
+    var rings = recs.pts.map(function (r, k) { var rg = { x: xs(r.i + 0.5), y: y(lastCum(r.i)) }; room.add({ b: { x: rg.x - 5, y: rg.y - 5, w: 10, h: 10 }, own: 'rec:' + k, k: 'mark' }); return rg; });
+    marks.forEach(function (mk) {
+      mk.y0 = mk.y + 5;
+      for (var pass = 0; pass < 3; pass++) {
+        marks.forEach(function (d) { if (d !== mk && Math.abs(d.x - mk.x) < 7 && d.y + 6.5 > mk.y0) mk.y0 = d.y + 7; });
+        rings.forEach(function (rg) { if (Math.abs(rg.x - mk.x) < 7.5 && rg.y + 7 > mk.y0) mk.y0 = rg.y + 7.5; });
+      }
+      room.add({ b: { x: mk.x - 5, y: mk.y - 5, w: 10, h: 10 }, own: 'mark:' + mk.k, k: 'mark' });
+      if (mk.y0 < PB) room.seg(mk.x, mk.y0, mk.x, PB, 0.75, 'mark:' + mk.k, 'lead');
+    });
+    var wx = -1, wc0 = 0, wc1 = 0;
+    if (E.wi >= 0) { wx = xs(E.wi); wc1 = E.cum[E.wi]; wc0 = wc1 - E.wet.p; room.seg(wx, y(wc0), wx, y(wc1), STAIR_W, 'wet', 'data'); }
+
+    // ---- frost marks and the crop on the axis, the soil surface (before the words that float, so those keep off them)
+    var frost = frostLayer(I, { xs: function (d) { return xs(d + 0.5); }, base: PB, room: room, inPlot: inPlotLow });
+    var crop = cropLayer(I, { xs: function (d) { return xs(d + 0.5); }, base: PB, room: room, inPlot: inPlotLow, minTop: HB + 4, x0: X0, x1: X1,
+      avoid: marks.map(function (mk) { return mk.x; }).concat(frost.xs) });
+
+    function placeNear(ax, ay, words, o1, date, dO, own, cands, lim) {
+      return choose(cands.map(function (c) { return { x: ax + c[0], y: ay + c[1], a: c[2] }; }).concat(spots(ax, ay, [], [12, 30, 60, 100]).filter(function (c) { return c.y < ay + (lim.below ? 400 : 0); })), function (c) {
+        var b = bv(c.x, c.y, words, Object.assign({}, o1, { anchor: c.a }), date, dO);
         if (!inPlot(b)) return 0;
-        var L = [mk.x, mk.y, c.x + (c.a === 'start' ? -3 : 3), b.y + b.h / 2];
-        // close to its dot: a word far from its date reads as someone else's
-        if (Math.hypot(L[2] - L[0], L[3] - L[1]) > 150) return 0;
+        if (lim.above && b.y + b.h > ay - 2 && Math.abs(c.x - ax) < 12) return 0;
+        if (lim.rg && b.y < ay + 6) return 0;
+        var L = [ax, ay, c.x + (c.a === 'start' ? -3 : 3), b.y + b.h / 2];
+        if (Math.hypot(L[2] - L[0], L[3] - L[1]) > lim.d) return 0;
         if (!room.clear(L, own, 7)) return 0;
+        // the biggest rain's leader leaves its riser clear of every dot and ring (a date on that day sits on the riser)
+        if (lim.dots && lim.dots.some(function (d) { return segRect(L, { x: d.x - 5.5, y: d.y - 5.5, w: 11, h: 11 }, 1); })) return 0;
         if (!room.free(b, own, false)) return 0;
         c.b = b; c.L = L;
         return room.free(b, own, true) ? 2 : 1;
       });
+    }
+    // the biggest rain first (it sits close to its riser), red, a marked day's voice
+    var wetAt = null, wO = { size: 15, w: 500, fill: X.red }, wetWords = colon(E.wetLabel) + (E.wet ? rainAmt(E.wet.p, 'day') : '');
+    if (wx >= 0 && !wetFoot) {
+      var wmy = (y(wc0) + y(wc1)) / 2;
+      wetAt = placeNear(wx, wmy, wetWords, wO, fmtDate(E.wet.date), mD, 'wet', [[-12, -22, 'end'], [-12, -46, 'end'], [-14, 0, 'end'], [-14, -70, 'end'], [12, 40, 'start']], { d: 140, dots: marks.concat(rings) });
+      if (wetAt) { room.text(wetAt.b, 'wet'); room.seg(wetAt.L[0], wetAt.L[1], wetAt.L[2], wetAt.L[3], 0.8, 'wet', 'lead'); }
+      else return r1(I, true);
+    }
+    // the reader's days: on the line where there is room, else in a row under the months, never dropped
+    var rowMarks = [], labelOf = {};
+    marks.forEach(function (mk) {
+      if (!mk.label) return;
+      var own = 'mark:' + mk.k;
+      var pick = placeNear(mk.x, mk.y, mk.words, mO, mk.date, mD, own,
+        [[-12, -16, 'end'], [12, -16, 'start'], [-14, -40, 'end'], [14, -40, 'start'], [-14, -64, 'end'], [14, -64, 'start'], [-16, -90, 'end'], [16, -90, 'start']], { d: 120, above: true });
       if (!pick) { rowMarks.push(mk); return; }
       room.text(pick.b, own);
-      if (Math.hypot(pick.L[2] - pick.L[0], pick.L[3] - pick.L[1]) > 16) room.seg(pick.L[0], pick.L[1], pick.L[2], pick.L[3], 0.9, own, 'lead');
-      else pick.L = null;
-      labelOf[k] = { line: true, x: pick.x, y: pick.y, a: pick.a, L: pick.L, it: { label: mk.label } };
+      if (Math.hypot(pick.L[2] - pick.L[0], pick.L[3] - pick.L[1]) > 16) room.seg(pick.L[0], pick.L[1], pick.L[2], pick.L[3], 0.8, own, 'lead'); else pick.L = null;
+      labelOf[mk.k] = { line: true, at: pick };
     });
-    // the rest in a row under the months, over a tick under the axis
+
+    // ---- the month row: labels 11 u tracked, totals 14 u tabular ink, the usual total 11 u light
+    var months = [], tab = function (s) { return s.replace('lining-nums', 'tabular-nums lining-nums'); };
+    E.starts.forEach(function (b, m) {
+      var cx = (xs(b) + xs(E.ends[m])) / 2;
+      months.push([cx, MB + 26, monCap(m), { w: 500, size: 11, ls: 0.08, fill: X.date, anchor: 'middle' }]);
+      if (E.monthHas[m]) months.push([cx, MB + 46, rainNum(E.month[m], 'tot'), { size: 14, fill: X.ink, anchor: 'middle' }]);
+      if (E.showN) months.push([cx, MB + 63, rainNum(E.mN[m], 'tot'), { size: 11, fill: X.usualM, anchor: 'middle' }]);
+    });
+    months.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'months'); });
+    if (hasRib) room.add({ b: { x: X0 - 4, y: PB + 10, w: X1 - X0 + 48, h: RIBBON_H + 4 }, own: 'ribbon', k: 'mark' });
+    // the dry stretch, a footnote under the months
+    var dry = null, footFacts = [];
+    if (E.dry && E.dry.len >= printDryMin(I)) {
+      var da = xs(E.dry.s), db = xs(E.dry.e + 1), ry = MB + 78;
+      dry = { a: da, b: db, ry: ry, text: E.dry.len + (LOC.fr ? ' jours secs' : ' dry days') };
+      room.seg(da, ry, db, ry + 5, 0.7, 'dry', 'lead');
+      var dbx = box((da + db) / 2, ry + 20, dry.text, { size: 12, anchor: 'middle' });
+      if (room.free(dbx, 'dry', false) && dbx.x > X0 - 20 && dbx.x + dbx.w < 1770) room.text(dbx, 'dry');
+      else { dry.words = false; footFacts.push(LOC.fr ? 'Plus longue période sèche : ' + E.dry.len + ' jours, ' + E.dry.range : 'Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range); }
+    }
+    // marked days with no room on the line: a row under the months, over a tick under the axis
+    var placedDates = [];
     if (rowMarks.length) {
-      var rowSt = Object.assign({}, mst, { size: 19 });
-      placedDates = placeDates(rowMarks, dateRows, function (s) { return W(s, rowSt); },
-        function (it, b) { return b.y + b.h < (small ? small.box.y - 6 : 1138) && room.free(b, 'mark:' + it.ids[0], false); },
-        function (A, ba, ra, B, bb, rb) { return !hit(ba, bb, ra === rb ? 20 : 2); }, [0.77 * 19, 0.27 * 19], [ML, 1738]);   // 20 apart along a row; rows may stack
+      var rowSt = Object.assign({}, mO);
+      placedDates = placeDates(rowMarks, [MB + 104, MB + 126], function (s) { return W(s, rowSt); },
+        function (it, b) { return b.y + b.h < NB - 0.77 * nameSize - 8 && room.free(b, 'mark:' + it.ids[0], false); },
+        function (A, ba, ra, B, bb, rb) { return !hit(ba, bb, ra === rb ? 20 : 2); }, [0.77 * 15, 0.27 * 15], [X0, 1738]);
       placedDates.forEach(function (pd) {
         pd.own = 'mark:' + pd.it.ids[0];
-        pd.box = box(pd.x, pd.y, pd.it.label, rowSt);
-        pd.st = rowSt;
+        pd.box = box(pd.x, pd.y, pd.it.label, rowSt); pd.st = rowSt;
         room.text(pd.box, pd.own);
         pd.it.ids.forEach(function (id) { marks[id].tick = true; room.seg(marks[id].x, PB + 8, marks[id].x, PB + 14, 0.75, 'mark:' + id, 'lead'); });
         labelOf[pd.it.ids[0]] = pd;
       });
     }
 
-    // the dry stretch's words: under the bracket, in a row with room; if none, a line in the header
-    if (dry) {
-      // its words centered somewhere over the bracket, nearest the middle first
-      var dw = W(dry.text, dry.st), dsol = null;
-      var dcx = (dry.a + dry.b) / 2, dlo = Math.max(62, dry.a - dw / 2), dhi = Math.min(1738 - dw, dry.b - dw / 2);
-      var dc = [];
-      for (var dd = 0; dd <= Math.max(0, dhi - dlo) + 4; dd += 4) [dcx - dw / 2 - dd, dcx - dw / 2 + dd].forEach(function (x) { if (x >= dlo - 1e-9 && x <= dhi + 1e-9) dc.push(x); });
-      if (!dc.length) dc.push(Math.max(62, Math.min(1738 - dw, dcx - dw / 2)));
-      [RY, RY + 24].some(function (ry) {
-        return dc.some(function (x) {
-          var b = box(x, ry, dry.text, dry.st);
-          // a clear gap from the dates' words, so the row never reads as one phrase
-          if (b.y + b.h < (small ? small.box.y - 6 : 1138) && room.free(b, 'dry', false) && !placedDates.some(function (pd) { return hit(pd.box, b, 24); })) { dsol = { x: x, y: ry, b: b }; return true; }
-          return false;
-        });
+    // ---- the station's facts: 12 u gray footnotes, below the line; one with no room goes to the foot line
+    var recAt = placeAll(recs.pts, function (k) {
+      // the words carry their date as a run (T draws it gray, a tie note after it back in the words' voice)
+      var r = recs.pts[k], words = r.text, date = '';
+      var rg = rings[k], own = 'rec:' + k;
+      var pick = placeNear(rg.x, rg.y, words, FACT, date, FACT_D, own,
+        [[10, 24, 'start'], [-10, 24, 'end'], [12, 44, 'start'], [-12, 44, 'end'], [14, 66, 'start'], [-14, 66, 'end'], [16, 90, 'start'], [-16, 90, 'end'], [40, 30, 'start'], [-40, 30, 'end'], [60, 56, 'start'], [-60, 56, 'end']], { d: 170, below: true, rg: rg });
+      // no room under the line (early in the year it runs along the axis): above it, still a footnote
+      if (!pick) pick = placeNear(rg.x, rg.y, words, FACT, date, FACT_D, own,
+        [[10, -14, 'start'], [-10, -14, 'end'], [12, -36, 'start'], [-12, -36, 'end'], [14, -60, 'start'], [-14, -60, 'end'], [40, -24, 'start'], [-40, -24, 'end']], { d: 140 });
+      if (!pick) return null;
+      var its = [room.text(pick.b, own), room.seg(pick.L[0], pick.L[1], pick.L[2], pick.L[3], 0.7, own, 'lead')];
+      pick.words = words; pick.date = date; its.pick = pick;
+      return its;
+    }, []);
+    // a fact with no room on the chart is said in the foot line instead (never dropped)
+    recs.pts.forEach(function (r, k) { if (!recAt[k]) footFacts.push(r.text); });
+
+    // ---- line ends ("your year", "usual"), the gap at Dec 31, and every year behind's remarkable ones
+    var ends = [], endBoxes = [], EX = X1 + 12, endY = y(E.total), endN = E.cmp ? y(E.normalRec) : null;
+    if (full) {
+      var yw = tr('your year'), uw = tr('usual');
+      ends.push(T(EX, endY + 5, yw, { size: 15, w: 500, fill: C.rain })); endBoxes.push(box(EX, endY + 5, yw, { size: 15, w: 500 }));
+      if (E.cmp) { ends.push(T(EX, endN + 5, uw, { size: 15, fill: C.mute })); endBoxes.push(box(EX, endN + 5, uw, { size: 15 })); }
+      var gap = E.cmp ? E.normalRec - E.total : 0;
+      if (E.cmp && Math.abs(gap) >= 0.5 && Math.abs(endY - endN) > 60) {
+        var bx = X1 + 6, ya = Math.min(endY, endN) + 16, yb = Math.max(endY, endN) - 16, mid = (ya + yb) / 2, bt = rainAmt(Math.abs(gap), 'tot') + (LOC.fr ? (gap > 0 ? ' de moins' : ' de plus') : gap > 0 ? ' short' : ' more');
+        ends.push('<path d="M' + n2(bx + 5) + ',' + n2(ya) + 'H' + n2(bx) + 'V' + n2(yb) + 'H' + n2(bx + 5) + '" fill="none" stroke="' + X.date + '" stroke-width="0.8"/>' + T(bx + 12, mid + 5, bt, { size: 15, w: 500, fill: X.ink }));
+        endBoxes.push({ x: bx - 2, y: ya, w: 14 + W(bt, { size: 15, w: 500 }), h: yb - ya });
+      }
+    }
+    var histLabels = [];
+    if (hist && full && hist.labels) {
+      var want = (hist.labels.wet || []).concat(hist.labels.dry || []);
+      var placedH = [];
+      want.forEach(function (yr) {
+        var th = hist.threads.filter(function (t) { return t.year === yr; })[0];
+        if (!th) return;
+        var ty = y(th.cum[Math.min(th.cum.length, N) - 1] || 0), s = String(yr), hO = { size: 11, fill: X.date };
+        for (var d = 0; d <= 30; d += 2) {
+          var found = null;
+          [ty + 4 + d, ty + 4 - d].some(function (bl) {
+            var b = box(X1 + 6, bl, s, hO);
+            if (b.y < PTOP - 10 || b.y + b.h > PB) return false;
+            if (endBoxes.some(function (e) { return hit(e, b, 3); }) || placedH.some(function (e) { return hit(e, b, 2); })) return false;
+            found = { bl: bl, b: b }; return true;
+          });
+          if (found) {
+            placedH.push(found.b);
+            var lab = T(X1 + 6, found.bl, s, hO);
+            if (Math.abs(found.bl - 4 - ty) > 3) lab = line(X1 + 0.5, ty, X1 + 4.5, found.bl - 4, X.date, 0.7) + lab;
+            histLabels.push(lab);
+            break;
+          }
+        }
       });
-      if (dsol) { dry.at = dsol; room.text(dsol.b, 'dry'); }
-      else { extraLines.push(LOC.fr ? 'Plus longue période sèche : ' + E.dry.len + ' jours, ' + E.dry.range : 'Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range); dry.at = null; }
     }
 
-    // ---- remarkable days: a small open ring on the line, a label clear of everything
-    var recAt = placeAll(recs.pts, function (k) {
-      var r = recs.pts[k], rg = ringAt[k], rst = { size: 16, w: 500, fill: C.rec }, own = 'rec:' + k;
-      var first = [[14, 30, 'start'], [-14, -18, 'end'], [14, 58, 'start'], [-14, -46, 'end'], [14, 86, 'start'], [-14, 30, 'end'], [14, -18, 'start'], [-14, -74, 'end'], [14, 114, 'start'], [-14, 58, 'end']];
-      var pick = choose(spots(rg.x, rg.y, first, [14, 44, 90, 150]), function (c) {
-        var b = box(c.x, c.y, r.text, Object.assign({}, rst, { anchor: c.a }));
-        if (!inPlot(b)) return 0;
-        var L = [rg.x, rg.y, c.x + (c.a === 'start' ? -3 : 3), b.y + b.h / 2];
-        if (!room.clear(L, own, 8)) return 0;
-        if (!room.free(b, own, false)) return 0;
-        c.b = b; c.L = L;
-        return room.free(b, own, true) ? 2 : 1;
-      });
-      if (!pick) return null;
-      var its = [room.text(pick.b, own), room.seg(pick.L[0], pick.L[1], pick.L[2], pick.L[3], 0.8, own, 'lead')];
-      its.pick = pick;
-      return its;
-    }, skipped);
-    
+    // ---- the foot: 12 u, up to three lines, "usual" said once; whatever found no room on the chart joins it
+    var foot1 = [];
+    if (E.gauge) foot1.push(E.gauge);
+    foot1.push((LOC.fr ? 'Pouces de ' : LOC.mm ? 'Millimetres of ' : 'Inches of ') + E.liquid + (LOC.fr ? ', du 1er janv. au 31 déc. ' : ', Jan 1 to Dec 31, ') + E.year);
+    if (LOC.mm) foot1[foot1.length - 1] = (LOC.fr ? 'Millimètres de ' : 'Millimetres of ') + E.liquid + (LOC.fr ? ', du 1er janv. au 31 déc. ' : ', Jan 1 to Dec 31, ') + E.year;
+    if (E.snowText) foot1.push(E.snowText + (LOC.fr ? ', les marches bleu pâle' : ', the light blue steps'));
+    foot1.push(E.daysText);
+    var foot2 = [];
+    if (E.cmp && E.ovNote) foot2.push(E.ovNote + (E.showN ? (LOC.fr ? '; le total normal du mois est le chiffre gris sous chaque mois' : '; the usual month total is the gray number under each month') : ''));
+    if (E.snowNote) foot2.push(E.snowNote);
+    if (hist && hist.foot) foot2.push(hist.foot);
+    if (E.missing > GAP_QUIET) foot2.push(LOC.fr ? 'Trous : ' + E.missing + ' jours sans relevé' : 'Gaps: ' + E.missing + ' days with no report');
+    recs.lines.forEach(function (t) { foot2.push(plain(t)); });
+    var tf = (I.temp && I.temp.foot) || [];
+    var extra = footFacts.concat(frost.foot, cropFoot(I, crop.foot), tf, hasRib ? [ribbonFoot(I)] : []);
+    var fS = { size: 12, fill: X.fact }, SEPF = '  ·  ', FW = qb ? qb.x - 24 - X0 : 1560, lines = [[]], dropped = [];
+    var addPart = function (t) { var cur = lines[lines.length - 1]; if (!cur.length || W(cur.concat([t]).join(SEPF), fS) <= FW) cur.push(t); else lines.push([t]); };
+    foot1.forEach(addPart);
+    lines.push([]); foot2.forEach(addPart);
+    extra.forEach(function (t) {
+      if (!t) return;
+      for (var li = 0; li < lines.length; li++) if (lines[li].length && W(lines[li].concat([t]).join(SEPF), fS) <= FW) { lines[li].push(t); return; }
+      lines = lines.filter(function (l) { return l.length; });
+      if (lines.length < 5) { lines.push([t]); return; }
+      dropped.push(t);
+    });
+    lines = lines.filter(function (l) { return l.length; });
+    // a part too long for any line is cut at a word, never run past the QR
+    lines = lines.map(function (l) { var s = l.join(SEPF); while (W(s, fS) > FW && s.indexOf(' ') > 0) s = s.slice(0, s.lastIndexOf(' ')).replace(/\u0001[^\u0002]*$/, ''); return s; });
+    var footTop = 1081 - (lines.length - 1) * 19;
+    var foot = lines.map(function (s, k) { return T(X0, footTop + k * 19, s, fS); }).join('');
+    dropped.forEach(function (t) { skipped.push(t); });
+
     // ================= draw, back to front
     o.push(G0('axis'));
-    // a gridline at the header's height starts at the header box's right edge: no stub left of it
-    for (var v2 = 0; v2 <= dom + 1e-9; v2 += step) if (v2 > 0) {
-      var gy2 = y(v2), under = headBox.x < X0 + 40 && gy2 >= headBox.y - 2 && gy2 <= headBox.y + headBox.h + 2;
-      o.push(line(under ? headBox.x + headBox.w : X0, gy2, X1, gy2, C.grid, 0.7));
-    }
-    tickVals.forEach(function (v3) { o.push(T(X0 - 14, y(v3) + 5, tickText(v3), { size: 15, fill: C.mute, anchor: 'end' })); });
+    ticks.forEach(function (v) { if (v > 0) o.push(line(X0, y(v), X1, y(v), X.grid, 0.7)); });
+    ticks.forEach(function (v) { o.push(T(X0 - 12, y(v) + 4.5, tickNum(v), { size: 13, fill: X.date, anchor: 'end' })); });
     o.push(G1);
-    o.push(G0('head') + '<rect x="' + n2(headBox.x) + '" y="' + n2(headBox.y) + '" width="' + n2(headBox.w) + '" height="' + n2(headBox.h) + '" fill="#FFFFFF"/>');
-    o.push(header(hp.x, hp.top) + G1);
-
-    // the band between the year and a usual year
-    if (E.cmp) {
+    if (hist) {
+      var hpath = '';
+      hist.threads.forEach(function (h) {
+        var s = 'M' + X0 + ',' + PB;
+        for (var i = 0; i < Math.min(h.cum.length, N); i++) s += 'L' + n2(xs(i + 1)) + ',' + n2(y(h.cum[i]));
+        hpath += '<path d="' + s + '" stroke="' + X.thread + '"/>';
+      });
+      o.push(G0('hist') + '<g fill="none" stroke="' + X.thread + '" stroke-width="0.7" stroke-linejoin="round">' + hpath + '</g>' + G1);
+    }
+    // warm stone behind a usual year, the pale blue ahead of it (none when the history threads take its place)
+    if (E.cmp && !hist) {
       var band = '', last = 0;
       days.forEach(function (x, i) {
         if (E.cum[i] !== null) last = E.cum[i];
         var a = y(last), b = y(E.ncum[i]);
         if (Math.abs(a - b) < 0.3) return;
-        band += '<rect x="' + n2(xs(i)) + '" y="' + n2(Math.min(a, b)) + '" width="' + n2(w + 0.25) + '" height="' + n2(Math.abs(a - b)) + '" fill="' + (a > b ? C.dryBand : C.wetBand) + '"/>';
+        band += '<rect x="' + n2(xs(i)) + '" y="' + n2(Math.min(a, b)) + '" width="' + n2(w + 0.25) + '" height="' + n2(Math.abs(a - b)) + '" fill="' + (a > b ? X.stone : X.ahead) + '"/>';
       });
-      o.push(G0('data') + '<g shape-rendering="crispEdges">' + band + '</g>');
-      var p = 'M' + X0 + ',' + PB;
-      days.forEach(function (x, i) { p += 'L' + n2(xs(i + 1)) + ',' + n2(y(E.ncum[i])); });
-      o.push('<path d="' + p + '" fill="none" stroke="' + C.mute + '" stroke-width="' + USUAL_W + '" stroke-dasharray="9 6"/>' + G1);
+      o.push(G0('data') + '<g shape-rendering="crispEdges">' + band + '</g>' + G1);
     }
-
-    // axis and month ticks
-    o.push(G0('axis') + line(X0, PB, X1, PB, C.ink, 0.9 * PT));
-    E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) o.push(line(xs(b), PB, xs(b), PB + 8, C.ink, 0.75 * PT)); });
+    // the header on white (a history thread passes behind it)
+    var hx = X0, hp = ['<rect x="' + n2(headBox.x - 4) + '" y="' + n2(headBox.y) + '" width="' + n2(headBox.w + 8) + '" height="' + n2(headBox.h) + '" fill="#FFFFFF"/>', T(hx, HY, head, hs)];
+    if (E.cmp) {
+      hp.push(line(hx, KY - 5, hx + 24, KY - 5, C.rain, 4)); hx += 34;
+      hp.push(T(hx, KY, yTxt, ks)); hx += W(yTxt, ks);
+      hp.push(T(hx + 18, KY, '·', Object.assign({}, sep, { anchor: 'middle' }))); hx += 36;
+      hp.push('<path d="M' + n2(hx) + ',' + (KY - 5) + 'h24" stroke="' + C.mute + '" stroke-width="1.5" stroke-dasharray="6 5"/>'); hx += 34;
+      hp.push(T(hx, KY, uTxt, us));
+    }
+    if (wetHeadY) hp.push(tv(X0, wetHeadY, wetWords, wO, fmtDate(E.wet.date), mD));
+    if (histNote) hp.push(T(X0, NY, histNote, FACT));
+    o.push(G0('head') + hp.join('') + G1);
+    if (E.cmp) o.push(G0('usual') + '<path d="' + np + '" fill="none" stroke="' + C.mute + '" stroke-width="' + USUAL_W + '" stroke-dasharray="6 5"/>' + G1);
+    o.push(crop.back);
+    o.push(G0('axis') + line(X0, PB, X1, PB, X.ink, 0.9 * PT));
+    E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) o.push(line(xs(b), PB, xs(b), PB + 7, X.ink, 0.75 * PT)); });
     o.push(G1);
-    if (E.preview && E.n < N) o.push(G0('data') + line(xs(E.n), pvTop, xs(E.n), PB, C.mute, 1, ' stroke-dasharray="3 4"') + G1);
-    if (E.preview && E.n < N) E.laterBox = { x0: xs(E.n), x1: X1, y0: pvTop, y1: PB };
-
-    // the staircase; the pen lifts over a day with no amount of its own
-    var d1 = '', prev = 0, pen = false;
-    days.forEach(function (x, i) {
-      if (E.P[i] === null) { pen = false; return; }
-      var c = E.cum[i];
-      if (!pen) { d1 += 'M' + n2(xs(i)) + ',' + n2(y(prev)); pen = true; }
-      d1 += 'L' + n2(xs(i)) + ',' + n2(y(c)) + 'L' + n2(xs(i + 1)) + ',' + n2(y(c));
-      prev = c;
-    });
+    if (hasRib) o.push(ribbon(I, { x0: X0, x1: X1, w: w, n: N, y0: PB + 12, h: RIBBON_H, side: 'right' }));
+    if (E.preview && E.n < N) { o.push(G0('data') + line(xs(E.n), pvTop, xs(E.n), PB, C.mute, 1, ' stroke-dasharray="3 4"') + G1); E.laterBox = { x0: xs(E.n), x1: X1, y0: pvTop, y1: PB }; }
+    // the year, snow steps in ice blue on the line (above the line only)
     o.push(G0('data'));
     if (d1) o.push('<path d="' + d1 + '" fill="none" stroke="' + C.rain + '" stroke-width="' + STAIR_W + '" stroke-linejoin="round" stroke-linecap="butt"/>');
-    // steps that came as snow, in ice blue: the riser and the flat after it, up to the next wet day or gap
     if (E.full) {
       var sp = '';
       days.forEach(function (x, i) {
@@ -1131,41 +1361,41 @@
       if (sp) o.push('<path d="' + sp + '" fill="none" stroke="' + C.snowLine + '" stroke-width="' + STAIR_W + '" stroke-linejoin="round"/>');
     }
     o.push(G1);
-    if (E.wi >= 0) o.push(G0('wet') + line(wx, y(wc0) + 1.5, wx, y(wc1) - 1.5, C.accent, 4.4) + G1);
-    o.push(G0('months') + months.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join('') + G1);
-    if (dry && dry.at) {
-      o.push(G0('dry') + '<path d="M' + n2(dry.a) + ',' + (RY - 24) + 'v6H' + n2(dry.b) + 'v-6" fill="none" stroke="' + C.mute + '" stroke-width="0.9"/>');
-      o.push(T(dry.at.x, dry.at.y, dry.text, dry.st) + G1);
+    if (wx >= 0) o.push(G0('wet') + line(wx, y(wc0) + 1.5, wx, y(wc1) - 1.5, X.red, STAIR_W) + G1);
+    o.push(G0('months') + months.map(function (t) { var s = T(t[0], t[1], t[2], t[3]); return t[3].size === 11 && !t[3].ls || t[3].size === 14 ? tab(s) : s; }).join(''));
+    if (dry) {
+      o.push('<path d="M' + n2(dry.a) + ',' + dry.ry + 'v5H' + n2(dry.b) + 'v-5" fill="none" stroke="' + X.date + '" stroke-width="0.7"/>');
+      if (dry.words !== false) o.push(T((dry.a + dry.b) / 2, dry.ry + 20, dry.text, { size: 12, fill: X.fact, anchor: 'middle' }));
     }
-    // the biggest rain's words
-    if (wetAt) o.push(G0('wet') + '<path d="M' + n2(wetAt.L[0]) + ',' + n2(wetAt.L[1]) + 'L' + n2(wetAt.L[2]) + ',' + n2(wetAt.L[3]) + '" stroke="' + C.accent + '" stroke-width="1"/>' +
-      T(wetAt.x, wetAt.y, E.wetText, { w: 500, size: 23, fill: C.accent, anchor: wetAt.a }) + G1);
-    // remarkable days (under the reader's dots: a date on the same day keeps its dot on top)
+    o.push(G1);
+    o.push(frost.svg);
     recs.pts.forEach(function (r, k) {
-      var pk = recAt[k], rg = ringAt[k];
+      var pk = recAt[k], rg = rings[k];
       if (!pk) return;
-      o.push(G0('rec:' + k) + '<circle cx="' + n2(rg.x) + '" cy="' + n2(rg.y) + '" r="5" fill="#FFFFFF" stroke="' + C.rec + '" stroke-width="1.8"/>');
-      o.push('<path d="M' + n2(pk.L[0]) + ',' + n2(pk.L[1]) + 'L' + n2(pk.L[2]) + ',' + n2(pk.L[3]) + '" stroke="' + C.rec + '" stroke-width="0.8" stroke-dasharray="2 2"/>');
-      o.push(T(pk.x, pk.y, r.text, { size: 16, w: 500, fill: C.rec, anchor: pk.a }) + G1);
+      o.push(G0('rec:' + k) + '<circle cx="' + n2(rg.x) + '" cy="' + n2(rg.y) + '" r="4" fill="#FFFFFF" stroke="' + X.fact + '" stroke-width="1.2"/>' +
+        '<path d="M' + n2(pk.L[0]) + ',' + n2(pk.L[1]) + 'L' + n2(pk.L[2]) + ',' + n2(pk.L[3]) + '" stroke="' + X.fact + '" stroke-width="0.7"/>' +
+        tv(pk.x, pk.y, pk.words, Object.assign({}, FACT, { anchor: pk.a }), pk.date, FACT_D) + G1);
     });
-    // the reader's dates
-    marks.forEach(function (mk, k) {
-      o.push(G0('mark:' + k));
-      if (mk.y0 < PB) o.push(line(mk.x, mk.y0, mk.x, PB, C.ink, 0.75));
-      o.push('<circle cx="' + n2(mk.x) + '" cy="' + n2(mk.y) + '" r="4.6" fill="' + C.ink + '" stroke="#FFFFFF" stroke-width="1.4"/>');
-      if (mk.tick) o.push(line(mk.x, PB + 8, mk.x, PB + 14, C.ink, 0.75));
-      var pd = labelOf[k];
+    if (wetAt) o.push(G0('wet') + '<path d="M' + n2(wetAt.L[0]) + ',' + n2(wetAt.L[1]) + 'L' + n2(wetAt.L[2]) + ',' + n2(wetAt.L[3]) + '" stroke="' + X.red + '" stroke-width="0.8"/>' +
+      tv(wetAt.x, wetAt.y, wetWords, Object.assign({}, wO, { anchor: wetAt.a }), fmtDate(E.wet.date), mD) + G1);
+    o.push(crop.front);
+    marks.forEach(function (mk) {
+      o.push(G0('mark:' + mk.k));
+      if (mk.y0 < PB) o.push(line(mk.x, mk.y0, mk.x, PB, X.ink, 0.75));
+      o.push('<circle cx="' + n2(mk.x) + '" cy="' + n2(mk.y) + '" r="4.6" fill="' + X.ink + '" stroke="#FFFFFF" stroke-width="1.4"/>');
+      if (mk.tick) o.push(line(mk.x, PB + 8, mk.x, PB + 14, X.ink, 0.75));
+      var pd = labelOf[mk.k];
       if (pd && pd.line) {
-        if (pd.L) o.push('<path d="M' + n2(pd.L[0]) + ',' + n2(pd.L[1]) + 'L' + n2(pd.L[2]) + ',' + n2(pd.L[3]) + '" stroke="' + C.ink + '" stroke-width="0.9"/>');
-        o.push(T(pd.x, pd.y, pd.it.label, Object.assign({}, mst, { anchor: pd.a })));
-      } else if (pd) o.push(T(pd.x, pd.y, pd.it.label, Object.assign({ anchor: 'start' }, pd.st)));
+        if (pd.at.L) o.push('<path d="M' + n2(pd.at.L[0]) + ',' + n2(pd.at.L[1]) + 'L' + n2(pd.at.L[2]) + ',' + n2(pd.at.L[3]) + '" stroke="' + X.ink + '" stroke-width="0.8"/>');
+        o.push(tv(pd.at.x, pd.at.y, mk.words, Object.assign({}, mO, { anchor: pd.at.a }), mk.words === mk.date ? '' : mk.date, mD));
+      } else if (pd) o.push(T(pd.x, pd.y, pd.it.label, Object.assign({ anchor: 'start' }, pd.st)).replace(/font-size="16" font-weight="400" fill="#5E6475"/g, 'font-size="15" font-weight="400" fill="' + X.date + '"'));
       o.push(G1);
     });
-
-    o.push(G0('title') + title.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join('') + G1);
+    o.push(G0('ends') + ends.join('') + histLabels.join('') + G1);
+    o.push(G0('title') + title.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join('') + (E.dedication ? dedText(TX, NB + 70, E.dedication, dedSize, X.fact) : '') + G1);
     if (lg) o.push(logoMark(lg));
-    if (small) o.push(small.svg);
-    o.push(qrMark(I.qr, 1690, 1100));
+    o.push(G0('foot') + foot + G1);
+    o.push(qrMark(I.qr, QR_R, QR_B));
     last_skipped = skipped;
     last_logo = lg ? { x: lg.x, y: lg.y, w: lg.w, h: lg.h } : null;
     return close(I, E, o, bandAt(room, [(PTOP + PB) / 2 + 60, PTOP + (PB - PTOP) * 0.78, PTOP + (PB - PTOP) * 0.3], PTOP + 40, PB - 40, X0 - 6, X1 + 6, E.preview && E.n < N ? [xs(E.n) + 12, X1 + 6] : null, 96));
@@ -1204,7 +1434,9 @@
   function r2(I) {
     var E = model(I), N = E.N, days = E.days, skipped = [];
     var ML = 120, X0 = 205, X1 = 1690, PW = X1 - X0, w = PW / N;
-    var G = 478, SH = 92, RB = 1000, RH = RB - G - 6;
+    var hasRib = !!(I.temp && I.temp.ribbon && I.temp.ribbon.scale);
+    // the temperature ribbon takes a strip under the rain (2026-10-17): the rain scale gives it 80 units
+    var G = 478, SH = 92, RB = hasRib ? 920 : 1000, RH = RB - G - 6, RIB_Y = RB + 22;
     // the rain scale reaches the deepest bar drawn below the ground (a snow day is drawn above it only)
     var maxRain = Math.max.apply(null, [0.01].concat(days.map(function (x, i) { return E.P[i] !== null && !(E.full && x.s > 0) ? E.P[i] : 0; })));
     var R = niceRain(maxRain), S = niceSnow(E.maxSnow);
@@ -1214,7 +1446,8 @@
     var recs = recordPoints(E, I.records);
     E.style2 = true;
     var put = function (list, own) { list.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), own); }); };
-    var draw = function (list) { return list.map(function (t) { return T(t[0], t[1], t[2], t[3]); }).join(''); };
+    // the dedication in plain italic (2026-10-17, both styles)
+    var draw = function (list) { return list.map(function (t) { return t[3] && t[3].it && t[3].fam === SERIF ? dedText(t[0], t[1], t[2], t[3].size, t[3].fill) : T(t[0], t[1], t[2], t[3]); }).join(''); };
 
     /* The top: the year's totals at the right; at the left the name, in the Staircase's serif and the biggest
        words on the sheet (panel 4, 2026-10-14), the place and year under it, the buyer's line under that. With
@@ -1279,14 +1512,14 @@
 
     // bars: a snow day shows only above the line (its melted water still counts in the total)
     // bars 0.85 of a day, so a year reads as a texture across the room, not hairlines (panel 4, 2026-10-14; were 0.66)
-    var bw = 0.85 * w, sw = 0.85 * w, bars = '', snows = '', barBoxes = [];
+    var bw = 0.85 * w, sw = 0.85 * w, bars = '', snows = '', barBoxes = [], snowBoxes = [];
     days.forEach(function (x, i) {
       var p = E.P[i], cx = xs(i);
       if (p === null) return;
       if (E.full && x.s > 0) {
         var h = Math.max(1.4, G - sy(x.s)), sb = { x: cx - sw / 2 + 0.35, y: G - 2.2 - h + 0.35, w: sw - 0.7, h: h - 0.7 };
         snows += '<rect x="' + n2(sb.x) + '" y="' + n2(sb.y) + '" width="' + n2(sb.w) + '" height="' + n2(sb.h) + '"/>';
-        room.add({ b: sb, own: 'data', k: 'mark' });
+        room.add({ b: sb, own: 'data', k: 'mark' }); snowBoxes.push(sb);
         return;
       }
       if (p > 0 && i !== E.wi) {
@@ -1309,9 +1542,10 @@
     var wcx = -1, wy2 = 0;
     if (E.wi >= 0) { wcx = xs(E.wi); wy2 = ry(E.wet.p); barBoxes.push(room.add({ b: { x: wcx - 1.9, y: G + 1.5, w: 3.8, h: wy2 - G - 1.5 }, own: 'wet', k: 'mark' }).b); }
 
+    if (hasRib) room.add({ b: { x: X0 - 4, y: RIB_Y - 2, w: X1 - X0 + 48, h: RIBBON_H + 4 }, own: 'ribbon', k: 'mark' });
     // the scale's names: rain at the foot of its scale, or under the soil if a bar is in the way
     var rainTitle = (E.full ? tr('rain') : E.liquid) + ', ' + rU(), rtSt = { size: 15, fill: C.mute };
-    var rty = [ry(R.ticks[R.ticks.length - 1]) + 36, RB + 24].filter(function (yy) { return room.free(box(ML, yy, rainTitle, rtSt), 'axis', false); })[0] || RB + 24;
+    var rty = [ry(R.ticks[R.ticks.length - 1]) + 36, RB + 24, RB + 70].filter(function (yy) { return room.free(box(ML, yy, rainTitle, rtSt), 'axis', false); })[0] || RB + 24;
     axisT.push([ML, rty, rainTitle, rtSt]);
     if (E.full) axisT.push([ML, sy(S.dom) - 14, tr('snow') + ', ' + sU(), { size: 15, fill: C.snowInk }]);
     put(axisT, 'axis');
@@ -1337,7 +1571,8 @@
     if (qb && barBoxes.some(function (bb) { return hit(bb, qb, 3); })) { qrBottom = 1132; qb = qrBox(I.qr, X1, qrBottom); }
     if (qb) room.add({ b: qb, own: 'qr', k: 'mark' });
     // the foot line is written last (the biggest rain or the dry stretch may land in it): its room, two lines' worth, is kept now
-    room.add({ b: { x: ML, y: FOOT_Y - FOOT_GAP - 0.77 * 15, w: 1440, h: FOOT_GAP + 1.04 * 15 }, own: 'foot', k: 'text' });
+    var footRows = I.crop || I.temp || hasRib ? 3 : 1;   // the options' words can take the foot line to three lines
+    room.add({ b: { x: ML, y: FOOT_Y - footRows * FOOT_GAP - 0.77 * 15, w: 1440, h: footRows * FOOT_GAP + 1.04 * 15 }, own: 'foot', k: 'text' });
 
     // remarkable days' rings on the ground line (placed first so every label keeps off them)
     var rings = recs.pts.map(function (r, k) { var x = xs(r.i); room.add({ b: { x: x - 5.5, y: G - 5.5, w: 11, h: 11 }, own: 'rec:' + k, k: 'mark' }); return x; });
@@ -1382,6 +1617,12 @@
       segs2.forEach(function (pq) { room.seg(x, pq[0], x, pq[1], 0.75, 'mark:' + mk.k, 'lead'); });
     });
 
+    // ---- frost marks and the crop on the ground line, the soil surface: plants grow up from it, clear of any snow there
+    var inSnow = function (b) { return b.x > X0 && b.x + b.w < X1 && b.y > TY + 31 && b.y + b.h < G - 2; };
+    var frost = frostLayer(I, { xs: xs, base: G, room: room, below: true, inPlot: function (b) { return b.x > X0 && b.x + b.w < X1 && b.y > TY + 31 && b.y + b.h < RB && !(b.y < G + 4 && b.y + b.h > G - 10); } });
+    var crop = cropLayer(I, { xs: xs, base: G - 1, room: room, inPlot: inSnow, x0: X0, x1: X1, plantH: 42, avoid: marks.map(function (mk) { return mk.x; }).concat(frost.xs),
+      blocked: function (a, b) { return snowBoxes.some(function (sb) { return sb.x < b + 2 && sb.x + sb.w > a - 2; }); } });
+
     // ---- the biggest rain, in red, in words, beside the foot of its bar
     var wetAt = null;
     if (E.wi >= 0) {
@@ -1391,7 +1632,7 @@
         .concat(spots(wcx, wy2 + 6, [], [10, 30, 70, 130]).filter(function (c) { return c.y > wy2 - 30; }));
       wetAt = choose(wc, function (c) {
         var b = box(c.x, c.y, E.wetText, Object.assign({}, wst, { anchor: c.a }));
-        if (b.x < X0 || b.x + b.w > X1 || b.y < G + 8 || b.y + b.h > 1060) return 0;
+        if (b.x < X0 || b.x + b.w > X1 || b.y < G + 8 || b.y + b.h > (hasRib ? RIB_Y - 6 : footRows > 1 ? 1040 : 1060)) return 0;
         c.b = b; c.L = null;
         if (!c.bare) {
           var sgn = c.a === 'start' ? 1 : -1;
@@ -1438,7 +1679,7 @@
         }
       }
       // beside its leader, or hanging under it (below the bars around it)
-      for (var yy = G + 70; yy <= RB + 50; yy += 15) cands.push({ x: x + 8, y: yy, a: 'start' }, { x: x - 8, y: yy, a: 'end' }, { x: x, y: yy, a: 'middle' });
+      for (var yy = G + 70; yy <= (hasRib ? RB + 10 : RB + 50); yy += 15) cands.push({ x: x + 8, y: yy, a: 'start' }, { x: x - 8, y: yy, a: 'end' }, { x: x, y: yy, a: 'middle' });
       // a label that spans another record's column would stand in its leader's way: only if nothing else fits
       var cols = rings.filter(function (rx, j) { return j !== k && !at[j]; });
       var spans = function (b) { return cols.some(function (rx) { return rx > b.x - 4 && rx < b.x + b.w + 4; }); };
@@ -1479,6 +1720,7 @@
     }
     if (E.dry && !dryAt) foot.push(LOC.fr ? 'Plus longue période sèche : ' + E.dry.len + ' jours, ' + E.dry.range : 'Longest dry stretch: ' + E.dry.len + ' days, ' + E.dry.range);
     else if (E.dry) foot.push(LOC.fr ? E.dry.len + ' jours secs : ' + E.dry.range : E.dry.len + ' dry days: ' + E.dry.range);
+    foot = foot.concat(frost.foot, cropFoot(I, crop.foot), (I.temp && I.temp.foot) || [], hasRib ? [ribbonFoot(I)] : []);
     var small = smallLine(E, ML, 1440, foot);
 
     // ================= draw, back to front
@@ -1492,6 +1734,8 @@
     o.push(G0('data'));
     if (snows) o.push('<g fill="' + C.snowFill + '" stroke="' + C.snowEdge + '" stroke-width="0.7">' + snows + '</g>');
     o.push('<g fill="' + C.bar + '">' + bars + '</g>' + G1);
+    o.push(crop.back);
+    if (hasRib) o.push(ribbon(I, { x0: X0, x1: X1, w: w, n: N, y0: RIB_Y, h: RIBBON_H, side: 'right' }));
     o.push(G0('axis'));
     ground.forEach(function (g) { o.push(line(g[0], G, g[1], G, C.ink, 1.1 * PT)); });
     mticks.forEach(function (x) { o.push(line(x, G - 7, x, G + 7, C.ink, 0.75 * PT)); });
@@ -1505,6 +1749,7 @@
       o.push(G1);
     }
     if (dryAt) o.push(G0('dry') + T(dryAt.x, dryAt.y, ds, dst) + G1);
+    o.push(frost.svg); o.push(crop.front);
     o.push(G0('months') + draw(months) + G1);
     marks.forEach(function (mk) {
       o.push(G0('mark:' + mk.k));
