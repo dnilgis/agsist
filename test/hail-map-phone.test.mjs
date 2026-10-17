@@ -112,7 +112,9 @@ test("the note follows the radius picker, and the radar line names its 30-day sc
     // The automatic radar verdict, when it is a "nothing found" line, says 30 days and the archive size.
     await pg.waitForFunction(() => { const v = document.getElementById("hm-verdict"); return v && !v.hidden; }, null, { timeout: 30000 }).catch(() => {});
     const v = await pg.$eval("#hm-verdict", (e) => (e.hidden ? "" : e.textContent));
-    if (v && /^No radar-estimated|radar record here stops/.test(v)) {
+    // 2026-10-17: the radar line carries its label first ("Radar, last 30 days"), under the year's ground reports
+    if (v && /^(Radar, last 30 days\s*)?(No radar-estimated|The radar record here stops)/i.test(v)) {
+      assert.match(v, /^Radar, last 30 days/i, "the radar line is labeled");
       assert.match(v, /in the last 30 days/);
       assert.match(v, /The radar archive holds \d+ storm days? back to/);
       assert.doesNotMatch(v, /on file, through/);

@@ -131,7 +131,7 @@
     var costs = 'storage and interest' + (inputs.shrink ? ' and shrink' : '');
     var ct = carryText(o.carry);
     return 'Hold to ' + o.to + '? ' + (ct === 'even' ? '0\u00a2' : ct) + what + ', net of ' + costs + ': '
-      + (c === 0 ? 'about even' : netText(n.net)) + ' a bushel.';
+      + (c === 0 ? 'about even.' : netText(n.net) + ' a bushel.');   // "about even a bushel" was broken grammar (2026-10-17)
   }
   /* The assumptions under that line, in words. months null: no month count.
      from (optional): the month the count starts, "December", for a futures

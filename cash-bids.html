@@ -175,6 +175,8 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .wtd-comm-btn.active.corn{background:rgba(230,176,66,.18);color:var(--gold);border-color:rgba(230,176,66,.5)}
 .wtd-comm-btn.active.soybeans{background:rgba(58,139,60,.18);color:var(--green);border-color:rgba(58,139,60,.5)}
 .wtd-comm-btn.active.wheat{background:rgba(202,138,60,.18);color:#ca8a3c;border-color:rgba(202,138,60,.5)}
+/* High contrast (forced colors, 2026-10-17): the picked crop was told apart by background color only, which forced colors removes */
+@media (forced-colors:active){.cb-filt[aria-pressed="true"],.cb-filt.active,.wtd-comm-btn.active{outline:3px solid Highlight;outline-offset:2px;border-color:Highlight;text-decoration:underline;text-underline-offset:3px}}
 .wtd-winner-banner{background:rgba(58,139,60,.12);border:1px solid rgba(58,139,60,.3);border-radius:8px;padding:.6rem .85rem;margin-bottom:.85rem;font-size:.82rem;color:var(--green);display:flex;align-items:center;gap:.5rem}
 .wtd-winner-banner strong{color:var(--text);white-space:nowrap}
 /* MEASURED AT 390px: the banner is display:flex with flex-wrap unset, so every
@@ -830,7 +832,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 </div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=28" defer></script>
-<script src="/components/storesell.js?v=7"></script><script src="/components/cb-glance.js?v=3"></script>
+<script src="/components/storesell.js?v=8"></script><script src="/components/cb-glance.js?v=3"></script>
 <link rel="stylesheet" href="/components/cb-alerts.css?v=2">
 <script src="/components/cb-signup.js?v=2" defer></script>
 <script src="/components/cb-alerts.js?v=3" defer></script>

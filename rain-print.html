@@ -300,6 +300,10 @@
   .rp-noname .rp-acts{margin:0}
   .rp-pay-wrap .rp-note:not(:empty){margin:.5rem 0 0}
   .rp-gift-line{margin:.6rem 0 .2rem}
+  .rp-pay-wrap .rp-gift-pre{margin:0 0 .5rem}
+  .rp-pgift{border-top:1px solid var(--border);padding-top:10px}
+  .rp-pg-box{display:flex;flex-direction:column;gap:.6rem;margin:.6rem 0 0}
+  .rp-pg-box .rp-note{margin:0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.5}
   .rp-code{font-family:var(--font-mono);font-size:var(--fs-xs);word-break:break-all;color:var(--text-dim)}
   .rp-order{margin:1rem 0 0;padding:16px;background:var(--surface);border:1px solid var(--border-g);border-radius:var(--r-md)}
   .rp-order h3{margin:0 0 .4rem;font-size:var(--fs-lg)}
@@ -674,6 +678,7 @@
           </details>
           <p class="rp-note rp-bad" id="rp-buy-why" hidden></p>
           <div class="rp-pay-wrap" id="rp-pay-wrap">
+            <p class="rp-note rp-gift-pre" id="rp-gift-pre">A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address.</p>
             <button class="btn btn-primary rp-pay" id="rp-pay" type="button">Check it and pay $89</button>
             <p class="rp-promise" id="rp-promise">You see a proof first, and get a full refund any time before I print.</p>
             <p class="rp-note rp-madeby" id="rp-madeby">Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes from sig@farmers1st.com, your receipt from Stripe.</p>
@@ -902,7 +907,23 @@
           <label><input type="radio" name="rp-pproduct" value="print12x18"><span>Print <b data-price="print12x18">$45</b></span></label>
           <label><input type="radio" name="rp-pproduct" value="digital"><span>Digital file <b data-price="digital">$19</b></span></label>
         </div></div>
-        <div><h3>Check the details</h3><dl class="rp-proof-sum" id="rp-proof-sum"></dl></div>
+        <div><h3>Check the details</h3><dl class="rp-proof-sum" id="rp-proof-sum"></dl><dl class="rp-proof-sum" id="rp-pg-sum" hidden></dl></div>
+        <!-- 2026-10-17: the gift, before Stripe. Mirrors the order form's fields (#ro-isgift, #ro-gift-to, #ro-gift-msg,
+             #ro-deliver, #ro-address, #ro-name, #ro-email) and goes to Sig as a rain-print-order post (gift: yes), so the
+             note reaches the letter the same way an order request's does. -->
+        <div class="rp-pgift" id="rp-pgift" hidden>
+          <label class="rp-check"><input type="checkbox" id="rp-pg-on"><span>This is a gift</span></label>
+          <div class="rp-pg-box" id="rp-pg-box" hidden>
+            <label class="field"><span>Who it&rsquo;s for</span><input id="rp-pg-to" type="text" maxlength="80" placeholder="Dad"></label>
+            <label class="field"><span id="rp-pg-msg-l">Your note, printed at the top of the letter in the box (optional)</span><textarea id="rp-pg-msg" maxlength="240" rows="2" placeholder="Every inch of the year you farmed."></textarea></label>
+            <label class="field"><span>Send it to</span><select id="rp-pg-deliver"><option value="recipient">Them</option><option value="buyer">Me</option></select></label>
+            <label class="field" id="rp-pg-addr-wrap"><span id="rp-pg-addr-l">Their address (name, street, town, state, ZIP)</span><textarea id="rp-pg-addr" maxlength="600" rows="3" autocomplete="off"></textarea></label>
+            <label class="field" id="rp-pg-email-wrap" hidden><span>Their email, for the file</span><input id="rp-pg-email" type="email" maxlength="254" autocomplete="off"></label>
+            <label class="field"><span>Your name</span><input id="rp-pg-name" type="text" maxlength="80" autocomplete="name"></label>
+            <label class="field"><span id="rp-pg-me-l">Your email, for the proof</span><input id="rp-pg-me" type="email" maxlength="254" autocomplete="email"></label>
+            <p class="rp-note" id="rp-pg-line">No prices go in the box. These come to me with your order; at checkout, Stripe takes the payment.</p>
+          </div>
+        </div>
         <div class="rp-proof-act" id="rp-proof-go">
           <p class="rp-proof-chg"><button type="button" class="rp-linkbtn" id="rp-proof-change">Change something</button></p>
         </div>
@@ -924,7 +945,7 @@
   <script src="/components/rp-logo.js?v=2"></script>
   <script src="/components/rp-canada.js?v=1"></script>
   <script src="/components/rain-print-art.js?v=13"></script>
-  <script src="/components/rain-print.js?v=45"></script>
+  <script src="/components/rain-print.js?v=46"></script>
   <script src="/components/rp-gift.js?v=5" defer></script>
 </body>
 </html>
