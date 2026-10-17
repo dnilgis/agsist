@@ -96,7 +96,7 @@
   .rp-art.rp-empty{aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;padding:1rem}
   /* a real example print (scripts/render_rain_print_examples.mjs) fills the empty frame until the live draw replaces it */
   .rp-ex,.rp-ex img{position:absolute;inset:0;display:block;width:100%;height:100%;z-index:1}
-  .rp-ex-tag{position:absolute;top:8px;right:8px;z-index:2;padding:2px 8px;border-radius:3px;background:rgba(19,19,19,.78);color:#fff;font-size:11px;line-height:1.5;letter-spacing:.02em}
+  .rp-ex-tag{position:absolute;top:8px;right:8px;z-index:2;padding:2px 8px;border-radius:3px;background:rgba(19,19,19,.78);color:#fff;font-size:13px;line-height:1.5;letter-spacing:.02em}
   .rp-placeholder{color:#4b5263;text-align:center;max-width:40ch;line-height:1.55;margin:0;font-size:var(--fs-sm)}
   .rp-cap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.4rem .8rem;max-width:680px;margin:0 auto;padding:8px 0 12px;font-size:var(--fs-xs);line-height:1.45;color:var(--rp-wall-ink)}
   .rp-cap-l{flex:1 1 180px;min-width:0}
@@ -206,6 +206,10 @@
   .rp-date-n{grid-column:1;font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);white-space:nowrap}
   .rp-date .rp-mo{grid-column:2}.rp-date .rp-dy{grid-column:3}.rp-date .rp-lab{grid-column:4;min-width:0}
   .rp-date .rp-rm{grid-column:5;justify-self:end;width:2rem;min-height:36px;padding:0;border:0;border-radius:var(--r-sm);background:none;color:var(--text-muted);font:inherit;font-size:1.25rem;line-height:1;cursor:pointer}
+  .rp-date .rp-rm{min-width:24px}
+  /* phone: while a text box has the keyboard, the sticky preview steps aside (2026-10-17, panels: strip, menu and
+     pay bar took 38% of the screen while typing) */
+  @media (max-width:899px){body:has(:is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus) .rp-strip{display:none}}
   .rp-date .rp-rm:hover{color:var(--text);background:var(--surface-2,var(--surface))}
   .rp-date .rp-rm:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
   .rp-date .rp-rm[hidden]{display:none}
@@ -251,7 +255,7 @@
   .rp-xwhy{color:var(--text)}
   @media(max-width:560px){.rp-xrow{grid-template-columns:1fr}}
   .rp-check{display:inline-flex;align-items:center;gap:.5rem;min-height:var(--btn-h);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer}
-  .rp-check input{width:1.1rem;height:1.1rem;accent-color:var(--brand-fill)}
+  .rp-check input{width:24px;height:24px;flex:none;accent-color:var(--brand-fill)}
   .rp-opts-note{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.55;margin:.5rem 0 .7rem;max-width:62ch}
   .rp-count{font-size:var(--fs-xs);color:var(--text-muted);margin:.25rem 0 0;line-height:1.45}
   .rp-count.rp-at{color:var(--text);font-weight:600}
@@ -335,7 +339,7 @@
   .rp-ogrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
   .rp-ogrid .rp-wide{grid-column:1/-1}
   .rp-check{display:flex;align-items:center;gap:.6rem;min-height:var(--btn-h);font-weight:600;color:var(--text);cursor:pointer}
-  .rp-check input{width:20px;height:20px;margin:0;accent-color:var(--brand-fill)}
+  .rp-check input{width:24px;height:24px;margin:0;flex:none;accent-color:var(--brand-fill)}
   .rp-ogrid .rp-ogrid{gap:.7rem}
   .rp-isgift .rp-note{margin:0 0 .2rem}
   .rp-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -572,7 +576,7 @@
                 <label><input type="radio" name="rp-style" value="r1" checked><span>Staircase</span></label>
                 <label><input type="radio" name="rp-style" value="r2"><span>Roots</span></label>
               </span>
-              <button type="button" class="chip rp-zoom-btn" id="rp-zoom" disabled>Up close</button>
+              <button type="button" class="chip rp-zoom-btn" id="rp-zoom" aria-label="Up close: see the print at full size" disabled>Up close</button>
             </span>
           </figcaption>
         </figure>
@@ -935,7 +939,7 @@
     <p class="rp-also" style="margin:1rem 0 0;font-size:.9rem;color:var(--text-dim)">Also in the works: <a href="/rain-gauge" style="color:var(--brand)">a better rain gauge</a>.</p>
     <div class="rp-strip" id="rp-strip" hidden>
       <div class="rp-mini" id="rp-mini" aria-hidden="true"></div>
-      <div class="rp-strip-r"><span id="rp-strip-t"></span><span class="rp-strip-say" id="rp-strip-say" hidden></span><button type="button" class="chip" id="rp-strip-zoom">Up close</button></div>
+      <div class="rp-strip-r"><span id="rp-strip-t"></span><span class="rp-strip-say" id="rp-strip-say" hidden></span><button type="button" class="chip" id="rp-strip-zoom" aria-label="Up close: see the print at full size">Up close</button></div>
     </div>
     <div class="rp-bar" id="rp-bar" hidden>
       <div class="rp-bar-t"><b id="rp-bar-what">Framed &middot; $89</b><span id="rp-bar-where"></span></div>
