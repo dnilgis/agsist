@@ -1,6 +1,6 @@
 {
  "about": "Free public government parcel services Field Scout reads at the moment a reader picks a field. Nothing here is a copy of the parcels; each entry is where to ask. scripts/probe_land_services.py checks every entry (fields, a test query, and that the service lets a web page read it) and sets verified and checked_utc. A county or state entry is used only when verified is true; Wisconsin's statewide map is builtin, tried even before the first check, and the page says so when it does not answer.",
- "checked_utc": "2026-10-17T04:24:30Z",
+ "checked_utc": "2026-10-17T04:47:50Z",
  "statewide": {
   "WI": [
    {
@@ -51,7 +51,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z",
+    "checked_utc": "2026-10-17T04:47:50Z",
     "builtin": true
    },
    {
@@ -122,13 +122,13 @@
      "ok"
     ],
     "data_last_edit": "2026-06-30",
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    },
    {
     "id": "wi-sco-v11",
     "builtin": true,
     "verified": false,
-    "checked_utc": "2026-10-17T04:24:30Z",
+    "checked_utc": "2026-10-17T04:47:50Z",
     "name": "Wisconsin Statewide Parcel Map (V11, 2025)",
     "by": "Wisconsin Department of Administration and the State Cartographer's Office (V11)",
     "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/ArcGIS/rest/services/Wisconsin_Statewide_Parcels/FeatureServer/0",
@@ -197,7 +197,7 @@
     "id": "wi-ltsb",
     "builtin": true,
     "verified": false,
-    "checked_utc": "2026-10-17T04:24:30Z",
+    "checked_utc": "2026-10-17T04:47:50Z",
     "name": "Wisconsin Statewide Parcel Map (Legislative Technology Services Bureau copy)",
     "by": "Wisconsin Legislative Technology Services Bureau, same V11 parcels",
     "url": "https://mapservices.legis.wisconsin.gov/arcgis/rest/services/WLIP/Parcels/FeatureServer/0",
@@ -391,7 +391,7 @@
     "notes": [
      "owners in 31 of 87 counties"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ]
  },
@@ -440,7 +440,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27059": [
@@ -476,7 +476,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27111": [
@@ -505,7 +505,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27117": [
@@ -544,7 +544,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27123": [
@@ -582,7 +582,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27145": [
@@ -620,7 +620,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27149": [
@@ -650,7 +650,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27155": [
@@ -683,7 +683,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "27173": [
@@ -719,7 +719,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "19013": [
@@ -753,7 +753,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "19155": [
@@ -791,7 +791,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "17093": [
@@ -833,7 +833,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "17143": [
@@ -866,7 +866,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "17043": [
@@ -892,7 +892,7 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
    }
   ],
   "17089": [
@@ -928,7 +928,111 @@
     "notes": [
      "ok"
     ],
-    "checked_utc": "2026-10-17T04:24:30Z"
+    "checked_utc": "2026-10-17T04:47:50Z"
+   }
+  ],
+  "27027": [
+   {
+    "id": "co-27027",
+    "verified": true,
+    "name": "Clay County parcels",
+    "by": "ClayCountyMN  Clay County, MN",
+    "url": "https://gis23.claycountymn.gov/arcgis/rest/services/OpenData/Tax_Parcels_with_Tax_Data_in_State_Standard/MapServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=1a2395e790d44b759dd7e1abbd16474a",
+    "fields": {
+     "pid": [
+      "PID",
+      "PIN",
+      "COUNTY_PIN",
+      "STATE_PIN"
+     ],
+     "owner": [
+      "TAX_NAME"
+     ],
+     "site": [
+      "PropertyAddress"
+     ],
+     "land": [
+      "EMV_LAND"
+     ],
+     "imp": [
+      "EMV_BLDG"
+     ],
+     "total": [
+      "EMV_TOTAL"
+     ],
+     "cls": [
+      "USECLASS1"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T04:51:14Z"
+   }
+  ],
+  "27131": [
+   {
+    "id": "co-27131",
+    "verified": true,
+    "name": "Rice County parcels",
+    "by": "rcgis@ricecountymn.gov",
+    "url": "https://asr-arcgis01.ricecountymn.gov/arcgis/rest/services/Maps/TaxParcels/MapServer/1",
+    "about": "https://www.arcgis.com/home/item.html?id=d79e1a5432e44980877703f5371a1a70",
+    "fields": {
+     "pid": [
+      "COUNTY_PIN",
+      "STATE_PIN"
+     ],
+     "owner": [
+      "OWNER_NAME"
+     ],
+     "land": [
+      "EMV_LAND"
+     ],
+     "imp": [
+      "EMV_BLDG"
+     ],
+     "total": [
+      "EMV_TOTAL"
+     ],
+     "cls": [
+      "USECLASS1",
+      "USECLASS2",
+      "USECLASS3",
+      "USECLASS4"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T04:52:30Z"
+   }
+  ],
+  "17097": [
+   {
+    "id": "co-17097",
+    "verified": true,
+    "name": "Lake County parcels",
+    "by": "LakeCounty_Illinois  Lake County Illinois GIS",
+    "url": "https://services3.arcgis.com/HESxeTbDliKKvec2/arcgis/rest/services/OpenData_ParcelPolygons/FeatureServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=318e616ff0d14efe83927d8dd3bc1e12",
+    "fields": {
+     "pid": [
+      "PIN"
+     ],
+     "owner": [
+      "taxpayer_name"
+     ]
+    },
+    "found": "arcgis-search",
+    "data_last_edit": "2026-10-11",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T04:58:30Z"
    }
   ]
  },
@@ -971,9 +1075,9 @@
     "url": "https://dnrmaps.wi.gov/arcgis/rest/services/DW_Map_Dynamic/EN_County_Tax_Parcels_WTM_Ext_Dynamic_L16/MapServer",
     "about": "https://www.sco.wisc.edu/parcels/data/",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://dnrmaps.wi.gov/arcgis/rest/services/DW_Map_Dynamic/EN_County_Tax_Parcels_WTM_Ext_Dynamic_L16/MapServer/0: ok"
+      "in the registry"
      ]
     }
    },
@@ -986,9 +1090,9 @@
     "url": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer",
     "about": "https://gisdata.mn.gov/dataset/plan-parcels-open",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer/1: owners in 31 of 87 counties"
+      "in the registry"
      ]
     }
    },
@@ -998,9 +1102,9 @@
     "by": "Polk County, Iowa",
     "url": "https://gis4.polkcountyiowa.gov/server/rest/services/Public/Polk_County_Parcels/MapServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "no polygon layer answered"
+      "no polygon layer answered: service did not answer: HTTP Error 403: Forbidden"
      ]
     }
    },
@@ -1010,7 +1114,7 @@
     "by": "Marshall County, Iowa",
     "url": "https://gis.marshallcountyia.gov/arcgis/rest/services/WebParcels/MapServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
       "https://gis.marshallcountyia.gov/arcgis/rest/services/WebParcels/MapServer/0: test query at 42.0358,-92.9608 returned no parcel"
      ]
@@ -1022,9 +1126,9 @@
     "by": "Linn County, Iowa GIS",
     "url": "https://gis.linncountyiowa.gov/ags/rest/services/RealEstate/mapLandRecords/MapServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "no polygon layer answered"
+      "no polygon layer answered: service error: {'code': 404, 'message': 'Service not found', 'details': []}; layers: "
      ]
     }
    },
@@ -1034,9 +1138,9 @@
     "by": "Scott County, Iowa GIS",
     "url": "https://services.arcgis.com/ovln19YRWV44nBqV/ArcGIS/rest/services/Cadastral/FeatureServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://services.arcgis.com/ovln19YRWV44nBqV/ArcGIS/rest/services/Cadastral/FeatureServer/5: no parcel number and owner fields by name"
+      "https://services.arcgis.com/ovln19YRWV44nBqV/ArcGIS/rest/services/Cadastral/FeatureServer/5: no parcel number and owner fields by name (fields: OBJECTID, Lot_Number, From_Date, GlobalID, Shape__Area, Shape__Length)"
      ]
     }
    },
@@ -1046,9 +1150,9 @@
     "by": "McLean County, Illinois GIS",
     "url": "https://gis.mcleancountyil.gov/arcgis/rest/services/BnZ/Parcels/MapServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://gis.mcleancountyil.gov/arcgis/rest/services/BnZ/Parcels/MapServer/0: no parcel number and owner fields by name"
+      "https://gis.mcleancountyil.gov/arcgis/rest/services/BnZ/Parcels/MapServer/0: no parcel number and owner fields by name (fields: OBJECTID, PIN, DEED_AC, COMPUTED_AC, ADDED, CHANGED, RETIRED, PAST, INITIALS, CONDOMAX, DATA_SOURCE, GlobalID, Shape, Shape.STArea(), Shape.STLength())"
      ]
     }
    },
@@ -1058,9 +1162,9 @@
     "by": "DuPage County, Illinois GIS",
     "url": "https://gis.dupageco.org/arcgis/rest/services/DuPage_County_IL/ParcelsWithRealEstateCC/MapServer/0",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://gis.dupageco.org/arcgis/rest/services/DuPage_County_IL/ParcelsWithRealEstateCC/MapServer/0: ok"
+      "in the registry"
      ]
     }
    },
@@ -1070,9 +1174,9 @@
     "by": "Lake County, Illinois",
     "url": "https://maps.lakecountyil.gov/arcgis/rest/services/CCAO/TaxParcelViewerPro/MapServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://maps.lakecountyil.gov/arcgis/rest/services/CCAO/TaxParcelViewerPro/MapServer/9: no parcel number and owner fields by name"
+      "https://maps.lakecountyil.gov/arcgis/rest/services/CCAO/TaxParcelViewerPro/MapServer/9: no parcel number and owner fields by name (fields: OBJECTID, TownshipNumber, RangeNumber, Shape, PAGE, Shape.STArea(), Shape.STLength())"
      ]
     }
    },
@@ -1082,7 +1186,7 @@
     "by": "LaSalle County, Illinois",
     "url": "https://gis.lasallecounty.org/arcgis/rest/services/TaxParcels/MapServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
       "https://gis.lasallecounty.org/arcgis/rest/services/TaxParcels/MapServer/1: no Access-Control-Allow-Origin for agsist.com; a browser page cannot read it"
      ]
@@ -1094,9 +1198,9 @@
     "by": "Kane County, Illinois",
     "url": "https://gistech.countyofkane.org/arcgis/rest/services/KanePINList/MapServer/0",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://gistech.countyofkane.org/arcgis/rest/services/KanePINList/MapServer/0: ok"
+      "in the registry"
      ]
     }
    },
@@ -1106,9 +1210,9 @@
     "by": "Cook County, Illinois",
     "url": "https://gis12.cookcountyil.gov/traditional/rest/services/CookViewer3Parcels/MapServer/0",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://gis12.cookcountyil.gov/traditional/rest/services/CookViewer3Parcels/MapServer/0: no parcel number and owner fields by name"
+      "https://gis12.cookcountyil.gov/traditional/rest/services/CookViewer3Parcels/MapServer/0: no parcel number and owner fields by name (fields: OBJECTID, Shape, GlobalID, PARID, TAXYR, CUR, STATUS, CITYNAME, STATECODE, UNITDESC, UNITNO, LOC2, ZIP1, ZIP2, TAXDIST, XCOORD, YCOORD, USER1, DEACTIVAT, PIN10, street_address, township_number, township_name, latitude, longitude, PIN14_dash, Shape.STArea(), Shape.STLength(), city_state_zip, PIN14, find_my_dist_link, class_info_display, assessor_link, current_procname, current_value_desc, LANDSF, CURRENTVALUE_TOTAL, CURRENTVALUE_LAND, CURRENTVALUE_BLDG, CURRENTVALUE_HIE_TOT, hist_assessval_link, BLDGSQFT, bldg_const_desc, oblique_link, historical_photo_link, clerk_prop_records_link, property_portal_link, hist_sf_mf_imp_chars_link, BCLASS, major_class_description, class_description, BCONST, NBHD, BLDGAGE, created_date, last_edited_date, XMin, XMax, YMin, YMax)"
      ]
     }
    },
@@ -1118,9 +1222,9 @@
     "by": "City of Rockford, Illinois",
     "url": "https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer",
     "last": {
-     "checked_utc": "2026-10-17T04:24:30Z",
+     "checked_utc": "2026-10-17T04:47:50Z",
      "notes": [
-      "https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer/0: no parcel number and owner fields by name"
+      "https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer/0: no parcel number and owner fields by name (fields: OBJECTID, PrimaryPIN, PIN, DashPIN, AltParcelNumber, ParcelYear, LOPHouseNumber, LOPHouseNbrSuffix, LOPPrefixDirectional, LOPStreetName, LOPStreetSuffix, LOPPostDirectional, LOPCommunityName, LegalDesc, TownshipName, OwnerLastName, OwnerFirstName, OwnerMiddleInit, OwnerSuffix, OwnerAddress1, OwnerAddress2, OwnerCity, OwnerState, OwnerZip, TaxpayerLastName, TaxpayerFirstName, TaxpayerMiddleInit, TaxpayerSuffix, TaxpayerAddress1, TaxpayerAddress2, TaxpayerCity, TaxpayerState, TaxpayerZip, OptOut, GlobalID, OwnerLastChange, Shape, Shape.STArea(), Shape.STLength())"
      ]
     }
    }
@@ -1166,7 +1270,7 @@
   },
   "MN": {
    "parcels_statewide_verified": true,
-   "parcels_counties_verified": 34,
+   "parcels_counties_verified": 36,
    "of": 87
   },
   "IA": {
@@ -1176,7 +1280,7 @@
   },
   "IL": {
    "parcels_statewide_verified": false,
-   "parcels_counties_verified": 4,
+   "parcels_counties_verified": 5,
    "of": 102
   }
  }
