@@ -1,0 +1,85 @@
+name: API jobs (one-time)
+
+# Two one-time review jobs through the Message Batches API (scripts/api_jobs.py):
+# unanswered searches per page, and alt text for the images on hand-made pages.
+# Dispatch only, from the fx/apijobs branch; no schedule. Input and every
+# output live on the raw branch under apijobs/<run>/ (never deployed).
+#
+#   mode=estimate  count tokens and print the worst-case cost, spend nothing
+#   mode=submit    estimate, refuse over $20, refuse if apijobs/<run>/batch.json
+#                  is already on raw, submit one batch, then wait and collect
+#   mode=collect   wait for the batch and write apijobs/<run>/results.json
+
+# The push trigger exists only so GitHub registers this workflow from a branch
+# that is not main (dispatch needs that); a push runs the selftest and nothing
+# else, no API call and no spend.
+on:
+  push:
+    branches: [fx/apijobs]
+    paths: [.github/workflows/api-jobs.yml]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "estimate | submit | collect"
+        required: true
+        default: estimate
+      run:
+        description: "Run folder under apijobs/ on raw (one batch per run)"
+        default: r1
+      wait_minutes:
+        description: "How long collect waits for the batch to end"
+        default: "120"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: api-jobs
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      APIJOBS_RUN: ${{ inputs.run || 'r1' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: python scripts/api_jobs.py selftest
+      - name: Get the input and any earlier batch record from raw
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          git fetch -q --depth 1 origin raw
+          D="apijobs/$APIJOBS_RUN"
+          mkdir -p "$D"
+          git show "FETCH_HEAD:$D/input/bundle.json" > /tmp/bundle.json
+          git show "FETCH_HEAD:$D/batch.json" > "$D/batch.json" 2>/dev/null || rm -f "$D/batch.json"
+          ls -la "$D" /tmp/bundle.json
+      - name: Estimate
+        if: ${{ inputs.mode == 'estimate' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/api_jobs.py estimate /tmp/bundle.json
+      - name: Save the estimate to raw
+        if: ${{ !cancelled() && inputs.mode == 'estimate' }}
+        run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN estimate" "apijobs/$APIJOBS_RUN/estimate.json"
+      - name: Submit
+        if: ${{ inputs.mode == 'submit' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/api_jobs.py submit /tmp/bundle.json
+      - name: Save the batch record to raw
+        if: ${{ !cancelled() && inputs.mode == 'submit' }}
+        run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN batch" "apijobs/$APIJOBS_RUN/batch.json" "apijobs/$APIJOBS_RUN/estimate.json"
+      - name: Wait and collect
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: test -f "apijobs/$APIJOBS_RUN/batch.json" && python scripts/api_jobs.py collect "${{ inputs.wait_minutes }}"
+      - name: Save results to raw
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN results" "apijobs/$APIJOBS_RUN/batch-status.json" "apijobs/$APIJOBS_RUN/results.json" "apijobs/$APIJOBS_RUN/results-raw.jsonl"
