@@ -56,6 +56,13 @@ THE RULES
       except: the November contract shall terminate on the Thursday prior to
       Thanksgiving Day..." -- CME Rule 10202. Dead from the day after.
 
+  TENTH_BUSINESS_DAY (CME lean hogs, 2026-10-17)
+      Trading terminates at noon on the 10th business day of the contract
+      month (CME Rulebook chapter 152, Lean Hog futures). Oct '26 hogs: Oct 1,
+      2, 5, 6, 7, 8, 9, 12, 13, 14, so the last trade was Wed Oct 14. Our own
+      feed agrees: HEV26 stopped printing new bars after Oct 14 while Dec moved.
+      Business days are is_trading_day below (exchange holidays skipped).
+
   All of these are deliberately a hair CONSERVATIVE: on the true last trading
   day we still consider the contract live. That errs toward the contract
   everyone is still quoting, which is the safe direction -- rolling EARLY is
@@ -67,12 +74,11 @@ THE RULES
   slightly longer, never roll early. Dead contracts stop updating and get
   flagged `stale` upstream, and every consumer already skips stale quotes.
 
-NOT VERIFIED -- see the note by PRODUCT_RULE before trusting these
-  Lean hogs and Class III milk are on MONTH_END because I could not retrieve
-  their termination rule from an authoritative source, not because I confirmed
-  it. Both are believed to terminate EARLIER than month end (hogs on the 10th
-  business day is the widely quoted rule). MONTH_END is the conservative choice
-  -- it holds too long rather than rolling early -- but it is a placeholder.
+NOT VERIFIED -- see the note by PRODUCT_RULE before trusting it
+  Class III milk is on MONTH_END as a placeholder. (Lean hogs were too until
+  2026-10-17, and MONTH_END held Oct '26 hogs on the home ticker at a frozen
+  $75.55 for two days after they stopped trading. Holding a dead contract
+  is not the safe direction after all: it prints a price nobody can trade.)
 
 USAGE
     from contract_calendar import is_expired, front_key
@@ -121,8 +127,8 @@ _MONTH = {
 #   cattle   CME Rule 10102.H -- last business day of the contract month
 #   feeders  CME Rule 10202   -- last Thursday, November and holiday exceptions
 #   grains   CBOT -- business day before the 15th (see docstring)
-# NOT SOURCED (placeholder, conservative):
-#   hogs     believed 10th business day; MONTH_END until confirmed
+#   hogs     CME chapter 152 -- 10th business day of the contract month
+# NOT SOURCED (placeholder):
 #   milk     believed tied to the USDA Class III announcement; MONTH_END until
 #            confirmed
 PRODUCT_RULE = {
@@ -131,7 +137,7 @@ PRODUCT_RULE = {
     "meal": "GRAIN", "soyoil": "GRAIN",
     "cattle": "MONTH_END",
     "feeders": "LAST_THURSDAY",
-    "hogs": "MONTH_END",        # UNVERIFIED -- see docstring
+    "hogs": "TENTH_BUSINESS_DAY",
     "milk": "MONTH_END",        # UNVERIFIED -- see docstring
 }
 _DEFAULT_RULE = "GRAIN"
@@ -169,8 +175,22 @@ def _feeder_last_trading_day(yr, mon):
     return _last_weekday_of_month(yr, mon, 3)      # 3 = Thursday
 
 
+def _nth_business_day(yr, mon, n):
+    """The n-th exchange business day of the month (is_trading_day)."""
+    d = date(yr, mon, 1)
+    seen = 0
+    while True:
+        if is_trading_day(d):
+            seen += 1
+            if seen == n:
+                return d
+        d += timedelta(days=1)
+
+
 def dead_from(yr, mon, rule):
     """First date on which a contract of this month/rule is considered dead."""
+    if rule == "TENTH_BUSINESS_DAY":
+        return _nth_business_day(yr, mon, 10) + timedelta(days=1)
     if rule == "MONTH_END":
         return (date(yr, mon, calendar.monthrange(yr, mon)[1])
                 + timedelta(days=1))               # the 1st of the next month
@@ -475,6 +495,27 @@ def _selftest():
     chk(is_expired("feeders-nov26", T(2026, 11, 19)) is False, "feeders-nov26 live on Nov 19")
     chk(is_expired("feeders-nov26", T(2026, 11, 20)) is True,  "feeders-nov26 dead on Nov 20")
     chk(is_expired("feeders-nov26", T(2026, 11, 26)) is True,  "feeders-nov26 not revived by the last Thursday")
+
+    # lean hogs: 10th business day (2026-10-17). Oct '26 stopped trading on
+    # Wed Oct 14; the home ticker still showed it at $75.55 "unch" on Oct 16.
+    chk(rule_for("hogs-oct26") == "TENTH_BUSINESS_DAY", "hogs are on the 10th-business-day rule")
+    chk(_nth_business_day(2026, 10, 10).isoformat() == "2026-10-14", "10th business day of Oct 2026 is Oct 14")
+    chk(is_expired("hogs-oct26", T(2026, 10, 14)) is False, "hogs-oct26 live on Oct 14 (last trading day)")
+    chk(is_expired("hogs-oct26", T(2026, 10, 15)) is True, "hogs-oct26 dead on Oct 15")
+    chk(is_expired("hogs-oct26", T(2026, 10, 16)) is True, "hogs-oct26 dead on Oct 16 (the scorer's day)")
+    chk(front_key(["hogs-oct26", "hogs-dec26"], T(2026, 10, 16)) == "hogs-dec26", "hogs front is Dec on Oct 16")
+    # Dec 2026: Dec 1-4, 7-11, 14 -> the 10th is Mon Dec 14
+    chk(_nth_business_day(2026, 12, 10).isoformat() == "2026-12-14", "10th business day of Dec 2026 is Dec 14")
+    # Feb 2027: Presidents Day Feb 15 is skipped: Feb 1-5, 8-12 -> the 10th is Feb 12
+    chk(_nth_business_day(2027, 2, 10).isoformat() == "2027-02-12", "10th business day of Feb 2027 is Feb 12")
+    # Jul 2027: Jul 5 is the observed Independence Day: 1, 2, 6, 7, 8, 9, 12, 13, 14, 15
+    chk(_nth_business_day(2027, 7, 10).isoformat() == "2027-07-15", "10th business day of Jul 2027 skips Jul 5")
+    # feeders Oct '26 trade to the last Thursday (Oct 29), Nov '26 to Nov 19
+    chk(is_expired("feeders-oct26", T(2026, 10, 16)) is False, "feeders-oct26 live on Oct 16")
+    chk(is_expired("feeders-oct26", T(2026, 10, 29)) is False, "feeders-oct26 live on Oct 29")
+    chk(is_expired("feeders-oct26", T(2026, 10, 30)) is True, "feeders-oct26 dead on Oct 30")
+    chk(front_key(["feeders-oct26", "feeders-nov26"], T(2026, 10, 30)) == "feeders-nov26",
+        "feeders roll oct -> nov on Oct 30")
 
     # grains keep the rule they always had -- this change must not move them
     for k in ("corn-jul26", "beans-jul26", "wheat-jul26", "oats-jul26",
