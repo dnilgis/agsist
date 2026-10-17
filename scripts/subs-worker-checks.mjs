@@ -258,6 +258,33 @@ t = await sig('both@farm.com');
 r = await call('/unsubscribe?e=both@farm.com&t=' + t, 'POST');
 A(!store.has('sub:both@farm.com') && !store.has('note:both@farm.com'), 'the daily unsubscribe also stops the notices');
 
+// v5.28: rainyear:<YYYY>:<county FIPS>, the January full-year rain email
+{
+  const now = new Date(), cy = now.getUTCFullYear(), jan = now.getUTCMonth() === 0;
+  r = await call('/notice', 'POST', { email: 'Rain@Example.com', topic: 'rainyear:' + cy + ':19169', source: 'page:rain/iowa/story-county', daily: true, zip: '50010' });
+  j = await r.json();
+  A(r.status === 200 && j.ok === true && j.topic === 'rainyear:' + cy + ':19169' && j.daily === true, 'rainyear: this year and a county FIPS is stored');
+  A(note('rain@example.com').t['rainyear:' + cy + ':19169'].src === 'page:rain/iowa/story-county', 'rainyear: keeps the page it came from');
+  A(rec('rain@example.com').zip === '50010', 'rainyear with daily:true: on the daily list with its ZIP');
+  for (const [tp, why] of [['rainyear:' + (cy - 2) + ':19169', 'a year two back'], ['rainyear:' + (cy + 1) + ':19169', 'next year'],
+      ['rainyear:' + cy + ':99001', 'no such state'], ['rainyear:' + cy + ':03001', 'state code 03'], ['rainyear:' + cy + ':19000', 'a state, not a county'],
+      ['rainyear:' + cy + ':1916', 'four digits'], ['rainyear:' + cy, 'no county'], ['rainyear:' + cy + ':19169:x', 'extra part']]) {
+    r = await call('/notice', 'POST', { email: 'rainbad@example.com', topic: tp });
+    A(r.status === 400 && (await r.json()).ok === false, 'rainyear refuses ' + why);
+  }
+  r = await call('/notice', 'POST', { email: 'rainbad@example.com', topic: 'rainyear:' + (cy - 1) + ':19169' });
+  A(r.status === (jan ? 200 : 400), 'rainyear: last year only during January');
+  A(!store.has('note:rainbad@example.com') || jan, 'a refused rainyear stores nothing');
+  r = await call('/notice-list?token=tok&topic=rainyear:');
+  const RL = await r.json();
+  A(RL.length >= 1 && RL.every(x => x.topic.startsWith('rainyear:')) && RL.some(x => x.email === 'rain@example.com'), '/notice-list?topic=rainyear: (prefix)');
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'rain@example.com', topic: 'rainyear:' + cy + ':19169' });
+  A((await r.json()).ok === true && Number.isFinite(note('rain@example.com').t['rainyear:' + cy + ':19169'].sent), 'rainyear: /notice-mark records sent');
+  store.set('note:old@example.com', JSON.stringify({ ts: 1, t: { 'rainyear:2020:19169': { ts: 1, src: 'x' } } }));
+  r = await call('/notice-mark?token=tok', 'POST', { email: 'old@example.com', topic: 'rainyear:2020:19169' });
+  A((await r.json()).ok === true && Number.isFinite(note('old@example.com').t['rainyear:2020:19169'].sent), 'rainyear: /notice-mark takes any year');
+}
+
 // ───────────────────────── v5.13 hardening ─────────────────────────
 // Each block gets its own store, so the counts above are not disturbed.
 const fresh = (extra = {}) => { const st = new Map(), meta = new Map(), opts = new Map(), log = { get: 0, list: [] };

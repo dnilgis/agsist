@@ -5,6 +5,14 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.28 (2026-10-17): RAIN YEAR NOTICE. /notice takes one more topic,
+ *   rainyear:<YYYY>:<county FIPS> (one email in January with that county's
+ *   full-year rain, from the county rain pages, /rain/<state>/<county>). The
+ *   year must be this year (or last year during January); the FIPS is 5
+ *   digits with a real state code. /notice-mark and /notice-unsubscribe take
+ *   any year. scripts/send_rain_year.py mails it from county-rain.yml.
+ *   Every other topic and route answers exactly as before. No new binding
+ *   and no new secret.
  * v5.27 (2026-10-17): RAIN PRINT OPTIONS IN SHORT LINKS. POST /rp-short takes a design
  *   code whose key field carries the units-and-language letter (A to H, 2026-10-16)
  *   and the 2026-10-17 options after a ~ (crop and its two days, plant drawings,
@@ -752,9 +760,19 @@ async function subAll(env) {
 const NOTE_MAX = 20;
 const NOTE_TEXT_MAX = 280;   // v5.18: the rain-gauge note, one line
 const RENT_STATES = new Set(("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy").split(" "));
+// v5.28: rainyear:<YYYY>:<county FIPS>, the January full-year rain email.
+const RAIN_ST_FIPS = new Set([1, 2, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+  27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 45, 46, 47, 48, 49, 50, 51, 53, 54, 55, 56]);
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
+  let ry = /^rainyear:(\d{4}):(\d{5})$/.exec(t);
+  if (ry) {
+    if (!RAIN_ST_FIPS.has(+ry[2].slice(0, 2)) || ry[2].slice(2) === "000") return null;
+    if (anyDate) return t;
+    const now = new Date(), cy = now.getUTCFullYear(), y = +ry[1];
+    return y === cy || (y === cy - 1 && now.getUTCMonth() === 0) ? t : null;
+  }
   let m = /^rent:([a-z]{2})$/.exec(t);
   if (m) return RENT_STATES.has(m[1]) ? t : null;
   m = /^arcplc:(\d{4})-(\d{2})-(\d{2})$/.exec(t);
