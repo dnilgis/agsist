@@ -39,8 +39,9 @@ ORIGIN = "https://agsist.com"
 UA = "AGSIST land service check (agsist.com; sig@farmers1st.com)"
 COUNTY_TOTAL = {"WI": 72, "MN": 87, "IA": 99, "IL": 102}
 
-PID = re.compile(r"^(PIN|PARCEL_?ID|PARCELID|PARCEL_?NO|PARCELNUM|PARCEL_NUMBER|PID|TAX_?ID|TAXPARCELID|GPIN|PARCEL)$", re.I)
-OWN = re.compile(r"^(OWNER_?NAME\d?|OWNERNME\d|OWNER\d?|OWN_?NAME\d?|DEEDHOLDER|TAXPAYER_?NAME|TAXPAYER|OWNER_?1|NAME_?1|OWNNAME)$", re.I)
+PID = re.compile(r"^((COUNTY_|STATE_)?PIN|PARCEL_?ID|PARCELID|PARCEL_?NO|PARCELNUM|PARCEL_?NUMBER|PARID|PID|TAX_?ID|TAXPARCELID|GPIN|PARCEL)$", re.I)
+OWN = re.compile(r"^(OWNER_?NAME\d?|OWNERNME\d|OWNER\d?|OWN_?NAME\d?|DEED_?HOLDER\d?|TAXPAYER_?NAME|TAXPAYER|OWNER_?1|NAME_?1|OWNNAME|BILL_?NAME|TAX_?NAME)$", re.I)
+TAXNAME = re.compile(r"^(BILL_?NAME|TAX_?NAME)$", re.I)
 MAIL = re.compile(r"^(MAIL(ING)?_?(ADDR(ESS)?)?\d?|PSTLADRESS|OWNER_?ADDR(ESS)?\d?|OWN_?ADD(R)?\d?|TAXPAYER_?ADDR(ESS)?\d?|MAIL_?CITY|MAIL_?STATE|MAIL_?ZIP)$", re.I)
 SITE = re.compile(r"^(SITE_?ADDR(ESS)?|SITEADRESS|PROP(ERTY)?_?ADDR(ESS)?|SITUS(_?ADDR(ESS)?)?|PHYSICAL_?ADDR(ESS)?)$", re.I)
 ACRES = re.compile(r"^(GIS_?ACRES|DEED_?ACRES|ACRES|ACREAGE|CALC_?ACRES|TOTAL_?ACRES|ASSD_?ACRES|DEEDACRES|GISACRES)$", re.I)
@@ -54,6 +55,15 @@ GOV = re.compile(r"\b(county|state|city|township|town of|village|dept|department
                  r"university|survey)\b", re.I)
 VENDOR = re.compile(r"beacon|schneider|qpublic|vanguard|tyler|devnet|fidlar|landmark|regrid|loveland|reportall|"
                     r"acrevalue|plat ?book|mapping solutions|arch ?beacon|esri (inc|staff)|wthgis", re.I)
+
+
+LOG = []
+
+
+def say(line):
+    """Print a line and keep it for the raw log (the runner's own log is not always readable later)."""
+    print(line)
+    LOG.append(line)
 
 
 def get(url, params=None, origin=False, timeout=45):
@@ -83,6 +93,8 @@ def guess_fields(fields):
     for key, rx in (("pid", PID), ("owner", OWN), ("mail", MAIL), ("site", SITE), ("land", LAND),
                     ("imp", IMP), ("total", TOTAL), ("cls", CLS), ("legal", LEGAL)):
         hit = all_of(rx)
+        if key == "owner" and any(not TAXNAME.match(n) for n in hit):
+            hit = [n for n in hit if not TAXNAME.match(n)]   # the tax bill name only when no owner field
         if hit:
             out[key] = hit[:4]
     ac = all_of(ACRES)
@@ -192,14 +204,25 @@ def check(entry, pt, tag):
 
 def discover_county(fips, c, seen):
     """Search ArcGIS Online for a public parcel layer this county publishes."""
-    q = '"%s County" parcels (type:"Feature Service" OR type:"Map Service")' % c["name"]
-    try:
-        _, _, body = get("https://www.arcgis.com/sharing/rest/search", {"q": q, "f": "json", "num": 25})
-        save_raw("search-%s.json" % fips, body)
-        items = json.loads(body).get("results") or []
-    except Exception as e:  # noqa: BLE001
-        return None, "search failed: %s" % e
     stname = {"MN": "Minnesota", "IA": "Iowa", "IL": "Illinois", "WI": "Wisconsin"}.get(c["st"], c["st"])
+    # The state name first: a bare "Story County" search fills up with same-named counties elsewhere.
+    items, ids = [], set()
+    for i, q in enumerate(('"%s County" %s parcels (type:"Feature Service" OR type:"Map Service")' % (c["name"], stname),
+                           '"%s County" parcels (type:"Feature Service" OR type:"Map Service")' % c["name"])):
+        try:
+            _, _, body = get("https://www.arcgis.com/sharing/rest/search", {"q": q, "f": "json", "num": 25})
+            save_raw("search-%s-%d.json" % (fips, i), body)
+            got = json.loads(body).get("results") or []
+        except Exception as e:  # noqa: BLE001
+            if i == 0:
+                continue
+            if not items:
+                return None, "search failed: %s" % e
+            got = []
+        for it in got:
+            if it.get("id") not in ids:
+                ids.add(it.get("id"))
+                items.append(it)
     for it in items:
         title = (it.get("title") or "") + " " + (it.get("snippet") or "") + " " + " ".join(t for t in (it.get("tags") or []) if t)
         if c["name"].lower() not in title.lower() or not re.search(r"parcel", title, re.I):
@@ -248,6 +271,54 @@ def discover_county(fips, c, seen):
             if ok:
                 return e, "ok"
     return None, "no public government parcel layer with owner fields found"
+
+
+BTAA = "https://geo.btaa.org/catalog/%s-parcels-05000US%s.json"
+REST_URL = re.compile(r"https://[^\s\"'\\<>]+?/rest/services/[^\s\"'\\<>?#]+?/(?:MapServer|FeatureServer)(?:/\d+)?(?=[\s\"'\\<>?#/]|$)")
+
+
+def rest_urls(text):
+    """ArcGIS service or layer URLs named in a catalog record, in the order they appear."""
+    out = []
+    for u in REST_URL.findall(text or ""):
+        if u not in out:
+            out.append(u)
+    return out
+
+
+def discover_btaa(fips, c, seen):
+    """The Big Ten Academic Alliance geoportal keeps a record of each county's own parcel service
+    (Iowa and others). Read the service it names, then check it like any other."""
+    try:
+        _, _, body = get(BTAA % (c["st"].lower(), fips))
+        save_raw("btaa-%s.json" % fips, body)
+        text = body.decode("utf-8", errors="replace")
+    except Exception as e:  # noqa: BLE001
+        return None, "no geoportal record (%s)" % e
+    m = re.search(r'"dct_publisher_sm"\s*:\s*\[\s*"([^"]+)"', text) or re.search(r'"schema_provider_s"\s*:\s*"([^"]+)"', text)
+    pub = m.group(1) if m else ""
+    for su in rest_urls(text):
+        if VENDOR.search(su) or VENDOR.search(pub):
+            continue
+        for lu in layers_of(su):
+            if lu in seen:
+                continue
+            seen.add(lu)
+            try:
+                _, _, mb = get(lu, {"f": "json"})
+                F = guess_fields(json.loads(mb).get("fields"))
+            except Exception:  # noqa: BLE001
+                continue
+            if "pid" not in F or "owner" not in F:
+                continue
+            e = {"id": "co-%s" % fips, "verified": False, "name": "%s County parcels" % c["name"], "by": pub or "%s County" % c["name"],
+                 "url": lu, "about": BTAA.replace(".json", "") % (c["st"].lower(), fips), "fields": F, "found": "btaa-geoportal"}
+            ok, notes = check(e, c["pt"], "co-%s" % fips)
+            e["verified"], e["notes"] = ok, notes
+            e["checked_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            if ok:
+                return e, "ok (geoportal record)"
+    return None, "geoportal record has no working owner layer"
 
 
 def owner_at(e, pt):
@@ -338,21 +409,118 @@ def coverage(reg, pts):
     return out
 
 
+POINT_MISS = ("test query at", "test parcel has a blank owner")
+
+
+def check_state(e, st, pts):
+    """A statewide entry. One that only some counties fill (partial: Minnesota's opt-in file) passes
+    when the layer itself checks out and at least one county gives an owner back; covers lists them."""
+    cos = [v for v in pts.values() if v["st"] == st]
+    ok, notes = check(e, cos[len(cos) // 2]["pt"], e["id"])
+    if e.get("partial") or "covers" in e:
+        hard = [n for n in notes if n != "ok" and not n.startswith("named fields") and not n.startswith(POINT_MISS)]
+        if not hard and (e.get("fields") or {}).get("owner"):
+            county_cover(e, st, pts)
+            ok = bool(e["covers"])
+            notes = [n for n in notes if not n.startswith(POINT_MISS)] + ["owners in %d of %d counties" % (len(e["covers"]), len(cos))]
+        else:
+            e["covers"] = []
+    return ok, notes
+
+
+def layers_of(url, why=None):
+    """A layer URL as is; a service URL becomes its polygon (or parcel-named) layers.
+    why, a list, gets the reason when nothing comes back."""
+    url = url.rstrip("/")
+    if re.search(r"/\d+$", url):
+        return [url]
+    try:
+        _, _, sb = get(url, {"f": "json"})
+        sv = json.loads(sb)
+    except Exception as e:  # noqa: BLE001
+        if why is not None:
+            why.append("service did not answer: %s" % e)
+        return []
+    if sv.get("error") and why is not None:
+        why.append("service error: %s" % sv["error"])
+    out = ["%s/%s" % (url, L["id"]) for L in sv.get("layers") or []
+           if "polygon" in str(L.get("geometryType", "")).lower() or re.search(r"parcel|tax", L.get("name") or "", re.I)][:6]
+    if not out and why is not None:
+        why.append("layers: %s" % ", ".join("%s %s" % (L.get("id"), L.get("name")) for L in (sv.get("layers") or [])[:30]))
+    return out
+
+
+def check_candidate(c, pts, now):
+    """A service someone found by hand (discover.candidates). Its fields are read from the layer;
+    it is added to the registry only when check() passes, never on the say-so of the list."""
+    st, fips = c["st"], c.get("fips")
+    tag = "cand-%s" % (fips or c.get("id") or st.lower())
+    why = []
+    lays = layers_of(c["url"], why)
+    last = ["no polygon layer answered" + (": " + "; ".join(why) if why else "")]
+    for i, lu in enumerate(lays):
+        try:
+            _, _, mb = get(lu, {"f": "json"})
+            save_raw("%s-%d-meta.json" % (tag, i), mb)
+            F = guess_fields(json.loads(mb).get("fields"))
+        except Exception as ex:  # noqa: BLE001
+            last = ["metadata did not answer: %s" % ex]
+            continue
+        if "pid" not in F or "owner" not in F:
+            names = [f.get("name") for f in json.loads(mb).get("fields") or []]
+            last = ["%s: no parcel number and owner fields by name (fields: %s)" % (lu, ", ".join(map(str, names[:60])))]
+            continue
+        e = {"id": "co-%s" % fips if fips else c.get("id") or "%s-statewide" % st.lower(), "verified": False,
+             "name": c.get("name") or ("%s County parcels" % pts[fips]["name"] if fips else "%s statewide parcels" % st),
+             "by": c.get("by", ""), "url": lu, "about": c.get("about"), "fields": F, "found": "candidate"}
+        if c.get("partial"):
+            e["partial"] = True
+        if fips:
+            ok, notes = check(e, pts[fips]["pt"], tag)
+        else:
+            ok, notes = check_state(e, st, pts)
+        e["verified"], e["notes"], e["checked_utc"] = ok, notes, now
+        last = ["%s: %s" % (lu, "; ".join(notes))]
+        if ok:
+            return e, last
+    return None, last
+
+
 def run(discover):
     reg = json.load(open(REG))
     pts = county_points()
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     for st, ents in (reg.get("statewide") or {}).items():
-        cos = [v for v in pts.values() if v["st"] == st]
         for e in ents:
-            ok, notes = check(e, cos[len(cos) // 2]["pt"], e["id"])
+            ok, notes = check_state(e, st, pts)
             e["verified"], e["notes"], e["checked_utc"] = ok, notes, now
-            print("%s %s: %s" % ("ok  " if ok else "FAIL", e["id"], "; ".join(notes)))
+            say("%s %s: %s" % ("ok  " if ok else "FAIL", e["id"], "; ".join(notes)))
+        ents.sort(key=lambda x: not x.get("verified"))   # a page tries them in order: working ones first
+    known = set(e["url"].rstrip("/") for v in list((reg.get("counties") or {}).values()) + list((reg.get("statewide") or {}).values()) for e in v)
+    for c in (reg.get("discover") or {}).get("candidates") or []:
+        if any(u == c["url"].rstrip("/") or u.startswith(c["url"].rstrip("/") + "/") for u in known):
+            c["last"] = {"checked_utc": now, "notes": ["in the registry"]}
+            continue
+        try:
+            e, notes = check_candidate(c, pts, now)
+        except Exception as ex:  # noqa: BLE001  one odd answer must not stop the rest
+            e, notes = None, ["error: %s" % ex]
+        c["last"] = {"checked_utc": now, "notes": notes}
+        say("%s candidate %s %s: %s" % ("ok  " if e else "FAIL", c["st"], c.get("fips") or "statewide", "; ".join(notes)))
+        if not e:
+            continue
+        if c.get("fips"):
+            reg.setdefault("counties", {})[c["fips"]] = [e] + [x for x in reg["counties"].get(c["fips"], []) if x.get("verified")]
+        else:
+            if c["st"] == "WI":
+                e["builtin"] = True
+            reg.setdefault("statewide", {}).setdefault(c["st"], []).insert(0, e)
+        known.add(e["url"])
     for fips, ents in list((reg.get("counties") or {}).items()):
         for e in ents:
             ok, notes = check(e, pts[fips]["pt"], e["id"])
             e["verified"], e["notes"], e["checked_utc"] = ok, notes, now
-            print("%s %s: %s" % ("ok  " if ok else "FAIL", e["id"], "; ".join(notes)))
+            say("%s %s: %s" % ("ok  " if ok else "FAIL", e["id"], "; ".join(notes)))
     if discover:
         seen = set(e["url"] for v in (reg.get("counties") or {}).values() for e in v)
         for st, cands in ((reg.get("discover") or {}).get("statewide_candidates") or {}).items():
@@ -360,7 +528,7 @@ def run(discover):
                 continue
             for cand in cands:
                 e = discover_statewide(st, cand, pts, seen)
-                print("%s statewide %s: %s" % (st, cand["name"], "found %s, owners in %d counties" % (e["url"], len(e["covers"])) if e else "none verified"))
+                say("%s statewide %s: %s" % (st, cand["name"], "found %s, owners in %d counties" % (e["url"], len(e["covers"])) if e else "none verified"))
                 if e:
                     reg.setdefault("statewide", {}).setdefault(st, []).append(e)
                     break
@@ -372,21 +540,27 @@ def run(discover):
             for fips, c in sorted(pts.items()):
                 if c["st"] != st or fips in covered or any(e.get("verified") for e in (reg.get("counties") or {}).get(fips, [])):
                     continue
-                try:
-                    e, why = discover_county(fips, c, seen)
-                except Exception as ex:  # noqa: BLE001  one odd answer must not stop the other counties
-                    e, why = None, "discovery error: %s" % ex
-                print("%s %s %s County: %s" % (st, fips, c["name"], why))
+                e, why = None, ""
+                for how in (discover_btaa, discover_county):
+                    try:
+                        e, w = how(fips, c, seen)
+                    except Exception as ex:  # noqa: BLE001  one odd answer must not stop the other counties
+                        e, w = None, "discovery error: %s" % ex
+                    why = (why + "; " if why else "") + w
+                    if e:
+                        break
+                say("%s %s %s County: %s" % (st, fips, c["name"], why))
                 if e:
                     reg.setdefault("counties", {})[fips] = [e]
                 time.sleep(0.4)
     reg["checked_utc"] = now
     reg["coverage"] = coverage(reg, pts)
     for st, v in reg["coverage"].items():
-        print("::notice::parcel and owner coverage %s: %d of %d counties%s" % (st, v["parcels_counties_verified"], v["of"], " (statewide)" if v["parcels_statewide_verified"] else ""))
+        say("::notice::parcel and owner coverage %s: %d of %d counties%s" % (st, v["parcels_counties_verified"], v["of"], " (statewide)" if v["parcels_statewide_verified"] else ""))
     with open(REG, "w") as f:
         json.dump(reg, f, indent=1)
         f.write("\n")
+    save_raw("probe-log.txt", "\n".join(LOG) + "\n")
     return 0
 
 
@@ -423,6 +597,32 @@ def selftest():
         ck("search answer with empty title and snippet is skipped, not a crash (%s)" % ex, False)
     finally:
         get, save_raw = real_get, real_save
+    G = guess_fields([{"name": n} for n in ["COUNTY_PIN", "OWNER_NAME", "TAX_NAME"]])
+    ck("Minnesota standard: county PIN, and the owner field over the tax bill name", G.get("pid") == ["COUNTY_PIN"] and G.get("owner") == ["OWNER_NAME"])
+    ck("tax bill name only when there is no owner field", guess_fields([{"name": "PIN"}, {"name": "BILLNAME"}]).get("owner") == ["BILLNAME"])
+    ck("deed holder fields", guess_fields([{"name": "PARID"}, {"name": "DeedHolder1"}]).get("owner") == ["DeedHolder1"])
+    rec = '{"dct_references_s":"{\\"urn:x-esri:serviceType:ArcGIS#DynamicMapLayer\\":\\"https://gis.co.x.ia.us/arcgis/rest/services/Parcels/MapServer\\"}","u":"https://a.gov/arcgis/rest/services/P/FeatureServer/3?f=json"}'
+    ck("service URLs out of a geoportal record", rest_urls(rec) == ["https://gis.co.x.ia.us/arcgis/rest/services/Parcels/MapServer", "https://a.gov/arcgis/rest/services/P/FeatureServer/3"])
+    # a statewide layer only some counties fill: passes on the counties that answer with an owner
+    pts = county_points()
+    mn = sorted(f for f, v in pts.items() if v["st"] == "MN")
+    hit = pts[mn[0]]["pt"]
+
+    def fake(url, params=None, origin=False, timeout=45):
+        if url.endswith("/query"):
+            on = params["geometry"] == "%f,%f" % hit
+            return 200, {"access-control-allow-origin": "*"}, json.dumps({"features": [{"attributes": {"PIN": "1", "OWNER_NAME": "SYNTHETIC OWNER" if on else ""}}] if on else []})
+        return 200, {"access-control-allow-origin": "*"}, json.dumps({"geometryType": "esriGeometryPolygon", "fields": [{"name": "PIN"}, {"name": "OWNER_NAME"}]})
+    real_sleep = time.sleep
+    get, save_raw, time.sleep = fake, (lambda *a, **k: None), (lambda *_: None)
+    try:
+        e = {"id": "mn-t", "partial": True, "url": "https://x.gov/arcgis/rest/services/P/FeatureServer/0", "fields": {"pid": ["PIN"], "owner": ["OWNER_NAME"]}}
+        ok, notes = check_state(e, "MN", pts)
+        ck("partial statewide layer passes on the one county that answers", ok and e["covers"] == [mn[0]] and len(e["no_owner_counties"]) == len(mn) - 1)
+        e2 = {"id": "mn-u", "url": "https://x.gov/arcgis/rest/services/P/FeatureServer/0", "fields": {"pid": ["PIN"], "owner": ["OWNER_NAME"]}}
+        ck("a whole-state layer still needs its own test parcel", not check_state(e2, "MN", pts)[0] and "covers" not in e2)
+    finally:
+        get, save_raw, time.sleep = real_get, real_save, real_sleep
     reg = json.load(open(REG))
     ck("registry: Wisconsin statewide entries are builtin", all(e.get("builtin") for e in reg["statewide"]["WI"]))
     ck("registry: nothing is verified by hand (only this script sets it)",
