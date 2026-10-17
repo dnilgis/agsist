@@ -188,7 +188,7 @@ test("free means free: no email gate, sign-up or upgrade in the land pieces", ()
 
 test("no em dashes in the new copy", () => {
   for (const f of ["field-scout-land.js", "components/field-report.js", "field-report.html", "data/land/parcel-services.json",
-    "scripts/probe_land_services.py", "scripts/fetch_land_sales.py", ".github/workflows/land-data.yml"]) {
+    "scripts/probe_land_services.py", "scripts/fetch_land_sales.py", "scripts/wi_retr_browser.py", ".github/workflows/land-data.yml"]) {
     assert.ok(!read(f).includes("—"), f + " has an em dash");
   }
 });
@@ -245,6 +245,8 @@ test("coverage: filed dates when the file has them, MyDec's real start otherwise
   const filed = F.coverageText({ from: "1999-06-28", to: "2026-09-04", filed_from: "2014-04-02", filed_to: "2026-10-09", older_deeds: 31 }, "IL");
   assert.equal(filed, "Declarations filed Apr 2, 2014 to Oct 9, 2026; 31 carry deed dates before 2014");
   assert.equal(F.coverageText({ from: "2016-01-04", to: "2026-01-02" }, "WI"), "Transfer returns from Jan 4, 2016 to Jan 2, 2026");
+  assert.equal(F.coverageText({ from: "2020-11-30", to: "2026-09-30", filed_from: "2021-01-04", filed_to: "2026-09-30", older_deeds: 12 }, "WI"),
+    "Returns filed Jan 4, 2021 to Sep 30, 2026; 12 carry deed dates before 2021");
   assert.match(F.historyHTML([], F.covOf(ilFile([], { coverage: { from: "1999-06-28", to: "2026-09-04" } }))), /filed from 2014 to Sep 4, 2026/);
 });
 
@@ -257,4 +259,42 @@ test("sources list names only transfer data on file", () => {
   }
   assert.match(li, /Illinois/);
   assert.doesNotMatch(li, /revenue\.wi\.gov/);
+});
+
+// Wisconsin eRETR rows shaped like the Oct 2026 build (scripts/fetch_land_sales.py wi_row; names synthetic).
+const WI_COLS = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt", "grantor", "grantee", "ac1"];
+const wiFile = (rows) => ({ state: "WI", county: "Vernon", fips: "55123", acres_rule: 2, names: true, cols: WI_COLS,
+  munis: { "0": ["Viroqua town", 43.55, -90.89] }, coverage: { from: "2026-07-30", to: "2026-09-29", filed_from: "2026-08-03", filed_to: "2026-09-30" }, rows });
+// three parcels, each with its own acres, read once: 40 + 38.5 + 1.5 = 80 ac; $720,000 / 80 = $9,000/ac
+const WI_SUM = ["900002", "2026-09-01", 720000, 80, null, 3, "4 1", "Warranty Deed, Sale", "036-00578-0000", "0", "SW NE SEC 20 T13N R4W", 0, "SYNTHETIC, SELLER B", "SYNTHETIC FARMS LLC", 40];
+// the whole sale's 160 ac typed on the first parcel and 0.00 on the other two: acres left blank by the builder
+const WI_ZERO = ["900003", "2026-09-19", 1400000, null, null, 3, "4", "Warranty Deed, Sale", "036-00600-0000", "0", "NW NW SEC 21 T13N R4W", 0, "SYNTHETIC, SELLER D", "SYNTHETIC, BUYER D", 160];
+const WI_GIFT = ["900008", "2026-08-30", 0, 35, null, 1, "6", "Quit Claim Deed, Related Parties, Parent/Child Gift", "036-00700-0000", "0", "NE SE SEC 22 T13N R4W", 1, "SYNTHETIC LAND LLC", "SYNTHETIC, CHILD E", null];
+
+test("Wisconsin returns: summed multi-parcel acres trusted, blanked ones uncertain, gifts not market sales", () => {
+  const [sum, zero, gift] = F.rowObjs(wiFile([WI_SUM, WI_ZERO, WI_GIFT]));
+  assert.equal(sum.acres, 80); assert.equal(sum.ppa, 9000); assert.equal(sum.muniName, "Viroqua town");
+  assert.equal(zero.acres, null); assert.equal(zero.acUnsure, true); assert.equal(zero.ppa, null);
+  assert.ok(F.marketSale(sum) && F.marketSale(zero));
+  assert.ok(!F.marketSale(gift), "a related-party gift with no price is not a comp");
+  assert.equal(F.filterComps([sum, zero, gift], {}, null).length, 2);
+  assert.equal(F.coverageText(F.covOf(wiFile([])), "WI"), "Returns filed Aug 3, 2026 to Sep 30, 2026");
+});
+
+test("Wisconsin transfer files on disk, when present, carry the checked acres rule and no uncertain acres", () => {
+  const dir = join(ROOT, "data/land/wi");
+  if (!existsSync(join(dir, "index.json"))) return;
+  const ix = JSON.parse(read("data/land/wi/index.json"));
+  assert.equal(ix.state, "WI");
+  assert.ok(ix.counties.length >= 60, "most of Wisconsin's 72 counties");
+  for (const c of ix.counties.slice(0, 8)) {
+    const f = JSON.parse(read("data/land/wi/" + c.fips + ".json"));
+    assert.equal(f.acres_rule, 2);
+    assert.ok(f.cols.includes("grantor") && f.cols.includes("ac1"));
+    const ia = f.cols.indexOf("acres"), inp = f.cols.indexOf("np"), ic = f.cols.indexOf("cls");
+    for (const r of f.rows) {
+      assert.ok(/(^| )(4|5M|6)( |$)/.test(r[ic]), "farm or forest class: " + r[ic]);
+      if (r[ia] != null) assert.ok(r[ia] > 0 && r[ia] / (r[inp] || 1) <= 640, "acres in range: " + r[ia]);
+    }
+  }
 });
