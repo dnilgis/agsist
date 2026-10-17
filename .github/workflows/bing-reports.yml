@@ -1,0 +1,40 @@
+name: Bing reports (on request)
+
+# Pulls Bing Webmaster Tools reports for agsist.com with the BING_API_KEY1
+# secret (Sig added it Oct 17, 2026). Run by hand only; no schedule. The
+# results go to a workflow artifact kept for 1 day, never into the repo, so
+# search query data does not sit in this public repository.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bing-reports
+  cancel-in-progress: false
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Pull reports
+        env:
+          KEY: ${{ secrets.BING_API_KEY1 }}
+        run: |
+          set -eu
+          [ -n "$KEY" ] || { echo "::error::BING_API_KEY1 secret is empty"; exit 1; }
+          mkdir -p out
+          SITE='https%3A%2F%2Fagsist.com%2F'
+          for m in GetQueryStats GetPageStats GetRankAndTrafficStats GetCrawlStats GetCrawlIssues GetLinkCounts GetUrlSubmissionQuota; do
+            code=$(curl -sS -o "out/$m.json" -w '%{http_code}' \
+              "https://ssl.bing.com/webmaster/api.svc/json/$m?siteUrl=$SITE&apikey=$KEY" || echo 000)
+            echo "$m: HTTP $code, $(wc -c < "out/$m.json" 2>/dev/null || echo 0) bytes"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bing-reports
+          path: out/
+          retention-days: 1
