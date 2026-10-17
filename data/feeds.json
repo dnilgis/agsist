@@ -224,7 +224,8 @@
     "cash-bid-pages"
    ],
    "touched_by": [
-    "cash-bid-pages"
+    "cash-bid-pages",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
@@ -667,6 +668,7 @@
    ],
    "touched_by": [
     "Generate Daily Briefing",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Morning brief \u2014 email Sigurd",
     "Morning report"
    ],
@@ -956,6 +958,7 @@
     "Dairy prices",
     "Bake farm-bill page",
     "Fertilizer co-op posted prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Harvest price tracker",
     "lrp",
     "Build Price Stats (5-year percentile)",
