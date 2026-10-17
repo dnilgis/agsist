@@ -56,7 +56,7 @@
   .rg-hero{display:grid;gap:0 2.6rem;grid-template-areas:"tag" "h1" "lede" "side" "form"}
   .rg-hero>.rg-tag{grid-area:tag}.rg-hero>h2{grid-area:h1}.rg-hero>.rg-lede{grid-area:lede}
   .rg-hero>.rg-side{grid-area:side;min-width:0}.rg-hero>.rg-form{grid-area:form}
-  #main .rg .rg-hero>h2{font-size:clamp(1.9rem,6.6vw,2.9rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 .65rem;text-wrap:balance}
+  #main .rg .rg-hero>h2{font-size:clamp(1.6rem,5.2vw,2.2rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 .65rem;text-wrap:balance}
   .rg-lede{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.1rem;max-width:46ch}
   /* on a phone the form sits under the render: one jump to it (Oct 16) */
   .rg-jump{display:block;width:max-content;margin-top:.8rem;padding:.55rem 1rem;min-height:44px;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
@@ -275,7 +275,7 @@
 
     <div class="rg-hero">
       <!-- THE GAUGE'S NAME: this tag line is the one place it is written. Change it here when the name is picked. -->
-      <p class="rg-tag"><span id="rg-gauge-name">The AGSIST rain gauge</span>&nbsp;&middot; Prototype design</p>
+      <p class="rg-tag"><span><span id="rg-gauge-name">The AGSIST rain gauge</span> &middot; Prototype design</span></p>
       <h2 id="rg-gauge-h">A rain gauge that keeps its own log</h2>
       <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field. <a class="rg-jump" href="#rg-form-1" data-rg-jump>Get on the waitlist</a></p>
       <div class="rg-side">

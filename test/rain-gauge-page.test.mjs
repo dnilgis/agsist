@@ -164,7 +164,7 @@ test("no price for either gauge, and no date for the Lorain", () => {
 });
 test("each gauge's name is written in one place", () => {
   assert.equal((page.match(/AGSIST rain gauge/g) || []).length, 1);
-  assert.match(main, /<!-- THE GAUGE'S NAME:[^>]*-->\s*<p class="rg-tag"><span id="rg-gauge-name">The AGSIST rain gauge<\/span>/);
+  assert.match(main, /<!-- THE GAUGE'S NAME:[^>]*-->\s*<p class="rg-tag"><span><span id="rg-gauge-name">The AGSIST rain gauge<\/span>/);
   const shown = page.replace(/<!--[\s\S]*?-->/g, "").replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "").replace(/data-note-prefix="[^"]*"/g, "");
   assert.equal((shown.match(/Lorain/g) || []).length, 1, "the concept's name shows once");
   assert.match(main, /<h2 class="sec-h" id="rg-lorain-h">The Lorain<\/h2>/);
