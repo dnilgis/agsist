@@ -12,9 +12,9 @@
   <link rel="preload" href="/components/styles.css?v=24" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=24">
 <link rel="stylesheet" href="/components/asof.css?v=1">
-<script src="/components/util.js?v=18"></script>
+<script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=1"></script>
+<script src="/components/price-local.js?v=2"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -289,6 +289,8 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
   function loadPrices(){
   fetch('/data/prices.json').then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(data){
     var q=data.quotes||{};
+    /* chaos-1: expired contracts roll off; each alias names the live month it now shows (components/price-local.js roll) */
+    if(window.AgPxStamp&&AgPxStamp.roll)q=AgPxStamp.roll(q);
     /* 2026-10-08: when the nearby contract IS the deferred one (Dec corn,
        Nov beans in the fall), the second card repeats the first to the cent.
        Hide it only when the two quotes carry the same ticker. */
@@ -354,8 +356,10 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       var d=q[m.key];if(!d||d.close==null)return;
       /* each change line names its own close date, as the build bakes it (seed_static.py seed_markets) */
       var cdm=/^(\d{4})-(\d{2})-(\d{2})/.exec(d.close_date||data.fetched||''),MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var when=cdm?' \u00b7 '+MON3[+cdm[2]-1]+' '+(+cdm[3])+(d.stale?' (last good quote)':''):'';
+      var when=cdm?' \u00b7 '+MON3[+cdm[2]-1]+' '+(+cdm[3])+(+cdm[1]!==new Date().getFullYear()?', '+cdm[1]:'')+(d.stale?' (last good quote)':''):'';
       setEl(m.p,m.c,d.close,m.grain,d.netChange,d.pctChange,d.roll,when,m.key);
+      /* a rolled alias names the month it now shows */
+      if(d.rolled_from&&d.contract){var pe=document.getElementById(m.p),ce=pe&&pe.closest('.pc'),lb=ce&&ce.querySelector('.pc-contract');if(lb)lb.textContent=d.contract;}
     });
     /* the source line follows each card's close_kind (twin of mk_source in seed_static.py) */
     var srcEl=document.getElementById('mk-src');if(srcEl)srcEl.textContent=mkSource(q,map);
@@ -368,7 +372,10 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       /* 2026-10-17: settle or last trade, from each quote's close_kind, in Central time (components/price-local.js; seed_static.py mk_board bakes the same words) */
       var bq={};map.forEach(function(m){bq[m.key]=q[m.key];});
       var bw=window.AgPxStamp?AgPxStamp.board(bq,null,data.fetched):'';
-      var stampH=bw?'<time class="px-stamp" datetime="'+data.fetched+'">'+bw.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+'</time>':(window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'');
+      /* chaos-1: a settle the file should have moved past says how old it is, and greys the cards once it is OLD_SESSIONS behind */
+      var ba=bw&&AgPxStamp.boardAge?AgPxStamp.boardAge(bq,null):null;
+      var stampH=bw?'<time class="px-stamp'+(ba&&ba.old?' is-stale':'')+'" datetime="'+data.fetched+'">'+bw.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+(ba&&ba.stale?'<span class="asof-note"> &middot; '+ba.note+'</span>':'')+'</time>':(window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'');
+      Array.prototype.forEach.call(document.querySelectorAll('.pc'),function(c){c.classList.toggle('px-old',!!(ba&&ba.old));});
       if(stampH)status.innerHTML=stampH+' &middot; each change line carries its own close date';
     }
   }).catch(function(){

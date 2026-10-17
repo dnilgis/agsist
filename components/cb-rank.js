@@ -261,6 +261,23 @@ function setFutures(json){
 }
 function futureFor(sym){return sym&&FUT[sym]||null;}
 
+/* Trading days after `day` through `today` (both YYYY-MM-DD, Central):
+   weekdays, less exchange holidays when components/price-local.js is on the
+   page (AgPxStamp.isTradingDay, the twin of scripts/contract_calendar.py).
+   Mon to Thu is 3; Fri to Wed is 3. */
+var REMARK_SESSIONS=3;
+function sessionsSince(day,today){
+  var a=Date.parse(day+'T00:00:00Z'),b=Date.parse(today+'T00:00:00Z');
+  if(!isFinite(a)||!isFinite(b)||b<=a)return 0;
+  if(b-a>400*864e5)return 999;
+  var n=0,P=root.AgPxStamp&&root.AgPxStamp.isTradingDay;
+  for(var t=a+864e5;t<=b;t+=864e5){
+    var iso=new Date(t).toISOString().slice(0,10),w=new Date(t).getUTCDay();
+    if(P?P(iso):(w>=1&&w<=5))n++;
+  }
+  return n;
+}
+
 /* ── Can this row be ranked, and on what number ────────────────────────── */
 /* opt: {now: ms, basisC: basis in cents or null (null when unusual or unclear),
          band: [lo,hi] $/bu for the crop, cash: $/bu as the page reads it} */
@@ -281,6 +298,13 @@ function assess(b,opt){
   r.day=isFinite(t)?centralDay(t):'';
   if(r.day&&r.today&&r.day>=r.today)return r; /* posted today */
   if(r.fresh<1)r.fresh=1;
+  /* AN OLD BOARD IS NOT RE-PRICED (2026-10-17, chaos-2). Harvest basis can
+     move 20 to 40 cents in a month, so a basis posted more than
+     REMARK_SESSIONS trading days ago is not carried onto today's futures:
+     it is not ranked at all (never Best, never Worth the Drive), the same as
+     a board we could not read. Its card still shows it with its age. */
+  r.sessions=r.day&&r.today?sessionsSince(r.day,r.today):null;
+  if(r.sessions!=null&&r.sessions>REMARK_SESSIONS){r.exclude=true;r.tooOld=true;r.tier=1;r.old=true;return r;}
   var sym=contractKey(b),f=futureFor(sym);
   if(f&&r.day&&f.date>r.day&&opt.basisC!=null&&isFinite(opt.basisC)){
     var p=Math.round((f.price+opt.basisC/100)*100)/100;
@@ -450,7 +474,7 @@ function cleanPlace(p){
 
 var api={centralDay:centralDay,dayLabel:dayLabel,pairMonths:pairMonths,pairEnd:pairEnd,
   wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,parseContract:parseContract,deliveryText:deliveryText,setFutures:setFutures,
-  futureFor:futureFor,assess:assess,compare:compare,note:note,priceText:priceText,
+  futureFor:futureFor,sessionsSince:sessionsSince,REMARK_SESSIONS:REMARK_SESSIONS,assess:assess,compare:compare,note:note,priceText:priceText,
   looksLikePoint:looksLikePoint,learnTowns:learnTowns,placeTown:placeTown,
   outlierCheck:outlierCheck,markOutliers:markOutliers,setStateMedians:setStateMedians,
   stateMedian:stateMedian,setNames:setNames,displayName:displayName,cleanPlace:cleanPlace,

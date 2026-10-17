@@ -1102,6 +1102,13 @@ function rankOf(b){
   return cbRank.assess(b,{cash:cash,basisC:bc,band:PPU_BAND[b.category]});
 }
 function rankable(b){return !rankOf(b).exclude;}
+/* Every row on the card is too old to re-price (cb-rank assess tooOld). */
+function boardTooOld(elev){
+  if(!window.cbRank||!elev||!elev.commodities)return false;
+  var n=0,old=0;
+  Object.keys(elev.commodities).forEach(function(k){(elev.commodities[k]||[]).forEach(function(b){n++;if(rankOf(b).tooOld)old++;});});
+  return n>0&&old===n;
+}
 function wheatCls(b){return window.cbRank?cbRank.wheatClass(b&&b.commodity):'';}
 function rankCmp(a,b){return window.cbRank?cbRank.compare(a,b):(b.rk.price-a.rk.price);}
 /* One candidate per elevator for corn and soybeans; for wheat one per class
@@ -1724,6 +1731,8 @@ function renderBids(bids,keepLimit){
        closed state), so the card says so plainly, and only until closedUntil. */
     html+=portalBadge(elev.portal,Date.now());
     if(elev.unread)html+='<div class="elev-stale" title="AGSIST could not reach this elevator\u2019s board on the latest run. This is the last price it posted, confirm before hauling.">board not reached, call before you load</div>';
+    /* chaos-2: a board read fine but not changed in over REMARK_SESSIONS trading days is not ranked; the card says so */
+    else if(boardTooOld(elev))html+='<div class="elev-stale" title="This elevator\u2019s board has not changed in over '+cbRank.REMARK_SESSIONS+' trading days. Its basis is not carried onto today\u2019s futures and it is left out of Best and Worth the Drive.">board not updated in over '+cbRank.REMARK_SESSIONS+' trading days, call before you load</div>';
     /* Per-elevator stale flag: renders ONLY when the feed carries a real
        timestamp for this elevator AND it's >18h old — fresh or timestamp-less
        bids stay clean (the status-bar timer covers those). */
@@ -2327,14 +2336,23 @@ function _fetchNetworkInner(zip,radiusMi,empty){
       var national=(index.counts&&index.counts.places)||null;
       var near=netPlacesWithin(index,coord,radiusMi||50,NET_MAX_PLACES);
       if(!near.length)return {rows:[],places:0,duplicatesResolved:0,nationalPlaces:national};
+      /* A SHARD THAT DID NOT LOAD IS NOT AN ELEVATOR WITH NO BIDS (chaos-7).
+         A 404, a cut-off file or an empty {} comes back here as null or with
+         no bids list. When most of the places the index lists in range fail
+         like that, the page says it could not load the bids (with Retry),
+         not that the area has none. */
+      var bad=0;
       return Promise.all(near.map(function(p){
         return netGet('data/'+p.shard,T).then(function(s){
-          return s?netRowsFrom(s,p.distance):[];
+          if(!s||!Array.isArray(s.bids)){bad++;return [];}
+          return netRowsFrom(s,p.distance);
         });
       })).then(function(lists){
         var rows=[],places=0;
         lists.forEach(function(l){if(l.length){places++;rows=rows.concat(l);}});
-        return {rows:rows,places:places,duplicatesResolved:0,nationalPlaces:national};
+        var out={rows:rows,places:places,duplicatesResolved:0,nationalPlaces:national,shardsBad:bad,shardsAsked:near.length};
+        if(bad*2>near.length)out.failed=true;
+        return out;
       });
     });
   }).catch(function(){return empty;});
@@ -2466,7 +2484,8 @@ function fetchBids(zip,radius,callback){
       renderNetStats();
       var wasShown=shown;shown=true;
       callback(null,merged.rows,bcErr?'The second feed did not answer. Showing the bids network only: the '+
-        n.places+' elevator'+(n.places===1?'':'s')+' AGSIST reads directly from their own boards.':null,
+        n.places+' elevator'+(n.places===1?'':'s')+' AGSIST reads directly from their own boards.':
+        (n.failed&&n.shardsBad?n.shardsBad+' of the '+n.shardsAsked+' elevator boards near you did not load. Showing the ones that did; Retry for the rest.':null),
         (isLate&&wasShown)?{late:true}:undefined);
     };
     if(!late.done&&NET_ON){

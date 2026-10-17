@@ -29,7 +29,7 @@ var CROPS={
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
     emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
     carry:'corn',
-    tiles:[{key:newCropKey('corn','dec'),alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{root:'beans',name:'Soybeans',sym:'ZS',p:'p-beans',c:'c-beans',g:true},{root:'wheat',name:'Wheat',sym:'ZW',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{nc:['corn','dec'],alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{root:'beans',name:'Soybeans',sym:'ZS',p:'p-beans',c:'c-beans',g:true},{root:'wheat',name:'Wheat',sym:'ZW',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
     labels:function(lbl){
       setTxt('lbl-corn',lbl);
@@ -53,7 +53,7 @@ var CROPS={
       renderRatio(data,function(r){return r<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored: historically the stronger per-acre plant':r<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Neutral zone: local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored: soybeans historically pay more per acre';});
       // S2: new-crop at a glance: the corn-dec benchmark (the next live Dec, which
       // rolls on its own; the label is read from its ticker). Hidden when the key is missing.
-      var cornDec=q[newCropKey('corn','dec')]||q['corn-dec'];
+      var cornDec=q[newCropKey('corn','dec',q)]||q['corn-dec'];
       /* when the nearby IS the new-crop contract (Dec corn from Sep to Dec) the hero
          already shows it; the line would only repeat the same price */
       var ncSame=!!(front&&cornDec&&front.ticker&&front.ticker===cornDec.ticker);
@@ -91,7 +91,7 @@ var CROPS={
     key:'beans',label:'Soybean',root:'ZS',stats:'soybean',ga:'soybeans',progressKey:'soybeans',
     emoji:'',
     carry:'soybeans',
-    tiles:[{key:newCropKey('beans','nov'),alt:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true,lbl:'lbl-beansnov'},{root:'corn',name:'Corn',sym:'ZC',p:'p-corn',c:'c-corn',g:true},{root:'meal',name:'Soybean meal',sym:'ZM',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{root:'soyoil',name:'Soybean oil',sym:'ZL',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
+    tiles:[{nc:['beans','nov'],alt:'beans-nov',p:'p-beansnov',c:'c-beansnov',g:true,lbl:'lbl-beansnov'},{root:'corn',name:'Corn',sym:'ZC',p:'p-corn',c:'c-corn',g:true},{root:'meal',name:'Soybean meal',sym:'ZM',p:'p-meal',c:'c-meal',g:false,u:{pre:'$',suf:'/t'}},{root:'soyoil',name:'Soybean oil',sym:'ZL',p:'p-soyoil',c:'c-soyoil',g:false,u:{suf:'¢'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-beans','c-beans'],
     labels:function(lbl,nearby){
       setTxt('hero-contract',lbl);
@@ -107,7 +107,7 @@ var CROPS={
     prices:function(q,data,front){
       /* v15 (S2): new-crop at a glance: the beans-nov benchmark (the next live Nov,
          which rolls on its own; the label is read from its ticker), hidden if key missing */
-      var ncQ=q[newCropKey('beans','nov')]||q['beans-nov'];
+      var ncQ=q[newCropKey('beans','nov',q)]||q['beans-nov'];
       var ncEl=document.getElementById('nc-line');
       var ncSame=!!(front&&ncQ&&front.ticker&&front.ticker===ncQ.ticker);
       if(ncEl&&ncQ&&ncQ.close!=null&&!ncSame){
@@ -365,7 +365,17 @@ function wheatCornPair(q){
    October 2026 that is Dec '27 corn and Nov '27 beans. The undated corn-dec
    key is the next live Dec, which in the fall is the hero's own contract, so
    a "new crop" tile on it repeated the hero (agecon review, 2026-10-12). */
-function newCropKey(root,mon){var d=new Date(),y=d.getFullYear()+(d.getMonth()>=8?1:0);return root+'-'+mon+String(y).slice(-2);}
+/* chaos-10 (2026-10-17): on the contract roll, not the calendar. On Sep 1
+   2027 the nearby is still Sep '27 and Dec '27 is the harvest contract, so
+   new crop is Dec '27 until Dec '27 is itself the nearby (then Dec '28).
+   With no dated nearby on file, the calendar rule (Sep 1 on) stands. */
+function newCropKey(root,mon,q){
+  var FC='FGHJKMNQUVXZ',hm=MON3.indexOf(mon)+1,n=q&&q[root+'-nearby'],m=n&&/^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(n.ticker||''));
+  var y;
+  if(m&&hm>0){var ny=2000+(+m[2]),nm=FC.indexOf(m[1])+1;y=nm>=hm?ny+1:ny;}
+  else{var d=new Date();y=d.getFullYear()+(d.getMonth()>=8?1:0);}
+  return root+'-'+mon+String(y).slice(-2);
+}
 function contractLabel(d){var SS=window.AgsistStoreSell,f=SS&&SS.futuresMonth&&d&&SS.futuresMonth(d.ticker);return f?f.label:null;}
 /* The quote the page leads with: the dated nearby contract when the pipeline
    publishes it with a price, else the continuous series (labeled as such). */
@@ -743,15 +753,35 @@ function loadWasde(){
       var up=d&&d.upcoming;
       var wEl=document.getElementById('snap-wasde');
       if(!up||!up.report||!up.date||!wEl){hide();return;}
-      var p=String(up.date).split('-');
-      if(p.length!==3){hide();return;}
-      var dt=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
-      if(isNaN(dt.getTime())){hide();return;}
-      var today=new Date();today.setHours(0,0,0,0);
-      var dd=Math.round((dt-today)/86400000);
       var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      wEl.textContent=up.report+' · '+MN[dt.getMonth()]+' '+dt.getDate()+' · '+(dd<0?'released':dd===0?'today':dd===1?'tomorrow':'in '+dd+' days');
-      maybeFlagWasdeImminence(dd);
+      var MF=['January','February','March','April','May','June','July','August','September','October','November','December'];
+      function show(name,iso){
+        var p=String(iso).split('-');
+        if(p.length!==3)return false;
+        var dt=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
+        if(isNaN(dt.getTime()))return false;
+        var today=new Date();today.setHours(0,0,0,0);
+        var dd=Math.round((dt-today)/86400000);
+        if(dd<0)return false;
+        wEl.textContent=name+' · '+MN[dt.getMonth()]+' '+dt.getDate()+' · '+(dd===0?'today':dd===1?'tomorrow':'in '+dd+' days');
+        maybeFlagWasdeImminence(dd);
+        return true;
+      }
+      if(show(up.report,up.date))return;
+      /* chaos-11 (2026-10-17): the file's "upcoming" report is past (the
+         file lags). "Next report" rolls to the next WASDE in the site's own
+         calendar file (/usda-calendar.ics, built from /usda-calendar); with
+         none listed, the line hides rather than name a past report. */
+      return fetch('/usda-calendar.ics',{cache:'no-cache'}).then(function(r){return r.ok?r.text():'';}).then(function(t){
+        var next=null,now=Date.now();
+        String(t||'').split('BEGIN:VEVENT').slice(1).forEach(function(ev){
+          var sm=/\nSUMMARY:([^\r\n]*)/.exec(ev),dm=/\nDTSTART(?:;[^:]*)?:(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})Z)?/.exec(ev);
+          if(!sm||!dm||!/^WASDE\b/.test(sm[1].trim()))return;
+          var at=dm[4]!=null?Date.UTC(+dm[1],+dm[2]-1,+dm[3],+dm[4],+dm[5]):Date.UTC(+dm[1],+dm[2]-1,+dm[3],17);
+          if(at>now&&(!next||at<next.at))next={at:at,iso:dm[1]+'-'+dm[2]+'-'+dm[3],m:+dm[2]-1};
+        });
+        if(!next||!show(MF[next.m]+' WASDE',next.iso))hide();
+      });
     })
     .catch(hide);
 }
@@ -1893,13 +1923,17 @@ function loadPrices(){
    range/seasonal block below. */
 AG.json('/data/prices.json')
   .then(function(data){
+    /* chaos-1 (2026-10-17): a file that stopped updating still names contracts
+       that have since expired. price-local.js roll() drops them and points
+       each alias at the nearest live month on file. */
     var q=data.quotes||{};
+    if(window.AgPxStamp&&AgPxStamp.roll)data.quotes=q=AgPxStamp.roll(q);
     window.__agsistLastQ=q;
     var F=frontInfo(q,data),front=F.q,heroLabel=F.label;
     window.__agsistHeroQ=front;
     CROP.labels(heroLabel,F.nearby);
     if(front&&front.close!=null){setEl(CROP.heroTile[0],grain$(front.close));var hcT=chgTxt(front.netChange,front.pctChange,front.roll);setEl(CROP.heroTile[1],hcT.t,hcT.c);}
-    CROP.tiles.forEach(function(m){var r=m.root?nearbyOf(q,m.root):null,d=m.root?(r&&r.d):(q[m.key]||(m.alt&&q[m.alt]));if(!d||d.close==null)return;if(m.root){var pe=document.getElementById(m.p),le0=pe&&pe.parentNode.querySelector('.cc-lbl');if(le0)le0.textContent=m.name+' '+(r.label||'most-active')+' ('+m.sym+')';}if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
+    CROP.tiles.forEach(function(m){var r=m.root?nearbyOf(q,m.root):null,mk=m.nc?newCropKey(m.nc[0],m.nc[1],q):m.key,d=m.root?(r&&r.d):(q[mk]||(m.alt&&q[m.alt]));if(!d||d.close==null)return;if(m.root){var pe=document.getElementById(m.p),le0=pe&&pe.parentNode.querySelector('.cc-lbl');if(le0)le0.textContent=m.name+' '+(r.label||'most-active')+' ('+m.sym+')';}if(m.lbl){var le=document.getElementById(m.lbl),cl=contractLabel(d);if(le&&cl)le.textContent=cl+' new crop';}setEl(m.p,m.g?grain$(d.close):raw$(d.close));var ch=chgTxt(d.netChange,d.pctChange,d.roll,m.g,m.u);setEl(m.c,ch.t,ch.c);});
 
     if(front&&front.close!=null){
       setEl('hero-price',grain$(front.close));
@@ -1938,6 +1972,9 @@ AG.json('/data/prices.json')
          settle) or "Last trade as of 1:46 pm CT", from components/price-local.js.
          A stale last trade keeps asof.js's age note. */
       var __pxs=pxStampHtml(front,data);
+      /* an old settle greys the hero, as the stamp does (price-local.js settleAge) */
+      var __age=front&&front.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(front.settle_date||front.close_date):null;
+      Array.prototype.forEach.call(document.querySelectorAll('.ph,.cg'),function(__ph){__ph.classList.toggle('px-old',!!(__age&&__age.old));});
       if(__st){var __sx=(typeof computeMarketSession==='function')?computeMarketSession():null;
         __st.innerHTML=(__sx&&__sx.state==='closed'?'Market closed \u00b7 ':'')+__pxs;}
       var __sa=document.getElementById('snap-age');if(__sa){__sa.innerHTML=__pxs;__sa.hidden=!__pxs;}

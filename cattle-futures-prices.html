@@ -12,9 +12,9 @@
   <link rel="preload" href="/components/styles.css?v=24" as="style">
 <link rel="stylesheet" href="/components/styles.css?v=24">
 <link rel="stylesheet" href="/components/asof.css?v=1">
-<script src="/components/util.js?v=18"></script>
+<script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=1"></script>
+<script src="/components/price-local.js?v=2"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -626,7 +626,7 @@ details.fold[hidden]{display:none}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=27" defer></script>
+<script src="/components/geo.js?v=28" defer></script>
 
 <script>
 /* ===== cattle dashboard: prices.json + price-stats.json ===== */
@@ -649,6 +649,8 @@ details.fold[hidden]{display:none}
   }
   var pricesP=fetch('/data/prices.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('prices '+r.status);return r.json();}).then(function(d){
     var q=d.quotes||{};
+    /* chaos-1: expired contracts roll off (components/price-local.js roll) */
+    if(window.AgPxStamp&&AgPxStamp.roll)d.quotes=q=AgPxStamp.roll(q);
     /* the 52-week range must belong to the contract shown: use the dated contract (it carries its own range) and name it; else say continuous series */
     var nLE=q['cattle-nearby'],nGF=q['feeders-oct26'];
     var le=(nLE&&nLE.close!=null&&nLE.wk52_lo!=null)?nLE:q.cattle,gf=(nGF&&nGF.close!=null&&nGF.wk52_lo!=null)?nGF:q.feeders;
@@ -657,6 +659,9 @@ details.fold[hidden]{display:none}
     if(lbL)lbL.textContent=(le===nLE&&nLE.contract)?'52-Week Range \u00b7 '+nLE.contract+' contract':'52-Week Range \u00b7 continuous series';
     if(lbG)lbG.textContent=(gf===nGF&&gfm)?'52-Week Range \u00b7 '+gfm[1].charAt(0).toUpperCase()+gfm[1].slice(1)+" '"+gfm[2]+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
+    /* chaos-1: an old settle greys the cards, as the stamp does */
+    var lea=le&&le.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(le.settle_date||le.close_date):null;
+    var ctg=document.querySelector('.ct-grid');if(ctg)ctg.classList.toggle('px-old',!!(lea&&lea.old));
     var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
     if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgPxStamp&&le?dot+'CME futures \u00b7 '+AgPxStamp.html(le,d.fetched):window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
     else if(st)st.innerHTML=dot+'Live CME futures · updated through the trading day';
