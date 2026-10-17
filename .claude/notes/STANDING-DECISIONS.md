@@ -115,3 +115,7 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 17, Sig) Radar rain at any address (NOAA MRMS, 24 h / 3 day / 7 day): approved to run a few times a day on its own schedule.
 - (Oct 17, Sig) Wisconsin transfer data: OK to fetch with an automated browser from DOR's public pages. Minnesota eCRV extract: Sig emails ecrv.support@state.mn.us.
 - (Oct 17, Sig) Oct 16 Daily correction added (expired hogs, afternoon trades). FFAI audit fixes pushed live on farmers1st.
+- (Oct 17, Sig) Rain Print Staircase default becomes "A2 clean" (typographer list, warm stone fill #ECE6DE, big year, heavier line, word-only line ends, "short" bracket). Plain italic dedication in both styles.
+- (Oct 17, Sig) New Rain Print options: crop overlay (corn, soybeans, sunflowers if a cited GDD stage source exists) placed by the station's real GDUs; plant drawings are their own toggle; plants stand on the horizontal axis / ground line like the soil surface, in both styles; optional usual-year ghost plants from 30-year normals.
+- (Oct 17, Sig) "Every year behind your year" history threads: an option, with the 2 wettest and 2 driest years subtly labeled.
+- (Oct 17, Sig) Box letter stays as today ("What you're holding" first). Family code: not decided.
