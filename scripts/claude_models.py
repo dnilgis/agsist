@@ -13,11 +13,13 @@ WHO USES WHAT (2026-10-17)
                                there on 2026-10-11; every read is held to a
                                program's number check and voice check whatever
                                wrote it.
-  REVIEWER claude-opus-5-5     the fact check before the send
-                               (fact_check_briefing.py): the strongest
-                               current model for a careful read of every
-                               number against the source data. It cannot
-                               turn thinking off; effort is the control.
+  REVIEWER claude-fable-5-1    the fact check before the send
+                               (fact_check_briefing.py): the most capable
+                               model Anthropic offers, for a careful read of
+                               every number against the source data. Its
+                               thinking is always on; effort is the control.
+                               A 404 or a 400 (the account cannot use it)
+                               moves the check to REVIEWER_FALLBACK, Opus 5.5.
   A model the API does not know (404) falls back once to WRITER_FALLBACK, so a
   name change at Anthropic costs a warning and not a morning.
 
@@ -35,15 +37,25 @@ THINKING
 PRICES are USD per million tokens from Anthropic's pricing as of 2026-10-17:
 (input, output, 5-minute cache write, cache read). Haiku 5.5's rate is for a
 prompt of 100K tokens or fewer; every prompt here is far under that. Batches are
-half price on all four.
+half price on all of them.
 """
 
 WRITER = "claude-sonnet-5-5"
 WRITER_FALLBACK = "claude-sonnet-5"
 CHECKER = "claude-haiku-5-5"
-REVIEWER = "claude-opus-5-5"
+REVIEWER = "claude-fable-5-1"
+REVIEWER_FALLBACK = "claude-opus-5-5"
+
+# Server side refusal fallback (beta). On a safety decline the API reruns the
+# same request on the model Anthropic picks for that kind of decline and
+# returns that answer, in one round trip. Sent on the fact check only: the
+# writer and critic already retry a refusal on WRITER_FALLBACK themselves, the
+# Batches API (atlas reads) rejects it, and Haiku 5.5 has no server fallback.
+FALLBACK_BETA = "server-side-fallback-2026-07-01"
+FALLBACK_MODELS = ("claude-fable-5-1", "claude-opus-5-5")
 
 PRICES = {
+    "claude-fable-5-1": (10.00, 50.00, 12.50, 0.25),
     "claude-opus-5-5": (4.00, 20.00, 5.00, 0.20),
     "claude-sonnet-5-5": (2.00, 10.00, 2.50, 0.20),
     "claude-sonnet-5": (2.00, 10.00, 2.50, 0.20),
@@ -56,6 +68,7 @@ PRICES = {
 # Smallest prefix each model will cache. A marker on a shorter prefix is ignored
 # without an error (cache_creation_input_tokens stays 0).
 CACHE_MIN_TOKENS = {
+    "claude-fable-5-1": 512,
     "claude-opus-5-5": 512,
     "claude-sonnet-5-5": 512,
     "claude-haiku-5-5": 512,
@@ -85,6 +98,14 @@ def with_model(payload, model):
     if "thinking" in out:
         out["thinking"] = no_thinking(model)
     return out
+
+
+def server_fallback(payload, headers):
+    """Copies of a request body and its headers with the server side refusal
+    fallback turned on, for the models that take it; unchanged otherwise."""
+    if not payload.get("model", "").startswith(FALLBACK_MODELS):
+        return dict(payload), dict(headers)
+    return dict(payload, fallbacks="default"), dict(headers, **{"anthropic-beta": FALLBACK_BETA})
 
 
 def cached_system(text):
@@ -134,9 +155,20 @@ def selftest():
     assert abs(cost_usd(CHECKER, {"input_tokens": 10**6}, batch=True) - 0.05) < 1e-12
     try:
         no_thinking(REVIEWER)
+        raise AssertionError("Fable 5.1 has no thinking-off word")
+    except ValueError:
+        pass
+    try:
+        no_thinking(REVIEWER_FALLBACK)
         raise AssertionError("Opus 5.5 has no thinking-off word")
     except ValueError:
         pass
+    b, h = server_fallback({"model": REVIEWER}, {"x": "1"})
+    assert b["fallbacks"] == "default" and h["anthropic-beta"] == FALLBACK_BETA and h["x"] == "1"
+    b, h = server_fallback({"model": CHECKER}, {"x": "1"})
+    assert "fallbacks" not in b and "anthropic-beta" not in h, "Haiku 5.5 has no server fallback"
+    # hand-worked: 30k input + 3k output on Fable 5.1 is $0.30 + $0.15
+    assert abs(cost_usd(REVIEWER, {"input_tokens": 30000, "output_tokens": 3000}) - 0.45) < 1e-9
     assert cost_usd("claude-unknown", {"input_tokens": 1}) is None
     for m in PRICES:
         assert m in CACHE_MIN_TOKENS, m

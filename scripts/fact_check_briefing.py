@@ -3,7 +3,8 @@
 fact_check_briefing.py -- the last read of the AGSIST Daily before it can send.
 
 Runs in daily.yml after the critic and before GATE 2. A careful reviewer model
-(claude_models.REVIEWER, Claude Opus 5.5 at effort high) gets the draft and the
+(claude_models.REVIEWER, Claude Fable 5.1 at effort high, the most capable
+model Anthropic offers; Opus 5.5 if the account cannot use it) gets the draft and the
 exact source data the generator used, and returns structured findings:
   mismatch               a claim the data contradicts (a price, a change, a level)
   unsourced_number       a number that appears in none of the inputs
@@ -267,13 +268,13 @@ def review_payload(fields, sources, model=None):
     p = {
         "model": model,
         "max_tokens": 16000,           # thinking counts against it; the findings are short
-        # Opus 5.5 cannot turn thinking off; effort is the control. A careful
-        # review is worth "high" (its default is "medium").
+        # Fable 5.1 and Opus 5.5 cannot turn thinking off; effort is the
+        # control, and a careful review is worth "high".
         "output_config": {"effort": "high",
                           "format": {"type": "json_schema", "schema": SCHEMA}},
-        # The instructions never change: cached. One call per run, so this
-        # pays only when a run is repeated within five minutes.
-        "system": claude_models.cached_system(SYSTEM),
+        # Not cached: this is the only call in the run on this model, and a
+        # cache write costs a quarter more than plain input and is never read.
+        "system": SYSTEM,
         "messages": [{"role": "user", "content":
                       "SOURCE DATA\n\n" + sources + "\n\nDRAFT\n\n" + draft
                       + "\n\nCheck the DRAFT against the SOURCE DATA and return the findings."}],
@@ -281,6 +282,8 @@ def review_payload(fields, sources, model=None):
     if model.startswith("claude-sonnet") or model.startswith("claude-haiku"):
         # a cheaper stand-in set by FACT_CHECK_MODEL still reviews with thinking on
         p["thinking"] = {"type": "adaptive"}
+    # a safety decline is rerun server side on Anthropic's pick (beta)
+    p, _ = claude_models.server_fallback(p, {})
     return p
 
 
@@ -289,6 +292,8 @@ def _post(payload, api_key):
     import urllib.error
     headers = {"Content-Type": "application/json", "x-api-key": api_key,
                "anthropic-version": "2023-06-01"}
+    if "fallbacks" in payload:
+        headers["anthropic-beta"] = claude_models.FALLBACK_BETA
     data = json.dumps(payload).encode("utf-8")
     delays = [5, 20, 45]
     for attempt in range(len(delays) + 1):
@@ -313,29 +318,45 @@ def _post(payload, api_key):
             raise RuntimeError(f"network: {type(e).__name__}: {e}")
 
 
+def _moved(payload, model):
+    """The same review on another model: the thinking field and the server
+    fallback follow the model."""
+    p = {k: v for k, v in payload.items() if k not in ("thinking", "fallbacks")}
+    p["model"] = model
+    if not model.startswith(("claude-fable", "claude-opus")):
+        p["thinking"] = {"type": "adaptive"}
+    p, _ = claude_models.server_fallback(p, {})
+    return p
+
+
 def call_reviewer(payload, api_key, post=_post):
-    """(findings, usage, model) or raises. A refusal or a 404 on the model tries
-    claude_models.WRITER once (the strongest model is a preference, not a
-    requirement for the check to run)."""
-    try:
-        r = post(payload, api_key)
-        if r.get("stop_reason") == "refusal":
-            raise RuntimeError("stop_reason refusal")
-    except RuntimeError as e:
-        if payload["model"] == claude_models.WRITER or not (
-                "refusal" in str(e) or "HTTP 404" in str(e)):
-            raise
-        print(f"::warning title=Fact check model fallback::{payload['model']} ({e}); "
-              f"reviewing on {claude_models.WRITER}", flush=True)
-        payload = dict(payload, model=claude_models.WRITER, thinking={"type": "adaptive"})
-        r = post(payload, api_key)
-        if r.get("stop_reason") == "refusal":
-            raise RuntimeError("refused on both models")
+    """(findings, usage, model, summary) or raises. A refusal, a 404 (unknown
+    model) or a 400 (for example an account that cannot use Fable 5.1) moves
+    the review down the chain once per model: REVIEWER, REVIEWER_FALLBACK,
+    WRITER. The strongest model is a preference, not a requirement for the
+    check to run."""
+    chain = [m for m in (claude_models.REVIEWER_FALLBACK, claude_models.WRITER) if m != payload["model"]]
+    while True:
+        try:
+            r = post(payload, api_key)
+            if r.get("stop_reason") == "refusal":
+                raise RuntimeError("stop_reason refusal")
+            break
+        except RuntimeError as e:
+            msg = str(e)
+            if not chain or not ("refusal" in msg or "HTTP 404" in msg or "HTTP 400" in msg):
+                raise
+            nxt = chain.pop(0)
+            print(f"::warning title=Fact check model fallback::{payload['model']} ({msg[:160]}); "
+                  f"reviewing on {nxt}", flush=True)
+            payload = _moved(payload, nxt)
     if r.get("stop_reason") == "max_tokens":
         raise RuntimeError("answer cut off at max_tokens")
     text = "".join(b.get("text", "") for b in r.get("content", []) if b.get("type") == "text").strip()
     data = json.loads(text)
-    return data.get("findings") or [], r.get("usage") or {}, payload["model"], data.get("summary", "")
+    # a server side fallback answers on another model: bill the one that answered
+    model = r.get("model") or payload["model"]
+    return data.get("findings") or [], r.get("usage") or {}, model, data.get("summary", "")
 
 
 # ── deciding ─────────────────────────────────────────────────────────────────
