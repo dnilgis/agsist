@@ -670,6 +670,7 @@ def page_html(editions):
   <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AGSIST Cash Bid Index: cash corn and soybean bids and basis by state">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
   <meta name="twitter:title" content="{esc(title)}">
