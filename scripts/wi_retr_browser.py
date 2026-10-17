@@ -151,30 +151,36 @@ def _explore(out, log):
 
         page.goto(HOME, wait_until="domcontentloaded", timeout=90000)
         snap("01-home")
-        hit = page.get_by_text(re.compile(r"historical\s+RETR", re.I))
-        n = hit.count()
-        log.append("historical links: %d" % n)
-        if n:
-            hit.first.click()
-            snap("02-historical")
-            # whatever the historical screen offers: say what a first file click asks for, without bulk download
-            links = page.locator("a").filter(has_text=re.compile(r"\d{4}|\.zip|\.csv|download", re.I))
-            log.append("file-like links on the historical screen: %d" % links.count())
-            if links.count():
-                try:
-                    with page.expect_download(timeout=90000) as dl:
-                        links.first.click()
-                    d = dl.value
-                    fn = os.path.join(out, "first-" + re.sub(r"[^A-Za-z0-9._-]", "_", d.suggested_filename))
-                    d.save_as(fn)
-                    log.append("first download: %s url %s bytes %d" % (d.suggested_filename, d.url, os.path.getsize(fn)))
-                except Exception as e:  # noqa: BLE001
-                    log.append("first link gave no download: %s" % e)
-                    snap("03-after-first-link")
+        try:
+            log.append("tap robots.txt: %r" % get("https://tap.revenue.wi.gov/robots.txt")[:800])
+        except Exception as e:  # noqa: BLE001
+            log.append("tap robots.txt: %s" % e)
+        agree = page.locator("#Dc-b")
+        if agree.count():
+            log.append("clicking the disclaimer's Agree")
+            agree.first.click()
+        snap("02-after-agree")
+        hit = page.get_by_text(re.compile(r"historical", re.I))
+        log.append("'historical' texts: %d" % hit.count())
+        # whatever the screen offers: what a first file click asks for, one file only
+        links = page.locator("a:visible").filter(has_text=re.compile(r"\b(19|20)\d\d\b|\.zip|\.csv|download", re.I))
+        log.append("file-like links: %d" % links.count())
+        if links.count():
+            log.append("first file-like link: %r" % links.first.inner_text())
+            try:
+                with page.expect_download(timeout=120000) as dl:
+                    links.first.click()
+                d = dl.value
+                fn = os.path.join(out, "first-" + re.sub(r"[^A-Za-z0-9._-]", "_", d.suggested_filename))
+                d.save_as(fn)
+                log.append("first download: %s url %s bytes %d" % (d.suggested_filename, d.url, os.path.getsize(fn)))
+            except Exception as e:  # noqa: BLE001
+                log.append("first link gave no download: %s" % str(e)[:300])
+            snap("03-after-first-link")
         br.close()
     open(os.path.join(out, "requests.json"), "w").write(json.dumps(reqs, indent=1))
     log.append("requests (%d):" % len(reqs))
-    for q in reqs[:120]:
+    for q in [q for q in reqs if q["type"] != "script"][:150]:
         log.append("   %s %s %s %s %s %s post=%s" % (q["m"], q.get("status"), q["type"], q.get("ctype", "")[:40], q.get("disp", "")[:80], q["url"][:200], q["post"][:300]))
     return 0
 
