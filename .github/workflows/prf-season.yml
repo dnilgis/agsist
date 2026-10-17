@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "probe | build | backtest"
+        description: "probe | probe2 | build | backtest"
         required: true
         default: probe
 
@@ -74,6 +74,36 @@ jobs:
           [ -s "$D/rma-processing-2027.pdf" ] && pdftotext -layout "$D/rma-processing-2027.pdf" "$D/rma-processing-2027.txt" || true
           ls -la "$D"; cat "$D/status.txt"; cat "$D/errors.txt" || true
           bash scripts/push_raw.sh "prf-season probe" "$D"
+
+      - name: Probe 2 (NCEI files and RMA's CPC-era index record)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe2' }}
+        run: |
+          D=data/prf-season-raw/probe2
+          mkdir -p "$D"
+          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          C=https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS/DOCU
+          get cpc-readme.txt "$C/PRCP_CU_GAUGE_V1.0CONUS_0.25deg.README"
+          get cpc-rt.ctl "$C/PRCP_CU_GAUGE_V1.0CONUS_0.25deg.lnx.RT.ctl"
+          N=https://www.ncei.noaa.gov/pub/data/cirs/usda
+          get ncei-usda.html "$N/"
+          get ncei-monthly.html "$N/monthly/"
+          get ncei-final.html "$N/monthly/final/"
+          get ncei-prelim.html "$N/monthly/prelim/"
+          get ncei-daily.html "$N/daily/"
+          get ncei-readme.txt "$N/README.txt"
+          get ncei-202608.csv "$N/monthly/final/202608.usda.csv"
+          get ncei-dg.html "https://www.ncei.noaa.gov/pub/data/daily-grids/"
+          get rma-viri.html "https://pubfs-rma.fpac.usda.gov/pub/Miscellaneous_Files/VI_RI_Data/index.html"
+          python3 - "$D" <<'PY'
+          import re, sys, os
+          d = sys.argv[1]
+          for f in sorted(os.listdir(d)):
+              if f.endswith(".html"):
+                  t = open(os.path.join(d, f), errors="replace").read()
+                  print("==", f, re.findall(r'href="([^"?]+)"', t)[:80])
+          PY
+          cat "$D/status.txt"
+          bash scripts/push_raw.sh "prf-season probe2" "$D"
 
       - name: Build
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'build' }}
