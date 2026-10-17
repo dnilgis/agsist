@@ -5,10 +5,23 @@ that needs a browser running its scripts; the monthly historical RETR files sit 
 "Download historical RETR data" screen with no plain link. This opens that public screen in one
 headless Chromium session (no sign-in), the way a person would, and saves what it finds.
 
+  python3 scripts/wi_retr_browser.py --fetch OUTDIR [--months N]
+        every month the screen offers (newest first; at most N, or 120), in DOR's XML report,
+        which lists every parcel, grantor and grantee on a return. Each file is read as it
+        arrives and deleted; the farm and forest returns go to OUTDIR/build/wi-retr.csv for
+        `scripts/fetch_land_sales.py --from OUTDIR/build WI`. The three newest months are also
+        fetched as CSV, only to name the municipality codes the XML gives.
+  python3 scripts/wi_retr_browser.py --convert OUTDIR FILE...
+        the same conversion from XML (.xml or .xml.gz) and CSV reports already on disk.
   python3 scripts/wi_retr_browser.py --explore OUTDIR
         robots.txt, then the data page and the historical screen: a screenshot, the page HTML
-        (scripts removed), every link and button, and every request the app makes, so the
-        clicks and the file requests can be read before anything is downloaded in bulk.
+        (scripts removed), every link and button, and every request the app makes.
+
+The flow (Oct 2026): revenue.wi.gov/Pages/ERETR/data-home.aspx redirects to
+tap.revenue.wi.gov/RETRHistoric (My Tax Account); a disclaimer with Agree / Disagree; Agree
+opens "Real Estate Historical Data": a CSV Report / XML Report choice, then one link per month
+for the last five years. A month link posts a FAST app event and the file comes back from a
+session-bound Retrieve URL, so a plain fetch cannot ask for it; the browser does.
 
 Polite by design: one browser session, one request at a time, a pause between files, and a
 User-Agent that names agsist.com. It stops if robots.txt disallows the pages.
@@ -25,7 +38,9 @@ UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chr
 HOME = "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx"
 # data-home.aspx only redirects here; used when www.revenue.wi.gov does not answer
 TAP = "https://tap.revenue.wi.gov/RETRHistoric"
-PAUSE = 4.0          # seconds between page actions and between files
+PAUSE = 4.0          # seconds between page actions
+FILE_PAUSE = 10.0    # seconds between monthly files
+CSV_MONTHS = 3       # newest months also fetched as CSV, to name the municipality codes
 
 
 def strip(html):
@@ -107,6 +122,79 @@ def note(title, text, chunk=6000, most=4):
         print("::notice title=%s %d::%s" % (title, i // chunk + 1, text[i:i + chunk].replace("%", "%25").replace("\r", "").replace("\n", "%0A")))
 
 
+def lands():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("fetch_land_sales", os.path.join(os.path.dirname(os.path.abspath(__file__)), "fetch_land_sales.py"))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+class Collector:
+    """Reads each monthly report as it arrives and keeps only what the build needs."""
+
+    def __init__(self):
+        self.L = lands()
+        self.farm = []          # farm and forest returns (dicts from wi_returns)
+        self.munis = {}         # (county code, muni code) -> name
+        self.months = []        # (yyyymm, returns, farm returns)
+        self.index = {}         # yyyymm -> {(doc, first pin): (cc, muni)} for months with a CSV
+
+    def xml(self, path, ym, want_index=False):
+        import gzip
+        fh = gzip.open(path, "rb") if path.endswith(".gz") else open(path, "rb")
+        n = f = 0
+        idx = {} if want_index else None
+        with fh:
+            for r in self.L.wi_returns(fh):
+                n += 1
+                if idx is not None and r["parcels"]:
+                    idx[(r["doc"], r["parcels"][0]["pin"])] = (r["cc"], r["parcels"][0]["muni"])
+                if any(p["use"] in self.L.WI_FARM_USE for p in r["parcels"]):
+                    f += 1
+                    self.farm.append(r)
+        if idx is not None:
+            self.index[ym] = idx
+        self.months.append((ym, n, f))
+        return n, f
+
+    def csv(self, path, ym):
+        got = self.L.wi_learn_munis(open(path, "rb").read(), self.index.get(ym, {}))
+        self.munis.update(got)
+        return len(got)
+
+    def write(self, out):
+        import csv
+        os.makedirs(os.path.join(out, "build"), exist_ok=True)
+        fn = os.path.join(out, "build", "wi-retr.csv")
+        rows = [self.L.wi_row(r, self.munis) for r in self.farm]
+        rows = [r for r in rows if r]
+        with open(fn, "w", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(self.L.WI_HEAD)
+            w.writerows(rows)
+        named = sum(1 for r in rows if r[7])
+        rep = {"months": [{"month": m, "returns": n, "farm": k} for m, n, k in sorted(self.months)], "farm_rows": len(rows),
+               "with_town": named, "muni_codes_named": len(self.munis)}
+        open(os.path.join(out, "build", "wi-retr-report.json"), "w").write(json.dumps(rep, indent=1))
+        return fn, rep
+
+
+def convert(out, files):
+    c = Collector()
+    xs = sorted(f for f in files if re.search(r"\.xml(\.gz)?$", f))
+    cs = [f for f in files if f.endswith(".csv")]
+    csv_months = {re.search(r"(\d{6})", os.path.basename(f)).group(1) for f in cs}
+    for f in xs:
+        ym = re.search(r"(\d{6})", os.path.basename(f)).group(1)
+        c.xml(f, ym, ym in csv_months)
+    for f in cs:
+        c.csv(f, re.search(r"(\d{6})", os.path.basename(f)).group(1))
+    fn, rep = c.write(out)
+    print(json.dumps(rep)[:3000])
+    return 0
+
+
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
 
@@ -170,6 +258,115 @@ def xml_shape(fn, log):
     log.append("xml paths: " + "; ".join("%s=%d" % kv for kv in paths.most_common(140)))
     for k, c in sorted(per.items()):
         log.append("children per return, %s: %s" % (k, dict(sorted(c.items()))))
+
+
+def pick_format(page, fmt):
+    lab = page.locator("label[for=Dc-s_%d]" % (0 if fmt == "CSV" else 1))
+    if not lab.count():
+        lab = page.locator("label").filter(has_text=re.compile(r"^\s*%s Report\s*$" % fmt))
+    lab.first.click()
+    time.sleep(PAUSE)
+
+
+def start(page, log):
+    """Open the historical screen past the disclaimer; the month links on it."""
+    open_home(page, log)
+    time.sleep(PAUSE)
+    agree = page.locator("#Dc-b")
+    if agree.count():
+        agree.first.click()
+        time.sleep(PAUSE)
+    try:
+        page.wait_for_load_state("networkidle", timeout=30000)
+    except Exception:  # noqa: BLE001
+        pass
+    return month_links(page)
+
+
+def fetch(out, most=120):
+    """Every offered month, newest first, through one browser session, one file at a time."""
+    os.makedirs(out, exist_ok=True)
+    raw = os.path.join(out, "raw")
+    os.makedirs(raw, exist_ok=True)
+    log = []
+    try:
+        rb = get("https://www.revenue.wi.gov/robots.txt")
+        if not robots_allows(rb, "/Pages/ERETR/data-home.aspx", "AGSIST-land-data"):
+            print("::error::robots.txt disallows the RETR data page; nothing fetched")
+            return 2
+    except urllib.error.HTTPError as e:
+        log.append("robots.txt: %s (none)" % e)
+    except Exception as e:  # noqa: BLE001
+        log.append("robots.txt did not answer (%s); it allowed these pages when last read" % str(e)[:120])
+    from playwright.sync_api import sync_playwright
+    c = Collector()
+    failed, csvs = [], []
+    with sync_playwright() as pw:
+        br = pw.chromium.launch()
+        ctx = br.new_context(user_agent=UA, accept_downloads=True, viewport={"width": 1280, "height": 1600})
+        page = ctx.new_page()
+        months = [m for m in start(page, log) if m["on"]]
+        months.sort(key=lambda m: (m["year"], m["month"]), reverse=True)
+        months = months[:most]
+        log.append("months offered: %d, %04d-%02d to %04d-%02d" % (len(months), months[-1]["year"], months[-1]["month"], months[0]["year"], months[0]["month"]) if months else "no months offered")
+        if not months:
+            print("::error::the historical screen offered no month")
+            br.close()
+            return 1
+        want_csv = {"%04d%02d" % (m["year"], m["month"]) for m in months[:CSV_MONTHS]}
+
+        def get_month(m, fmt):
+            """One file; on a miss, reopen the screen once (the session ends after 15 idle minutes)."""
+            ym = "%04d%02d" % (m["year"], m["month"])
+            tag = "%s-%s" % (fmt.lower(), ym)
+            for attempt in (1, 2):
+                if attempt == 2:
+                    log.append("%s: reopening the screen" % tag)
+                    fresh = {(x["year"], x["month"]): x for x in start(page, log)}
+                    m = fresh.get((m["year"], m["month"]), m)
+                    pick_format(page, fmt)
+                fn = grab(page, page.locator("#" + m["id"]), raw, tag, log, wait=300000)
+                if fn:
+                    return fn
+                time.sleep(FILE_PAUSE)
+            return None
+        pick_format(page, "CSV")
+        for m in months[:CSV_MONTHS]:
+            fn = get_month(m, "CSV")
+            if fn:
+                csvs.append((fn, "%04d%02d" % (m["year"], m["month"])))
+            time.sleep(FILE_PAUSE)
+        pick_format(page, "XML")
+        for m in months:
+            ym = "%04d%02d" % (m["year"], m["month"])
+            fn = get_month(m, "XML")
+            if not fn:
+                failed.append(ym)
+                continue
+            try:
+                n, f = c.xml(fn, ym, ym in want_csv)
+                log.append("%s: %d returns, %d farm or forest (%.1f MB)" % (ym, n, f, os.path.getsize(fn) / 1048576))
+            except Exception as e:  # noqa: BLE001
+                failed.append(ym)
+                log.append("%s: could not read: %s" % (ym, str(e)[:200]))
+            os.remove(fn)
+            print(log[-1], flush=True)
+            time.sleep(FILE_PAUSE)
+        br.close()
+    for fn, ym in csvs:
+        log.append("%s CSV: %d municipality codes named" % (ym, c.csv(fn, ym)))
+        os.remove(fn)
+    fn, rep = c.write(out)
+    rep["failed_months"] = failed
+    open(os.path.join(out, "build", "wi-retr-report.json"), "w").write(json.dumps(rep, indent=1))
+    log.append("wrote %s: %d farm and forest returns from %d months; %d with a town named; %d municipality codes named; months not read: %s"
+               % (fn, rep["farm_rows"], len(rep["months"]), rep["with_town"], rep["muni_codes_named"], ", ".join(failed) or "none"))
+    open(os.path.join(out, "fetch-log.txt"), "w").write("\n".join(log) + "\n")
+    print("\n".join(log))
+    note("wi fetch", "\n".join(log[-80:]), most=3)
+    if failed:
+        print("::warning::Wisconsin months not read: %s" % ", ".join(failed))
+    return 0 if rep["farm_rows"] else 1
 
 
 def explore(out):
@@ -290,6 +487,11 @@ def _explore(out, log):
 
 if __name__ == "__main__":
     a = sys.argv[1:]
+    if "--fetch" in a:
+        sys.exit(fetch(a[a.index("--fetch") + 1], int(a[a.index("--months") + 1]) if "--months" in a else 120))
+    if "--convert" in a:
+        i = a.index("--convert")
+        sys.exit(convert(a[i + 1], a[i + 2:]))
     if "--explore" in a:
         sys.exit(explore(a[a.index("--explore") + 1]))
     print("usage: wi_retr_browser.py --explore OUTDIR")

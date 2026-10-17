@@ -10,10 +10,13 @@ Sources (free and public only; a state is built only once its files read cleanly
       Illinois Open Data portal dataset it54-y4c6 (2014 on, updated weekly), with
       the added-PIN table ay2h-5hx3. Farm declarations only (Line 8 current use j).
       Seller and buyer names are in the public file (Step 4).
-  WI  Wisconsin Department of Revenue, Real Estate Transfer Return data. Columns are
-      read by the titles in DOR's layout (SLFReportsHistSales/RETRmlist.pdf), which
-      carries grantor and grantee names. As of Oct 2026 the monthly files are only
-      reachable inside DOR's My Tax Account app (scripts required), so nothing is built.
+  WI  Wisconsin Department of Revenue, electronic Real Estate Transfer Returns (eRETR).
+      The monthly files (the last five years) are on DOR's public My Tax Account screen
+      "Real Estate Historical Data", which needs a browser running its scripts:
+      scripts/wi_retr_browser.py --fetch DIR downloads each month's XML report there (every
+      parcel, grantor and grantee on a return; the CSV report shows only the first) and
+      writes DIR/build/wi-retr.csv with our column names, farm and forest returns only;
+      then --from DIR/build WI builds. Grantor and grantee names are in the public file.
   MN  Minnesota Department of Revenue, eCRV. The bulk Weekly Sales Extract is sent only
       on request; not built.
 
@@ -22,6 +25,7 @@ Sources (free and public only; a state is built only once its files read cleanly
         workflow moves that to the raw branch). Run this first and read the columns.
   python3 scripts/fetch_land_sales.py [WI MN]           fetch every listed file and build
   python3 scripts/fetch_land_sales.py --from DIR WI     build from files already downloaded
+        (for WI, the wi-retr.csv that scripts/wi_retr_browser.py --fetch writes)
   python3 scripts/fetch_land_sales.py --selftest
 
 What it keeps: transfers whose property class is farm, forest, undeveloped or
@@ -61,13 +65,13 @@ STATES = {
         "name": "Wisconsin", "fips": "55",
         "source": "Wisconsin Department of Revenue, electronic Real Estate Transfer Returns",
         "short": "Wisconsin transfer return",
-        "pages": ["https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx"],
+        "pages": [],
         "links": [{"t": "Wisconsin DOR transfer return data", "url": "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx"}],
-        "since_note": "Wisconsin's electronic transfer returns began in the mid-2000s; older deeds are at the county Register of Deeds.",
-        # Oct 2026: data-home.aspx is the My Tax Account app ("Javascript must be enabled"); the monthly
-        # historical files sit behind its "Download historical RETR data" screen, not a plain link,
-        # and 2026 returns are only in its one-at-a-time public search.
-        "no_files": " (it is DOR's My Tax Account app, which needs a browser running its scripts; 2026 returns are only in its public search)",
+        "since_note": "Wisconsin DOR's public download holds the last five years of returns; older ones are in DOR's property search and at the county Register of Deeds.",
+        # Oct 2026: data-home.aspx redirects to the My Tax Account app (tap.revenue.wi.gov/RETRHistoric):
+        # a disclaimer to agree to, then one link per month. The file comes from a session-bound
+        # request, so scripts/wi_retr_browser.py fetches it in a real browser and this builds --from it.
+        "no_files": " (Wisconsin's monthly files come through scripts/wi_retr_browser.py --fetch; build with --from)",
     },
     "IL": {
         "name": "Illinois", "fips": "17", "socrata": True,
@@ -116,6 +120,8 @@ COLS = {
     # recorded (filed) date, kept apart from the sale date for the coverage line; Line 3a acres as reported
     "rec": ["DATERECORDED", "RECORDINGDATE", "RECORDEDDATE"],
     "ac1": ["ACRESLINE1"],
+    # Wisconsin: the sum of every parcel's acres above zero, used only to trim to 10+ acre sales (never published)
+    "acany": ["ACRESANYPARCEL"],
     "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
 }
 WI_CONVEYANCE = {"1": "Warranty Deed", "2": "Land Contract", "3": "Quit Claim Deed", "4": "Other"}
@@ -280,7 +286,7 @@ def parse_rows(tables):
             elif "cls" in m and not farm_class(cls):
                 rep["not_farm"] += 1
                 continue
-            conv = g("conv", 40)
+            conv = g("conv", 60)
             if "conv" in m and hk[m["conv"]] == "CONVEYANCECODE":
                 conv = WI_CONVEYANCE.get(conv.lstrip("0"), conv)
             muni = g("muni", 60).upper()
@@ -297,12 +303,13 @@ def parse_rows(tables):
             ex = g("exempt")
             recs.append({
                 "doc": g("doc"), "date": d, "price": round(p), "acres": parse_num(g("acres")),
-                "cls": norm_class(cls), "conv": conv.title(), "pid": g("pid", 40), "muni": muni,
+                "cls": norm_class(cls), "conv": re.sub(r"[A-Za-z]+('[A-Za-z]+)?", lambda w: w.group(0).capitalize(), conv), "pid": g("pid", 40), "muni": muni,
                 "county": g("county", 40), "legal": g("legal", LEGAL_MAX),
                 "grantor": who("grantor"), "grantee": who("grantee"),
                 "np": int(npv) if npv and npv >= 1 else None,
                 "rec": parse_date(g("rec")) if "rec" in m else None,
                 "ac1": parse_num(g("ac1")) if "ac1" in m else None,
+                "acany": parse_num(g("acany")) if "acany" in m else None,
                 "exempt": 1 if ex and not re.match(r"^(0|N|NO|NONE|FALSE)$", ex, re.I) else 0,
             })
     return recs, rep
@@ -379,6 +386,10 @@ def coverage(rs):
     return cov
 
 
+class OverCap(Exception):
+    """A state's county files together are over MAX_STATE_MB; nothing was written."""
+
+
 def build(st, recs, gaz, now):
     cfg = STATES[st]
     cix = county_index(st)
@@ -393,8 +404,7 @@ def build(st, recs, gaz, now):
     names = any(r.get("grantor") for r in recs)
     ac1 = any(r.get("ac1") for r in recs)
     cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else [])
-    os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
-    index, total = [], 0
+    index, total, files = [], 0, []
     for fips, rs in sorted(by.items()):
         # several parcels on one return: the price is for all of them
         docs = {}
@@ -432,11 +442,14 @@ def build(st, recs, gaz, now):
                "coverage": cov, "acres_rule": ACRES_RULE, "cols": cols, "munis": munis, "rows": rows}
         s = json.dumps(doc, separators=(",", ":"))
         total += len(s)
-        with open(os.path.join(OUT, st.lower(), fips + ".json"), "w") as f:
-            f.write(s)
+        files.append((fips, s))
         index.append({"fips": fips, "name": c["name"], "lat": c["lat"], "lng": c["lng"], "n": len(rs), "from": rs[-1]["date"], "to": rs[0]["date"]})
     if total > MAX_STATE_MB * 1048576:
-        raise SystemExit("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, MAX_STATE_MB))
+        raise OverCap("%s: %.1f MB of county files, over the %d MB cap; not written (raise it in this file on purpose)" % (st, total / 1048576, MAX_STATE_MB))
+    os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
+    for fips, s in files:
+        with open(os.path.join(OUT, st.lower(), fips + ".json"), "w") as f:
+            f.write(s)
     with open(os.path.join(OUT, st.lower(), "index.json"), "w") as f:
         json.dump({"state": st, "source": cfg["source"], "fetched_utc": now, "names": names, "counties": index,
                    "unplaced_rows": unplaced}, f, separators=(",", ":"))
@@ -706,6 +719,223 @@ def fetch_il():
     return decls, extra, len(need)
 
 
+# ── Wisconsin eRETR XML (DOR's "Real Estate Historical Data" monthly report) ──────────────
+# Codes are DOR's own, from the report's schema (MTA_RETR_Export.xsd, Aug 6, 2026).
+WI_COUNTY = dict(enumerate(["Adams", "Ashland", "Barron", "Bayfield", "Brown", "Buffalo", "Burnett", "Calumet", "Chippewa", "Clark",
+                            "Columbia", "Crawford", "Dane", "Dodge", "Door", "Douglas", "Dunn", "Eau Claire", "Florence", "Fond du Lac",
+                            "Forest", "Grant", "Green", "Green Lake", "Iowa", "Iron", "Jackson", "Jefferson", "Juneau", "Kenosha",
+                            "Kewaunee", "La Crosse", "Lafayette", "Langlade", "Lincoln", "Manitowoc", "Marathon", "Marinette", "Marquette",
+                            "Milwaukee", "Monroe", "Oconto", "Oneida", "Outagamie", "Ozaukee", "Pepin", "Pierce", "Polk", "Portage",
+                            "Price", "Racine", "Richland", "Rock", "Rusk", "St. Croix", "Sauk", "Sawyer", "Shawano", "Sheboygan",
+                            "Taylor", "Trempealeau", "Vernon", "Vilas", "Walworth", "Washburn", "Washington", "Waukesha", "Waupaca",
+                            "Waushara", "Winnebago", "Wood", "Menominee"], 1))
+# Property Use Type to the assessment class it names (Utility and Telephone have no farm meaning; left out)
+WI_USE = {"AGRICULTURE": "4", "AGRFOREST": "5M", "PRODFOREST": "6", "UNDEVELOP": "5", "OTHER": "7", "SINGLE": "1", "MULTI": "1",
+          "COMMERCIAL": "2", "MANUFACTUR": "3"}
+WI_FARM_USE = ("AGRICULTURE", "AGRFOREST", "PRODFOREST")       # farm and forest: classes 4, 5M, 6
+WI_DOC = {"WARRANTY": "Warranty Deed", "QUITDEED": "Quit Claim Deed", "LAND": "Land Contract", "TRUSTEEDEED": "Trustee's Deed",
+          "PERSONALDEED": "Personal Representative's Deed", "DECEDENT": "Termination of Decedent's Interest", "CONDO": "Condominium Deed",
+          "CORRECTION": "Correction Instrument", "SHERIFFFORE": "Sheriff's Deed (foreclosure)", "JUDGFORE": "Foreclosure Judgment",
+          "SHERIFFPART": "Sheriff's Deed (partition)", "TRANSFER": "Transfer by Affidavit", "MINERAL": "Mineral Lease",
+          "LANDAMEND": "Land Contract Amendment", "VENDEELAND": "Land Contract Assignment", "LEASE99MORE": "Lease of 99 Years or More",
+          "ASSIGN99MORE": "Lease Assignment", "ASSIGN99LESS": "Lease Assignment", "WRPLA": "Improvements Document",
+          "WWARRANTY": "State Highway Warranty Deed", "WTRUSTEEDEED": "State Highway Trustee's Deed", "WPERSONDEED": "State Highway Deed",
+          "CORPDEED": "State Highway Deed", "AWARDDAMAGE": "State Highway Award of Damages", "QUITCORP": "State Highway Quit Claim Deed",
+          "QUITGRANTOR": "State Highway Quit Claim Deed", "QUITPURCHASE": "State Highway Quit Claim Deed", "OTHER": "Other Deed"}
+WI_CONV = {"SALE": "Sale", "SALEREPDEED": "Sale", "GIFT": "Gift", "PARENTGIFT": "Parent/Child Gift", "PARENTPART": "Parent/Child Part Gift",
+           "TRUSTCONVEY": "To Trust", "TRUSTEEBENE": "Trustee to Beneficiary", "TRUSTEE3RD": "Trustee to Third Party", "WILL": "Will or Survivorship",
+           "DECEDENT": "Decedent", "DIVORCE": "Divorce or Spouse", "MEMBERLLC": "To or From LLC", "PARTNER": "To or From Partnership",
+           "SHARE": "To or From Corporation", "DEEDLAND": "Land Contract Satisfied", "EXCHANGE": "Exchange", "PARTITION": "Partition",
+           "SHERIFFPART": "Partition", "SHERIFF": "Sheriff's Deed", "SHERIFF3RD": "Sheriff's Deed", "FORECLOS": "Foreclosure",
+           "FORECLOSE3RD": "Foreclosure", "COUNTYFORE": "Foreclosure", "CORRECTION": "Correction", "MINERAL": "Mineral Lease",
+           "MINERALAMEND": "Mineral Lease", "MINERALROYAL": "Mineral Lease", "LANDAMEND": "Land Contract Amendment", "NEWPARCEL": "Parcel Creation",
+           "XFRAFFIDAVIT": "Transfer by Affidavit", "OTHER": ""}
+WI_RELATED = ("FAMILY", "PARENTCHILD", "SPOUSES", "EXSPOUSES", "SHAREHOLDER", "EMPLOYER")
+WI_HEAD = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
+           "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1",
+           "ACRESANYPARCEL"]
+
+
+def wi_date(s):
+    """DOR's MM-dd-yyyy to ISO; anything else None."""
+    m = re.match(r"^(\d{2})-(\d{2})-(\d{4})$", str(s or "").strip())
+    return parse_date("%s/%s/%s" % (m[1], m[2], m[3])) if m else None
+
+
+def wi_name(el, tx):
+    """One grantor or grantee as DOR's CSV shows it: LAST, FIRST for a person, the name for an entity."""
+    last, first, whole = tx(el, "Name/LastName"), tx(el, "Name/FirstName"), tx(el, "Name/Name")
+    if last and first:
+        return "%s, %s" % (last, first)
+    return clean(last or first or whole)
+
+
+def wi_returns(fh):
+    """Every return in a monthly eRETR XML report, streamed (a month is 60 to 100 MB)."""
+    import xml.etree.ElementTree as ET
+
+    def local(t):
+        return t.rsplit("}", 1)[-1]
+
+    def find(el, path):
+        cur = el
+        for part in path.split("/"):
+            cur = next((c for c in cur if local(c.tag) == part), None)
+            if cur is None:
+                return None
+        return cur
+
+    def tx(el, path):
+        e = find(el, path)
+        return clean(e.text) if e is not None and e.text else ""
+
+    def kids(el, path, name):
+        e = find(el, path)
+        return [c for c in e if local(c.tag) == name] if e is not None else []
+    for ev, el in ET.iterparse(fh, events=("end",)):
+        if local(el.tag) != "Return":
+            continue
+        yield {
+            "cc": tx(el, "County/CountyCode"), "doc": tx(el, "County/DocumentNumber"), "rec": wi_date(tx(el, "County/RecordedDate")),
+            "date": wi_date(tx(el, "Document/ConveyanceDate")), "doctype": tx(el, "Document/DocumentType"),
+            "conv": tx(el, "Document/ConveyanceType"), "rel": tx(el, "Document/GrantorGranteeRelationship"),
+            "parcels": [{"muni": tx(p, "Municipality"), "pin": tx(p, "ParcelNumber"), "use": tx(p, "PropertyUseType"),
+                         "acres": parse_num(tx(p, "TotalAcres")), "part": tx(p, "PartOfParcelTransferred")} for p in kids(el, "Parcels", "Parcel")],
+            "grantors": [wi_name(g, tx) for g in kids(el, "Grantors", "Grantor")],
+            "grantees": [wi_name(g, tx) for g in kids(el, "Grantees", "Grantee")],
+            "price": parse_num(tx(el, "Fee/SalePrice")), "exempt": tx(el, "Fee/Exemption"), "legal": tx(el, "LegalDescription")[:LEGAL_MAX + 20],
+        }
+        el.clear()
+
+
+def wi_acres(parcels):
+    """Acres for the whole return, and the first parcel's figure as reported, or None when unsure.
+
+    Each parcel on a return carries its own Total Acres. Filers often put the whole sale's acres
+    on the first parcel and 0.00 on the rest, so a zero can mean "counted above" or "not known";
+    the same parcel can be listed twice; and a large figure can be repeated on every parcel. So:
+      - one parcel: its acres (above 0, under 20,000);
+      - several: the sum, only when every parcel number appears once, every parcel has acres
+        above 0, no parcel averages over a section (640 acres), and the parcels do not all
+        repeat one figure above a forty (40.5 acres; a run of forties is common, a repeated
+        quarter section is more likely the total typed on each line).
+    Anything else is uncertain: None, never a guess (acres_rule 2, the Illinois rule)."""
+    n = len(parcels)
+    if not n:
+        return None, None
+    first = parcels[0]["acres"]
+    if n == 1:
+        return (round(first, 2) if first and 0 < first < 20000 else None), None
+    ac1 = round(first, 2) if first and 0 < first < 20000 else None
+    pins = [key(p["pin"]) for p in parcels]
+    vals = [p["acres"] for p in parcels]
+    if any(not k for k in pins) or len(set(pins)) != n:
+        return None, ac1
+    if any(v is None or v <= 0 for v in vals):
+        return None, ac1
+    tot = sum(vals)
+    if tot / n > 640:
+        return None, ac1
+    if len(set(vals)) == 1 and vals[0] > 40.5:
+        return None, ac1
+    return round(tot, 2), ac1
+
+
+def wi_muni_label(name):
+    """'Leon, Town of' (DOR's CSV) to 'TOWN OF LEON', the form muni_key reads."""
+    m = re.match(r"^(.*?),\s*(Town|Village|City)\s+of$", clean(name), re.I)
+    return ("%s OF %s" % (m[2], m[1])).upper() if m else clean(name).upper()
+
+
+def wi_learn_munis(csv_blob, index):
+    """{(county code, muni code): name} from DOR's CSV report of a month whose XML was read.
+    The XML gives each parcel's municipality as a code; the CSV gives the first parcel's by name.
+    index: {(document number, first parcel number): (county code, muni code)} from that XML."""
+    out = {}
+    rows = read_table("x.csv", csv_blob)
+    hdr = [key(h) for h in next(rows, [])]
+    try:
+        i_co, i_doc, i_pin, i_mu = (hdr.index(k) for k in ("COUNTY", "DOCUMENTNUMBER", "PARCELNUMBER", "MUNICIPALITY"))
+    except ValueError:
+        return out
+    names = {key(v): "%02d" % k for k, v in WI_COUNTY.items()}
+    for r in rows:
+        if len(r) <= max(i_co, i_doc, i_pin, i_mu):
+            continue
+        hit = index.get((clean(r[i_doc]), clean(r[i_pin])))
+        if hit and names.get(key(r[i_co])) == hit[0] and clean(r[i_mu]):
+            out[hit] = wi_muni_label(r[i_mu])
+    return out
+
+
+def wi_row(ret, munis):
+    """One farm or forest return as a row under WI_HEAD, or None for any other return."""
+    ps = ret["parcels"]
+    if not ps or not any(p["use"] in WI_FARM_USE for p in ps):
+        return None
+    try:
+        county = WI_COUNTY[int(ret["cc"])]
+    except (ValueError, KeyError):
+        county = ""
+    codes = []
+    for u in sorted({p["use"] for p in ps}, key=lambda u: (u not in WI_FARM_USE, WI_FARM_USE.index(u) if u in WI_FARM_USE else 0, u)):
+        c = WI_USE.get(u)
+        if c and c not in codes:
+            codes.append(c)
+    ac, ac1 = wi_acres(ps)
+    conv = WI_DOC.get(ret["doctype"], ret["doctype"].title())
+    if ret["rel"] in WI_RELATED:
+        conv += ", related parties"
+    what = WI_CONV.get(ret["conv"], ret["conv"].title())
+    if what and what.upper() not in conv.upper():
+        conv += ", " + what
+
+    def names(xs):
+        xs = [x for x in xs if x]
+        return "; ".join(dict.fromkeys(xs))
+    f = lambda v: "" if v is None else ("%g" % v if isinstance(v, float) else str(v))
+    return [ret["doc"], ret["date"] or "", f(ret["price"]), f(ac), " ".join(codes), conv, ps[0]["pin"],
+            munis.get((ret["cc"], ps[0]["muni"]), ""), county, ret["legal"], names(ret["grantors"]), names(ret["grantees"]),
+            ret["exempt"], str(len(ps)), ret["rec"] or "", f(ac1) if len(ps) > 1 else "",
+            f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2))]
+
+
+def wi_dedupe(recs):
+    """A return can come back in a later month's file (an amended filing): keep the latest filing
+    of each county and document number, so a sale is one row and its acres are counted once."""
+    best = {}
+    for r in recs:
+        k = (key(r["county"]), r["doc"]) if r["doc"] else (id(r),)
+        if k not in best or (r.get("rec") or "") >= (best[k].get("rec") or ""):
+            best[k] = r
+    return list(best.values())
+
+
+def trim(recs, done):
+    """The next cut when a state's files are over the cap: first farm sales of 10 acres or more
+    (any parcel's acres; a return with no acres at all is dropped), then the oldest filing year,
+    one year at a time. None when nothing is left to cut."""
+    if "10+ acres" not in done:
+        return [r for r in recs if max(r.get("acres") or 0, r.get("ac1") or 0, r.get("acany") or 0) >= 10], "10+ acres"
+    yrs = sorted({(r.get("rec") or r["date"])[:4] for r in recs})
+    if len(yrs) <= 1:
+        return None, None
+    return [r for r in recs if (r.get("rec") or r["date"])[:4] != yrs[0]], "dropped filing year %s" % yrs[0]
+
+
+def summary(st, recs, trims):
+    """Rows per filing year, counties, rows with names: what the run report needs."""
+    by = {}
+    for r in recs:
+        y = (r.get("rec") or r["date"])[:4]
+        by[y] = by.get(y, 0) + 1
+    named = sum(1 for r in recs if r.get("grantor") or r.get("grantee"))
+    known = sum(1 for r in recs if r.get("acres"))
+    multi = sum(1 for r in recs if (r.get("np") or 1) > 1)
+    return "%s rows by filing year: %s; %d rows with names; %d multi-parcel; %d with acres; trims: %s" % (
+        st, ", ".join("%s %d" % kv for kv in sorted(by.items())), named, multi, known, "; ".join(trims) or "none")
+
+
 def run(states, from_dir=None):
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     gzblob = fetch(GAZ)
@@ -750,7 +980,23 @@ def run(states, from_dir=None):
             print("::warning::%s transfers not written: %s" % (st, why))
             bad += 1
             continue
-        res = build(st, recs, gazetteer(STATES[st]["fips"], gzblob), now)
+        if st == "WI":
+            recs = wi_dedupe(recs)
+        gaz = gazetteer(STATES[st]["fips"], gzblob)
+        trims = []
+        while True:
+            try:
+                res = build(st, recs, gaz, now)
+                break
+            except OverCap as e:
+                cut, why = trim(recs, trims) if st == "WI" else (None, None)
+                if cut is None:
+                    raise SystemExit(str(e))
+                print("::warning::%s; trimmed: %s (%d rows left of %d)" % (e, why, len(cut), len(recs)))
+                trims.append(why)
+                recs = cut
+        res["trims"] = trims
+        print("::notice::%s" % summary(st, recs, trims))
         print("::notice::%s transfers: %d rows in %d counties (%.2f MB); names %s; %d rows with no county match; files %d, rows read %d, not farm %d"
               % (st, res["rows"], res["counties"], res["mb"], "in the data" if res["names"] else "not in the data", res["unplaced"], rep["files"], rep["rows"], rep["not_farm"]))
     return 1 if bad and bad == len([s for s in states if not STATES[s].get("request_only")]) else 0
@@ -853,6 +1099,61 @@ def selftest():
     ck("IL: related-party sales say so", il[1]["conv"].endswith("Related Parties"))
     ck("IL: township as the place", il[0]["muni"] == "ABINGTON" and muni_key(il[0]["muni"]) == ("T", "ABINGTON"))
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
+    # Wisconsin eRETR monthly XML (DOR's Real Estate Historical Data report), a synthetic file in its shape
+    fx3 = os.path.join(ROOT, "test", "fixtures", "land-sales", "wi-retr-sample.xml")
+    rets = list(wi_returns(open(fx3, "rb")))
+    ck("WI XML: every return read, every parcel kept", len(rets) == 10 and [len(r["parcels"]) for r in rets[:3]] == [1, 3, 3])
+    ck("WI XML: names as DOR's CSV shows them, every grantor kept", rets[1]["grantors"] == ["SYNTHETIC, SELLER B", "SYNTHETIC, SELLER C"]
+       and rets[1]["grantees"] == ["SYNTHETIC FARMS LLC"])
+    ck("WI XML: MM-dd-yyyy dates to ISO, other shapes not guessed", rets[0]["date"] == "2024-03-15" and rets[0]["rec"] == "2024-03-18"
+       and wi_date("2024-03-21") is None and wi_date("13-01-2024") is None)
+    idx = {(r["doc"], r["parcels"][0]["pin"]): (r["cc"], r["parcels"][0]["muni"]) for r in rets}
+    mu = wi_learn_munis(("County,Document Number,Municipality,Parcel Number\nBarron,900001,\"Chetek, Town of\",\t022-1234-56-000\n"
+                         "St. Croix,900008,\"Hudson, City of\",\t032-1000-01-000\nPolk,900002,\"Wrong, Town of\",\t022-1234-57-000\n").encode(), idx)
+    ck("WI munis: named from the CSV by document and first parcel, county must agree", mu == {("03", "010"): "TOWN OF CHETEK", ("55", "032"): "CITY OF HUDSON"})
+    rows = [wi_row(r, mu) for r in rets]
+    ck("WI XML: farm and forest returns only (any parcel class 4, 5M or 6)", rows[6] is None and all(rows[i] for i in (0, 1, 2, 7, 9)))
+    wr, wrep = parse_rows([iter([WI_HEAD] + [x for x in rows if x])])
+    by = {r["doc"]: r for r in wr}
+    ck("WI XML: rows read through the shared parser", len(wr) == 8 and wrep["bad_date"] == 1 and wrep["not_farm"] == 0)
+    ck("WI acres: one parcel", by["900001"]["acres"] == 40 and by["900001"]["np"] == 1 and by["900001"]["ac1"] is None)
+    ck("WI acres: several parcels each read once, in acres, are summed", by["900002"]["acres"] == 80 and by["900002"]["np"] == 3)
+    ck("WI acres: whole sale on the first parcel and zeros after is uncertain, first figure kept as reported",
+       by["900003"]["acres"] is None and by["900003"]["ac1"] == 160 and by["900003"]["np"] == 3)
+    ck("WI acres: the same parcel twice is uncertain", by["900004"]["acres"] is None)
+    ck("WI acres: one figure above a forty repeated on every parcel is uncertain, a run of forties is summed",
+       by["900005"]["acres"] is None and by["900006"]["acres"] == 80)
+    ck("WI acres: over a section per parcel, or a blank parcel number, is uncertain",
+       wi_acres([{"pin": "a", "acres": 1000.0}, {"pin": "b", "acres": 500.0}])[0] is None and wi_acres([{"pin": "", "acres": 10.0}, {"pin": "b", "acres": 5.0}])[0] is None)
+    ck("WI class: farm codes first, buildings classes kept", by["900002"]["cls"] == "4 1" and by["900008"]["cls"] == "6" and by["900010"]["cls"] == "5M 1")
+    ck("WI names and county: St Croix code 55, entity names whole", by["900008"]["county"] == "St. Croix" and by["900008"]["grantor"] == "SYNTHETIC LAND LLC"
+       and by["900002"]["grantor"] == "SYNTHETIC, SELLER B; SYNTHETIC, SELLER C")
+    ck("WI deed type: related parties and gift said, fee exemption flagged", by["900008"]["conv"] == "Quit Claim Deed, Related Parties, Parent/Child Gift"
+       and by["900008"]["exempt"] == 1 and by["900001"]["exempt"] == 0 and by["900001"]["conv"] == "Warranty Deed, Sale")
+    ck("WI town: from the learned name, the form muni_key reads", by["900001"]["muni"] == "TOWN OF CHETEK" and muni_key(by["900001"]["muni"]) == ("T", "CHETEK"))
+    ck("WI town: an unknown code is left blank, not guessed", wi_row(dict(rets[0], cc="04"), mu)[7] == "")
+    later = dict(by["900001"], rec="2024-05-02", price=1)
+    dd = wi_dedupe(list(wr) + [later])
+    ck("WI: a return filed again keeps the latest filing only", len(dd) == len(wr) and [r for r in dd if r["doc"] == "900001"][0]["price"] == 1)
+    t1, w1 = trim(wr, [])
+    ck("WI trim: 10+ acres first, any parcel's acres counted", w1 == "10+ acres" and {r["doc"] for r in t1} == set(by) - {"900010"})
+    t2, w2 = trim([dict(r, rec="2021-01-05") for r in t1[:2]] + t1[2:], [w1])
+    ck("WI trim: then the oldest filing year", w2 == "dropped filing year 2021" and len(t2) == len(t1) - 2 and trim(t2, [w1, w2])[0] is None)
+    global MAX_STATE_MB
+    keep = MAX_STATE_MB
+    MAX_STATE_MB = 0
+    wd = os.path.join(OUT, "wi")
+
+    def snap():
+        return sorted((n, os.path.getmtime(os.path.join(wd, n))) for n in os.listdir(wd)) if os.path.isdir(wd) else None
+    before = snap()
+    try:
+        build("WI", wr, {}, "2026-01-01T00:00:00Z")
+        ck("over the cap: refused", False)
+    except OverCap:
+        ck("over the cap: refused before any file is written", snap() == before)
+    finally:
+        MAX_STATE_MB = keep
     print("FAILS=%d" % bad)
     return 1 if bad else 0
 
