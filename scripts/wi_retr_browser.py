@@ -220,13 +220,11 @@ def _explore(out, log):
         snap("02-after-agree")
         months = month_links(page)
         log.append("month links: %d enabled of %d; years %s" % (sum(1 for m in months if m["on"]), len(months), sorted({m["year"] for m in months})))
-        for lab, tag in (("View CSV Documentation", "doc-csv"), ("View XML Schema", "doc-xml")):
-            grab(page, page.get_by_text(lab).first, out, tag, log)
-            snap("03-" + tag)
         on = [m for m in months if m["on"]]
         if on:
             m = on[0]
-            for fmt in ("CSV", "XML"):
+            log.append("newest offered month: %04d-%02d" % (m["year"], m["month"]))
+            for fmt in ("XML", "CSV"):
                 page.locator("label[for=Dc-s_%d]" % (0 if fmt == "CSV" else 1)).click()
                 time.sleep(PAUSE)
                 grab(page, page.locator("#" + m["id"]), out, "%s-%04d-%02d" % (fmt.lower(), m["year"], m["month"]), log)
