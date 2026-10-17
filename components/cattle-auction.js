@@ -168,7 +168,8 @@
       (mi != null ? ' &middot; ' + Math.round(mi) + ' mi' : '') + '</p></header>';
     if (b.sale) h += '<p class="sb-sale">Sale day: ' + esc(b.sale) + '</p>';
     if (s0 && rs.length) {
-      h += '<p class="sb-sale">Barn report of <b>' + niceDate(s0.date) + '</b>' + (s0.receipts ? ' &middot; ' + s0.receipts.toLocaleString('en-US') + ' head' : '') + '</p>';
+      h += '<p class="sb-sale">Barn report of <b>' + niceDate(s0.date) + '</b>' + (s0.receipts ? ' &middot; ' + s0.receipts.toLocaleString('en-US') + ' head' : '') + '</p>' +
+        (s0.note ? '<p class="sb-src">' + esc(s0.note) + '.</p>' : '');
       h += '<div class="sb-tw"><table class="sb-t"><thead><tr><th scope="col">Weight<small>lb</small></th><th scope="col">Range<small>$/cwt</small></th></tr></thead><tbody>';
       rs.forEach(function (r) { h += '<tr><th scope="row">' + r.lo + '-' + r.hi + '</th><td>' + r.plo.toFixed(2) + '-' + r.phi.toFixed(2) + '</td></tr>'; });
       h += '</tbody></table></div><p class="sb-src">Posted by the barn, not USDA: a low and high, no average or head count by class. <a href="' + esc(s0.source_url || b.site) + '" rel="noopener">The barn&#x27;s report</a></p>';

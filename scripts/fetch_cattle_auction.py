@@ -564,11 +564,11 @@ FILE_DATE_RE = re.compile(r"(20\d\d)[.\-_](\d{1,2})[.\-_](\d{1,2})")
 OWN_MAX_AGE = 45            # days; an older newest report is not shown as current
 NO_RANGE_RE = re.compile(r"^(?:n\.?\s?t\.?|no test|none|light test|call\b.*|up to\b.*|below\b.*|"
                          r"\$?\d[\d,]*(?:\.\d+)?\s*(?:&|and)\s*(?:down|up|under|less)\b.*)?$", re.I)
-PX_PAIR_RE = re.compile(r"^\$?(\d{2,4}(?:\.\d{1,2})?)\s*(?:-|–|—|to)\s*\$?(\d{2,4}(?:\.\d{1,2})?)$", re.I)
+PX_PAIR_RE = re.compile(r"^\$?(\d{2,4}(?:\.\d{1,2})?)\s*(?:-|–|\u2014|to)\s*\$?(\d{2,4}(?:\.\d{1,2})?)$", re.I)
 EQ_ROW_RE = re.compile(
     r"^(beef|holstein|crossbred|cross\s?bred|dairy(?:\s+beef)?(?:\s+cross)?)\s+(steers?|heifers?)\s+"
     r"(?:(\d{3,4})\s*(?:-|–|to)\s*(\d{3,4})|(?:under|over)\s+\d{3,4})\s*(?:lbs?\.?|#)\s*(.*)$", re.I)
-PR_ROW_RE = re.compile(r"^(beef|holstein|dairy beef x)\s+(str|hfr|str/hfr)\s+(\d{3,4})#\s*-\s*(\d{3,4})#\s*[–—-]\s*(.*)$", re.I)
+PR_ROW_RE = re.compile(r"^(beef|holstein|dairy beef x)\s+(str|hfr|str/hfr)\s+(\d{3,4})#\s*-\s*(\d{3,4})#\s*[–\u2014-]\s*(.*)$", re.I)
 LB_ROW_RE = re.compile(r"\b(\d{3,4})-(\d{3,4})\s*LB\s+(STEERS|HEIFERS)\s+(\S+)\s+To\s+(\S+)", re.I)
 WD = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 LOOSE_DATE_RE = re.compile(
@@ -1099,60 +1099,110 @@ def selftest():
        pick_slug(dict(src, slug=None), lst2) == "1245"
        and pick_slug({"id": "worthing-sd", "match": "sioux falls|worthing", "slug": None}, lst2) is None)
 
-    # barns' own reports (parse_own): fixtures put together from lines search
-    # results quoted, NOT saved reports (see the fixture headers)
-    pl = "\n".join(ln for ln in (fx / "own-premier-lines.txt").read_text().splitlines() if not ln.startswith("#"))
-    ck("own report: 'Oct 12-15, 2026' is no single sale date, so no hint means no report", parse_own(pl)[0] is None)
-    po, why = parse_own(pl, "2026-10-15")
-    ck("own Premier lines parse with the PDF's file date", po is not None, why)
+    # barns' own reports: real pages the probe saved Oct 17 2026 (fixture headers
+    # give the URL). Numbers below checked by hand against the page text.
+    def ofx(i):
+        return html_text((fx / ("own-%s.html" % i)).read_text())
+    T = "2026-10-17"
+    po, why = parse_own(ofx("withee-wi"), "premier", T)
+    ck("own Premier (Withee) real page parses", po is not None, why)
     if po:
-        ck("own Premier: beef steers 200-400 375-600 and 400-600 310-470, heifers 400-600 300-430; fed, cows, calves, Holsteins never",
-           po["ranges"] == [{"sex": "heifers", "lo": 400, "hi": 600, "plo": 300.0, "phi": 430.0},
-                            {"sex": "steers", "lo": 200, "hi": 400, "plo": 375.0, "phi": 600.0},
-                            {"sex": "steers", "lo": 400, "hi": 600, "plo": 310.0, "phi": 470.0}], po["ranges"])
-        ck("own Premier: 3,545 head", po["receipts"] == 3545, po["receipts"])
-    eq, why = parse_own(html_text((fx / "own-equity-lines.html").read_text()))
-    ck("own Equity table parses, sale date 9/23/26", eq is not None and eq["date"] == "2026-09-23", why or eq["date"])
+        ck("own Premier: 'Date: 10-6 and 10-13-2026' is the Oct 13 sale, noted as one report for both, 835 + 245 = 1,080 head",
+           po["date"] == "2026-10-13" and po["receipts"] == 1080
+           and po.get("note") == "One report for the Oct 6 and Oct 13 sales (835 and 245 head)", po)
+        ck("own Premier: Beef Str 200-400 375-600, 400-600 310-470, 600-900 235-389; Hfr 400-600 300-430; Holstein and Dairy Beef X never",
+           {"sex": "steers", "lo": 400, "hi": 600, "plo": 310.0, "phi": 470.0} in po["ranges"]
+           and {"sex": "steers", "lo": 200, "hi": 400, "plo": 375.0, "phi": 600.0} in po["ranges"]
+           and {"sex": "steers", "lo": 600, "hi": 900, "plo": 235.0, "phi": 389.0} in po["ranges"]
+           and {"sex": "heifers", "lo": 400, "hi": 600, "plo": 300.0, "phi": 430.0} in po["ranges"]
+           and len(po["ranges"]) == 6 and not any(r["plo"] == 280.0 for r in po["ranges"]), po["ranges"])
+    eq, why = parse_own(ofx("altoona-wi"), "equity", T)
+    ck("own Equity Altoona: feeder table's own 'Date: 10/02/2026 325 Head', not the page's Oct 13 'as of'",
+       eq is not None and eq["date"] == "2026-10-02" and eq["receipts"] == 325, why or eq)
     if eq:
-        ck("own Equity: 3 steer and 2 heifer ranges under their headings, the Holstein table and the script never",
-           [(r["sex"], r["lo"], r["plo"], r["phi"]) for r in eq["ranges"]] ==
-           [("heifers", 300, 380.0, 442.5), ("heifers", 400, 296.0, 410.0), ("steers", 300, 400.0, 465.0),
-            ("steers", 400, 360.0, 440.0), ("steers", 600, 330.0, 372.5)], eq["ranges"])
-        ck("own Equity: 665 head", eq["receipts"] == 665, eq["receipts"])
-    ck("own: an unreadable price on a steer line refuses the report",
-       parse_own(pl.replace("310-470", "31O-470"), "2026-10-15")[0] is None)
+        ck("own Equity Altoona: steers 400-600 325-500 and 600-800 280-380, heifers 400-600 325-440; under 400, over 800 and Holsteins never",
+           [(r["sex"], r["lo"], r["hi"], r["plo"], r["phi"]) for r in eq["ranges"]] ==
+           [("heifers", 400, 600, 325.0, 440.0), ("heifers", 600, 800, 250.0, 350.0),
+            ("steers", 400, 600, 325.0, 500.0), ("steers", 600, 800, 280.0, 380.0)], eq["ranges"])
+    eq, why = parse_own(ofx("stratford-wi"), "equity", T)
+    ck("own Equity Stratford: no date over the feeder table, so the page's 'As of Friday October 16, 2026'; no head count",
+       eq is not None and eq["date"] == "2026-10-16" and eq["receipts"] is None, why or eq)
+    if eq:
+        ck("own Equity Stratford: steers 400-600 300-415, 600-800 250-345; heifers 400-600 300-340",
+           eq["ranges"][2:] == [{"sex": "steers", "lo": 400, "hi": 600, "plo": 300.0, "phi": 415.0},
+                                {"sex": "steers", "lo": 600, "hi": 800, "plo": 250.0, "phi": 345.0}]
+           and eq["ranges"][0] == {"sex": "heifers", "lo": 400, "hi": 600, "plo": 300.0, "phi": 340.0}, eq["ranges"])
+    eq, why = parse_own(ofx("lomira-wi"), "equity", T)
+    ck("own Equity Lomira: 'Saturday, September 26' with no year is 2026 (a Saturday); steers 350-600 350-600 (en dash)",
+       eq is not None and eq["date"] == "2026-09-26"
+       and {"sex": "steers", "lo": 350, "hi": 600, "plo": 350.0, "phi": 600.0} in eq["ranges"], why or eq)
+    eq, why = parse_own(ofx("sparta-wi"), "equity", T)
+    ck("own Equity Sparta: 'Next Sale is on November 5th  October 15th Results' is Oct 15, never Nov 5; steers 400-600 320-500",
+       eq is not None and eq["date"] == "2026-10-15"
+       and {"sex": "steers", "lo": 400, "hi": 600, "plo": 320.0, "phi": 500.0} in eq["ranges"], why or eq)
+    ck("own Equity Sparta: read in January, a yearless Oct 15 more than 200 days back is not guessed",
+       parse_own(ofx("sparta-wi"), "equity", "2027-06-30")[0] is None)
+    eq, why = parse_own(ofx("reedsville-wi"), "equity", T)
+    ck("own Equity Reedsville: tops only ('Up to 510'), no range, no report", eq is None and "no beef" in why, why)
+    eq, why = parse_own(ofx("richland-center-wi"), "equity", T)
+    ck("own Equity Richland Center: only the next sale's date over the feeder table, no report", eq is None and "no sale date" in why, why)
+    lb, why = parse_own(ofx("lanesboro-mn"), "lanesboro", T)
+    ck("own Lanesboro: Oct 9 2026, 1,722 head; 300-500 steers 395-555, 500-700 heifers 295-425; yearlings with no price never",
+       lb is not None and lb["date"] == "2026-10-09" and lb["receipts"] == 1722 and len(lb["ranges"]) == 6
+       and {"sex": "steers", "lo": 300, "hi": 500, "plo": 395.0, "phi": 555.0} in lb["ranges"]
+       and {"sex": "heifers", "lo": 500, "hi": 700, "plo": 295.0, "phi": 425.0} in lb["ranges"], why or lb)
+    st = ofx("stratford-wi")
+    ck("own: an unreadable price on a beef steer line refuses the report",
+       parse_own(st.replace("300-415", "30O-415"), "equity", T)[0] is None)
     ck("own: a price outside the sane range refuses the report",
-       parse_own(pl.replace("310-470", "3100-4700"), "2026-10-15")[0] is None)
+       parse_own(st.replace("300-415", "3000-4150"), "equity", T)[0] is None)
     ck("own: a backwards price range refuses the report",
-       parse_own(pl.replace("310-470", "470-310"), "2026-10-15")[0] is None)
+       parse_own(st.replace("300-415", "415-300"), "equity", T)[0] is None)
     ck("own: a weight range that is no feeder class refuses the report",
-       parse_own(pl.replace("400#-600# – 310", "600#-400# – 310"), "2026-10-15")[0] is None)
-    ck("own: no steer or heifer range, no report", parse_own("Oct 14, 2026\nMarket cows 120-135\n")[0] is None)
+       parse_own(ofx("withee-wi").replace("400#-600# – 310", "600#-400# – 310"), "premier", T)[0] is None)
+    ck("own: a report over %d days old is not shown as current" % OWN_MAX_AGE,
+       parse_own(ofx("altoona-wi"), "equity", "2026-12-01")[0] is None)
+    ck("own: a sale date after the read date refuses the report", parse_own(ofx("lanesboro-mn"), "lanesboro", "2026-10-01")[0] is None)
+    ck("own: a layout with no reader refuses", parse_own(st, "rockcreek", T)[0] is None)
+    ck("own: inline tags split inside a number read as one ('400 to 50</span><span>0 lbs')",
+       "400 to 500 lbs" in html_text("<td><span>Beef Steers 400 to 50</span><span>0 lbs.</span></td>"))
     page = ('<a href="/wp-content/uploads/2026/10/2026.10.9-Market-Report.pdf">old</a>'
             '<a href="https://premierlivestockandauctions.com/wp-content/uploads/2026/10/2026.10.16-Market-Report.pdf">new</a>'
             '<a href="/wp-content/uploads/2026/10/sale-flyer.pdf">flyer</a>')
     ck("own: the newest dated market report PDF on the page is the one read",
        newest_pdf("https://premierlivestockandauctions.com/market-reports/", page) ==
        ("2026-10-16", "https://premierlivestockandauctions.com/wp-content/uploads/2026/10/2026.10.16-Market-Report.pdf"))
+    # Rock Creek (saved page, Oct 17): files named by upload day, labels by sale day; the old pick read a 2025 PDF
+    rc = ('<a href="https://rockcreeklivestockmarket.com/wp-content/uploads/2025/11/2025-11-24-Market-Report.pdf">November 24th, 2025 Market Report</a>'
+          '<a href="https://rockcreeklivestockmarket.com/wp-content/uploads/2026/10/2026-10-02-mr.pdf">October 5th, 2026 Market Report</a>'
+          '<a href="https://rockcreeklivestockmarket.com/wp-content/uploads/2026/10/2026-10-12-mr.pdf">October 12th, 2026 Market Report</a>')
+    ck("own: Rock Creek's newest report by its label, Oct 12 2026",
+       newest_pdf("https://rockcreeklivestockmarket.com/?page_id=348", rc, T) ==
+       ("2026-10-12", "https://rockcreeklivestockmarket.com/wp-content/uploads/2026/10/2026-10-12-mr.pdf"))
+    kal = ('<a href="https://www.kalonasalesbarn.com/wp-content/uploads/2026/10/Hay-Report-17.pdf">HAY OCTOBER 15, 2026</a>'
+           '<a href="https://www.kalonasalesbarn.com/wp-content/uploads/2026/10/Cattle-Report-30.pdf">CATTLE OCTOBER 15, 2026</a>'
+           '<a href="https://www.kalonasalesbarn.com/wp-content/uploads/2026/10/Cattle-Report-29.pdf">CATTLE OCTOBER 8, 2026</a>')
+    ck("own: Kalona's newest cattle report, never the hay report of the same day",
+       newest_pdf("https://www.kalonasalesbarn.com/market-reports/", kal, T)[1].endswith("Cattle-Report-30.pdf"))
     ck("own: a page with no dated report PDF is read as the page", newest_pdf("https://x.org/", "<a href='/a.pdf'>a</a>") is None)
     cfgo = {"own_reports": [
-        {"id": "a-wi", "name": "A", "town": "A", "state": "WI", "lat": 44, "lon": -90, "sale": "Tue", "site": "https://a.org/r", "parser": "ranges", "parser_checked": False},
+        {"id": "a-wi", "name": "A", "town": "A", "state": "WI", "lat": 44, "lon": -90, "sale": "Tue", "site": "https://a.org/r", "parser": "equity", "parser_checked": False},
         {"id": "b-mn", "name": "B", "town": "B", "state": "MN", "lat": 44, "lon": -93, "sale": "Mon", "site": "https://b.org/", "check": True},
-        {"id": "c-wi", "name": "C", "town": "C", "state": "WI", "lat": 44, "lon": -91, "sale": "Wed", "site": "https://c.org/r", "parser": "ranges", "parser_checked": True}]}
+        {"id": "c-wi", "name": "C", "town": "C", "state": "WI", "lat": 44, "lon": -91, "sale": "Wed", "site": "https://c.org/r", "parser": "lanesboro", "parser_checked": True}]}
     calls = []
     def og(src):
         calls.append(src["id"])
-        return pl, "2026-10-15", "https://c.org/r.pdf", [], None
+        return ofx("lanesboro-mn"), "https://c.org/r", [], None
     own = run_own(cfgo, {"own": [{"id": "a-wi", "sales": [{"date": "2026-10-01", "ranges": [{"sex": "steers"}]}]}]}, now, og)
     ck("own: only a source with a checked parser is fetched", calls == ["c-wi"], calls)
     ck("own: an unchecked parser shows no numbers, even ones left in the old feed, and says needs first read",
        "sales" not in own[0] and own[0]["status"]["note"] == "needs first read", own[0])
     ck("own: a site seen in one place only is not linked", "site" not in own[1] and own[0]["site"] == "https://a.org/r")
-    ck("own: a checked parser's sale carries its report link", own[2]["sales"][0]["date"] == "2026-10-15"
-       and own[2]["sales"][0]["source_url"] == "https://c.org/r.pdf" and own[2]["status"]["ok"])
-    own2 = run_own(cfgo, {"own": own}, now, lambda src: (None, None, None, [], "fetch failed: 403"))
+    ck("own: a checked parser's sale carries its report link", own[2]["sales"][0]["date"] == "2026-10-09"
+       and own[2]["sales"][0]["source_url"] == "https://c.org/r" and own[2]["status"]["ok"], own[2])
+    own2 = run_own(cfgo, {"own": own}, now, lambda src: (None, None, [], "fetch failed: 403"))
     ck("own: a failed fetch keeps the last good sale and records why",
-       own2[2]["sales"][0]["date"] == "2026-10-15" and own2[2]["status"]["note"] == "fetch failed: 403")
+       own2[2]["sales"][0]["date"] == "2026-10-09" and own2[2]["status"]["note"] == "fetch failed: 403")
 
     cfg = json.loads((ROOT / SOURCES).read_text())
     ids = [x["id"] for x in cfg["barns"]] + [x["id"] for x in cfg["state_reports"]]
@@ -1166,8 +1216,15 @@ def selftest():
     ck("every own-report barn has a sale day, an https site and lat/lon in the lower 48", all(
         x.get("sale") and x.get("site", "").startswith("https://") and 24 < x["lat"] < 50 and -125 < x["lon"] < -66
         and re.match(r"^[A-Z]{2}$", x["state"]) for x in cfg.get("own_reports") or []))
-    ck("no own-report parser ships checked before a saved report backs it",
-       not any(x.get("parser_checked") for x in cfg.get("own_reports") or []))
+    chk = [x for x in cfg.get("own_reports") or [] if x.get("parser_checked")]
+    ck("a checked own-report parser has a reader and a real saved report fixture with its URL on top",
+       all(x.get("parser") in OWN_KINDS and (fx / ("own-%s.html" % x["id"])).exists()
+           and ("Saved copy of " + x["site"] + " fetched") in (fx / ("own-%s.html" % x["id"])).read_text()[:300] for x in chk),
+       [x["id"] for x in chk])
+    ck("every checked own-report fixture parses with its own reader on its fetch date",
+       all(parse_own(ofx(x["id"]), x["parser"], T)[0] for x in chk if (fx / ("own-%s.html" % x["id"])).exists()))
+    ck("a barn not read yet says why", all(x.get("why") for x in cfg.get("own_reports") or [] if not x.get("parser_checked")),
+       [x["id"] for x in cfg.get("own_reports") or [] if not x.get("parser_checked") and not x.get("why")])
 
     print()
     if fails:

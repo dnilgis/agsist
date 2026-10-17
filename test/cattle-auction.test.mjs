@@ -202,8 +202,19 @@ test("the page's list of barns USDA does not report is the own_reports list; unc
   // Premier (Withee), Equity and Central Livestock are what Sig asked for by name
   for (const id of ["withee-wi", "lomira-wi", "stratford-wi", "reedsville-wi", "bonduel-wi", "johnson-creek-wi", "richland-center-wi", "rock-creek-mn", "zumbrota-mn"])
     assert.ok(srcs.own_reports.some((b) => b.id === id), id);
-  assert.ok(srcs.own_reports.every((b) => !b.parser_checked), "no barn-posted price ships before a checked read");
-  assert.match(strip(page), /not shown here until AGSIST has read one of their reports and checked the reading by hand/);
+  // a barn-posted price ships only with a real saved report as its fixture, and the page names every such barn
+  const intro = strip(page).split("Barns USDA does not report")[1].split("Sale days are as")[0];
+  assert.match(intro, /own prices show here only once AGSIST has read its report and checked the reading by hand/);
+  for (const b of srcs.own_reports.filter((x) => x.parser_checked)) {
+    const f = ROOT + "test/fixtures/cattle-auction/own-" + b.id + ".html";
+    assert.ok(existsSync(f), b.id + " checked without a saved report");
+    assert.match(readFileSync(f, "utf8").slice(0, 300), /Saved copy of .* fetched 20\d\d-\d\d-\d\d/, b.id);
+    assert.ok(intro.includes(b.town), b.id + " live but not named on the page");
+  }
+  for (const b of srcs.own_reports.filter((x) => !x.parser_checked)) {
+    assert.ok(b.why, b.id + " not read and no reason given");
+    assert.ok(!intro.includes(" " + b.town + ","), b.id + " named as live but not checked");
+  }
 });
 
 test("barns USDA does not report: nearest first within range; ranges per sex, lightest first", () => {
@@ -215,9 +226,9 @@ test("barns USDA does not report: nearest first within range; ranges per sex, li
   near(n[2].mi, 115, 6, "Withee-Zumbrota");
   assert.equal(A.nearOwn(own, { lat: 44.95, lon: -90.6 }, 2, 400).map((x) => x.barn.id).join(), "w,s");
   const st = fixture.own.find((b) => b.id === "stratford-wi");
-  assert.equal(A.ownRanges(st, "steers").map((r) => r.lo).join(), "300,400");
-  assert.equal(A.ownRanges(st, "heifers").map((r) => r.lo).join(), "300");
-  assert.equal(A.ownRanges(fixture.own[0], "steers").length, 0);
+  assert.equal(A.ownRanges(st, "steers").map((r) => r.lo).join(), "400,600");
+  assert.equal(A.ownRanges(st, "heifers").map((r) => r.lo + "-" + r.hi).join(), "400-600,600-800");
+  assert.equal(A.ownRanges(fixture.own.find((b) => b.id === "zumbrota-mn"), "steers").length, 0);
 });
 
 test("barns with a second sale day: also is a list of other report numbers, never the slug again", () => {
@@ -329,7 +340,7 @@ test("browser: a ZIP shows the nearest barns with sale date, classes, change and
   } finally { await browser.close(); srv.close(); }
 });
 
-test("browser: a Wisconsin ZIP lists the barns USDA does not report, nearest first, no price until a checked read", { skip }, async () => {
+test("browser: a Wisconsin ZIP lists the barns USDA does not report, nearest first, barn ranges only from a checked read", { skip }, async () => {
   const srv = await serve(true), browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { p, errs } = await open(browser, srv);
@@ -341,12 +352,15 @@ test("browser: a Wisconsin ZIP lists the barns USDA does not report, nearest fir
     const own = await p.$$eval(".sb-own", (x) => x.map((e) => e.textContent));
     assert.equal(own.length, 3);
     assert.match(own[0], /Premier Livestock & Auctions.*Withee, WI.*0 mi.*Sale day: Feeder cattle the 1st, 2nd and 3rd Tuesday/s);
-    assert.match(own[0], /has not read and checked its own report yet, so no price is shown/);
-    assert.doesNotMatch(own[0], /\d{3}\.\d{2}/);
-    assert.match(own[1], /Equity Livestock.*Stratford.*Barn report of Sep 23, 2026.*665 head.*300-400.*400\.00-465\.00.*400-600.*360\.00-440\.00/s);
-    assert.match(own[1], /Posted by the barn, not USDA/);
-    assert.match(own[2], /Zumbrota.*Ask the barn for its latest market report/s);
-    assert.equal(await p.$$eval(".sb-own", (x) => x[2].querySelectorAll("a").length), 0);
+    // Withee and Stratford: what parse_own reads from the real saved pages (Oct 17 2026)
+    assert.match(own[0], /Barn report of Oct 13, 2026.*1,080 head.*One report for the Oct 6 and Oct 13 sales \(835 and 245 head\)\./s);
+    assert.match(own[0], /200-400.*375\.00-600\.00.*400-600.*310\.00-470\.00.*600-900.*235\.00-389\.00/s);
+    assert.match(own[0], /Posted by the barn, not USDA/);
+    assert.match(own[1], /Equity Livestock.*Stratford.*Barn report of Oct 16, 2026.*400-600.*300\.00-415\.00.*600-800.*250\.00-345\.00/s);
+    assert.doesNotMatch(own[1], /\d head/);
+    assert.match(own[2], /Zumbrota.*has not read and checked its own report yet, so no price is shown/s);
+    assert.doesNotMatch(own[2], /\d{3}\.\d{2}/);
+    assert.equal(await p.$$eval(".sb-own", (x) => x[2].querySelector("a").href), "https://www.centrallivestock.com/zumbrota-market-report.html");
     assert.equal(await p.$$eval(".sb-own", (x) => x[0].querySelector("a").href), "https://premierlivestockandauctions.com/market-reports/");
     await p.selectOption("#sb-state", "MN");
     assert.match(await p.textContent("#sb-results"), /Minnesota barns USDA does not report.*Central Livestock Association/s);
