@@ -1,0 +1,4 @@
+[
+{"out":"A2b-clean-v2-stone-lineend-figures-sheet","art":"scratch-rpv2/art-v2.js","v2":{"fill":"#ECE6DE","lineEnds":"figures"},"name":"The Lindquist Home Farms","dedication":"For Dad, his 40th crop on the home place. Love, Kate","marks":[["2012-05-01","Planted corn"],["2012-07-04","Our wedding!"],["2012-10-20","Harvest done"]]},
+{"out":"B-history-sheet","art":"scratch-rpv2/art-v2.js","station":"USC00130200","gaugeText":"Weather station: Ames 8 WSW, NOAA co-op station, 7.9 mi from Ames","v2":{"history":true,"lineEnds":"words","histSpan":"46 years, 1965 to 2025","threadOpacity":1,"histNote":"9th driest of the 46 full years this station has kept"},"name":"The Lindquist Home Farms","dedication":"For Dad, his 40th crop on the home place. Love, Kate","marks":[["2012-05-01","Planted corn"],["2012-07-04","Our wedding!"],["2012-10-20","Harvest done"]]}
+]

@@ -1,0 +1,6 @@
+[
+{"out":"C-letter-v2-gift-family-code","art":"scratch-rpv2/art-v2.js","v2":{"fill":"#ECE6DE","lineEnds":"words"},"name":"The Lindquist Home Farms","dedication":"For Dad, his 40th crop on the home place. Love, Kate","marks":[["2012-05-01","Planted corn"],["2012-07-04","Our wedding!"],["2012-10-20","Harvest done"]],
+ "letter":{"script":"scratch-rpv2/insert-v2.js","gift":"For Dad, his 40th crop on the home place. Love, Kate","familyCode":"LINDQUIST-12","v2":{"dryBand":"#ECE6DE","wetBand":"#EAEFF4"}}},
+{"out":"C0-letter-current-gift","marks":[["2012-05-01","Planted corn"],["2012-07-04","Our wedding!"],["2012-10-20","Harvest done"]],"name":"The Lindquist Home Farms","dedication":"For Dad, his 40th crop on the home place. Love, Kate",
+ "letter":{"script":"components/rp-insert.js","gift":"For Dad, his 40th crop on the home place. Love, Kate"}}
+]

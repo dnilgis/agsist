@@ -1,0 +1,6 @@
+[
+{"out":"E1-roots-crop-with-usual-year-sheet","art":"scratch-rpv2/art-v2.js","style":"r2","name":"The Lindquist Home Farms","dedication":"For Dad, his 40th crop on the home place. Love, Kate","marks":[["2012-05-01","Planted corn"],["2012-07-04","Our wedding!"],["2012-10-20","Harvest done"]],
+ "crop":{"kind":"corn","plant":"2012-05-01","harvest":"2012-10-20","ghost":true,"tempStation":"USW00094989","foot":["Corn stages: growing degree days (86/50) from planting, from Ames Municipal Airport temperatures 5.0 mi away; stage GDUs for a 2,700 GDU hybrid (Purdue)"],"ghostFoot":["Gray plants: the same corn in a usual year (NOAA 1991 to 2020 normal temperatures)"]}},
+{"out":"E2-roots-crop-no-ghost-sheet","art":"scratch-rpv2/art-v2.js","style":"r2","name":"The Lindquist Home Farms","dedication":"For Dad, his 40th crop on the home place. Love, Kate","marks":[["2012-05-01","Planted corn"],["2012-07-04","Our wedding!"],["2012-10-20","Harvest done"]],
+ "crop":{"kind":"corn","plant":"2012-05-01","harvest":"2012-10-20","ghost":false,"tempStation":"USW00094989","foot":["Corn stages: growing degree days (86/50) from planting, from Ames Municipal Airport temperatures 5.0 mi away; stage GDUs for a 2,700 GDU hybrid (Purdue)"],"ghostFoot":[]}}
+]
