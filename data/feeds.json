@@ -1906,7 +1906,6 @@
   {
    "path": "data/prices.json",
    "pages": [
-    "breakeven.html",
     "cattle-futures-prices.html",
     "developer.html",
     "fast-facts.html",
