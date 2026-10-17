@@ -184,7 +184,8 @@
     return out;
   }
   // 17 u after the 21 u words on Staircase's line, 16 u after Roots' 20 u and the 19 u row under the months
-  function dateSt(o) { o = st(o || {}); return Object.assign({}, o, { size: o.size >= 21 ? 17 : 16, w: 400, fill: C.mute, it: false, ls: 0 }); }
+  // (and under 16 u, the footnote voices of 2026-10-17, the date keeps its words' size)
+  function dateSt(o) { o = st(o || {}); return Object.assign({}, o, { size: o.size >= 21 ? 17 : o.size >= 16 ? 16 : o.size, w: 400, fill: o.size < 16 ? '#8A8F98' : C.mute, it: false, ls: 0 }); }
   function plain(s) { return String(s).replace(/\u0001([^\u0001\u0002]*)\u0002/g, ' $1'); }
   function W(s, o) {
     if (DATE_RE.test(String(s))) return runs(s, st(o || {})).reduce(function (t, r) { return t + W(r.s, r.o); }, 0);
@@ -787,7 +788,7 @@
   // words, then an optional date in its own voice on the same baseline
   function tv(x, y, s, o, date, dO) {
     var t = T(x, y, s, o);
-    if (date) t = t.replace('</text>', '<tspan font-weight="' + (dO.w || 400) + '" font-size="' + n2(dO.size || o.size) + '" fill="' + dO.fill + '"> ' + esc(date) + '</tspan></text>');
+    if (date) t = t.replace('</text>', '<tspan font-size="' + n2(dO.size || o.size) + '" font-weight="' + (dO.w || 400) + '" fill="' + dO.fill + '"> ' + esc(date) + '</tspan></text>');
     return t;
   }
   function wv(s, o, date, dO) { return W(s, o) + (date ? W(' ' + date, Object.assign({}, o, dO)) : 0); }
@@ -1027,7 +1028,9 @@
     var HY = PTOP + 18, KY = HY + 32;
     var ks = { size: 15, w: 500, fill: C.rain }, us = { size: 15, w: 400, fill: C.mute }, sep = { size: 15, fill: C.soft };
     var yTxt = E.TU + ' ' + tr(E.preview ? 'so far' : 'this year'), uTxt = E.cmp ? rainAmt(E.normalRec, 'tot') + ' ' + tr(E.preview ? 'a usual year by then' : E.unrecorded ? 'a usual year, same days' : 'a usual year') : '';
-    var keyW = 34 + W(yTxt, ks) + (E.cmp ? 36 + 34 + W(uTxt, us) : 0);
+    // with nothing to compare the headline already says the total: no key row (no total said twice)
+    var keyW = E.cmp ? 34 + W(yTxt, ks) + 36 + 34 + W(uTxt, us) : 0;
+    if (!E.cmp) KY = HY;
     var histNote = hist && hist.note ? hist.note : '';
     // the biggest rain with no clean spot on the chart is a red line in the header (never dropped)
     var wetHeadY = wetFoot && E.wet ? KY + 24 : 0, NY = (wetHeadY || KY) + 22;
@@ -1203,17 +1206,21 @@
 
     // ---- the station's facts: 12 u gray footnotes, below the line; one with no room goes to the foot line
     var recAt = placeAll(recs.pts, function (k) {
-      var r = recs.pts[k], two = splitDate(r.text), words = two ? two[0] : plain(r.text), date = two ? two[1] : '';
+      // the words carry their date as a run (T draws it gray, a tie note after it back in the words' voice)
+      var r = recs.pts[k], words = r.text, date = '';
       var rg = rings[k], own = 'rec:' + k;
       var pick = placeNear(rg.x, rg.y, words, FACT, date, FACT_D, own,
         [[10, 24, 'start'], [-10, 24, 'end'], [12, 44, 'start'], [-12, 44, 'end'], [14, 66, 'start'], [-14, 66, 'end'], [16, 90, 'start'], [-16, 90, 'end'], [40, 30, 'start'], [-40, 30, 'end'], [60, 56, 'start'], [-60, 56, 'end']], { d: 170, below: true, rg: rg });
+      // no room under the line (early in the year it runs along the axis): above it, still a footnote
+      if (!pick) pick = placeNear(rg.x, rg.y, words, FACT, date, FACT_D, own,
+        [[10, -14, 'start'], [-10, -14, 'end'], [12, -36, 'start'], [-12, -36, 'end'], [14, -60, 'start'], [-14, -60, 'end'], [40, -24, 'start'], [-40, -24, 'end']], { d: 140 });
       if (!pick) return null;
       var its = [room.text(pick.b, own), room.seg(pick.L[0], pick.L[1], pick.L[2], pick.L[3], 0.7, own, 'lead')];
       pick.words = words; pick.date = date; its.pick = pick;
       return its;
     }, []);
     // a fact with no room on the chart is said in the foot line instead (never dropped)
-    recs.pts.forEach(function (r, k) { if (!recAt[k]) footFacts.push(plain(r.text)); });
+    recs.pts.forEach(function (r, k) { if (!recAt[k]) footFacts.push(r.text); });
 
     // ---- line ends ("your year", "usual"), the gap at Dec 31, and every year behind's remarkable ones
     var ends = [], endBoxes = [], EX = X1 + 12, endY = y(E.total), endN = E.cmp ? y(E.normalRec) : null;
@@ -1283,7 +1290,7 @@
     });
     lines = lines.filter(function (l) { return l.length; });
     // a part too long for any line is cut at a word, never run past the QR
-    lines = lines.map(function (l) { var s = l.join(SEPF); while (W(s, fS) > FW && s.indexOf(' ') > 0) s = s.slice(0, s.lastIndexOf(' ')); return s; });
+    lines = lines.map(function (l) { var s = l.join(SEPF); while (W(s, fS) > FW && s.indexOf(' ') > 0) s = s.slice(0, s.lastIndexOf(' ')).replace(/\u0001[^\u0002]*$/, ''); return s; });
     var footTop = 1081 - (lines.length - 1) * 19;
     var foot = lines.map(function (s, k) { return T(X0, footTop + k * 19, s, fS); }).join('');
     dropped.forEach(function (t) { skipped.push(t); });
@@ -1315,9 +1322,9 @@
     }
     // the header on white (a history thread passes behind it)
     var hx = X0, hp = ['<rect x="' + n2(headBox.x - 4) + '" y="' + n2(headBox.y) + '" width="' + n2(headBox.w + 8) + '" height="' + n2(headBox.h) + '" fill="#FFFFFF"/>', T(hx, HY, head, hs)];
-    hp.push(line(hx, KY - 5, hx + 24, KY - 5, C.rain, 4)); hx += 34;
-    hp.push(T(hx, KY, yTxt, ks)); hx += W(yTxt, ks);
     if (E.cmp) {
+      hp.push(line(hx, KY - 5, hx + 24, KY - 5, C.rain, 4)); hx += 34;
+      hp.push(T(hx, KY, yTxt, ks)); hx += W(yTxt, ks);
       hp.push(T(hx + 18, KY, '·', Object.assign({}, sep, { anchor: 'middle' }))); hx += 36;
       hp.push('<path d="M' + n2(hx) + ',' + (KY - 5) + 'h24" stroke="' + C.mute + '" stroke-width="1.5" stroke-dasharray="6 5"/>'); hx += 34;
       hp.push(T(hx, KY, uTxt, us));
