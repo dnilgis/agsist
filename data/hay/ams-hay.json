@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-17T01:20:16Z",
+ "updated": "2026-10-17T17:32:59Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, state hay reports",
  "note": "Confirmed trades as AMS reports them, $ per ton, by grade and bale type. Each report has its own date. Not blended with the NASS monthly prices in hay-prices.json.",
  "reports": [
@@ -151,7 +151,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -332,7 +332,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -342,7 +342,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -568,7 +568,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -1589,7 +1589,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -1599,7 +1599,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -1609,7 +1609,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -1619,7 +1619,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -1705,7 +1705,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -1715,7 +1715,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -1806,7 +1806,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -2032,7 +2032,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -2042,7 +2042,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -2173,7 +2173,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -2424,7 +2424,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -2650,7 +2650,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3006,7 +3006,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3016,7 +3016,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3026,7 +3026,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3036,7 +3036,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3046,7 +3046,7 @@
    "status": {
     "ok": false,
     "note": "no Per Ton hay or straw rows",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3056,7 +3056,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3066,7 +3066,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3076,7 +3076,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3086,7 +3086,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3096,7 +3096,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3106,7 +3106,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   },
   {
@@ -3116,7 +3116,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-10-17T01:20:16Z"
+    "checked": "2026-10-17T17:32:59Z"
    }
   }
  ]
