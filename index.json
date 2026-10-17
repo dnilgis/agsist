@@ -6264,7 +6264,7 @@
   {
    "bytes": 352077,
    "sha256": "de746f4ec2ea92ca9dddb6b259ea473fa6a37e26fe890f85c55b2ebcefc80509",
-   "fetched_utc": "2026-10-17T02:11:09Z",
+   "fetched_utc": "2026-10-17T01:58:00Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
@@ -6279,14 +6279,14 @@
    "why": "/home competitor benchmark Oct 16, 2026 (established)",
    "kind": "rendered",
    "checked_utc": "2026-10-17T02:10:50Z",
-   "error": null,
    "attempts": [
     "direct/browser: HTTP 403",
     "wayback/browser: ok 200"
    ],
-   "status": "new",
+   "status": "manual",
    "text_chars": 5092,
-   "redacted": null
+   "redacted": null,
+   "note": "saved by hand from the owner browser; site refuses automated fetches"
   },
   {
    "bytes": 550124,
@@ -6316,7 +6316,7 @@
   {
    "bytes": 237925,
    "sha256": "b972c095ae34764b9a902b32080441fc4588f69a2029b25b865dcba1ba3efba1",
-   "fetched_utc": "2026-10-17T02:11:42Z",
+   "fetched_utc": "2026-10-17T01:58:00Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
@@ -6331,14 +6331,14 @@
    "why": "/home competitor benchmark Oct 16, 2026 (established); rendered, plain clients got HTTP 403/402 on agriculture.com (bench-home-5)",
    "kind": "rendered",
    "checked_utc": "2026-10-17T02:11:10Z",
-   "error": null,
    "attempts": [
     "direct/browser: HTTP 403",
     "wayback/browser: ok 200"
    ],
-   "status": "new",
+   "status": "manual",
    "text_chars": 2279,
-   "redacted": null
+   "redacted": null,
+   "note": "saved by hand from the owner browser; site refuses automated fetches"
   },
   {
    "bytes": 921195,
@@ -8001,7 +8001,7 @@
   {
    "bytes": null,
    "sha256": null,
-   "fetched_utc": null,
+   "fetched_utc": "2026-10-17T01:58:00Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
@@ -8016,8 +8016,8 @@
    "why": "/field-scout competitor benchmark Oct 16, 2026 (established); rendered; what a visitor sees without logging in",
    "kind": "rendered",
    "checked_utc": "2026-10-17T01:54:16Z",
-   "error": "direct/browser: HTTP 403; wayback/browser: bot challenge (AWS WAF), nothing saved",
-   "status": "failed"
+   "status": "manual",
+   "note": "saved by hand from the owner browser; site refuses automated fetches"
   },
   {
    "bytes": null,

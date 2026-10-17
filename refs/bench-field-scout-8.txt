@@ -1,0 +1,20 @@
+# Benchmark field-scout: AcreValue public parcel map
+# https://www.acrevalue.com/map/
+# saved by hand from the owner's browser 2026-10-17 (site refuses automated fetches); text below is what a logged-out visitor sees, transcribed from the saved page and a screenshot (bench-field-scout-8.webp). Site keys in the page source omitted.
+
+Top nav: Parcel Map | Sold Land | Land for Sale | Community | Pricing | Help | More | Log In | Sign Up
+Tabs: Parcels | For Sale | Sold Land | Community
+Search box: "Enter a county, township, city, or address" | filters: State, County, Parcel #, Owner, More
+Banner: "Showing all Parcels."  Button: "Get Full Report" (greyed until a field is picked). "0 FIELDS"
+Map controls: Map | List | Map Layers (NEW) | Hide Layers | Measuring Tools | Hybrid / Map / 3D. Basemap: Mapbox satellite, regional view (MN/WI/IA).
+Overlay on map: "Zoom or search to view fields"
+
+Right panel:
+ Chart: "Average Sales Price per Acre by Quarter - Wisconsin". Series: Sales Price, Trend (R2: 0.360), Avg - All Sales ($9,463). Y axis $k per acre 6.6 to 13.1; X axis quarters Q3 '23 to Q2 '26.
+ Heading: "Farmland Values, Soil Survey, and GIS Maps"
+ Text: "View GIS maps that compile agricultural data, including farmland values, soil productivity ratings, crop mix, and parcel ownership information."
+ SAMPLE REPORT card: PARCEL | ACREVALUE $10,453/ac. | ACRES 384.8 | CSR2 23 | OWNER (12/12/24) JOHN DOE
+
+Layer list available in page (icon set): soils (SSURGO), CSR2/productivity, crop history (CDL), NDVI, elevation, flood, wetlands, CLU boundaries, transmission lines, substations, pipelines, power plants, wind/solar, oil wells, ethanol/biodiesel/soybean plants, grain bins/barns, CEJST, FCC broadband, protected land, easements, hunting, trails.
+Paid features signalled: Pricing page, Get Full Report, owner names/addresses and list view gated by subscription permissions (Recurly checkout in page).
+Tracking in page: Google Analytics, GTM, LinkedIn, Twitter, Meta Pixel, Omnisend, reCAPTCHA, AWS WAF captcha.

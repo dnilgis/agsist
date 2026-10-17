@@ -1,249 +1,30 @@
-# Benchmark home: AgWeb (Farm Journal)
+# Benchmark home: AgWeb home (Farm Journal)
 # https://www.agweb.com/
-# fetched 2026-10-17T02:11:09Z, sha256 de746f4ec2ea92ca9dddb6b259ea473fa6a37e26fe890f85c55b2ebcefc80509
-
-Agriculture news and commodity markets - AgWeb
-
-Top Story
-
-News
-
-Northwest Iowa Sees Yield Surprise Mirroring 2025 Records
-
-Despite a mid-season flash drought and a 10-inch September soaking, Matt McCarthy is seeing near-record yields and better margins — though quality concerns and a race against drydown loom.
-
-October 14, 2026 07:34 AM
-·
-Michelle Rook
-
-More Coverage
-
-Latest News
-
-Market Analysis
-
-Corn, Soybeans Close Below Support on Harvest, NOPA Crush: Cattle Rebound
-
-Chip Nellinger, Blue Reef Agri-Marketing says soybeans closed below the low set on report day on harvest, the NOPA crush figures and Brazilian production estimates.
-
-October 15, 2026 05:02 PM
-·
-Michelle Rook
-
-Machinery
-
-New Satellite and AI Tools Aim to Help Growers Optimize Nitrogen Use
-
-Collaborating directly with Corn Belt farmers, Dr. Kaiyu Guan bridges space imagery and supercomputing to give growers field-by-field insights into soil health and resource efficiency.
-
-October 15, 2026 04:40 PM
-·
-Eduardo Morales
-
-Politics
-
-Record ARC and PLC Payments Expected by Month’s End: What Farmers Could Receive Per Acre
-
-Farmers could see record ARC and PLC payments by the end of October, but estimates of $13.2 to $13.8 billion fall short of early projections, and payment limits could trim individual checks.
-
-October 15, 2026 01:18 PM
-·
-Tyne Morgan
-
-Policy
-
-Iowa Senate Race Plays Out Amid Tight Farm Margins
-
-Republican Rep. Ashley Hinson and Democratic state Rep. Josh Turek agree on E15 and a Farm Bill. They split on who is responsible for the squeeze on farm margins.
-
-October 15, 2026 12:07 PM
-·
-Margy Eckelkamp
-
-Business
-
-ClearCost Says It Will ‘Turn the Lights On’ in Bulk Fertilizer Trading
-
-ClearCost CEO Keith Busch says the platform will post state-level delivered prices, hold payment until product moves and, eventually, support hedging, with the redeveloped version due in January.
-
-October 15, 2026 11:07 AM
-·
-Margy Eckelkamp
-
-Market Analysis
-
-Corn, Soybeans See More Fund Selling and Harvest Pressure: Livestock Try to Bounce
-
-Corn and soybeans were lower again Thursday on fund long liquidation and harvest pressure. Hogs were trying to bounce off contract lows.
-
-October 15, 2026 11:01 AM
-·
-Michelle Rook
-
-Business
-
-Turn Your Pole Barn Into $8,000 Extra Income With New Grant Program
-
-American Farmland Trust and Airbnb are partnering to help farmers and ranchers develop income opportunities through farm stays and agricultural experiences.
-
-October 15, 2026 10:55 AM
-·
-Rhonda Brooks
-
-Policy
-
-Weeks Before Key STB Filings, BNSF Warns Rail Merger Threatens Ag Supply Chain
-
-BNSF says the proposed UP-NS merger would leave captive shippers with fewer options and farm inputs with higher freight costs. Union Pacific says it would open new routes and take trucks off the road.
-
-October 15, 2026 07:08 AM
-·
-Margy Eckelkamp
-
-Read More
-
-Industry Insights | Sponsored
-
-Innovations and updates brought to you by today’s leading agricultural brands.
-
-Sponsored
-
-Where Biological Seed Treatments Fit on Your Farm
-
-October 15, 2026 08:00 AM
-·
-WinField® United
-
-Sponsored
-
-The Price Per Acre Isn’t the Whole Story
-
-October 08, 2026 11:30 AM
-·
-The Syngenta Crop Protection Team
-
-Sponsored
-
-Turnrow Talk: From soil sampling to harvest, data drives yield for customers of Helena Agri-Enterprises, Osmond, NE
-
-October 07, 2026 03:00 PM
-·
-Corteva Agriscience
-
-Sponsored
-
-What RRV Agronomists Say Growers Can Do Now for Next Spring
-
-October 01, 2026 01:20 PM
-·
-General Mills
-
-Read More
-
-Market News
-
-Commodity market news and analysis you can act on — from the Farm Journal team and industry experts.
-
-Markets
-
-Was Your Risk Management Plan Ready for the USDA’s Corn Yield Shock?
-
-October 09, 2026 08:52 PM
-·
-Michelle Rook
-
-News
-
-USDA Delivers Unexpected Blow to Corn Bulls, Corn Prices Tank
-
-October 09, 2026 01:18 PM
-·
-Michelle Rook
-
-Markets
-
-Cattle See Profit Taking After Fresh Highs, Plunging Beef
-
-October 02, 2026 10:59 AM
-·
-Michelle Rook
-
-Markets
-
-Soybeans Hit Near Term Lows as Corn Holds $5: Cattle Make New Highs
-
-October 01, 2026 05:35 PM
-·
-Michelle Rook
-
-Markets
-
-Corn Bounces Off $5 After Stock Shock but For How Long? Soybeans Fall
-
-October 01, 2026 10:42 AM
-·
-Michelle Rook
-
-Markets
-
-USDA Quarterly Stocks Holds Bearish Surprise for Corn
-
-October 01, 2026 07:05 AM
-·
-Michelle Rook
-
-Read More
-
-Agronomy News
-
-Agronomy news and crop production insights covering input management, pest control and soil health.
-
-Business
-
-Kentucky Farmer Turned Veteran Ag Leader Takes Helm at Syngenta North America
-
-October 12, 2026 09:38 PM
-·
-Rhonda Brooks
-
-Harvest
-
-Four Ways To Limit Compaction This Harvest
-
-October 09, 2026 01:11 PM
-·
-Rhonda Brooks
-
-Soybeans
-
-Late-Season Rains Rewrite Soybean Farmers’ Harvest Playbook
-
-October 07, 2026 02:42 PM
-·
-Rhonda Brooks
-
-Ag Economy
-
-Farmers Face A Fertilizer Market Full of Wild Cards
-
-October 05, 2026 03:30 PM
-·
-Rhonda Brooks
-
-Harvest
-
-Stop Corn Butt Shelling Before It Costs You Twice
-
-October 02, 2026 04:36 PM
-·
-Rhonda Brooks
-
-Harvest
-
-Why You Need to Call an Insurance Adjuster Before the Combine Rolls
-
-October 02, 2026 09:44 AM
-·
-Rhonda Brooks
-
-Read More
+# saved by hand from the owner's browser 2026-10-17 (site refuses automated fetches); visible text transcribed from the saved page.
+
+Title: Agriculture news and commodity markets - AgWeb
+Hat: Diesel Prices | Markets News | Magazine Archive | Subscribe
+Nav: News (Harvest, Crops, Livestock, Ag Policy & Politics, Farm Business, Land, Farm Machinery, All Topics) | Markets (Commodity Futures Prices, Corn Prices, Soybean Prices, Market Analysis, Markets Now with Michelle Rook, AgriTalk, Weekend Market Report) | Cash Grain Bids | Weather | Farm Journal TV (Watch Live, On-Demand, Programs) | More (Ag Economists Monthly Monitor, Opinion, Pro Farmer Crop Tour, AgFax, Events) | My Account | Search
+Top leaderboard ad.
+
+Top Story (video): "As Farmer Voices in Washington Disappear, Who Will Speak for American Ag?" Clinton Griffiths, October 16, 2026 02:59 PM. Dozens of ag champions and producers will leave Washington following the midterm elections...
+
+Latest News (with timestamps and authors):
+- How Low Do We Go? Jerry Gulke says grain prices need to go low enough to be competitive and stimulate demand. Oct 16 8:11 PM, Michelle Rook
+- Grains Lower For Another Week on Fund Selling, Harvest: Is a Bottom Close? (video) Matt Bennett, AgMarket. Oct 16 5:21 PM
+- Hurricane Isaias Destroys Up to 95% of Florida Panhandle Cotton Crop (video). Oct 16 1:57 PM, Tyne Morgan
+- House Agriculture Committee Seat at Stake in NC 1st District Race. Oct 16 11:07 AM, Paige Phillips
+- Cattle Rally on Cash Hopes But Are Fresh Highs in the Cards? Corn, Soybeans Break Support (video). Oct 16 10:59 AM
+- Could Virtual Fencing Create a New Revenue Stream For Row-Crop Farmers? (video). Oct 16 9:33 AM
+- Georgia's 14th District Rematch: A Cattleman Takes On the Incumbent... Oct 16 8:44 AM
+- Corn, Soybeans Close Below Support on Harvest, NOPA Crush: Cattle Rebound (video). Oct 15 5:02 PM
+Native ad slots inside the list. Read More.
+
+Industry Insights | Sponsored: WinField United, Syngenta, Corteva, General Mills sponsored articles.
+Market News: How Low Do We Go? | Was Your Risk Management Plan Ready for the USDA's Corn Yield Shock? | USDA Delivers Unexpected Blow to Corn Bulls, Corn Prices Tank | cattle and soybean market videos.
+Agronomy News: Syngenta NA leader | Four Ways To Limit Compaction This Harvest | Late-Season Rains Rewrite Soybean Farmers' Harvest Playbook | Farmers Face A Fertilizer Market Full of Wild Cards | Stop Corn Butt Shelling | Call an Insurance Adjuster Before the Combine Rolls.
+
+Right rail: 300x250 ad, interstitial ad, Markets mini module (futures table loaded by script; empty in saved HTML), 300x600 ads, "Harvest & Yield News" list, sticky footer ad on mobile.
+Bottom: Follow AgWeb socials; "Get News Daily - Subscribe now"; "Get Market Alerts - Subscribe now"; News & Markets app (iOS, Android).
+Footer: video/podcasts, magazines, marketplaces, company links. "All market data delayed 10 minutes." CME Group logo.
+No location personalisation in the static page; cash bids and weather are separate pages.
