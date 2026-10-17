@@ -18,6 +18,7 @@ import os
 import re
 import sys
 import time
+import urllib.error
 import urllib.request
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36 AGSIST-land-data/1.0 (agsist.com; sig@farmers1st.com)"
@@ -63,10 +64,30 @@ def robots_allows(txt, path, agent="*"):
     return best is None or best[0] == "allow"
 
 
-def get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return r.read().decode("utf-8", errors="replace")
+def get(url, tries=3):
+    for i in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return r.read().decode("utf-8", errors="replace")
+        except urllib.error.HTTPError:
+            raise
+        except Exception:  # noqa: BLE001
+            if i == tries - 1:
+                raise
+            time.sleep(20 * (i + 1))
+
+
+def goto(page, url, log, tries=3):
+    """The DOR server sometimes does not answer for a minute or two: wait and try again."""
+    for i in range(tries):
+        try:
+            return page.goto(url, wait_until="domcontentloaded", timeout=90000)
+        except Exception as e:  # noqa: BLE001
+            log.append("goto %s try %d: %s" % (url, i + 1, str(e).splitlines()[0][:200]))
+            if i == tries - 1:
+                raise
+            time.sleep(30 * (i + 1))
 
 
 def note(title, text, chunk=6000, most=4):
@@ -149,7 +170,7 @@ def _explore(out, log):
             log.append("   text: " + txt[:2500])
             return items
 
-        page.goto(HOME, wait_until="domcontentloaded", timeout=90000)
+        goto(page, HOME, log)
         snap("01-home")
         try:
             log.append("tap robots.txt: %r" % get("https://tap.revenue.wi.gov/robots.txt")[:800])
