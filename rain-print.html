@@ -231,6 +231,12 @@
   .rp-style-pick{border:0;padding:0;margin:0}
   .rp-style-pick legend{font-size:var(--fs-xs);font-weight:600;color:var(--text-dim);margin-bottom:.35rem;padding:0}
   .rp-checks{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem}
+  .rp-xopt{border:0;border-top:1px dashed var(--border-2);margin:.4rem 0 0;padding:.6rem 0 0;min-width:0}
+  .rp-xopt legend{font-size:var(--fs-sm);font-weight:700;color:var(--text);padding:0}
+  .rp-xrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem .8rem;align-items:end}
+  .rp-xrow .rp-checks{grid-column:1/-1}
+  .rp-xwhy{color:var(--text)}
+  @media(max-width:560px){.rp-xrow{grid-template-columns:1fr}}
   .rp-check{display:inline-flex;align-items:center;gap:.5rem;min-height:var(--btn-h);font-size:var(--fs-sm);font-weight:600;color:var(--text-dim);cursor:pointer}
   .rp-check input{width:1.1rem;height:1.1rem;accent-color:var(--brand-fill)}
   .rp-opts-note{font-size:var(--fs-xs);color:var(--text-muted);line-height:1.55;margin:.5rem 0 .7rem;max-width:62ch}
@@ -606,7 +612,7 @@
               <p class="rp-count rp-dates-n rp-date-say" id="rp-date-say" aria-live="polite"></p>
             </div>
           </div>
-          <details class="rp-more" id="rp-more"><summary>More options: compare, station, normals, remarkable days, logo</summary>
+          <details class="rp-more" id="rp-more"><summary>More options: compare, station, crop, temperatures, every year behind, logo</summary>
             <div class="rp-opts rp-opts-more">
               <div><label class="field"><span>Compare with</span><select id="rp-cmp" aria-describedby="rp-cmp-hint">
                 <option value="none">Nothing</option>
@@ -618,7 +624,34 @@
                 <label class="rp-check"><input type="checkbox" id="rp-normals"><span>Show the 30-year normals</span></label>
                 <label class="rp-check"><input type="checkbox" id="rp-records"><span>Show remarkable days</span></label>
               </div>
-              <p class="rp-opts-note rp-wide2">Staircase steps up with every rain, so a flat stretch is a dry stretch and a tall step is a big rain. Roots draws each day as its own line, snow stacked above the ground and rain soaking down below it. The normals show NOAA&rsquo;s 30-year normal for each month under its total. Remarkable days marks the coldest and hottest days, the frosts, the biggest snow, the wettest week, and any month or year that stands out in that station&rsquo;s own history, if it has kept records long enough to tell.</p>
+              <p class="rp-opts-note rp-wide2">Staircase steps up with every rain, so a flat stretch is a dry stretch and a tall step is a big rain. Roots draws each day as its own line, snow stacked above the ground and rain soaking down below it. The normals show NOAA&rsquo;s 30-year normal for each month under its total. Remarkable days marks the biggest snow, the wettest week, and any month or year that stands out in that station&rsquo;s own history, if it has kept records long enough to tell.</p>
+              <fieldset class="rp-wide2 rp-xopt" id="rp-temp-set"><legend>Temperatures</legend>
+                <div class="rp-checks" id="rp-temp-opts">
+                  <label class="rp-check"><input type="checkbox" id="rp-frost"><span>Mark the last and first frost</span></label>
+                  <label class="rp-check"><input type="checkbox" id="rp-heat"><span>Hottest and coldest day</span></label>
+                  <label class="rp-check"><input type="checkbox" id="rp-ribbon"><span>Show daily temperatures</span></label>
+                </div>
+                <p class="rp-count">Frost is a low of 32&deg;F or colder: the last one in spring and the first in fall get a small mark on the date line. The hottest and coldest day go in the small print. Daily temperatures adds a thin band under the chart with each day&rsquo;s high and low. Temperatures come from the nearest station that kept daily highs and lows that year, named on the print.</p>
+                <p class="rp-count rp-xwhy" id="rp-temp-why" aria-live="polite" hidden></p>
+              </fieldset>
+              <fieldset class="rp-wide2 rp-xopt" id="rp-crop-set"><legend>Crop</legend>
+                <div class="rp-xrow" id="rp-crop-opts">
+                  <label class="field"><span>Crop</span><select id="rp-crop"><option value="">None</option><option value="corn">Corn</option><option value="soy">Soybeans</option></select></label>
+                  <label class="field"><span>Planted</span><select id="rp-crop-plant" disabled><option value="">Pick a marked day</option></select></label>
+                  <label class="field"><span>Harvested</span><select id="rp-crop-harvest" disabled><option value="">Pick a marked day</option></select></label>
+                  <div class="rp-checks">
+                    <label class="rp-check"><input type="checkbox" id="rp-plants" disabled><span>Show plant drawings</span></label>
+                    <label class="rp-check"><input type="checkbox" id="rp-ghost" disabled><span>Compare with a usual year</span></label>
+                  </div>
+                </div>
+                <p class="rp-count">Mark the planting and harvest days under Mark a day, then pick them here. Each stage goes on the day the station&rsquo;s own growing degree days reached it, counted from planting the way the <a href="/gdu-calculator">GDU calculator</a> does. Plant drawings stand on the date line like the soil; without them the stages are labeled. Compare with a usual year adds gray plants for the same crop on NOAA&rsquo;s 1991 to 2020 normal temperatures, and says how many days ahead or behind silking (corn) or first flower (soybeans) came.</p>
+                <p class="rp-count rp-xwhy" id="rp-crop-say" aria-live="polite" hidden></p>
+              </fieldset>
+              <fieldset class="rp-wide2 rp-xopt" id="rp-hist-set"><legend>History</legend>
+                <label class="rp-check"><input type="checkbox" id="rp-hist" aria-describedby="rp-hist-help"><span>Every year behind your year</span></label>
+                <p class="rp-count" id="rp-hist-help">Every full year the station kept, as thin gray lines behind yours, with the two wettest and two driest marked. It takes a long record, so the print uses the nearest station with 30 or more full years (it may be a few miles farther), named on the print. Staircase only.</p>
+                <p class="rp-count rp-xwhy" id="rp-hist-why" aria-live="polite" hidden></p>
+              </fieldset>
               <div class="rp-wide2 rp-logo" id="rp-logo" role="group" aria-labelledby="rp-logo-h">
                 <span class="rp-logo-h" id="rp-logo-h">Add a logo (optional)</span>
                 <div class="rp-logo-row">
@@ -923,8 +956,10 @@
   <script src="/components/rp-short.js?v=5"></script>
   <script src="/components/rp-logo.js?v=2"></script>
   <script src="/components/rp-canada.js?v=1"></script>
-  <script src="/components/rain-print-art.js?v=13"></script>
-  <script src="/components/rain-print.js?v=44"></script>
+  <script src="/components/gdu-stages.js?v=1"></script>
+  <script src="/components/rain-print-extras.js?v=1"></script>
+  <script src="/components/rain-print-art.js?v=14"></script>
+  <script src="/components/rain-print.js?v=45"></script>
   <script src="/components/rp-gift.js?v=5" defer></script>
 </body>
 </html>

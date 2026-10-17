@@ -1722,7 +1722,8 @@
       style: ST.style, year: META.year, place: placeLong(), name: ex ? EXAMPLE.name : ST.name, dedication: ex ? EXAMPLE.dedication : ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: locMarkers(ex ? markersOn(exampleMarkers(META.year), META.year, DATA.d.n) : printMarkers()),
-      records: ST.records && !STUCK ? recordsFor() : [], qr: qrInfo(o.serial, o.qrMatrix), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      records: ST.records && !STUCK ? withoutTemp(recordsFor(), ST) : [], qr: qrInfo(o.serial, o.qrMatrix), preview: PREVIEW ? { last: PREVIEW.last } : null,
+      crop: extrasCrop(), temp: extrasTemp(), hist: extrasHist(),
       gauge: META ? gaugeLine(META) : '', logo: logoArt(), loc: META && META.ca ? LOC() : null,
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
@@ -1773,6 +1774,132 @@
     // a Canadian print: its remarkable days in its units and language (components/rp-canada.js)
     return CA() && META && META.ca ? CA().localizeRecords(RECS, LOC()) : RECS;
   }
+
+  // ---------------------------------------------------------------- the 2026-10-17 options
+  /* TEMP: the temperature station's year for the print drawn (META.sid|year): {sid, td, rows, tm, norm, found}
+     or {none: why}. Read after the print draws (extrasLoad), never holding it up; the print draws again when
+     it is in. The gauge's own highs and lows are used when it keeps them; else the nearest station that does
+     (StnMeta maxt over the same box), up to three read, nearest first. */
+  var TEMP = null, TEMP_KEY = '', TEMP_P = null, HIST_WHY = '', FULL_CACHE = new Map();
+  var TEMP_ELEMS = ['pcpn', 'avgt', 'snow', 'maxt', 'mint'];
+  function wantTemp() { return !!(ST.crop || ST.frost || ST.heat || ST.ribbon); }
+  function wantHist() { return !!(ST.hist && ST.style !== 'r2'); }
+  function extrasReady() {
+    if (root.AgRainExtras && root.AgGduStages) return Promise.resolve(true);
+    var one = function (src, ok) { return ok() ? Promise.resolve(true) : new Promise(function (res) { var sc = doc.createElement('script'); sc.src = src; sc.onload = function () { res(ok()); }; sc.onerror = function () { res(false); }; doc.head.appendChild(sc); }); };
+    return one('/components/gdu-stages.js?v=1', function () { return !!root.AgGduStages; }).then(function () { return one('/components/rain-print-extras.js?v=1', function () { return !!root.AgRainExtras; }); });
+  }
+  function tempNormal(sid, year) {
+    var params = JSON.stringify({ sid: sid, sdate: year + '-01-01', edate: year + '-12-31', elems: [{ name: 'maxt', normal: '91' }, { name: 'mint', normal: '91' }] });
+    return safeFetch('https://data.rcc-acis.org/StnData?params=' + encodeURIComponent(params)).then(function (r) { return r.json(); })
+      .then(function (j) { return j && !j.error && Array.isArray(j.data) ? root.AgRainExtras.normalTemps(j.data, year) : null; }, function () { return null; });
+  }
+  function tempStationsNear(lat, lon, year) {
+    var d = 0.6, box = [lon - d, lat - d, lon + d, lat + d].map(function (x) { return x.toFixed(3); }).join(',');
+    var u = 'https://data.rcc-acis.org/StnMeta?' + new URLSearchParams({ bbox: box, elems: 'maxt', sdate: year + '-01-01', edate: lastDayOf(year), meta: 'name,sids,ll,valid_daterange' });
+    return safeFetch(u).then(function (r) { return r.json(); }).then(function (j) {
+      return (j.meta || []).filter(function (m) { return m.ll && m.sids && m.sids[0] && m.valid_daterange && m.valid_daterange[0] && m.valid_daterange[0][0] <= year + '-01-01'; })
+        .map(function (m) { return { sid: cleanSid(m.sids[0]), name: m.name, km: haversine(lat, lon, m.ll[1], m.ll[0]) }; }).sort(function (a, b) { return a.km - b.km; });
+    });
+  }
+  function extrasLoad(my) {
+    if (!DATA || !META || BLOCKED) return;
+    var key = META.sid + '|' + META.year + '|' + (PREVIEW ? PREVIEW.last : '');
+    var go = wantTemp() || wantHist();
+    if (!go) { syncExtrasUi(); return; }
+    extrasReady().then(function (ok) {
+      if (!ok || my !== reqToken) return null;
+      var jobs = [];
+      if (wantHist() && !FULL_CACHE.has(META.sid)) jobs.push(stationExtremes(META.sid).then(function (x) { FULL_CACHE.set(META.sid, root.AgRainExtras.fullYears(x.rows, 1)); }, function () { FULL_CACHE.set(META.sid, null); }));
+      if (wantTemp() && TEMP_KEY !== key) { TEMP_KEY = key; TEMP = null; TEMP_P = tempFind(key); }
+      if (wantTemp()) jobs.push(TEMP_P.then(function () { return ST.crop && ST.ghost && TEMP && TEMP.sid && TEMP.norm === undefined ? tempNormal(TEMP.sid, META.year).then(function (n) { TEMP.norm = n; }) : null; }));
+      if (ST.frost || ST.heat) jobs.push(recordsReady());
+      return Promise.all(jobs);
+    }).then(function () { if (my === reqToken && DATA) { syncExtrasUi(); render(); } });
+  }
+  function tempFind(key) {
+    var X = root.AgRainExtras, year = META.year, last = PREVIEW ? DATA.days.length - 1 : undefined;
+    var mine = X.tempDays(DATA.raw, year);
+    if (META.ca || tempStationOk(mine, last)) {
+      TEMP = tempStationOk(mine, last) ? { sid: META.sid, td: mine, rows: DATA.raw, tm: { same: true } } : { none: 'This station keeps no daily highs and lows for ' + year + ', so frost, the hottest and coldest day, crop stages and the temperature band are off.' };
+      return Promise.resolve(TEMP);
+    }
+    var town = META.city;
+    return tempStationsNear(META.lat, META.lon, year).then(function (list) {
+      var c = list.filter(function (x) { return x.sid !== META.sid; }).slice(0, 3);
+      return Promise.all(c.map(function (x) { return daily(x.sid, year).then(function (d) { return d; }, function () { return null; }); })).then(function (ds) {
+        var best = null;
+        c.forEach(function (x, i) {
+          if (best || !ds[i]) return;
+          var td = X.tempDays(ds[i].raw, year);
+          if (tempStationOk(td, last)) best = { sid: x.sid, td: td, rows: ds[i].raw, tm: { same: false, name: stationName(ds[i].meta.name || x.name), words: tempAway(x.km) } };
+        });
+        if (TEMP_KEY !== key) return;
+        TEMP = best || { none: 'No weather station near ' + town + ' kept daily highs and lows for ' + year + ', so frost, the hottest and coldest day, crop stages and the temperature band are off.' };
+      });
+    }).then(null, function () { if (TEMP_KEY === key) { TEMP = { none: 'The temperature records didn’t load just now, so frost, the hottest and coldest day, crop stages and the temperature band are off. Try again in a minute.' }; TEMP_KEY = ''; } });
+  }
+  function tempFound() {
+    if (!TEMP || !TEMP.td || !root.AgRainRecords) return [];
+    if (TEMP.found === undefined) { try { TEMP.found = root.AgRainRecords.find({ year: META.year, sid: TEMP.sid, daily: TEMP.rows, dailyElems: TEMP_ELEMS }, { kinds: TEMP_KINDS }); } catch (e) { TEMP.found = []; } }
+    return TEMP.found;
+  }
+  function extrasCrop() { return ST.crop && TEMP && TEMP.td ? cropInput(ST, TEMP.td, TEMP.norm || null) : null; }
+  function extrasTemp() { return TEMP && TEMP.td ? tempInput(ST, TEMP.td, tempFound(), TEMP.tm, !!ST.crop) : null; }
+  function extrasHist() { return wantHist() && META && FULL_CACHE.get(META.sid) ? histInput(FULL_CACHE.get(META.sid), META.year) : null; }
+  /* Every year behind: the nearest station whose full record reaches HIST_MIN full years and whose year is good
+     (at most MISS_OK unrecorded days), from those whose record spans 30 years or more, up to four read. */
+  function pickLong(list, year, onTry) {
+    var yrs = function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r ? +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 : 0; };
+    var cands = list.filter(function (s) { return yrs(s) >= HIST_MIN && !(CA() && CA().isSid(s.sid)); }).slice(0, 4);
+    return extrasReady().then(function () {
+      var i = 0;
+      var next = function () {
+        var s = cands[i++];
+        if (!s) return null;
+        if (onTry) onTry(s);
+        return Promise.all([stationExtremes(s.sid), daily(s.sid, year)]).then(function (r) {
+          var full = root.AgRainExtras.fullYears(r[0].rows, 1);
+          FULL_CACHE.set(s.sid, full);
+          return full.length >= HIST_MIN && r[1].d.missing <= MISS_OK ? { chosen: s, picked: r[1] } : next();
+        }, next);
+      };
+      return next();
+    });
+  }
+  // the options panel: what each switch can do for this print, and why one can't
+  function syncExtrasUi() {
+    var say = function (id, t) { var el = $(id); if (el) { el.textContent = t || ''; el.hidden = !t; } };
+    var tempBox = $('rp-temp-opts');
+    if (!tempBox) return;
+    var noTemp = TEMP && TEMP.none;
+    tempBox.hidden = !!noTemp;
+    $('rp-crop-opts').hidden = !!noTemp;
+    say('rp-temp-why', noTemp ? TEMP.none : TEMP && TEMP.tm ? (TEMP.tm.same ? 'Temperatures from the same station as the rain.' : 'Temperatures from ' + TEMP.tm.name + ', ' + TEMP.tm.words + ': the nearest station with daily highs and lows for ' + META.year + '.') : '');
+    // the crop's days come from the marked days
+    syncCropDays();
+    var c = extrasCrop();
+    say('rp-crop-say', ST.crop && !c && TEMP && TEMP.td ? 'Mark the planting day and the harvest day above, then pick them here.' : c && c.stop === 'missing' ? 'The temperature record has a gap, so no stage after it is drawn.' : '');
+    var r2 = ST.style === 'r2', long = STATIONS.some(function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r && +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 >= HIST_MIN; });
+    $('rp-hist').disabled = r2 || (!long && !!STATIONS.length);
+    var full = META ? FULL_CACHE.get(META.sid) : null;
+    say('rp-hist-why', r2 ? 'Staircase only: Roots draws each day as its own bar.' : !long && STATIONS.length ? 'No station near here has ' + HIST_MIN + ' years of daily records, so this one can’t be drawn.'
+      : HIST_WHY ? HIST_WHY : wantHist() && full && full.length < HIST_MIN ? stationName(META.name) + ' has ' + full.length + ' full years; it takes ' + HIST_MIN + '. Pick the nearest station again under Weather station, or turn this off.' : '');
+  }
+  function syncCropDays() {
+    var opts = '<option value="">Pick a marked day</option>' + ST.markers.map(function (m) { return '<option value="' + esc(m.date) + '">' + esc(markerWords(m)) + '</option>'; }).join('');
+    ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
+      var el = $(id); if (!el) return;
+      var v = id === 'rp-crop-plant' ? ST.cropPlant : ST.cropHarvest;
+      if (el.innerHTML !== opts) el.innerHTML = opts;
+      el.value = v && ST.markers.some(function (m) { return m.date === v; }) ? v : '';
+      el.disabled = !$('rp-crop').value;
+    });
+    var on = !!$('rp-crop').value;
+    $('rp-plants').disabled = !on; $('rp-ghost').disabled = !on;
+  }
+  // a planting or harvest day among the marked days, by its words, for a crop just picked
+  function guessCropDay(re) { var m = ST.markers.filter(function (x) { return re.test(x.label || ''); })[0]; return m ? m.date : ''; }
 
   // ---------------------------------------------------------------- the logo
   /* LOGO: the picture behind ST.logo, or a file just picked while it saves:
@@ -1995,6 +2122,8 @@
       layout: ST.layout, palette: ST.palette, size: '12x18', style: pick('rp-style', 'r1'),
       cmp: $('rp-cmp').value, name: $('rp-name').value, dedication: $('rp-ded').value, markers: markers,
       normals: $('rp-normals').checked, records: $('rp-records').checked,
+      crop: $('rp-crop').value, cropPlant: $('rp-crop-plant').value, cropHarvest: $('rp-crop-harvest').value, plants: $('rp-plants').checked, ghost: $('rp-ghost').checked,
+      hist: $('rp-hist').checked, frost: $('rp-frost').checked, heat: $('rp-heat').checked, ribbon: $('rp-ribbon').checked,
       // the logo is not a box: its id rides along from the design, the color switch is read
       logo: ST.logo, logoInk: pick('rp-logo-ink', ST.logoInk ? '1' : '0') !== '0',
       // units and language: the reader's own switch (a Canadian design only; a US town drops them)
@@ -2019,6 +2148,8 @@
     $('rp-ded').value = s.dedication;
     $('rp-normals').checked = s.normals;
     $('rp-records').checked = s.records;
+    $('rp-crop').value = s.crop; $('rp-plants').checked = s.plants; $('rp-ghost').checked = s.ghost;
+    $('rp-hist').checked = s.hist; $('rp-frost').checked = s.frost; $('rp-heat').checked = s.heat; $('rp-ribbon').checked = s.ribbon;
     for (var i = 1; i <= LIMITS.markers; i++) {
       var m = s.markers[i - 1];
       $('rp-m' + i + 'mo').value = m ? m.date.slice(5, 7) : '';
@@ -2029,7 +2160,8 @@
     syncRows();
     syncYearNote();
     // a design that uses the folded options opens them, so nothing on the print is out of sight
-    if (s.records || s.logo || s.cmp === 'station' || (s.cmp === 'none' && s.normals)) $('rp-more').open = true;
+    if (s.records || s.logo || s.cmp === 'station' || (s.cmp === 'none' && s.normals) || s.crop || s.hist || s.ribbon) $('rp-more').open = true;
+    if (s === ST) syncCropDays();
     radios('rp-logo-ink').forEach(function (r) { r.checked = r.value === (s.logoInk ? '1' : '0'); });
     if (s === ST) wantLogo();
     if ($('rp-name-n')) { syncCounts(); syncDates(); }
@@ -2795,10 +2927,20 @@
         STATIONS = [chosen].concat(list);
         picked = d; seen[linked] = snowStateOf(d.days);
       }).catch(function (err) { if (err === 'stale') throw err; return instead(); });
+      // every year behind your year: the nearest station with HIST_MIN full years, drawn from that station (Staircase)
+      if (wantHist()) return nearestLong();
       return nearest('');
       /* Nearest first; take the first of three with a near-complete year, else the most complete,
          then trade a few miles for a snowfall record where snow is normal (pickStation). skip: a station that just failed.
          Only a design without its own station gets here: a link's, a gift card's or a saved station is never re-picked. */
+      function nearestLong() {
+        autoPick = true;
+        return pickLong(list, ST.year, function (s) { setStatus('Reading the full record at ' + stationName(s.name) + '\u2026'); }).then(function (r) {
+          if (my !== reqToken) throw 'stale';
+          if (!r) { HIST_WHY = 'None of the nearest stations with a long record has ' + HIST_MIN + ' full years and a good ' + ST.year + ', so the history threads are off.'; return nearest(''); }
+          HIST_WHY = ''; picked = r.picked; chosen = r.chosen; why = null; seen[chosen.sid] = snowStateOf(picked.days);
+        });
+      }
       function nearest(skip) {
         var pool = list.filter(function (s) { return s.sid !== skip; });
         if (!pool.length) throw noStation();
@@ -2826,7 +2968,7 @@
       sel.value = chosen.sid;
       var caM = !!(chosen.ca || (CA() && CA().isSid(chosen.sid)));
       var stateAbbr = caM ? String(g.prov || picked.meta.state || '').toUpperCase() : abbrFor((g.admin1 || '').toLowerCase()) || picked.meta.state || '';
-      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid, why: autoPick ? why : null };
+      META = { approx: !!g.approx, name: picked.meta.name || chosen.name, state: picked.meta.state || chosen.state || '', stateAbbr: stateAbbr, year: ST.year, km: chosen.km, place: g.name + ', ' + (stateAbbr || g.admin1), city: g.name, sid: chosen.sid, why: autoPick ? why : null, lat: g.latitude, lon: g.longitude };
       // a Canadian print: its province, its source (ECCC or CoCoRaHS) and a postal lookup for the credits; the toggles show
       if (caM) { META.ca = true; META.prov = stateAbbr.toLowerCase(); META.src = picked.meta.src || chosen.src || ''; META.postal = g.postal || ''; }
       syncCa();
@@ -2889,6 +3031,7 @@
         if (e && !e.auto && !artShown) showArt();
       }
       if (ST.records) recordsReady().then(function (ok) { if (ok && DATA && my === reqToken) render(); });
+      extrasLoad(my);
     }).catch(function (err) {
       if (err === 'stale') return;
       if (SAMPLE) {
@@ -3307,6 +3450,13 @@
     if (ST.logo || (LOGO && LOGO.state === 'saving')) rows.push(['Logo', logoWords()]);
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'The station\u2019s full record' : 'Nothing']);
+    // the 2026-10-17 options, so the proof and the order say exactly what prints
+    if (ST.crop) rows.push(['Crop', ({ corn: 'Corn', soy: 'Soybeans' })[ST.crop] + ', planted ' + shortDate(ST.cropPlant) + ', harvested ' + shortDate(ST.cropHarvest) +
+      (ST.plants ? ', with plant drawings' : ', stages labeled') + (ST.ghost ? ', against a usual year' : '')]);
+    var tw = [];
+    if (ST.frost) tw.push('frost marks'); if (ST.heat) tw.push('hottest and coldest day'); if (ST.ribbon) tw.push('daily temperature band');
+    if (tw.length) rows.push(['Temperatures', tw.join(', ') + (TEMP && TEMP.tm ? '; from ' + (TEMP.tm.same ? 'the same station' : TEMP.tm.name + ', ' + TEMP.tm.words) : '')]);
+    if (ST.hist) rows.push(['Every year behind', ST.style === 'r2' ? 'on, but Roots doesn\u2019t draw it' : 'on' + (META && FULL_CACHE.get(META.sid) ? ', ' + FULL_CACHE.get(META.sid).length + ' full years at this station' : '')]);
     return rows;
   }
   function logoWords() {
@@ -3375,6 +3525,7 @@
     list.push(['Name', cutSpan('rp-name', rows['Name'])], ['Line under it', cutSpan('rp-ded', rows['Line under it'])],
       ['Marked days', ST.markers.length ? ST.markers.map(function (m) { return '<span class="rp-pd' + (linkCut(m) || typedCut(m) ? ' rp-pcut' : '') + '">' + esc(markerWords(m)) + '</span>'; }).join('') : '(none)'],
       ['Compared with', esc(rows['Compared with'])], ['Style', esc(rows['Style'])]);
+    ['Crop', 'Temperatures', 'Every year behind'].forEach(function (k) { if (rows[k]) list.push([k, esc(rows[k])]); });
     // the logo, in words and as it prints
     if (rows['Logo']) { var la = logoArt(); list.push(['Logo', esc(rows['Logo']) + (la ? '<img class="rp-plogo" alt="" src="' + esc(la.href) + '">' : '')]); }
     if (PREVIEW) list.push(['Preview', 'through ' + esc(longDate(PREVIEW.last)) + '; the print shows the full year']);
@@ -4065,7 +4216,7 @@
      print to display the remarkable days on page load"); the print at the top
      wears the example words until the reader does something. A design from a
      link comes in as it was made. */
-  if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; SHOW_EX = !PAID; }
+  if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; ST.frost = true; ST.heat = true; SHOW_EX = !PAID; }
   writeInputs(ST);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
   // the Christmas lines read right from October 1 through December 25 only
@@ -4168,6 +4319,26 @@
   $('rp-normals').addEventListener('change', function () { if ($('rp-normals').checked) $('rp-cmp').value = 'normal'; restyle(); });
   $('rp-cmp').addEventListener('change', function () { if ($('rp-cmp').value !== 'normal') $('rp-normals').checked = false; restyle(); });
   $('rp-records').addEventListener('change', function () { restyle(); });
+  /* The 2026-10-17 options. A crop picked fills its days from marked days whose words say so (Planted,
+     Harvest); the temperature switches read the temperature station the first time one is on; the history
+     threads change the station (the nearest with 30 full years), so they draw the year again. */
+  $('rp-crop').addEventListener('change', function () {
+    if ($('rp-crop').value) {
+      if (!$('rp-crop-plant').value) ST.cropPlant = guessCropDay(/plant|seed/i);
+      if (!$('rp-crop-harvest').value) ST.cropHarvest = guessCropDay(/harvest|combin/i);
+      ST.crop = $('rp-crop').value; syncCropDays();
+    }
+    syncCropDays(); restyle(); extrasLoad(reqToken);
+  });
+  ['rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost', 'rp-frost', 'rp-heat', 'rp-ribbon'].forEach(function (id) {
+    $(id).addEventListener('change', function () { restyle(); extrasLoad(reqToken); });
+  });
+  $('rp-hist').addEventListener('change', function () {
+    HIST_WHY = '';
+    ST.hist = $('rp-hist').checked;
+    if (!DATA || SAMPLE) { restyle(); return; }
+    ST.station = ''; run();
+  });
   // the logo: a file in, the color switch, remove
   if (root.AgRpLogo) {
     $('rp-logo-file').addEventListener('change', function () { var f = $('rp-logo-file').files; if (f && f[0]) pickLogo(f[0]); });
@@ -4383,6 +4554,7 @@
   var GIFT = null;
   var LOCK_IDS = { place: ['rp-place', 'rp-go'], year: ['rp-year'], station: ['rp-station'], style: ['rp-style'], cmp: ['rp-cmp'], name: ['rp-name'],
     dedication: ['rp-ded'], markers: [1, 2, 3, 4, 5].reduce(function (a, i) { return a.concat(['rp-m' + i + 'mo', 'rp-m' + i + 'dy', 'rp-m' + i + 'l']); }, []).concat(['rp-add-day']), normals: ['rp-normals'], records: ['rp-records'],
+    crop: ['rp-crop', 'rp-crop-plant', 'rp-crop-harvest', 'rp-plants', 'rp-ghost'], hist: ['rp-hist'], frost: ['rp-frost'], heat: ['rp-heat'], ribbon: ['rp-ribbon'],
     logo: ['rp-logo-file', 'rp-logo-remove', 'rp-logo-ink'] };
   function lockInput(field) {
     (LOCK_IDS[field] || []).forEach(function (id) {

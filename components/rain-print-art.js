@@ -1029,8 +1029,11 @@
     var yTxt = E.TU + ' ' + tr(E.preview ? 'so far' : 'this year'), uTxt = E.cmp ? rainAmt(E.normalRec, 'tot') + ' ' + tr(E.preview ? 'a usual year by then' : E.unrecorded ? 'a usual year, same days' : 'a usual year') : '';
     var keyW = 34 + W(yTxt, ks) + (E.cmp ? 36 + 34 + W(uTxt, us) : 0);
     var histNote = hist && hist.note ? hist.note : '';
-    var HB = KY + 6 + (histNote ? 22 : 0);
-    var headBox = { x: X0 - 4, y: HY - 26, w: Math.max(W(head, hs), keyW, histNote ? W(histNote, FACT) : 0) + 12, h: HB - HY + 30 };
+    // the biggest rain with no clean spot on the chart is a red line in the header (never dropped)
+    var wetHeadY = wetFoot && E.wet ? KY + 24 : 0, NY = (wetHeadY || KY) + 22;
+    var HB = (histNote ? NY : wetHeadY || KY) + 6;
+    var wetHeadW = wetHeadY ? wv(colon(E.wetLabel) + rainAmt(E.wet.p, 'day'), { size: 15, w: 500 }, fmtDate(E.wet.date), { size: 15, w: 400 }) : 0;
+    var headBox = { x: X0 - 4, y: HY - 26, w: Math.max(W(head, hs), keyW, histNote ? W(histNote, FACT) : 0, wetHeadW) + 12, h: HB - HY + 30 };
     room.add({ b: headBox, own: 'head', k: 'mark' });
 
     // ---- the name block, the year as large as the name, one left edge (a logo, if any, first)
@@ -1134,6 +1137,8 @@
         var L = [ax, ay, c.x + (c.a === 'start' ? -3 : 3), b.y + b.h / 2];
         if (Math.hypot(L[2] - L[0], L[3] - L[1]) > lim.d) return 0;
         if (!room.clear(L, own, 7)) return 0;
+        // the biggest rain's leader leaves its riser clear of every dot and ring (a date on that day sits on the riser)
+        if (lim.dots && lim.dots.some(function (d) { return segRect(L, { x: d.x - 5.5, y: d.y - 5.5, w: 11, h: 11 }, 1); })) return 0;
         if (!room.free(b, own, false)) return 0;
         c.b = b; c.L = L;
         return room.free(b, own, true) ? 2 : 1;
@@ -1143,7 +1148,7 @@
     var wetAt = null, wO = { size: 15, w: 500, fill: X.red }, wetWords = colon(E.wetLabel) + (E.wet ? rainAmt(E.wet.p, 'day') : '');
     if (wx >= 0 && !wetFoot) {
       var wmy = (y(wc0) + y(wc1)) / 2;
-      wetAt = placeNear(wx, wmy, wetWords, wO, fmtDate(E.wet.date), mD, 'wet', [[-12, -22, 'end'], [-12, -46, 'end'], [-14, 0, 'end'], [-14, -70, 'end'], [12, 40, 'start']], { d: 140 });
+      wetAt = placeNear(wx, wmy, wetWords, wO, fmtDate(E.wet.date), mD, 'wet', [[-12, -22, 'end'], [-12, -46, 'end'], [-14, 0, 'end'], [-14, -70, 'end'], [12, 40, 'start']], { d: 140, dots: marks.concat(rings) });
       if (wetAt) { room.text(wetAt.b, 'wet'); room.seg(wetAt.L[0], wetAt.L[1], wetAt.L[2], wetAt.L[3], 0.8, 'wet', 'lead'); }
       else return r1(I, true);
     }
@@ -1169,7 +1174,7 @@
       if (E.showN) months.push([cx, MB + 63, rainNum(E.mN[m], 'tot'), { size: 11, fill: X.usualM, anchor: 'middle' }]);
     });
     months.forEach(function (t) { room.text(box(t[0], t[1], t[2], t[3]), 'months'); });
-    if (hasRib) room.add({ b: { x: X0 - 40, y: PB + 10, w: X1 - X0 + 40, h: RIBBON_H + 4 }, own: 'ribbon', k: 'mark' });
+    if (hasRib) room.add({ b: { x: X0 - 4, y: PB + 10, w: X1 - X0 + 48, h: RIBBON_H + 4 }, own: 'ribbon', k: 'mark' });
     // the dry stretch, a footnote under the months
     var dry = null, footFacts = [];
     if (E.dry && E.dry.len >= printDryMin(I)) {
@@ -1263,7 +1268,6 @@
     if (hist && hist.foot) foot2.push(hist.foot);
     if (E.missing > GAP_QUIET) foot2.push(LOC.fr ? 'Trous : ' + E.missing + ' jours sans relevé' : 'Gaps: ' + E.missing + ' days with no report');
     recs.lines.forEach(function (t) { foot2.push(plain(t)); });
-    if (wetFoot && E.wetText) foot2.push(plain(E.wetText));
     var tf = (I.temp && I.temp.foot) || [];
     var extra = footFacts.concat(frost.foot, cropFoot(I, crop.foot), tf, hasRib ? [ribbonFoot(I)] : []);
     var fS = { size: 12, fill: X.fact }, SEPF = '  ·  ', FW = qb ? qb.x - 24 - X0 : 1560, lines = [[]], dropped = [];
@@ -1307,7 +1311,7 @@
         if (Math.abs(a - b) < 0.3) return;
         band += '<rect x="' + n2(xs(i)) + '" y="' + n2(Math.min(a, b)) + '" width="' + n2(w + 0.25) + '" height="' + n2(Math.abs(a - b)) + '" fill="' + (a > b ? X.stone : X.ahead) + '"/>';
       });
-      o.push(G0('band') + '<g shape-rendering="crispEdges">' + band + '</g>' + G1);
+      o.push(G0('data') + '<g shape-rendering="crispEdges">' + band + '</g>' + G1);
     }
     // the header on white (a history thread passes behind it)
     var hx = X0, hp = ['<rect x="' + n2(headBox.x - 4) + '" y="' + n2(headBox.y) + '" width="' + n2(headBox.w + 8) + '" height="' + n2(headBox.h) + '" fill="#FFFFFF"/>', T(hx, HY, head, hs)];
@@ -1318,14 +1322,15 @@
       hp.push('<path d="M' + n2(hx) + ',' + (KY - 5) + 'h24" stroke="' + C.mute + '" stroke-width="1.5" stroke-dasharray="6 5"/>'); hx += 34;
       hp.push(T(hx, KY, uTxt, us));
     }
-    if (histNote) hp.push(T(X0, KY + 22, histNote, FACT));
+    if (wetHeadY) hp.push(tv(X0, wetHeadY, wetWords, wO, fmtDate(E.wet.date), mD));
+    if (histNote) hp.push(T(X0, NY, histNote, FACT));
     o.push(G0('head') + hp.join('') + G1);
     if (E.cmp) o.push(G0('usual') + '<path d="' + np + '" fill="none" stroke="' + C.mute + '" stroke-width="' + USUAL_W + '" stroke-dasharray="6 5"/>' + G1);
     o.push(crop.back);
     o.push(G0('axis') + line(X0, PB, X1, PB, X.ink, 0.9 * PT));
     E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) o.push(line(xs(b), PB, xs(b), PB + 7, X.ink, 0.75 * PT)); });
     o.push(G1);
-    if (hasRib) o.push(ribbon(I, { x0: X0, x1: X1, w: w, n: N, y0: PB + 12, h: RIBBON_H, side: 'left' }));
+    if (hasRib) o.push(ribbon(I, { x0: X0, x1: X1, w: w, n: N, y0: PB + 12, h: RIBBON_H, side: 'right' }));
     if (E.preview && E.n < N) { o.push(G0('data') + line(xs(E.n), pvTop, xs(E.n), PB, C.mute, 1, ' stroke-dasharray="3 4"') + G1); E.laterBox = { x0: xs(E.n), x1: X1, y0: pvTop, y1: PB }; }
     // the year, snow steps in ice blue on the line (above the line only)
     o.push(G0('data'));
