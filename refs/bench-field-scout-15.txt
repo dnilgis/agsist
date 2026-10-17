@@ -1,0 +1,7 @@
+# Benchmark field-scout: CropScape help
+# https://nassgeodata.gmu.edu/CropScape/devhelp/help.html
+# fetched 2026-10-17T00:04:48Z, sha256 042a7c134440cbb007a62ee5837c79ff388e8ef54f06a0227a40caf1a8bf61f4
+
+CropScape Developer Guide
+
+Loading…

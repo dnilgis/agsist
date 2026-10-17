@@ -1,0 +1,1016 @@
+<!DOCTYPE html><html lang="en"><head><script async="" src="https://www.googletagmanager.com/gtm.js?id=G-TQQ89DLSYZ&amp;gtm_auth=&amp;gtm_preview=&amp;gtm_cookies_win=x"></script><script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];
+        w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js', });
+        var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+        j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl+'&gtm_auth=&gtm_preview=&gtm_cookies_win=x';
+        f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','G-TQQ89DLSYZ');</script><style type="text/css">.rstcustom__rowWrapper {
+  height: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  cursor: move; }
+  .rstcustom__rowWrapper:hover {
+    opacity: 0.7; }
+  .rstcustom__rowWrapper:active {
+    opacity: 1; }
+
+.rstcustom__rowWrapperDragDisabled {
+  cursor: default; }
+
+.rstcustom__row {
+  height: 100%;
+  white-space: nowrap;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative; }
+  .rstcustom__row > * {
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box; }
+
+/**
+ * The outline of where the element will go if dropped, displayed while dragging
+ */
+.rstcustom__rowLandingPad, .rstcustom__rowCancelPad {
+  border: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  outline: none; }
+  .rstcustom__rowLandingPad *, .rstcustom__rowCancelPad * {
+    opacity: 0 !important; }
+  .rstcustom__rowLandingPad::before, .rstcustom__rowCancelPad::before {
+    background-color: lightblue;
+    border: 2px dotted black;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1; }
+
+/**
+ * Alternate appearance of the landing pad when the dragged location is invalid
+ */
+.rstcustom__rowCancelPad::before {
+  background-color: #e6a8ad; }
+
+/**
+ * Nodes matching the search conditions are highlighted
+ */
+.rstcustom__rowSearchMatch {
+  -webkit-box-shadow: inset 0 -7px 7px -3px #0080ff;
+          box-shadow: inset 0 -7px 7px -3px #0080ff; }
+
+/**
+ * The node that matches the search conditions and is currently focused
+ */
+.rstcustom__rowSearchFocus {
+  -webkit-box-shadow: inset 0 -7px 7px -3px #fc6421;
+          box-shadow: inset 0 -7px 7px -3px #fc6421; }
+
+.rstcustom__rowContents, .rstcustom__rowLabel, .rstcustom__rowToolbar, .rstcustom__toolbarButton {
+  display: inline-block;
+  vertical-align: middle; }
+
+.rstcustom__rowContents {
+  position: relative;
+  height: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between; }
+
+.rstcustom__rowLabel {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
+  padding-right: 20px; }
+
+.rstcustom__rowToolbar {
+  -webkit-box-flex: 0;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+
+.rstcustom__collapseButton,
+.rstcustom__expandButton {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  z-index: 2;
+  position: absolute;
+  top: 45%;
+  width: 30px;
+  height: 30px;
+  -webkit-transform: translate3d(-50%, -50%, 0);
+          transform: translate3d(-50%, -50%, 0);
+  cursor: pointer; }
+  .rstcustom__collapseButton::after,
+  .rstcustom__expandButton::after {
+    content: '';
+    position: absolute;
+    -webkit-transform-origin: 7px 4px;
+        -ms-transform-origin: 7px 4px;
+            transform-origin: 7px 4px;
+    -webkit-transform: translate3d(-50%, -20%, 0);
+            transform: translate3d(-50%, -20%, 0);
+    border: solid transparent 10px;
+    border-left-width: 7px;
+    border-right-width: 7px;
+    border-top-color: gray; }
+  .rstcustom__collapseButton:hover::after,
+  .rstcustom__expandButton:hover::after {
+    border-top-color: black; }
+  .rstcustom__collapseButton:focus,
+  .rstcustom__expandButton:focus {
+    outline: none; }
+    .rstcustom__collapseButton:focus::after,
+    .rstcustom__expandButton:focus::after {
+      -webkit-filter: drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9);
+              filter: drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9); }
+
+.rstcustom__expandButton::after {
+  -webkit-transform: translate3d(-50%, -20%, 0) rotateZ(-90deg);
+          transform: translate3d(-50%, -20%, 0) rotateZ(-90deg); }
+
+/**
+ * Line for under a node with children
+ */
+.rstcustom__lineChildren {
+  height: 100%;
+  display: inline-block; }
+
+/* ==========================================================================
+   Scaffold
+
+    Line-overlaid blocks used for showing the tree structure
+   ========================================================================== */
+.rstcustom__lineBlock, .rstcustom__absoluteLineBlock {
+  height: 100%;
+  position: relative;
+  display: inline-block;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto; }
+
+.rstcustom__absoluteLineBlock {
+  position: absolute;
+  top: 0; }
+
+/* Highlight line for pointing to dragged row destination
+   ========================================================================== */
+/**
+ * +--+--+
+ * |  |  |
+ * |  |  |
+ * |  |  |
+ * +--+--+
+ */
+.rstcustom__highlightLineVertical {
+  z-index: 3; }
+  .rstcustom__highlightLineVertical::before {
+    position: absolute;
+    content: '';
+    background-color: #36c2f6;
+    width: 6px;
+    margin-left: -3px;
+    left: 50%;
+    top: 0;
+    height: 100%; }
+
+@-webkit-keyframes rstcustom__arrow-pulse {
+  0% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 0; }
+  30% {
+    -webkit-transform: translate(0, 300%);
+            transform: translate(0, 300%);
+    opacity: 1; }
+  70% {
+    -webkit-transform: translate(0, 700%);
+            transform: translate(0, 700%);
+    opacity: 1; }
+  100% {
+    -webkit-transform: translate(0, 1000%);
+            transform: translate(0, 1000%);
+    opacity: 0; } }
+
+@keyframes rstcustom__arrow-pulse {
+  0% {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    opacity: 0; }
+  30% {
+    -webkit-transform: translate(0, 300%);
+            transform: translate(0, 300%);
+    opacity: 1; }
+  70% {
+    -webkit-transform: translate(0, 700%);
+            transform: translate(0, 700%);
+    opacity: 1; }
+  100% {
+    -webkit-transform: translate(0, 1000%);
+            transform: translate(0, 1000%);
+    opacity: 0; } }
+  .rstcustom__highlightLineVertical::after {
+    content: '';
+    position: absolute;
+    height: 0;
+    margin-left: -3px;
+    left: 50%;
+    top: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 3px solid white;
+    -webkit-animation: rstcustom__arrow-pulse 1s infinite linear both;
+            animation: rstcustom__arrow-pulse 1s infinite linear both; }
+
+/**
+ * +-----+
+ * |     |
+ * |  +--+
+ * |  |  |
+ * +--+--+
+ */
+.rstcustom__highlightTopLeftCorner::before {
+  z-index: 3;
+  content: '';
+  position: absolute;
+  border-top: solid 6px #36c2f6;
+  border-left: solid 6px #36c2f6;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  height: calc(50% + 3px);
+  top: 50%;
+  margin-top: -3px;
+  right: 0;
+  width: calc(50% + 3px); }
+
+/**
+ * +--+--+
+ * |  |  |
+ * |  |  |
+ * |  +->|
+ * +-----+
+ */
+.rstcustom__highlightBottomLeftCorner {
+  z-index: 3; }
+  .rstcustom__highlightBottomLeftCorner::before {
+    content: '';
+    position: absolute;
+    border-bottom: solid 6px #36c2f6;
+    border-left: solid 6px #36c2f6;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    height: calc(100% + 3px);
+    top: 0;
+    right: 7px;
+    width: calc(50% - 4px); }
+  .rstcustom__highlightBottomLeftCorner::after {
+    content: '';
+    position: absolute;
+    height: 0;
+    right: 0;
+    top: 100%;
+    margin-top: -7px;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 7px solid #36c2f6; }
+</style><style type="text/css">.rstcustom__node {
+  min-width: 100%;
+  position: relative; }
+</style><meta charset="utf-8"><link rel="shortcut icon" href="/CropSmart/favicon.ico"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="Description" content="WaterSmart Data Information Portal (DIP)"><meta name="robots" content="all"><meta name="keywords" content="WaterSmart, NSF, IDS, Irrigation, precipitation, UCAR, USDA,Nebraska, GFS, NWM, Forecasting, ET, Evapotranspiration, Soil moisture, GMU, Web Service, CSISS, Soil Properties, Crop Status,Drought, Farmer Decision Making Support"><meta name="google-site-verification" content="bgxdfNFex0CYFctzwbAgZE4yRRF1u2P6zzuvNguzWU8"><link rel="manifest" href="/CropSmart/manifest.json"><title>CropSmart - NSF</title><script defer="defer" src="/CropSmart/static/js/main.403df4aa.js"></script><link href="/CropSmart/static/css/main.ccdf1590.css" rel="stylesheet"><style>.flexible-modal {
+  position: absolute;
+  z-index: 1;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+/* Animation */
+
+.modal-anim-enter {
+  opacity: 0.00;
+  transform: scale(0.7);
+  transition: all 0.2s;
+}
+
+.modal-anim-enter.modal-anim-enter-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-anim-leave {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.2s;
+}
+
+.modal-anim-leave.modal-anim-leave-active {
+  opacity: 0.00;
+  transform: scale(0.7);
+}
+
+.flexible-modal-mask {
+  position: fixed;
+  height: 100%;
+  background: rgba(55, 55, 55, 0.6);
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
+.flexible-modal-resizer {
+  position:absolute;
+  right:0;
+  bottom:0;
+  cursor:se-resize;
+  margin:5px;
+  border-bottom: solid 2px #333;
+  border-right: solid 2px #333;
+}
+
+.flexible-modal-drag-area{
+  background: rgba(22, 22, 333, 0.2);
+  height: 50px;
+  position:absolute;
+  right:0;
+  top:0;
+  cursor:move;
+}
+
+.flexible-modal-rebound-btn{
+    position: absolute;
+    z-index: 1000;
+    bottom: 0;
+    width: 50px;
+    height: 30px;
+}
+
+.flexible-modal-hidden{
+    position: absolute;
+    z-index: 1;
+    border: 1px solid #ccc;
+    background: white;
+    animation-fill-mode: forwards;
+    -webkit-animation-name: modalHidden; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+    animation-name: modalHidden;
+    animation-duration: 1s;
+}
+
+.flexible-modal-rebound-btn-hidden{
+    display: none
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes modalHidden {
+    from   {}
+    to  {left:0; top:800px; width: 50px; visibility: hidden}
+}
+
+/* Standard syntax */
+@keyframes modalHidden {
+    from   {}
+    to  {left:0; top:800px; width: 50px; visibility: hidden}
+}
+
+.minimise-enter {
+    opacity: 0.01;
+    transform: scale(0.9) translateY(50%);
+}
+.minimise-enter-active {
+    opacity: 1;
+    transform: scale(1) translateY(0%);
+    transition: all 300ms ease-out;
+}
+.minimise-exit {
+    opacity: 1;
+    transform: scale(1) translateY(0%);
+}
+.minimise-exit-active {
+    opacity: 0.01;
+    transform: scale(0.9) translateY(50%);
+    transition: all 300ms ease-out;
+}</style><style data-jss="" data-meta="MuiTouchRipple">
+.MuiTouchRipple-root {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.MuiTouchRipple-ripple {
+  opacity: 0;
+  position: absolute;
+}
+.MuiTouchRipple-rippleVisible {
+  opacity: 0.3;
+  animation: MuiTouchRipple-keyframes-enter 550ms cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1);
+}
+.MuiTouchRipple-ripplePulsate {
+  animation-duration: 200ms;
+}
+.MuiTouchRipple-child {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 1;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+.MuiTouchRipple-childLeaving {
+  opacity: 0;
+  animation: MuiTouchRipple-keyframes-exit 550ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.MuiTouchRipple-childPulsate {
+  top: 0;
+  left: 0;
+  position: absolute;
+  animation: MuiTouchRipple-keyframes-pulsate 2500ms cubic-bezier(0.4, 0, 0.2, 1) 200ms infinite;
+}
+@-webkit-keyframes MuiTouchRipple-keyframes-enter {
+  0% {
+    opacity: 0.1;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+}
+@-webkit-keyframes MuiTouchRipple-keyframes-exit {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes MuiTouchRipple-keyframes-pulsate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style><style data-jss="" data-meta="MuiButtonBase">
+.MuiButtonBase-root {
+  color: inherit;
+  border: 0;
+  cursor: pointer;
+  margin: 0;
+  display: inline-flex;
+  outline: 0;
+  padding: 0;
+  position: relative;
+  align-items: center;
+  user-select: none;
+  border-radius: 0;
+  vertical-align: middle;
+  -moz-appearance: none;
+  justify-content: center;
+  text-decoration: none;
+  background-color: transparent;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.MuiButtonBase-root::-moz-focus-inner {
+  border-style: none;
+}
+.MuiButtonBase-root.Mui-disabled {
+  cursor: default;
+  pointer-events: none;
+}
+@media print {
+  .MuiButtonBase-root {
+    -webkit-print-color-adjust: exact;
+  }
+}
+</style><style data-jss="" data-meta="MuiButton">
+.MuiButton-root {
+  color: rgba(0, 0, 0, 0.87);
+  padding: 6px 16px;
+  font-size: 0.875rem;
+  min-width: 64px;
+  box-sizing: border-box;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  line-height: 1.75;
+  border-radius: 4px;
+  letter-spacing: 0.02857em;
+  text-transform: uppercase;
+}
+.MuiButton-root:hover {
+  text-decoration: none;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+.MuiButton-root.Mui-disabled {
+  color: rgba(0, 0, 0, 0.26);
+}
+@media (hover: none) {
+  .MuiButton-root:hover {
+    background-color: transparent;
+  }
+}
+.MuiButton-root:hover.Mui-disabled {
+  background-color: transparent;
+}
+.MuiButton-label {
+  width: 100%;
+  display: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+}
+.MuiButton-text {
+  padding: 6px 8px;
+}
+.MuiButton-textPrimary {
+  color: #3f51b5;
+}
+.MuiButton-textPrimary:hover {
+  background-color: rgba(63, 81, 181, 0.04);
+}
+@media (hover: none) {
+  .MuiButton-textPrimary:hover {
+    background-color: transparent;
+  }
+}
+.MuiButton-textSecondary {
+  color: #f50057;
+}
+.MuiButton-textSecondary:hover {
+  background-color: rgba(245, 0, 87, 0.04);
+}
+@media (hover: none) {
+  .MuiButton-textSecondary:hover {
+    background-color: transparent;
+  }
+}
+.MuiButton-outlined {
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  padding: 5px 15px;
+}
+.MuiButton-outlined.Mui-disabled {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.MuiButton-outlinedPrimary {
+  color: #3f51b5;
+  border: 1px solid rgba(63, 81, 181, 0.5);
+}
+.MuiButton-outlinedPrimary:hover {
+  border: 1px solid #3f51b5;
+  background-color: rgba(63, 81, 181, 0.04);
+}
+@media (hover: none) {
+  .MuiButton-outlinedPrimary:hover {
+    background-color: transparent;
+  }
+}
+.MuiButton-outlinedSecondary {
+  color: #f50057;
+  border: 1px solid rgba(245, 0, 87, 0.5);
+}
+.MuiButton-outlinedSecondary:hover {
+  border: 1px solid #f50057;
+  background-color: rgba(245, 0, 87, 0.04);
+}
+.MuiButton-outlinedSecondary.Mui-disabled {
+  border: 1px solid rgba(0, 0, 0, 0.26);
+}
+@media (hover: none) {
+  .MuiButton-outlinedSecondary:hover {
+    background-color: transparent;
+  }
+}
+.MuiButton-contained {
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+  background-color: #e0e0e0;
+}
+.MuiButton-contained:hover {
+  box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);
+  background-color: #d5d5d5;
+}
+.MuiButton-contained.Mui-focusVisible {
+  box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12);
+}
+.MuiButton-contained:active {
+  box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12);
+}
+.MuiButton-contained.Mui-disabled {
+  color: rgba(0, 0, 0, 0.26);
+  box-shadow: none;
+  background-color: rgba(0, 0, 0, 0.12);
+}
+@media (hover: none) {
+  .MuiButton-contained:hover {
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+    background-color: #e0e0e0;
+  }
+}
+.MuiButton-contained:hover.Mui-disabled {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+.MuiButton-containedPrimary {
+  color: #fff;
+  background-color: #3f51b5;
+}
+.MuiButton-containedPrimary:hover {
+  background-color: #303f9f;
+}
+@media (hover: none) {
+  .MuiButton-containedPrimary:hover {
+    background-color: #3f51b5;
+  }
+}
+.MuiButton-containedSecondary {
+  color: #fff;
+  background-color: #f50057;
+}
+.MuiButton-containedSecondary:hover {
+  background-color: #c51162;
+}
+@media (hover: none) {
+  .MuiButton-containedSecondary:hover {
+    background-color: #f50057;
+  }
+}
+.MuiButton-disableElevation {
+  box-shadow: none;
+}
+.MuiButton-disableElevation:hover {
+  box-shadow: none;
+}
+.MuiButton-disableElevation.Mui-focusVisible {
+  box-shadow: none;
+}
+.MuiButton-disableElevation:active {
+  box-shadow: none;
+}
+.MuiButton-disableElevation.Mui-disabled {
+  box-shadow: none;
+}
+.MuiButton-colorInherit {
+  color: inherit;
+  border-color: currentColor;
+}
+.MuiButton-textSizeSmall {
+  padding: 4px 5px;
+  font-size: 0.8125rem;
+}
+.MuiButton-textSizeLarge {
+  padding: 8px 11px;
+  font-size: 0.9375rem;
+}
+.MuiButton-outlinedSizeSmall {
+  padding: 3px 9px;
+  font-size: 0.8125rem;
+}
+.MuiButton-outlinedSizeLarge {
+  padding: 7px 21px;
+  font-size: 0.9375rem;
+}
+.MuiButton-containedSizeSmall {
+  padding: 4px 10px;
+  font-size: 0.8125rem;
+}
+.MuiButton-containedSizeLarge {
+  padding: 8px 22px;
+  font-size: 0.9375rem;
+}
+.MuiButton-fullWidth {
+  width: 100%;
+}
+.MuiButton-startIcon {
+  display: inherit;
+  margin-left: -4px;
+  margin-right: 8px;
+}
+.MuiButton-startIcon.MuiButton-iconSizeSmall {
+  margin-left: -2px;
+}
+.MuiButton-endIcon {
+  display: inherit;
+  margin-left: 8px;
+  margin-right: -4px;
+}
+.MuiButton-endIcon.MuiButton-iconSizeSmall {
+  margin-right: -2px;
+}
+.MuiButton-iconSizeSmall > *:first-child {
+  font-size: 18px;
+}
+.MuiButton-iconSizeMedium > *:first-child {
+  font-size: 20px;
+}
+.MuiButton-iconSizeLarge > *:first-child {
+  font-size: 22px;
+}
+</style><style data-jss="" data-meta="MuiTypography">
+.MuiTypography-root {
+  margin: 0;
+}
+.MuiTypography-body2 {
+  font-size: 0.875rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: 0.01071em;
+}
+.MuiTypography-body1 {
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+}
+.MuiTypography-caption {
+  font-size: 0.75rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.66;
+  letter-spacing: 0.03333em;
+}
+.MuiTypography-button {
+  font-size: 0.875rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  line-height: 1.75;
+  letter-spacing: 0.02857em;
+  text-transform: uppercase;
+}
+.MuiTypography-h1 {
+  font-size: 6rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 300;
+  line-height: 1.167;
+  letter-spacing: -0.01562em;
+}
+.MuiTypography-h2 {
+  font-size: 3.75rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.00833em;
+}
+.MuiTypography-h3 {
+  font-size: 3rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.167;
+  letter-spacing: 0em;
+}
+.MuiTypography-h4 {
+  font-size: 2.125rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.235;
+  letter-spacing: 0.00735em;
+}
+.MuiTypography-h5 {
+  font-size: 1.5rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.334;
+  letter-spacing: 0em;
+}
+.MuiTypography-h6 {
+  font-size: 1.25rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.0075em;
+}
+.MuiTypography-subtitle1 {
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: 0.00938em;
+}
+.MuiTypography-subtitle2 {
+  font-size: 0.875rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  line-height: 1.57;
+  letter-spacing: 0.00714em;
+}
+.MuiTypography-overline {
+  font-size: 0.75rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 2.66;
+  letter-spacing: 0.08333em;
+  text-transform: uppercase;
+}
+.MuiTypography-srOnly {
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+}
+.MuiTypography-alignLeft {
+  text-align: left;
+}
+.MuiTypography-alignCenter {
+  text-align: center;
+}
+.MuiTypography-alignRight {
+  text-align: right;
+}
+.MuiTypography-alignJustify {
+  text-align: justify;
+}
+.MuiTypography-noWrap {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.MuiTypography-gutterBottom {
+  margin-bottom: 0.35em;
+}
+.MuiTypography-paragraph {
+  margin-bottom: 16px;
+}
+.MuiTypography-colorInherit {
+  color: inherit;
+}
+.MuiTypography-colorPrimary {
+  color: #3f51b5;
+}
+.MuiTypography-colorSecondary {
+  color: #f50057;
+}
+.MuiTypography-colorTextPrimary {
+  color: rgba(0, 0, 0, 0.87);
+}
+.MuiTypography-colorTextSecondary {
+  color: rgba(0, 0, 0, 0.54);
+}
+.MuiTypography-colorError {
+  color: #f44336;
+}
+.MuiTypography-displayInline {
+  display: inline;
+}
+.MuiTypography-displayBlock {
+  display: block;
+}
+</style><style data-jss="" data-meta="MuiLink">
+.MuiLink-underlineNone {
+  text-decoration: none;
+}
+.MuiLink-underlineHover {
+  text-decoration: none;
+}
+.MuiLink-underlineHover:hover {
+  text-decoration: underline;
+}
+.MuiLink-underlineAlways {
+  text-decoration: underline;
+}
+.MuiLink-button {
+  border: 0;
+  cursor: pointer;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  position: relative;
+  user-select: none;
+  border-radius: 0;
+  vertical-align: middle;
+  -moz-appearance: none;
+  background-color: transparent;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.MuiLink-button::-moz-focus-inner {
+  border-style: none;
+}
+.MuiLink-button.Mui-focusVisible {
+  outline: auto;
+}
+</style><style data-jss="" data-meta="MuiSnackbar">
+.MuiSnackbar-root {
+  left: 8px;
+  right: 8px;
+  display: flex;
+  z-index: 1400;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+}
+.MuiSnackbar-anchorOriginTopCenter {
+  top: 8px;
+}
+@media (min-width:600px) {
+  .MuiSnackbar-anchorOriginTopCenter {
+    top: 24px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+}
+.MuiSnackbar-anchorOriginBottomCenter {
+  bottom: 8px;
+}
+@media (min-width:600px) {
+  .MuiSnackbar-anchorOriginBottomCenter {
+    left: 50%;
+    right: auto;
+    bottom: 24px;
+    transform: translateX(-50%);
+  }
+}
+.MuiSnackbar-anchorOriginTopRight {
+  top: 8px;
+  justify-content: flex-end;
+}
+@media (min-width:600px) {
+  .MuiSnackbar-anchorOriginTopRight {
+    top: 24px;
+    left: auto;
+    right: 24px;
+  }
+}
+.MuiSnackbar-anchorOriginBottomRight {
+  bottom: 8px;
+  justify-content: flex-end;
+}
+@media (min-width:600px) {
+  .MuiSnackbar-anchorOriginBottomRight {
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+  }
+}
+.MuiSnackbar-anchorOriginTopLeft {
+  top: 8px;
+  justify-content: flex-start;
+}
+@media (min-width:600px) {
+  .MuiSnackbar-anchorOriginTopLeft {
+    top: 24px;
+    left: 24px;
+    right: auto;
+  }
+}
+.MuiSnackbar-anchorOriginBottomLeft {
+  bottom: 8px;
+  justify-content: flex-start;
+}
+@media (min-width:600px) {
+  .MuiSnackbar-anchorOriginBottomLeft {
+    left: 24px;
+    right: auto;
+    bottom: 24px;
+  }
+}
+</style><style data-jss="" data-meta="makeStyles">
+.jss1 {
+  display: flex;
+  margin-top: 64px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.jss2 {
+  margin: 8px;
+  background-color: #3f51b5;
+}
+.jss3 {
+  width: 100%;
+  margin-top: 24px;
+}
+.jss4 {
+  margin: 24px 0px 16px;
+}
+</style><style data-emotion="css-global" data-s=""></style><style data-emotion="css-global" data-s=""></style><style data-emotion="css" data-s=""></style></head><body><noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=G-TQQ89DLSYZ&gtm_auth=&gtm_preview=&gtm_cookies_win=x"
+        height="0" width="0" style="display:none;visibility:hidden" id="tag-manager"></iframe></noscript><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"><div class="App"><div><div><div style="padding: 0px; margin: 0px; height: 42px; min-height: 42px;"><nav class="py-0 bg-dark navbar navbar-expand-md navbar-dark" style="padding: 0px; margin: 0px; height: 42px; min-height: 42px;"><a class="navbar-brand" style="padding: 0px; margin-left: 30px;"><span style="font-weight: bold;">CropSmart</span><span style="margin-left: 15px; color: rgb(176, 176, 176); font-size: 70%;">A Decision Making Tool for Sustainable Agriculture</span></a><ul class="ml-auto py-0 bg-dark nav" style="padding: 0px; margin: 2px 0px 0px; height: 40px; min-height: 40px;"><a href="https://cropsmart.org" target="_blank" rel="noreferrer"><img class="logo" src="/CropSmart/image/CropSmart-Logo-Original.png" alt="CSISS" hspace="10" style="height: 38px;"></a><a href="https://www.nsf.gov/" target="_blank" rel="noreferrer"><img class="logo" src="/CropSmart/image/NSF_4-Color_bitmap_Logo.png" alt="NSF" hspace="10" style="height: 38px;"></a><a href="https://www.usda.gov/" target="_blank"><img class="logo" src="/CropSmart/image/usda_alt_logo-30.png" alt="USDA" hspace="10" style="height: 38px;"></a><a href="https://www.nass.usda.gov" target="_blank"><img class="logo" src="/CropSmart/image/icon_nass.png" alt="NASS" hspace="10" style="height: 38px;"></a><a href="https://www.nasa.gov/" target="_blank"><img class="logo" src="/CropSmart/image/nasa_logo-30.png" alt="NASA" hspace="10" style="height: 38px;"></a><a href="https://www.noaa.gov/" target="_blank"><img class="logo" src="/CropSmart/image/noaa_logo.png" alt="NOAA" hspace="10" style="height: 38px;"></a></ul></nav></div><div class="MuiGrid-root MuiGrid-container css-1pui3qk"><div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-7 css-7vy65v"><div class="MuiGrid-root MuiGrid-container css-1d3bbye"><div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-15c532o"><div class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-1jxmsnw"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="LockOutlinedIcon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2M9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9zm9 14H6V10h12zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2"></path></svg></div></div><div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-15j76c0"><h1 class="MuiTypography-root MuiTypography-h5">Sign in</h1></div><div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-15j76c0"><form class="jss3" novalidate=""><div class="MuiFormControl-root MuiFormControl-fullWidth css-g4ysei"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-filled MuiFormLabel-colorPrimary Mui-focused Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-sizeMedium MuiInputLabel-filled css-1rgmeur" data-shrink="true" for="email">Email Address<span aria-hidden="true" class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-sp68t1"> *</span></label><div variant="filled" required="" label="Email Address" class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth Mui-focused MuiInputBase-formControl css-1h777u5"><input aria-invalid="false" autocomplete="email" id="email" name="username" required="" type="text" class="MuiInputBase-input MuiFilledInput-input css-2bxn45" value=""></div></div><div class="MuiFormControl-root MuiFormControl-fullWidth css-g4ysei"><label class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-filled MuiFormLabel-colorPrimary Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeMedium MuiInputLabel-filled css-14x1nlk" data-shrink="false" for="password">Password<span aria-hidden="true" class="MuiFormLabel-asterisk MuiInputLabel-asterisk css-sp68t1"> *</span></label><div required="" label="Password" class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1atcsw2"><input aria-invalid="false" autocomplete="current-password" id="password" name="password" required="" type="password" class="MuiInputBase-input MuiFilledInput-input MuiInputBase-inputAdornedEnd css-ftr4jk" value=""><div class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-filled MuiInputAdornment-sizeMedium css-1mzf9i9"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-u6hyex" tabindex="0" type="button" aria-label="display the password"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="VisibilityIcon"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5m0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"></path></svg><span class="MuiTouchRipple-root css-w0pj6f"></span></button></div></div></div><label class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-q725lo"><span class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium MuiCheckbox-root MuiCheckbox-colorPrimary MuiCheckbox-sizeMedium css-zun73v"><input class="PrivateSwitchBase-input css-1m9pwf3" type="checkbox" data-indeterminate="false"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="CheckBoxOutlineBlankIcon"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"></path></svg><span class="MuiTouchRipple-root css-w0pj6f"></span></span><span class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-9l3uo3">Remember me</span></label><button class="MuiButtonBase-root MuiButton-root MuiButton-contained jss4 MuiButton-containedPrimary MuiButton-fullWidth" tabindex="0" type="submit"><span class="MuiButton-label">Sign In</span><span class="MuiTouchRipple-root"></span></button><div class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-direction-xs-column css-18l9x7f"><div class="MuiGrid-root MuiGrid-item css-1wxaqej"><a href="/CropSmart/signup?redirecturl=https://nassgeodata.gmu.edu/CropScape">Don't have an account? Sign Up here.</a></div><div class="MuiGrid-root MuiGrid-item css-1wxaqej"><a href="/CropSmart/forgot_password">Forgot password? Reset it here.</a></div></div></form></div></div></div><div class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-4 css-14pcq5f"><div class="MuiBox-root css-1foheqw"><p><strong>Why must I register?</strong></p><p>The CropSmart SignIn provides a single mechanism for user registration and profile management for all CSISS's system components (CropSmart, CropScape, VegScape, Crop-CASMA, iCrop, GADMFS, etc.). Your CropSmart signin also helps the CSISS's program better understand the usage of CropSmart services to improve user experience through customization of tools and improvement of services. CSISS's system data are openly available to all and free of charge.</p></div></div><div class="MuiBox-root css-h5fkc8"><p class="MuiTypography-root MuiTypography-body2 MuiTypography-colorTextSecondary MuiTypography-alignCenter">Copyright © <a class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorInherit" href="https://material-ui.com/">CSISS</a> 2026.</p></div></div></div><form method="POST" action="https://nassgeodata.gmu.edu/CropScape"><input type="hidden" name="httpd_username" value=""><input type="hidden" name="httpd_password" value="1.wmiknxdul6"></form></div></div></div><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-TQQ89DLSYZ"></script></body></html>

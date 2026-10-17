@@ -1,0 +1,120 @@
+# Benchmark field-scout: NRCS Web Soil Survey start page
+# https://websoilsurvey.nrcs.usda.gov/app/
+# fetched 2026-10-17T00:04:55Z, sha256 0c525a9dbe9100ddcabdce43e9f1e41464b0ddf99fa68cb2b4b00d949c103bc8
+
+Web Soil Survey - Home
+
+Skip to Page Content
+
+You are here: Web Soil Survey Home
+
+Soils Home
+
+National Cooperative Soil Survey (NCSS)
+
+Archived Soil Surveys
+
+Status Maps
+
+Official Soil Series Descriptions (OSD)
+
+Series Extent Explorer
+
+Geospatial Data Gateway
+
+eFOTG
+
+National Soil Characterization Data
+
+Soil Health
+
+Soil Geography
+
+Web Soil Survey (WSS) provides soil data and information produced by the National Cooperative Soil Survey.
+It is operated by the USDA Natural Resources Conservation Service (NRCS) and provides access to the largest natural resource information system in the world.
+NRCS has soil maps and data available online for more than 95 percent of the nation’s counties and anticipates having 100 percent in the near future.
+The site is updated and maintained online as the single authoritative source of soil survey information.
+
+Soil surveys can be used for general farm, local, and wider area planning.
+Onsite investigation is needed in some cases, such as
+
+soil quality assessments
+
+and certain conservation and engineering applications. For more detailed information,
+contact your local USDA Service Center at the following link: USDA Service Center
+or your NRCS State Soil Scientist at the following link: NRCS State Soil Scientist.
+
+Use the Area of Interest tab to define your area of interest.
+
+Click or Press the Enter or Spacebar key to view the larger image.
+Press the Escape key to close.
+
+Click the Soil Map tab to view or print a soil map, and detailed descriptions of the soils in your Area of Interest.
+
+Click or Press the Enter or Spacebar key to view the larger image.
+Press the Escape key to close.
+
+Click the Soil Data Explorer tab to access soil data for your area and determine the suitability of the soils for a particular use.
+The items you want saved in a report can be added to your shopping cart.
+
+Click or Press the Enter or Spacebar key to view the larger image.
+Press the Escape key to close.
+
+Use the Shopping Cart tab to get your custom printable report immediately, or download it later.
+
+Click or Press the Enter or Spacebar key to view the larger image.
+Press the Escape key to close.
+
+Start Web Soil Survey (WSS)
+
+Know Web Soil Survey Requirements
+
+Know Web Soil Survey operation hours
+
+Find what areas of the U.S. have soil data
+
+Find information by topic
+
+Know how to hyperlink from other documents to Web Soil Survey
+
+Know the SSURGO data structure
+
+Use Web Soil Survey on a mobile device
+
+Web Soil Survey 3.4.0 has been released! View Web Soil Survey release history
+
+Sign up for e-mail updates via GovDelivery
+
+Getting Started With Web Soil Survey
+
+How to use Web Soil Survey Online Help
+
+Known Problems and Workarounds
+
+Frequently Asked Questions
+
+Citing Web Soil Survey as a source of soils data
+
+Last Modified: 07/31/2019
+
+NRCS Home
+|
+USDA
+|
+NRCS Soils
+|
+FOIA
+|
+
+Accessibility Statement
+|
+Privacy Policy
+|
+Non-Discrimination Statement
+|
+
+Information Quality
+|
+USA.gov
+|
+White House

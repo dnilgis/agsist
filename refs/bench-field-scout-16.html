@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="en-US"><!-- InstanceBegin template="/Templates/master.dwt.php" codeOutsideHTMLIsLocked="false" -->
+
+<head>
+	<!-- InstanceBeginEditable name="doctitle" -->
+<title>USDA - National Agricultural Statistics Service - Research and Science - Cropland Data Layers</title>
+<!-- InstanceEndEditable -->
+	<meta name="Content-Type" content="X-Content-Type-Options: nosniff">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="Statistics, Agriculture, Farm, Information, USDA, Government, agricultural, NASS">
+	<meta name="description" content="USDA National Agricultural Statistics Service Information. NASS publications cover a wide range of subjects, from traditional crops, such as corn and wheat, to specialties, such as mushrooms and flowers; from calves born to hogs slaughtered; from agricultural prices to land in farms. The agency has the distinction of being known as The Fact Finders of U.S. Agriculture due to the abundance of information we produce. The National Agricultural Statistics Service's mission is to serve the United States, its agriculture, and its rural communities by providing meaningful, accurate, and objective statistical information and services.">
+	<link rel="alternate" title="NASS Today's Reports" href="http://www.nass.usda.gov/rss/reports.xml" type="application/rss+xml">
+	<link rel="alternate" title="NASS News and Events" href="http://www.nass.usda.gov/rss/news.xml" type="application/rss+xml">
+	<!--  Cascading Style Sheets  -->
+	<link href="/newCSS/bootstrap.css" rel="stylesheet" type="text/css"/>
+	<link href="/newCSS/master.css" rel="stylesheet" type="text/css"/>
+	<link href="/newCSS/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="icon" href="/favicon.ico">
+
+	<script src="/newJS/breadcrumbs.js"></script>
+	<script>
+		function getLastMod() {
+			var lastMod = Date.parse( document.lastModified );
+			var now = new Date();
+			var diff = ( new Date( now.toLocaleString() ) ).getTimezoneOffset() - now.getTimezoneOffset();
+			if ( !diff ) diff = now.getTimezoneOffset() * 60000;
+			else diff = 0;
+			return lastMod - diff;
+		}
+	</script>
+	<!-- ReCaptcha -->
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+	<script>
+		// ForeSee Production Embed Script v2.01
+		// DO NOT MODIFY BELOW THIS LINE *****************************************
+		;
+		( function ( g ) {
+			var d = document,
+				am = d.createElement( 'script' ),
+				h = d.head || d.getElementsByTagName( "head" )[ 0 ],
+				fsr = 'fsReady',
+				aex = {
+					"src": "//gateway.foresee.com/sites/usda-nass/production/gateway.min.js",
+					"type": "text/javascript",
+					"async": "true",
+					"data-vendor": "fs",
+					"data-role": "gateway"
+				};
+			for ( var attr in aex ) {
+				am.setAttribute( attr, aex[ attr ] );
+			}
+			h.appendChild( am );
+			g[ fsr ] || ( g[ fsr ] = function () {
+				var aT = '__' + fsr + '_stk__';
+				g[ aT ] = g[ aT ] || [];
+				g[ aT ].push( arguments );
+			} );
+		} )( window );
+		// DO NOT MODIFY ABOVE THIS LINE *****************************************
+	</script>
+</head>
+
+<body>
+	<!-- Google Tag Manager -->
+	<script>
+		( function ( w, d, s, l, i ) {
+			w[ l ] = w[ l ] || [];
+			w[ l ].push( {
+				'gtm.start': new Date().getTime(),
+				event: 'gtm.js'
+			} );
+			var f = d.getElementsByTagName( s )[ 0 ],
+				j = d.createElement( s ),
+				dl = l != 'dataLayer' ? '&l=' + l : '';
+			j.async = true;
+			j.src =
+				'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+			f.parentNode.insertBefore( j, f );
+		} )( window, document, 'script', 'dataLayer', 'GTM-KVTND4N' );
+	</script>
+	<!-- End Google Tag Manager -->
+	<div class="container">
+		<div id="masthead" class="col-sm-12 clearfix">
+			<!-- New script for fontawesome icons as of 12/12/2024 for the Touchpoints CX survey/PAO -->
+<script src="https://kit.fontawesome.com/dc4c24a15b.js" crossorigin="anonymous"></script>
+
+<div id="skip" class="container">
+	
+	<p class="text-center hidden-print skip"><a href="#skipnav" >Skip to Main Content</a></p>
+
+
+<div id="container" class="masthead col-xs-12 clearfix"> 
+  <!-- open #mastheadLeft -->
+  <div class="mastheadLeft hidden-xs hidden-sm col-md-8"> 
+    <!-- open #logo -->
+    <div class="col-md-2 hidden-xs hidden-sm zoom80"><img class="img-responsive" src="/images/masthead/USDA-Logo.png" alt="USDA Logo" width="100" height="71" /></div>
+    <div class="col-md-1 hidden-xs hidden-sm zoom80"><img class="img-responsive" src="/images/masthead/nass_logo_bw-1.png" alt="NASS - Agriculture Counts" width="71" height="71" /></div>
+    <!-- closes #logo -->
+    <div class="usda hidden-xs hidden-sm col-md-8">
+      <h1><a href="http://www.usda.gov" target="_blank">United States Department of Agriculture</a></h1>
+      <h2><a href="/index.php">National Agricultural Statistics Service</a></h2>
+    </div>
+  </div>
+  <div class="mastheadRight col-xs-12 col-sm-12 col-md-4 clearfix">
+    <div class="main_social hidden-xs hidden-sm col-md-12 clearfix">
+      <div class="socialIcons"><a href="http://twitter.com/usda_nass/" target="_blank"><img src="/images/main/sc-twitter-large-1.png" alt="NASS on Twitter" width="37" height="37"  /></a>&nbsp;<a href="https://www.youtube.com/usdanass" target="_blank"><img src="/images/main/sc-youtube-large-1.png" alt="USDA-NASS on Youtube" width="37" height="37"  /></a>&nbsp;<a href="https://www.usda.gov/media/blog" target="_blank"><img src="/images/main/sc-blogfeed-large-1.png" alt="USDA Blog" width="37" height="37"  /></a>&nbsp;<a href="/Newsroom/Syndication/"><img src="/images/main/sc-rss-large-1.png" alt="NASS RSS Feeds" width="37" height="37"  /></a>&nbsp;<a href="http://www.flickr.com/photos/usdagov"><img src="/images/main/sc-flickr-large-1.png" alt="USDA on Flickr" width="37" height="37"  /></a>&nbsp;<a href="http://www.facebook.com/USDA"><img src="/images/main/sc-facebook-large-1.png" alt="USDA on Facebook" width="37" height="37"  /></a></div>
+      <div class="email_signup"> Subscriptions:&nbsp;&nbsp;&nbsp; <a href="https://esmis.nal.usda.gov/" target="_blank" title="Subscribe to NASS National Reports">National</a> | <a href="/Newsroom/Subscribe/" title="Subscribe to NASS News Releases">News</a></div>
+    </div>
+    <!-- closes #topNav --> 
+    <!-- START Mobile Menu -->
+    <nav class="navbar navbar-default hidden-md hidden-lg col-xs-12 col-sm-12">
+      <div id="mobile-navigation" class="container"> 
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">  <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+          <a class="hidden-lg logo" href="http://www.usda.gov"><img src="/images/masthead/USDA-Logo.png" alt="USDA Logo" width="100" height="71" /></a>&nbsp;<a class="hidden-md hidden-lg logo" href="/index.php"><img src="/images/masthead/nass_logo_bw-1.png" alt="NASS -Agriculture Counts" width="71" height="71" /></a> </div>
+        
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse mobile" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav" role="menu">
+            <li><a href="/index.php" title="Go to the NASS Homepage">Home</a></li>
+            <li><a href="/Data_and_Statistics/index.php" >Data & Statistics</a></li>
+            <li><a href="/Publications/index.php" aria-label="National Publications">Publications</a></li>
+            <li><a href="/Research_and_Science/index.php">Research, Science and Technology</a></li>
+            <li><a href="/Newsroom/index.php">Newsroom <span class="sr-only">(current)</span></a></li>
+            <li><a href="/Surveys/index.php" aria-label="NASS Surveys">Surveys</a></li>
+            <li><a href="/AgCensus/index.php">Census</a></li>
+            <li class="divider"></li>
+            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">NASS Information <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="/About_NASS/index.php">About NASS</a></li>
+                <li><a href="/Statistics_by_State/RFO/index.php">Regional Offices</a></li>
+                <li><a href="/About_NASS/Opportunities/index.php">Careers</a></li>
+                <li><a href="/Contact_Us/index.php">Contact Us</a></li>
+              </ul>
+            </li>
+            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Subscriptions <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="https://esmis.nal.usda.gov/">National</a></li>
+                <li><a href="/Publications/Subscribe_to_State_Reports/index.php">State</a></li>
+                <li><a href="/Newsroom/Subscribe/index.php">News</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse --> 
+      </div>
+      <!-- /.container-fluid --> 
+    </nav>
+    <!-- END Mobile Menu --> 
+    
+    <!-- start search -->
+    <div id="search_" class="searchBar right clearfix">
+      <form class="navbar-form navbar-right hidden-print" action="https://search.usa.gov/search" id="search_form_mobile" method="get" >
+  <input name="utf8" type="hidden" value="&#x2713;" />
+  <input id="affiliate" name="affiliate" type="hidden" value="usda-nass" />
+  <input class="form-control usagov-search-autocomplete" title="Search NASS" placeholder="Search NASS" id="query" name="query" />
+  <button type="submit" aria-label="Search" class="btn btn-default searchBar searchBtn"><span class="fa fa-search"></span></button>
+</form>
+<br />
+
+    </div>
+  </div>
+  <!-- closes #mastheadRight --> 
+
+<!-- START Main Menu START -->
+</div>
+<div>
+  <!-- START Main Menu START -->
+
+<div id="primary_navigation" class="container hidden-xs hidden-sm col-md-12 col-lg-12 clearfix">
+	<ul id="menu" role="list">
+		<li><a href="/index.php" title="Go to the NASS Homepage"><span class="fa fa-home"></span></a>
+		</li>
+		<!-- Begin Home Item -->
+		
+		<li><a href="/Data_and_Statistics/index.php" class="drop">Data & Statistics&nbsp;&nbsp;<span class="fa fa-caret-down"></span></a>
+			<!-- Begin 4 columns Item -->
+
+			<div class="dropdown_4columns">
+				<!-- Begin 4 columns container -->
+
+				<div class="col_4" style="border-bottom: #ccc thin solid;">
+					<h2>Access Quick Stats (searchable database)&nbsp;&nbsp;<a href="https://quickstats.nass.usda.gov/" target="_blank" title="Go to Quick Stats website"><span class="fa fa-2x fa-arrow-circle-right"></span></a></h2>
+					<p>The <a href="https://quickstats.nass.usda.gov/" target="_blank" title="Go to Quick Stats website">Quick Stats</a> Database is the most comprehensive tool for accessing agricultural data published by NASS. It allows you to customize your query by commodity, location, or time period.</p>
+					
+					<ul>
+					<li><a href="/Corrections/?log=QS">Quick Stats System Updates</a></li>
+					<li><a href="/datasets">Download Quick Stats data files</a></li>
+					</ul>
+					
+					
+					<h3>Access Quick Stats Lite &nbsp;&nbsp;<a href="/Quick_Stats/Lite/index.php" title="Go to Quick Stats Lite"><span class="fa fa-2x fa-arrow-circle-right"></span></a></h3>
+					<p><a href="/Quick_Stats/Lite/index.php">Quick Stats Lite</a> provides a more structured approach to get commonly requested statistics from our online database.</p>
+					
+					
+				<!--<h3><img src="/Publications/AgCensus/images/newred.png" width="25" alt="New Census Data Query Tool"/>Access Census Data Query Tool &nbsp;&nbsp;<a href="/Quick_Stats/CDQT/chapter/1/table/1" title="Go to Census Data Query Tool"><span class="fa fa-2x fa-arrow-circle-right"></span></a></h3>
+					<p>The <a href="/Quick_Stats/CDQT/chapter/1/table/1">Census Data Query Tool</a> (CDQT) is a web based tool that is available to access and download table level data from the Census of Agriculture Volume 1 publication.</p>-->
+				</div>
+				<div class="col_2">
+					<p class="level3">Explore Statistics</p>
+					<ul>
+						<li>
+							<a href="/Statistics_by_State/index.php">
+								<p class="level4">By State</p>
+							</a>
+						</li>
+						<li>
+							<p class="level4">By Subject</p>
+							<ul>
+								<li><a href="/Statistics_by_Subject/index.php?sector=CROPS">Crops and Plants</a>
+								</li>
+								<li><a href="/Statistics_by_Subject/Demographics/index.php">Demographics</a>
+								</li>
+								<li><a href="/Statistics_by_Subject/Economics_and_Prices/index.php">Economic and Prices</a>
+								</li>
+								<li><a href="/Statistics_by_Subject/Environmental/index.php">Environmental</a>
+								</li>
+								<li><a href="/Statistics_by_Subject/index.php?sector=ANIMALS%20&amp;%20PRODUCTS">Livestock and Animals</a>
+								</li>
+								<li><a href="/Research_and_Science/index.php">Research, Science, and Technology</a>
+								</li>
+							</ul>
+							<!--		    <p><strong>* = Currently unavailable</strong></p>
+-->
+						</li>
+						<li>
+							<a href="/Charts_and_Maps/index.php">
+								<p class="level4">Charts and Maps</p>
+							</a>
+						</li>
+						<li>
+							<a href="/Data_Visualization/index.php">
+								<p class="level4">Data Visualization</p>
+							</a>
+						</li>
+						<li>
+							<a href="/Data_and_Statistics/Pre-Defined_Queries/index.php">
+								<p class="level4">Pre-Defined Queries</p>
+							</a>
+						</li>
+						<li>
+							<a href="/Data_and_Statistics/Special_Tabulations/index.php">
+								<p class="level4">Special Tabulations and Restricted Microdata</p>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col_2"> <br>
+					<p class="level4">County Level Information</p>
+					<ul>
+						<li><a href="/Charts_and_Maps/Crops_County/index.php">County Maps</a>
+							<ul>
+<!--								<li><a href="/Data_and_Statistics/County_Data_Files/Release_Schedule/index.php">County Data Release Schedule</a>
+								</li>-->
+								<li><a href="/Charts_and_Maps/Crops_County/boundary_maps/indexgif.php">County and District Geographic Boundaries</a>
+								</li>
+								<li><a href="/Data_and_Statistics/County_Data_Files/Frequently_Asked_Questions/county_list.txt">County and District Codes</a>
+								</li>
+								<li><a href="/Data_and_Statistics/County_Data_Files/Frequently_Asked_Questions/commcodes.php">Commodity Codes</a>
+								</li>
+								<li><a href="/Data_and_Statistics/County_Data_Files/Livestock_County_Estimates/index.php">Livestock County Estimates</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+									
+				</div>
+				<div class="col_4">
+					<p class="level4" style="border-top: #ccc thin solid; padding-top:10px;">Geospatial Data &amp; Interactive Maps</p>
+				</div>
+				<div class="col_2">
+					<ul>
+						<li><a href="https://croplandcros.scinet.usda.gov/" target="_blank">CroplandCROS</a>
+						</li>
+						<li><a href="/Research_and_Science/Cropland/SARS1a.php">Cropland Data Layer</a>
+						</li>
+						<li><a href="https://nassgeodata.gmu.edu/VegScape/" target="_blank">VegScape</a>
+						</li>
+						<li><a href="https://cloud.csiss.gmu.edu/Crop-CASMA/">Crop Condition and Soil Moisture Analytics
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col_2">
+					<ul>
+						<li><a href="/Research_and_Science/Crop-Sequence-Boundaries/index.php">Crop Sequence Boundaries 
+							</a>
+						</li>
+						<li><a href="/Research_and_Science/Crop_Progress_Gridded_Layers/index.php">Crop Progress & Condition Gridded Layers
+							</a>
+						</li>
+						<li><a href="/Research_and_Science/Disaster-Analysis/index.php">Disaster Analysis
+							</a>
+						</li>
+						<li><a href="/Research_and_Science/stratafront2b.php">Land Use Strata for Selected States</a></li>
+						
+						
+												
+					</ul>
+				</div>
+			</div>
+			<!-- End 4 columns container -->
+
+		</li>
+		<!-- End Home Item -->
+
+		<li><a href="/Publications/index.php" class="drop">Publications&nbsp;&nbsp;<span class="fa fa-caret-down"></span></a>
+			<!-- Begin 4 columns Item -->
+
+			<div class="dropdown_4columns">
+				<!-- Begin 4 columns container -->
+
+				<div class="col_4">
+					<h2>Today's Reports&nbsp;&nbsp;<a href="/Publications/index.php" aria-label="Today's Reports"><span class="fa fa-2x fa-arrow-circle-right"></span></a></h2>
+				</div>
+				<div class="col_2">
+					<p class="level4">Browse NASS Reports</p>
+					<ul>
+						<li><a href="/Statistics_by_Subject/index.php">by Subject</a>
+						</li>
+						<li><a href="/Publications/Calendar/reports_by_date.php">by Date (Reports Calendar)</a>
+						</li>
+						<li><a href="/Publications/Reports_by_Release_Day/index.php">by Title/Release Day</a>
+						</li>
+						<li><a href="https://esmis.nal.usda.gov/">by Keyword</a>
+						</li>
+						<li><a href="/Publications/2026_Products_and_Services_Guide.pdf">Guide to Products and Services</a>
+						</li>
+					</ul>
+					<p class="level4">Additional Reports</p>
+					<ul>
+						<li><a href="/Publications/Highlights/index.php">Highlights</a>
+						</li>
+						<li><a href="/Publications/AgCensus/2022/index.php">2022 Census of Agriculture</a>
+						</li>
+						<li><a href="/Surveys/index.php">Surveys and Programs</a>
+						</li>
+						<li><a href="/Publications/Methodology_and_Data_Quality/index.php">Methodology &amp; Quality Measures</a></li>
+						<li><a href="/Corrections/index.php?log=asb">Agricultural Statistics Board Corrections</a></li>
+						<li><a href="/Education_and_Outreach/Reports,_Presentations_and_Conferences/Reports_by_Date/index.php">Research Reports</a>
+						</li>
+					</ul>
+				</div>
+				<div class="col_2">
+					<p class="level4">Historical Publications</p>
+					<ul>
+						<li><a href="https://www.nass.usda.gov/AgCensus/archive/" target="_blank">Archived Ag Census Reports</a> (2002 and prior - published every 5 years)</li>
+						<li><a href="https://esmis.nal.usda.gov/publication/agricultural-statistics">Annual Agricultural Statistics</a>
+						</li>
+						<li><a href="/Publications/Statistical_Bulletins/index.php">Statistical Bulletins</a> (final estimates, 1987 to 2012</li>
+						<li><a href="/Publications/Track_Records/index.php">Track Records:</a> (crops, livestock, grain stocks)</li>
+						<li><a href="/Publications/Trends_in_U.S._Agriculture/index.php">Trends</a> 20th century</li>
+						<li><a href="/Publications/Price_Reactions/index.php">Price Reactions</a> (after crop or livestock reports)</li>
+					</ul>
+					<p class="level4">Receive Reports by Email:</p>
+					<ul>
+						<li><a href="https://esmis.nal.usda.gov/?keyword=national+reports">National Reports</a>
+						</li>
+						<!--li><a href="/Publications/Subscribe_to_State_Reports/index.php">State Reports</a>
+						</li-->
+						<li><a href="/Newsroom/Subscribe/index.php">NASS News Releases</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- End 4 columns container -->
+
+		</li>
+		<li><a href="/Newsroom/index.php" class="drop">Newsroom&nbsp;&nbsp;<span class="fa fa-caret-down"></span></a>
+			<!-- Begin 5 columns Item -->
+
+			<div class="dropdown_4columns">
+				<!-- Begin 5 columns container -->
+
+				<div class="col_2">
+					<p class="level4">News Releases</p>
+					<div class="newsFeed">
+						<p>10/01/26  &nbsp;<a href="/Newsroom/2026/10-01-2026.php">USDA to Host Virtual Data Users’ Meeting for Public Input on Statistical Programs</a></p>
+<p>09/30/26  &nbsp;<a href="/Newsroom/2026/09-30-2026.php">US corn ending stocks up 35% from last year, soybean ending stocks down 3% </a></p>
+<p>09/24/26  &nbsp;<a href="/Newsroom/2026/09-24-2026.php">United States hog inventory down 2% </a></p>
+<p>08/12/26  &nbsp;<a href="/Newsroom/2026/08-12-2026B.php">USDA unlocks the power of producer insights in latest August Crop Production report Data is vital to ag industry’s decision-making </a></p>
+<p>08/12/26  &nbsp;<a href="/Newsroom/2026/08-12-2026.php">Producers Are Being Called to Help Build Their County Crop Estimates </a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					</div>
+					<h3 class="right"><a href="/Newsroom/2026/index.php">Read More News</a></h3>
+				</div>
+				<div class="col_2">
+					<p class="level4">ASB Notices</p>
+					<div class="newsFeed">
+						<p>06/22/26 &nbsp;<a href="/Newsroom/Notices/2026/06-22-2026.php">NASS Adds Additional Counties to the 2025 Cotton County-level Estimates</a></p>
+<p>12/22/25 &nbsp;<a href="/Newsroom/Notices/2025/12-22-2025.php">USDA NASS reschedules reports due to December 24 & 26 government closure</a></p>
+<p>11/19/25 &nbsp;<a href="/Newsroom/Notices/2025/11-19-2025.php">USDA Reschedules Reports Affected by Lapse in Federal Funding</a></p>
+<p>10/31/25 &nbsp;<a href="/Newsroom/Notices/2025/10-31-2025.php">USDA’s National Agricultural Statistics Service (NASS) will release key data in November</a></p>
+<p>08/28/25 &nbsp;<a href="/Newsroom/Notices/2025/08-28-2025.php">NASS discontinues select data collection programs and reports</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					</div>
+					<h3 class="right"><a href="/Newsroom/Notices/index.php">Read More Notices</a></h3>
+				</div>
+				<div class="col_2">
+					<p class="level4">Videos</p>
+					<div class="newsFeed">
+						<p>02/13/24 &nbsp;<a target="_blank"  href="https://youtu.be/VerxO14wiHI">2022 Census of Agriculture Data Highlights</a></p>
+<p>02/13/24 &nbsp;<a target="_blank"  href="https://youtu.be/FyjUJnIMSfc">How to Find 2022 Census of Agriculture Data</a></p>
+<p>02/13/24 &nbsp;<a target="_blank"  href="https://www.youtube.com/live/0EY87thoLuo?si=leRX_UTy2DKXJcvN">2022 Census of Agriculture Data Release Event</a></p>
+<p>07/16/21 &nbsp;<a target="_blank"  href="https://youtu.be/8t_ZfpMtjzg">What is a Farm?</a></p>
+<p>08/05/20 &nbsp;<a target="_blank"  href="https://www.youtube.com/watch?v=4rodJxNmISE&t">The NASS Mission: We do it for you</a></p>
+
+
+					</div>
+					<h3 class="right"><a href="/Newsroom/Video_Features/index.php">View More Videos</a></h3>
+				</div>
+				<div class="col_2">
+					<p class="level4">ASB Briefings</p>
+					<div class="newsFeed">
+						<p>10/09/26 &nbsp;<a href="/Newsroom/Executive_Briefings/2026/10-09-2026.pdf">Crop Production (October 2026)</a></p>
+<p>09/30/26 &nbsp;<a href="/Newsroom/Executive_Briefings/2026/09-30-2026.pdf">Small Grains Summary and Grain Stocks (September 2026)</a></p>
+<p>09/24/26 &nbsp;<a href="/Newsroom/Executive_Briefings/2026/09-24-2026.pdf">Quarterly Hogs and Pigs (September 2026)</a></p>
+<p>09/11/26 &nbsp;<a href="/Newsroom/Executive_Briefings/2026/09-11-2026.pdf">Crop Production (September 2026)</a></p>
+<p>08/12/26 &nbsp;<a href="/Newsroom/Executive_Briefings/2026/08-12-2026.pdf">Crop Production (August 2026)</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					</div>
+					<h3 class="right"><a href="/Newsroom/Executive_Briefings/index.php">View More Briefings</a></h3>
+				</div>
+			</div>
+			<!-- End 5 columns container -->
+		</li>
+		<!-- End 5 columns Item -->
+
+		<!-- End 4 columns Item -->
+
+		<!-- End 4 columns Item -->
+
+		<li><a href="/Surveys/index.php" class="drop">Surveys&nbsp;&nbsp;<span class="fa fa-caret-down"></span></a>
+			<div class="dropdown_2columns align_right">
+				<!-- Begin 2 columns container -->
+				<div class="col_2">
+					<h2>Respond to Surveys Online&nbsp;&nbsp;<a href="https://www.agcounts.usda.gov" target="_blank" title="Go to Survey Page"><span class="fa fa-2x fa-arrow-circle-right"></span></a></h2>
+				</div>
+				<div class="col_2">
+					<p><a href="/Surveys/Guide_to_NASS_Surveys/index.php">Guide to NASS Surveys and Programs</a>
+					</p>
+					<p> <a href="/Education_and_Outreach/Understanding_Statistics/index.php">Understanding Agricultural Statistics</a>
+					</p>
+					<p><a href="https://www.agcounts.usda.gov/cgi-bin/counts/" target="_blank">Make Sure I'm Counted</a>
+					</p>
+					<p><a href="/Surveys/Program_Review/index.php" target="_blank">Statistical Programs and Review</a>
+					</p>
+				</div>
+			</div>
+		</li>
+		<li><a href="/AgCensus/index.php">Census</a>
+		</li>
+		<!--  <li><a href="http://agcensus.usda.gov">Census</a></li>  -->
+		<li><a href="/About_NASS/index.php" class="drop">About NASS&nbsp;&nbsp;<span class="fa fa-caret-down"></span></a>
+			<div class="dropdown_4columns align_right">
+				<!-- Begin 2 columns container -->
+
+				<div class="col_2">
+					<p class="level4">Structure and Organization</p>
+					<ul>
+						<li><a href="/About_NASS/index.php">Agency Overview</a>
+						</li>
+						<li><a href="/About_NASS/NASS_Biographies/index.php">NASS Biographies</a>
+						</li>
+						<li><a href="/About_NASS/Org_Chart/OrgChart.pdf"><!-- Please keep the OrgChart name as is-NASSPortal links back to here -->Organizational Chart</a>
+						</li>
+						<li><a href="/About_NASS/Assistance_to_Other_Organizations/index.php">Assistance to Other Organizations</a>
+						</li>
+						<li><a href="/About_NASS/International_Programs/index.php">International Programs</a>
+						</li>
+						<li><a href="/About_NASS/pdf/NASS_TalkingAboutNASS_ExternalGuide_2022_V01.pdf">Talking About NASS - A guide for partners and stakeholders</a></li>
+				   <!-- <li><a href="/About_NASS/Strategic_Plan/pdf/USDA_NASS_StrategicPlan_FY22-26.pdf">NASS Strategic Plan for FY 2022-2026</a></li> -->
+						<li><a href="https://www.usda.gov/about-usda/general-information/our-agency/our-performance">USDA Strategic Goals</a></li>
+		  				
+						
+					</ul>
+					<p class="level4">Guiding Principles</p>
+					<ul>
+						<li><a href="/About_NASS/Mission_Statement/index.php">Mission and Core Values</a>
+						</li>
+						<li><a href="/About_NASS/Keeping_Data_Safe/index.php">Keeping Data Safe</a>
+						</li>
+						<li><a href="/About_NASS/Confidentiality_Pledge/index.php">Confidentiality Pledge</a>
+						</li>
+						<li><a href="/About_NASS/Security_Pledge/index.php">Security Pledge</a>
+						</li>
+						<li><a href="/About_NASS/Security_Statement/index.php">Security Statement</a>
+						</li>
+						<li><a href="/About_NASS/pdf/ScientificIntegrityStatement.pdf">Statement of Commitment to Scientific Integrity</a>
+						</li>
+						<li><a href="/About_NASS/Regulations_Guiding_NASS/index.php">Regulations Guiding NASS</a>
+						</li>
+						<li><a href="/About_NASS/Information_Quality_Guidelines/index.php">Information Quality</a>
+						</li>
+						<li><a href="/About_NASS/pdf/learning-agenda-fy2426.pdf">Learning Agenda, Fiscal Year 2024 -2026</a>
+						</li>
+					</ul>
+						<p class="level4">Civil Rights</p>
+					<ul>
+						<!-- <li><a href="/About_NASS/Civil_Rights/NASS EEO Policy Statement_Signed 24July 2024.pdf">NASS EEO Policy Statement</a></li>-->
+		  				 <!--<li>
+							<p><a  href="/About_NASS/Civil_Rights/antiharassment2021.pdf">USDA and NASS Anti-Harassment Policy Statement</a></p></li>-->
+						 <li><a href="https://www.usda.gov/sites/default/files/documents/dm-4200-003.pdf">Anti-Harassment Policy | USDA</a></li>
+                       <li><a href="https://www.ocio.usda.gov/sites/default/files/docs/2012/DR%204300-010%20Civil%20Rights%20Accountability%20and%20Procedures-Final_20170103.pdf">Civil Rights Accountability Policy and Procedures</a></li>
+						<li><a href="https://www.usda.gov/sites/default/files/documents/no-fear-act-notice.pdf">No FEAR Act Notice</a></li>
+		  				<li><a href="https://www.usda.gov/nofear/agencies">No FEAR Act - NASS Data</a></li>
+						<li>
+							<p><a  href="/About_NASS/Civil_Rights/reasonable-accommodations2020.pdf">REE Reasonable Accommodations and Personal Assistance Services</a></p></li>
+						
+						<li><a href="https://www.usda.gov/oascr/filing-discrimination-complaint-usda-employee" target="_blank">How to File an EEO Complaint</a></li>
+						
+						<li><a href="https://www.usda.gov/accessibility-statement">Accessibility Statement</a></li>
+		
+						<li><a href="https://www.access-board.gov/law/aba.html">Architectural Barriers Act</a></li>
+						<li><a href="/About_NASS/Civil_Rights/index.php">And Justice for All posters</a></li>
+		 
+					</ul>
+				</div>
+				<div class="col_2">
+					<p class="level4">Work at NASS</p>
+					<ul>
+						<li><a href="/About_NASS/Opportunities/index.php">Career Opportunities</a>
+						</li>
+					</ul>
+					<p class="level4">Education and Outreach</a>
+					</p>
+					<ul>
+						<li><a href="/Education_and_Outreach/Understanding_Statistics/index.php">Understanding Ag Statistics</a>
+						</li>
+						<li><a href="/Education_and_Outreach/Meeting/index.php">Data Users' Meetings</a></li>
+						<li><a href="/Education_and_Outreach/Morris_Hansen/index.php">Morris Hansen Lecture</a></li>
+						<li><a href="/About_NASS/International_Programs/icas/index.php">International Conference on Agricultural Statistics</a></li>
+					</ul>
+					<p class="level4">History and Procedures</p>
+					<ul>
+						<li><a href="/About_NASS/ASB_and_Lockup/index.php">Agricultural Statistics Board and Lockup</a>
+						</li>
+						<li><a href="/About_NASS/Timeline/index.php">Agricultural Statistics: A Historical Timeline</a>
+						</li>
+						<li><a href="/About_NASS/pdf/The%20Story%20of%20U.S.%20Agricultural%20Estimates.pdf">The Story of U.S. Agricultural Estimates</a>
+						</li>
+						<li><a href="/About_NASS/pdf/As%20We%20Recall%20The%20History%20of%20Ag%20Estimates%201933%20to%201961.pdf">As  We Recall: The Growth of Agricultural Estimates, 1933-1961</a>
+						</li>
+						<li>
+							<p><a href="/About_NASS/pdf/asb_historical.pdf">Safeguarding America's Agricultural Statistics Report</a> and <a href="https://www.youtube.com/watch?v=SxnWZVjGGUI">Video</a>
+							</p>
+						</li>
+						<li><a href="/About_NASS/History_of_Ag_Statistics/index.php">History of Ag Statistics</a>
+						</li>
+						<li><a href="/About_NASS/Reports_Procedures/index.php">Report Procedures</a>
+						</li>
+						<li><a href="/About_NASS/pdf/evolving_nass.pdf">An Evolving Statistical Service</a>
+						</li>
+						<li><a href="/About_NASS/pdf/NASSFactFinders_April_2016_FINAL.pdf">Fact Finders for Agriculture</a>
+						</li>
+						<li>
+							<p><a href="/About_NASS/pdf/agriculture_counts.pdf">Agriculture Counts - The Founding and Evolution of the National Agricultural Statistics Service &nbsp; 1957-2007</a>
+							</p>
+						</li>
+						<li><a href="/About_NASS/Hall_of_Fame/index.php">Hall of Fame</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!-- End 2 columns container -->
+
+		</li>
+		<li><a href="/Contact_Us/index.php" class="drop">Contact Us&nbsp;&nbsp;<span class="fa fa-caret-down"></span></a>
+			<div class="dropdown_4columns align_right">
+				<!-- Begin 4 columns container -->
+
+				<div class="col_2">
+					<p class="level4">Mailing Address:</p>
+					<p><address>
+					  USDA-NASS<br>
+					  1400 Independence Ave., SW<br>
+					  Washington, DC 20250</address>
+					</p>
+										
+					<p class="level4">Survey FAQs and Contact Us:</p>
+					<p><a href="/Feedback/index.php"><span class="fa fa-arrow-circle-right"></span> Access FAQs or submit a question.</a>
+					</p>
+					
+					<p class="level4">Data Inquiries:</p>
+					<p>Hours: 8:00 a.m. - 5:00 p.m. Central Standard Time<br/> Monday - Friday, except federal holidays<br/> Toll-Free: <a href="tel:800-727-9540"><span class="fa fa-phone"></span>(800) 727-9540</a>
+					</p>
+					<p class="level4">Media Inquiries:</p>
+					
+					<p>Email: NASS-Media@usda.gov <a href="mailto:NASS-Media@usda.gov" title="Email: Ask USDA"><span class="fa fa-envelope"></span></a></p>
+				</div>
+				
+				<div class="col_2">
+					<p class="level4">Other USDA Inquiries:</p>
+					<p>Hours: Monday to Friday 8 a.m. - 5 p.m. EST<br/>Toll-Free: <a href="tel:833-663-8732"><span class="fa fa-phone"></span>(833) One-USDA</a><br>
+					Email: askusda@usda.gov <a href="mailto:askusda@usda.gov" title="Email: Ask USDA"><span class="fa fa-envelope"></span></a><br>
+			  		Website: <a href="https://ask.usda.gov/s/">https://ask.usda.gov/s/</a>
+					</p>
+					
+					
+				<!--<p>Kristen Lenhardt, <em>Public Affairs Director</em><br> Email: <a href="mailto:kristen.lenhardt@usda.gov" title="Email: Kristen Lenhardt"><span class="fa fa-envelope"></span></a> / Phone: <a href="tel:202-690-8122"><span class="fa fa-phone"></span>&nbsp;(202) 690-8122</a>
+					</p>
+					<p>Teresa White, <em>Public Affairs Deputy Director</em><br> Email: <a href="mailto:teresa.white@usda.gov" title="Email: Teresa White"><span class="fa fa-envelope"></span></a> / Phone: <a href="tel:202-690-8123"><span class="fa fa-phone"></span>&nbsp;(202) 690-8123</a></p>
+           
+					<p>Jim Barrett, <em>Public Affairs Specialist</em><br> Email: <a href="mailto:jim.barrett@usda.gov" title="Email: Jim Barrett"><span class="fa fa-envelope"></span></a> / Phone: <a href="tel:202-690-8124"><span class="fa fa-phone"></span>&nbsp;(202) 690-8124</a></p>
+			  
+					<p>Jodi Halvorson, <em>Public Affairs Specialist</em><br> Email: <a href="mailto:Jodi.Halvorson@usda.gov" title="Email: Jodi Halvorson"><span class="fa fa-envelope"></span></a> / Phone: <a href="tel:916-738-6609"><span class="fa fa-phone"></span>&nbsp;(916) 738-6609</a></p>
+			  
+					<p>Terry Matlock, <em>Public Affairs Specialist</em><br> Email: <a href="mailto:Terry.Matlock@usda.gov" title="Email: Terry Matlock"><span class="fa fa-envelope"></span></a> / Phone: <a href="tel:720-787-3172"><span class="fa fa-phone"></span>&nbsp;(720) 787-3172</a></p>
+			  
+					<p>Alexandra Nseir, <em>Public Affairs Specialist</em><br> Email: <a href="mailto:Alexandra.Nseir@usda.gov" title="Email: Alex Nseir"><span class="fa fa-envelope"></span></a> / Phone: <a href="tel:202-690-8121"><span class="fa fa-phone"></span>&nbsp;(202) 690-8121</a></p>-->
+           
+					
+					
+					
+					<p class="level4">Translation Services:</p>
+					<p>Email: NASSLanguages@usda.gov <a href="mailto:NASSLanguages@usda.gov" title="Email: NASSLanguages@usda.gov"><span class="fa fa-envelope"></span></a></p>
+				</div>
+				<div class="col_4">
+					<div class="col_2" style="padding-right: 10px;">
+						<!--<p class="level4">Regional and State Field Offices</p>
+						<p>Find contact information for Regional and State Field Offices&nbsp;&nbsp;<a href="/Statistics_by_State/RFO/index.php"><span class="fa fa-arrow-circle-right"></span></a>
+						</p>-->
+						
+						<p class="level4">Regional and State Field Offices:</p>
+						<p><a href="/Statistics_by_State/RFO/index.php"><span class="fa fa-arrow-circle-right"></span> Find contact information for Regional and State Field Offices</a>
+						</p>
+						<p class="level4">Ask a Specialist:</p>
+						<p><a href="/Contact_Us/Ask_a_Specialist/index.php" title="Ask a NASS Specialist"><span class="fa fa-arrow-circle-right"></span> Have a specific question for one of our subject experts? Contact a specialist.&nbsp;&nbsp;</a>
+						</p>
+
+					</div>
+					<div class="col-2">
+						<p class="level4">Web Content Publishing Schedule:</p>
+						<p>Section 207(f)(2) of the E-Government Act of 2002 requires federal agencies to develop an inventory of information to be published on their Web sites, establish a schedule for publishing information, make those schedules available for public comment, and post the schedules and priorities on the Web site.
+						</p>
+					</div>
+				</div>
+			</div>
+		</li>
+		<li><a href="/Help/index.php" class="drop">Help&nbsp;&nbsp;<span class="fa fa-caret-down"></span></a>
+			<div class=" dropdown_2columns align_right">
+				<div class="col_2">
+					<p class="level4">Technical Issues</p>
+					<ul>
+						<li><a href="/Help/RSS/index.php">RSS Feed</a>
+						</li>
+						<li><a href="/Contact_Us/index.php">Contact Us </a> </li>
+					</ul>
+				</div>
+				<div class="col_2">
+					<p class="level4">Search Tips</p>
+					<ul>
+						<li><a href="/Help/Search_Tips/index.php">Search Tips</a>
+						</li>
+					</ul>
+					<p class="level4">For Developers and Data Users</p>
+					<ul>
+						<li><a href="/developer/index.php">Application Programming Interfaces (APIs)</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
+</div>
+
+
+</div>		</div>
+		<div id="brdcrmb_socMedia" class="container col-xs-12 clearfix">
+			<div id='breadcrumb-container' class="breadCrumb col-xs-12 col-sm-12 col-md-8 col-lg-8 hidden-print"></div>
+<!-- end of breadcrumb -->
+
+ <div class="socialMedia container col-xs-12 col-sm-12 col-md-4 col-lg-4 alignRight social_title social_icons clearfix hidden-print" align="right">
+	 <label for="select-a-state"><em>Statistics by State</em>&nbsp;
+    <select class="form-control select-state" id="select-a-state" name="select-a-state" onchange="top.location=this.value;" title="Select Statistics by State">
+      <optgroup label="Select a State">
+      <option value="/Statistics_by_State/RFO/index.php" title="Regional Offices">Regional Offices</option>
+      <option value="/Statistics_by_State/Alabama/index.php" title="Alabama">Alabama</option>
+      <option value="/Statistics_by_State/Alaska/index.php" title="Alaska">Alaska</option>
+      <option value="/Statistics_by_State/Arizona/index.php" title="Arizona">Arizona</option>
+      <option value="/Statistics_by_State/Arkansas/index.php" title="Arkansas">Arkansas</option>
+      <option value="/Statistics_by_State/California/index.php" title="California">California</option>
+      <option value="/Statistics_by_State/Colorado/index.php" title="Colorado">Colorado</option>
+      <option value="/Statistics_by_State/Connecticut/index.php" title="Connecticut">Connecticut</option>
+      <option value="/Statistics_by_State/Delaware/index.php" title="Delaware">Delaware</option>
+      <option value="/Statistics_by_State/Florida/index.php" title="Florida">Florida</option>
+      <option value="/Statistics_by_State/Georgia/index.php" title="Georgia">Georgia</option>
+      <option value="/Statistics_by_State/Hawaii/index.php" title="Hawaii">Hawaii</option>
+      <option value="/Statistics_by_State/Idaho/index.php" title="Idaho">Idaho</option>
+      <option value="/Statistics_by_State/Illinois/index.php" title="Illinois">Illinois</option>
+      <option value="/Statistics_by_State/Indiana/index.php" title="Indiana">Indiana</option>
+      <option value="/Statistics_by_State/Iowa/index.php" title="Iowa">Iowa</option>
+      <option value="/Statistics_by_State/Kansas/index.php" title="Kansas">Kansas</option>
+      <option value="/Statistics_by_State/Kentucky/index.php" title="Kentucky">Kentucky</option>
+      <option value="/Statistics_by_State/Louisiana/index.php" title="Louisiana">Louisiana</option>
+      <option value="/Statistics_by_State/Maine/index.php" title="Maine">Maine</option>
+      <option value="/Statistics_by_State/Maryland/index.php" title="Maryland">Maryland</option>
+      <option value="/Statistics_by_State/Massachusetts/index.php" title="Massachussetts">Massachusetts</option>
+      <option value="/Statistics_by_State/Michigan/index.php" title="Michigan">Michigan</option>
+      <option value="/Statistics_by_State/Minnesota/index.php" title="Minnesota">Minnesota</option>
+      <option value="/Statistics_by_State/Mississippi/index.php" title="Mississippi">Mississippi</option>
+      <option value="/Statistics_by_State/Missouri/index.php" title="Missouri">Missouri</option>
+      <option value="/Statistics_by_State/Montana/index.php" title="Montana">Montana</option>
+      <option value="/Statistics_by_State/Nebraska/index.php" title="Nebraska">Nebraska</option>
+      <option value="/Statistics_by_State/Nevada/index.php" title="Nevada">Nevada</option>
+      <option value="/Statistics_by_State/New_England/index.php" title="New England">New England</option>
+      <option value="/Statistics_by_State/New_Hampshire/index.php" title="New Hampshire">New Hampshire</option>
+      <option value="/Statistics_by_State/New_Jersey/index.php" title="New Jersey">New Jersey</option>
+      <option value="/Statistics_by_State/New_Mexico/index.php" title="New Mexico">New Mexico</option>
+      <option value="/Statistics_by_State/New_York/index.php" title="New York">New York</option>
+      <option value="/Statistics_by_State/North_Carolina/index.php" title="North Carolina">North Carolina</option>
+      <option value="/Statistics_by_State/North_Dakota/index.php" title="North Dakota">North Dakota</option>
+      <option value="/Statistics_by_State/Ohio/index.php" title="Ohio">Ohio</option>
+      <option value="/Statistics_by_State/Oklahoma/index.php" title="Oklahoma">Oklahoma</option>
+      <option value="/Statistics_by_State/Oregon/index.php" title="Oregon">Oregon</option>
+      <option value="/Statistics_by_State/Pennsylvania/index.php" title="Pennsylvania">Pennsylvania</option>
+      <option value="/Statistics_by_State/Puerto_Rico/index.php" title="Puerto Rico">Puerto Rico</option>
+      <option value="/Statistics_by_State/Puerto_Rico_(Spanish)/index.php" title="Puerto Rico (Spanish)">Puerto Rico (Spanish)</option>
+      <option value="/Statistics_by_State/Rhode_Island/index.php" title="Rhode Island">Rhode Island</option>
+      <option value="/Statistics_by_State/South_Carolina/index.php" title="South Carolina">South Carolina</option>
+      <option value="/Statistics_by_State/South_Dakota/index.php" title="South Dakota">South Dakota</option>
+      <option value="/Statistics_by_State/Tennessee/index.php" title="Tennessee">Tennessee</option>
+      <option value="/Statistics_by_State/Texas/index.php" title="Texas">Texas</option>
+      <option value="/Statistics_by_State/Utah/index.php" title="Utah">Utah</option>
+      <option value="/Statistics_by_State/Vermont/index.php" title="Vermont">Vermont</option>
+      <option value="/Statistics_by_State/Virginia/index.php" title="Virginia">Virginia</option>
+      <option value="/Statistics_by_State/Washington/index.php" title="Washington">Washington</option>
+      <option value="/Statistics_by_State/West_Virginia/index.php" title="West Virginia">West Virginia</option>
+      <option value="/Statistics_by_State/Wisconsin/index.php" title="Wisconsin">Wisconsin</option>
+      <option value="/Statistics_by_State/Wyoming/index.php" title="Wyoming">Wyoming</option>
+      </optgroup>
+    </select>&nbsp;&nbsp;
+  </label>
+</div>
+<!-- end of socialmedia --> 
+		</div>
+		<div class="container mainContent clearfix">
+			<div role="main" class="contentMain clearfix">
+				<div class="leftnav col-xs-12 col-sm-12 col-md-4">
+					<div class=".hidden-print"><div id="leftnav" class="hidden-print">
+	<div id="left-mobile-nav" class="clearfix">
+		<div id="leftnav-menu-title" class="col-xs-9 hidden-md hidden-lg">
+			<span class="h3">Research &amp; Science</span>
+		</div>
+		<div id="mobileLeftNavButton" class="col-xs-3 hidden-md hidden-lg">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#left-nav-menu">Menu <span class="caret"></span> </button>
+		</div>
+	</div>
+	<div id="left-nav-menu" class="collapse navbar-collapse mobile">
+		<h3>Related Topics</h3>
+		<ul class="listStyleNone">
+			<li><a href="/Research_and_Science/asa-nass.php">Research Fellow and Associate Program</a>
+			</li>
+			<li><a href="/Charts_and_Maps/Crop_Progress_&_Condition/index.php">Seasonal Summary of Crop Progress and Condition</a>
+			</li>
+		</ul>
+		
+	    <h3>Geospatial Data</h3>
+		<ul>
+			<li><a href="https://croplandcros.scinet.usda.gov/" target="_blank">CroplandCROS</a>
+			</li>
+			<li><a href="/Research_and_Science/Cropland/SARS1a.php">Cropland Data Layer</a>
+			</li>
+			<li><a href="https://nassgeodata.gmu.edu/VegScape/" target="_blank">VegScape</a>
+			</li>
+			<li><a href="https://cloud.csiss.gmu.edu/Crop-CASMA/" target="_blank">Crop-CASMA</a>
+			</li>
+			<li><a href="/Research_and_Science/Crop_Progress_Gridded_Layers/index.php">Crop Progress & Condition Gridded Layers</a>
+			</li>
+			<li><a href="/Research_and_Science/Disaster-Analysis/index.php">Disaster Analysis</a></li>
+			</li>
+		<li><a href="/Research_and_Science/Crop-Sequence-Boundaries/index.php">Crop Sequence Boundaries</a></li>
+			</li>
+			<li><a href="/Research_and_Science/stratafront2b.php">Land Use Strata for Selected States</a>
+			</li>
+			
+
+		</ul>
+	</div>
+</div></div>
+				</div>
+				<div class="contentRight col-xs-12 col-sm-12 col-md-8 col-lg-8 clearfix">
+					<a id="skipnav"></a>
+					<!-- UPDATED TEMMPLATE -->
+					<div id="field_body" class="field">
+						<!-- InstanceBeginEditable name="Edit Main Content" -->
+          <h3 class="hidden-xs hidden-sm">Research and Science</h3>
+          <h4>Cropland Data Layers - FAQs</h4>
+          <p class="text-center"><a href="https://croplandcros.scinet.usda.gov/" target="_blank">CroplandCROS</a> | FAQ | <a href="metadata/meta.php">Metadata</a> | <a
+ href="Release/index.php">National Download</a> | <a href="https://agriwatch.projects.earthengine.app/view/active">CDL Viewer</a> | <a href="https://agriwatch.projects.earthengine.app/view/hcdl-viewer">Hawaii CDL Viewer</a></p>
+		  <h5><a href="/Research_and_Science/Cropland/docs/cdl_legend_colors.html">List of  CDL codes, class names, and RGB color values</a></h5>
+
+<h5>Metadata in various formats available at <a href="https://catalog.data.gov/dataset/cropland-data-layer">Data.Gov</a> and on our <a href="/Research_and_Science/Cropland/metadata/meta.php">metadata webpage</a></h5>
+
+<h5>Frequently anticipated questions:</h5>
+<ul>
+  <li><a href="#what">What does this data set describe?</a>
+    <ol>
+      <li><a href="#what.1">How might this data set be cited?</a></li>
+      <li><a href="#what.2">What geographic area does the data set cover?</a></li>
+      <li><a href="#what.3">What does it look like?</a></li>
+      <li><a href="#what.4">Does the data set describe conditions during a particular time period?</a></li>
+      <li><a href="#what.5">What is the general form of this data set?</a></li>
+      <li><a href="#what.6">How does the data set represent geographic features?</a></li>
+      <li><a href="#what.7">How does the data set describe geographic features?</a></li>
+    </ol>
+  </li>
+  <li><a href="#who">Who produced the data set?</a>
+    <ol>
+      <li><a href="#who.1">Who are the originators of the data set?</a></li>
+      <li><a href="#who.2">Who also contributed to the data set?</a></li>
+      <li><a href="#who.3">To whom should users address questions about the data?</a></li>
+    </ol>
+  </li>
+  <li><a href="#why">Why was the data set created?</a></li>
+  <li><a href="#how">How was the data set created?</a>
+    <ol>
+      <li><a href="#how.1">From what previous works were the data drawn?</a></li>
+      <li><a href="#how.2">How were the data generated, processed, and modified?</a></li>
+      <li><a href="#how.3">What similar or related data should the user be aware of?</a></li>
+    </ol>
+  </li>
+  <li><a href="#quality">How reliable are the data; what problems remain in the data set?</a>
+    <ol>
+      <li><a href="#quality.1">How well have the observations been checked?</a></li>
+      <li><a href="#quality.2">How accurate are the geographic locations?</a></li>
+      <li><a href="#quality.3">Where are the gaps in the data?  What is missing?</a></li>
+      <li><a href="#quality.4">How consistent are the relationships among the data, including topology?</a></li>
+    </ol>
+  </li>
+  <li><a href="#getacopy">How can someone get a copy of the data set?</a>
+    <ol>
+      <li><a href="#getacopy.0">Are there legal restrictions on access or use of the data?</a></li>
+      <li><a href="#getacopy.1">Who distributes the data?</a></li>
+      <li><a href="#getacopy.2">What's the catalog number I need to order this data set?</a></li>
+      <li><a href="#getacopy.3">What legal disclaimers am I supposed to read?</a></li>
+      <li><a href="#getacopy.4">How can I download or order the data?</a></li>
+    </ol>
+  </li>
+  <li><a href="#metaref">Who wrote the metadata?</a></li>
+	<br>
+  <li><a href="#history"><b>CDL Program History</b></a>
+    <ol>
+      <li><a href="#history.0">How has the CDL Program changed over time?</a></li>
+      <li><a href="#history.1">How has the methodology used to create the CDL changed over the program's history?</a></li>
+    </ol>
+  </li>
+	<br>	
+  <li><a href="#common"><b>Common User Questions</b></a>
+    <ol>
+      <li><a href="#common.0">Is the Cropland Data Layer available in a shapefile format?</a></li>
+      <li><a href="#common.1">What differences can be expected when comparing CDL-based acreage and official NASS statistics?</a></li>
+      <li><a href="#common.2">What projections are used?</a></li>
+      <li><a href="#common.3">Are color legends available for the Cropland Data Layers?</a></li>
+      <li><a href="#common.4">Has someone compiled all of the exported CDL attribute tables by year and state into a master spreadsheet?</a></li>
+      <li><a href="#common.5">Has someone summarized CDL acreage for all land cover categories at the county-level for the Continental United States?</a></li>
+      <li><a href="#common.6">Is more detailed accuracy assessment information available than what is provided in the metadata? Can you provide the full accuracy assessment error/confusion matrices for all states?</a></li>
+      <li><a href="#common.7">NASS says this is a Cropland data layer product, what about the areas that are not agriculturally intensive?</a></li>
+      <li><a href="#common.8">Are more detailed CDL category definitions available?</a></li>
+      <li><a href="#common.9">Does the CDL differentiate between grassland types such as urban grassland, pastures used for grazing, and other grass-related land cover types?</a></li>
+      <li><a href="#common.10">How are fields with multiple crop types planted in the same season handled in the Cropland Data Layer, such as winter wheat followed by soybeans?</a></li>
+      <li><a href="#common.11">Have the attribute names, codes, and/or colors changed over the history of the program?</a></li>
+      <li><a href="#common.12">How do I add class names and/or histogram values to the GeoTIFF file when viewing the CDL in ESRI ArcGIS Software?</a></li>
+      <li><a href="#common.13">How can I create a legend for the CDL using ESRI ArcGIS software?</a></li>
+      <li><a href="#common.14">Is any smoothing or filtering applied to the CDL?</a></li>
+      <li><a href="#common.15">How do I add category names to a downloaded .tif image in ESRI ArcGIS?</a></li>
+      <li><a href="#common.16">I am using Erdas Imagine to view downloaded CDL data, but there is no histogram information. How do I build statistics in Erdas Imagine?</a></li>
+      <li><a href="#common.17">How do I add category names and/or colors to my downloaded CDL data in Erdas Imagine?</a></li>
+      <li><a href="#common.18">What other geospatial products does NASS offer, such as the Cultivated Layer, Crop Frequency Data Layers, Confidence Layer, and Crop Sequence Boundaries?</a></li>
+    </ol>
+  </li>	  
+	  
+	<br>
+</ul>
+<hr/>
+<h3><a name="what">What does this data set describe?</a></h3>
+<div style="margin-left: 2em">
+<dl>
+<span class="element-name title">Title:</span> <span class="element-value title">Cropland Data Layer</span><br/>
+<span class="element-name abstract">Abstract:</span>
+<div class="child element-value abstract">
+The USDA National Agricultural Statistics Service (NASS) Cropland Data Layer (CDL) is an annual raster, geo-referenced, crop-specific land cover data layer produced using satellite imagery and extensive agricultural ground reference data. The program began in 1997 with limited coverage and in 2008 forward expanded coverage to the entire Continental United States. Please note that no farmer reported data are derivable from the Cropland Data Layer.<br>
+<br>
+Beginning in 2024, the CDL spatial resolution has increased  to 10-meters. The 2008 to 2023 CDLs have a spatial resolution of 30-meters. The current program uses Landsat 8 and 9 OLI/TIRS and ESA SENTINEL-2A and -2B collected throughout the growing season. Past years of CDL have used other satellite-based sensors such as Landsat 5 and 7, ISRO ResourceSat-2 LISS-3, IRS AWiFS, Diemos-1 and UK-DMC-2, and MODIS 16-Day NDVI Composite. Some CDL states used additional ancillary inputs to supplement and improve the land cover classification including historical CDL data, the United States Geological Survey (USGS) National Elevation Dataset (NED), USDA National Resources Conservation Service (NRCS) National Commodity Crop Productivity Index (NCCPI), and the most current publicaly available versions of the USGS National Land Cover Database imperviousness and the tree canopy data layers. Agricultural training and validation data are derived from the Farm Service Agency (FSA) Common Land Unit (CLU) Program. Some CDL states incorporate additional crop-specific ground reference obtained from the following non-FSA sources which are detailed in the 'Lineage' Section of this metadata: US Bureau of Reclamation, NASS Citrus Data Layer (internal use only), California Department of Water Resources, Florida Department of Agriculture and Consumer Services Office of Agricultural Water Policy, Cornell University grape/vineyard data, Oregon State University tree crop and vineyard data, Utah Department of Water Resources, and Washington State Department of Agriculture. The most current version of the NLCD is used as non-agricultural training and validation data.</div>
+	<br>
+	<span class="element-name supplinf">Supplemental_Information:</span>
+<div class="child element-value supplinf">
+The data is available free for download through CroplandCROS at &lt;<a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>&gt;. Metadata, Frequently Asked Questions (FAQs), and the most current year of data is available free for download at the official website &lt;<a href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php">https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php</a>&gt;.
+</div>
+</dl>
+</div>
+<ol>
+<li style="margin-bottom: 1em;"><a name="what.1"><b>How might this data set be cited?</b></a>
+<div style="margin-left: 1em;">
+United States Department of Agriculture (USDA) National Agricultural Statistics Service (NASS), 20260227, Cropland Data Layer: USDA NASS, USDA NASS Marketing and Information Services Office, Washington, D.C.
+  <p>
+Online Links: <a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>
+</ul>
+<p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+NASS maintains a Frequently Asked Questions (FAQ's) section on the CDL website at &lt;<a href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php">https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php</a>&gt;. The data is available free for download through CroplandCROS &lt;<a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>&gt; and the Geospatial Data Gateway &lt;<a href="https://datagateway.nrcs.usda.gov/">https://datagateway.nrcs.usda.gov/</a>&gt;.
+</div>
+</dl>
+</li>
+<li style="margin-bottom: 1em;"><a name="what.2"><b>What geographic area does the data set cover?</b></a>
+<dl>
+<span class="element-name westbc">West_Bounding_Coordinate:</span> <span class="element-value westbc">-129.335318</span><br/>
+<span class="element-name eastbc">East_Bounding_Coordinate:</span> <span class="element-value eastbc">-73.226636</span><br/>
+<span class="element-name northbc">North_Bounding_Coordinate:</span> <span class="element-value northbc">49.041442</span><br/>
+<span class="element-name southbc">South_Bounding_Coordinate:</span> <span class="element-value southbc">21.809104</span><br/>
+</dl>
+</li>
+<li style="margin-bottom: 1em;"><a name="what.3"><b>What does it look like?</b></a>
+<img class="cdl_snapshot" src="metadata/CDL_browse_graphic_752x600.png" width="700" alt="Map of Cropland Data Layer"/>
+	There are over 100 potential land cover categories. The legend above lists only a subset of available categories.
+<li style="margin-bottom: 1em;"><a name="what.4"><b>Does the data set describe conditions during a particular time period?</b></a>
+<dl>
+    Beginning_Date: 1997<br/>
+    Ending_Date: annual, ongoing<br/>
+    Currentness_Reference: annual growing season<br/>
+</dl>
+</li>
+<li style="margin-bottom: 1em;"><a name="what.5"><b>What is the general form of this data set?</b></a>
+<dl>
+<span class="element-name geoform">Geospatial_Data_Presentation_Form:</span> <span class="element-value geoform">raster digital data, </span>typically Geotiff or Cloud-Optimized Geotiff (.tif)  <br/>
+</dl>
+</li>
+<li><a name="what.6"><b>How does the data set represent geographic features?</b></a>
+<ol type="a">
+<li style="margin-bottom: 1em;"><a name="what.6.a"><b>How are geographic features stored in the data set?</b></a><br/>
+<dl>
+<span class="element-name indspref">Indirect_Spatial_Reference:</span> <span class="element-value indspref">Continental United States</span><br/>
+</dl>
+This is a Raster data set.
+It contains the following raster data types:
+<ul>
+<li> Dimensions 316295 x 480509, type 10-meter Pixel
+<li> Dimensions 96523 x 153811, type 30-meter Pixel
+</ul>
+</li>
+<li style="margin-bottom: 1em;"><a name="what.6.b"><b>What coordinate system is used to represent geographic features?</b></a><br/>
+The map projection used is (EPSG:5070) Albers Conical Equal Area as used by mrlc.gov (NLCD).<br/>
+<dl>
+<dt>Projection parameters:
+<dd>
+<dl>
+<span class="element-name stdparll">Standard_Parallel:</span> <span class="element-value stdparll">29.500000</span><br/>
+<span class="element-name stdparll">Standard_Parallel:</span> <span class="element-value stdparll">45.500000</span><br/>
+<span class="element-name longcm">Longitude_of_Central_Meridian:</span> <span class="element-value longcm">-96.000000</span><br/>
+<span class="element-name latprjo">Latitude_of_Projection_Origin:</span> <span class="element-value latprjo">23.000000</span><br/>
+<span class="element-name feast">False_Easting:</span> <span class="element-value feast">0.000000</span><br/>
+<span class="element-name fnorth">False_Northing:</span> <span class="element-value fnorth">0.000000</span><br/>
+</dl>
+</dl>
+Planar coordinates are encoded using row and column<br/>
+Abscissae (x-coordinates) are specified to the nearest 10<br/>
+Ordinates (y-coordinates) are specified to the nearest 10<br/>
+Planar coordinates are specified in meters<br/>
+The horizontal datum used is North American Datum of 1983.<br/>
+The ellipsoid used is Geodetic Reference System 80.<br/>
+The semi-major axis of the ellipsoid used is 6378137.000000.<br/>
+The flattening of the ellipsoid used is 1/298.257223563.<br/>
+</li>
+</ol>
+</li>
+<li style="margin-bottom: 1em;"><a name="what.7"><b>How does the data set describe geographic features?</b></a>
+<dl>
+<span class="element-name eaover">Entity_and_Attribute_Overview:</span>
+<div class="child element-value eaover">
+The Cropland Data Layer (CDL) is produced using agricultural training data from the Farm Service Agency (FSA) Common Land Unit (CLU) Program and non-agricultural training data from the most current version of the United States Geological Survey (USGS) National Land Cover Database (NLCD). The strength and emphasis of the CDL is crop-specific land cover categories. The accuracy of the CDL non-agricultural land cover classes are entirely dependent upon the NLCD. Thus, the USDA NASS recommends that users consider the NLCD for studies involving non-agricultural land cover.
+</div>
+<span class="element-name eadetcit">Entity_and_Attribute_Detail_Citation:</span>
+<div class="child element-value eadetcit">
+  <pre>
+ Data Dictionary: USDA National Agricultural Statistics Service, Cropland Data Layer
+
+ Source: USDA National Agricultural Statistics Service
+
+ The following is a cross reference list of the categorization codes and land covers.
+ Note that not all land cover categories listed below will appear in an individual state.
+
+ Raster
+ Attribute Domain Values and Definitions: NO DATA, BACKGROUND 0
+
+ Categorization Code   Land Cover
+           &quot;0&quot;       Background
+
+ Raster
+ Attribute Domain Values and Definitions: CROPS 1-60
+
+ Categorization Code   Land Cover
+           &quot;1&quot;       Corn
+           &quot;2&quot;       Cotton
+           &quot;3&quot;       Rice
+           &quot;4&quot;       Sorghum
+           &quot;5&quot;       Soybeans
+           &quot;6&quot;       Sunflower
+          &quot;10&quot;       Peanuts
+          &quot;11&quot;       Tobacco
+          &quot;12&quot;       Sweet Corn
+          &quot;13&quot;       Pop or Orn Corn
+          &quot;14&quot;       Mint
+          &quot;21&quot;       Barley
+          &quot;22&quot;       Durum Wheat
+          &quot;23&quot;       Spring Wheat
+          &quot;24&quot;       Winter Wheat
+          &quot;25&quot;       Other Small Grains
+          &quot;26&quot;       Dbl Crop WinWht/Soybeans
+          &quot;27&quot;       Rye
+          &quot;28&quot;       Oats
+          &quot;29&quot;       Millet
+          &quot;30&quot;       Speltz
+          &quot;31&quot;       Canola
+          &quot;32&quot;       Flaxseed
+          &quot;33&quot;       Safflower
+          &quot;34&quot;       Rape Seed
+          &quot;35&quot;       Mustard
+          &quot;36&quot;       Alfalfa
+          &quot;37&quot;       Other Hay/Non Alfalfa
+          &quot;38&quot;       Camelina
+          &quot;39&quot;       Buckwheat
+          &quot;41&quot;       Sugarbeets
+          &quot;42&quot;       Dry Beans
+          &quot;43&quot;       Potatoes
+          &quot;44&quot;       Other Crops
+          &quot;45&quot;       Sugarcane
+          &quot;46&quot;       Sweet Potatoes
+          &quot;47&quot;       Misc Vegs &amp; Fruits
+          &quot;48&quot;       Watermelons
+          &quot;49&quot;       Onions
+          &quot;50&quot;       Cucumbers
+          &quot;51&quot;       Chick Peas
+          &quot;52&quot;       Lentils
+          &quot;53&quot;       Peas
+          &quot;54&quot;       Tomatoes
+          &quot;55&quot;       Caneberries
+          &quot;56&quot;       Hops
+          &quot;57&quot;       Herbs
+          &quot;58&quot;       Clover/Wildflowers
+          &quot;59&quot;       Sod/Grass Seed
+          &quot;60&quot;       Switchgrass
+
+ Raster
+ Attribute Domain Values and Definitions: NON-CROP 61-65
+
+ Categorization Code   Land Cover
+          &quot;61&quot;       Fallow/Idle Cropland
+          &quot;62&quot;       Pasture/Grass
+          &quot;63&quot;       Forest
+          &quot;64&quot;       Shrubland
+          &quot;65&quot;       Barren
+
+ Raster
+ Attribute Domain Values and Definitions: CROPS 66-80
+
+ Categorization Code   Land Cover
+          &quot;66&quot;       Cherries
+          &quot;67&quot;       Peaches
+          &quot;68&quot;       Apples
+          &quot;69&quot;       Grapes
+          &quot;70&quot;       Christmas Trees
+          &quot;71&quot;       Other Tree Crops
+          &quot;72&quot;       Citrus
+          &quot;74&quot;       Pecans
+          &quot;75&quot;       Almonds
+          &quot;76&quot;       Walnuts
+          &quot;77&quot;       Pears
+
+ Raster
+ Attribute Domain Values and Definitions: OTHER 81-109
+
+ Categorization Code   Land Cover
+          &quot;81&quot;       Clouds/No Data
+          &quot;82&quot;       Developed
+          &quot;83&quot;       Water
+          &quot;87&quot;       Wetlands
+          &quot;88&quot;       Nonag/Undefined
+          &quot;92&quot;       Aquaculture
+
+ Raster
+ Attribute Domain Values and Definitions: NLCD-DERIVED CLASSES 110-195
+
+ Categorization Code   Land Cover
+         &quot;111&quot;       Open Water
+         &quot;112&quot;       Perennial Ice/Snow
+         &quot;121&quot;       Developed/Open Space
+         &quot;122&quot;       Developed/Low Intensity
+         &quot;123&quot;       Developed/Med Intensity
+         &quot;124&quot;       Developed/High Intensity
+         &quot;131&quot;       Barren
+         &quot;141&quot;       Deciduous Forest
+         &quot;142&quot;       Evergreen Forest
+         &quot;143&quot;       Mixed Forest
+         &quot;152&quot;       Shrubland
+         &quot;176&quot;       Grassland/Pasture
+         &quot;190&quot;       Woody Wetlands
+         &quot;195&quot;       Herbaceous Wetlands
+
+ Raster
+ Attribute Domain Values and Definitions: CROPS 195-255
+
+ Categorization Code   Land Cover
+         &quot;204&quot;       Pistachios
+         &quot;205&quot;       Triticale
+         &quot;206&quot;       Carrots
+         &quot;207&quot;       Asparagus
+         &quot;208&quot;       Garlic
+         &quot;209&quot;       Cantaloupes
+         &quot;210&quot;       Prunes
+         &quot;211&quot;       Olives
+         &quot;212&quot;       Oranges
+         &quot;213&quot;       Honeydew Melons
+         &quot;214&quot;       Broccoli
+         &quot;215&quot;       Avocados
+         &quot;216&quot;       Peppers
+         &quot;217&quot;       Pomegranates
+         &quot;218&quot;       Nectarines
+         &quot;219&quot;       Greens
+         &quot;220&quot;       Plums
+         &quot;221&quot;       Strawberries
+         &quot;222&quot;       Squash
+         &quot;223&quot;       Apricots
+         &quot;224&quot;       Vetch
+         &quot;225&quot;       Dbl Crop WinWht/Corn
+         &quot;226&quot;       Dbl Crop Oats/Corn
+         &quot;227&quot;       Lettuce
+         &quot;228&quot;       Dbl Crop Triticale/Corn
+         &quot;229&quot;       Pumpkins
+         &quot;230&quot;       Dbl Crop Lettuce/Durum Wht
+         &quot;231&quot;       Dbl Crop Lettuce/Cantaloupe
+         &quot;232&quot;       Dbl Crop Lettuce/Cotton
+         &quot;233&quot;       Dbl Crop Lettuce/Barley
+         &quot;234&quot;       Dbl Crop Durum Wht/Sorghum
+         &quot;235&quot;       Dbl Crop Barley/Sorghum
+         &quot;236&quot;       Dbl Crop WinWht/Sorghum
+         &quot;237&quot;       Dbl Crop Barley/Corn
+         &quot;238&quot;       Dbl Crop WinWht/Cotton
+         &quot;239&quot;       Dbl Crop Soybeans/Cotton
+         &quot;240&quot;       Dbl Crop Soybeans/Oats
+         &quot;241&quot;       Dbl Crop Corn/Soybeans
+         &quot;242&quot;       Blueberries
+         &quot;243&quot;       Cabbage
+         &quot;244&quot;       Cauliflower
+         &quot;245&quot;       Celery
+         &quot;246&quot;       Radishes
+         &quot;247&quot;       Turnips
+         &quot;248&quot;       Eggplants
+         &quot;249&quot;       Gourds
+         &quot;250&quot;       Cranberries
+         &quot;254&quot;       Dbl Crop Barley/Soybeans
+</pre>
+</div>
+</dl>
+</li>
+</ol>
+<hr/>
+<h3><a name="who">Who produced the data set?</a></h3>
+<ol>
+<li style="margin-bottom: 1em;"><a name="who.1"><b>Who are the originators of the data set?</b></a>
+<ul>
+<li>United States Department of Agriculture (USDA) National Agricultural Statistics Service (NASS)
+</ul>
+</li>
+<li style="margin-bottom: 1em;"><a name="who.2"><b>Who also contributed to the data set?</b></a>
+<blockquote>
+USDA National Agricultural Statistics Service
+</blockquote>
+</li>
+<li style="margin-bottom: 1em;"><a name="who.3"><b>To whom should users address questions about the data?</b></a>
+<div style="margin-left: 2em">
+<div title="Contact_Organization_Primary">USDA NASS, Spatial Analysis Research Section</div>
+<div>Attn: <span title="Contact_Person">USDA NASS, Spatial Analysis Research Section staff</span></div>
+<div title="Address">1400 Independence Avenue, SW, Room 5029 South Building</div>
+<span title="City">Washington</span>, <span title="State_or_Province">District of Columbia</span> <span title="Postal_Code">20250-2001</span><br/>
+<div title="Country">USA</div>
+<p>
+<div title="Contact_Voice_Telephone">800-727-9540 (voice)</div>
+<div title="Contact_Facsimile_Telephone">855-493-0447 (FAX)</div>
+<div title="Contact_Electronic_Mail_Address">SM.NASS.RDD.GIB@usda.gov</div>
+</div>
+</li>
+</ol>
+<hr/>
+<h3><a name="why">Why was the data set created?</a></h3>
+<blockquote>
+The purpose of the Cropland Data Layer Program is to use satellite imagery to (1) provide supplemental acreage estimates to the Agricultural Statistics Board for the state's major commodities and (2) produce digital, crop-specific, categorized geo-referenced output products.
+</blockquote>
+<hr/>
+<h3><a name="how">How was the data set created?</a></h3>
+<ol>
+<li style="margin-bottom: 1em;"><a name="how.1"><b>From what previous works were the data drawn?</b></a>
+<dl>
+<dt><b>SENTINEL-2</b> (source 1 of 14)
+<dd>
+<div style="margin-left: 1em;">
+European Space Agency (ESA), 2025, SENTINEL-2: Copernicus - European Commission, European Commission, Brussels (Belgium).
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+The CDL used Sentinel-2 satellite imagery as one of the inputs from 2017-2025. The ESA SENTINEL-2 satellite sensor operates in twelve spectral bands at spatial resolutions varying from 10 to 60 meters. Additional information about the data can be obtained at &lt;<a href="http://www.esa.int/">http://www.esa.int/</a>&gt;.</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online download</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">10 meter</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span> <span class="element-value srccontr">Raw data used in land cover spectral signature analysis</span><br/>
+</dl>
+<dt><b>Landsat</b> (source 2 of 14)
+<dd>
+<div style="margin-left: 1em;">
+United States Geological Survey (USGS) Earth Resources Observation and Science (EROS), 2025, Landsat TM/ETM/OLI/TIRS: USGS, EROS, Sioux Falls, South Dakota 57198-001.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+The CDL has used Landsat satellite imagery as a primary input throughout the entire history of the program from 1997 to current. The Landsat data are free for download through the following website &lt;<a href="https://glovis.usgs.gov/">https://glovis.usgs.gov/</a>&gt;. Additional information about Landsat data can be obtained at &lt;<a href="https://www.usgs.gov/centers/eros">https://www.usgs.gov/centers/eros</a>&gt;.</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online download</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">30 meter</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span> <span class="element-value srccontr">Raw data used in land cover spectral signature analysis</span><br/>
+</dl>
+<dt><b>NED</b> (source 3 of 14)
+<dd>
+<div style="margin-left: 1em;">
+United States Geological Survey (USGS) National Geospatial Program, 2025, 3D Elevation Program (3DEP): USGS, EROS Data Center, Sioux Falls, South Dakota 57198 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+The 3D Elevation Program (3DEP) is used as an ancillary data source in the production of the Cropland Data Layer. More information can be found at &lt;<a href="https://www.usgs.gov/3d-elevation-program">https://www.usgs.gov/3d-elevation-program</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">1 meter</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in land cover spectral signature analysis
+</div>
+</dl>
+<dt><b>NLCD</b> (source 4 of 14)
+<dd>
+<div style="margin-left: 1em;">
+United States Geological Survey (USGS) Earth Resources Observation and Science (EROS) Data Center, 2024, National Land Cover Database 2024 (NLCD 2024): USGS, EROS Data Center, Sioux Falls, South Dakota 57198 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+The most current publicly available NLCD is used as ground training and validation for non-agricultural categories. Additionally, the USGS NLCD Imperviousness Layer was used as ancillary data source in the Cropland Data Layer classification process. More information on the NLCD can be found at &lt;<a href="https://www.mrlc.gov/">https://www.mrlc.gov/</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">30 meter</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span> <span class="element-value srccontr">Raw data used in land cover spectral signature analysis</span><br/>
+</dl>
+<dt><b>FSA CLU</b> (source 5 of 14)
+<dd>
+<div style="margin-left: 1em;">
+United States Department of Agriculture (USDA) Farm Service Agency (FSA), 2025, USDA, FSA Common Land Unit (CLU): USDA, FSA Aerial Photography Field Office, Salt Lake City, Utah 84119-2020 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+Access to the USDA, Farm Service Agency (FSA) Common Land Unit (CLU) digital data set is currently limited to FSA and Agency partnerships. During the current growing season, producers enrolled in FSA programs report their growing intentions, crops and acreage to USDA Field Service Centers. Their field boundaries are digitized in a standardized GIS data layer and the associated attribute information is maintained in a database known as 578 Administrative Data. This CLU/578 dataset provides a comprehensive and robust agricultural training and validation data set for the Cropland Data Layer. Additional information about the CLU Program can be found at &lt;<a href="https://www.fsa.usda.gov/">https://www.fsa.usda.gov/</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>NCCPI</b> (source 6 of 14)
+<dd>
+<div style="margin-left: 1em;">
+United States Geological Survey (USGS) Earth Resources Observation and Science (EROS) Data Center, 2012, National Commodity Crop Productivity Index (NCCPI) Version 2.0: United States Department of Agriculture, Natural Resources Conservation Service, National Soil Survey Center, Lincoln, Nebraska USA.<p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(Michigan only dataset -- no longer used in 2024 or later) The NCCPI was used as an ancillary input for the Michigan CDL. The data was resampled to 30 meters for use in CDL production. For more information about the NCCPI: &lt;<a href="https://www.nrcs.usda.gov/">https://www.nrcs.usda.gov/</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">30 meter</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span> <span class="element-value srccontr">Ancillary input used in land cover spectral signature analysis</span><br/>
+</dl>
+<dt><b>LandIQ</b> (source 7 of 14)
+<dd>
+<div style="margin-left: 1em;">
+California Department of Water Resources (DWR), 2023, Statewide Land Use 2024 (Provisional): California Department of Water Resources (DWR), Sacramento, California 94236-0001 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(California only dataset) The California Department of Water Resources Land Use Program data is used as additional crop-specific ground reference training and validation for tree crops and vineyards in California. More information about California Department of Water Resources Land Use Program can be found online at &lt;<a href="https://data.cnra.ca.gov/dataset/statewide-crop-mapping">https://data.cnra.ca.gov/dataset/statewide-crop-mapping</a>&gt; and &lt;<a href="https://www.landiq.com/">https://www.landiq.com/</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>LCRAS GIS Data</b> (source 8 of 14)
+<dd>
+<div style="margin-left: 1em;">
+United States Department of Interior, Bureau of Reclamation, Lower Colorado Region, 2025, Lower Colorado River Water Accounting System (LCRAS) GIS data layer: United States Department of Interior, Bureau of Reclamation, Lower Colorado Region, Boulder City, NV 89006-1470, USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(Arizona and California only dataset) The Lower Colorado River Water Accounting System (LCRAS) GIS data layer contains an annually updated record of crop types that was used to supplement the training and validation of the Cropland Data Layer. The area covered is Southern California and Southwest Arizona. For more details, please reference the Bureau of Reclamation website &lt;<a href="https://www.usbr.gov/lc/">https://www.usbr.gov/lc/</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>NASS Citrus Grove Data Layer</b> (source 9 of 14)
+<dd>
+<div style="margin-left: 1em;">
+United States Department of Agriculture (USDA) National Agricultural Statistics Service (NASS), 2025, USDA NASS Citrus Grove Data Layer: USDA NASS Florida Field Office, Maitland, Florida 32751-7057 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(Florida only dataset) The Citrus Grove Data Layer is used as additional citrus training and validation ground reference data. Access to the USDA National Agricultural Statistics Service (NASS) Citrus Grove Data Layer is unpublished, for internal NASS use only.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>FSAID</b> (source 10 of 14)
+<dd>
+<div style="margin-left: 1em;">
+Florida Department of Agriculture and Consumer Services, 2021, Florida Statewide Agricultural Irrigation Demand (FSAID) Geodatabase: Florida Department of Agriculture and Consumer Services, Tallahassee, Florida 32399-0800 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(Florida only dataset) The Florida Statewide Agricultural Irrigation Demand (FSAID) Geodatabase provides additional training and validation ground reference for Florida specialty tree crops. More information about this data set can be found online at &lt;<a href="https://www.fdacs.gov/Agriculture-Industry/Water/Agricultural-Water-Supply-Planning">https://www.fdacs.gov/Agriculture-Industry/Water/Agricultural-Water-Supply-Planning</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>Lake Erie Vineyards GIS data</b> (source 11 of 14)
+<dd>
+<div style="margin-left: 1em;">
+Cornell Cooperative Extension, Lake Erie Regional Grape Program, 2025, GIS Mapping of Lake Erie and Finger Lakes Vineyards: Regional Grape Program at CLEREL - Cornell University, Portland, NY, 14769 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(New York, Ohio and Pennsylvania only dataset) This  GIS data provides additional training and validation data for vineyards. More information can be found at &lt;<a href="https://lergp.cce.cornell.edu/">https://lergp.cce.cornell.edu/</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>none</b> (source 12 of 14)
+<dd>
+<div style="margin-left: 1em;">
+Gordon B. Jones, PhD, and Rick Hilton of Oregon State University; Karim Naguib of the Jackson County GIS Office, unknown, Pear and Vineyard Data for Jackson County, Oregon: unpublished, Central Point, Oregon 97502 USA.<p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(Oregon only dataset -- no longer used in CDL production) The Oregon State University Pear and Vineyard Data for Jackson County, Oregon provides additional tree crop and vineyard training and validation data. Contact Gordon B. Jones at Oregon State University for more information.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>Utah DWR Agriculture Check Polygons</b> (source 13 of 14)
+<dd>
+<div style="margin-left: 1em;">
+Utah Division of Water Resources, 2025, Agriculture Check Polygons: Utah Division of Water Resources, Salt Lake City, Utah 84116 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(Utah only dataset) The Utah Division of Water Resources Agriculture Check Polygon data provides additional training and validation data for Utah's cropland.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+<dt><b>WSDA Crop Geodatabase</b> (source 14 of 14)
+<dd>
+<div style="margin-left: 1em;">
+Washington State Department of Agriculture (WSDA), 2025, WSDA Crop Geodatabase: Washington State Department of Agriculture, Olympia, WA 98504-2560 USA.
+  <p>
+</div>
+<dl>
+<span class="element-name othercit">Other_Citation_Details:</span>
+<div class="child element-value othercit">
+(Washington only dataset) The WSDA Crop Geodatabase provides additional training and validation data for Washington's orchards, vineyards and small acreage crops. More information about the WSDA Crop Geodatabase can be found at &lt;<a href="https://agr.wa.gov/">https://agr.wa.gov/</a>&gt;.
+</div>
+</dl>
+<dl>
+<span class="element-name typesrc">Type_of_Source_Media:</span> <span class="element-value typesrc">online</span><br/>
+<span class="element-name srcscale">Source_Scale_Denominator:</span> <span class="element-value srcscale">4800</span><br/>
+<span class="element-name srccontr">Source_Contribution:</span>
+<div class="child element-value srccontr">
+spatial and attribute information used in the spectral signature training and validation of agricultural land cover
+</div>
+</dl>
+</dl>
+</li>
+<li style="margin-bottom: 1em;"><a name="how.2"><b>How were the data generated, processed, and modified?</b></a>
+<dl>
+<dt>Date: 2023 (process 1 of 1)
+<dd>
+OVERVIEW: NEW 10-METER CDL: The crop classification utilized remote sensing data from harmonized Sentinel-2 MSI Level-2A, Landsat 8, and Landsat 9 Level-2 Collection 2 Tier-1 products, providing surface reflectance (SR) data across multiple spectral bands, including GREEN, RED, NIR, SWIR1, SWIR2, and RedEdge bands 1-4. To mitigate cloud cover, 10-day median composites of surface reflectance and NDVI were created from the cloud-masked Landsat-Sentinel multi-sensor data for the 2025 growing season. Ancillary inputs included the USGS NLCD 2024 Imperviousness Layer, the USGS NLCD 2023 Tree Canopy Layer, and the USGS 3DEP digital elevation model. In addition, mixed sampling strategies and localized training were applied to the 10m CDL production. Additional information: Z. Li, R. Mueller, Z. Yang, D. Johnson and P. Willis, &quot;Cloud-Powered Agricultural Mapping: A Revolution Toward 10m Resolution Cropland Data Layers,&quot; IGARSS 2024 - 2024 IEEE International Geoscience and Remote Sensing Symposium, Athens, Greece, 2024, pp. 4081-4084, doi: 10.1109/IGARSS53475.2024.10641079. PDF available at <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/docs/IGARSS2024_Proceedings_10mCDL_Li_etal.pdf">IGARSS2024_Proceedings_10mCDL_Li_etal.pdf</a>.
+<div class="blank"></div>
+<div class="blank"></div>
+PROGRAM HISTORY: The United States Department of Agriculture (USDA) National Agricultural Statistics Service (NASS) Cropland Data Layer (CDL) Program is a unique agricultural-specific land cover geospatial product that is produced annually in participating states. The CDL Program builds upon NASS' traditional crop acreage estimation program and integrates Farm Service Agency (FSA) grower-reported field data with satellite imagery to create an unbiased statistical estimator of crop area at the state and county level for internal use. It is important to note that the internal CDL acreage estimates, which most closely aligned with planted acres, are not simple pixel counting but regression estimates using NASS survey data. It is more of an 'Adjusted Census by Satellite.'
+<div class="blank"></div>
+<div class="blank"></div>
+SOFTWARE: The 2025 CDL used a random forest classifier in Google Earth Engine  to create the classification. ERDAS Imagine is used in the pre- and post- processing of all raster-based data. ESRI ArcGIS is used to prepare the vector-based training and validation data.
+<div class="blank"></div>
+<div class="blank"></div>
+RANDOM FOREST CLASSIFIER: The 2025 Cropland Data Layer uses a random forest classifier approach. This is a departure from previous CDLs (2008-2023) that used a decision tree classifier using See5 software. Older CDLs (pre-2007) had limited ground reference training and less satellite imagery inputs and used a maximum likelihood classifier approach.
+<div class="blank"></div>
+<div class="blank"></div>
+GROUND TRUTH: As with the maximum likelihood method and decision tree classifiers, random forest is a supervised classification technique. Thus, it relies on having a sample of known ground reference areas in which to train the classifier. Older versions of the CDL (prior to 2006) utilized ground reference from the annual June Agricultural Survey (JAS). Beginning in 2006, the CDL utilizes the very comprehensive ground reference provided from the FSA Common Land Unit (CLU) Program as a replacement for the JAS data. The FSA CLU data have the advantage of natively being in a GIS and containing magnitudes more of field level information. Disadvantages include that it is not truly a probability sample of land cover and has bias toward subsidized program crops. Additional information about the FSA data can be found at &lt;<a href="https://www.fsa.usda.gov/">https://www.fsa.usda.gov/</a>&gt;. The most current version of the NLCD is used as non-agricultural training and validation data.
+<div class="blank"></div>
+<div class="blank"></div>
+INPUTS: The 2025 CDL has a spatial resolution of 10 meters and was produced using satellite imagery from Landsat 8 and 9 OLI/TIRS and ESA SENTINEL-2A and -2B collected throughout the growing season. Additional ancillary inputs were used to supplement and improve the land cover classification including the United States Geological Survey (USGS) 3D Elevation Program (3DEP) data and the USGS National Land Cover Database imperviousness data. Agricultural training and validation data are derived from the Farm Service Agency (FSA) Common Land Unit (CLU) Program. The USGS NLCD is used as non-agricultural training and validation data.
+<div class="blank"></div>
+<div class="blank"></div>
+ACCURACY: The accuracy of the land cover classifications are evaluated using independent validations data sets generated from the FSA CLU data (agricultural categories) and the NLCD (non-agricultural categories). The Producer's Accuracy is generally 85% to 95% correct for the major crop-specific land cover categories.
+<div class="blank"></div>
+<div class="blank"></div>
+PUBLIC RELEASE: The USDA NASS Cropland Data Layer is considered public domain and free to redistribute. The official website is &lt;<a href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php">https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php</a>&gt;. The data is available free for download through CroplandCROS &lt;<a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>&gt; and the Geospatial Data Gateway &lt;<a href="https://datagateway.nrcs.usda.gov/">https://datagateway.nrcs.usda.gov/</a>&gt;. Please note that in no case are farmer reported data revealed or derivable from the public use Cropland Data Layer.
+Person who carried out this activity:<br/>
+<div style="margin-left: 2em">
+<div title="Contact_Organization_Primary">USDA NASS, Spatial Analysis Research Section</div>
+<div>Attn: <span title="Contact_Person">USDA NASS, Spatial Analysis Research Section staff</span></div>
+<div title="Address">1400 Independence Avenue, SW, Room 5029 South Building</div>
+<span title="City">Washington</span>, <span title="State_or_Province">District of Columbia</span> <span title="Postal_Code">20250-2001</span><br/>
+<div title="Country">USA</div>
+<p>
+<div title="Contact_Voice_Telephone">800-727-9540 (voice)</div>
+<div title="Contact_Facsimile_Telephone">855-493-0447 (FAX)</div>
+<div title="Contact_Electronic_Mail_Address">SM.NASS.RDD.GIB@usda.gov</div>
+</div>
+</dl>
+</li>
+</ol>
+<hr/>
+<h3><a name="quality">How reliable are the data; what problems remain in the data set?</a></h3>
+<ol>
+<li style="margin-bottom: 1em;"><a name="quality.1"><b>How well have the observations been checked?</b></a><br/>
+ Below are the Overall Accuracy metrics for the crop-specific categories for the Continental United States 2016 to 2025 CDLs. Full accuracy reports for past years, states, and individual crop types are available at the official NASS metadata website noted above.
+   <div class="blank"></div>
+<pre>
+2025 Cropland Data Layer
+75.4% OVERALL CROP ACCURACY, 24.6% ERROR, 0.712 KAPPA
+
+2024 Cropland Data Layer
+77.5% OVERALL CROP ACCURACY, 22.5% ERROR, 0.733 KAPPA
+
+2023 Cropland Data Layer
+81.6%  OVERALL CROP ACCURACY, 18.4%  ERROR, 0.788  KAPPA
+
+2022 Cropland Data Layer
+80.9%  OVERALL CROP ACCURACY, 19.1%  ERROR, 0.780  KAPPA
+
+2021 Cropland Data Layer
+81.6% OVERALL CROP ACCURACY, 18.4% ERROR, 0.787 KAPPA
+
+2020 Cropland Data Layer
+81.3% OVERALL CROP ACCURACY, 18.7% ERROR, 0.786 KAPPA
+
+2019 Cropland Data Layer
+81.5% OVERALL CROP ACCURACY, 18.5% ERROR, 0.789 KAPPA
+
+2018 Cropland Data Layer
+82.3% OVERALL CROP ACCURACY, 17.7% ERROR, 0.796 KAPPA
+
+2017 Cropland Data Layer
+82.2% OVERALL CROP ACCURACY, 17.8% ERROR, 0.800 KAPPA
+
+2016 Cropland Data Layer
+79.6% OVERALL CROP ACCURACY, 20.4% ERROR, 0.767 KAPPA
+</pre>
+The accuracy of the non-agricultural land cover classes within the Cropland Data Layer is entirely dependent upon the USGS, National Land Cover Database. Thus, the USDA NASS recommends that users consider the NLCD for studies involving non-agricultural land cover. For more information on the accuracy of the NLCD please reference &lt;<a href="https://www.mrlc.gov/">https://www.mrlc.gov/</a>&gt;.
+</li>
+<li style="margin-bottom: 1em;"><a name="quality.2"><b>How accurate are the geographic locations?</b></a><br/>
+The Cropland Data Layer retains the spatial attributes of the input imagery. The Landsat 8 and 9 OLI/TIRS imagery uses the Collection 2 Level-1 specifications. Please reference the metadata on the USGS Glovis website &lt;<a href="https://glovis.usgs.gov/">https://glovis.usgs.gov/</a>&gt; for the positional accuracy of each Landsat scene. The Sentinel 2A and 2B imagery uses the S2MSI1C product type which is orthorectified Top-of-Atmosphere reflectance. Please reference the metadata on the Copernicus website &lt;<a href="https://www.copernicus.eu/en">https://www.copernicus.eu/en</a>&gt; for positional accuracy details.
+</li>
+<li style="margin-bottom: 1em;"><a name="quality.3"><b>Where are the gaps in the data?  What is missing?</b></a><br/>
+Continental US coverage (2008 to current), partial US coverage (1997-2007)
+</li>
+<li style="margin-bottom: 1em;"><a name="quality.4"><b>How consistent are the relationships among the observations, including topology?</b></a><br/>
+The Cropland Data Layer (CDL) has been produced using training and independent validation data from the Farm Service Agency (FSA) Common Land Unit (CLU) Program and United States Geological Survey (USGS) National Land Cover Database (NLCD). More information about the FSA CLU Program can be found at &lt;<a href="https://www.fsa.usda.gov/">https://www.fsa.usda.gov/</a>&gt;. More information about the NLCD can be found at &lt;<a href="https://www.mrlc.gov/">https://www.mrlc.gov/</a>&gt;.</li>
+</ol>
+<hr/>
+<h3><a name="getacopy">How can someone get a copy of the data set?</a></h3>
+<blockquote>
+<a name="getacopy.0"><b>Are there legal restrictions on access or use of the data?</b></a>
+<blockquote>
+<dl>
+<span class="element-name accconst">Access_Constraints:</span> <span class="element-value accconst">none</span><br/>
+<span class="element-name useconst">Use_Constraints:</span>
+<div class="child element-value useconst">
+The USDA NASS Cropland Data Layer and the data offered on the CroplandCROS website is provided to the public as is and is considered public domain and free to redistribute. The USDA NASS does not warrant any conclusions drawn from these data.
+</div>
+</dl>
+</blockquote>
+</blockquote>
+<ol>
+<li style="margin-bottom: 1em;"><a name="getacopy.1"><b>Who distributes the data set?</b></a><br/>
+<div style="margin-left: 2em">
+<div title="Contact_Organization_Primary">USDA NASS Customer Service</div>
+<div>Attn: <span title="Contact_Person">USDA NASS Customer Service Staff</span></div>
+<div title="Address">1400 Independence Avenue, SW, Room 5038-S</div>
+<span title="City">Washington</span>, <span title="State_or_Province">District of Columbia</span> <span title="Postal_Code">20250-2001</span><br/>
+<div title="Country">USA</div>
+<p>
+<div title="Contact_Voice_Telephone">800-727-9540 (voice)</div>
+<div title="Contact_Facsimile_Telephone">855-493-0447 (FAX)</div>
+<div title="Contact_Electronic_Mail_Address">SM.NASS.RDD.GIB@usda.gov</div>
+<dl>
+<span class="element-name cntinst">Contact_Instructions:</span>
+<div class="child element-value cntinst">
+Please visit the official website &lt;<a href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php">https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php</a>&gt; for distribution details. The Cropland Data Layer is available free for download at CroplandCROS &lt;<a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>&gt; and the Geospatial Data Gateway &lt;<a href="https://datagateway.nrcs.usda.gov/">https://datagateway.nrcs.usda.gov/</a>&gt;. Distribution issues can also be directed to the NASS Customer Service Hotline at 1-800-727-9540.
+</div>
+</dl>
+</div>
+</li>
+<li style="margin-bottom: 1em;"><a name="getacopy.2"><b>What's the catalog number I need to order this data set?</b></a>
+<tt>2025 Cropland Data Layer</tt>
+</li>
+<li style="margin-bottom: 1em;"><a name="getacopy.3"><b>What legal disclaimers am I supposed to read?</b></a>
+<blockquote>
+Disclaimer: Users of the Cropland Data Layer (CDL) are solely responsible for interpretations made from these products. The CDL is provided 'as is' and the USDA NASS does not warrant results you may obtain using the Cropland Data Layer. Contact our staff at (SM.NASS.RDD.GIB@usda.gov) if technical questions arise in the use of the CDL. NASS maintains a Frequently Asked Questions (FAQ's) section at &lt;<a href="https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php">https://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php</a>&gt;.
+</blockquote>
+</li>
+<li style="margin-bottom: 1em;"><a name="getacopy.4"><b>How can I download or order the data?</b></a>
+<ul>
+<li><b>Availability in digital form:</b>
+<table class="table table-condensed Digital_Form">
+<tr><th style="text-align: left; vertical-align: top;">Data&nbsp;format:</th>
+<td>
+Cloud Optimized GeoTIFF
+ in format GEOTIFF
+
+</td>
+</tr>
+<tr><th style="text-align: left; vertical-align: top;">Network&nbsp;links:</th>
+<td>
+&lt;<a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>&gt;<br/>
+</td>
+</tr>
+</table>
+<li style="margin-bottom: 1em;"><b>Cost and order instructions:</b>
+<blockquote>
+The CDL is available online and free for download at CroplandCROS &lt;<a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>&gt;, the Geospatial Data Gateway &lt;<a href="https://datagateway.nrcs.usda.gov/">https://datagateway.nrcs.usda.gov/</a>&gt;, and the NASS CDL website &lt;<a href="https://www.nass.usda.gov/Research_and_Science/Cropland/Release/">https://www.nass.usda.gov/Research_and_Science/Cropland/Release/</a>&gt;. Distribution questions can be directed to the NASS Customer Service Hotline at 1-800-727-9540.
+</blockquote>
+</ul>
+</li>
+<li style="margin-bottom: 1em;"><a name="getacopy.6"><b>What hardware or software do I need in order to use the data set?</b></a>
+<blockquote>
+If the user does not have software capable of viewing GEOTIF (.tif)  file formats then we suggest using CroplandCROS &lt;<a href="https://croplandcros.scinet.usda.gov/">https://croplandcros.scinet.usda.gov/</a>&gt;.
+</blockquote>
+</li>
+</ol>
+<hr/>
+<h3><a name="metaref">Who wrote the metadata?</a></h3>
+<dl>
+<dt>Metadata in various formats availabe at <a href="https://catalog.data.gov/dataset/cropscape-cropland-data-layer">Data.Gov</a><br/>
+<div title="ISO 19115-3">Metadata Standard: <a href="https://geodata.nal.usda.gov/geonetwork/srv/api/records/ed735798-c133-44f1-a977-ad0c0dcad514/formatters/xml">ISO 19115-3</a></div>
+<div title="ISO 19139">Metadata Standard: <a href="https://geodata.nal.usda.gov/geonetwork/srv/api/records/ed735798-c133-44f1-a977-ad0c0dcad514/formatters/iso19139?output=xml">ISO 19139</a></div>
+</dd>
+<dt>Dates:
+<dd>Last modified: 12-Mar-2026<br/>
+</dd>
+<dt>Metadata author:
+<dd>
+<div style="margin-left: 2em">
+<div title="Contact_Organization_Primary">USDA NASS, Spatial Analysis Research Section</div>
+<div>Attn: <span title="Contact_Person">USDA NASS, Spatial Analysis Research Section Staff</span></div>
+<div title="Address">1400 Independence Avenue, SW, Room 5029 South Building</div>
+<span title="City">Washington</span>, <span title="State_or_Province">District of Columbia</span> <span title="Postal_Code">20250-2001</span><br/>
+<div title="Country">USA</div>
+<p>
+<div title="Contact_Voice_Telephone">800-727-9540 (voice)</div>
+<div title="Contact_Facsimile_Telephone">855-493-0447 (FAX)</div>
+<div title="Contact_Electronic_Mail_Address">SM.NASS.RDD.GIB@usda.gov</div>
+</div>
+</dd>
+<dt>Metadata standard: <dd>FGDC Content Standards for Digital Geospatial Metadata (FGDC-STD-001-1998)</dl>
+<span class="mp-generated">The layout and majority of content presented above was generated by <a href="https://geology.usgs.gov/tools/metadata/tools/doc/mp.html"><tt>mp</tt></a> version 2.9.50<br/></span>
+<hr/>
+
+
+<h3><a name="history">CDL PROGRAM HISTORY</a></h3>						
+<ol>
+<li style="margin-bottom: 1em;"><a name="history.0"><b>How has the CDL Program changed over time?</b></a>
+<blockquote>
+              Originally, field preparation and digitizing work were performed in NASS Field Offices and the remote sensing analysis performed by the Spatial Analysis Research Section (SARS) of NASS. However, in 1997 SARS entered into a data sharing partnership with USDA's Foreign Agricultural Service and USDA's Farm Service Agency. The agreement provided access to Landsat 5 coverage in the states selected for the project by SARS. The first states covered with the data sharing partnership were Arkansas, North Dakota and South Dakota. Improvements in hardware along with software enhancements made program expansion possible for the 1999 growing season. NASS Research Development Division solicited additional states to find outside cooperators/partners to provide an analyst and hardware to perform duties associated with the Acreage Estimation Program. The Illinois and Mississippi State Field Offices were able to obtain partnership agreements with external State/Federal Agencies.<br>
+	          <br>
+              For crop year 2000, the states of Iowa and Indiana were added to	the Program. North Dakota was able to obtain a partner for the 2000	crop year cooperatively with North Dakota State University (NDSU)	through an EPA water quality grant for 5 years. Indiana was added	to the program for crop year 2000 also, but as a regional type	center where the ground data collection and digitization was	performed at the Indiana State Office, and the acreage estimation	was performed at the Illinois State Office.<br>
+              <br>
+              For crop year 2001, the Missouri southeastern boot heel area was	added to the program. All boot heel digitizing was performed by the	Missouri Ag Statistics Service, and image processing duties were performed by the Arkansas Ag Statistical Service. Nebraska and	Wisconsin were added as pilot states, where all digitizing was	performed by the Nebraska and Wisconsin Ag Statistics Service offices respectively, and image processing functions were performed by SARS. Maryland/Delaware were also added as a pilot program where	digitizing was done by the University of Maryland Mid-Atlantic	RESAC group, and image processing was performed by the SARS	group.<br>
+              <br>
+              For crop year 2002, Nebraska expanded to full state coverage, and	Wisconsin expanded to full state coverage in 2003. In 2002, a ten state Mid-Atlantic based Cropland Data Layer product was sponsored in part by a NASA/Raytheon/Synergy Project through Towson University, with the	digitizing and image analysis performed under contract by NASS. The	Mid-Atlantic CDL products were based on the 2002 June Agricultural	Survey and the Agriculture Coverage Evaluation Survey (ACES) that	coincided with the 2002 Agricultural Census.<br>
+              <br>
+              For crop year 2004, the IRS Resourcesat-1 AWiFS sensor was used	over Nebraska, Indiana and Arkansas to perform acreage analysis. The AR, IN and NE CDL's were released with both Landsat TM	classifications as well as AWiFS classifications. The AWiFS sensor has 56 meter spatial resolution, and five day repeat coverage. The	best possible scene dates taken during the month of August 2004	were used to create the AWiFS CDL products. A cooperative	partnership between University of Maryland Department of Geography and SARS helped process the Louisiana 2004 CDL. A Florida CDL for 2004 was released in February of 2007 using Landsat 5/7 imagery. The Florida CDL was the first CDL created	exclusively with See5, and it was the first usage of the	segmentation based gap filled Landsat-7 SLC-off imagery. It	included the first usage of the Farm Service Agency/Common Land	Unit and the Florida Citrus Grove layer for ground truth	training.<br>
+              <br>
+              For crop year 2005, the Idaho Cropland Data Layer was created with	a cooperative partnership between Utah State University, the United	Potato Growers of Idaho and NASS. This partnership produced both a	Landsat TM and Resourcesat-1 AWiFS classification over the Idaho	Snake River Plain. The 2005 Midwestern CDL update contained new	AWiFS classifications and a revised Wisconsin TM based	classification. The new AWiFS classifications cover Nebraska and	North Dakota. The Wisconsin revision was performed under contract	for the Wisconsin State, Bureau of Environmental and Occupational	Health and Department of Health and Family Services. The 2005	Mississippi Delta Region was classified using the regression tree	classifier See5.0 available from <a href="http://www.rulequest.com/" target="_blank">www.rulequest.com</a> over the 2001	NLCD defined mapping Zone 45 <a href="https://www.mrlc.gov/" target="_blank">https://www.mrlc.gov/</a> for the States of	Arkansas, Louisiana and Missouri. The Zone 45 classification	results from See5.0 were overlaid on top of the Arkansas, Louisiana	and Missouri bootheel, resulting in an accurate ag classification	and an enhanced non-ag land cover classification leveraging results	from the 2001 NLCD products. The traditional pixel based PEDITOR	classification covers the remaining parts of these states.<br>
+              <br>
+              The 2006 Delta/Midwestern/Pacific Northwest CDL products covered	eleven states: AR, IL, IN, IA, LA, MO, MS, NE, ND, WA, WI. Illinois	and Indiana were processed with Peditor. The remaining States were	processed using See5 decision tree software. The Mississippi Delta	CDL and the remaining Midwestern and Prairie States were processed	exclusively with See5 using the FSA Common Land Unit for ground	truth. The 2006 Washington CDL does have a smoothing algorithm applied to remove pixel scatter. This is the only state and year of CDL that has any level of post-classification smoothing.<br>
+              <br>
+              The 2007 CDL product became operational in NASS delivering for the	first time in-season acreage estimates for the October 2007 Crop	Report across all speculative corn and soybean states. Twenty-one	states total (AR, CA, IL, IN, IA, ID, KS, LA, MI, MN, MO, MS, MT,	ND, NE, OH, OK, OR, SD, WA, WI) were processed into CDL's.	Additionally, new CDL's were created for crop year 2006 for KS, MN,	MO, OH, OK, SD. Michigan State University/Land Policy Institute	entered into a cooperative partnership with SARS and obtained	funding to provide an image analyst to process Michigan.<br>
+              <br>
+              The 2008 crop year is the first year that the entire Continental	United States is covered by the CDL. Real-time CDL acreage	estimates were produced for the June Ag Survey for winter wheat,	the August Crop Report and the October Crop Report for corn and	soybeans. The 2008 CDL was reprocessed and released on 12/11/2017. The 2008 and 2009 Cropland Data Layers (CDL) for the entire Continental United States have been reprocessed and re-released at a 30 meter spatial resolution. The move from 56m to 30m resolution was made possible with the inclusion of Landsat 5 Thematic Mapper data, which was not freely available during the initial processing period. Additionally, the reprocessing effort used more complete Farm Service Agency administrative data for training and accuracy assessing the classifications.<br>
+              <br>
+              The 2009 crop year again covered the entire	continental United States and produced real-time CDL acreage	estimates for the June Ag Survey and September Small Grain Summary	for winter wheat, the August, September and October Crop Reports	for corn, soybeans, rice and cotton. The original 2009 product was	released at 56 meters resolution but was re-released as a 30 meter product on 12/11/2017.<br>
+			  <br>
+		      The 2008 and 2009 CDLs were reprocessed and re-released on 12/11/2017 for the entire Continental United States at a 30 meter spatial resolution. The move from 56m to 30m resolution was made possible with the inclusion of Landsat 5 Thematic Mapper data, which was not freely available during the initial processing period. Additionally, the reprocessing effort used more complete Farm Service Agency administrative data for training and accuracy assessing the classifications.<br>
+              <br>
+              The 2010 CDL product was released the first week of January 2011	co-incident with the release of the new CropScape web service.	The 2010 product utilized Landsat TM/ETM+ and AWiFS imagery for production	of a 30m product covering the Continental United States.<br>
+              <br>
+              The 2011 CDL product was released January 31, 2012. The 2011	product utilized Deimos-1, UK-DMC 2, Landsat TM/ETM+, and AWiFS	imagery for production of a 30m product covering the Continental United States. Coincident with	the release of the 2011 product, the entire historical CDL catalog	was re-released with minor category code and class name revisions.	These revisions were done to eliminate redundant or unused	categories. Please view the <a
+ href="/Research_and_Science/Cropland/docs/CDL_2011_crosswalk.php"> 2011 crosswalk document</a> for a detailed listing of the revisions.<br>
+              <br>
+              The 2012 CDL product was released January 31, 2013. The 2012	product utilized Deimos-1, UK-DMC 2, and Landsat TM/ETM+ imagery	for production of a 30m product covering the Continental United States.<br>
+              <br>
+              The 2013 CDL product was released January 31, 2014. The 2013	product utilized Deimos-1, UK-DMC 2, and Landsat 8 imagery	for production of a 30m product covering the Continental United States. Coincident with	the release of the 2013 product, the entire historical CDL catalog	was re-released with minor category code and class name revisions.	These revisions were done to eliminate redundant or unused	categories. Please view the <a
+ href="/Research_and_Science/Cropland/docs/CDL_2013_crosswalk.php"> 2013 crosswalk document</a> for a detailed listing of the revisions.<br>
+              <br>
+              The 2014 CDL product was released February 2, 2015. The 2014 CDL product utilized Deimos-1, UK-DMC 2, and Landsat 8 imagery	for production of a 30m product covering the Continental United States.<br>
+              <br>
+              The 2015 CDL product was released February 12, 2016. The 2015 CDL product utilized Deimos-1, UK-DMC 2, and Landsat 8 imagery	for production of a 30m product covering the Continental United States.<br>
+              <br>
+              The 2016 CDL product was released February 3, 2017. The 2016 CDL product utilized Deimos-1, UK-DMC 2, and Landsat 8 imagery	for production of a 30m product covering the Continental United States. Beginning with the 2016 CDL season we are creating CDL accuracy assessments using unbuffered validation data. These "unbuffered" accuracy metrics will now reflect the accuracy of field edges which have not been represented previously. This admission of modestly inflated accuracy measures does not render past assessments useless. By providing both buffered and unbuffered validation scenarios for 2016 gives guidance on the bias. There are no plans to create unbuffered accuracy assessments for prior CDL seasons.<br>
+              <br>
+              The 2017 CDL product was released January 26, 2018. The 2017 CDL product utilized satellite imagery from the Landsat 8 OLI/TIRS sensor, the Disaster Monitoring Constellation (DMC) DEIMOS-1 and UK2, the ISRO ResourceSat-2 LISS-3, and the ESA SENTINEL-2 sensors collected during the current growing season. The spatial resolution is 30 meters covering the Continental United States.<br>
+              <br>
+              The 2018 CDL product was released February 15, 2019. The 2018 CDL product utilized satellite imagery from the Landsat 8 OLI/TIRS sensor, the Disaster Monitoring Constellation (DMC) DEIMOS-1 and UK2, the ISRO ResourceSat-2 LISS-3, and the ESA SENTINEL-2 sensors collected during the current growing season. The spatial resolution is 30 meters covering the Continental United States. A new CDL category was added in 2018, Code 215 - Avocados.<br>
+              <br>
+              The 2019 CDL product was released February 5, 2020. The 2019 CDL product utilized satellite imagery from the Landsat 8 OLI/TIRS sensor, the Disaster Monitoring Constellation (DMC) DEIMOS-1 and UK2, the ISRO ResourceSat-2 LISS-3, and the ESA SENTINEL-2 sensors collected during the current growing season. The spatial resolution is 30 meters covering the Continental United States. The 2007-2018 CDLs used FSA CLU data for agricultural training with a 30 meter inward buffer applied. The inward buffering removes spectrally mixed field edge pixels from the land cover classifier. Starting with the 2019 CDL products, the inward buffer has been reduced from 30 meters to 15 meters. The result is a noticeable increase in crop identification at field borders which impacts the CDL, the Cultivated Layer, and Crop Frequency Layers. The newly published USGS NLCD 2016 was used as training for the non-agricultural component of the 2019 CDL. A new CDL category was added in 2019, Code 228 - Double-Cropped Triticale/Corn.<br>
+              <br>
+              The 2020 CDL product was released February 1, 2021. The 2020 CDL product utilized satellite imagery from the Landsat 8 OLI/TIRS sensor, the Disaster Monitoring Constellation (DMC) DEIMOS-1, the ISRO ResourceSat-2 LISS-3, and the ESA SENTINEL-2 sensors collected during the current growing season. The spatial resolution is 30 meters covering the Continental United States. There were no new CDL categories added in 2020.<br>
+              <br>
+              The 2021 CDL product was released February 14, 2022. The 2021 CDL product utilized satellite imagery from the Landsat 8 OLI/TIRS sensor, the ISRO ResourceSat-2 LISS-3, and the ESA SENTINEL-2 sensors collected during the current growing season. The spatial resolution is 30 meters covering the Continental United States. There were no new CDL categories added in 2021.<br>
+			  <br>
+              The 2022 CDL product was released January 30, 2023. The 2022 CDL product utilized satellite imagery from the Landsat 8 and Landsat 9 OLI/TIRS sensors, the ISRO ResourceSat-2 LISS-3, and the ESA SENTINEL-2A and -2B sensors collected during the current growing season. The spatial resolution is 30 meters covering the Continental United States. There were no new CDL categories added or changes in processing methodology in 2022.<br>
+			  <br>
+		      The 2023 CDL product was released January 31, 2024. The 2023 CDL product utilized satellite imagery from the Landsat 8 and Landsat 9 OLI/TIRS sensors and the ESA SENTINEL-2A and -2B sensors collected during the current growing season. The spatial resolution is 30 meters covering the Continental United States. There were no new CDL categories added or changes in processing methodology in 2023.
+	          <br>
+	          <br>
+	          The 2024 CDL product was released February 27, 2025. The 2024 Cropland Data Layer uses a random forest classifier approach using Google Earth Engine. The spatial resolution increased to 10-meter. The crop classification utilized remote sensing data from harmonized Sentinel-2 MSI Level-2A, Landsat 8, and Landsat 9 Level-2 Collection 2 Tier-1 products, providing surface reflectance (SR) data across multiple spectral bands, including GREEN, RED, NIR, SWIR1, SWIR2, and RedEdge bands 1-4. To mitigate cloud cover, 10-day median composites of surface reflectance and NDVI were created from the cloud-masked Landsat-Sentinel multi-sensor data covering the growing season for major U.S. commodities. An impervious layer from USGS NLCD 2021 and a digital elevation model from USGS 3DEP were also included ancillary input variables. In addition, mixed sampling strategies and localized training and were applied to the 2024 10m CDL production. Additional information: Z. Li, R. Mueller, Z. Yang, D. Johnson and P. Willis, "Cloud-Powered Agricultural Mapping: A Revolution Toward 10m Resolution Cropland Data Layers," IGARSS 2024 - 2024 IEEE International Geoscience and Remote Sensing Symposium, Athens, Greece, 2024, pp. 4081-4084, doi: 10.1109/IGARSS53475.2024.10641079. PDF available at <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/docs/IGARSS2024_Proceedings_10mCDL_Li_etal.pdf">IGARSS2024_Proceedings_10mCDL_Li_etal.pdf</a>.
+		      <br>
+	          <br>
+	          The 2025 CDL product was released February 27, 2026. The 2025 Cropland Data Layer uses a random forest classifier approach using Google Earth Engine. The spatial resolution increased to 10-meter. The crop classification utilized remote sensing data from harmonized Sentinel-2 MSI Level-2A, Landsat 8, and Landsat 9 Level-2 Collection 2 Tier-1 products, providing surface reflectance (SR) data across multiple spectral bands, including GREEN, RED, NIR, SWIR1, SWIR2, and RedEdge bands 1-4. To mitigate cloud cover, 10-day median composites of surface reflectance and NDVI were created from the cloud-masked Landsat-Sentinel multi-sensor data covering the growing season for major U.S. commodities. An impervious layer from USGS NLCD 2024, 2023 NLCD Tree Canopy Layer, and a digital elevation model from USGS 3DEP were included ancillary input variables. In addition, mixed sampling strategies and localized training and were applied to the 2025 10m CDL production.
+</blockquote>
+</li>
+
+<li style="margin-bottom: 1em;"><a name="history.1"><b>How has the methodology used to create the CDL changed over the program's history?</b></a><br/>
+<blockquote>
+              The classification process used to create older CDLs (prior to 2006) was based on a maximum likelihood classifier approach using in-house software. The pre-2006 CDL's relied primarily on satellite imagery from the Landsat TM/ETM satellites which had a 16-day revisit. The in-house software limited the use of only two scenes per classification area. The only source of ground truth was the NASS June Area Survey (JAS). The JAS data is collected by field enumerators so it is quite accurate but is limited in coverage due to the cost and time constraints of such a massive annual field survey. It was also very labor intensive to digitize and label all of the collected JAS field data for use in the classification process. Non-agricultural land cover was based on image analyst interpretations.<br>
+	          <br>
+              Starting in 2006, NASS began utilizing a new satellite sensor, new commercial off-the-shelf software, more extensive training/validation data. The in-house software was phased out in favor of a commercial software suite, which includes Erdas Imagine, ESRI ArcGIS, and Rulequest See5. This improved processing efficiency and, more importantly, allowed for unlimited satellite imagery and ancillary dataset inputs. The new source of agricultural training and validation data became the USDA Farm Service Agency (FSA) Common Land Unit (CLU) Program data which was much more extensive in coverage than the JAS and was in a GIS-ready format. NASS also began using the most current USGS National Land Cover Dataset (NLCD) dataset to train over the non-agricultural domain. The new classification method uses a decision tree classifier. New satellite sensors are incorporated as they become available. Currently, the CDL Program uses the Landsat 8 and 9 OLI/TIRS and Sentinel 2A and 2B sensors. Past CDLs in this era also used the Disaster Monitoring Constellation (DMC) DEIMOS-1 and UK2, the ISRO ResourceSat-2 LISS-3. Imagery is downloaded daily throughout the growing season with the objective of obtaining at least one cloud-free usable image every two weeks throughout the growing season.<br>
+	          <br>
+	          Beginning in 2024, Google Earth Engine is used to create the classification using a random forest classifier approach. Satellite imagery is hosted within the Google Earth Engine Platform eliminating the need to download and preprocess imagery in-house. The spatial resolution is now 10-meters. The crop classification utilized remote sensing data from harmonized Sentinel-2 MSI Level-2A, Landsat 8, and Landsat 9 Level-2 Collection 2 Tier-1 products, providing surface reflectance (SR) data across multiple spectral bands, including GREEN, RED, NIR, SWIR1, SWIR2, and RedEdge bands 1-4. To mitigate cloud cover, 10-day median composites of surface reflectance and NDVI were created from the cloud-masked Landsat-Sentinel multi-sensor data for the current growing season. An impervious layer from USGS NLCD 2024, the NLCD 2023 Tree Canopy, and a digital elevation model from USGS 3DEP were also included ancillary input variables. In addition, mixed sampling strategies and localized training and were applied to the  10m CDL production. Additional information: Z. Li, R. Mueller, Z. Yang, D. Johnson and P. Willis, "Cloud-Powered Agricultural Mapping: A Revolution Toward 10m Resolution Cropland Data Layers," IGARSS 2024 - 2024 IEEE International Geoscience and Remote Sensing Symposium, Athens, Greece, 2024, pp. 4081-4084, doi: 10.1109/IGARSS53475.2024.10641079. PDF available at <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/docs/IGARSS2024_Proceedings_10mCDL_Li_etal.pdf">IGARSS2024_Proceedings_10mCDL_Li_etal.pdf</a>.
+</blockquote>
+</li>
+</ol>					
+<hr/>
+
+<h3><a name="common">Common User Questions</a></h3>						
+<ol>
+<li style="margin-bottom: 1em;"><a name="common.0"><b>Is the Cropland Data Layer available in a shapefile format?</b></a>
+<blockquote>
+ We do not offer the data in a vector format, such as shapefile. The CDL data can be downloaded in a raster-based GeoTIFF file format and used in most common GIS software. In ESRI ArcGIS you would most likely require the 'Spatial Analyst' extension to perform any in-depth GIS applications using the GeoTIFF file. And any common image processing software, such as QGIS, should be able to perform basic image processing/GIS applications using the GeoTIFF file. This type of pixel-based data does not lend itself to being converted to vector since the resulting polygon file would be enormous. Depending on the size of area you are studying it is technically possible to convert CDL data to a shapefile, but it would have to be a rather small area such as a single county or smaller.<br><br>
+If you do convert the data to a shapefile format and want to add the CDL category names in ESRI ArcGIS Desktop, then start by downloading this spreadsheet file <a
+ href="/Research_and_Science/Cropland/docs/cdl_codes_names.xlsx">cdl_codes_names.xlsx</a> that lists all CDL codes and category names. Open this file and change the "Code" column header to match the name of the attribute field in your newly created shapefile. Then open both the excel file and the shapefile in ArcGIS. Right click on the shapefile in the ArcGIS Table of Contents and do a JOIN on the commonly named "code" attribute field. You can then right click on the shapefile and use Data > Export Data to save a new shapefile with the category names added.
+</blockquote>
+</li>					
+					
+<li style="margin-bottom: 1em;"><a name="common.1"><b>What differences can be expected when comparing CDL-based acreage and official NASS statistics?</b></a><br/>
+<blockquote>
+Users should be aware of the potential limitations of acreage summaries that are based on only pixel counting. Most land cover classification datasets will contain some level of counting bias (typically downward). Pixel counting is usually downward biased when compared to the official estimates. Counting pixels and multiplying by the area of each pixel will result in biased area estimates and should be considered raw numbers needing bias correction. Official crop acreage estimates at the state and county level are available at <a href="https://quickstats.nass.usda.gov/">QuickStats</a>.<br>
+                Here are a list of references discussing the subject matter of pixel counting and estimation:<br>
+                a) Gallego F.J., 2004, Remote sensing and land cover area estimation. International Journal of Remote Sensing. Vol. 25, n. 15, pp. 3019-3047.<br>
+                b) European Commission, Joint Research Centre, MARS; <a
+ href="http://mars.jrc.ec.europa.eu/Bulletins-Publications/Best-practices-for-crop-area-estimation-with-Remote-Sensing"> Best practices for crop area estimation with Remote Sensing - Section 4.1.1.</a><br>
+                c) Czaplewski, R. L. (1992). Misclassification bias in areal estimates. Photogrammetric Engineering and Remote Sensing, 58, 189-192.</p>
+</blockquote>
+</li>					
+					
+<li style="margin-bottom: 1em;"><a name="common.2"><b>What projections are used?</b></a><br/>
+<blockquote>
+              <p>CDL data use USA Contiguous Albers Equal Area Conic USGS Version with a spheroid of GRS 1980 and datum of NAD83. The downloadable zip files from the <a
+ href="/Research_and_Science/Cropland/SARS1a.php">SARS</a> website are offered in the native Albers projection.  Please notice that this projection has an offset from the standard North America Albers Equal Area Conic in standard parallels. The projection information is as follows (in human-readable OGC WKT):</p>
+              PROJCS[&quot;NAD_1983_Albers&quot;,<br>
+GEOGCS[&quot;NAD83&quot;,<br>
+DATUM[&quot;North_American_Datum_1983&quot;,<br>
+SPHEROID[&quot;GRS 1980&quot;,6378137,298.257222101,<br>
+AUTHORITY[&quot;EPSG&quot;,&quot;7019&quot;]],<br>
+TOWGS84[0,0,0,0,0,0,0],<br>
+AUTHORITY[&quot;EPSG&quot;,&quot;6269&quot;]],<br>
+PRIMEM[&quot;Greenwich&quot;,0,<br>
+AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],<br>
+UNIT[&quot;degree&quot;,0.0174532925199433,<br>
+AUTHORITY[&quot;EPSG&quot;,&quot;9108&quot;]],<br>
+AUTHORITY[&quot;EPSG&quot;,&quot;4269&quot;]],<br>
+PROJECTION[&quot;Albers_Conic_Equal_Area&quot;],<br>
+PARAMETER[&quot;standard_parallel_1&quot;,29.5],<br>
+PARAMETER[&quot;standard_parallel_2&quot;,45.5],<br>
+PARAMETER[&quot;latitude_of_center&quot;,23],<br>
+PARAMETER[&quot;longitude_of_center&quot;,-96],<br>
+PARAMETER[&quot;false_easting&quot;,0],<br>
+PARAMETER[&quot;false_northing&quot;,0],<br>
+UNIT[&quot;meters&quot;,1]]
+</blockquote>
+	<br>
+                In order to conform to <a href="https://datagateway.nrcs.usda.gov/">Geospatial Data Gateway</a> technical specifications, any CDL data downloaded through the Geospatial Data Gateway is re-projected from Albers to the dominant Universal Transverse Mercator (UTM) zone with a spheroid of GRS 1980 and datum of NAD83. The one exception to the UTM projection is for Wisconsin. Wisconsin is projected using the Wisconsin Transverse Mercator (WTM) projection.
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.3"><b>Are color legends available for the Cropland Data Layers?</b></a><br/>
+<blockquote>
+              <p>Below is a color legend of all CDL codes and class names for the Continental United States:<br>
+                <a href="/Research_and_Science/Cropland/docs/US_CDL_Legend.png">US_CDL_Legend.png</a><br>
+<!--
+				<a href="/Research_and_Science/Cropland/docs/US_2024_CDL_legend.jpg">US_2024_CDL_legend.jpg</a><br>
+  			    <a href="/Research_and_Science/Cropland/docs/US_2023_CDL_legend.jpg">US_2023_CDL_legend.jpg</a><br>
+				<a href="/Research_and_Science/Cropland/docs/US_2022_CDL_legend.jpg">US_2022_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2021_CDL_legend.jpg">US_2021_CDL_legend.jpg</a><br>
+				<a href="/Research_and_Science/Cropland/docs/US_2020_CDL_legend.jpg">US_2020_CDL_legend.jpg</a><br>
+				<a href="/Research_and_Science/Cropland/docs/US_2019_CDL_legend.jpg">US_2019_CDL_legend.jpg</a><br>
+				<a href="/Research_and_Science/Cropland/docs/US_2018_CDL_legend.jpg">US_2018_CDL_legend.jpg</a><br>
+				<a href="/Research_and_Science/Cropland/docs/US_2017_CDL_legend.jpg">US_2017_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2016_CDL_legend.jpg">US_2016_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2015_CDL_legend.jpg">US_2015_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2014_CDL_legend.jpg">US_2014_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2013_CDL_legend.jpg">US_2013_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2012_CDL_legend.jpg">US_2012_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2011_CDL_legend.jpg">US_2011_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2010_CDL_legend.jpg">US_2010_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2009_CDL_legend.jpg">US_2009_CDL_legend.jpg</a><br>
+                <a href="/Research_and_Science/Cropland/docs/US_2008_CDL_legend.jpg">US_2008_CDL_legend.jpg</a></p>
+-->
+</blockquote>
+</li>
+
+
+				
+<li style="margin-bottom: 1em;"><a name="common.4"><b>Has someone compiled all of the exported CDL attribute tables by year and state into a master spreadsheet?</b></a><br/>
+<blockquote>
+             <p>State-level histogram summaries are discontinued. However, county summaries are still available at <a
+ href="/Research_and_Science/Cropland/docs/County_Pixel_Count.zip">County_Pixel_Count.zip</a> which can be used to create state summaries.<br>
+	            <a href="/Research_and_Science/Cropland/docs/2023_CDL_Histogram_Summary.xlsx">2023_CDL_Histogram_Summary.xlsx</a><br> 
+                <a href="/Research_and_Science/Cropland/docs/2022_CDL_Histogram_Summary.xlsx">2022_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2021_CDL_Histogram_Summary.xlsx">2021_CDL_Histogram_Summary.xlsx</a><br>
+				<a href="/Research_and_Science/Cropland/docs/2020_CDL_Histogram_Summary.xlsx">2020_CDL_Histogram_Summary.xlsx</a><br>
+				<a href="/Research_and_Science/Cropland/docs/2019_CDL_Histogram_Summary.xlsx">2019_CDL_Histogram_Summary.xlsx</a><br>
+				<a href="/Research_and_Science/Cropland/docs/2018_CDL_Histogram_Summary.xlsx">2018_CDL_Histogram_Summary.xlsx</a><br>
+				<a href="/Research_and_Science/Cropland/docs/2017_CDL_Histogram_Summary.xlsx">2017_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2016_CDL_Histogram_Summary.xlsx">2016_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2015_CDL_Histogram_Summary.xlsx">2015_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2014_CDL_Histogram_Summary.xlsx">2014_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2013_CDL_Histogram_Summary.xlsx">2013_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2012_CDL_Histogram_Summary.xlsx">2012_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2011_CDL_Histogram_Summary.xlsx">2011_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2010_CDL_Histogram_Summary.xlsx">2010_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2009_CDL_Histogram_Summary.xlsx">2009_CDL_Histogram_Summary.xlsx</a><br>
+                <a href="/Research_and_Science/Cropland/docs/2008_CDL_Histogram_Summary.xlsx">2008_CDL_Histogram_Summary.xlsx</a>
+</blockquote>
+</li>
+			
+<li style="margin-bottom: 1em;"><a name="common.5"><b>Has someone summarized CDL acreage for all land cover categories at the county-level for the Continental United States?</b></a><br/>
+<blockquote>
+Below is a link to a WinZIP file containing CSV spreadsheets that summarize the pixel counts and acreage for all US counties for each CDL land cover category beginning with the year 2007 to current. These are raw pixel counts and are not official NASS estimates. The yearly CDL pixel counts and acreage county summaries are available at <a
+ href="/Research_and_Science/Cropland/docs/County_Pixel_Count.zip">County_Pixel_Count.zip</a>.
+</blockquote>
+</li>
+			
+<li style="margin-bottom: 1em;"><a name="common.6"><b>Is more detailed accuracy assessment information available than what is provided in the metadata? Can you provide the full accuracy assessment error/confusion matrices for all states?</b></a><br/>
+<blockquote>
+           The strength and emphasis of the CDL is crop-specific land cover categories. The accuracy of the CDL non-agricultural land cover classes is entirely dependent upon the USGS, National Land Cover Database (NLCD). Thus, the USDA, NASS recommends that users consider the NLCD for studies involving non-agricultural land cover.<br>
+		   <br>
+           The training and validation data used to create and accuracy assess the CDL has traditionally been based on ground truth data that is buffered inward 30 meters. This was done 1) because satellite imagery (as well as the polygon reference data) in the past was not georeferenced to the same precision as now (i.e. everything "stacked" less perfectly), 2) to eliminate from training spectrally-mixed pixels at land cover boundaries, and 3) to be spatially conservative during the era when coarser 56 meter AWiFS satellite imagery was incorporated. Ultimately, all of these scenarios created "blurry" edge pixels through the seasonal time series which it was found if ignored from training in the classification helped improve the quality of CDL. However, the accuracy assessment portion of the analysis also used buffered data meaning those same edge pixels were not assessed fully with the rest of the classification. This would be inconsequential if those edge pixels were similar in nature to the rest of the scene but they are not as they tend to be more difficult to classify correctly. Thus, the accuracy assessments as have been presented are inflated somewhat.<br>
+	       <br>
+           Beginning with the 2016 CDL season we are creating CDL accuracy assessments using unbuffered validation data. These "unbuffered" accuracy metrics will now reflect the accuracy of field edges which have not been represented previously. This admission of modestly inflated accuracy measures does not render past assessments useless. By providing both buffered and unbuffered validation scenarios for 2016 gives guidance on the bias. There are no plans to create unbuffered accuracy assessments for prior CDL seasons.<br>
+	       <br>
+	       Beginning with the 2024 CDL, the accuracy assessment methodology has changed.Better control was placed on generating a proportional sample across crop and non-crop categories. For example, if a state is roughly 40% cropland and 60% non-cropland, 40% of the validation samples are now drawn from cropland areas and 60% from non-cropland areas.Secondly, in the past the number of validation samples was the same regardless of the size of the state. Now, the sample size is proportional to the size of the state.This means a large state like Texas has more validation samples but a small state like Rhode Island has much less.A major advantage of this is the individual state statistics can be summed together to easily generate multi-state assessment statistics.<br>
+	       <br>
+           The full error matrices are included in the downloadable links below.
+              <p> 
+ 				<a href="/Research_and_Science/Cropland/docs/CDL_2025_accuracy_assessments.zip"> CDL_2025_accuracy_assessments.zip</a><br>
+				<a href="/Research_and_Science/Cropland/docs/CDL_2024_accuracy_assessments.zip"> CDL_2024_accuracy_assessments.zip</a><br>
+				<a href="/Research_and_Science/Cropland/docs/CDL_2023_accuracy_assessments.zip"> CDL_2023_accuracy_assessments.zip</a><br>
+				<a href="/Research_and_Science/Cropland/docs/CDL_2022_accuracy_assessments.zip"> CDL_2022_accuracy_assessments.zip</a><br>
+ 				<a href="/Research_and_Science/Cropland/docs/CDL_2021_accuracy_assessments.zip"> CDL_2021_accuracy_assessments.zip</a><br>
+				<a href="/Research_and_Science/Cropland/docs/CDL_2020_accuracy_assessments.zip"> CDL_2020_accuracy_assessments.zip</a><br>
+				<a href="/Research_and_Science/Cropland/docs/CDL_2019_accuracy_assessments.zip"> CDL_2019_accuracy_assessments.zip</a><br>
+				<a href="/Research_and_Science/Cropland/docs/CDL_2018_accuracy_assessments.zip"> CDL_2018_accuracy_assessments.zip</a><br>
+				<a href="/Research_and_Science/Cropland/docs/CDL_2017_accuracy_assessments.zip"> CDL_2017_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2016_accuracy_assessments.zip"> CDL_2016_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2015_accuracy_assessments.zip"> CDL_2015_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2014_accuracy_assessments.zip"> CDL_2014_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2013_accuracy_assessments.zip"> CDL_2013_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2012_accuracy_assessments.zip"> CDL_2012_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2011_accuracy_assessments.zip"> CDL_2011_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2010_accuracy_assessments.zip"> CDL_2010_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2009_accuracy_assessments.zip"> CDL_2009_accuracy_assessments.zip</a><br>
+                <a href="/Research_and_Science/Cropland/docs/CDL_2008_accuracy_assessments.zip"> CDL_2008_accuracy_assessments.zip</a></p>
+</blockquote>
+</li>
+				
+<li style="margin-bottom: 1em;"><a name="common.7"><b>NASS says this is a Cropland data layer product, what about the areas that are not agriculturally intensive?</b></a><br/>
+<blockquote>
+              <p>The strength of the CDL is in its agricultural classifications. The major crop types for a CDL state will normally have a classification accuracy of 85% to 95%.
+	          </p><br>
+              Prior to 2006, the field level training data was collected solely through the June Agricultural Survey (JAS). The JAS is an annual national survey of randomly selected areas of land. The selected areas are targeted toward cultivated parts of each state based on its area frame. Our enumerators are given questionnaires to ask the farmers what, where, when and how much are they planting. Our surveys focus on cropland, but the enumerators record all land covers within the sampled area of land whether it is cropland or not. NASS uses broad land use categories to define land that is not under cultivation, including; non-agricultural, pasture/rangeland, waste, woods, and farmstead making it difficult to know what specific type of land use/cover actually is on the ground. Thus, non-agricultural land cover contained within the 2005 and older CDL products were based solely on an individual analyst's interpretation.
+              </p><br>
+              <p>Newer CDLs (2006 to current) use agricultural training and validation data provided by the FSA CLU Program. The FSA CLU data does not contain much, if any, non-agricultural data. The only source of non-ag training available at the scale required to meet the needs of the CDL Program is the USGS National Land Cover Dataset (NLCD). We sample the non-ag categories of the NLCD proportionate to the available FSA CLU data for a state and include this in the CDL classification process. Thus, the accuracy of the non-agricultural land cover classes within the Cropland Data Layer are entirely dependent upon the NLCD. We recommend that users consider the NLCD for studies involving non-agricultural land cover.
+              </p><br>
+              <p>The FSA CLU data does contain a small amount of non-agricultural data and this non-ag FSA data was used in the classification process in early versions of the CDL. Thus, there are some CDL states that may have multiple categories for the same non-ag land cover type, such as category 87 (FSA-sampled wetland) and category 190 and 195 (NLCD-sampled wetlands). This is should only be an issue in the 2006 and 2007 CDL products. Beginning in 2008, the use of the FSA CLU non-ag for classification training was discontinued. Beginning  with the 2013 CDL, the use of FSA-sampled grasses and pasture (code 62) was discontinued.</p>
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.8"><b>Are more detailed CDL category definitions available?</b></a><br/>
+<blockquote>
+              The AGRICULTURAL CATEGORIES are based on data from the Farm Service Agency (FSA) Common Land Unit (CLU) Program. Thus, all crop specific categories are determined by the FSA CLU/578 Program which offers detailed documentation at the following website: <a href=https://www.fsa.usda.gov/programs-and-services/laws-and-regulations/handbooks/index>https://www.fsa.usda.gov/programs-and-services/laws-and-regulations/handbooks/index</a>. The online manual titled 2-CP contains much of the crop information used for CDL purposes, especially the Section titled "Exhibit 10 2003 and Subsequent Year Crops Reported on FSA-578." There are hundreds of potential FSA crop types and thousands of other variables that we have done our best to crosswalk for CDL purposes. This Microsoft Excel spreadsheet <a href="/Research_and_Science/Cropland/docs/FSA-to-CDL_Crosswalk.xlsx">FSA-to-CDL_Crosswalk</a> details our current crosswalking and can be used to determine exactly what FSA crop types appear within grouped CDL categories, such as "Other Crops" (CDL code 44), "Misc Vegs and Fruit" (CDL code 47), "Herbs" (CDL code 57), "Other Tree Crops" (CDL code 71), and "Greens" (CDL code 219).<br>
+	          <br>
+              The NON-AGRICULTURAL CATEGORIES in the CDL are derived from the most current publicly available USGS National Land Cover Database (NLCD). The non-ag NLCD categories are sampled for training the classification and for validation. The NLCD legend with category definitions is available at: <a href=https://www.mrlc.gov/data/legends/national-land-cover-database-2016-nlcd2016-legend>https://www.mrlc.gov/data/legends/national-land-cover-database-2016-nlcd2016-legend</a>. In the CDL we have added 100 to their code numbers (i.e. NLCD code 11 "Open Water" is code 111 in the CDL). The NLCD Cultivated Crops category is ignored for CDL purposes. We have also made the decision to merge NLCD "Grassland/Herbaceous" and NLCD "Pasture/Hay" into a single CDL category called "Grassland/Pasture" (CDL code 176).
+</blockquote>
+</li>
+					
+<li style="margin-bottom: 1em;"><a name="common.9"><b>Does the CDL differentiate between grassland types such as urban grassland, pastures used for grazing, and other grass-related land cover types?</b></a><br/>
+<blockquote>
+              Unfortunately, the pasture and grass-related land cover categories have traditionally had very low classification accuracy in the CDL. Moderate spatial and spectral resolution satellite imagery is not ideal for separating grassy land use types, such as urban open space versus pasture for grazing versus CRP grass. To further complicate the matter, the pasture and grass-related categories were not always classified definitionally consistent from state to state or year to year. In an effort to eliminate user confusion and category inconsistencies the 1997-2013 CDLs were recoded and re-released in January 2014 to better represent pasture and grass-related categories. A new category named Grass/Pasture (code 176) collapses the following historical CDL categories: Pasture/Grass (code 62), Grassland Herbaceous (code 171), and Pasture/Hay (code 181). We continue to search for program enhancements and ancillary datasets that may help improve the identification of grassland and pasture categories within the CDL. We recommend users consider using the USGS NLCD (https://www.mrlc.gov/) for research involving non-agricultural categories and grassland/pasture categories.
+</blockquote>
+</li>
+
+		
+<li style="margin-bottom: 1em;"><a name="common.10"><b>How are fields with multiple crop types planted in the same season handled in the Cropland Data Layer, such as winter wheat followed by soybeans?</b></a><br/>
+<blockquote>
+              The primary focus of the Cropland Data Layer (CDL) is large area summer crops. The Farm Service Agency CLU data is the primary source of agricultural training data for the CDL classifier. We depend on the data that the farmer reports on their FSA CLU/578 signup forms. The FSA ground reference is prepared to indicate whether a single or double crop was planted in a particular field. For example, a winter wheat field planted in the Fall of 2009 will be identified in the 2010 CDL, as we consider the time of harvest as the current year of production. If the field is multi-use during a given year, for example winter wheat (ww) followed by soybeans (sb), then a double cropping situation exists and the category for that given field will be winter wheat/soybeans, and is labeled as such in the legend. If a field is only soybeans during that year, then it will be identified as soybeans only. Therefore, all major crop rotations/patterns are captured with this method and are consider mutually exclusive for a given pixel/field. The CDL Program is currently not equipped to monitor triple or quad cropping practices.
+</blockquote>
+</li>	
+
+				
+<li style="margin-bottom: 1em;"><a name="common.11"><b>Have the attribute names, codes, and/or colors changed over the history of the program?</b></a><br/>
+<blockquote>
+                All category codes, class names and legend colors are standardized and consistent for all states and all years of the Cropland Data Layer Program.<br>
+                <br>
+                The 1997-2013 CDLs were recoded and re-released January 31, 2014 to better represent pasture and grass-related categories. A new category named Grass/Pasture (code 176) collapses the following historical CDL categories: Pasture/Grass (code 62), Grassland Herbaceous (code 171), and Pasture/Hay (code 181). This was done to eliminate confusion among these similar land cover types which were not always classified definitionally consistent from state to state or year to year and frequently had poor classification accuracies. Please view the <a
+ href="/Research_and_Science/Cropland/docs/CDL_2013_crosswalk.php"> 2013 crosswalk document</a> for a detailed listing of the revisions.<br>
+                <br>
+                This follows the recoding of the entire CDL archive in January 2012 to better align the  historical CDLs with the current product. These revisions were done to eliminate redundant and/or unused categories. The majority of the changes apply to the non-agricultural domain. Please view the <a
+ href="/Research_and_Science/Cropland/docs/CDL_2011_crosswalk.php"> 2011 crosswalk document</a> for a detailed listing of the revisions.
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.12"><b>How do I add class names and/or histogram values to the GeoTIFF file when viewing the CDL in ESRI ArcGIS Desktop Software?</b></a><br/>
+<blockquote>
+                 If your downloaded CDL .tif file does not contain category names, then you can add them using the following instructions. Download the file: <a
+ href="/Research_and_Science/Cropland/docs/generic_cdl_attributes.tif.vat.dbf.zip"> generic_cdl_attributes.tif.vat.dbf</a>. This generic file contains all possible CDL colors and category names. As long as the .tif file and the .tif.vat.dbf file have the same file name, then the category names will load automatically in ArcMap. So, change the file name (not extension) of the generic_cdl_attributes.tif.vat.dbf to match the file name of the downloaded CDL .tif file. Then add the .tif file as a layer in ArcMap. The category names will display in the Table of Contents window.<br>
+                <br>
+                Example 1 - If the downloaded .tif file is: _NASS_DATA_CACHE_CDL_2011_clip_20110307142903_862761787.tif Change the generic_cdl_attributes.tif.vat.dbf file name to: _NASS_DATA_CACHE_CDL_2011_clip_20110307142903_862761787.tif.vat.dbf<br>
+                <br>
+                Example 2 - If you renamed the downloaded .tif file to MyCDL.tif, then rename the generic_cdl_attributes.tif.vat.dbf file name to MyCDL.tif.vat.dbf.<br>
+                <br>
+                To create a pixel "count" field in the attribute table of the downloaded CDL use the "Build Raster Attribute Table" Function in ESRI ArcGIS. In ESRI ArcGIS Version 9.3 and 10 this function is located at ArcToolbox > Data Management Tools > Raster > Raster Properties > Build Raster Attribute Table. Specify the downloaded CDL tif file as the Input Raster and accept all other defaults and click OK. After it has run successfully, a new "Count" data field is added to the attribute table. Count represents a raw pixel count. To calculate acreage multiply the count by the square meters conversion factor which is dependent upon the CDL pixel size. The conversion factor for 30 meter pixels is 0.222394. The conversion factor for 56 meter pixels is 0.774922.
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.13"><b>How can I create a legend for the CDL using ESRI ArcGIS Desktop software?</b></a><br/>
+<blockquote>
+                Step-by-step instructions are provided on how to create a CDL legend using ArcGIS at: <a
+ href="/Research_and_Science/Cropland/docs/CDL_Create_Legend.pdf"> CDL_Create_Legend.pdf</a>.
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.14"><b>Is any smoothing or filtering applied to the CDL?</b></a><br/>
+<blockquote>
+                In general, no smoothing or filtering is done to the CDL classification. However, there have been exceptions in the past. The original 2006 CDL products did contain a small level of smoothing, but in March of 2009 all but one of the 2006 CDL products with were re-released with no smoothing. The one exception is the 2006 Washington CDL which still contains the smoothing. Smoothing has also been applied to cranberries in the 2008, 2009, 2010 and 2011 New England States and to oranges in 2008, 2009 and 2010 Florida.
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.15"><b>How do I add category names to a downloaded .tif image in ESRI ArcGIS?</b></a><br/>
+<blockquote>
+               If your downloaded CDL .tif file does not contain category names, then you can add them using the following instructions. Download this file: <a
+ href="/Research_and_Science/Cropland/docs/generic_cdl_attributes.tif.vat.dbf.zip">generic_cdl_attributes.tif.vat.dbf</a>. This generic file contains all possible CDL colors and category names. As long as the .tif file and the .tif.vat.dbf file have the same file name, then the category names will load automatically in ArcMap. So, change the file name (not extension) of the generic_cdl_attributes.tif.vat.dbf to match the file name of the downloaded CDL .tif file. Then add the .tif file as a layer in ArcMap. The category names will display in the Table of Contents window.<br>
+                <br>
+                Example 1 - If the downloaded .tif file name is: NASS_DATA_CDL_2011_clip.tif then change the generic_cdl_attributes.tif.vat.dbf file name to: NASS_DATA_CDL_2011_clip.tif.<em>vat.dbf</em><br>
+                <br>
+                Example 2 - If you renamed the downloaded .tif file to MyCDL.tif, then rename the generic_cdl_attributes.tif.vat.dbf file name to MyCDL.tif.vat.dbf.
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.16"><b>I am using Erdas Imagine to view downloaded CDL data, but there is no histogram information. How do I build statistics in Erdas Imagine?</b></a><br/>
+<blockquote>
+              To generate statistics in Erdas Imagine, go to Tools > Image Information then click on "Compute the statistics." If you have the TIF file open in a Viewer, then you will have to close it and reopen the TIF file. Now when you view the attribute information, there should be a Histogram column, which represents the pixel count per category. To calculate acreage multiply the count by the square meters conversion factor which is dependent upon the CDL pixel size. The conversion factor for 10-meter pixels is 0.0247105. The conversion factor for 10-meter pixels is 0.0247105. For 30-meter pixels the conversion factor is 0.222394. The conversion factor for 56-meter pixels is 0.774922.
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.17"><b>How do I add category names and/or colors to my downloaded CDL data in Erdas Imagine?</b></a><br/>
+<blockquote>
+              You first must build statistics for the TIF file as outlined in the question above. To add category names, open the TIF in a Viewer and select Raster > Attributes. In the Raster Attribute Editor select Edit &gt; Add Class Names. This new "Class Names" column can be populated manually or you can download this prepared file at: <a
+ href="/Research_and_Science/Cropland/docs/CDL_names_colors_codes.zip">cdl_class_names.zip</a>. Save to your computer, unzip, and then in the Raster Attribute Editor highlight the "Class Names" column by left-clicking on the header of the Class Names column. Next, right-click on the Class Names column and select the Import option. Specify the CDL_Names file as the file to import and this will add all possible CDL class names to your TIF attribute table. You can add colors by importing the CDL_Colors file similar to the steps used to add the class names.
+</blockquote>
+</li>
+
+				
+<li style="margin-bottom: 1em;"><a name="common.18"><b>What other geospatial products does NASS offer, such as the Cultivated Layer, Crop Frequency Data Layers, Confidence Layer, and Crop Sequence Boundaries?</b></a><br/>
+<blockquote>
+	          <p>The <a href="https://croplandcros.scinet.usda.gov/"><b>CroplandCROS</b></a> web service hosts the Cropland Data Layer (CDL) and many of the CDL derivatives listed below and allows users to easily conduct area and statistical analysis of planted U.S. commodities, geolocate farms, and map areas of interest. User guides and instructional videos are available at the CroplandCROS website.</p>
+	          <p>CroplandCROS does offer REST API’s. If a user experiences any API issues then the following information may help in troubleshooting: An error code 498 typically indicates an &quot;Invalid Token,&quot; meaning the token used to access the service expired or is no longer valid. To resolve make sure you are using a correct and active authentication token. If a token is no longer valid it is best practice to erase browsing history, generate a new token through your ArcGIS Online or Portal for ArcGIS account and re-submit the API request with the updated token. Additionally, some users have reported issues when using Chrome so the workflow could be tried from a different browser.<br>
+	            <br>
+	            The <a href="https://www.nass.usda.gov/Research_and_Science/Crop-Sequence-Boundaries/"><b>Crop Sequence Boundaries</b></a> was developed with USDA's Economic Research Service, produces estimates of field boundaries, crop acreage, and crop rotations across the contiguous United States. It uses satellite imagery with other public data and is open source allowing users to conduct area and statistical analysis of planted U.S. commodities and provides insight on farmer cropping decisions. NASS needed a representative field to predict crop planting based on common crop rotations such as corn-soy and ERS is using this product to study changes in farm management practices like tillage or cover cropping over time. CSB represents non-confidential single crop field boundaries over a set time frame. It does not contain personal identifying information. The boundaries captured are of crops grown only, not ownership boundaries or tax parcels (unit of property). The data are from satellite imagery and publicly available data, it does not come from producers or agencies like the Farm Service Agency.<br>
+	            <br>
+	            The <a href="https://www.nass.usda.gov/Research_and_Science/Crop_Progress_Gridded_Layers/"><b>Crop Progress and Condition Gridded Layers</b></a> are fully synthetic representations of confidential, county level data. These data are available for U.S. corn, soybeans, cotton and winter wheat. The current archive of these datasets span growing-season weeks for all years from 2015 to present. State level representations of this data in chart form are available at <a
+ href="/Charts_and_Maps/Crop_Progress_&amp;_Condition/index.php">Crop Progress and Condition Charts</a>.<br>
+	            <br>
+	            The <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/Release/"><b>Cultivated Layer</b></a> is based on the most recent five years of CDL data and is updated annually.  An Erdas Imagine Spatial Model is used to create the Cultivated Layer.  The processing logic is as follows. If a pixel is identified as cultivated  in at least two out of the five years of CDL data then it is assigned to  the 'Cultivated' category. The exception is that all pixels identified as  cultivated in the most recent year are assigned to the 'Cultivated' category  regardless of whether or not they were cultivated in the previous four  years of CDL data.<br>
+	            <br>
+	            The <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/Release/"><b>Crop Frequency Data Layers</b></a> identify crop specific planting frequency and are based on land cover information derived from every year of available CDL data beginning with 2008, the first year of full Continental U.S. coverage. There are currently four individual crop frequency data layers that represent corn, cotton, soybeans, and wheat. Please be aware that there is  overlap between these layers where double-cropping between these crop types exists.<br>
+	            <br>
+	            The <a href="https://www.nass.usda.gov/Research_and_Science/Cropland/Release/"><b>Confidence Layer</b></a> is a derivative of the CDL. The CDL Confidence Layer shows probabilities (0-100) that each pixel is correctly classified. For 2024 and newer CDLs, the Google Earth Engine (GEE) classifier ee.Classifier.smileRandomForest was used for crop type classification, with the output mode MULTIPROBABILITY used for the generation of the confidence layer. Note that confidence values should not be used as a measure of accuracy because pixels can be correctly classified even with low confidence values. This is particularly true when multiple crops have similar spectral signatures, which can result in tied confidence scores. More information at <a href="https://haifengl.github.io/api/java/smile/classification/RandomForest.html">https://haifengl.github.io/api/java/smile/classification/RandomForest.html</a> and <a href="https://link.springer.com/article/10.1023/A:1010933404324">https://link.springer.com/article/10.1023/A:1010933404324</a>.</p>
+		        <br>
+	            <p>2023 and older CDL Confidence Layers used a different method described here: The following description of the confidence layer is from the document titled 'MDA_NLCD_User_Guide.doc' which is available free for download with the NLCD Mapping Tool at http://www.mrlc.gov/. The Confidence Layer "spatially represents the predicted confidence that is associated with that output pixel, based upon the rule(s) that were used to classify it. This is useful in that the user can see the spatial representation of distribution and magnitude of error or confidence for a given classification... This error layer represents a percent confidence associated with each rule and output categorical, classified value. It is expressed as a percentage of confidence. A value of zero would therefore have a low confidence (always wrong), while a value of 100 would have a very high confidence (always right)." For more information on the use of confidence layers please refer to the following paper: Liu, Weiguo, Sucharita Gopal and Curtis E. Woodcock, 2004. Uncertainty and confidence in land cover classification using a hybrid classifier approach, Photogrammetric Engineering & Remote Sensing, 70(8):963-971. Ultimately, however, the confidence value is not a measure of accuracy for a given pixel but rather how well it fit within the decision tree ruleset.<br>
+	            <br>
+	            The <a href="https://www.nass.usda.gov/Research_and_Science/Disaster-Analysis/"><b>Disaster Analysis</b></a> Program monitors agricultural disasters in near real-time and provide quantitative assessments using remotely sensed data and geospatial techniques.<br>
+	            <br>
+	            The USDA-NASS area sampling frame delineates all parcels of land for the purpose of sampling. The area frame is constructed by visually interpreting satellite imagery to divide a state into stratification classes (strata) based on percent of land used in cultivation. Strata are typically defined by percent cultivated, non-agricultural land, urban use, agri-urban, or water. The <a
+ href="https://www.nass.usda.gov/Research_and_Science/stratafront2b.php"><b>Land Use Strata for Selected States</b></a> area available for download.<br>
+	            <br>
+	            Agricultural Statistics Districts (ASD) for the entire U.S. are available in ESRI shapefile format at: <a
+ href="/Charts_and_Maps/Crops_County/boundary_maps/asds.zip">ASD shapefile</a>. An ASD is defined as a contiguous group of counties having relatively similar agricultural characteristics. The ASD's used by NASS usually divide each state into as many as nine Agricultural Statistics Districts to make data comparison easier. Each district is more homogeneous with respect to agriculture than the state as a whole. The following link provides national State, ASD, and county codes in tabular .csv format <a
+ href="/Research_and_Science/Cropland/docs/asds2009.csv">asds2009.csv</a>. Lists of state, ASD, and county can also be found at the following link: <a
+ href="https://www.nass.usda.gov/Data_and_Statistics/County_Data_Files/Frequently_Asked_Questions/county_list.txt">county_list.txt</a>.
+	            </p>
+</blockquote>
+</li>
+
+</ol>
+
+          <!-- InstanceEndEditable -->
+					</div>
+					<p class="right"> Last Modified:
+						<!-- #BeginDate format:Am3 -->05/06/2026<!-- #EndDate -->&nbsp;&nbsp;&nbsp; </p>
+				</div>
+			</div>
+		</div>
+		<!-- START Footer -->
+		<div id="footer" role="contentinfo" class="container hidden-xs hidden-sm footer clearfix">
+			
+  <div id="motto" class="statement col-xs-12">
+    <p>~ Providing Timely, Accurate and Useful Statistics in Service to U.S. Agriculture ~</p>
+  </div>
+  <ul class="footerTop center">
+    <li><a href="/index.php" class="footer">NASS Home</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="http://www.usda.gov" class="footer">USDA.gov</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="http://www.data.gov" class="footer"  target="_blank">Data.gov</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="http://www.usa.gov" class="footer">USA.gov</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="https://www.whitehouse.gov" class="footer">WhiteHouse.gov</a></li>
+	<li>&nbsp;|&nbsp;</li>
+	<li><a href="https://esmis.nal.usda.gov/" class="footer">Economics, Statistics and Market Information System (ESMIS)</a></li>
+	<li>&nbsp;|&nbsp;</li>  
+	  <li><a href="https://www.usda.gov/nofear/agencies" target="_blank" class="footer" >No Fear Act - NASS Data</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="https://www.usda.gov/accessibility-statement" target="_blank" class="footer" >Accessibility Statement</a></li>
+	  <li>&nbsp;|&nbsp;</li>
+	<li><a href="https://www.ars.usda.gov/research/freedom-of-information-act-and-privacy-act-reference-guide/" target="_blank">FOIA</a></li>
+	
+    
+  </ul>
+  <ul class="footerBottom center">
+    <li><a href="/About_NASS/Privacy/index.php">Privacy Policy and Assessments</a></li>
+    <li>&nbsp;|&nbsp;</li>
+	<li><a href="/About_NASS/Security_Statement/index.php">Security Statement</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="/About_NASS/Information_Quality_Guidelines/index.php" class="footer">Information Quality</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="https://www.usda.gov/non-discrimination-statement" class="footer">Non-Discrimination Statement</a></li>
+    <li>&nbsp;|&nbsp;</li>
+    <li><a href="/About_NASS/Regulations_Guiding_NASS/" target="_blank" class="footer">Guidance Documents</a></li>
+    <li>&nbsp;|&nbsp;</li>
+	<li><a href="https://www.usda.gov/policies-and-links" target="_blank" class="footer" >USDA Policies and Links</a></li>
+	<li>&nbsp;|&nbsp;</li>
+	
+	<li><a href="https://ask.usda.gov/s/" target="_blank" class="footer" >AskUSDA</a></li>   
+	
+    
+  </ul>
+
+		</div>
+		<!-- closes #footer -->
+
+	</div>
+	<!-- end of #container -->
+
+	<!-- Analytics -->
+	
+<!-- SiteImprove (updated 4/27/16 to add element for hot spot) -->
+<script>
+/*<![CDATA[*/
+(function() {
+var sz = document.createElement('script'); sz.type = 'text/javascript'; sz.async = true;
+sz.src = '//siteimproveanalytics.com/js/siteanalyze_10240.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(sz, s);
+})();
+/*]]>*/
+</script>
+
+<!-- Updated Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-9021651-1', 'nass.gov');
+  ga('create', 'UA-27627304-38', {'usda':'b'});
+  ga('send', 'pageview');
+  ga('b.send', 'pageview');
+</script>
+
+
+<!-- START search.digital.gov analytics START --> 
+<script>
+//<![CDATA[
+      var usasearch_config = { siteHandle:"usda-nass" };
+
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "//search.usa.gov/javascripts/remote.loader.js";
+      document.getElementsByTagName("head")[0].appendChild(script);
+
+//]]>
+</script> 
+
+<!-- Feedback button for Touchpoints survey added 12/24 -->
+	<div class="container" align="right">
+
+		<br>
+		<a class="btn btn-primary" style="text-decoration: none" href="https://touchpoints.app.cloud.gov/touchpoints/20931010" target="_blank" role="button"><i class="fa-regular fa-comment"></i> Feedback</a>
+	</div>
+	<!-- Bootstrap core JavaScript
+================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script>
+		$( document ).ready( function () {
+			$( "select" ).each( function () {
+				$( this ).val( $( this ).find( 'option[selected]' ).val() )
+			} );
+		} )
+	</script>
+	<!-- Bootstrap -->
+	<script src="../../newJS/bootstrap.js"></script>
+</body>
+
+<!-- InstanceEnd --></html>

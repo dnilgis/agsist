@@ -1,0 +1,13 @@
+# Benchmark field-scout: USDA NASS CropScape app
+# https://nassgeodata.gmu.edu/CropScape/
+# fetched 2026-10-17T00:04:45Z, sha256 1ac5368111873faee812d1a71771fd024df20d478f4c5821f36eb2d24be0e1f3
+
+CropSmart - NSF
+
+Sign in
+
+Why must I register?
+
+The CropSmart SignIn provides a single mechanism for user registration and profile management for all CSISS's system components (CropSmart, CropScape, VegScape, Crop-CASMA, iCrop, GADMFS, etc.). Your CropSmart signin also helps the CSISS's program better understand the usage of CropSmart services to improve user experience through customization of tools and improvement of services. CSISS's system data are openly available to all and free of charge.
+
+Copyright © CSISS 2026.
