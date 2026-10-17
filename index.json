@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-17T00:24:26Z",
+ "run_utc": "2026-10-17T00:25:24Z",
  "sources": [
   {
    "bytes": null,
@@ -6327,6 +6327,27 @@
    "status": "failed"
   },
   {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "bench-home-9",
+   "url": "https://www.farmprogress.com/",
+   "title": "Benchmark home: Farm Progress home",
+   "why": "/home competitor benchmark Oct 16, 2026 (established)",
+   "kind": "html",
+   "checked_utc": "2026-10-17T00:25:06Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback/python: HTTP 429; wayback/python: HTTP 429; wayback/curl: HTTP 429",
+   "status": "failed"
+  },
+  {
    "bytes": 622075,
    "sha256": "f081df81a58a04809bccd0ae7ada78bffb519c6627535150bf17768a4ccded31",
    "fetched_utc": "2026-10-17T00:24:26Z",
@@ -6350,6 +6371,27 @@
    ],
    "status": "new",
    "text_chars": 18550
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "bench-home-11",
+   "url": "https://brownfieldagnews.com/",
+   "title": "Benchmark home: Brownfield Ag News home",
+   "why": "/home competitor benchmark Oct 16, 2026 (established, farm radio network)",
+   "kind": "html",
+   "checked_utc": "2026-10-17T00:25:19Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback: no archived copy",
+   "status": "failed"
   },
   {
    "bytes": 1997,
