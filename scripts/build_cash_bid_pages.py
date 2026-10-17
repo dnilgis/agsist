@@ -1218,6 +1218,9 @@ def board_section(bd, snap_ct):
             else f"call{who} to confirm")
     name = bd["operator"] or bd["city"]
     loc = near_text(bd) or (bd["city"] if bd["city"] and bd["city"].lower() != name.lower() else "")
+    # the company's own page (scripts/build_company_pages.py), when it has one
+    co = (f'<div class="loc"><a href="{esc(bd["company_path"])}">Every {esc(bd["company_short"])} location</a></div>'
+          if bd.get("company_path") else "")
     trs = []
     for r in rows:
         com = r["commodity"]
@@ -1241,7 +1244,7 @@ def board_section(bd, snap_ct):
     holds = hold_lines(bd)
     more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t, _ in holds)
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
-            + (f'<div class="loc">{esc(loc)}</div>' if loc else "")
+            + (f'<div class="loc">{esc(loc)}</div>' if loc else "") + co
             + portal_html(pi, snap_ct)
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
@@ -2335,6 +2338,13 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
            "counts": state_counts(towns, near), "zip_coord": zip_coord, "summaries": summaries,
            "hist": _hist_lookup(hist_dir) if hist_dir else None, "live_all": live_board_list(towns),
            "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {}}
+    # one page per company with COMPANY_MIN or more boards in towns; each board
+    # learns its page first, so its town page can link it
+    import build_company_pages as CO
+    companies = CO.group(towns, {s_["id"]: s_ for s_ in index.get("sources") or [] if s_.get("id")})
+    for co in companies.values():
+        for _, bd in co["locs"]:
+            bd["company_path"], bd["company_short"] = co["path"], co["short"]
     before = set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
@@ -2361,6 +2371,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         with open(os.path.join(tmp, url_slug(STATE_NAMES[st]), "index.html"), "w", encoding="utf-8") as f:
             f.write(page)
         smetas.append(sm)
+    cmetas, cindex = CO.write_all(companies, ctx, tmp)
     assert not os.path.exists(os.path.join(tmp, "index.html")), "cash-bids/index.html would capture /cash-bids"
     # swap in: towns that no longer have any network board disappear with the old tree
     shutil.rmtree(out_dir, ignore_errors=True)
@@ -2398,6 +2409,9 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             stamp_basis_hub(hub, doc)
     entries = [(SITE + m["path"], m["latest"]) for m in smetas if m["indexable"]]
     entries += [(SITE + m["path"], m["latest"]) for m in metas if m["indexable"]]
+    if cindex["indexable"]:
+        entries.append((SITE + cindex["path"], cindex["latest"] or gen))
+    entries += [(SITE + m["path"], m["latest"]) for m in cmetas if m["indexable"]]
     if sitemap:
         write_sitemap(sitemap, entries)
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(out_dir) for f in fs)
@@ -2410,6 +2424,11 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
           f"{len(smetas)} state indexes, {sum(m['elevators'] for m in metas)} elevators, "
           f"{sum(m['rows'] for m in metas)} bid rows, {size / 1024:.0f} KB -> {out_dir}/; "
           f"{len(entries)} sitemap URLs; {len(new_urls)} new pages")
+    if cmetas:
+        big = max(cmetas, key=lambda m: m["kb"])
+        print(f"[cash-bid-pages] {len(cmetas)} company pages ({sum(1 for m in cmetas if m['indexable'])} with a current "
+              f"bid), {sum(m['kb'] for m in cmetas):.0f} KB in all, biggest {big['slug']} {big['kb']:.0f} KB "
+              f"({big['locations']} locations)")
     return metas, smetas, drops, new_urls
 
 
@@ -2775,6 +2794,8 @@ def selftest():
         assert bool(got) == on, d
         assert got in ("", '<p class="rp-promo" data-rain-print-promo hidden></p>')
     assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
+    import build_company_pages as CO      # the company pages, built inside build_all()
+    CO.selftest()
     print("selftest OK")
 
 
