@@ -587,8 +587,8 @@
         <section class="rp-step" id="rp-where" aria-labelledby="rp-draw-h">
           <h2 class="sec-h rp-step-h" id="rp-draw-h"><span class="rp-n" aria-hidden="true">1</span>Where and when</h2>
           <form class="rp-form" id="rp-form" autocomplete="off" aria-labelledby="rp-draw-h">
-            <label class="field rp-place"><span>Town nearest the farm or home</span><input id="rp-place" type="text" maxlength="32" placeholder="Chetek, WI" required></label>
-            <label class="field rp-year"><span>Year</span><select id="rp-year"><option value="2025">2025</option></select></label>
+            <label class="field rp-place"><span>Town nearest the farm or home</span><input id="rp-place" name="place" type="text" maxlength="32" placeholder="Chetek, WI" required></label>
+            <label class="field rp-year"><span>Year</span><select id="rp-year" name="year"><option value="2025">2025</option></select></label>
             <button class="btn btn-primary" id="rp-go" type="submit">Draw my year</button>
           </form>
           <!-- Canada (2026-10-16, components/rp-canada.js): shows once a Canadian town is drawn -->
@@ -1003,17 +1003,17 @@
       </div>
     </div>
   </dialog>
+  <!-- 2026-10-17 (speed panel): every script deferred, in the order they ran before (loader.js after the page's
+       own, as when the page's ran during parsing). rp-logo.js, gdu-stages.js and rain-print-extras.js load
+       when a logo, a crop or a temperature option is first wanted (components/rain-print.js logoReady, extrasReady). -->
+  <script src="/components/util.js?v=19" defer></script>
+  <script src="/components/qr.js?v=10" defer></script>
+  <script src="/components/form-post.js?v=4" defer></script>
+  <script src="/components/rp-short.js?v=5" defer></script>
+  <script src="/components/rp-canada.js?v=2" defer></script>
+  <script src="/components/rain-print-art.js?v=15" defer></script>
+  <script src="/components/rain-print.js?v=50" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/util.js?v=19"></script>
-  <script src="/components/qr.js?v=10"></script>
-  <script src="/components/form-post.js?v=4"></script>
-  <script src="/components/rp-short.js?v=5"></script>
-  <script src="/components/rp-logo.js?v=2"></script>
-  <script src="/components/rp-canada.js?v=1"></script>
-  <script src="/components/gdu-stages.js?v=1"></script>
-  <script src="/components/rain-print-extras.js?v=1"></script>
-  <script src="/components/rain-print-art.js?v=14"></script>
-  <script src="/components/rain-print.js?v=49"></script>
   <script src="/components/rp-gift.js?v=5" defer></script>
 </body>
 </html>

@@ -1850,7 +1850,7 @@
     if (RECS_P) return RECS_P;
     RECS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rain-print-records.js?v=3';
+      sc.src = '/components/rain-print-records.js?v=4';
       sc.onload = function () { res(!!root.AgRainRecords); };
       sc.onerror = function () { RECS_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -2907,6 +2907,7 @@
   function geocode(q) { return PICKED && PICKED.q === q ? Promise.resolve(PICKED.hit) : geoFind(q); }
   var reqToken = 0;
   function run(e, preset) {
+    if (e && !e.auto) fontsSoon();   // the reader's own draw; the sample waits for the page's load
     if (e) e.preventDefault();
     var next;
     if (preset) next = preset;
@@ -4399,7 +4400,7 @@
     if (INS_P) return INS_P;
     INS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rp-insert.js?v=2';
+      sc.src = '/components/rp-insert.js?v=3';
       sc.onload = function () { res(!!root.AgRpInsert); };
       sc.onerror = function () { INS_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -4838,8 +4839,19 @@
   markLinkCuts(cutLabels(root.location.search));
   if (LINK_WHY) { $('rp-link-note').textContent = LINK_WHY; $('rp-link-note').hidden = false; }
   showBuy(false);
-  // the art measures its labels with these fonts: draw again once they are in
-  fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
+  /* The art measures its labels with these fonts: draw again once they are in.
+     They are asked for when a draw starts, when the reader reaches the form, or
+     after the page has loaded, not at the start (2026-10-17, speed panel: about
+     170 KB of print fonts raced the page's own scripts on a slow phone). */
+  var FONTS_ASKED = false;
+  function fontsSoon() {
+    if (FONTS_ASKED) return;
+    FONTS_ASKED = true;
+    fontsReady().then(function () { if (DATA && !BLOCKED) render(); });
+  }
+  if (doc.readyState === 'complete') setTimeout(fontsSoon, 0);
+  else root.addEventListener('load', function () { setTimeout(fontsSoon, 0); });
+  ['focusin', 'pointerdown'].forEach(function (ev) { form.addEventListener(ev, fontsSoon, { once: true }); });
   PRICES_P = loadPrices();
   // a town with no year, or a year that can't be drawn, draws the last full year (linkProblem says so)
   var LINK_REF = ST.place ? null : shortRefOf(new URLSearchParams(root.location.search).get('d'));

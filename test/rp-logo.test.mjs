@@ -203,7 +203,11 @@ test("the page: the upload under the name, its help line, the color switch, the 
   assert.match(H, /id="rp-logo-remove" hidden>Remove</);
   assert.match(H, />Logo for the prints \(optional\)</);   // no separate note card (Sig, 2026-10-17)
   const i = (s) => H.indexOf(s);
-  assert.ok(i("/components/rp-logo.js?v=") > 0 && i("/components/rp-logo.js?v=") < i("/components/rain-print.js?v="), "loaded before the engine");
+  // 2026-10-17 (speed panel): the engine loads rp-logo.js when a logo is first wanted (a ?logo= link or the file picker)
+  assert.ok(i("/components/rp-logo.js?v=") < 0, "not loaded up front on /rain-print");
+  assert.match(E, /sc\.src = '\/components\/rp-logo\.js\?v=2';/, "the engine loads it on demand");
+  assert.match(E, /if \(!root\.AgRpLogo\) \{\n\s+LOGO = \{ id: id, state: 'loading'[\s\S]{0,200}logoReady\(\)\.then/, "a design with a logo waits for it");
+  assert.match(E, /logoReady\(\)\.then\(function \(ok\) \{ if \(ok\) pickLogo\(f\[0\]\)/, "a picked file waits for it");
   assert.match(read("rp-gift.html"), /\/components\/rp-logo\.js\?v=2/);
   assert.match(E, /list\.push\(\['Logo', esc\(rows\['Logo'\]\) \+ \(la \? '<img class="rp-plogo"/);
   assert.match(E, /return 'added, ' \+ \(ST\.logoInk/);
