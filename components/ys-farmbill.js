@@ -10,7 +10,7 @@
     [['corn', 'Corn', 'corn_acres_planted'], ['soybeans', 'Soybeans', 'bean_acres_planted'], ['wheat', 'Wheat', 'wheat_prod']].forEach(function (c) {
       var k = Y0.crops && Y0.crops[c[0]], e = k && k.erp && k.erp.erp, u = k && k.scen && k.scen.usda;
       if (typeof e !== 'number' || (stats && !(stats[c[2]] > 0))) return;
-      var s = '<b>' + c[1] + '</b>' + (stats && c[0] !== 'wheat' ? ' (' + h.num(stats[c[2]]) + ' million acres planted in ' + h.esc(name) + ', ' + stats.year + ')' : '') +
+      var s = '<b>' + c[1] + '</b>' + (stats && c[0] !== 'wheat' ? ' (' + stats[c[2]].toFixed(1) + ' million acres planted in ' + h.esc(name) + ', ' + stats.year + ')' : '') +
         ': ' + yr + ' PLC pays below ' + h.money(e) + ' a bushel, the effective reference price (the 2025 law set ' + h.money(k.statutory) + ', up from ' + h.money(k.prior_statutory) + ').';
       if (typeof u === 'number') {
         /* PLC rate = effective reference price - the higher of the season-average price and the loan rate */

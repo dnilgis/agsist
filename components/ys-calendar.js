@@ -45,7 +45,7 @@
     if (pd) {
       var mo = +pd.date.slice(5, 7), cs = mo >= 8 && mo <= 11, sl = cs && stats && stats.forecast ? h.statLine(stats, name) : '';
       s = '<b>Crop Production</b>, ' + when(pd) + ': USDA’s ' + h.esc(name) + (cs ? ' corn and soybean yields.' : ' crop estimates.');
-      if (sl) { s += ' Last time, ' + sl.replace('USDA’s', 'USDA’s'); src.push('USDA NASS state forecast, ' + h.nassDay(stats)); }
+      if (sl) { s += ' Last time, ' + sl; src.push('USDA NASS state forecast, ' + h.nassDay(stats)); }
       out.push(s);
     }
     var fs = next('fsa');

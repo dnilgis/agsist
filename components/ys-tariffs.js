@@ -19,7 +19,7 @@
       if (b && typeof b.median === 'number' && isFinite(b.median)) {
         var cc = Math.round(b.median * 1e6) / 1e4;
         s += (s ? ' ' : '') + 'Basis ' + (Math.abs(cc) < 0.125 ? 'even with' : qc(cc) + '¢ ' + (cc < 0 ? 'under' : 'over')) + ' ' + h.esc(b.label || b.contract) +
-          (typeof b.wow === 'number' && b.wow ? ', ' + qc(b.wow) + '¢ ' + (b.wow > 0 ? 'stronger' : 'weaker') + ' on the week' : '') + ' (' + b.n + ' elevator' + (b.n === 1 ? '' : 's') + ').';
+          (typeof b.wow === 'number' ? ', ' + (b.wow ? qc(b.wow) + '¢ ' + (b.wow > 0 ? 'stronger' : 'weaker') : 'unchanged') + ' on the week' : '') + ' (' + b.n + ' elevator' + (b.n === 1 ? '' : 's') + ').';
         based = true;
       }
       if (s) out.push('<b>' + c[2] + '</b>: ' + s);

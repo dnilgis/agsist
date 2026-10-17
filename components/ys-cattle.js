@@ -10,9 +10,13 @@
     var A = o.d['cattle-auction'], q = o.d.prices && o.d.prices.quotes && o.d.prices.quotes['feeders-nearby'], p = o.loc, geo = p.lat !== null, list = [];
     (A && A.barns || []).forEach(function (b) {
       var s = b.sales && b.sales[0], mi = geo && typeof b.lat === 'number' ? miles(p, b) : null;
-      if (s && s.classes && h.age(s.date, o.now) <= 21 && (geo ? mi !== null && mi <= NEAR : b.state === st)) list.push({ b: b, s: s, mi: mi });
+      if (s && s.classes && h.age(s.date, o.now) <= 21 && (geo ? mi !== null : b.state === st)) list.push({ b: b, s: s, mi: mi });
     });
     list.sort(function (x, y) { return geo ? x.mi - y.mi : x.s.date < y.s.date ? 1 : -1; });
+    /* none within 250 miles: say so, then the two closest, miles shown */
+    var far = geo && list.length && list[0].mi > NEAR;
+    if (far) { out.push('No sale barn in the USDA reports we read is within ' + NEAR + ' miles of you. The closest:'); list = list.slice(0, 2); }
+    else if (geo) list = list.filter(function (x) { return x.mi <= NEAR; });
     var board = q && typeof q.close === 'number' && h.age(q.close_date, o.now) <= 5 ? q : null, k = board && h.esc(board.contract || 'nearby'), n = 0;
     list.slice(0, 3).forEach(function (x) {
       var c = x.s.classes['steers|1-2'] ? 'steers|1-2' : 'steers|1', K = x.s.classes[c] || {}, parts = [], e = K['800'];
@@ -27,7 +31,7 @@
       }
       out.push(s); n++;
     });
-    if (!n) out.push('No sale barn in the USDA reports we read ' + (geo ? 'is within ' + NEAR + ' miles of you' : 'is in ' + h.esc(name)) + ' with a sale in the last three weeks.');
+    if (!n && !far) out.push('No sale barn in the USDA reports we read ' + (geo ? 'has' : 'in ' + h.esc(name) + ' has') + ' a steer sale on file from the last three weeks.');
     if (board) out.push('Feeder futures, ' + k + ', settled ' + h.money(board.close) + ' on ' + h.day(board.close_date) + '. A barn average is not the CME index; the gap is AGSIST arithmetic, same day only.');
     if (n) src.push('USDA AMS auction reports, each barn’s latest sale' + (geo ? '; straight-line miles from your saved spot' : ''));
     if (board) src.push('CME settles as Yahoo Finance reports them');
