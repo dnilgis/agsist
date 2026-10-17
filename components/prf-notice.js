@@ -44,6 +44,7 @@
     return n >= 6196 && n <= 34941 && row >= 20 && row <= 116 && col >= 21 && col <= 251;
   }
   function source() {
+    if (typeof location === 'undefined') return 'page:prf';
     return 'page:' + (location.pathname.replace(/\.html$/, '').replace(/^\/+|\/+$/g, '') || 'prf');
   }
   function askHtml(grid, after) {
@@ -66,7 +67,9 @@
     if (!el) return;
     if (!document.getElementById('prf-notice-css')) {
       var st = document.createElement('style'); st.id = 'prf-notice-css';
-      st.textContent = '.prf-notice{margin:1rem 0 .25rem}.prf-notice[hidden]{display:none}.prf-notice-done{margin:0;font-size:.9rem;color:var(--text-muted,#666)}';
+      st.textContent = '.prf-notice{margin:1rem 0 .25rem}.prf-notice[hidden]{display:none}.prf-notice-done{margin:0;font-size:.9rem;color:var(--text-muted,#666)}'
+        /* the /prf grid card is a narrow column on a wide screen: keep the label on its own line */
+        + '.prf-notice .sa-f{grid-template-columns:minmax(0,1fr) auto}.prf-notice .sa-l{grid-column:1/-1}.prf-notice .sa-in{grid-column:1}.prf-notice .sa-b{grid-column:2}';
       document.head.appendChild(st);
     }
     var shown = '';
