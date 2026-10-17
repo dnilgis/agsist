@@ -25,7 +25,7 @@
 <meta property="og:site_name"    content="AGSIST">
 <meta property="og:locale"       content="en_US">
 <meta property="og:title"        content="Soybean &amp; Corn Yield Calculator | AGSIST">
-<meta property="og:description"  content="Estimate pre-harvest corn and soybean yield from field measurements. Ear count method (corn) and pod count method (soybeans). Free.">
+<meta property="og:description"  content="Soybean yield from pod counts and corn yield from ear counts: bushels per acre from your own field counts. Free.">
 <meta property="og:url"          content="https://agsist.com/yield-estimator">
 <meta property="og:image"        content="https://agsist.com/img/og/yield-estimator.jpg?v=ac98c70f">
 <meta property="og:image:alt" content="Soybean and corn yield calculator. Bushels per acre from your own ear and pod counts.">
@@ -35,7 +35,7 @@
 <meta name="twitter:site"        content="@agsist">
 <meta name="twitter:creator"     content="@agsist">
 <meta name="twitter:title"       content="Soybean &amp; Corn Yield Calculator | AGSIST">
-<meta name="twitter:description" content="Pre-harvest yield estimation from field counts. Corn and soybean. Free.">
+<meta name="twitter:description" content="Soybean yield from pod counts and corn yield from ear counts: bushels per acre from your own field counts. Free.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/yield-estimator.jpg?v=ac98c70f">
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
@@ -202,7 +202,7 @@
   <div class="ye-hero">
     <div class="ye-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-harvest field estimate</div>
     <h1>Soybean and corn<br>yield calculator</h1>
-    <p class="page-lede">Corn and soybean bushels per acre from your own field counts: ear counts for corn, pod counts for soybeans.</p>
+    <p class="page-lede">Soybean and corn bushels per acre from your own field counts: pod counts for soybeans, ear counts for corn.</p>
     <details class="ye-more"><summary>When to count, and how accurate it is</summary>
       <p>Count corn from the milk stage (R3) on and soybeans at R6 to R7, the same ear-count and kernel-count math crop tour scouts run in August. Sample at least 5 locations per field, 10 ears or plants each. The calculator averages up to 10 sites and lists each one.</p>
       <p><strong>Method:</strong> Yield Component Method (ears &times; kernel rows &times; kernels per row &divide; 85, for a 1/1000-acre sample). Kernels per bushel is the guess: Purdue&rsquo;s Bob Nielsen says to &ldquo;perform separate calculations using kernel weight &lsquo;fudge factor&rsquo; values equal to 65, 75, and 85,&rdquo; and 90 to 100 after a stressful grain fill. His recent trials averaged about 76,000. We show 75,000, 85,000 and 95,000 side by side and headline 85,000. <strong>Accuracy:</strong> corn estimates run about &plusmn;20 bu/ac, the figure Purdue, Iowa State, Ohio State and Penn State Extension all give for this method. Soybean estimates are looser still; Michigan State puts them at &plusmn;25% or worse before R6. Not a substitute for yield monitor or combine data.</p>
@@ -211,12 +211,12 @@
   </div>
 
   <nav class="ye-tabs" role="tablist" aria-label="Crop estimator tabs">
-    <button class="ye-tab active" id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="true"  aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
-    <button class="ye-tab"        id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="false" aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
+    <button class="ye-tab active" id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="true"  aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
+    <button class="ye-tab"        id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="false" aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
   </nav>
 
   <!-- CORN TAB -->
-  <div class="ye-panel active" id="ye-corn" role="tabpanel" aria-labelledby="ye-tab-corn" tabindex="0">
+  <div class="ye-panel" id="ye-corn" role="tabpanel" aria-labelledby="ye-tab-corn" tabindex="0" aria-hidden="true">
     <div class="ye-panel-head">
       <h2>Corn <span style="color:var(--gold)">yield calculator</span></h2>
       <span class="badge">Ear count method</span>
@@ -329,7 +329,7 @@
   </div>
 
   <!-- SOYBEAN TAB -->
-  <div class="ye-panel" id="ye-bean" role="tabpanel" aria-labelledby="ye-tab-bean" tabindex="0" aria-hidden="true">
+  <div class="ye-panel active" id="ye-bean" role="tabpanel" aria-labelledby="ye-tab-bean" tabindex="0">
     <div class="ye-panel-head">
       <h2>Soybean <span style="color:var(--gold)">yield calculator</span></h2>
       <span class="badge">Pod count method</span>
@@ -482,7 +482,7 @@ if(FALL){
   var kk=document.querySelector('.ye-hero .ye-eyebrow');
   if(kk&&kk.lastChild&&kk.lastChild.nodeType===3)kk.lastChild.nodeValue=' Field estimate: count before you cut';
   var ld=document.querySelector('.ye-hero .page-lede');
-  if(ld)ld.textContent='Harvest is on: a field estimate from your own counts in rows you have not cut yet, ear counts for corn and pod counts for soybeans, to set beside the yield monitor.';
+  if(ld)ld.textContent='Harvest is on: a field estimate from your own counts in rows you have not cut yet, pod counts for soybeans and ear counts for corn, to set beside the yield monitor.';
 }
 
 /* TAB SYSTEM */
@@ -507,7 +507,11 @@ tabs.forEach(function(b,i){b.addEventListener('keydown',function(e){
   if(n){e.preventDefault();switchTab(n.dataset.tab);n.focus();}
 });});
 
-var activeCrop='corn';
+/* 2026-10-17: Soybeans opens first. Search Console, Jul 15 to Oct 14: "soybean yield
+   calculator" was the page's top query (3,181 impressions, position 6.1) and corn
+   queries were a fraction of that. #corn opens the corn tab. */
+var activeCrop='bean';
+if(/^#corn/.test(location.hash))switchTab('corn');
 
 /* ROW LENGTH LOOKUP (1/1000 acre for given row width) */
 var ROW_LENGTHS={20:'26\'2"',30:'17\'5"',36:'14\'6"',38:'13\'9"',40:'13\'1"',15:'34\'10"',7.5:'69\'8"'};
