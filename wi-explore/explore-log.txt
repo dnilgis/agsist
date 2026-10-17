@@ -1,0 +1,222 @@
+robots.txt (133 bytes): User-agent: *
+
+Disallow: /_layouts/
+Disallow: /_vti_bin/
+Disallow: /_catalogs/
+Disallow: /Pages/Employment/Badge-Photo.aspx
+
+
+
+robots allows /Pages/ERETR/data-home.aspx: True
+robots allows /SLFReportsHistSales/: True
+robots allows /: True
+[01-home] url https://tap.revenue.wi.gov/mta/_/ title 'My Tax Account'; 14 visible controls
+   A# 'Skip to Main Content' href=#CONTROL_CONTAINER__0 onclick=
+   A# '' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   BUTTON# 'Open Chat' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   BUTTON# 'Support' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   A#ManagerBackNavigation 'Go back to\nHome' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   BUTTON#Dc-a 'Disagree' href= onclick=
+   BUTTON#Dc-b 'Agree' href= onclick=
+   A# '' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   A# 'DOR' href=https://www.revenue.wi.gov/ onclick=
+   A# 'Common Questions' href=https://www.revenue.wi.gov/Pages/FAQS/home.aspx onclick=
+   A# 'Forms' href=https://www.revenue.wi.gov/Pages/HTML/formpub.aspx onclick=
+   A# 'Publications' href=https://www.revenue.wi.gov/Pages/HTML/pubs.aspx onclick=
+   A# 'Training' href=https://www.revenue.wi.gov/Pages/Training/Home.aspx onclick=
+   A# 'Contact Us' href=https://www.revenue.wi.gov/Pages/ContactUs/home.aspx onclick=
+   text: Skip to Main Content Open Chat Support Go back to Home Disclaimer This site is intended as a general index to Real Estate Transfer Return (RETR) data and related assessment information. The State of Wisconsin and the Department of Revenue assume no responsibility whatsoever for direct, indirect, special, consequential, exemplary, or other damages. The data contained on this site is intended for informational purposes only and is not intended for detailed, site-specific analysis. All information is believed accurate but is NOT guaranteed to be without error. It is based on the best information available at the time of posting and may not reflect the most current records. By proceeding with a search, you are confirming that you have read this notice and you understand and agree with its contents. Disagree Agree For your security, this application times out after 15 minutes. All unsaved information will be lost. DOR Common Questions Forms Publications Training Contact Us Copyright © 2026 State of Wisconsin. All Rights Reserved.
+tap robots.txt: HTTP Error 404: Not Found
+clicking the disclaimer's Agree
+[02-after-agree] url https://tap.revenue.wi.gov/mta/_/#2 title 'My Tax Account'; 86 visible controls
+   A# 'Skip to Main Content' href=#CONTROL_CONTAINER__0 onclick=
+   A# '' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   BUTTON# 'Open Chat' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   BUTTON# 'Support' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   A#ManagerBackNavigation 'Go back to\nHome' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   A#cl_Dc-o 'View CSV Documentation' href=#sQHFKbM3lhG8Djnh_Dc-o onclick=
+   A#cl_Dc-p 'View XML Schema' href=#sQHFKbM3lhG8Djnh_Dc-p onclick=
+   A#cl_Dc-c1-6 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-6 onclick=
+   A#cl_Dc-d1-6 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-6 onclick=
+   A#cl_Dc-e1-6 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-6 onclick=
+   A#cl_Dc-f1-6 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-6 onclick=
+   A#cl_Dc-g1-6 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-6 onclick=
+   A#cl_Dc-h1-6 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-6 onclick=
+   A#cl_Dc-i1-6 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-6 onclick=
+   A#cl_Dc-j1-6 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-6 onclick=
+   A#cl_Dc-k1-6 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-6 onclick=
+   A#cl_Dc-l1-6 'October' href= onclick=
+   A#cl_Dc-m1-6 'November' href= onclick=
+   A#cl_Dc-n1-6 'December' href= onclick=
+   A#cl_Dc-c1-5 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-5 onclick=
+   A#cl_Dc-d1-5 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-5 onclick=
+   A#cl_Dc-e1-5 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-5 onclick=
+   A#cl_Dc-f1-5 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-5 onclick=
+   A#cl_Dc-g1-5 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-5 onclick=
+   A#cl_Dc-h1-5 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-5 onclick=
+   A#cl_Dc-i1-5 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-5 onclick=
+   A#cl_Dc-j1-5 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-5 onclick=
+   A#cl_Dc-k1-5 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-5 onclick=
+   A#cl_Dc-l1-5 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-5 onclick=
+   A#cl_Dc-m1-5 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-5 onclick=
+   A#cl_Dc-n1-5 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-5 onclick=
+   A#cl_Dc-c1-4 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-4 onclick=
+   A#cl_Dc-d1-4 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-4 onclick=
+   A#cl_Dc-e1-4 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-4 onclick=
+   A#cl_Dc-f1-4 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-4 onclick=
+   A#cl_Dc-g1-4 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-4 onclick=
+   A#cl_Dc-h1-4 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-4 onclick=
+   A#cl_Dc-i1-4 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-4 onclick=
+   A#cl_Dc-j1-4 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-4 onclick=
+   A#cl_Dc-k1-4 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-4 onclick=
+   A#cl_Dc-l1-4 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-4 onclick=
+   A#cl_Dc-m1-4 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-4 onclick=
+   A#cl_Dc-n1-4 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-4 onclick=
+   A#cl_Dc-c1-3 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-3 onclick=
+   A#cl_Dc-d1-3 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-3 onclick=
+   A#cl_Dc-e1-3 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-3 onclick=
+   A#cl_Dc-f1-3 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-3 onclick=
+   A#cl_Dc-g1-3 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-3 onclick=
+   A#cl_Dc-h1-3 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-3 onclick=
+   A#cl_Dc-i1-3 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-3 onclick=
+   A#cl_Dc-j1-3 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-3 onclick=
+   A#cl_Dc-k1-3 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-3 onclick=
+   A#cl_Dc-l1-3 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-3 onclick=
+   A#cl_Dc-m1-3 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-3 onclick=
+   A#cl_Dc-n1-3 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-3 onclick=
+   A#cl_Dc-c1-2 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-2 onclick=
+   A#cl_Dc-d1-2 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-2 onclick=
+   A#cl_Dc-e1-2 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-2 onclick=
+   A#cl_Dc-f1-2 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-2 onclick=
+   A#cl_Dc-g1-2 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-2 onclick=
+   A#cl_Dc-h1-2 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-2 onclick=
+   A#cl_Dc-i1-2 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-2 onclick=
+   A#cl_Dc-j1-2 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-2 onclick=
+   A#cl_Dc-k1-2 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-2 onclick=
+   A#cl_Dc-l1-2 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-2 onclick=
+   A#cl_Dc-m1-2 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-2 onclick=
+   A#cl_Dc-n1-2 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-2 onclick=
+   A#cl_Dc-c1-1 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-1 onclick=
+   A#cl_Dc-d1-1 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-1 onclick=
+   A#cl_Dc-e1-1 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-1 onclick=
+   A#cl_Dc-f1-1 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-1 onclick=
+   A#cl_Dc-g1-1 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-1 onclick=
+   A#cl_Dc-h1-1 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-1 onclick=
+   A#cl_Dc-i1-1 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-1 onclick=
+   A#cl_Dc-j1-1 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-1 onclick=
+   A#cl_Dc-k1-1 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-1 onclick=
+   A#cl_Dc-l1-1 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-1 onclick=
+   A#cl_Dc-m1-1 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-1 onclick=
+   A#cl_Dc-n1-1 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-1 onclick=
+   A# '' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   text: Skip to Main Content Open Chat Support Go back to Home Real Estate Historical Data The Historical Data tool allows you to download a file containing all Wisconsin RETRs for the selected month and year. If you need RETR data that is older than 5 years, data from multiple months and/or years, or if you need to filter your data further by county, municipality, or other fields, please return to the previous screen and select the Search Wisconsin Property Data link and generate a report from there. CSV (comma-separated values) File Open with: Microsoft Excel, Google Sheets Easiest to read Displayed as a table where each row is one return Can only show one grantor, one grantee, and one parcel XML File Open with: web browser (Microsoft Edge, Mozilla Firefox, Google Chrome) Easiest to load into a program Values are stored in tags Can show all grantors, grantees, and parcels View CSV Documentation View XML Schema What type of report would you like to generate? What type of report would you like to generate? CSV Report XML Report Click on any of the months below to generate a file for that year and month. 2026 January February March April May June July August September October November December 2025 January February March April May June July August September October November December 2024 January February March April May June July August September October November December 2023 January February March April May June July August September October November December 2022 January February March April May June July August September October November December 2021 January February March April May June July August September October November December For your security, this application times out after 15 minutes. All unsaved information will be lost. DOR Common Questions Forms Publications Training Contact Us Copyright © 2026 State of Wisconsin. All Rights Reserved.
+month links: 69 enabled of 72; years [2021, 2022, 2023, 2024, 2025, 2026]
+newest offered month: 2026-01
+xml-2026-01: download RETRHistoricalReport202601.xml (67972069 bytes) url https://tap.revenue.wi.gov/mta/_/Retrieve/0/Dc/jUkMUC1fBurc_pAjmBNEXw__?FILE__=REPORT&PARAMS__=2161084259714030725
+xml paths: Returns/Return/Parcels/Parcel=21236; Returns/Return/Parcels/Parcel/Municipality=21236; Returns/Return/Parcels/Parcel/PartOfParcelTransferred=21236; Returns/Return/Parcels/Parcel/ParcelNumber=21236; Returns/Return/Parcels/Parcel/PropertyType=21236; Returns/Return/Parcels/Parcel/GranteePrimaryResidence=21236; Returns/Return/Parcels/Parcel/PhysicalPropertyAddress=21236; Returns/Return/Parcels/Parcel/LotSquareFootage=21236; Returns/Return/Parcels/Parcel/TotalAcres=21236; Returns/Return/Parcels/Parcel/MFLPFCAcres=21236; Returns/Return/Parcels/Parcel/WaterFrontageFeet=21236; Returns/Return/Parcels/Parcel/PropertyUseType=21007; Returns/Return/Grantees/Grantee=19497; Returns/Return/Grantees/Grantee/GranteeType=19497; Returns/Return/Grantees/Grantee/Name=19497; Returns/Return/Grantees/Grantee/Address=19485; Returns/Return/Grantees/Grantee/Address/Country=19485; Returns/Return/Grantees/Grantee/Address/Street=19485; Returns/Return/Grantees/Grantee/Address/City=19485; Returns/Return/Grantees/Grantee/Address/State=19485; Returns/Return/Grantees/Grantee/Address/Zip=19485; Returns/Return/Grantors/Grantor=19476; Returns/Return/Grantors/Grantor/GrantorType=19476; Returns/Return/Grantors/Grantor/Name=19476; Returns/Return/Grantors/Grantor/Address=18596; Returns/Return/Grantors/Grantor/Address/Country=18596; Returns/Return/Grantors/Grantor/Address/Street=18596; Returns/Return/Grantors/Grantor/Address/City=18596; Returns/Return/Grantors/Grantor/Address/State=18596; Returns/Return/Grantors/Grantor/Address/Zip=18596; Returns/Return=15280; Returns/Return/County=15280; Returns/Return/County/CountyCode=15280; Returns/Return/County/DocumentNumber=15280; Returns/Return/County/RecordedDate=15280; Returns/Return/Document=15280; Returns/Return/Document/DocumentType=15280; Returns/Return/Document/ConveyanceType=15280; Returns/Return/Document/ConveyanceDate=15280; Returns/Return/Document/GrantorGranteeRelationship=15280; Returns/Return/Document/Ownership=15280; Returns/Return/Document/RightsRetained=15280; Returns/Return/Parcels=15280; Returns/Return/Grantors=15280; Returns/Return/Grantees=15280; Returns/Return/Fee=15280; Returns/Return/Fee/EstimatedValue=15280; Returns/Return/Fee/SalePrice=15280; Returns/Return/Fee/TransferFeeDue=15280; Returns/Return/Fee/PersonalPropertyExcluded=15280; Returns/Return/Fee/PersonalPropertyIncluded=15280; Returns/Return/Preparer=15280; Returns/Return/Preparer/Name=15280; Returns/Return/Preparer/Name/Name=15280; Returns/Return/TaxBill=15280; Returns/Return/TaxBill/Name=15280; Returns/Return/TaxBill/Address=15280; Returns/Return/TaxBill/Address/Country=15280; Returns/Return/TaxBill/Address/Street=15280; Returns/Return/TaxBill/Address/City=15280; Returns/Return/TaxBill/Address/State=15280; Returns/Return/TaxBill/Address/Zip=15280; Returns/Return/Grantors/Grantor/Name/FirstName=14576; Returns/Return/Grantors/Grantor/Name/LastName=14576; Returns/Return/Grantees/Grantee/Name/FirstName=13775; Returns/Return/Grantees/Grantee/Name/LastName=13775; Returns/Return/LegalDescription=13083; Returns/Return/Parcels/Parcel/Section=11281; Returns/Return/Parcels/Parcel/Township=11281; Returns/Return/Parcels/Parcel/Range=11281; Returns/Return/Parcels/Parcel/Meridian=11281; Returns/Return/TaxBill/Name/FirstName=9744; Returns/Return/TaxBill/Name/LastName=9744; Returns/Return/GrantorAgent=7825; Returns/Return/GrantorAgent/Name=7825; Returns/Return/GrantorAgent/Name/Name=7825; Returns/Return/GrantorAgent/Address=7825; Returns/Return/GrantorAgent/Address/Country=7825; Returns/Return/GrantorAgent/Address/Street=7825; Returns/Return/GrantorAgent/Address/City=7825; Returns/Return/GrantorAgent/Address/State=7825; Returns/Return/GrantorAgent/Address/Zip=7825; Returns/Return/Fee/Exemption=7491; Returns/Return/Parcels/Parcel/UnitCount=7217; Returns/Return/GranteeAgent=7146; Returns/Return/GranteeAgent/Name=7146; Returns/Return/GranteeAgent/Name/Name=7146; Returns/Return/GranteeAgent/Address=7146; Returns/Return/GranteeAgent/Address/Country=7146; Returns/Return/GranteeAgent/Address/Street=7146; Returns/Return/GranteeAgent/Address/City=7146; Returns/Return/GranteeAgent/Address/State=7146; Returns/Return/GranteeAgent/Address/Zip=7146; Returns/Return/Grantees/Grantee/Name/Name=5722; Returns/Return/TaxBill/Name/Name=5536; Returns/Return/Document/GrantorGranteeExplain=5146; Returns/Return/Grantors/Grantor/Name/Name=4900; Returns/Return/Parcels/Parcel/Subdivision=4893; Returns/Return/Parcels/Parcel/Lot=4893; Returns/Return/Parcels/Parcel/Block=4893; Returns/Return/Financing/FinancingTypes/FinancingType=4822; Returns/Return/Financing=4787; Returns/Return/Financing/FinancingTypes=4787; Returns/Return/Document/ConveyanceTypeExplain=4312; Returns/Return/Parcels/Parcel/PropertyExplain=1800; Returns/Return/Document/DocumentTypeExplain=1608; Returns/Return/Fee/PreviousDocumentNumber=1377; Returns/Return/Parcels/Parcel/Condominium=651; Returns/Return/Parcels/Parcel/UnitNumber=651; Returns/Return/Grantors/Grantor/GrantorTypeExplain=644; Returns/Return/Parcels/Parcel/PropertyUseSubType=598; Returns/Return/Document/OwnershipExplain=415; Returns/Return/Document/OriginalLandContractDate=383; Returns/Return/Grantees/Grantee/GranteeTypeExplain=369; Returns/Return/Document/RightsRetainedExplain=306; Returns/Return/Fee/StateWhereFiled=77; Returns/Return/Fee/DateFiled=6; Returns/Return/Fee/AcquiredByCorporationDate=5; Returns=1
+children per return, County: {1: 15280}
+children per return, Document: {1: 15280}
+children per return, Fee: {1: 15280}
+children per return, Financing: {1: 4787}
+children per return, GranteeAgent: {1: 7146}
+children per return, Grantees: {1: 15280}
+children per return, GrantorAgent: {1: 7825}
+children per return, Grantors: {1: 15280}
+children per return, LegalDescription: {1: 13083}
+children per return, Parcels: {1: 15280}
+children per return, Preparer: {1: 15280}
+children per return, TaxBill: {1: 15280}
+doc-xml: download MTA_RETR_Export.xsd (67667 bytes) url https://tap.revenue.wi.gov/mta/_/Retrieve/0/Dc/jUkMUC1fBurc_pAjmBNEXw__?FILE__=XMLSchema&PARAMS__=8985998713016182012
+[05-doc-xml] url https://tap.revenue.wi.gov/mta/_/#4 title 'My Tax Account'; 86 visible controls
+   A# 'Skip to Main Content' href=#CONTROL_CONTAINER__0 onclick=
+   A# '' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   BUTTON# 'Open Chat' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   BUTTON# 'Support' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   A#ManagerBackNavigation 'Go back to\nHome' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   A#cl_Dc-o 'View CSV Documentation' href=#sQHFKbM3lhG8Djnh_Dc-o onclick=
+   A#cl_Dc-p 'View XML Schema' href=#sQHFKbM3lhG8Djnh_Dc-p onclick=
+   A#cl_Dc-c1-6 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-6 onclick=
+   A#cl_Dc-d1-6 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-6 onclick=
+   A#cl_Dc-e1-6 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-6 onclick=
+   A#cl_Dc-f1-6 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-6 onclick=
+   A#cl_Dc-g1-6 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-6 onclick=
+   A#cl_Dc-h1-6 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-6 onclick=
+   A#cl_Dc-i1-6 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-6 onclick=
+   A#cl_Dc-j1-6 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-6 onclick=
+   A#cl_Dc-k1-6 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-6 onclick=
+   A#cl_Dc-l1-6 'October' href= onclick=
+   A#cl_Dc-m1-6 'November' href= onclick=
+   A#cl_Dc-n1-6 'December' href= onclick=
+   A#cl_Dc-c1-5 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-5 onclick=
+   A#cl_Dc-d1-5 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-5 onclick=
+   A#cl_Dc-e1-5 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-5 onclick=
+   A#cl_Dc-f1-5 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-5 onclick=
+   A#cl_Dc-g1-5 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-5 onclick=
+   A#cl_Dc-h1-5 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-5 onclick=
+   A#cl_Dc-i1-5 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-5 onclick=
+   A#cl_Dc-j1-5 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-5 onclick=
+   A#cl_Dc-k1-5 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-5 onclick=
+   A#cl_Dc-l1-5 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-5 onclick=
+   A#cl_Dc-m1-5 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-5 onclick=
+   A#cl_Dc-n1-5 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-5 onclick=
+   A#cl_Dc-c1-4 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-4 onclick=
+   A#cl_Dc-d1-4 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-4 onclick=
+   A#cl_Dc-e1-4 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-4 onclick=
+   A#cl_Dc-f1-4 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-4 onclick=
+   A#cl_Dc-g1-4 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-4 onclick=
+   A#cl_Dc-h1-4 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-4 onclick=
+   A#cl_Dc-i1-4 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-4 onclick=
+   A#cl_Dc-j1-4 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-4 onclick=
+   A#cl_Dc-k1-4 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-4 onclick=
+   A#cl_Dc-l1-4 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-4 onclick=
+   A#cl_Dc-m1-4 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-4 onclick=
+   A#cl_Dc-n1-4 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-4 onclick=
+   A#cl_Dc-c1-3 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-3 onclick=
+   A#cl_Dc-d1-3 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-3 onclick=
+   A#cl_Dc-e1-3 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-3 onclick=
+   A#cl_Dc-f1-3 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-3 onclick=
+   A#cl_Dc-g1-3 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-3 onclick=
+   A#cl_Dc-h1-3 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-3 onclick=
+   A#cl_Dc-i1-3 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-3 onclick=
+   A#cl_Dc-j1-3 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-3 onclick=
+   A#cl_Dc-k1-3 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-3 onclick=
+   A#cl_Dc-l1-3 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-3 onclick=
+   A#cl_Dc-m1-3 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-3 onclick=
+   A#cl_Dc-n1-3 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-3 onclick=
+   A#cl_Dc-c1-2 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-2 onclick=
+   A#cl_Dc-d1-2 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-2 onclick=
+   A#cl_Dc-e1-2 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-2 onclick=
+   A#cl_Dc-f1-2 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-2 onclick=
+   A#cl_Dc-g1-2 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-2 onclick=
+   A#cl_Dc-h1-2 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-2 onclick=
+   A#cl_Dc-i1-2 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-2 onclick=
+   A#cl_Dc-j1-2 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-2 onclick=
+   A#cl_Dc-k1-2 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-2 onclick=
+   A#cl_Dc-l1-2 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-2 onclick=
+   A#cl_Dc-m1-2 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-2 onclick=
+   A#cl_Dc-n1-2 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-2 onclick=
+   A#cl_Dc-c1-1 'January' href=#sQHFKbM3lhG8Djnh_Dc-c1-1 onclick=
+   A#cl_Dc-d1-1 'February' href=#sQHFKbM3lhG8Djnh_Dc-d1-1 onclick=
+   A#cl_Dc-e1-1 'March' href=#sQHFKbM3lhG8Djnh_Dc-e1-1 onclick=
+   A#cl_Dc-f1-1 'April' href=#sQHFKbM3lhG8Djnh_Dc-f1-1 onclick=
+   A#cl_Dc-g1-1 'May' href=#sQHFKbM3lhG8Djnh_Dc-g1-1 onclick=
+   A#cl_Dc-h1-1 'June' href=#sQHFKbM3lhG8Djnh_Dc-h1-1 onclick=
+   A#cl_Dc-i1-1 'July' href=#sQHFKbM3lhG8Djnh_Dc-i1-1 onclick=
+   A#cl_Dc-j1-1 'August' href=#sQHFKbM3lhG8Djnh_Dc-j1-1 onclick=
+   A#cl_Dc-k1-1 'September' href=#sQHFKbM3lhG8Djnh_Dc-k1-1 onclick=
+   A#cl_Dc-l1-1 'October' href=#sQHFKbM3lhG8Djnh_Dc-l1-1 onclick=
+   A#cl_Dc-m1-1 'November' href=#sQHFKbM3lhG8Djnh_Dc-m1-1 onclick=
+   A#cl_Dc-n1-1 'December' href=#sQHFKbM3lhG8Djnh_Dc-n1-1 onclick=
+   A# '' href=#dHLkkQ5TBw6Ymdw5 onclick=
+   text: Skip to Main Content Open Chat Support Go back to Home Real Estate Historical Data The Historical Data tool allows you to download a file containing all Wisconsin RETRs for the selected month and year. If you need RETR data that is older than 5 years, data from multiple months and/or years, or if you need to filter your data further by county, municipality, or other fields, please return to the previous screen and select the Search Wisconsin Property Data link and generate a report from there. CSV (comma-separated values) File Open with: Microsoft Excel, Google Sheets Easiest to read Displayed as a table where each row is one return Can only show one grantor, one grantee, and one parcel XML File Open with: web browser (Microsoft Edge, Mozilla Firefox, Google Chrome) Easiest to load into a program Values are stored in tags Can show all grantors, grantees, and parcels View CSV Documentation View XML Schema What type of report would you like to generate? What type of report would you like to generate? CSV Report XML Report Click on any of the months below to generate a file for that year and month. 2026 January February March April May June July August September October November December 2025 January February March April May June July August September October November December 2024 January February March April May June July August September October November December 2023 January February March April May June July August September October November December 2022 January February March April May June July August September October November December 2021 January February March April May June July August September October November December For your security, this application times out after 15 minutes. All unsaved information will be lost. DOR Common Questions Forms Publications Training Contact Us Copyright © 2026 State of Wisconsin. All Rights Reserved.
+requests (21):
+   GET 302 document   https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx post=
+   GET 302 document   https://tap.revenue.wi.gov/RETRHistoric post=
+   GET 302 document application/xml  https://tap.revenue.wi.gov/mta/?Link=RETRHistoric post=
+   GET 302 document application/xml  https://tap.revenue.wi.gov/mta/?Link=RETRHistoric&Check=1 post=
+   GET 200 document text/html; charset=utf-8  https://tap.revenue.wi.gov/mta/_/ post=
+   GET 200 xhr application/json  https://tap.revenue.wi.gov/mta/_/?Load=1&FAST_SCRIPT_VER__=1&FAST_VERLAST__=1.MLGBNUVE._._.8WLWe58b2UkMDLLU1GS7pFoYHn4&FAST_VERLAST_SOURCE__=HTML%3A%20_%20%5BPage%3A527390891%5D%20%40%202026-10-17%201 post=
+   POST 200 xhr application/json  https://tap.revenue.wi.gov/mta/_/EventOccurred post=LASTFOCUSFIELD__=Dc-b&DOC_MODAL_ID__=0&EVENT__=Dc-b&TYPE__=0&CLOSECONFIRMED__=false&SCREENWIDTH__=2&SCROLLPOSITIONS__=&FAST_SCRIPT_VER__=1&FAST_VERLAST__=2.MLGBNUVE._._.SKIFdo5Qr27nvs7m5f0m6z_pehY&FAST_VERLAST_SOURCE__=_%3APage%3A1965840508%20%40%202026-10-17%2010%3A00%3A05.7028&FAST_CLIENT_WHEN__=1
+   POST 200 xhr application/json  https://tap.revenue.wi.gov/mta/_/Recalc post=Dc-s=XML&LASTFOCUSFIELD__=Dc-s_1&DOC_MODAL_ID__=0&FAST_SCRIPT_VER__=1&FAST_VERLAST__=3.MLGBNUVE._._._7ktFpPdwyMh81nAim0ZVXm0qYo&FAST_VERLAST_SOURCE__=_%3AEventOccurred%3A1309131175%20%40%202026-10-17%2010%3A00%3A09.9635&FAST_CLIENT_WHEN__=1792249214096&FAST_CLIENT_WINDOW__=FWDC.WND-5c1a-f30b-4dc4&FA
+   POST 200 xhr application/json  https://tap.revenue.wi.gov/mta/_/EventOccurred post=Dc-s=XML&LASTFOCUSFIELD__=cl_Dc-c1-6&DOC_MODAL_ID__=0&EVENT__=Dc-c1-6&TYPE__=0&CLOSECONFIRMED__=false&SCREENWIDTH__=2&SCROLLPOSITIONS__=&FAST_SCRIPT_VER__=1&FAST_VERLAST__=4.MLGBNUVE._._.mzRuEBDPDqkiy5BQqMAd9ydwDX4&FAST_VERLAST_SOURCE__=_%3ARecalc%3A1724101962%20%40%202026-10-17%2010%3A00%3A14.1218&
+   POST 200 xhr application/json  https://tap.revenue.wi.gov/mta/_/EventOccurred post=Dc-s=XML&LASTFOCUSFIELD__=cl_Dc-p&DOC_MODAL_ID__=0&EVENT__=Dc-p&TYPE__=0&CLOSECONFIRMED__=false&SCREENWIDTH__=2&SCROLLPOSITIONS__=&FAST_SCRIPT_VER__=1&FAST_VERLAST__=5.MLGBNUVE._._.3wd4in-b3KlxI4uyx-e6AO206RE&FAST_VERLAST_SOURCE__=_%3AEventOccurred%3A778924521%20%40%202026-10-17%2010%3A00%3A21.0011&

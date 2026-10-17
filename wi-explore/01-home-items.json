@@ -1,0 +1,137 @@
+[
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Skip to Main Content",
+  "href": "#CONTROL_CONTAINER__0",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "BUTTON",
+  "id": "",
+  "text": "Open Chat",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "BUTTON",
+  "id": "",
+  "text": "Support",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "ManagerBackNavigation",
+  "text": "Go back to\nHome",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "BUTTON",
+  "id": "Dc-a",
+  "text": "Disagree",
+  "href": "",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "BUTTON",
+  "id": "Dc-b",
+  "text": "Agree",
+  "href": "",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Scroll for More",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": false,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "DOR",
+  "href": "https://www.revenue.wi.gov/",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Common Questions",
+  "href": "https://www.revenue.wi.gov/Pages/FAQS/home.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Forms",
+  "href": "https://www.revenue.wi.gov/Pages/HTML/formpub.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Publications",
+  "href": "https://www.revenue.wi.gov/Pages/HTML/pubs.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Training",
+  "href": "https://www.revenue.wi.gov/Pages/Training/Home.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Contact Us",
+  "href": "https://www.revenue.wi.gov/Pages/ContactUs/home.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ }
+]

@@ -1,0 +1,785 @@
+[
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Skip to Main Content",
+  "href": "#CONTROL_CONTAINER__0",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "BUTTON",
+  "id": "",
+  "text": "Open Chat",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "BUTTON",
+  "id": "",
+  "text": "Support",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "ManagerBackNavigation",
+  "text": "Go back to\nHome",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-o",
+  "text": "View CSV Documentation",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-o",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-p",
+  "text": "View XML Schema",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-p",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-c1-6",
+  "text": "January",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-c1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-d1-6",
+  "text": "February",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-d1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-e1-6",
+  "text": "March",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-e1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-f1-6",
+  "text": "April",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-f1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-g1-6",
+  "text": "May",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-g1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-h1-6",
+  "text": "June",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-h1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-i1-6",
+  "text": "July",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-i1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-j1-6",
+  "text": "August",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-j1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-k1-6",
+  "text": "September",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-k1-6",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-l1-6",
+  "text": "October",
+  "href": "",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-m1-6",
+  "text": "November",
+  "href": "",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-n1-6",
+  "text": "December",
+  "href": "",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-c1-5",
+  "text": "January",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-c1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-d1-5",
+  "text": "February",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-d1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-e1-5",
+  "text": "March",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-e1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-f1-5",
+  "text": "April",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-f1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-g1-5",
+  "text": "May",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-g1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-h1-5",
+  "text": "June",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-h1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-i1-5",
+  "text": "July",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-i1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-j1-5",
+  "text": "August",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-j1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-k1-5",
+  "text": "September",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-k1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-l1-5",
+  "text": "October",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-l1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-m1-5",
+  "text": "November",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-m1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-n1-5",
+  "text": "December",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-n1-5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-c1-4",
+  "text": "January",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-c1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-d1-4",
+  "text": "February",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-d1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-e1-4",
+  "text": "March",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-e1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-f1-4",
+  "text": "April",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-f1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-g1-4",
+  "text": "May",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-g1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-h1-4",
+  "text": "June",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-h1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-i1-4",
+  "text": "July",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-i1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-j1-4",
+  "text": "August",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-j1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-k1-4",
+  "text": "September",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-k1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-l1-4",
+  "text": "October",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-l1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-m1-4",
+  "text": "November",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-m1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-n1-4",
+  "text": "December",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-n1-4",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-c1-3",
+  "text": "January",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-c1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-d1-3",
+  "text": "February",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-d1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-e1-3",
+  "text": "March",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-e1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-f1-3",
+  "text": "April",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-f1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-g1-3",
+  "text": "May",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-g1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-h1-3",
+  "text": "June",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-h1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-i1-3",
+  "text": "July",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-i1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-j1-3",
+  "text": "August",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-j1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-k1-3",
+  "text": "September",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-k1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-l1-3",
+  "text": "October",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-l1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-m1-3",
+  "text": "November",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-m1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-n1-3",
+  "text": "December",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-n1-3",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-c1-2",
+  "text": "January",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-c1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-d1-2",
+  "text": "February",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-d1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-e1-2",
+  "text": "March",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-e1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-f1-2",
+  "text": "April",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-f1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-g1-2",
+  "text": "May",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-g1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-h1-2",
+  "text": "June",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-h1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-i1-2",
+  "text": "July",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-i1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-j1-2",
+  "text": "August",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-j1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-k1-2",
+  "text": "September",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-k1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-l1-2",
+  "text": "October",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-l1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-m1-2",
+  "text": "November",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-m1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-n1-2",
+  "text": "December",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-n1-2",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-c1-1",
+  "text": "January",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-c1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-d1-1",
+  "text": "February",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-d1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-e1-1",
+  "text": "March",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-e1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-f1-1",
+  "text": "April",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-f1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-g1-1",
+  "text": "May",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-g1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-h1-1",
+  "text": "June",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-h1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-i1-1",
+  "text": "July",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-i1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-j1-1",
+  "text": "August",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-j1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-k1-1",
+  "text": "September",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-k1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-l1-1",
+  "text": "October",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-l1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-m1-1",
+  "text": "November",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-m1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "cl_Dc-n1-1",
+  "text": "December",
+  "href": "#sQHFKbM3lhG8Djnh_Dc-n1-1",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Scroll for More",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": false,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "",
+  "href": "#dHLkkQ5TBw6Ymdw5",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "DOR",
+  "href": "https://www.revenue.wi.gov/",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Common Questions",
+  "href": "https://www.revenue.wi.gov/Pages/FAQS/home.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Forms",
+  "href": "https://www.revenue.wi.gov/Pages/HTML/formpub.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Publications",
+  "href": "https://www.revenue.wi.gov/Pages/HTML/pubs.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Training",
+  "href": "https://www.revenue.wi.gov/Pages/Training/Home.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ },
+ {
+  "tag": "A",
+  "id": "",
+  "text": "Contact Us",
+  "href": "https://www.revenue.wi.gov/Pages/ContactUs/home.aspx",
+  "onclick": "",
+  "visible": true,
+  "options": null
+ }
+]

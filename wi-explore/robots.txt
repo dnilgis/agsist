@@ -1,0 +1,8 @@
+User-agent: *
+
+Disallow: /_layouts/
+Disallow: /_vti_bin/
+Disallow: /_catalogs/
+Disallow: /Pages/Employment/Badge-Photo.aspx
+
+

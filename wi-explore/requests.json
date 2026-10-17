@@ -1,0 +1,208 @@
+[
+ {
+  "m": "GET",
+  "url": "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx",
+  "type": "document",
+  "post": "",
+  "status": 302,
+  "ctype": "",
+  "disp": "",
+  "len": "0"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/RETRHistoric",
+  "type": "document",
+  "post": "",
+  "status": 302,
+  "ctype": "",
+  "disp": "",
+  "len": "0"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/?Link=RETRHistoric",
+  "type": "document",
+  "post": "",
+  "status": 302,
+  "ctype": "application/xml",
+  "disp": "",
+  "len": "0"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/?Link=RETRHistoric&Check=1",
+  "type": "document",
+  "post": "",
+  "status": 302,
+  "ctype": "application/xml",
+  "disp": "",
+  "len": "0"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/_/",
+  "type": "document",
+  "post": "",
+  "status": 200,
+  "ctype": "text/html; charset=utf-8",
+  "disp": "",
+  "len": "1870"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/jquery-3.7.1.min.js.v.2076054298",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "31402"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/jquery-ui-1.13.3.min.js.v.1700278526",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "69081"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/jquery.ba-hashchange.min.js.v.1155090076",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "816"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/jquery.watermark-3.2.0.min.js.v.1399446050",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "2370"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/jquery.qtip.min.js.v.1089023552",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "13674"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/globalize.min.js.v.1268667110",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "5859"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/jquery.form.min.js.v.1959831130",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "6580"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/WDC.min.js.v.1128343525",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "155403"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Resource/fast-jquery-ui-i18n.min.js.v.1100343543",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "514"
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/Config/WDC.Init.js?Application=TAP&Language=ENG&h=1269224793",
+  "type": "script",
+  "post": "",
+  "status": 200,
+  "ctype": "text/javascript",
+  "disp": "",
+  "len": "2204"
+ },
+ {
+  "m": "GET",
+  "url": "https://www.googletagmanager.com/gtag/js?id=G-CHT1W4FLBE",
+  "type": "script",
+  "post": ""
+ },
+ {
+  "m": "GET",
+  "url": "https://tap.revenue.wi.gov/mta/_/?Load=1&FAST_SCRIPT_VER__=1&FAST_VERLAST__=1.MLGBNUVE._._.8WLWe58b2UkMDLLU1GS7pFoYHn4&FAST_VERLAST_SOURCE__=HTML%3A%20_%20%5BPage%3A527390891%5D%20%40%202026-10-17%2010%3A00%3A05.4471&FAST_CLIENT_WHEN__=1792249205665&FAST_CLIENT_WINDOW__=FWDC.WND-5c1a-f30b-4dc4&FAST_CLIENT_AJAX_ID__=1&FAST_CLIENT_TRIGGER__=InitPage&_=1792249205573",
+  "type": "xhr",
+  "post": "",
+  "status": 200,
+  "ctype": "application/json",
+  "disp": "",
+  "len": "3031"
+ },
+ {
+  "m": "POST",
+  "url": "https://tap.revenue.wi.gov/mta/_/EventOccurred",
+  "type": "xhr",
+  "post": "LASTFOCUSFIELD__=Dc-b&DOC_MODAL_ID__=0&EVENT__=Dc-b&TYPE__=0&CLOSECONFIRMED__=false&SCREENWIDTH__=2&SCROLLPOSITIONS__=&FAST_SCRIPT_VER__=1&FAST_VERLAST__=2.MLGBNUVE._._.SKIFdo5Qr27nvs7m5f0m6z_pehY&FAST_VERLAST_SOURCE__=_%3APage%3A1965840508%20%40%202026-10-17%2010%3A00%3A05.7028&FAST_CLIENT_WHEN__=1792249209931&FAST_CLIENT_WINDOW__=FWDC.WND-5c1a-f30b-4dc4&FAST_CLIENT_AJAX_ID__=2&FAST_CLIENT_TRIGGER__=DocFieldLinkClick&FAST_CLIENT_SOURCE_ID__=Dc-b&FAST_FINGERPRINT__=%7B%22fingerprintVersion%22%3A%222%22%2C%22fingerprintSuccess%22%3Atrue%2C%22fingerprintData%22%3A%5B%7B%22key%22%3A%22webRtc%22%2C%22value%22%3A%7B%22webRtcSupported%22%3Atrue%2C%22hasWebcam%22%3Afalse%2C%22hasMicrophone%22%3Afalse%2C%22hasSpeakers%22%3Afalse%2C%22screenCapturingSupported%22%3Atrue%2C%22sctpDataChannelsSupported%22%3Afalse%2C%22rtpDataChannelsSupported%22%3Afalse%2C%22audioContextSupported%22%3Atrue%2C%22mobileDevice%22%3Afalse%2C%22webSocketsSupported%22%3Atrue%2C%22webSocketsBlocked%22%3Afalse%2C%22canvasSupportsStreamCapturing%22%3Atrue%2C%22videoSupportsStreamCapturing%22%3Atrue%2C%22audioInputDevices%22%3A0%2C%22audioOutputDevices%22%3A0%2C%22videoInputDevices%22%3A0%2C%22osName%22%3A%22Linux%22%2C%22osVersion%22%3A%22-%22%2C%22browserName%22%3A%22Netscape%22%2C%22browserVersion%22%3A5%2C%22privateBrowsing%22%3Afalse%7D%7D%2C%7B%22key%22%3A%22userAgent%22%2C%22value%22%3A%22Mozilla%2F5.0%20(X11%3B%20Linux%20x86_64)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F141.0%20Safari%2F537.36%20AGSIST-land-data%2F1.0%20(agsist.com%3B%20sig%40farmers1st.com)%22%7D%2C%7B%22key%22%3A%22webdriver%22%2C%22value%22%3Atrue%7D%2C%7B%22key%22%3A%22language%22%2C%22value%22%3A%22en-US%40posix%22%7D%2C%7B%22key%22%3A%22colorDepth%22%2C%22value%22%3A24%7D%2C%7B%22key%22%3A%22deviceMemory%22%2C%22value%22%3A8%7D%2C%7B%22key%22%3A%22hardwareConcurrency%22%2C%22value%22%3A4%7D%2C%7B%22key%22%3A%22screenResolution%22%2C%22value%22%3A%5B1600%2C1280%5D%7D%2C%7B%22key%22%3A%22availableScreenResolution%22%2C%22value%22%3A%5B1600%2C1280%5D%7D%2C%7B%22key%22%3A%22timezoneOffset%22%2C%22value%22%3A0%7D%2C%7B%22key%22%3A%22timezone%22%2C%22value%22%3A%22UTC%22%7D%2C%7B%22key%22%3A%22sessionStorage%22%2C%22value%22%3Atrue%7D%2C%7B%22key%22%3A%22localStorage%22%2C%22value%22%3Atrue%7D%2C%7B%22key%22%3A%22indexedDb%22%2C%22value%22%3Atrue%7D%2C%7B%22key%22%3A%22addBehavior%22%2C%22value%22%3Afalse%7D%2C%7B%22key%22%3A%22openDatabase%22%2C%22value%22%3Afalse%7D%2C%7B%22key%22%3A%22cpuClass%22%2C%22value%22%3A%22not%20available%22%7D%2C%7B%22key%22%3A%22platform%22%2C%22value%22%3A%22Linux%20x86_64%22%7D%2C%7B%22key%22%3A%22webglVendorAndRenderer%22%2C%22value%22%3A%22Google%20Inc.%20(Google)~ANGLE%20(Google%2C%20Vulkan%201.3.0%20(SwiftShader%20Device%20(Subzero)%20(0x0000C0DE))%2C%20SwiftShader%20driver)%22%7D%2C%7B%22key%22%3A%22hasLiedLanguages%22%2C%22value%22%3Afalse%7D%2C%7B%22key%22%3A%22hasLiedResolution%22%2C%22value%22%3Afalse%7D%2C%7B%22key%22%3A%22hasLiedOs%22%2C%22value%2",
+  "status": 200,
+  "ctype": "application/json",
+  "disp": "",
+  "len": "5611"
+ },
+ {
+  "m": "POST",
+  "url": "https://tap.revenue.wi.gov/mta/_/Recalc",
+  "type": "xhr",
+  "post": "Dc-s=XML&LASTFOCUSFIELD__=Dc-s_1&DOC_MODAL_ID__=0&FAST_SCRIPT_VER__=1&FAST_VERLAST__=3.MLGBNUVE._._._7ktFpPdwyMh81nAim0ZVXm0qYo&FAST_VERLAST_SOURCE__=_%3AEventOccurred%3A1309131175%20%40%202026-10-17%2010%3A00%3A09.9635&FAST_CLIENT_WHEN__=1792249214096&FAST_CLIENT_WINDOW__=FWDC.WND-5c1a-f30b-4dc4&FAST_CLIENT_AJAX_ID__=3&FAST_CLIENT_TRIGGER__=CheckboxChange&FAST_CLIENT_SOURCE_ID__=Dc-s_1",
+  "status": 200,
+  "ctype": "application/json",
+  "disp": "",
+  "len": "166"
+ },
+ {
+  "m": "POST",
+  "url": "https://tap.revenue.wi.gov/mta/_/EventOccurred",
+  "type": "xhr",
+  "post": "Dc-s=XML&LASTFOCUSFIELD__=cl_Dc-c1-6&DOC_MODAL_ID__=0&EVENT__=Dc-c1-6&TYPE__=0&CLOSECONFIRMED__=false&SCREENWIDTH__=2&SCROLLPOSITIONS__=&FAST_SCRIPT_VER__=1&FAST_VERLAST__=4.MLGBNUVE._._.mzRuEBDPDqkiy5BQqMAd9ydwDX4&FAST_VERLAST_SOURCE__=_%3ARecalc%3A1724101962%20%40%202026-10-17%2010%3A00%3A14.1218&FAST_CLIENT_WHEN__=1792249218163&FAST_CLIENT_WINDOW__=FWDC.WND-5c1a-f30b-4dc4&FAST_CLIENT_AJAX_ID__=4&FAST_CLIENT_TRIGGER__=DocFieldLinkClick&FAST_CLIENT_SOURCE_ID__=Dc-c1-6",
+  "status": 200,
+  "ctype": "application/json",
+  "disp": "",
+  "len": "5705"
+ },
+ {
+  "m": "POST",
+  "url": "https://tap.revenue.wi.gov/mta/_/EventOccurred",
+  "type": "xhr",
+  "post": "Dc-s=XML&LASTFOCUSFIELD__=cl_Dc-p&DOC_MODAL_ID__=0&EVENT__=Dc-p&TYPE__=0&CLOSECONFIRMED__=false&SCREENWIDTH__=2&SCROLLPOSITIONS__=&FAST_SCRIPT_VER__=1&FAST_VERLAST__=5.MLGBNUVE._._.3wd4in-b3KlxI4uyx-e6AO206RE&FAST_VERLAST_SOURCE__=_%3AEventOccurred%3A778924521%20%40%202026-10-17%2010%3A00%3A21.0011&FAST_CLIENT_WHEN__=1792249228845&FAST_CLIENT_WINDOW__=FWDC.WND-5c1a-f30b-4dc4&FAST_CLIENT_AJAX_ID__=5&FAST_CLIENT_TRIGGER__=DocFieldLinkClick&FAST_CLIENT_SOURCE_ID__=Dc-p",
+  "status": 200,
+  "ctype": "application/json",
+  "disp": "",
+  "len": "5712"
+ }
+]
