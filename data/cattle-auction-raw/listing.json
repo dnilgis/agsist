@@ -1,52 +1,5 @@
 {
  "url": "https://www.ams.usda.gov/market-news/feeder-and-replacement-cattle-auctions",
- "scanned": {
-  "1234": {
-   "title": "Green City Livestock Auction Replacement Cattle Special - Green City, MO",
-   "date": "2026-02-14",
-   "feeder": false
-  },
-  "1235": {
-   "title": "New Cambria Livestock Market Replacement Cattle Special - New Cambria, MO",
-   "date": "2026-02-14",
-   "feeder": false
-  },
-  "1236": {
-   "title": "Unionville Livestock Market LLC Replacement Cattle Special - Unionville, MO",
-   "date": "2026-01-10",
-   "feeder": false
-  },
-  "1237": {
-   "title": "Unionville Livestock Market - Unionville, MO",
-   "date": "2026-10-13",
-   "feeder": true
-  },
-  "1245": {
-   "title": "Joplin Regional Stockyards Feeder Cattle - Carthage, MO",
-   "date": "2026-10-12",
-   "feeder": true
-  },
-  "1248": {
-   "title": "New Cambria Livestock Market - New Cambria, MO",
-   "date": "2026-10-01",
-   "feeder": true
-  },
-  "1249": {
-   "title": "Ozarks Regional Stockyards Feeder Cattle - West Plains, MO",
-   "date": "2026-10-13",
-   "feeder": true
-  },
-  "1254": {
-   "title": "Green City Livestock Auction - Green City, MO",
-   "date": "2026-10-07",
-   "feeder": true
-  },
-  "1255": {
-   "title": "Springfield Livestock Marketing Center Feeder Cattle - Springfield, MO",
-   "date": "2026-10-14",
-   "feeder": true
-  }
- },
  "reports": {
   "Alabama Daily Cattle Auction Summary (pdf)": "1992",
   "Alabama Weekly Cattle Auction Summary (Fri) (pdf)": "2006",
@@ -500,12 +453,6 @@
   "Torrington Livestock Commission Co. – Feeder Cattle Auction – Torrington, WY (Wed) (pdf)": "2103",
   "Torrington Livestock Commission Co. – Cattle Auction – Torrington, WY (Seasonal-Mon) (pdf)": "2105",
   "Winter Livestock Auction – Cattle Auction – Riverton, WY (Tue) (pdf)": "2104",
-  "Wyoming Weekly Cattle Auction Summary (Mon) (pdf)": "2106",
-  "Unionville Livestock Market - Unionville, MO": "1237",
-  "Joplin Regional Stockyards Feeder Cattle - Carthage, MO": "1245",
-  "New Cambria Livestock Market - New Cambria, MO": "1248",
-  "Ozarks Regional Stockyards Feeder Cattle - West Plains, MO": "1249",
-  "Green City Livestock Auction - Green City, MO": "1254",
-  "Springfield Livestock Marketing Center Feeder Cattle - Springfield, MO": "1255"
+  "Wyoming Weekly Cattle Auction Summary (Mon) (pdf)": "2106"
  }
 }
