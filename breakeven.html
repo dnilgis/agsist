@@ -47,6 +47,12 @@
     .co-fill{margin:0 0 16px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}.co-fill-hd{font-size:.8rem;font-weight:700;color:var(--text);margin:0 0 8px}.co-fill-hd span{font-weight:400;color:var(--text-muted)}
     .co-note{font-size:.8rem;color:var(--text-dim);line-height:1.55;margin:.6rem 0 0}.co-note p{margin:0 0 .35rem}.co-note a,.yr-note a{color:var(--gold,#d4a23f)}
     .live-price-bar select{min-height:44px;font-size:.85rem;max-width:100%}.yr-note{font-size:.8rem;color:var(--text-dim);line-height:1.5;margin:-8px 0 14px}
+    .be-yr2{display:flex;flex-wrap:wrap;gap:6px;margin:.45rem 0 .1rem}.be-yr2[hidden]{display:none}
+    .be-yr2 label{display:inline-flex;align-items:center;min-height:40px;padding:0 .8rem;border:1px solid var(--border);border-radius:999px;font-size:.85rem;color:var(--text-dim);cursor:pointer}
+    .be-yr2 input{position:absolute;opacity:0;width:1px;height:1px}
+    .be-yr2 label:has(input:checked){border-color:var(--gold);color:var(--text);font-weight:700;box-shadow:inset 0 0 0 1px var(--gold)}
+    .be-yr2 label:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+    @media(forced-colors:active){.be-yr2 label:has(input:checked){outline:2px solid CanvasText;outline-offset:1px}}
     .be-ans{max-width:1100px;margin:0 auto 14px;padding:12px 14px;border:2px solid var(--border);border-radius:8px;background:var(--surface)}.be-ans p{margin:0}
     .be-ans-main{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .5rem;font-size:.95rem;color:var(--text-dim)}.be-ans-k{font-weight:700;color:var(--text)}
     #ans-be{font-family:'JetBrains Mono',monospace;font-size:1.6rem;color:var(--gold)}.be-ans-fut,.be-ans-sens{font-size:.88rem;line-height:1.5;color:var(--text-dim);margin-top:.3rem!important}.be-ans-sens{color:var(--text)}.be-ans-from{font-size:.78rem;color:var(--text-muted);margin-top:.3rem!important}.be-ans-from:empty{display:none}
@@ -63,10 +69,14 @@
     @media print{#mini-bar{display:none!important;}}
     body.agsb-open #mini-bar{display:none!important;}
     @media(prefers-reduced-motion:reduce){.live-dot{animation:none;}.hint-popup{animation:none;}.cost-bar-seg,.profit-gauge-fill,.profit-gauge-marker,.be-faq-a{transition:none;}}
-    .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--border);color:var(--text-dim);font-size:0.763rem;font-weight:700;cursor:pointer;transition:all 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;}
-    .hint-icon:hover,.hint-icon.active{background:var(--green);color:#06110b;}
-    /* 44px tap target around the 20px dot (12px on each side); the dot itself is unchanged */
-    .hint-icon{position:relative;}.hint-icon::before{content:"";position:absolute;inset:-12px;}
+    /* 2026-10-17 (field audit): the button itself is the 40 x 40 tap target, so the hit area is real
+       (a 20px button with a ::before did not count as one), and the 20px dot is drawn inside it.
+       margin -10px top and bottom keeps the label row as tall as before; the space under each label
+       (.input-wrap label margin-bottom) keeps the target off the input below. */
+    .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-10px -8px -10px -4px;padding:0;border:0;border-radius:50%;--dot:var(--border);background:radial-gradient(circle at center,var(--dot) 0 10px,transparent 10.5px);color:var(--text-dim);font-size:0.763rem;font-weight:700;cursor:pointer;transition:color 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;}
+    .hint-icon:hover,.hint-icon.active{--dot:var(--green);color:#06110b;}
+    .hint-icon:focus-visible{outline:2px solid var(--gold);outline-offset:-6px;}
+    .input-wrap label{margin-bottom:10px;}
     /* light mode: dark text on the light-theme --green (#2e7d4f) read 3.8:1; white reads 5.1:1 */
     [data-theme="light"] .hint-icon:hover,[data-theme="light"] .hint-icon.active{color:#fff;}
     .hint-popup{display:none;margin-top:8px;background:var(--surface);border:2px solid var(--green);border-radius:6px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:hintIn 0.15s ease-out;}
@@ -220,6 +230,8 @@
     <div class="calc-title"><h1>Break-even price calculator</h1><p class="be-by">Sigurd Lindquist, CCA &middot; page updated Oct 17, 2026</p><p class="be-example"><!--BAKE:be-example--><strong>Example with this page's default costs</strong> (farmdoc's 2027 northern Illinois budget, fertilizer at posted co-op prices): corn at $1,160 an acre and 237 bu/ac breaks even at $4.89 a bushel; soybeans at $812 and 71 bu/ac at $11.44. Change any line below to get yours.<!--/BAKE--></p></div>
     <section class="be-ans" id="be-ans" aria-label="Your break-even">
       <p class="be-ans-main"><span class="be-ans-k">Break-even</span> <b id="ans-be">-</b> <span id="ans-u">a bushel, cash</span></p>
+      <!-- 2026-10-17 (field audit): the crop-year switch beside the answer, so a harvest-time reader can flip to the crop in the bin. Mirrors #be-year. -->
+      <div class="be-yr2" id="be-yr2" role="radiogroup" aria-label="Crop year" hidden></div>
       <p class="be-ans-fut" id="ans-fut"></p>
       <p class="be-ans-sens" id="ans-sens"></p>
       <p class="be-ans-from" id="ans-from"></p>
@@ -406,6 +418,6 @@
     cl:{name:'central Illinois, low-productivity',corn:{yield:233,seed:134,chemicals:121,insurance:37,machinery:179,labor:27,overhead:115,land:279},soybeans:{yield:71,seed:78,chemicals:73,insurance:12,machinery:161,labor:27,overhead:90,land:279}},
     s:{name:'southern Illinois',corn:{yield:197,seed:132,chemicals:110,insurance:37,machinery:195,labor:27,overhead:111,land:186},soybeans:{yield:60,seed:80,chemicals:72,insurance:15,machinery:178,labor:25,overhead:85,land:186}}}};
   </script>
-  <script src="/components/breakeven.js?v=3" defer></script>
+  <script src="/components/breakeven.js?v=4" defer></script>
 </body>
 </html>

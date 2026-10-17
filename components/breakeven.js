@@ -431,9 +431,16 @@
   function syncYearSelect(c) {
     var sel = $('be-year'), nw = $('live-name-wrap'), nt = $('yr-note'); if (!sel) return;
     var k0 = CROP_PRICE_KEY[c], k1 = nextYearKey(c);
-    if (!k1) { sel.hidden = true; if (nw) nw.hidden = false; if (nt) nt.hidden = true; return; }
+    var y2 = $('be-yr2');
+    if (!k1) { sel.hidden = true; if (nw) nw.hidden = false; if (nt) nt.hidden = true; if (y2) y2.hidden = true; return; }
     sel.innerHTML = '<option value="0">' + contractLabel(c, k0) + '</option><option value="1">' + contractLabel(c, k1) + '</option>';
     sel.value = _beYear; sel.hidden = false; if (nw) nw.hidden = true;
+    /* the same two choices as buttons beside the answer (2026-10-17): "2026 crop, Dec '26" */
+    if (y2) {
+      var lab = function (key) { var ym = tickerYM(key); return ym ? (2000 + ym.yy) + ' crop, ' + ym.mon + " '" + String(ym.yy).padStart(2, '0') : contractLabel(c, key); };
+      y2.innerHTML = ['0', '1'].map(function (v) { return '<label><input type="radio" name="be-yr2" value="' + v + '"' + (_beYear === v ? ' checked' : '') + '>' + lab(v === '1' ? k1 : k0) + '</label>'; }).join('');
+      y2.hidden = false;
+    }
     if (nt) { var ym = tickerYM(k1); nt.hidden = _beYear !== '1'; if (ym) nt.innerHTML = 'Planning the ' + (2000 + ym.yy) + ' crop: the cost lines are farmdoc&rsquo;s ' + (2000 + ym.yy) + ' budget and fertilizer at this fall&rsquo;s posted prices. Put in your own as you book them.'; }
   }
   function onYearChange() {
@@ -471,7 +478,8 @@
       if (FIELD_KEYS.indexOf(t.id) >= 0 || t.id === 'acres') calcBreakeven();
     }, true);
     var on = function (id, ev, fn) { var e = $(id); if (e) e.addEventListener(ev, fn); };
-    on('crop', 'change', onCropChange); on('be-year', 'change', onYearChange); on('be-region', 'change', onRegionChange);
+    on('crop', 'change', onCropChange); on('be-year', 'change', onYearChange);
+    on('be-yr2', 'change', function (e) { var sel = $('be-year'); if (!sel || !e.target || e.target.name !== 'be-yr2') return; sel.value = e.target.value; onYearChange(); }); on('be-region', 'change', onRegionChange);
     ['focusin', 'pointerdown', 'change'].forEach(function (ev) { on('co-fill', ev, function () { loadCounty(); }); });
     on('be-use', 'click', useLivePrice); on('be-print', 'click', printReport); on('be-reset', 'click', resetDefaults);
     D.addEventListener('click', function (e) {
