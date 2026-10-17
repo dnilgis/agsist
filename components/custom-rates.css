@@ -47,6 +47,17 @@
   /* phone: the range drops under the average so four columns fit 390 px */
   .cr-t.cr-full thead th.rg,.cr-t.cr-full td.rg{display:none}
   .cr-t.cr-full td.av .rgm{display:block}
+  .cr-t.cr-full td.av{white-space:normal;min-width:5.5rem}
+  .cr-t.cr-full td.av small{display:block}
+  .cr-t thead th{letter-spacing:0;font-size:.66rem}
 }
 .cr-t td.av .rgm{display:none;font-size:.72rem;color:var(--text-muted);white-space:normal}
+/* neighbor comparison: a table on wide screens, a list per job on phones */
+.cr-cmpl{list-style:none;padding:0;margin:0 0 .8rem;display:none}
+.cr-cmpl li{border-bottom:1px solid var(--border);padding:.55rem 0;font-size:.9rem;color:var(--text)}
+.cr-cmpl li small{color:var(--text-muted)}
+.cr-cmpl li span{display:flex;flex-wrap:wrap;gap:.25rem .9rem;margin-top:.2rem}
+.cr-cmpl li i{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.84rem;white-space:nowrap}
+.cr-cmpl li i.me{font-weight:800}
+@media(max-width:560px){.cr-cmp-wrap .cr-tw{display:none}.cr-cmpl{display:block}}
 @media print{#site-header,#site-footer,.skip,.breadcrumb,.cr-pick,.cr-chips,.cr-faq,.cr-actions{display:none!important}html,body,main{background:#fff!important;color:#000!important}.cr p,.cr li,.cr b,.cr-t td,.cr-t th{color:#000!important}}

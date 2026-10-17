@@ -97,6 +97,7 @@ specific page. Each daily briefing has a permanent dated URL.
 
 ## My ground and programs
 
+- [Custom Farm Rates by State](https://agsist.com/custom-rates): what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>
 - [Cash Rent by State](https://agsist.com/rent/): USDA county cash rent for every published state, one page per state at /rent/<state>
 - [Farmland Atlas](https://agsist.com/farmland-atlas): every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>
 - [Compare Counties](https://agsist.com/farmland-atlas/compare): up to three counties side by side

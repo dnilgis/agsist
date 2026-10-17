@@ -61,7 +61,7 @@
   function stem(w) {
     w = w.toLowerCase();
     if (w.length > 4) w = w.replace(/(ings|ing|ers|es|s)$/, '');
-    if (w.length > 5) w = w.replace(/(ed|er)$/, '');
+    if (w.length > 5) w = w.replace(/(ed|er|e)$/, '');
     return w;
   }
   function words(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(' ').filter(Boolean); }
@@ -168,7 +168,7 @@
       box.innerHTML = '<p class="fine">No bordering state has a survey on this page yet, so there is nothing next door to set beside ' + esc(d.name) + '.</p>';
       return;
     }
-    var cols = [d.state].concat(nb), rows = [];
+    var cols = [d.state].concat(nb), rows = [], items = [];
     Object.keys(idx.keys).forEach(function (k) {
       var c = idx.common[k]; if (!c || !c[d.state]) return;
       var mine = c[d.state];
@@ -182,6 +182,11 @@
         return '<td title="' + esc(v[5]) + '">' + money(v[0], v[1]) + '<small> (' + v[4] + ')</small></td>';
       });
       rows.push('<tr><th scope="row">' + esc(idx.keys[k]) + ' <small>' + esc(unitLabel(mine[1])) + '</small></th>' + tds.join('') + '</tr>');
+      items.push('<li><b>' + esc(idx.keys[k]) + '</b> <small>' + esc(unitLabel(mine[1])) + '</small><span>' + cols.map(function (x) {
+        var v = c[x], nm = info(x).name;
+        if (!v || v[1] !== mine[1]) return '';
+        return '<i' + (x === d.state ? ' class="me"' : '') + '>' + esc(nm) + ' ' + money(v[0], v[1]) + ' <small>(' + v[4] + ')</small></i>';
+      }).join('') + '</span></li>');
     });
     if (!rows.length) {
       box.innerHTML = '<p class="fine">' + (st.q ? 'None of the matching jobs is in a bordering state\'s survey with the same unit.' : 'No common job with the same unit in the bordering surveys.') + '</p>';
@@ -189,7 +194,8 @@
     }
     var head = cols.map(function (x) { var s = info(x); return '<th scope="col">' + esc(s.name) + '<br><small>' + s.year + '</small></th>'; }).join('');
     box.innerHTML = '<div class="cr-tw"><table class="cr-t cr-cmp"><caption>Average, with the number of answers in brackets. Each survey words its jobs its own way and was taken in a different year, so read these as close matches, not the same job. The full table above shows this state\'s wording.</caption>' +
-      '<thead><tr><th scope="col">Job</th>' + head + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
+      '<thead><tr><th scope="col">Job</th>' + head + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>' +
+      '<ul class="cr-cmpl">' + items.join('') + '</ul>';
   }
 
   function boot() {
