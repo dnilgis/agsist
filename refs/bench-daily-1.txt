@@ -1,5 +1,0 @@
-# Benchmark daily: Barchart Ag Market Commentary newsletter
-# https://www.barchart.com/news/barchart-newsletters/ag-market-commentary
-# fetched 2026-10-16T16:16:50Z, sha256 72405cda14c4d28f2dd255fc0ebf3f2c43a709f248427cc5209045df066c9d75
-
-

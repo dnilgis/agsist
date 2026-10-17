@@ -1,5 +1,0 @@
-# Benchmark basis: Barchart cash bids / cmdty basis indexes
-# https://www.barchart.com/cmdty/indexes/grain
-# fetched 2026-10-16T16:13:25Z, sha256 d55e0468bb71e7f4148d778dd63d676362c2eae6af66af4aa38cd4fb4c7d7080
-
-

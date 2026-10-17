@@ -1,5 +1,0 @@
-# Benchmark yield-estimator: MSU estimating grain yields in corn
-# https://www.canr.msu.edu/news/estimating_grain_yields_in_corn
-# fetched 2026-10-16T16:13:05Z, sha256 6f69527f35bc5e774d0f4971f21690342330892805857abda413e9950f724667
-
-

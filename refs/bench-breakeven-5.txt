@@ -1,5 +1,0 @@
-# Benchmark breakeven: MSU 2026 Corn Cost of Production projection tool
-# https://www.canr.msu.edu/resources/2026-corn-projected-cost-of-production
-# fetched 2026-10-16T16:09:11Z, sha256 87b1f5b79e99cb7e9cb37f921fbf5b4b96b650103079d2cf70357749ede2b0a2
-
-

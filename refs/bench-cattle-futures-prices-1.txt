@@ -1,5 +1,1278 @@
 # Benchmark cattle-futures-prices: Barchart
 # https://www.barchart.com/futures/quotes/GF*0/futures-prices
-# fetched 2026-10-16T16:14:33Z, sha256 86d8c045b5f52fd4b3f707f02a6a29959d732ff88f62841572b0402227bd1f80
+# fetched 2026-10-17T00:28:05Z, sha256 c05a6290e3a0e14e9e56f253be0ff0ee8996e509f3dee00694a94b72d04c2ae2
 
+Feeder Cattle Prices and Feeder Cattle Futures Prices - Barchart.com
 
+Your browser of choice has not been tested for use with Barchart.com. If you have issues, please download one of the browsers listed here.
+
+-
+Barchart for Businesses
+
+Powering Your Market with Actionable Data & Technology
+
+Barchart supports the global finance, media and commodity markets with data and technology for trading, investing and risk management.
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Explore our Data Catalog
+
+Log In Menu
+
+Stocks | Futures | Watchlist | News | More
+
+Advanced search
+
+or
+
+Watchlist | Portfolio | Dashboard
+
+MAIN MENU
+
+Home Stocks Options Learn
+
+ETFs Futures Currencies Watchlist
+
+Investing News Tools Portfolio
+
+POPULAR
+
+Stocks Percent Change Top 100 Stocks Stocks Highs/Lows Stocks Volume Leaders Unusual Options Activity Options Volume Leaders
+
+Commodities Grains Energies Alerts Pre-Market Post-Market
+
+-
+Stocks Stocks
+
+Market Pulse
+
+- Stock Market Overview
+
+- Market Momentum
+
+- Market Performance
+
+- Top 100 Stocks
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Economic Overview
+
+- Earnings Within 7 Days
+
+- Earnings & Dividends
+
+- Stock Screener
+
+Barchart Trade Picks
+
+- Today's Top Stock Pick
+
+- All Top Stock Picks
+
+Performance Leaders
+
+- Percent Change
+
+- Price Change
+
+- Range Change
+
+- Gap Up & Gap Down
+
+- 3, 4, 5 Day Gainers
+
+Before & After Markets
+
+- Pre-Market Trading
+
+- Post-Market Trading
+
+Most Active
+
+- Volume Leaders
+
+- Price Volume Leaders
+
+- Volume Advances
+
+- Trading Liquidity
+
+Indices
+
+- Market Indices
+
+- S&P Indices
+
+- S&P Sectors
+
+- Dow Jones Indices
+
+- Nasdaq Indices
+
+- Russell Indices
+
+- Volatility Indices
+
+- Commodities Indices
+
+- US Sectors Indices
+
+- World Indices
+
+Trading Signals
+
+- New Recommendations
+
+- Top Stocks to Own
+
+- Top Signal Strength
+
+- Top Signal Direction
+
+- Stock Signal Upgrades
+
+Sectors
+
+- Stock Market Sectors
+
+- Major Markets Heat Map
+
+- Industry Rankings
+
+- Industry Heat Map
+
+- Industry Performance
+
+- Stocks by Grouping
+
+-
+Options Options
+
+Market Pulse
+
+- Options Market Overview
+
+- Unusual Options Activity
+
+- Options Flow
+
+- Upcoming Earnings
+
+Volatility
+
+- IV Rank and IV Percentile
+
+- Implied vs Realized Vol
+
+- Highest Implied Volatility
+
+- %Change in Volatility
+
+Volume & Open Interest
+
+- Most Active Options
+
+- Unusual Options Volume
+
+- Options Volume Leaders
+
+- Highest Open Positions
+
+- Change in Open Interest
+
+- %Change in Open Interest
+
+Data & Tools
+
+- Options Time & Sales
+
+- Options Price History
+
+- Options Calculator
+
+- Options Learning Center
+
+Option Screeners
+
+- Options Screener
+
+- Long Call Screener
+
+- Long Put Screener
+
+Income Strategies
+
+- Covered Call
+
+- Naked Put
+
+Vertical Spreads
+
+- Bull Call Spread
+
+- Bear Call Spread
+
+- Bear Put Spread
+
+- Bull Put Spread
+
+Protection Strategies
+
+- Married Put
+
+- Protective Collar
+
+Straddle and Strangle
+
+- Long Straddle
+
+- Short Straddle
+
+- Long Strangle
+
+- Short Strangle
+
+Horizontal Strategies
+
+- Long Call Calendar
+
+- Long Put Calendar
+
+- Long Call Diagonal
+
+- Short Call Diagonal
+
+- Long Put Diagonal
+
+- Short Put Diagonal
+
+Butterfly Strategies
+
+- Long Call Butterfly
+
+- Short Call Butterfly
+
+- Long Put Butterfly
+
+- Short Put Butterfly
+
+- Long Iron Butterfly
+
+- Short Iron Butterfly
+
+Condor Strategies
+
+- Long Call Condor
+
+- Short Call Condor
+
+- Long Put Condor
+
+- Short Put Condor
+
+- Long Iron Condor
+
+- Short Iron Condor
+
+-
+ETFs ETFs
+
+Market Pulse
+
+- ETF Market Overview
+
+- Popular ETFs
+
+- ETF Finder
+
+- Top 100 ETFs
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Top Dividend ETFs
+
+- ETF Screener
+
+Performance Leaders
+
+- Percent Change
+
+- Price Change
+
+- Range Change
+
+- Gap Up & Gap Down
+
+- 3, 4, 5 Day Gainers
+
+Before & After Markets
+
+- Pre-Market Trading
+
+- Post-Market Trading
+
+Most Active
+
+- Volume Leaders
+
+- Price Volume Leaders
+
+- Volume Advances
+
+Trading Signals
+
+- New Recommendations
+
+- Top ETFs to Own
+
+- Top Signal Strength
+
+- Top Signal Direction
+
+- ETFs Signal Upgrades
+
+Mutual Funds
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Performance
+
+- Price Change
+
+- Funds Screener
+
+-
+Futures Futures
+
+Market Pulse
+
+- Futures Market Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Futures Market Map
+
+- Performance Leaders
+
+- Most Active Futures
+
+- Prices by Exchange
+
+Commodity Groupings
+
+- Commodities Prices
+
+- Currencies
+
+- Energies
+
+- Financials
+
+- Grains
+
+- Indices
+
+- Livestock
+
+- Metals
+
+- Softs
+
+- Mini & Micro Futures
+
+Futures Trading Guide
+
+- Trading Guide
+
+- Historical Performance
+
+Commitment of Traders
+
+- Commitment of Traders
+
+- Legacy Report
+
+- Disaggregated Report
+
+- Financial TFF Report
+
+Resources
+
+- Contract Specifications
+
+- Futures Expirations
+
+- First Notice Dates
+
+- Options Expirations
+
+- Economic Calendar
+
+Cash Markets
+
+- Cash Markets Overview
+
+- Corn Indexes
+
+- Soybean Indexes
+
+European Futures
+
+- Euro Futures Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Futures Market Map
+
+- Performance Leaders
+
+- Most Active Futures
+
+European Groupings
+
+- Commodities Prices
+
+- Energies
+
+- Financials
+
+- Grains
+
+- Indices
+
+- Metals
+
+- Softs
+
+- Power Futures
+
+- Carbon Futures
+
+- Baltic Freight Indices
+
+European Trading Guide
+
+- European Trading Guide
+
+- Historical Performance
+
+-
+Currencies Currencies
+
+Forex Market Pulse
+
+- Forex Market Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Forex Market Map
+
+- Performance Leaders
+
+- Currency Converter
+
+Crypto Market Pulse
+
+- Crypto Market Overview
+
+- Market Capitalizations
+
+- Bitcoin Futures
+
+Trading Signals
+
+- New Recommendations
+
+Commitment of Traders
+
+- Commitment of Traders
+
+- Legacy Report
+
+- Financial TFF Report
+
+Currency Groupings
+
+- Popular Cross Rates
+
+- Australian Dollar
+
+- British Pound
+
+- Canadian Dollar
+
+- Euro FX
+
+- Japanese Yen
+
+- Swiss Franc
+
+- US Dollar
+
+- Metals Rates
+
+- All Forex Markets
+
+Crypto Groupings
+
+- Popular Coins
+
+- Bitcoin
+
+- Bitcoin-Cash
+
+- Ethereum
+
+- Litecoin
+
+- Monero
+
+- XRP
+
+- Tether
+
+- Zcash
+
+-
+Investing Investing
+
+Investing Ideas
+
+- Today’s Investing Ideas
+
+- Top Performing Stocks
+
+- Top Trending Tickers
+
+- Barchart Screeners
+
+Insider Trading
+
+- Insider Trading Activity
+
+- Politician Insider Trading
+
+Today's Picks
+
+- Chart of the Day
+
+- Top Stock Pick
+
+- Futures Trading Guide
+
+My Screeners
+
+- Stock Screener
+
+- ETF Screener
+
+- Funds Screener
+
+- Options Screener
+
+Technical Ideas
+
+- Bullish Moving Averages
+
+- Bearish Moving Averages
+
+- Breakouts and Reversals
+
+- Candlestick Patterns
+
+- eMACD Buy Signals
+
+- Hot Penny Stocks
+
+- Short Interest Stocks
+
+- Standout Stocks
+
+- Top Stocks Under $10
+
+- TTM Squeeze
+
+- Up Trending Stocks
+
+- Down Trending Stocks
+
+Dividend Ideas
+
+- Best Dividend Stocks
+
+- Dividend Aristocrats
+
+- Dividend Kings
+
+Power Investors
+
+- Cathie Wood Stocks
+
+- Warren Buffett Stocks
+
+Themed Lists
+
+- AI Stocks
+
+- Battery Stocks
+
+- Biotechnology Stocks
+
+- Cannabis Stocks
+
+- Clean Energy Stocks
+
+- Crypto Stocks
+
+- Cybersecurity Stocks
+
+- Data Center Stocks
+
+- EV Stocks
+
+- Fintech Stocks
+
+- Gold Stocks
+
+- Magnificent 7
+
+- Metaverse Stocks
+
+- Nuclear Energy Stocks
+
+- Oil Stocks
+
+- Power & Infrastructure
+
+- Quantum Computing
+
+- REIT Stocks
+
+- Semiconductor Stocks
+
+- Stagflation Stocks
+
+- SPAC Stocks
+
+- World Markets
+
+-
+News News
+
+Barchart
+
+- Markets Today
+
+- Barchart News
+
+- Exclusives
+
+- Contributors
+
+- Chart of the Day
+
+- News Feeds
+
+Featured Authors
+
+- Andrew Hecht
+
+- Austin Schroeder
+
+- Caleb Naysmith
+
+- Darin Newsom
+
+- Don Dawson
+
+- Gavin McMaster
+
+- Jim Van Meerten
+
+- Justin Estes
+
+- Mark Hake
+
+- Oleksandr Pylypenko
+
+- Rich Asplund
+
+- Rick Orford
+
+- Rob Isbitts
+
+- Sarah Holzmann
+
+- All Authors
+
+Commodity News
+
+- All Commodities
+
+- Energy
+
+- Grains
+
+- Livestock
+
+- Metals
+
+- Softs
+
+Financial News
+
+- All Financials
+
+- Crypto
+
+- Dividends
+
+- ETFs
+
+- FX
+
+- Interest Rates
+
+- Options
+
+- Stock Market
+
+Free Newsletters
+
+- All Free Newsletters
+
+- The Barchart Brief
+
+- Active Investor
+
+- Unusual Options Activity
+
+- Dividend Investor
+
+- Pre-Market Bulletin
+
+- Commodity Bulletin
+
+- Chart of the Day
+
+- Ag Market Commentary
+
+Press Releases
+
+- All Press Releases
+
+- ACCESS Newswire
+
+- Business Wire
+
+- GlobeNewswire
+
+- TMX Newsfile
+
+- PR Newswire
+
+-
+Tools Tools
+
+Member Tools
+
+- My Watchlist
+
+- Investor Portfolio
+
+- Standard Portfolio
+
+- Dashboard
+
+- Symbol Notes
+
+- Alert Center
+
+- Alert Templates
+
+- Barchart Screeners
+
+- My Charts
+
+- Custom Views
+
+- Barchart Custom Views
+
+- Chart Templates
+
+- Barchart Chart Templates
+
+- Compare Stocks
+
+- Daily Prices Download
+
+- Historical Data Download
+
+My Custom Reports
+
+- Watchlist Emails
+
+- Standard Portfolio Emails
+
+- Investor Portfolio Emails
+
+- Screener Emails
+
+- End-of-Day My Charts
+
+- End-of-Day Reports
+
+Manage Tools
+
+- Organize Watchlists
+
+- Organize Portfolios
+
+- Organize Investor Portfolios
+
+- Organize Screeners
+
+- Organize My Charts
+
+My Account
+
+- My Profile
+
+- Site Preferences
+
+- Author Followings
+
+- Trading Alerts & Ideas
+
+-
+Learn Learn
+
+Resources
+
+- Site Education
+
+- Options Education
+
+- Site News
+
+Barchart Webinars
+
+- Upcoming Webinars
+
+- Archived Webinars
+
+- Popular Webinars
+
+Barchart Live
+
+- Market on Close
+
+- Market on Close Archive
+
+Membership
+
+- Barchart Premier
+
+- Barchart Plus
+
+- Membership Comparison
+
+- Barchart for Excel
+
+- Create Free Account
+
+Barchart Resources
+
+- Technical Indicators
+
+- Barchart Trading Signals
+
+- Time & Sales Conditions
+
+- Barchart Special Symbols
+
+- Barchart Data Fields
+
+Options Resources
+
+- Profit & Loss Charts
+
+- Options Volatility
+
+- Options Greeks
+
+- Covered Call
+
+- Naked Put
+
+- Long Call Option
+
+- Deep ITM Calls
+
+- Long Put Option
+
+- Credit Spreads
+
+- Short Straddles
+
+- Short Iron Condor
+
+- 7 Ways to Make Money
+
+- Hedge Stocks with Options
+
+Site News
+Contact
+Market:
+
+- US
+
+- Canada
+
+- UK
+
+- Australia
+
+- Europe
+
+Faster, Cleaner, Better. Try Barchart Plus for Free
+
+Menu
+
+-
+quotes
+
+- Price Overview
+
+- Performance Report
+
+-
+charts
+
+- Interactive Chart
+
+- Snapshot Chart
+
+-
+technicals
+
+- Trading Guide
+
+- Barchart Opinion
+
+- Trading Strategies
+
+- Technical Analysis
+
+- Trader's Cheat Sheet
+
+- Seasonal Returns
+
+- Price History
+
+- Historical Data
+
+-
+options
+
+- Options Prices
+
+- Volatility & Greeks
+
+-
+spreads
+
+- Futures Spreads
+
+- Synthetic Spreads
+
+-
+commodity info
+
+- News & Headlines
+
+- Comparison
+
+- Contract Specifications
+
+- Futures Prices
+
+- Historical Prices
+
+Feeder Cattle May '26 (GFK26)
+
+[[ item.lastPrice ]] [[ item.priceChange ]] ([[ item.percentChange ]]) [[ item.tradeTime ]] [CME]
+
+[[ item.bidPrice ]] x [[ item.bidSize ]] [[ item.askPrice ]] x [[ item.askSize ]]
+
+[[ rootItem.symbol ]]underlying price [[ rootItem.lastPrice ]] [[ rootItem.priceChange ]] ([[ rootItem.percentChange ]]) [[ rootItem.tradeTime ]]
+
+Feeder Cattle Prices for [[ item.sessionDateDisplayLong ]]
+
+Notes
+
+Alerts
+
+Watch
+
+Help
+
+Go To:
+
+Find the latest Feeder Cattle prices and Feeder Cattle futures quotes for all active contracts below.
+
+Strike:
+
+[[ strike ]] x
+
+View All Filters Hide All Filters
+
+options quotes flipcharts download
+
+[[ timeframe ]] futures price quotes as of Sat, Apr 11th, 2026.
+
+Latest price quotes as of [[ snapshotDate ]].
+
+[[ timeframe ]] futures price quotes, based on [[ timeframe ]] data.
+
+Looking for expired contracts? Check out our Feeder Cattle Historical Prices page.
+
+Feeder Cattle Futures Market News and Commentary
+
+Cattle Rallies into the Weekend
+Barchart - Fri Apr 10, 5:34PM CDT
+
+Live cattle futures closed with contracts 27 cents to $2 higher at the close, as April was up $5.57 for the week. Cash trade saw some light trade at $246 in the South early this week with some northern action near $250 this morning. Feeder cattle futures posted gains of $1.62 to $2.32 at the Friday close, with April $1.25 higher on the week. The CME Feeder Cattle Index was back up $2.57 to $366.67 on April 9.
+
+CFTC data from this afternoon showed managed money at a net long of 133,265 contracts in live cattle futures and options as of April 7, a 9,523 contract increase on the week. Specs in Feeder cattle futures and options added just 91 contracts to their net long to 20,202 contracts.
+
+Wholesale Boxed Beef prices were lower in the Friday afternoon report, with the Chc/Sel still at an inverted 44 cents. Choice boxes were down 19 cents to $380.90, while Select was 23 cents lower at $381.34. USDA estimated federally inspected cattle slaughter this week at 512,000 head. That... Read more
+
+Livestock Futures News
+See More
+
+Grains pressured while beans and cattle break higher
+Sidwell Strategies Sat Apr 11, 9:56AM CDT
+
+Higher fuel costs threaten consumer demand
+
+Live Cattle Futures Makes New All-time high
+Walsh Trading Fri Apr 10, 9:33PM CDT
+
+Cattle markets end week strong
+
+Soybeans Analysis & Targets
+ONE44 Analytics Fri Apr 10, 6:19PM CDT
+
+Educational and Actionable information using Fibonacci and W.D. Gann analysis.
+
+ZSK26 : 1175-6s (+0.90%)
+
+Hogs Close Mostly Lower on Friday
+Barchart Fri Apr 10, 5:34PM CDT
+
+Lean hog futures posted losses of 37 to 60 cent losses in most contracts on Friday, as April was an exception, up a nickel. June was down 75 cents on the...
+
+HEK26 : 95.525s (-0.39%)
+
+HEJ26 : 90.725s (+0.06%)
+
+HEM26 : 103.725s (-0.38%)
+
+Cattle Rallies into the Weekend
+Barchart Fri Apr 10, 5:34PM CDT
+
+Live cattle futures closed with contracts 27 cents to $2 higher at the close, as April was up $5.57 for the week. Cash trade saw some light trade at $246...
+
+LEQ26 : 244.750s (+0.58%)
+
+LEM26 : 249.200s (+0.81%)
+
+LEJ26 : 251.775s (+0.80%)
+
+GFK26 : 372.350s (+0.52%)
+
+GFJ26 : 374.150s (+0.44%)
+
+GFQ26 : 372.450s (+0.63%)
+
+That’s a Wrap for Grain and Livestock Markets!
+Blue Line Futures Fri Apr 10, 3:41PM CDT
+
+Here’s a look at how things shook out to round out the week, including a look at fund positioning and seasonal tendencies for grain and livestock markets...
+
+More News From Barchart
+See More
+
+While the Stock Market Was Rallying, Palantir Stock Sold Off. Should You Buy the Dip in PLTR?
+Barchart Sat Apr 11, 10:30AM CDT
+
+Shares of the Alex Karp-led company nosedived by more than 14% on the ceasefire news.
+
+NVDA : 188.63 (+2.57%)
+
+PLTR : 128.06 (-1.86%)
+
+Dear IBM Stock Fans, Mark Your Calendars for April 22
+Barchart Sat Apr 11, 8:00AM CDT
+
+IBM is approaching earnings with tempered expectations as short-term pressures weigh on sentiment, while underlying momentum remains steady.
+
+IBM : 230.76 (-2.71%)
+
+Earnings Preview: What to Expect From PPG Industries’ Report
+Barchart Sat Apr 11, 5:02AM CDT
+
+PPG Industries is poised to release its first-quarter earnings by the end of this month, and analysts are anticipating a marginal decline in profits.
+
+PPG : 110.33 (+0.57%)
+
+$SPX : 6,816.89 (-0.11%)
+
+XLB : 51.96 (+0.56%)
+
+Realty Income Earnings Preview: What to Expect
+Barchart Sat Apr 11, 4:58AM CDT
+
+Realty Income is gearing up to report its first-quarter earnings, and analysts are projecting a single-digit increase in FFO.
+
+$SPX : 6,816.89 (-0.11%)
+
+XLRE : 42.82 (+0.21%)
+
+O : 63.75 (+0.87%)
+
+Coca-Cola’s Quarterly Earnings Preview: What You Need to Know
+Barchart Sat Apr 11, 4:55AM CDT
+
+The Coca-Cola Company is set to report its fiscal first-quarter results by the end of this month, and analysts are anticipating a low double-digit growth...
+
+KO : 77.47 (-0.91%)
+
+$SPX : 6,816.89 (-0.11%)
+
+XLP : 82.37 (-1.29%)
+
+Earnings Preview: What to Expect From Clorox’s Report
+Barchart Sat Apr 11, 4:52AM CDT
+
+The Clorox Company is set to report its third-quarter results shortly, and analysts are forecasting a modest, single-digit increase in earnings.
+
+$SPX : 6,816.89 (-0.11%)
+
+XLP : 82.37 (-1.29%)
+
+CLX : 105.28 (-2.17%)
+
+Here's What to Expect From The Williams Companies’ Next Earnings Report
+Barchart Sat Apr 11, 4:46AM CDT
+
+The Williams Companies is all ready to release its FY2026 Q1 earnings shortly, and analysts are expecting its earnings to rise in the single digits.
+
+XLE : 56.94 (-0.68%)
+
+$SPX : 6,816.89 (-0.11%)
+
+WMB : 72.74 (-0.11%)
+
+ConocoPhillips vs. EOG: 1 of These Energy Stocks Is Cheaper and Pays You More. Which One?
+Barchart Fri Apr 10, 6:00PM CDT
+
+ConocoPhillips and EOG are both winning energy stocks, but one stands out on scale while the other looks cheaper and stronger for income.
+
+COP : 122.55 (-0.75%)
+
+EOG : 136.19 (-0.29%)
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-

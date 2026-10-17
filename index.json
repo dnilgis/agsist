@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-17T00:26:52Z",
+ "run_utc": "2026-10-17T00:29:00Z",
  "sources": [
   {
    "bytes": null,
@@ -4918,29 +4918,25 @@
    "status": "failed"
   },
   {
-   "bytes": 962,
-   "sha256": "87b1f5b79e99cb7e9cb37f921fbf5b4b96b650103079d2cf70357749ede2b0a2",
-   "fetched_utc": "2026-10-16T16:09:11Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-breakeven-5.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-breakeven-5",
    "url": "https://www.canr.msu.edu/resources/2026-corn-projected-cost-of-production",
    "title": "Benchmark breakeven: MSU 2026 Corn Cost of Production projection tool",
    "why": "/breakeven competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:09:11Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 200"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:27:31Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback: no archived copy; the old copy was a Incapsula bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": null,
@@ -5619,29 +5615,25 @@
    "text_chars": 1329
   },
   {
-   "bytes": 959,
-   "sha256": "6f69527f35bc5e774d0f4971f21690342330892805857abda413e9950f724667",
-   "fetched_utc": "2026-10-16T16:13:05Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-yield-estimator-3.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-yield-estimator-3",
    "url": "https://www.canr.msu.edu/news/estimating_grain_yields_in_corn",
    "title": "Benchmark yield-estimator: MSU estimating grain yields in corn",
    "why": "/yield-estimator competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:13:05Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 200"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:27:38Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: HTTP 429; wayback/python: HTTP 429; wayback/curl: HTTP 429; the old copy was a Incapsula bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": 192378,
@@ -5765,29 +5757,25 @@
    "text_chars": 2149
   },
   {
-   "bytes": 1997,
-   "sha256": "d55e0468bb71e7f4148d778dd63d676362c2eae6af66af4aa38cd4fb4c7d7080",
-   "fetched_utc": "2026-10-16T16:13:25Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-basis-5.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html; charset=UTF-8",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-basis-5",
    "url": "https://www.barchart.com/cmdty/indexes/grain",
    "title": "Benchmark basis: Barchart cash bids / cmdty basis indexes",
    "why": "/basis competitor benchmark Oct 16, 2026 (established)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:13:24Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 202"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:27:49Z",
+   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": 16833,
@@ -5965,29 +5953,32 @@
    "text_chars": 5041
   },
   {
-   "bytes": 1997,
-   "sha256": "86d8c045b5f52fd4b3f707f02a6a29959d732ff88f62841572b0402227bd1f80",
-   "fetched_utc": "2026-10-16T16:14:33Z",
+   "bytes": 464248,
+   "sha256": "c05a6290e3a0e14e9e56f253be0ff0ee8996e509f3dee00694a94b72d04c2ae2",
+   "fetched_utc": "2026-10-17T00:28:05Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
    "saved_as": "refs/bench-cattle-futures-prices-1.html",
-   "final_url": null,
-   "content_type": "text/html; charset=UTF-8",
-   "via": "direct",
-   "archive_timestamp": null,
+   "final_url": "https://web.archive.org/web/20260411233330id_/https://www.barchart.com/futures/quotes/GF*0/futures-prices",
+   "content_type": "text/html; charset=utf-8",
+   "via": "wayback",
+   "archive_timestamp": "20260411233330",
    "id": "bench-cattle-futures-prices-1",
    "url": "https://www.barchart.com/futures/quotes/GF*0/futures-prices",
    "title": "Benchmark cattle-futures-prices: Barchart",
    "why": "/cattle-futures-prices competitor benchmark Oct 16, 2026 (established)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:14:33Z",
+   "checked_utc": "2026-10-17T00:27:56Z",
    "error": null,
    "attempts": [
-    "direct/python: ok 202"
+    "direct/python: bot challenge (AWS WAF), nothing saved",
+    "direct/curl: bot challenge (AWS WAF), nothing saved",
+    "wayback/python: HTTP 429",
+    "wayback/python: ok 200"
    ],
-   "status": "new",
-   "text_chars": 1
+   "status": "updated",
+   "text_chars": 16173
   },
   {
    "bytes": 1104967,
@@ -6384,29 +6375,25 @@
    "status": "failed"
   },
   {
-   "bytes": 1997,
-   "sha256": "72405cda14c4d28f2dd255fc0ebf3f2c43a709f248427cc5209045df066c9d75",
-   "fetched_utc": "2026-10-16T16:16:50Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-daily-1.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html; charset=UTF-8",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-daily-1",
    "url": "https://www.barchart.com/news/barchart-newsletters/ag-market-commentary",
    "title": "Benchmark daily: Barchart Ag Market Commentary newsletter",
    "why": "/daily competitor benchmark Oct 16, 2026 (established)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:16:50Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 202"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:28:07Z",
+   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": 188287,
@@ -7494,29 +7481,25 @@
    "text_chars": 40203
   },
   {
-   "bytes": 958,
-   "sha256": "7e336952cf54df034992eddc9a2795e43f7a61ab8e39235cda45b3d16e3f5e56",
-   "fetched_utc": "2026-10-16T16:21:36Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-presell-calculator-1.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-presell-calculator-1",
    "url": "https://www.canr.msu.edu/news/high-grain-prices-how-many-bushels-should-i-market",
    "title": "Benchmark presell-calculator: MSU Extension, how many bushels should I market",
    "why": "/presell-calculator competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:21:36Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 200"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:28:13Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: network: [Errno 111] Connection refused; wayback/python: HTTP 429; wayback/curl: network: curl exit 7: curl: (7) Failed to connect to web.archive.org port 443 after 23836 ms: Couldn't connect to server; the old copy was a Incapsula bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": 118199,
