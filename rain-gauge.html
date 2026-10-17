@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
-  <title>Rain Print now, a rain gauge before planting 2027 | AGSIST</title>
-  <meta name="description" content="Two things for the rain at your place. Rain Print: a year of rain at your nearest NOAA station, printed and framed, ready to order now. A rain gauge that reports on its own, coming before planting 2027. Join the waitlist.">
+  <title>Rain gauge prototype: a gauge that keeps its own log | AGSIST</title>
+  <meta name="description" content="A rain gauge that reads like any good gauge and logs each rain to your phone, field by field. Prototype now, aiming for before planting 2027. Join the waitlist.">
   <meta name="author"      content="Sigurd Lindquist">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/rain-gauge">
@@ -13,17 +13,17 @@
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
-  <meta property="og:title"        content="Rain Print now, a rain gauge before planting 2027">
-  <meta property="og:description"  content="Two things for the rain at your place. Rain Print: a year of rain at your nearest NOAA station, printed and framed, ready to order now. A rain gauge that reports on its own, coming before planting 2027. Join the waitlist.">
+  <meta property="og:title"        content="A rain gauge that keeps its own log">
+  <meta property="og:description"  content="A rain gauge that reads like any good gauge and logs each rain to your phone, field by field. Prototype now, aiming for before planting 2027. Join the waitlist.">
   <meta property="og:url"          content="https://agsist.com/rain-gauge">
   <meta property="og:image"        content="https://agsist.com/img/og/rain-gauge.jpg?v=8fe25a59">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt"    content="3D render of an early rain gauge prototype on a fence post at the edge of a field. Waitlist open.">
+  <meta property="og:image:alt"    content="3D render of the prototype rain gauge, charcoal cap and clear tube, on a fence post at the edge of a field. A rain gauge that keeps its own log. Prototype, waitlist open.">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
-  <meta name="twitter:title"       content="Rain Print now, a rain gauge before planting 2027">
-  <meta name="twitter:description" content="Two things for the rain at your place. Rain Print: a year of rain at your nearest NOAA station, printed and framed, ready to order now. A rain gauge that reports on its own, coming before planting 2027. Join the waitlist.">
+  <meta name="twitter:title"       content="A rain gauge that keeps its own log">
+  <meta name="twitter:description" content="A rain gauge that reads like any good gauge and logs each rain to your phone, field by field. Prototype now, aiming for before planting 2027. Join the waitlist.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/rain-gauge.jpg?v=8fe25a59">
 
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
@@ -45,69 +45,41 @@
   .rg :is(p,li,h2,h3,legend,label span){font-variant-numeric:normal}
   .rg-p{color:var(--text-dim);line-height:1.65;margin:0 0 .85rem;max-width:62ch}
   .rg a{color:var(--link)}
-  .rg-sec{margin:3rem 0 0;scroll-margin-top:72px}
+  .rg-sec{margin:3rem 0 0}
   .rg-sec>.sec-h{margin:0 0 .5rem}
+  .rg-sec>.sec-h+.rg-p{margin-bottom:1.2rem}
   .rg-tag{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-mono);font-size:var(--fs-2xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin:0 0 .5rem}
   .rg-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand-fill);box-shadow:0 0 0 3px rgba(var(--brand-rgb),.22)}
-  .rg-tag.soon{color:var(--text-muted)}
-  .rg-tag.soon::before{background:transparent;box-shadow:inset 0 0 0 2px var(--text-muted)}
 
-  /* the opening: one line, then the two things side by side on a wide screen */
-  #main .rg h1{font-size:clamp(1.8rem,6.2vw,2.7rem);line-height:1.1;letter-spacing:-.02em;margin:.4rem 0 .6rem;text-wrap:balance;max-width:22ch}
-  .rg-lede{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.2rem;max-width:52ch}
-  .rg-two{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
-  @media(min-width:700px){.rg-two{grid-template-columns:1fr 1fr;gap:1rem}}
-  .rg-two a,#main .rg-two a{text-decoration:none}
-  .rg-two a{display:block;height:100%;box-sizing:border-box;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text)!important;text-decoration:none}
-  .rg-two a:hover,.rg-two a:focus-visible{border-color:var(--brand)}
-  .rg-two a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-  .rg-two b{display:block;font-size:var(--fs-md);margin:0 0 .2rem}
-  .rg-two span.rg-two-x{display:block;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
-  .rg-two .rg-tag{display:flex;margin:0 0 .35rem}
-  .rg-by{margin:1rem 0 0;font-size:var(--fs-xs);color:var(--text-muted)}
-
-  /* a product: words beside a picture */
-  /* phone: the heading, the picture, then the rest; wide: words left, picture right */
-  .rg-split{display:grid;gap:0;grid-template-areas:"head" "fig" "body";align-items:start}
-  .rg-split>.rg-head{grid-area:head}.rg-split>figure{grid-area:fig;margin:0 0 1.2rem}.rg-split>.rg-body{grid-area:body}
-  @media(min-width:900px){.rg-split{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-areas:"head fig" "body fig";grid-template-rows:auto 1fr;column-gap:2.6rem}.rg-split>figure{margin:0;align-self:center}.rg-nofig{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-areas:"head body";grid-template-rows:auto}}
-  .rg-split figure{margin:0}
-  .rg-split img{display:block;width:100%;height:auto;border-radius:var(--r-lg);box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -18px rgba(0,0,0,.55)}
-  .rg-split figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
-  .rg-price{margin:0 0 .4rem;font-weight:600;color:var(--text);line-height:1.5}
-  .rg-xmas{margin:0 0 .9rem;font-size:var(--fs-sm);color:var(--text-dim);line-height:1.5}
-  .rg-go-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
-  .rg-go-link:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-  .rg-go-link.ghost{background:transparent;border:1px solid var(--border-2);color:var(--text)!important}
-  @media(max-width:520px){.rg-go-link{width:100%}}
-  .rg-why{list-style:none;margin:0 0 1rem;padding:0}
-  .rg-why li{padding:.65rem 0;border-bottom:1px solid var(--border);color:var(--text-dim);line-height:1.55}
-  .rg-why li:first-child{padding-top:0}
-  .rg-why b{color:var(--text)}
-
-  /* first batch and the warranty */
-  .rg-cards{display:grid;gap:1.1rem;margin:1.6rem 0 0}
-  @media(min-width:760px){.rg-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem}}
-  #main .rg .rg-cards h3{margin:0 0 .35rem;font-size:var(--fs-md);line-height:1.3}
-  .rg-cards p{margin:0;color:var(--text-dim);line-height:1.6;font-size:var(--fs-sm)}
-  .rg-cards>div{padding-top:.8rem;border-top:2px solid var(--brand-fill)}
-
-  /* on the record */
-  .rg-status{display:flex;gap:.7rem;align-items:flex-start;margin:0 0 1.1rem;padding:.75rem .9rem;border:1px solid var(--border);border-left:3px solid var(--brand-fill);border-radius:var(--r-8);background:var(--surface);line-height:1.5;font-size:var(--fs-sm);color:var(--text-dim);max-width:62ch}
+  /* hero: words and the form on the left, the render on the right; on a phone
+     the render sits between the lede and the status line */
+  .rg-hero{display:grid;gap:0 2.6rem;grid-template-areas:"tag" "h1" "lede" "side" "form"}
+  .rg-hero>.rg-tag{grid-area:tag}.rg-hero>h2{grid-area:h1}.rg-hero>.rg-lede{grid-area:lede}
+  .rg-hero>.rg-side{grid-area:side;min-width:0}.rg-hero>.rg-form{grid-area:form}
+  #main .rg .rg-hero>h2{font-size:clamp(1.9rem,6.6vw,2.9rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 .65rem;text-wrap:balance}
+  .rg-lede{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.1rem;max-width:46ch}
+  /* on a phone the form sits under the render: one jump to it (Oct 16) */
+  .rg-jump{display:block;width:max-content;margin-top:.8rem;padding:.55rem 1rem;min-height:44px;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
+  .rg-jump:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .rg-fig{margin:0 -16px 0;position:relative}
+  .rg-fig img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover}
+  .rg-fig figcaption{padding:.45rem 16px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
+  .rg-cbadge{position:absolute;top:12px;left:12px;padding:.2rem .55rem;border-radius:var(--r-pill);background:rgba(10,12,13,.62);color:#f2efe6;font-family:var(--font-mono);font-size:var(--fs-2xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;backdrop-filter:blur(4px)}
+  /* on a phone the badge covered the funnel; the caption and the label above the title already say prototype */
+  @media(max-width:899px){.rg-cbadge{display:none}}
+  @media(min-width:900px){.rg-jump{display:none}}
+  .rg-status{display:flex;gap:.7rem;align-items:flex-start;margin:1.1rem 0 1rem;padding:.75rem .9rem;border:1px solid var(--border);border-left:3px solid var(--brand-fill);border-radius:var(--r-8);background:var(--surface);line-height:1.5;font-size:var(--fs-sm);color:var(--text-dim)}
   .rg-status b{color:var(--text)}
-  .rg-log{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
-  @media(min-width:760px){.rg-log{grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}}
-  .rg-log li{padding:12px 14px;border:1px dashed var(--border-2);border-radius:var(--r-md);color:var(--text-dim);font-size:var(--fs-sm);line-height:1.55}
-  .rg-log b{display:block;color:var(--text);font-size:var(--fs-md);margin:0 0 .2rem}
-  .rg-log em{display:block;margin-top:.4rem;font-style:normal;font-family:var(--font-mono);font-size:var(--fs-2xs);letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
-
-  /* how they fit */
-  .rg-fit{padding:16px 18px;border:1px solid var(--border-g);border-radius:var(--r-lg);background:linear-gradient(180deg,var(--surface),var(--bg));max-width:760px}
-  .rg-fit p{margin:0;color:var(--text-dim);line-height:1.65}
-  .rg-fit p+p{margin-top:.6rem}
+  @media(min-width:900px){
+    .rg-hero{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:"tag side" "h1 side" "lede side" "form side";grid-template-rows:auto auto auto 1fr;align-items:start;margin-top:.6rem}
+    .rg-fig{margin:0}
+    .rg-fig img{border-radius:var(--r-lg);aspect-ratio:auto;box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -18px rgba(0,0,0,.55)}
+    .rg-fig figcaption{padding:.55rem 2px 0}
+    .rg-status{margin:1rem 0 0}
+  }
 
   /* the waitlist form */
-  .rg-form{padding:16px;background:var(--surface);border:1px solid var(--border-g);border-top:3px solid var(--brand-fill);border-radius:var(--r-md);max-width:760px}
+  .rg-form{padding:16px;background:var(--surface);border:1px solid var(--border-g);border-top:3px solid var(--brand-fill);border-radius:var(--r-md)}
   #main .rg .rg-form-h{margin:0 0 .25rem;font-size:var(--fs-lg);line-height:1.25}
   .rg-form-lead{margin:0 0 .9rem;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
   .rg-grid{display:grid;grid-template-columns:minmax(0,1fr) 7.5rem;gap:.8rem}
@@ -132,16 +104,116 @@
   .rg-fine{font-size:var(--fs-xs);color:var(--text-muted);margin:.7rem 0 0;line-height:1.5}
   .rg-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
+  /* how it would work: four phones */
+  .rg-screens{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem .9rem;align-items:start}
+  .rg-step-card{grid-column:1/-1}
+  @media(max-width:519px){.rg-step-phone{grid-column:1/-1}}
+  @media(min-width:700px){.rg-step-card{grid-column:auto}.rg-screens{gap:2rem 1.6rem}}
+  .rg-step figure{margin:0 0 .8rem}
+  .rg-card-fig img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
+  .rg-card-fig figcaption,.rg-front figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
+  .rg-phone{max-width:240px;margin:0 auto;padding:5px;border-radius:30px;background:#191c1d;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.25),0 16px 30px -16px rgba(0,0,0,.6)}
+  [data-theme="light"] .rg-phone{background:#1d2021}
+  .rg-phone img{display:block;width:100%;height:auto;border-radius:25px}
+  #main .rg .rg-step h3{display:flex;align-items:center;gap:.5rem;margin:0 0 .3rem;font-size:var(--fs-md);line-height:1.3}
+  .rg-step p{margin:0;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.55}
+  .rp-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--brand-fill);color:#0a0c0d;font-family:var(--font-mono);font-size:.78em;font-weight:700}
+  .rg-made-up{margin:1.2rem 0 0;font-size:var(--fs-xs);color:var(--text-muted);font-style:italic}
+
+  /* why, and who it's for: a list beside a picture */
+  .rg-split{display:grid;gap:1.4rem;align-items:center}
+  @media(min-width:900px){.rg-split{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:2.6rem}.rg-split.rg-flip>figure{order:-1}}
+  .rg-split figure{margin:0}
+  .rg-split.rg-top{align-items:start}
+  .rg-split img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
+  .rg-split figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
+  .rg-why{list-style:none;margin:0;padding:0}
+  .rg-why li{padding:.75rem 0;border-bottom:1px solid var(--border);color:var(--text-dim);line-height:1.55}
+  .rg-why li:first-child{padding-top:0}
+  @media(min-width:760px){.rg-why.rg-2col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 2rem}.rg-why.rg-2col li:nth-child(2){padding-top:0}}
+  .rg-front{display:grid;gap:1.4rem;align-items:start}
+  @media(min-width:760px){.rg-front{grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:2.6rem;align-items:center}}
+  .rg-front figure{margin:0}
+  .rg-front img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
+  @media(max-width:759px){.rg-front figure{max-width:420px;margin:0 auto}}
+  .rg-why b{display:block;color:var(--text);font-size:var(--fs-md);margin-bottom:.1rem}
+  .rg-who{list-style:none;margin:0;padding:0;max-width:760px}
+  .rg-who li{position:relative;padding:.6rem 0 .6rem 1.2rem;border-bottom:1px solid var(--border);color:var(--text);line-height:1.5}
+  .rg-who li::before{content:"";position:absolute;left:0;top:1.1rem;width:7px;height:7px;border-radius:50%;background:#2E5C86}
+  [data-theme="dark"] .rg-who li::before{background:#A9CDEC}
+
+  /* first batch, warranty, made in Chetek */
+  .rg-promise{padding:18px;border:1px solid var(--border-g);border-radius:var(--r-lg);background:var(--surface)}
+  .rg-cards{display:grid;gap:1.1rem}
+  @media(min-width:760px){.rg-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:1.6rem}}
+  #main .rg .rg-cards h3{margin:0 0 .35rem;font-size:var(--fs-lg);line-height:1.25}
+  .rg-cards p{margin:0;color:var(--text-dim);line-height:1.6;font-size:var(--fs-sm)}
+  .rg-cards>div{padding-top:.9rem;border-top:2px solid var(--brand-fill)}
+  .rg-sig{margin:1.4rem 0 0;padding:0 0 0 14px;border-left:3px solid var(--brand)}
+  .rg-sig blockquote{margin:0}
+  .rg-sig p{margin:0;font-size:var(--fs-md);line-height:1.6;color:var(--text);max-width:62ch}
+  .rg-sig figcaption{margin-top:.35rem;font-size:var(--fs-xs);color:var(--text-muted)}
+
+  /* the opening: three things */
+  #main .rg h1{font-size:clamp(1.8rem,6.2vw,2.7rem);line-height:1.1;letter-spacing:-.02em;margin:.4rem 0 .6rem;text-wrap:balance;max-width:22ch}
+  .rg-open{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.2rem;max-width:52ch}
+  .rg-three{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+  @media(min-width:760px){.rg-three{grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}}
+  .rg-three a,#main .rg-three a{text-decoration:none}
+  .rg-three a{display:block;height:100%;box-sizing:border-box;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text)!important}
+  .rg-three a:hover,.rg-three a:focus-visible{border-color:var(--brand)}
+  .rg-three a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .rg-three b{display:block;font-size:var(--fs-md);margin:0 0 .2rem}
+  .rg-three .rg-three-x{display:block;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.5}
+  .rg-three .rg-tag{display:flex;margin:0 0 .35rem}
+  .rg-tag.soon{color:var(--text-muted)}
+  .rg-tag.soon::before{background:transparent;box-shadow:inset 0 0 0 2px var(--text-muted)}
+  .rg-byline{margin:1rem 0 0;font-size:var(--fs-xs);color:var(--text-muted)}
+  .rg-prod{margin:3.6rem 0 0;padding-top:2.2rem;border-top:1px solid var(--border);scroll-margin-top:72px}
+  .rg-prod>.rg-sec:first-of-type{margin-top:2.4rem}
+  /* a product: heading, picture, the rest on a phone; words left, picture right when wide */
+  .rg-pair{display:grid;gap:0;grid-template-areas:"head" "fig" "body";align-items:start}
+  .rg-pair>.rg-head{grid-area:head}.rg-pair>figure{grid-area:fig;margin:0 0 1.2rem}.rg-pair>.rg-body{grid-area:body}
+  .rg-pair img{display:block;width:100%;height:auto;border-radius:var(--r-lg);box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -18px rgba(0,0,0,.55)}
+  .rg-pair figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
+  @media(min-width:900px){.rg-pair{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-areas:"head fig" "body fig";grid-template-rows:auto 1fr;column-gap:2.6rem}.rg-pair>figure{margin:0;align-self:center}}
+  #main .rg .rg-pair h2{margin:0 0 .5rem}
+  .rg-list{list-style:none;margin:0 0 1rem;padding:0}
+  .rg-list li{padding:.65rem 0;border-bottom:1px solid var(--border);color:var(--text-dim);line-height:1.55}
+  .rg-list li:first-child{padding-top:0}
+  .rg-list b{color:var(--text)}
+  .rg-price{margin:0 0 .4rem;font-weight:600;color:var(--text);line-height:1.5}
+  .rg-xmas{margin:0 0 .9rem;font-size:var(--fs-sm);color:var(--text-dim);line-height:1.5}
+  .rg-go-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
+  .rg-go-link:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  @media(max-width:520px){.rg-go-link{width:100%}}
+  .rg-explore{margin:0 0 1rem;padding:.7rem .9rem;border:1px dashed var(--border-2);border-radius:var(--r-8);font-size:var(--fs-sm);color:var(--text-dim);line-height:1.5}
+  .rg-explore b{color:var(--text)}
+  .rg-form-lorain{margin-top:1.4rem;max-width:760px}
+  .rg-form-lorain .rg-grid>.rg-use{grid-column:1/-1}
+  /* on the record */
+  .rg-log{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+  @media(min-width:760px){.rg-log{grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}}
+  .rg-log li{padding:12px 14px;border:1px dashed var(--border-2);border-radius:var(--r-md);color:var(--text-dim);font-size:var(--fs-sm);line-height:1.55}
+  .rg-log b{display:block;color:var(--text);font-size:var(--fs-md);margin:0 0 .2rem}
+  .rg-log em{display:block;margin-top:.4rem;font-style:normal;font-family:var(--font-mono);font-size:var(--fs-2xs);letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+  .rg-rec-status{margin:0 0 1.1rem;max-width:62ch}
+  /* how they fit */
+  .rg-fit{padding:16px 18px;border:1px solid var(--border-g);border-radius:var(--r-lg);background:linear-gradient(180deg,var(--surface),var(--bg));max-width:760px}
+  .rg-fit p{margin:0;color:var(--text-dim);line-height:1.65}
+  .rg-fit p+p{margin-top:.6rem}
+
   /* questions */
   .rg details{border:1px solid var(--border);border-radius:var(--r-md);padding:0 14px;margin:0 0 .6rem;background:var(--surface);max-width:820px}
   .rg summary{cursor:pointer;min-height:var(--btn-h);display:flex;align-items:center;font-weight:600;color:var(--text);padding:.4rem 0}
   .rg details[open]>summary{border-bottom:1px solid var(--border);margin-bottom:.6rem}
   .rg details p{color:var(--text-dim);line-height:1.6;margin:0 0 .8rem;max-width:68ch}
-  .rg-sign{margin:2rem 0 0;font-size:var(--fs-xs);color:var(--text-muted)}
+  .rg-end{max-width:760px}
+  .rg-by{margin:2rem 0 0;font-size:var(--fs-xs);color:var(--text-muted)}
   .rg-links{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.4rem 0 0;font-size:var(--fs-sm)}
   .rg-links a{display:inline-flex;align-items:center;min-height:var(--btn-h);border:1px solid var(--border);border-radius:var(--r-pill);padding:0 .9rem;color:var(--link);text-decoration:none}
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/rain-gauge#page","url":"https://agsist.com/rain-gauge","name":"Rain Print now, a rain gauge before planting 2027","description":"Two things for the rain at your place. Rain Print: a year of rain at your nearest NOAA station, printed and framed, ready to order now. A rain gauge that reports on its own, coming before planting 2027. Join the waitlist.","datePublished":"2026-10-14","dateModified":"2026-10-17","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://agsist.com/img/og/rain-gauge.jpg?v=8fe25a59","width":1200,"height":630},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Rain gauge","item":"https://agsist.com/rain-gauge"}]}},{"@type":"FAQPage","@id":"https://agsist.com/rain-gauge#faq","mainEntity":[{"@type":"Question","name":"What won't the gauge do?","acceptedAnswer":{"@type":"Answer","text":"It is not an 8-inch National Weather Service gauge, and I won't call it one. It measures rain. Snow is not measured as snow, so keep your snow board or ruler for that. Like any gauge, it reads best out in the open, away from trees and buildings."}},{"@type":"Question","name":"When can I get one?","acceptedAnswer":{"@type":"Answer","text":"Before planting 2027. I'm getting manufacturing going this winter. That's my plan, not a promise of a ship date. People on the waitlist hear first."}},{"@type":"Question","name":"What will it cost?","acceptedAnswer":{"@type":"Answer","text":"I haven't set a price yet. The first batch will be priced barely over what it costs me to make them, as a thank-you to the people who try it with me early. I'll set the price before orders open. Everyone on the waitlist gets that first-batch price, even if the first batch runs out before your turn."}},{"@type":"Question","name":"Who makes it?","acceptedAnswer":{"@type":"Answer","text":"I do, in Chetek, Wisconsin. I'm a crop adviser and I run AGSIST. It's designed, built, sold and shipped from here. If you write to me about yours, I'm the one who writes back."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"I'm not making any claim yet. It's being tested next to a glass gauge now. Each month I'll post how far apart they were and how often it missed, good or bad. The first comparison goes up once a full month is in."}},{"@type":"Question","name":"Who can see my rain?","acceptedAnswer":{"@type":"Answer","text":"Only you, unless you share it. Your rain stays yours, and I don't sell it."}},{"@type":"Question","name":"What if it breaks?","acceptedAnswer":{"@type":"Answer","text":"As long as I'm alive and the business is running, if your gauge breaks in normal use, I'll fix it or replace it. Send me a photo and tell me what happened. Write to me at sig@farmers1st.com."}},{"@type":"Question","name":"Will it work with Rain Print?","acceptedAnswer":{"@type":"Answer","text":"That's the plan. Next year, your own gauge can draw your Rain Print instead of the nearest NOAA station. Nothing is built for that yet."}},{"@type":"Question","name":"What happens when I join the waitlist?","acceptedAnswer":{"@type":"Answer","text":"You'll hear from me when the first batch is ready, with the first-batch price, before anyone else. Only rain gauge news goes to that address. It does not sign you up for AGSIST Daily."}}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agsist.com/rain-gauge#page","url":"https://agsist.com/rain-gauge","name":"A rain gauge that keeps its own log","description":"A rain gauge that reads like any good gauge and logs each rain to your phone, field by field. Prototype now, aiming for before planting 2027. Join the waitlist.","datePublished":"2026-10-14","isPartOf":{"@type":"WebSite","url":"https://agsist.com/"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://agsist.com/img/og/rain-gauge.jpg?v=8fe25a59","width":1200,"height":630},"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"AGSIST","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Rain gauge","item":"https://agsist.com/rain-gauge"}]},"dateModified":"2026-10-17"},{"@type":"FAQPage","@id":"https://agsist.com/rain-gauge#faq","mainEntity":[{"@type":"Question","name":"When can I get one?","acceptedAnswer":{"@type":"Answer","text":"I'm getting manufacturing going this winter, and I'm aiming to have the first ones ready before planting 2027. That's my plan, not a promise of a ship date. People on the waitlist hear first."}},{"@type":"Question","name":"What will it cost?","acceptedAnswer":{"@type":"Answer","text":"I haven't set a price yet. The first batch will be priced barely over what it costs me to make them, as a thank-you to the people who try it with me early. Everyone on the waitlist gets that first-batch price, even if the first batch runs out before your turn."}},{"@type":"Question","name":"Does it need a battery?","acceptedAnswer":{"@type":"Answer","text":"No. There is nothing in the gauge to charge or replace. The code on the collar is printed, and your phone does the rest."}},{"@type":"Question","name":"Does it work without a phone?","acceptedAnswer":{"@type":"Answer","text":"Yes. It's a rain gauge first. You can read it by eye and empty it like any other gauge. The phone part is only there if you want the log."}},{"@type":"Question","name":"How do I empty it?","acceptedAnswer":{"@type":"Answer","text":"Lift the clear tube straight up out of its holder, dump it, and set it back in."}},{"@type":"Question","name":"What does it mount on?","acceptedAnswer":{"@type":"Answer","text":"A wood post or a steel T-post. It screws onto a wood post. On a T-post, two hose clamps hold it."}},{"@type":"Question","name":"Do I need to install an app?","acceptedAnswer":{"@type":"Answer","text":"No. Scanning the code opens a page in your phone's web browser. There's nothing to download."}},{"@type":"Question","name":"How accurate is it?","acceptedAnswer":{"@type":"Answer","text":"I'm not making any claim yet. The prototype hasn't been tested in real rain. Before I say anything about accuracy, it will sit next to a standard gauge for a season, and I'll post what I find, good or bad."}},{"@type":"Question","name":"Who can see my readings?","acceptedAnswer":{"@type":"Answer","text":"Only you, unless you share them. You choose who gets a view-only link, and you can take anyone off at any time. If a rain map is ever added, being on it would be your choice, and it would be off to start."}},{"@type":"Question","name":"What if it breaks?","acceptedAnswer":{"@type":"Answer","text":"As long as I'm alive and the business is running, if your gauge breaks in normal use, I'll fix it or replace it. Send me a photo and tell me what happened. Write to me at sig@farmers1st.com."}},{"@type":"Question","name":"Will it work with Rain Print?","acceptedAnswer":{"@type":"Answer","text":"That's the idea. A season of readings from your own gauge could become a Rain Print of your own field, instead of the nearest weather station. Nothing is built for that yet."}},{"@type":"Question","name":"What happens when I join the waitlist?","acceptedAnswer":{"@type":"Answer","text":"You'll hear from me when the first batch is ready, with the first-batch price, before anyone else. Only rain gauge news goes to that address. It does not sign you up for AGSIST Daily."}},{"@type":"Question","name":"Can I buy the tipping-bucket concept?","acceptedAnswer":{"@type":"Answer","text":"No. It's a concept I'm exploring, not a product. There is no price and no date, and it may never be made. If it goes further, people on its interest list hear first."}}]}]}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -166,23 +238,28 @@
   <div class="rg">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; Rain gauge</nav>
 
-    <h1>Two things for the rain at your place</h1>
-    <p class="rg-lede">One you can buy today, and one I&rsquo;m building. Here are both, and the plan for getting the second one to you.</p>
-    <ul class="rg-two">
-      <li><a href="#rain-print"><span class="rg-tag">Available now</span><b>Rain Print</b><span class="rg-two-x">A year of rain at the weather station nearest you, printed and framed.</span></a></li>
-      <li><a href="#gauge"><span class="rg-tag soon">Coming before planting 2027</span><b>A rain gauge of your own</b><span class="rg-two-x">It reports on its own from a post out in the field. Waitlist open.</span></a></li>
+    <h1>Three things for the rain at your place</h1>
+    <p class="rg-open">One you can buy today, one I&rsquo;m building, and one I&rsquo;m still working out. Here are all three, and the plan.</p>
+    <ul class="rg-three">
+      <li><a href="#rain-print"><span class="rg-tag">Available now</span><b>Rain Print</b><span class="rg-three-x">A year of rain at the weather station nearest you, printed and framed.</span></a></li>
+      <li><a href="#gauge"><span class="rg-tag soon">Before planting 2027</span><b>A rain gauge that keeps its own log</b><span class="rg-three-x">A prototype on my bench. Waitlist open.</span></a></li>
+      <li><a href="#lorain"><span class="rg-tag soon">Exploring</span><b>A tipping-bucket gauge</b><span class="rg-three-x">A concept I&rsquo;m exploring. No price, no date. Interest list open.</span></a></li>
     </ul>
-    <p class="rg-by">Sigurd Lindquist, CCA, Chetek, Wisconsin</p>
+    <p class="rg-byline">Sigurd Lindquist, CCA, Chetek, Wisconsin</p>
 
-    <section class="rg-sec" id="rain-print" aria-labelledby="rg-rp-h">
-      <div class="rg-split">
+    <section class="rg-prod" id="rain-print" aria-labelledby="rg-rp-h">
+      <div class="rg-pair">
         <div class="rg-head">
           <p class="rg-tag">Available now</p>
           <h2 class="sec-h" id="rg-rp-h">Rain Print</h2>
           <p class="rg-p">One year of rain at the NOAA station nearest you, drawn day by day on a 12 x 18 print, printed and framed for the wall. Type your town and a year: a drought year, the wet spring, the year you bought the place. Drawing it is free. You pay only if you want it printed.</p>
         </div>
+        <figure>
+          <a href="/rain-print" tabindex="-1" aria-hidden="true"><picture><source type="image/webp" srcset="/img/rain-print-example-2012-ames-ia.webp"><img src="/img/rain-print-example-2012-ames-ia.jpg" width="1200" height="800" alt="An example Rain Print of Ames, Iowa, in 2012, the drought year: rain stepping up across the months, well under a usual year, from NOAA daily records" loading="lazy" decoding="async"></picture></a>
+          <figcaption>A real one: 2012 at Ames, Iowa, the drought year, from NOAA daily records.</figcaption>
+        </figure>
         <div class="rg-body">
-          <ul class="rg-why">
+          <ul class="rg-list">
             <li><b>Every rain and snow of the year,</b> from NOAA&rsquo;s daily records, next to what a usual year brings.</li>
             <li><b>Your name and dates on it.</b> You see a proof before I print.</li>
             <li><b>Printed, framed and shipped by me</b> from Chetek. Every print is numbered, and I initial each one by hand.</li>
@@ -191,64 +268,24 @@
           <p class="rg-xmas" id="rg-rp-xmas" hidden></p>
           <a class="rg-go-link" href="/rain-print" data-rg="rain-print">Make your Rain Print</a>
         </div>
-        <figure>
-          <a href="/rain-print" tabindex="-1" aria-hidden="true"><picture><source type="image/webp" srcset="/img/rain-print-example-2012-ames-ia.webp"><img src="/img/rain-print-example-2012-ames-ia.jpg" width="1200" height="800" alt="An example Rain Print of Ames, Iowa, in 2012, the drought year: rain stepping up across the months, well under a usual year, from NOAA daily records" loading="lazy" decoding="async"></picture></a>
-          <figcaption>A real one: 2012 at Ames, Iowa, the drought year, from NOAA daily records.</figcaption>
-        </figure>
       </div>
     </section>
 
-    <section class="rg-sec" id="gauge" aria-labelledby="rg-gauge-h">
-      <div class="rg-split rg-nofig">
-        <div class="rg-head">
-          <p class="rg-tag soon">Coming before planting 2027</p>
-          <!-- THE GAUGE'S NAME: this heading is the one place it is written. Change it here when the name is picked. -->
-          <h2 class="sec-h" id="rg-gauge-h">The AGSIST rain gauge</h2>
-          <p class="rg-p">A gauge you put on a post out in the field and leave there. It keeps the record so you don&rsquo;t have to.</p>
-        </div>
-        <div class="rg-body">
-          <ul class="rg-why">
-            <li><b>It reports on its own.</b> You don&rsquo;t drive out to read it after every rain.</li>
-            <li><b>Built to run through a Wisconsin winter on batteries.</b> The first winter is part of the test.</li>
-            <li><b>Every tip is kept with its time,</b> so you see how hard it rained, and when it started and quit, not just the total.</li>
-            <li><b>No console, no app, no subscription.</b> Nothing to install, nothing to pay every month.</li>
-            <li><b>Your rain stays yours.</b> Nobody sees it unless you share it.</li>
-          </ul>
-          <a class="rg-go-link" href="#waitlist" data-rg-jump>Get on the waitlist</a>
-        </div>
-      </div>
-      <div class="rg-cards">
-        <div>
-          <h3>The first batch is priced as a thank-you</h3>
-          <p>The first batch will be priced barely over what it costs me to make them. I haven&rsquo;t set the price yet; I will before orders open. Everyone on the waitlist gets that price, even if the first batch runs out before your turn.</p>
-        </div>
-        <div>
-          <h3>If it breaks, I fix it</h3>
-          <p>As long as I&rsquo;m alive and the business is running, if your gauge breaks in normal use, I&rsquo;ll fix it or replace it. Send me a photo and tell me what happened. Write to me at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>.</p>
-        </div>
-      </div>
-    </section>
+    <section class="rg-prod" id="gauge" aria-labelledby="rg-gauge-h">
 
-    <section class="rg-sec" id="record" aria-labelledby="rg-rec-h">
-      <h2 class="sec-h" id="rg-rec-h">On the record</h2>
-      <p class="rg-p">I&rsquo;m building this in the open. Here is what goes up on this page as it happens, good or bad.</p>
-      <p class="rg-status"><span><b>Today:</b> testing is under way. The first comparison posts here once a full month is in.</span></p>
-      <ul class="rg-log">
-        <li><b>Photos from the yard</b>The test gauges on their posts, through the weather. <em>As it happens</em></li>
-        <li><b>A monthly comparison</b>Each month, the gauge against a glass gauge beside it: how far apart they were, and how often it missed. <em>First one after a full month</em></li>
-        <li><b>The first winter</b>How it holds up through a Wisconsin winter, cold, snow and all. <em>This winter</em></li>
-      </ul>
-    </section>
-
-    <section class="rg-sec" id="fit" aria-labelledby="rg-fit-h">
-      <h2 class="sec-h" id="rg-fit-h">How they fit together</h2>
-      <div class="rg-fit">
-        <p>Today a Rain Print is drawn from the nearest NOAA station, which can be miles from your field. The plan for next year: your own gauge can draw your Rain Print instead, from the rain that fell on your ground.</p>
-        <p>Nothing is built for that yet. When it is, it will say so here.</p>
+    <div class="rg-hero">
+      <!-- THE GAUGE'S NAME: this tag line is the one place it is written. Change it here when the name is picked. -->
+      <p class="rg-tag"><span id="rg-gauge-name">The AGSIST rain gauge</span>&nbsp;&middot; Prototype design</p>
+      <h2 id="rg-gauge-h">A rain gauge that keeps its own log</h2>
+      <p class="rg-lede">Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field. <a class="rg-jump" href="#rg-form-1" data-rg-jump>Get on the waitlist</a></p>
+      <div class="rg-side">
+      <figure class="rg-fig">
+        <span class="rg-cbadge" aria-hidden="true">Prototype design</span>
+        <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-wood-post.webp" sizes="(min-width: 900px) 540px, 100vw"><img src="/img/rain-gauge/gauge-wood-post.jpg" width="1600" height="1000" alt="3D render of the prototype rain gauge on a wooden fence post at the edge of a field: a charcoal funnel on top, a clear tube in front of a white scale, and a code on the collar." loading="lazy" decoding="async"></picture>
+        <figcaption>Prototype design, 3D render. On a wood post at the edge of a field.</figcaption>
+      </figure>
+      <p class="rg-status"><span><b>Where it stands:</b> a prototype on my bench in Chetek. I&rsquo;m aiming to have the first ones ready before planting 2027.</span></p>
       </div>
-    </section>
-
-    <section class="rg-sec" id="waitlist" aria-labelledby="rg-form-h-1">
       <form class="rg-form" id="rg-form-1" data-n="1" novalidate aria-labelledby="rg-form-h-1">
           <h2 class="rg-form-h" id="rg-form-h-1">Get on the waitlist</h2>
           <p class="rg-form-lead">Everyone on the waitlist hears first and gets the first-batch price. No price is set yet; the first batch will be priced barely over what it costs me to make. Free to join.</p>
@@ -267,22 +304,222 @@
           <p class="rg-msg" id="rg-msg-1" role="status" aria-live="polite" hidden></p>
           <p class="rg-fine">Only rain gauge news goes to this address. It does not sign you up for AGSIST Daily. See <a href="/privacy">privacy</a>.</p>
         </form>
+    </div>
+
+    <section class="rg-sec" id="what" aria-labelledby="rg-what-h">
+      <h3 class="sec-h" id="rg-what-h">What it is</h3>
+      <div class="rg-front">
+        <figure>
+          <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-front.webp" sizes="(min-width: 760px) 420px, 100vw"><img src="/img/rain-gauge/gauge-front.jpg" width="1000" height="1250" alt="3D render of the prototype rain gauge from the front: a clear tube in front of a white scale with numbers on both sides, a charcoal funnel on top and a code on the collar, on a wood post." loading="lazy" decoding="async"></picture>
+          <figcaption>Prototype design, 3D render. Straight on, the way you read it.</figcaption>
+        </figure>
+        <div>
+          <p class="rg-p">This is the prototype I&rsquo;ve designed. The printed parts are charcoal.</p>
+          <ul class="rg-why">
+            <li><b>A clear tube on the outside.</b> It&rsquo;s a store-bought clear tube, so you see the water without opening anything.</li>
+            <li><b>A white scale behind it.</b> A printed back holds the white scale. You read it through the clear tube, with big numbers on both sides.</li>
+            <li><b>A funnel on top, the code on the collar.</b> The top funnel is printed. The QR code sits on the collar just under it.</li>
+            <li><b>Lift it out to empty it.</b> The tube lifts straight up out of its printed holder. Dump it and set it back in.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="rg-sec" aria-labelledby="rg-mount-h">
+      <h3 class="sec-h" id="rg-mount-h">Wood post or T-post</h3>
+      <div class="rg-split rg-top">
+        <div>
+          <p class="rg-p">It screws onto a wood post. On a steel T-post, two hose clamps hold it. Put it on the fence line you already drive past.</p>
+          <p class="rg-p">Like any rain gauge, it reads best out in the open, away from trees and buildings.</p>
+        </div>
+        <figure>
+          <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-t-post.webp" sizes="(min-width: 900px) 480px, 100vw"><img src="/img/rain-gauge/gauge-t-post.jpg" width="1200" height="750" alt="3D render of the prototype rain gauge held to a green steel T-post by two hose clamps, with fence wire and a field behind it." loading="lazy" decoding="async"></picture>
+          <figcaption>Prototype design, 3D render. On a steel T-post with two hose clamps.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="rg-sec" id="how" aria-labelledby="rg-how-h">
+      <h3 class="sec-h" id="rg-how-h">How it would work</h3>
+      <p class="rg-p">It works like any good rain gauge. Walk out after a rain, look at the scale through the tube, read it. The difference is what happens next.</p>
+      <ol class="rg-screens">
+        <li class="rg-step rg-step-card">
+          <figure class="rg-card-fig"><picture><source type="image/webp" srcset="/img/rain-gauge/gauge-top-code.webp" sizes="(min-width: 900px) 520px, 100vw"><img src="/img/rain-gauge/gauge-top-code.jpg" width="1200" height="750" alt="3D render of the top of the prototype gauge: a charcoal funnel and, on the collar under it, a square QR code." loading="lazy" decoding="async"></picture>
+            <figcaption>Prototype design, 3D render. The code on the collar.</figcaption></figure>
+          <h3><span class="rp-n" aria-hidden="true">1</span>Scan the code</h3>
+          <p>Each gauge has its own code on the collar, so your phone knows which field it&rsquo;s standing in. No app to install; it opens in the browser.</p>
+        </li>
+        <li class="rg-step rg-step-card">
+          <figure class="rg-card-fig"><picture><source type="image/webp" srcset="/img/rain-gauge/gauge-reading.webp" sizes="(min-width: 900px) 520px, 100vw"><img src="/img/rain-gauge/gauge-reading.jpg" width="1200" height="750" alt="Concept screen on a phone: the gauge&rsquo;s scale seen through the camera, an orange line at the water, 0.42 in, and a Save button." loading="lazy" decoding="async"></picture>
+            <figcaption>Concept screen: how the phone reading will look. The reader is being adapted to this design.</figcaption></figure>
+          <h3><span class="rp-n" aria-hidden="true">2</span>Take a photo of the scale</h3>
+          <p>Take a photo through the clear tube. The phone shows you the number, like 0.42 in. If it looks off, nudge it up or down before you save.</p>
+        </li>
+        <li class="rg-step rg-step-phone">
+          <figure><div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-3-log.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-3-log.jpg" width="780" height="1688" alt="Phone screen: North 80 rain log, 21.48 in since April 1, with a list of readings. Sample numbers." loading="lazy" decoding="async"></picture></div>
+            <figcaption class="sr-only">Concept screen: your rain log for one field, with the season total.</figcaption></figure>
+          <h3><span class="rp-n" aria-hidden="true">3</span>It lands in your rain log</h3>
+          <p>Every reading is kept by field, with the date and time. Your season total is always up to date.</p>
+        </li>
+        <li class="rg-step rg-step-phone">
+          <figure><div class="rg-phone"><picture><source type="image/webp" srcset="/img/rain-gauge/screen-4-share.webp" sizes="(min-width: 900px) 240px, 45vw"><img src="/img/rain-gauge/screen-4-share.jpg" width="780" height="1688" alt="Phone screen: who can see the North 80 rain log, with a landlord and an agronomist added, view only." loading="lazy" decoding="async"></picture></div>
+            <figcaption class="sr-only">Concept screen: share a field&rsquo;s rain with your landlord or agronomist.</figcaption></figure>
+          <h3><span class="rp-n" aria-hidden="true">4</span>Share it if you want</h3>
+          <p>Send a view-only link to the landlord or the agronomist. They see only the fields you share with them.</p>
+        </li>
+      </ol>
+      <p class="rg-made-up">The phone screens are concept screens. The numbers are made up.</p>
+    </section>
+
+    <section class="rg-sec" aria-labelledby="rg-why-h">
+      <h3 class="sec-h" id="rg-why-h">Why I&rsquo;m building it</h3>
+        <ul class="rg-why rg-2col">
+          <li><b>No notebook.</b> The reading goes from the gauge to the log in the same minute you read it.</li>
+          <li><b>No forgetting.</b> You don&rsquo;t have to remember what it said by the time you get back to the house.</li>
+          <li><b>A record for every field.</b> One gauge per field means North 80 and the home place each get their own season total, not one number for the whole farm.</li>
+          <li><b>It&rsquo;s still a plain gauge.</b> No battery, no phone needed. If you never scan it, you read it with your eyes and empty it, like you always have.</li>
+        </ul>
+    </section>
+
+    <section class="rg-sec" aria-labelledby="rg-who-h">
+      <h3 class="sec-h" id="rg-who-h">Who it&rsquo;s for</h3>
+        <ul class="rg-who">
+          <li>Farmers who want rain by field, not one number from a station miles away.</li>
+          <li>Landlords and tenants who settle up on what actually fell.</li>
+          <li>Agronomists and crop consultants who keep notes on a lot of fields.</li>
+          <li>Anyone who reads a gauge every morning and is tired of writing it down.</li>
+        </ul>
+    </section>
+
+    <section class="rg-sec" aria-labelledby="rg-batch-h">
+      <h3 class="sec-h" id="rg-batch-h">The first batch, and what I promise</h3>
+      <div class="rg-promise">
+        <div class="rg-cards">
+          <div>
+            <h3>Priced as a thank-you</h3>
+            <p>The first batch will be priced barely over what it costs me to make them. That&rsquo;s my thank-you to the people who try it with me early. I haven&rsquo;t set the price yet. Everyone on the waitlist gets that price, even if the first batch runs out before your turn.</p>
+          </div>
+          <div>
+            <h3>If it breaks, I fix it</h3>
+            <p>As long as I&rsquo;m alive and the business is running, if your gauge breaks in normal use, I&rsquo;ll fix it or replace it. Send me a photo and tell me what happened. Write to me at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>.</p>
+          </div>
+          <div>
+            <h3>Made in Chetek</h3>
+            <p>Designed, made, sold and shipped from Chetek, Wisconsin. If you write to me about yours, I&rsquo;m the one who writes back.</p>
+          </div>
+        </div>
+        <figure class="rg-sig">
+          <blockquote><p>I&rsquo;m a crop adviser in Chetek, Wisconsin, and I run AGSIST. I&rsquo;d rather build this with a few people who will use it and tell me straight what&rsquo;s wrong with it.</p></blockquote>
+          <figcaption>Sigurd Lindquist, CCA</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="rg-sec" aria-labelledby="rg-test-h">
+      <h3 class="sec-h" id="rg-test-h">A season next to a standard gauge</h3>
+      <p class="rg-p">I&rsquo;m not making any claim about accuracy yet. The prototype hasn&rsquo;t been tested in real rain. It&rsquo;s going to sit next to a standard gauge for a full season, and I&rsquo;ll post what I find here, good or bad.</p>
+      <p class="rg-p">The first batch will likely go out before that season is done. If you get one early, you&rsquo;re trying it with me, and you&rsquo;ll see the side-by-side numbers as they come in.</p>
+    </section>
+
+    </section>
+
+    <section class="rg-prod" id="lorain" aria-labelledby="rg-lorain-h">
+      <div class="rg-pair">
+        <div class="rg-head">
+          <p class="rg-tag soon">Exploring: no price, no date</p>
+          <!-- THE CONCEPT'S NAME: this heading is the one place it is shown. The form's data-note-prefix is the list tag Sig reads; change both together. -->
+          <h2 class="sec-h" id="rg-lorain-h">The Lorain</h2>
+          <p class="rg-p">A tipping-bucket rain gauge I want to explore. It doesn&rsquo;t exist yet. This is the idea, at a high level, so you can tell me if you&rsquo;d want one.</p>
+        </div>
+        <figure>
+          <picture><source type="image/webp" srcset="/img/rain-gauge/lorain-concept.webp" sizes="(min-width: 900px) 540px, 100vw"><img src="/img/rain-gauge/lorain-concept.jpg" width="1600" height="1000" alt="Concept drawing of a tipping-bucket rain gauge on a green steel T-post in a field: a dark funnel and round body on an arm off the post, and a small white sealed box with a square code below it." loading="lazy" decoding="async"></picture>
+          <figcaption>Concept render, not a product photo.</figcaption>
+        </figure>
+        <div class="rg-body">
+          <ul class="rg-list">
+            <li><b>A tipping-bucket design.</b> The rain is counted as it falls, not read off a tube later.</li>
+            <li><b>Every tip is timed,</b> so you see how hard it rained, and when it started and quit.</li>
+            <li><b>It reports on its own from the field.</b> No walk out after every rain.</li>
+            <li><b>Built for winter on batteries.</b></li>
+            <li><b>A QR code on the gauge to claim it</b> as yours.</li>
+            <li><b>Readings on a dashboard.</b> No subscription.</li>
+          </ul>
+          <p class="rg-explore"><b>Where it stands:</b> exploring. No price, no date, and nothing built to sell. If it goes further, it will say so here first.</p>
+        </div>
+      </div>
+      <form class="rg-form rg-form-lorain" id="rg-form-3" data-n="3" data-list="rain-gauge-lorain" data-note-prefix="[Lorain] " novalidate aria-labelledby="rg-form-h-3">
+          <h3 class="rg-form-h" id="rg-form-h-3">Interested in this one?</h3>
+          <p class="rg-form-lead">This is an interest list for this concept only, separate from the gauge waitlist above. Joining one does not put you on the other. Leave your email and I&rsquo;ll write if it goes further.</p>
+          <div class="rg-grid">
+            <label class="field rg-email"><span>Email</span><input type="email" id="rg-email-3" name="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
+            <label class="field rg-zip"><span>ZIP <i>(optional)</i></span><input type="text" id="rg-zip-3" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}"></label>
+            <label class="field rg-use"><span>Anything you&rsquo;d want it to do? <i>(optional, one line)</i></span><input type="text" id="rg-use-3" name="use" maxlength="270" placeholder="Rain rate on the home field"></label>
+          </div>
+          <div class="rg-hp" aria-hidden="true"><label for="rg-gotcha-3">Leave this empty</label><input type="text" id="rg-gotcha-3" name="_gotcha" tabindex="-1" autocomplete="off"></div>
+          <div class="rg-go-row"><button type="submit" class="btn btn-primary rg-go" id="rg-go-3">Put me on the interest list</button></div>
+          <p class="rg-msg" id="rg-msg-3" role="status" aria-live="polite" hidden></p>
+          <p class="rg-fine">Only news about this concept goes to this address. It does not sign you up for AGSIST Daily. See <a href="/privacy">privacy</a>.</p>
+        </form>
+    </section>
+
+    <section class="rg-sec" id="record" aria-labelledby="rg-rec-h">
+      <h2 class="sec-h" id="rg-rec-h">On the record</h2>
+      <p class="rg-p">I&rsquo;m building in the open. Here is what goes up on this page as it happens, good or bad.</p>
+      <p class="rg-status rg-rec-status"><span><b>Today:</b> no results yet. The first comparison posts here once a full month is in.</span></p>
+      <ul class="rg-log">
+        <li><b>Photos from the yard</b>The gauges on their posts, through the weather. <em>As it happens</em></li>
+        <li><b>A monthly comparison</b>Each month, against a glass gauge beside it: how far apart they were, and how often it missed. <em>First one after a full month</em></li>
+        <li><b>The first winter</b>How they hold up through a Wisconsin winter, cold, snow and all. <em>This winter</em></li>
+      </ul>
+    </section>
+
+    <section class="rg-sec" id="fit" aria-labelledby="rg-fit-h">
+      <h2 class="sec-h" id="rg-fit-h">How they fit together</h2>
+      <div class="rg-fit">
+        <p>Today a Rain Print is drawn from the nearest NOAA station, which can be miles from your field. The tipping-bucket concept keeps every tip with its time, so the plan is that one day it could draw your Rain Print from the rain on your own ground instead.</p>
+        <p>It&rsquo;s a concept. Nothing is built for that yet.</p>
+      </div>
     </section>
 
     <section class="rg-sec" aria-labelledby="rg-faq-h">
       <h2 class="sec-h" id="rg-faq-h">Questions</h2>
-      <details><summary>What won&rsquo;t the gauge do?</summary><p>It is not an 8-inch National Weather Service gauge, and I won&rsquo;t call it one. It measures rain. Snow is not measured as snow, so keep your snow board or ruler for that. Like any gauge, it reads best out in the open, away from trees and buildings.</p></details>
-      <details><summary>When can I get one?</summary><p>Before planting 2027. I&rsquo;m getting manufacturing going this winter. That&rsquo;s my plan, not a promise of a ship date. People on the waitlist hear first.</p></details>
-      <details><summary>What will it cost?</summary><p>I haven&rsquo;t set a price yet. The first batch will be priced barely over what it costs me to make them, as a thank-you to the people who try it with me early. I&rsquo;ll set the price before orders open. Everyone on the waitlist gets that first-batch price, even if the first batch runs out before your turn.</p></details>
-      <details><summary>Who makes it?</summary><p>I do, in Chetek, Wisconsin. I&rsquo;m a crop adviser and I run AGSIST. It&rsquo;s designed, built, sold and shipped from here. If you write to me about yours, I&rsquo;m the one who writes back.</p></details>
-      <details><summary>How accurate is it?</summary><p>I&rsquo;m not making any claim yet. It&rsquo;s being tested next to a glass gauge now. Each month I&rsquo;ll post how far apart they were and how often it missed, good or bad. The first comparison goes up once a full month is in.</p></details>
-      <details><summary>Who can see my rain?</summary><p>Only you, unless you share it. Your rain stays yours, and I don&rsquo;t sell it.</p></details>
+      <details><summary>When can I get one?</summary><p>I&rsquo;m getting manufacturing going this winter, and I&rsquo;m aiming to have the first ones ready before planting 2027. That&rsquo;s my plan, not a promise of a ship date. People on the waitlist hear first.</p></details>
+      <details><summary>What will it cost?</summary><p>I haven&rsquo;t set a price yet. The first batch will be priced barely over what it costs me to make them, as a thank-you to the people who try it with me early. Everyone on the waitlist gets that first-batch price, even if the first batch runs out before your turn.</p></details>
+      <details><summary>Does it need a battery?</summary><p>No. There is nothing in the gauge to charge or replace. The code on the collar is printed, and your phone does the rest.</p></details>
+      <details><summary>Does it work without a phone?</summary><p>Yes. It&rsquo;s a rain gauge first. You can read it by eye and empty it like any other gauge. The phone part is only there if you want the log.</p></details>
+      <details><summary>How do I empty it?</summary><p>Lift the clear tube straight up out of its holder, dump it, and set it back in.</p></details>
+      <details><summary>What does it mount on?</summary><p>A wood post or a steel T-post. It screws onto a wood post. On a T-post, two hose clamps hold it.</p></details>
+      <details><summary>Do I need to install an app?</summary><p>No. Scanning the code opens a page in your phone&rsquo;s web browser. There&rsquo;s nothing to download.</p></details>
+      <details><summary>How accurate is it?</summary><p>I&rsquo;m not making any claim yet. The prototype hasn&rsquo;t been tested in real rain. Before I say anything about accuracy, it will sit next to a standard gauge for a season, and I&rsquo;ll post what I find, good or bad.</p></details>
+      <details><summary>Who can see my readings?</summary><p>Only you, unless you share them. You choose who gets a view-only link, and you can take anyone off at any time. If a rain map is ever added, being on it would be your choice, and it would be off to start.</p></details>
       <details><summary>What if it breaks?</summary><p>As long as I&rsquo;m alive and the business is running, if your gauge breaks in normal use, I&rsquo;ll fix it or replace it. Send me a photo and tell me what happened. Write to me at <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>.</p></details>
-      <details><summary>Will it work with Rain Print?</summary><p>That&rsquo;s the plan. Next year, your own gauge can draw your Rain Print instead of the nearest NOAA station. Nothing is built for that yet.</p></details>
+      <details><summary>Will it work with Rain Print?</summary><p>That&rsquo;s the idea. A season of readings from your own gauge could become a Rain Print of your own field, instead of the nearest weather station. Nothing is built for that yet.</p></details>
       <details><summary>What happens when I join the waitlist?</summary><p>You&rsquo;ll hear from me when the first batch is ready, with the first-batch price, before anyone else. Only rain gauge news goes to that address. It does not sign you up for AGSIST Daily.</p></details>
+      <details><summary>Can I buy the tipping-bucket concept?</summary><p>No. It&rsquo;s a concept I&rsquo;m exploring, not a product. There is no price and no date, and it may never be made. If it goes further, people on its interest list hear first.</p></details>
     </section>
 
-    <p class="rg-sign">Sigurd Lindquist, CCA, Chetek, Wisconsin</p>
+    <section class="rg-sec rg-end" id="waitlist">
+      <form class="rg-form" id="rg-form-2" data-n="2" novalidate aria-labelledby="rg-form-h-2">
+          <h2 class="rg-form-h" id="rg-form-h-2">Want to try one early?</h2>
+          <p class="rg-form-lead">Leave your email and I&rsquo;ll tell you when the first batch is ready, with the first-batch price, before anyone else.</p>
+          <div class="rg-grid">
+            <label class="field rg-email"><span>Email</span><input type="email" id="rg-email-2" name="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
+            <label class="field rg-zip"><span>ZIP <i>(optional)</i></span><input type="text" id="rg-zip-2" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}"></label>
+            <fieldset class="rg-count"><legend>How many would you want? <i>(optional)</i></legend><div class="rg-seg">
+              <label><input type="radio" name="count-2" value="1"><span>1</span></label>
+              <label><input type="radio" name="count-2" value="2-5"><span>2 to 5</span></label>
+              <label><input type="radio" name="count-2" value="6+"><span>6 or more</span></label>
+            </div></fieldset>
+            <label class="field rg-use"><span>What would you use it for? <i>(optional)</i></span><input type="text" id="rg-use-2" name="use" maxlength="200" placeholder="A few fields, rented ground"></label>
+          </div>
+          <div class="rg-hp" aria-hidden="true"><label for="rg-gotcha-2">Leave this empty</label><input type="text" id="rg-gotcha-2" name="_gotcha" tabindex="-1" autocomplete="off"></div>
+          <div class="rg-go-row"><button type="submit" class="btn btn-primary rg-go" id="rg-go-2">Put me on the waitlist</button></div>
+          <p class="rg-msg" id="rg-msg-2" role="status" aria-live="polite" hidden></p>
+          <p class="rg-fine">Only rain gauge news goes to this address. It does not sign you up for AGSIST Daily. See <a href="/privacy">privacy</a>.</p>
+        </form>
+    </section>
+
+    <p class="rg-by">Sigurd Lindquist, CCA, Chetek, Wisconsin</p>
     <nav class="rg-links" aria-label="Related pages">
       <a href="/rain-print">Rain Print</a>
       <a href="/rain">Rain by county</a>
@@ -314,8 +551,9 @@
     var forms = [].slice.call(document.querySelectorAll('.rg-form'));
     var savedZip = '';
     try { var o = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); if (o && /^\d{5}$/.test(o.zip || '')) savedZip = o.zip; } catch (e) {}
-    function onList() { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; return !!n['rain-gauge']; } catch (e) { return false; } }
-    function done() { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; n['rain-gauge'] = Date.now(); localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {} }
+    // each list remembers itself: the gauge waitlist under 'rain-gauge', the Lorain interest list under its data-list
+    function onList(list) { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; return !!n[list]; } catch (e) { return false; } }
+    function done(list) { try { var n = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; n[list] = Date.now(); localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {} }
     function lock(f, text) {
       var m = f.querySelector('.rg-msg');
       m.textContent = text; m.className = 'rg-msg ok'; m.hidden = false;
@@ -329,10 +567,13 @@
     }
     forms.forEach(function (f) {
       var n = f.getAttribute('data-n');
+      var list = f.getAttribute('data-list') || 'rain-gauge';
+      // the Lorain form posts to the same worker topic (the worker takes rain-gauge only); its note starts with the tag
+      var prefix = f.getAttribute('data-note-prefix') || '';
       var $ = function (id) { return document.getElementById(id + '-' + n); };
       var msg = $('rg-msg'), go = $('rg-go'), zipIn = $('rg-zip');
       if (savedZip && !zipIn.value) zipIn.value = savedZip;
-      if (onList()) { msg.textContent = 'This browser is already on the waitlist. Sign up another address if you like.'; msg.className = 'rg-msg ok'; msg.hidden = false; }
+      if (onList(list)) { msg.textContent = prefix ? 'This browser is already on this interest list. Sign up another address if you like.' : 'This browser is already on the waitlist. Sign up another address if you like.'; msg.className = 'rg-msg ok'; msg.hidden = false; }
       function say(t, ok) { msg.textContent = t; msg.className = 'rg-msg ' + (ok ? 'ok' : 'err'); msg.hidden = false; }
       f.addEventListener('submit', function (ev) {
         ev.preventDefault();
@@ -343,7 +584,7 @@
         if (zip && !/^\d{5}$/.test(zip)) { say('A ZIP is five digits. Fix it or leave it blank.', false); zipIn.focus(); return; }
         var body = { email: email, topic: 'rain-gauge', source: 'rain-gauge', _gotcha: $('rg-gotcha').value };
         if (zip) body.zip = zip;
-        var note = noteFor(count, use);
+        var note = prefix ? (prefix + use.replace(/\s+/g, ' ')).slice(0, 280) : noteFor(count, use);
         if (note) body.note = note;
         go.disabled = true;
         // a silent worker gives up after 12 s instead of leaving the button stuck (2026-10-14, panel 3 F4)
@@ -358,9 +599,12 @@
           .then(function (res) {
             finish();
             if (res.ok) {
-              done();
-              forms.forEach(function (g) { lock(g, g === f ? 'Thanks. You are on the waitlist. You will hear from me when the first batch is ready.' : 'You are on the waitlist.'); });
-              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : 'bottom' }); } catch (e) {}
+              done(list);
+              forms.forEach(function (g) {
+                if ((g.getAttribute('data-list') || 'rain-gauge') !== list) return;
+                lock(g, prefix ? 'Thanks. You are on the interest list for this concept.' : g === f ? 'Thanks. You are on the waitlist. You will hear from me when the first batch is ready.' : 'You are on the waitlist.');
+              });
+              try { if (typeof window.gtag === 'function') window.gtag('event', 'notice_signup', { topic: 'rain-gauge', source: 'rain-gauge', form: n === '1' ? 'top' : n === '3' ? 'lorain' : 'bottom' }); } catch (e) {}
             } else {
               go.disabled = false;
               say(res.status === 429 && res.error === 'busy today' ? 'Lots of people are signing up today. Try again tomorrow, or write to me through /contact.'
@@ -386,6 +630,10 @@
         if (x && xe) { xe.textContent = x; xe.hidden = false; }
       })
       .catch(function () {});
+    var rp = document.querySelector('[data-rg="rain-print"]');
+    if (rp) rp.addEventListener('click', function () {
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_print_promo_click', { placement: 'rain-gauge-page', page: location.pathname }); } catch (e) {}
+    });
   });
   function rpPriceLine(cfg) {
     if (!cfg) return '';
@@ -393,15 +641,11 @@
     if (!ok('digital') || !ok('print12x18') || !ok('framed12x18')) return '';
     return 'Digital file $' + cfg.digital + ', print $' + cfg.print12x18 + ', framed $' + cfg.framed12x18 + '. Shipping included in the 50 states.';
   }
-  // clicks: the jump to the waitlist and the Rain Print button
+  // the phone's jump to the waitlist form (Oct 16)
   (function () {
     var j = document.querySelector('[data-rg-jump]');
     if (j) j.addEventListener('click', function () {
       try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_gauge_waitlist_jump', { page: location.pathname }); } catch (e) {}
-    });
-    var rp = document.querySelector('[data-rg="rain-print"]');
-    if (rp) rp.addEventListener('click', function () {
-      try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_print_promo_click', { placement: 'rain-gauge-page', page: location.pathname }); } catch (e) {}
     });
   })();
   </script>
