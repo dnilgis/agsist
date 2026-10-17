@@ -457,7 +457,7 @@ jobs:
       # (no key, API error, refusal) is a warning and exit 0, so an outage at
       # Anthropic never stops a briefing the code gates pass. Set the
       # FACT_CHECK_MODE variable to "report" to log without blocking.
-      - name: GATE 2f — fact check against the source data
+      - name: GATE 2f, fact check against the source data
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL }}

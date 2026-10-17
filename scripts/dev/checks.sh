@@ -16,6 +16,7 @@ for t in scripts/test_send_loops.py scripts/test_basis_states.py scripts/test_sh
 run llms python3 scripts/build_llms_txt.py --check
 # number consistency: rule selftests must pass; on the real data it reports only (prints, never fails) until it has run clean
 run numbers bash -c "python3 scripts/check_number_consistency.py --selftest >/dev/null && python3 scripts/check_number_consistency.py > '$OUT/numbers.out' 2>&1; tail -1 '$OUT/numbers.out' >&2; true"
+run site-check python3 scripts/daily_site_check.py --selftest
 run worker node scripts/test_form_worker.mjs
 run share python3 scripts/build_share_images.py --check
 for b in build_arc_plc build_breakeven_data build_prf_states build_prf_counties build_county_rain stamp_prf build_croptour build_farmbill; do [ -f scripts/$b.py ] && run $b python3 scripts/$b.py --check; done
