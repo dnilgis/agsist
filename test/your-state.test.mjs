@@ -137,8 +137,8 @@ test("conditions-yield: the state's USDA forecast and finals, its rating and wha
   const t = text(run("cy", WI, { "state-stats": stats, "cond-yield/fit": fit, "nass/corn-yield": cornY, "nass/soy-yield": soyY }));
   assert.match(t, /USDA’s October forecast for 2026 \(Wisconsin, Oct 9\): corn 182 bu\/acre, soybeans 54\. 2025 finals: corn 188, soybeans 56\./);
   // ISO week 41 of 2026 runs Mon Oct 5 to Sun Oct 11; no fit at week 41 for corn, so week 40: r2 0.414 -> 41%, "weak" (0.25 to 0.5)
-  assert.match(t, /Corn rated 58% good\/excellent in Wisconsin, week ending Oct 11\. At week 40, the latest with enough years, Wisconsin’s rating has explained 41% of how its final yield landed against trend \(weak, 22 years\)\./);
-  assert.match(t, /Soybeans rated 55% good\/excellent in Wisconsin, week ending Oct 11\. At this week, Wisconsin’s rating has explained 72% of how its final yield landed against trend \(strong, 23 years\)\./);
+  assert.match(t, /Corn : 58% good\/excellent, week ending Oct 11\. At week 40 \(the latest with enough years\) the Wisconsin rating has explained 41% of its final yield against trend \(weak, 22 years\)\./);
+  assert.match(t, /Soybeans : 55% good\/excellent, week ending Oct 11\. At this week the Wisconsin rating has explained 72% of its final yield against trend \(strong, 23 years\)\./);
   assert.match(t, /Our nowcast above is national\. No state yield is printed from it/);
   const old = { crops: { corn: { states: { WI: { ...fit.crops.corn.states.WI, latest: { year: 2025, week: 41, ge: 60 } } } } } };
   assert.doesNotMatch(text(run("cy", WI, { "cond-yield/fit": old })), /good\/excellent/, "last year's rating is not this week's");
@@ -216,17 +216,17 @@ const arc = { updated: "2026-10-16", default_year: { until: "2026-12-11", then: 
 test("farm bill: county ARC/PLC link, reference prices and the PLC rate at USDA's price", () => {
   const h = run("farmbill", WI, { "arc-plc": arc, "state-stats": stats }), t = text(h);
   assert.match(h, /href="\/arc-plc\/wisconsin\/barron-county"/);
-  assert.match(t, /Barron County , Wisconsin: ARC or PLC for Barron County/);
+  assert.match(t, /Barron County, Wisconsin\. Your base acres and PLC yield are on your FSA farm records; we do not have them\. ARC or PLC for Barron County/);
   assert.match(t, /we do not have them/);
   // corn: max(0, 4.42 - max(4.70, 2.42)) = 0
-  assert.match(t, /Corn \(4\.0 million acres planted in Wisconsin, 2026\): 2026 PLC pays below \$4\.42 a bushel, the effective reference price \(the 2025 law set \$4\.10, up from \$3\.70\)\. At USDA’s \$4\.70 season-average price \(Oct 9, 2026\), no PLC payment\./);
-  assert.match(t, /Soybeans \(2\.2 million acres .*below \$10\.71 .*\$12\.00 .*no PLC payment\./);
+  assert.match(t, /Corn \(4\.0 million acres in Wisconsin, 2026\): 2026 PLC pays below \$4\.42 a bushel \(effective reference price; the 2025 law set \$4\.10, up from \$3\.70\)\. At USDA’s \$4\.70 price \(Oct 9, 2026\): no PLC payment\./);
+  assert.match(t, /Soybeans \(2\.2 million acres in Wisconsin.*below \$10\.71 .*\$12\.00 .*no PLC payment\./);
   // wheat: 6.35 - max(6.30, 3.72) = 0.05 -> 5 cents
-  assert.match(t, /Wheat : 2026 PLC pays below \$6\.35 .*the PLC rate is 5¢ a bushel of your PLC yield, paid on 85% of base acres\./);
+  assert.match(t, /Wheat : 2026 PLC pays below \$6\.35 .*5¢ a bushel of PLC yield on 85% of base acres\./);
   assert.doesNotMatch(text(run("farmbill", IA, { "arc-plc": arc, "state-stats": stats })), /Wheat/, "Iowa has no wheat on file");
   // after Dec 11 the 2027 year; the loan rate floors the price: 4.34 - max(2.00, 2.42) = 1.92
   const t27 = text(Y.build({ loc: IA, mode: "farmbill", d: { "arc-plc": arc }, now: Date.parse("2026-12-15T15:00:00Z") }));
-  assert.match(t27, /2027 PLC pays below \$4\.34 .*the PLC rate is \$1\.92 a bushel/);
+  assert.match(t27, /2027 PLC pays below \$4\.34 .*: \$1\.92 a bushel of PLC yield/);
   assert.match(Y.h.countyLink(place({ county: "St. Croix County" }), "Wisconsin"), /\/arc-plc\/wisconsin\/st-croix-county"/);
 });
 

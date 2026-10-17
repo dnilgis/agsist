@@ -20,11 +20,11 @@
       if (h.age(end, o.now) > 21) return;
       Object.keys(S.weeks || {}).forEach(function (k) { if (+k <= L.week && +k > wk) wk = +k; });
       w = wk && S.weeks[wk];
-      var s = '<b>' + c[1] + '</b> rated ' + h.num(L.ge) + '% good/excellent in ' + h.esc(name) + ', week ending ' + h.day(end) + '.';
+      var s = '<b>' + c[1] + '</b>: ' + h.num(L.ge) + '% good/excellent, week ending ' + h.day(end) + '.';
       if (w && typeof w.r2 === 'number') {
         var r2 = w.r2;
-        s += (wk === L.week ? ' At this week' : ' At week ' + wk + ', the latest with enough years') + ', ' + h.esc(name) + '’s rating has explained ' + Math.round(r2 * 100) +
-          '% of how its final yield landed against trend (' + (r2 < 0.25 ? 'mostly noise' : r2 < 0.5 ? 'weak' : r2 < 0.7 ? 'meaningful' : 'strong') + ', ' + w.n + ' years).';
+        s += ' At ' + (wk === L.week ? 'this week' : 'week ' + wk + ' (the latest with enough years)') + ' the ' + h.esc(name) + ' rating has explained ' + Math.round(r2 * 100) +
+          '% of its final yield against trend (' + (r2 < 0.25 ? 'mostly noise' : r2 < 0.5 ? 'weak' : r2 < 0.7 ? 'meaningful' : 'strong') + ', ' + w.n + ' years).';
       }
       out.push(s); any = true;
     });

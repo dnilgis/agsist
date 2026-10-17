@@ -97,7 +97,7 @@
         f.forEach(function (k, i) { o.d[k] = r[i]; });
         el.innerHTML = build(o);
         Array.prototype.forEach.call(el.querySelectorAll('a[data-chk]'), function (a) {
-          fetch(a.getAttribute('href'), { method: 'HEAD' }).then(function (x) { if (!x.ok) throw 0; }).catch(function () {
+          fetch(a.getAttribute('href') + '.html', { method: 'HEAD' }).then(function (x) { if (!x.ok) throw 0; }).catch(function () {
             a.href = a.getAttribute('data-chk'); a.innerHTML = 'ARC or PLC in ' + esc(NAMES[loc.state]) + ' &rarr;';
           });
         });
