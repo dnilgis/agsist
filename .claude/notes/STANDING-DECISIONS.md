@@ -124,3 +124,5 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 17, Sig) No "Gifts" menu group for now.
 - (Oct 17, Sig) Farmland Atlas gets recorded farm sales (IL, WI) with unusually large sales noted; no buyer or seller names on indexed atlas pages.
 - (Oct 17, Sig) Daily briefing gets a second, stronger fact-check pass (newest strongest model) that can block the send. New daily-site-check.yml approved: once a day, runs the number check and staleness checks, keeps one GitHub issue "Daily site check" updated.
+- (Oct 17, Sig) PRF "this interval so far" (NCEI nClimGrid, RMA's source) approved to run daily at 14:23 UTC.
+- (Oct 17, Sig) Daily briefing fact check: Opus 5.5, report-only for a week (review Oct 24), then decide on block.

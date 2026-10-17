@@ -5,15 +5,16 @@ name: PRF interval so far
 # CPC's real-time daily gauge analysis (0.25 degree, CONUS), the same daily
 # rain RMA's Rainfall Index is built from.
 #
-# Dispatch only. No schedule until Sig approves one.
+# Daily at 14:23 UTC (Sig approved Oct 17, 2026), plus dispatch modes below.
 #   mode=probe     save directory listings, one daily file and the RMA source
 #                  notes to the raw branch (data/prf-season-raw/), nothing else
 #   mode=build     fetch the open intervals and commit data/prf/now/
 #   mode=backtest  rebuild past intervals from CPC and compare with RMA's final
 #                  index; the result goes to the raw branch and the job log
 #
-# Run by hand for now; a daily schedule ("23 14 * * *") waits for Sig's OK.
 on:
+  schedule:
+    - cron: '23 14 * * *'   # daily, after NCEI posts its daily grids (3 days behind); Sig approved Oct 17, 2026
   workflow_dispatch:
     inputs:
       mode:
