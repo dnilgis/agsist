@@ -146,3 +146,37 @@ test("1: stationSaid in the code: every status line that names the drawn station
   assert.ok(!/setStatus\([^;]*stationName\(META\.name\)/.test(S), "no status line builds the station from its raw name");
   assert.match(S, /'Drawn from the records at ' \+ stationSaid\(META, true\)/);
 });
+
+// ---------- (i) maker mode, gated ----------
+test("(i) the maker gate: only the hash is in the code, honest comment, serial still behind it", () => {
+  assert.match(S, /var MAKER_HASH = '[0-9a-f]{64}'/);
+  assert.match(S, /It is not DRM/);
+  assert.match(S, /return MAKER && m \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/, "serial=N and serial=0 still need maker mode");
+  assert.ok(!/maker-key|MAKER_KEY\s*=/.test(S), "no key in the code");
+});
+
+test("(i) ?maker=1 alone is the public page; the right key once opens it on that browser, then ?maker=1 works", { skip }, async () => {
+  const { createHash } = await import("node:crypto");
+  const TEST_KEY = "test-only-key-0000000";
+  const real = /var MAKER_HASH = '([0-9a-f]{64})'/.exec(S)[1];
+  const fake = createHash("sha256").update(TEST_KEY).digest("hex");
+  await withPage(async (page, base, errors) => {
+    // a test-only hash: the shipped file with the constant swapped, so the real key never enters the repo
+    await page.route(/\/components\/rain-print\.js/, (r) => r.fulfill({ contentType: "text/javascript", body: S.replace(real, fake) }));
+    await page.goto(base + "/rain-print.html?maker=1");
+    await idle(page);
+    assert.equal(await page.isHidden("#rp-maker"), true, "no maker box for ?maker=1 alone");
+    await page.goto(base + "/rain-print.html?maker=wrong-key-00000000000");
+    await page.waitForTimeout(800);
+    assert.equal(await page.isHidden("#rp-maker"), true, "a wrong key opens nothing");
+    await page.goto(base + "/rain-print.html?maker=" + TEST_KEY + "&serial=0");
+    await page.waitForURL(/maker=1&serial=0/, { timeout: 15000 });
+    await idle(page);
+    assert.ok(!page.url().includes(TEST_KEY), "the key leaves the address bar");
+    assert.equal(await page.isVisible("#rp-maker"), true, "the maker box opens");
+    await page.goto(base + "/rain-print.html?maker=1");
+    await idle(page);
+    assert.equal(await page.isVisible("#rp-maker"), true, "and ?maker=1 works on this browser from then on");
+    assert.deepEqual(errors, []);
+  });
+});

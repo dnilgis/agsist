@@ -1589,7 +1589,42 @@
   var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
   var DPI = 300;
   var SHEET_WORDS = SHEET.h + ' x ' + SHEET.w + ' in sheet, the art ' + SHEET.art.w + ' x ' + SHEET.art.h + ' in in the middle, untrimmed';
-  var MAKER = /(?:^|[?&])maker=1(?:&|$)/.test(root.location.search);
+  /* MAKER MODE, GATED (2026-10-17, art panel: ?maker=1 alone showed anyone the
+     print and digital file buttons, which gave away the $19 file). Sig opens
+     ?maker=<his key> once on a browser: the page compares the key's SHA-256
+     with MAKER_HASH, keeps a flag in this browser's localStorage, and reloads
+     as ?maker=1, so the key leaves the address bar. From then on ?maker=1
+     (with &serial=N or &serial=0) works on that browser; anywhere else
+     ?maker=1 is the public page. Only the hash is in this file, never the key.
+     This stops casual use. It is not DRM: the hash and the flag are both in
+     this public file, and anyone who reads it can set the flag and draw the
+     files themselves. */
+  var MAKER_HASH = 'd13c567a9e183ee53f5f263b90610b99e05c0a7bdb27e26940c19683ca1c30d3', MAKER_FLAG = 'rp-maker';
+  var MAKER_ASK = /(?:^|[?&])maker=([^&#]+)/.exec(root.location.search);
+  var MAKER = (function () {
+    if (!MAKER_ASK) return false;
+    try { return root.localStorage.getItem(MAKER_FLAG) === MAKER_HASH; } catch (e) { return false; }
+  })();
+  function sha256Hex(text) {
+    var c = root.crypto && root.crypto.subtle;
+    if (!c || typeof TextEncoder !== 'function') return Promise.resolve('');
+    return c.digest('SHA-256', new TextEncoder().encode(text)).then(function (b) {
+      return Array.prototype.map.call(new Uint8Array(b), function (x) { return (x < 16 ? '0' : '') + x.toString(16); }).join('');
+    }, function () { return ''; });
+  }
+  if (MAKER_ASK && MAKER_ASK[1] !== '1') {
+    var makerOne = function () { return root.location.href.replace(/([?&])maker=[^&#]+/, '$1maker=1'); };
+    if (MAKER) { try { root.history.replaceState(root.history.state, '', makerOne()); } catch (e) {} }
+    else {
+      var key = MAKER_ASK[1];
+      try { key = decodeURIComponent(key); } catch (e) {}
+      sha256Hex(key).then(function (h) {
+        if (h !== MAKER_HASH) return;
+        try { root.localStorage.setItem(MAKER_FLAG, MAKER_HASH); } catch (e) { return; }
+        root.location.replace(makerOne());
+      });
+    }
+  }
   var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
   var ORDER_TO = 'sig@farmers1st.com';

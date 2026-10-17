@@ -13,6 +13,7 @@
  * Needs Playwright and Chromium; skipped where they are missing.
  *   node --test test/rain-print-buy-path.test.mjs
  */
+import { makerFlag } from "./fixtures/rp-maker.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -98,6 +99,7 @@ async function withPage(fn, { width = 390, height = 844, ...opts } = {}) {
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width, height }, serviceWorkers: "block", hasTouch: width < 900, isMobile: false });
+    await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
     await ctx.clock.setFixedTime(new Date("2026-10-15T17:00:00Z"));
     await mocks(ctx, opts);
     const page = await ctx.newPage();

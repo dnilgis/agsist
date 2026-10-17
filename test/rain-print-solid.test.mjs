@@ -22,6 +22,7 @@
  *
  *   node --test test/rain-print-solid.test.mjs
  */
+import { makerFlag } from "./fixtures/rp-maker.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -141,6 +142,7 @@ async function withPage(fn, opts = {}) {
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width: opts.width || 1280, height: opts.height || 900 }, serviceWorkers: "block" });
+    await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
     await ctx.clock.setFixedTime(new Date(opts.time || "2026-10-14T17:00:00Z"));
     const log = { stripe: [] };
     await mocks(ctx, opts, log);
