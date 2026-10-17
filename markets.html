@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=18"></script>
 <script src="/components/asof.js?v=1"></script>
+<script src="/components/price-local.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -57,6 +58,16 @@
 @media (min-width:521px){.pc .pc-price{font-size:clamp(1.15rem,16cqi,2.4rem)}}
 /* "$4.25¾" in small mono type reads like "$4.25%": these lines set in the body font, where the glyph is legible */
 .pc-range-labels>span,.pc-chg-val{font-family:var(--font-body)}
+/* 2026-10-17 phone: two cards a row so six or more markets show on the first screens; nothing is dropped */
+@media (max-width:520px){
+  .section-inner>div[style*="grid-template-columns"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.45rem!important}
+  .section-inner .pc{padding:.55rem .6rem}
+  .section-inner .pc .pc-head{margin-bottom:.3rem}
+  .section-inner .pc .pc-price{font-size:clamp(1.05rem,15cqi,1.45rem)}
+  .section-inner .pc .pc-chg-val{font-size:.74rem;padding:.1rem .3rem;white-space:normal;overflow:visible;text-overflow:clip}
+  .section-inner .pc .pc-range-labels{font-size:.7rem}
+  .section-inner .pc .pc-range-labels>span:nth-child(2){display:none}
+}
 .mkt-idx{margin-top:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
 .mkt-idx-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
 .mkt-idx-grp{padding:12px 16px 4px;font-size:0.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
@@ -111,6 +122,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
         <!--SEED:mk:dup--><style id="mk-dup-css">#pc-card-corn-dec,#pc-card-bean-nov{display:none}</style><!--/SEED-->
         <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"><!--SEED:mk:status--><time class="asof" data-asof="prices" datetime="2026-10-17T05:46:11Z">Updated Oct 17, 12:46 am</time> &middot; each change line carries its own close date<!--/SEED--></span>
       </div>
+      <p class="pl-line" data-state-bid="corn soybeans" hidden></p>
 
       <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
@@ -353,7 +365,10 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
     if(status&&data.fetched){
       /* the stamp plus the build's own words (seed_static.py seed_markets), so the
          line is rewritten in place rather than shrinking after first paint */
-      var stampH=window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'';
+      /* 2026-10-17: settle or last trade, from each quote's close_kind, in Central time (components/price-local.js; seed_static.py mk_board bakes the same words) */
+      var bq={};map.forEach(function(m){bq[m.key]=q[m.key];});
+      var bw=window.AgPxStamp?AgPxStamp.board(bq,null,data.fetched):'';
+      var stampH=bw?'<time class="px-stamp" datetime="'+data.fetched+'">'+bw.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];})+'</time>':(window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'');
       if(stampH)status.innerHTML=stampH+' &middot; each change line carries its own close date';
     }
   }).catch(function(){

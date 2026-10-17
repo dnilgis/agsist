@@ -728,6 +728,44 @@ def mk_source(q):
     return "Latest delayed trades, except the exchange settle for " + _and_list(st) + "." + tail
 
 
+def mk_board(q, fetched):
+    """The /markets status line (twin of AgPxStamp.board in components/price-local.js):
+    "Oct 16 settle", or "Oct 16 settle where posted, latest delayed trade otherwise",
+    or "Latest delayed trades", then when the file was read, in Central time.
+    Baked, so the read time always carries its date."""
+    st, last, n = "", 0, 0
+    for _, _, _, key, _ in MK_MAP:
+        d = q.get(key) or {}
+        if d.get("close") is None:
+            continue
+        n += 1
+        if d.get("close_kind") == "settle":
+            sd = str(d.get("settle_date") or d.get("close_date") or "")
+            if sd > st:
+                st = sd
+        else:
+            last += 1
+    read = ""
+    try:
+        t = datetime.fromisoformat(str(fetched).replace("Z", "+00:00"))
+        if t.tzinfo is None:
+            t = t.replace(tzinfo=timezone.utc)
+        c = t.astimezone(CT) if CT else t
+        read = f"{_md(c)}, " + c.strftime("%I:%M").lstrip("0") + " " + c.strftime("%p").lower() + " CT"
+    except (TypeError, ValueError):
+        read = ""
+    if not n:
+        return ("Read " + read) if read else ""
+    sdd = _iso_date(st) if st else None
+    if sdd and not last:
+        out = _md(sdd) + " settle"
+    elif sdd:
+        out = _md(sdd) + " settle where posted, latest delayed trade otherwise"
+    else:
+        out = "Latest delayed trades"
+    return out + (". Read " + read if read else "")
+
+
 def seed_markets(prices, today):
     seeds = {}
     q = dict((prices or {}).get("quotes") or {})
@@ -795,7 +833,8 @@ def seed_markets(prices, today):
             dup.append("#" + card)
     seeds["mk:dup"] = ('<style id="mk-dup-css">' + ",".join(dup) + "{display:none}</style>") if dup else ""
     seeds["mk:src"] = _e(mk_source(q))
-    seeds["mk:status"] = _asof_time(fetched, "prices", fd) + " &middot; each change line carries its own close date"
+    seeds["mk:status"] = ('<time class="px-stamp" datetime="' + _e(str(fetched)) + '">' + _e(mk_board(q, fetched)) + "</time>"
+                          " &middot; each change line carries its own close date")
     print(f"  markets.html: {n} of {len(MK_MAP)} quotes seeded")
     return _write_seeds("markets.html", seeds)
 
