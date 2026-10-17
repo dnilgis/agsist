@@ -150,6 +150,7 @@ PAGES = [
         ("/cattle-auction-prices", "Sale Barn Prices", "feeder steer and heifer prices by 100 lb weight class (Medium and Large 1 and 1-2), weighted average $/cwt and $/head with head counts, at USDA-reported sale barns and state auction summaries near a ZIP"),
     ]),
     ("My ground and programs", [
+        ("/custom-rates", "Custom Farm Rates by State", "what hired combining, planting, spraying, tillage, hauling and baling cost, as each state's university or state survey published it (average, range, unit, survey year, link): Iowa, Kansas, Nebraska, North Dakota, Wisconsin, Indiana, Ohio, Missouri, Oklahoma; one page per state at /custom-rates/<state>"),
         ("/rent/", "Cash Rent by State", "USDA county cash rent for every published state, one page per state at /rent/<state>"),
         ("/farmland-atlas", "Farmland Atlas",
          "every US county's cash rent, land value, crop insurance loss record, drought and more from public records, one page per county at /farmland-atlas/<state>/<county>"),
@@ -194,7 +195,7 @@ OMIT = {
 }
 
 # Generated page sets: a URL under one of these is covered by its set's line.
-SET_RE = re.compile(r"^/(daily|hail|hail-map|rent|yield|basis|cash-bids|arc-plc|farmland-atlas|embed|prf)/.+")
+SET_RE = re.compile(r"^/(daily|hail|hail-map|rent|yield|basis|cash-bids|arc-plc|farmland-atlas|embed|prf|custom-rates)/.+")
 
 
 def url_file(path, root=REPO):

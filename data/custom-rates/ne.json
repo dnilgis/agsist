@@ -1,0 +1,614 @@
+{
+ "state": "NE",
+ "name": "Nebraska",
+ "slug": "nebraska",
+ "survey": "2026 Nebraska Agricultural Custom Rates (Nebraska Extension EC823, April 24, 2026)",
+ "publisher": "University of Nebraska-Lincoln Extension, Center for Agricultural Profitability",
+ "survey_year": 2026,
+ "collected": "108 responses; rates reflect late winter 2025 and early 2026",
+ "sources": [
+  {
+   "url": "https://cap.unl.edu/sites/unl.edu.ianr.agecon.center-for-ag-profitability/files/media/file/2026-nebraska-custom-rates-report_ada.pdf",
+   "ref": "cr-ne-2026"
+  }
+ ],
+ "spread": "minmax",
+ "spread_label": "lowest to highest answer",
+ "includes": "Reported rates include charges for equipment, fuel, labor, and supplies such as baling wire or twine. Seed, fertilizer, and chemical costs are not included unless otherwise specified.",
+ "range_note": "Rows are from the report's State Summary (operations with six or more answers). The range is the lowest and highest answer.",
+ "rows": [
+  {
+   "s": "Land tillage",
+   "o": "Disk harrowing, primary (heavy)",
+   "u": "acre",
+   "a": 20.69,
+   "n": 27,
+   "lo": 7.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Disk harrowing, finishing (light)",
+   "u": "acre",
+   "a": 19.47,
+   "n": 29,
+   "lo": 7.0,
+   "hi": 26.0,
+   "k": "disk-tandem"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Harrowing, spike or spring tooth",
+   "u": "acre",
+   "a": 14.75,
+   "n": 8,
+   "lo": 8.0,
+   "hi": 28.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Chisel plow for primary tillage",
+   "u": "acre",
+   "a": 25.75,
+   "n": 8,
+   "lo": 17.0,
+   "hi": 36.0,
+   "k": "chisel"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Deep chisel",
+   "u": "acre",
+   "a": 36.0,
+   "n": 8,
+   "lo": 28.0,
+   "hi": 60.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Subsoil or rip",
+   "u": "acre",
+   "a": 27.4,
+   "n": 15,
+   "lo": 15.0,
+   "hi": 35.0,
+   "k": "subsoil"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Field cultivator",
+   "u": "acre",
+   "a": 19.28,
+   "n": 16,
+   "lo": 9.0,
+   "hi": 26.0,
+   "k": "field-cult"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Vertical or turbo tillage",
+   "u": "acre",
+   "a": 21.31,
+   "n": 18,
+   "lo": 14.0,
+   "hi": 28.0,
+   "k": "vertical-till"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Strip tilling",
+   "u": "acre",
+   "a": 25.67,
+   "n": 9,
+   "lo": 14.0,
+   "hi": 36.0,
+   "k": "strip-till"
+  },
+  {
+   "s": "Land tillage",
+   "o": "Strip tilling with fertilizer application",
+   "u": "acre",
+   "a": 26.71,
+   "n": 14,
+   "lo": 18.0,
+   "hi": 36.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Rolling stalk chopper, not PTO driven",
+   "u": "acre",
+   "a": 15.29,
+   "n": 7,
+   "lo": 12.0,
+   "hi": 20.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Cultivation tillage, conventional",
+   "u": "acre",
+   "a": 21.33,
+   "n": 6,
+   "lo": 12.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Cultivation tillage, handling residue",
+   "u": "acre",
+   "a": 18.75,
+   "n": 8,
+   "lo": 12.0,
+   "hi": 26.0
+  },
+  {
+   "s": "Land tillage",
+   "o": "Cultivation tillage, hill or ditch",
+   "u": "acre",
+   "a": 21.62,
+   "n": 13,
+   "lo": 12.0,
+   "hi": 50.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Drilling small grains, conventional drill",
+   "u": "acre",
+   "a": 17.86,
+   "n": 14,
+   "lo": 10.0,
+   "hi": 25.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Drilling small grains, no-till drill",
+   "u": "acre",
+   "a": 22.55,
+   "n": 31,
+   "lo": 15.0,
+   "hi": 40.0,
+   "k": "drill-smallgrain"
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Drilling soybeans, conventional drill",
+   "u": "acre",
+   "a": 22.33,
+   "n": 6,
+   "lo": 18.0,
+   "hi": 25.0,
+   "k": "drill-soy"
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Drilling soybeans, no-till drill",
+   "u": "acre",
+   "a": 24.02,
+   "n": 26,
+   "lo": 15.0,
+   "hi": 40.0,
+   "k": "drill-soy-notill"
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Seeding CRP ground",
+   "u": "acre",
+   "a": 30.0,
+   "n": 8,
+   "lo": 15.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Seeding cover crops, drill",
+   "u": "acre",
+   "a": 22.27,
+   "n": 28,
+   "lo": 15.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Planting row crops, no coulters, with band applicator",
+   "u": "acre",
+   "a": 26.36,
+   "n": 14,
+   "lo": 15.0,
+   "hi": 49.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Planting row crops, no coulters, without band applicator",
+   "u": "acre",
+   "a": 29.19,
+   "n": 8,
+   "lo": 20.0,
+   "hi": 44.0,
+   "k": "plant-row"
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Planting row crops, coulters, with band applicator",
+   "u": "acre",
+   "a": 30.01,
+   "n": 20,
+   "lo": 20.0,
+   "hi": 50.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Planting row crops, coulters, without band applicator",
+   "u": "acre",
+   "a": 25.95,
+   "n": 15,
+   "lo": 18.0,
+   "hi": 36.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Ridge planting, with band applicator",
+   "u": "acre",
+   "a": 28.26,
+   "n": 17,
+   "lo": 20.0,
+   "hi": 42.0
+  },
+  {
+   "s": "Planting and post planting",
+   "o": "Ridge planting, without band applicator",
+   "u": "acre",
+   "a": 29.14,
+   "n": 11,
+   "lo": 20.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Haying and baling",
+   "o": "Mowing hay",
+   "u": "acre",
+   "a": 18.71,
+   "n": 7,
+   "lo": 10.0,
+   "hi": 25.0,
+   "k": "mow-hay"
+  },
+  {
+   "s": "Haying and baling",
+   "o": "Raking hay",
+   "u": "acre",
+   "a": 8.17,
+   "n": 15,
+   "lo": 5.0,
+   "hi": 12.5,
+   "k": "rake"
+  },
+  {
+   "s": "Haying and baling",
+   "o": "Swathing with crushing/crimping",
+   "u": "acre",
+   "a": 19.26,
+   "n": 17,
+   "lo": 14.0,
+   "hi": 25.0,
+   "k": "swath"
+  },
+  {
+   "s": "Haying and baling",
+   "o": "Raking cornstalks",
+   "u": "acre",
+   "a": 9.67,
+   "n": 6,
+   "lo": 4.0,
+   "hi": 15.0
+  },
+  {
+   "s": "Haying and baling",
+   "o": "Baling large round bales with net wrap",
+   "u": "bale",
+   "a": 17.88,
+   "n": 26,
+   "lo": 12.0,
+   "hi": 25.0,
+   "k": "bale-round-net"
+  },
+  {
+   "s": "Haying and baling",
+   "o": "Baling cornstalks, large round bales with net wrap",
+   "u": "bale",
+   "a": 21.22,
+   "n": 9,
+   "lo": 18.0,
+   "hi": 27.0
+  },
+  {
+   "s": "Haying and baling",
+   "o": "Loading and moving large round bales",
+   "u": "mile",
+   "a": 4.82,
+   "n": 11,
+   "lo": 2.0,
+   "hi": 7.0
+  },
+  {
+   "s": "Small grain harvest",
+   "o": "Combining small grains (no hauling), flat rate",
+   "u": "acre",
+   "a": 47.39,
+   "n": 9,
+   "lo": 36.0,
+   "hi": 65.0,
+   "k": "combine-smallgrain"
+  },
+  {
+   "s": "Small grain harvest",
+   "o": "Combining small grains, minimum rate (plus an average $0.24 a bushel above 24 bushels)",
+   "u": "acre",
+   "a": 33.57,
+   "n": 7,
+   "lo": 30.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Small grain harvest",
+   "o": "Hauling small grain to local storage",
+   "u": "bushel",
+   "a": 0.21,
+   "n": 11,
+   "lo": 0.15,
+   "hi": 0.33
+  },
+  {
+   "s": "Application of fertilizer",
+   "o": "Dry fertilizer solid broadcast, including labor and applicator",
+   "u": "acre",
+   "a": 9.66,
+   "n": 14,
+   "lo": 8.0,
+   "hi": 17.0,
+   "k": "fert-dry"
+  },
+  {
+   "s": "Application of fertilizer",
+   "o": "Dry fertilizer, variable rate",
+   "u": "acre",
+   "a": 12.48,
+   "n": 12,
+   "lo": 9.0,
+   "hi": 22.0
+  },
+  {
+   "s": "Application of fertilizer",
+   "o": "Liquid fertilizer, constant rate, labor and applicator",
+   "u": "acre",
+   "a": 12.82,
+   "n": 22,
+   "lo": 8.0,
+   "hi": 25.0,
+   "k": "fert-liquid"
+  },
+  {
+   "s": "Application of fertilizer",
+   "o": "Liquid fertilizer, variable rate, labor and applicator",
+   "u": "acre",
+   "a": 15.25,
+   "n": 18,
+   "lo": 9.5,
+   "hi": 23.0
+  },
+  {
+   "s": "Application of fertilizer",
+   "o": "Anhydrous ammonia, knife with coulters",
+   "u": "acre",
+   "a": 19.69,
+   "n": 16,
+   "lo": 10.0,
+   "hi": 25.0,
+   "k": "nh3"
+  },
+  {
+   "s": "Insect, disease and weed control",
+   "o": "Spraying weed control, self-propelled sprayer",
+   "u": "acre",
+   "a": 9.85,
+   "n": 29,
+   "lo": 7.0,
+   "hi": 12.5,
+   "k": "spray-ground"
+  },
+  {
+   "s": "Insect, disease and weed control",
+   "o": "Crop spraying by drone (fungicides, insecticides and/or herbicides)",
+   "u": "acre",
+   "a": 15.17,
+   "n": 6,
+   "lo": 13.0,
+   "hi": 20.0,
+   "k": "spray-drone"
+  },
+  {
+   "s": "Harvesting grains and soybeans",
+   "o": "Combining irrigated corn, flat rate",
+   "u": "acre",
+   "a": 50.7,
+   "n": 30,
+   "lo": 25.0,
+   "hi": 82.0,
+   "k": "combine-corn"
+  },
+  {
+   "s": "Harvesting grains and soybeans",
+   "o": "Combining irrigated corn, flat rate",
+   "u": "bushel",
+   "a": 0.32,
+   "n": 8,
+   "lo": 0.26,
+   "hi": 0.45
+  },
+  {
+   "s": "Harvesting grains and soybeans",
+   "o": "Combining dryland corn, flat rate",
+   "u": "acre",
+   "a": 49.29,
+   "n": 42,
+   "lo": 30.0,
+   "hi": 82.0
+  },
+  {
+   "s": "Harvesting grains and soybeans",
+   "o": "Combining high moisture corn, flat rate",
+   "u": "acre",
+   "a": 58.6,
+   "n": 10,
+   "lo": 47.0,
+   "hi": 75.0
+  },
+  {
+   "s": "Harvesting grains and soybeans",
+   "o": "Combining high moisture corn",
+   "u": "bushel",
+   "a": 0.34,
+   "n": 8,
+   "lo": 0.26,
+   "hi": 0.45
+  },
+  {
+   "s": "Harvesting grains and soybeans",
+   "o": "Combining soybeans, flat rate",
+   "u": "acre",
+   "a": 50.87,
+   "n": 38,
+   "lo": 28.0,
+   "hi": 85.0,
+   "k": "combine-soy"
+  },
+  {
+   "s": "Hauling operations",
+   "o": "Hauling irrigated corn, field to local storage (15 miles or less)",
+   "u": "bushel",
+   "a": 0.14,
+   "n": 31,
+   "lo": 0.05,
+   "hi": 0.28
+  },
+  {
+   "s": "Hauling operations",
+   "o": "Hauling dryland corn, field to local storage (15 miles or less)",
+   "u": "bushel",
+   "a": 0.15,
+   "n": 39,
+   "lo": 0.06,
+   "hi": 0.28
+  },
+  {
+   "s": "Hauling operations",
+   "o": "Hauling high moisture corn, field to local storage (15 miles or less)",
+   "u": "bushel",
+   "a": 0.15,
+   "n": 15,
+   "lo": 0.1,
+   "hi": 0.25
+  },
+  {
+   "s": "Hauling operations",
+   "o": "Hauling soybeans, field to local storage (15 miles or less)",
+   "u": "bushel",
+   "a": 0.15,
+   "n": 34,
+   "lo": 0.06,
+   "hi": 0.27
+  },
+  {
+   "s": "Hauling operations",
+   "o": "Grain from combine with tractor and grain cart to edge of field",
+   "u": "acre",
+   "a": 5.83,
+   "n": 6,
+   "lo": 4.0,
+   "hi": 8.0,
+   "k": "grain-cart"
+  },
+  {
+   "s": "Hauling operations",
+   "o": "Grain with truck to storage or elevator, flat rate",
+   "u": "bushel",
+   "a": 0.16,
+   "n": 22,
+   "lo": 0.07,
+   "hi": 0.3,
+   "k": "haul-grain-bu"
+  },
+  {
+   "s": "Other custom services",
+   "o": "Grain bin storage, no air or electric charge included",
+   "u": "bushel / month",
+   "a": 0.02,
+   "n": 7,
+   "lo": 0.01,
+   "hi": 0.04
+  },
+  {
+   "s": "Other custom services",
+   "o": "Grain bin storage, with air or electric charge included",
+   "u": "bushel / month",
+   "a": 0.03,
+   "n": 6,
+   "lo": 0.01,
+   "hi": 0.06
+  },
+  {
+   "s": "Other custom services",
+   "o": "Mowing grass (CRP or pasture)",
+   "u": "hour",
+   "a": 154.29,
+   "n": 7,
+   "lo": 100.0,
+   "hi": 250.0
+  },
+  {
+   "s": "Other custom services",
+   "o": "Checking pivots during irrigation season",
+   "u": "acre",
+   "a": 14.19,
+   "n": 9,
+   "lo": 5.0,
+   "hi": 35.0
+  },
+  {
+   "s": "Other custom services",
+   "o": "Closing pivot tracks",
+   "u": "hour",
+   "a": 161.11,
+   "n": 9,
+   "lo": 50.0,
+   "hi": 250.0
+  },
+  {
+   "s": "Other custom services",
+   "o": "Closing pivot tracks",
+   "u": "pivot",
+   "a": 357.14,
+   "n": 7,
+   "lo": 100.0,
+   "hi": 1000.0
+  },
+  {
+   "s": "Other custom services",
+   "o": "Tractor rent, greater than 250 hp",
+   "u": "metered hour",
+   "a": 158.57,
+   "n": 7,
+   "lo": 85.0,
+   "hi": 400.0
+  },
+  {
+   "s": "Custom contract farming",
+   "o": "Dryland soybeans (average 6.8 trips over the field; no input costs)",
+   "u": "acre",
+   "a": 125.0,
+   "n": 6,
+   "lo": 100.0,
+   "hi": 180.0,
+   "k": "custom-farm-soy"
+  }
+ ],
+ "withheld": "The State Summary's dryland corn contract farming row repeats the CRP mowing row's numbers exactly and has no matching detail table, so it is left out. The summary labels small grain hauling \"cents per bushel\"; the detail table says \"flat rate per bushel\" and shows dollars, so it is listed per bushel."
+}

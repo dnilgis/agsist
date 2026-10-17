@@ -1,0 +1,375 @@
+{
+ "state": "IN",
+ "name": "Indiana",
+ "slug": "indiana",
+ "survey": "2025 Indiana Farm Custom Rates (Purdue University, Michael Langemeier, April 2025)",
+ "publisher": "Purdue University Extension",
+ "survey_year": 2025,
+ "collected": "Questionnaires handed out at Purdue Extension meetings, December 2024 through March 2025; 97 respondents reporting rates paid or received in the past year",
+ "sources": [
+  {
+   "url": "https://ag.purdue.edu/commercialag/home/wp-content/uploads/2025/04/20250417_Langemeier_2025IndianaFarmCustomRates.pdf",
+   "ref": "cr-in-2025"
+  }
+ ],
+ "spread": "sd",
+ "spread_label": "average plus and minus one standard deviation (about two thirds of answers)",
+ "includes": "Unless otherwise stated, the rates include payments for fuel, operator labor, and machinery ownership costs.",
+ "range_note": "Purdue does not print a low-high range. Where 30 or more answered, it prints the average plus and minus one standard deviation, where about two thirds of answers fall; that band is shown in the range column. Rows with fewer than five answers are left out.",
+ "rows": [
+  {
+   "s": "Land preparation",
+   "o": "Rotary hoeing",
+   "u": "acre",
+   "a": 9.4,
+   "n": 5
+  },
+  {
+   "s": "Land preparation",
+   "o": "Chisel plowing",
+   "u": "acre",
+   "a": 19.13,
+   "n": 20,
+   "k": "chisel"
+  },
+  {
+   "s": "Land preparation",
+   "o": "Vertical tillage",
+   "u": "acre",
+   "a": 17.12,
+   "n": 26,
+   "k": "vertical-till"
+  },
+  {
+   "s": "Land preparation",
+   "o": "Disking with tandem disk",
+   "u": "acre",
+   "a": 15.19,
+   "n": 18,
+   "k": "disk-tandem"
+  },
+  {
+   "s": "Land preparation",
+   "o": "Field cultivating",
+   "u": "acre",
+   "a": 16.59,
+   "n": 25,
+   "k": "field-cult"
+  },
+  {
+   "s": "Land preparation",
+   "o": "V-ripping or sub-soiling",
+   "u": "acre",
+   "a": 22.0,
+   "n": 17,
+   "k": "subsoil"
+  },
+  {
+   "s": "Fertilizer application, ground",
+   "o": "Broadcasting bulk dry fertilizer",
+   "u": "acre",
+   "a": 7.74,
+   "n": 27,
+   "k": "fert-dry"
+  },
+  {
+   "s": "Fertilizer application, ground",
+   "o": "Spraying liquid fertilizer",
+   "u": "acre",
+   "a": 8.56,
+   "n": 17,
+   "k": "fert-liquid"
+  },
+  {
+   "s": "Fertilizer application, ground",
+   "o": "Knifing-in liquid fertilizer",
+   "u": "acre",
+   "a": 14.58,
+   "n": 17
+  },
+  {
+   "s": "Fertilizer application, ground",
+   "o": "Anhydrous application, pre-plant",
+   "u": "acre",
+   "a": 15.21,
+   "n": 12,
+   "k": "nh3"
+  },
+  {
+   "s": "Fertilizer application, ground",
+   "o": "Side-dress anhydrous application",
+   "u": "acre",
+   "a": 15.35,
+   "n": 17
+  },
+  {
+   "s": "Fertilizer application, ground",
+   "o": "Spreading manure",
+   "u": "acre",
+   "a": 15.39,
+   "n": 9
+  },
+  {
+   "s": "Chemical application",
+   "o": "Tractor and sprayer",
+   "u": "acre",
+   "a": 8.4,
+   "n": 10,
+   "k": "spray-tractor"
+  },
+  {
+   "s": "Chemical application",
+   "o": "Self-propelled sprayer",
+   "u": "acre",
+   "a": 8.39,
+   "n": 40,
+   "lo": 6.7,
+   "hi": 10.0,
+   "k": "spray-ground"
+  },
+  {
+   "s": "Chemical application",
+   "o": "Aerial sprayer",
+   "u": "acre",
+   "a": 13.31,
+   "n": 18,
+   "k": "spray-aerial"
+  },
+  {
+   "s": "Precision agriculture",
+   "o": "Precision fertilizer application",
+   "u": "acre",
+   "a": 7.9,
+   "n": 14
+  },
+  {
+   "s": "Precision agriculture",
+   "o": "Precision chemical application",
+   "u": "acre",
+   "a": 9.0,
+   "n": 7
+  },
+  {
+   "s": "Grain planting",
+   "o": "Conventional till corn, 30 inch rows",
+   "u": "acre",
+   "a": 22.97,
+   "n": 31,
+   "lo": 16.4,
+   "hi": 29.5,
+   "k": "plant-row"
+  },
+  {
+   "s": "Grain planting",
+   "o": "No-till corn, 30 inch rows",
+   "u": "acre",
+   "a": 22.79,
+   "n": 24,
+   "k": "plant-notill"
+  },
+  {
+   "s": "Grain planting",
+   "o": "Conventional till soybeans, 15 inch rows",
+   "u": "acre",
+   "a": 21.64,
+   "n": 18
+  },
+  {
+   "s": "Grain planting",
+   "o": "No-till soybeans, 15 inch rows",
+   "u": "acre",
+   "a": 21.94,
+   "n": 31,
+   "lo": 16.8,
+   "hi": 27.0
+  },
+  {
+   "s": "Grain planting",
+   "o": "Conventional till soybeans, drilled",
+   "u": "acre",
+   "a": 18.33,
+   "n": 6,
+   "k": "drill-soy"
+  },
+  {
+   "s": "Grain planting",
+   "o": "No-till soybeans, drilled",
+   "u": "acre",
+   "a": 19.5,
+   "n": 8,
+   "k": "drill-soy-notill"
+  },
+  {
+   "s": "Grain planting",
+   "o": "No-till small grains",
+   "u": "acre",
+   "a": 19.46,
+   "n": 12
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Corn, combine only",
+   "u": "acre",
+   "a": 36.97,
+   "n": 53,
+   "lo": 28.8,
+   "hi": 45.1,
+   "k": "combine-corn"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Soybeans, combine only",
+   "u": "acre",
+   "a": 35.94,
+   "n": 54,
+   "lo": 28.1,
+   "hi": 43.8,
+   "k": "combine-soy"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Small grain, combine only",
+   "u": "acre",
+   "a": 32.37,
+   "n": 15,
+   "k": "combine-smallgrain"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Corn, combine and haul to bin",
+   "u": "acre",
+   "a": 43.88,
+   "n": 26,
+   "k": "harvest-haul-corn"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Soybeans, combine and haul to bin",
+   "u": "acre",
+   "a": 40.79,
+   "n": 28,
+   "k": "harvest-haul-soy"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Small grain, combine and haul to bin",
+   "u": "acre",
+   "a": 41.14,
+   "n": 7
+  },
+  {
+   "s": "Machinery and operator for all growing and harvesting operations",
+   "o": "Corn",
+   "u": "acre",
+   "a": 122.34,
+   "n": 8,
+   "k": "custom-farm-corn"
+  },
+  {
+   "s": "Machinery and operator for all growing and harvesting operations",
+   "o": "Soybeans",
+   "u": "acre",
+   "a": 107.23,
+   "n": 8,
+   "k": "custom-farm-soy"
+  },
+  {
+   "s": "On-farm corn drying",
+   "o": "Five points of moisture removed",
+   "u": "bushel",
+   "a": 0.19,
+   "n": 11,
+   "p": "cents"
+  },
+  {
+   "s": "On-farm corn drying",
+   "o": "Ten points of moisture removed",
+   "u": "bushel",
+   "a": 0.32,
+   "n": 10,
+   "p": "cents"
+  },
+  {
+   "s": "Grain hauling",
+   "o": "Total cost of hauling grain to market (average one-way haul 23.2 miles)",
+   "u": "bushel",
+   "a": 0.188,
+   "n": 47,
+   "lo": 0.126,
+   "hi": 0.251,
+   "k": "haul-grain-bu",
+   "p": "cents"
+  },
+  {
+   "s": "Hay, straw or corn stover",
+   "o": "Tractor and mower/conditioner",
+   "u": "acre",
+   "a": 20.1,
+   "n": 10,
+   "k": "mow-cond"
+  },
+  {
+   "s": "Hay, straw or corn stover",
+   "o": "Tedding",
+   "u": "acre",
+   "a": 8.17,
+   "n": 6,
+   "k": "ted"
+  },
+  {
+   "s": "Hay, straw or corn stover",
+   "o": "Raking (windrowing)",
+   "u": "acre",
+   "a": 11.44,
+   "n": 9,
+   "k": "rake"
+  },
+  {
+   "s": "Hay, straw or corn stover",
+   "o": "Baling small rectangular bales (25-60 lbs)",
+   "u": "bale",
+   "a": 1.12,
+   "n": 9,
+   "k": "bale-smallsq"
+  },
+  {
+   "s": "Hay, straw or corn stover",
+   "o": "Baling large rectangular bales (over 1,000 lbs)",
+   "u": "bale",
+   "a": 13.17,
+   "n": 6,
+   "k": "bale-largesq"
+  },
+  {
+   "s": "Hay, straw or corn stover",
+   "o": "Baling large round bales (5 feet wide)",
+   "u": "bale",
+   "a": 19.58,
+   "n": 13,
+   "k": "bale-round"
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Tiling (excluding cost of tile)",
+   "u": "foot",
+   "a": 0.95,
+   "n": 6,
+   "p": "cents"
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Mowing pasture or CRP acres",
+   "u": "acre",
+   "a": 30.85,
+   "n": 9,
+   "k": "mow-crp"
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Bulldozing (blade 9 feet wide or less)",
+   "u": "hour",
+   "a": 129.0,
+   "n": 9
+  }
+ ]
+}

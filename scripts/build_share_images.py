@@ -147,6 +147,7 @@ LINES = {
     "rain-radar": ("Rain on your field", "Rain in the last 24 hours, 3 days and 7 days at any spot, from NOAA radar and gauges."),
     "harvest-or-wait": ("Harvest or wait", "Drying bill now vs after field drydown, against the field loss you expect."),
     "editorial-standards": ("Editorial standards", "How the AGSIST Daily is made, where the numbers come from, and how corrections work."),
+    "custom-rates": ("Custom rates", "Nine state surveys: the average, range, unit and year for each job, with the source."),
     "grain-shrink": ("Grain shrink", "Corn, soybeans, wheat and sorghum: shrink, drying charges and overdry loss at your bid."),
     "hay-prices": ("Hay prices", "Alfalfa and other hay, dollars a ton, every state USDA publishes."),
     "hail-map": ("Hail map", "Hail swaths and ground reports for any US address, by storm day."),

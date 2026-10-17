@@ -1,0 +1,260 @@
+{
+ "state": "OK",
+ "name": "Oklahoma",
+ "slug": "oklahoma",
+ "survey": "Oklahoma Farm and Ranch Custom Rates, 2021-2022 (OSU Extension Current Report CR-205, revised March 2022)",
+ "publisher": "Oklahoma State University Extension, with the USDA NASS Oklahoma Field Office mailing",
+ "survey_year": 2021,
+ "collected": "Survey of Oklahoma farmers, ranchers and custom operators, fall 2021; about 675 usable surveys",
+ "sources": [
+  {
+   "url": "https://extension.okstate.edu/fact-sheets/print-publications/cr/cr-205-farm-and-ranch-custom-rates-2021-2022.pdf",
+   "ref": "cr-ok-2022"
+  }
+ ],
+ "spread": "none",
+ "spread_label": "no range printed",
+ "includes": "Custom work means the operator furnishes the implement, fuel, labor and other inputs tied to the job; seed or fertilizer only when stated.",
+ "range_note": "This report prints the average and the median, not a range. It is the newest Oklahoma edition we could find, from a 2021 survey, so it runs older than its neighbors. Rows with the state average withheld (D) are left out.",
+ "rows": [
+  {
+   "s": "Tillage",
+   "o": "Discing, offset",
+   "u": "acre",
+   "a": 10.79,
+   "n": 12
+  },
+  {
+   "s": "Tillage",
+   "o": "Discing, tandem",
+   "u": "acre",
+   "a": 12.27,
+   "n": 11,
+   "k": "disk-tandem"
+  },
+  {
+   "s": "Tillage",
+   "o": "Blade or wide sweeps",
+   "u": "acre",
+   "a": 13.17,
+   "n": 6
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Applying bulk dry fertilizer",
+   "u": "acre",
+   "a": 6.09,
+   "n": 64,
+   "k": "fert-dry"
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Applying liquid fertilizer",
+   "u": "acre",
+   "a": 5.82,
+   "n": 20,
+   "k": "fert-liquid"
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Applying liquid fertilizer, side-dress",
+   "u": "acre",
+   "a": 7.88,
+   "n": 8
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Lime application",
+   "u": "ton",
+   "a": 9.92,
+   "n": 6,
+   "k": "lime-ton"
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Ground application, herbicides with boom sprayer",
+   "u": "acre",
+   "a": 6.48,
+   "n": 56,
+   "k": "spray-ground"
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Air application, herbicides",
+   "u": "acre",
+   "a": 10.2,
+   "n": 13,
+   "k": "spray-aerial"
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Ground application, fungicides with boom sprayer",
+   "u": "acre",
+   "a": 5.33,
+   "n": 10
+  },
+  {
+   "s": "Fertilizer and chemical",
+   "o": "Air application, fungicides",
+   "u": "acre",
+   "a": 7.53,
+   "n": 8
+  },
+  {
+   "s": "Planting",
+   "o": "Drill small grains, conventional tillage",
+   "u": "acre",
+   "a": 12.55,
+   "n": 10,
+   "k": "drill-smallgrain"
+  },
+  {
+   "s": "Haying",
+   "o": "Mowing hay",
+   "u": "acre",
+   "a": 16.19,
+   "n": 27,
+   "k": "mow-hay"
+  },
+  {
+   "s": "Haying",
+   "o": "Raking hay",
+   "u": "acre",
+   "a": 4.22,
+   "n": 27,
+   "k": "rake"
+  },
+  {
+   "s": "Haying",
+   "o": "Swathing",
+   "u": "acre",
+   "a": 16.09,
+   "n": 116,
+   "k": "swath"
+  },
+  {
+   "s": "Haying",
+   "o": "Baling a small square bale",
+   "u": "bale",
+   "a": 2.05,
+   "n": 20,
+   "k": "bale-smallsq"
+  },
+  {
+   "s": "Haying",
+   "o": "Baling a large square bale, 4-foot width",
+   "u": "bale",
+   "a": 17.58,
+   "n": 8,
+   "k": "bale-largesq"
+  },
+  {
+   "s": "Haying",
+   "o": "Baling a round bale, 4-foot width",
+   "u": "bale",
+   "a": 14.67,
+   "n": 22
+  },
+  {
+   "s": "Haying",
+   "o": "Cutting, raking, baling round bales, 4-foot width",
+   "u": "bale",
+   "a": 22.56,
+   "n": 166
+  },
+  {
+   "s": "Haying",
+   "o": "Baling a round bale, 5-foot width",
+   "u": "bale",
+   "a": 16.16,
+   "n": 123,
+   "k": "bale-round"
+  },
+  {
+   "s": "Haying",
+   "o": "Cutting, raking, baling round bales, 5-foot width",
+   "u": "bale",
+   "a": 25.55,
+   "n": 175
+  },
+  {
+   "s": "Small grain harvest",
+   "o": "Combining wheat and small grains (flat rate)",
+   "u": "acre",
+   "a": 23.89,
+   "n": 61,
+   "k": "combine-smallgrain"
+  },
+  {
+   "s": "Small grain harvest",
+   "o": "Base rate for combining small grains (plus $0.24 a bushel over about 21.68 bushels an acre)",
+   "u": "acre",
+   "a": 23.61,
+   "n": 38
+  },
+  {
+   "s": "Small grain harvest",
+   "o": "Flat rate for hauling small grains",
+   "u": "bushel",
+   "a": 0.24,
+   "n": 28
+  },
+  {
+   "s": "Small grain harvest",
+   "o": "Combining soybeans (flat rate)",
+   "u": "acre",
+   "a": 27.11,
+   "n": 9,
+   "k": "combine-soy"
+  },
+  {
+   "s": "Livestock",
+   "o": "Pregnancy test cattle",
+   "u": "head",
+   "a": 4.78,
+   "n": 27
+  },
+  {
+   "s": "Livestock",
+   "o": "Worming cattle",
+   "u": "head",
+   "a": 4.43,
+   "n": 20
+  },
+  {
+   "s": "Livestock",
+   "o": "Hauling cattle, belly semi truck",
+   "u": "mile",
+   "a": 3.92,
+   "n": 21
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Brush hogging",
+   "u": "hour",
+   "a": 55.24,
+   "n": 29
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Dozing (D6 or smaller)",
+   "u": "hour",
+   "a": 107.44,
+   "n": 43
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Dozing (D7 or larger)",
+   "u": "hour",
+   "a": 143.18,
+   "n": 17
+  },
+  {
+   "s": "Miscellaneous",
+   "o": "Welding",
+   "u": "hour",
+   "a": 54.46,
+   "n": 28
+  }
+ ]
+}
