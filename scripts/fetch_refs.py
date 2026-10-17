@@ -22,6 +22,17 @@ If-None-Match / If-Modified-Since, or the same sha256, keeps what is there.
 A failure is listed in index.json and the summary, never fatal: the old copy
 stays and the run carries on.
 
+Kinds: "pdf", "html" (plain HTTP), and "rendered": a page that only fills
+in with JavaScript, opened in headless Chromium (Playwright) on the runner,
+one page at a time, saved as the rendered HTML plus its text. The workflow
+installs the browser only when a rendered source is in the run.
+
+Bot walls: a page that answers with a bot check (AWS WAF, Cloudflare,
+Incapsula, SiteGround, DataDome, PerimeterX, Akamai) is never saved as the
+source. The attempt fails with "bot challenge (<who>)" and the next fallback
+is tried; nothing tries to get past the check. An old copy that turns out to
+be a bot check is deleted rather than kept as "the last good copy".
+
     python3 scripts/fetch_refs.py --out DIR [--ids a,b] [--sources FILE]
     python3 scripts/fetch_refs.py --selftest
 """
@@ -49,7 +60,9 @@ TIMEOUT = 90
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{1,63}$")
-KINDS = ("pdf", "html")
+KINDS = ("pdf", "html", "rendered")
+# a page with less readable text than this is noted in its row (a JS app?)
+THIN_TEXT = 300
 
 
 def now_utc():
@@ -74,7 +87,7 @@ def load_sources(path, allow_http=False):
             problems.append("%s: duplicate id" % where)
         seen.add(r.get("id"))
         if r.get("kind") not in KINDS:
-            problems.append("%s: kind must be pdf or html" % where)
+            problems.append("%s: kind must be pdf, html or rendered" % where)
         mirrors = r.get("mirrors", [])
         if not isinstance(mirrors, list) or not all(
                 isinstance(m, str) and m.startswith("https://") for m in mirrors):
@@ -165,6 +178,45 @@ def html_text(raw):
     body = "".join(p.inmain) if len("".join(p.inmain).strip()) > 200 else "".join(p.all)
     title = re.sub(r"\s+", " ", p.title).strip()
     return (title + "\n\n" if title else "") + _tidy(body)
+
+
+# Bot checks seen on the references branch (Oct 2026): Barchart and
+# ipcm.wisc.edu answered 202 with an AWS WAF challenge page, canr.msu.edu an
+# Incapsula iframe, opisystems.com a SiteGround captcha redirect. Each was
+# saved as if it were the page (text_chars 1). A signature counts only on a
+# page with little readable text, because real pages behind Cloudflare or AWS
+# carry some of the same script names. A plain reCAPTCHA or Turnstile tag is
+# not a signature: short articles carry one on their newsletter form (the
+# Iowa Farm Bureau page, bench-planting-date-5).
+CHALLENGES = (
+    ("AWS WAF", (rb"awsWafCookieDomainList", rb"AwsWafIntegration", rb"token\.awswaf\.com")),
+    ("Cloudflare", (rb"<title>\s*Just a moment\.\.\.", rb"cf_chl_opt", rb"cf-browser-verification",
+                    rb"Attention Required! \| Cloudflare")),
+    ("Incapsula", (rb"_Incapsula_Resource", rb"Incapsula incident ID")),
+    ("SiteGround", (rb"/\.well-known/sgcaptcha/",)),
+    ("DataDome", (rb"captcha-delivery\.com",)),
+    ("PerimeterX", (rb"px-captcha", rb"Press &amp; Hold", rb"Press & Hold")),
+    ("Akamai", (rb"errors\.edgesuite\.net",)),
+    ("robot check", (rb"verify (that )?you('|&#39;|&rsquo;)?re not a robot", rb"[Aa]re you a robot",
+                     rb"[Ee]nable JavaScript and cookies to continue")),
+)
+
+
+def challenge_reason(raw, text=None):
+    """Who is asking for a bot check, or None. Only pages with little
+    readable text are judged."""
+    if not raw or raw[:1024].lstrip().startswith(b"%PDF"):
+        return None
+    if text is None:
+        text = html_text(raw)
+    body = text.split("\n", 1)[1] if text.count("\n") else text
+    if len(body.strip()) >= 1500:
+        return None
+    head = raw[:300000]
+    for who, pats in CHALLENGES:
+        if any(re.search(p, head) for p in pats):
+            return who
+    return None
 
 
 def pdf_text(path):
@@ -290,6 +342,88 @@ def download_curl(url, max_bytes, timeout):
         return code, body, hd, final or url
 
 
+# ── rendered pages (kind "rendered") ───────────────────────────────────────
+#
+# Headless Chromium through Playwright, started once per run and reused, one
+# page at a time. A normal desktop User-Agent and window, no login, nothing
+# that hides automation, no captcha solving: if the settled page shows a bot
+# check, the attempt fails and nothing is saved. Playwright is imported only
+# here, so the plain fetch needs no extra packages. REFS_CHROMIUM may name a
+# Chromium binary (the sandbox has one at /opt/pw-browsers/chromium).
+
+class _Browser:
+    pw = None
+    browser = None
+
+    @classmethod
+    def get(cls):
+        if cls.browser is None:
+            try:
+                from playwright.sync_api import sync_playwright
+            except ImportError:
+                raise Fail("playwright not installed (the workflow installs it when a rendered id is asked for)")
+            cls.pw = sync_playwright().start()
+            kw = {"headless": True}
+            exe = os.environ.get("REFS_CHROMIUM")
+            if exe:
+                kw["executable_path"] = exe
+            try:
+                cls.browser = cls.pw.chromium.launch(**kw)
+            except Exception as e:
+                cls.pw.stop()
+                cls.pw = None
+                raise Fail("browser would not start: %s" % str(e).splitlines()[0][:160])
+        return cls.browser
+
+    @classmethod
+    def close(cls):
+        try:
+            if cls.browser is not None:
+                cls.browser.close()
+            if cls.pw is not None:
+                cls.pw.stop()
+        except Exception:
+            pass
+        cls.browser = cls.pw = None
+
+
+SETTLE_MS = 1500
+
+
+def download_rendered(url, max_bytes, timeout):
+    """Open url in headless Chromium, let it settle, return the rendered
+    document. Same return shape as download()."""
+    browser = _Browser.get()
+    ctx = browser.new_context(user_agent=UA, locale="en-US",
+                              viewport={"width": 1280, "height": 900},
+                              extra_http_headers={"Accept-Language": "en-US,en;q=0.8"})
+    try:
+        page = ctx.new_page()
+        try:
+            resp = page.goto(url, wait_until="domcontentloaded", timeout=timeout * 1000)
+        except Exception as e:
+            msg = str(e).splitlines()[0][:160]
+            raise Fail("network: timed out" if "Timeout" in msg else "network: %s" % msg)
+        if resp is None:
+            raise Fail("no response")
+        code = resp.status
+        if code >= 400:
+            raise Fail("HTTP %d" % code)
+        try:
+            page.wait_for_load_state("networkidle", timeout=min(20, timeout) * 1000)
+        except Exception:
+            pass                       # pages that never go quiet: take what is there
+        page.wait_for_timeout(SETTLE_MS)
+        body = page.content().encode("utf-8")
+        if len(body) > max_bytes:
+            raise Fail("too big: over %d bytes" % max_bytes)
+        hd = Headers((k.lower(), v) for k, v in resp.headers.items())
+        hd["content-type"] = "text/html; charset=utf-8"   # what we save is the rendered DOM
+        return code, body, hd, page.url
+    finally:
+        ctx.close()
+
+
 def candidates(src):
     """(url, via) in the order to try them. The Wayback copy is found at run
     time (wayback_url), so it is listed here as None."""
@@ -301,7 +435,7 @@ def candidates(src):
     if host in RMA_HOSTS:
         other = RMA_HOSTS[1] if host == RMA_HOSTS[0] else RMA_HOSTS[0]
         out.append((url.replace("//" + host, "//" + other, 1), "alt-host"))
-    if WAYBACK_API:
+    if WAYBACK_API and src.get("kind") != "rendered":
         out.append((None, "wayback"))
     return out
 
@@ -328,12 +462,17 @@ def _try(url, via, client, cond, src, max_bytes, timeout):
     """One request. Returns the download tuple, or raises Fail."""
     if client == "python":
         res = download(url, cond, max_bytes, timeout)
+    elif client == "browser":
+        res = download_rendered(url, max_bytes, timeout)
     else:
         res = download_curl(url, max_bytes, timeout)
     code, body, hd, final = res
     if code != 304:
         if not body:
             raise Fail("empty body")
+        who = challenge_reason(body) if src["kind"] != "pdf" else None
+        if who:
+            raise Fail("bot challenge (%s), nothing saved" % who)
         if src["kind"] == "pdf" and not body[:1024].lstrip().startswith(b"%PDF"):
             snippet = re.sub(rb"\s+", b" ", body[:100]).decode("utf-8", "replace")
             raise Fail("expected a PDF, got %s (%d bytes): %s" % (
@@ -360,16 +499,18 @@ def acquire(src, prev, max_bytes, timeout, retry_wait, dead):
             attempts.append("%s: skipped, %s timed out earlier" % (via, host))
             continue
         cond = prev if via == "direct" else {}
-        for client, tries in (("python", 2), ("curl", 1)):
+        clients = (("browser", 1),) if src["kind"] == "rendered" else (("python", 2), ("curl", 1))
+        for client, tries in clients:
             for n in range(tries):
                 try:
                     code, body, hd, final = _try(url, via, client, cond, src, max_bytes, timeout)
                 except Fail as e:
                     msg = str(e)
                     attempts.append("%s/%s: %s" % (via, client, msg))
-                    if msg.startswith("too big"):
+                    if msg.startswith("too big") or msg.startswith("playwright not") \
+                            or msg.startswith("browser would not"):
                         raise Fail("; ".join(attempts))
-                    if _is_timeout(msg) and client == "curl":
+                    if _is_timeout(msg) and client in ("curl", "browser"):
                         dead[host] = dead.get(host, 0) + 1
                     if n + 1 < tries and not _is_timeout(msg) and \
                             re.match(r"(network|HTTP (5\d\d|429))", msg):
@@ -400,6 +541,19 @@ def fetch_one(src, prev, out, max_bytes, retry_wait=5.0, timeout=TIMEOUT, dead=N
             src, prev, max_bytes, timeout, retry_wait, dead)
     except Fail as e:
         row.update(status="failed", error=str(e))
+        if have:
+            old = os.path.join(out, row["saved_as"])
+            with open(old, "rb") as f:
+                who = challenge_reason(f.read())
+            if who:
+                for ext in ("pdf", "html", "txt"):
+                    p = os.path.join(out, "refs", "%s.%s" % (sid, ext))
+                    if os.path.exists(p):
+                        os.remove(p)
+                for k in ("bytes", "sha256", "fetched_utc", "pages", "etag", "last_modified",
+                          "saved_as", "final_url", "content_type", "via", "archive_timestamp"):
+                    row[k] = None
+                row["error"] += "; the old copy was a %s bot check, removed" % who
         return row
     row["attempts"] = attempts
     row["via"] = via
@@ -452,6 +606,10 @@ def fetch_one(src, prev, out, max_bytes, retry_wait=5.0, timeout=TIMEOUT, dead=N
                text_chars=len(text))
     if is_pdf and not text.strip():
         row["error"] = "no text extracted (scanned PDF, or pdftotext missing)"
+    elif not is_pdf and len(text.split("\n", 1)[-1].strip()) < THIN_TEXT:
+        row["error"] = "thin: only %d characters of text%s" % (
+            len(text.strip()), "" if src["kind"] == "rendered" else
+            " (a page built by JavaScript? try kind rendered)")
     return row
 
 
@@ -479,25 +637,12 @@ def run(sources_path, out, ids=None, delay=DELAY, max_bytes=MAX_BYTES,
     todo = [r for r in rows if not want or r["id"] in want]
     result = dict(old)
     dead = {}
-    for n, src in enumerate(todo):
-        if n:
-            time.sleep(delay)
-        row = fetch_one(src, old.get(src["id"], {}), out, max_bytes, retry_wait,
-                        timeout, dead)
-        result[src["id"]] = row
-        log("%-9s %-34s %s" % (row["status"], src["id"], row.get("error") or "%s bytes via %s%s" % (
-            row.get("bytes"), row.get("via"),
-            " " + row["archive_timestamp"] if row.get("archive_timestamp") else "")))
+    try:
+        _run_each(todo, old, result, out, delay, max_bytes, retry_wait, timeout, dead, log)
+    finally:
+        _Browser.close()
     # sources dropped from the list: forget them and their files
-    listed = {r["id"] for r in rows}
-    for sid in list(result):
-        if sid not in listed:
-            for ext in ("pdf", "html", "txt"):
-                p = os.path.join(out, "refs", "%s.%s" % (sid, ext))
-                if os.path.exists(p):
-                    os.remove(p)
-            del result[sid]
-
+    _forget(rows, result, out)
     ordered = [result[r["id"]] for r in rows if r["id"] in result]
     doc = {"note": "Written by scripts/fetch_refs.py on agsist main. Read a source: "
                    "git show origin/references:refs/<id>.txt",
@@ -507,6 +652,29 @@ def run(sources_path, out, ids=None, delay=DELAY, max_bytes=MAX_BYTES,
         json.dump(doc, f, indent=1, sort_keys=False)
         f.write("\n")
     return [result[r["id"]] for r in todo], 0
+
+
+def _run_each(todo, old, result, out, delay, max_bytes, retry_wait, timeout, dead, log):
+    for n, src in enumerate(todo):
+        if n:
+            time.sleep(delay)
+        row = fetch_one(src, old.get(src["id"], {}), out, max_bytes, retry_wait,
+                        timeout, dead)
+        result[src["id"]] = row
+        log("%-9s %-34s %s" % (row["status"], src["id"], row.get("error") or "%s bytes via %s%s" % (
+            row.get("bytes"), row.get("via"),
+            " " + row["archive_timestamp"] if row.get("archive_timestamp") else "")))
+
+
+def _forget(rows, result, out):
+    listed = {r["id"] for r in rows}
+    for sid in list(result):
+        if sid not in listed:
+            for ext in ("pdf", "html", "txt"):
+                p = os.path.join(out, "refs", "%s.%s" % (sid, ext))
+                if os.path.exists(p):
+                    os.remove(p)
+            del result[sid]
 
 
 def summary(done):
@@ -519,6 +687,9 @@ def summary(done):
             lines.append("NOT LIVE %s  via %s%s  (live URL failed; tried again next run)" % (
                 r["id"], r["via"],
                 " snapshot " + r["archive_timestamp"] if r.get("archive_timestamp") else ""))
+    for r in done:
+        if r["status"] != "failed" and (r.get("error") or "").startswith("thin"):
+            lines.append("THIN %s  %s" % (r["id"], r["error"]))
     for r in by.get("failed", []):
         lines.append("FAILED %s  %s  (%s)" % (r["id"], r["url"], r["error"]))
     return "\n".join(lines)
@@ -606,6 +777,27 @@ def _tiny_pdf(text):
     return bytes(out)
 
 
+JS_PAGE = (b"<html><head><title>Bids app</title></head><body><main id='m'></main>"
+           b"<script>var t='Rendered by script: cash corn bid 4.12 at the elevator. ';"
+           b"document.getElementById('m').innerHTML='<h1>Bids</h1><p>'+t.repeat(12)+'</p>';"
+           b"document.title='Bids app ready';</script></body></html>")
+WAF_PAGE = (b"<!DOCTYPE html><html><head><title></title><script>window.awsWafCookieDomainList = ['x.com'];"
+            b"</script><script src='/awswaf/challenge.js'></script></head>"
+            b"<body><div id='challenge-container'></div><noscript><h1>JavaScript is disabled</h1>"
+            b"In order to continue, we need to verify that you're not a robot.</noscript></body></html>")
+INCAP_PAGE = (b"<html style='height:100%'><head><script src='/_Incapsula_Resource?SWJIYLWA=1'></script>"
+              b"</head><body><iframe id='main-iframe' src='/_Incapsula_Resource?x=1'>Request unsuccessful. "
+              b"Incapsula incident ID: 1-2</iframe></body></html>")
+
+
+def _have_browser():
+    try:
+        import playwright.sync_api  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
 def selftest():
     import http.server
     import threading
@@ -616,7 +808,7 @@ def selftest():
                      + b"<p>" + b"Filler sentence about scouting corn. " * 8 + b"</p>"
                      b"<table><tr><td>A</td><td>1</td></tr></table></main>"
                      b"<footer>Copyright</footer></body></html>",
-             "hits": {}, "rma_up": False}
+             "hits": {}, "rma_up": False, "waf_fixed": False}
     pdf = _tiny_pdf("Coverage price is 95 percent")
     archived_pdf = _tiny_pdf("Archived copy of the handbook")
     live_pdf = _tiny_pdf("Live copy of the handbook")
@@ -676,6 +868,24 @@ def selftest():
             if p.startswith("/slow"):
                 time.sleep(2.5)
                 return self._send(200, b"<p>too late</p>", "text/html")
+            if p == "/js.html":
+                # the text only exists once a browser runs the script
+                return self._send(200, JS_PAGE, "text/html; charset=utf-8")
+            if p == "/waf.html":
+                # what Barchart sent the plain client: 202 and a bot check
+                return self._send(202, WAF_PAGE, "text/html; charset=UTF-8")
+            if p == "/incap.html":
+                return self._send(200, INCAP_PAGE, "text/html")
+            if p == "/longcf.html":
+                # a real page behind Cloudflare carries the challenge script name too
+                return self._send(200, b"<html><head><title>Just a moment...</title>"
+                                  b"<script src='/cdn-cgi/challenge-platform/x.js'></script></head><body><main>"
+                                  + b"<p>Long real article about drying corn in the bin. </p>" * 40
+                                  + b"</main></body></html>", "text/html")
+            if p == "/was-waf.html":
+                if state["waf_fixed"]:
+                    return self._send(200, state["page"], "text/html")
+                return self._send(202, WAF_PAGE, "text/html")
             if p == "/redirect":
                 self.send_response(302)
                 self.send_header("Location", "/noetag.html")
@@ -858,6 +1068,84 @@ def selftest():
               "dead host skipped: %s" % st["slow3"]["error"])
         ann = annotations(done)
         check(len(ann) <= 9 and "slow1, slow2, slow3" in ann[0], "annotations: %s" % ann)
+
+        # bot checks are not saved; a real page that names the scripts is
+        bots = [{"id": "waf", "url": base + "/waf.html", "kind": "html"},
+                {"id": "incap", "url": base + "/incap.html", "kind": "html"},
+                {"id": "longcf", "url": base + "/longcf.html", "kind": "html"},
+                {"id": "jsplain", "url": base + "/js.html", "kind": "html"},
+                {"id": "waswaf", "url": base + "/was-waf.html", "kind": "html"}]
+        for b_ in bots:
+            b_.update(title="T " + b_["id"], why="selftest")
+        check(challenge_reason(WAF_PAGE) == "AWS WAF" and challenge_reason(INCAP_PAGE) == "Incapsula",
+              "challenge signatures")
+        write(srcs + bots)
+        done, _ = run(sp, out, ids="waf,incap,longcf,jsplain", **dict(kw, max_bytes=200000))
+        st = {r["id"]: r for r in done}
+        for i, who in (("waf", "AWS WAF"), ("incap", "Incapsula")):
+            check(st[i]["status"] == "failed" and ("bot challenge (%s)" % who) in st[i]["error"]
+                  and "direct/curl: bot challenge" in st[i]["error"]
+                  and not os.path.exists(os.path.join(out, "refs/%s.html" % i)),
+                  "%s bot check not saved: %s" % (i, st[i]))
+        check(st["longcf"]["status"] == "new", "long page behind Cloudflare saved: %s" % st["longcf"])
+        check(st["jsplain"]["status"] == "new" and st["jsplain"]["error"].startswith("thin")
+              and "try kind rendered" in st["jsplain"]["error"], "thin page noted: %s" % st["jsplain"])
+        check("THIN jsplain" in summary(done), "summary lists thin pages")
+        # an old copy that is a bot check (saved before this check existed)
+        os.makedirs(os.path.join(out, "refs"), exist_ok=True)
+        with open(os.path.join(out, "refs/waswaf.html"), "wb") as f:
+            f.write(WAF_PAGE)
+        with open(os.path.join(out, "refs/waswaf.txt"), "w") as f:
+            f.write("old")
+        idx = json.load(open(os.path.join(out, "index.json")))
+        idx["sources"].append({"id": "waswaf", "url": base + "/was-waf.html", "saved_as": "refs/waswaf.html",
+                               "sha256": "x", "bytes": len(WAF_PAGE), "status": "new"})
+        with open(os.path.join(out, "index.json"), "w") as f:
+            json.dump(idx, f)
+        done, _ = run(sp, out, ids="waswaf", **kw)
+        r = done[0]
+        check(r["status"] == "failed" and r["saved_as"] is None and r["sha256"] is None
+              and "old copy was a AWS WAF bot check, removed" in r["error"]
+              and not os.path.exists(os.path.join(out, "refs/waswaf.html"))
+              and not os.path.exists(os.path.join(out, "refs/waswaf.txt")),
+              "old bot-check copy removed: %s" % r)
+        state["waf_fixed"] = True
+        done, _ = run(sp, out, ids="waswaf", **kw)
+        check(done[0]["status"] == "new", "real page saved once the wall is gone: %s" % done[0])
+
+        # kind "rendered": a headless browser runs the page's script
+        rend = [{"id": "jsrend", "url": base + "/js.html", "kind": "rendered"},
+                {"id": "wafrend", "url": base + "/waf.html", "kind": "rendered"},
+                {"id": "gonerend", "url": base + "/missing", "kind": "rendered"}]
+        for r_ in rend:
+            r_.update(title="T " + r_["id"], why="selftest")
+        write(srcs + bots + rend)
+        check(not load_sources(sp, allow_http=True)[1], "rendered kind accepted")
+        if _have_browser():
+            done, _ = run(sp, out, ids="jsrend,wafrend,gonerend", **dict(kw, max_bytes=200000))
+            st = {r["id"]: r for r in done}
+            t = open(os.path.join(out, "refs/jsrend.txt")).read() \
+                if os.path.exists(os.path.join(out, "refs/jsrend.txt")) else ""
+            check(st["jsrend"]["status"] == "new" and "cash corn bid 4.12" in t
+                  and "Bids app ready" in t and st["jsrend"]["saved_as"] == "refs/jsrend.html"
+                  and st["jsrend"]["attempts"] == ["direct/browser: ok 200"]
+                  and not st["jsrend"]["error"], "rendered text saved: %s %r" % (st["jsrend"], t[:300]))
+            check(b"cash corn bid" in open(os.path.join(out, "refs/jsrend.html"), "rb").read(),
+                  "rendered html saved")
+            check(st["wafrend"]["status"] == "failed" and "bot challenge (AWS WAF)" in st["wafrend"]["error"]
+                  and "wayback" not in st["wafrend"]["error"]
+                  and not os.path.exists(os.path.join(out, "refs/wafrend.html")),
+                  "rendered bot check not saved: %s" % st["wafrend"])
+            check(st["gonerend"]["status"] == "failed"
+                  and st["gonerend"]["error"].startswith("direct/browser: HTTP 404"),
+                  "rendered 404: %s" % st["gonerend"])
+        elif os.environ.get("REFS_REQUIRE_BROWSER") == "1":
+            check(False, "REFS_REQUIRE_BROWSER=1 but playwright is not installed")
+        else:
+            done, _ = run(sp, out, ids="jsrend", **kw)
+            check(done[0]["status"] == "failed" and "playwright not installed" in done[0]["error"],
+                  "rendered without playwright fails cleanly: %s" % done[0])
+            print("selftest: rendered pages not tried in a browser here (no playwright)")
 
         # bad lists are refused
         write([{"id": "Bad Id", "url": "x", "title": "", "why": "w", "kind": "doc"},
