@@ -70,6 +70,9 @@ import concurrent.futures
 import datetime as dt
 import glob
 import gzip
+import io
+import re
+import tarfile
 import json
 import os
 import statistics
@@ -88,20 +91,25 @@ CPC_DIR = "https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS/RT/"
 CPC_NAME = "PRCP_CU_GAUGE_V1.0CONUS_0.25deg.lnx.{d}.RT"
 RMA_API = ("https://public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternalIndexes/GetIndexValues"
            "?intervalType=BiMonthly&sampleYearMinimum={y0}&sampleYearMaximum={y1}&gridId={g}")
-NCEI_MONTH = "https://www.ncei.noaa.gov/monitoring-content/data/us/usda/monthly/final/{ym}.usda.csv"
+NCEI = "https://www.ncei.noaa.gov/pub/data/cirs/usda/"
+NCEI_MONTH = NCEI + "monthly/final/{ym}.usda.csv"
 UA = "agsist.com PRF interval tracker (https://agsist.com/prf)"
-SOURCE = ("NOAA CPC Unified Gauge-Based Analysis of Daily Precipitation over CONUS, "
-          "real-time version, 0.25 degree")
+SOURCE = "NOAA NCEI nClimGrid on RMA's 0.25 degree grid (pub/data/cirs/usda): monthly final, monthly initial, daily initial-unsynced"
+CPC_SOURCE = ("NOAA CPC Unified Gauge-Based Analysis of Daily Precipitation over CONUS, "
+              "real-time version, 0.25 degree")
 
 COLS, ROWS = 300, 120
 CELLS = COLS * ROWS
 FILE_BYTES = 2 * CELLS * 4
 UNDEF = -999.0
+MAX_DAY_MM, MAX_MONTH_MM = 1500, 3000
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 MAX_DAY_TENTHS = 15000          # 1,500 mm in a day is not rain, it is a broken file
 LAND_MIN, LAND_MAX = 13000, 14500   # boxes with a value; 13,626 on 2026-10-15
 FIRST_YEAR = 1951
 CPC_LAST_CROP_YEAR = 2026       # RMA: CPC through crop year 2026, NCEI nClimGrid from 2027
 KEEP_ENDED_DAYS = 75            # an ended interval stays on the card this long, or until RMA publishes it
+MIN_AVG_MM = 5.0                # a whole-interval average under this (desert summer) gets no index
 PUBLISHED_SHARE = 0.9           # RMA has published an interval when this share of grids has it
 COVERAGE = [70, 75, 80, 85, 90]
 IV = ["Jan-Feb", "Feb-Mar", "Mar-Apr", "Apr-May", "May-Jun", "Jun-Jul",
@@ -317,38 +325,142 @@ def interval_totals(fields, grids, first, last):
     return tot
 
 
-def build(today=None, fetch_fields=None, prf=PRF, out_dir=OUT, through=None, backtest_path=BACKTEST):
+# ---------------------------------------------------------------- NCEI (the source)
+
+def ncei_grid(lat, lon):
+    """NCEI's USDA files give each box's centre; RMA's grid id from it."""
+    r, c = round((lat - 20.125) / 0.25), round((lon + 129.875) / 0.25)
+    if abs(r * 0.25 + 20.125 - lat) > 1e-3 or abs(c * 0.25 - 129.875 - lon) > 1e-3 or not (0 <= r < ROWS and 0 <= c < COLS):
+        raise ValueError(f"{lat},{lon} is not a 0.25 degree box centre")
+    return r * COLS + c + 1
+
+
+def parse_ncei(text, daily, need=None):
+    """One NCEI USDA CSV (latitude,longitude,precipitation|prcp) -> {grid: mm}.
+    Refuses anything off the documented layout, and a file that misses more
+    than 1% of the grids in `need`."""
+    lines = text.strip().splitlines()
+    head = [h.strip().lower() for h in lines[0].split(",")]
+    if head[:2] != ["latitude", "longitude"] or len(head) != 3 or head[2] not in ("precipitation", "prcp"):
+        raise ValueError(f"unexpected header {lines[0]!r}")
+    cap = MAX_DAY_MM if daily else MAX_MONTH_MM
+    out = {}
+    for ln in lines[1:]:
+        la, lo, p = ln.split(",")
+        v = float(p)
+        if not (0 <= v <= cap) or v != v:
+            raise ValueError(f"{la},{lo}: {v} mm is out of range")
+        out[ncei_grid(float(la), float(lo))] = v
+    if not (LAND_MIN <= len(out) <= LAND_MAX):
+        raise ValueError(f"{len(out)} boxes, expected {LAND_MIN} to {LAND_MAX}")
+    if need:
+        miss = [g for g in need if g not in out]
+        if len(miss) > 0.01 * len(need):
+            raise ValueError(f"{len(miss)} PRF grids missing")
+    return out
+
+
+def ncei_month(ym, need=None, get=None):
+    """(field, 'final' | 'initial') for month YYYYMM, or (None, None) when NCEI has neither."""
+    get = get or http_get
+    for kind in ("final", "initial"):
+        raw = get(NCEI + f"monthly/{kind}/{ym}.usda.csv")
+        if raw:
+            keep = os.environ.get("PRF_SEASON_SAVE")
+            if keep and kind == "initial":      # kept on the raw branch: initial against final, later
+                os.makedirs(keep, exist_ok=True)
+                open(os.path.join(keep, f"initial-{ym}.usda.csv"), "wb").write(raw)
+            return parse_ncei(raw.decode("utf-8", "replace"), False, need), kind
+    return None, None
+
+
+def untar_days(raw, need=None):
+    """{date: field} from one NCEI daily tarball of YYYYMMDD.usda.csv files."""
+    out = {}
+    with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as tf:
+        for m in tf.getmembers():
+            name = os.path.basename(m.name)
+            if not m.isfile() or not name.endswith(".usda.csv"):
+                continue
+            day = dt.datetime.strptime(name[:8], "%Y%m%d").date()
+            out[day] = parse_ncei(tf.extractfile(m).read().decode("utf-8", "replace"), True, need)
+    return out
+
+
+def ncei_unsynced(need=None, get=None):
+    """Every day in NCEI's initial-unsynced folder (the last 40 days, not yet
+    rescaled to the month). Tarballs are read oldest first so a newer one wins."""
+    get = get or http_get
+    listing = (get(NCEI + "daily/initial-unsynced/") or b"").decode("utf-8", "replace")
+    names = sorted(set(re.findall(r'href="(\d{8}\.tar\.gz)"', listing)))
+    if not names:
+        raise RuntimeError("NCEI's initial-unsynced folder lists no tarballs")
+    days = {}
+    with concurrent.futures.ThreadPoolExecutor(WORKERS) as ex:
+        for n, raw in zip(names, ex.map(lambda n: get(NCEI + "daily/initial-unsynced/" + n), names)):
+            if raw:
+                days.update(untar_days(raw, need))
+    return days
+
+
+def month_total(y, m, through, months, days):
+    """(mm per grid, how) for month m of year y through `through`:
+    the month's file when NCEI has one, else the sum of its unsynced days.
+    None when a day is missing."""
+    first, last = dt.date(y, m, 1), min(month_end(y, m), through)
+    ym = f"{y}{m:02d}"
+    if last == month_end(y, m) and months.get(ym, (None, None))[0] is not None:
+        return months[ym]
+    tot, d = None, first
+    while d <= last:
+        f = days.get(d)
+        if f is None:
+            return None, f"no NCEI daily grid for {d.isoformat()}"
+        tot = dict(f) if tot is None else {g: tot[g] + f[g] for g in tot if g in f}
+        d += dt.timedelta(days=1)
+    return tot, "daily"
+
+
+def build(today=None, get=None, prf=PRF, out_dir=OUT, backtest_path=BACKTEST):
     today = today or dt.datetime.now(dt.timezone.utc).date()
     rec = load_record(prf)
     by_state = state_grids(prf)
     all_grids = sorted({g for gs in by_state.values() for g in gs})
-    through = through or newest_day(today)
+    days = ncei_unsynced(all_grids, get)
+    through = max(days)
+    if (today - through).days > 10:
+        raise RuntimeError(f"NCEI's newest daily grid is {through}, more than 10 days old; not writing")
 
     def published(y, i):
         have = sum(1 for g in all_grids if g in rec and (rec[g][1].get(y) or [None] * 11)[i] is not None)
         return have >= PUBLISHED_SHARE * len(all_grids)
 
     ivs = open_intervals(through, published)
-    days = sorted({interval(y, i)[0] + dt.timedelta(days=k)
-                   for y, i in ivs if y <= CPC_LAST_CROP_YEAR
-                   for k in range((min(interval(y, i)[1], through) - interval(y, i)[0]).days + 1)})
-    fields = (fetch_fields or (lambda ds: fetch_days(ds, os.environ.get("PRF_SEASON_CACHE"), through - dt.timedelta(days=3))))(days)
+    months = {}
+    for y, i in ivs:
+        for m in (i + 1, i + 2):
+            ym = f"{y}{m:02d}"
+            if ym not in months and month_end(y, m) <= through:
+                months[ym] = ncei_month(ym, all_grids, get)
 
     meta, cols = [], []
     for y, i in ivs:
         a, b = interval(y, i)
         upto = min(b, through)
         m = {"y": y, "i": i, "name": IV[i], "from": a.isoformat(), "to": b.isoformat(),
-             "days": (b - a).days + 1, "have": (upto - a).days + 1}
-        if y > CPC_LAST_CROP_YEAR:
-            m["withheld"] = "From crop year 2027 RMA uses NOAA NCEI's nClimGrid, not CPC; this tracker does not read it yet."
-            meta.append(m)
-            cols.append(None)
-            continue
-        try:
-            tot = interval_totals(fields, all_grids, a, upto)
-        except LookupError as e:
-            m["withheld"] = f"CPC is missing a day ({e}); no number until it is posted."
+             "days": (b - a).days + 1, "have": (upto - a).days + 1, "how": []}
+        tot = None
+        for mo in (i + 1, i + 2):
+            if dt.date(y, mo, 1) > through:
+                break
+            part, how = month_total(y, mo, through, months, days)
+            if part is None:
+                m["withheld"] = f"NCEI is missing part of {MONTHS[mo - 1]} ({how}); no number until it is posted."
+                break
+            m["how"].append([MONTHS[mo - 1], how])
+            tot = dict(part) if tot is None else {g: tot[g] + part[g] for g in tot if g in part}
+        if m.get("withheld"):
+            m.pop("how")
             meta.append(m)
             cols.append(None)
             continue
@@ -362,7 +474,7 @@ def build(today=None, fetch_fields=None, prf=PRF, out_dir=OUT, through=None, bac
 
     acc = None
     if backtest_path and os.path.exists(backtest_path):
-        acc = json.load(open(backtest_path)).get("summary")
+        acc = json.load(open(backtest_path)).get("card")
     built = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     os.makedirs(out_dir, exist_ok=True)
     wrote = []
@@ -379,16 +491,15 @@ def build(today=None, fetch_fields=None, prf=PRF, out_dir=OUT, through=None, bac
             g_out[str(g)] = row
         doc = {"v": 1, "st": st, "built": built, "through": through.isoformat(), "src": SOURCE,
                "iv": meta, "g": g_out, "acc": acc,
-               "note": "Preliminary. Rain so far from CPC's real-time daily analysis, mm x 10; average for the "
-                       "whole interval from RMA's record, mm x 10. Not RMA's final index. "
-                       "Written by scripts/fetch_prf_season.py."}
+               "note": "Preliminary. Rain so far from NOAA NCEI's USDA grids (nClimGrid), mm x 10; average for the "
+                       "whole interval from RMA's record, mm x 10. 'how' says which NCEI file each month came from. "
+                       "Not RMA's final index. Written by scripts/fetch_prf_season.py."}
         text = json.dumps(doc, separators=(",", ":"), sort_keys=True)
         check_doc(json.loads(text))
-        path = os.path.join(out_dir, f"{st}.json")
-        open(path, "w").write(text)
+        open(os.path.join(out_dir, f"{st}.json"), "w").write(text)
         wrote.append((st, len(text)))
     log(f"wrote {len(wrote)} state files through {through}, intervals: "
-        + ", ".join(f"{IV[m['i']]} {m['y']}" + (" (withheld)" if m.get('withheld') else "") for m in meta))
+        + ", ".join(f"{IV[m['i']]} {m['y']} " + ("(withheld)" if m.get("withheld") else "+".join(f"{a}:{b}" for a, b in m["how"])) for m in meta))
     log("largest: " + ", ".join(f"{s} {n:,}" for s, n in sorted(wrote, key=lambda t: -t[1])[:3]))
     return wrote
 
@@ -518,8 +629,65 @@ def backtest_collect(out_dir, years=(2024, 2025, 2026), every=25):
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "backtest-rows.json")
     json.dump({"collected": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-               "grids": grids, "every": every, "source": SOURCE, "rows": out}, open(path, "w"), separators=(",", ":"))
+               "grids": grids, "every": every, "source": CPC_SOURCE, "rows": out}, open(path, "w"), separators=(",", ":"))
     log(f"backtest: {len(out)} rows -> {path}")
+
+
+def prelim_collect(out_dir, month="202609", get=None):
+    """On a runner: for every PRF grid, one month as NCEI's unsynced daily grids
+    add it up, as its preliminary month file has it, and as the synced daily
+    tarball adds it up, plus the month before from the final file. That is how
+    far the in-month number moves when NCEI rescales it."""
+    get = get or http_get
+    grids = sorted({g for v in state_grids().values() for g in v})
+    y, m = int(month[:4]), int(month[4:])
+    days = ncei_unsynced(grids, get)
+    first, last = dt.date(y, m, 1), month_end(y, m)
+    have = [d for d in days if first <= d <= last]
+    log(f"prelim: {len(have)} unsynced days in {month}")
+    unsynced = month_total(y, m, last, {}, days)[0]
+    initial, kind = ncei_month(month, grids, get)
+    synced = untar_days(get(NCEI + f"daily/initial-synced/{month}.tar.gz") or b"", grids)
+    syn = {}
+    for f in synced.values():
+        for g, v in f.items():
+            syn[g] = syn.get(g, 0.0) + v
+    pm = f"{y}{m - 1:02d}" if m > 1 else f"{y - 1}12"
+    before, kind_b = ncei_month(pm, grids, get)
+    rows = [[g, before.get(g) if before else None, None if unsynced is None else unsynced.get(g),
+             initial.get(g) if initial else None, round(syn[g], 2) if g in syn else None] for g in grids]
+    os.makedirs(out_dir, exist_ok=True)
+    path = os.path.join(out_dir, f"prelim-{month}.json")
+    json.dump({"collected": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "month": month,
+               "month_kind": kind, "before": pm, "before_kind": kind_b, "unsynced_days": len(have),
+               "synced_days": len(synced), "cols": ["grid", "month before (mm)", "unsynced daily sum (mm)",
+                                                    "monthly file (mm)", "synced daily sum (mm)"], "rows": rows},
+              open(path, "w"), separators=(",", ":"))
+    log(f"prelim: {len(rows)} grids -> {path} (month file: {kind}, month before: {kind_b})")
+
+
+def prelim_summary(doc, rec):
+    """Index points the two-month interval ending in doc['month'] moved between
+    the unsynced daily sum and NCEI's month file."""
+    y, m = int(doc["month"][:4]), int(doc["month"][4:])
+    i = m - 2                       # the interval whose second month this is
+    pts, pct, same = [], [], 0
+    for g, before, uns, mon, syn in doc["rows"]:
+        if None in (before, uns, mon) or g not in rec:
+            continue
+        if syn is not None and abs(syn - mon) <= 0.05 + 0.0005 * mon:
+            same += 1
+        av = average_for_year(rec[g][0][i], {yy: v[i] for yy, v in rec[g][1].items()}, y)
+        if not av or av < MIN_AVG_MM:
+            continue
+        pts.append(abs((before + uns) - (before + mon)) / av * 100)
+        if mon >= 5:
+            pct.append(abs(uns - mon) / mon * 100)
+    s = sorted(pts)
+    return {"month": MONTHS[m - 1] + " " + str(y), "interval": f"{IV[i]} {y}", "n": len(pts),
+            "median_pts": round(statistics.median(pts), 1), "p90_pts": round(s[int(0.9 * len(s))], 1),
+            "median_pct_of_month": round(statistics.median(pct), 1), "synced_equals_month_file": same,
+            "month_kind": doc["month_kind"], "unsynced_days": doc["unsynced_days"]}
 
 
 def summarize(rows, rec=None):
@@ -550,17 +718,40 @@ def summarize(rows, rec=None):
             "per_interval": per}
 
 
-def backtest_analyze(path, out=BACKTEST):
-    op = gzip.open if path.endswith(".gz") else open
-    doc = json.load(op(path, "rt"))
-    s = summarize(doc["rows"])
-    full = {"what": "CPC real-time daily totals over each whole interval, divided by RMA's average for that "
-                    "grid and year, against RMA's published final index (PRF service), index points.",
-            "collected": doc["collected"], "every": doc["every"], "source": doc["source"],
-            "summary": {k: v for k, v in s.items() if k != "per_interval"}, "per_interval": s["per_interval"]}
+def final_match(rows):
+    """NCEI's final months against RMA's published rain for the same interval."""
+    pairs = [r for r in rows if r.get("ncei") is not None and r.get("rma_mm") is not None]
+    exact = sum(1 for r in pairs if abs(r["ncei"] - r["rma_mm"]) < 0.015)
+    idx_exact = sum(1 for r in pairs if round(r["ncei"] / r["rma_avg"], 3) == round(r["rma_idx"], 3))
+    ivs = sorted({(r["y"], r["i"]) for r in pairs})
+    return {"n": len(pairs), "exact_mm": exact, "exact_index": idx_exact, "grids": len({r["g"] for r in pairs}),
+            "first": f"{IV[ivs[0][1]]} {ivs[0][0]}", "last": f"{IV[ivs[-1][1]]} {ivs[-1][0]}", "intervals": len(ivs)}
+
+
+def backtest_analyze(rows_path, prelim_path, out=BACKTEST, prf=PRF):
+    op = lambda p: (gzip.open if p.endswith(".gz") else open)(p, "rt")
+    doc = json.load(op(rows_path))
+    pre = json.load(op(prelim_path))
+    cpc = summarize(doc["rows"])
+    fm = final_match(doc["rows"])
+    ps = prelim_summary(pre, load_record(prf))
+    full = {"what": "How close the interval-so-far numbers run to RMA's final index. "
+                    "cpc: CPC real-time daily totals over each whole interval / RMA's average, against RMA's published "
+                    "final index, index points (the source first asked for; not used). final_match: NCEI's final monthly "
+                    "files against RMA's published interval rain. prelim: how far NCEI's in-month daily sum moved when "
+                    "NCEI wrote the month file.",
+            "collected": doc["collected"], "prelim_collected": pre["collected"], "every": doc["every"],
+            "cpc": {"source": doc["source"], "summary": {k: v for k, v in cpc.items() if k != "per_interval"},
+                    "per_interval": cpc["per_interval"]},
+            "final_match": fm, "prelim": ps,
+            "card": {"final_n": fm["n"], "final_exact": fm["exact_index"], "final_grids": fm["grids"],
+                     "final_first": fm["first"], "final_last": fm["last"],
+                     "prelim_month": ps["month"], "prelim_interval": ps["interval"], "prelim_n": ps["n"],
+                     "prelim_median_pts": ps["median_pts"], "prelim_p90_pts": ps["p90_pts"],
+                     "cpc_median_abs": cpc["median_abs"], "cpc_n": cpc["n"]}}
     os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump(full, open(out, "w"), indent=1, sort_keys=True)
-    log(json.dumps(full["summary"], indent=1))
+    log(json.dumps(full["card"], indent=1))
     return full
 
 
@@ -657,7 +848,8 @@ def main():
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--backtest-collect", metavar="OUT_DIR")
-    ap.add_argument("--backtest-analyze", metavar="ROWS")
+    ap.add_argument("--backtest-analyze", nargs=2, metavar=("ROWS", "PRELIM"))
+    ap.add_argument("--prelim-collect", metavar="OUT_DIR")
     ap.add_argument("--today", help="YYYY-MM-DD, for tests")
     args = ap.parse_args()
     if args.selftest:
@@ -668,7 +860,10 @@ def main():
         backtest_collect(args.backtest_collect)
         return
     if args.backtest_analyze:
-        backtest_analyze(args.backtest_analyze)
+        backtest_analyze(*args.backtest_analyze)
+        return
+    if args.prelim_collect:
+        prelim_collect(args.prelim_collect)
         return
     today = dt.date.fromisoformat(args.today) if args.today else None
     build(today)

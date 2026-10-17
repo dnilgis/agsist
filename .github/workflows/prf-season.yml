@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "probe | probe2 | probe3 | build | backtest"
+        description: "probe | probe2 | probe3 | build | backtest | prelim"
         required: true
         default: probe
 
@@ -159,8 +159,15 @@ jobs:
         run: |
           python scripts/fetch_prf_season.py --backtest-collect data/prf-season-raw/backtest
           gzip -9 -n -k data/prf-season-raw/backtest/backtest-rows.json
-          python scripts/fetch_prf_season.py --backtest-analyze data/prf-season-raw/backtest/backtest-rows.json.gz
           bash scripts/push_raw.sh "prf-season backtest" data/prf-season-raw/backtest
+
+      - name: Preliminary against month file (collect)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'prelim' }}
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python scripts/fetch_prf_season.py --prelim-collect data/prf-season-raw/backtest
+          bash scripts/push_raw.sh "prf-season prelim" data/prf-season-raw/backtest
 
       # A source that fails writes nothing: the script refuses a file it
       # cannot check, and the card keeps showing the last good one with its date.
@@ -169,10 +176,13 @@ jobs:
         timeout-minutes: 20
         env:
           PYTHONUNBUFFERED: "1"
+          PRF_SEASON_SAVE: data/prf-season-raw/initial
         run: |
           python scripts/fetch_prf_season.py
           python scripts/fetch_prf_season.py --check
           python scripts/check_site_budget.py
+          # NCEI keeps only last month's preliminary file; keep each one to check it against the final
+          if [ -d data/prf-season-raw/initial ]; then bash scripts/push_raw.sh "prf-season initial month" data/prf-season-raw/initial || true; fi
 
       - name: Commit
         if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'build') }}
