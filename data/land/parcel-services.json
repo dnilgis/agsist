@@ -1154,9 +1154,9 @@
  },
  "countyLinks": {},
  "salesNote": {
-  "MN": "Minnesota sales are filed on the state's electronic Certificate of Real Estate Value (eCRV). We add them here once we have checked that the state's public copy is free and carries parcel numbers.",
-  "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We add a statewide copy only once we have checked one that is free.",
-  "IL": "Illinois sales are filed on the state transfer declaration (PTAX-203) with the county. We add a statewide copy only once we have checked one that is free."
+  "MN": "Minnesota sales are filed on the state's electronic Certificate of Real Estate Value (eCRV). The state sends its bulk copy only on request, so we do not hold it; the state's free eCRV search shows one sale at a time.",
+  "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We have not found a free statewide copy.",
+  "IL": "Illinois sales come from the state's MyDec transfer declarations (PTAX-203) on the Illinois open data portal."
  },
  "coverage": {
   "WI": {

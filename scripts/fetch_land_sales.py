@@ -6,10 +6,16 @@ uses them twice: every recorded transfer of the parcel the reader picked, and th
 sold-land comps list with its filters.
 
 Sources (free and public only; a state is built only once its files read cleanly):
-  WI  Wisconsin Department of Revenue, electronic Real Estate Transfer Return
-      (eRETR) data downloads.
-  MN  Minnesota Department of Revenue, electronic Certificate of Real Estate
-      Value (eCRV) data, if the public copy is free and carries parcel numbers.
+  IL  Illinois Department of Revenue, MyDec transfer declarations (Form PTAX-203),
+      Illinois Open Data portal dataset it54-y4c6 (2014 on, updated weekly), with
+      the added-PIN table ay2h-5hx3. Farm declarations only (Line 8 current use j).
+      Seller and buyer names are in the public file (Step 4).
+  WI  Wisconsin Department of Revenue, Real Estate Transfer Return data. Columns are
+      read by the titles in DOR's layout (SLFReportsHistSales/RETRmlist.pdf), which
+      carries grantor and grantee names. As of Oct 2026 the monthly files are only
+      reachable inside DOR's My Tax Account app (scripts required), so nothing is built.
+  MN  Minnesota Department of Revenue, eCRV. The bulk Weekly Sales Extract is sent only
+      on request; not built.
 
   python3 scripts/fetch_land_sales.py --probe [WI MN]   save the data pages, the file
         links they list and the head of the first files to data/land-raw/sales/ (the
@@ -55,9 +61,25 @@ STATES = {
         "pages": ["https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx"],
         "links": [{"t": "Wisconsin DOR transfer return data", "url": "https://www.revenue.wi.gov/Pages/ERETR/data-home.aspx"}],
         "since_note": "Wisconsin's electronic transfer returns began in the mid-2000s; older deeds are at the county Register of Deeds.",
+        # Oct 2026: data-home.aspx is the My Tax Account app ("Javascript must be enabled"); the monthly
+        # historical files sit behind its "Download historical RETR data" screen, not a plain link,
+        # and 2026 returns are only in its one-at-a-time public search.
+        "no_files": " (it is DOR's My Tax Account app, which needs a browser running its scripts; 2026 returns are only in its public search)",
+    },
+    "IL": {
+        "name": "Illinois", "fips": "17", "socrata": True,
+        "source": "Illinois Department of Revenue, MyDec real estate transfer declarations (Form PTAX-203), on the Illinois Open Data portal",
+        "short": "Illinois transfer declaration",
+        "pages": [],
+        "links": [{"t": "Illinois MyDec data (PTAX-203)", "url": "https://data.illinois.gov/d/it54-y4c6"},
+                  {"t": "Illinois DOR MyDec data files", "url": "https://tax.illinois.gov/localgovernments/property/mydecdatafiles.html"}],
+        "since_note": "Illinois' MyDec file starts in 2014; older declarations are with the county clerk and recorder.",
     },
     "MN": {
         "name": "Minnesota", "fips": "27",
+        # The bulk copy (eCRV Weekly Sales Extract, zipped XML) goes to those who email ecrv.support@state.mn.us;
+        # the free public search (ecrvsearch.revenue.mn.gov) is one sale at a time. Not built until a free file is found.
+        "request_only": "the bulk eCRV Weekly Sales Extract is sent only on request (ecrv.support@state.mn.us); the free public search is one sale at a time",
         "source": "Minnesota Department of Revenue, electronic Certificates of Real Estate Value (eCRV)",
         "short": "Minnesota eCRV",
         "pages": [],
@@ -66,22 +88,31 @@ STATES = {
     },
 }
 
-# Column names seen on state transfer files, compared with letters and digits only.
+# Column names seen on state transfer files, compared with letters and digits only. The first
+# name in a list that a file has wins. The Wisconsin names are the column titles in DOR's
+# "Real Estate Transfer Return Data" layout (SLFReportsHistSales/RETRmlist.pdf, columns A to CK).
 COLS = {
-    "doc": ["DOCUMENTNUMBER", "DOCNO", "DOCNUMBER", "RETRNUMBER", "RETRID", "RECEIPTNUMBER", "ECRVID", "ECRVNUMBER", "CRVNUMBER", "DOCID", "TRANSFERID", "RETURNNUMBER"],
-    "date": ["DATEOFCONVEYANCE", "CONVEYANCEDATE", "TRANSFERDATE", "SALEDATE", "DEEDDATE", "DATECONVEYED", "DATEOFSALE", "DATEOFDEED", "CONVEYDATE", "RECORDINGDATE", "RECORDEDDATE"],
+    "doc": ["DOCUMENTNUMBER", "DOCNO", "DOCNUMBER", "RETRNUMBER", "RETRID", "RECEIPTNUMBER", "ECRVID", "ECRVNUMBER", "CRVNUMBER", "DOCID", "TRANSFERID", "RETURNNUMBER", "SALENUMBER"],
+    "date": ["DATEOFCONVEYANCE", "CONVEYANCEDATE", "DATECONVEYED", "TRANSFERDATE", "SALEDATE", "DEEDDATE", "DATEOFSALE", "DATEOFDEED", "CONVEYDATE", "RECORDINGDATE", "RECORDEDDATE", "DATERECORDED"],
     "price": ["TOTALVALUE", "TOTALREALESTATEVALUE", "TOTALREALPROPERTYVALUE", "SALEPRICE", "PURCHASEPRICE", "TOTALPURCHASEPRICE", "VALUEOFREALPROPERTY", "CONSIDERATION", "TOTALCONSIDERATION", "SALESPRICE", "ADJUSTEDSALEPRICE"],
     "acres": ["ACRES", "TOTALACRES", "ACREAGE", "LANDACRES", "NUMBEROFACRES", "ACRESTOTAL", "DEEDEDACRES", "TOTALACREAGE"],
-    "cls": ["PROPERTYCLASS", "PROPCLASS", "CLASS", "CLASSCODE", "PREDOMINANTUSE", "PROPERTYTYPE", "PROPERTYUSE", "USECODE", "PLANNEDUSE", "PROPERTYCLASSIFICATION"],
-    "conv": ["CONVEYANCETYPE", "DEEDTYPE", "INSTRUMENTTYPE", "TYPEOFCONVEYANCE", "CONVEYANCE", "TYPEOFDEED", "INSTRUMENT"],
-    "pid": ["PARCELNUMBER", "PARCELID", "TAXPARCELNUMBER", "TAXPARCELID", "TAXKEY", "PIN", "PARCEL", "PARCELNO", "PARCELIDENTIFICATIONNUMBER"],
-    "muni": ["MUNICIPALITY", "MUNICIPALITYNAME", "MUNINAME", "MUNI", "CITYTOWNSHIP", "TOWNSHIP", "TOWNSHIPCITY", "CITYTOWNSHIPNAME", "PROPERTYMUNICIPALITY", "MCD"],
+    "cls": ["PROPERTYCLASS", "PROPCLASS", "CLASS", "CLASSCODE", "PROPERTYTYPE", "PROPERTYUSE", "USECODE", "PLANNEDUSE", "PROPERTYCLASSIFICATION"],
+    # Wisconsin's return: K "Predominate Use", 4=Agricultural, 6=Forest Land (5 is Utility & Misc. here, not undeveloped)
+    "use": ["PREDOMINATEUSE", "PREDOMINANTUSE"],
+    "conv": ["CONVEYANCETYPE", "DEEDTYPE", "INSTRUMENTTYPE", "TYPEOFCONVEYANCE", "CONVEYANCE", "TYPEOFDEED", "INSTRUMENT", "CONVEYANCECODE"],
+    "pid": ["PARCELNUMBER", "PARCELID", "TAXPARCELNUMBER", "TAXPARCELID", "TAXKEY", "PIN", "PARCEL", "PARCELNO", "PARCELIDENTIFICATIONNUMBER", "PARCELIDENTIFICATION"],
+    "muni": ["MUNICIPALITY", "MUNICIPALITYNAME", "MUNINAME", "MUNI", "TVCNAMECITYVILLAGETOWN", "TVCNAME", "CITYTOWNSHIP", "TOWNSHIPCITY", "CITYTOWNSHIPNAME", "PROPERTYMUNICIPALITY", "MCD", "TOWNSHIP"],
+    "city_yn": ["CITYYN"], "village_yn": ["VILLAGEYN"], "town_yn": ["TOWNYN"],
     "county": ["COUNTY", "COUNTYNAME", "PROPERTYCOUNTY", "COUNTYOFPROPERTY", "CNTY"],
     "legal": ["LEGALDESCRIPTION", "LEGAL", "ABBREVIATEDLEGAL", "LEGALDESC", "SHORTLEGAL"],
     "grantor": ["GRANTOR", "GRANTORNAME", "GRANTORNAMES", "SELLER", "SELLERNAME", "SELLERNAMES", "GRANTORFULLNAME"],
     "grantee": ["GRANTEE", "GRANTEENAME", "GRANTEENAMES", "BUYER", "BUYERNAME", "BUYERNAMES", "GRANTEEFULLNAME"],
-    "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION"],
+    "grantor_last": ["GRANTORLASTNAME"], "grantor_first": ["GRANTORFIRSTNAME"],
+    "grantee_last": ["GRANTEELASTNAME"], "grantee_first": ["GRANTEEFIRSTNAME"],
+    "np": ["TOTALPARCELS", "NUMBEROFPARCELS"],
+    "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
 }
+WI_CONVEYANCE = {"1": "Warranty Deed", "2": "Land Contract", "3": "Quit Claim Deed", "4": "Other"}
 NEED = ["date", "price", "county"]
 FARM_WORDS = re.compile(r"\b(AGRIC|AG\b|FARM|FOREST|TIMBER|UNDEVELOP|SWAMP|WASTE|VACANT LAND|PASTURE|TILLABLE|CROPLAND|RURAL VACANT|OTHER)", re.I)
 CLASS_CODE = re.compile(r"^(4|5|5M|6|7)$", re.I)
@@ -106,8 +137,13 @@ def map_columns(header):
 def parse_date(s):
     s = str(s or "").strip()
     m = re.match(r"^(\d{4})-(\d{1,2})-(\d{1,2})", s)
+    m8 = re.match(r"^(\d{2})(\d{2})(\d{4})$", s)      # Wisconsin MMDDYYYY
     if m:
         y, mo, d = int(m[1]), int(m[2]), int(m[3])
+    elif m8:
+        mo, d, y = int(m8[1]), int(m8[2]), int(m8[3])
+    elif re.match(r"^\d{6,7}$", s):
+        return None    # MMDDYYYY with a leading zero dropped: 1112024 is Jan 11 or Nov 1; no guess
     else:
         m = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{2,4})", s)
         if not m:
@@ -195,6 +231,12 @@ def parse_rows(tables):
         except StopIteration:
             continue
         m = map_columns(header)
+        hk = [key(h) for h in header]
+        if "use" in m and "cls" in m and hk[m["cls"]] == "PROPERTYTYPE":
+            del m["cls"]       # Wisconsin's Property Type is land only / with buildings, not a class
+        for side in ("grantor", "grantee"):
+            if side not in m and side + "_last" in m:
+                m[side] = m[side + "_last"]       # a name in two columns; joined below
         miss = [n for n in NEED if n not in m]
         if "pid" not in m and "legal" not in m:
             miss.append("pid or legal")
@@ -220,15 +262,39 @@ def parse_rows(tables):
                 rep["bad_price"] += 1
                 continue
             cls = g("cls")
-            if "cls" in m and not farm_class(cls):
+            if "use" in m and "cls" not in m:
+                u = g("use")
+                if re.match(r"^\d+$", u):
+                    cls = {"4": "4", "6": "6"}.get(u.lstrip("0"), "")
+                elif farm_class(u):
+                    cls = u
+                if not cls:
+                    rep["not_farm"] += 1
+                    continue
+            elif "cls" in m and not farm_class(cls):
                 rep["not_farm"] += 1
                 continue
+            conv = g("conv", 40)
+            if "conv" in m and hk[m["conv"]] == "CONVEYANCECODE":
+                conv = WI_CONVEYANCE.get(conv.lstrip("0"), conv)
+            muni = g("muni", 60).upper()
+            if muni and not re.match(r"^(TOWN|TOWNSHIP|VILLAGE|CITY)\b", muni):
+                kind = [w for w, c in (("CITY OF", "city_yn"), ("VILLAGE OF", "village_yn"), ("TOWN OF", "town_yn")) if g(c) == "1"]
+                if len(kind) == 1:
+                    muni = kind[0] + " " + muni
+
+            def who(side):
+                if side + "_last" in m and m[side] == m[side + "_last"]:
+                    return clean("%s %s" % (g(side + "_first"), g(side + "_last")), 80) or None
+                return g(side, 80) if side in m else None
+            npv = parse_num(g("np")) if "np" in m else None
             ex = g("exempt")
             recs.append({
                 "doc": g("doc"), "date": d, "price": round(p), "acres": parse_num(g("acres")),
-                "cls": norm_class(cls), "conv": g("conv", 40).title(), "pid": g("pid", 40), "muni": g("muni", 60).upper(),
+                "cls": norm_class(cls), "conv": conv.title(), "pid": g("pid", 40), "muni": muni,
                 "county": g("county", 40), "legal": g("legal", LEGAL_MAX),
-                "grantor": g("grantor", 80) if "grantor" in m else None, "grantee": g("grantee", 80) if "grantee" in m else None,
+                "grantor": who("grantor"), "grantee": who("grantee"),
+                "np": int(npv) if npv and npv >= 1 else None,
                 "exempt": 1 if ex and not re.match(r"^(0|N|NO|NONE|FALSE)$", ex, re.I) else 0,
             })
     return recs, rep
@@ -334,7 +400,7 @@ def build(st, recs, gaz, now):
         rows = []
         for r in rs:
             a = r["acres"]
-            rows.append([r["doc"], r["date"], r["price"], round(a, 2) if a else None, r.get("tac"), r.get("np", 1), r["cls"], r["conv"],
+            rows.append([r["doc"], r["date"], r["price"], round(a, 2) if a else None, r.get("tac"), r.get("np") or 1, r["cls"], r["conv"],
                          r["pid"], mcode.get(r["muni"], ""), r["legal"], r["exempt"]] + ([r["grantor"], r["grantee"]] if names else []))
         c = next(v for v in cix.values() if v["fips"] == fips)
         doc = {"state": st, "county": c["name"], "fips": fips, "source": cfg["source"], "source_short": cfg["short"],
@@ -380,6 +446,7 @@ def strip_scripts(blob):
 
 
 IL_SODA = "https://data.illinois.gov/resource/it54-y4c6.json"
+IL_PINS = "https://data.illinois.gov/resource/ay2h-5hx3.json"
 IL_FIELDS = ["declaration_id", "document_number", "date_recorded", "line_4_instrument_date", "line_1_county", "line_1_township",
              "line_1_city", "line_1_primary_pin", "line_1_lot_size_or_acreage", "line_2_total_parcels", "line_3_additional_pins",
              "line_5_instrument_type", "line_11_full_consideration", "line_13_net_consideration", "line_16_state_exemption",
@@ -514,13 +581,90 @@ def annotate(title, text, chunk=6000, most=6):
         print("::notice title=%s %d::%s" % (title, i // chunk + 1, part))
 
 
+def il_table(decls, extra):
+    """Illinois MyDec rows (Socrata JSON, Line 8 current use 'j' Farm) as one table with our column names.
+    One row per declaration: the price is for every parcel on it, so acres are the whole sale's
+    (Line 1 acreage plus each added PIN's, in acres) or left blank when a lot size is not in acres.
+    extra: {declaration_id: [additional PIN rows]}."""
+    head = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
+            "TOWNSHIP", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS"]
+    yield head
+    for d in decls:
+        did = str(d.get("declaration_id") or "")
+        n = parse_num(d.get("line_2_total_parcels"))
+        n = int(n) if n and n >= 1 else 1
+        ac = parse_num(d.get("line_1_lot_size_or_acreage"))
+        ac = ac if ac and 0 < ac < 20000 else None
+        adds = extra.get(did, [])
+        if n > 1 or d.get("line_3_additional_pins") in (True, "true"):
+            tot = ac
+            for x in adds:
+                v, u = parse_num(x.get("lot_size_or_acreage")), str(x.get("lot_size_units") or "").upper()
+                if v is None or tot is None:
+                    tot = None
+                    break
+                if u.startswith("ACRE"):
+                    tot += v
+                elif u.startswith("SQ"):
+                    tot += v / 43560.0
+                else:
+                    tot = None
+                    break
+            ac = round(tot, 2) if tot and len(adds) + 1 >= n else None
+        price = d.get("line_13_net_consideration")
+        if parse_num(price) is None:
+            price = d.get("line_11_full_consideration")
+        conv = str(d.get("line_5_instrument_type") or "")
+        if d.get("line_10b_sale_between_related") in (True, "true"):
+            conv += ", related parties"
+        yield [str(d.get("document_number") or did), str(d.get("line_4_instrument_date") or d.get("date_recorded") or "")[:10],
+               "" if price is None else str(price), "" if ac is None else str(ac), "4", conv, str(d.get("line_1_primary_pin") or ""),
+               str(d.get("line_1_township") or ""), str(d.get("line_1_county") or ""), str(d.get("step_3_legal_description") or ""),
+               str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n)]
+
+
+def soda(url, params):
+    return json.loads(fetch(url + "?" + urllib.parse.urlencode(params, safe="(),'=*$", quote_via=urllib.parse.quote), timeout=300))
+
+
+def fetch_il():
+    """Every Illinois farm declaration (Line 8 current use j, Farm) and the added PINs on them."""
+    decls, off, page = [], 0, 50000
+    while True:
+        got = soda(IL_SODA, {"$select": ",".join(IL_FIELDS + ["step_3_legal_description"]), "$where": "line_8_current_use='J'",
+                             "$order": "declaration_id", "$limit": page, "$offset": off})
+        decls += got
+        if len(got) < page:
+            break
+        off += page
+    need = [d["declaration_id"] for d in decls if d.get("declaration_id") and (parse_num(d.get("line_2_total_parcels")) or 1) > 1]
+    extra = {}
+    for i in range(0, len(need), 80):
+        ids = ",".join("'%s'" % re.sub(r"[^0-9A-Za-z]", "", x) for x in need[i:i + 80])
+        for x in soda(IL_PINS, {"$where": "declaration_id in(%s)" % ids, "$limit": 50000}):
+            extra.setdefault(str(x.get("declaration_id")), []).append(x)
+    return decls, extra, len(need)
+
+
 def run(states, from_dir=None):
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     gzblob = fetch(GAZ)
     bad = 0
     for st in states:
         tables = []
-        if from_dir:
+        if STATES[st].get("request_only"):
+            print("::notice::%s transfers not built: %s" % (st, STATES[st]["request_only"]))
+            continue
+        if STATES[st].get("socrata") and not from_dir:
+            try:
+                decls, extra, multi = fetch_il()
+            except Exception as e:  # noqa: BLE001
+                print("::warning::%s open data did not answer: %s" % (st, e))
+                bad += 1
+                continue
+            print("%s: %d farm declarations, %d with more than one parcel, %d added PINs read" % (st, len(decls), multi, sum(len(v) for v in extra.values())))
+            tables.append(il_table(decls, extra))
+        elif from_dir:
             for n in sorted(os.listdir(from_dir)):
                 if re.search(r"\.(zip|csv|txt|xlsx)$", n, re.I):
                     tables.append(read_table(n, open(os.path.join(from_dir, n), "rb").read()))
@@ -536,6 +680,10 @@ def run(states, from_dir=None):
                         tables.append(read_table(os.path.basename(urllib.parse.urlparse(u).path), fetch(u)))
                     except Exception as e:  # noqa: BLE001
                         print("::warning::%s file %s: %s" % (st, u, e))
+        if not tables:
+            print("::warning::%s transfers not written: the data page lists no file to download%s" % (st, STATES[st].get("no_files", "")))
+            bad += 1
+            continue
         recs, rep = parse_rows(tables)
         ok, why = checks_pass(recs, rep)
         if not ok:
@@ -545,7 +693,7 @@ def run(states, from_dir=None):
         res = build(st, recs, gazetteer(STATES[st]["fips"], gzblob), now)
         print("::notice::%s transfers: %d rows in %d counties (%.2f MB); names %s; %d rows with no county match; files %d, rows read %d, not farm %d"
               % (st, res["rows"], res["counties"], res["mb"], "in the data" if res["names"] else "not in the data", res["unplaced"], rep["files"], rep["rows"], rep["not_farm"]))
-    return 1 if bad == len(states) else 0
+    return 1 if bad and bad == len([s for s in states if not STATES[s].get("request_only")]) else 0
 
 
 def selftest():
@@ -570,6 +718,45 @@ def selftest():
     ck("dates", parse_date("3/5/24") == "2024-03-05" and parse_date("2023-12-01 00:00:00") == "2023-12-01" and parse_date("13/40/2020") is None)
     ck("numbers", parse_num("$1,234.50") == 1234.5 and parse_num("") is None and parse_num("n/a") is None)
     ck("file links", file_links("https://x.gov/a/b.aspx", '<a href="/d/2024.zip">x</a><a href="c.csv">y</a><a href="z.pdf">') == ["https://x.gov/d/2024.zip", "https://x.gov/a/c.csv"])
+    # Wisconsin, a file shaped like DOR's layout (all 89 column titles, A to CK)
+    fx2 = os.path.join(ROOT, "test", "fixtures", "land-sales", "wi-retr-layout-sample.csv")
+    w, wr = parse_rows([read_table("wi.csv", open(fx2, "rb").read())])
+    ck("WI layout: date, value, county and parcel found by their titles", {"date", "price", "county", "pid", "use", "grantor", "grantee"} <= set(wr.get("columns") or []))
+    ck("WI layout: Predominate Use 4 and 6 kept, 1 and 5 dropped", wr["not_farm"] == 2 and sorted(r["cls"] for r in w) == ["4", "4", "6"])
+    ck("WI layout: Property Type is not read as a class", "cls" not in (wr.get("columns") or []))
+    ck("WI layout: MMDDYYYY dates", w[0]["date"] == "2024-03-15" and w[1]["date"] == "2025-01-10")
+    ck("WI layout: a date with its leading zero dropped is not guessed", wr["bad_date"] == 1 and parse_date("1112024") is None)
+    ck("WI layout: names from the first and last name columns", w[0]["grantor"] == "SYNTHETIC SELLER A" and w[0]["grantee"] == "SYNTHETIC BUYER A" and w[1]["grantor"] == "SYNTHETIC FARMS LLC")
+    ck("WI layout: conveyance codes read as deed types", [r["conv"] for r in w] == ["Warranty Deed", "Land Contract", "Quit Claim Deed"])
+    ck("WI layout: town from the TVC name and Town YN", w[0]["muni"] == "TOWN OF CHETEK" and muni_key(w[0]["muni"]) == ("T", "CHETEK"))
+    ck("WI layout: exemption number flags the return", w[2]["exempt"] == 1 and w[0]["exempt"] == 0)
+    # Illinois, rows shaped like the MyDec open data answer (it54-y4c6, Line 8 current use J)
+    decl = [
+        {"declaration_id": "1", "document_number": "2026-000001", "date_recorded": "2026-10-09T00:00:00.000", "line_4_instrument_date": "2026-09-23T00:00:00.000",
+         "line_1_county": "Mercer", "line_1_township": "Abington", "line_1_primary_pin": "14-14-34-300-004", "line_1_lot_size_or_acreage": "35",
+         "line_2_total_parcels": "2", "line_3_additional_pins": True, "line_5_instrument_type": "Warranty Deed", "line_11_full_consideration": "775000.0",
+         "line_13_net_consideration": "775000.0", "line_10b_sale_between_related": False, "step_4_seller_name": "SYNTHETIC SELLER A", "step_4_buyer_name": "SYNTHETIC BUYER A"},
+        {"declaration_id": "2", "document_number": "2026-000002", "date_recorded": "2026-10-09T00:00:00.000", "line_4_instrument_date": "2026-10-08T00:00:00.000",
+         "line_1_county": "Montgomery", "line_1_township": "Pitman", "line_1_primary_pin": "03-22-200-003", "line_1_lot_size_or_acreage": "20",
+         "line_2_total_parcels": "1", "line_3_additional_pins": False, "line_5_instrument_type": "Trustee Deed", "line_11_full_consideration": "300000.0",
+         "line_13_net_consideration": "300000.0", "line_10b_sale_between_related": True, "step_4_seller_name": "SYNTHETIC SELLER B", "step_4_buyer_name": "SYNTHETIC BUYER B"},
+        {"declaration_id": "3", "document_number": "2026-000003", "line_4_instrument_date": "2025-04-01T00:00:00.000", "line_1_county": "Will",
+         "line_1_township": "Wilton", "line_1_primary_pin": "13-19-04-100-002-0000", "line_1_lot_size_or_acreage": "40.5", "line_2_total_parcels": "2",
+         "line_3_additional_pins": True, "line_5_instrument_type": "Warranty Deed", "line_11_full_consideration": "900000.0", "line_13_net_consideration": "880000.0",
+         "line_16_state_exemption": "", "step_4_seller_name": "SYNTHETIC SELLER C", "step_4_buyer_name": "SYNTHETIC BUYER C"},
+    ]
+    extra = {"1": [{"declaration_id": "1", "pin": "14-14-34-300-005", "lot_size_or_acreage": "45", "lot_size_units": "Acres"}],
+             "3": [{"declaration_id": "3", "pin": "13-19-04-100-003-0000", "lot_size_or_acreage": "56' x 208'", "lot_size_units": "Dimensions"}]}
+    il, ir = parse_rows([il_table(decl, extra)])
+    ck("IL: every farm declaration read", len(il) == 3 and ir["bad_date"] == 0 and ir["bad_price"] == 0)
+    ck("IL: instrument date, net consideration for real property", il[0]["date"] == "2026-09-23" and il[2]["price"] == 880000)
+    ck("IL: acres for the whole sale when every lot size is in acres", il[0]["acres"] == 80 and il[0]["np"] == 2)
+    ck("IL: acres left blank when an added lot size is not in acres", il[2]["acres"] is None and il[2]["np"] == 2)
+    ck("IL: one parcel keeps its Line 1 acres", il[1]["acres"] == 20 and il[1]["np"] == 1)
+    ck("IL: names from Step 4", il[0]["grantor"] == "SYNTHETIC SELLER A" and il[0]["grantee"] == "SYNTHETIC BUYER A")
+    ck("IL: related-party sales say so", il[1]["conv"].endswith("Related Parties"))
+    ck("IL: township as the place", il[0]["muni"] == "ABINGTON" and muni_key(il[0]["muni"]) == ("T", "ABINGTON"))
+    ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     print("FAILS=%d" % bad)
     return 1 if bad else 0
 
@@ -580,6 +767,6 @@ if __name__ == "__main__":
         sys.exit(selftest())
     if "--probe" in a:
         sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS] or sorted(set(STATES) | set(PROBE_DOCS))))
-    sts = [x for x in a if x in STATES] or ["WI", "MN"]
+    sts = [x for x in a if x in STATES] or ["WI", "MN", "IL"]
     fd = a[a.index("--from") + 1] if "--from" in a else None
     sys.exit(run(sts, fd))
