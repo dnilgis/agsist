@@ -41,8 +41,8 @@
  * /rain-print?d=<code> and the same print draws again.
  *
  * DOWNLOADS. The public button gives a watermarked preview PNG. /rain-print?maker=1
- * shows Sig's clean 300 dpi print files (12x18 in, 0.125 in bleed, so 12.25 x 18.25 in
- * and fits a 13 x 19 sheet),
+ * shows Sig's clean 300 dpi print files (the 13 x 19 in sheet, untrimmed, the art
+ * 16.5 x 11 in in the middle: SHEET, 2026-10-17),
  * a PDF of the same and the SVG. That switch is a convenience, not security:
  * the art is drawn in the reader's browser and anyone can save it.
  *
@@ -115,6 +115,28 @@
      print's own short link. Uppercase keeps it in QR alphanumeric mode: version
      2 at level M, 25 x 25 modules, the same printed size as the short link. */
   var STANDARD_LINK = 'HTTPS://AGSIST.COM/RAIN-PRINT', STD_M = null;
+  /* THE SHEET (2026-10-17, Sig): prints and framed prints are printed on 13 x 19 in
+     paper and ship untrimmed. The 3:2 art (1800 x 1200 units) is scaled to 16.5 x
+     11 in and centred on the sheet; the margin is the print's own white. The
+     framed print sits in a 13 x 19 black frame with a white mat (the stock
+     "matted to 11 x 17" kind, window about 16.5 x 10.5 in), so everything the
+     art draws stays inside the centred safe window, which
+     test/rain-print-sheet.test.mjs measures on the drawn sheet. When Sig
+     measures the real mat, change mat and safe here (inches, landscape). The
+     digital file is the art alone, 18 x 12 in at 300 dpi, as before. */
+  var SHEET = { w: 19, h: 13, art: { w: 16.5, h: 11 }, mat: { w: 16.5, h: 10.5 }, safe: { w: 16.25, h: 10.25 } };
+  // where the art and the windows sit on the sheet, in inches from the sheet's top left
+  function sheetBoxes(S) {
+    S = S || SHEET;
+    var at = function (b) { return { x: (S.w - b.w) / 2, y: (S.h - b.h) / 2, w: b.w, h: b.h }; };
+    return { sheet: { x: 0, y: 0, w: S.w, h: S.h }, art: at(S.art), mat: at(S.mat), safe: at(S.safe) };
+  }
+  // the safe window in the art's own units (1800 x 1200 across the art): what the art must keep its ink inside
+  function safeInArt(S) {
+    S = S || SHEET;
+    var B = sheetBoxes(S), k = 1800 / S.art.w;
+    return { x0: (B.safe.x - B.art.x) * k, y0: (B.safe.y - B.art.y) * k, x1: (B.safe.x - B.art.x + B.safe.w) * k, y1: (B.safe.y - B.art.y + B.safe.h) * k };
+  }
   function standardMatrix() {
     if (!STD_M && root.AgQR) STD_M = root.AgQR.matrix(STANDARD_LINK, null, 'alnum');
     return STD_M ? STD_M.map(function (r) { return r.slice(); }) : null;
@@ -1405,7 +1427,7 @@
   }
 
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
-    designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
+    designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
@@ -1419,7 +1441,8 @@
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   /* Print sizes, landscape: trim width and height in inches. The art is 1800 x 1200 units, 100 to the inch. */
   var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
-  var ART_UNITS_IN = 100, BLEED_IN = 0.125, DPI = 300;
+  var DPI = 300;
+  var SHEET_WORDS = SHEET.h + ' x ' + SHEET.w + ' in sheet, the art ' + SHEET.art.w + ' x ' + SHEET.art.h + ' in in the middle, untrimmed';
   var MAKER = /(?:^|[?&])maker=1(?:&|$)/.test(root.location.search);
   var CHOICE = { digital: 'Digital file', print12x18: '12 x 18 print', framed12x18: '12 x 18 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
@@ -3692,14 +3715,15 @@
     a.href = url; a.download = name; doc.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
   }
-  /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide, no bleed),
-     'digital' (the $19 file: 300 dpi at the trim, no bleed, no serial) or a print
-     size key (the printer's file: bleed, and the serial when the link has one). */
+  /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide), 'digital' (the
+     $19 file: the art alone, 18 x 12 in at 300 dpi, no serial) or a print size key
+     (Sig's print file: the 13 x 19 in sheet at 300 dpi, the art 16.5 x 11 in in the
+     middle (SHEET), and the serial when the link has one; untrimmed, so no bleed and no crop marks). */
   /* own: the QR matrix of the print's own short link (an order file); without
      it the file carries the standard code. */
   function drawCanvas(kind, own) {
     var P = PRINT[kind === 'preview' || kind === 'digital' ? ST.size : kind];
-    var o = { qrMatrix: own || null }, pxW, pxH;
+    var o = { qrMatrix: own || null }, pxW, pxH, sheet = null;
     if (kind === 'preview') {
       pxW = 2000; pxH = Math.round(2000 * P.h / P.w); o.watermark = true;
     } else if (kind === 'digital') {
@@ -3707,10 +3731,13 @@
     } else {
       o.serial = SERIAL;
       if (!own) o.serial = '';   // a test print is no numbered print
-      pxW = Math.round((P.w + 2 * BLEED_IN) * DPI); pxH = Math.round((P.h + 2 * BLEED_IN) * DPI);
-      o.bleed = ART_UNITS_IN * BLEED_IN;
+      sheet = sheetBoxes();
+      pxW = Math.round(SHEET.w * DPI); pxH = Math.round(SHEET.h * DPI);
     }
-    o.px = [pxW, pxH];
+    // the art's own pixels: the whole canvas, or its box on the sheet
+    var artPx = sheet ? [Math.round(sheet.art.w * DPI), Math.round(sheet.art.h * DPI)] : [pxW, pxH];
+    var artAt = sheet ? [Math.round(sheet.art.x * DPI), Math.round(sheet.art.y * DPI)] : [0, 0];
+    o.px = artPx;
     var saved = ST.size;
     if (PRINT[kind]) ST.size = kind;
     // The page's own fonts first (document.fonts), then the same files inlined
@@ -3726,20 +3753,9 @@
             var c = doc.createElement('canvas');
             c.width = pxW; c.height = pxH;
             var cx = c.getContext('2d');
-            cx.drawImage(img, 0, 0, pxW, pxH);
-            /* A print file: crop marks in the bleed, on each trim edge carried out
-               to the sheet's edge, stopping 1/16 in short of the trim corner, so
-               they are cut away with the bleed. 2 px (about 0.5 pt), black. */
-            if (o.bleed) {
-              var bx = BLEED_IN * DPI, gap = DPI / 16;
-              cx.save(); cx.strokeStyle = '#000000'; cx.lineWidth = 2; cx.lineCap = 'butt'; cx.beginPath();
-              [[bx, bx, -1, -1], [pxW - bx, bx, 1, -1], [bx, pxH - bx, -1, 1], [pxW - bx, pxH - bx, 1, 1]].forEach(function (k) {
-                var x = k[0], y = k[1];
-                cx.moveTo(k[2] < 0 ? 0 : pxW, y); cx.lineTo(x + k[2] * gap, y);   // along the top or bottom trim edge
-                cx.moveTo(x, k[3] < 0 ? 0 : pxH); cx.lineTo(x, y + k[3] * gap);   // along the left or right trim edge
-              });
-              cx.stroke(); cx.restore();
-            }
+            // a sheet: the print's own white all round, the art in the middle
+            if (sheet) { cx.fillStyle = '#FFFFFF'; cx.fillRect(0, 0, pxW, pxH); }
+            cx.drawImage(img, artAt[0], artAt[1], artPx[0], artPx[1]);
             URL.revokeObjectURL(url);
             resolve(c);
           } catch (e) { reject(e); } });
@@ -3756,12 +3772,12 @@
       return b.arrayBuffer().then(function (buf) { return new Blob([pngWithDpi(new Uint8Array(buf), DPI)], { type: 'image/png' }); });
     });
   }
-  /* A one-page PDF around a JPEG: MediaBox = bleed size, TrimBox inset 0.125 in. No library. */
-  /* bleedIn: the bleed in inches (the print's 0.125 when left out; 0 for the insert letter, MediaBox = TrimBox). */
+  /* A one-page PDF around a JPEG, P inches wide and high (the 13 x 19 sheet, or the
+     insert letter). bleedIn: a bleed in inches round P (TrimBox inset by it); 0 when left out. No library. */
   function pdfFromJpeg(jpeg, pxW, pxH, P, bleedIn) {
     var enc = new TextEncoder(), parts = [], offs = [], len = 0;
     var put = function (x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; };
-    var bi = bleedIn === undefined ? BLEED_IN : bleedIn;
+    var bi = bleedIn || 0;
     var wPt = (P.w + 2 * bi) * 72, hPt = (P.h + 2 * bi) * 72, bl = bi * 72;
     var content = 'q ' + wPt.toFixed(2) + ' 0 0 ' + hPt.toFixed(2) + ' 0 0 cm /Im0 Do Q';
     put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
@@ -3788,8 +3804,8 @@
       var tname = slug() + '-' + kind + '-test-print-standard-code';
       logoGate().then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, null); }).then(function (c) {
         return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
-          saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), tname + '.pdf');
-          out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.';
+          saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, SHEET), tname + '.pdf');
+          out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.';
           ga('rain_print_download', { kind: 'test', fmt: 'pdf' });
         });
       }).then(null, function (e) { out.textContent = e === 'logo' ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
@@ -3825,15 +3841,15 @@
       job = go(function () { return drawCanvas(kind, own); }).then(function (c) {
         if (fmt === 'pdf') {
           return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
-            saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), name + '.pdf');
-            return qrNote('PDF saved: ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.');
+            saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, SHEET), name + '.pdf');
+            return qrNote('PDF saved: ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.');
           });
         }
         return toBlob(c, 'image/png').then(function (b) {
           saveBlob(b, name + '.png');
           return qrNote(kind === 'preview' ? 'Preview saved (' + c.width + ' x ' + c.height + ' px, watermarked).'
             : kind === 'digital' ? 'Digital file saved: ' + c.width + ' x ' + c.height + ' px, 12 x 18 in at 300 dpi, no serial.'
-            : 'Print file saved' + (SERIAL ? ' with ' + SERIAL : ', no serial (add &serial=N to the link)') + ': ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px at 300 dpi.');
+            : 'Print file saved' + (SERIAL ? ' with ' + SERIAL : ', no serial (add &serial=N to the link)') + ': ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px at 300 dpi.');
         });
       });
     }
