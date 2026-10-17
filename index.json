@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-17T00:14:09Z",
+ "run_utc": "2026-10-17T00:24:26Z",
  "sources": [
   {
    "bytes": null,
@@ -6214,29 +6214,29 @@
    "status": "failed"
   },
   {
-   "bytes": 1997,
-   "sha256": "08e1532ad4fec926201c506c7bf5569f75151e78f1896f0d7c978605e8c76420",
-   "fetched_utc": "2026-10-16T16:16:10Z",
+   "bytes": 534434,
+   "sha256": "3ece12c500eb2c6fbeffffc7e7ede4ca3a8779233e35579ca90a5e9a1153a303",
+   "fetched_utc": "2026-10-17T00:23:51Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
    "saved_as": "refs/bench-home-2.html",
    "final_url": null,
-   "content_type": "text/html; charset=UTF-8",
+   "content_type": "text/html; charset=utf-8",
    "via": "direct",
    "archive_timestamp": null,
    "id": "bench-home-2",
    "url": "https://www.barchart.com/futures/grains",
    "title": "Benchmark home: Barchart Grains",
    "why": "/home competitor benchmark Oct 16, 2026 (established)",
-   "kind": "html",
-   "checked_utc": "2026-10-16T16:16:10Z",
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T00:23:46Z",
    "error": null,
    "attempts": [
-    "direct/python: ok 202"
+    "direct/browser: ok 202"
    ],
-   "status": "new",
-   "text_chars": 1
+   "status": "updated",
+   "text_chars": 16147
   },
   {
    "bytes": null,
@@ -6254,9 +6254,9 @@
    "url": "https://www.agriculture.com/markets",
    "title": "Benchmark home: Successful Farming (agriculture.com)",
    "why": "/home competitor benchmark Oct 16, 2026 (established)",
-   "kind": "html",
-   "checked_utc": "2026-10-16T16:16:11Z",
-   "error": "direct/python: HTTP 403; direct/curl: HTTP 402; wayback: no archived copy",
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T00:23:52Z",
+   "error": "direct/browser: HTTP 403",
    "status": "failed"
   },
   {
@@ -6275,10 +6275,81 @@
    "url": "https://www.agweb.com/",
    "title": "Benchmark home: AgWeb (Farm Journal)",
    "why": "/home competitor benchmark Oct 16, 2026 (established)",
-   "kind": "html",
-   "checked_utc": "2026-10-16T16:16:20Z",
-   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback/python: HTTP 429; wayback/python: network: [Errno 111] Connection refused; wayback/curl: HTTP 429",
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T00:23:54Z",
+   "error": "direct/browser: HTTP 403",
    "status": "failed"
+  },
+  {
+   "bytes": 550124,
+   "sha256": "66ebddcb4e00443ed72bf97c32542a793e48460cb88e6ed779ddf5e036c1b750",
+   "fetched_utc": "2026-10-17T00:24:18Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": "Fri, 06 Feb 2015 22:22:40 GMT",
+   "saved_as": "refs/bench-home-7.html",
+   "final_url": "https://www.dtnpf.com/agriculture/web/ag/home",
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-home-7",
+   "url": "https://www.dtnpf.com/",
+   "title": "Benchmark home: DTN/Progressive Farmer home",
+   "why": "/home competitor benchmark Oct 16, 2026 (established); rendered, the home page fills its markets and news blocks with JavaScript",
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T00:23:56Z",
+   "error": null,
+   "attempts": [
+    "direct/browser: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 12778
+  },
+  {
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": null,
+   "final_url": null,
+   "content_type": null,
+   "via": null,
+   "archive_timestamp": null,
+   "id": "bench-home-8",
+   "url": "https://www.agriculture.com/",
+   "title": "Benchmark home: Successful Farming home (agriculture.com)",
+   "why": "/home competitor benchmark Oct 16, 2026 (established); rendered, plain clients got HTTP 403/402 on agriculture.com (bench-home-5)",
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T00:24:19Z",
+   "error": "direct/browser: HTTP 403",
+   "status": "failed"
+  },
+  {
+   "bytes": 622075,
+   "sha256": "f081df81a58a04809bccd0ae7ada78bffb519c6627535150bf17768a4ccded31",
+   "fetched_utc": "2026-10-17T00:24:26Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/bench-home-10.html",
+   "final_url": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "bench-home-10",
+   "url": "https://www.barchart.com/",
+   "title": "Benchmark home: Barchart home",
+   "why": "/home competitor benchmark Oct 16, 2026 (established); rendered, the plain client got an AWS WAF bot check (bench-home-2)",
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T00:24:21Z",
+   "error": null,
+   "attempts": [
+    "direct/browser: ok 202"
+   ],
+   "status": "new",
+   "text_chars": 18550
   },
   {
    "bytes": 1997,

@@ -1,0 +1,1537 @@
+# Benchmark home: Barchart home
+# https://www.barchart.com/
+# fetched 2026-10-17T00:24:26Z, sha256 f081df81a58a04809bccd0ae7ada78bffb519c6627535150bf17768a4ccded31
+
+Barchart | Market Data, News, Trading Tools, and Analysis
+
+FREE WEBINAR
+
+WATCH LIVE:
+
+You are impersonating user . Stop
+
+-
+Barchart for Businesses
+
+Barchart for Businesses
+
+Let's find a solution for your business.
+
+1 Your market
+
+2 What are you looking for?
+
+3 Your information
+
+What industry are you in?
+
+Financial Services
+
+Media
+
+Agriculture
+
+Energy
+
+Metals
+
+Food & Beverage
+
+Other
+
+Explore our Market Data & Technology Solutions
+
+Data →
+
+Market Data Physical Commodity Prices Grain Prices & Yield Forecasts Commodity Fundamentals News Feeds Company Data Weather & Geospatial
+
+Services →
+
+Market Data & APIs Charting & Tools Commodity Workflow Solutions
+
+Platforms →
+
+cmdtyView Front-End producerView CRM Excel Add-In Digital Information Board
+
+See our full suite of services at barchart.com/solutions →
+
+Log In Try Premier! Menu
+
+LOGIN
+
+Try Barchart for Free
+
+false
+
+My Account
+
+-
+
+Watchlist
+
+-
+
+Portfolio
+
+-
+
+Alerts
+
+-
+
+My Charts
+
+-
+
+Custom Views
+
+-
+
+Chart Templates
+
+-
+
+My Profile
+
+-
+
+Site Preferences
+
+-
+
+Log Out
+
+UPGRADE
+
+Stocks | Futures | Watchlist | News | More
+
+Advanced search
+
+or
+
+Watchlist Watchlist | Portfolio Portfolio | Dashboard Dashboard
+
+MAIN MENU
+
+Home Stocks Options Learn
+
+ETFs Futures Currencies Watchlist
+
+Investing News Tools Portfolio
+
+POPULAR
+
+Stocks Percent Change Top 100 Stocks Stocks Highs/Lows Stocks Volume Leaders Unusual Options Activity Options Volume Leaders
+
+Commodities Grains Energies Alerts Pre-Market Post-Market
+
+-
+Stocks Stocks
+
+Market Pulse
+
+- Stock Market Overview
+
+- Market Momentum
+
+- Market Performance
+
+- Top 100 Stocks
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Economic Overview
+
+- Earnings Within 7 Days
+
+- Earnings & Dividends
+
+- Stock Screener
+
+Barchart Trade Picks
+
+- Today's Top Stock Pick
+
+- All Top Stock Picks
+
+Performance Leaders
+
+- Percent Change
+
+- Price Change
+
+- Range Change
+
+- Gap Up & Gap Down
+
+- 3, 4, 5 Day Gainers
+
+Before & After Markets
+
+- Pre-Market Trading
+
+- Post-Market Trading
+
+Most Active
+
+- Volume Leaders
+
+- Price Volume Leaders
+
+- Volume Advances
+
+- Trading Liquidity
+
+Indices
+
+- Market Indices
+
+- S&P Indices
+
+- S&P Sectors
+
+- Dow Jones Indices
+
+- Nasdaq Indices
+
+- Russell Indices
+
+- Volatility Indices
+
+- Commodities Indices
+
+- US Sectors Indices
+
+- World Indices
+
+Trading Signals
+
+- New Recommendations
+
+- Top Stocks to Own
+
+- Top Signal Strength
+
+- Top Signal Direction
+
+- Stock Signal Upgrades
+
+Sectors
+
+- Stock Market Sectors
+
+- Major Markets Heat Map
+
+- Industry Rankings
+
+- Industry Heat Map
+
+- Industry Performance
+
+- Stocks by Grouping
+
+-
+Options Options
+
+Market Pulse
+
+- Options Market Overview
+
+- Unusual Options Activity
+
+- Options Flow
+
+- Upcoming Earnings
+
+Volatility
+
+- IV Rank and IV Percentile
+
+- Implied vs Realized Vol
+
+- Rising vs Falling Volatility
+
+- Highest Implied Volatility
+
+- %Change in Volatility
+
+Volume & Open Interest
+
+- Most Active Options
+
+- Unusual Options Volume
+
+- Options Volume Leaders
+
+- Highest Open Positions
+
+- Change in Open Interest
+
+- %Change in Open Interest
+
+Data & Tools
+
+- Options Time & Sales
+
+- Options Price History
+
+- Options Calculator
+
+- Options Learning Center
+
+Option Screeners
+
+- Options Screener
+
+- Long Call Screener
+
+- Long Put Screener
+
+Income Strategies
+
+- Covered Call
+
+- Naked Put
+
+Vertical Spreads
+
+- Bull Call Spread
+
+- Bear Call Spread
+
+- Bear Put Spread
+
+- Bull Put Spread
+
+Protection Strategies
+
+- Married Put
+
+- Protective Collar
+
+Straddle and Strangle
+
+- Long Straddle
+
+- Short Straddle
+
+- Long Strangle
+
+- Short Strangle
+
+Horizontal Strategies
+
+- Long Call Calendar
+
+- Long Put Calendar
+
+- Long Call Diagonal
+
+- Short Call Diagonal
+
+- Long Put Diagonal
+
+- Short Put Diagonal
+
+Butterfly Strategies
+
+- Long Call Butterfly
+
+- Short Call Butterfly
+
+- Long Put Butterfly
+
+- Short Put Butterfly
+
+- Long Iron Butterfly
+
+- Short Iron Butterfly
+
+Condor Strategies
+
+- Long Call Condor
+
+- Short Call Condor
+
+- Long Put Condor
+
+- Short Put Condor
+
+- Long Iron Condor
+
+- Short Iron Condor
+
+-
+ETFs ETFs
+
+Market Pulse
+
+- ETF Market Overview
+
+- Popular ETFs
+
+- ETF Finder
+
+- Top 100 ETFs
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Top Dividend ETFs
+
+- ETF Screener
+
+Performance Leaders
+
+- Percent Change
+
+- Price Change
+
+- Range Change
+
+- Gap Up & Gap Down
+
+- 3, 4, 5 Day Gainers
+
+Before & After Markets
+
+- Pre-Market Trading
+
+- Post-Market Trading
+
+Most Active
+
+- Volume Leaders
+
+- Price Volume Leaders
+
+- Volume Advances
+
+Trading Signals
+
+- New Recommendations
+
+- Top ETFs to Own
+
+- Top Signal Strength
+
+- Top Signal Direction
+
+- ETFs Signal Upgrades
+
+Mutual Funds
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Performance
+
+- Price Change
+
+- Funds Screener
+
+-
+Futures Futures
+
+Market Pulse
+
+- Futures Market Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Futures Market Map
+
+- Performance Leaders
+
+- Most Active Futures
+
+- Prices by Exchange
+
+Commodity Groupings
+
+- Commodities Prices
+
+- Currencies
+
+- Energies
+
+- Financials
+
+- Grains
+
+- Indices
+
+- Livestock
+
+- Metals
+
+- Softs
+
+- Single Stock Futures
+
+- Mini & Micro Futures
+
+Futures Trading Guide
+
+- Trading Guide
+
+- Historical Performance
+
+Commitment of Traders
+
+- Commitment of Traders
+
+- Legacy Report
+
+- Disaggregated Report
+
+- Financial TFF Report
+
+Resources
+
+- Contract Specifications
+
+- Futures Expirations
+
+- First Notice Dates
+
+- Options Expirations
+
+- Economic Calendar
+
+- Perpetual Futures
+
+Cash Markets
+
+- Cash Markets Overview
+
+- Corn Indexes
+
+- Soybean Indexes
+
+European Futures
+
+- Euro Futures Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Futures Market Map
+
+- Performance Leaders
+
+- Most Active Futures
+
+European Groupings
+
+- Commodities Prices
+
+- Energies
+
+- Financials
+
+- Grains
+
+- Indices
+
+- Metals
+
+- Softs
+
+- Europe Power Futures
+
+- Europe Gas Futures
+
+- Baltic Freight Indices
+
+European Trading Guide
+
+- European Trading Guide
+
+- Historical Performance
+
+-
+Currencies Currencies
+
+Forex Market Pulse
+
+- Forex Market Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Forex Market Map
+
+- Performance Leaders
+
+- Currency Converter
+
+Crypto Market Pulse
+
+- Crypto Market Overview
+
+- Market Capitalizations
+
+- Bitcoin Futures
+
+Trading Signals
+
+- New Recommendations
+
+Commitment of Traders
+
+- Commitment of Traders
+
+- Legacy Report
+
+- Financial TFF Report
+
+Currency Groupings
+
+- Popular Cross Rates
+
+- Australian Dollar
+
+- British Pound
+
+- Canadian Dollar
+
+- Euro FX
+
+- Japanese Yen
+
+- Swiss Franc
+
+- US Dollar
+
+- Metals Rates
+
+- All Forex Markets
+
+Crypto Groupings
+
+- Popular Coins
+
+- Bitcoin
+
+- Bitcoin-Cash
+
+- Ethereum
+
+- Litecoin
+
+- Monero
+
+- XRP
+
+- Tether
+
+- Zcash
+
+-
+Investing Investing
+
+Investing Ideas
+
+- Today’s Investing Ideas
+
+- Top Performing Stocks
+
+- Top Trending Tickers
+
+- Barchart Screeners
+
+Insider Trading
+
+- Insider Trading Activity
+
+- Politician Insider Trading
+
+Today's Picks
+
+- Chart of the Day
+
+- Top Stock Pick
+
+- Futures Trading Guide
+
+My Screeners
+
+- Stock Screener
+
+- ETF Screener
+
+- Funds Screener
+
+- Options Screener
+
+Technical Ideas
+
+- Bullish Moving Averages
+
+- Bearish Moving Averages
+
+- Breakouts and Reversals
+
+- Candlestick Patterns
+
+- eMACD Buy Signals
+
+- Hot Penny Stocks
+
+- RSI Bullish Divergence
+
+- RSI Bearish Divergence
+
+- Short Interest Stocks
+
+- Standout Stocks
+
+- Top Stocks Under $10
+
+- TTM Squeeze
+
+- Up Trending Stocks
+
+- Down Trending Stocks
+
+Dividend Ideas
+
+- Best Dividend Stocks
+
+- Dividend Aristocrats
+
+- Dividend Kings
+
+Power Investors
+
+- Cathie Wood Stocks
+
+- Warren Buffett Stocks
+
+Themed Lists
+
+- AI Stocks
+
+- Battery Stocks
+
+- Biotechnology Stocks
+
+- Cannabis Stocks
+
+- Clean Energy Stocks
+
+- Crypto Stocks
+
+- Cybersecurity Stocks
+
+- Data Center Stocks
+
+- Drones & Flying Cars
+
+- EV Stocks
+
+- Fintech Stocks
+
+- Gold Stocks
+
+- Nuclear Energy Stocks
+
+- Oil Stocks
+
+- Power & Infrastructure
+
+- Quantum Computing
+
+- Rare Earth Minerals
+
+- REIT Stocks
+
+- Robotics Stocks
+
+- Semiconductor Stocks
+
+- Space Race Stocks
+
+- Trillion Dollar Stocks
+
+- World Markets
+
+-
+News News
+
+Barchart
+
+- Markets Today
+
+- Barchart News
+
+- Exclusives
+
+- Contributors
+
+- Chart of the Day
+
+- News Feeds
+
+Featured Authors
+
+- Andrew Hecht
+
+- Austin Schroeder
+
+- Caleb Naysmith
+
+- Darin Newsom
+
+- Don Dawson
+
+- Elizabeth Volk
+
+- Gavin McMaster
+
+- Jeannine Mancini
+
+- Jim Van Meerten
+
+- Justin Estes
+
+- Mark Hake
+
+- Oleksandr Pylypenko
+
+- Rich Asplund
+
+- Rick Orford
+
+- Rob Isbitts
+
+- Sarah Holzmann
+
+- All Authors
+
+Commodity News
+
+- All Commodities
+
+- Energy
+
+- Grains
+
+- Livestock
+
+- Metals
+
+- Softs
+
+Financial News
+
+- All Financials
+
+- Crypto
+
+- Dividends
+
+- ETFs
+
+- FX
+
+- Interest Rates
+
+- Options
+
+- Stock Market
+
+Free Newsletters
+
+- All Free Newsletters
+
+- The Barchart Brief
+
+- Active Investor
+
+- Unusual Options Activity
+
+- Dividend Investor
+
+- Pre-Market Bulletin
+
+- Commodity Bulletin
+
+- Chart of the Day
+
+- Ag Market Commentary
+
+Press Releases
+
+- All Press Releases
+
+- ACCESS Newswire
+
+- Business Wire
+
+- GlobeNewswire
+
+- TMX Newsfile
+
+- PR Newswire
+
+-
+Tools Tools
+
+Member Tools
+
+- My Watchlist
+
+- Investor Portfolio
+
+- Standard Portfolio
+
+- Dashboard Dashboard
+
+- Symbol Notes
+
+- Alert Center
+
+- Alert Templates
+
+- Barchart Screeners
+
+- My Charts
+
+- Custom Views
+
+- Barchart Custom Views
+
+- Chart Templates
+
+- Barchart Chart Templates
+
+- Compare Stocks
+
+- Daily Prices Download
+
+- Historical Data Download
+
+My Custom Reports
+
+- Watchlist Emails
+
+- Standard Portfolio Emails
+
+- Investor Portfolio Emails
+
+- Screener Emails
+
+- End-of-Day My Charts
+
+- My Market Reports
+
+Manage Tools
+
+- Organize Watchlists
+
+- Organize Portfolios
+
+- Organize Investor Portfolios
+
+- Organize Screeners
+
+- Organize My Charts
+
+My Account
+
+- My Profile
+
+- Site Preferences
+
+- Subscription Details
+
+- Author Followings
+
+- Trading Alerts & Ideas
+
+-
+Learn Learn
+
+Knowledge Base
+
+- Site Education
+
+- Options Education
+
+- Options Learning Center
+
+- Quick Start Tutorials
+
+- Site News
+
+Barchart Webinars
+
+- Upcoming Webinars
+
+- Archived Webinars
+
+- Popular Webinars
+
+Barchart Live
+
+- Market on Close
+
+- Market on Close Archive
+
+Membership
+
+- Barchart Premier Barchart Premier
+
+- Barchart Plus Barchart Plus
+
+- Membership Comparison
+
+- Barchart for Excel
+
+- Create Free Account
+
+Barchart Resources
+
+- Technical Indicators
+
+- Barchart Trading Signals
+
+- Time & Sales Conditions
+
+- Barchart Special Symbols
+
+- Barchart Data Fields
+
+- Featured Brokerages
+
+Options Resources
+
+- Profit & Loss Charts
+
+- Options Volatility
+
+- Options Greeks
+
+- Covered Call
+
+- Naked Put
+
+- Long Call Option
+
+- Deep ITM Calls
+
+- Long Put Option
+
+- Credit Spreads
+
+- Short Straddles
+
+- Short Iron Condor
+
+- 7 Ways to Make Money
+
+- Hedge Stocks with Options
+
+Hi,
+
+Site News
+Contact
+Market:
+
+- US
+
+- Canada
+
+- UK
+
+- Australia
+
+- Europe
+
+Your Free 7-Day Premier trial ends on . Extend Your Trial For Another 30 Days. Time remaining
+
+NaNd
+Days
+
+:
+
+NaNh
+Hours
+
+:
+
+NaNm
+Minutes
+
+:
+
+NaNs
+Seconds
+
+S&P 500
+
+S&P 500
+
+7,659.44
+
+-84.62
+(-1.09%)
+
+Crude Oil
+
+Crude Oil
+
+101.41
+
++3.44
+(+3.51%)
+
+VIX
+
+VIX
+
+19.99
+
++3.53
+(+21.45%)
+
+Gold
+
+Gold
+
+4,181.1
+
++11.0
+(+0.26%)
+
+MU 878.84 (-5.63%) NVDA 214.13 (-1.43%) TSLA 354.72 (-2.13%) AAPL 343.46 (+0.43%) META 709.33 (-3.72%) MSFT 529.05 (-1.93%) SPCX 146.03 (-1.74%)
+
+Investor Portfolio
+Link Your Brokerage Portfolio to Your Personal Barchart Account
+
+Most brokerage apps are built for buying and selling — not analysis. Link your account and turn holdings into a fully integrated workflow.
+
+Link Your Account → Watch a short tutorial
+
+- Detailed Analysis
+
+- Custom Alerts
+
+- Barchart Screeners
+
+FREE 30-DAY TRIAL
+
+Investment Tools and Research for
+More Confident and Profitable Trading
+
+Try Barchart Premier for 30 Days ON US! Try Premier ON US!
+
+Markets Today
+See More
+
+Stock Indexes Finish Sharply Lower as Tech Stocks Plunge
+
+Barchart
+
+In This Story
+
+- GOOGL -8.63 (-2.47%)
+
+- ANET -8.60 (-4.63%)
+
+- AAPL +1.46 (+0.43%)
+
+- HRL +0.21 (+1.04%)
+
+Goldman vs. JPMorgan: Both Raised Their Dividends. Which Bank Is the Better Buy?
+
+Lockheed Martin's $88 Billion Missile Backlog Could Be a Reason to Buy Before October 22
+
+Applied Materials Just Opened a $5 Billion R&D Center. What That Actually Means for AMAT Stock.
+
+PEP Stock Alert: KFC Just Dealt PepsiCo a Blow With New Coca-Cola Deal
+
+What Were Markets Telling Us at Friday's Close?
+Barchart
+
+Mobileye Just Scored a New Bullish Rating. Here's Why.
+Barchart
+
+Why Dan Ives Says Now Is the Time to Buy the Dip on Nvidia Stock
+Barchart
+
+How to Play Unusual Options Activity in 3 Stocks: Kraft Heinz, Eaton, and Ollie’s Bargain Outlet
+Barchart
+
+KeyBanc Just Downgraded Workday Stock. Here's Why.
+Barchart
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Major Markets Overview
+Full List
+
+false
+
+Stock Market Leaders
+Full List
+
+false
+
+Most Popular ETF Funds
+Full List
+
+false
+
+The AI Debt Burden Is Spooking Wall Street. Here’s Why CoreWeave Is at the Center of the Storm. Barchart - Fri Oct 16, 12:48PM CDT
+CoreWeave's debt burden is raising red flags, but I wouldn't dump the stock just yet.
+
+CRWV : 61.39 (-11.91%)
+
+FOXA Stock Just Scored a Rare Double-Upgrade. Here's Why. Barchart - Fri Oct 16, 12:43PM CDT
+Bank of America issues a bullish note on Fox Corp. Here’s why analyst Jessica Reif Ehrlich sees significant further upside in FOXA shares.
+
+ROKU : 154.54 (-0.08%)
+
+FOXA : 64.15 (+0.27%)
+
+SK hynix Sinks as AI Stocks Pullback Amid Rising Interest Rates. How to Play SKHY Here. Barchart - Fri Oct 16, 12:38PM CDT
+SK hynix has dropped 57% from its summer peak as Fed rate hike fears and AI debt worries hit chip stocks. Here is what the selloff means for investors now.
+
+CRWV : 61.39 (-11.91%)
+
+$KSIC : 5,668.05 (+2.05%)
+
+MU : 878.84 (-5.63%)
+
+NBIS : 165.47 (-12.18%)
+
+KXIAY : 7.9300 (-8.64%)
+
+SKHY : 136.49 (-6.58%)
+
+Where Is the Stock Market Heading in the Final Months of 2026? Barchart - Fri Oct 16, 10:55AM CDT
+U.S. Stocks are higher in 2026, and one more than one event during the final quarter could cause significant volatility. The stock market remains in a bullish trend, but even the most aggressive bull markets...
+
+$VIX : 19.99 (+21.45%)
+
+ZBZ26 : 105-13s (-0.03%)
+
+SPY : 763.25 (-1.11%)
+
+Leidos Holdings' Quarterly Earnings Preview: What You Need to Know Barchart - Fri Oct 16, 10:51AM CDT
+Leidos Holdings is expected to announce its third-quarter results in November, and analysts project a marginal earnings rise.
+
+XLI : 167.76 (-0.08%)
+
+$SPX : 7,659.44 (-1.09%)
+
+LDOS : 124.85 (+0.69%)
+
+The Sky Is Falling for Skydance Stock as Financial Concerns Mount. How to Play SKYD Here. Barchart - Fri Oct 16, 10:47AM CDT
+A total of 471 million warrants were distributed, and investors were not thrilled.
+
+NFLX : 70.53 (-2.86%)
+
+SKYD : 6.91 (-4.82%)
+
+DIS : 110.59 (-0.08%)
+
+NBIS Stock Is Down 40% From Its 52-Week High. If You Buy It Now, You’re Betting on Nebius Recovering Amid Debt Concerns. Barchart - Fri Oct 16, 10:34AM CDT
+Nebius stock is down 34% as debt tops $8.5 billion. Here is what revenue growth, a $250 billion build plan, and Gartner's warning mean for investors.
+
+NBIS : 165.47 (-12.18%)
+
+Buy Cattle Futures Here Before Prices Head Higher Barchart - Fri Oct 16, 10:28AM CDT
+December live cattle futures present a buying opportunity on more price strength.
+
+LEZ26 : 228.350s (+0.48%)
+
+LEZ26 : 228.350s (+0.48%)
+
+What to Expect From Pfizer's Q3 2026 Earnings Report Barchart - Fri Oct 16, 10:25AM CDT
+Pfizer will release its third-quarter earnings next month, and analysts anticipate a double-digit profit dip.
+
+XLV : 176.71 (-0.27%)
+
+$SPX : 7,659.44 (-1.09%)
+
+PFE : 29.58 (+0.48%)
+
+How to Play Apple Stock at $5 Trillion Barchart - Fri Oct 16, 10:21AM CDT
+AAPL stock has had a stellar 2026, pushing Apple's market cap past the $5 trillion milestone. But should investors jump in or hold back?
+
+NVDA : 214.13 (-1.43%)
+
+GOOG : 336.91 (-2.32%)
+
+GOOGL : 340.59 (-2.47%)
+
+AAPL : 343.46 (+0.43%)
+
+More News
+
+My Watchlist
+
+Keep Track of the Symbols
+You Follow With Free Watchlists
+
+Create A Watchlist
+
+My Watchlist
+
+Keep Track of the Symbols
+You Follow With Free Watchlists
+
+Login /Create Free Account
+
+Barchart Free Newsletters
+
+The Barchart Brief
+
+A Daily Read of Top Stories, Must-See Charts, and Breakout Movers. Our exclusive Brief highlights top stories, big movers, and emerging trends in a quick, easy to skim format.
+
+By clicking SIGN UP you agree to receive this free newsletter and other Barchart marketing at the email provided. Opt out at any time. Terms of Use and Privacy Policy apply.
+
+Browse all of our free newsletters
+
+Tweets @Barchart
+
+Barchart
+
+@Barchart
+
+U.S. Homes are now the most unaffordable in history 🚨 🚨 https://t.co/Do0ZRULhu9
+
+1 hour ago
+
+Barchart
+
+@Barchart
+
+Are Stocks headed for a bear market?
+
+4 hours ago
+
+Barchart
+
+@Barchart
+
+New Tesla Roadster goes airborne and lands safely 🤯👀 https://t.co/kAdfnLVJRX
+
+19 hours ago
+
+Barchart
+
+@Barchart
+
+Sugar hits highest closing price since December 2024 📈 🍬 Halloween canceled 🎃 https://t.co/kGnjIpncpo
+
+23 hours ago
+
+Barchart
+
+@Barchart
+
+Source: @VisualCap
+
+1 day ago
+
+Barchart
+
+@Barchart
+
+Home Values by State 🚨 Hawaii is the most expensive at $833,000 while West Virginia is the cheapest at $179,000 https://t.co/HuJcGVG7VB
+
+1 day ago
+
+Barchart
+
+@Barchart
+
+JUST IN 🚨: Semiconductor Stocks have now traded red for 8 straight days, their longest losing streak in 16 years 📉 📉 https://t.co/v3ao80nBxe
+
+1 day ago
+
+Barchart
+
+@Barchart
+
+Bill Gates Says Despite Elon Musk Being Mean to Him, He’s Still ‘In Awe’ of His Work — ‘He’s Brilliant, He’s Rich, He’s Influential’https://t.co/DwN2hYZ1tz
+
+1 day ago
+
+Barchart
+
+@Barchart
+
+Legendary Hedge Fund Manager Paul Tudor Jones says he will be short stocks all of 2027 🚨 🚨 https://t.co/Irj6C4xSgK
+
+1 day ago
+
+Barchart
+
+@Barchart
+
+Small Cap Stocks $IWM have entered a technical correction after falling more than 10% from their August all-time high 🚨 https://t.co/pisVwZdJTg
+
+1 day ago
+
+Barchart Expert Deep Dives
+
+Watch on YouTube
+
+S&P Sectors Market Map
+
+Energy
++2.46%
+
+Utilities
++1.40%
+
+Consumer Staples
++1.31%
+
+Materials
++0.68%
+
+Financials
++0.49%
+
+Real Estate
++0.38%
+
+Industrials
+-0.05%
+
+Health Care
+-0.26%
+
+Consumer Discretionary
+-1.17%
+
+Communication Services
+-2.45%
+
+Information Technology
+-2.54%
+
+See More
+
+Top 100 Stocks
+
+(Sorted by Daily Weighted Alpha)
+
+Symbol
+
+Wtd Alpha
+
+52W %Chg
+
+TXG
+
++467.22
+
++464.30%
+
+10X Genomics Inc
+
+IOVA
+
++334.64
+
++508.04%
+
+Iovance Biotherapeutics Inc
+
+SNDK
+
++303.02
+
++800.60%
+
+Sandisk Corp
+
+MRNA
+
++289.86
+
++703.28%
+
+Moderna Inc
+
+BUUU
+
++285.01
+
++391.79%
+
+BuUU Group Limited Cl A
+
+See More
+
+Major Market Indices
+
+Symbol Last %Chg
+
+$SPX 7,659.44 -1.09%
+
+S&P 500 Index
+
+$NASX 26,140.03 -2.15%
+
+Nasdaq Composite
+
+$DOWI 52,002.41 -0.34%
+
+Dow Jones Industrial Average
+
+$ONE 3,807.62 -1.23%
+
+S&P 100 Index
+
+See More
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
