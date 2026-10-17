@@ -1,6 +1,6 @@
 {
  "updated": "2026-10-15T00:23:22+00:00",
- "count": 23,
+ "count": 21,
  "added": 0,
  "state": {
   "px": {
@@ -85,28 +85,6 @@
    "ts": "2026-10-04T12:00:00+00:00"
   },
   {
-   "id": "px:2026-10-01:corn-dec:move",
-   "kind": "board",
-   "headline": "December corn down 3.8% on the day",
-   "detail": "Settled $5.02, -20 cents on the session.",
-   "significance": "notable",
-   "url": "/corn-futures-prices",
-   "source": "CME settlement via the AGSIST board",
-   "day_only": true,
-   "ts": "2026-10-01T12:00:00+00:00"
-  },
-  {
-   "id": "px:2026-10-01:wheat:move",
-   "kind": "board",
-   "headline": "Wheat down 2.5% on the day",
-   "detail": "Settled $6.77, -17.5 cents on the session.",
-   "significance": "notable",
-   "url": "/wheat-futures-prices",
-   "source": "CME settlement via the AGSIST board",
-   "day_only": true,
-   "ts": "2026-10-01T12:00:00+00:00"
-  },
-  {
    "id": "px:2026-09-30:wheat:move",
    "kind": "board",
    "headline": "Wheat down 2.7% on the day",
@@ -124,7 +102,7 @@
    "detail": "Trade looked for 1.918 B bu; USDA printed 2.095 B bu — +9.2% versus the survey.",
    "significance": "high",
    "url": "/whats-priced-in",
-   "source": "USDA WASDE, graded against the pre-report survey",
+   "source": "USDA, graded against the pre-report survey",
    "day_only": true,
    "ts": "2026-09-30T12:00:00+00:00"
   },
