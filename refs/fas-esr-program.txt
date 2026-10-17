@@ -1,0 +1,163 @@
+# USDA FAS Export Sales Reporting Program
+# https://www.fas.usda.gov/programs/export-sales-reporting-program
+# fetched 2026-10-17T08:37:03Z, sha256 82c33e9efed9dbd8fa7b0f810205e740940e1dfc2245e42024d885d7f58c1ca0
+
+Export Sales Reporting Program | USDA Foreign Agricultural ServiceLock
+
+-
+
+-
+
+-
+
+Export Sales Reporting Program
+
+-
+
+-
+
+-
+
+Timely reporting and publishing of agricultural export sales data is key to effectively functioning markets. The U.S. Department of Agriculture is required by law to publicly release summary sales data obtained from U.S. exporters of many agricultural commodities.
+
+NOTICE
+
+Due to the lapse in Government funding, the weekly Export Sales report has not been published since September 25, 2025 (September 18, 2025, week ending data).
+
+USDA will release unpublished past Weekly Export Sales Reports based on the following schedule. All Export Sales reports will be published at 8:30 a.m. ET on the day of their release.
+
+Weekly Reporting
+
+Each week, U.S. exporters are required to report to USDA’s Foreign Agricultural Service (FAS) any sales transaction entered into with a buyer outside the United States for the following commodities, regardless of quantity:
+
+Barley Cottonseed Oil Soybeans
+
+Beef Flaxseed Soybean Cake and Meal
+
+Cattle Hides and Skins Grain Sorghum Soybean Oil
+
+Cattle Wet Blues Linseed Oil Sunflower Seed Oil
+
+Corn Oats Wheat (by class)
+
+Cotton (by type) Pork Wheat Products
+
+Cottonseed Rice (by class)
+
+Cottonseed Cake and Meal Rye
+
+Weekly reporting is also required for all food aid donations, regardless of the commodity or volume.
+
+The weekly reporting period runs Friday through Thursday and exporters must report no later than 11:59 p.m. ET the following Monday. FAS publishes a weekly summary of export sales activity every Thursday at 8:30 a.m. ET, unless a change is announced. If the preceding Friday or Monday is a national holiday, the reporting deadline moves to Tuesday and the weekly summary is published Friday.
+
+FAS compares and reconciles reported data with sources including USDA’s Federal Grain Inspection Service, U.S. Census Bureau, and trade reports.
+
+Daily Reporting
+
+In addition to the weekly reporting requirement, daily reports to USDA are required for any export sales activity of quantities totaling:
+
+- 100,000 metric tons or more of one commodity sold in one day to one destination, except for soybean oil.
+
+- 200,000 metric tons or more of one commodity sold to one destination during any reporting week, except for soybean oil.
+
+- 20,000 metric tons or more of soybean oil sold in one day to one destination.
+
+- 40,000 metric tons or more of soybean oil sold to one destination during any reporting week.
+
+By 3 p.m. ET on the business day following the transaction, exporters must report to FAS the quantity sold, the commodity type and class, the marketing year of the shipment, and the ultimate destination.
+
+FAS publishes this information on the subsequent business day at 9 a.m. ET. The reporting week for daily sales is Friday -Thursday. Daily sales activity is also captured in the weekly report.
+
+Barley Oats Soybean Oil
+
+Corn Soybeans Wheat
+
+Grain Sorghum Soybean Cake and Meal
+
+(See the latest daily sales reports below, under News and Features.)
+
+Access the Export Sales Query System
+
+Search for sales by country, commodity and date.
+
+Learn More
+
+-
+
+-
+
+-
+
+Resources
+
+Regulations
+
+7 CFR, Part 20 - Export Sales Reporting Requirements
+
+Federal Register Notices
+
+Notice of Request for a Revision of a Currently Approved Information Collection (May 2023)
+
+Notice of Request for a Revision of a Currently Approved Information Collection (May 2020)
+
+Clarifying Terms for Reporting Export Sales of Beef and Pork
+
+Proposed Rule Reopening Comment Period for Reporting Export Sales of DDGs
+
+Final Rule Implementing Requirements for Weekly Export Sales Reporting for Pork
+
+Data and Analysis
+
+View All
+
+February 26, 2026
+
+Export Sales Report
+
+Weekly Export Sales
+
+Weekly summary of U.S. export sales activity for key commodities.
+
+February 20, 2026
+
+Export Sales Report
+
+Weekly Export Sales
+
+Weekly summary of U.S. export sales activity for key commodities.
+
+February 12, 2026
+
+Export Sales Report
+
+Weekly Export Sales
+
+Weekly summary of U.S. export sales activity for key commodities.
+
+News and Features
+
+View All
+
+March 4, 2026
+
+Export Sales Announcement
+
+Export Sales to Unknown Destinations
+
+Private exporters reported sales of 125,000 MT of corn for delivery to unknown destinations during MY 2025/2026.
+
+March 3, 2026
+
+Export Sales Announcement
+
+Export Sales to Unknown Destinations
+
+Private exporters reported sales of 196,000 MT of corn for delivery to unknown destinations during MY 2025/2026.
+
+February 27, 2026
+
+Export Sales Announcement
+
+Export Sales to Unknown Destinations
+
+Private exporters reported sales of 257,000 MT of corn for delivery to unknown destinations during MY 2025/2026.

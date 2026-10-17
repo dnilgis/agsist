@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-17T03:10:48Z",
+ "run_utc": "2026-10-17T08:37:03Z",
  "sources": [
   {
    "bytes": null,
@@ -1534,6 +1534,88 @@
    ],
    "status": "new",
    "text_chars": 5094
+  },
+  {
+   "bytes": 12642,
+   "sha256": "8eabca907daddb0412f8a581f997acbb73a741a2f810c2af9a1a88ae73cccdaa",
+   "fetched_utc": "2026-10-17T08:35:37Z",
+   "pages": 3,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/fsa-fba-rates.pdf",
+   "final_url": null,
+   "content_type": "application/pdf",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "fsa-fba-rates",
+   "url": "https://www.fsa.usda.gov/print/pdf/node/13533",
+   "title": "FSA: Farmer Bridge Assistance program, per-acre payment rates (Dec 31, 2025)",
+   "why": "/tariffs trade-aid row: FBA rates per planted acre, payment limit, timing. Not published until read here",
+   "kind": "pdf",
+   "checked_utc": "2026-10-17T08:34:34Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 3796,
+   "redacted": null
+  },
+  {
+   "bytes": 111459,
+   "sha256": "808443ee6cda4c809076bd840d79ce84c30c6a4ebdbbd4e8c78176eb898f909a",
+   "fetched_utc": "2026-10-17T08:35:38Z",
+   "pages": null,
+   "etag": "\"1792186402-gzip\"",
+   "last_modified": "Fri, 16 Oct 2026 21:33:22 GMT",
+   "saved_as": "refs/fsa-fba-program.html",
+   "final_url": "https://www.fsa.usda.gov/resources/income-support/farmer-bridge-assistance-fba-program",
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
+   "archive_timestamp": null,
+   "id": "fsa-fba-program",
+   "url": "https://www.fsa.usda.gov/fba",
+   "title": "FSA: Farmer Bridge Assistance program page",
+   "why": "/tariffs trade-aid row: program name, eligibility, payment limit, AGI rule, payment dates, any 2026 round",
+   "kind": "html",
+   "checked_utc": "2026-10-17T08:35:38Z",
+   "error": null,
+   "attempts": [
+    "direct/python: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 8902,
+   "redacted": null
+  },
+  {
+   "bytes": 45686,
+   "sha256": "82c33e9efed9dbd8fa7b0f810205e740940e1dfc2245e42024d885d7f58c1ca0",
+   "fetched_utc": "2026-10-17T08:37:03Z",
+   "pages": null,
+   "etag": null,
+   "last_modified": null,
+   "saved_as": "refs/fas-esr-program.html",
+   "final_url": "https://web.archive.org/web/20260304202506id_/https://www.fas.usda.gov/programs/export-sales-reporting-program",
+   "content_type": "text/html; charset=UTF-8",
+   "via": "wayback",
+   "archive_timestamp": "20260304202506",
+   "id": "fas-esr-program",
+   "url": "https://www.fas.usda.gov/programs/export-sales-reporting-program",
+   "title": "USDA FAS Export Sales Reporting Program",
+   "why": "/tariffs China gauge: what commitments, outstanding sales and accumulated exports mean in the weekly report",
+   "kind": "html",
+   "checked_utc": "2026-10-17T08:35:40Z",
+   "error": null,
+   "attempts": [
+    "direct/python: HTTP 403",
+    "direct/curl: HTTP 403",
+    "wayback/python: HTTP 429",
+    "wayback/python: network: [Errno 111] Connection refused",
+    "wayback/curl: ok 200"
+   ],
+   "status": "new",
+   "text_chars": 4673,
+   "redacted": null
   },
   {
    "bytes": 26049,

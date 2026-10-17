@@ -1,0 +1,376 @@
+# FSA: Farmer Bridge Assistance program page
+# https://www.fsa.usda.gov/fba
+# fetched 2026-10-17T08:35:38Z, sha256 808443ee6cda4c809076bd840d79ce84c30c6a4ebdbbd4e8c78176eb898f909a
+
+Farmer Bridge Assistance (FBA) Program | Farm Service AgencyLock
+
+-
+
+-
+
+-
+
+Resources
+
+-
+Find a Program
+
+-
+Loans
+
+-
+Climate-Smart Agriculture and Farm Loan Programs
+
+-
+Emergency Farm Loans
+
+-
+Farm Operating Loans
+
+-
+Farm Ownership Loans
+
+-
+Farm Storage Facility Loan (FSFL) Program
+
+-
+Graze-Out
+
+-
+Guaranteed Farm Loans
+
+-
+Guaranteed Loans - Lender Toolkit
+
+-
+Highly Fractionated Indian Land Loan Program (HFIL)
+
+-
+Indian Tribal Land Acquisition Loan Program
+
+-
+Loan Deficiency Payments (LDP)
+
+-
+Marketing Assistance Loans (MAL)
+
+-
+Operating Microloan
+
+-
+Organic Dairy Marketing Assistance Program (ODMAP 2024)
+
+-
+Youth Loans
+
+-
+Conservation
+
+-
+CRP Grasslands
+
+-
+Conservation Reserve Enhancement Program (CREP)
+
+-
+Conservation Reserve Program (CRP)
+
+-
+Farmable Wetlands Program (FWP)
+
+-
+General CRP
+
+-
+Transition Incentives Program
+
+-
+Water-Saving Commodities (WSC) Program
+
+-
+Disaster Recovery
+
+-
+2023/2024 Supplemental Disaster Assistance
+
+-
+Disaster Set-Aside Program (DSA)
+
+-
+Emergency Assistance for Livestock, Honeybees, and Farm-Raised Fish (ELAP)
+
+-
+Emergency Conservation Program (ECP)
+
+-
+Emergency Forest Restoration Program (EFRP)
+
+-
+Emergency Livestock Relief Program (ELRP)
+
+-
+Emergency Relief Program (ERP)
+
+-
+Livestock Forage Disaster Program (LFP)
+
+-
+Livestock Indemnity Program (LIP)
+
+-
+Milk Loss Program (MLP)
+
+-
+Noninsured Disaster Assistance Program (NAP)
+
+-
+On-Farm Stored Commodity Loss Program (OFSCLP)
+
+-
+Supplemental Disaster Relief Program (SDRP)
+
+-
+Tree Assistance Program (TAP)
+
+-
+Income Support
+
+-
+Agriculture Risk Coverage (ARC) & Price Loss Coverage (PLC)
+
+-
+Assistance for Specialty Crop Farmers (ASCF) Program
+
+-
+Dairy Indemnity Payment Program (DIPP)
+
+-
+Dairy Margin Coverage Program (DMC)
+
+-
+Emergency Commodity Assistance Program (ECAP)
+
+-
+Farmer Bridge Assistance (FBA) Program
+
+-
+Marketing Assistance for Specialty Crops (MASC)
+
+-
+Organic Certification Cost Share Program (OCCSP)
+
+-
+Reimbursement Transportation Cost Payment (RTCP)
+
+-
+Strengthening Processing for U.S. Ranchers (SPUR) Program
+
+-
+General Programs
+
+-
+Certified Mediation Program (CMP)
+
+-
+Farm Labor Stabilization and Protection Pilot Grant Program
+
+-
+Food Safety Certification for Specialty Crops (FSCSC) Program
+
+-
+Outreach & Education
+
+-
+About Us
+
+-
+Programs
+
+-
+Partner Organization Resources
+
+-
+State Outreach Coordinators
+
+-
+Price Support
+
+-
+Commodity Loans
+
+-
+Commodity Loan Rates
+
+-
+Facility Loan Programs
+
+-
+Loan Deficiency Payments
+
+-
+Price Support Reports
+
+-
+Posted County Price Rates
+
+-
+Economic and Policy Analysis
+
+-
+EPAD Reports
+
+-
+Commodity Loan Activity Reports
+
+-
+ELS Cotton Reports
+
+-
+Honey Reports
+
+-
+Peanut Reports
+
+-
+Rice Reports
+
+-
+Upland Cotton Reports
+
+-
+Wool and Mohair Reports
+
+-
+Financial Management Information
+
+-
+Initiatives
+
+-
+Acreage Crop Reporting Streamlining Initiative (ACRSI)
+
+Farmer Bridge Assistance (FBA) Program
+
+What It Is
+
+If you’re looking for information on the Assistance for Specialty Crops Farmers (ASCF) program, please visit fsa.usda.gov/ascf. Online enrollment opens June 1.
+
+USDA’s Farm Service Agency (FSA) is providing $11 billion through a one-time bridge payment to American farmers with an additional $1 billion available for additional commodities. This assistance provides producers with a bridge until the benefits of the One Big Beautiful Bill Act (OBBBA) are available. These bridge payments are authorized under the Commodity Credit Corporation Charter Act.
+
+Check Application or Payment Status
+
+The FBA application period closed on April 17, 2026.
+
+Producers who have a secure Login.gov account can track their application and payment status.
+
+Check Status
+
+About Login.gov
+
+Login.gov is the public’s one account for government. Producers can use one account and password for secure, private access to participating government agencies, including FSA. Producers who already have a Login.gov account can work with FSA using their existing account.
+
+Visit Login.gov to create your account.
+
+For assistance creating a Login.gov account, visit login.gov/help.
+
+Application Requirements
+
+Producers must have the following forms on file with FSA for the 2025 crop year:
+
+- Form AD-2047, Customer Data Worksheet
+
+- Form CCC-901, Member Information for Legal Entities (if applicable)
+
+- Form CCC-902I (if applicable), Farm Operating Plan for an Individual
+
+- Form CCC-902E (if applicable), Farm Operating Plan for an entity
+
+- Form CCC-941, Average Adjusted Gross Income (AGI) Certification and Consent to Disclosure of Tax Information
+
+- AD-1026, Highly Erodible Land Conservation (HELC) and Wetland Conservation (WC) Certification
+
+- SF-3881, ACH Vendor/ Miscellaneous Payment Enrollment Form (Direct Deposit)
+
+Most producers, especially those who have previously participated in FSA programs, will likely have these forms on file. However, those who are uncertain and want to confirm the status of their forms, can contact their local FSA county office.
+
+Producers have until April 17, 2026, to submit their completed application. Only one application is required for all FBA eligible commodities nationwide.
+
+FBA Payments and Calculator
+
+Payments will be issued as applications are approved and will be calculated using a flat payment rate for the eligible commodity multiplied by the eligible reported acres. There will not be a payment factor. Payments are based on acreage and not production.
+
+An FBA payment calculator is available to help eligible producers estimate payments.
+
+FBA Payment Calculator
+
+FBA Payments Dashboard
+
+This page provides weekly stats on the total number of FBA payments disbursed by state.
+
+View FBA Dashboard
+
+Who Is Eligible
+
+To be eligible, producers must meet the following requirements:
+
+- Be actively engaged in farming.
+
+- Have risk and interest in the eligible planted commodity.
+
+- Report eligible acres for the 2025 crop year by 5 p.m. ET on Dec. 19, 2025
+
+Eligible Commodities
+
+The following commodities are eligible for FBA: Barley, Chickpeas, Corn, Cotton, Lentils, Oats, Peanuts, Peas, Rice, Sorghum, Soybeans, Wheat, Canola, Crambe, Flax, Mustard, Rapeseed, Safflower, Sesame, and Sunflower. All intended uses for FBA eligible commodities are eligible excluding grazing, experimental, green manure, left standing, or cover crops. Below are the payment rates for the FBA eligible commodities that triggered a payment. Crambe had no reported crop acres in 2025 and rapeseed did not trigger an eligible loss.
+
+Important Dates
+
+Feb. 23 – April 17, 2026 – FBA enrollment period
+
+How It Works
+
+FBA payments will be based on 2025 reported acres, Economic Research Service cost of production, and the World Agriculture Supply and Demand Estimate Report.
+
+Double crop acres, including all initial and subsequently planted crops, are eligible. Prevent plant acres are not eligible.
+
+The FBA payment limit is $155,000 per producer. The average adjusted gross income (AGI) limitation relating to limits on payments for persons or legal entities, excluding joint ventures and general partnerships, with certain levels of AGI apply. Specifically, a person or legal entity with an AGI (as defined in 7 CFR Part 1400) that exceeds $900,000 is not eligible to receive FBA payments.
+
+Crop insurance linkage is not required; however, USDA strongly urges producers to take advantage of the new OBBBA risk management tools to best protect against future price risk and volatility.
+
+Additional Resources
+
+-
+
+FBA Enrollment Period News Release - Feb 20, 2026
+
+FBA Payment Rates News Release - Dec. 31, 2025
+
+FBA News Release - Dec. 8, 2025
+
+FBA Fact Sheet
+
+FBA Final Rule
+
+Frequently Asked Questions
+
+This assistance is intended for producers who have a share interest and risk in producing the crop.
+
+All intended uses are eligible with the exception of grazing, left standing, experimental, green manure, and cover only crops.
+
+A pre-filled application will be available for producers on record as having filed an acreage report for an eligible commodity. The producer will then need to verify that the information on the application is correct.
+
+It is intended that prefilled applications will be available the week of February 23.
+
+Yes
+
+Yes, initial and subsequently planted crops will be eligible regardless of being located in an approved double cropping area.
+
+An FSA-578 late filed acreage report can be filed after December 19, 2025; however, that acreage will not be eligible for Farmer Bridge Assistance.
+
+CCC funds may be expended under the Charter Act only as authorized in that act; there must be an affirmative grant of authority for expenditures. There is no authority in the Charter Act that specifies the use of CCC for losses due to natural disasters.
+
+Yes, producers having an average AGI exceeding $900,000 will be ineligible.
+
+The per person payment limitation for FBA is $155,000.
+
+Entities such as corporations, limited liability corporations, S corporations, trusts, will be limited to $155,000.
