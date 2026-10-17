@@ -1,0 +1,3965 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "55001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.75",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Friendship",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.65",
+    "usual_in": "30.14",
+    "vs_usual": {
+     "diff_in": "2.51",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.28",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d972d8c7527dd88f",
+   "sid": "472973 2",
+   "story": "Through Oct 13, the weather station in Friendship had its wettest month in April at 8.28 inches. The biggest single day came Sep 19 with 2.75 inches. Its longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge. On the days both years reported, this year sits 1.29 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "55003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 24",
+     "in": "1.52",
+     "label": "biggest single day"
+    },
+    "county": "Ashland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Ashland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.26",
+    "usual_in": "27.44",
+    "vs_usual": {
+     "diff_in": "9.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.28",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3c093436cca0be75",
+   "sid": "US1WIAS0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Ashland has caught 18.26 inches, 9.18 inches less than a usual year. April was the wettest month at 4.28 inches, and the biggest single day came Apr 24 with 1.52 inches. The gauge went 10 days in a row with nothing from May 29 to Jun 7. That is 3.58 inches less than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "55005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "Barron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Cumberland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.49",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.06",
+    "usual_in": "28.88",
+    "vs_usual": {
+     "diff_in": "1.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.25",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bb214cb40bdd2b0d",
+   "sid": "471923 2",
+   "story": "Through Oct 13, the weather station in Cumberland had April as its wettest month at 6.25 inches, and the biggest single day came Apr 28 with 2.02 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge, not even a trace. On the days both years reported, this year is 4.49 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "55007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 24",
+     "in": "1.65",
+     "label": "biggest single day"
+    },
+    "county": "Bayfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "4 miles west of Clam Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 59,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.03",
+    "usual_in": "28.64",
+    "vs_usual": {
+     "diff_in": "11.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.80",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7231e165f339bd98",
+   "sid": "471604 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Clam Lake has run well short of a usual year. April was the wettest month at 4.80 inches, and the biggest single day came Apr 24 with 1.65 inches. The gauge went 11 days in a row with nothing from May 26 to Jun 5. On the days both years reported, this year is 6.00 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "55009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Brown County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Green Bay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 138,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.62",
+    "usual_in": "26.45",
+    "vs_usual": {
+     "diff_in": "10.17",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.95",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c0fcf7b117e47433",
+   "sid": "473268 2",
+   "story": "Through Oct 13, the weather station in Green Bay had 36.62 inches, 10.17 inches more than a usual year. April was the wettest month at 8.95 inches. The biggest single day came Jun 24 with 2.18 inches. That is 13.26 inches more than this point last year, when the gauge had 23.36.",
+   "through": "2026-10-13"
+  },
+  "55011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 14",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "Buffalo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Alma",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "28.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.52",
+    "usual_in": "32.80",
+    "vs_usual": {
+     "diff_in": "4.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.41",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a6c3dd8217835fc1",
+   "sid": "470124 2",
+   "story": "Through Oct 13, the weather station in Alma had its wettest month in June at 6.41 inches. The biggest single day was Apr 14 with 2.02 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17, with nothing in the gauge. On the days both years reported, this year is 0.13 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "55013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "1.43",
+     "label": "biggest single day"
+    },
+    "county": "Burnett County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Grantsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 265,
+      "diff_in": "12.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "30.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.62",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.31",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bca526ea9611fb67",
+   "sid": "US1WIBT0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Grantsburg has caught 17.62 inches. April was the wettest month at 4.31 inches, and the biggest single day came Apr 28 with 1.43 inches. On the days both years reported, that is 12.12 inches less than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "55015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "3.80",
+     "label": "biggest single day"
+    },
+    "county": "Calumet County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Chilton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.28",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jul 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.68",
+    "usual_in": "28.35",
+    "vs_usual": {
+     "diff_in": "3.33",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.43",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "188094e602afc8ad",
+   "sid": "471568 2",
+   "story": "Through Oct 13, the weather station in Chilton had its wettest month in September at 8.43 inches, and the biggest single day came Sep 4 with 3.80 inches. Before that, the gauge went 16 days in a row with nothing in it, from Jul 11 to Jul 26. On the days both years reported, this year is 8.28 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "55017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 10",
+     "in": "1.10",
+     "label": "biggest single day"
+    },
+    "county": "Chippewa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3 miles northwest of Jim Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.23",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.19",
+    "usual_in": "28.06",
+    "vs_usual": {
+     "diff_in": "7.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.51",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1229589228fde8e6",
+   "sid": "474027 2",
+   "story": "Through Oct 13, the weather station 3 miles northwest of Jim Falls has 20.19 inches, 7.87 inches less than a usual year. June was the wettest month at 4.51 inches, and the biggest single day was 1.10 inches on Jun 10. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with not even a trace in the gauge. Last year by Oct 13 the station had 29.42 inches, so this year is 9.23 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "55019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "2.46",
+     "label": "biggest one-day reading"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "1 mile east of Owen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "2.34",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "29.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 4"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": 95,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.38",
+    "usual_in": "28.70",
+    "vs_usual": {
+     "diff_in": "1.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.97",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ac7a31ef22c2fa50",
+   "sid": "476357 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Owen had June as its wettest month at 6.97 inches, and the biggest one-day reading came Jun 11 with 2.46 inches. That came right after a dry stretch of 12 days in a row with nothing in the gauge, from May 24 to Jun 4. On the days both years reported, this year ran 2.34 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "55021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Columbia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Arlington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.00",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.01",
+    "usual_in": "30.30",
+    "vs_usual": {
+     "diff_in": "2.71",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.50",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a33e7a19028c87f0",
+   "sid": "470308 2",
+   "story": "Through Oct 13, the weather station in Arlington had 8.00 inches more than last year at this point, when it had 25.01. April was the wettest month at 7.50 inches. The biggest single day came Aug 1 with 2.20 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "55023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Crawford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Lynxville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.63",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.88",
+    "usual_in": "31.65",
+    "vs_usual": {
+     "diff_in": "7.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.36",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "74983b3c8ea48aaf",
+   "sid": "474937 2",
+   "story": "Through Oct 13, the weather station in Lynxville has caught 38.88 inches, 7.23 inches more than a usual year. April was the wettest month at 8.36 inches, and the biggest single day came Sep 19 with 2.60 inches. It also went 17 days in a row with nothing in the gauge, Feb 3 to Feb 19. This year is 9.63 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "55025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.87",
+     "label": "biggest single day"
+    },
+    "county": "Dane County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Madison Dane County Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.50",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.57",
+    "usual_in": "31.72",
+    "vs_usual": {
+     "diff_in": "0.85",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.26",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e5a892312195321f",
+   "sid": "14837 1",
+   "story": "Through Oct 13, the weather station at Madison Dane County Regional Airport had April as the wettest month at 7.26 inches. The biggest single day came Jun 24 with 1.87 inches. The longest dry stretch ran 10 days, Feb 7 to Feb 16, with nothing in the gauge, not even a trace. That puts this year 3.50 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "55027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.22",
+     "label": "biggest single day"
+    },
+    "county": "Dodge County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Horicon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.41",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.96",
+    "usual_in": "30.02",
+    "vs_usual": {
+     "diff_in": "4.94",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.78",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60d28e03e7faed2e",
+   "sid": "473756 2",
+   "story": "Through Oct 13, the weather station in Horicon had its wettest month in April with 7.78 inches. The biggest single day came Aug 1 at 2.22 inches. The longest dry stretch ran 9 days, Feb 9 to Feb 17, with not even a trace in the gauge. That puts the station 5.41 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "55029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "1.93",
+     "label": "biggest single day"
+    },
+    "county": "Door County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Sturgeon Bay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.96",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.02",
+    "usual_in": "26.89",
+    "vs_usual": {
+     "diff_in": "2.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.34",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "03210708cc462735",
+   "sid": "94820 1",
+   "story": "Through Oct 13, the weather station in Sturgeon Bay had April as its wettest month at 7.34 inches, and its biggest single day came Apr 12 with 1.93 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with not even a trace in the gauge. The station is 3.96 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "55031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "1.83",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "in Superior",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.01",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Jan 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.31",
+    "usual_in": "26.05",
+    "vs_usual": {
+     "diff_in": "7.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.96",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bbc03418aff2c2c7",
+   "sid": "478349 2",
+   "story": "Through Oct 13, the weather station in Superior had its wettest month in April at 4.96 inches, and the biggest single day came Apr 27 with 1.83 inches. The longest dry stretch ran 29 days, Jan 19 to Feb 16, with nothing in the gauge. On the days both years reported, 2026 is 1.01 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "55033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "2.07",
+     "label": "biggest single day"
+    },
+    "county": "Dunn County",
+    "days_in_year_so_far": 285,
+    "days_missing": 6,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Menomonie",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "7.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 12",
+     "total_in": "31.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Wisconsin",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "23.53",
+    "usual_in": "29.13",
+    "vs_usual": {
+     "diff_in": "5.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.04",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "90101b3dc73d48fa",
+   "sid": "475335 2",
+   "story": "Through Oct 12, the weather station in Menomonie had its wettest month in April at 5.04 inches. The biggest single day came late, 2.07 inches on Sep 4. On the days both years reported, this year sits 7.77 inches less than last year. The longest dry stretch ran 15 days, Feb 3 to Feb 17, with not even a trace in the gauge.",
+   "through": "2026-10-12"
+  },
+  "55035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 10",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "Eau Claire County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Eau Claire",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.50",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.84",
+    "usual_in": "28.24",
+    "vs_usual": {
+     "diff_in": "5.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.89",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "427b1b46640e43e5",
+   "sid": "472425 2",
+   "story": "Through Oct 13, the weather station 3 miles southwest of Eau Claire has caught 22.84 inches, 5.40 inches less than a usual year. June was the wettest month at 5.89 inches, and 2.68 inches of that came on Jun 10 alone. On the days both years reported, this year sits 4.50 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "55037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 16",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Florence County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Florence",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.90",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "29.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Wisconsin",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "21.45",
+    "usual_in": "25.28",
+    "vs_usual": {
+     "diff_in": "3.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.25",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd2c196956374311",
+   "sid": "472826 2",
+   "story": "Through Oct 12, the weather station in Florence has 7.90 inches less than last year at this point. April was the wettest month at 5.25 inches, and the biggest single day was Mar 16 with 1.70 inches. The longest dry stretch ran 15 days, Aug 2 to Aug 16, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "55039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Fond du Lac County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Fond Du Lac",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.71",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.24",
+    "usual_in": "26.51",
+    "vs_usual": {
+     "diff_in": "2.73",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.93",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5a357d8238481070",
+   "sid": "472839 2",
+   "story": "Through Oct 13, the weather station in Fond Du Lac has 29.24 inches, 2.73 more than a usual year. April was the wettest month at 7.93 inches, and the biggest single day was 2.50 inches on Sep 19. The gauge went 17 days without a drop from Jul 10 to Jul 26. That is 6.71 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "55043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.86",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4 miles west-southwest of Lancaster",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.18",
+    "usual_in": "32.75",
+    "vs_usual": {
+     "diff_in": "9.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.62",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1157dd515c2c7a2d",
+   "sid": "474546 2",
+   "story": "Through Oct 13, the weather station 4 miles west-southwest of Lancaster had 42.18 inches, 9.43 more than a usual year. April did the most of it with 8.62 inches, and the biggest single day came Sep 19 at 2.86. On the days both years reported, that is 10.23 inches more than 2025 had by now. The longest dry run was 15 days, Feb 3 to Feb 17, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "55045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Green County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Monroe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "13.46",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.67",
+    "usual_in": "33.55",
+    "vs_usual": {
+     "diff_in": "5.12",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.88",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f7507589f58cce9",
+   "sid": "475573 2",
+   "story": "Through Oct 13, the weather station in Monroe had its wettest month in April at 9.88 inches. The biggest single day was Jun 25 with 2.50 inches. The gauge also went 15 days in a row with nothing in it, Feb 3 to Feb 17. On the days both years reported, this year is 13.46 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "55047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.44",
+     "label": "biggest single day"
+    },
+    "county": "Green Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Markesan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.49",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.57",
+    "usual_in": "30.12",
+    "vs_usual": {
+     "diff_in": "1.45",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.77",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "294c9d6cb2cb8bb2",
+   "sid": "475096 2",
+   "story": "Through Oct 13, the weather station in Markesan had April as its wettest month at 7.77 inches. The biggest single day came Sep 19 with 2.44 inches. The gauge also went 11 days in a row with nothing from May 2 to May 12. That puts this year 7.49 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "55049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.88",
+     "label": "biggest single day"
+    },
+    "county": "Iowa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "7.3 miles east-northeast of Mineral Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.98",
+    "usual_in": "34.11",
+    "vs_usual": {
+     "diff_in": "0.87",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.27",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "40b9dfd554824903",
+   "sid": "US1WIIW0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.3 miles east-northeast of Mineral Point had April as its wettest month at 7.27 inches. It then went 10 days in a row with nothing in the gauge, from Jul 22 to Jul 31. The very next day, Aug 1, brought the biggest single day at 2.88 inches. The gauge sits 1.17 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "55051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 8",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Iron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Hurley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "11.28",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "29.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 59,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.35",
+    "usual_in": "29.28",
+    "vs_usual": {
+     "diff_in": "11.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.20",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7d3b1d07c79bc989",
+   "sid": "473800 2",
+   "story": "Through Oct 13, the weather station in Hurley has 17.35 inches, 11.93 inches less than a usual year. April was the wettest month at 3.20 inches, and the biggest single day was Aug 8 with 2.09 inches. The gauge went 11 days in a row with nothing from Jul 10 to Jul 20. On the days both years reported, that is 11.28 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "55053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "4.25",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 283,
+    "days_missing": 5,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "3 miles northwest of Mather",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "4.73",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 10",
+     "total_in": "29.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 9,
+    "pct_of_usual": 117,
+    "state": "Wisconsin",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "34.37",
+    "usual_in": "29.31",
+    "vs_usual": {
+     "diff_in": "5.06",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.99",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "44c7aa563dd80fb0",
+   "sid": "475164 2",
+   "story": "Through Oct 10, the weather station 3 miles northwest of Mather has caught 34.37 inches, 5.06 more than a usual year. April did most of the work at 9.99 inches, and the biggest one-day reading was 4.25 inches on Jul 2. That came after 13 days in a row with nothing in the gauge, Mar 19 to Mar 31. On the days both years reported, this year is 4.73 inches ahead of last year.",
+   "through": "2026-10-10"
+  },
+  "55055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Jefferson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.80",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.76",
+    "usual_in": "32.78",
+    "vs_usual": {
+     "diff_in": "1.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.59",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cfdbe5e66d60caae",
+   "sid": "474108 2",
+   "story": "Through Oct 13, the weather station in Jefferson had 31.76 inches, 1.02 inches less than a usual year. April was the wettest month at 7.59 inches, and the biggest single day was 2.80 inches on Aug 1. The gauge went 10 days in a row with nothing from May 3 to May 12. This year is 9.80 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "55057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "2.48",
+     "label": "biggest single day"
+    },
+    "county": "Juneau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1 mile southeast of Mauston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.80",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "33.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.19",
+    "usual_in": "31.22",
+    "vs_usual": {
+     "diff_in": "4.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.47",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f4160d70ce040a35",
+   "sid": "475178 2",
+   "story": "Through Oct 13, the weather station 1 mile southeast of Mauston had April as its wettest month at 9.47 inches. The biggest single day came Jul 2 with 2.48 inches. Right after that wet April, the gauge sat empty 12 days in a row from May 1 to May 12, not even a trace. On the days both years reported, this year is 2.80 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "55059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 27",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Kenosha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "4 miles northeast of Paddock Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "14.77",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "22.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.12",
+    "usual_in": "31.26",
+    "vs_usual": {
+     "diff_in": "5.86",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.68",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5b3ab1d77a4a7157",
+   "sid": "476380 2",
+   "story": "Through Oct 13, the weather station 4 miles northeast of Paddock Lake had its wettest month in April at 8.68 inches. It went 17 days with nothing in the gauge from Jul 10 to Jul 26, then caught its biggest single day on Jul 27 with 2.90 inches. On the days both years reported, that is 14.77 inches more than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "55061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 14",
+     "in": "2.32",
+     "label": "biggest one-day reading"
+    },
+    "county": "Kewaunee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5.9 miles south of Luxemburg",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 10,
+    "pct_of_usual": null,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.90",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.25",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "71643f44589f95d8",
+   "sid": "US1WIKW0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.9 miles south of Luxemburg had 32.90 inches for the year. April did most of the talking at 8.25 inches, and the biggest one-day reading came Apr 14 with 2.32 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "55063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 1",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "La Crosse County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in La Crosse",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.49",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "34.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.86",
+    "usual_in": "32.52",
+    "vs_usual": {
+     "diff_in": "0.66",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.46",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b6b67918c08b2bff",
+   "sid": "474373 2",
+   "story": "Through Oct 13, the weather station in La Crosse sat 0.66 inches less than a usual year, about usual. July carried the year with 7.46 inches, and Jul 1 alone put 2.73 inches in the gauge. The longest dry stretch ran 10 days, Feb 7 to Feb 16. On the days both years reported, this year is 2.49 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "55065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Lafayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Darlington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.77",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.69",
+    "usual_in": "32.11",
+    "vs_usual": {
+     "diff_in": "4.58",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.88",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1aa8791092e5e287",
+   "sid": "472001 2",
+   "story": "Through Oct 13, the weather station in Darlington had its wettest month in June at 9.88 inches. The biggest single day came Sep 19 with 2.60 inches. The longest dry stretch ran 16 days, Feb 4 to Feb 19, with nothing in the gauge. On the days both years reported, this year has 8.77 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "55067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.33",
+     "label": "biggest single day"
+    },
+    "county": "Langlade County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "1 mile southeast of White Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.20",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.82",
+    "usual_in": "27.98",
+    "vs_usual": {
+     "diff_in": "4.84",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.80",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a073584345d5a64",
+   "sid": "479176 2",
+   "story": "Through Oct 13, the weather station 1 mile southeast of White Lake has 32.82 inches, 3.20 more than it had by this day last year. April was the wettest month at 7.80 inches. The biggest single day came Jul 31 with 3.33 inches. The longest dry stretch ran 9 days, Feb 9 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "55069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "1.94",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "7.0 miles west of Merrill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.07",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 88,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.10",
+    "usual_in": "29.74",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.67",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7e2847e7c44b967f",
+   "sid": "US1WILN0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.0 miles west of Merrill has caught 26.10 inches, 3.64 inches less than a usual year. April was the wettest month at 5.67 inches, and the biggest one-day reading was 1.94 inches on Jul 9. That puts this year 7.07 inches behind last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "55071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "1.95",
+     "label": "biggest single day"
+    },
+    "county": "Manitowoc County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Manitowoc",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.36",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.73",
+    "usual_in": "26.20",
+    "vs_usual": {
+     "diff_in": "0.47",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.79",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "65dee26d4646b7ed",
+   "sid": "475017 2",
+   "story": "Through Oct 13, the weather station in Manitowoc had its wettest month in April with 6.79 inches. The biggest single day came Jul 9 at 1.95 inches, and the next day started 17 days in a row with nothing in the gauge, Jul 10 to Jul 26. That puts the station 2.36 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "55073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 10",
+     "in": "2.61",
+     "label": "biggest single day"
+    },
+    "county": "Marathon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Wausau",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.10",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.65",
+    "usual_in": "28.89",
+    "vs_usual": {
+     "diff_in": "3.76",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.74",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a0b791c418ee2954",
+   "sid": "14897 1",
+   "story": "Through Oct 13, the station in Wausau has the most rain in April, with 8.74 inches that month. The biggest single day came Jun 10, at 2.61 inches. The longest dry stretch ran 10 days, Feb 7 to Feb 16, with nothing in the gauge. That puts the year at 1.10 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "55075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 9",
+     "in": "1.53",
+     "label": "biggest single day"
+    },
+    "county": "Marinette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "in Peshtigo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.79",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.95",
+    "usual_in": "27.14",
+    "vs_usual": {
+     "diff_in": "0.81",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.63",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "38cb0e13c90d05f6",
+   "sid": "476510 2",
+   "story": "Through Oct 13, the weather station in Peshtigo, 28 miles from the middle of the county, had its wettest month in April at 6.63 inches. The biggest single day came early, 1.53 inches on Jan 9. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with not even a trace in the gauge. On the days both years reported, this year is 1.79 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "55077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "3.00",
+     "label": "biggest single day"
+    },
+    "county": "Marquette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Montello",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.53",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.69",
+    "usual_in": "30.93",
+    "vs_usual": {
+     "diff_in": "0.76",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.91",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e8c5487d47ebfe84",
+   "sid": "475581 2",
+   "story": "Through Oct 13, the weather station in Montello had its wettest month in April, with 7.91 inches. The biggest single day came Sep 19, at 3.00 inches. From May 1 to May 12 it went 12 days in a row with nothing in the gauge, not even a trace. That puts it 4.53 inches more than 2025 by the same day.",
+   "through": "2026-10-13"
+  },
+  "55079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 16",
+     "in": "2.61",
+     "label": "biggest single day"
+    },
+    "county": "Milwaukee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of West Allis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.42",
+    "usual_in": "30.60",
+    "vs_usual": {
+     "diff_in": "4.82",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.45",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1ff1220a9304e744",
+   "sid": "US1WIMW0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southeast of West Allis caught most of its year in April. April was the wettest month at 10.45 inches, and the biggest single day came Apr 16 with 2.61 inches. The longest dry stretch ran 10 days, May 26 to Jun 4, with not even a trace. Even at 4.82 inches more than a usual year, the gauge sits 1.19 inches less than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "55081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "5.31",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "3 miles north-northwest of Cashton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "6.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "36.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 134,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.80",
+    "usual_in": "31.88",
+    "vs_usual": {
+     "diff_in": "10.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.41",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "56e1e74954e5cc4c",
+   "sid": "471287 2",
+   "story": "Through Oct 13, the weather station 3 miles north-northwest of Cashton had 42.80 inches, 10.92 inches more than a usual year. July did most of the work with 9.41 inches, and 5.31 of that came on Jul 2 alone. On the days both years reported, that is 6.72 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "55083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "1.72",
+     "label": "biggest single day"
+    },
+    "county": "Oconto County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "4 miles west of Oconto",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.87",
+    "usual_in": "27.85",
+    "vs_usual": {
+     "diff_in": "3.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.28",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b60d5d3e1074adf",
+   "sid": "476208 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Oconto has 30.87 inches, 3.02 inches more than a usual year. April did most of the work at 7.28 inches, and the biggest single day came Apr 12 with 1.72 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "55085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "1.87",
+     "label": "biggest single day"
+    },
+    "county": "Oneida County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Rhinelander Oneida County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.95",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Aug 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.44",
+    "usual_in": "25.14",
+    "vs_usual": {
+     "diff_in": "1.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.07",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e7b3887def8ed03b",
+   "sid": "04803 1",
+   "story": "Through Oct 13, the weather station at Rhinelander Oneida County Airport had its wettest month in April, with 6.07 inches. The biggest single day came in that same month, 1.87 inches on Apr 12. The longest dry stretch ran 10 days, from Aug 5 to Aug 14, with not even a trace in the gauge. The year sits 2.95 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "55087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "5.44",
+     "label": "biggest single day"
+    },
+    "county": "Outagamie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Appleton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 139,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.48",
+    "usual_in": "27.73",
+    "vs_usual": {
+     "diff_in": "10.75",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.10",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "13863ed0f0dcc687",
+   "sid": "470265 2",
+   "story": "Through Oct 13, the weather station in Appleton has caught 38.48 inches, 10.75 more than a usual year. September did most of the work with 10.10 inches, and 5.44 of that came on Sep 4 alone. Before that the gauge sat empty for 17 days in a row, Jul 10 to Jul 26. That puts this year 12.17 inches ahead of 2025 on the same days.",
+   "through": "2026-10-13"
+  },
+  "55089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.38",
+     "label": "biggest single day"
+    },
+    "county": "Ozaukee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Grafton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.50",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.09",
+    "usual_in": "29.66",
+    "vs_usual": {
+     "diff_in": "4.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.62",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8bf81c04f317644c",
+   "sid": "473198 2",
+   "story": "Through Oct 13, the weather station in Grafton had its wettest month in April at 8.62 inches. The gauge then sat empty for 17 days in a row, Jul 10 to Jul 26, before the biggest single day came Aug 1 with 2.38 inches. That puts the year 1.50 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "55091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.32",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pepin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3.0 miles northeast of Stockholm",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 88,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.01",
+    "usual_in": "29.65",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.68",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d857c61ccb0ddfba",
+   "sid": "US1WIPP0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles northeast of Stockholm had 26.01 inches, 3.64 inches less than a usual year. April was the wettest month at 5.68 inches, and the biggest one-day reading came Sep 19 with 2.32 inches. The gauge went 15 days in a row with nothing in it, Feb 3 to Feb 17. On the days both years reported, this year is 5.74 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "55093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "1.13",
+     "label": "biggest single day"
+    },
+    "county": "Pierce County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile east of Ellsworth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "13.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "30.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.04",
+    "usual_in": "31.10",
+    "vs_usual": {
+     "diff_in": "12.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.52",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aeebe8c00a1f0762",
+   "sid": "472556 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Ellsworth had 19.04 inches, 12.06 inches less than a usual year. September was the wettest month at 4.52 inches, and the biggest single day was 1.13 inches on Sep 4. On the days both years reported, this year is 13.85 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "55095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Luck",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.40",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.82",
+    "usual_in": "28.01",
+    "vs_usual": {
+     "diff_in": "6.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.98",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ce3bfcaf7160d4f",
+   "sid": "474894 2",
+   "story": "Through Oct 13, the weather station in Luck had its wettest month in June at 4.98 inches. The biggest single day came Jul 5 with 1.90 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17, with nothing in the gauge. Last year to this date the station had 7.40 inches more than it has now.",
+   "through": "2026-10-13"
+  },
+  "55097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Portage County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Stevens Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.81",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.36",
+    "usual_in": "29.06",
+    "vs_usual": {
+     "diff_in": "8.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.05",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b3340a5089280c27",
+   "sid": "478171 2",
+   "story": "Through Oct 13, the weather station in Stevens Point had its wettest month in April, with 8.05 inches. The biggest single day came Aug 21, at 2.03 inches. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge, not even a trace. That leaves this year 9.81 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "55099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 24",
+     "in": "1.91",
+     "label": "biggest one-day reading"
+    },
+    "county": "Price County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "5.9 miles southwest of Butternut",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "5.75",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 18,
+     "through": "Oct 13",
+     "total_in": "28.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 82,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.91",
+    "usual_in": "27.78",
+    "vs_usual": {
+     "diff_in": "4.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.41",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8979ccc109b8d5a2",
+   "sid": "US1WIPR0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.9 miles southwest of Butternut got most of its year early. April was the wettest month at 6.41 inches, and the biggest reading came Apr 24 with 1.91 inches. On the days both years reported, this year has 5.75 inches less than 2025 did.",
+   "through": "2026-10-13"
+  },
+  "55101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 28",
+     "in": "3.10",
+     "label": "biggest single day"
+    },
+    "county": "Racine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Union Grove",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.58",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 132,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.08",
+    "usual_in": "29.54",
+    "vs_usual": {
+     "diff_in": "9.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.40",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c5b40a3d7168059",
+   "sid": "478723 2",
+   "story": "Through Oct 13, the weather station in Union Grove had its wettest month in April at 9.40 inches. The biggest single day was Jul 28 with 3.10 inches. That puts this year 14.58 inches more than last year at this point, when the gauge had 24.50 inches. The longest dry stretch was 9 days in a row, Feb 9 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "55107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "1.51",
+     "label": "biggest one-day reading"
+    },
+    "county": "Rusk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "10.6 miles east of Chetek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "5.46",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "28.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.97",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.15",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "593191886126d88f",
+   "sid": "US1WIRS0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 10.6 miles east of Chetek had caught 24.97 inches. June was the wettest month at 5.15 inches, even though it opened with the tail end of 12 days in a row with nothing in the gauge, from May 25 to Jun 5. On the days both years reported, this year came in 5.46 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "55109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "St. Croix County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Roberts",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "9.51",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "29.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.23",
+    "usual_in": "28.05",
+    "vs_usual": {
+     "diff_in": "8.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.33",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8410b152a8baf534",
+   "sid": "477230 2",
+   "story": "Through Oct 13, the weather station in Roberts had its wettest month in April at 4.33 inches. Right after that it went 16 days in a row with nothing in the gauge, from Apr 29 to May 14. The biggest single day was 1.18 inches on Sep 17. On the days both years reported, that is 9.51 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "55111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "2.41",
+     "label": "biggest single day"
+    },
+    "county": "Sauk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Reedsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.97",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.74",
+    "usual_in": "33.72",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.51",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad270c41a560c11b",
+   "sid": "477052 2",
+   "story": "Through Oct 13, the weather station in Reedsburg has 33.74 inches, about usual for this point in a usual year. April did most of the work at 8.51 inches, the wettest month. The biggest single day was 2.41 inches on Jul 2. That is 6.97 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "55113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 26",
+     "in": "1.46",
+     "label": "biggest single day"
+    },
+    "county": "Sawyer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "7 miles west of Couderay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.78",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.28",
+    "usual_in": "34.16",
+    "vs_usual": {
+     "diff_in": "8.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.95",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3cd8dfcd6056a91a",
+   "sid": "471847 2",
+   "story": "Through Oct 13, the weather station 7 miles west of Couderay has caught 25.28 inches, 8.88 inches less than a usual year. April was the wettest month at 5.95 inches. The gauge stayed dry 13 days in a row from Aug 5 to Aug 17, then took the biggest single day of the year at 1.46 inches on Aug 26. Last year by this date it had 7.78 inches more.",
+   "through": "2026-10-13"
+  },
+  "55115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Shawano County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2 miles south-southwest of Shawano",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.35",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 133,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.01",
+    "usual_in": "27.86",
+    "vs_usual": {
+     "diff_in": "9.15",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.81",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f725ab60a38b739d",
+   "sid": "477708 2",
+   "story": "Through Oct 13, the weather station 2 miles south-southwest of Shawano has 37.01 inches, 9.15 more than a usual year. April did the heavy lifting with 8.81 inches. The biggest single day came Sep 4 at 2.78. That puts this year 14.35 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "55117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "3.53",
+     "label": "biggest single day"
+    },
+    "county": "Sheboygan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Oostburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jul 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.57",
+    "usual_in": "28.22",
+    "vs_usual": {
+     "diff_in": "3.35",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.54",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "59e3d2b16712f2ef",
+   "sid": "473116 2",
+   "story": "Through Oct 13, the weather station in Oostburg had its wettest month in September at 7.54 inches, and 3.53 inches of that came on Sep 4, the biggest single day. The gauge went 16 days in a row with nothing from Jul 11 to Jul 26. That puts the year 7.95 inches more than 2025 at the same point.",
+   "through": "2026-10-13"
+  },
+  "55119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "1.76",
+     "label": "biggest single day"
+    },
+    "county": "Taylor County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile east-northeast of Medford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.27",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.20",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2927d967b03e3443",
+   "sid": "US1WITY0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-northeast of Medford has caught 26.27 inches, 5.02 inches less than last year by the same day. April was the wettest month at 5.20 inches. The biggest single day came Aug 21 with 1.76 inches. The gauge went 10 days in a row with nothing in it, not even a trace, from Jul 10 to Jul 19.",
+   "through": "2026-10-13"
+  },
+  "55121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "3.75",
+     "label": "biggest single day"
+    },
+    "county": "Trempealeau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "in Trempealeau",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.14",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 132,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.34",
+    "usual_in": "29.90",
+    "vs_usual": {
+     "diff_in": "9.44",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.32",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "850ec2bb54d3bd8c",
+   "sid": "478589 2",
+   "story": "Through Oct 13, the weather station in Trempealeau had its wettest month in September with 9.32 inches. The biggest single day came Sep 19 at 3.75 inches. On the days both years reported, this year has 6.14 inches more than last year. The longest dry stretch ran 15 days, Feb 3 to Feb 17, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "55123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "3.14",
+     "label": "biggest single day"
+    },
+    "county": "Vernon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in La Farge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.49",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.28",
+    "usual_in": "33.55",
+    "vs_usual": {
+     "diff_in": "5.73",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.91",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b4d1e0f0687892a8",
+   "sid": "474404 2",
+   "story": "Through Oct 13, the weather station in La Farge has caught 39.28 inches, 5.73 more than a usual year. April was the wettest month at 8.91 inches, and the biggest single day came Jul 2 with 3.14. It went 15 days in a row without even a trace, Feb 3 to Feb 17. That is 10.49 inches more than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "55125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Vilas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Eagle River",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.47",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.70",
+    "usual_in": "26.78",
+    "vs_usual": {
+     "diff_in": "2.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.23",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b9756e170456f87a",
+   "sid": "472314 2",
+   "story": "Through Oct 13, the weather station in Eagle River had June as its wettest month at 6.23 inches, and its biggest single day came Jun 11 with 1.60 inches. From Jul 10 to Jul 20 the gauge went 11 days in a row with nothing in it, not even a trace. The year sits at 24.70 inches, 0.47 inches less than 2025 had through the same day.",
+   "through": "2026-10-13"
+  },
+  "55127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Walworth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Delavan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.98",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.66",
+    "usual_in": "30.71",
+    "vs_usual": {
+     "diff_in": "8.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.58",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd5402860fed22b7",
+   "sid": "472051 2",
+   "story": "Through Oct 13, the weather station in Delavan had April as the wettest month at 9.58 inches. The biggest single day was Aug 1 with 2.10 inches. The gauge also went 14 days in a row with nothing, from Jul 7 to Jul 20. This year is 6.98 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "55129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "2.25",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washburn County",
+    "days_in_year_so_far": 282,
+    "days_missing": 0,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Spooner",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.64",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "25.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 20"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 75,
+    "state": "Wisconsin",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "20.12",
+    "usual_in": "26.69",
+    "vs_usual": {
+     "diff_in": "6.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.81",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5530c8aa3286c10c",
+   "sid": "478027 2",
+   "story": "Through Oct 9, the weather station in Spooner had 20.12 inches, 6.57 inches less than a usual year. April was the wettest month at 4.81 inches, and the biggest one-day reading was 2.25 inches on Jul 4. The gauge then went 19 days in a row with nothing in it, not even a trace, from Aug 2 to Aug 20. That is 5.64 inches less than 2025 had by Oct 9.",
+   "through": "2026-10-09"
+  },
+  "55131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "2.86",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in West Bend Public Works",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.01",
+    "usual_in": "30.18",
+    "vs_usual": {
+     "diff_in": "4.83",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.06",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d8148ce524372116",
+   "sid": "479052 2",
+   "story": "Through Oct 13, the weather station in West Bend Public Works had its wettest month in April, with 8.06 inches. The biggest single day came Jul 9 with 2.86 inches. Then the gauge sat empty for 17 days in a row, Jul 10 to Jul 26, not even a trace. The year is running 1.26 inches more than 2025 did by the same day.",
+   "through": "2026-10-13"
+  },
+  "55133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 16",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Waukesha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Brookfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.44",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.37",
+    "usual_in": "30.07",
+    "vs_usual": {
+     "diff_in": "1.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.78",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "66a5596405301b9e",
+   "sid": "471062 2",
+   "story": "Through Oct 13, the station in Brookfield has caught most of its rain in April, with 8.78 inches that month. The biggest single day was Apr 16 at 2.56 inches. Then it went 17 days in a row with nothing in the gauge, from Jul 11 to Jul 27. The year is still 1.44 inches behind last year, even sitting 1.30 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "55135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 14",
+     "in": "5.00",
+     "label": "biggest single day"
+    },
+    "county": "Waupaca County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Clintonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.45",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 135,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.76",
+    "usual_in": "27.99",
+    "vs_usual": {
+     "diff_in": "9.77",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.72",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a01ffdf7687a4ecf",
+   "sid": "471676 2",
+   "story": "Through Oct 13, the weather station in Clintonville has caught 37.76 inches, 9.77 more than a usual year. April did most of the work with 11.72 inches, and 5.00 of that came on Apr 14 alone. The longest dry run was 11 days, May 1 to May 11. Last year at this point the gauge had 26.31, so 2026 is 11.45 inches ahead.",
+   "through": "2026-10-13"
+  },
+  "55137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 1",
+     "in": "1.83",
+     "label": "biggest single day"
+    },
+    "county": "Waushara County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Wautoma Municipal Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.80",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.13",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4b389d1c3ce9afb5",
+   "sid": "00132 1",
+   "story": "Through Oct 13, the weather station at Wautoma Municipal Airport has caught 23.80 inches this year. September was the wettest month at 6.13 inches. The biggest single day came Jul 1 with 1.83 inches. The longest dry stretch ran 19 days, Jan 18 to Feb 5, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "55139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "2.72",
+     "label": "biggest single day"
+    },
+    "county": "Winnebago County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Oshkosh",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.72",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.43",
+    "usual_in": "28.03",
+    "vs_usual": {
+     "diff_in": "4.40",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.83",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a7949128c34c4a3",
+   "sid": "476330 2",
+   "story": "Through Oct 13, the weather station in Oshkosh has 32.43 inches, 4.40 more than a usual year. April was the wettest month at 7.83 inches, and the biggest single day was 2.72 inches on Sep 4. The longest dry stretch ran 11 days, Jan 22 to Feb 1. That puts this year 7.72 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "55141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 18",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Wood County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Marshfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.05",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Wisconsin",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.93",
+    "usual_in": "28.95",
+    "vs_usual": {
+     "diff_in": "4.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.40",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5a9c353f3256dc52",
+   "sid": "475120 2",
+   "story": "Through Oct 13, the weather station in Marshfield shows April did most of the talking this year. April brought 9.40 inches, and Apr 18 alone put 2.73 inches in the gauge, the biggest single day so far. The longest dry stretch ran 11 days, Feb 7 to Feb 17. Against last year at this point, the station is 7.05 inches more.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "WI"
+}

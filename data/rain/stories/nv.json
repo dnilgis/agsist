@@ -1,0 +1,897 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "32003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.14",
+     "label": "biggest single day"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Las Vegas Air Terminal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.57",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "1.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 59,
+     "from": "Apr 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 59,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "1.81",
+    "usual_in": "3.06",
+    "vs_usual": {
+     "diff_in": "1.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.26",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fb5332197f94c6c3",
+   "sid": "53123 1",
+   "story": "Through Oct 13, the weather station in Las Vegas Air Terminal has 1.81 inches for the year, 1.25 inches less than a usual year. Most of that came in October, with 1.26 inches, and 1.14 inches of it fell on Oct 11 alone. Earlier the gauge went 59 days in a row without even a trace, from Apr 26 to Jun 23. On the days both years reported, this year is 0.57 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "32005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "0.85",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 278,
+    "days_missing": 1,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.7 miles south of Gardnerville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 70,
+     "from": "May 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nevada",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "4.11",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "1.31",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5d59534ebbf8b735",
+   "sid": "US1NVDG0028 6",
+   "story": "Through Oct 5, the volunteer rain gauge 1.7 miles south of Gardnerville had caught 4.11 inches. February was the wettest month at 1.31 inches. The gauge then went 70 days in a row with nothing in it, not even a trace, from May 6 to Jul 14. The biggest single day came after that, 0.85 inches on Aug 13.",
+   "through": "2026-10-05"
+  },
+  "32007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 1",
+     "in": "0.67",
+     "label": "biggest single day"
+    },
+    "county": "Elko County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "in Elko",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.24",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.27",
+    "usual_in": "7.98",
+    "vs_usual": {
+     "diff_in": "2.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.22",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "20724663cc828ad1",
+   "sid": "262570 2",
+   "story": "Through Oct 13, the weather station in Elko has caught 5.27 inches, 2.71 less than a usual year. January was the wettest month at 1.22 inches, and the biggest single day came right off the start on Jan 1 with 0.67. The gauge went 25 days in a row with nothing at all from Mar 6 to Mar 30. Last year at this point it had 1.24 inches more.",
+   "through": "2026-10-13"
+  },
+  "32009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 26",
+     "in": "0.67",
+     "label": "biggest one-day reading"
+    },
+    "county": "Esmeralda County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Silverpeak",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.59",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "2.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 43,
+     "from": "Jan 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 83,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.06",
+    "usual_in": "3.67",
+    "vs_usual": {
+     "diff_in": "0.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.88",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0340ea1179b3f5d3",
+   "sid": "267463 2",
+   "story": "Through Oct 13, the weather station in Silverpeak had caught 3.06 inches, and 1.88 inches of that came in April. The biggest single reading was 0.67 inches on Apr 26. Earlier, the gauge went 43 days in a row with nothing in it, Jan 5 to Feb 16. On the days both years reported, this year has 0.59 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "32011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "0.86",
+     "label": "biggest single day"
+    },
+    "county": "Eureka County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "at Eureka Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.27",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "May 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.93",
+    "usual_in": "7.35",
+    "vs_usual": {
+     "diff_in": "0.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.48",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "197d7fa0b2471e76",
+   "sid": "03170 1",
+   "story": "Through Oct 13, the weather station at Eureka Airport has caught 1.27 inches more than last year on the same days. July was the wettest month at 1.48 inches. The biggest single day came late, 0.86 inches on Oct 11. Before that, the gauge went 31 days in a row with nothing in it, not even a trace, from May 24 to Jun 23.",
+   "through": "2026-10-13"
+  },
+  "32013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "0.73",
+     "label": "biggest single day"
+    },
+    "county": "Humboldt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "3 miles west of Orovada",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.89",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 35,
+     "from": "Sep 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.02",
+    "usual_in": "7.80",
+    "vs_usual": {
+     "diff_in": "1.78",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.83",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "062518a9952ddc8c",
+   "sid": "265818 2",
+   "story": "Through Oct 13, the weather station 3 miles west of Orovada has 6.02 inches for the year, 1.78 inches less than a usual year. April was the wettest month at 1.83 inches, and the biggest single day came Jun 27 with 0.73 inches. The gauge then went 35 days in a row with nothing in it, not even a trace, from Sep 5 to Oct 9. That leaves this year 0.89 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "32015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "0.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lander County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "in Austin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "7.07",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 94,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.00",
+    "usual_in": "9.54",
+    "vs_usual": {
+     "diff_in": "0.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.81",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2fac740683bedb11",
+   "sid": "93126 1",
+   "story": "Through Oct 13, the station in Austin had its wettest month in April at 1.81 inches. The biggest rain came Aug 11 with 0.70 inches. From Jan 9 to Feb 9 it went 32 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 7.07 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "32017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.05",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "in Hiko",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.03",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 81,
+     "from": "Apr 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.09",
+    "usual_in": "5.53",
+    "vs_usual": {
+     "diff_in": "0.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "1.84",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "407ccb0fc07ec939",
+   "sid": "263671 2",
+   "story": "Through Oct 13, the weather station in Hiko had its wettest month in October, with 1.84 inches, and 1.05 inches of that came on Oct 11 alone. Before that, the gauge went 81 days in a row with nothing in it, not even a trace, from Apr 27 to Jul 16. The year sits 2.03 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "32019": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 5",
+     "in": "0.38",
+     "label": "biggest single day"
+    },
+    "county": "Lyon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "5.5 miles north-northeast of Wellington",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 50,
+     "from": "Feb 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "2.86",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "1.04",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0b0c6f6d993f42c2",
+   "sid": "US1NVLY0044 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.5 miles north-northeast of Wellington has caught 2.86 inches this year. May was the wettest month at 1.04 inches, and the biggest single day came May 5 with 0.38 inches. Before that the gauge went 50 days in a row with nothing in it, not even a trace, from Feb 20 to Apr 10.",
+   "through": "2026-10-13"
+  },
+  "32021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "0.75",
+     "label": "biggest single day"
+    },
+    "county": "Mineral County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Hawthorne",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 52,
+     "from": "Feb 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 44,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "1.44",
+    "usual_in": "3.29",
+    "vs_usual": {
+     "diff_in": "1.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.91",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "88f8107e60ff54d0",
+   "sid": "263512 2",
+   "story": "Through Oct 13, the weather station in Hawthorne had a 52 day dry stretch from Feb 19 to Apr 11 with nothing in the gauge, not even a trace. August was the wettest month at 0.91 inches, and 0.75 of that came on Aug 11. This year is 2.28 inches less than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "32023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "0.50",
+     "label": "biggest single day"
+    },
+    "county": "Nye County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "34 miles from the middle of the county",
+    "gauge_where": "at Tonopah Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.03",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "2.87",
+    "usual_in": "4.05",
+    "vs_usual": {
+     "diff_in": "1.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.00",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b8b0377fb24b7129",
+   "sid": "23153 1",
+   "story": "Through Oct 13, the weather station at Tonopah Airport had its wettest month in April with 1.00 inches, and the biggest single day came Apr 27 with 0.50 inches. Then it went 32 days in a row with nothing in the gauge, from May 30 to Jun 30. That puts this year 1.03 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "32027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Pershing County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Rye Patch",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Aug 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.79",
+    "usual_in": "6.35",
+    "vs_usual": {
+     "diff_in": "1.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.20",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1e26f6e81d066b7f",
+   "sid": "267192 2",
+   "story": "Through Oct 13, the weather station in Rye Patch has caught 4.79 inches, 1.56 inches less than a usual year. Most of that came on Aug 13, when the gauge took 2.00 inches in a single day. That made August the wettest month at 2.20 inches. Since Aug 29 it has gone 46 days in a row with nothing in the gauge, not even a trace, and that stretch is still going.",
+   "through": "2026-10-13"
+  },
+  "32029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "1.00",
+     "label": "biggest single day"
+    },
+    "county": "Storey County",
+    "days_in_year_so_far": 285,
+    "days_missing": 7,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Virginia City",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 43,
+     "from": "Aug 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "Nevada",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "5.32",
+    "usual_in": "8.01",
+    "vs_usual": {
+     "diff_in": "2.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.54",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2b4a632b0945c40f",
+   "sid": "268761 2",
+   "story": "Through Oct 12, the weather station in Virginia City has caught 5.32 inches, 2.69 inches less than a usual year. February was the wettest month at 1.54 inches. The biggest single day came Jun 19 with 1.00 inch. Then the gauge sat empty for 43 days in a row, Aug 29 to Oct 10, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "32031": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 4",
+     "in": "0.46",
+     "label": "biggest single day"
+    },
+    "county": "Washoe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "76 miles from the middle of the county",
+    "gauge_where": "in Reno",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.66",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 45,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "2.62",
+    "usual_in": "5.79",
+    "vs_usual": {
+     "diff_in": "3.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.89",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b76f87c691da42ec",
+   "sid": "266791 2",
+   "story": "Through Oct 13, the weather station in Reno has 2.62 inches, 3.17 inches less than a usual year. February was the wettest month at 0.89 inches, and that came right after 31 days in a row with nothing in the gauge, from Jan 9 to Feb 8. The biggest single day was 0.46 inches on May 4. Last year at this point the station had 6.28 inches, so this year is 3.66 inches behind.",
+   "through": "2026-10-13"
+  },
+  "32033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.35",
+     "label": "biggest single day"
+    },
+    "county": "White Pine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "at Ely Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.61",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.34",
+    "usual_in": "7.62",
+    "vs_usual": {
+     "diff_in": "0.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.76",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "10c016ba3a7f5c4d",
+   "sid": "23154 1",
+   "story": "Through Oct 13, the station at Ely Airport has a lot of its year riding on the last few days. October is the wettest month so far at 1.76 inches, and 1.35 of that came on Oct 11, the biggest single day. The longest dry stretch ran 19 days, Mar 6 to Mar 24. That still puts the gauge 2.61 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "32510": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "0.94",
+     "label": "biggest single day"
+    },
+    "county": "Carson City",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4.4 miles north of Carson City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "1.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "5.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 42,
+    "state": "Nevada",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.38",
+    "usual_in": "10.35",
+    "vs_usual": {
+     "diff_in": "5.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.44",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3ef6c04e7f468199",
+   "sid": "US1NVCC0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.4 miles north of Carson City caught most of its year early. February was the wettest month at 1.44 inches, and the biggest single day was Feb 18 with 0.94 inches. Then the gauge went 45 days in a row with nothing in it, not even a trace, from May 30 to Jul 13. On the days both years reported, this year is 1.45 inches less than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "NV"
+}

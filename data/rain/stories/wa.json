@@ -1,0 +1,2258 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "53001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 22",
+     "in": "0.63",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "3 miles northeast of Lind",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.25",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.98",
+    "usual_in": "6.81",
+    "vs_usual": {
+     "diff_in": "1.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.82",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1b5984e5f00e7349",
+   "sid": "454679 2",
+   "story": "Through Oct 13, the weather station 3 miles northeast of Lind has caught 4.98 inches, 1.83 inches less than a usual year. April was the wettest month at 1.82 inches, and the biggest day came Apr 22 with 0.63 inches. Then the gauge sat empty for 46 days in a row, from Jul 18 to Sep 1. Last year it had 0.25 inches more by this date.",
+   "through": "2026-10-13"
+  },
+  "53003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.90",
+     "label": "biggest one-day reading"
+    },
+    "county": "Asotin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "14 miles southwest of Asotin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 249,
+      "diff_in": "3.00",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 21,
+     "through": "Oct 13",
+     "total_in": "7.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 2"
+    },
+    "multi_day_reports": 10,
+    "pct_of_usual": 98,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.16",
+    "usual_in": "11.35",
+    "vs_usual": {
+     "diff_in": "0.19",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "2.71",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c5d3234d1840de12",
+   "sid": "450294 2",
+   "story": "Through Oct 13, the weather station 14 miles southwest of Asotin had its wettest month in April, with 2.71 inches. Earlier it went 25 days in a row with nothing in the gauge, Jan 9 to Feb 2. On the days both years reported, this year is 3.00 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "53005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.67",
+     "label": "biggest single day"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Richland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.81",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "5.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.74",
+    "usual_in": "5.88",
+    "vs_usual": {
+     "diff_in": "1.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.57",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f31936181251a82b",
+   "sid": "US1WABT0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Richland had most of its year early. February was the wettest month at 1.57 inches, and the biggest single day came Feb 24 with 0.67 inches. From Jul 17 to Aug 15 the gauge went 30 days in a row with nothing in it, not even a trace. On the days both years reported, that is 0.81 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "53007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "0.86",
+     "label": "biggest one-day reading"
+    },
+    "county": "Chelan County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "29 miles from the middle of the county",
+    "gauge_where": "in Chelan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.84",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "4.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 64,
+     "from": "Jun 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 81,
+    "state": "Washington",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "6.32",
+    "usual_in": "7.85",
+    "vs_usual": {
+     "diff_in": "1.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.03",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6a1f9a1c5d0d3fe0",
+   "sid": "451350 2",
+   "story": "Through Oct 12, the weather station in Chelan had its wettest month in March at 2.03 inches, and the biggest one-day reading came Mar 13 at 0.86 inches. Then it went 64 days in a row with nothing in the gauge, from Jun 10 to Aug 12. The year sits 1.53 inches less than a usual year, but it is still 1.84 inches more than 2025 had by this day.",
+   "through": "2026-10-12"
+  },
+  "53009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "0.54",
+     "label": "biggest single day"
+    },
+    "county": "Clallam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "at Port Angeles Fairchild International Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Aug 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 52,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.90",
+    "usual_in": "17.03",
+    "vs_usual": {
+     "diff_in": "8.13",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.38",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8d9110538e60eb54",
+   "sid": "94266 1",
+   "story": "Through Oct 13, the weather station at Port Angeles Fairchild International Airport had 8.90 inches, 8.13 inches less than a usual year. March was the wettest month at 2.38 inches. The gauge went 25 days in a row with nothing in it, not even a trace, from Aug 3 to Aug 27. The biggest single day came after that, 0.54 inches on Sep 25.",
+   "through": "2026-10-13"
+  },
+  "53011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.49",
+     "label": "biggest one-day reading"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1.9 miles northeast of Vancouver",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.78",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "19.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 79,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.32",
+    "usual_in": "28.18",
+    "vs_usual": {
+     "diff_in": "5.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.67",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "459b3b4c290b4545",
+   "sid": "US1WACK0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles northeast of Vancouver had February as its wettest month at 6.67 inches, and its biggest one-day reading came Feb 24 at 1.49 inches. Then it went 36 days in a row with nothing in it, not even a trace, from Jul 24 to Aug 28. On the days both years reported, this year has 2.78 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "53013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 14",
+     "in": "1.05",
+     "label": "biggest single day"
+    },
+    "county": "Columbia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1 mile west-southwest of Dayton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "0.17",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "10.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.10",
+    "usual_in": "12.92",
+    "vs_usual": {
+     "diff_in": "1.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.27",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff3f0d70d1d4e701",
+   "sid": "452030 2",
+   "story": "Through Oct 13, the weather station 1 mile west-southwest of Dayton had most of its year early. March was the wettest month at 3.27 inches, and the biggest single day came Mar 14 with 1.05 inches. Then it went 30 days in a row with nothing in the gauge, from Jul 17 to Aug 15. On the days both years reported, this year is 0.17 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "53015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 14",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Cowlitz County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Kalama Falls Hatchery",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.40",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.42",
+    "usual_in": "43.22",
+    "vs_usual": {
+     "diff_in": "9.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.17",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d538710c95a357f5",
+   "sid": "454084 2",
+   "story": "Through Oct 13, the weather station in Kalama Falls Hatchery had its wettest month in March at 8.17 inches, and its biggest single day came Mar 14 with 1.82 inches. Then it went 18 days in a row with nothing in the gauge, from Apr 25 to May 12. The year still sits 9.80 inches less than a usual year, but it is 4.40 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "53017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "1.19",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "34 miles from the middle of the county",
+    "gauge_where": "at Wenatchee Pangborn Memorial Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.65",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "2.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.57",
+    "usual_in": "5.19",
+    "vs_usual": {
+     "diff_in": "0.38",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "1.39",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6e2ba1a29218a10a",
+   "sid": "94239 1",
+   "story": "Through Oct 13, the weather station at Wenatchee Pangborn Memorial Airport put most of its year in March. That month brought 1.39 inches, and 1.19 of that came on Mar 13 alone. From Jul 24 to Aug 14 the gauge went 22 days in a row with nothing in it, not even a trace. On the days both years reported, 2026 is 2.65 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "53019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 30",
+     "in": "1.20",
+     "label": "biggest single day"
+    },
+    "county": "Ferry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "10.2 miles northwest of Kettle Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "1.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "11.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jan 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.93",
+    "usual_in": "17.29",
+    "vs_usual": {
+     "diff_in": "4.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.35",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ac841f41b4088885",
+   "sid": "US1WAFY0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 10.2 miles northwest of Kettle Falls had its wettest month in June at 3.35 inches. The biggest single day came Jun 30 with 1.20 inches. On the days both years reported, this year has 1.35 inches more than last year, but it still sits 4.36 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "53021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 22",
+     "in": "0.50",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "at Pasco Tri Cities Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.08",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.93",
+    "usual_in": "5.30",
+    "vs_usual": {
+     "diff_in": "1.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.38",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "15544c58bb8f1bb9",
+   "sid": "24163 1",
+   "story": "Through Oct 13, the weather station at Pasco Tri Cities Airport has caught 3.93 inches, 1.37 inches less than a usual year. February was the wettest month at 1.38 inches, and the biggest single day was 0.50 inches on Apr 22. The gauge went 29 days in a row with nothing in it, from Jul 17 to Aug 14. That leaves this year 1.08 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "53023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 14",
+     "in": "2.21",
+     "label": "biggest single day"
+    },
+    "county": "Garfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Pomeroy",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.84",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.83",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3dd9de9a2ad77c05",
+   "sid": "US1WAGF0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Pomeroy has caught 12.84 inches this year. March was the wettest month at 4.83 inches, and 2.21 of that came on Mar 14, the biggest single day. Then the gauge sat empty for 47 days in a row, from Jul 18 to Sep 2, without so much as a trace.",
+   "through": "2026-10-13"
+  },
+  "53025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 22",
+     "in": "0.82",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Moses Lake Grant County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.58",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.75",
+    "usual_in": "5.38",
+    "vs_usual": {
+     "diff_in": "1.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.97",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c069a4bcc4b82b3b",
+   "sid": "24110 1",
+   "story": "Through Oct 13, the weather station at Moses Lake Grant County Airport had most of its year come in April. April was the wettest month at 0.97 inches, and 0.82 inches of that fell on Apr 22, the biggest single day. The gauge then went 28 days in a row with nothing in it, from Jul 18 to Aug 14. Even so, it is 0.58 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "53027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "2.30",
+     "label": "biggest single day"
+    },
+    "county": "Grays Harbor County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "at Hoquiam Bowerman Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.80",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jun 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.02",
+    "usual_in": "42.62",
+    "vs_usual": {
+     "diff_in": "3.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "12.53",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5895fa6f5a06d5bb",
+   "sid": "94225 1",
+   "story": "Through Oct 13, the weather station at Hoquiam Bowerman Airport had a wet March, with 12.53 inches for the wettest month and the biggest single day on Mar 17 at 2.30 inches. The longest dry stretch ran 14 days, Jun 11 to Jun 24, without even a trace in the gauge. That still leaves the station 3.60 inches less than a usual year, but 6.80 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "53029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "0.65",
+     "label": "biggest single day"
+    },
+    "county": "Island County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Coupeville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.89",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "9.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Jul 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.82",
+    "usual_in": "16.12",
+    "vs_usual": {
+     "diff_in": "4.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.99",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5ca7b518763c4940",
+   "sid": "US1WAIS0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Coupeville has caught 11.82 inches, 4.30 inches less than a usual year. March was the wettest month at 2.99 inches, and the biggest single day was Feb 18 with 0.65 inches. The gauge went 26 days in a row with nothing in it, not even a trace, from Jul 28 to Aug 22. On the days both years reported, that is 1.89 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "53031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 29",
+     "in": "1.01",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "36 miles from the middle of the county",
+    "gauge_where": "5.8 miles north-northeast of Quilcene",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "16.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jun 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 72,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.14",
+    "usual_in": "23.68",
+    "vs_usual": {
+     "diff_in": "6.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.80",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7ea5d9f3b14b773d",
+   "sid": "US1WAJF0028 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.8 miles north-northeast of Quilcene had its wettest month in March at 3.80 inches. The biggest one-day reading was 1.01 inches on Aug 29. From Jun 12 to Jun 24 it went 13 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 0.41 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "53033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "1.46",
+     "label": "biggest one-day reading"
+    },
+    "county": "King County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "3.6 miles south-southeast of Renton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.78",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "17.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 82,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.98",
+    "usual_in": "28.14",
+    "vs_usual": {
+     "diff_in": "5.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.73",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "175b9232625c09e9",
+   "sid": "US1WAKG0041 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles south-southeast of Renton has caught most of its water early, with 7.73 inches in March, the wettest month. The biggest one-day reading came Jun 9 at 1.46 inches. Then it went 19 days in a row with nothing in the gauge, not even a trace, from Aug 4 to Aug 22. On the days both years reported, that is 5.78 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "53035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "0.85",
+     "label": "biggest single day"
+    },
+    "county": "Kitsap County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "1 mile northwest of Poulsbo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.51",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.02",
+    "usual_in": "25.93",
+    "vs_usual": {
+     "diff_in": "9.91",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.27",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dcbf868886a4fdcc",
+   "sid": "456706 2",
+   "story": "Through Oct 13, the weather station 1 mile northwest of Poulsbo had its wettest month in January with 3.27 inches. The biggest single day was Apr 2 at 0.85 inches. The longest dry stretch ran 19 days from Aug 4 to Aug 22 with nothing in the gauge, not even a trace. That put the station at 16.02 inches, 0.51 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "53037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "Kittitas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Ellensburg Bowers Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.71",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.62",
+    "usual_in": "6.01",
+    "vs_usual": {
+     "diff_in": "0.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.31",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5e2f61d0ff5adeef",
+   "sid": "24220 1",
+   "story": "Through Oct 13, the weather station at Ellensburg Bowers Field had 2.71 inches more than last year at this point, when it sat at 3.91. September did most of the work at 2.31 inches, the wettest month so far. The biggest single day came back on Mar 13 with 1.18 inches. In between, the gauge went 21 days in a row with nothing in it, not even a trace, from Jul 23 to Aug 12.",
+   "through": "2026-10-13"
+  },
+  "53039": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "0.59",
+     "label": "biggest single day"
+    },
+    "county": "Klickitat County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "at Dallesport Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "0.11",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "6.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jun 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.18",
+    "usual_in": "8.06",
+    "vs_usual": {
+     "diff_in": "1.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.41",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6ffb9d9dac530711",
+   "sid": "24219 1",
+   "story": "Through Oct 13, the weather station at Dallesport Airport got its wettest month in February with 2.41 inches. The biggest single day was May 28 at 0.59 inches. The longest dry stretch ran 18 days, Jun 27 to Jul 14, without so much as a trace in the gauge. On the days both years reported, this year has 0.11 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "53041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Lewis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2.8 miles northeast of Onalaska",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "4.34",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 13",
+     "total_in": "31.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jun 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.97",
+    "usual_in": "43.80",
+    "vs_usual": {
+     "diff_in": "6.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.38",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "038d7eae6f4cfca7",
+   "sid": "US1WALW0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.8 miles northeast of Onalaska caught most of its year early. March was the wettest month at 10.38 inches, and the biggest single day came Mar 13 with 2.05 inches. The longest dry stretch ran 14 days, Jun 12 to Jun 25, with not even a trace. On the days both years reported, this year is 4.34 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "53043": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "0.78",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Davenport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.18",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "8.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.89",
+    "usual_in": "9.48",
+    "vs_usual": {
+     "diff_in": "2.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.36",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a38396b2fa2f8f5",
+   "sid": "452007 2",
+   "story": "Through Oct 13, the weather station in Davenport has 6.89 inches, 2.59 inches less than a usual year. May was the wettest month at 1.36 inches, and the biggest single day came May 30 with 0.78. Then the gauge sat empty for 36 days in a row, Jul 18 to Aug 22, not even a trace. On the days both years reported, that is 1.18 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "53045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Mason County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Cushman Powerhouse",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Jun 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.78",
+    "usual_in": "53.92",
+    "vs_usual": {
+     "diff_in": "13.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.82",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78b0a35e2e9d27f0",
+   "sid": "451939 2",
+   "story": "Through Oct 13, the weather station in Cushman Powerhouse had most of its year come early. January was the wettest month at 13.82 inches, and the biggest single day was 2.20 inches on Mar 13. Then the gauge went 30 days in a row with nothing in it, not even a trace, from Jun 27 to Jul 26. That leaves it 13.14 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "53047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "0.42",
+     "label": "biggest single day"
+    },
+    "county": "Okanogan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Omak",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.81",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 50,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.90",
+    "usual_in": "7.80",
+    "vs_usual": {
+     "diff_in": "3.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.70",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a343993b84ee0b16",
+   "sid": "94197 1",
+   "story": "Through Oct 13, the weather station in Omak had its wettest month in April, and that was only 0.70 inches. The biggest single day was 0.42 inches on Apr 1. From Jul 18 to Aug 11 the gauge went 25 days in a row with nothing in it, not even a trace. This year is 0.81 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "53049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Pacific County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2 miles south of Raymond",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.41",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.80",
+    "usual_in": "52.41",
+    "vs_usual": {
+     "diff_in": "9.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.68",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "821bfcf9a401bbe1",
+   "sid": "456914 2",
+   "story": "Through Oct 13, the weather station 2 miles south of Raymond had 42.80 inches, 9.61 inches less than a usual year. March did most of the work with 13.68 inches, and the biggest single day came Mar 12 with 2.34 inches. The gauge then sat empty 15 days in a row from Aug 4 to Aug 18. Still, that is 6.41 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "53051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 26",
+     "in": "0.65",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pend Oreille County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "32 miles from the middle of the county",
+    "gauge_where": "in Boundary",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 68,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.36",
+    "usual_in": "19.61",
+    "vs_usual": {
+     "diff_in": "6.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.16",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b23555ac895b3d36",
+   "sid": "450844 2",
+   "story": "Through Oct 13, the weather station in Boundary has its wettest month in September at 2.16 inches, and its biggest one-day reading came Sep 26 at 0.65 inches. Before that, the gauge went 19 days in a row with nothing in it, from Jul 25 to Aug 12. On the days both years reported, this year is 1.32 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "53053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Pierce County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Tacoma",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.02",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Jul 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.88",
+    "usual_in": "25.54",
+    "vs_usual": {
+     "diff_in": "5.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.36",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "89ecb7e98e153168",
+   "sid": "458278 2",
+   "story": "Through Oct 13, the weather station in Tacoma had March as its wettest month at 8.36 inches, and the biggest single day came Mar 13 with 2.12 inches. The gauge then went 33 days in a row with nothing in it, from Jul 27 to Aug 28. Still, the year sits 6.02 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "53055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 12",
+     "in": "1.39",
+     "label": "biggest single day"
+    },
+    "county": "San Juan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Orcas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.38",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.08",
+    "usual_in": "16.65",
+    "vs_usual": {
+     "diff_in": "1.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.86",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e1812ff6f18aa536",
+   "sid": "US1WASJ0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northwest of Orcas had its wettest month in March with 4.86 inches. The biggest single day came Jan 12 at 1.39 inches. The gauge went 19 days in a row with nothing in it, from Aug 4 to Aug 22. That still leaves it 3.38 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "53057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "0.67",
+     "label": "biggest single day"
+    },
+    "county": "Skagit County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "40 miles from the middle of the county",
+    "gauge_where": "4.9 miles south of Anacortes",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Jul 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.87",
+    "usual_in": "18.05",
+    "vs_usual": {
+     "diff_in": "2.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.30",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d2b9961522c91208",
+   "sid": "US1WASG0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.9 miles south of Anacortes did most of its catching early. March was the wettest month at 4.30 inches, and the biggest single day was only 0.67 inches on Jun 9. From Jul 28 to Aug 22 it went 26 days in a row with nothing in the gauge, not even a trace. Still, it holds 2.56 inches more than last year did by this day.",
+   "through": "2026-10-13"
+  },
+  "53059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Skamania County",
+    "days_in_year_so_far": 285,
+    "days_missing": 1,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "31 miles from the middle of the county",
+    "gauge_where": "in Skamania Fish Hatchery",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "2.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 12",
+     "total_in": "42.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Washington",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "40.13",
+    "usual_in": "53.13",
+    "vs_usual": {
+     "diff_in": "13.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.54",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f50fc440a3e2088c",
+   "sid": "457696 2",
+   "story": "Through Oct 12, the weather station in Skamania Fish Hatchery got the most in March, with 10.54 inches. The biggest single day came Mar 12 at 2.17 inches. From Jul 1 to Jul 22 the gauge went 22 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 2.12 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "53061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "1.45",
+     "label": "biggest single day"
+    },
+    "county": "Snohomish County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "29 miles from the middle of the county",
+    "gauge_where": "at Everett Snohomish County Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.67",
+    "usual_in": "21.70",
+    "vs_usual": {
+     "diff_in": "2.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.20",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0ca23d612afebb89",
+   "sid": "24222 1",
+   "story": "Through Oct 13, the weather station at Everett Snohomish County Airport had 24.67 inches, 2.97 more than a usual year. March did most of the work with 7.20 inches, the wettest month. The biggest single day was Jun 9 at 1.45 inches. Then the gauge sat empty for 19 days in a row, Aug 3 to Aug 21, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "53063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "0.80",
+     "label": "biggest single day"
+    },
+    "county": "Spokane County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Spokane International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.68",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 35,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.50",
+    "usual_in": "11.11",
+    "vs_usual": {
+     "diff_in": "3.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.61",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "faa6fa2653b37230",
+   "sid": "24157 1",
+   "story": "Through Oct 13, the weather station at Spokane International Airport had its wettest month in March, with 1.61 inches. The biggest single day came Mar 13 at 0.80 inches. Then the gauge sat empty for 35 days in a row, from Jul 18 to Aug 21. That leaves the year 0.68 inches behind last year and 3.61 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "53065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 15",
+     "in": "0.64",
+     "label": "biggest single day"
+    },
+    "county": "Stevens County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "31 miles from the middle of the county",
+    "gauge_where": "2.6 miles southwest of Clayton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "2.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 12",
+     "total_in": "13.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Washington",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "12.58",
+    "usual_in": "18.13",
+    "vs_usual": {
+     "diff_in": "5.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.17",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "424b853ead756db8",
+   "sid": "US1WAST0001 6",
+   "story": "Through Oct 12, the volunteer rain gauge 2.6 miles southwest of Clayton has 12.58 inches, 5.55 inches less than a usual year. March was the wettest month at 2.17 inches, and the biggest single day was 0.64 inches on Apr 15. The gauge went 26 days in a row with nothing in it, from Jul 18 to Aug 12. On the days both years reported, this year has 2.12 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "53067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Thurston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.3 miles south of Olympia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.38",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Aug 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.79",
+    "usual_in": "35.55",
+    "vs_usual": {
+     "diff_in": "7.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.91",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e4759ec7b5822152",
+   "sid": "US1WATH0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles south of Olympia caught 9.91 inches in March, the wettest month, and 2.12 inches on Mar 12 alone, the biggest single day. Then it went 23 days in a row with nothing at all, from Aug 4 to Aug 26. On the days both years reported, that is still 4.38 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "53069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "2.58",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wahkiakum County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Grays River",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "1.71",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "50.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 88,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.23",
+    "usual_in": "59.23",
+    "vs_usual": {
+     "diff_in": "7.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.41",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "307628c886ba3732",
+   "sid": "US1WAWK0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Grays River had 52.23 inches, 7.00 inches less than a usual year. March did most of the work at 13.41 inches, and the biggest one-day reading was 2.58 inches on Mar 12. On the days both years reported, this year is 1.71 inches more than last year. The longest dry stretch ran 8 days, Apr 29 to May 6.",
+   "through": "2026-10-13"
+  },
+  "53071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 22",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "Walla Walla County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Walla Walla Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.47",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.24",
+    "usual_in": "13.09",
+    "vs_usual": {
+     "diff_in": "2.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.24",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4e99c90310cc39dc",
+   "sid": "24160 1",
+   "story": "Through Oct 13, the weather station at Walla Walla Regional Airport had most of its year in April, with 3.24 inches that month and the biggest single day at 1.18 inches on Apr 22. From Jul 17 to Aug 14 it went 29 days in a row with nothing in the gauge, not even a trace. It is still 2.85 inches less than a usual year, but 1.47 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "53073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 12",
+     "in": "2.27",
+     "label": "biggest single day"
+    },
+    "county": "Whatcom County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Glacier",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.61",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jun 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.98",
+    "usual_in": "46.09",
+    "vs_usual": {
+     "diff_in": "8.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.49",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dbc5b1e7bc903e32",
+   "sid": "US1WAWC0070 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Glacier caught 11.49 inches in March, the wettest month of the year. The biggest single day was Jan 12 at 2.27 inches. The gauge went 14 days in a row with nothing in it, not even a trace, from Jun 12 to Jun 25. Still, that is 5.61 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "53075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 14",
+     "in": "1.79",
+     "label": "biggest one-day reading"
+    },
+    "county": "Whitman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "2 miles northwest of Pullman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.11",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 115,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.82",
+    "usual_in": "13.79",
+    "vs_usual": {
+     "diff_in": "2.03",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.73",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c8fdff896f4cfc9",
+   "sid": "456789 2",
+   "story": "Through Oct 13, the weather station 2 miles northwest of Pullman had its wettest month in March at 4.73 inches, and the biggest one-day reading came on Mar 14 at 1.79 inches. Then it quit. From Jul 18 to Aug 14 the gauge went 28 days in a row with nothing in it, not even a trace. The year sits 4.11 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "53077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "1.06",
+     "label": "biggest single day"
+    },
+    "county": "Yakima County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "2.5 miles west-northwest of Yakima",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "0.84",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 18,
+     "through": "Oct 13",
+     "total_in": "4.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Washington",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.07",
+    "usual_in": "7.11",
+    "vs_usual": {
+     "diff_in": "1.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.02",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "29e5e1963d2dcb06",
+   "sid": "US1WAYK0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles west-northwest of Yakima got the bulk of its year in September, with 2.02 inches. The biggest single day came on Sep 13 at 1.06 inches. Before that, the gauge sat empty for 22 days in a row, from Jul 24 to Aug 14. On the days both years reported, this year is 0.84 inches more than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "WA"
+}

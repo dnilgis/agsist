@@ -1,0 +1,820 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "04001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Apache County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "61 miles from the middle of the county",
+    "gauge_where": "at St Johns Industrial Air Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.29",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "5.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 148,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.65",
+    "usual_in": "7.22",
+    "vs_usual": {
+     "diff_in": "3.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.72",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6008074485c00f83",
+   "sid": "93027 1",
+   "story": "Through Oct 13, the weather station at St Johns Industrial Air Park has caught most of its year in September, 3.72 inches. The biggest single day came Sep 29 with 1.90 inches. The longest dry stretch ran 19 days, Mar 11 to Mar 29, with not even a trace in the gauge. On the days both years reported, 2026 is 5.29 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "04003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 21",
+     "in": "1.47",
+     "label": "biggest single day"
+    },
+    "county": "Cochise County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "39 miles from the middle of the county",
+    "gauge_where": "in Sierra Vista",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 142,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.01",
+    "usual_in": "11.29",
+    "vs_usual": {
+     "diff_in": "4.72",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.86",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b48e974c69648f8e",
+   "sid": "027880 2",
+   "story": "Through Oct 13, the weather station in Sierra Vista has 16.01 inches, 4.72 inches more than a usual year. July did most of the work with 4.86 inches, and the biggest single day was 1.47 inches on Jul 21. It went 23 days with nothing in the gauge from Apr 8 to Apr 30. That is 5.26 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "04005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Coconino County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "31 miles from the middle of the county",
+    "gauge_where": "in Wupatki Nm",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "3.63",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "4.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 42,
+     "from": "Feb 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.61",
+    "usual_in": "7.06",
+    "vs_usual": {
+     "diff_in": "1.55",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.35",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "72e5d9df53bce7d6",
+   "sid": "029542 2",
+   "story": "Through Oct 13, the weather station in Wupatki Nm had its wettest month in September with 3.35 inches, and 1.92 inches of that came on Sep 12. Earlier it went 42 days in a row with nothing in the gauge, Feb 18 to Mar 31. On the days both years reported, this year is 3.63 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "04007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 30",
+     "in": "1.47",
+     "label": "biggest single day"
+    },
+    "county": "Gila County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "in Globe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.98",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.48",
+    "usual_in": "12.47",
+    "vs_usual": {
+     "diff_in": "2.01",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.25",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dbd79388f4a42b6b",
+   "sid": "023501 2",
+   "story": "Through Oct 13, the weather station in Globe had its wettest month in September with 4.25 inches. The biggest single day was Aug 30 at 1.47 inches. The longest dry stretch ran 21 days, Mar 11 to Mar 31, with nothing in the gauge, not even a trace. That leaves the station 0.98 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "04009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Graham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "at Safford Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.46",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.47",
+    "usual_in": "6.21",
+    "vs_usual": {
+     "diff_in": "0.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.33",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ffba7642e484425e",
+   "sid": "93084 1",
+   "story": "Through Oct 13, the weather station at Safford Municipal Airport had 6.47 inches, 0.26 more than a usual year. September did most of the work with 3.33 inches, and 1.62 of that came on Sep 16 alone. The gauge sat empty for 20 days in a row from Mar 11 to Mar 30. Last year at this point it had 4.01, so 2026 is 2.46 inches ahead.",
+   "through": "2026-10-13"
+  },
+  "04011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "2.54",
+     "label": "biggest one-day reading"
+    },
+    "county": "Greenlee County",
+    "days_in_year_so_far": 278,
+    "days_missing": 9,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "33 miles from the middle of the county",
+    "gauge_where": "in Duncan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "5.00",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 5",
+     "total_in": "3.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 51,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 107,
+    "state": "Arizona",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "8.29",
+    "usual_in": "7.76",
+    "vs_usual": {
+     "diff_in": "0.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "248940a436d34e47",
+   "sid": "022754 2",
+   "story": "Through Oct 5, the weather station in Duncan had its biggest one-day reading on Sep 29 at 2.54 inches. Before that it went 51 days in a row with nothing in the gauge, from Mar 11 to Apr 30. On the days both years reported, this year has 5.00 inches more than 2025 did.",
+   "through": "2026-10-05"
+  },
+  "04013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.34",
+     "label": "biggest single day"
+    },
+    "county": "Maricopa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Waddell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.26",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 59,
+     "from": "Apr 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 50,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.90",
+    "usual_in": "7.74",
+    "vs_usual": {
+     "diff_in": "3.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.69",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8b8e5fb7a52f1c77",
+   "sid": "US1AZMR0448 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Waddell went 59 days in a row with nothing in it, from Apr 15 to Jun 12. September was the wettest month at 1.69 inches, and 1.34 of that came on Sep 29 alone. That leaves the gauge 2.26 inches behind last year at this point, with 3.84 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "04015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "1.25",
+     "label": "biggest single day"
+    },
+    "county": "Mohave County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "29 miles from the middle of the county",
+    "gauge_where": "1.4 miles north-northeast of Dolan Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.48",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 70,
+     "from": "Apr 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.51",
+    "usual_in": "6.12",
+    "vs_usual": {
+     "diff_in": "0.39",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "1.90",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0ae742969ab68e12",
+   "sid": "US1AZMH0027 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles north-northeast of Dolan Springs went 70 days in a row with nothing in it, from Apr 15 to Jun 23. September was the wettest month at 1.90 inches, and the biggest single day was Aug 15 with 1.25 inches. That still leaves the gauge 0.48 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "04017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "1.79",
+     "label": "biggest single day"
+    },
+    "county": "Navajo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "34 miles from the middle of the county",
+    "gauge_where": "at Winslow Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.70",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 190,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.99",
+    "usual_in": "5.25",
+    "vs_usual": {
+     "diff_in": "4.74",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.44",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "18b74656161fd8aa",
+   "sid": "23194 1",
+   "story": "Through Oct 13, the weather station at Winslow Airport had caught most of its year in September, with 4.44 inches that month. The biggest single day was Sep 16 at 1.79 inches. Back in the spring the gauge went 20 days in a row with nothing in it, from Mar 11 to Mar 30. That still left the station 0.70 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "04019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.74",
+     "label": "biggest single day"
+    },
+    "county": "Pima County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "39 miles from the middle of the county",
+    "gauge_where": "1.1 miles east of Valencia West",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 35,
+     "from": "Mar 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 169,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.23",
+    "usual_in": "9.63",
+    "vs_usual": {
+     "diff_in": "6.60",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.06",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6aeb54b9316e8f40",
+   "sid": "US1AZPM0318 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles east of Valencia West had 16.23 inches, 6.60 more than a usual year. August was the wettest month at 5.06 inches, and the biggest single day was 2.74 inches on Aug 13. Before that, the gauge went 35 days in a row with nothing in it, from Mar 31 to May 4.",
+   "through": "2026-10-13"
+  },
+  "04021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "0.82",
+     "label": "biggest single day"
+    },
+    "county": "Pinal County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Robson Ranch",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.66",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Apr 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.64",
+    "usual_in": "5.98",
+    "vs_usual": {
+     "diff_in": "1.34",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.49",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c810c70a3126336",
+   "sid": "027187 2",
+   "story": "Through Oct 13, the weather station in Robson Ranch had its wettest month in September, with 1.49 inches. The biggest single day came Sep 29, with 0.82 inches. Before that, the gauge went 33 days in a row with nothing in it, not even a trace, from Apr 2 to May 4. Against last year, it is 0.66 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "04023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "1.59",
+     "label": "biggest single day"
+    },
+    "county": "Santa Cruz County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Nogales International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.55",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Feb 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.35",
+    "usual_in": "12.67",
+    "vs_usual": {
+     "diff_in": "4.68",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.06",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9723813c76c1513c",
+   "sid": "03196 1",
+   "story": "Through Oct 13, the weather station at Nogales International Airport had its wettest month in July at 7.06 inches. The biggest single day was Sep 23 with 1.59 inches. The longest dry stretch ran 19 days, Feb 18 to Mar 8, with not even a trace in the gauge. That puts this year 3.55 inches more than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "04025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.27",
+     "label": "biggest single day"
+    },
+    "county": "Yavapai County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Prescott",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.17",
+    "usual_in": "13.58",
+    "vs_usual": {
+     "diff_in": "2.59",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.44",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "99d09d5d4bf1fc53",
+   "sid": "026796 2",
+   "story": "Through Oct 13, the weather station in Prescott has had its wettest month in July at 4.44 inches. The biggest single day was Sep 29 with 1.27 inches. It also went 39 days in a row with nothing in the gauge, from Feb 21 to Mar 31. That still leaves 2026 at 3.17 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "04027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 28",
+     "in": "0.30",
+     "label": "biggest single day"
+    },
+    "county": "Yuma County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "42 miles from the middle of the county",
+    "gauge_where": "in Yuma Mcas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "2.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 59,
+     "from": "Apr 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 23,
+    "state": "Arizona",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "0.60",
+    "usual_in": "2.57",
+    "vs_usual": {
+     "diff_in": "1.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.32",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "948d64b559d347cb",
+   "sid": "03145 1",
+   "story": "Through Oct 13, the weather station in Yuma Mcas had 0.60 inches for the year, 2.02 inches less than it had by this day in 2025. September was the wettest month at 0.32 inches, and most of that came on Sep 28, the biggest single day at 0.30 inches. The gauge went 59 days in a row with nothing in it, not even a trace, from Apr 14 to Jun 11.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "AZ"
+}

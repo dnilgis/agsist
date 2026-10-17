@@ -1,0 +1,1543 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "49001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 14",
+     "in": "1.05",
+     "label": "biggest single day"
+    },
+    "county": "Beaver County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "33 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Beaver",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.15",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Feb 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.04",
+    "usual_in": "11.28",
+    "vs_usual": {
+     "diff_in": "3.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.01",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61c1acf5322df3a9",
+   "sid": "US1UTBV0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Beaver had 8.04 inches, 3.24 inches less than a usual year. April was the wettest month at 2.01 inches, and the biggest single day came Apr 14 with 1.05 inches. Before that, the gauge went 46 days in a row with nothing in it, from Feb 14 to Mar 31. That still puts this year 0.15 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "49005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 3",
+     "in": "1.59",
+     "label": "biggest single day"
+    },
+    "county": "Cache County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Logan Utah St U",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.59",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Jun 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.10",
+    "usual_in": "14.92",
+    "vs_usual": {
+     "diff_in": "1.18",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.07",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9ef032aa069bd29c",
+   "sid": "425186 2",
+   "story": "Through Oct 13, the station in Logan Utah St U has 3.59 inches more than it had by this day last year. January was the wettest month at 3.07 inches, and the biggest single day came Mar 3 with 1.59 inches. Then the gauge sat empty for 26 days in a row, Jun 29 to Jul 24.",
+   "through": "2026-10-13"
+  },
+  "49007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "1.39",
+     "label": "biggest single day"
+    },
+    "county": "Carbon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Sunnyside City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.76",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.97",
+    "usual_in": "12.59",
+    "vs_usual": {
+     "diff_in": "0.38",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.15",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a287808749441bc6",
+   "sid": "428476 2",
+   "story": "Through Oct 13, the weather station in Sunnyside City has caught 3.76 inches more than it had by this day last year. September was the wettest month at 3.15 inches, and the biggest single day was Sep 17 with 1.39 inches. Earlier on it went 34 days in a row with nothing in the gauge, from Jan 9 to Feb 11.",
+   "through": "2026-10-13"
+  },
+  "49009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Daggett County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "in Hickerson Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.10",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "14.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Utah",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "19.10",
+    "usual_in": "17.60",
+    "vs_usual": {
+     "diff_in": "1.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.60",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2e0fd3c10e1633d2",
+   "sid": "USS0009J08S 6",
+   "story": "Through Oct 10, the weather station in Hickerson Park has 5.10 inches more than last year at this point. August was the wettest month at 4.60 inches. The biggest single day was Jul 22 with 1.60 inches. From May 31 to Jun 27 the gauge went 28 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-10"
+  },
+  "49011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "0.96",
+     "label": "biggest single day"
+    },
+    "county": "Davis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1.8 miles west of Farmington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.35",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.01",
+    "usual_in": "14.03",
+    "vs_usual": {
+     "diff_in": "1.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.05",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "80c33cf8e0e7dca4",
+   "sid": "US1UTDV0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles west of Farmington has caught 13.01 inches. October is the wettest month so far at 2.05 inches, and the biggest single day came Oct 12 with 0.96 inches. The gauge went 24 days in a row with nothing from Mar 8 to Mar 31. That still puts this year 0.35 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "49013": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "1.13",
+     "label": "biggest single day"
+    },
+    "county": "Duchesne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Altamont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jan 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.60",
+    "usual_in": "7.80",
+    "vs_usual": {
+     "diff_in": "1.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.40",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "41897fa5a7db8c90",
+   "sid": "420074 2",
+   "story": "Through Oct 13, the weather station in Altamont has 9.60 inches, 1.80 more than a usual year. September was the wettest month at 2.40 inches, and the biggest single day was 1.13 inches on May 18. Last year at this point the gauge had 5.43, so this year is 4.17 inches more. The longest dry stretch ran 36 days, from Jan 6 to Feb 10, with not even a trace.",
+   "through": "2026-10-13"
+  },
+  "49015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.31",
+     "label": "biggest single day"
+    },
+    "county": "Emery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "in Ferron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.64",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.60",
+    "usual_in": "6.99",
+    "vs_usual": {
+     "diff_in": "0.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "1.52",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34580b5e70d346df",
+   "sid": "422798 2",
+   "story": "Through Oct 13, the weather station in Ferron had its wettest month in September at 1.52 inches, and 1.31 inches of that came on Sep 29 alone. Before that it went 39 days in a row with nothing in the gauge, from Feb 21 to Mar 31. The year sits 2.64 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "49017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Garfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "54 miles from the middle of the county",
+    "gauge_where": "in Panguitch",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 161,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.48",
+    "usual_in": "8.38",
+    "vs_usual": {
+     "diff_in": "5.10",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.72",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b69e83a36b2cbf05",
+   "sid": "426601 2",
+   "story": "Through Oct 13, the weather station in Panguitch had its wettest month in August at 5.72 inches, and its biggest single day came Aug 13 with 1.60 inches. It also went 26 days in a row with nothing in the gauge, from Mar 6 to Mar 31. On the days both years reported, this year is 7.41 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "49019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "0.50",
+     "label": "biggest single day"
+    },
+    "county": "Grand County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "at Moab Canyonland Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.94",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "4.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.21",
+    "usual_in": "5.30",
+    "vs_usual": {
+     "diff_in": "0.09",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "1.26",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "77f9aca78ee45138",
+   "sid": "93075 1",
+   "story": "Through Oct 13, the weather station at Moab Canyonland Airport has caught 5.21 inches, 0.09 less than a usual year. September was the wettest month at 1.26 inches, and the biggest single day was 0.50 on Jul 22. The gauge went 25 days in a row with nothing from Mar 7 to Mar 31. That still beats last year by 0.94 inches.",
+   "through": "2026-10-13"
+  },
+  "49021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.09",
+     "label": "biggest single day"
+    },
+    "county": "Iron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "4.4 miles southwest of Cedar City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.64",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "May 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.10",
+    "usual_in": "12.14",
+    "vs_usual": {
+     "diff_in": "3.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.57",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e3a5af501bd03059",
+   "sid": "US1UTIR0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.4 miles southwest of Cedar City had its wettest month in April at 1.57 inches. The biggest single day came Sep 29 with 1.09 inches. From May 19 to Jun 13 it went 26 days in a row with nothing in the gauge, not even a trace. That leaves it 2.64 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "49023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.29",
+     "label": "biggest one-day reading"
+    },
+    "county": "Juab County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "50 miles from the middle of the county",
+    "gauge_where": "in Levan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.04",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "7.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 9"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 130,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.96",
+    "usual_in": "10.72",
+    "vs_usual": {
+     "diff_in": "3.24",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.29",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1fd0d8d7f6988fe8",
+   "sid": "425065 2",
+   "story": "Through Oct 13, the weather station in Levan has caught 13.96 inches, 3.24 more than a usual year. October is the wettest month at 2.29 inches, and most of that came in the biggest one-day reading, 1.29 inches on Oct 11. Earlier it went 32 days in a row with nothing in the gauge, from Jan 9 to Feb 9. On the days both years reported, this year is 6.04 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "49025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.13",
+     "label": "biggest single day"
+    },
+    "county": "Kane County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "34 miles from the middle of the county",
+    "gauge_where": "in Alton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.07",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.82",
+    "usual_in": "13.13",
+    "vs_usual": {
+     "diff_in": "1.69",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.91",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3c53223ca67fe4a8",
+   "sid": "420086 2",
+   "story": "Through Oct 13, the weather station in Alton has its wettest month in October, with 2.91 inches, and the biggest single day came Oct 11 at 1.13 inches. Back in spring it went 25 days in a row with nothing in the gauge, Mar 6 to Mar 30. On the days both years reported, this year is 3.07 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "49027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 28",
+     "in": "0.75",
+     "label": "biggest one-day reading"
+    },
+    "county": "Millard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "in Deseret",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.46",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 11"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 91,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.02",
+    "usual_in": "6.58",
+    "vs_usual": {
+     "diff_in": "0.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.31",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3609f2570808f928",
+   "sid": "422101 2",
+   "story": "Through Oct 13, the weather station in Deseret had its wettest month in August with 1.31 inches. The biggest one-day reading was 0.75 inches on Sep 28. Early on it went 34 days in a row with nothing in the gauge, from Jan 9 to Feb 11. That still leaves the year 0.46 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "49029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "1.20",
+     "label": "biggest single day"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Kilfoil Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.50",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "17.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Utah",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "17.00",
+    "usual_in": "20.54",
+    "vs_usual": {
+     "diff_in": "3.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.10",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "096ceadf22b03cd9",
+   "sid": "USS0011H31S 6",
+   "story": "Through Oct 10, the weather station in Kilfoil Creek had 17.00 inches, 3.54 less than a usual year. February was the wettest month at 3.10 inches. The gauge then went 46 days in a row with nothing in it, from May 31 to Jul 15. The biggest single day came late, 1.20 inches on Sep 18, and the year sits 0.50 inches behind last year.",
+   "through": "2026-10-10"
+  },
+  "49031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 31",
+     "in": "1.30",
+     "label": "biggest single day"
+    },
+    "county": "Piute County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "in Fish Lake Utah",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.50",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "11.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Utah",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "10.50",
+    "usual_in": "13.93",
+    "vs_usual": {
+     "diff_in": "3.43",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.40",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "344db1565b707961",
+   "sid": "USS0011L03S 6",
+   "story": "Through Oct 10, the weather station in Fish Lake Utah had its wettest month in August at 2.40 inches, and the biggest single day came Aug 31 with 1.30 inches. Before that, it went 24 days in a row with nothing in the gauge, from Mar 8 to Mar 31. That leaves the year 3.43 inches less than a usual year, and 0.50 inches less than last year.",
+   "through": "2026-10-10"
+  },
+  "49033": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "0.90",
+     "label": "biggest single day"
+    },
+    "county": "Rich County",
+    "days_in_year_so_far": 285,
+    "days_missing": 1,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Woodruff",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "3.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "6.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 121,
+    "state": "Utah",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "9.72",
+    "usual_in": "8.06",
+    "vs_usual": {
+     "diff_in": "1.66",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.20",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f515953f3a5037c",
+   "sid": "429595 2",
+   "story": "Through Oct 12, the weather station in Woodruff had its wettest month in May at 2.20 inches, and its biggest single day came May 30 with 0.90 inches. It also went 33 days in a row with nothing in the gauge, not even a trace, from Jan 10 to Feb 11. On the days both years reported, this year is 3.37 inches more than 2025.",
+   "through": "2026-10-12"
+  },
+  "49035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "0.93",
+     "label": "biggest single day"
+    },
+    "county": "Salt Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.0 miles northeast of Sandy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.11",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.08",
+    "usual_in": "18.65",
+    "vs_usual": {
+     "diff_in": "4.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.57",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2f97da18a4dbe13d",
+   "sid": "US1UTSL0027 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles northeast of Sandy had its wettest month in August with 2.57 inches. The biggest single day came Aug 14 at 0.93 inches. The longest dry stretch ran 24 days, Mar 8 to Mar 31, with nothing in the gauge, not even a trace. Against last year, the gauge has 0.11 inches more than 2025 had through Oct 13.",
+   "through": "2026-10-13"
+  },
+  "49037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "0.84",
+     "label": "biggest single day"
+    },
+    "county": "San Juan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "27 miles from the middle of the county",
+    "gauge_where": "in Bluff",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.45",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "5.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.46",
+    "usual_in": "5.71",
+    "vs_usual": {
+     "diff_in": "0.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.18",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "124b4e51ff9bc4dc",
+   "sid": "420788 2",
+   "story": "Through Oct 13, the weather station in Bluff had most of its rain late. September brought 2.18 inches, and the biggest single day was Sep 30 at 0.84. Before that, the gauge went 25 days in a row with nothing, Mar 7 to Mar 31. On the days both years reported, this year has 0.45 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "49039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.12",
+     "label": "biggest single day"
+    },
+    "county": "Sanpete County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Manti",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.33",
+    "usual_in": "10.14",
+    "vs_usual": {
+     "diff_in": "0.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.59",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3c2ac7e42f63e311",
+   "sid": "425402 2",
+   "story": "Through Oct 13, the weather station in Manti had 9.33 inches, 0.81 less than a usual year. That still beats last year by 2.69 inches. August was the wettest month at 1.59 inches, and the biggest single day came Sep 29 with 1.12. The gauge went 25 days in a row with nothing from Mar 7 to Mar 31.",
+   "through": "2026-10-13"
+  },
+  "49041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "0.84",
+     "label": "biggest single day"
+    },
+    "county": "Sevier County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "31 miles from the middle of the county",
+    "gauge_where": "in Fremont Indian",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.46",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 37,
+     "from": "May 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.85",
+    "usual_in": "9.62",
+    "vs_usual": {
+     "diff_in": "1.77",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.60",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "39dd40c11f0add4f",
+   "sid": "423012 2",
+   "story": "Through Oct 13, the weather station in Fremont Indian, 31 miles from the middle of the county, had 7.85 inches, 1.77 less than a usual year. September was the wettest month at 1.60 inches, and the biggest single day came Sep 29 with 0.84. The gauge went 37 days in a row with nothing, from May 19 to Jun 24. That still puts this year 0.46 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "49043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "0.95",
+     "label": "biggest single day"
+    },
+    "county": "Summit County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "in Echo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.78",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jun 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.01",
+    "usual_in": "11.31",
+    "vs_usual": {
+     "diff_in": "0.70",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.35",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a23e42cf32ab529",
+   "sid": "422385 2",
+   "story": "Through Oct 13, the weather station in Echo had 12.01 inches, 0.70 more than a usual year. September was the wettest month at 2.35 inches. The biggest single day was Jul 22 with 0.95. From Jun 1 to Jun 21 it went 21 days without even a trace, and the gauge still sits 2.78 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "49045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "0.58",
+     "label": "biggest single day"
+    },
+    "county": "Tooele County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "34 miles from the middle of the county",
+    "gauge_where": "2 miles west of Grantsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.11",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 63,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.84",
+    "usual_in": "9.25",
+    "vs_usual": {
+     "diff_in": "3.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.22",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b4ce5ede928320d8",
+   "sid": "423348 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Grantsville had its biggest single day on the last one, 0.58 inches on Oct 13. April was the wettest month at 1.22 inches. The longest dry stretch ran 34 days, Jan 9 to Feb 11, with nothing in the gauge. That leaves 5.84 inches, 0.11 more than last year by Oct 13 and 3.41 less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "49047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 29",
+     "in": "0.83",
+     "label": "biggest single day"
+    },
+    "county": "Uintah County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "at Vernal Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.44",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.54",
+    "usual_in": "7.11",
+    "vs_usual": {
+     "diff_in": "2.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.50",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "42d3eb224b462f38",
+   "sid": "94030 1",
+   "story": "Through Oct 13, the weather station at Vernal Municipal Airport has caught 4.54 inches, 2.57 less than a usual year. August was the wettest month at 1.50 inches, and the biggest single day came Aug 29 with 0.83. The gauge went 24 days in a row with nothing, May 31 to Jun 23. Still, that is 1.44 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "49049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.21",
+     "label": "biggest single day"
+    },
+    "county": "Utah County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Spanish Fork Power House",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "15.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.99",
+    "usual_in": "15.35",
+    "vs_usual": {
+     "diff_in": "2.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.90",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a2b4a17d935edde7",
+   "sid": "428119 2",
+   "story": "Through Oct 13, the weather station in Spanish Fork Power House had 25 days in a row with nothing in the gauge, from Mar 7 to Mar 31. Then Apr 1 brought 1.21 inches, the biggest single day, and April ended up the wettest month at 2.90 inches. On the days both years reported, that is 2.12 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "49051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.31",
+     "label": "biggest single day"
+    },
+    "county": "Wasatch County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "in Deer Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.43",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.24",
+    "usual_in": "15.82",
+    "vs_usual": {
+     "diff_in": "0.42",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.62",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "06f59cb4869e3e72",
+   "sid": "422057 2",
+   "story": "Through Oct 13, the station in Deer Creek has caught 3.43 inches more than it had by this day last year. April was the wettest month at 3.62 inches. The biggest single day came late, 1.31 inches on Oct 12. Back on Jan 9 the gauge went dry and stayed that way 33 days in a row, through Feb 10.",
+   "through": "2026-10-13"
+  },
+  "49057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 3",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Weber County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Ogden NE Bench",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.86",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Utah",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.11",
+    "usual_in": "19.04",
+    "vs_usual": {
+     "diff_in": "0.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.09",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c02b38c6f6ee5cad",
+   "sid": "426405 2",
+   "story": "Through Oct 13, the weather station in Ogden NE Bench has 2.86 inches more than last year at this point. April was the wettest month with 3.09 inches. The biggest single day came Mar 3, with 1.80 inches. The longest dry stretch ran 19 days, Jan 10 to Jan 28, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "UT"
+}

@@ -1,0 +1,2359 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "54003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 28",
+     "in": "4.00",
+     "label": "biggest single day"
+    },
+    "county": "Berkeley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Martinsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "2.33",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "32.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jan 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.69",
+    "usual_in": "33.42",
+    "vs_usual": {
+     "diff_in": "2.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.26",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aa1d519604b8473a",
+   "sid": "465706 2",
+   "story": "Through Oct 13, the weather station in Martinsburg had its wettest month in August at 8.26 inches. The biggest single day was Aug 28 with 4.00 inches. The longest dry stretch ran 13 days, Jan 12 to Jan 24, with nothing in the gauge, not even a trace. On the days both years reported, this year is 2.33 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "54005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.19",
+     "label": "biggest one-day reading"
+    },
+    "county": "Boone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 23,
+    "days_reported": 263,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1.8 miles west-southwest of Danville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 247,
+      "diff_in": "13.08",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "50.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.99",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.79",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ac734bf946824a2c",
+   "sid": "US1WVBN0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles west-southwest of Danville had 35.99 inches. July was the wettest month at 4.79 inches, and the biggest one-day reading was 2.19 inches on Jul 29. The gauge then went 13 days in a row with nothing, from Aug 24 to Sep 5. On the days both years reported, this year ran 13.08 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "54007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Braxton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Gassaway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "4.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "38.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 106,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.09",
+    "usual_in": "39.74",
+    "vs_usual": {
+     "diff_in": "2.35",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.14",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fab6555ad08a900d",
+   "sid": "463361 2",
+   "story": "Through Oct 13, the weather station in Gassaway had its wettest month in August with 9.14 inches. The biggest one-day reading came Sep 20 at 2.10 inches. Then the gauge sat empty for 15 days in a row, Sep 26 to Oct 10. On the days both years reported, this year is 4.44 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "54009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Brooke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Wheeling Ohio County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "8.58",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "27.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.14",
+    "usual_in": "30.51",
+    "vs_usual": {
+     "diff_in": "5.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.92",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "533b9ba9e25acd80",
+   "sid": "14894 1",
+   "story": "Through Oct 13, the weather station at Wheeling Ohio County Airport had its wettest month in August with 8.92 inches. The biggest single day was Aug 20 at 2.35 inches. The longest dry stretch ran 9 days, May 28 to Jun 5, with nothing in the gauge. On the days both years reported, this year is 8.58 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54011": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Cabell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 22,
+    "days_reported": 264,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.9 miles east of Huntington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 253,
+      "diff_in": "12.42",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "46.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 13"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 92,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.68",
+    "usual_in": "35.41",
+    "vs_usual": {
+     "diff_in": "2.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.96",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d438e305b5fc4d66",
+   "sid": "US1WVCB0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles east of Huntington had 32.68 inches, 2.73 inches less than a usual year. July was the wettest month at 5.96 inches. The longest dry stretch ran 8 days, Apr 6 to Apr 13, with nothing in the gauge. On the days both years reported, this year is 12.42 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "54017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.93",
+     "label": "biggest single day"
+    },
+    "county": "Doddridge County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2.2 miles north-northwest of Center Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "7.89",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "41.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.42",
+    "usual_in": "38.41",
+    "vs_usual": {
+     "diff_in": "11.01",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.52",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6932ec883b3ccbbc",
+   "sid": "US1WVDD0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.2 miles north-northwest of Center Point has caught 49.42 inches, 11.01 more than a usual year. September was the wettest month at 8.52 inches, and the biggest single day was 2.93 inches on Jul 22. On the days both years reported, that is 7.89 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54021": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Gilmer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 26,
+    "days_reported": 260,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "4.0 miles east of Auburn",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 244,
+      "diff_in": "4.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "42.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.67",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.22",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ed52839de5965aa8",
+   "sid": "US1WVGL0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles east of Auburn has caught 47.67 inches. September was the wettest month at 9.22 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge. On the days both years reported, this year is 4.30 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54025": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Greenbrier County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3 miles north of Lewisburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "38.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.92",
+    "usual_in": "33.90",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.43",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6570642704dacfb5",
+   "sid": "465224 2",
+   "story": "Through Oct 13, the weather station 3 miles north of Lewisburg is right about at a usual year. May carried the most with 5.43 inches, and 2.10 inches of that came on May 22, the biggest single day. The longest dry stretch ran 10 days, Apr 7 to Apr 16, with nothing in the gauge. On the days both years reported, this year is 4.32 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "54027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Hampshire County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.5 miles southwest of Springfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 255,
+      "diff_in": "1.06",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 13",
+     "total_in": "29.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jan 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.00",
+    "usual_in": "32.12",
+    "vs_usual": {
+     "diff_in": "1.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.16",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "37c649c011bdf4b0",
+   "sid": "US1WVHM0004 6",
+   "story": "Through Oct 13, the gauge 3.5 miles southwest of Springfield saw its biggest single day on Oct 11, with 2.80 inches. May was the wettest month at 6.16 inches. On the days both years reported, this year ran 1.06 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "54029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 27",
+     "in": "2.08",
+     "label": "biggest single day"
+    },
+    "county": "Hancock County",
+    "days_in_year_so_far": 285,
+    "days_missing": 16,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in New Cumberland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 252,
+      "diff_in": "14.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 12",
+     "total_in": "25.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Sep 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "West Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "40.15",
+    "usual_in": "32.12",
+    "vs_usual": {
+     "diff_in": "8.03",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d11e859cf897409a",
+   "sid": "466442 2",
+   "story": "Through Oct 12, the weather station in New Cumberland had 40.15 inches, 8.03 inches more than a usual year. The biggest single day was Mar 27 at 2.08 inches. The longest dry stretch ran 10 days, Sep 23 to Oct 2, with nothing in the gauge. On the days both years reported, this year is 14.15 inches more than last year.",
+   "through": "2026-10-12"
+  },
+  "54031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.13",
+     "label": "biggest one-day reading"
+    },
+    "county": "Hardy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Rig",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "9.07",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "24.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 104,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.64",
+    "usual_in": "30.52",
+    "vs_usual": {
+     "diff_in": "1.12",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.09",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3ef9b92247655e49",
+   "sid": "US1WVHY0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Rig had its biggest one-day reading on Oct 12, at 2.13 inches. May was the wettest month with 5.09 inches. The longest dry stretch ran 11 days, from Jan 27 to Feb 6. On the days both years reported, this year is 9.07 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 17",
+     "in": "2.07",
+     "label": "biggest single day"
+    },
+    "county": "Harrison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Clarksburg Benedum Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.36",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.69",
+    "usual_in": "36.61",
+    "vs_usual": {
+     "diff_in": "3.08",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.82",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c0fe7e3129a17a11",
+   "sid": "03802 1",
+   "story": "Through Oct 13, the weather station at Clarksburg Benedum Airport had August as its wettest month with 7.82 inches. The biggest single day came Aug 17 with 2.07 inches. The longest dry stretch ran 7 days from Feb 8 to Feb 14 with nothing in the gauge, not even a trace. That puts this year 4.36 inches more than 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "54035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "4.35",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5.8 miles south of Ripley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "4.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "41.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 123,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.89",
+    "usual_in": "37.22",
+    "vs_usual": {
+     "diff_in": "8.67",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "10fc6d0bc737288d",
+   "sid": "US1WVJC0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.8 miles south of Ripley had caught 8.67 inches more than a usual year. The biggest single day was Sep 10 at 4.35 inches. That came after 12 days in a row with nothing in the gauge, from Aug 24 to Sep 4. On the days both years reported, this year is 4.23 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "54037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.47",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "12.8 miles south-southwest of Harpers Ferry",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 265,
+      "diff_in": "2.72",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "34.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.21",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.75",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1abcffdc42fc224c",
+   "sid": "US1WVJF0015 6",
+   "story": "Through Oct 13, August was the wettest month at the volunteer rain gauge 12.8 miles from Harpers Ferry, with 6.75 inches. The biggest single day came Jul 22 at 1.47 inches. The longest dry stretch ran 11 days, Jan 27 to Feb 6. On the 265 days both years reported, this year is 2.72 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "54039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 16",
+     "in": "4.23",
+     "label": "biggest single day"
+    },
+    "county": "Kanawha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Charleston - West Virginia International Yeager Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.60",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jan 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.69",
+    "usual_in": "37.80",
+    "vs_usual": {
+     "diff_in": "1.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.92",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "31568425371c7825",
+   "sid": "13866 1",
+   "story": "Through Oct 13, the station at Charleston's Yeager Airport has caught 39.69 inches, 1.89 more than a usual year. August did most of the talking with 10.92 inches, and Aug 16 alone brought 4.23. Even so, the gauge sits 0.60 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "54041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "6.20",
+     "label": "biggest single day"
+    },
+    "county": "Lewis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Stonewall Jackson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "13.14",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.20",
+    "usual_in": "41.67",
+    "vs_usual": {
+     "diff_in": "12.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.60",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ec35cb50ee7cb290",
+   "sid": "468522 2",
+   "story": "Through Oct 13, the weather station in Stonewall Jackson had July as its wettest month at 10.60 inches. The biggest single day came Jul 22 with 6.20 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge. On the days both years reported, this year is 13.14 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "54045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.05",
+     "label": "biggest one-day reading"
+    },
+    "county": "Logan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 24,
+    "days_reported": 262,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Logan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "7.22",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "48.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 93,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.17",
+    "usual_in": "36.56",
+    "vs_usual": {
+     "diff_in": "2.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f2111192dd11f07",
+   "sid": "03808 1",
+   "story": "Through Oct 13, the weather station in Logan had its biggest one-day reading on Aug 12 at 2.05 inches. The longest dry stretch ran 11 days, from Apr 6 to Apr 16, with nothing in the gauge, not even a trace. On the days both years reported, this year is 7.22 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "54049": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "2.22",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Fairmont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.87",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "45.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.59",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.56",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "18e736d6e972428e",
+   "sid": "US1WVMA0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge just south-southwest of Fairmont has caught 47.59 inches. May did most of the work at 8.56 inches, and the biggest single day was May 28 with 2.22 inches. Then the gauge sat empty for 9 days in a row, May 29 to Jun 6. On the days both years reported, this year is 1.87 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "54051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "3.10",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 282,
+    "days_missing": 1,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Moundsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "14.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "29.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "West Virginia",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "44.15",
+    "usual_in": "36.93",
+    "vs_usual": {
+     "diff_in": "7.22",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.22",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3105156572d187b3",
+   "sid": "466248 2",
+   "story": "Through Oct 9, the weather station in Moundsville had its wettest month in March at 7.22 inches. The biggest single day was Jul 22 with 3.10 inches. The longest dry stretch ran 10 days, Aug 25 to Sep 3. On the days both years reported, that is 14.23 inches more than last year.",
+   "through": "2026-10-09"
+  },
+  "54055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 28",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "Mercer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Bluefield Mercer County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "12.34",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "24.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.25",
+    "usual_in": "34.11",
+    "vs_usual": {
+     "diff_in": "3.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.82",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61edeb6e40cea3b7",
+   "sid": "03859 1",
+   "story": "Through Oct 13, the weather station at Bluefield Mercer County Airport had 37.25 inches, 3.14 inches more than a usual year. July did most of the work with 8.82 inches, and Jul 28 brought the biggest single day at 2.02 inches. The longest dry stretch ran 8 days, Aug 28 to Sep 4. On the days both years reported, that is 12.34 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.83",
+     "label": "biggest one-day reading"
+    },
+    "county": "Mineral County",
+    "days_in_year_so_far": 285,
+    "days_missing": 8,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2 miles south-southwest of Keyser",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "3.27",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "36.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 101,
+    "state": "West Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "33.15",
+    "usual_in": "32.79",
+    "vs_usual": {
+     "diff_in": "0.36",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.13",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f5f2c44281909ca",
+   "sid": "464840 2",
+   "story": "Through Oct 12, the weather station 2 miles south-southwest of Keyser sits right about a usual year, 0.36 inches more. July was the wettest month at 5.13 inches, and the biggest one-day reading came just this past Oct 11 at 1.83 inches. The gauge went 9 days with nothing from May 29 to Jun 6. On the days both years reported, this year is 3.27 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "54059": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "1.91",
+     "label": "biggest single day"
+    },
+    "county": "Mingo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Williamson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.47",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jan 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.97",
+    "usual_in": "39.12",
+    "vs_usual": {
+     "diff_in": "3.15",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.19",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e146c2918c28964c",
+   "sid": "469610 2",
+   "story": "Through Oct 13, the weather station in Williamson had its wettest month in June with 5.19 inches. The biggest single day was May 25 at 1.91 inches. On the days both years reported, this year is 2.47 inches less than last year. The longest dry stretch ran 8 days, Jan 2 to Jan 9, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "54061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 27",
+     "in": "1.34",
+     "label": "biggest single day"
+    },
+    "county": "Monongalia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Morgantown Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.66",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.92",
+    "usual_in": "35.17",
+    "vs_usual": {
+     "diff_in": "3.75",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.68",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "49efd74c4be3d44c",
+   "sid": "13736 1",
+   "story": "Through Oct 13, the weather station at Morgantown Municipal Airport had June as its wettest month at 5.68 inches. The biggest single day came early, 1.34 inches on Mar 27. The gauge went 9 days in a row with nothing from May 28 to Jun 5, then June made up for it. Still, this year sits 5.66 inches less than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "54063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "2.13",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile southeast of Greenville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "0.25",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.33",
+    "usual_in": "32.88",
+    "vs_usual": {
+     "diff_in": "2.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.25",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6430cf5dc2ae8350",
+   "sid": "463671 2",
+   "story": "Through Oct 13, the weather station 1 mile southeast of Greenville had its wettest month in August at 7.25 inches. The biggest single day came Aug 7 with 2.13 inches. The longest dry stretch ran 10 days, Apr 7 to Apr 16. On the days both years reported, this year sits 0.25 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "54065": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "3.34",
+     "label": "biggest one-day reading"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Cacapon St Prk",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 257,
+      "diff_in": "1.21",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 13",
+     "total_in": "27.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 94,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.74",
+    "usual_in": "34.73",
+    "vs_usual": {
+     "diff_in": "1.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.41",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6add4a0d8a29e3de",
+   "sid": "461324 2",
+   "story": "Through Oct 13, the weather station in Cacapon St Prk had May as its wettest month at 7.41 inches, and the biggest one-day reading came May 23 at 3.34 inches. Right after that it went 9 days with nothing in the gauge, May 29 to Jun 6. On the days both years reported, this year is 1.21 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Nicholas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Craigsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.33",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "48.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Sep 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.73",
+    "usual_in": "42.78",
+    "vs_usual": {
+     "diff_in": "3.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.17",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e83158402605f5b6",
+   "sid": "US1WVNC0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Craigsville had its wettest month in August at 7.17 inches. The biggest single day came Jun 23 with 2.57 inches. The longest dry stretch ran 7 days from Sep 26 to Oct 2, nothing in the gauge, not even a trace. On the days both years reported, this year has 1.33 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "54069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "2.71",
+     "label": "biggest single day"
+    },
+    "county": "Ohio County",
+    "days_in_year_so_far": 286,
+    "days_missing": 19,
+    "days_reported": 267,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Pike Island",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 243,
+      "diff_in": "6.49",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 28,
+     "through": "Oct 13",
+     "total_in": "29.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 127,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.31",
+    "usual_in": "31.04",
+    "vs_usual": {
+     "diff_in": "8.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.77",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e6b2016613d03e3c",
+   "sid": "467018 2",
+   "story": "Through Oct 13, the weather station in Pike Island had August as the wettest month at 10.77 inches, and the biggest single day came Aug 11 with 2.71 inches. The longest dry stretch ran 11 days, Jan 27 to Feb 6, with nothing in the gauge. On the days both years reported, this year is 6.49 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 8",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Pendleton County",
+    "days_in_year_so_far": 285,
+    "days_missing": 8,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3.0 miles northeast of Fort Seybert",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "West Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "31.75",
+    "usual_in": "33.99",
+    "vs_usual": {
+     "diff_in": "2.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.91",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7f19825f0882b2b4",
+   "sid": "US1WVPN0001 6",
+   "story": "Through Oct 12, the volunteer rain gauge 3.0 miles northeast of Fort Seybert had 31.75 inches, 2.24 inches less than a usual year. August was the wettest month at 6.91 inches, and the biggest single day came Aug 8 with 2.17 inches. The longest dry stretch ran 20 days, Jan 27 to Feb 15, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "54077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "3.12",
+     "label": "biggest single day"
+    },
+    "county": "Preston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "7.4 miles north of Thomas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.48",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Oct 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.74",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.88",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "887835a3750e7351",
+   "sid": "US1WVPR0011 6",
+   "story": "Through Oct 13, the wettest month at the volunteer rain gauge 7.4 miles north of Thomas was May, with 7.88 inches. The biggest single day came Jul 22, when 3.12 inches went in the gauge. On the days both years reported, this year sits 0.48 inches less than 2025. That's close enough to call it even.",
+   "through": "2026-10-13"
+  },
+  "54079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "2.54",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1.6 miles south-southwest of Hurricane",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.95",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Sep 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.60",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.95",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5ac754eecccd3b15",
+   "sid": "US1WVPT0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles south-southwest of Hurricane had caught 41.60 inches, 3.95 inches less than last year had by the same day. July was the wettest month at 6.95 inches. The biggest single day was 2.54 inches on Oct 11. That came not long after the longest dry stretch, 7 days with nothing in the gauge from Sep 26 to Oct 2.",
+   "through": "2026-10-13"
+  },
+  "54081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Raleigh County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Beckley Va Hospital",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "3.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "38.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.50",
+    "usual_in": "35.33",
+    "vs_usual": {
+     "diff_in": "6.17",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.68",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d35ea3f9378162d3",
+   "sid": "460580 2",
+   "story": "Through Oct 13, the weather station in Beckley Va Hospital has caught 41.50 inches, 6.17 inches more than a usual year. June was the wettest month at 7.68 inches, and the biggest single day came Jun 23 with 2.10 inches. The longest dry stretch ran 10 days, Apr 7 to Apr 16. On the days both years reported, that is 3.35 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "54083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 16",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Randolph County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Elkins- Randolph County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.20",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 5,
+     "from": "Oct 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.00",
+    "usual_in": "39.05",
+    "vs_usual": {
+     "diff_in": "4.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.49",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "709e78b5ae5b1468",
+   "sid": "13729 1",
+   "story": "Through Oct 13, the weather station at Elkins- Randolph County Airport had 44.00 inches, 4.95 more than a usual year. August did most of the work with 8.49 inches, and the biggest single day was Aug 16 at 2.35. That is 6.20 inches more than 2025 had by the same day. The longest dry stretch ran only 5 days, Oct 5 to Oct 9.",
+   "through": "2026-10-13"
+  },
+  "54085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.49",
+     "label": "biggest single day"
+    },
+    "county": "Ritchie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.9 miles north-northeast of Harrisville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.64",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.60",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "220deb838a9fce46",
+   "sid": "US1WVRT0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.9 miles north-northeast of Harrisville has caught 48.64 inches. August was the wettest month at 8.60 inches. The biggest single day came Jul 22 with 2.49 inches. The longest run with nothing in the gauge, not even a trace, was 7 days, Feb 8 to Feb 14.",
+   "through": "2026-10-13"
+  },
+  "54089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "1.47",
+     "label": "biggest single day"
+    },
+    "county": "Summers County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Bluestone Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.45",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.67",
+    "usual_in": "33.85",
+    "vs_usual": {
+     "diff_in": "2.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.04",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "310a806ba26f13e1",
+   "sid": "460939 2",
+   "story": "Through Oct 13, the weather station in Bluestone Lake has 31.67 inches, 2.18 inches less than a usual year. August was the wettest month at 6.04 inches, and the biggest single day came Aug 12 with 1.47 inches. The longest dry stretch ran 10 days, Apr 7 to Apr 16, with nothing in the gauge. That puts the year 3.45 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "54091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.95",
+     "label": "biggest single day"
+    },
+    "county": "Taylor County",
+    "days_in_year_so_far": 286,
+    "days_missing": 22,
+    "days_reported": 264,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Tygart",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "7.43",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "36.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.80",
+    "usual_in": "36.73",
+    "vs_usual": {
+     "diff_in": "5.07",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.90",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c3d318ffce852608",
+   "sid": "468986 2",
+   "story": "Through Oct 13, the weather station in Tygart had August as its wettest month at 7.90 inches. The biggest single day was Jul 22 with 1.95 inches. On the days both years reported, this year is 7.43 inches ahead of 2025. The longest dry stretch ran 8 days, Feb 8 to Feb 15, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "54093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 6",
+     "in": "2.62",
+     "label": "biggest single day"
+    },
+    "county": "Tucker County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3 miles southeast of Davis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.69",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "53.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.47",
+    "usual_in": "51.08",
+    "vs_usual": {
+     "diff_in": "3.39",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.57",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0006376a5cdb04aa",
+   "sid": "462211 2",
+   "story": "Through Oct 13, the station 3 miles southeast of Davis had September as its wettest month, at 8.57 inches. The biggest single day was Sep 6, with 2.62 inches. The longest dry stretch ran 6 days, from Jun 30 to Jul 5. On the days both years reported, this year is 0.69 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "54097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "5.85",
+     "label": "biggest one-day reading"
+    },
+    "county": "Upshur County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Buckhannon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "16.25",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "40.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 142,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "54.37",
+    "usual_in": "38.22",
+    "vs_usual": {
+     "diff_in": "16.15",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.36",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b6be49065d0e6e3b",
+   "sid": "461220 2",
+   "story": "Through Oct 13, the weather station in Buckhannon has caught 54.37 inches, 16.15 more than a usual year. July did most of the work with 11.36 inches, and Jul 22 alone put 5.85 in the gauge. On the days both years reported, that is 16.25 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "54099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.96",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at Huntington Tri-State Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.49",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jan 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.62",
+    "usual_in": "36.72",
+    "vs_usual": {
+     "diff_in": "4.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.03",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8232fc1c126d2895",
+   "sid": "03860 1",
+   "story": "Through Oct 13, the weather station at Huntington Tri-State Airport has caught 32.62 inches, 4.10 inches less than a usual year. July was the wettest month at 7.03 inches. The biggest single day came early, 1.96 inches on Jan 25. That is 8.49 inches less than 2025 had by this same day.",
+   "through": "2026-10-13"
+  },
+  "54103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Wetzel County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.5 miles east of New Martinsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.36",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.79",
+    "usual_in": "37.36",
+    "vs_usual": {
+     "diff_in": "8.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.74",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0dcc1a5ee1f0b804",
+   "sid": "US1WVWT0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.5 miles east of New Martinsville had its wettest month in September at 6.74 inches. The biggest single day came late, 1.82 inches on Oct 11. The longest dry stretch was 9 days in a row with nothing in the gauge, May 29 to Jun 6. That puts this year 8.36 inches more than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "54107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "2.01",
+     "label": "biggest single day"
+    },
+    "county": "Wood County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Parkersburg/Mid-Ohio Valley Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.79",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 127,
+    "state": "West Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.81",
+    "usual_in": "34.52",
+    "vs_usual": {
+     "diff_in": "9.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.16",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2909855ea54e6953",
+   "sid": "03804 1",
+   "story": "Through Oct 13, the weather station at Parkersburg/Mid-Ohio Valley Regional Airport had a wet year going, and August did most of the talking with 9.16 inches. The biggest single day came in that month too, 2.01 inches on Aug 11. The longest dry stretch was 8 days, Feb 7 to Feb 14. This year is 8.79 inches more than 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "54109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "1.60",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wyoming County",
+    "days_in_year_so_far": 284,
+    "days_missing": 12,
+    "days_reported": 272,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in R.D. Bailey Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "0.17",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 11",
+     "total_in": "37.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 96,
+    "state": "West Virginia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "35.94",
+    "usual_in": "37.52",
+    "vs_usual": {
+     "diff_in": "1.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.50",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8e2ffb8192ef4ba0",
+   "sid": "467372 2",
+   "story": "Through Oct 11, the weather station in R.D. Bailey Lake had its wettest month in June with 7.50 inches, and the biggest one-day reading came Jun 23 at 1.60 inches. The longest dry stretch ran 13 days, Aug 24 to Sep 5, with nothing in the gauge, not even a trace. On the days both years reported, 2026 is 0.17 inches less than 2025.",
+   "through": "2026-10-11"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "WV"
+}

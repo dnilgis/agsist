@@ -1,0 +1,5001 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "18001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1 mile north of Decatur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.83",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.11",
+    "usual_in": "33.31",
+    "vs_usual": {
+     "diff_in": "6.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.59",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3ab00838d0fbe74f",
+   "sid": "122096 2",
+   "story": "Through Oct 13, the weather station 1 mile north of Decatur had its wettest month in August at 8.59 inches, and the biggest single day came Aug 11 with 2.55 inches. That is 13.83 inches more than last year by the same day. Lately the gauge has gone 11 days in a row with nothing in it, from Oct 3 to Oct 13, and that dry stretch is still going.",
+   "through": "2026-10-13"
+  },
+  "18003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Allen County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "4.1 miles northeast of Fort Wayne",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.62",
+    "usual_in": "31.42",
+    "vs_usual": {
+     "diff_in": "5.20",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.11",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8964893348623491",
+   "sid": "US1INAL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.1 miles northeast of Fort Wayne has caught 36.62 inches, 5.20 more than a usual year. April did most of the talking at 8.11 inches, and Apr 1 alone brought 2.34. Last year at this point the gauge had 24.45, so this year is 12.17 inches ahead of it. The longest dry stretch was 11 days, May 26 to Jun 5.",
+   "through": "2026-10-13"
+  },
+  "18005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Bartholomew County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Columbus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.46",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "39.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.03",
+    "usual_in": "37.84",
+    "vs_usual": {
+     "diff_in": "3.19",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.08",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c7aed4d9a643ebe5",
+   "sid": "121747 2",
+   "story": "Through Oct 13, the weather station in Columbus had its wettest month in March at 9.08 inches. The biggest single day was Apr 28, with 3.20 inches. Later it went 13 days in a row with nothing in the gauge, from Aug 28 to Sep 9. On the days both years reported, this year sits 0.46 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "18007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "1.69",
+     "label": "biggest single day"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "5.0 miles northwest of Earl Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 259,
+      "diff_in": "5.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "29.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.40",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.97",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b7e71fe93b6c4e80",
+   "sid": "US1INBT0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.0 miles northwest of Earl Park caught 33.40 inches. August was the wettest month at 8.97 inches, and the biggest single day was Aug 14 with 1.69 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with not even a trace. On the 259 days both years reported, this year has 5.30 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Blackford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "4 miles east-southeast of Hartford City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.09",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.78",
+    "usual_in": "34.17",
+    "vs_usual": {
+     "diff_in": "1.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.44",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c08dc2fc7f44cd78",
+   "sid": "123777 2",
+   "story": "Through Oct 13, the weather station 4 miles east-southeast of Hartford City has caught 32.78 inches. August did most of the work with 9.44 inches, and the biggest single day was Aug 12 at 3.30 inches. The gauge then sat empty for 8 days in a row from Oct 3 to Oct 10. That still puts this year 6.09 inches more than last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "18011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "2.38",
+     "label": "biggest one-day reading"
+    },
+    "county": "Boone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6 miles west of Lebanon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 120,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.10",
+    "usual_in": "34.15",
+    "vs_usual": {
+     "diff_in": "6.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.90",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e55196a720af1950",
+   "sid": "124910 2",
+   "story": "Through Oct 13, the weather station 6 miles west of Lebanon has 41.10 inches, 6.95 inches more than a usual year. August did most of the work at 9.90 inches, and the biggest one-day reading came Aug 2 with 2.38 inches. Then it shut off for 9 days in a row, Aug 28 to Sep 5, with nothing in the gauge. That is 12.17 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "18013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Brown County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.7 miles south-southeast of Morgantown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.86",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.57",
+    "usual_in": "37.44",
+    "vs_usual": {
+     "diff_in": "9.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.76",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d027399e7fc8252c",
+   "sid": "US1INBR0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.7 miles south-southeast of Morgantown has caught 46.57 inches. May did the heavy lifting with 10.76 inches, the wettest month of the year. The biggest single day came early, 2.85 inches on Mar 4. That puts this year 3.86 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "18017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Cass County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Young America",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "10.16",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "24.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.52",
+    "usual_in": "33.89",
+    "vs_usual": {
+     "diff_in": "0.63",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.84",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c8c8c4f5d1ccb4f6",
+   "sid": "129905 2",
+   "story": "Through Oct 13, the station in Young America caught 7.84 inches in August, its wettest month, and 2.78 inches of that came on Aug 14, the biggest single day. It has been dry since, with 11 days in a row of nothing in the gauge from Oct 3 to Oct 13, and that stretch is still going. On the days both years reported, this year is 10.16 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Jeffersonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.86",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.43",
+    "usual_in": "40.96",
+    "vs_usual": {
+     "diff_in": "6.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.11",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "47f79b4eb1a1d217",
+   "sid": "US1INCK0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Jeffersonville had its wettest month in May, with 8.11 inches. Right after that it went 11 days in a row with nothing in it, not even a trace, from May 29 to Jun 8. On the days both years reported, this year is 11.86 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "18021": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile west of Bowling Green",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.02",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.10",
+    "usual_in": "38.05",
+    "vs_usual": {
+     "diff_in": "5.05",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2640201ad4e0c053",
+   "sid": "120877 2",
+   "story": "Through Oct 13, the weather station 1 mile west of Bowling Green had June as the wettest month at 8.14 inches. The biggest single day came May 19 with 2.90 inches. The longest dry stretch ran 13 days, Feb 2 to Feb 14, with nothing in the gauge. That puts the station 2.02 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "18023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.44",
+     "label": "biggest single day"
+    },
+    "county": "Clinton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Frankfort Disposal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.29",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Sep 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.06",
+    "usual_in": "34.95",
+    "vs_usual": {
+     "diff_in": "8.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.77",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dca8d20d89e6cb1d",
+   "sid": "123082 2",
+   "story": "Through Oct 13, the weather station in Frankfort Disposal has caught 43.06 inches, 8.11 more than a usual year. August did most of the work with 11.77 inches, and the biggest single day came Aug 20 at 2.44. Then it shut off for 10 days in a row, Sep 1 to Sep 10. That puts this year 11.29 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "18025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "4.29",
+     "label": "biggest one-day reading"
+    },
+    "county": "Crawford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3.7 miles west-southwest of Milltown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "2.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "47.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 107,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.37",
+    "usual_in": "41.49",
+    "vs_usual": {
+     "diff_in": "2.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.04",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e76d643b27b9a279",
+   "sid": "US1INCW0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles west-southwest of Milltown had 44.37 inches, 2.88 more than a usual year. June did most of the work with 12.04 inches, and the biggest one-day reading was 4.29 on Jun 27. The longest dry stretch was 10 days, Jan 15 to Jan 24. On the days both years reported, this year is 2.45 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "18027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "4.76",
+     "label": "biggest single day"
+    },
+    "county": "Daviess County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.5 miles northwest of Washington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.50",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "47.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.63",
+    "usual_in": "37.63",
+    "vs_usual": {
+     "diff_in": "4.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.10",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "43f197d2d9c6a6ff",
+   "sid": "US1INDV0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles northwest of Washington had its wettest month in June at 11.10 inches. That came even with 11 days in a row of nothing in the gauge, May 29 to Jun 8. The biggest single day was Jun 22 at 4.76 inches. This year still sits 5.50 inches less than 2025 on the days both years reported.",
+   "through": "2026-10-13"
+  },
+  "18029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Dearborn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.9 miles west of Aurora",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "1.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "44.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.63",
+    "usual_in": "36.29",
+    "vs_usual": {
+     "diff_in": "3.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.61",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "336150ed5cc45cb7",
+   "sid": "US1INDR0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.9 miles west of Aurora had June as its wettest month at 9.61 inches, and the biggest single day came Jun 18 with 2.50 inches. Then it went 16 days in a row with nothing in the gauge, Aug 21 to Sep 5. On the days both years reported, 2026 is 1.93 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "18031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 10",
+     "in": "3.84",
+     "label": "biggest one-day reading"
+    },
+    "county": "Decatur County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "6.0 miles southwest of Greensburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "11.12",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "37.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.22",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "12.31",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e461f5b423a0fbbe",
+   "sid": "US1INDC0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.0 miles southwest of Greensburg had caught 49.22 inches. August was the wettest month at 12.31 inches. Then the gauge sat empty for 14 days in a row, Aug 28 to Sep 10. On the days both years reported, this year is 11.12 inches more than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "18033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "4.25",
+     "label": "biggest single day"
+    },
+    "county": "DeKalb County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1 mile southeast of Butler",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.30",
+    "usual_in": "30.05",
+    "vs_usual": {
+     "diff_in": "1.25",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.74",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dca0d0f939477dcd",
+   "sid": "121187 2",
+   "story": "Through Oct 13, the weather station 1 mile southeast of Butler had a big August. That month brought 7.74 inches, and 4.25 of it came on Aug 7, the biggest single day of the year. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with nothing in the gauge. On the days both years reported, that is 2.13 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "5.08",
+     "label": "biggest single day"
+    },
+    "county": "Delaware County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4.0 miles southwest of Eaton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.49",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.41",
+    "usual_in": "33.78",
+    "vs_usual": {
+     "diff_in": "3.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.20",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1c4cdeedca2d1c93",
+   "sid": "US1INDL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles southwest of Eaton had its wettest month in August with 12.20 inches. The biggest single day was Aug 12 at 5.08 inches. Since then it has gone quiet, with 11 days in a row of nothing in the gauge from Oct 3 to Oct 13, and that stretch is still going. The year sits 7.49 inches more than 2025 did by this day.",
+   "through": "2026-10-13"
+  },
+  "18037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "4.11",
+     "label": "biggest single day"
+    },
+    "county": "Dubois County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "less than a mile east-southeast of Huntingburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "2.06",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "41.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.99",
+    "usual_in": "42.00",
+    "vs_usual": {
+     "diff_in": "3.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.46",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d5cbc485ea8666c9",
+   "sid": "US1INDB0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-southeast of Huntingburg had caught 45.99 inches, 3.99 more than a usual year. June did most of the work with 14.46 inches, and Jun 27 alone brought 4.11. The longest dry stretch ran 13 days, Feb 2 to Feb 14. On the days both years reported, this year is 2.06 inches ahead of last.",
+   "through": "2026-10-13"
+  },
+  "18039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "1.94",
+     "label": "biggest single day"
+    },
+    "county": "Elkhart County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Goshen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.24",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.71",
+    "usual_in": "32.47",
+    "vs_usual": {
+     "diff_in": "2.24",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.53",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8d1868b8ba0100b0",
+   "sid": "123418 2",
+   "story": "Through Oct 13, the weather station 3 miles southwest of Goshen has 5.24 inches more than it had by this day last year. April was the wettest month at 6.53 inches. The biggest single day came Sep 20 with 1.94 inches. The longest dry stretch ran 9 days, Feb 9 to Feb 17, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "18041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "4.24",
+     "label": "biggest one-day reading"
+    },
+    "county": "Fayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2 miles northeast of Alpine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.81",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 139,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.17",
+    "usual_in": "36.22",
+    "vs_usual": {
+     "diff_in": "13.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.14",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2a35da5f89fa2f04",
+   "sid": "120132 2",
+   "story": "Through Oct 13, the weather station 2 miles northeast of Alpine had August as its wettest month at 11.14 inches. The biggest one-day reading came Aug 12 with 4.24 inches. Right after that it went 8 days with nothing in the gauge, Aug 28 to Sep 4. On the days both years reported, this year is 4.81 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "3.43",
+     "label": "biggest single day"
+    },
+    "county": "Floyd County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "3.0 miles southeast of Galena",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.18",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.40",
+    "usual_in": "40.25",
+    "vs_usual": {
+     "diff_in": "2.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.49",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dbd6e9e849355867",
+   "sid": "US1INFD0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles southeast of Galena has caught 37.40 inches, 2.85 inches less than a usual year. June was the wettest month at 8.49 inches, even after the gauge sat empty for 11 days from May 29 to Jun 8. The biggest single day was 3.43 inches on Apr 28. Last year at this point the gauge had 12.18 inches more.",
+   "through": "2026-10-13"
+  },
+  "18045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 7",
+     "in": "4.15",
+     "label": "biggest one-day reading"
+    },
+    "county": "Fountain County",
+    "days_in_year_so_far": 286,
+    "days_missing": 27,
+    "days_reported": 259,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Covington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 251,
+      "diff_in": "21.82",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "26.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.35",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.26",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fcf510a9cae77e1f",
+   "sid": "US1INFN0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Covington had caught 46.35 inches. August was the wettest month at 10.26 inches. The biggest single reading came Jun 7 with 4.15 inches. On the 251 days both years reported, that is 21.82 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "18047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "2.83",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Brookville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.60",
+    "usual_in": "34.93",
+    "vs_usual": {
+     "diff_in": "9.67",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.94",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8e2d4acfaf2d0986",
+   "sid": "121030 2",
+   "story": "Through Oct 13, the weather station in Brookville has caught most of its rain in August, with 9.94 inches that month. The biggest single day came early, 2.83 inches on Mar 4. The longest dry stretch ran 13 days, Apr 6 to Apr 18, with not even a trace in the gauge. On the days both years reported, that is 4.26 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "18049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "1.85",
+     "label": "biggest single day"
+    },
+    "county": "Fulton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Rochester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "12.94",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.32",
+    "usual_in": "33.28",
+    "vs_usual": {
+     "diff_in": "4.04",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.45",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f83c5ad87b71564b",
+   "sid": "127482 2",
+   "story": "Through Oct 13, the weather station in Rochester has caught 37.32 inches, 4.04 more than a usual year. April was the wettest month at 7.45 inches, and the biggest single day came late, 1.85 inches on Oct 2. On the days both years reported, this year is 12.94 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Gibson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Wsw Princeton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.91",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "38.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.46",
+    "usual_in": "40.03",
+    "vs_usual": {
+     "diff_in": "3.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c6f0e8e1416c5941",
+   "sid": "127125 2",
+   "story": "Through Oct 13, the weather station in Wsw Princeton has 36.46 inches, 3.57 inches less than a usual year. June was the wettest month at 8.63 inches. The gauge then went 20 days in a row with nothing from Aug 21 to Sep 9, and the biggest single day came right after with 2.95 inches on Sep 12. On the days both years reported, this year is 1.91 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "18053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.97",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2 miles north of Marion",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "13.52",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Oct 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 127,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.94",
+    "usual_in": "33.83",
+    "vs_usual": {
+     "diff_in": "9.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.44",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5375c12b36f0e92f",
+   "sid": "125337 2",
+   "story": "Through Oct 13, the weather station 2 miles north of Marion had August as the wettest month at 8.44 inches, with the biggest single day on Aug 12 at 2.97 inches. Since then it has gone dry. The gauge has shown nothing for 10 days in a row, Oct 4 to Oct 13, and that stretch is still going. On the days both years reported, this year is 13.52 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "3.14",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "4.0 miles east-southeast of Solsberry",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "45.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.01",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.74",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9de6e52b85c8e84",
+   "sid": "US1INGN0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles east-southeast of Solsberry had May as its wettest month at 8.74 inches. The biggest single day came Jun 22 with 3.14 inches. On the days both years reported, this year sits 2.45 inches less than 2025 did by the same day.",
+   "through": "2026-10-13"
+  },
+  "18057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Hamilton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.5 miles west of Carmel",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.37",
+    "usual_in": "35.56",
+    "vs_usual": {
+     "diff_in": "4.81",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.06",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7a55cfbbeb99f952",
+   "sid": "US1INHM0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles west of Carmel had caught 9.67 inches more than it had by this day in 2025. August did most of the work at 10.06 inches, the wettest month. The biggest single day came Apr 28 with 2.55 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "18059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "2.51",
+     "label": "biggest single day"
+    },
+    "county": "Hancock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Greenfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.38",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.50",
+    "usual_in": "38.70",
+    "vs_usual": {
+     "diff_in": "4.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.18",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1918a2101c195374",
+   "sid": "123527 2",
+   "story": "Through Oct 13, the weather station in Greenfield had its wettest month in August at 10.18 inches. Right after that it went 12 days without a drop, Aug 24 to Sep 4. The biggest single day came early, 2.51 inches on Mar 4. On the days both years reported, that is 8.38 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "3.94",
+     "label": "biggest single day"
+    },
+    "county": "Harrison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "5.7 miles south-southeast of Milltown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.69",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.83",
+    "usual_in": "40.93",
+    "vs_usual": {
+     "diff_in": "2.90",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.88",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff9a7df237f8909f",
+   "sid": "US1INHR0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.7 miles south-southeast of Milltown has caught 43.83 inches. June did most of the work with 14.88 inches, and the biggest single day was Jun 27 at 3.94 inches. Then it shut off for 13 days in a row from Aug 28 to Sep 9, not even a trace. Still, that is 7.69 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "18063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "3.68",
+     "label": "biggest single day"
+    },
+    "county": "Hendricks County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.1 miles west of Plainfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.89",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.10",
+    "usual_in": "37.56",
+    "vs_usual": {
+     "diff_in": "4.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.84",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aa874dfde46d6061",
+   "sid": "US1INHS0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles west of Plainfield had a big August. It caught 9.84 inches that month, and 3.68 of it came on Aug 2, the biggest single day of the year. Then it went 9 days in a row with nothing, from Aug 28 to Sep 5. On the days both years reported, 2026 is 8.89 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "7.06",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3.2 miles west of New Castle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "17.92",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "31.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 139,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.61",
+    "usual_in": "35.61",
+    "vs_usual": {
+     "diff_in": "14.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "17.16",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1bf8c54567aa014e",
+   "sid": "US1INHY0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles west of New Castle has caught most of its year in August, with 17.16 inches that month. The biggest single day came Aug 12 at 7.06 inches. On the days both years reported, that puts 2026 17.92 inches ahead of last year. The gauge did go dry for 8 days in a row, from Aug 28 to Sep 4.",
+   "through": "2026-10-13"
+  },
+  "18067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "1.86",
+     "label": "biggest single day"
+    },
+    "county": "Howard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles west-southwest of Kokomo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.87",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.88",
+    "usual_in": "36.26",
+    "vs_usual": {
+     "diff_in": "1.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.96",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ffe1f6165ce4c9e",
+   "sid": "124662 2",
+   "story": "Through Oct 13, the weather station 3 miles west-southwest of Kokomo has its biggest numbers in August, the wettest month at 7.96 inches. The biggest single day came Aug 14 with 1.86 inches. Since then it has gone dry, with 11 days in a row of nothing in the gauge from Oct 3 to Oct 13, and that stretch is still going. On the days both years reported, this year is 4.87 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "4.24",
+     "label": "biggest single day"
+    },
+    "county": "Huntington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Huntington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.28",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.04",
+    "usual_in": "33.24",
+    "vs_usual": {
+     "diff_in": "9.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.09",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ca7e9262029fc44b",
+   "sid": "124181 2",
+   "story": "Through Oct 13, the weather station in Huntington had its wettest month in August with 13.09 inches. The biggest single day came Sep 17 at 4.24 inches. It went 13 days in a row with nothing in the gauge, May 24 to Jun 5. That puts this year 18.28 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "18073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 16",
+     "in": "1.45",
+     "label": "biggest single day"
+    },
+    "county": "Jasper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Rensselaer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.82",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.01",
+    "usual_in": "33.43",
+    "vs_usual": {
+     "diff_in": "5.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.08",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "68855377e3f2e551",
+   "sid": "127298 2",
+   "story": "Through Oct 13, the weather station in Rensselaer had its wettest month in April at 6.08 inches, and its biggest single day came Apr 16 with 1.45 inches. The longest dry stretch ran 13 days, Aug 18 to Aug 30, with nothing in the gauge. The year sits 5.42 inches less than a usual year, but 0.82 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "18075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.50",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2.3 miles south of Portland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "6.93",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "32.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.70",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.07",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "48ac675dfe35d53b",
+   "sid": "US1INJY0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles south of Portland had caught 38.70 inches. August was the wettest month at 9.07 inches, and the biggest reading came Aug 12 with 2.50 inches. On the days both years reported, this year is running 6.93 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "4.80",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Clifty Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.19",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.67",
+    "usual_in": "39.01",
+    "vs_usual": {
+     "diff_in": "2.34",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.59",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4a2762c7e2631edd",
+   "sid": "121615 2",
+   "story": "Through Oct 13, the weather station in Clifty Creek got its biggest single day on Apr 28 with 4.80 inches, and May was the wettest month at 8.59 inches. The gauge then went 15 days in a row without even a trace, from Aug 22 to Sep 5. On the days both years reported, that is 6.19 inches less than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "18079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "3.09",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jennings County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2 miles east-southeast of North Vernon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "1.56",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "40.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 109,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.96",
+    "usual_in": "38.40",
+    "vs_usual": {
+     "diff_in": "3.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eda3905474c254da",
+   "sid": "126435 2",
+   "story": "Through Oct 13, the weather station 2 miles east-southeast of North Vernon had its biggest one-day reading on Aug 12 at 3.09 inches. Then it went 20 days in a row with nothing in the gauge, not even a trace, from Aug 21 to Sep 9. On the days both years reported, this year is 1.56 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "3.02",
+     "label": "biggest single day"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile west of Franklin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.54",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.29",
+    "usual_in": "36.10",
+    "vs_usual": {
+     "diff_in": "3.19",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.30",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1183bb444e62fbba",
+   "sid": "123093 2",
+   "story": "Through Oct 13, the station 1 mile west of Franklin had its wettest month in May with 8.30 inches. The biggest single day was Mar 4 at 3.02 inches. The gauge then went 13 days in a row with nothing from Aug 28 to Sep 9. That still leaves this year 0.54 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "18083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "4.09",
+     "label": "biggest single day"
+    },
+    "county": "Knox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5 miles northeast of Vincennes",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.76",
+    "usual_in": "37.39",
+    "vs_usual": {
+     "diff_in": "3.37",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.26",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "df7bb354d18df07d",
+   "sid": "129113 2",
+   "story": "Through Oct 13, the weather station 5 miles northeast of Vincennes had June as its wettest month at 10.26 inches. The biggest single day came Apr 28 with 4.09 inches. The longest dry stretch ran 13 days, Aug 28 to Sep 9, with not even a trace in the gauge. Even at 3.37 inches more than a usual year, it still sits 1.42 inches less than 2025 did by the same day.",
+   "through": "2026-10-13"
+  },
+  "18085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 31",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Kosciusko County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Northern Indiana",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.65",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "29.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.41",
+    "usual_in": "32.23",
+    "vs_usual": {
+     "diff_in": "5.18",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.39",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e25d3d4950f93661",
+   "sid": "126400 2",
+   "story": "Through Oct 13, the weather station in Northern Indiana, 12 miles from the middle of the county, had its wettest month in March with 6.39 inches. The biggest single day came Mar 31 with 2.34 inches. Since Oct 3 the gauge has gone 11 days in a row with nothing in it, not even a trace, and that stretch is still going. On the days both years reported, this year is 7.65 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 15",
+     "in": "2.45",
+     "label": "biggest one-day reading"
+    },
+    "county": "LaGrange County",
+    "days_in_year_so_far": 285,
+    "days_missing": 18,
+    "days_reported": 267,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "9.9 miles east of Lagrange",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 256,
+      "diff_in": "8.31",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 12",
+     "total_in": "26.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 126,
+    "state": "Indiana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.14",
+    "usual_in": "27.95",
+    "vs_usual": {
+     "diff_in": "7.19",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.47",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60a222c532971dfd",
+   "sid": "US1INLG0011 6",
+   "story": "Through Oct 12, the volunteer rain gauge 9.9 miles east of Lagrange had its wettest month in April with 8.47 inches, and the biggest one-day reading came Apr 15 at 2.45 inches. The longest run with nothing in the gauge was 11 days, May 26 to Jun 5. On the days both years reported, this year is 8.31 inches more than 2025.",
+   "through": "2026-10-12"
+  },
+  "18091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "LaPorte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.6 miles southwest of La Porte",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.46",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.47",
+    "usual_in": "35.32",
+    "vs_usual": {
+     "diff_in": "7.15",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.72",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "829cc4cdd95fcd89",
+   "sid": "US1INLP0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles southwest of La Porte had caught 8.46 inches more than it had by the same day last year. June was the wettest month at 10.72 inches, and the biggest single day came Sep 20 with 2.56 inches. Lately the gauge has sat empty, 11 days in a row with nothing in it, not even a trace, from Oct 3 to Oct 13, and still counting.",
+   "through": "2026-10-13"
+  },
+  "18093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "4.62",
+     "label": "biggest single day"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Oolitic Purdue Ex Frm",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.89",
+    "usual_in": "38.52",
+    "vs_usual": {
+     "diff_in": "1.37",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.99",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ca05b9128bb0b9ff",
+   "sid": "126580 2",
+   "story": "Through Oct 13, the weather station in Oolitic Purdue Ex Frm shows a year that came in lumps. The biggest single day was Apr 28 at 4.62 inches, and May was the wettest month at 7.99 inches. Then the gauge sat empty 11 days in a row, May 29 to Jun 8. On the days both years reported, that is 6.66 inches less than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "18095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "2.66",
+     "label": "biggest one-day reading"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2.0 miles south of Anderson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "9.67",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 118,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.54",
+    "usual_in": "35.24",
+    "vs_usual": {
+     "diff_in": "6.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.39",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6cfb0b1a6c07b8d7",
+   "sid": "US1INMD0025 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles south of Anderson had 41.54 inches, 6.30 more than a usual year. August did most of the work with 13.39 inches, and the biggest one-day reading came Aug 2 at 2.66. Then it shut off for 8 days in a row, Aug 28 to Sep 4, with not even a trace. On the days both years reported, this year ran 9.67 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2 miles south of Castleton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.92",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.02",
+    "usual_in": "38.52",
+    "vs_usual": {
+     "diff_in": "1.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.85",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d7f520f24d9024b6",
+   "sid": "121326 2",
+   "story": "Through Oct 13, the weather station 2 miles south of Castleton had its wettest month in August, with 8.85 inches. It then went 14 days in a row with nothing at all, from Aug 27 to Sep 9. The biggest single day was Apr 27 at 2.17 inches. That leaves this year 6.92 inches more than 2025 through the same day.",
+   "through": "2026-10-13"
+  },
+  "18099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "3.16",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Plymouth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "13.02",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "30.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 134,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.75",
+    "usual_in": "32.62",
+    "vs_usual": {
+     "diff_in": "11.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.01",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a10f03b849e9872a",
+   "sid": "126989 2",
+   "story": "Through Oct 13, the weather station in Plymouth has 43.75 inches, 11.13 more than a usual year. April did most of the work at 10.01 inches, the wettest month. The biggest single day was Jul 4 with 3.16 inches. On the days both years reported, that is 13.02 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "18101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "3.95",
+     "label": "biggest single day"
+    },
+    "county": "Martin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "8 miles south of Shoals",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.03",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.29",
+    "usual_in": "39.99",
+    "vs_usual": {
+     "diff_in": "0.30",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.07",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "701eb222e4caaca5",
+   "sid": "128036 2",
+   "story": "Through Oct 13, the weather station 8 miles south of Shoals sits at 40.29 inches, about usual. June was the wettest month at 7.07 inches, and the biggest single day came Apr 28 with 3.95 inches. The longest dry stretch ran 10 days, Feb 5 to Feb 14. That is 5.03 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "18103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Miami County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.3 miles northeast of Denver",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.52",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.18",
+    "usual_in": "33.34",
+    "vs_usual": {
+     "diff_in": "3.84",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.15",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "44aaf9f14fc32ab1",
+   "sid": "US1INMM0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles northeast of Denver has caught 15.52 inches more than it had by this day in 2025. August was the wettest month at 7.15 inches, and the biggest single day was Sep 17 with 2.57 inches. Since then it has gone quiet, with 11 days in a row of nothing in the gauge from Oct 3 to Oct 13, and that stretch is still going.",
+   "through": "2026-10-13"
+  },
+  "18105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "2.47",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Bloomington Monroe County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "3.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "39.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.94",
+    "usual_in": "37.16",
+    "vs_usual": {
+     "diff_in": "1.22",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.80",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4bc0956acda125d9",
+   "sid": "03893 1",
+   "story": "Through Oct 13, the weather station at Bloomington Monroe County Airport had its wettest month in March at 7.80 inches. The biggest single day came Apr 27 with 2.47 inches. The gauge then went 14 days in a row with nothing in it, from Aug 27 to Sep 9. On the days both years reported, that is 3.44 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "18107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "3.85",
+     "label": "biggest one-day reading"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 284,
+    "days_missing": 8,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3.4 miles east of Ladoga",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "11.08",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 11",
+     "total_in": "30.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "40.96",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.39",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c62e9f9a18f54368",
+   "sid": "US1INMY0018 6",
+   "story": "Through Oct 11, the volunteer rain gauge 3.4 miles east of Ladoga had caught 40.96 inches. August was the wettest month at 10.39 inches, and the biggest reading came Aug 2 with 3.85 inches. On the days both years reported, this year ran 11.08 inches more than 2025.",
+   "through": "2026-10-11"
+  },
+  "18109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "2 miles southwest of Martinsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.52",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.14",
+    "usual_in": "36.76",
+    "vs_usual": {
+     "diff_in": "4.38",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.76",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "45924c2e1a7d8cc5",
+   "sid": "125407 2",
+   "story": "Through Oct 13, the weather station 2 miles southwest of Martinsville had May as its wettest month at 8.76 inches. The biggest single day came Mar 4 with 3.25 inches. From Aug 28 to Sep 9 it went 13 days in a row with nothing in the gauge, not even a trace. That still leaves the station 1.52 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "18111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "1.80",
+     "label": "biggest one-day reading"
+    },
+    "county": "Newton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.6 miles north-northeast of Mount Ayr",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "2.11",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "26.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Sep 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 29"
+    },
+    "multi_day_reports": 15,
+    "pct_of_usual": 87,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.36",
+    "usual_in": "31.59",
+    "vs_usual": {
+     "diff_in": "4.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.71",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "557a011fa1e58f1b",
+   "sid": "US1INNW0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles north-northeast of Mount Ayr had its wettest month in April at 6.71 inches. The biggest one-day reading came Sep 16 with 1.80 inches. Then the gauge sat empty 8 days in a row, Sep 22 to Sep 29. On the days both years reported, this year has 2.11 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.94",
+     "label": "biggest single day"
+    },
+    "county": "Noble County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.7 miles south of Albion",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.93",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.11",
+    "usual_in": "30.30",
+    "vs_usual": {
+     "diff_in": "2.81",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.52",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1caeb9a0c99d9586",
+   "sid": "US1INNB0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles south of Albion has caught 33.11 inches, 2.81 more than a usual year. April did most of the work with 8.52 inches, and Apr 1 alone brought 2.94. The gauge has been dry 11 days running, from Oct 3 to Oct 13, and still going. That is 4.93 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "18115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.36",
+     "label": "biggest one-day reading"
+    },
+    "county": "Ohio County",
+    "days_in_year_so_far": 280,
+    "days_missing": 17,
+    "days_reported": 263,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.6 miles south-southeast of Aurora",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 237,
+      "diff_in": "3.22",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 7",
+     "total_in": "43.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 111,
+    "state": "Indiana",
+    "through": "Oct 7",
+    "through_iso": "2026-10-07",
+    "total_in": "39.04",
+    "usual_in": "35.31",
+    "vs_usual": {
+     "diff_in": "3.73",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6dc5dffb03ca094e",
+   "sid": "US1INOH0001 6",
+   "story": "Through Oct 7, the volunteer rain gauge 3.6 miles south-southeast of Aurora has caught 39.04 inches, 3.73 inches more than a usual year. June was the wettest month at 7.67 inches, and the biggest one-day reading was 2.36 inches on Apr 28. On the days both years reported, this year is 3.22 inches less than last year.",
+   "through": "2026-10-07"
+  },
+  "18119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.53",
+     "label": "biggest single day"
+    },
+    "county": "Owen County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7.0 miles south of Spencer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.62",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.79",
+    "usual_in": "39.92",
+    "vs_usual": {
+     "diff_in": "4.87",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.89",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2aa1f4291b803f5e",
+   "sid": "US1INOW0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.0 miles south of Spencer has caught 44.79 inches, 4.87 more than a usual year. March was the wettest month at 8.89 inches, and the biggest single day was 2.53 inches on Apr 28. The longest dry stretch ran 9 days, Aug 28 to Sep 5. Even so, it is 3.62 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "18121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Parke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Rockville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "14.43",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.19",
+    "usual_in": "37.67",
+    "vs_usual": {
+     "diff_in": "5.52",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.69",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fb040aeae8c9793e",
+   "sid": "127522 2",
+   "story": "Through Oct 13, the weather station in Rockville has 14.43 inches more than last year, on the days both years reported. August was the wettest month at 9.69 inches. The biggest single day was Mar 4 with 2.00 inches. The gauge also went 19 days with nothing in it, from Feb 1 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "18123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "3.31",
+     "label": "biggest single day"
+    },
+    "county": "Perry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Tell City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.53",
+    "usual_in": "40.47",
+    "vs_usual": {
+     "diff_in": "1.06",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.24",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a454c3036b6fc6a5",
+   "sid": "128698 2",
+   "story": "Through Oct 13, the weather station in Tell City has run 1.06 inches more than a usual year. June did most of the work at 11.24 inches, and the biggest single day came Jun 28 with 3.31 inches. The gauge also went 13 days in a row with nothing from Feb 2 to Feb 14. On the days both years reported, this year is 9.95 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "18125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "4.55",
+     "label": "biggest single day"
+    },
+    "county": "Pike County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.4 miles east-northeast of Petersburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "3.72",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "39.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.46",
+    "usual_in": "38.08",
+    "vs_usual": {
+     "diff_in": "2.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.20",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5512f175b2428741",
+   "sid": "US1INPK0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge east-northeast of Petersburg had its wettest month in June at 8.20 inches. Most of that came on Jun 27, the biggest single day, at 4.55 inches. The longest dry stretch ran 13 days, Feb 2 to Feb 14. On the days both years reported, this year is 3.72 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "18127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "3.24",
+     "label": "biggest single day"
+    },
+    "county": "Porter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile south of Porter",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "16.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "28.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.88",
+    "usual_in": "33.08",
+    "vs_usual": {
+     "diff_in": "11.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee09e34d6631f034",
+   "sid": "US1INPT0069 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south of Porter has caught 44.88 inches, 11.80 more than a usual year. June did most of the work with 10.71 inches, and the biggest single day was 3.24 on Jun 22. On the days both years reported, that is 16.26 inches more than last year. Lately it has quit, with nothing in the gauge for 11 days from Oct 3 to Oct 13.",
+   "through": "2026-10-13"
+  },
+  "18129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "5.02",
+     "label": "biggest one-day reading"
+    },
+    "county": "Posey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2.8 miles northwest of Poseyville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "5.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "37.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 84,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.24",
+    "usual_in": "38.24",
+    "vs_usual": {
+     "diff_in": "6.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.50",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d3cb0d059fdb6ed",
+   "sid": "US1INPS0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.8 miles northwest of Poseyville had its wettest month in June, at 8.50 inches. Of that, 5.02 inches came on Jun 28 alone, the biggest reading of the year. Later it went 13 days with nothing in the gauge, not even a trace, from Aug 28 to Sep 9. On the days both years reported, this year sits 5.85 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "18131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Pulaski County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Francesville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.10",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.86",
+    "usual_in": "32.25",
+    "vs_usual": {
+     "diff_in": "6.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.96",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5d24c33ba5c51fe0",
+   "sid": "123078 2",
+   "story": "Through Oct 13, the weather station in Francesville has caught 13.10 inches more than it had by this day last year. April was the wettest month at 8.96 inches. The biggest single day came Jun 8 with 2.60 inches. The gauge also went 22 days in a row with nothing in it, from Jan 27 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "18133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "3.09",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.5 miles west of Cloverdale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.46",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "37.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.27",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.67",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61c297859de23ab7",
+   "sid": "US1INPM0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.5 miles west of Cloverdale had its wettest month in August at 9.67 inches. The biggest single day came Mar 4 with 3.09 inches. The longest dry stretch ran 13 days, Feb 2 to Feb 14, with not even a trace. On the days both years reported, this year has 6.46 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "6.33",
+     "label": "biggest one-day reading"
+    },
+    "county": "Randolph County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5 miles north-northwest of Farmland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "1.90",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "32.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 115,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.90",
+    "usual_in": "33.03",
+    "vs_usual": {
+     "diff_in": "4.87",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee554017b105f9b8",
+   "sid": "122825 2",
+   "story": "Through Oct 13, the weather station 5 miles north-northwest of Farmland had its biggest one-day reading on Aug 12 at 6.33 inches. Not long after, it went 8 days in a row with nothing in the gauge, from Aug 28 to Sep 4. On the days both years reported, this year has 1.90 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "4.42",
+     "label": "biggest one-day reading"
+    },
+    "county": "Ripley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northeast of Batesville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 133,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.44",
+    "usual_in": "36.33",
+    "vs_usual": {
+     "diff_in": "12.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.52",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "40bed9e8e4b86abc",
+   "sid": "US1INRP0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northeast of Batesville had caught 12.11 inches more than a usual year. March was the wettest month at 9.52 inches. The biggest one-day reading came Aug 12 with 4.42 inches. Then it shut off, with 13 days in a row of nothing in the gauge, not even a trace, from Aug 28 to Sep 9.",
+   "through": "2026-10-13"
+  },
+  "18139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "3.78",
+     "label": "biggest single day"
+    },
+    "county": "Rush County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Rushville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.19",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.12",
+    "usual_in": "36.91",
+    "vs_usual": {
+     "diff_in": "6.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.86",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b77c5757aaa7805",
+   "sid": "127646 2",
+   "story": "Through Oct 13, the weather station in Rushville has caught 43.12 inches, 6.21 inches more than a usual year. August was the wettest month at 11.86 inches. The biggest single day came Mar 4 with 3.78 inches. That is also 2.19 inches more than last year had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "18141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "2.67",
+     "label": "biggest single day"
+    },
+    "county": "St. Joseph County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4.6 miles southeast of South Bend",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.38",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.43",
+    "usual_in": "32.08",
+    "vs_usual": {
+     "diff_in": "5.35",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "03b2f06a507216b1",
+   "sid": "US1INSJ0028 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles southeast of South Bend has caught 37.43 inches, 5.35 more than a usual year. June did most of the work with 7.71 inches, and the biggest single day was Jul 4 at 2.67. The gauge has been dry 11 days in a row since Oct 3. That puts this year 7.38 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "18145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Shelby County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Shelbyville Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.00",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "34.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Sep 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.99",
+    "usual_in": "34.45",
+    "vs_usual": {
+     "diff_in": "5.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.52",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "65f7def6869a2055",
+   "sid": "53866 1",
+   "story": "Through Oct 13, the weather station at Shelbyville Municipal Airport had a lot of its year come in August, with 10.52 inches that month. The biggest single day was Aug 1 at 3.25 inches. Then it shut off for 10 days in a row, Sep 22 to Oct 1, with nothing in the gauge. On the days both years reported, that is 5.00 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18147": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Spencer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "2.3 miles south-southeast of Ferdinand",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "0.54",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "40.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 7,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.81",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.51",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "39f9b6683bd94aff",
+   "sid": "US1INSP0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles south-southeast of Ferdinand has caught 41.81 inches. June did most of the work, with 10.51 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, without even a trace in the gauge. On the days both years reported, this year is 0.54 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "3.35",
+     "label": "biggest single day"
+    },
+    "county": "Starke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Knox",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.18",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.36",
+    "usual_in": "34.32",
+    "vs_usual": {
+     "diff_in": "8.04",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.20",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "08f25e607cf384bd",
+   "sid": "124657 2",
+   "story": "Through Oct 13, the weather station in Knox has caught 9.18 inches more than it had by this day last year. June did most of the work at 8.20 inches, and Jun 9 alone brought 3.35 inches, the biggest single day so far. Since then it has turned off. The gauge has gone 11 days in a row with nothing in it, not even a trace, from Oct 3 through Oct 13, and that stretch is still going.",
+   "through": "2026-10-13"
+  },
+  "18151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 11",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Steuben County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "8.7 miles east-southeast of Angola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "4.97",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "28.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.19",
+    "usual_in": "30.83",
+    "vs_usual": {
+     "diff_in": "2.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.79",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "80b4fb7cf999eefa",
+   "sid": "US1INSN0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.7 miles east-southeast of Angola has done most of its catching in April, with 8.79 inches that month. The biggest single day came early, 2.55 inches on Mar 11. The longest dry stretch ran 11 days, May 26 to Jun 5, with nothing in the gauge, not even a trace. On the days both years reported, this year is 4.97 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.47",
+     "label": "biggest single day"
+    },
+    "county": "Sullivan County",
+    "days_in_year_so_far": 282,
+    "days_missing": 3,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "5 miles west-northwest of Graysville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "6.02",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "41.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Indiana",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "35.29",
+    "usual_in": "37.14",
+    "vs_usual": {
+     "diff_in": "1.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "300affbc5938f939",
+   "sid": "123501 2",
+   "story": "Through Oct 9, the weather station 5 miles west-northwest of Graysville had its wettest month in June at 7.38 inches, and its biggest single day came Jun 22 with 2.47 inches. Then it went 19 days in a row with nothing in the gauge, from Aug 22 to Sep 9. On the days both years reported, that is 6.02 inches less than last year.",
+   "through": "2026-10-09"
+  },
+  "18155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "3.02",
+     "label": "biggest one-day reading"
+    },
+    "county": "Switzerland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 14,
+    "days_reported": 272,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3.7 miles west-northwest of Vevay",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.03",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.01",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9b26699125e0a9f",
+   "sid": "US1INSW0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles west-northwest of Vevay had caught 37.03 inches. August was the wettest month at 7.01 inches. The biggest one-day reading was 3.02 inches on Apr 28. The longest dry stretch ran 14 days, Aug 22 to Sep 4, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "18157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.39",
+     "label": "biggest single day"
+    },
+    "county": "Tippecanoe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.2 miles northeast of Lafayette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.15",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.40",
+    "usual_in": "32.84",
+    "vs_usual": {
+     "diff_in": "3.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.87",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "341aeea55d47a0c7",
+   "sid": "US1INTP0028 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.2 miles northeast of Lafayette has caught 10.15 inches more than it had by this day last year. August did most of the work at 7.87 inches, and the biggest single day came Aug 14 with 2.39 inches. The longest dry stretch was 10 days, Feb 8 to Feb 17, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "18159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "5.21",
+     "label": "biggest single day"
+    },
+    "county": "Tipton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5 miles southwest of Tipton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "17.07",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jan 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.73",
+    "usual_in": "33.33",
+    "vs_usual": {
+     "diff_in": "13.40",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "15.13",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d499cf68b82d38d",
+   "sid": "128784 2",
+   "story": "Through Oct 13, the weather station 5 miles southwest of Tipton has caught 46.73 inches, 13.40 more than a usual year. August did most of the work with 15.13 inches, and Aug 14 alone brought 5.21. On the days both years reported, this year is 17.07 inches more than last year. The longest stretch with nothing in the gauge was 7 days, Jan 2 to Jan 8.",
+   "through": "2026-10-13"
+  },
+  "18161": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "4.79",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Liberty",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "13.63",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.91",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "14.67",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "996263d83572608a",
+   "sid": "125049 2",
+   "story": "Through Oct 13, the weather station in Liberty had its wettest month in August at 14.67 inches, and the biggest single day came Aug 12 with 4.79 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, with not even a trace in the gauge. On the days both years reported, that is 13.63 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "3.06",
+     "label": "biggest single day"
+    },
+    "county": "Vanderburgh County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Evansville Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.78",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.04",
+    "usual_in": "37.97",
+    "vs_usual": {
+     "diff_in": "3.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.34",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "875320e73d42a854",
+   "sid": "93817 1",
+   "story": "Through Oct 13, the weather station at Evansville Regional Airport had 34.04 inches, 3.93 inches less than a usual year. June did most of the work with 10.34 inches, and Jun 27 brought the biggest single day at 3.06 inches. The gauge then went 13 days in a row with nothing from Aug 27 to Sep 8. That puts this year 14.78 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "18165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.98",
+     "label": "biggest single day"
+    },
+    "county": "Vermillion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "4 miles west-northwest of Perrysville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "14.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 131,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.18",
+    "usual_in": "31.38",
+    "vs_usual": {
+     "diff_in": "9.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.47",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b5faf7f0d921225d",
+   "sid": "126830 2",
+   "story": "Through Oct 13, the weather station 4 miles west-northwest of Perrysville had its wettest month in August at 10.47 inches, and the biggest single day came Aug 14 with 2.98 inches. Lately the gauge has had nothing in it for 11 days in a row, Oct 3 to Oct 13, and that stretch is still going. On the days both years reported, this year is 14.62 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "18167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.30",
+     "label": "biggest one-day reading"
+    },
+    "county": "Vigo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.0 miles southwest of West Terre Haute",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "5.29",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "36.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.55",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.13",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e0a08008baff0919",
+   "sid": "US1INVG0019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.0 miles southwest of West Terre Haute had caught 41.55 inches. March was the wettest month at 8.13 inches, and the biggest single reading was 2.30 inches on Apr 28. The gauge went 20 days in a row with nothing in it, not even a trace, from Jan 26 to Feb 14. On the days both years reported, this year is 5.29 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "18169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Wabash County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Wabash",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "13.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "27.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Feb 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.87",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.70",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "53d62ce7cd125a79",
+   "sid": "US1INWB0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northwest of Wabash had its wettest month in April at 8.70 inches. The biggest single day came Sep 17 with 3.20 inches. On the days both years reported, this year is 13.23 inches more than last year. The longest dry stretch ran 8 days, Feb 10 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "18173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.77",
+     "label": "biggest single day"
+    },
+    "county": "Warrick County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2.4 miles north of Boonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "46.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Indiana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "36.74",
+    "usual_in": "41.12",
+    "vs_usual": {
+     "diff_in": "4.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.00",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bd88d92de1446ed2",
+   "sid": "US1INWK0005 6",
+   "story": "Through Oct 12, the volunteer rain gauge 2.4 miles north of Boonville had caught 36.74 inches, 4.38 inches less than a usual year. June did most of the work with 10.00 inches, and Jun 22 alone put 2.77 inches in the gauge. Then it went 13 days with nothing at all, Aug 28 to Sep 9. Last year at this point the gauge was 10.19 inches ahead.",
+   "through": "2026-10-12"
+  },
+  "18175": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.92",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3.6 miles north-northeast of Fredericksburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "2.52",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "45.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 110,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.09",
+    "usual_in": "40.12",
+    "vs_usual": {
+     "diff_in": "3.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.96",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2bbbd13002655375",
+   "sid": "US1INWS0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles north-northeast of Fredericksburg had 44.09 inches, 3.97 more than a usual year. May did most of the talking with 10.96 inches, and 3.92 of that came on May 19. Then the gauge sat empty 12 days in a row, May 28 to Jun 8. On the days both years reported, this year is 2.52 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "18177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "6.84",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Richmond Water Works",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "18.03",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 161,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "55.25",
+    "usual_in": "34.22",
+    "vs_usual": {
+     "diff_in": "21.03",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "18.21",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f01050e76e35ecc6",
+   "sid": "127370 2",
+   "story": "Through Oct 13, the weather station in Richmond Water Works has caught most of its year in August, with 18.21 inches that month. The biggest single day was Aug 12 at 6.84 inches. On the days both years reported, that is 18.03 inches more than last year. The longest dry stretch was 11 days, from Jan 26 to Feb 5, without even a trace.",
+   "through": "2026-10-13"
+  },
+  "18179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "4.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wells County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Bluffton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "19.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "25.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 137,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.46",
+    "usual_in": "32.39",
+    "vs_usual": {
+     "diff_in": "12.07",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.72",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aca60f578af2625d",
+   "sid": "US1INWL0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southeast of Bluffton had 44.46 inches, 12.07 more than a usual year. August was the wettest month at 9.72 inches, and the biggest one-day reading was 4.10 inches on Sep 17. On the days both years reported, that is 19.26 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "18181": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "White County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5 miles west of Chalmers",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "14.19",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "21.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "Indiana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.57",
+    "usual_in": "33.84",
+    "vs_usual": {
+     "diff_in": "1.73",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.11",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "27bcfb162a71856c",
+   "sid": "121417 2",
+   "story": "Through Oct 12, the weather station 5 miles west of Chalmers has caught 35.57 inches, 14.19 inches more than it had by this day last year. June did most of the work at 8.11 inches, and Jun 9 brought the biggest single day at 2.90 inches. The longest dry stretch ran 10 days, Feb 8 to Feb 17, with not even a trace in the gauge.",
+   "through": "2026-10-12"
+  },
+  "18183": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.82",
+     "label": "biggest single day"
+    },
+    "county": "Whitley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4.6 miles south of Columbia City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.92",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Feb 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Indiana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.06",
+    "usual_in": "33.01",
+    "vs_usual": {
+     "diff_in": "3.05",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.50",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f39918a09c5bca8f",
+   "sid": "US1INWY0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles south of Columbia City had caught 36.06 inches, 3.05 more than a usual year. April did most of the work at 8.50 inches, and it started on Apr 1 with 2.82 inches, the biggest single day. The longest dry stretch was 8 days, Feb 10 to Feb 17. That is 7.92 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "IN"
+}

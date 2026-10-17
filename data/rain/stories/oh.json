@@ -1,0 +1,4577 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "39001": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "6 miles east-northeast of West Union",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.40",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Sep 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.80",
+    "usual_in": "38.05",
+    "vs_usual": {
+     "diff_in": "1.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.08",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "206fcf9aaaf2b5b6",
+   "sid": "339050 2",
+   "story": "Through Oct 13, the weather station 6 miles east-northeast of West Union had its wettest month in May at 8.08 inches. The biggest single day came May 25 with 2.24 inches. The longest dry stretch ran 8 days, Sep 25 to Oct 2, with nothing in the gauge, not even a trace. The year sits 5.40 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "39003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 8",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Allen County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.7 miles northeast of Lima",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.24",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 132,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.21",
+    "usual_in": "32.72",
+    "vs_usual": {
+     "diff_in": "10.49",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.13",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b89211182c3d2abc",
+   "sid": "US1OHAL0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles northeast of Lima has caught 43.21 inches, 10.49 more than a usual year. August did most of the damage with 9.13 inches, and the biggest single day was Aug 8 at 2.55. That is 13.24 inches more than this gauge had by Oct 13 last year. The longest run with nothing in it was 10 days, Feb 8 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "39005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.95",
+     "label": "biggest single day"
+    },
+    "county": "Ashland County",
+    "days_in_year_so_far": 285,
+    "days_missing": 2,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "3.8 miles west-southwest of Nova",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "1.49",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 12",
+     "total_in": "33.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "33.96",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.22",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "51994fc732563878",
+   "sid": "US1OHAS0008 6",
+   "story": "Through Oct 12, the volunteer rain gauge 3.8 miles west-southwest of Nova had its wettest month in April, with 7.22 inches. The biggest single day came early in that month, 1.95 inches on Apr 1. The longest dry stretch ran 11 days, Feb 7 to Feb 17, with not even a trace in the gauge. On the days both years reported, this year is 1.49 inches more than 2025.",
+   "through": "2026-10-12"
+  },
+  "39007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 11",
+     "in": "1.34",
+     "label": "biggest single day"
+    },
+    "county": "Ashtabula County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Ashtabula County Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.49",
+    "usual_in": "28.35",
+    "vs_usual": {
+     "diff_in": "7.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.07",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "941ae78932128093",
+   "sid": "04857 1",
+   "story": "Through Oct 13, the weather station at Ashtabula County Airport had 20.49 inches, 7.86 inches less than a usual year. March was the wettest month at 4.07 inches, and the biggest single day came Mar 11 with 1.34 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "2.93",
+     "label": "biggest single day"
+    },
+    "county": "Athens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.6 miles north-northeast of Stewart",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.09",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jan 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 148,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.79",
+    "usual_in": "35.71",
+    "vs_usual": {
+     "diff_in": "17.08",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.94",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "190cafec62d6f20a",
+   "sid": "US1OHAT0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles north-northeast of Stewart had its wettest month in August with 11.94 inches. The biggest single day came Jun 18 at 2.93 inches. The longest dry stretch was only 8 days, Jan 2 to Jan 9. That puts this year 13.09 inches more than last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "39013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "3.46",
+     "label": "biggest one-day reading"
+    },
+    "county": "Belmont County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2.9 miles southwest of Mount Pleasant",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 10"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.22",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.97",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "af0d6e0cb6ec6009",
+   "sid": "US1OHBL0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles southwest of Mount Pleasant had caught 43.22 inches. August was the wettest month at 10.97 inches, and the biggest one-day reading came Aug 11 with 3.46 inches. The longest stretch with nothing in the gauge, not even a trace, ran 9 days from Jan 2 to Jan 10.",
+   "through": "2026-10-13"
+  },
+  "39015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 6",
+     "in": "1.69",
+     "label": "biggest single day"
+    },
+    "county": "Brown County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.2 miles southeast of Hamersville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "8.78",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "41.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.27",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.81",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4307d359cfc03bad",
+   "sid": "US1OHBR0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.2 miles southeast of Hamersville had 32.27 inches. March was the wettest month at 5.81 inches, and the biggest single day came Mar 6 with 1.69 inches. The gauge then went 13 days in a row with nothing in it, not even a trace, from Aug 24 to Sep 5. On the days both years reported, that is 8.78 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "39017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "2.19",
+     "label": "biggest single day"
+    },
+    "county": "Butler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4.7 miles east of Hamilton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.96",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.83",
+    "usual_in": "35.56",
+    "vs_usual": {
+     "diff_in": "6.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.22",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b418df6a25dde64b",
+   "sid": "US1OHBT0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles east of Hamilton had 6.96 inches more than it had by the same day last year. May was the wettest month at 8.22 inches, and the biggest single day came early, 2.19 inches on Mar 4. The gauge also went 12 days in a row with nothing in it, not even a trace, from Aug 24 to Sep 4.",
+   "through": "2026-10-13"
+  },
+  "39019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile south of Minerva",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.14",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.48",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "07451cec42ef3618",
+   "sid": "US1OHCR0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south of Minerva has caught 41.14 inches. August was the wettest month at 7.48 inches, and the biggest single day came Aug 11 with 2.05 inches. The longest dry stretch ran 8 days, Feb 8 to Feb 15, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 27",
+     "in": "2.60",
+     "label": "biggest one-day reading"
+    },
+    "county": "Champaign County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Urbana Wrf",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.44",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 120,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.21",
+    "usual_in": "35.98",
+    "vs_usual": {
+     "diff_in": "7.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.44",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "10313d6f4d4a976e",
+   "sid": "338552 2",
+   "story": "Through Oct 13, the weather station in Urbana Wrf has caught 43.21 inches, 7.23 more than a usual year. May did the most work at 8.44 inches, and the biggest one-day reading was 2.60 inches on Mar 27. That is 6.44 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "39023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 27",
+     "in": "2.52",
+     "label": "biggest one-day reading"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Springfield Water Treatment",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.02",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 118,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.35",
+    "usual_in": "33.22",
+    "vs_usual": {
+     "diff_in": "6.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.07",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b2c056a09b7cba07",
+   "sid": "337935 2",
+   "story": "Through Oct 13, the weather station in Springfield Water Treatment had its wettest month in May at 8.07 inches. The biggest one-day reading came Mar 27 with 2.52 inches. The gauge then went 11 days in a row with nothing in it, from Aug 25 to Sep 4. That puts the year 5.02 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "39025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "2.41",
+     "label": "biggest single day"
+    },
+    "county": "Clermont County",
+    "days_in_year_so_far": 285,
+    "days_missing": 1,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Amelia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "8.10",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "45.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "37.40",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.97",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0cdbe741084e00f5",
+   "sid": "330140 2",
+   "story": "Through Oct 12, the weather station in Amelia had 37.40 inches for the year. July was the wettest month at 5.97 inches, and the biggest single day was Sep 10 with 2.41 inches. The gauge went 15 days in a row with nothing, from Aug 21 to Sep 4. On the days both years reported, that is 8.10 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "39027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "Clinton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Wilmington Air Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.34",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.40",
+    "usual_in": "34.26",
+    "vs_usual": {
+     "diff_in": "6.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.49",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5c5e54a57e154fbc",
+   "sid": "13841 1",
+   "story": "Through Oct 13, the weather station in Wilmington Air Park had March as the wettest month at 7.49 inches. The biggest single day came Jun 18 with 2.25 inches. The longest dry stretch ran 10 days from May 28 to Jun 6 with nothing in the gauge, not even a trace. That puts this year 4.34 inches more than last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "39029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "2.08",
+     "label": "biggest single day"
+    },
+    "county": "Columbiana County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile east-northeast of Hanoverton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.61",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.42",
+    "usual_in": "34.33",
+    "vs_usual": {
+     "diff_in": "9.09",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.41",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "be64b366b9550530",
+   "sid": "US1OHCB0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-northeast of Hanoverton has caught 43.42 inches, 9.09 more than a usual year. August was the wettest month at 9.41 inches, and the biggest single day came Sep 4 with 2.08. That puts this year 10.61 inches ahead of 2025 at the same date. The longest dry stretch was 8 days, May 29 to Jun 5, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "39031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Coshocton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "6.0 miles west-southwest of Warsaw",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "6.52",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "35.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.31",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.57",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eb13ab62e7d296c6",
+   "sid": "US1OHCC0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.0 miles west-southwest of Warsaw has caught 42.31 inches. August was the wettest month at 9.57 inches, and the biggest single day came Aug 12 with 2.96 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace. On the days both years reported, this year is 6.52 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39033": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Crawford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Bucyrus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.69",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "33.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.14",
+    "usual_in": "31.39",
+    "vs_usual": {
+     "diff_in": "5.75",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.90",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dbd8626ad9a10691",
+   "sid": "331072 2",
+   "story": "Through Oct 13, the weather station in Bucyrus had its wettest month in April with 7.90 inches. The biggest single day came May 23 at 1.90 inches. The longest dry stretch ran 11 days, Feb 8 to Feb 18, with nothing in the gauge, not even a trace. On the days both years reported, this year is 3.69 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Cuyahoga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.9 miles north-northwest of Parma",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.58",
+    "usual_in": "33.22",
+    "vs_usual": {
+     "diff_in": "1.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.48",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "245695efefeda1d7",
+   "sid": "US1OHCY0024 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles north-northwest of Parma has 34.58 inches, 1.36 inches more than a usual year. April was the wettest month at 6.48 inches, and the biggest single day came Jul 6 with 2.46 inches. The gauge went 10 days in a row with nothing from May 27 to Jun 5. Last year it had 3.58 inches more by this date.",
+   "through": "2026-10-13"
+  },
+  "39037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "3.07",
+     "label": "biggest single day"
+    },
+    "county": "Darke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Greenville Water",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.82",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Oct 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.22",
+    "usual_in": "32.48",
+    "vs_usual": {
+     "diff_in": "11.74",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.60",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3e5ffe2def55a742",
+   "sid": "333375 2",
+   "story": "Through Oct 13, the weather station in Greenville Water has caught 44.22 inches, 10.82 inches more than last year by this day. August did most of the work at 11.60 inches, and the biggest single day was Aug 2 with 3.07 inches. Since then it has dried out some. The gauge has gone 10 days in a row with nothing in it, from Oct 4 through Oct 13, and that stretch is still going.",
+   "through": "2026-10-13"
+  },
+  "39039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 5",
+     "in": "1.99",
+     "label": "biggest single day"
+    },
+    "county": "Defiance County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Defiance Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.93",
+    "usual_in": "27.03",
+    "vs_usual": {
+     "diff_in": "0.10",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.75",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78538464f126027e",
+   "sid": "04851 1",
+   "story": "Through Oct 13, the weather station at Defiance Airport sat about where a usual year would put it, 0.10 inches less. April was the wettest month at 5.75 inches, and the biggest single day came Sep 5 with 1.99 inches. The gauge went 11 days in a row with nothing from May 25 to Jun 4. On the days both years reported, this year ran 2.72 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "2.75",
+     "label": "biggest one-day reading"
+    },
+    "county": "Delaware County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.4 miles east of Lewis Center",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "14.96",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "30.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 148,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.85",
+    "usual_in": "31.59",
+    "vs_usual": {
+     "diff_in": "15.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.55",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4ca0051c74eba9ce",
+   "sid": "US1OHDL0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles east of Lewis Center had August as its wettest month at 10.55 inches. The biggest one-day reading came Jul 11 with 2.75 inches. On the days both years reported, this year ran 14.96 inches more than 2025. The longest dry stretch was 9 days, May 29 to Jun 6, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "2.43",
+     "label": "biggest single day"
+    },
+    "county": "Erie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2.5 miles south-southwest of Huron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.22",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "33.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.35",
+    "usual_in": "30.75",
+    "vs_usual": {
+     "diff_in": "2.60",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.19",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f33069cba77f18e",
+   "sid": "US1OHER0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles south-southwest of Huron had its wettest month in April at 6.19 inches. The biggest single day came Aug 7 with 2.43 inches. From May 26 to Jun 6 it went 12 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 0.22 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Fairfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Lancaster Fairfield County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.99",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.11",
+    "usual_in": "32.47",
+    "vs_usual": {
+     "diff_in": "5.64",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.52",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e110471a540fd683",
+   "sid": "53844 1",
+   "story": "Through Oct 13, the weather station at Lancaster Fairfield County Airport had August as its wettest month at 9.52 inches. The biggest single day came Aug 20 with 2.96 inches. Then the gauge sat empty 11 days in a row, Aug 24 to Sep 3. On the days both years reported, this year has 4.99 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 21",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Fayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Washington Court House",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.60",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.83",
+    "usual_in": "33.17",
+    "vs_usual": {
+     "diff_in": "0.66",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.67",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "727ad878bd538cd4",
+   "sid": "338794 2",
+   "story": "Through Oct 13, the weather station in Washington Court House has been about where a usual year puts it. March was the wettest month at 6.67 inches. The biggest single day came Sep 21 with 2.00 inches. That still leaves the gauge 5.60 inches behind last year to this date.",
+   "through": "2026-10-13"
+  },
+  "39049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at John Glenn International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.68",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.29",
+    "usual_in": "33.99",
+    "vs_usual": {
+     "diff_in": "10.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.94",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "81626e49b2fd10ae",
+   "sid": "14821 1",
+   "story": "Through Oct 13, the weather station at John Glenn International Airport has a lot of its year in August. August brought 9.94 inches, and the biggest single day came Aug 20 with 2.87 inches. The longest dry stretch ran 9 days, from May 28 to Jun 5. This year sits 11.68 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "39051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Fulton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Wauseon Water",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.94",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.03",
+    "usual_in": "28.52",
+    "vs_usual": {
+     "diff_in": "1.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.20",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ebcde74f5cbad495",
+   "sid": "338822 2",
+   "story": "Through Oct 13, the weather station in Wauseon Water had its wettest month in April with 8.20 inches, and the biggest single day came Apr 1 at 2.40 inches. Then it went 12 days in a row with nothing in the gauge, from May 26 to Jun 6. On the days both years reported, this year has 1.94 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "4.96",
+     "label": "biggest single day"
+    },
+    "county": "Gallia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 21,
+    "days_reported": 265,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Gallipolis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "0.31",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "39.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.01",
+    "usual_in": "33.99",
+    "vs_usual": {
+     "diff_in": "5.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.12",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1e3d83e9e5a336b0",
+   "sid": "333029 2",
+   "story": "Through Oct 13, the station in Gallipolis had its wettest month in September, with 8.12 inches. Sep 10 alone brought 4.96 inches, the biggest rain so far. Before that, the gauge caught nothing for 12 days in a row, Aug 24 to Sep 4. On the days both years reported, this year is 0.31 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.08",
+     "label": "biggest single day"
+    },
+    "county": "Geauga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Chardon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.21",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.62",
+    "usual_in": "39.49",
+    "vs_usual": {
+     "diff_in": "1.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.42",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2901d19db89dd7c7",
+   "sid": "331458 2",
+   "story": "Through Oct 13, the weather station in Chardon has caught 40.62 inches, 5.21 inches more than last year by this day. August did most of the work at 8.42 inches, the wettest month so far. The biggest single day came Sep 3 with 2.08 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "39057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 20",
+     "in": "2.72",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6 miles south-southeast of Xenia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "13.17",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.92",
+    "usual_in": "34.98",
+    "vs_usual": {
+     "diff_in": "12.94",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.30",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fab9d0b4022e6294",
+   "sid": "339361 2",
+   "story": "Through Oct 13, the weather station 6 miles south-southeast of Xenia had its wettest month in August at 8.30 inches. The biggest single day came Feb 20 with 2.72 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, with nothing in the gauge. On the days both years reported, this year is 13.17 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "3.90",
+     "label": "biggest single day"
+    },
+    "county": "Guernsey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.7 miles west-southwest of Cambridge",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "72.01",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "15.05",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fb81791d8580384a",
+   "sid": "US1OHGY0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles west-southwest of Cambridge had caught 72.01 inches this year. August was the wettest month at 15.05 inches, and the biggest single day came Aug 20 with 3.90 inches. The longest dry stretch ran 10 days, Jan 27 to Feb 5, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "1.17",
+     "label": "biggest single day"
+    },
+    "county": "Hancock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "at Findlay Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.29",
+    "usual_in": "27.56",
+    "vs_usual": {
+     "diff_in": "5.27",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.83",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab9e3f1aef46bdc7",
+   "sid": "14825 1",
+   "story": "Through Oct 13, the weather station at Findlay Airport had caught 22.29 inches, 5.27 inches less than a usual year. April was the wettest month at 3.83 inches. The biggest single day was Jul 10, with 1.17 inches. The longest dry stretch ran 12 days, May 25 to Jun 5, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 8",
+     "in": "2.33",
+     "label": "biggest single day"
+    },
+    "county": "Hardin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "5.4 miles northeast of Ada",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.41",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.25",
+    "usual_in": "31.16",
+    "vs_usual": {
+     "diff_in": "5.09",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.83",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a12bcc6fb664cb0",
+   "sid": "US1OHHD0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.4 miles northeast of Ada has caught 12.41 inches more than it had by this day last year. September was the wettest month at 6.83 inches. The biggest single day was Aug 8, with 2.33 inches. The longest dry stretch ran 10 days, Feb 8 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.5 miles north-northwest of Napoleon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.64",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.81",
+    "usual_in": "28.93",
+    "vs_usual": {
+     "diff_in": "1.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.71",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dc006662947500b3",
+   "sid": "US1OHHY0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.5 miles north-northwest of Napoleon had most of its year show up early. April was the wettest month at 8.71 inches, and the biggest single day came Apr 1 with 2.45 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with nothing in the gauge. That puts the gauge 0.64 inches ahead of last year and 1.12 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "39071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Highland County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Hillsboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "42.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Ohio",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "43.95",
+    "usual_in": "37.77",
+    "vs_usual": {
+     "diff_in": "6.18",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.62",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "daeb769c3275a6c4",
+   "sid": "333758 2",
+   "story": "Through Oct 11, the weather station in Hillsboro had most of its year show up late. September was the wettest month at 9.62 inches, and Sep 20 alone brought 3.25 inches, the biggest single day. Back in spring the gauge went 13 days in a row with nothing in it, Apr 6 to Apr 18. On the days both years reported, that is 1.23 inches more than 2025.",
+   "through": "2026-10-11"
+  },
+  "39073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Hocking County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Logan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.25",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "38.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Ohio",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "43.78",
+    "usual_in": "35.32",
+    "vs_usual": {
+     "diff_in": "8.46",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.13",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "39d9b4574717e24f",
+   "sid": "334672 2",
+   "story": "Through Oct 12, the weather station in Logan had August as its wettest month at 10.13 inches. The biggest single day came Aug 12 with 2.20 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge. That puts the station 5.25 inches ahead of last year at this point.",
+   "through": "2026-10-12"
+  },
+  "39077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "1.86",
+     "label": "biggest one-day reading"
+    },
+    "county": "Huron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 24,
+    "days_reported": 262,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Bellevue",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "1.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "35.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 111,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.42",
+    "usual_in": "30.12",
+    "vs_usual": {
+     "diff_in": "3.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.35",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "52622ae48074ce27",
+   "sid": "US1OHHR0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of Bellevue had its wettest month in April, at 6.35 inches. The biggest rain came Aug 7, when 1.86 inches landed in the gauge. On the days both years reported, this year sits 1.15 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "4.88",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3 miles northwest of Jackson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.24",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "36.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.61",
+    "usual_in": "36.56",
+    "vs_usual": {
+     "diff_in": "2.05",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.69",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d9050dd979f3b7f9",
+   "sid": "334004 2",
+   "story": "Through Oct 13, the weather station 3 miles northwest of Jackson had 38.61 inches, 2.05 inches more than a usual year. September did most of the work with 9.69 inches, and 4.88 of that came on Sep 10, the biggest single day. The longest dry stretch ran 11 days, May 29 to Jun 8. On the days both years reported, this year is 2.24 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39081": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "1.89",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Steubenville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "14.85",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "24.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.25",
+    "usual_in": "34.15",
+    "vs_usual": {
+     "diff_in": "4.10",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.78",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "367e7f808591913b",
+   "sid": "338025 2",
+   "story": "Through Oct 13, the station in Steubenville had its wettest month in August with 8.78 inches. Right after that it went 11 days with nothing in the gauge, from Aug 24 to Sep 3. The biggest single day came early, 1.89 inches on May 23. On the days both years reported, this year has 14.85 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.32",
+     "label": "biggest single day"
+    },
+    "county": "Knox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "4.0 miles north-northwest of Fredericktown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.07",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.63",
+    "usual_in": "34.53",
+    "vs_usual": {
+     "diff_in": "4.10",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.93",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bbb7d566c601d85d",
+   "sid": "US1OHKN0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles north-northwest of Fredericktown had its wettest month in August at 6.93 inches. The biggest single day came Apr 4 with 2.32 inches. The longest dry stretch ran 8 days, from Feb 8 to Feb 15, with not even a trace. The gauge is 2.07 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "39087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in South Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "7.67",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "39.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.90",
+    "usual_in": "39.74",
+    "vs_usual": {
+     "diff_in": "8.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.99",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "449be5f09ca9c4fc",
+   "sid": "337857 2",
+   "story": "Through Oct 13, the weather station in South Point had July as its wettest month with 5.99 inches, and Jul 22 was the biggest single day at 2.00 inches. Then the gauge went 14 days in a row with nothing in it, from Aug 22 to Sep 4. On the days both years reported, that comes to 7.67 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "39089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.64",
+     "label": "biggest single day"
+    },
+    "county": "Licking County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Newark Heath Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "11.04",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "30.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 139,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.99",
+    "usual_in": "31.61",
+    "vs_usual": {
+     "diff_in": "12.38",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.26",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "82f0c1681dfd1ac5",
+   "sid": "04858 1",
+   "story": "Through Oct 13, the weather station at Newark Heath Airport had 43.99 inches, 12.38 more than a usual year. August did most of the work with 12.26 inches, and the biggest single day was 2.64 inches on Aug 20. The longest dry stretch ran 9 days, May 28 to Jun 5. On the days both years reported, this year is 11.04 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "4.18",
+     "label": "biggest single day"
+    },
+    "county": "Logan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Bellefontaine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "17.50",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 144,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.22",
+    "usual_in": "34.79",
+    "vs_usual": {
+     "diff_in": "15.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.61",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "71190ff38bf9b6d1",
+   "sid": "330563 2",
+   "story": "Through Oct 13, the weather station in Bellefontaine had 50.22 inches, 15.43 more than a usual year. August did most of the work with 13.61 inches, and Aug 20 alone brought 4.18. The longest dry stretch was 9 days, May 29 to Jun 6. That puts this year 17.50 inches ahead of 2025 on the same dates.",
+   "through": "2026-10-13"
+  },
+  "39093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "1.55",
+     "label": "biggest single day"
+    },
+    "county": "Lorain County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Oberlin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "1.10",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "30.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.90",
+    "usual_in": "32.18",
+    "vs_usual": {
+     "diff_in": "0.28",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.23",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f2d552fa05b9aae5",
+   "sid": "336196 2",
+   "story": "Through Oct 13, the weather station in Oberlin had its wettest month in April with 7.23 inches. The biggest single day was Jul 6 at 1.55 inches. The longest dry stretch ran 12 days, Feb 8 to Feb 19, with nothing in the gauge. On the days both years reported, this year is 1.10 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 11",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Lucas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Toledo Express Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.68",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.15",
+    "usual_in": "28.44",
+    "vs_usual": {
+     "diff_in": "1.71",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.25",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad856f80f08dc71d",
+   "sid": "94830 1",
+   "story": "Through Oct 13, the weather station at Toledo Express Airport has 6.68 inches more than last year had by the same day. April was the wettest month at 6.25 inches. The biggest single day came Mar 11 with 2.35 inches. The gauge stayed dry 11 days in a row from Feb 7 to Feb 17, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.32",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in London State Fish Hatchery",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.93",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.12",
+    "usual_in": "34.49",
+    "vs_usual": {
+     "diff_in": "7.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.21",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a030986e8dc11dcf",
+   "sid": "334681 2",
+   "story": "Through Oct 13, the weather station in London State Fish Hatchery had 42.12 inches, 7.63 more than a usual year. May was the wettest month at 9.21 inches, and the gauge then sat empty 9 days in a row from May 29 to Jun 6. The biggest single day came Aug 12 with 2.32 inches. That is 6.93 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "39099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 27",
+     "in": "2.16",
+     "label": "biggest single day"
+    },
+    "county": "Mahoning County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Canfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.25",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.01",
+    "usual_in": "33.52",
+    "vs_usual": {
+     "diff_in": "6.49",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.20",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "beec54b0214d9d8a",
+   "sid": "US1OHMH0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of Canfield has caught 40.01 inches, 6.49 more than a usual year. April was the wettest month at 7.20 inches, and the biggest single day came Mar 27 with 2.16. The longest dry stretch ran 10 days, May 28 to Jun 6. That puts 2026 at 7.25 inches more than 2025 on the same days.",
+   "through": "2026-10-13"
+  },
+  "39103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Medina County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile east-northeast of Medina",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.40",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "33.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.89",
+    "usual_in": "34.03",
+    "vs_usual": {
+     "diff_in": "2.86",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.98",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a1c7145cfd5b1631",
+   "sid": "US1OHMD0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-northeast of Medina put most of its year into April. April was the wettest month at 6.98 inches, and the biggest single day came Apr 1 with 1.50 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with not even a trace. On the days both years reported, this year is 3.40 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.88",
+     "label": "biggest single day"
+    },
+    "county": "Meigs County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.0 miles south-southeast of Albany",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.54",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.55",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "978e906cc6f26c7d",
+   "sid": "US1OHMS0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles south-southeast of Albany had caught 46.54 inches. September did most of the talking with 10.55 inches, and the biggest single day came Sep 20 at 2.88 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "39107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Mercer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "3.0 miles south-southwest of Maria Stein",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "11.93",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.53",
+    "usual_in": "31.13",
+    "vs_usual": {
+     "diff_in": "7.40",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.62",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3ab8a8168947b0b4",
+   "sid": "US1OHMC0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles south-southwest of Maria Stein had 38.53 inches, 7.40 more than a usual year. August did most of the work at 11.62 inches, and the biggest single day was 2.87 on Aug 2. Then it shut off for 13 days in a row, Aug 23 to Sep 4. On the days both years reported, that is 11.93 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39109": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "2.74",
+     "label": "biggest single day"
+    },
+    "county": "Miami County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Tipp City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.99",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "37.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.00",
+    "usual_in": "33.74",
+    "vs_usual": {
+     "diff_in": "10.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.51",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "707e95fbbc98a254",
+   "sid": "338332 2",
+   "story": "Through Oct 13, the weather station in Tipp City has caught most of this year's rain in May, with 10.51 inches that month. The biggest single day was May 23 at 2.74 inches. Then it shut off, with 9 days in a row of nothing in the gauge from May 29 to Jun 6. On the days both years reported, that's 6.99 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "39111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Hannibal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.04",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.10",
+    "usual_in": "36.75",
+    "vs_usual": {
+     "diff_in": "8.35",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.06",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "340288552aa2268a",
+   "sid": "333500 2",
+   "story": "Through Oct 13, the weather station in Hannibal had its wettest month in September at 7.06 inches. The biggest single day was Jul 22 with 2.00 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with nothing in the gauge. On the days both years reported, this year is 7.04 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "39113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "3.35",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.7 miles east of Farmersville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.71",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 145,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.70",
+    "usual_in": "33.65",
+    "vs_usual": {
+     "diff_in": "15.05",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.73",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c3aae4a0b7767e78",
+   "sid": "US1OHMY0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles east of Farmersville had caught 48.70 inches, 15.05 more than a usual year. August did most of the work with 13.73 inches, and the biggest single day was Aug 20 at 3.35. That is 10.71 inches more than 2025 had by the same day. The gauge did go 13 days in a row with nothing, from Apr 6 to Apr 18.",
+   "through": "2026-10-13"
+  },
+  "39115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "3.82",
+     "label": "biggest one-day reading"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "5.7 miles northeast of Glouster",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "5.51",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "42.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.04",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.35",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cbe5779403253874",
+   "sid": "US1OHMG0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.7 miles northeast of Glouster had 11.35 inches in August, the wettest month of the year. The biggest one-day reading came Aug 11 at 3.82 inches. Then it went 15 days in a row with nothing in the gauge, not even a trace, from Sep 26 to Oct 10. On the days both years reported, this year is 5.51 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Morrow County",
+    "days_in_year_so_far": 285,
+    "days_missing": 7,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Mount Gilead",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 256,
+      "diff_in": "1.00",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 27,
+     "through": "Oct 12",
+     "total_in": "32.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "33.54",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.10",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "13c5eb0e0e8684f6",
+   "sid": "US1OHMW0008 6",
+   "story": "Through Oct 12, the volunteer rain gauge near Mount Gilead says May was the wettest month at 6.10 inches. The biggest single day came earlier, 2.00 inches on Apr 4. From May 29 to Jun 5 it went 8 days in a row with nothing in it, not even a trace. On the days both years reported, 2026 is running 1.00 inch more than 2025.",
+   "through": "2026-10-12"
+  },
+  "39119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.37",
+     "label": "biggest single day"
+    },
+    "county": "Muskingum County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Zanesville Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "10.27",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.44",
+    "usual_in": "31.31",
+    "vs_usual": {
+     "diff_in": "9.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.77",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9118dc2dac576bcf",
+   "sid": "93824 1",
+   "story": "Through Oct 13, the weather station at Zanesville Municipal Airport has caught 40.44 inches, 9.13 more than a usual year. August did most of the work with 10.77 inches, and the biggest single day was Aug 20 at 2.37. On the days both years reported, that is 10.27 inches more than 2025. The longest dry stretch ran 9 days, May 28 to Jun 5.",
+   "through": "2026-10-13"
+  },
+  "39121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 20",
+     "in": "2.49",
+     "label": "biggest single day"
+    },
+    "county": "Noble County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4.0 miles southeast of Senecaville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "9.56",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "37.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.89",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.27",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff2c2109b76aed25",
+   "sid": "US1OHNB0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles southeast of Senecaville had its wettest month in August at 8.27 inches. The biggest single day came Aug 20 with 2.49 inches. The longest dry stretch ran 9 days, May 28 to Jun 5. On the days both years reported, this year is 9.56 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "2.99",
+     "label": "biggest single day"
+    },
+    "county": "Ottawa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "1.1 miles south-southwest of Put-In-Bay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "3.27",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.59",
+    "usual_in": "29.91",
+    "vs_usual": {
+     "diff_in": "1.68",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.01",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e691c3236ae79c62",
+   "sid": "US1OHOT0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles south-southwest of Put-In-Bay has caught 1.68 inches more than a usual year. August was the wettest month at 6.01 inches, and the biggest single day was Jul 6 with 2.99 inches. The gauge went 13 days dry from May 25 to Jun 6. On the days both years reported, that is 3.27 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Paulding County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Paulding",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.61",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.96",
+    "usual_in": "30.34",
+    "vs_usual": {
+     "diff_in": "0.38",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.11",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f57d0eacc21c016a",
+   "sid": "336465 2",
+   "story": "Through Oct 13, the weather station in Paulding had its wettest month in April at 7.11 inches, and the biggest single day came Apr 1 with 2.40 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with nothing in the gauge. That puts the station 4.61 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "39127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "4.60",
+     "label": "biggest single day"
+    },
+    "county": "Perry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2 miles northwest of New Lexington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "11.88",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.85",
+    "usual_in": "35.27",
+    "vs_usual": {
+     "diff_in": "12.58",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "15.40",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b2417e65e40ea74e",
+   "sid": "335857 2",
+   "story": "Through Oct 13, the weather station 2 miles northwest of New Lexington has caught most of its rain in August. That month alone came to 15.40 inches, and Aug 11 brought the biggest single day at 4.60 inches. On the days both years reported, this year is 11.88 inches more than last year. The longest dry stretch ran 9 days, May 29 to Jun 6.",
+   "through": "2026-10-13"
+  },
+  "39129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.15",
+     "label": "biggest single day"
+    },
+    "county": "Pickaway County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Circleville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": null,
+      "dir": "about the same",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 131,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.48",
+    "usual_in": "33.25",
+    "vs_usual": {
+     "diff_in": "10.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.24",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "45621a2153a79f8a",
+   "sid": "331592 2",
+   "story": "Through Oct 13, the weather station in Circleville had caught 43.48 inches, about the same as last year by this day. August was the wettest month with 9.24 inches, and the biggest single day came Aug 12 with 2.15 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "4.71",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pike County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Waverly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.54",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 7"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 115,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.60",
+    "usual_in": "35.33",
+    "vs_usual": {
+     "diff_in": "5.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.51",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d3a16c43bdf643b7",
+   "sid": "338830 2",
+   "story": "Through Oct 13, the weather station in Waverly had its wettest month in September at 9.51 inches. The biggest one-day reading came Sep 10 with 4.71 inches. The longest dry stretch ran 10 days, May 29 to Jun 7, with nothing in the gauge. On the days both years reported, this year is 2.54 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "4.22",
+     "label": "biggest single day"
+    },
+    "county": "Portage County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "4.7 miles southeast of Mogadore",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.70",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 121,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.84",
+    "usual_in": "33.68",
+    "vs_usual": {
+     "diff_in": "7.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.89",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5b1c070b5510e342",
+   "sid": "US1OHPT0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles southeast of Mogadore had 40.84 inches, 7.16 more than a usual year. September did most of the work at 7.89 inches, and 4.22 of that came on Sep 4 alone. That puts the gauge 14.70 inches ahead of last year to the same day. The longest it went with nothing in it was 11 days, May 26 to Jun 5.",
+   "through": "2026-10-13"
+  },
+  "39135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Preble County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Eaton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.92",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 144,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.40",
+    "usual_in": "34.91",
+    "vs_usual": {
+     "diff_in": "15.49",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.94",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a1fd41103348711",
+   "sid": "332485 2",
+   "story": "Through Oct 13, the weather station in Eaton had its wettest month in August with 10.94 inches. The biggest single day came Aug 13 with 2.12 inches. That is 14.92 inches more than 2025 had by the same day. The longest dry stretch ran 13 days from Apr 6 to Apr 18 with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.4 miles west of Leipsic",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.30",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.11",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.72",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "494c1db683f7d16f",
+   "sid": "US1OHPN0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.4 miles west of Leipsic shows April as the wettest month at 7.72 inches. The biggest single day came early in it, 2.45 inches on Apr 1. The longest dry stretch ran 9 days, Feb 8 to Feb 16, with not even a trace. That puts the gauge 2.30 inches more than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "39139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 26",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Richland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Mansfield Lahm Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.40",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.04",
+    "usual_in": "34.48",
+    "vs_usual": {
+     "diff_in": "0.44",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.70",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5403fc9c436411ed",
+   "sid": "14891 1",
+   "story": "Through Oct 13, the weather station at Mansfield Lahm Regional Airport had its wettest month in May at 5.70 inches. Then it went 9 days in a row with nothing in the gauge, from May 28 to Jun 5. The biggest single day came back on Mar 26 with 1.50 inches. The year sits 0.40 inches less than 2025 to the same day.",
+   "through": "2026-10-13"
+  },
+  "39141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Ross County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Frankfort",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.67",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.41",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.10",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee9db2a514f795a2",
+   "sid": "US1OHRS0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Frankfort shows 7.67 inches less than last year at this point. March was the wettest month with 7.10 inches, and the biggest single day came Mar 5 with 1.88 inches. Then it went 13 days in a row with nothing in the gauge, from Apr 6 to Apr 18.",
+   "through": "2026-10-13"
+  },
+  "39143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.07",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sandusky County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2.2 miles east-northeast of Fremont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 108,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.45",
+    "usual_in": "29.99",
+    "vs_usual": {
+     "diff_in": "2.46",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.19",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eb0dc4f139ac8b91",
+   "sid": "US1OHSD0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.2 miles east-northeast of Fremont had its wettest month in April at 7.19 inches. The biggest one-day reading came early in that month, 2.07 inches on Apr 1. The longest dry stretch ran 12 days, May 26 to Jun 6, with nothing in the gauge, not even a trace. On the days both years reported, this year is 1.89 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "39145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Scioto County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Portsmouth-Sciotoville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.42",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.81",
+    "usual_in": "34.97",
+    "vs_usual": {
+     "diff_in": "0.84",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.86",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f828b07fcd352420",
+   "sid": "336781 2",
+   "story": "Through Oct 13, the weather station in Portsmouth-Sciotoville has caught 35.81 inches, 0.84 inches more than a usual year. May was the wettest month at 7.86 inches, and the biggest single day was 2.90 inches on Jul 19. The gauge then went 13 days in a row without a drop from Aug 24 to Sep 5. On the days both years reported, this year is 2.42 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "39147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.86",
+     "label": "biggest single day"
+    },
+    "county": "Seneca County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.2 miles southeast of Tiffin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.91",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.82",
+    "usual_in": "32.52",
+    "vs_usual": {
+     "diff_in": "0.70",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.60",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d317ab0270ad57ee",
+   "sid": "US1OHSN0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.2 miles southeast of Tiffin had 31.82 inches, 0.70 less than a usual year. April did most of the work at 7.60 inches, and Apr 1 alone brought 2.86. The gauge then went 12 days with nothing at all, May 26 to Jun 6. That puts this year 3.91 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "39149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 27",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Shelby County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.3 miles north-northeast of Houston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.18",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "33.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.05",
+    "usual_in": "35.16",
+    "vs_usual": {
+     "diff_in": "5.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.42",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1874957790afa4c5",
+   "sid": "US1OHSH0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles north-northeast of Houston had its wettest month in August at 8.42 inches. The biggest single day came Mar 27 with 2.45 inches. The longest stretch with nothing in the gauge ran 9 days, May 29 to Jun 6. On the days both years reported, this year is 7.18 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "39151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "1.87",
+     "label": "biggest single day"
+    },
+    "county": "Stark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "4.8 miles south-southwest of Alliance",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.41",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.51",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.53",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "81b67c14b200c1be",
+   "sid": "US1OHST0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles south-southwest of Alliance has caught 10.41 inches more than it had by this day last year. September was the wettest month at 6.53 inches, and the biggest single day came Sep 4 with 1.87 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 24",
+     "in": "1.51",
+     "label": "biggest single day"
+    },
+    "county": "Summit County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.1 miles east-southeast of Cuyahoga Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.98",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.15",
+    "usual_in": "31.81",
+    "vs_usual": {
+     "diff_in": "2.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.89",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6cf79560a141544b",
+   "sid": "US1OHSM0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles east-southeast of Cuyahoga Falls had its year made in April. That month brought 7.89 inches, and the biggest single day was 1.51 inches on Apr 24. Then it quit for a while, with 12 days in a row of nothing in the gauge from May 26 to Jun 6. The gauge sits 1.98 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "39155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.44",
+     "label": "biggest single day"
+    },
+    "county": "Trumbull County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Youngstown-Warren Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.43",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.85",
+    "usual_in": "33.11",
+    "vs_usual": {
+     "diff_in": "0.26",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.22",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a7c28ea298db905e",
+   "sid": "14852 1",
+   "story": "Through Oct 13, the weather station at Youngstown-Warren Regional Airport had its wettest month in April at 5.22 inches. The biggest single day came Sep 3 with 2.44 inches. From May 25 to Jun 5 the gauge went 12 days in a row with nothing in it, not even a trace. That leaves the year 0.43 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "39157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 16",
+     "in": "2.51",
+     "label": "biggest single day"
+    },
+    "county": "Tuscarawas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at New Philadelphia Clever Field",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.14",
+    "usual_in": "31.00",
+    "vs_usual": {
+     "diff_in": "2.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.55",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7f43fd80b58b398d",
+   "sid": "04852 1",
+   "story": "Through Oct 13, the weather station at New Philadelphia Clever Field had 33.14 inches, 2.14 more than a usual year. August was the wettest month at 6.55 inches, and the biggest single day came Aug 16 with 2.51 inches. The longest dry stretch ran 9 days, May 28 to Jun 5, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "39159": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "2.75",
+     "label": "biggest one-day reading"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Marysville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "12.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 123,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.46",
+    "usual_in": "32.87",
+    "vs_usual": {
+     "diff_in": "7.59",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.59",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e84bc2e2659a6b2c",
+   "sid": "334979 2",
+   "story": "Through Oct 13, the weather station in Marysville has had more rain than a usual year, and August did most of the work with 8.59 inches. Right after that it shut off, with 11 days in a row of nothing in the gauge from Aug 25 to Sep 4. The biggest one-day reading was 2.75 inches on May 23. On the days both years reported, that is 12.30 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "39161": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "2.11",
+     "label": "biggest single day"
+    },
+    "county": "Van Wert County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1 mile south of Van Wert",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.29",
+    "usual_in": "33.08",
+    "vs_usual": {
+     "diff_in": "9.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.23",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0d2af1632b2f9c4d",
+   "sid": "338609 2",
+   "story": "Through Oct 13, the weather station 1 mile south of Van Wert had its wettest month in August at 9.23 inches. The biggest single day came Aug 11 with 2.11 inches. That puts the gauge 16.56 inches more than last year by this date, at 42.29 inches against 25.73. The longest dry stretch was 11 days, Feb 9 to Feb 19, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.98",
+     "label": "biggest one-day reading"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Kings Mills",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.15",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 118,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.74",
+    "usual_in": "36.11",
+    "vs_usual": {
+     "diff_in": "6.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.55",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab55f75c82924583",
+   "sid": "334238 2",
+   "story": "Through Oct 13, the weather station in Kings Mills had September as its wettest month at 7.55 inches, and the biggest one-day reading came Sep 19 at 2.98 inches. The longest dry stretch ran 13 days in a row, Apr 6 to Apr 18, with not even a trace in the gauge. That puts the station 6.15 inches ahead of where it stood on Oct 13 last year.",
+   "through": "2026-10-13"
+  },
+  "39167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "3.02",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Beverly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "11.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "36.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.61",
+    "usual_in": "36.18",
+    "vs_usual": {
+     "diff_in": "10.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.75",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4d59e4e8fb897ca8",
+   "sid": "330676 2",
+   "story": "Through Oct 13, the weather station in Beverly had August as its wettest month at 9.75 inches. The biggest single day was Sep 10 with 3.02 inches. On the days both years reported, this year is 11.13 inches more than last year. The longest dry stretch ran 8 days, May 30 to Jun 6, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "39169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.16",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Wooster Wayne County Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.70",
+    "usual_in": "29.73",
+    "vs_usual": {
+     "diff_in": "3.03",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.02",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dce940aac2e65965",
+   "sid": "04842 1",
+   "story": "Through Oct 13, the weather station at Wooster Wayne County Airport had 26.70 inches, 3.03 inches less than a usual year. April was the wettest month with 5.02 inches, and the biggest single day came Apr 1 with 1.16 inches. The longest dry stretch ran 9 days, May 28 to Jun 5, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "39171": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.13",
+     "label": "biggest single day"
+    },
+    "county": "Williams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of Bryan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.34",
+    "usual_in": "30.67",
+    "vs_usual": {
+     "diff_in": "0.33",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.93",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cc084356b738a5cd",
+   "sid": "331042 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of Bryan has run close to a usual year, just 0.33 inches less. August did most of the work at 7.93 inches, and Aug 3 alone brought 2.13. The gauge went 11 days in a row with nothing from May 27 to Jun 6. That still puts it 3.17 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "39173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "1.67",
+     "label": "biggest single day"
+    },
+    "county": "Wood County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "1.6 miles west-southwest of Perrysburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Ohio",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.67",
+    "usual_in": "29.31",
+    "vs_usual": {
+     "diff_in": "2.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.78",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e4dff81ace6864fe",
+   "sid": "US1OHWD0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles west-southwest of Perrysburg had its wettest month in April at 6.78 inches, and the biggest single day came early, 1.67 inches on Apr 1. Then it shut off for 13 days in a row, May 25 to Jun 6, with not even a trace in the gauge. The year sits 5.95 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "OH"
+}

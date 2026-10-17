@@ -1,0 +1,3333 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "05003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Ashley County",
+    "days_in_year_so_far": 285,
+    "days_missing": 4,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Portland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "28.88",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 12",
+     "total_in": "54.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Arkansas",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "25.86",
+    "usual_in": "43.26",
+    "vs_usual": {
+     "diff_in": "17.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.61",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "efc5399f83e6ac79",
+   "sid": "035866 2",
+   "story": "Through Oct 12, the weather station in Portland has 25.86 inches, 17.40 less than a usual year. The wettest month was May at 4.61 inches, and the biggest single day was 2.12 inches on Jan 10. The gauge went 14 days in a row with nothing from Feb 22 to Mar 7. On the days both years reported, this year sits 28.88 inches behind last year.",
+   "through": "2026-10-12"
+  },
+  "05005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Baxter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2.0 miles west of Midway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "16.24",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "47.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.49",
+    "usual_in": "36.48",
+    "vs_usual": {
+     "diff_in": "4.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e7ec3d75745d0f77",
+   "sid": "US1ARBX0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles west of Midway has caught 31.49 inches, 4.99 inches less than a usual year. June was the wettest month at 6.12 inches, and the biggest single day was 2.57 inches on Mar 5. The gauge went 19 days in a row without even a trace, from Sep 13 to Oct 1. On the days both years reported, that is 16.24 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 4",
+     "in": "2.66",
+     "label": "biggest single day"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Fayetteville Springdale NW Ar Regl Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "15.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.24",
+    "usual_in": "36.20",
+    "vs_usual": {
+     "diff_in": "7.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.19",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c6c1412365950f30",
+   "sid": "53922 1",
+   "story": "Through Oct 13, the weather station at Fayetteville Springdale NW Ar Regl Airport sat 7.96 inches less than a usual year. June did the heavy lifting with 8.19 inches, and the biggest single day was 2.66 inches on Mar 4. On the days both years reported, this year ran 15.89 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 13",
+     "in": "3.42",
+     "label": "biggest single day"
+    },
+    "county": "Boone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Harrison Boone County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.18",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.90",
+    "usual_in": "35.25",
+    "vs_usual": {
+     "diff_in": "0.35",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4c13fca14b6814f7",
+   "sid": "13971 1",
+   "story": "Through Oct 13, the weather station at Harrison Boone County Airport sits about where a usual year would, 0.35 inches less. May was the wettest month at 8.05 inches, and the biggest single day came Jun 13 with 3.42 inches. The gauge went 12 days in a row with nothing from Aug 25 to Sep 5. Last year by this day it had 1.18 inches more.",
+   "through": "2026-10-13"
+  },
+  "05015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "2.60",
+     "label": "biggest one-day reading"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "6.5 miles northwest of Berryville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.73",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.85",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bd132d207d2380c3",
+   "sid": "US1ARCR0023 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.5 miles northwest of Berryville had caught 27.73 inches. June was the wettest month at 5.85 inches. The biggest one-day reading came Aug 7 with 2.60 inches. The longest dry stretch ran 18 days from Jan 27 to Feb 13 with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "05019": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 21,
+    "days_reported": 265,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "8.5 miles east-southeast of Arkadelphia",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 27"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.70",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.16",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "761815709f7b95e0",
+   "sid": "US1ARCK0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.5 miles east-southeast of Arkadelphia had caught 27.70 inches this year. May was the wettest month at 7.16 inches. The longest dry stretch ran 12 days, Feb 16 to Feb 27, with nothing in the gauge, not even a trace. The gauge reported on 265 of 286 days, so the total misses 21 days.",
+   "through": "2026-10-13"
+  },
+  "05021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 11",
+     "in": "4.16",
+     "label": "biggest one-day reading"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 283,
+    "days_missing": 13,
+    "days_reported": 270,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Corning",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 69,
+    "state": "Arkansas",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "25.11",
+    "usual_in": "36.44",
+    "vs_usual": {
+     "diff_in": "11.33",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.73",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "77f2aa134f822124",
+   "sid": "031632 2",
+   "story": "Through Oct 10, the weather station in Corning had one long wait and one big day. It went 19 days in a row with nothing in the gauge, from Aug 23 to Sep 10. Then Sep 11 brought 4.16 inches, the biggest one-day reading so far, and that one day made up most of September, the wettest month at 4.73 inches. Even so, the station sat 11.33 inches less than a usual year.",
+   "through": "2026-10-10"
+  },
+  "05023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.22",
+     "label": "biggest single day"
+    },
+    "county": "Cleburne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2 miles northeast of Heber Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "22.08",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "52.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.39",
+    "usual_in": "40.36",
+    "vs_usual": {
+     "diff_in": "8.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.24",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61de7c39aa077a27",
+   "sid": "033229 2",
+   "story": "Through Oct 13, the weather station 2 miles northeast of Heber Springs had its wettest month in April, with 6.24 inches. The biggest single day came Apr 29, at 3.22 inches. On the days both years reported, 2026 sits 22.08 inches less than 2025 did.",
+   "through": "2026-10-13"
+  },
+  "05027": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Columbia County",
+    "days_in_year_so_far": 284,
+    "days_missing": 21,
+    "days_reported": 263,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Magnolia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 251,
+      "diff_in": "18.26",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 11",
+     "total_in": "53.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 80,
+    "state": "Arkansas",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "32.20",
+    "usual_in": "40.10",
+    "vs_usual": {
+     "diff_in": "7.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61327aa485f5a904",
+   "sid": "034548 2",
+   "story": "Through Oct 11, the weather station in Magnolia had 32.20 inches, 7.90 inches less than a usual year. The longest dry stretch ran 17 days, Feb 16 to Mar 4, with nothing in the gauge, not even a trace. On the days both years reported, that is 18.26 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "05029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 25",
+     "in": "2.67",
+     "label": "biggest single day"
+    },
+    "county": "Conway County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "9.4 miles west-southwest of Morrilton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "25.64",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.80",
+    "usual_in": "39.79",
+    "vs_usual": {
+     "diff_in": "12.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.65",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ecef08c22703fbfa",
+   "sid": "US1ARCW0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.4 miles west-southwest of Morrilton has caught 26.80 inches, 25.64 inches less than it had by this day last year. May was the wettest month at 7.65 inches. The biggest single day was Apr 25 with 2.67 inches. The longest dry stretch ran 20 days, Jan 26 to Feb 14, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "05031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.91",
+     "label": "biggest single day"
+    },
+    "county": "Craighead County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "at Jonesboro Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "21.81",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "44.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.98",
+    "usual_in": "37.33",
+    "vs_usual": {
+     "diff_in": "14.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5d7ac1a8e1c019b1",
+   "sid": "03953 1",
+   "story": "Through Oct 13, the weather station at Jonesboro Municipal Airport has caught 22.98 inches, 14.35 inches less than a usual year. June was the wettest month at 4.66 inches, and 2.91 of that came on Jun 22, the biggest single day. On the days both years reported, this year is 21.81 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "05035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Crittenden County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in West Memphis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "28.75",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "59.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.57",
+    "usual_in": "41.25",
+    "vs_usual": {
+     "diff_in": "9.68",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.60",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c4ba3143b331b1c6",
+   "sid": "037712 2",
+   "story": "Through Oct 13, the weather station in West Memphis has its biggest single day on Apr 29 at 3.20 inches, and May was the wettest month at 7.60 inches. Then it went 20 days in a row with nothing in the gauge, from Sep 13 to Oct 2. On the days both years reported, this year is 28.75 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.71",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cross County",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.3 miles east-northeast of Wynne",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "7.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 27"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.26",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.77",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7bf1a2f5694d3708",
+   "sid": "US1ARCS0005 6",
+   "story": "Through Oct 13, the wettest month at the gauge near Wynne was May with 8.77 inches, and the biggest one-day reading was 3.71 inches on Apr 29. The gauge went 15 days in a row with nothing in it, not even a trace, from Sep 13 to Sep 27. On the days both years reported, this year is 7.93 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "2.26",
+     "label": "biggest single day"
+    },
+    "county": "Dallas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "6.6 miles north-northwest of Fordyce",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "16.65",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 52,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.55",
+    "usual_in": "43.56",
+    "vs_usual": {
+     "diff_in": "21.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.52",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cf9de34e623b0f27",
+   "sid": "US1ARDL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.6 miles north-northwest of Fordyce had 22.55 inches, 21.01 inches less than a usual year. May was the wettest month at 5.52 inches, and the biggest single day was 2.26 inches on Mar 12. That came right after 18 days in a row with nothing in the gauge, from Feb 17 to Mar 6. On the days both years reported, this year is 16.65 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "05043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 11",
+     "in": "2.01",
+     "label": "biggest single day"
+    },
+    "county": "Drew County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Monticello Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "15.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "38.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.62",
+    "usual_in": "39.81",
+    "vs_usual": {
+     "diff_in": "17.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.18",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34d1a343b5d6b6ff",
+   "sid": "53919 1",
+   "story": "Through Oct 13, the weather station at Monticello Municipal Airport has caught 15.56 inches less than last year on the days both years reported. May was the wettest month at 6.18 inches. The biggest single day came Mar 11 with 2.01 inches. From Apr 6 to Apr 19 the gauge went 14 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "05045": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 11",
+     "in": "2.48",
+     "label": "biggest single day"
+    },
+    "county": "Faulkner County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.4 miles north-northwest of Greenbrier",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "22.20",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "54.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.56",
+    "usual_in": "40.32",
+    "vs_usual": {
+     "diff_in": "7.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.56",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9c4e4008c4e833a4",
+   "sid": "US1ARFK0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.4 miles north-northwest of Greenbrier had most of its year come in May, with 10.56 inches that month. The biggest single day was May 11 at 2.48 inches. The longest dry stretch ran 14 days, Sep 14 to Sep 27, with not even a trace. Last year at this point the gauge had 54.76 inches, so this year is 22.20 inches less.",
+   "through": "2026-10-13"
+  },
+  "05047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "1.75",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "4.6 miles south of Ozark",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "26.63",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Jan 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 56,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.93",
+    "usual_in": "37.39",
+    "vs_usual": {
+     "diff_in": "16.46",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.04",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "efc1ee314eb2124e",
+   "sid": "US1ARFR0003 6",
+   "story": "Through Oct 13, the wettest month at the volunteer rain gauge 4.6 miles south of Ozark was June, at 4.04 inches. The biggest single day was Sep 10, with 1.75 inches. From Jan 22 to Feb 13 the gauge went 23 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 26.63 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Fulton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Mammoth Spring",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.00",
+    "usual_in": "37.96",
+    "vs_usual": {
+     "diff_in": "6.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.00",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "85af7e6a24801187",
+   "sid": "034572 2",
+   "story": "Through Oct 13, the weather station in Mammoth Spring has 31.00 inches, 6.96 inches less than a usual year. April was the wettest month at 6.00 inches. The biggest single day came late, 3.20 inches on Oct 2. The longest dry stretch ran 18 days, Jan 27 to Feb 13, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "05051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Garland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Blakely Mountain",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "26.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "49.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 52,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.76",
+    "usual_in": "43.74",
+    "vs_usual": {
+     "diff_in": "20.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.91",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f84a0eaa3be43d3b",
+   "sid": "030764 2",
+   "story": "Through Oct 13, the weather station in Blakely Mountain has run well behind last year, with 26.39 inches less than 2025 on the days both years reported. May was the wettest month at 5.91 inches. The biggest single day came Feb 15 with 1.92 inches, right after an 18 day dry stretch from Jan 26 to Feb 12 with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "05055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "3.32",
+     "label": "biggest one-day reading"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.8 miles west of Lafe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "17.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 73,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.87",
+    "usual_in": "36.86",
+    "vs_usual": {
+     "diff_in": "9.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.13",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4872cf75d42d1182",
+   "sid": "US1ARGN0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles west of Lafe had September as its wettest month at 5.13 inches. The biggest one-day reading was 3.32 inches on Jul 10. From Mar 17 to Apr 3 it went 18 days in a row with nothing in it, not even a trace. On the days both years reported, that is 17.62 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 5",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Hempstead County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3 miles northeast of Hope",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "28.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "55.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 63,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.72",
+    "usual_in": "42.09",
+    "vs_usual": {
+     "diff_in": "15.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.41",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c50234a9e791920e",
+   "sid": "033428 2",
+   "story": "Through Oct 13, the weather station 3 miles northeast of Hope has caught 26.72 inches, 15.37 inches less than a usual year. April was the wettest month at 6.41 inches, and the biggest single day was Apr 5 with 2.00 inches. The gauge then went 22 days in a row with nothing from Jul 17 to Aug 7. On the days both years reported, this year is 28.66 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "05059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Hot Spring County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Degray Lake State Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "13.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.55",
+    "usual_in": "44.62",
+    "vs_usual": {
+     "diff_in": "6.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.94",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a48b853e3cc1a2e2",
+   "sid": "031910 2",
+   "story": "Through Oct 13, the weather station in Degray Lake State Park had its biggest single day on Feb 15 with 2.55 inches, then went 17 days in a row with nothing in the gauge from Feb 16 to Mar 4. April was the wettest month at 7.94 inches. On the days both years reported, this year is 13.70 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "3.46",
+     "label": "biggest single day"
+    },
+    "county": "Howard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Nashville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "14.72",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "46.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.26",
+    "usual_in": "42.08",
+    "vs_usual": {
+     "diff_in": "8.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.80",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78ff35d93a385e10",
+   "sid": "035112 2",
+   "story": "Through Oct 13, the weather station in Nashville had 33.26 inches, 8.82 inches less than a usual year. June carried a lot of it with 11.80 inches, and the biggest single day was Jun 25 at 3.46 inches. From Sep 14 to Oct 1 the gauge went 18 days in a row with nothing in it, not even a trace. On the days both years reported, that is 14.72 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "2.30",
+     "label": "biggest one-day reading"
+    },
+    "county": "Independence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Batesville Lvstk",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "20.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "42.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 60,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.36",
+    "usual_in": "37.49",
+    "vs_usual": {
+     "diff_in": "15.13",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.34",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8e67625acf67eb4a",
+   "sid": "030458 2",
+   "story": "Through Oct 13, the weather station in Batesville Lvstk has run well behind a usual year, 15.13 inches less. June was the wettest month at 4.34 inches, and the biggest one-day reading came late, 2.30 inches on Oct 2. The longest dry stretch ran 18 days, Jan 27 to Feb 13. On the days both years reported, this year sits 20.20 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05065": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 20",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "Izard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2 miles west-southwest of Calico Rock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "13.52",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.71",
+    "usual_in": "38.09",
+    "vs_usual": {
+     "diff_in": "8.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.00",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0b7917a1ff52a3e5",
+   "sid": "031132 2",
+   "story": "Through Oct 13, the weather station 2 miles west-southwest of Calico Rock had May as its wettest month at 7.00 inches, and the biggest single day came May 20 with 2.68 inches. The longest dry stretch ran 18 days, Jan 27 to Feb 13, with not even a trace in the gauge. On the days both years reported, this year is 13.52 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Newport Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "11.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.30",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.81",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8cb087a176a2c2f2",
+   "sid": "13917 1",
+   "story": "Through Oct 13, the weather station at Newport Municipal Airport had its wettest month in June at 5.81 inches, and its biggest single day came Jun 22 with 2.12 inches. The longest dry stretch ran 25 days, Jan 26 to Feb 19, with not even a trace in the gauge. On the days both years reported, this year sits 11.44 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 25",
+     "in": "2.31",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Pine Bluff",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "17.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "42.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.44",
+    "usual_in": "40.83",
+    "vs_usual": {
+     "diff_in": "15.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.25",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "156fa259b529af92",
+   "sid": "035754 2",
+   "story": "Through Oct 13, the weather station in Pine Bluff has 25.44 inches, 15.39 inches less than a usual year. May was the wettest month at 5.25 inches, and the biggest single day was 2.31 inches on Apr 25. The gauge then went 22 days in a row with nothing in it, from Jul 17 to Aug 7. On the days both years reported, that is 17.38 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "3.07",
+     "label": "biggest one-day reading"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "6 miles northeast of Clarksville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "24.95",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "54.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 73,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.69",
+    "usual_in": "40.95",
+    "vs_usual": {
+     "diff_in": "11.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.91",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b7390b70a2262828",
+   "sid": "031457 2",
+   "story": "Through Oct 13, the weather station 6 miles northeast of Clarksville is 24.95 inches behind last year, when it had 54.64 inches by this day. June was the wettest month at 6.91 inches. The biggest one-day reading came late, 3.07 inches on Oct 2. The longest dry stretch ran 19 days, from Jan 27 to Feb 14.",
+   "through": "2026-10-13"
+  },
+  "05073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.71",
+     "label": "biggest single day"
+    },
+    "county": "Lafayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Lewisville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "21.48",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.27",
+    "usual_in": "40.84",
+    "vs_usual": {
+     "diff_in": "10.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.58",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6ff267777f92799e",
+   "sid": "034185 2",
+   "story": "Through Oct 13, the weather station in Lewisville had a good share of its year land in June, with 10.58 inches that month. The biggest single day was Jun 20 at 3.71 inches. Then it quit for 22 days in a row, Jul 15 to Aug 5, with not even a trace in the gauge. On the days both years reported, that is 21.48 inches less than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "05075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 11",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4.4 miles south-southeast of Smithville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "22.96",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "51.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.29",
+    "usual_in": "39.59",
+    "vs_usual": {
+     "diff_in": "11.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.20",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c23f72847b7455a8",
+   "sid": "US1ARLW0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.4 miles south-southeast of Smithville had 28.29 inches, 11.30 inches less than a usual year. July was the wettest month at 5.20 inches, and the biggest single day was 2.57 inches on Sep 11. On the days both years reported, that is 22.96 inches less than last year. The gauge went 19 days in a row with nothing in it, from Jan 26 to Feb 13.",
+   "through": "2026-10-13"
+  },
+  "05077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "2.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2 miles south of Marianna",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 265,
+      "diff_in": "16.64",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "51.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 17"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 73,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.28",
+    "usual_in": "37.20",
+    "vs_usual": {
+     "diff_in": "9.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "22bea47cbd08eadb",
+   "sid": "034638 2",
+   "story": "Through Oct 13, the weather station 2 miles south of Marianna has 27.28 inches, 9.92 inches less than a usual year. The biggest one-day reading came Feb 15 at 2.17 inches. The gauge went 16 days in a row with nothing, not even a trace, from Aug 2 to Aug 17. On the days both years reported, this year is 16.64 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "2.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Little River County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4 miles south-southeast of Ashdown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "10.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "40.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 5"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 70,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.99",
+    "usual_in": "40.16",
+    "vs_usual": {
+     "diff_in": "12.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.99",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8757cfd3658205c9",
+   "sid": "030286 2",
+   "story": "Through Oct 13, the weather station 4 miles south-southeast of Ashdown had 27.99 inches, 12.17 inches less than a usual year. June was the wettest month at 7.99 inches, and the biggest rain came Jun 20 with 2.70 inches. Then the gauge went 19 days in a row with nothing, from Jul 18 to Aug 5. On the days both years reported, that is 10.31 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "2.27",
+     "label": "biggest single day"
+    },
+    "county": "Logan County",
+    "days_in_year_so_far": 285,
+    "days_missing": 2,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Ratcliff",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "19.43",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "46.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Arkansas",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "27.20",
+    "usual_in": "37.00",
+    "vs_usual": {
+     "diff_in": "9.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.43",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "20cd6fdaabe6b0aa",
+   "sid": "036008 2",
+   "story": "Through Oct 12, the weather station in Ratcliff had its wettest month in April at 6.43 inches. Then it went 16 days in a row with nothing in the gauge, from Aug 26 to Sep 10. The biggest single day came late, 2.27 inches on Oct 2. On the days both years reported, that is 19.43 inches less than 2025 had.",
+   "through": "2026-10-12"
+  },
+  "05087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "6.00",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2 miles south of Kingston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.61",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "49.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.86",
+    "usual_in": "39.96",
+    "vs_usual": {
+     "diff_in": "3.90",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.41",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b2268bf2046347a4",
+   "sid": "033909 2",
+   "story": "Through Oct 13, the weather station 2 miles south of Kingston had a lot of its year early. January was the wettest month at 11.41 inches, and Jan 25 alone brought 6.00 inches, the biggest single day. The longest dry stretch ran 15 days, Aug 9 to Aug 23, with not even a trace in the gauge. On the days both years reported, this year is 5.61 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05089": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1 mile south of Bull Shoals",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "14.40",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 85,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.48",
+    "usual_in": "35.81",
+    "vs_usual": {
+     "diff_in": "5.33",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.51",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f1f004348d6def49",
+   "sid": "031021 2",
+   "story": "Through Oct 13, the weather station 1 mile south of Bull Shoals has 30.48 inches, 5.33 inches less than a usual year. May was the wettest month at 6.51 inches. The longest dry stretch ran 17 days, Jan 28 to Feb 13, with nothing in the gauge. On the days both years reported, that is 14.40 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.64",
+     "label": "biggest single day"
+    },
+    "county": "Miller County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Texarkana Webb Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.71",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.59",
+    "usual_in": "37.54",
+    "vs_usual": {
+     "diff_in": "11.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.04",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "baf8d367e9cd2527",
+   "sid": "13977 1",
+   "story": "Through Oct 13, the weather station at Texarkana Webb Field has 25.59 inches, 11.95 inches less than a usual year. June was the wettest month at 8.04 inches, and the biggest single day came Jun 19 with 2.64 inches. The longest dry stretch ran 12 days, Feb 21 to Mar 4, with nothing in the gauge, not even a trace. Last year had 40.30 inches by this day, so 2026 is 14.71 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "05093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.05",
+     "label": "biggest single day"
+    },
+    "county": "Mississippi County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "6.1 miles east of Blytheville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "19.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.78",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.10",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a51916abdf00b065",
+   "sid": "US1ARMS0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.1 miles east of Blytheville has caught 19.00 inches less than last year on the days both years reported. May was the wettest month at 6.10 inches, and the biggest single day was Apr 29 with 3.05 inches. The gauge then went 14 days in a row with nothing in it, not even a trace, from Aug 9 to Aug 22.",
+   "through": "2026-10-13"
+  },
+  "05097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 11",
+     "in": "2.71",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Mount Ida",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "21.81",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "53.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.36",
+    "usual_in": "42.80",
+    "vs_usual": {
+     "diff_in": "11.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.76",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2a124deb48c3a4e1",
+   "sid": "53921 1",
+   "story": "Through Oct 13, the weather station in Mount Ida has caught 31.36 inches, 11.44 inches less than a usual year. April was the wettest month at 5.76 inches, and the biggest single day was 2.71 inches on Sep 11. On the days both years reported, that is 21.81 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "05099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.85",
+     "label": "biggest one-day reading"
+    },
+    "county": "Nevada County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.7 miles southwest of Prescott",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "16.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "43.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.84",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.43",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c4add4f0f191f17a",
+   "sid": "US1ARNV0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles southwest of Prescott has caught 26.84 inches. April was the wettest month at 5.43 inches, and the biggest one-day reading was 1.85 inches on Jun 24. The longest dry stretch ran 17 days, Feb 16 to Mar 4, with nothing in the gauge. On the days both years reported, this year is 16.31 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "2.03",
+     "label": "biggest one-day reading"
+    },
+    "county": "Newton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.8 miles southeast of Jasper",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "11.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "43.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 79,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.67",
+    "usual_in": "41.55",
+    "vs_usual": {
+     "diff_in": "8.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.45",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "abce9c73e29cb847",
+   "sid": "US1ARNW0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.8 miles southeast of Jasper caught its most in May, 6.45 inches. The biggest one-day reading came late, 2.03 inches on Oct 2. From Jul 17 to Jul 30 it went 14 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 11.70 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "05105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "2.86",
+     "label": "biggest single day"
+    },
+    "county": "Perry County",
+    "days_in_year_so_far": 277,
+    "days_missing": 13,
+    "days_reported": 264,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "6.2 miles south-southwest of Bigelow",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 242,
+      "diff_in": "18.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 23,
+     "through": "Oct 4",
+     "total_in": "45.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "25.64",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.60",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6291d4015b19d982",
+   "sid": "US1ARPY0007 6",
+   "story": "Through Oct 4, the gauge near Bigelow had caught 25.64 inches for the year. July was the wettest month at 4.60 inches, but the biggest single day came back on Feb 15 with 2.86 inches. Then the gauge went 19 days in a row with nothing in it, not even a trace, from Sep 13 to Oct 1. On the days both years reported, that is 18.95 inches less than 2025.",
+   "through": "2026-10-04"
+  },
+  "05109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 16",
+     "in": "2.61",
+     "label": "biggest single day"
+    },
+    "county": "Pike County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "1 mile southwest of Antoine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "13.36",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 11",
+     "total_in": "48.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Arkansas",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "36.02",
+    "usual_in": "42.26",
+    "vs_usual": {
+     "diff_in": "6.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.27",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bcbde252b3381026",
+   "sid": "030178 2",
+   "story": "Through Oct 11, the weather station 1 mile southwest of Antoine has 36.02 inches, 6.24 inches less than a usual year. April was the wettest month at 7.27 inches. The gauge went 19 days in a row with nothing in it, from Feb 16 to Mar 6. On the days both years reported, this year is 13.36 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "05113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 11",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1 mile south-southeast of Big Fork",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "23.26",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "55.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.75",
+    "usual_in": "50.91",
+    "vs_usual": {
+     "diff_in": "14.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.90",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "72179460e6222fa2",
+   "sid": "030664 2",
+   "story": "Through Oct 13, the weather station 1 mile south-southeast of Big Fork had June as the wettest month at 7.90 inches. The biggest single day was Sep 11 with 2.70 inches. From Feb 16 to Mar 3 the gauge went 16 days in a row with nothing in it, not even a trace. On the days both years reported, that is 23.26 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 11",
+     "in": "3.46",
+     "label": "biggest single day"
+    },
+    "county": "Pope County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "at Russellville Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "17.83",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.83",
+    "usual_in": "34.60",
+    "vs_usual": {
+     "diff_in": "9.77",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.90",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a63b2cdeda63eafc",
+   "sid": "53920 1",
+   "story": "Through Oct 13, the weather station at Russellville Municipal Airport went 13 days in a row with nothing, not even a trace, from Aug 28 to Sep 9. Then Sep 11 brought 3.46 inches, the biggest single day of the year so far. May was the wettest month at 5.90 inches. On the days both years reported, 2026 is 17.83 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 7",
+     "in": "1.48",
+     "label": "biggest single day"
+    },
+    "county": "Prairie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "at Stuttgart Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "17.94",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.26",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "3.99",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eba3d358d2931b40",
+   "sid": "13925 1",
+   "story": "Through Oct 13, the weather station at Stuttgart Municipal Airport had 17.26 inches for the year. March was the wettest month at 3.99 inches, and the biggest single day came Mar 7 with 1.48 inches. The gauge then went 15 days in a row with nothing, from Sep 12 to Sep 26. On the days both years reported, that is 17.94 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05119": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 27",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Pulaski County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in North Little Rock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.62",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.91",
+    "usual_in": "39.09",
+    "vs_usual": {
+     "diff_in": "10.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.31",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "522c618774398005",
+   "sid": "03952 1",
+   "story": "Through Oct 13, the weather station in North Little Rock has 28.91 inches, 10.18 inches less than a usual year. May was the wettest month at 7.31 inches, and the biggest single day came May 27 with 2.29 inches. The gauge then went 14 days in a row with nothing from Aug 27 to Sep 9. Last year at this point it had 18.62 inches more.",
+   "through": "2026-10-13"
+  },
+  "05125": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "3.69",
+     "label": "biggest one-day reading"
+    },
+    "county": "Saline County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "2.2 miles east-southeast of Shannon Hills",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "6.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "44.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 95,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.07",
+    "usual_in": "39.90",
+    "vs_usual": {
+     "diff_in": "1.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.91",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "526125377228d09a",
+   "sid": "US1ARSL0035 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.2 miles east-southeast of Shannon Hills has 38.07 inches, 1.83 inches less than a usual year. May was the wettest month at 9.91 inches, and the biggest one-day reading came May 6 with 3.69 inches. The gauge then went 18 days in a row with nothing in it from Sep 14 to Oct 1. On the days both years reported, this year is 6.73 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 12",
+     "in": "2.84",
+     "label": "biggest single day"
+    },
+    "county": "Scott County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Waldron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "12.65",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "48.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.17",
+    "usual_in": "40.73",
+    "vs_usual": {
+     "diff_in": "4.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.71",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9043e211202a0a5",
+   "sid": "037488 2",
+   "story": "Through Oct 13, the weather station in Waldron had its wettest month in April at 8.71 inches. The biggest single day came Jul 12 with 2.84 inches. The longest dry stretch ran 17 days, Feb 16 to Mar 4, with nothing in the gauge. On the days both years reported, this year is 12.65 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "3.70",
+     "label": "biggest single day"
+    },
+    "county": "Searcy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Gilbert",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "11.42",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "43.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.21",
+    "usual_in": "37.30",
+    "vs_usual": {
+     "diff_in": "5.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.54",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8a5cb4747306ea2f",
+   "sid": "032794 2",
+   "story": "Through Oct 13, the weather station in Gilbert has the wettest month as June at 6.54 inches. The biggest single day came Jun 14 with 3.70 inches. The longest dry stretch ran 18 days, Jan 27 to Feb 13, with nothing in the gauge. On the days both years reported, this year is 11.42 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 6",
+     "in": "3.95",
+     "label": "biggest single day"
+    },
+    "county": "Sebastian County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "at Fort Smith Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.90",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jul 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.42",
+    "usual_in": "37.26",
+    "vs_usual": {
+     "diff_in": "8.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.78",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "589be11cc4125b17",
+   "sid": "13964 1",
+   "story": "Through Oct 13, the weather station at Fort Smith Regional Airport had 28.42 inches, 8.84 inches less than a usual year. June did most of the work with 7.78 inches, and 3.95 of that came on Jun 6. From Jul 30 to Aug 16 the gauge went 18 days in a row with nothing in it. Last year at this point it had 15.90 inches more.",
+   "through": "2026-10-13"
+  },
+  "05133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Sevier County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at De Queen Sevier County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.35",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.35",
+    "usual_in": "34.63",
+    "vs_usual": {
+     "diff_in": "8.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.05",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "31b4594ec4bccc1b",
+   "sid": "53925 1",
+   "story": "Through Oct 13, the weather station at De Queen Sevier County Airport has caught 26.35 inches, 8.28 inches less than a usual year. June was the wettest month at 7.05 inches, and the biggest single day was Apr 4 with 2.35 inches. Last year at this point the gauge had 42.70 inches, so this year is 16.35 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "05135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.06",
+     "label": "biggest single day"
+    },
+    "county": "Sharp County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "8.0 miles south-southwest of Hardy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "24.33",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "49.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.14",
+    "usual_in": "38.70",
+    "vs_usual": {
+     "diff_in": "15.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.32",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e58f47fbf26e77b5",
+   "sid": "US1ARSH0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.0 miles south-southwest of Hardy has caught 23.14 inches, 15.56 inches less than a usual year. June was the wettest month at 5.32 inches, and the biggest single day was 2.06 inches on Jun 22. On the days both years reported, this year is 24.33 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05137": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "Stone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Mountain View",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "12.37",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 24,
+     "through": "Oct 13",
+     "total_in": "43.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.98",
+    "usual_in": "39.62",
+    "vs_usual": {
+     "diff_in": "7.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.02",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a675621e9ff7d7be",
+   "sid": "035046 2",
+   "story": "Through Oct 13, the weather station in Mountain View has 31.98 inches, 7.64 inches less than a usual year. May was the wettest month at 7.02 inches, and the biggest single day came May 28 with 2.42 inches. The longest dry stretch ran 18 days, Jan 27 to Feb 13. On the days both years reported, this year is 12.37 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "05139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "3.26",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at El Dorado Goodwin Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.81",
+    "usual_in": "39.90",
+    "vs_usual": {
+     "diff_in": "12.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.78",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b42132d28f54fbd2",
+   "sid": "93992 1",
+   "story": "Through Oct 13, the weather station at El Dorado Goodwin Field has 27.81 inches, 12.09 inches less than a usual year. Last year by this day it had 38.39, so this year sits 10.58 inches behind. June was the wettest month at 4.78 inches, and the biggest single day was 3.26 inches on Jul 4. The gauge went 16 days in a row with nothing in it, Mar 16 to Mar 31.",
+   "through": "2026-10-13"
+  },
+  "05141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.94",
+     "label": "biggest single day"
+    },
+    "county": "Van Buren County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2 miles north-northeast of Damascus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "15.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "48.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Arkansas",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "33.23",
+    "usual_in": "40.37",
+    "vs_usual": {
+     "diff_in": "7.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.17",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fe01805c2fc13f34",
+   "sid": "031829 2",
+   "story": "Through Oct 10, the weather station 2 miles north-northeast of Damascus had 33.23 inches, 7.14 inches less than a usual year. May was the wettest month at 7.17 inches, and the biggest single day was Jun 23 with 2.94 inches. The gauge went 15 days in a row with nothing from Jan 27 to Feb 10. Last year by this day it had 48.42 inches, so this year is 15.19 inches less.",
+   "through": "2026-10-10"
+  },
+  "05143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.63",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Fayetteville Drake Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "21.17",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.43",
+    "usual_in": "37.51",
+    "vs_usual": {
+     "diff_in": "6.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.08",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "88e507ce3788bf00",
+   "sid": "93993 1",
+   "story": "Through Oct 13, the weather station at Fayetteville Drake Field had 31.43 inches, 6.08 inches less than a usual year. June carried a lot of it with 11.08 inches, and the biggest single day was Jun 8 at 2.63 inches. The gauge then went 12 days in a row with nothing from Aug 25 to Sep 5. Last year by this date it had 52.60 inches, so this year is 21.17 inches less.",
+   "through": "2026-10-13"
+  },
+  "05145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.96",
+     "label": "biggest one-day reading"
+    },
+    "county": "White County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Georgetown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "21.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "47.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": 69,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.16",
+    "usual_in": "37.90",
+    "vs_usual": {
+     "diff_in": "11.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.33",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fcd758ec84329cfc",
+   "sid": "032760 2",
+   "story": "Through Oct 13, the station in Georgetown had its wettest month in April at 5.33 inches, and its biggest one-day reading came Apr 29 at 2.96 inches. It went 16 days in a row with nothing in the gauge, from Jan 26 to Feb 10. On the days both years reported, this year is 21.66 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "05149": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "Yell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "in Dardanelle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "18.78",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "45.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Arkansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.04",
+    "usual_in": "37.53",
+    "vs_usual": {
+     "diff_in": "6.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.95",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8449222b92f73eb2",
+   "sid": "031838 2",
+   "story": "Through Oct 13, the weather station in Dardanelle had May as the wettest month at 7.95 inches, and May 29 brought the biggest single day at 2.81 inches. The longest dry stretch ran 20 days, Jan 26 to Feb 14, with nothing in the gauge. On the days both years reported, this year is 18.78 inches less than 2025.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "AR"
+}

@@ -1,0 +1,4842 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "19003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "4.56",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Corning",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 151,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.58",
+    "usual_in": "29.61",
+    "vs_usual": {
+     "diff_in": "14.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.89",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "33ee88f7b24fc1cc",
+   "sid": "131833 2",
+   "story": "Through Oct 13, the station in Corning had a wet year going. September was the wettest month at 12.89 inches, and the biggest single day was Aug 5 with 4.56 inches. The longest dry stretch ran 18 days, from Jan 25 to Feb 11, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "19005": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Allamakee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles north-northeast of Waukon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "6.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "30.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 10,
+    "pct_of_usual": 111,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.36",
+    "usual_in": "31.82",
+    "vs_usual": {
+     "diff_in": "3.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "03568b6f604395b2",
+   "sid": "138755 2",
+   "story": "Through Oct 13, the weather station 3 miles north-northeast of Waukon has caught 35.36 inches, 3.54 more than a usual year. The longest dry stretch ran 17 days, Feb 3 to Feb 19, with nothing in the gauge, not even a trace. On the days both years reported, this year is 6.23 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 6",
+     "in": "2.22",
+     "label": "biggest one-day reading"
+    },
+    "county": "Appanoose County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Rathbun",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "3.14",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "32.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 108,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.71",
+    "usual_in": "33.12",
+    "vs_usual": {
+     "diff_in": "2.59",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.11",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "41f30115a2a288de",
+   "sid": "136910 2",
+   "story": "Through Oct 13, the weather station in Rathbun has seen its wettest month in September, with 7.11 inches. The biggest one-day reading was 2.22 inches on Mar 6. The gauge also went 25 days in a row with nothing in it, from Jan 26 to Feb 19. On the days both years reported, this year is 3.14 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.44",
+     "label": "biggest single day"
+    },
+    "county": "Audubon County",
+    "days_in_year_so_far": 285,
+    "days_missing": 10,
+    "days_reported": 275,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Audubon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "5.70",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 12",
+     "total_in": "28.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Iowa",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "32.67",
+    "usual_in": "29.75",
+    "vs_usual": {
+     "diff_in": "2.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.90",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0b9c0661ccf7fd57",
+   "sid": "130385 2",
+   "story": "Through Oct 12, the weather station in Audubon had its wettest month in September at 8.90 inches. The biggest single day came on Oct 1 with 2.44 inches. Back in spring it went 16 days in a row with nothing in the gauge, May 1 to May 16. On the days both years reported, that is 5.70 inches more than 2025.",
+   "through": "2026-10-12"
+  },
+  "19011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "3.03",
+     "label": "biggest single day"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Vinton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "13.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "31.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.52",
+    "usual_in": "32.48",
+    "vs_usual": {
+     "diff_in": "13.04",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b246de756e07021a",
+   "sid": "138568 2",
+   "story": "Through Oct 13, the weather station in Vinton has caught 13.04 inches more than a usual year. June did most of the work at 9.12 inches, and Jun 9 alone brought 3.03 inches. The longest dry stretch ran 16 days, Feb 4 to Feb 19. On the days both years reported, that is 13.53 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "19013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.91",
+     "label": "biggest single day"
+    },
+    "county": "Black Hawk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Waterloo Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.94",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.81",
+    "usual_in": "31.51",
+    "vs_usual": {
+     "diff_in": "9.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.06",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78b156b4675c5b8b",
+   "sid": "94910 1",
+   "story": "Through Oct 13, the weather station at Waterloo Municipal Airport has caught 40.81 inches, 9.30 more than a usual year. September was the wettest month at 8.06 inches, and the biggest single day came Oct 1 with 2.91. That is 8.94 inches more than 2025 had by Oct 13. The longest dry stretch ran 14 days, Feb 4 to Feb 17, with not even a trace.",
+   "through": "2026-10-13"
+  },
+  "19015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "3.13",
+     "label": "biggest single day"
+    },
+    "county": "Boone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Boone",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "42.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 148,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.01",
+    "usual_in": "33.78",
+    "vs_usual": {
+     "diff_in": "16.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.17",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "055dd87a8bb095c4",
+   "sid": "130807 2",
+   "story": "Through Oct 13, the station in Boone has caught 50.01 inches, 16.23 more than a usual year. July was the wettest month at 8.17 inches, and the biggest single day was Jun 5 with 3.13. The longest dry stretch ran 12 days, Mar 19 to Mar 30. On the days both years reported, that is 7.15 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "19019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "3.23",
+     "label": "biggest single day"
+    },
+    "county": "Buchanan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Stanley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "7.71",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.81",
+    "usual_in": "32.90",
+    "vs_usual": {
+     "diff_in": "7.91",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.15",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6c21e97b021e6072",
+   "sid": "137892 2",
+   "story": "Through Oct 13, the weather station in Stanley had its wettest month in June at 8.15 inches. The biggest single day came Jul 3 with 3.23 inches. The longest dry stretch ran 16 days, Feb 4 to Feb 19, with not even a trace in the gauge. On the days both years reported, this year is 7.71 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "19021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "2.04",
+     "label": "biggest one-day reading"
+    },
+    "county": "Buena Vista County",
+    "days_in_year_so_far": 285,
+    "days_missing": 28,
+    "days_reported": 257,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Sioux Rapids",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 240,
+      "diff_in": "5.78",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 24,
+     "through": "Oct 12",
+     "total_in": "29.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": 97,
+    "state": "Iowa",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "23.88",
+    "usual_in": "24.58",
+    "vs_usual": {
+     "diff_in": "0.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4228ab5639e1c1d2",
+   "sid": "137726 2",
+   "story": "Through Oct 12, the weather station in Sioux Rapids sits 0.70 inches less than a usual year. The biggest one-day reading came Jul 3 at 2.04 inches. The longest dry stretch ran 16 days, Feb 4 to Feb 19, with nothing in the gauge. On the days both years reported, this year is 5.78 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "19023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 21",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Butler County",
+    "days_in_year_so_far": 282,
+    "days_missing": 19,
+    "days_reported": 263,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Allison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 255,
+      "diff_in": "10.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 9",
+     "total_in": "35.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 163,
+    "state": "Iowa",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "46.15",
+    "usual_in": "28.35",
+    "vs_usual": {
+     "diff_in": "17.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.44",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d42c31ab2e8ec1f5",
+   "sid": "130157 2",
+   "story": "Through Oct 9, the station in Allison had its wettest month in September with 9.44 inches. The biggest single day came Jul 21 at 2.60 inches. The longest dry stretch ran 14 days, Feb 4 to Feb 17. On the days both years reported, this year is 10.41 inches more than last year.",
+   "through": "2026-10-09"
+  },
+  "19025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "3.33",
+     "label": "biggest single day"
+    },
+    "county": "Calhoun County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.0 miles northeast of Lytton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "0.09",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "27.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.18",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.48",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b5182164750bec65",
+   "sid": "US1IACH0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles northeast of Lytton has caught 27.18 inches. September was the wettest month at 8.48 inches, and the biggest single day was Sep 7 with 3.33 inches. On the days both years reported, this year is 0.09 inches less than last year. The longest dry stretch ran 18 days, Feb 2 to Feb 19, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 14,
+    "days_reported": 272,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Carroll",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 265,
+      "diff_in": "5.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "32.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.60",
+    "usual_in": "27.98",
+    "vs_usual": {
+     "diff_in": "1.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2de04e243e9d1cd5",
+   "sid": "131233 2",
+   "story": "Through Oct 13, the weather station in Carroll had its biggest single day on Oct 1, with 2.50 inches. Its longest dry stretch ran 26 days, from Jan 25 to Feb 19, without even a trace in the gauge. On the days both years reported, this year has 5.30 inches less than last year. Against a usual year it sits 1.38 inches less.",
+   "through": "2026-10-13"
+  },
+  "19031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.43",
+     "label": "biggest single day"
+    },
+    "county": "Cedar County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Lowden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.84",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.67",
+    "usual_in": "33.43",
+    "vs_usual": {
+     "diff_in": "9.24",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.78",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "075b5cdf50b5678d",
+   "sid": "134963 2",
+   "story": "Through Oct 13, the weather station in Lowden had September as its wettest month, with 9.78 inches. The biggest single day was Jul 31, at 3.43 inches. The longest dry stretch ran 15 days, Feb 4 to Feb 18, with not even a trace in the gauge. That leaves the station 8.84 inches more than it had by this day in 2025.",
+   "through": "2026-10-13"
+  },
+  "19033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "2.33",
+     "label": "biggest single day"
+    },
+    "county": "Cerro Gordo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Mason City Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.51",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.90",
+    "usual_in": "31.95",
+    "vs_usual": {
+     "diff_in": "5.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.53",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bc1f3257d48428c2",
+   "sid": "14940 1",
+   "story": "Through Oct 13, the weather station at Mason City Municipal Airport had July as the wettest month, with 7.53 inches. The biggest single day came Jul 8, at 2.33 inches. The longest dry stretch ran 14 days, Feb 3 to Feb 16, with nothing in the gauge. That leaves the year 6.51 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "19035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "3.80",
+     "label": "biggest single day"
+    },
+    "county": "Cherokee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Cherokee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.60",
+    "usual_in": "27.64",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.05",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f3443a2d9b25787f",
+   "sid": "131442 2",
+   "story": "Through Oct 13, the weather station in Cherokee has 27.60 inches, about usual for a usual year. September did most of the work at 9.05 inches, and Sep 7 alone brought 3.80. The gauge went 14 days dry from Mar 19 to Apr 1. On the days both years reported, that is 3.62 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "19037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "3.20",
+     "label": "biggest one-day reading"
+    },
+    "county": "Chickasaw County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in New Hampton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "2.82",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "36.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 99,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.63",
+    "usual_in": "34.84",
+    "vs_usual": {
+     "diff_in": "0.21",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.09",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "67398da9db577851",
+   "sid": "135952 2",
+   "story": "Through Oct 13, the weather station in New Hampton has caught 34.63 inches, 0.21 inches less than a usual year. September did most of the work at 8.09 inches, and the biggest one-day reading came Sep 19 with 3.20 inches. The gauge stayed bone empty for 16 days in a row from Feb 4 to Feb 19. On the days both years reported, this year is 2.82 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "19039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "4.62",
+     "label": "biggest single day"
+    },
+    "county": "Clarke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.5 miles west-southwest of Osceola",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.99",
+    "usual_in": "33.70",
+    "vs_usual": {
+     "diff_in": "6.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.27",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dbb75a2e6c4d1a42",
+   "sid": "US1IACL0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles west-southwest of Osceola had 39.99 inches, 6.29 inches more than a usual year. September was the wettest month at 10.27 inches. The biggest single day came Aug 5 with 4.62 inches. The longest dry stretch ran 16 days, Feb 2 to Feb 17, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 6",
+     "in": "2.04",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Spencer Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.76",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.91",
+    "usual_in": "24.35",
+    "vs_usual": {
+     "diff_in": "3.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.53",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2e6a3ee57d064251",
+   "sid": "14972 1",
+   "story": "Through Oct 13, the weather station at Spencer Municipal Airport has caught 20.91 inches, 3.44 inches less than a usual year. September was the wettest month at 6.53 inches, and the biggest single day was 2.04 inches on Sep 6. That came after 15 days in a row with nothing in the gauge, Jul 9 to Jul 23. Last year at this point the station had 3.76 inches more.",
+   "through": "2026-10-13"
+  },
+  "19043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "3.35",
+     "label": "biggest single day"
+    },
+    "county": "Clayton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Strawberry Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.44",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.30",
+    "usual_in": "34.04",
+    "vs_usual": {
+     "diff_in": "8.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "860c74bba5130f50",
+   "sid": "138009 2",
+   "story": "Through Oct 13, the weather station in Strawberry Point has caught 6.44 inches more than it had by this day last year. June was the wettest month at 7.87 inches. The biggest single day came Aug 1 with 3.35 inches. The longest dry stretch was 13 days, Feb 7 to Feb 19, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "19045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Clinton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2.0 miles northeast of Calamus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.97",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.93",
+    "usual_in": "33.62",
+    "vs_usual": {
+     "diff_in": "4.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "694327cf9c9922a5",
+   "sid": "US1IACN0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles northeast of Calamus has caught 6.97 inches more than it had by this day last year. June did most of the work, the wettest month at 9.71 inches. The biggest single day came Aug 1 with 3.25 inches. The longest dry stretch was 16 days, Feb 4 to Feb 19, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 9",
+     "in": "2.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Dallas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Perry",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.93",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.04",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9e133c1f1b3ab5e9",
+   "sid": "US1IADL0042 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southwest of Perry has caught 39.93 inches. September was the wettest month at 9.04 inches, and the biggest one-day reading came Sep 9 with 2.17 inches. The longest dry stretch ran 12 days, Mar 19 to Mar 30, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "19051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "1.72",
+     "label": "biggest single day"
+    },
+    "county": "Davis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Bloomfield",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.11",
+    "usual_in": "33.97",
+    "vs_usual": {
+     "diff_in": "0.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.56",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c8097e2b6b90e6a4",
+   "sid": "130753 2",
+   "story": "Through Oct 13, the weather station in Bloomfield had April as its wettest month at 7.56 inches. The biggest single day came Jun 11 with 1.72 inches. Before any of that, the station went 36 days in a row with nothing in it, not even a trace, from Jan 26 to Mar 2. All told it sits at 33.11 inches, 0.86 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "19053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "2.15",
+     "label": "biggest single day"
+    },
+    "county": "Decatur County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Lamoni Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.08",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 121,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.93",
+    "usual_in": "32.30",
+    "vs_usual": {
+     "diff_in": "6.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.84",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee4642bc3c92b976",
+   "sid": "94991 1",
+   "story": "Through Oct 13, the weather station at Lamoni Municipal Airport had September as the wettest month, with 8.84 inches. The biggest single day was Jun 11, at 2.15 inches. The longest dry stretch ran 17 days, Feb 2 to Feb 18, with nothing in the gauge. That puts this year 10.08 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "19055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "6.22",
+     "label": "biggest single day"
+    },
+    "county": "Delaware County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Manchester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "12.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "36.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 150,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.22",
+    "usual_in": "32.91",
+    "vs_usual": {
+     "diff_in": "16.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.19",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "11b0dbfdf7deb59c",
+   "sid": "135086 2",
+   "story": "Through Oct 13, the weather station in Manchester has caught 49.22 inches, 16.31 more than a usual year. August was the wettest month at 9.19 inches, and 6.22 of that came on Aug 1 alone. The longest dry stretch ran 16 days, Feb 4 to Feb 19. On the days both years reported, this year is 12.53 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "19057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 17",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Des Moines County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "at Burlington Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "9.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "26.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.30",
+    "usual_in": "31.99",
+    "vs_usual": {
+     "diff_in": "5.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.86",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aadf6bffc9d6f4ae",
+   "sid": "14931 1",
+   "story": "Through Oct 13, the weather station at Burlington Municipal Airport has caught 37.30 inches, 5.31 more than a usual year. June did most of the work with 6.86 inches, and the biggest single day was 2.03 on Jun 17. On the days both years reported, this year is 9.68 inches ahead of 2025. The longest dry stretch was 16 days, Feb 3 to Feb 18.",
+   "through": "2026-10-13"
+  },
+  "19059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Dickinson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Spirit Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.48",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.95",
+    "usual_in": "25.86",
+    "vs_usual": {
+     "diff_in": "1.09",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.15",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b071393b16eb3f9b",
+   "sid": "137859 2",
+   "story": "Through Oct 13, the station in Spirit Lake shows September carried this year, with 8.15 inches in that month alone. The biggest single day came Sep 8 at 2.20 inches. The longest dry stretch ran 14 days, from Mar 19 to Apr 1, with not even a trace in the gauge. Even so, the year sits 0.48 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "19061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "3.31",
+     "label": "biggest single day"
+    },
+    "county": "Dubuque County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Dubuque Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "12.67",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "27.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.00",
+    "usual_in": "32.56",
+    "vs_usual": {
+     "diff_in": "8.44",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.76",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "76accf4773dde179",
+   "sid": "94908 1",
+   "story": "Through Oct 13, the weather station at Dubuque Regional Airport had 41.00 inches, 8.44 more than a usual year. June was the wettest month at 9.76 inches, and the biggest single day was Sep 19 with 3.31. On the days both years reported, that is 12.67 inches more than 2025 had by now. The longest dry stretch ran 12 days, Feb 7 to Feb 18.",
+   "through": "2026-10-13"
+  },
+  "19063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 6",
+     "in": "1.84",
+     "label": "biggest single day"
+    },
+    "county": "Emmet County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Estherville Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.84",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "23.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.76",
+    "usual_in": "26.11",
+    "vs_usual": {
+     "diff_in": "3.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.03",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cce6ad4526e9425d",
+   "sid": "94971 1",
+   "story": "Through Oct 13, the weather station at Estherville Municipal Airport has caught 22.76 inches, 3.35 inches less than a usual year. September did most of the work at 6.03 inches, the wettest month. The biggest single day was Mar 6 with 1.84 inches. On the days both years reported, this year sits 0.84 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "19065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "5.80",
+     "label": "biggest single day"
+    },
+    "county": "Fayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Fayette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "12.24",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.03",
+    "usual_in": "34.14",
+    "vs_usual": {
+     "diff_in": "7.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.12",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2d8a44871ea2aefe",
+   "sid": "132864 2",
+   "story": "Through Oct 13, the weather station in Fayette has caught 42.03 inches. September did most of the work at 9.12 inches, and Sep 19 alone brought 5.80 inches, the biggest single day. On the days both years reported, that is 12.24 inches more than 2025 had by now. The longest dry stretch ran 16 days, Feb 4 to Feb 19, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "2.05",
+     "label": "biggest one-day reading"
+    },
+    "county": "Floyd County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Charles City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "8.46",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "40.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 97,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.55",
+    "usual_in": "32.59",
+    "vs_usual": {
+     "diff_in": "1.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.34",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d2b0934c27a03303",
+   "sid": "131402 2",
+   "story": "Through Oct 13, the weather station in Charles City has had its wettest month in July, with 6.34 inches. The biggest one-day reading came Jul 3 at 2.05 inches. On the days both years reported, this year is 8.46 inches less than 2025. The longest dry stretch ran 12 days, from Feb 4 to Feb 15.",
+   "through": "2026-10-13"
+  },
+  "19069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.07",
+     "label": "biggest one-day reading"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 19,
+    "days_reported": 267,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Hampton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "3.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "38.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 114,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.94",
+    "usual_in": "31.44",
+    "vs_usual": {
+     "diff_in": "4.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.56",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a0ce56432ecfc140",
+   "sid": "133584 2",
+   "story": "Through Oct 13, the weather station in Hampton got its most rain in July, at 6.56 inches. The biggest one-day reading came Apr 4 with 2.07 inches. The gauge also went 13 days in a row with nothing from Feb 21 to Mar 5. On the days both years reported, this year is 3.00 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "19071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "3.65",
+     "label": "biggest single day"
+    },
+    "county": "Fremont County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Randolph",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "7.52",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.03",
+    "usual_in": "30.39",
+    "vs_usual": {
+     "diff_in": "1.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9dc728f840d76195",
+   "sid": "136891 2",
+   "story": "Through Oct 13, the station in Randolph had June as its wettest month at 7.12 inches. The biggest single day was Jun 11, with 3.65 inches in the gauge. On the days both years reported, 2026 has 7.52 inches more than 2025 did.",
+   "through": "2026-10-13"
+  },
+  "19075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.20",
+     "label": "biggest single day"
+    },
+    "county": "Grundy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Grundy Center",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "11.05",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "32.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.46",
+    "usual_in": "31.09",
+    "vs_usual": {
+     "diff_in": "12.37",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.53",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e1580235552de8c7",
+   "sid": "133487 2",
+   "story": "Through Oct 13, the weather station in Grundy Center has had a wet back end of the year. September was the wettest month at 8.53 inches, and the biggest single day came Oct 1 with 4.20 inches. On the days both years reported, that is 11.05 inches more than last year. The longest dry stretch was 16 days, Feb 4 to Feb 19, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Guthrie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "3.2 miles south of Jamaica",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.32",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.40",
+    "usual_in": "29.91",
+    "vs_usual": {
+     "diff_in": "7.49",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.51",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "900b3c6957173b94",
+   "sid": "US1IAGT0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles south of Jamaica has caught 37.40 inches, 7.49 inches more than a usual year. September did most of the work with 8.51 inches, and the biggest single day came Sep 7 at 1.88 inches. The longest dry stretch ran 12 days, Mar 19 to Mar 30. That is 1.32 inches more than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "19079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "4.10",
+     "label": "biggest single day"
+    },
+    "county": "Hamilton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Webster City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "38.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.17",
+    "usual_in": "32.73",
+    "vs_usual": {
+     "diff_in": "6.44",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.37",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "213e5fa5fa55bd67",
+   "sid": "138806 2",
+   "story": "Through Oct 13, the weather station in Webster City has caught 6.44 inches more than a usual year. September was the wettest month at 7.37 inches, and the biggest single day was Jul 3 with 4.10 inches. The gauge went 16 days in a row with nothing in it, from Feb 4 to Feb 19. On the days both years reported, this year sits 0.12 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "19083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Hardin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Iowa Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "37.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 127,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.95",
+    "usual_in": "32.98",
+    "vs_usual": {
+     "diff_in": "8.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.07",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b075b142989c7bee",
+   "sid": "14979 1",
+   "story": "Through Oct 13, the weather station in Iowa Falls had April as the wettest month at 8.07 inches. The biggest single day came late, 2.80 inches on Oct 1. The longest dry stretch ran 16 days, Feb 4 to Feb 19, with not even a trace in the gauge. On the days both years reported, that is 4.30 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.68",
+     "label": "biggest single day"
+    },
+    "county": "Harrison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile west-northwest of Logan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.57",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.60",
+    "usual_in": "30.28",
+    "vs_usual": {
+     "diff_in": "2.32",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.95",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b0c56b2de7758d1b",
+   "sid": "134894 2",
+   "story": "Through Oct 13, the weather station 1 mile west-northwest of Logan had its wettest month in September at 7.95 inches. The biggest single day came Oct 1 with 4.68 inches. That still leaves the year 3.57 inches less than last year by this date. The longest dry stretch was 14 days, Feb 6 to Feb 19, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 283,
+    "days_missing": 7,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1 mile south of Salem",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "7.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 10",
+     "total_in": "25.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Iowa",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "35.99",
+    "usual_in": "31.78",
+    "vs_usual": {
+     "diff_in": "4.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.48",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab93cbcb913e813e",
+   "sid": "137363 2",
+   "story": "Through Oct 10, the weather station 1 mile south of Salem had its wettest month in August, with 8.48 inches. The biggest single day came Aug 15, at 2.50 inches. On the days both years reported, this year has had 7.62 inches more than 2025.",
+   "through": "2026-10-10"
+  },
+  "19093": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Ida County",
+    "days_in_year_so_far": 286,
+    "days_missing": 19,
+    "days_reported": 267,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.7 miles south-southwest of Arthur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "0.51",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "31.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.29",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "48be1739e0df1dfc",
+   "sid": "US1IAID0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles south-southwest of Arthur had 30.29 inches. The longest dry stretch ran 14 days, Mar 19 to Apr 1, with not even a trace in the gauge. On the 260 days both years reported, this year is 0.51 inches less than last year. The gauge missed 19 days this year, so the total runs a little light.",
+   "through": "2026-10-13"
+  },
+  "19095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 15",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Iowa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile east of Williamsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "7.24",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "29.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.56",
+    "usual_in": "31.71",
+    "vs_usual": {
+     "diff_in": "7.85",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bb74b1af7c3e1bb0",
+   "sid": "139067 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Williamsburg has 39.56 inches, 7.85 inches more than a usual year. June did most of the work with 9.38 inches. Then the gauge went 20 days in a row with nothing, Aug 20 to Sep 8, and the biggest single day came right after with 2.46 inches on Sep 15. On the days both years reported, that is 7.24 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "3.10",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Bellevue",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "10.79",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "29.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.14",
+    "usual_in": "30.93",
+    "vs_usual": {
+     "diff_in": "9.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.14",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d7c54d19d36dba5f",
+   "sid": "130608 2",
+   "story": "Through Oct 13, the weather station in Bellevue had its wettest month in September at 11.14 inches, and the biggest single day was Sep 19 with 3.10 inches. Earlier on, it went 16 days with nothing in the gauge, from Feb 4 to Feb 19. On the days both years reported, this year ran 10.79 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "19099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "3.01",
+     "label": "biggest single day"
+    },
+    "county": "Jasper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "17 miles east of Des Moines",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "17.24",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 144,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.88",
+    "usual_in": "31.19",
+    "vs_usual": {
+     "diff_in": "13.69",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.32",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7902d63f9d66b5b4",
+   "sid": "54902 1",
+   "story": "Through Oct 13, the weather station 17 miles east of Des Moines had a wet September, with 13.32 inches for the month. The biggest single day came Sep 8 at 3.01 inches. Back on the other end, the gauge went 25 days in a row with nothing in it, from Jan 25 to Feb 18. On the days both years reported, that's 17.24 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "19101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 285,
+    "days_missing": 3,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Fairfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "15.08",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 12",
+     "total_in": "30.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 143,
+    "state": "Iowa",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "46.14",
+    "usual_in": "32.37",
+    "vs_usual": {
+     "diff_in": "13.77",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.82",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6c11576be573f6da",
+   "sid": "132789 2",
+   "story": "Through Oct 12, the weather station in Fairfield has 46.14 inches, 13.77 more than a usual year. June did most of the work with 9.82 inches, and the biggest single day was Jun 8 at 2.45. On the days both years reported, that is 15.08 inches more than 2025. The longest dry stretch was 17 days, Feb 3 to Feb 19.",
+   "through": "2026-10-12"
+  },
+  "19103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Iowa City Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "17.82",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "22.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jun 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.47",
+    "usual_in": "30.39",
+    "vs_usual": {
+     "diff_in": "12.08",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.35",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fee7c7ebdb4b97ae",
+   "sid": "14937 1",
+   "story": "Through Oct 13, the weather station at Iowa City Municipal Airport had a lot of its year land in September, with 11.35 inches that month. The biggest single day was Sep 19 at 2.09 inches. On the days both years reported, this year is 17.82 inches more than last year. The longest dry stretch ran 10 days, Jun 22 to Jul 1, without even a trace.",
+   "through": "2026-10-13"
+  },
+  "19105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "4.43",
+     "label": "biggest single day"
+    },
+    "county": "Jones County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3 miles south-southwest of Anamosa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "15.65",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "26.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.99",
+    "usual_in": "33.53",
+    "vs_usual": {
+     "diff_in": "9.46",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.77",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1140f7612eda172e",
+   "sid": "130214 2",
+   "story": "Through Oct 13, the weather station 3 miles south-southwest of Anamosa has 42.99 inches, 9.46 more than a usual year. April was the wettest month at 8.77 inches, and the biggest single day was Aug 1 with 4.43. On the days both years reported, this year is 15.65 inches more than last year. The longest dry stretch was 16 days, Feb 4 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "19107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 9",
+     "in": "3.09",
+     "label": "biggest single day"
+    },
+    "county": "Keokuk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Sigourney",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.58",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.60",
+    "usual_in": "31.99",
+    "vs_usual": {
+     "diff_in": "5.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.62",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "58c24dd9d12c17fd",
+   "sid": "137678 2",
+   "story": "Through Oct 13, the weather station in Sigourney has caught 37.60 inches, 5.61 more than a usual year. September did most of the work with 10.62 inches, and the biggest single day was Sep 9 at 3.09. The longest dry stretch was 17 days, Feb 3 to Feb 19. On the days both years reported, that is 6.58 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 21",
+     "in": "1.68",
+     "label": "biggest single day"
+    },
+    "county": "Kossuth County",
+    "days_in_year_so_far": 282,
+    "days_missing": 7,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "less than a mile northwest of Burt",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "10.16",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "35.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Iowa",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "24.99",
+    "usual_in": "28.98",
+    "vs_usual": {
+     "diff_in": "3.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.12",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b34c6d1a983e5cd5",
+   "sid": "US1IAKS0005 6",
+   "story": "Through Oct 9, the volunteer rain gauge less than a mile northwest of Burt had its wettest month in September at 6.12 inches, and its biggest single day came Sep 21 with 1.68 inches. Earlier on, the gauge went 29 days in a row with nothing in it, not even a trace, from Feb 2 to Mar 2. On the days both years reported, this year sits 10.16 inches less than 2025.",
+   "through": "2026-10-09"
+  },
+  "19111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "2.31",
+     "label": "biggest single day"
+    },
+    "county": "Lee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Donnellson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.18",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.61",
+    "usual_in": "33.11",
+    "vs_usual": {
+     "diff_in": "0.50",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.25",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dba5682aa52d63cb",
+   "sid": "132299 2",
+   "story": "Through Oct 13, the weather station in Donnellson had most of its year come in August, with 8.25 inches that month. The biggest single day was Aug 15 at 2.31 inches. Then it shut off, 19 days in a row with nothing in the gauge from Aug 21 to Sep 8. All told it sits 0.18 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "19113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.91",
+     "label": "biggest one-day reading"
+    },
+    "county": "Linn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Ely",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "16.33",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "25.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 20"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 128,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.20",
+    "usual_in": "32.89",
+    "vs_usual": {
+     "diff_in": "9.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.73",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "32b4630be9b464c5",
+   "sid": "US1IALN0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southeast of Ely has caught 42.20 inches, 9.31 inches more than a usual year. September did most of the work with 10.73 inches, and the biggest one-day reading came Sep 20 at 2.91 inches. On the days both years reported, that is 16.33 inches more than 2025. The longest dry stretch ran 11 days, Jul 10 to Jul 20.",
+   "through": "2026-10-13"
+  },
+  "19115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "5.31",
+     "label": "biggest single day"
+    },
+    "county": "Louisa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5.4 miles southeast of Wapello",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "14.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "29.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.83",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.53",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a0380c4b1f5b296",
+   "sid": "US1IALS0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.4 miles southeast of Wapello had its wettest month in August at 11.53 inches. The biggest single day came Aug 14 with 5.31 inches. On the days both years reported, this year is 14.41 inches more than last year. The longest dry stretch ran 10 days, Feb 3 to Feb 12.",
+   "through": "2026-10-13"
+  },
+  "19119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.49",
+     "label": "biggest single day"
+    },
+    "county": "Lyon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Rock Rapids",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.91",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.30",
+    "usual_in": "25.94",
+    "vs_usual": {
+     "diff_in": "1.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.67",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "397c403afdd666a1",
+   "sid": "137147 2",
+   "story": "Through Oct 13, the weather station in Rock Rapids had September as its wettest month by a wide margin, with 9.67 inches. The biggest single day was Jun 28, at 2.49 inches. Back on Feb 5 to Feb 25 the gauge went 21 days in a row with nothing in it, not even a trace. Even so, the station is 1.91 inches ahead of where 2025 stood on the same day.",
+   "through": "2026-10-13"
+  },
+  "19121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "3.80",
+     "label": "biggest one-day reading"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1.1 miles northwest of St Charles",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "13.05",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 13",
+     "total_in": "31.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 2"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.16",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.69",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ba5aa1b8584bd809",
+   "sid": "US1IAMD0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles northwest of St Charles had 46.16 inches. September was the wettest month at 10.69 inches, and the biggest one-day reading was 3.80 inches on Aug 14. On the days both years reported, this year is 13.05 inches more than last year. The longest stretch with nothing in the gauge, not even a trace, was 10 days, Feb 21 to Mar 2.",
+   "through": "2026-10-13"
+  },
+  "19125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 9",
+     "in": "3.42",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1 mile south of Pella",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "12.86",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "28.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 132,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.50",
+    "usual_in": "31.50",
+    "vs_usual": {
+     "diff_in": "10.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.23",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5cfe27b751ce07bd",
+   "sid": "136527 2",
+   "story": "Through Oct 13, the weather station 1 mile south of Pella has run 10.00 inches more than a usual year. September was the wettest month at 9.23 inches, and the biggest single day came Sep 9 with 3.42 inches. On the days both years reported, this year is 12.86 inches ahead of 2025. The longest dry stretch was 10 days, Feb 3 to Feb 12.",
+   "through": "2026-10-13"
+  },
+  "19127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 17",
+     "in": "3.43",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Marshalltown Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "7.74",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "31.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Aug 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.13",
+    "usual_in": "28.71",
+    "vs_usual": {
+     "diff_in": "10.42",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e5c63a2c8889ea6e",
+   "sid": "94988 1",
+   "story": "Through Oct 13, the weather station at Marshalltown Municipal Airport had 39.13 inches, 10.42 more than a usual year. June did most of the work with 8.14 inches, and 3.43 of that came on Jun 17 alone. The longest dry stretch was 9 days, Aug 19 to Aug 27. On the days both years reported, that is 7.74 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "19129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "2.47",
+     "label": "biggest single day"
+    },
+    "county": "Mills County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4 miles northeast of Hastings",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.08",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.50",
+    "usual_in": "30.82",
+    "vs_usual": {
+     "diff_in": "7.68",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.70",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4b2a2e06662b6e19",
+   "sid": "133675 2",
+   "story": "Through Oct 13, the weather station 4 miles northeast of Hastings had 38.50 inches, 7.68 more than a usual year. September did most of the work at 9.70 inches, the wettest month. The biggest single day was 2.47 inches on Aug 5. That is 13.08 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "19131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "3.90",
+     "label": "biggest single day"
+    },
+    "county": "Mitchell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in St Ansgar",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.87",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.20",
+    "usual_in": "33.19",
+    "vs_usual": {
+     "diff_in": "0.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.46",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6b075c6a64d9c851",
+   "sid": "137326 2",
+   "story": "Through Oct 13, the weather station in St Ansgar has caught 32.20 inches, 0.99 inches less than a usual year. July was the wettest month at 8.46 inches, and 3.90 of that came on Jul 9. The longest dry stretch ran 14 days, Feb 4 to Feb 17. On the days both years reported, this year sits 9.87 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "19133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "2.74",
+     "label": "biggest single day"
+    },
+    "county": "Monona County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Mapleton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "4.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "29.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.30",
+    "usual_in": "28.39",
+    "vs_usual": {
+     "diff_in": "3.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.15",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b780b33643e05106",
+   "sid": "135123 2",
+   "story": "Through Oct 13, the weather station in Mapleton had its wettest month in August with 7.15 inches, and the biggest single day came Aug 13 with 2.74 inches. The gauge went 19 days in a row with nothing in it from Apr 28 to May 16. On the days both years reported, this year has 4.45 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "19135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "3.29",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Lovilia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "13.89",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "29.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.26",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.71",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b4fc1e8c0a0130f",
+   "sid": "US1IAMR0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southeast of Lovilia has caught 44.26 inches. September was the wettest month at 9.71 inches, and the biggest single day was Aug 14 with 3.29 inches. The gauge went 25 days in a row with nothing from Jan 26 to Feb 19. On the days both years reported, that is 13.89 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "19139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "3.59",
+     "label": "biggest single day"
+    },
+    "county": "Muscatine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2 miles north of Muscatine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.38",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.30",
+    "usual_in": "32.32",
+    "vs_usual": {
+     "diff_in": "11.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.49",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cb98989b2d779952",
+   "sid": "135844 2",
+   "story": "Through Oct 13, the weather station 2 miles north of Muscatine has caught most of its year in June, with 10.49 inches that month. The biggest single day came Jun 18 at 3.59 inches. On the days both years reported, this year is 8.38 inches more than last year. The gauge did go dry 16 days in a row, Feb 4 to Feb 19, so it has not all been wet.",
+   "through": "2026-10-13"
+  },
+  "19141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "O'Brien County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Primghar",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.52",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.69",
+    "usual_in": "27.69",
+    "vs_usual": {
+     "diff_in": "1.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.49",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bdf15fc27c5961c1",
+   "sid": "136800 2",
+   "story": "Through Oct 13, the weather station in Primghar has caught 28.69 inches, 1.00 more than a usual year. September did most of the work at 8.49 inches, the wettest month so far. The biggest single day was 2.00 inches on Jun 28. That is 0.52 more than last year to the same day, so it is close.",
+   "through": "2026-10-13"
+  },
+  "19143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "2.47",
+     "label": "biggest single day"
+    },
+    "county": "Osceola County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Sibley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.11",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.82",
+    "usual_in": "26.55",
+    "vs_usual": {
+     "diff_in": "1.27",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.97",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0d37b0aec95b13b2",
+   "sid": "137664 2",
+   "story": "Through Oct 13, the weather station in Sibley had its wettest month in September, with 10.97 inches. The biggest single day came Sep 7 at 2.47 inches. The gauge also went 14 days in a row without even a trace, from Jul 10 to Jul 23. On the days both years reported, this year is 3.11 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "19145": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "1.91",
+     "label": "biggest single day"
+    },
+    "county": "Page County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Clarinda",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "13.81",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "22.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jan 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.74",
+    "usual_in": "31.73",
+    "vs_usual": {
+     "diff_in": "6.01",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.98",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff39a61e372dabcb",
+   "sid": "131533 2",
+   "story": "Through Oct 13, the weather station in Clarinda has had its wettest month in September, with 8.98 inches. The biggest single day came May 19 at 1.91 inches. Back on Jan 30 through Feb 19 it went 21 days in a row without even a trace. On the days both years reported, this year is 13.81 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.73",
+     "label": "biggest one-day reading"
+    },
+    "county": "Palo Alto County",
+    "days_in_year_so_far": 286,
+    "days_missing": 22,
+    "days_reported": 264,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5.4 miles west of West Bend",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 15"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.12",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "891f927de23cc9e1",
+   "sid": "US1IAPA0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.4 miles west of West Bend had caught 27.12 inches on the days it reported. The biggest one-day reading came Jun 28 at 2.73 inches. From Apr 30 to May 15 the gauge went 16 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "19149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "3.35",
+     "label": "biggest single day"
+    },
+    "county": "Plymouth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Remsen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.08",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Jan 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.53",
+    "usual_in": "27.50",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.46",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "37325f8306733470",
+   "sid": "136976 2",
+   "story": "Through Oct 13, the weather station in Remsen sits right about a usual year. September did most of the work at 7.46 inches, and the biggest single day was 3.35 inches on Jul 3. Before that came 47 days in a row with nothing in the gauge, from Jan 18 to Mar 5. Last year at this point the station had 3.08 inches more.",
+   "through": "2026-10-13"
+  },
+  "19151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "2.30",
+     "label": "biggest single day"
+    },
+    "county": "Pocahontas County",
+    "days_in_year_so_far": 284,
+    "days_missing": 27,
+    "days_reported": 257,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Pocahontas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 248,
+      "diff_in": "3.81",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 11",
+     "total_in": "28.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Iowa",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "22.80",
+    "usual_in": "25.76",
+    "vs_usual": {
+     "diff_in": "2.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.03",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4f89c435f23ac494",
+   "sid": "136719 2",
+   "story": "Through Oct 11, the weather station in Pocahontas had its wettest month in September at 6.03 inches. The biggest single day was Jul 3 with 2.30 inches. The gauge went 18 days in a row with nothing in it, from Feb 2 to Feb 19. On the days both years reported, this year is 3.81 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "19153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 9",
+     "in": "5.13",
+     "label": "biggest single day"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.5 miles west-northwest of Des Moines",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "19.65",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 152,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "51.08",
+    "usual_in": "33.55",
+    "vs_usual": {
+     "diff_in": "17.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.73",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e8a17045f247c64d",
+   "sid": "US1IAPK0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.5 miles west-northwest of Des Moines had 51.08 inches, 17.53 more than a usual year. September did most of the damage with 14.73 inches, and 5.13 of that came on Sep 9 alone. The longest dry spell was 12 days, Mar 19 to Mar 30. Last year at this point the gauge had 31.43 inches, so this year is 19.65 ahead.",
+   "through": "2026-10-13"
+  },
+  "19155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 15",
+     "in": "3.54",
+     "label": "biggest single day"
+    },
+    "county": "Pottawattamie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Oakland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.85",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "25.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.51",
+    "usual_in": "32.01",
+    "vs_usual": {
+     "diff_in": "3.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.92",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9f19ef3519413f3c",
+   "sid": "136151 2",
+   "story": "Through Oct 13, the weather station in Oakland had its wettest month in September at 11.92 inches. The biggest single day came Sep 15 with 3.54 inches. On the days both years reported, 2026 is 9.85 inches more than last year. The longest dry stretch ran 17 days, Feb 1 to Feb 17, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Poweshiek County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Grinnell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.69",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 132,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.56",
+    "usual_in": "32.92",
+    "vs_usual": {
+     "diff_in": "10.64",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.02",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f76fcafb784cc558",
+   "sid": "133473 2",
+   "story": "Through Oct 13, the weather station 3 miles southwest of Grinnell had a wet September, with 10.02 inches for the month. The biggest single day was Jul 4 at 2.45 inches. The longest dry stretch ran 17 days, Feb 3 to Feb 19. On the days both years reported, this year is 11.69 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19161": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "3.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sac County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Sac City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.52",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 107,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.53",
+    "usual_in": "28.62",
+    "vs_usual": {
+     "diff_in": "1.91",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.04",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a6be823b97aa12ca",
+   "sid": "137312 2",
+   "story": "Through Oct 13, the weather station in Sac City had most of its year show up in September, with 9.04 inches that month. The biggest one-day reading came Sep 7 at 3.70 inches. On the days both years reported, this year is 1.52 inches more than last year. The longest dry stretch ran 16 days, Feb 4 to Feb 19, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "3.47",
+     "label": "biggest one-day reading"
+    },
+    "county": "Scott County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Eldridge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.51",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 124,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.37",
+    "usual_in": "32.49",
+    "vs_usual": {
+     "diff_in": "7.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.46",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "50509dc32d93b9f8",
+   "sid": "US1IAST0030 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southwest of Eldridge had 40.37 inches, 7.88 more than a usual year. September did most of the talking with 8.46 inches, and the biggest one-day reading was 3.47 on Sep 20. That puts this year 12.51 inches ahead of last year through the same day. The longest dry stretch was 16 days, Feb 4 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "19165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.93",
+     "label": "biggest single day"
+    },
+    "county": "Shelby County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.4 miles southeast of Earling",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "3.96",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "30.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.90",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.08",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a3e8bdd7cce74814",
+   "sid": "US1IASH0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.4 miles southeast of Earling had 31.90 inches. September was the wettest month at 8.08 inches, and the biggest single day came Oct 1 with 4.93 inches. On the days both years reported, this year is 3.96 inches more than 2025. The longest dry stretch ran 20 days, Jan 12 to Jan 31, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 5",
+     "in": "1.64",
+     "label": "biggest single day"
+    },
+    "county": "Sioux County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of Sioux Center",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.45",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.71",
+    "usual_in": "26.21",
+    "vs_usual": {
+     "diff_in": "4.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.34",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f867eeb2babbfe4",
+   "sid": "137700 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of Sioux Center had 21.71 inches, 4.50 inches less than a usual year. September did most of the work with 7.34 inches, and the biggest single day was 1.64 inches on Sep 5. The gauge went 20 days in a row with nothing from Feb 5 to Feb 24. That is 6.45 inches less than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "19169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 4",
+     "in": "5.34",
+     "label": "biggest single day"
+    },
+    "county": "Story County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.5 miles north-northeast of Ames",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 145,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.27",
+    "usual_in": "33.35",
+    "vs_usual": {
+     "diff_in": "14.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.65",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e4bcabbac939afb3",
+   "sid": "US1IASR0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles north-northeast of Ames has caught 14.92 inches more than a usual year. July did most of the work with 12.65 inches, and Jul 4 alone brought 5.34 inches. The longest dry stretch ran 14 days, Mar 17 to Mar 30. That puts this year 10.26 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "19171": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "2.54",
+     "label": "biggest single day"
+    },
+    "county": "Tama County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles north of Toledo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.05",
+    "usual_in": "30.09",
+    "vs_usual": {
+     "diff_in": "6.96",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.18",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cf2c85a6f90d2188",
+   "sid": "138296 2",
+   "story": "Through Oct 13, the weather station 3 miles north of Toledo had 37.05 inches, 6.96 more than a usual year. September was the wettest month at 7.18 inches, and the biggest single day was Jul 3 with 2.54. On the days both years reported, that is 6.72 inches more than 2025. The gauge also went 16 days in a row with nothing in it, Feb 4 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "19173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.51",
+     "label": "biggest single day"
+    },
+    "county": "Taylor County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "4.7 miles north of New Market",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.00",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.88",
+    "usual_in": "30.47",
+    "vs_usual": {
+     "diff_in": "8.41",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.46",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "672a8df88cba9f11",
+   "sid": "US1IATY0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles north of New Market caught 12.00 inches more than it had by this date last year. September did the most work at 8.46 inches. The biggest single day came Jun 21 with 2.51 inches. It went dry for 19 days in a row from Feb 1 to Feb 19, nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "19177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "2.32",
+     "label": "biggest single day"
+    },
+    "county": "Van Buren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.5 miles west of Farmington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.55",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.91",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "14104c597d69cfd7",
+   "sid": "US1IAVB0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.5 miles west of Farmington caught 34.55 inches, 3.56 inches more than it had by the same day in 2025. August was the wettest month at 9.91 inches, and the biggest single day came Aug 15 with 2.32 inches. The longest dry stretch ran 17 days, Feb 3 to Feb 19, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "19179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "1.99",
+     "label": "biggest single day"
+    },
+    "county": "Wapello County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Ottumwa Industrial Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.02",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "17.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Iowa",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "27.67",
+    "usual_in": "31.81",
+    "vs_usual": {
+     "diff_in": "4.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.59",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bbfced70bae1ebf4",
+   "sid": "14950 1",
+   "story": "Through Oct 12, the weather station at Ottumwa Industrial Airport has caught 27.67 inches, 4.14 inches less than a usual year. September did most of the work at 7.59 inches. The biggest single day was 1.99 inches on Aug 13. Last year was a lot thinner, and this year is 10.02 inches more than 2025 to the same day.",
+   "through": "2026-10-12"
+  },
+  "19181": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "5.24",
+     "label": "biggest single day"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Indianola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "18.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "27.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.06",
+    "usual_in": "33.01",
+    "vs_usual": {
+     "diff_in": "12.05",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.35",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cf5099eda12480e5",
+   "sid": "US1IAWR0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southwest of Indianola had caught 45.06 inches, 12.05 more than a usual year. September did most of the work with 11.35 inches, and Aug 14 alone put 5.24 in the gauge. On the days both years reported, that is 18.41 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "19183": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "3.98",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Washington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "9.73",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "28.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.22",
+    "usual_in": "32.25",
+    "vs_usual": {
+     "diff_in": "5.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.95",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1130a73b94d0a809",
+   "sid": "138688 2",
+   "story": "Through Oct 13, the station in Washington has caught 38.22 inches, 5.97 more than a usual year. September did most of the work at 8.95 inches, and the biggest single day was Aug 14 with 3.98. On the days both years reported, that is 9.73 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "19185": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 26,
+    "days_reported": 260,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Allerton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 246,
+      "diff_in": "2.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 15,
+     "through": "Oct 13",
+     "total_in": "32.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 10,
+    "pct_of_usual": 100,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.81",
+    "usual_in": "31.70",
+    "vs_usual": {
+     "diff_in": "0.11",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.19",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "62951000c5b2e345",
+   "sid": "130149 2",
+   "story": "Through Oct 13, April was the wettest month at the weather station in Allerton, with 6.19 inches. The longest dry stretch ran 12 days, Feb 8 to Feb 19, without even a trace in the gauge. On the days both years reported, this year has 2.26 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "19187": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "4.05",
+     "label": "biggest single day"
+    },
+    "county": "Webster County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.6 miles east-northeast of Fort Dodge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.43",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.99",
+    "usual_in": "34.00",
+    "vs_usual": {
+     "diff_in": "3.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.47",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "44331ea1e96be7ce",
+   "sid": "US1IAWB0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles east-northeast of Fort Dodge had September as its wettest month at 8.47 inches. The biggest single day came Jul 3 with 4.05 inches. The gauge went 18 days in a row with nothing, Feb 2 to Feb 19. Even at 3.99 inches more than a usual year, it still sits 1.43 inches less than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "19189": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 7",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "Winnebago County",
+    "days_in_year_so_far": 282,
+    "days_missing": 24,
+    "days_reported": 258,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Lake Mills",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 251,
+      "diff_in": "5.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 9",
+     "total_in": "42.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "Iowa",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "31.26",
+    "usual_in": "29.74",
+    "vs_usual": {
+     "diff_in": "1.52",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.14",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "22f93e53bdd25f18",
+   "sid": "134557 2",
+   "story": "Through Oct 9, the weather station in Lake Mills had its wettest month in September at 6.14 inches. The biggest single day came early, 2.25 inches on Mar 7, and then the gauge sat empty 16 days in a row from Mar 17 to Apr 1. On the days both years reported, this year is 5.30 inches behind last year.",
+   "through": "2026-10-09"
+  },
+  "19191": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "4.81",
+     "label": "biggest single day"
+    },
+    "county": "Winneshiek County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Decorah",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.72",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "39.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.14",
+    "usual_in": "32.63",
+    "vs_usual": {
+     "diff_in": "4.51",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.25",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "44120563c5fa72f0",
+   "sid": "132110 2",
+   "story": "Through Oct 13, the weather station in Decorah had 37.14 inches, 4.51 more than a usual year. September was the wettest month at 7.25 inches, and 4.81 of that came on Sep 19 alone. The gauge stayed dry 17 days in a row from Feb 3 to Feb 19. On the days both years reported, this year is 2.72 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "19193": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "3.07",
+     "label": "biggest single day"
+    },
+    "county": "Woodbury County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "4 miles north-northeast of Hornick",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Iowa",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.23",
+    "usual_in": "27.93",
+    "vs_usual": {
+     "diff_in": "2.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.62",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "82cf5b53764347c4",
+   "sid": "133900 2",
+   "story": "Through Oct 13, the weather station 4 miles north-northeast of Hornick had its wettest month in August with 7.62 inches. The biggest single day came Aug 13 with 3.07 inches. The longest dry stretch ran 15 days, Feb 5 to Feb 19, with not even a trace in the gauge. That leaves the year 3.06 inches less than last year at this point.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "IA"
+}

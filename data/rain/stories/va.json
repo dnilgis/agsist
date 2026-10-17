@@ -1,0 +1,5608 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "51001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "3.57",
+     "label": "biggest single day"
+    },
+    "county": "Accomack County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Wallops Island Nasa Test Facility",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.90",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.31",
+    "usual_in": "34.30",
+    "vs_usual": {
+     "diff_in": "3.99",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.33",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa008883b87f87e2",
+   "sid": "93739 1",
+   "story": "Through Oct 13, the weather station in Wallops Island Nasa Test Facility has 30.31 inches, 3.99 inches less than a usual year. July did most of the work with 9.33 inches, and 3.57 of that fell on Jul 22 alone. The gauge sat empty for 14 days in a row from May 29 to Jun 11. Last year at this point it had 11.90 inches more.",
+   "through": "2026-10-13"
+  },
+  "51003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "3.13",
+     "label": "biggest single day"
+    },
+    "county": "Albemarle County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2 miles west of Charlottesville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "32.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.09",
+    "usual_in": "38.99",
+    "vs_usual": {
+     "diff_in": "5.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.36",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c5646e9b3a93d0cc",
+   "sid": "441593 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Charlottesville has 33.09 inches, 5.90 inches less than a usual year. August did a lot of the work at 10.36 inches, and the biggest single day was 3.13 inches on Aug 3. The longest dry stretch ran 12 days, Apr 7 to Apr 18. On the days both years reported, this year is 0.23 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "51005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 28",
+     "in": "2.32",
+     "label": "biggest single day"
+    },
+    "county": "Alleghany County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Gathright",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "6.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "39.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.34",
+    "usual_in": "32.48",
+    "vs_usual": {
+     "diff_in": "0.14",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.15",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3b08531bc5d16684",
+   "sid": "443310 2",
+   "story": "Through Oct 13, the weather station in Gathright sits about where a usual year would, 0.14 inches less. August was the wettest month at 7.15 inches, and the biggest single day came early, 2.32 inches on Jan 28. On the days both years reported, this year is 6.95 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "1.37",
+     "label": "biggest single day"
+    },
+    "county": "Amelia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.6 miles west of Jetersville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "14.58",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "42.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.27",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.23",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "090383ab1a18ed76",
+   "sid": "US1VAAM0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles west of Jetersville has caught 28.27 inches. On the days both years reported, that is 14.58 inches less than 2025 had by this point. May was the wettest month at 4.23 inches, and the biggest single day was 1.37 inches on Sep 23. The gauge went 13 days in a row with nothing in it, not even a trace, from Aug 23 to Sep 4.",
+   "through": "2026-10-13"
+  },
+  "51009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.93",
+     "label": "biggest single day"
+    },
+    "county": "Amherst County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.7 miles southwest of Amherst",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.32",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.47",
+    "usual_in": "36.89",
+    "vs_usual": {
+     "diff_in": "7.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.38",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9759e0a0c02f1f5",
+   "sid": "US1VAAH0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles southwest of Amherst had 29.47 inches, 7.42 inches less than a usual year. July was the wettest month at 4.38 inches. The biggest single day came late, 1.93 inches on Oct 11. That is 8.32 inches less than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "51011": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "3.03",
+     "label": "biggest one-day reading"
+    },
+    "county": "Appomattox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 27,
+    "days_reported": 259,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1.6 miles north-northeast of Pamplin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 236,
+      "diff_in": "1.47",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 24,
+     "through": "Oct 13",
+     "total_in": "30.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 7"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.34",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.53",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "70a09dc975832af5",
+   "sid": "US1VAAP0004 6",
+   "story": "Through Oct 13, the gauge near Pamplin had its wettest month in May at 5.53 inches, and 3.03 inches of that came on May 26 alone. Then it sat empty for 10 days in a row, from May 29 to Jun 7. On the 236 days both years reported, this year has 1.47 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "51013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.99",
+     "label": "biggest single day"
+    },
+    "county": "Arlington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Washington Reagan National Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.75",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.54",
+    "usual_in": "33.37",
+    "vs_usual": {
+     "diff_in": "5.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.27",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3c5e91d4577f0bfe",
+   "sid": "13743 1",
+   "story": "Through Oct 13, the weather station at Washington Reagan National Airport has 27.54 inches, 3.75 inches less than it had by this day last year. The biggest single day came early, 1.99 inches on Jan 25. August was the wettest month at 4.27 inches. The longest dry stretch ran 12 days, May 29 to Jun 9, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "51015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "1.81",
+     "label": "biggest single day"
+    },
+    "county": "Augusta County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.3 miles south-southeast of Mount Solon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "6.03",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "35.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.11",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.13",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8c03a8f1b9120981",
+   "sid": "US1VAAG0024 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.3 miles south-southeast of Mount Solon had July as its wettest month at 5.13 inches, and its biggest single day came Jul 6 with 1.81 inches. It also went 12 days in a row with nothing in the gauge, from Apr 7 to Apr 18. On the days both years reported, this year is 6.03 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.98",
+     "label": "biggest one-day reading"
+    },
+    "county": "Bath County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Hot Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 98,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.73",
+    "usual_in": "37.60",
+    "vs_usual": {
+     "diff_in": "0.87",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.31",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78f77373ede5a639",
+   "sid": "444128 2",
+   "story": "Through Oct 13, the station in Hot Springs had its wettest month in August with 7.31 inches. The biggest one-day reading came late, 1.98 inches on Oct 11. The longest dry stretch ran 10 days, Apr 7 to Apr 16, with not even a trace in the gauge. On the days both years reported, this year sits 1.29 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.58",
+     "label": "biggest single day"
+    },
+    "county": "Bedford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Huddleston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "5.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.55",
+    "usual_in": "33.74",
+    "vs_usual": {
+     "diff_in": "10.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.33",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e902ff609da618a7",
+   "sid": "444148 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Huddleston had its biggest single day on Oct 11, with 1.58 inches. The wettest month was February, at 3.33 inches. From Aug 29 to Sep 11 the gauge went 14 days in a row with nothing in it, not even a trace. On the days both years reported, this year sits 5.89 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "3.42",
+     "label": "biggest single day"
+    },
+    "county": "Botetourt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.9 miles north-northwest of Fincastle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "17.63",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 13",
+     "total_in": "41.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.00",
+    "usual_in": "36.04",
+    "vs_usual": {
+     "diff_in": "12.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.97",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d95cd7dddffa16ae",
+   "sid": "US1VABT0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northwest of Fincastle had its wettest month in October, with 4.97 inches, and 3.42 of that came on Oct 11 alone. Before that, the gauge went 12 days with nothing at all from May 29 to Jun 9. On the days both years reported, this year sits 17.63 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "51025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "1.41",
+     "label": "biggest single day"
+    },
+    "county": "Brunswick County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "5 miles north of Alberta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.84",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.25",
+    "usual_in": "38.32",
+    "vs_usual": {
+     "diff_in": "11.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.46",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2290bd00a0139c51",
+   "sid": "440079 2",
+   "story": "Through Oct 13, the weather station 5 miles north of Alberta has caught 27.25 inches, 14.84 inches less than it had by this day in 2025. July was the wettest month at 5.46 inches. The biggest single day came early, 1.41 inches on Feb 16. The gauge stayed empty 10 days in a row from Apr 7 to Apr 16.",
+   "through": "2026-10-13"
+  },
+  "51027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Buchanan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Grundy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "8.25",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "43.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.86",
+    "usual_in": "38.12",
+    "vs_usual": {
+     "diff_in": "4.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.12",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e715a0d8dd3769f9",
+   "sid": "443640 2",
+   "story": "Through Oct 13, the weather station in Grundy had its wettest month in September at 5.12 inches. The biggest single day came Sep 13 with 2.40 inches. The longest dry stretch ran 12 days from May 29 to Jun 9 with nothing in the gauge. On the days both years reported, this year is 8.25 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.77",
+     "label": "biggest one-day reading"
+    },
+    "county": "Buckingham County",
+    "days_in_year_so_far": 285,
+    "days_missing": 4,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Buckingham",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "9.76",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 12",
+     "total_in": "38.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 84,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "28.99",
+    "usual_in": "34.70",
+    "vs_usual": {
+     "diff_in": "5.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.37",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "606eb59b62245896",
+   "sid": "441136 2",
+   "story": "Through Oct 12, the weather station in Buckingham had its wettest month in July with 5.37 inches, and its biggest one-day reading came Jul 22 at 1.77 inches. The longest dry stretch ran 13 days, Apr 7 to Apr 19, without even a trace in the gauge. On the days both years reported, this year is 9.76 inches behind last year.",
+   "through": "2026-10-12"
+  },
+  "51031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Campbell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4 miles south-southwest of Concord",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.03",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.28",
+    "usual_in": "36.47",
+    "vs_usual": {
+     "diff_in": "11.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.10",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bab4df1dbc41cdbd",
+   "sid": "441955 2",
+   "story": "Through Oct 13, the weather station 4 miles south-southwest of Concord had its wettest month in July with 4.10 inches. The biggest single day was Sep 23 at 1.70 inches. From Apr 7 to Apr 25 it went 19 days in a row with nothing in the gauge, not even a trace. That leaves the year 6.03 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "51033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Caroline County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.7 miles east-northeast of Ruther Glen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.79",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.07",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.81",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b42728586c3f69ee",
+   "sid": "US1VACL0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge east-northeast of Ruther Glen had its wettest month in July at 8.81 inches. The biggest single day came Sep 23 with 2.80 inches. It went 13 days in a row with nothing in the gauge, Apr 7 to Apr 19. On the days both years reported, that is 1.79 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Galax Water",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "44.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.54",
+    "usual_in": "41.11",
+    "vs_usual": {
+     "diff_in": "2.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.39",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "894e41829265c9ec",
+   "sid": "443272 2",
+   "story": "Through Oct 13, the weather station in Galax Water had its wettest month in July at 9.39 inches. The biggest single day came late, 3.30 inches on Oct 11. The longest dry stretch ran 10 days, Apr 7 to Apr 16, with nothing in the gauge. On the days both years reported, this year is 5.70 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "3.82",
+     "label": "biggest single day"
+    },
+    "county": "Charlotte County",
+    "days_in_year_so_far": 285,
+    "days_missing": 3,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4.3 miles southeast of Saxe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "7.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "40.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "31.33",
+    "usual_in": "36.57",
+    "vs_usual": {
+     "diff_in": "5.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.20",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "032fc8d009f58e39",
+   "sid": "US1VACH0001 6",
+   "story": "Through Oct 12, the volunteer rain gauge 4.3 miles southeast of Saxe had caught most of its year in July, with 7.20 inches that month. The biggest single day was Jul 8 at 3.82 inches. Then it went 14 days in a row with nothing in the gauge, not even a trace, from Aug 24 to Sep 6. On the days both years reported, that is 7.89 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "51041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "6.08",
+     "label": "biggest single day"
+    },
+    "county": "Chesterfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "6.6 miles east of Chester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "6.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "52.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.68",
+    "usual_in": "40.45",
+    "vs_usual": {
+     "diff_in": "5.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.43",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f5235f4db14c755",
+   "sid": "US1VACS0045 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.6 miles east of Chester has caught 45.68 inches, 5.23 more than a usual year. August did most of the work with 11.43 inches, and 6.08 of that came on Aug 5 alone. The gauge went 13 days dry from Apr 7 to Apr 19. On the days both years reported, it is still 6.56 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.83",
+     "label": "biggest single day"
+    },
+    "county": "Clarke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of Berryville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.28",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.38",
+    "usual_in": "33.76",
+    "vs_usual": {
+     "diff_in": "2.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.38",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d04e63d89f35e05b",
+   "sid": "US1VACK0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northwest of Berryville had 31.38 inches, 2.38 less than a usual year. August was the wettest month at 5.38 inches, and the biggest single day was 1.83 inches on Jul 22. The longest dry stretch ran 12 days, Apr 7 to Apr 18. That still beats last year by 1.28 inches.",
+   "through": "2026-10-13"
+  },
+  "51047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.27",
+     "label": "biggest one-day reading"
+    },
+    "county": "Culpeper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.5 miles north of Rixeyville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "7.80",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "34.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 113,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.68",
+    "usual_in": "35.27",
+    "vs_usual": {
+     "diff_in": "4.41",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.40",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "245ada9d60c66087",
+   "sid": "US1VACP0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles north of Rixeyville caught 9.40 inches in August, the wettest month so far. The biggest one-day reading came Aug 3 at 2.27 inches. Back in spring it went 12 days in a row with nothing in the gauge, Apr 7 to Apr 18. On the days both years reported, 2026 is 7.80 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "51051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "1.99",
+     "label": "biggest single day"
+    },
+    "county": "Dickenson County",
+    "days_in_year_so_far": 279,
+    "days_missing": 0,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1 mile west of Clintwood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "8.17",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 6",
+     "total_in": "42.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Virginia",
+    "through": "Oct 6",
+    "through_iso": "2026-10-06",
+    "total_in": "34.04",
+    "usual_in": "39.87",
+    "vs_usual": {
+     "diff_in": "5.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.48",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b190b8625a6e5237",
+   "sid": "441825 2",
+   "story": "Through Oct 6, the weather station 1 mile west of Clintwood had 34.04 inches, 8.17 inches less than it had by this day last year. August was the wettest month at 9.48 inches. The biggest single day was Jun 19 with 1.99 inches, just after an 11 day stretch from May 30 to Jun 9 with nothing in the gauge, not even a trace.",
+   "through": "2026-10-06"
+  },
+  "51059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Fairfax County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Vienna",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.27",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.46",
+    "usual_in": "35.05",
+    "vs_usual": {
+     "diff_in": "3.41",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.69",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fe1cd337b43f047d",
+   "sid": "448737 2",
+   "story": "Through Oct 13, the weather station in Vienna has 6.27 inches more than it had by this day last year. August was the wettest month at 5.69 inches. The biggest single day came Mar 17 with 2.12 inches. The longest dry stretch ran 12 days, Apr 7 to Apr 18, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "51061": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Fauquier County",
+    "days_in_year_so_far": 286,
+    "days_missing": 25,
+    "days_reported": 261,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "8.0 miles southwest of Marshall",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.70",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.74",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "194a7fc015b0b3cb",
+   "sid": "US1VAFQ0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.0 miles southwest of Marshall had caught 38.70 inches. September was the wettest month at 6.74 inches. The longest dry stretch ran 12 days, Apr 7 to Apr 18, with nothing in the gauge, not even a trace. The gauge reported on 261 of the 286 days so far.",
+   "through": "2026-10-13"
+  },
+  "51063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "4.45",
+     "label": "biggest one-day reading"
+    },
+    "county": "Floyd County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "in Copper Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "1.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "41.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 10"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 100,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.81",
+    "usual_in": "39.76",
+    "vs_usual": {
+     "diff_in": "0.05",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cd393cd52045dc38",
+   "sid": "441999 2",
+   "story": "Through Oct 13, the weather station in Copper Hill sits about where a usual year would, 0.05 inches more. The biggest one-day reading came late, 4.45 inches on Oct 11. The longest dry stretch ran 13 days, May 29 to Jun 10, with nothing in the gauge. On the days both years reported, this year is 1.70 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 12",
+     "in": "1.43",
+     "label": "biggest single day"
+    },
+    "county": "Fluvanna County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "6 miles southeast of Scottsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.65",
+    "usual_in": "34.59",
+    "vs_usual": {
+     "diff_in": "5.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.94",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "31bd6d0575af4644",
+   "sid": "446491 2",
+   "story": "Through Oct 13, the weather station 6 miles southeast of Scottsville has 28.65 inches, 7.42 inches less than it had by this day last year. July was the wettest month at 4.94 inches, and the biggest single day came Jul 12 with 1.43 inches. The longest dry stretch ran 17 days, Apr 8 to Apr 24, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "51069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "3.53",
+     "label": "biggest single day"
+    },
+    "county": "Frederick County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.2 miles east of Stephens City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "1.58",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.27",
+    "usual_in": "33.17",
+    "vs_usual": {
+     "diff_in": "0.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.87",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad70bae44fc2c66e",
+   "sid": "US1VAFD0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.2 miles east of Stephens City had its biggest single day on Oct 11 with 3.53 inches. September was the wettest month at 4.87 inches. The longest dry stretch ran 13 days, Apr 7 to Apr 19, with not even a trace in the gauge. On the days both years reported, this year has 1.58 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "51071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "1.22",
+     "label": "biggest single day"
+    },
+    "county": "Giles County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "4 miles south-southeast of Pearisburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "34.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.10",
+    "usual_in": "34.60",
+    "vs_usual": {
+     "diff_in": "5.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.08",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "01915cd9d7fed6e0",
+   "sid": "448022 2",
+   "story": "Through Oct 13, the weather station 4 miles south-southeast of Pearisburg has 29.10 inches, 5.50 inches less than a usual year. July was the wettest month at 6.08 inches, and the biggest single day came Jul 7 with 1.22 inches. On the days both years reported, that is 5.20 inches less than 2025 had by this point. The longest dry stretch ran 9 days, Jan 1 to Jan 9.",
+   "through": "2026-10-13"
+  },
+  "51073": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Gloucester County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.5 miles west-northwest of James Store",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "41.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.24",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.68",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "518543e492d1a8e9",
+   "sid": "US1VAGC0029 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles west-northwest of James Store had 7.68 inches in July, its wettest month. The biggest single day was May 26 at 2.46 inches. From Apr 7 to Apr 19 it went 13 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 7.45 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Goochland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Crozier",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.01",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.86",
+    "usual_in": "35.80",
+    "vs_usual": {
+     "diff_in": "7.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.67",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab28a03661b76a0a",
+   "sid": "442142 2",
+   "story": "Through Oct 13, the weather station in Crozier has caught 14.01 inches less than it had by this day last year, when it stood at 41.87. July was the wettest month at 4.67 inches, and the biggest single day came Sep 23 with 1.90. The gauge went 13 days in a row with nothing in it, from Apr 7 to Apr 19.",
+   "through": "2026-10-13"
+  },
+  "51077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "2.90",
+     "label": "biggest one-day reading"
+    },
+    "county": "Grayson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.3 miles south of Independence",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "4.83",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "33.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.55",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.29",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eae2337f52654d04",
+   "sid": "US1VAGR0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles south of Independence had its wettest month in July at 9.29 inches. Its biggest one-day reading came late, 2.90 inches on Oct 11. The longest run with nothing in the gauge was 10 days, Apr 7 to Apr 16. On the days both years reported, this year is 4.83 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "51079": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 19,
+    "days_reported": 267,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.7 miles east of Ruckersville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 9"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.26",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.38",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4e78b4d0bbf12b61",
+   "sid": "US1VAGN0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles east of Ruckersville has caught 30.26 inches. August was the wettest month at 6.38 inches. The longest stretch with nothing in the gauge, not even a trace, ran 9 days from Jan 1 to Jan 9. The gauge reported on 267 of 286 days, so a few days are missing from that total.",
+   "through": "2026-10-13"
+  },
+  "51083": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Halifax County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in South Boston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "11.27",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "36.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.41",
+    "usual_in": "37.12",
+    "vs_usual": {
+     "diff_in": "10.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.70",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bc6ba06f1e1f8a2b",
+   "sid": "93717 1",
+   "story": "Through Oct 13, the weather station in South Boston has caught 10.71 inches less than a usual year. May was the wettest month at 4.70 inches, and 2.10 of that came on May 26. The gauge then went 19 days in a row with nothing from Apr 7 to Apr 25. On the days both years reported, that is 11.27 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 13",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Hanover County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Ashland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.95",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.99",
+    "usual_in": "36.10",
+    "vs_usual": {
+     "diff_in": "2.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.04",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f950a00adebcd53f",
+   "sid": "440327 2",
+   "story": "Through Oct 13, the weather station in Ashland had a dry run of 12 days in a row from May 29 to Jun 9 with nothing in the gauge, not even a trace. Then it got its biggest single day on Jun 13 with 2.18 inches. July was the wettest month at 9.04 inches. The year sits 3.95 inches behind last year at the same point, and 2.11 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "51087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Henrico County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Richmond International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.24",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.18",
+    "usual_in": "37.05",
+    "vs_usual": {
+     "diff_in": "2.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.33",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fdf09afdffe2eeb5",
+   "sid": "13740 1",
+   "story": "Through Oct 13, the weather station at Richmond International Airport had its wettest month in July at 7.33 inches. The biggest single day came Sep 12 with 2.35 inches. The gauge went 13 days in a row without even a trace, from May 28 to Jun 9. That puts the year at 6.24 inches less than 2025 at this point, even running 2.13 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "51089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 23",
+     "in": "4.22",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Martinsville Filter",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "4.41",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "37.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.78",
+    "usual_in": "37.85",
+    "vs_usual": {
+     "diff_in": "5.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.07",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "862aae92697398f2",
+   "sid": "445300 2",
+   "story": "Through Oct 13, the weather station in Martinsville Filter had most of its rain bunched up in July, the wettest month at 9.07 inches. Jul 23 alone put 4.22 inches in the gauge, the biggest single day. Then it went 19 days in a row with nothing at all, from Aug 24 to Sep 11. On the days both years reported, that's 4.41 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "4.13",
+     "label": "biggest single day"
+    },
+    "county": "Isle of Wight County",
+    "days_in_year_so_far": 285,
+    "days_missing": 11,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.3 miles southwest of Smithfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 249,
+      "diff_in": "13.75",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 12",
+     "total_in": "47.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "34.38",
+    "usual_in": "41.04",
+    "vs_usual": {
+     "diff_in": "6.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.47",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ed9571b6e1d3f4c",
+   "sid": "US1VAIW0004 6",
+   "story": "Through Oct 12, the volunteer rain gauge 1.3 miles southwest of Smithfield has caught 34.38 inches, 6.66 inches less than a usual year. July was the wettest month at 9.47 inches, and 4.13 of that came on Jul 8. The gauge went 18 days in a row with nothing from May 28 to Jun 14. On the days both years reported, this year is 13.75 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "51095": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "3.34",
+     "label": "biggest single day"
+    },
+    "county": "James City County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3.2 miles west-northwest of Williamsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "18.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "53.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.22",
+    "usual_in": "40.04",
+    "vs_usual": {
+     "diff_in": "7.82",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.85",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "983a1bf219dc4a49",
+   "sid": "US1VAJC0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-northwest of Williamsburg has run well short of last year, with 18.53 inches less than 2025 on the days both years reported. July was the wettest month at 6.85 inches. The biggest single day was May 26 with 3.34 inches. From Mar 29 to Apr 13 the gauge went 16 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "51101": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "3.41",
+     "label": "biggest single day"
+    },
+    "county": "King William County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "2 miles northwest of West Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.16",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.00",
+    "usual_in": "39.02",
+    "vs_usual": {
+     "diff_in": "1.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.56",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "13b6852da970ab24",
+   "sid": "449025 2",
+   "story": "Through Oct 13, the weather station 2 miles northwest of West Point had its biggest single day on May 25 with 3.41 inches. Then it went 13 days in a row with nothing in the gauge, from May 28 to Jun 9. July was the wettest month at 7.56 inches. The year so far sits 11.16 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "51103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "3.51",
+     "label": "biggest single day"
+    },
+    "county": "Lancaster County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "6.2 miles north-northeast of Urbanna",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.52",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.75",
+    "usual_in": "39.80",
+    "vs_usual": {
+     "diff_in": "2.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.70",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db8f83678d8a60ca",
+   "sid": "US1VALN0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northeast of Urbanna has caught 37.75 inches. July was the wettest month at 8.70 inches, and the biggest single day came Sep 23 with 3.51 inches. The gauge went 13 days in a row with nothing in it, from Apr 7 to Apr 19. That puts this year 5.52 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "51105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "5.39",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Pennington Gap",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "9.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "50.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 93,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.96",
+    "usual_in": "39.80",
+    "vs_usual": {
+     "diff_in": "2.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.50",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dfc4ae72a5aff3d1",
+   "sid": "446626 2",
+   "story": "Through Oct 13, the weather station in Pennington Gap has a lot of its year tied up in June. June brought 7.50 inches, and 5.39 of that came on Jun 19 alone, the biggest one-day reading. The gauge went 16 days in a row with nothing from Mar 18 to Apr 2. On the days both years reported, this year sits 9.44 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "2.37",
+     "label": "biggest single day"
+    },
+    "county": "Loudoun County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Sterling",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.70",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.94",
+    "usual_in": "36.08",
+    "vs_usual": {
+     "diff_in": "0.14",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.37",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5aa780210f742f81",
+   "sid": "448084 2",
+   "story": "Through Oct 13, the weather station in Sterling sits right about a usual year, 0.14 inches less. September was the wettest month at 5.37 inches. The biggest single day came late, 2.37 inches on Oct 11. That is 7.70 inches more than 2025 had by this same day.",
+   "through": "2026-10-13"
+  },
+  "51109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "2.19",
+     "label": "biggest single day"
+    },
+    "county": "Louisa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Louisa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.48",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.57",
+    "usual_in": "35.12",
+    "vs_usual": {
+     "diff_in": "2.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.73",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "25caa22bd35f320b",
+   "sid": "445050 2",
+   "story": "Through Oct 13, the weather station in Louisa had its wettest month in August, with 5.73 inches. The biggest single day came early, 2.19 inches on Jan 25. From Apr 6 to Apr 18 the gauge went 13 days in a row with nothing in it, not even a trace. It is still 1.48 inches more than last year to this day.",
+   "through": "2026-10-13"
+  },
+  "51111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "3.63",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lunenburg County",
+    "days_in_year_so_far": 285,
+    "days_missing": 11,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Victoria",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "33.01",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.52",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "064ba16aa15516cd",
+   "sid": "US1VALB0002 6",
+   "story": "Through Oct 12, the volunteer rain gauge less than a mile north of Victoria had caught 33.01 inches. August was the wettest month at 6.52 inches, and 3.63 of that came on Aug 5, the biggest one-day reading of the year. The longest dry stretch ran 13 days, Apr 7 to Apr 19, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "51113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 23",
+     "in": "2.27",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "4.6 miles north-northwest of Madison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.84",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.07",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.40",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c73d1a44f6fef530",
+   "sid": "US1VAMD0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles north-northwest of Madison has caught 41.07 inches. August did most of the work with 9.40 inches, and Aug 23 brought the biggest single day at 2.27 inches. The longest dry stretch ran 12 days, Apr 7 to Apr 18. That is 4.84 inches less than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "51115": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "Mathews County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile southeast of Port Haywood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "14.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "48.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.13",
+    "usual_in": "41.29",
+    "vs_usual": {
+     "diff_in": "7.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.85",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "044a56a24be435f7",
+   "sid": "US1VAMT0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile southeast of Port Haywood has caught 34.13 inches, 7.16 inches less than a usual year. July was the wettest month at 5.85 inches, and the biggest single day was May 26 with 2.68 inches. The gauge went 13 days in a row with nothing from Apr 7 to Apr 19. On the days both years reported, this year is 14.73 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "51117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "1.66",
+     "label": "biggest single day"
+    },
+    "county": "Mecklenburg County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in John H Kerr",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "14.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "35.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.06",
+    "usual_in": "34.98",
+    "vs_usual": {
+     "diff_in": "13.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.03",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "267040941d7c522e",
+   "sid": "444414 2",
+   "story": "Through Oct 13, the station in John H Kerr had August as its wettest month, at 3.03 inches. The biggest single day was 1.66 inches on Sep 13. On the days both years reported, this year sits 14.38 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "4.67",
+     "label": "biggest single day"
+    },
+    "county": "Middlesex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2.9 miles west of Hartfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "41.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.72",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.27",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6762325e895b458c",
+   "sid": "US1VAMX0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles west of Hartfield has caught 40.72 inches. July was the wettest month at 9.27 inches, and the biggest single day came Sep 23 with 4.67 inches. The gauge went 13 days in a row with nothing in it, from Apr 7 to Apr 19. On the days both years reported, that is 0.62 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "1.63",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Blacksburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.94",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.50",
+    "usual_in": "34.93",
+    "vs_usual": {
+     "diff_in": "2.43",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.27",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b629eec62c279525",
+   "sid": "440766 2",
+   "story": "Through Oct 13, the weather station in Blacksburg had its wettest month in July at 8.27 inches, and the biggest single day came Jul 19 with 1.63 inches. The longest dry stretch ran 7 days, Apr 7 to Apr 13, with not even a trace in the gauge. On the days both years reported, 2026 has 0.94 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "51125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.44",
+     "label": "biggest one-day reading"
+    },
+    "county": "Nelson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.8 miles west-northwest of Nellysford",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.00",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.72",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "85b2c2c387dcc5bb",
+   "sid": "US1VANL0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles west-northwest of Nellysford has caught 36.00 inches. October is the wettest month so far at 6.72 inches, and 2.44 inches of that came on Oct 12, the biggest reading of the year. The longest dry stretch ran 12 days, Apr 7 to Apr 18, with not even a trace in the gauge. It has reported on 280 of 286 days.",
+   "through": "2026-10-13"
+  },
+  "51127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.86",
+     "label": "biggest single day"
+    },
+    "county": "New Kent County",
+    "days_in_year_so_far": 285,
+    "days_missing": 3,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3.7 miles northeast of Providence Forge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "14.91",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 12",
+     "total_in": "49.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "34.86",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.16",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "83c5908bfb7ef34e",
+   "sid": "US1VANK0004 6",
+   "story": "Through Oct 12, the volunteer rain gauge 3.7 miles northeast of Providence Forge has caught 34.86 inches. July was the wettest month at 6.16 inches, and the biggest single day was Jul 22 with 2.86 inches. On the days both years reported, this year is 14.91 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "51131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 12",
+     "in": "1.98",
+     "label": "biggest single day"
+    },
+    "county": "Northampton County",
+    "days_in_year_so_far": 283,
+    "days_missing": 2,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5 miles east-northeast of Cape Charles",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "3.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "33.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Virginia",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "30.37",
+    "usual_in": "34.60",
+    "vs_usual": {
+     "diff_in": "4.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.08",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7980ac31898f293e",
+   "sid": "03739 1",
+   "story": "Through Oct 10, the weather station 5 miles east-northeast of Cape Charles has run 4.23 inches less than a usual year. February was the wettest month at 5.08 inches, and the biggest single day was Jul 12 with 1.98 inches. The gauge went 13 days in a row with nothing from May 28 to Jun 9. On the days both years reported, this year is 3.56 inches behind 2025.",
+   "through": "2026-10-10"
+  },
+  "51133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Northumberland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "4.6 miles southeast of Heathsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.69",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.94",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.97",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b9a35b6f1c4f25fe",
+   "sid": "US1VAND0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles southeast of Heathsville had 34.94 inches. July was the wettest month at 8.97 inches, and the biggest single day came Jul 22 with 3.20 inches. The gauge went 13 days in a row with nothing from Apr 7 to Apr 19. On the days both years reported, this year ran 8.69 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "1.99",
+     "label": "biggest single day"
+    },
+    "county": "Nottoway County",
+    "days_in_year_so_far": 285,
+    "days_missing": 1,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "7.4 miles north of Blackstone",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "7.26",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "39.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "32.01",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.15",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "91a9e1187b0d20bb",
+   "sid": "US1VANY0008 6",
+   "story": "Through Oct 12, the volunteer rain gauge 7.4 miles north of Blackstone had 32.01 inches for the year. July was the wettest month at 6.15 inches, and the biggest single day came Jul 7 with 1.99 inches. The longest dry stretch ran 13 days, Apr 7 to Apr 19, with not even a trace in the gauge. On the days both years reported, that is 7.26 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "51137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Orange County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Somerset",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.07",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.33",
+    "usual_in": "35.94",
+    "vs_usual": {
+     "diff_in": "1.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.09",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "68fb85e10ce5e482",
+   "sid": "447904 2",
+   "story": "Through Oct 13, the weather station in Somerset has caught 34.33 inches, 1.61 inches less than a usual year. August was the wettest month at 6.09 inches, and the biggest single day came back on Jan 25 with 1.62 inches. The longest dry stretch ran 14 days, May 30 to Jun 12, with nothing in the gauge. Last year at this point the station had 7.07 inches more.",
+   "through": "2026-10-13"
+  },
+  "51139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 23",
+     "in": "3.13",
+     "label": "biggest single day"
+    },
+    "county": "Page County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1.4 miles north of Shenandoah",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "5.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "29.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.46",
+    "usual_in": "34.05",
+    "vs_usual": {
+     "diff_in": "1.41",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.16",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0aafb47b57d81c1d",
+   "sid": "US1VAPG0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles north of Shenandoah had its wettest month in August with 7.16 inches, and the biggest single day came Aug 23 with 3.13 inches. Early on it went 19 days in a row with nothing in the gauge, from Jan 28 to Feb 15. On the days both years reported, this year has 5.68 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "51143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "1.44",
+     "label": "biggest single day"
+    },
+    "county": "Pittsylvania County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at Danville Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "11.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "33.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.05",
+    "usual_in": "35.37",
+    "vs_usual": {
+     "diff_in": "13.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.89",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "83bf10044d81995f",
+   "sid": "13728 1",
+   "story": "Through Oct 13, the weather station at Danville Regional Airport has 22.05 inches, 13.32 inches less than a usual year. July was the wettest month at 3.89 inches, and the biggest single day was 1.44 inches on Feb 15. The gauge went 13 days in a row with nothing from May 28 to Jun 9. On the days both years reported, this year is 11.74 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Powhatan County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "7.8 miles northeast of Powhatan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.19",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 11",
+     "total_in": "37.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "33.61",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.88",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0b139e73fae58b5a",
+   "sid": "US1VAPH0007 6",
+   "story": "Through Oct 11, the volunteer rain gauge 7.8 miles northeast of Powhatan had 33.61 inches for the year. August was the wettest month at 6.88 inches, and the biggest single day was 2.34 inches on Jul 7. The gauge went 13 days in a row with nothing in it, Apr 7 to Apr 19. On the days both years reported, that is 4.19 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "51147": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "3.52",
+     "label": "biggest one-day reading"
+    },
+    "county": "Prince Edward County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Farmville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "9.36",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 7"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 96,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.60",
+    "usual_in": "34.84",
+    "vs_usual": {
+     "diff_in": "1.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.72",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ac0f2fb58b529293",
+   "sid": "442941 2",
+   "story": "Through Oct 13, the weather station in Farmville had its wettest month in May at 6.72 inches. The biggest rain came May 26 with 3.52 inches. Then the gauge sat empty for 10 days from May 29 to Jun 7. On the days both years reported, this year has 9.36 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "3.33",
+     "label": "biggest single day"
+    },
+    "county": "Prince George County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Disputanta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "20.17",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "51.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Mar 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "30.90",
+    "usual_in": "40.70",
+    "vs_usual": {
+     "diff_in": "9.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.92",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "74e6763ee38c76f8",
+   "sid": "442400 2",
+   "story": "Through Oct 12, the weather station in Disputanta has caught 9.80 inches less than a usual year. August was the wettest month at 5.92 inches, and 3.33 of that came on Aug 5 alone. The gauge went 22 days in a row with nothing from Mar 29 to Apr 19. Last year at this point it was 20.17 inches ahead of where it sits now.",
+   "through": "2026-10-12"
+  },
+  "51153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Prince William County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "4.0 miles south of Nokesville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.49",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.17",
+    "usual_in": "37.14",
+    "vs_usual": {
+     "diff_in": "3.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.75",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bc0142adc978b4a5",
+   "sid": "US1VAPW0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles south of Nokesville has caught 33.17 inches, 3.97 inches less than a usual year. May was the wettest month at 5.75 inches, and the biggest single day was 1.80 inches on Jul 7. The longest dry stretch ran 11 days, Jan 27 to Feb 6. On the days both years reported, this year is 0.49 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "51155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.71",
+     "label": "biggest single day"
+    },
+    "county": "Pulaski County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northwest of New River",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.05",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "37.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.69",
+    "usual_in": "34.26",
+    "vs_usual": {
+     "diff_in": "3.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.48",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b8a726fcb12cd99d",
+   "sid": "US1VAPL0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northwest of New River has run 3.57 inches less than a usual year. July was the wettest month at 4.48 inches, and the biggest single day came late, 1.71 inches on Oct 11. The gauge went 12 days in a row with nothing in it, Aug 24 to Sep 4. On the days both years reported, that is 7.05 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "1.77",
+     "label": "biggest one-day reading"
+    },
+    "county": "Rappahannock County",
+    "days_in_year_so_far": 281,
+    "days_missing": 23,
+    "days_reported": 258,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Sperryville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 9"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 87,
+    "state": "Virginia",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "31.23",
+    "usual_in": "35.83",
+    "vs_usual": {
+     "diff_in": "4.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.64",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5ba5148ef2ef02d2",
+   "sid": "447985 2",
+   "story": "Through Oct 8, the weather station in Sperryville had September as its wettest month at 4.64 inches. The biggest one-day reading came Jul 29 with 1.77 inches. The longest dry stretch ran 9 days, Jan 1 to Jan 9, with nothing in the gauge, not even a trace. That leaves the station 4.60 inches less than a usual year.",
+   "through": "2026-10-08"
+  },
+  "51159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Richmond County",
+    "days_in_year_so_far": 277,
+    "days_missing": 0,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2 miles northwest of Warsaw",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "9.64",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 4",
+     "total_in": "41.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Virginia",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "31.98",
+    "usual_in": "35.17",
+    "vs_usual": {
+     "diff_in": "3.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.25",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b29f048c27f6450b",
+   "sid": "448894 2",
+   "story": "Through Oct 4, the weather station 2 miles northwest of Warsaw has 31.98 inches, 9.64 inches less than last year by this day. July was the wettest month at 7.25 inches, and the biggest single day came Jul 8 with 1.80 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-04"
+  },
+  "51163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.30",
+     "label": "biggest single day"
+    },
+    "county": "Rockbridge County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Buena Vista",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "2.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.28",
+    "usual_in": "33.84",
+    "vs_usual": {
+     "diff_in": "4.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.12",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0ba14332243a05f2",
+   "sid": "441159 2",
+   "story": "Through Oct 13, the weather station in Buena Vista has October as its wettest month at 5.12 inches, and the month is not done yet. The biggest single day came Oct 12 with 2.30 inches. The longest dry stretch ran 12 days, Apr 7 to Apr 18. On the days both years reported, 2026 sits 2.77 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51165": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Rockingham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Dale Enterprise",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.24",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.06",
+    "usual_in": "32.17",
+    "vs_usual": {
+     "diff_in": "0.11",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.56",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e630151edda14155",
+   "sid": "442208 2",
+   "story": "Through Oct 13, the weather station in Dale Enterprise has a year that sits right about usual, just 0.11 inches less. May did most of the work at 6.56 inches, and May 22 alone brought 2.46 inches. The gauge went 19 days without a drop from Jan 28 to Feb 15. That puts this year 5.24 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "51167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "1.68",
+     "label": "biggest one-day reading"
+    },
+    "county": "Russell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Lebanon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "8.86",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "49.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 16"
+    },
+    "multi_day_reports": 10,
+    "pct_of_usual": 109,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.65",
+    "usual_in": "36.30",
+    "vs_usual": {
+     "diff_in": "3.35",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.96",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "75e6b2b8162dc2cc",
+   "sid": "444777 2",
+   "story": "Through Oct 13, the weather station in Lebanon has caught 39.65 inches, 3.35 inches more than a usual year. July was the wettest month at 6.96 inches, and the biggest one-day reading came Aug 12 with 1.68 inches. On the days both years reported, that is 8.86 inches less than 2025 had by this point. The longest dry stretch ran 10 days, Apr 7 to Apr 16.",
+   "through": "2026-10-13"
+  },
+  "51169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Scott County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "6.2 miles north-northeast of Gate City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.07",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.17",
+    "usual_in": "39.97",
+    "vs_usual": {
+     "diff_in": "1.20",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.61",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "031b23d19d068454",
+   "sid": "US1VASC0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.2 miles north-northeast of Gate City had 41.17 inches, 1.20 more than a usual year. August was the wettest month at 7.61 inches. The biggest single day came Jun 23 with 2.03 inches, right after the longest dry stretch, 9 days from May 31 to Jun 8 with nothing in the gauge. Last year was wetter by this point, and this year is 4.07 inches less.",
+   "through": "2026-10-13"
+  },
+  "51173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Smyth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1 mile north of Saltville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Jan 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.50",
+    "usual_in": "39.26",
+    "vs_usual": {
+     "diff_in": "0.24",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.56",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "05bd225ba5041828",
+   "sid": "447506 2",
+   "story": "Through Oct 13, the weather station 1 mile north of Saltville sits about usual, 0.24 inches more than a usual year. August was the wettest month at 5.56 inches. The biggest single day came Sep 24 with 2.29 inches. Last year by this day the gauge had 44.56 inches, so this year is 5.06 inches less.",
+   "through": "2026-10-13"
+  },
+  "51175": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 5",
+     "in": "1.86",
+     "label": "biggest one-day reading"
+    },
+    "county": "Southampton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.7 miles north of Sedley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "16.09",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "45.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 69,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.22",
+    "usual_in": "42.36",
+    "vs_usual": {
+     "diff_in": "13.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.96",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "58513264e8f2e596",
+   "sid": "US1VAST0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles north of Sedley has caught 29.22 inches, 13.14 inches less than a usual year. July was the wettest month at 5.96 inches, and the biggest one-day reading was 1.86 inches on Sep 5. The gauge went 13 days in a row with nothing in it, from Apr 7 to Apr 19. On the days both years reported, this year is 16.09 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "51177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 26",
+     "in": "2.37",
+     "label": "biggest single day"
+    },
+    "county": "Spotsylvania County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "5.2 miles south-southwest of Fredericksburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "2.84",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "38.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.12",
+    "usual_in": "34.64",
+    "vs_usual": {
+     "diff_in": "1.48",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.25",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6da9f24124a15d0f",
+   "sid": "US1VASP0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge south-southwest of Fredericksburg had its wettest month in August at 7.25 inches. The biggest single day came early, 2.37 inches on Jan 26. The gauge went 13 days in a row with nothing in it from May 29 to Jun 10. On the days both years reported, this year sits 2.84 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 26",
+     "in": "1.28",
+     "label": "biggest single day"
+    },
+    "county": "Stafford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "7.5 miles east-southeast of Fredericksburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.63",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "38.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.33",
+    "usual_in": "36.37",
+    "vs_usual": {
+     "diff_in": "8.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.58",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "de14f69277dc4f93",
+   "sid": "US1VASF0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.5 miles east-southeast of Fredericksburg has 28.33 inches, 8.04 inches less than a usual year. July was the wettest month at 6.58 inches. The biggest single day came early, 1.28 inches on Jan 26. On the days both years reported, this year is 10.63 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51183": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 4",
+     "in": "1.44",
+     "label": "biggest single day"
+    },
+    "county": "Sussex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "1 mile northwest of Wakefield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "28.34",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.59",
+    "usual_in": "42.21",
+    "vs_usual": {
+     "diff_in": "16.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.54",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8941925cc87b209c",
+   "sid": "448800 2",
+   "story": "Through Oct 13, the weather station 1 mile northwest of Wakefield has 25.59 inches, 16.62 inches less than a usual year. On the days both years reported, that is 28.34 inches less than 2025. June was the wettest month at 4.54 inches, and the biggest single day was 1.44 inches on Aug 4. The gauge went 13 days in a row with nothing from Apr 6 to Apr 18.",
+   "through": "2026-10-13"
+  },
+  "51185": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 12",
+     "in": "2.27",
+     "label": "biggest single day"
+    },
+    "county": "Tazewell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Richlands",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "3.02",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.56",
+    "usual_in": "36.20",
+    "vs_usual": {
+     "diff_in": "6.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.98",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d2ad7cde32f5641c",
+   "sid": "447174 2",
+   "story": "Through Oct 13, the weather station in Richlands has caught 42.56 inches, 6.36 inches more than a usual year. July was the wettest month at 8.98 inches, and the biggest single day came Aug 12 with 2.27 inches. Then the gauge sat empty for 12 days in a row, Aug 24 to Sep 4. On the days both years reported, that is still 3.02 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "51187": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Front Royal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "9.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "40.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 10"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 97,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.47",
+    "usual_in": "34.60",
+    "vs_usual": {
+     "diff_in": "1.13",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.89",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8c4107de43cd8b86",
+   "sid": "443229 2",
+   "story": "Through Oct 13, the biggest single reading at the weather station in Front Royal came on Oct 12, at 2.10 inches. September was the wettest month with 4.89 inches. On the days both years reported, this year has 9.62 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51191": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "1.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles south of Abingdon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "3.55",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "39.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 96,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.45",
+    "usual_in": "37.99",
+    "vs_usual": {
+     "diff_in": "1.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.02",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "35e8a9bef2e14310",
+   "sid": "440021 2",
+   "story": "Through Oct 13, the weather station 3 miles south of Abingdon had August as its wettest month at 5.02 inches. Then it went 14 days in a row with nothing in the gauge, from Aug 23 to Sep 5. The biggest one-day reading was 1.70 inches on Jun 19. On the days both years reported, this year is 3.55 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51193": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "2.43",
+     "label": "biggest single day"
+    },
+    "county": "Westmoreland County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "5.2 miles east-southeast of Montross",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "10.96",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "43.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Virginia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "32.55",
+    "usual_in": "37.05",
+    "vs_usual": {
+     "diff_in": "4.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.94",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3fe6e78cdd22e1fb",
+   "sid": "US1VAWM0001 6",
+   "story": "Through Oct 11, the volunteer rain gauge 5.2 miles east-southeast of Montross had 10.96 inches less than it had by this day last year. July was the wettest month at 6.94 inches, and the biggest single day came Jul 8 with 2.43 inches. The gauge also went 14 days in a row with nothing in it, not even a trace, from May 29 to Jun 11.",
+   "through": "2026-10-11"
+  },
+  "51197": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 23",
+     "in": "1.85",
+     "label": "biggest single day"
+    },
+    "county": "Wythe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Wytheville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.29",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Sep 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.73",
+    "usual_in": "33.90",
+    "vs_usual": {
+     "diff_in": "2.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.79",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f5134104f3aa48af",
+   "sid": "449301 2",
+   "story": "Through Oct 13, the weather station in Wytheville had its wettest month in July at 5.79 inches, and the biggest single day came Jul 23 with 1.85 inches. Then it went 14 days in a row with nothing in the gauge, Sep 8 to Sep 21. On the days both years reported, this year is 4.29 inches more than last year, but still 2.17 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "51199": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 25",
+     "in": "3.21",
+     "label": "biggest single day"
+    },
+    "county": "York County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2 miles north of Williamsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.38",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.93",
+    "usual_in": "41.99",
+    "vs_usual": {
+     "diff_in": "8.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.57",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "322485a459ddf6fc",
+   "sid": "449151 2",
+   "story": "Through Oct 13, the weather station 2 miles north of Williamsburg has 33.93 inches, 8.06 inches less than a usual year. May was the wettest month at 5.57 inches, and 3.21 of that came on May 25 alone. The longest dry stretch ran 12 days, Apr 7 to Apr 18. Last year by this day the gauge had 15.38 inches more.",
+   "through": "2026-10-13"
+  },
+  "51510": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.62",
+     "label": "biggest one-day reading"
+    },
+    "county": "Alexandria City",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.6 miles west of Alexandria",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 255,
+      "diff_in": "3.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "36.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.75",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.56",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "998a8f1c8c60233f",
+   "sid": "US1VAALC010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles west of Alexandria had its wettest month in September at 5.56 inches. The biggest one-day reading came Aug 3 with 2.62 inches. The longest dry stretch ran 13 days, from Apr 7 to Apr 19. On the days both years reported, the gauge caught 3.98 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51550": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 23",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Chesapeake City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.8 miles northeast of Chesapeake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.56",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.60",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.62",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "90ac4488ecb406c1",
+   "sid": "US1VACSC015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles northeast of Chesapeake has caught 29.60 inches, 10.56 inches less than last year by the same day. July did most of the work with 7.62 inches, and 2.80 of that came on Jul 23 alone. The gauge went 13 days in a row with nothing at all, from Apr 7 to Apr 19.",
+   "through": "2026-10-13"
+  },
+  "51595": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 22",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Emporia City",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1 mile west-northwest of Emporia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "21.42",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 63,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.60",
+    "usual_in": "37.45",
+    "vs_usual": {
+     "diff_in": "13.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.07",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "19954633498dd0a5",
+   "sid": "442790 2",
+   "story": "Through Oct 13, the weather station 1 mile west-northwest of Emporia has had 23.60 inches, 13.85 inches less than a usual year. On the days both years reported, that is 21.42 inches less than 2025 had by now. July was the wettest month at 4.07 inches, and the biggest single day was 1.60 inches on Aug 22. The gauge went 13 days in a row with nothing in it, from Apr 7 to Apr 19.",
+   "through": "2026-10-13"
+  },
+  "51600": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "1.84",
+     "label": "biggest one-day reading"
+    },
+    "county": "Fairfax City",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1 mile north of Fairfax",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "4.55",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "34.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 9,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.09",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.16",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d4b128b051dfc6e5",
+   "sid": "US1VAFXC001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile north of Fairfax had August as its wettest month at 6.16 inches, and its biggest day was 1.84 inches on Mar 17. The gauge went 12 days in a row with nothing in it, not even a trace, from May 29 to Jun 9. On the days both years reported, this year has 4.55 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "51620": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 21",
+     "in": "1.79",
+     "label": "biggest single day"
+    },
+    "county": "Franklin City",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1.2 miles northwest of Franklin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.84",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "44.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.78",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.87",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "120a9073f9ad6c40",
+   "sid": "US1VAFRC004 6",
+   "story": "Through Oct 12, the volunteer rain gauge 1.2 miles northwest of Franklin caught 8.87 inches in July, its wettest month, and the biggest single day was 1.79 inches on Jul 21. The longest dry stretch ran 13 days, Apr 7 to Apr 19, with nothing in the gauge, not even a trace. On the days both years reported, this year is 8.84 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "51650": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Hampton City",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "6.3 miles southwest of Hampton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "14.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 15,
+     "through": "Oct 13",
+     "total_in": "39.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.23",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.04",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bea291cea6405266",
+   "sid": "US1VAHMC021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.3 miles southwest of Hampton has caught 27.23 inches. July was the wettest month at 5.04 inches. The longest dry stretch ran 13 days, Apr 7 to Apr 19, with not even a trace in the gauge. On the days both years reported, this year is 14.56 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51680": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.30",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lynchburg City",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.4 miles north-northwest of Lynchburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "19.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "41.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.10",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "3.67",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2f2e161a784409e3",
+   "sid": "US1VALYC007 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northwest of Lynchburg has 25.10 inches. On the days both years reported, that is 19.39 inches less than last year. January was the wettest month at 3.67 inches, and the biggest one-day reading was 1.30 inches on Jul 22. The gauge went 13 days in a row with nothing in it, from Apr 7 to Apr 19.",
+   "through": "2026-10-13"
+  },
+  "51700": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 17",
+     "in": "1.96",
+     "label": "biggest single day"
+    },
+    "county": "Newport News City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.3 miles east of Newport News",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.56",
+    "usual_in": "41.58",
+    "vs_usual": {
+     "diff_in": "9.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.13",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd6d79d74708073e",
+   "sid": "US1VANNC004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles east of Newport News has caught 15.42 inches less than it had by this day last year. July was the wettest month at 6.13 inches. The biggest single day was Mar 17 with 1.96 inches. The gauge also went 13 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 19.",
+   "through": "2026-10-13"
+  },
+  "51710": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 23",
+     "in": "2.38",
+     "label": "biggest single day"
+    },
+    "county": "Norfolk City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Norfolk International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.98",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.90",
+    "usual_in": "40.65",
+    "vs_usual": {
+     "diff_in": "10.75",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.78",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9a9b1ae96419340",
+   "sid": "13737 1",
+   "story": "Through Oct 13, the weather station at Norfolk International Airport had August as its wettest month at 5.78 inches. The biggest single day was Jul 23, with 2.38 inches. From May 28 to Jun 9 the gauge went 13 days in a row with nothing in it, not even a trace. Next to last year at this point, 2026 is 5.98 inches less.",
+   "through": "2026-10-13"
+  },
+  "51730": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 4",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Petersburg City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Petersburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "20.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.15",
+    "usual_in": "38.46",
+    "vs_usual": {
+     "diff_in": "5.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.81",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0215c88963317451",
+   "sid": "446656 2",
+   "story": "Through Oct 13, the weather station in Petersburg had 20.02 inches less than last year at this point. May was the wettest month at 5.81 inches. The biggest single day came Aug 4 with 2.73 inches. The gauge also went 13 days in a row with nothing in it, from Apr 6 to Apr 18.",
+   "through": "2026-10-13"
+  },
+  "51735": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "Poquoson City",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "6.1 miles west-southwest of Poquoson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "16.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "49.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.31",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.73",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "447673753265f04f",
+   "sid": "US1VAPQC003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.1 miles west-southwest of Poquoson had its wettest month in July at 5.73 inches. The biggest single day came Aug 11 with 2.81 inches. On the days both years reported, this year is 16.31 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51740": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "3.20",
+     "label": "biggest single day"
+    },
+    "county": "Portsmouth City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4.1 miles south-southeast of Portsmouth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.16",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.01",
+    "usual_in": "44.89",
+    "vs_usual": {
+     "diff_in": "7.88",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.31",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "daf45a4523e10a1c",
+   "sid": "US1VAPRC002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.1 miles south-southeast of Portsmouth had 37.01 inches, 7.88 inches less than a usual year. July was the wettest month at 9.31 inches, and the biggest single day was Aug 5 with 3.20 inches. The longest dry stretch ran 13 days, Apr 7 to Apr 19, without even a trace. That is 3.16 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "51760": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "2.72",
+     "label": "biggest one-day reading"
+    },
+    "county": "Richmond City",
+    "days_in_year_so_far": 286,
+    "days_missing": 23,
+    "days_reported": 263,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.7 miles north of Richmond",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 243,
+      "diff_in": "11.01",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 21,
+     "through": "Oct 13",
+     "total_in": "40.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 10"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.60",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.66",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f4a7fe385dbfc58c",
+   "sid": "US1VARCC017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles north of Richmond had 32.60 inches. July was the wettest month at 6.66 inches, and the biggest one-day reading came Jul 22 with 2.72 inches. The gauge went 13 days in a row with nothing in it, not even a trace, from May 29 to Jun 10. On the days both years reported, this year ran 11.01 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "51770": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "3.76",
+     "label": "biggest single day"
+    },
+    "county": "Roanoke City",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.9 miles south-southwest of Roanoke",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "35.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.05",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.12",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3868e3dbf4bb3166",
+   "sid": "US1VARNC003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles south-southwest of Roanoke has caught 31.05 inches. October is the wettest month at 6.12 inches, and most of that came Oct 11, the biggest single day at 3.76 inches. The longest dry stretch ran 12 days, Apr 7 to Apr 18. On the days both years reported, that is 4.44 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "51790": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 19",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Staunton City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Staunton Water Treatment",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.49",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.10",
+    "usual_in": "33.71",
+    "vs_usual": {
+     "diff_in": "8.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.52",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1ec95978d042a0b3",
+   "sid": "448062 2",
+   "story": "Through Oct 13, the longest dry run at the weather station in Staunton Water Treatment was 13 days with nothing in the gauge, from Apr 6 to Apr 18. The next day, Apr 19, brought 2.40 inches, the biggest single day of the year. May was the wettest month at 3.52 inches. The station sits 10.49 inches less than last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "51800": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Suffolk City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Suffolk Lake Kilby",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.26",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.11",
+    "usual_in": "42.15",
+    "vs_usual": {
+     "diff_in": "5.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.67",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6629bc2cde1c2aa6",
+   "sid": "448192 2",
+   "story": "Through Oct 13, the weather station in Suffolk Lake Kilby has 10.26 inches less than last year at this point. September was the wettest month at 6.67 inches, and the biggest single day came Sep 23 with 2.18 inches. The longest dry stretch ran 12 days, Apr 7 to Apr 18, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "51810": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 23",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Virginia Beach City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3.1 miles east-northeast of Virginia Beach",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "20.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.61",
+    "usual_in": "43.84",
+    "vs_usual": {
+     "diff_in": "14.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.12",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ee317204c3291d8",
+   "sid": "US1VAVBC021 6",
+   "story": "Through Oct 13, the volunteer rain gauge east-northeast of Virginia Beach has caught 29.61 inches, 14.23 inches less than a usual year. July did most of the work with 9.12 inches, and the biggest single day was Jul 23 at 2.35 inches. The gauge went 13 days in a row with nothing, Apr 7 to Apr 19. By this day last year it had 49.80 inches, so this year sits 20.19 inches behind.",
+   "through": "2026-10-13"
+  },
+  "51820": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.80",
+     "label": "biggest one-day reading"
+    },
+    "county": "Waynesboro City",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.6 miles west-northwest of Waynesboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "2.57",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "26.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 9"
+    },
+    "multi_day_reports": 8,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.05",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.94",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5dfd85a23afb8dee",
+   "sid": "US1VAWYC005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles west-northwest of Waynesboro had its wettest month in May at 4.94 inches. Then it went 12 days in a row with nothing in it, from May 29 to Jun 9. The biggest one-day reading came late, 1.80 inches on Oct 11. On the days both years reported, this year is 2.57 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "51830": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Williamsburg City",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1.4 miles east-northeast of Williamsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.23",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Virginia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.03",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.33",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "43d730ea2bdb1802",
+   "sid": "US1VAWLC002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles east-northeast of Williamsburg has 34.03 inches for the year. September was the wettest month at 5.33 inches, and 2.95 of that came on Sep 23, the biggest single day. The gauge went 13 days in a row with nothing, from Apr 7 to Apr 19. That puts this year 11.23 inches less than last year through the same day.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "VA"
+}

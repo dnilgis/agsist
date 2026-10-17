@@ -1,0 +1,713 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "50001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "1.12",
+     "label": "biggest single day"
+    },
+    "county": "Addison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Cornwall",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.87",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "26.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.69",
+    "usual_in": "30.56",
+    "vs_usual": {
+     "diff_in": "2.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.50",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "55e72464e8fef62e",
+   "sid": "431580 2",
+   "story": "Through Oct 13, May was the wettest month at the weather station in Cornwall, with 4.50 inches. The biggest single day came Jul 29 with 1.12 inches. On the days both years reported, this year has 0.87 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "50005": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Caledonia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Saint Johnsbury",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Apr 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.91",
+    "usual_in": "31.86",
+    "vs_usual": {
+     "diff_in": "1.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.46",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c002c9328c60f827",
+   "sid": "437054 2",
+   "story": "Through Oct 13, the weather station in Saint Johnsbury has caught 29.91 inches, 1.95 inches less than a usual year. May was the wettest month at 6.46 inches, and the biggest single day came May 30 with 1.70 inches. The longest dry stretch ran just 6 days, Apr 24 to Apr 29. That is still 4.56 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "50007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "1.31",
+     "label": "biggest single day"
+    },
+    "county": "Chittenden County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Burlington International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.19",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.10",
+    "usual_in": "30.19",
+    "vs_usual": {
+     "diff_in": "0.09",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.56",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7ffc876e0a8eec8f",
+   "sid": "14742 1",
+   "story": "Through Oct 13, the weather station at Burlington International Airport had its biggest single day on the last one, 1.31 inches on Oct 13. June was the wettest month at 5.56 inches. The longest dry stretch ran 8 days, Apr 21 to Apr 28, with not even a trace in the gauge. The year sits 2.19 inches more than last year, and just 0.09 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "50009": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.86",
+     "label": "biggest single day"
+    },
+    "county": "Essex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Island Pond",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.01",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.73",
+    "usual_in": "35.63",
+    "vs_usual": {
+     "diff_in": "2.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.63",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1605b47d41e46f18",
+   "sid": "434120 2",
+   "story": "Through Oct 13, the weather station in Island Pond had its wettest month in May at 6.63 inches. The biggest single day came May 30 with 1.86 inches. The longest dry stretch ran 9 days, Apr 21 to Apr 29, with nothing in the gauge. That puts this year 8.01 inches more than last year at this point, though still 2.90 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "50011": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.83",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "4.1 miles east-southeast of Montgomery",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "2.26",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "36.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.86",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.00",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e390ddd75bfd92b0",
+   "sid": "US1VTFR0030 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.1 miles east-southeast of Montgomery has caught 34.86 inches. June was the wettest month at 8.00 inches, and the biggest single day was May 30 with 1.83 inches. The longest dry stretch ran 8 days, Apr 22 to Apr 29, with not even a trace. On the days both years reported, that is 2.26 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "50015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Lamoille County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Morrisville Stowe State Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "2.26",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "27.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Sep 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.95",
+    "usual_in": "28.16",
+    "vs_usual": {
+     "diff_in": "1.79",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.30",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f98fe9effe07ed8a",
+   "sid": "54771 1",
+   "story": "Through Oct 13, the weather station at Morrisville Stowe State Airport had its biggest single day on Oct 13 itself, with 1.92 inches. May was the wettest month at 6.30 inches. The longest dry stretch ran 6 days, Sep 21 to Sep 26, with not even a trace in the gauge. On the days both years reported, this year has 2.26 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "50017": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 15",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Orange County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Corinth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.31",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Apr 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.64",
+    "usual_in": "33.60",
+    "vs_usual": {
+     "diff_in": "2.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.34",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1029d5ac6a2a92b2",
+   "sid": "431565 2",
+   "story": "Through Oct 13, the weather station in Corinth has 30.64 inches, 2.96 inches less than a usual year. May was the wettest month at 6.34 inches, and the biggest single day came May 15 with 2.35 inches. That still puts this year 2.31 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "50019": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Orleans County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Westfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.63",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "37.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.27",
+    "usual_in": "39.27",
+    "vs_usual": {
+     "diff_in": "1.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.03",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "063a0a489bd1fcde",
+   "sid": "US1VTOL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Westfield caught the most in June, at 9.03 inches. The biggest single day was May 30, with 1.90 inches. The longest dry stretch ran 8 days, from Apr 22 to Apr 29. On the days both years reported, this year is 2.63 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "50021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 15",
+     "in": "1.28",
+     "label": "biggest single day"
+    },
+    "county": "Rutland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Rutland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.98",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.41",
+    "usual_in": "32.24",
+    "vs_usual": {
+     "diff_in": "3.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.90",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f0d3660deb5f1173",
+   "sid": "436995 2",
+   "story": "Through Oct 13, the weather station in Rutland had 3.83 inches less than a usual year. June was the wettest month at 5.90 inches, and the biggest single day came Jun 15 with 1.28 inches. The longest dry stretch ran 9 days, Apr 21 to Apr 29. Still, that is 2.98 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "50023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.0 miles northwest of Waterbury",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.63",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "41.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Apr 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.07",
+    "usual_in": "39.53",
+    "vs_usual": {
+     "diff_in": "3.46",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.05",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cb4a4a91f667abca",
+   "sid": "US1VTWS0019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles northwest of Waterbury had its wettest month in June at 7.05 inches. The biggest single day came Jun 20 with 1.62 inches. The longest dry stretch ran 8 days, Apr 22 to Apr 29, with nothing in the gauge, not even a trace. On the days both years reported, this year sits 5.63 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "50025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "1.84",
+     "label": "biggest one-day reading"
+    },
+    "county": "Windham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 25,
+    "days_reported": 261,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "1.1 miles north-northeast of Rockingham",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 241,
+      "diff_in": "5.76",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 22,
+     "through": "Oct 13",
+     "total_in": "35.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 5,
+     "from": "Feb 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 96,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.06",
+    "usual_in": "31.42",
+    "vs_usual": {
+     "diff_in": "1.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.85",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d6d8b5b290dac33",
+   "sid": "US1VTWH0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles north-northeast of Rockingham has caught 30.06 inches, 1.36 inches less than a usual year. September was the wettest month at 4.85 inches, and the biggest one-day reading was 1.84 inches on Jul 30. On the days both years reported, this year is 5.76 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "50027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 15",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Windsor County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Woodstock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.35",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Vermont",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.16",
+    "usual_in": "32.82",
+    "vs_usual": {
+     "diff_in": "0.66",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.77",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "23c7605872b21313",
+   "sid": "439984 2",
+   "story": "Through Oct 13, the weather station in Woodstock has the county at 32.16 inches, 0.66 inches less than a usual year. June was the wettest month at 5.77 inches, and the biggest single day came Jun 15 with 2.03 inches. The longest dry stretch ran 10 days, from Jan 28 to Feb 6. On the days both years reported, that is 2.35 inches less than 2025.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "VT"
+}
