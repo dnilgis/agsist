@@ -22,7 +22,7 @@ test('live prices hide the whole baked table, not just the nearby row', () => {
   assert.match(block, /querySelector\('\.seed-tbl-wrap'\);if\(__st\)__st\.style\.display='none'/);
   assert.doesNotMatch(block, /\/\^Nearby\//, 'no row-by-row filter that leaves deferred and KC rows behind');
   for (const p of ['corn', 'soybean', 'wheat']) {
-    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=14/, `${p} page loads the new futures.js`);
+    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=15/, `${p} page loads the new futures.js`);
   }
 });
 
@@ -77,4 +77,13 @@ test('the cattle COT sentence follows its own number', () => {
   const html = read('cattle-futures-prices.html');
   assert.doesNotMatch(html, /High net-long positioning can amplify the downside if funds liquidate; a low reading leaves room/);
   assert.match(html, /lp>=80\?' Positioning that high can amplify a drop if funds sell out\.':\(lp<=20\?' A reading that low leaves room for funds to buy back in\.'/);
+});
+
+// 2026-10-17 audit N9: the futures pages and /cot printed two different
+// measures under the same words ("A shorter yardstick"). Each names its own.
+test('the COT range line and the /cot percentile say which measure they are', () => {
+  const fj = read('components/futures.js'), cj = read('components/cot-page.js');
+  assert.match(fj, /Where the net sits in its 52-week range, in contracts: '\+p52\+'% of the way from the low/);
+  assert.match(cj, /Where the net ranks among the last '\+k\.weeks\+' weeks, in contracts: the '\s*\+ordinal\(k\.pct\)\+' percentile/);
+  assert.doesNotMatch(fj + cj, /A shorter yardstick/);
 });

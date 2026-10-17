@@ -617,7 +617,8 @@ function renderCOT(data){
     if(k)m+='Ranking: managed-money net (long minus short) divided by open interest, ranked against '+(k.weeks?Number(k.weeks).toLocaleString('en-US')+' weeks':'every week')+' since '+k.since+'. Crowded means the top or bottom tenth of that record, on the side the position is on. Source: CFTC Disaggregated futures-only report; percentile computed by AGSIST from the weekly history (the same figure the <a href="/cot">positioning page</a> shows). ';
     if(d.min52!=null&&d.max52!=null&&d.max52>d.min52){
       var p52=Math.max(0,Math.min(100,Math.round(((d.net-d.min52)/(d.max52-d.min52))*100)));
-      m+='A shorter yardstick, in contracts: the net is '+p52+'% of the way from its 52-week low ('+fmtKContracts(d.min52)+') to its high ('+fmtKContracts(d.max52)+'). Contracts are not adjusted for the size of the market, so this is not the ranking.';
+      /* 2026-10-17 audit N9: /cot gives a percentile under the same words; this is a place in the range, so it says that, and the two never read as one number */
+      m+='Where the net sits in its 52-week range, in contracts: '+p52+'% of the way from the low ('+fmtKContracts(d.min52)+') to the high ('+fmtKContracts(d.max52)+'). That is a place in the range, not the percentile /cot shows. Contracts are not adjusted for the size of the market, so this is not the ranking.';
     }
     mathEl.innerHTML=m+'</p>';
   }
