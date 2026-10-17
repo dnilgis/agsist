@@ -1035,7 +1035,24 @@ PAGES[CATTLE_PAGE] = (seo_cattle, frozenset({"title", "desc"}))
 # Visible lines baked into the page body, between <!--BAKE:name--> and
 # <!--/BAKE-->. Same data, same run and same rails as the head tags above, so
 # the line a reader sees and the snippet Google shows cannot disagree.
+# The futures H1s say what people type (2026-10-17 search-terms check, Google + Bing + Bing AI
+# against each page's first screen): "cbot corn futures quotes", "chicago board of trade corn
+# price", "cbot soybeans" (2,248 at position 11), "soybean price per bushel"; on cattle, feeder
+# searches carry about 19,700 of ~19,900 weight, so feeders come first. Fixed words, no number:
+# the price sits right beside the heading. Baked here so a hand edit cannot drift from the title.
+H1_CORN = "CBOT corn futures prices today, per bushel"
+H1_BEANS = "CBOT soybean futures prices today, per bushel"
+H1_CATTLE = "Feeder and live cattle futures prices today"
+
+
+def body_h1(text):
+    return lambda c: text
+
+
 BODY = {
+    "corn-futures-prices.html": ("futures-h1", body_h1(H1_CORN)),
+    "soybean-futures-prices.html": ("futures-h1", body_h1(H1_BEANS)),
+    CATTLE_PAGE: ("cattle-h1", body_h1(H1_CATTLE)),
     "usda-calendar.html": ("next-wasde", body_usda_calendar),
     "usda-quick-stats.html": ("state-yields", body_quick_stats),
     "breakeven.html": [("be-example", body_breakeven), ("be-faq", body_be_faq), ("be-total", body_be_total),
@@ -1307,6 +1324,21 @@ def selftest():
     _bo, _bf = bake_body("<p><!--BAKE:next-wasde-->old<!--/BAKE--></p>", "next-wasde", "new")
     ck("body bake replaces between the markers", _bf and _bo == "<p><!--BAKE:next-wasde-->new<!--/BAKE--></p>", _bo)
     ck("body bake reports missing markers", bake_body("<p>x</p>", "next-wasde", "y")[1] is False)
+
+    print("\nfutures H1s: the words people search, baked between markers")
+    for _pg, _nm, _want in (("corn-futures-prices.html", "futures-h1", H1_CORN),
+                            ("soybean-futures-prices.html", "futures-h1", H1_BEANS),
+                            (CATTLE_PAGE, "cattle-h1", H1_CATTLE)):
+        _src = (REPO / _pg).read_text(encoding="utf-8")
+        ck(f"{_pg} has one <h1> holding the {_nm} markers",
+           len(re.findall(r"<h1[ >]", _src)) == 1 and re.search(r"<h1><!--BAKE:" + _nm + r"-->[^<]*<!--/BAKE--></h1>", _src))
+        ck(f"{_pg} H1 rule is registered", any(sp[0] == _nm for sp in (BODY[_pg] if isinstance(BODY[_pg], list) else [BODY[_pg]])))
+        _out, _ok = bake_body(_src, _nm, BODY[_pg][1](ctx))
+        ck(f"{_pg} H1 bakes to the rule's words", _ok and f"<!--BAKE:{_nm}-->{_want}<!--/BAKE-->" in _out)
+        ck(f"{_pg} H1 has no number and no dash", not re.search(r"\d|\u2014|\u2013", _want), _want)
+    ck("corn and soybean H1s name CBOT and per bushel",
+       all("CBOT" in x and "per bushel" in x for x in (H1_CORN, H1_BEANS)))
+    ck("cattle H1 leads with feeders", H1_CATTLE.startswith("Feeder"))
 
     t, d = seo_cot(ctx)
     ck("COT title states the position", "Net Long Corn 126k" in t, t)

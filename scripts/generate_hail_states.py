@@ -163,22 +163,70 @@ def asset_url(path):
         return path
 
 
-def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
+MONTH_ORDER = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def season_line(name, months):
+    """The busiest months from the state's own 12 monthly counts: the fewest
+    months that hold at least 60% of reports (at most four), in calendar order.
+    None when there is nothing to say."""
+    total = sum(months or [])
+    if not total:
+        return None
+    order = sorted(range(12), key=lambda i: (-months[i], i))
+    pick, got = [], 0
+    for i in order:
+        if months[i] <= 0 or len(pick) >= 4:
+            break
+        pick.append(i)
+        got += months[i]
+        if got >= 0.6 * total:
+            break
+    pick.sort()
+    names = [MONTH_FULL[MONTH_ORDER[i]] for i in pick]
+    contiguous = len(pick) > 2 and pick[-1] - pick[0] == len(pick) - 1
+    if len(names) == 1:
+        span_txt = names[0]
+    elif contiguous:
+        span_txt = names[0] + " through " + names[-1]
+    elif len(names) == 2:
+        span_txt = names[0] + " and " + names[1]
+    else:
+        span_txt = ", ".join(names[:-1]) + " and " + names[-1]
+    verb = "holds" if len(names) == 1 else "hold"
+    share = (f"{got:,} of the {total:,} reports" if total < 50 else str(round(100.0 * got / total)) + "% of reports")
+    return span_txt + " " + verb + " " + share + " in " + name + "."
+
+
+def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_tot=None):
     n_yrs = len(years)
     span = span or n_yrs
     rows = merge_counties(rows, span)
     for r in rows:
         r["avg"] = round(r.get("total", 0) / span, 1)
         r["county"] = county_name(r.get("county", ""))
-    total = sum(r.get("total", 0) for r in rows)
     top = rows[0] if rows else None
-    # dominant peak month across the top counties, weighted by report count
-    month_w = {}
-    for r in rows:
-        m = r.get("peak")
-        if m:
-            month_w[m] = month_w.get(m, 0) + r.get("total", 0)
-    peak = max(month_w, key=month_w.get) if month_w else None
+    months = (st_tot or {}).get("months") or []
+    if st_tot and st_tot.get("total") and len(months) == 12:
+        # True statewide figures (fetch_hail.py state_totals), every report.
+        total = int(st_tot["total"])
+        dmg_reports = int(st_tot.get("dmg", 0))
+        where = " statewide"
+        peak = MONTH_ORDER[max(range(12), key=lambda i: (months[i], -i))]
+        season = season_line(name, months)
+    else:
+        # Older data file: only the ranked counties are known, so say so.
+        total = sum(r.get("total", 0) for r in rows)
+        dmg_reports = sum(round(r.get("total", 0) * r.get("dmg_pct", 0) / 100) for r in rows)
+        where = (" in the " + str(len(rows)) + " counties with the most reports" if len(rows) >= 12 else "")
+        # dominant peak month across the top counties, weighted by report count
+        month_w = {}
+        for r in rows:
+            m = r.get("peak")
+            if m and m in MONTH_FULL:
+                month_w[m] = month_w.get(m, 0) + r.get("total", 0)
+        peak = max(month_w, key=month_w.get) if month_w else None
+        season = None
     peak_full = MONTH_FULL.get(peak, peak) if peak else None
     heavy = total >= 400
     canonical = "https://agsist.com/hail-map/" + slug(name)
@@ -198,14 +246,14 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
           name + " has recorded relatively few hail reports in the last " + str(n_yrs) + " years.") +
          " Reports track population and spotter coverage as well as storms, so rural corridors can be under-counted; the persistent leaders on this table are real hail geography."),
         ("When is hail season in " + name + "?",
-         ("Reported hail in " + name + " peaks around " + peak_full + "," if peak_full else
-          "Hail in " + name + " follows the severe-thunderstorm season,") +
-         " with most activity in the spring-through-midsummer window. Any single year can break the pattern."),
+         ("Reported hail in " + name + " peaks around " + peak_full + ". " if peak_full else
+          "Hail in " + name + " follows the severe-thunderstorm season. ") +
+         (season + " " if season else "") + "Any single year can break the pattern."),
         ("How much of " + name + "'s hail is severe?",
          "Severe hail is 1\u2033 or larger, the National Weather Service severe size, which dents roofs and vehicles. Crops can be hurt by smaller hail, especially with wind, and the loss depends on growth stage. " +
          ("The per-county severe share is in the table" if float(dmg_in) == 1.0 else
           "The table\u2019s share column counts stones " + size_line(dmg_in)) +
-         "; statewide, hail of any size totaled " +
+         "; " + (where.strip() + ", " if where else "") + "hail of any size totaled " +
          f"{total:,}" + " reports over " + str(n_yrs) + " years."),
     ]
     faq_ld = ",".join(
@@ -218,10 +266,10 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     intro = (
         "<p class=\"hs-sub\">" +
         ((name + " logged " + f"{total:,}" +
-          " National Weather Service hail reports in the last " + str(n_yrs) + " years. " +
+          " National Weather Service hail reports" + where + " in the last " + str(n_yrs) + " years. " +
           esc(top["county"]) + " County had the most" + (", and reports peak around " + peak_full if peak_full else "") + ".")
          if heavy and top else
-         (name + " logged " + f"{total:,}" + " National Weather Service hail reports over the last " +
+         (name + " logged " + f"{total:,}" + " National Weather Service hail reports" + where + " over the last " +
           str(n_yrs) + " years, " + ("meaningful but not hail-alley volume." if total >= 60 else
           "a comparatively quiet record by national standards."))) +
         " The table ranks the counties. To check one address, use the map\u2019s search: it lists every dated report within 10 miles (5 or 25 if you pick).</p>")
@@ -229,14 +277,13 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None):
     # Key Figures — complete standalone sentences, because that is what
     # writers and AI engines lift verbatim (see: insurance lead-gen pages
     # already quoting this site). Each fact is quotable without editing.
-    dmg_reports = sum(round(r.get("total", 0) * r.get("dmg_pct", 0) / 100) for r in rows)
-    figs = [name + " logged " + f"{total:,}" + " National Weather Service hail reports statewide over the last " + str(n_yrs) + " years (" + str(years[0]) + "\u2013" + str(years[-1]) + ")."]
+    figs = [name + " logged " + f"{total:,}" + " National Weather Service hail reports" + where + " over the last " + str(n_yrs) + " years (" + str(years[0]) + "\u2013" + str(years[-1]) + ")."]
     if top:
         figs.append(esc(top["county"]) + " County leads " + name + " with " + f"{top.get('total',0):,}" + " hail reports over that span, about " + str(top.get("avg", "")) + " per year.")
     if peak_full:
         figs.append("Reported hail in " + name + " peaks in " + peak_full + ".")
     if total:
-        figs.append("Roughly " + f"{dmg_reports:,}" + " of " + name + "'s reports involved stones " + size_line(dmg_in) + ".")
+        figs.append(("Roughly " if not st_tot else "") + f"{dmg_reports:,}" + " of " + name + "'s reports" + (where if not st_tot else "") + " involved stones " + size_line(dmg_in) + ".")
     key_figs = ("<section class=\"hs-figs\" id=\"key-figures\"><h2>Key figures: " + esc(name) + " hail at a glance</h2><ul>"
         + "".join("<li>" + f + "</li>" for f in figs) + "</ul>"
         "<p class=\"hs-cite\">To cite these figures: <em>AGSIST National Hail Map, "
@@ -365,10 +412,11 @@ def main():
         prev = open(path).read() if os.path.exists(path) else None
         old = prev_mod.get(slug(name))
         sd = state_storm_days(days, abbr)
-        if prev is not None and old and page_html(abbr, name, rows, years, dmg_in, old, span, sd) == prev:
+        tot = (d.get("state_totals") or {}).get(abbr)
+        if prev is not None and old and page_html(abbr, name, rows, years, dmg_in, old, span, sd, tot) == prev:
             lastmod[slug(name)] = old
             continue
-        html = page_html(abbr, name, rows, years, dmg_in, today, span, sd)
+        html = page_html(abbr, name, rows, years, dmg_in, today, span, sd, tot)
         lastmod[slug(name)] = today
         if prev != html:
             open(path, "w", encoding="utf-8").write(html)
@@ -417,6 +465,15 @@ def selftest():
     ok("1\u2033 or larger, the National Weather Service severe size" in html and "1.0\u2033" not in html, "1 inch is the NWS severe size, printed as 1")
     h15 = page_html("WI", "Wisconsin", rows, [2022, 2023, 2024, 2025, 2026], 1.5, "2026-10-10", 4.75, [])
     ok("1.5\u2033 or larger, the National Weather Service severe size" not in h15 and "severe-hail share" not in h15, "1.5 inches is never called severe")
+    ks = {"total": 4469, "dmg": 3410, "months": [3, 7, 267, 1065, 1092, 790, 497, 317, 319, 101, 4, 7]}
+    ok(season_line("Kansas", ks["months"]) == "April through June hold 66% of reports in Kansas.", season_line("Kansas", ks["months"]))
+    ok(season_line("Hawaii", [0, 1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0]) == "March holds 5 of the 6 reports in Hawaii.", "HI season")
+    hk = page_html("KS", "Kansas", rows * 12, [2022, 2023, 2024, 2025, 2026], 1.0, "2026-10-10", 4.75, [], ks)
+    ok("4,469 National Weather Service hail reports statewide" in hk and "3,410 of Kansas's reports" in hk, "statewide totals come from state_totals")
+    ok("spring-through-midsummer" not in hk and "peaks around May" in hk, "season from the state's own months")
+    r12 = [{"county": "C%d" % i, "total": 100 - i, "avg": 1.0, "peak": "May", "dmg_pct": 50} for i in range(12)]
+    h12 = page_html("KS", "Kansas", r12, [2022, 2023, 2024, 2025, 2026], 1.0, "2026-10-10", 4.75, [])
+    ok("statewide" not in h12 and "in the 12 counties with the most reports" in h12, "no statewide claim from a top-12 subtotal")
     if fails:
         print("SELFTEST FAILED:\n  " + "\n  ".join(fails))
         sys.exit(1)

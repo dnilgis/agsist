@@ -230,30 +230,38 @@
     for (var k in q) if (q[k] && q[k].ticker === t && typeof q[k].close === 'number') return q[k];
     return null;
   }
+  /* One state's middle bid for one crop, or null: {crop, label, name, fut, contract, median, basis (words),
+     n, cash (a number, or null when the futures quote is missing or older than 5 days), on (whose close),
+     asOf ("Oct 17")}. Wheat takes the class most of the state's elevators bid. Pure; lines() and the
+     no-ZIP sample on /cash-bids (components/cb-sample.js) both read it, so the two never disagree. */
+  function cell(bs, prices, st, crop, now) {
+    now = now || Date.now();
+    var s = bs && bs.states && bs.states[st];
+    if (!s || !bs.generated || (now - Date.parse(bs.generated)) / DAY > 10) return null;
+    var ok = (CROPS[crop] || []).filter(function (c) {
+      var r = s.crops && s.crops[c[0]];
+      return r && typeof r.median === 'number' && isFinite(r.median) && r.contract && r.n >= (bs.min_n || 3);
+    }).sort(function (a, b) { return s.crops[b[0]].n - s.crops[a[0]].n; })[0];
+    if (!ok) return null;
+    var r = s.crops[ok[0]], asOf = ct(bs.generated);
+    var root3 = /^(MWO|MW|ZC|ZS|ZW|KE)/.exec(r.contract), fut = root3 ? FUT[root3[1]] : '';
+    var q = quoteFor(prices, r.contract), cash = null, on = '';
+    if (q && q.close_date && (now - Date.parse(q.close_date + 'T18:00:00Z')) / DAY <= 5) {
+      var v = Math.round(Math.round((q.close + r.median * 100) * 1e6) / 1e6) / 100;
+      if (v > 0) { cash = v; on = q.close_kind === 'settle' ? 'the ' + isoDay(q.settle_date || q.close_date, now) + ' settle' : 'the latest delayed trade'; }
+    }
+    return { crop: ok[1], name: s.name, fut: fut, label: r.label || r.contract, contract: r.contract, median: r.median,
+      basis: basisWords(r.median), n: r.n, cash: cash, on: on, asOf: asOf ? MON[asOf.m - 1] + ' ' + asOf.d : '' };
+  }
   /* -> [{html}] for one state and the crops asked; pure, the tests call it */
   function lines(bs, prices, st, crops, now) {
-    now = now || Date.now();
-    var s = bs && bs.states && bs.states[st], out = [];
-    if (!s || !bs.generated || (now - Date.parse(bs.generated)) / DAY > 10) return out;
-    var asOf = ct(bs.generated), asOfTxt = asOf ? MON[asOf.m - 1] + ' ' + asOf.d : '';
+    var out = [];
     (crops || []).forEach(function (crop) {
-      /* one line per crop: wheat shows the class most of the state's elevators bid */
-      var ok = (CROPS[crop] || []).filter(function (c) {
-        var r = s.crops && s.crops[c[0]];
-        return r && typeof r.median === 'number' && isFinite(r.median) && r.contract && r.n >= (bs.min_n || 3);
-      }).sort(function (a, b) { return s.crops[b[0]].n - s.crops[a[0]].n; }).slice(0, 1);
-      ok.forEach(function (c) {
-        var r = s.crops[c[0]];
-        var root3 = /^(MWO|MW|ZC|ZS|ZW|KE)/.exec(r.contract), fut = root3 ? FUT[root3[1]] : '';
-        var q = quoteFor(prices, r.contract), cash = '';
-        if (q && q.close_date && (now - Date.parse(q.close_date + 'T18:00:00Z')) / DAY <= 5) {
-          var v = Math.round(Math.round((q.close + r.median * 100) * 1e6) / 1e6) / 100;
-          var on = q.close_kind === 'settle' ? 'the ' + isoDay(q.settle_date || q.close_date, now) + ' settle' : 'the latest delayed trade';
-          if (v > 0) cash = ', about <b>$' + v.toFixed(2) + '</b> cash on ' + on;
-        }
-        out.push('<b>' + esc(s.name) + ' ' + c[1] + ':</b> median basis <b>' + basisWords(r.median) + '</b> ' + esc(fut + (r.label || r.contract)) + ' futures' + cash +
-          '. <span class="pl-s">' + r.n + ' elevators, ' + asOfTxt + '.</span>');
-      });
+      var c = cell(bs, prices, st, crop, now);
+      if (!c) return;
+      var cash = c.cash != null ? ', about <b>$' + c.cash.toFixed(2) + '</b> cash on ' + c.on : '';
+      out.push('<b>' + esc(c.name) + ' ' + c.crop + ':</b> median basis <b>' + c.basis + '</b> ' + esc(c.fut + c.label) + ' futures' + cash +
+        '. <span class="pl-s">' + c.n + ' elevators, ' + c.asOf + '.</span>');
     });
     return out;
   }
@@ -270,7 +278,7 @@
   }
 
   var api = { stamp: stamp, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
-    deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, lines: lines, build: build, nearLine: nearLine, NAMES: NAMES };
+    deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
   var doc = root.document;

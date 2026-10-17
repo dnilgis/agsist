@@ -252,7 +252,7 @@ function maturity(){
   var v = parseFloat($('pd-rm').value);
   var ok = crop==='corn' ? (isFinite(v)&&v>=70&&v<=135) : (isFinite(v)&&v>=0&&v<=6);
   var rm = ok ? v : null, target = null;
-  // Corn: rm*22+250, an AGSIST line through K-State (110-day ~2,670) and Purdue (112-day ~2,700); same as /gdu-calculator.
+  // Corn: rm*22+250, an AGSIST line set on K-State's 110-day ~2,670 at 22 GDUs per RM day (Purdue's 112-day ~2,700 is 14 under it); same as /gdu-calculator.
   // Soybean: 1750 + 280*MG, a straight line through NDSU's soybean GDD model (planting to R8:
   // 1,694 for 00.8, 1,890 for 0.5, 2,058 for 1.1 RM), same as /gdu-calculator. Used ONLY for
   // MG -0.2 to 1.1; any other MG has no published figure, so no target is printed.
@@ -265,7 +265,7 @@ function targetLine(m){
     if(m.rm===null) return crop==='corn' ? 'Enter a corn relative maturity from 70 to 135.' : 'Enter a soybean maturity group from 0 to 6.';
     return 'Soybean GDU target: n/a · no published GDD-to-maturity figure for MG '+m.rm+' (NDSU’s model covers 00.8–1.1); soybean maturity is driven by day length. Use the seed company’s rating.';
   }
-  return 'GDU target for '+m.rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+fmt(m.target)+' GDUs'+(crop==='corn'?' (AGSIST line through K-State 110-day ≈ 2,670 and Purdue 112-day ≈ 2,700; a reference figure).':' to R8 (NDSU soybean GDD model).');
+  return 'GDU target for '+m.rm+(crop==='corn'?'-day RM corn':' MG soybean')+': '+fmt(m.target)+' GDUs'+(crop==='corn'?' (AGSIST line: 22 GDUs per day of RM, set on K-State\u2019s 110-day ≈ 2,670; Purdue\u2019s 112-day ≈ 2,700 sits 14 under it; a reference figure).':' to R8 (NDSU soybean GDD model).');
 }
 
 /* ─── ZONE GDU COMPARE ───────────────────────────────────────────────── */

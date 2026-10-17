@@ -322,6 +322,44 @@ def finalize_counties(acc, years, per_state=12, end_iso=None):
     return by_state
 
 
+def state_totals(events_by_year, years):
+    """True statewide totals, not the top-12 county subtotal the ranked table
+    carries. Read from the dated events files ([lat, lon, mag, "MM-DD", ST]),
+    so a year whose fetch failed still counts from the file it kept.
+    {ST: {"total": n, "dmg": n at DAMAGING_IN or larger, "months": [12 ints, Jan..Dec]}}"""
+    out = {}
+    for y in years:
+        for e in events_by_year.get(y) or []:
+            if len(e) < 5:
+                continue
+            st = str(e[4] or "").upper()
+            if st not in VALID_ST:
+                continue
+            rec = out.setdefault(st, {"total": 0, "dmg": 0, "months": [0] * 12})
+            rec["total"] += 1
+            m = e[2]
+            if isinstance(m, (int, float)) and DAMAGING_IN <= m <= MAX_HAIL_IN:
+                rec["dmg"] += 1
+            try:
+                mo = int(str(e[3])[:2])
+            except ValueError:
+                mo = 0
+            if 1 <= mo <= 12:
+                rec["months"][mo - 1] += 1
+    return out
+
+
+def load_events(years):
+    ev = {}
+    for y in years:
+        try:
+            with open("%s/events-%d.json" % (OUT_DIR, y)) as fh:
+                ev[y] = json.load(fh).get("ev") or []
+        except (OSError, ValueError):
+            ev[y] = []
+    return ev
+
+
 def existing_count(year):
     path = "%s/%d.json" % (OUT_DIR, year)
     if not os.path.exists(path):
@@ -434,6 +472,8 @@ def main():
                 "years": cty_years,
                 "damaging_in": DAMAGING_IN,
                 "states": by_state,
+                # Every report in the state, not just the 12 ranked counties.
+                "state_totals": state_totals(load_events(cty_years), cty_years),
             }, fh, separators=(",", ":"))
         print("[counties] ranked counties for %d states" % len(by_state))
     else:

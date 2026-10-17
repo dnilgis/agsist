@@ -77,7 +77,25 @@
   }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
-  var api = { miles: miles, daysBetween: daysBetween, nearest: nearest, classRows: classRows, money: money, signed: signed,
+  /* The no-ZIP first line (2026-10-17 search-terms check: "cattle prices today" 655, "feeder calf
+   * prices today" 109 saw no price before a ZIP). The USDA state summaries already in the data
+   * file, largest receipts first, sales within STALE_DAYS of today: for one sex|grade, the 500 and
+   * 700 lb classes (or whichever of 300 to 800 the report has, lightest first). Pure. */
+  var GLANCE_N = 3, GLANCE_CLS = [500, 700];
+  function glance(states, key, todayIso) {
+    return (states || []).filter(function (b) {
+      return hasSales(b) && daysBetween(b.sales[0].date, todayIso) <= STALE_DAYS && daysBetween(b.sales[0].date, todayIso) >= 0 &&
+        (b.sales[0].classes || {})[key];
+    }).sort(function (a, b) { return (b.sales[0].receipts || 0) - (a.sales[0].receipts || 0) || (a.state < b.state ? -1 : 1); })
+      .slice(0, GLANCE_N).map(function (b) {
+        var rows = classRows(b, key), pick = rows.filter(function (r) { return GLANCE_CLS.indexOf(r.cls) >= 0; });
+        if (!pick.length) pick = rows.slice(0, 2);
+        return { state: b.state, date: b.sales[0].date, receipts: b.sales[0].receipts || 0, source_url: b.source_url,
+          cells: pick.map(function (r) { return { cls: r.cls, cwt: r.cwt, head: r.head }; }) };
+      }).filter(function (g) { return g.cells.length; });
+  }
+
+  var api = { glance: glance, GLANCE_N: GLANCE_N, miles: miles, daysBetween: daysBetween, nearest: nearest, classRows: classRows, money: money, signed: signed,
     niceDate: niceDate, hasSales: hasSales, CLASSES: CLASSES, PRIOR_DAYS: PRIOR_DAYS, MIN_HEAD: MIN_HEAD, NEAR_MILES: NEAR_MILES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgSaleBarn = api;
@@ -126,11 +144,30 @@
     return h;
   }
 
+  var ST = { AL: 'Alabama', AR: 'Arkansas', CO: 'Colorado', FL: 'Florida', GA: 'Georgia', IA: 'Iowa', ID: 'Idaho', IL: 'Illinois',
+    KS: 'Kansas', KY: 'Kentucky', MO: 'Missouri', MS: 'Mississippi', MT: 'Montana', NC: 'North Carolina', ND: 'North Dakota',
+    NE: 'Nebraska', NM: 'New Mexico', OK: 'Oklahoma', OR: 'Oregon', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas',
+    VA: 'Virginia', WY: 'Wyoming' };
+  function renderGlance(states) {
+    var el = $('sb-glance');
+    if (!el) return;
+    var g = S.here || S.state ? [] : glance(states, S.sex + '|' + S.grade, today());
+    if (!g.length) { el.hidden = true; el.innerHTML = ''; return; }
+    var who = 'Medium and Large ' + S.grade + ' ' + (S.sex === 'steers' ? 'steers' : 'heifers');
+    el.innerHTML = '<p class="sb-gh"><b>Cattle prices today:</b> biggest USDA state auction reports, ' + esc(who) + ', $/cwt</p><ul>' +
+      g.map(function (x) {
+        return '<li><b>' + esc(ST[x.state] || x.state) + '</b>, report of ' + esc(niceDate(x.date).replace(/, \d{4}$/, '')) + ' (' + x.receipts.toLocaleString('en-US') + ' head): ' +
+          x.cells.map(function (c) { return c.cls + '-' + (c.cls + 99) + ' lb <b>$' + c.cwt.toFixed(2) + '</b>'; }).join(' &middot; ') + '</li>';
+      }).join('') + '</ul>';
+    el.hidden = false;
+  }
+
   function render() {
     var out = $('sb-results'), D = S.data;
     if (!D) return;
     var barns = (D.barns || []).filter(hasSales), states = (D.states || []).filter(hasSales);
     if (!barns.length && !states.length) return;
+    renderGlance(states);
     $('sb-empty').hidden = true;
     var h = '';
     if (S.state) {
