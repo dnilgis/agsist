@@ -897,7 +897,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
           <table class="n-compare-table">
             <thead><tr><th scope="col">N Source</th><th scope="col">Analysis</th><th scope="col">Volatilization Risk</th><th scope="col">Best Applied</th><th scope="col">Key Tradeoffs</th></tr></thead>
             <tbody>
-              <tr><td>Urea (granular)</td><td>46-0-0</td><td class="risk-high-tag">HIGH (surface)</td><td>Incorporated by ½”+ rain within 48h; or use NBPT stabilizer; or inject/till-in</td><td>Highest N analysis = lowest cost per lb N. Most versatile for spreading. Surface application without stabilizer carries real loss risk above 50°F.</td></tr>
+              <tr><td>Urea (granular)</td><td>46-0-0</td><td class="risk-high-tag">HIGH (surface)</td><td>Incorporated by ½”+ rain within 48h; or use NBPT stabilizer; or inject/till-in</td><td>Highest N analysis of the dry N products.<span id="urea-cheapest-n" hidden></span> Most versatile for spreading. Surface application without stabilizer carries real loss risk above 50°F.</td></tr>
               <tr><td>UAN (liquid)</td><td>28-0-0 or 32-0-0</td><td class="risk-mod-tag">MODERATE</td><td>Banded or dribbled, reduces volatilization vs broadcast. Can be injected for lowest risk.</td><td>Contains ~50% urea, ~25% ammonium, ~25% nitrate. Ammonium and nitrate fractions do not volatilize. Can be blended with herbicides and applied in-season. Requires liquid applicator.</td></tr>
               <tr><td>ESN (polymer-coated urea)</td><td>44-0-0</td><td class="risk-low-tag">LOW</td><td>Fall or early spring; coating delays release by weeks. Soil temperature controls release rate.</td><td>Significantly more expensive per lb N. Release is temperature-driven: in a cold spring, may release slowly. Excellent for no-till or high-pH fields where surface urea loss is high. Pays best when N prices are high.</td></tr>
               <tr><td>Anhydrous Ammonia</td><td>82-0-0</td><td class="risk-low-tag">VERY LOW</td><td>Injected below soil surface, volatilization negligible when properly applied.</td><td>Highest N analysis available. Requires specialized injection equipment. Best applied fall or early spring when soils are not too wet or frozen. Cold injection preferred to minimize nitrification before spring uptake.</td></tr>
@@ -1282,6 +1282,21 @@ function scoreToLevel(s){if(s<30)return'low';if(s<55)return'moderate';if(s<75)re
   var src=u.src_label||(u.src==='coop'?'co-op middle cash price, posted '+when:'USDA Illinois average, report of '+when);
   var lo=Math.round(8/perN),hi=Math.round(12/perN);
   el.innerHTML='Looking for the price? Urea: <strong>$'+Math.round(u.price)+'/ton</strong>, '+src+'. $'+Math.round(u.price)+' / ('+'2,000 lb x '+nPct+'% N) = about $'+perN+' per lb N. At that price, NBPT at $8 to $12 an acre pays for itself if it saves about '+lo+' to '+hi+' lb of N an acre. Call to confirm. <a href="/fertilizer">All fertilizer prices</a>.';
+  el.hidden=false;}).catch(function(){});}catch(e){}})();
+/* Cheapest N per lb, named from the posted co-op prices (data/fertilizer-prices.json), straight N
+   products only (N-0-0: urea, anhydrous, UAN). Was a fixed line saying urea is lowest cost per lb N;
+   at the site's own posted prices anhydrous is (accuracy pass, Oct 17). Nothing shown without prices. */
+function cheapestN(d){
+  var best=null;
+  ((d&&d.prices)||[]).forEach(function(p){var m=/^(\d+)-0-0$/.exec(String(p.symbol||''));
+    if(!m||p.unit!=='$/ton'||typeof p.price!=='number'||!(p.price>0)||!p.as_of)return;
+    var per=p.price/(2000*(+m[1])/100);if(!best||per<best.per)best={name:p.name,per:per,as_of:p.as_of};});
+  return best;
+}
+(function(){try{fetch('/data/fertilizer-prices.json').then(function(r){return r.ok?r.json():null;}).then(function(d){
+  var el=document.getElementById('urea-cheapest-n'),b=cheapestN(d);if(!el||!b)return;
+  var when=new Date(b.as_of+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric'});
+  el.textContent=' At posted co-op prices (as of '+when+'), the cheapest N per lb is '+b.name.toLowerCase()+', about $'+b.per.toFixed(2)+'.';
   el.hidden=false;}).catch(function(){});}catch(e){}})();
 function scoreToLabel(s){var l=scoreToLevel(s);return{low:'Low Risk',moderate:'Moderate Risk',high:'High Risk',extreme:'Extreme Risk'}[l];}
 function riskColor(level){return{low:'var(--risk-low)',moderate:'var(--risk-mod)',high:'var(--risk-high)',extreme:'var(--risk-extreme)'}[level]||'var(--risk-mod)';}

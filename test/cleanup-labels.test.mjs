@@ -78,3 +78,21 @@ test("crop progress is stamped with the Central-time date", () => {
   assert.match(src, /ZoneInfo\("America\/Chicago"\)/);
   assert.doesNotMatch(src, /"updated":\s+datetime\.now\(\)\.strftime/);
 });
+
+test("urea: the cheapest N per lb is named from the posted prices, not asserted", () => {
+  const html = read("urea.html");
+  assert.doesNotMatch(html, /Highest N analysis = lowest cost per lb N/);
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(fn(html, "cheapestN") + ";this.f=cheapestN;", ctx);
+  // hand-worked: anhydrous $832.10 / (2,000 x 82%) = $0.507; urea $615.95 / 920 = $0.670; UAN28 $415.33 / 560 = $0.742
+  const b = ctx.f({ prices: [
+    { name: "Urea", symbol: "46-0-0", price: 615.95, unit: "$/ton", as_of: "2026-10-06" },
+    { name: "Anhydrous ammonia", symbol: "82-0-0", price: 832.1, unit: "$/ton", as_of: "2026-10-06" },
+    { name: "UAN 28%", symbol: "28-0-0", price: 415.33, unit: "$/ton", as_of: "2026-10-06" },
+    { name: "AMS", symbol: "21-0-0-24S", price: 300, unit: "$/ton", as_of: "2026-10-06" }] });
+  assert.equal(b.name, "Anhydrous ammonia");
+  assert.equal(b.per.toFixed(2), "0.51");
+  assert.equal(ctx.f({ prices: [] }), null);
+  assert.ok(ctx.f(JSON.parse(read("data/fertilizer-prices.json"))), "the live price file names one");
+});
