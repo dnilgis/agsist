@@ -37,7 +37,7 @@ import html as _html
 import json
 import os
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -1162,12 +1162,22 @@ def _selftest():
             bad.append(("rain print line", cfg, when))
     with open(RAIN_PRINT_JSON, encoding="utf-8") as f:
         shipped = json.load(f)
-    # 2026-10-13: promote is on since launch (the site card and menu), but the
-    # email line stays off until Sig writes a briefing_line.
-    if not isinstance(shipped.get("promote"), bool) or shipped.get("briefing_line") is not None:
-        bad.append(("data/rain-print.json ships with an email line", shipped.get("promote"), shipped.get("briefing_line")))
-    if "rain-print" in render_text(d, "https://agsist.com/", today=date(2026, 11, 15)):
-        bad.append(("rain print line in the email while the shipped file has no briefing_line", "", ""))
+    # 2026-10-14 (Sig: "give it a fair chance now"): the shipped file carries one
+    # email line, plain words, inside a dated window; outside the window, nothing.
+    line = shipped.get("briefing_line")
+    if not (shipped.get("promote") is True and isinstance(line, str) and 0 < len(line) <= 200
+            and "\u2014" not in line and "agsist.com/rain-print" in line):
+        bad.append(("data/rain-print.json email line", shipped.get("promote"), line))
+    try:
+        lo, hi = date.fromisoformat(shipped["promote_from"]), date.fromisoformat(shipped["promote_until"])
+    except (KeyError, TypeError, ValueError):
+        lo = hi = None
+        bad.append(("data/rain-print.json promote window", shipped.get("promote_from"), shipped.get("promote_until")))
+    if lo and hi:
+        if not (lo <= hi and rain_print_line(lo, shipped) and rain_print_line(hi, shipped)):
+            bad.append(("shipped line on inside its window", lo, hi))
+        if rain_print_line(hi + timedelta(days=1), shipped) or rain_print_line(lo - timedelta(days=1), shipped):
+            bad.append(("shipped line off outside its window", lo, hi))
     for b in bad:
         print("FAIL", b)
     print("brief_email selftest " + ("FAILED" if bad else "ok"))
