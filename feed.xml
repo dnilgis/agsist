@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Oct 2026 22:27:44 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 17 Oct 2026 10:54:37 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn and beans break lower; crude tops $101 on tight supply</title>
+      <link>https://agsist.com/daily/2026-10-17</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-10-17</guid>
+      <pubDate>Sat, 17 Oct 2026 10:54:24 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn settled Friday at $4.74¼, down 3¾ cents, and beans closed at $12.61¼, off 1¾ cents, both pressured by harvest supply all week. Crude gained 3.5% to $101.41 after the IEA pushed emergency stock releases and the US offered another 17 million barrels from the reserve.
+• Corn and beans ease into the weekend
+• Cattle firm on cash hopes
+• Crude tops $101 on tight supply
+Read more: https://agsist.com/daily/2026-10-17</description>
+    </item>
     <item>
       <title>Corn and beans break lower as harvest pressure builds</title>
       <link>https://agsist.com/daily/2026-10-16</link>
@@ -362,18 +374,6 @@ Action: New-crop beans: if Export Sales top 600K MT and Nov '26 closes above $13
 • EXPORT SALES IN FOCUS
 • CRUDE EASES; DIESEL STORY DEEPENS
 Read more: https://agsist.com/daily/2026-09-17</description>
-    </item>
-    <item>
-      <title>Beans lead; Saudi pipeline crisis keeps crude bid</title>
-      <link>https://agsist.com/daily/2026-09-16</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-09-16</guid>
-      <pubDate>Wed, 16 Sep 2026 11:11:10 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Soybeans added 6¾ cents to $13.29 on strong demand and meal follow-through, while corn flatlined at $5.37 and cattle corrected across the board. WTI held $103.73 -- the Saudi pipeline shutdown, which began forcing spot crude sales outside the Strait of Hormuz last week, kept the bid alive despite a $1 pullback.
-Action: New-crop beans at a 52-week high: price the first 10% on any settle above $13.35. Do not wait.
-• BEANS FIRM; CORN FLAT
-• CRUDE HOLDS; CATTLE CORRECT
-Read more: https://agsist.com/daily/2026-09-16</description>
     </item>
   </channel>
 </rss>

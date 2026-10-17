@@ -1,0 +1,395 @@
+{
+  "headline": "Corn and beans break lower; crude tops $101 on tight supply",
+  "lead": "Corn settled Friday at $4.74¼, down 3¾ cents, and beans closed at $12.61¼, off 1¾ cents, both pressured by harvest supply all week. Crude gained 3.5% to $101.41 after the IEA pushed emergency stock releases and the US offered another 17 million barrels from the reserve.",
+  "teaser": "Corn and beans eased again on harvest supply while crude topped $101 on a tightening fuel market.",
+  "one_number": {
+    "value": "85%",
+    "unit": "Equatorial Guinea oil output drop since 2020",
+    "context": "OPEC's smallest producer fell to 20,000 barrels a day from 140,000, a small but real piece of the tight global supply pushing crude higher."
+  },
+  "sections": [
+    {
+      "title": "Corn and beans ease into the weekend",
+      "body": "- Corn settled at **$4.74¼**, down 3¾ cents, the third straight lower close as harvest supply keeps weighing on the board.\n- Beans held closer to flat at $12.61¼, down just 1¾ cents, with China back in the market booking its first cargoes since the Trump-Xi summit.",
+      "so_what": "Chinese demand is steadying beans while corn and wheat take the harvest pressure alone.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Cattle firm on cash hopes",
+      "body": "- Live cattle closed at **$227.55**, up 0.7%, and feeders held near flat at $343.625.\n- Packing plant closures are tightening where feeders can be sold, with some finishers now hauling cattle farther to find a bid.\n- Hogs added half a percent to $66.925, a quiet close after a quiet week.",
+      "so_what": "Cash hopes are lifting cattle even as some feeders face fewer places to sell.",
+      "conviction_level": "low",
+      "overnight_surprise": false
+    },
+    {
+      "title": "Crude tops $101 on tight supply",
+      "body": "- WTI crude traded at **$101.41**, up 3.5%, after the IEA accelerated emergency releases and the US offered another 17 million barrels from the Strategic Petroleum Reserve.\n- Equatorial Guinea's output has broke down 85% since 2020, a small cut that still tightens the global barrel count.",
+      "so_what": "Diesel costs for fall fieldwork are the number to watch, not the barrel price alone.",
+      "conviction_level": "medium",
+      "overnight_surprise": false
+    }
+  ],
+  "outside_the_pit": [
+    {
+      "title": "Winter weather outlook webinar set for Wednesday, Oct 21",
+      "body": "A livestream on what a strong El Niño pattern means for winter temperatures and precipitation runs Wednesday at 1 p.m. CT.",
+      "tag": "WEATHER",
+      "event_date": "2026-10-21"
+    }
+  ],
+  "watch_list": [
+    {
+      "time": "Monday, Oct 19, 3:00 p.m. CT",
+      "desc": "Crop Progress report; watch harvest pace against the five-year average as basis sits at seasonal lows."
+    },
+    {
+      "time": "Ongoing",
+      "desc": "Corn back above $4.80 would say harvest pressure is easing; a close under $4.70 says it is not."
+    },
+    {
+      "time": "Thursday, Oct 22, 7:30 a.m. CT",
+      "desc": "Export sales; another confirmed China soybean buy would help beans hold $12.60."
+    }
+  ],
+  "source_summary": "CME settlement data, USDA, feedstuffs.com, agweb.com, farmdocdaily.illinois.edu, farmpolicynews.illinois.edu, beefmagazine.com, thefencepost.com, oilprice.com, drovers.com",
+  "date": "Saturday, October 17, 2026",
+  "meta": {
+    "market_mood": "mixed",
+    "heat_section": 0,
+    "overnight_surprises_count": 0,
+    "word_count": 357,
+    "news_coverage": {
+      "ok": 15,
+      "total": 17,
+      "items": 77,
+      "dark": [
+        "brownfieldagnews.com",
+        "porkbusiness.com"
+      ]
+    }
+  },
+  "locked_prices": {
+    "corn": 4.7425,
+    "corn-dec": 4.7425,
+    "beans": 12.6125,
+    "beans-nov": 12.6125,
+    "wheat": 6.605,
+    "oats": 3.9775,
+    "cattle": 227.55,
+    "feeders": 343.625,
+    "hogs": 66.925,
+    "milk": 15.27,
+    "meal": 357.10001,
+    "soyoil": 67.13,
+    "crude": 101.41,
+    "natgas": 3.116,
+    "gold": 4181.1001,
+    "silver": 56.995,
+    "dollar": 101.84,
+    "sp500": 7659.43994,
+    "bitcoin": 81508.5625
+  },
+  "locked_changes": {
+    "corn": {
+      "prev": 4.78,
+      "pct": -0.7845,
+      "kind": "settle"
+    },
+    "corn-dec": {
+      "prev": 4.78,
+      "pct": -0.7845,
+      "kind": "settle"
+    },
+    "beans": {
+      "prev": 12.63,
+      "pct": -0.1386,
+      "kind": "settle"
+    },
+    "beans-nov": {
+      "prev": 12.63,
+      "pct": -0.1386,
+      "kind": "settle"
+    },
+    "wheat": {
+      "prev": 6.7,
+      "pct": -1.4179,
+      "kind": "settle"
+    },
+    "oats": {
+      "prev": 3.96,
+      "pct": 0.4419,
+      "kind": "settle"
+    },
+    "cattle": {
+      "prev": 225.95,
+      "pct": 0.7081,
+      "kind": "settle"
+    },
+    "feeders": {
+      "prev": 343.375,
+      "pct": 0.0728,
+      "kind": "settle"
+    },
+    "hogs": {
+      "prev": 66.575,
+      "pct": 0.5257,
+      "kind": "settle"
+    },
+    "milk": {
+      "prev": 15.2,
+      "pct": 0.4605,
+      "kind": "settle"
+    },
+    "meal": {
+      "prev": 359.8,
+      "pct": -0.7504,
+      "kind": "settle"
+    },
+    "soyoil": {
+      "prev": 67.15,
+      "pct": -0.0298,
+      "kind": "settle"
+    },
+    "crude": {
+      "prev": 97.97,
+      "pct": 3.5113,
+      "kind": "last",
+      "at": "2026-10-16T21:00:00Z"
+    },
+    "natgas": {
+      "prev": 3.236,
+      "pct": -3.7083,
+      "kind": "last",
+      "at": "2026-10-16T21:00:00Z"
+    },
+    "gold": {
+      "prev": 4170.1001,
+      "pct": 0.2638,
+      "kind": "last",
+      "at": "2026-10-16T21:00:00Z"
+    },
+    "silver": {
+      "prev": 56.837,
+      "pct": 0.278,
+      "kind": "last",
+      "at": "2026-10-16T21:00:00Z"
+    },
+    "dollar": {
+      "prev": 102.0,
+      "pct": -0.1569,
+      "kind": "last",
+      "at": "2026-10-17T06:46:21Z"
+    },
+    "sp500": {
+      "prev": 7744.0601,
+      "pct": -1.0927,
+      "kind": "last",
+      "at": "2026-10-17T06:46:21Z"
+    },
+    "bitcoin": {
+      "prev": 82141.4609,
+      "pct": -0.7705,
+      "kind": "last",
+      "at": "2026-10-17T06:46:21Z"
+    }
+  },
+  "board": {
+    "fetched": "2026-10-17T06:46:21Z",
+    "quote_session": "2026-10-16",
+    "prev_close_session": "2026-10-15"
+  },
+  "harvest_clock": {
+    "asof": "2026-10-16",
+    "updated": "2026-10-17T00:39:02Z",
+    "source": "USDA RMA Price Discovery",
+    "url": "/harvest-price-tracker",
+    "start": "2026-10-01",
+    "end": "2026-10-31",
+    "crops": [
+      {
+        "crop": "Corn",
+        "contract": "Dec '26",
+        "harvest": 4.91,
+        "projected": 4.62,
+        "pct": 6.3,
+        "days_done": 12,
+        "days_total": 22,
+        "days_left": 10,
+        "start": "2026-10-01",
+        "end": "2026-10-31",
+        "n_states": 31,
+        "all_states": false,
+        "rma_harvest": 4.92,
+        "through": "2026-10-16",
+        "rma_through": "2026-10-15",
+        "source": "settles"
+      },
+      {
+        "crop": "Soybeans",
+        "contract": "Nov '26",
+        "harvest": 12.83,
+        "projected": 11.09,
+        "pct": 15.7,
+        "days_done": 12,
+        "days_total": 22,
+        "days_left": 10,
+        "start": "2026-10-01",
+        "end": "2026-10-31",
+        "n_states": 25,
+        "all_states": false,
+        "rma_harvest": 12.85,
+        "through": "2026-10-16",
+        "rma_through": "2026-10-15",
+        "source": "settles"
+      }
+    ],
+    "lines": [
+      "Corn harvest price so far: $4.91 vs $4.62 projected (+6.3%), 12 of 22 trading days in.",
+      "Soybeans harvest price so far: $12.83 vs $11.09 projected (+15.7%), 12 of 22 trading days in."
+    ],
+    "note": "Ours: the average of the daily CBOT settles through Oct 16, figured the way USDA RMA does. RMA posts corn at $4.92 and soybeans at $12.85, both through Oct 15. Window and projected price: USDA RMA, as of Oct 16. Oct 1-31 window, most states."
+  },
+  "edge": {
+    "label": "Only on AGSIST",
+    "generated": "2026-10-17T10:53:49Z",
+    "facts": [
+      {
+        "id": "cash_change_corn",
+        "kind": "cash_change",
+        "crop": "corn",
+        "sentence": "On Friday, Oct 16, 1,494 of the 1,527 elevators AGSIST reads posted a lower cash corn bid than Thursday, 25 a higher one; 132 changed their basis, 57 weaker and 75 stronger.",
+        "key": "1,494 of the 1,527 elevators",
+        "detail": "8 unchanged; median change 5¢ lower. Biggest state move: Iowa, 5¢ lower (306 elevators). 3 outliers left out.",
+        "value": -5.0,
+        "unit": "cents per bushel, median change in cash bid",
+        "n": 1527,
+        "as_of": "2026-10-16",
+        "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
+        "url": "/cash-bids",
+        "link_text": "Cash bids near you"
+      },
+      {
+        "id": "cash_change_soybeans",
+        "kind": "cash_change",
+        "crop": "soybeans",
+        "sentence": "On Friday, Oct 16, 1,270 of the 1,328 elevators AGSIST reads posted a lower cash soybean bid than Thursday, 49 a higher one; 174 changed their basis, 114 weaker and 60 stronger.",
+        "key": "1,270 of the 1,328 elevators",
+        "detail": "9 unchanged; median change 2¢ lower. Biggest state move: Iowa, 2¢ lower (269 elevators).",
+        "value": -2.0,
+        "unit": "cents per bushel, median change in cash bid",
+        "n": 1328,
+        "as_of": "2026-10-16",
+        "source": "AGSIST elevator network, last posted bid per trading day (data/bids-prev)",
+        "url": "/cash-bids",
+        "link_text": "Cash bids near you"
+      },
+      {
+        "id": "basis_spread_corn",
+        "kind": "basis_spread",
+        "crop": "corn",
+        "sentence": "Corn basis on Oct 17 ran from 55¢ over December futures in Texas to 80¢ under in North Dakota and South Dakota, state medians of the elevators AGSIST reads.",
+        "key": "55¢ over December futures",
+        "detail": "Elevators behind each median: Texas 17, North Dakota 37, South Dakota 89. 15 states with 15 or more.",
+        "value": 135.0,
+        "unit": "cents per bushel between the strongest and weakest state median",
+        "n": 1371,
+        "as_of": "2026-10-17",
+        "source": "AGSIST elevator network, state median basis (scripts/basis_method.py)",
+        "url": "/basis",
+        "link_text": "Basis by state"
+      }
+    ]
+  },
+  "chart_series": {
+    "corn": [
+      5.0025,
+      5.0425,
+      5.025,
+      5.0075,
+      4.81,
+      4.8125,
+      4.815,
+      4.8,
+      4.7425,
+      4.7425
+    ],
+    "soybeans": [
+      12.8625,
+      13.0375,
+      12.9425,
+      12.9375,
+      12.8275,
+      12.83,
+      12.905,
+      12.7325,
+      12.605,
+      12.6125
+    ]
+  },
+  "chart_dates": [
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17"
+  ],
+  "chart_window": "Oct 6 - Oct 17",
+  "quote_strip": {
+    "asof": "2026-10-17T06:46:21Z",
+    "session": "2026-10-16",
+    "vs_session": "2026-10-15",
+    "quotes": [
+      {
+        "key": "corn-dec",
+        "name": "Corn",
+        "contract": "Dec '26",
+        "last": 4.7425,
+        "prev": 4.78,
+        "pct": -0.7845
+      },
+      {
+        "key": "beans-nov",
+        "name": "Soybeans",
+        "contract": "Nov '26",
+        "last": 12.6125,
+        "prev": 12.63,
+        "pct": -0.1386
+      },
+      {
+        "key": "wheat",
+        "name": "Wheat",
+        "contract": "nearby",
+        "last": 6.605,
+        "prev": 6.7,
+        "pct": -1.4179
+      }
+    ]
+  },
+  "sponsor": {
+    "active": false,
+    "label": "SPONSOR · 1 SLOT",
+    "advertiser": "AGSIST",
+    "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
+    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+    "cta_text": "Become the sponsor",
+    "cta_url": "mailto:sig@farmers1st.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+    "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
+    "is_house_ad": true
+  },
+  "issue_number": 218,
+  "generated_at": "2026-10-17T10:54:24.050396+00:00",
+  "generator_version": "5.5.0",
+  "surprise_count": 0,
+  "surprises": [],
+  "price_validation_clean": true,
+  "market_closed": true,
+  "market_status_reason": "weekend",
+  "otp_week_ahead": true,
+  "first_published_at": "2026-10-17T10:54:24.050396+00:00"
+}

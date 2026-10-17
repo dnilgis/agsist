@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-10-17",
+      "date_display": "Saturday, October 17, 2026",
+      "headline": "Corn and beans break lower; crude tops $101 on tight supply",
+      "teaser": "Corn and beans eased again on harvest supply while crude topped $101 on a tightening fuel market.",
+      "market_mood": "mixed",
+      "surprise_count": 0,
+      "sections": 3,
+      "url": "/daily/2026-10-17",
+      "market_closed": true
+    },
+    {
       "date": "2026-10-16",
       "date_display": "Friday, October 16, 2026",
       "headline": "Corn and beans break lower as harvest pressure builds",
@@ -2492,6 +2503,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-10-16T22:27:42.837929+00:00",
-  "count": 217
+  "updated": "2026-10-17T10:54:24.057370+00:00",
+  "count": 218
 }
