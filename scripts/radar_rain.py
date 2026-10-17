@@ -31,10 +31,13 @@ WINDOWS (all end at the newest hour H that has Pass 2 24H and 72H files)
 
 THE FILE  data/radar-rain/<st>.bin  (one per state, all windows)
   "RR01", uint32 LE header length, header JSON (UTF-8), then one zlib blob
-  per window. Each blob is int16 LE, row-major, north row first, in
-  hundredths of an inch, -1 = no data; every row after the first is stored
-  as its difference from the row above. Cell (r, c) center is
-  lat = y0 - r*d, lon = x0 + c*d. components/radar-rain.js reads it.
+  per window. A window's grid is row-major, north row first, in hundredths
+  of an inch, -1 = no data. Windows run shortest first and each one after
+  the first is stored as its difference from the one before ("base"). The
+  blob holds the gradient-predictor residual of that grid (cell minus
+  left + above - above-left) as int16 LE ("t": "i2", or i4 if one will not
+  fit). Cell (r, c) center is lat = y0 - r*d, lon = x0 + c*d.
+  components/radar-rain.js reads it.
 
   python3 scripts/radar_rain.py                  fetch, build every state
   python3 scripts/radar_rain.py --states IA,KS   some states
@@ -309,27 +312,74 @@ def quantize(mm):
     return np.clip(v, MISSING, 32767).astype(np.int16)
 
 
-def encode_grid(q):
-    q = q.astype(np.int32)
+SPIKE_MIN = 200          # hundredths: only cells of 2 in or more are tested
+SPIKE_RATIO = 20         # ...and blanked when 20 times the middle of the 5 x 5 cells around them
+
+
+def despike(q):
+    """MRMS has a few fixed bad cells (one near Mt. Baker, WA read 95 in for
+    half of October 2026 beside neighbors near 1 in). A cell of 2 in or more
+    that is 20 times the median of the 5 x 5 cells around it is set to no
+    data. A real storm core that steep is rare; if one is caught, the page
+    says no data for that cell instead of printing a number it cannot back."""
+    q = q.copy()
+    rs, cs = np.nonzero(q >= SPIKE_MIN)
+    if not len(rs):
+        return q, 0
+    f = np.pad(np.where(q < 0, np.nan, q.astype(float)), 2, constant_values=np.nan)
+    offs = [(dr, dc) for dr in range(-2, 3) for dc in range(-2, 3) if (dr, dc) != (0, 0)]
+    nb = np.stack([f[rs + 2 + dr, cs + 2 + dc] for dr, dc in offs], axis=1)
+    has = ~np.all(np.isnan(nb), axis=1)
+    med = np.full(len(rs), np.inf)
+    if has.any():
+        med[has] = np.nanmedian(nb[has], axis=1)
+    bad = q[rs, cs] >= SPIKE_RATIO * np.maximum(med, 1.0)
+    q[rs[bad], cs[bad]] = MISSING
+    return q, int(bad.sum())
+
+
+def predict_residual(q):
+    """Gradient predictor (the PNG/LOCO-I 'a + b - c' guess): each cell minus
+    left + above - above-left. First row: minus left; first column: minus above."""
+    q = q.astype(np.int64)
     d = q.copy()
-    d[1:] -= q[:-1]
-    return zlib.compress(d.astype("<i2").tobytes(), 9)
+    d[0, 1:] = q[0, 1:] - q[0, :-1]
+    d[1:, 0] = q[1:, 0] - q[:-1, 0]
+    d[1:, 1:] = q[1:, 1:] - (q[1:, :-1] + q[:-1, 1:] - q[:-1, :-1])
+    return d
 
 
-def decode_grid(blob, ny, nx):
-    d = np.frombuffer(zlib.decompress(blob), dtype="<i2").astype(np.int32).reshape(ny, nx)
-    return np.cumsum(d, axis=0).astype(np.int16)
+def undo_residual(d):
+    """Inverse of predict_residual: a 2-D running sum."""
+    return np.cumsum(np.cumsum(d.astype(np.int64), axis=0), axis=1)
+
+
+def encode_grid(q):
+    """int grid -> (zlib bytes, dtype tag). int16 unless a residual will not fit."""
+    d = predict_residual(q)
+    t = "i2" if (d.min() >= -32768 and d.max() <= 32767) else "i4"
+    return zlib.compress(d.astype("<" + t).tobytes(), 9), t
+
+
+def decode_grid(blob, ny, nx, t="i2"):
+    d = np.frombuffer(zlib.decompress(blob), dtype="<" + t).reshape(ny, nx)
+    return undo_residual(d)
 
 
 def write_bin(path, header, grids):
-    """grids: list of (window dict, int16 array). Window dicts get off/len."""
-    blobs, wins, off = [], [], 0
+    """grids: list of (window dict, int16 array), shortest window first. Each
+    window after the first is stored as its difference from the one before
+    it (the 7 days hold the 3 days, and so on), which is exact in integers
+    and much smaller. Window dicts get off, len, t and base."""
+    blobs, wins, off, prev = [], [], 0, None
     for w, q in grids:
-        b = encode_grid(q)
-        w = dict(w, off=off, len=len(b))
+        q = q.astype(np.int32)
+        b, t = encode_grid(q if prev is None else q - prev[1])
+        w = dict(w, off=off, len=len(b), t=t, base=None if prev is None else prev[0])
         off += len(b)
         blobs.append(b)
         wins.append(w)
+        prev = (w["id"], q)
     header = dict(header, windows=wins)
     hj = json.dumps(header, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     data = b"RR01" + struct.pack("<I", len(hj)) + hj + b"".join(blobs)
@@ -349,7 +399,10 @@ def read_bin(path_or_bytes):
     base = 8 + n
     grids = {}
     for w in h["windows"]:
-        grids[w["id"]] = decode_grid(b[base + w["off"]: base + w["off"] + w["len"]], h["ny"], h["nx"])
+        g = decode_grid(b[base + w["off"]: base + w["off"] + w["len"]], h["ny"], h["nx"], w.get("t", "i2"))
+        if w.get("base"):
+            g = g + grids[w["base"]]
+        grids[w["id"]] = g.astype(np.int16)
     return h, grids
 
 
@@ -393,8 +446,10 @@ def gauge_days(st, end_day, n=GAUGE_DAYS):
             if (end_day - day).days < n and day <= end_day:
                 days[day.isoformat()] = v
         if days:
+            page = "/rain/%s/%s" % (R.slug(R.STATES.get(st.upper(), st)), R.slug(c.get("name") or ""))
             out[fips] = {"name": s.get("name"), "sid": sid, "net": s.get("net"), "ll": s["ll"],
-                         "county": c.get("name"), "days": days}
+                         "county": c.get("name"), "days": days,
+                         "page": page if os.path.exists(os.path.join(ROOT, page.lstrip("/") + ".html")) else None}
     return out, dd.get("edate")
 
 
@@ -518,8 +573,9 @@ def build(states, now=None):
         ny, nx = (r1 - r0) // POOL, (c1 - c0) // POOL
         grids = []
         for wid, (a, span) in fields.items():
-            q = quantize(pool_mean(a[r0:r1, c0:c1]))
-            grids.append(({"id": wid, "start": iso(end - dt.timedelta(hours=span)), "end": iso(end), "hours": span}, q))
+            q, spikes = despike(quantize(pool_mean(a[r0:r1, c0:c1])))
+            grids.append(({"id": wid, "start": iso(end - dt.timedelta(hours=span)), "end": iso(end), "hours": span,
+                           "blanked": spikes}, q))
         gl = []
         for g in sorted(gauge[st].values(), key=lambda x: x["sid"]):
             dates, gv, rv = [], [], []
@@ -533,7 +589,7 @@ def build(states, now=None):
                 rv.append(r)
             if dates:
                 gl.append({"sid": g["sid"], "name": g["name"], "county": g["county"], "net": g["net"],
-                           "ll": g["ll"], "dates": dates, "gauge": gv, "radar": rv})
+                           "ll": g["ll"], "page": g.get("page"), "dates": dates, "gauge": gv, "radar": rv})
         hdr = {
             "schema": SCHEMA, "st": st, "source": SOURCE, "updated": iso(now), "data_end": iso(end),
             "x0": round(LO1 + (c0 + (POOL - 1) / 2) * DEG, 4), "y0": round(LA1 - (r0 + (POOL - 1) / 2) * DEG, 4),
@@ -630,8 +686,25 @@ def selftest():
     ok(p[0, 0] == 2 and np.isnan(p[0, 1]), "pool: mean, and no-data spreads %s" % p)
     rng = np.random.default_rng(7)
     big = rng.integers(-1, 900, size=(57, 83)).astype(np.int16)
-    ok(np.array_equal(decode_grid(encode_grid(big), 57, 83), big), "grid round trip")
+    blob, t = encode_grid(big)
+    ok(t == "i2" and np.array_equal(decode_grid(blob, 57, 83, t), big), "grid round trip")
+    huge = np.zeros((4, 5), dtype=np.int32)
+    huge[0, 0], huge[0, 1], huge[0, 2] = 32767, -1, 32767     # -1 then 32767: a step of 32768
+    blob, t = encode_grid(huge)
+    ok(t == "i4" and np.array_equal(decode_grid(blob, 4, 5, t), huge), "grid round trip, wide residuals")
     ok(tile(168) == [72, 72, 24] and tile(400) == [72] * 5 + [24, 12, 3, 1] and sum(tile(397)) == 397, "tile")
+
+    # 2b. a lone bad cell is blanked; a storm core with wet neighbors is kept
+    f = np.full((9, 9), 20, dtype=np.int16)
+    f[4, 4] = 900
+    f[1, 1] = -1
+    g_, n_ = despike(f)
+    ok(n_ == 1 and g_[4, 4] == -1 and g_[0, 0] == 20, "despike: lone 9 in cell among 0.20 in")
+    core = np.full((9, 9), 30, dtype=np.int16)
+    core[3:6, 3:6] = 150
+    core[4, 4] = 400
+    g_, n_ = despike(core)
+    ok(n_ == 0 and g_[4, 4] == 400, "despike keeps a 4 in core inside 1.5 in rain")
 
     # 3. a file, written and read, and a point lookup
     import tempfile
