@@ -48,7 +48,8 @@ s.seed_futures_pages(json.loads(sys.argv[1]), '2026-10-14')
   execFileSync('python3', ['-c', py, JSON.stringify(prices)], { stdio: 'pipe' });
   const out = fs.readFileSync(path.join(dir, 'soybean-futures-prices.html'), 'utf8');
   const desc = /<meta name="description" content="([^"]*)"/.exec(out)[1];
-  assert.match(desc, /^Soybeans Nov '26 closed \$12\.83¾ on Oct 13\./, desc);
+  assert.match(desc, /^Soybeans Nov '26 settled \$12\.83¾ on Oct 13\./, desc);
+  assert.doesNotMatch(desc, /closed/, 'only a settle is named, and it is called settled');
   assert.doesNotMatch(desc, /%|a\.m\.|p\.m\.|12\.88/, desc);
 });
 

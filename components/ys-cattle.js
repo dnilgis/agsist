@@ -17,13 +17,19 @@
     var far = geo && list.length && list[0].mi > NEAR;
     if (far) { out.push('No sale barn in the USDA reports we read is within ' + NEAR + ' miles of you. The closest:'); list = list.slice(0, 2); }
     else if (geo) list = list.filter(function (x) { return x.mi <= NEAR; });
-    var board = q && typeof q.close === 'number' && h.age(q.close_date, o.now) <= 5 ? q : null, k = board && h.esc(board.contract || 'nearby'), n = 0;
+    /* Only the exchange settle is called settled (2026-10-17). close is a
+       last trade until fetch_prices marks it close_kind "settle"; on Oct 16
+       this line printed the 1:46 p.m. trade, $343.98, as the settle. settle /
+       settle_date / settle_net are the newest settle on file. The settles
+       map is used only from a settles_v 2 file (older maps held last trades). */
+    var board = q && typeof q.settle === 'number' && q.settle_date && h.age(q.settle_date, o.now) <= 5 ? q : null,
+      sm = board && board.settles_v === 2 ? board.settles : null, k = board && h.esc(board.contract || 'nearby'), n = 0;
     list.slice(0, 3).forEach(function (x) {
       var c = x.s.classes['steers|1-2'] ? 'steers|1-2' : 'steers|1', K = x.s.classes[c] || {}, parts = [], e = K['800'];
       [['500', '5-weight'], ['800', '8-weight']].forEach(function (w) { var r = K[w[0]]; if (r && r.cwt) parts.push(w[1] + ' steers ' + h.money(r.cwt) + '/cwt (' + r.head + ' head)'); });
       if (!parts.length) return;
       var s = '<b>' + h.esc(x.b.town + ', ' + x.b.state) + '</b>' + (geo ? ', ' + Math.round(x.mi) + ' mi' : '') + ', sale ' + h.day(x.s.date) + ': ' + parts.join(', ') + ', Medium and Large ' + c.slice(7) + '.';
-      var set = board && board.settles && board.settles[x.s.date];
+      var set = sm && sm[x.s.date];
       if (typeof set === 'number' && e && e.cwt) {
         set = Math.round(set * 100) / 100;
         var d = Math.round((e.cwt - set) * 100) / 100;
@@ -32,7 +38,11 @@
       out.push(s); n++;
     });
     if (!n && !far) out.push('No sale barn in the USDA reports we read ' + (geo ? 'has' : 'in ' + h.esc(name) + ' has') + ' a steer sale on file from the last three weeks.');
-    if (board) out.push('Feeder futures, ' + k + ', settled ' + h.money(board.close) + ' on ' + h.day(board.close_date) + '. A barn average is not the CME index; the gap is AGSIST arithmetic, same day only.');
+    if (board) {
+      var sn = typeof board.settle_net === 'number' ? Math.round(board.settle_net * 1000) / 1000 : null;
+      var mv = sn === null ? '' : sn === 0 ? ', unchanged' : (sn > 0 ? ', up ' : ', down ') + h.money(Math.abs(sn));
+      out.push('Feeder futures, ' + k + ', settled ' + h.money(board.settle) + ' on ' + h.day(board.settle_date) + mv + '. A barn average is not the CME index; the gap is AGSIST arithmetic, same day only.');
+    }
     if (n) src.push('USDA AMS auction reports, each barn’s latest sale' + (geo ? '; straight-line miles from your saved spot' : ''));
     if (board) src.push('CME settles as Yahoo Finance reports them');
     o.links.push('<a href="/cattle-auction-prices">Every barn and weight class &rarr;</a>');

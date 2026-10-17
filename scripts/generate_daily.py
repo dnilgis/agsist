@@ -675,8 +675,19 @@ def load_prices():
         # along and was being thrown away one line above.
         locked_changes[key] = {"prev": round(opn / 100, 4) if is_grain else round(opn, 4),
                                "pct": round(pct, 4)}
+        # fetch_prices v3.7: is this price the exchange settle or a trade?
+        # (2026-10-17: "Soybeans closed $12.60 1/2" was a 1:46 p.m. trade.)
+        if q.get("close_kind"):
+            locked_changes[key]["kind"] = q["close_kind"]
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
-        line = f"  {label}: {price_str} ({arrow} {chg_str})"
+        # Name the month for the products whose key is the front month
+        # (fetch_prices.pin_continuous), so "Lean Hogs" is never a dead month.
+        mon = q.get("contract") if key in ("cattle", "feeders", "hogs", "milk") else None
+        line = f"  {label}{(' ' + mon) if mon else ''}: {price_str} ({arrow} {chg_str})"
+        if q.get("close_kind") == "last":
+            line += " [last trade, not the settle]"
+        elif q.get("close_kind") == "settle":
+            line += " [settle]"
         wk52_hi = q.get("wk52_hi"); wk52_lo = q.get("wk52_lo")
         if wk52_hi and wk52_lo:
             hi, lo = float(wk52_hi), float(wk52_lo)
@@ -2133,9 +2144,24 @@ def quote_timing(fetched_iso, market_status=None, locked_changes=None):
         qs, ps = ct.date(), None
     out["quote_session"], out["prev_session"] = qs, ps
     out["as_of"] = ct.strftime("%-I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + " CT"
+    # fetch_prices v3.7 says per quote whether the price is the settle. A
+    # last trade after the bell is not a settle either (2026-10-17: Yahoo's
+    # bar holds the last trade until late evening). Any grain benchmark still
+    # on a last trade makes the whole board unsettled, weekend or not.
+    hm = (ct.hour, ct.minute)
+    kinds = {k: (v or {}).get("kind") for k, v in (locked_changes or {}).items()
+             if k in ("corn", "corn-dec", "beans", "beans-nov", "wheat")}
+    if any(kd == "last" for kd in kinds.values()):
+        out["settled"] = False
+        if qs is not None and ct.date() == qs and hm < CBOT_GRAIN_CLOSE_CT:
+            out["phase"] = "overnight" if hm < DAY_OPEN_CT else "intraday"
+        else:
+            out["phase"] = "last trade"
+        return out
+    if kinds and all(kd == "settle" for kd in kinds.values()):
+        return out
     if market_status and market_status.get("is_closed"):
         return out
-    hm = (ct.hour, ct.minute)
     if qs is not None and ct.date() == qs and hm < CBOT_GRAIN_CLOSE_CT:
         out["settled"] = False
         out["phase"] = "overnight" if hm < DAY_OPEN_CT else "intraday"
@@ -2152,8 +2178,10 @@ def price_timing_block(timing):
         v = timing["prev_settles"].get(k)
         if v is None: continue
         lines.append(f"  {label}: " + (_frac_price(v) if k in GRAIN_KEYS else f"{v:,.2f}"))
+    session = ("The exchange settle for today is not posted yet. "
+               if timing.get("phase") == "last trade" else "The day session has not closed. ")
     return (f"PRICE TIMING (HARD RULE): the prices above are {timing['phase'].upper()} quotes, "
-            f"as of {timing['as_of']}, NOT settlements. The day session has not closed. "
+            f"as of {timing['as_of']}, NOT settlements. {session}"
             f"NEVER write that any of them 'closed', 'settled' or 'finished' at a price; say "
             f"'overnight', 'trading at', 'sits at' or 'as of {timing['as_of']}'. The change "
             f"column is measured against the previous settle. The PREVIOUS SETTLES ({psl}), "
@@ -4033,7 +4061,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 </main>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/your-area.js?v=1" defer></script>
+<script src="/components/your-area.js?v=2" defer></script>
 <script src="/components/daily-local.js?v=1" defer></script>
 <script>
 (function(){{

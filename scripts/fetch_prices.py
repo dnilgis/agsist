@@ -4,6 +4,20 @@ fetch_prices.py — fetches commodity/futures/index/crypto prices via yfinance
 Writes to data/prices.json. Run by GitHub Actions every 30min on weekdays.
 All free, no API key needed.
 
+v3.7 — 2026-10-17
+  Settle or last trade, said every time. v3.6 recorded the bar between the
+  1:20 p.m. close and the reopen as the day's settle and then preferred it to
+  the bar Yahoo later corrected, so on Oct 16 Nov soybeans printed "closed
+  $12.60 1/2 (-3 3/4c)" against a CBOT settle of $12.61 1/4 (-1 3/4c): both
+  ends of the change were last trades. Yahoo's bar becomes the settle late
+  in the evening (RESTATED_BY, with the cases). Each quote now carries
+  close_kind ("settle" or "last"), close_time for a last trade, prev_kind,
+  and settle / settle_date / settle_net, the newest settle on file. Only a
+  settle may be called closed or settled. The settles map holds settles only
+  (settles_v 2); the afternoon trade is kept apart in day_last.
+  Livestock and milk continuous keys now copy the front month
+  (pin_continuous): HE=F printed dead Oct '26 hogs at $75.55 on Oct 16.
+
 v3.6 — 2026-10-15
   Settled close kept apart from the evening trade. Yahoo puts a market's
   evening reopen into the bar of the day that just closed, under that day's
@@ -219,6 +233,36 @@ def add_nearby(quotes, symbols, now=None):
                       f"(most-active) contract; pages should use {crop}-nearby")
             break
     return nearby
+
+
+# Roots whose continuous Yahoo series is replaced by the true front month
+# (2026-10-17). HE=F kept printing Oct '26 lean hogs at $75.55 "unch" on
+# Oct 16, two days after Oct hogs stopped trading (Oct 14), while Dec hogs
+# rose 0.30 to $66.875; GF=F had already moved to Nov feeders while Oct
+# feeders still trade to Oct 29. For livestock and milk the page means the
+# front month, so the continuous key becomes a copy of <root>-nearby. Any
+# other root's continuous key is replaced the same way when it is stale.
+FRONT_PINNED = ("cattle", "feeders", "hogs", "milk")
+
+
+def pin_continuous(quotes, nearby, stale_keys=None):
+    """Point continuous keys at the nearby contract (see FRONT_PINNED).
+    Returns the list of keys replaced. Mutates quotes (and stale_keys).
+    Pure function of its inputs; selftested in scripts/test_nearby.py."""
+    done = []
+    for root, nb in (nearby or {}).items():
+        alias = quotes.get(root + "-nearby")
+        cq = quotes.get(root)
+        if not alias:
+            continue
+        if root in FRONT_PINNED or (isinstance(cq, dict) and cq.get("stale")):
+            q = dict(alias)
+            q["continuous_ticker"] = (cq or {}).get("ticker")
+            quotes[root] = q
+            done.append(root)
+            if stale_keys is not None and root in stale_keys:
+                stale_keys.remove(root)
+    return done
 
 
 # ── Unit guard for the symbols no run has confirmed yet (2026-10-03) ─────────
@@ -637,7 +681,38 @@ _MARKET_OF_ROOT = {
     "crude": "energy", "natgas": "energy",
     "gold": "metals", "silver": "metals",
 }
-SETTLES_KEPT = 3          # dates of recorded settles carried per quote
+SETTLES_KEPT = 3          # dates of settles (and day-session last trades) carried per quote
+# The settles map format. Until v3.7 `settles` held whatever the bar said
+# between the close and the reopen, which is the last trade, not the settle;
+# a map without this version mark is not carried.
+SETTLES_V = 2
+
+# ── When a bar becomes the settle (2026-10-17) ──────────────────────────────
+# Yahoo's daily bar for a session holds the LAST TRADE until late evening,
+# then Yahoo replaces it with the exchange settle. Every case on file agrees:
+#   Nov '26 soybeans Oct 16: 1260.50 at 18:46 UTC (13:46 CT), CBOT settle
+#     1261.25 (-1.75, Barchart and Successful Farming, Oct 16). We printed
+#     "closed $12.60 1/2 (-3 3/4c)".
+#   Nov '26 soybeans Oct 15: 1264.25 at 18:46 UTC; the bar read from 04:16 UTC
+#     on was 1263.00, which is the settle the -1.75 above is measured from.
+#   Dec '26 corn Oct 15: 478.25 at 18:46 UTC; the bar later read 478.00, the
+#     settle (Oct 16 settled 474.25, -3.75).
+#   Dec '26 corn Oct 14: 481.00 at 18:46 UTC; the bar later read 480.75.
+#   Dec '26 lean hogs Oct 15: 66.625 at 18:46 UTC, 66.575 from 03:46 UTC.
+#   Oct '26 feeders Oct 15: 343.50, then 343.375 from 03:46 UTC.
+# So a bar is called a settle only when Yahoo has had the evening to replace
+# it: any bar older than the newest one, or the newest one fetched at or after
+# RESTATED_BY Central on its own date (or any later date), and never while an
+# evening session is trading into it. Before that the price is the last trade
+# and says so (close_kind "last", close_time).
+RESTATED_BY = (23, 30)
+
+
+def restate_at(day, market):
+    """When the bar for session `day` is taken to hold the settle (CT, aware)."""
+    from datetime import date as _date
+    d = day if isinstance(day, _date) else datetime.strptime(str(day)[:10], "%Y-%m-%d").date()
+    return datetime(d.year, d.month, d.day, *RESTATED_BY, tzinfo=_ct())
 
 
 def market_of(key):
@@ -669,102 +744,126 @@ def session_bounds(day, market):
     return close, reopen
 
 
-def carried_settles(key, old_q, old_fetched):
-    """The {date: settle} map a quote carries into this run: its own `settles`
-    from the previous file, plus the old close itself when the previous file
-    was fetched between that session's close and the next reopen (so the first
-    run after this change starts with the afternoon's close). A stale or
-    already-split old quote adds nothing beyond its map. Pure; selftested in
-    scripts/test_overnight_settle.py."""
-    out = {}
-    if not isinstance(old_q, dict):
+def _iso(dt):
+    return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def carried_settles(key, old_q, old_fetched=None):
+    """{"settles": {date: px}, "day_last": {date: {"px", "at"}}} that a quote
+    carries into this run from the previous file. Only a v2 map (settles_v ==
+    SETTLES_V) is carried: older files filled `settles` with the afternoon's
+    last trade. A stale quote carries nothing new but keeps its maps.
+    `old_fetched` is accepted for the old call shape and not used. Pure;
+    selftested in scripts/test_overnight_settle.py."""
+    out = {"settles": {}, "day_last": {}}
+    if not isinstance(old_q, dict) or old_q.get("settles_v") != SETTLES_V:
         return out
     for d, px in (old_q.get("settles") or {}).items():
         v = _num(px)
         if v is not None:
-            out[str(d)[:10]] = v
-    if old_q.get("stale") or old_q.get("settled"):
-        return out
-    mkt = market_of(key)
-    cd, close = old_q.get("close_date"), _num(old_q.get("close"))
-    if not mkt or not SESSIONS[mkt]["settle_in_bar"] or not cd or close is None or cd in out:
-        return out
-    try:
-        fu = datetime.strptime(old_fetched, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-        c, r = session_bounds(cd, mkt)
-    except Exception:
-        return out
-    if c <= fu < r:
-        out[cd] = close
+            out["settles"][str(d)[:10]] = v
+    for d, rec in (old_q.get("day_last") or {}).items():
+        if isinstance(rec, dict) and _num(rec.get("px")) is not None and rec.get("at"):
+            out["day_last"][str(d)[:10]] = {"px": _num(rec["px"]), "at": str(rec["at"])}
     return out
 
 
 def split_settle(key, bars, now, carried=None):
-    """The settled close and the last trade, kept apart.
+    """The settle and the last trade, kept apart.
 
-    `bars` as for close_and_prev, `now` the fetch time (aware), `carried` the
-    {date: settle} map from the previous file. Returns a dict:
-      close, prev, close_date, prev_date   as close_and_prev, except:
-        * in the evening session (the newest bar holds trades after its
-          session's reopen) close is the recorded settle of that bar's date;
-          with none recorded, close falls back to the bar before it, under its
-          own date, and settle_pending names the date whose close is missing
-        * prev is the recorded settle for prev_date when there is one (Yahoo
-          later rewrote the Oct 14 corn bar to 480.75 against a 481.0 settle)
-      settled      True when the close is a finished session's close that
-                   the newest bar had buried under evening trades
-      last, last_date, last_net   the evening trade, the trade date it
-                   belongs to, and its change from the close it follows
-                   (None when that close is not known)
-      settle_pending  the date whose close is not known yet, or absent
-      prev_source  "recorded settle" when prev came from `carried`
-      settles      the map to carry forward (this run's record added when
-                   the fetch is between the close and the reopen)
+    `bars` as for close_and_prev, `now` the fetch time (aware), `carried` what
+    carried_settles() returned for the previous file. Returns a dict:
+      close, prev, close_date, prev_date   as close_and_prev, except in the
+                   evening session (see below)
+      close_kind   "settle" when close is the exchange settle for close_date,
+                   "last" when it is a trade (in session, or after the close
+                   but before Yahoo has replaced the bar with the settle)
+      close_time   for a "last" close: when the trade was current (the fetch
+                   time in session, the session close after it)
+      prev_kind    "settle" when prev is a settle (an older bar), else None
+      settle, settle_date, settle_net   the newest settle known for this
+                   contract and its change from the settle before it (None
+                   when that one is not on file)
+      settled      True when an evening session has traded into the newest
+                   bar; that trade is moved to last / last_date / last_net
+      settle_pending  the date whose settle is not known yet (evening only)
+      settles, day_last   the maps to carry forward
+    Markets with no session table (indexes, the dollar, crypto) pass through
+    with close_kind None. Energy and metals settle mid-session, so their bar
+    is never the settle: close_kind is always "last" for them.
     Pure function of its inputs; selftested in scripts/test_overnight_settle.py.
     """
+    from contract_calendar import next_trading_day
     clean = [(str(d)[:10], _num(c)) for d, c in bars]
     clean = [(d, c) for d, c in clean if c is not None]
     close, prev, close_date, prev_date = close_and_prev(clean)
-    out = {"close": close, "prev": prev, "close_date": close_date, "prev_date": prev_date}
-    settles = {}
-    for d, px in (carried or {}).items():
-        v = _num(px)
-        if v is not None:
-            settles[str(d)[:10]] = v
+    out = {"close": close, "prev": prev, "close_date": close_date, "prev_date": prev_date,
+           "close_kind": None}
+    carried = carried or {}
+    settles = dict(carried.get("settles") or {})
+    day_last = dict(carried.get("day_last") or {})
     mkt = market_of(key)
-    bounds = session_bounds(close_date, mkt) if (mkt and clean) else None
-    if bounds:
-        s = SESSIONS[mkt]
-        c_at, r_at = bounds
-        if s["settle_in_bar"] and c_at <= now < r_at:
-            settles[close_date] = close
-        from contract_calendar import next_trading_day
-        nxt = next_trading_day(datetime.strptime(close_date, "%Y-%m-%d").date())
-        # Only while the next session is still open: past its close a bar
-        # still dated the day before is a missing bar, not evening trades.
-        if s["reopen_eve"] and r_at <= now < session_bounds(nxt, mkt)[0]:
-            last = close
-            out["last"] = last
-            out["last_date"] = nxt.isoformat()
-            out["settled"] = True
-            older = clean[:-1]
-            if close_date in settles:
-                out["close"] = settles[close_date]
-                out["prev"] = older[-1][1] if older else None
-                out["prev_date"] = older[-1][0] if older else None
-                out["last_net"] = round(last - out["close"], 5)
-            else:
-                # The close of the newest session is not known; the newest
-                # one that is, under its own date.
-                c2, p2, cd2, pd2 = close_and_prev(older)
-                out.update({"close": c2, "prev": p2, "close_date": cd2, "prev_date": pd2,
-                            "last_net": None, "settle_pending": close_date})
-    pd = out.get("prev_date")
-    if pd and pd in settles and out.get("prev") is not None and settles[pd] != out["prev"]:
-        out["prev"] = settles[pd]
-        out["prev_source"] = "recorded settle"
+    if not mkt or not clean:
+        return out
+    s = SESSIONS[mkt]
+    trusted = s["settle_in_bar"]
+    older = clean[:-1]
+    if trusted:
+        for d, px in older:
+            settles[d] = px          # Yahoo has replaced these with the settle
+    c_at, r_at = session_bounds(close_date, mkt)
+    nxt = next_trading_day(datetime.strptime(close_date, "%Y-%m-%d").date())
+    next_close = session_bounds(nxt, mkt)[0]
+    evening = s["reopen_eve"] and r_at <= now < next_close
+    if evening:
+        out["settled"] = True
+        out["last"] = close
+        out["last_date"] = nxt.isoformat()
+        if close_date in settles:
+            out.update({"close": settles[close_date], "close_kind": "settle"})
+        elif close_date in day_last:
+            out.update({"close": day_last[close_date]["px"], "close_kind": "last",
+                        "close_time": day_last[close_date]["at"]})
+        else:
+            # Nothing on file for the newest session: the newest one that
+            # is known, under its own date.
+            c2, p2, cd2, pd2 = close_and_prev(older)
+            out.update({"close": c2, "prev": p2, "close_date": cd2, "prev_date": pd2,
+                        "close_kind": "settle" if trusted else "last",
+                        "settle_pending": close_date})
+            if not trusted:
+                out["close_time"] = _iso(session_bounds(cd2, mkt)[0]) if cd2 else None
+        if "settle_pending" not in out:
+            out["prev"] = older[-1][1] if older else None
+            out["prev_date"] = older[-1][0] if older else None
+            out["last_net"] = round(out["last"] - out["close"], 5)
+        else:
+            out["last_net"] = None
+    elif trusted and now >= restate_at(close_date, mkt):
+        out["close_kind"] = "settle"
+        settles[close_date] = close
+    else:
+        out["close_kind"] = "last"
+        out["close_time"] = _iso(min(now, c_at))
+        if trusted and now >= c_at:
+            day_last[close_date] = {"px": close, "at": _iso(c_at)}
+    if trusted and out.get("prev_date") is not None:
+        out["prev_kind"] = "settle"
+    # The newest settle on file and its change.
+    if out["close_kind"] == "settle" and trusted:
+        sd = out["close_date"]
+    else:
+        sd = out.get("prev_date") if trusted else None
+    if sd is not None and sd in settles:
+        out["settle"] = settles[sd]
+        out["settle_date"] = sd
+        from contract_calendar import prior_trading_day
+        pd0 = prior_trading_day(datetime.strptime(sd, "%Y-%m-%d").date()).isoformat()
+        out["settle_net"] = round(settles[sd] - settles[pd0], 5) if pd0 in settles else None
     keep = sorted(settles)[-SETTLES_KEPT:]
     out["settles"] = {d: settles[d] for d in keep}
+    keep = sorted(day_last)[-SETTLES_KEPT:]
+    out["day_last"] = {d: day_last[d] for d in keep}
     return out
 
 
@@ -843,10 +942,8 @@ def fetch_quote(key, ticker, now=None, carried=None):
         ref = sp.get("last", close)
         if sp.get("settled"):
             print(f"  NOTE {key} ({ticker}): bar {sp['last_date']} trade {sp['last']} kept as last; "
-                  f"close {close} ({close_date})"
-                  + (f", close of {sp['settle_pending']} not on record yet" if sp.get("settle_pending") else ""))
-        if sp.get("prev_source"):
-            print(f"  NOTE {key} ({ticker}): previous close {prev} on {prev_date} from the recorded settle")
+                  f"close {close} ({close_date}, {sp.get('close_kind')})"
+                  + (f", settle of {sp['settle_pending']} not on record yet" if sp.get("settle_pending") else ""))
         if close is None and not bars:
             # No bars at all: the live quote is the only close there is, and
             # there is no previous close to measure a change against.
@@ -902,10 +999,23 @@ def fetch_quote(key, ticker, now=None, carried=None):
             out["last_net"] = sp["last_net"]
             if sp.get("settle_pending"):
                 out["settle_pending"] = sp["settle_pending"]
-        if sp.get("prev_source"):
-            out["prev_source"] = sp["prev_source"]
-        if sp.get("settles"):
-            out["settles"] = sp["settles"]
+        # Settle or last trade (2026-10-17). Only a "settle" close may be
+        # called closed or settled anywhere on the site; a "last" close is a
+        # trade as of close_time. settle / settle_date / settle_net are the
+        # newest exchange settle on file, for text that says "settled".
+        out["close_kind"] = sp.get("close_kind")
+        if sp.get("close_time"):
+            out["close_time"] = sp["close_time"]
+        if sp.get("prev_kind"):
+            out["prev_kind"] = sp["prev_kind"]
+        if sp.get("settle") is not None:
+            out["settle"] = round(sp["settle"], 5)
+            out["settle_date"] = sp["settle_date"]
+            out["settle_net"] = sp.get("settle_net")
+        if sp.get("settles") or sp.get("day_last"):
+            out["settles_v"] = SETTLES_V
+            out["settles"] = sp.get("settles") or {}
+            out["day_last"] = sp.get("day_last") or {}
         return out
     except Exception as e:
         print(f"  ERR  {key} ({ticker}): {e}")
@@ -1035,6 +1145,9 @@ def main():
             for c, v in rolls.items()))
 
     nearby = add_nearby(quotes, SYMBOLS)
+    pinned = pin_continuous(quotes, nearby, stale_keys)
+    if pinned:
+        print("  FRONT: continuous " + ", ".join(f"{r} -> {nearby[r]['key']}" for r in pinned))
 
     # Cross-check the previous close against the settles fetch_harvest_prices
     # recorded for the same contract and day. Reported, never "repaired": the

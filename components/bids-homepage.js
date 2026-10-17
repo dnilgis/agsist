@@ -791,7 +791,9 @@
       if(!w || String(w.ticker || '').split('.')[0] !== tk || !Array.isArray(w.series)) continue;
       for(var j = 0; j < w.series.length; j++){
         var x = w.series[j];
-        if(x && x.d === day && typeof x.s === 'number' && isFinite(x.s)) return x.s;
+        /* p: the evening's own day, read before Yahoo swaps the last trade
+           for the settle (fetch_harvest_prices.mark_provisional). Not a settle. */
+        if(x && x.d === day && !x.p && typeof x.s === 'number' && isFinite(x.s)) return x.s;
       }
     }
     return null;
