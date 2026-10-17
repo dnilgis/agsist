@@ -155,6 +155,19 @@ STATES = [
 ]  # Alaska excluded: NASS runs no cash rents survey there. Hawaii has no counties in the survey frame.
 
 
+
+def county_name(fips, nass_title):
+    """The Census spelling by FIPS (McLean, DeKalb, LaSalle, St. Clair), else NASS's
+    title-cased name with Mc fixed; .title() alone printed "Mclean" (Oct 17, 2026)."""
+    try:
+        from build_breakeven_data import official_names, fix_case
+    except ImportError:
+        return nass_title
+    o = official_names().get(str(fips))
+    if o:
+        return o[:-len(" County")] if o.endswith(" County") else o
+    return fix_case(nass_title)
+
 def log(*a):
     print(*a, flush=True)
 
@@ -287,7 +300,7 @@ def collect_state(key, state, getter=None, cur=None):
             year = int(rec.get("year", 0))
             if not f or v is None or year in NO_SURVEY_YEARS:
                 continue
-            c = touch(f, (rec.get("county_name") or "").title())
+            c = touch(f, county_name(f, (rec.get("county_name") or "").title()))
             c["rent"].setdefault(kind, {})[str(year)] = round(v, 2)
 
     for kind, sd in YIELD_KINDS.items():

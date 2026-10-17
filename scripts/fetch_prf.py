@@ -108,6 +108,17 @@ WORKERS = 8
 MAX_FAIL_SHARE = 0.02
 
 
+
+def census_name(st, co, rma_name):
+    """RMA writes "Mclean"; the page shows the Census spelling by FIPS (Oct 17, 2026)."""
+    if not rma_name:
+        return rma_name
+    try:
+        from fetch_cash_rent import county_name
+    except ImportError:
+        return rma_name
+    return county_name(f"{st}{co}", rma_name)
+
 def log(*a):
     print(*a, flush=True)
 
@@ -428,7 +439,7 @@ def state_files(adm):
                 per_combo[i] = row
         present = sorted(per_combo)
         uniform = all(per_combo[i] == per_combo[present[0]] for i in present)
-        out = {"n": adm["cnames"].get((st, co), ""), "g": sorted(rec["grids"]), "b": b}
+        out = {"n": census_name(st, co, adm["cnames"].get((st, co), "")), "g": sorted(rec["grids"]), "b": b}
         if not out["n"]:
             raise RuntimeError(f"county {st}{co} has PRF offers and no name in the county table")
         if uniform:

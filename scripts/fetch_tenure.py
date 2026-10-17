@@ -42,6 +42,15 @@ SD = {"owned": "AG LAND, OWNED, IN FARMS - ACRES",
 YEARS = [1997, 2002, 2007, 2012, 2017, 2022]
 
 
+
+def county_name(fips, nass_title):
+    """Census spelling by FIPS (McLean, not .title()'s "Mclean"); see fetch_cash_rent."""
+    try:
+        from fetch_cash_rent import county_name as cn
+    except ImportError:
+        return nass_title
+    return cn(fips, nass_title)
+
 def api_get(params):
     q = dict(params)
     q["key"] = KEY
@@ -128,7 +137,7 @@ def collect(fetch):
                         fips = (r.get("state_fips_code", "") or "") + (r.get("county_code", "") or "")
                         if len(fips) != 5 or fips.endswith("998"):   # 998 = combined-other
                             continue
-                        c = counties.setdefault(fips, {"n": (r.get("county_name") or "").title(),
+                        c = counties.setdefault(fips, {"n": county_name(fips, (r.get("county_name") or "").title()),
                                                        "st": r.get("state_alpha"), "y": {}})
                         c["y"].setdefault(str(yr), [None, None])[idx] = v
                     elif lvl == "STATE":
