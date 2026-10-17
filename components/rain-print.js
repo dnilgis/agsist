@@ -2029,12 +2029,35 @@
     return root.AgRpLogo.inkUrl(LOGO.color.url, inkHex()).then(function (u) { if (my === LOGO_ASK && LOGO) LOGO.ink = u; }, function () {});
   }
   // the design's logo, read from the worker when the design names one this page hasn't drawn
+  /* rp-logo.js loads when a logo is first wanted (2026-10-17, speed panel: most
+     buyers never add one), the way gdu-stages.js and the extras do. */
+  var LOGO_P = null;
+  function logoReady() {
+    if (root.AgRpLogo) return Promise.resolve(true);
+    if (!LOGO_P) LOGO_P = new Promise(function (res) {
+      var sc = doc.createElement('script');
+      sc.src = '/components/rp-logo.js?v=2';
+      sc.onload = function () { res(!!root.AgRpLogo); };
+      sc.onerror = function () { LOGO_P = null; res(false); };
+      doc.head.appendChild(sc);
+    });
+    return LOGO_P;
+  }
   function wantLogo() {
     var id = ST.logo;
     if (!id) { if (LOGO && LOGO.state !== 'saving') LOGO = null; syncLogoUi(); return; }
     if (LOGO && LOGO.id === id) { syncLogoUi(); return; }
     var my = ++LOGO_ASK;
-    if (!root.AgRpLogo) { LOGO = { id: id, state: 'missing', color: null, ink: null, msg: 'The logo didn\u2019t load.' }; syncLogoUi(); return; }
+    if (!root.AgRpLogo) {
+      LOGO = { id: id, state: 'loading', color: null, ink: null };
+      syncLogoUi();
+      logoReady().then(function (ok) {
+        if (my !== LOGO_ASK) return;
+        if (ok) { LOGO = null; wantLogo(); return; }
+        LOGO = { id: id, state: 'missing', color: null, ink: null, msg: 'The logo didn\u2019t load.' }; syncLogoUi();
+      });
+      return;
+    }
     LOGO = { id: id, state: 'loading', color: null, ink: null };
     syncLogoUi();
     root.AgRpLogo.load(id).then(function (got) {
@@ -4591,10 +4614,10 @@
     ST.station = ''; run();
   });
   // the logo: a file in, the color switch, remove
-  if (root.AgRpLogo) {
-    $('rp-logo-file').addEventListener('change', function () { var f = $('rp-logo-file').files; if (f && f[0]) pickLogo(f[0]); });
-    $('rb-logo-file').addEventListener('change', function () { var f = $('rb-logo-file').files; if (f && f[0]) pickBizLogo(f[0]); });
-  } else { $('rp-logo').hidden = true; $('rb-logo').hidden = true; }
+  $('rp-logo-file').addEventListener('change', function () { var f = $('rp-logo-file').files; if (f && f[0]) logoReady().then(function (ok) { if (ok) pickLogo(f[0]); else logoMsg('The logo tool didn\u2019t load. Check the connection and choose the file again.'); }); });
+  $('rb-logo-file').addEventListener('change', function () { var f = $('rb-logo-file').files; if (f && f[0]) logoReady().then(function (ok) { if (ok) pickBizLogo(f[0]); else bizLogoMsg('The logo tool didn\u2019t load. Check the connection and choose the file again.'); }); });
+  // the file picker is about to open: start loading the logo tool now
+  ['rp-logo-pick', 'rb-logo-pick'].forEach(function (id) { var b = $(id); if (b) ['pointerdown', 'focus'].forEach(function (ev) { b.addEventListener(ev, function () { logoReady(); }, { once: true }); }); });
   radios('rp-logo-ink').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   $('rp-logo-remove').addEventListener('click', removeLogo);
   $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
