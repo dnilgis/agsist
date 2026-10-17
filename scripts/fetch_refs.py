@@ -233,6 +233,36 @@ def pdf_text(path):
     return r.stdout.decode("utf-8", "replace"), pages
 
 
+# ── tokens in saved pages ───────────────────────────────────────────────────
+#
+# GitHub push protection refused two whole references commits (Oct 17, runs
+# 38984223427 and 38985426508: "push declined due to repository rule
+# violations") because a fetched page carried a key the site ships to every
+# browser. Those keys are public, but the push fails and every other page in
+# the run is lost. So known key shapes are blanked before a page is saved,
+# in both the .html and the .txt, and the row counts them ("redacted").
+SECRET_PATTERNS = (
+    rb"AIza[0-9A-Za-z_\-]{35}",                       # Google API key
+    rb"\b[sp]k\.eyJ[0-9A-Za-z_\-]{20,}\.[0-9A-Za-z_\-]{10,}",   # Mapbox token
+    rb"\b(?:sk|rk)_live_[0-9A-Za-z]{20,}",              # Stripe secret
+    rb"\bAKIA[0-9A-Z]{16}\b",                           # AWS access key id
+    rb"\bxox[abprs]-[0-9A-Za-z\-]{10,}",                # Slack
+    rb"\bgh[pousr]_[0-9A-Za-z]{36}\b",                  # GitHub
+    rb"https://hooks\.slack\.com/services/[0-9A-Za-z/]+",
+    rb"-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]{0,5000}?-----END [A-Z ]*PRIVATE KEY-----",
+)
+REDACTED = b"REDACTED-BY-FETCH-REFS"
+
+
+def scrub(body):
+    """(body with known key shapes blanked, how many)."""
+    n = 0
+    for pat in SECRET_PATTERNS:
+        body, k = re.subn(pat, REDACTED, body)
+        n += k
+    return body, n
+
+
 # ── one download ────────────────────────────────────────────────────────────
 #
 # WHY THERE ARE FALLBACKS. The first run on GitHub (2026-10-15) timed out on
@@ -256,6 +286,25 @@ def pdf_text(path):
 # the original bytes without the Wayback toolbar.
 WAYBACK_API = "https://archive.org/wayback/available?url="
 WAYBACK_RAW = "https://web.archive.org/web/{ts}id_/{url}"
+# The availability API often says "no archived copy" for pages the archive
+# does hold (agriculture.com/markets, Oct 16), so the CDX index is asked too.
+WAYBACK_CDX = ("https://web.archive.org/cdx/search/cdx?output=json&limit=-1"
+               "&filter=statuscode:200&fl=timestamp&url=")
+# A rendered source opens the archive's own view, whose page assets come from
+# the archive too (the id_ form would load them from the blocked live site).
+WAYBACK_VIEW = "https://web.archive.org/web/{ts}/{url}"
+# archive.org answered 429 when a run asked it about many sources a few
+# seconds apart (Oct 17). Space every archive request and back off on 429.
+WAYBACK_GAP = 6.0
+WAYBACK_429_WAIT = 45.0
+_wb_last = [0.0]
+
+
+def _wayback_pause():
+    wait = _wb_last[0] + WAYBACK_GAP - time.monotonic()
+    if wait > 0:
+        time.sleep(wait)
+    _wb_last[0] = time.monotonic()
 RMA_HOSTS = ("www.rma.usda.gov", "rma.usda.gov")
 ACCEPT = "text/html,application/xhtml+xml,application/pdf;q=0.9,*/*;q=0.8"
 
@@ -414,6 +463,10 @@ def download_rendered(url, max_bytes, timeout):
         except Exception:
             pass                       # pages that never go quiet: take what is there
         page.wait_for_timeout(SETTLE_MS)
+        if (urllib.parse.urlsplit(url).hostname or "").endswith("archive.org"):
+            # the archive's toolbar is not part of the page
+            page.evaluate("""() => { for (const id of ['wm-ipp-base', 'wm-ipp', 'donato', 'wm-ipp-print'])
+                { const e = document.getElementById(id); if (e) e.remove(); } }""")
         body = page.content().encode("utf-8")
         if len(body) > max_bytes:
             raise Fail("too big: over %d bytes" % max_bytes)
@@ -435,27 +488,56 @@ def candidates(src):
     if host in RMA_HOSTS:
         other = RMA_HOSTS[1] if host == RMA_HOSTS[0] else RMA_HOSTS[0]
         out.append((url.replace("//" + host, "//" + other, 1), "alt-host"))
-    if WAYBACK_API and src.get("kind") != "rendered":
+    if WAYBACK_API:
         out.append((None, "wayback"))
     return out
 
 
+def _archive_json(api, timeout, what):
+    """GET a JSON answer from archive.org, paced, one retry after a 429."""
+    for n in range(2):
+        _wayback_pause()
+        try:
+            req = urllib.request.Request(api, headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=min(timeout, 60)) as r:
+                raw = r.read(1_000_000).decode("utf-8", "replace")
+            return json.loads(raw) if raw.strip() else None
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and n == 0:
+                time.sleep(WAYBACK_429_WAIT)
+                continue
+            raise Fail("%s: HTTP %d" % (what, e.code))
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            raise Fail("%s: %s" % (what, getattr(e, "reason", None) or e))
+
+
 def wayback_url(url, timeout):
-    """Ask the Internet Archive for its closest snapshot of url. Returns
-    (raw-bytes url, timestamp) or raises Fail."""
-    api = WAYBACK_API + urllib.parse.quote(url, safe="")
+    """Ask the Internet Archive for its newest good snapshot of url: the
+    availability API first, then the CDX index. Returns (raw-bytes url,
+    timestamp) or raises Fail."""
+    notes = []
     try:
-        req = urllib.request.Request(api, headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=min(timeout, 60)) as r:
-            doc = json.loads(r.read(1_000_000).decode("utf-8", "replace"))
-    except (urllib.error.URLError, OSError, ValueError) as e:
-        raise Fail("availability API: %s" % (getattr(e, "reason", None) or e))
-    snap = ((doc or {}).get("archived_snapshots") or {}).get("closest") or {}
-    ts = str(snap.get("timestamp") or "")
-    if not snap.get("available") or not re.match(r"^\d{14}$", ts) or \
-            str(snap.get("status", "200")) != "200":
-        raise Fail("no archived copy")
-    return WAYBACK_RAW.format(ts=ts, url=url), ts
+        doc = _archive_json(WAYBACK_API + urllib.parse.quote(url, safe=""), timeout,
+                            "availability API")
+        snap = ((doc or {}).get("archived_snapshots") or {}).get("closest") or {}
+        ts = str(snap.get("timestamp") or "")
+        if snap.get("available") and re.match(r"^\d{14}$", ts) and \
+                str(snap.get("status", "200")) == "200":
+            return WAYBACK_RAW.format(ts=ts, url=url), ts
+    except Fail as e:
+        notes.append(str(e))
+    if WAYBACK_CDX:
+        try:
+            rows = _archive_json(WAYBACK_CDX + urllib.parse.quote(url, safe=""), timeout, "CDX")
+            # [["timestamp"], ["20260825140900"]]: a header row, then the newest capture
+            ts = str(rows[-1][0]) if isinstance(rows, list) and len(rows) > 1 else ""
+            if re.match(r"^\d{14}$", ts):
+                return WAYBACK_RAW.format(ts=ts, url=url), ts
+        except Fail as e:
+            notes.append(str(e))
+        except (IndexError, TypeError, KeyError):
+            notes.append("CDX: unreadable answer")
+    raise Fail("no archived copy" + (" (%s)" % "; ".join(notes) if notes else ""))
 
 
 def _try(url, via, client, cond, src, max_bytes, timeout):
@@ -494,6 +576,8 @@ def acquire(src, prev, max_bytes, timeout, retry_wait, dead):
             except Fail as e:
                 attempts.append("wayback: %s" % e)
                 continue
+            if src["kind"] == "rendered":
+                url = WAYBACK_VIEW.format(ts=ts, url=src["url"])
         host = urllib.parse.urlsplit(url).hostname or ""
         if via != "wayback" and dead.get(host, 0) >= 2:
             attempts.append("%s: skipped, %s timed out earlier" % (via, host))
@@ -502,6 +586,8 @@ def acquire(src, prev, max_bytes, timeout, retry_wait, dead):
         clients = (("browser", 1),) if src["kind"] == "rendered" else (("python", 2), ("curl", 1))
         for client, tries in clients:
             for n in range(tries):
+                if via == "wayback":
+                    _wayback_pause()
                 try:
                     code, body, hd, final = _try(url, via, client, cond, src, max_bytes, timeout)
                 except Fail as e:
@@ -514,7 +600,8 @@ def acquire(src, prev, max_bytes, timeout, retry_wait, dead):
                         dead[host] = dead.get(host, 0) + 1
                     if n + 1 < tries and not _is_timeout(msg) and \
                             re.match(r"(network|HTTP (5\d\d|429))", msg):
-                        time.sleep(retry_wait)
+                        time.sleep(WAYBACK_429_WAIT if via == "wayback" and "429" in msg
+                                   else retry_wait)
                         continue
                     break
                 attempts.append("%s/%s: ok %d" % (via, client, code))
@@ -574,6 +661,9 @@ def fetch_one(src, prev, out, max_bytes, retry_wait=5.0, timeout=TIMEOUT, dead=N
         row.update(status="failed", error="empty body")
         return row
 
+    redacted = 0
+    if not is_pdf:
+        body, redacted = scrub(body)
     ext = "pdf" if is_pdf else "html"
     rel = "refs/%s.%s" % (sid, ext)
     sha = hashlib.sha256(body).hexdigest()
@@ -599,11 +689,12 @@ def fetch_one(src, prev, out, max_bytes, retry_wait=5.0, timeout=TIMEOUT, dead=N
     else:
         text, pages = html_text(body), None
     head = "# %s\n# %s\n# fetched %s, sha256 %s\n\n" % (src["title"], src["url"], now_utc(), sha)
+    text = scrub(text.encode("utf-8"))[0].decode("utf-8")
     with open(os.path.join(out, "refs", sid + ".txt"), "w", encoding="utf-8") as f:
         f.write(head + text)
     row.update(status="updated" if prev.get("sha256") else "new", bytes=len(body),
                sha256=sha, fetched_utc=now_utc(), pages=pages, saved_as=rel,
-               text_chars=len(text))
+               text_chars=len(text), redacted=redacted or None)
     if is_pdf and not text.strip():
         row["error"] = "no text extracted (scanned PDF, or pdftotext missing)"
     elif not is_pdf and len(text.split("\n", 1)[-1].strip()) < THIN_TEXT:
@@ -677,6 +768,34 @@ def _forget(rows, result, out):
             del result[sid]
 
 
+def drop(out, ids, reason):
+    """Take saved copies out of a references checkout (refs/<id>.* and the
+    row's file fields) and mark the rows failed. The workflow calls this
+    when push protection names files: those pages are left out and the rest
+    of the run is pushed. Returns the ids dropped."""
+    idx_path = os.path.join(out, "index.json")
+    with open(idx_path, encoding="utf-8") as f:
+        doc = json.load(f)
+    gone = []
+    for r in doc.get("sources", []):
+        if r.get("id") not in ids:
+            continue
+        for ext in ("pdf", "html", "txt"):
+            pth = os.path.join(out, "refs", "%s.%s" % (r["id"], ext))
+            if os.path.exists(pth):
+                os.remove(pth)
+        for k in ("bytes", "sha256", "fetched_utc", "pages", "etag", "last_modified",
+                  "saved_as", "final_url", "content_type", "via", "archive_timestamp",
+                  "text_chars", "redacted"):
+            r[k] = None
+        r.update(status="failed", error=reason)
+        gone.append(r["id"])
+    with open(idx_path, "w", encoding="utf-8") as f:
+        json.dump(doc, f, indent=1, sort_keys=False)
+        f.write("\n")
+    return gone
+
+
 def summary(done):
     by = {}
     for r in done:
@@ -727,7 +846,17 @@ def main(argv=None):
     ap.add_argument("--timeout", type=int, default=TIMEOUT, help="seconds per request")
     ap.add_argument("--check", action="store_true", help="only validate sources.json")
     ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--drop", action="store_true",
+                    help="remove the saved copies of --ids from --out and mark them failed")
+    ap.add_argument("--reason", default="dropped")
     a = ap.parse_args(argv)
+    if a.drop:
+        ids = {i.strip() for i in a.ids.split(",") if i.strip()}
+        if not a.out or not ids:
+            print("--drop needs --out and --ids")
+            return 2
+        print("dropped: " + ", ".join(drop(a.out, ids, a.reason)))
+        return 0
     if a.selftest:
         return selftest()
     if a.check:
@@ -788,6 +917,10 @@ WAF_PAGE = (b"<!DOCTYPE html><html><head><title></title><script>window.awsWafCoo
 INCAP_PAGE = (b"<html style='height:100%'><head><script src='/_Incapsula_Resource?SWJIYLWA=1'></script>"
               b"</head><body><iframe id='main-iframe' src='/_Incapsula_Resource?x=1'>Request unsuccessful. "
               b"Incapsula incident ID: 1-2</iframe></body></html>")
+
+
+# built at run time so this file holds no key-shaped string of its own
+FAKE_KEY = b"AIza" + b"Sy" + b"0123456789abcdefghijklmnopqrstuvw"
 
 
 def _have_browser():
@@ -856,6 +989,27 @@ def selftest():
                 return self._send(200, json.dumps(doc).encode(), "application/json")
             if p.startswith("/web/20260901123456id_/"):
                 return self._send(200, archived_pdf, "application/pdf")
+            if p.startswith("/cdx?url="):
+                asked = urllib.parse.unquote(p.split("=", 1)[1])
+                if "cdxonly" in asked or "jsblocked" in asked:
+                    return self._send(200, b'[["timestamp"],["20260702030405"]]', "application/json")
+                return self._send(200, b"[]", "application/json")
+            if p.startswith("/web/20260702030405id_/"):
+                return self._send(200, b"<html><body><main><p>"
+                                  + b"From the CDX snapshot of the markets page. " * 10
+                                  + b"</p></main></body></html>", "text/html")
+            if p.startswith("/web/20260702030405/"):
+                # the archive's own view of a JS page, with its toolbar
+                return self._send(200, JS_PAGE.replace(
+                    b"<body>", b"<body><div id='wm-ipp-base'>Wayback Machine toolbar</div>"),
+                    "text/html")
+            if p == "/cdxonly.html" or p == "/jsblocked.html":
+                return self._send(403, b"denied", "text/plain")
+            if p == "/keys.html":
+                return self._send(200, b"<html><body><main><p>Map of the field. </p>"
+                                  b"<script>var k='" + FAKE_KEY + b"';</script><p>"
+                                  + b"Soil map units and acres. " * 20 + b"</p><p>key "
+                                  + FAKE_KEY + b"</p></main></body></html>", "text/html")
             if p == "/archived-handbook.pdf":
                 if state["rma_up"]:
                     return self._send(200, live_pdf, "application/pdf")
@@ -911,9 +1065,14 @@ def selftest():
     # timed-out-host test
     slow_base = "http://localhost:%d" % srv.server_address[1]
     g = globals()
-    saved = {k: g[k] for k in ("WAYBACK_API", "WAYBACK_RAW")}
+    saved = {k: g[k] for k in ("WAYBACK_API", "WAYBACK_RAW", "WAYBACK_CDX", "WAYBACK_VIEW",
+                               "WAYBACK_GAP", "WAYBACK_429_WAIT")}
     g["WAYBACK_API"] = base + "/wb/available?url="
     g["WAYBACK_RAW"] = base + "/web/{ts}id_/{url}"
+    g["WAYBACK_CDX"] = base + "/cdx?url="
+    g["WAYBACK_VIEW"] = base + "/web/{ts}/{url}"
+    g["WAYBACK_GAP"] = 0.0
+    g["WAYBACK_429_WAIT"] = 0.0
     for k in ("no_proxy", "NO_PROXY"):
         os.environ[k] = "localhost,127.0.0.1," + os.environ.get(k, "")
     tmp = tempfile.mkdtemp(prefix="refs-selftest-")
@@ -1113,8 +1272,37 @@ def selftest():
         done, _ = run(sp, out, ids="waswaf", **kw)
         check(done[0]["status"] == "new", "real page saved once the wall is gone: %s" % done[0])
 
+        # the CDX index finds a snapshot the availability API does not;
+        # known key shapes are blanked before saving
+        more = [{"id": "cdxonly", "url": base + "/cdxonly.html", "kind": "html"},
+                {"id": "keys", "url": base + "/keys.html", "kind": "html"}]
+        for m_ in more:
+            m_.update(title="T " + m_["id"], why="selftest")
+        write(srcs + bots + more)
+        check(len(FAKE_KEY) == 39 and scrub(FAKE_KEY)[1] == 1, "scrub pattern")
+        done, _ = run(sp, out, ids="cdxonly,keys", **dict(kw, max_bytes=200000))
+        st = {r["id"]: r for r in done}
+        check(st["cdxonly"]["status"] == "new" and st["cdxonly"]["via"] == "wayback"
+              and st["cdxonly"]["archive_timestamp"] == "20260702030405"
+              and "CDX snapshot" in open(os.path.join(out, "refs/cdxonly.txt")).read(),
+              "CDX fallback: %s" % st["cdxonly"])
+        kh = open(os.path.join(out, "refs/keys.html"), "rb").read()
+        kt = open(os.path.join(out, "refs/keys.txt"), "rb").read()
+        check(st["keys"]["status"] == "new" and st["keys"]["redacted"] == 2
+              and FAKE_KEY not in kh and FAKE_KEY not in kt and REDACTED in kh and REDACTED in kt,
+              "keys blanked: %s" % st["keys"])
+
+        # push protection named a file: drop takes it out, the rest stays
+        gone = drop(out, {"keys"}, "push protection flagged this page")
+        idx = {r["id"]: r for r in json.load(open(os.path.join(out, "index.json")))["sources"]}
+        check(gone == ["keys"] and idx["keys"]["status"] == "failed" and idx["keys"]["saved_as"] is None
+              and idx["keys"]["error"] == "push protection flagged this page"
+              and not os.path.exists(os.path.join(out, "refs/keys.html"))
+              and os.path.exists(os.path.join(out, "refs/cdxonly.html")), "drop: %s" % idx.get("keys"))
+
         # kind "rendered": a headless browser runs the page's script
         rend = [{"id": "jsrend", "url": base + "/js.html", "kind": "rendered"},
+                {"id": "jsblocked", "url": base + "/jsblocked.html", "kind": "rendered"},
                 {"id": "wafrend", "url": base + "/waf.html", "kind": "rendered"},
                 {"id": "gonerend", "url": base + "/missing", "kind": "rendered"}]
         for r_ in rend:
@@ -1122,7 +1310,7 @@ def selftest():
         write(srcs + bots + rend)
         check(not load_sources(sp, allow_http=True)[1], "rendered kind accepted")
         if _have_browser():
-            done, _ = run(sp, out, ids="jsrend,wafrend,gonerend", **dict(kw, max_bytes=200000))
+            done, _ = run(sp, out, ids="jsrend,wafrend,gonerend,jsblocked", **dict(kw, max_bytes=200000))
             st = {r["id"]: r for r in done}
             t = open(os.path.join(out, "refs/jsrend.txt")).read() \
                 if os.path.exists(os.path.join(out, "refs/jsrend.txt")) else ""
@@ -1132,8 +1320,14 @@ def selftest():
                   and not st["jsrend"]["error"], "rendered text saved: %s %r" % (st["jsrend"], t[:300]))
             check(b"cash corn bid" in open(os.path.join(out, "refs/jsrend.html"), "rb").read(),
                   "rendered html saved")
+            tb = open(os.path.join(out, "refs/jsblocked.txt")).read() \
+                if os.path.exists(os.path.join(out, "refs/jsblocked.txt")) else ""
+            check(st["jsblocked"]["status"] == "new" and st["jsblocked"]["via"] == "wayback"
+                  and st["jsblocked"]["attempts"][0] == "direct/browser: HTTP 403"
+                  and "cash corn bid 4.12" in tb and "toolbar" not in tb,
+                  "rendered from the archive view, toolbar dropped: %s %r" % (st["jsblocked"], tb[:200]))
             check(st["wafrend"]["status"] == "failed" and "bot challenge (AWS WAF)" in st["wafrend"]["error"]
-                  and "wayback" not in st["wafrend"]["error"]
+                  and "wayback: no archived copy" in st["wafrend"]["error"]
                   and not os.path.exists(os.path.join(out, "refs/wafrend.html")),
                   "rendered bot check not saved: %s" % st["wafrend"])
             check(st["gonerend"]["status"] == "failed"
