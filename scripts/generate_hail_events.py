@@ -114,6 +114,20 @@ SWATH_DAY_LINE = ("The radar swath covers the UTC calendar day, 7 p.m. Central t
                   "to 7 p.m. Central this day.")
 
 
+def moved_stub(d, dest):
+    """Short noindex page sending an old day address to the storm day that now
+    holds its reports (storm days run 12Z to 12Z since Oct 17, 2026)."""
+    nd = nice_date(d)
+    return (f'<!DOCTYPE html>\n<html lang="en" data-theme="dark">\n<head>\n<meta charset="utf-8">\n'
+            f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+            f'<title>Hail {esc(nd)}: moved | AGSIST</title>\n<meta name="robots" content="noindex,follow">\n'
+            f'<link rel="canonical" href="https://agsist.com{dest}">\n'
+            f'<meta http-equiv="refresh" content="0; url={dest}">\n</head>\n<body>\n'
+            f'<main style="max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:Inter,system-ui,sans-serif;text-align:center">\n'
+            f'<p>Storm days now run 7 a.m. to 7 a.m. Central, as the Storm Prediction Center counts them, so the reports once listed for {esc(nd)} are on a neighboring storm day.</p>\n'
+            f'<p><a href="{dest}" style="font-weight:600">Go there &rarr;</a></p>\n</main>\n</body>\n</html>\n')
+
+
 def day_rule_line(rule):
     return DAY_RULE_LINE.get(rule if rule == SPC_RULE else None)
 
@@ -742,6 +756,27 @@ def main():
         if prev != html:
             open(path, "w", encoding="utf-8").write(html)
             made += 1
+    # A day page left over from an older grouping (UTC days before Oct 17,
+    # 2026) whose day no longer qualifies: its reports now sit on a neighbor
+    # storm day. Keep the address working with a short moved stub to that day
+    # (or the hub), never a stale page that says the old rule.
+    qset = set(qualifying)
+    stubbed = 0
+    for fn in sorted(os.listdir(OUT_DIR)):
+        mday = re.fullmatch(r"(\d{4}-\d{2}-\d{2})\.html", fn)
+        if not mday or mday.group(1) in qset:
+            continue
+        d = mday.group(1)
+        dd = datetime.strptime(d, "%Y-%m-%d").date()
+        near = [x.isoformat() for x in (dd - timedelta(days=1), dd + timedelta(days=1)) if x.isoformat() in qset]
+        dest = f"/hail/{near[0]}" if near else "/hail/"
+        stub = moved_stub(d, dest)
+        path = os.path.join(OUT_DIR, fn)
+        if open(path, encoding="utf-8").read() != stub:
+            open(path, "w", encoding="utf-8").write(stub)
+            stubbed += 1
+    if stubbed:
+        print(f"storm pages: {stubbed} old day pages now point to their storm day")
     hp = os.path.join(OUT_DIR, "index.html")
     hprev = open(hp).read() if os.path.exists(hp) else None
     hold = re.search(r'"dateModified":"(\d{4}-\d{2}-\d{2})"', hprev or "")
