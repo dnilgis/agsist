@@ -14,7 +14,7 @@
   var ZIPS = 'https://dnilgis.github.io/bids/data/zips/';
   var BASE = '/data/radar-rain/';
   var STALE_H = 9;              // four runs a day: anything older than this missed a run or two
-  var MAP_CELLS = 22;           // cells each side of the point on the map (0.02 deg each)
+  var MAP_CELLS = 11;           // cells each side of the point on the map (0.04 deg each, about 30 miles)
   var GAUGE_MI = 30;
   var WINS = [['24h', 'Last 24 hours'], ['3d', 'Last 3 days'], ['7d', 'Last 7 days'], ['month', 'This month']];
   var NET = { cocorahs: 'CoCoRaHS volunteer gauge', noaa: 'NOAA co-op gauge' };
@@ -246,7 +246,7 @@
     x.beginPath(); x.arc(mx, m, 7, 0, 2 * Math.PI); x.fillStyle = '#ffd23f'; x.fill(); x.lineWidth = 2; x.strokeStyle = '#111'; x.stroke();
     big.className = 'rr-flat';
     big.setAttribute('role', 'img');
-    big.setAttribute('aria-label', 'Radar rain around the point, about 55 miles across');
+    big.setAttribute('aria-label', 'Radar rain around the point, about 60 miles across');
     el.appendChild(big);
   }
 

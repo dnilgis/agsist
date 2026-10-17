@@ -98,6 +98,9 @@ test("published state files decode and cover the point they claim", async () => 
   const f = await R.parse(fs.readFileSync(path.join(ROOT, "data/radar-rain/ia.bin")));
   const h = f.header;
   assert.equal(h.st, "IA");
+  const v = JSON.parse(fs.readFileSync(path.join(ROOT, "data/radar-rain/validation.json"), "utf8"));
+  assert.equal(h.d, 0.04, "the grid Sig chose (Oct 17): 0.04 degree");
+  assert.equal(v.grid_deg, h.d, "the page's accuracy numbers were measured on the grid it ships");
   assert.ok(h.windows.some((w) => w.id === "24h"));
   for (const w of h.windows) {
     const q = f.grids[w.id];

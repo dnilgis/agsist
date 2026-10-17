@@ -1,26 +1,27 @@
 {
- "what": "NOAA MRMS MultiSensor QPE 24H Pass 2 ending 12:00Z, at the 0.02 degree squares /rain-radar ships, vs NOAA co-op morning gauges (county rain stations, data/rain/daily). Same day convention as ACIS: a report dated D covers the 24 hours ending that morning; radar ending 12Z on D matched far better than 12Z on D-1 (wet-day median gap 0.12 vs 0.42 in).",
+ "what": "NOAA MRMS MultiSensor QPE 24H Pass 2 ending 12:00Z, averaged into the 0.04 degree squares /rain-radar ships, vs NOAA co-op morning gauges (county rain stations, data/rain/daily). Same day convention as ACIS: a report dated D covers the 24 hours ending that morning; radar ending 12Z on D matched far better than 12Z on D-1 (wet-day median gap 0.12 vs 0.42 in).",
  "period": [
   "2026-10-01",
   "2026-10-13"
  ],
  "run": "2026-10-17, scripts/radar_rain.py --validate",
+ "grid_deg": 0.04,
  "gauge_days": 14476,
  "stations": 1175,
  "states": 47,
  "wet_days": {
   "rule": "gauge or radar 0.10 in or more",
-  "n": 2458,
+  "n": 2473,
   "median_abs_in": 0.13,
   "mean_bias_in": -0.027,
-  "radar_wet_gauge_dry_share": 0.055,
-  "gauge_wet_radar_zero_share": 0.069
+  "radar_wet_gauge_dry_share": 0.058,
+  "gauge_wet_radar_zero_share": 0.065
  },
  "heavy_days": {
   "rule": "gauge 0.50 in or more",
   "n": 1032,
-  "median_abs_in": 0.2,
-  "median_abs_pct": 19,
+  "median_abs_in": 0.21,
+  "median_abs_pct": 20,
   "median_radar_over_gauge": 0.91
  },
  "period_totals": {
@@ -29,8 +30,63 @@
   "median_abs_in": 0.2,
   "median_abs_pct": 13
  },
- "native_vs_pooled": {
-  "wet_median_abs_in_native": 0.12,
-  "wet_median_abs_in_pooled": 0.125
+ "grid_compare": {
+  "note": "same gauges and days, sampled at NOAA's 0.01 degree cell and at 0.02, 0.03 and 0.04 degree squares",
+  "native_0.01": {
+   "wet_n": 2464,
+   "wet_med_abs": 0.12,
+   "wet_bias": -0.0278,
+   "rwet_gdry": 0.0544,
+   "gwet_r0": 0.0698,
+   "big_n": 1032,
+   "big_med_abs": 0.2,
+   "big_pct": 18.4,
+   "big_ratio": 0.908,
+   "tot_n": 623,
+   "tot_med_abs": 0.2,
+   "tot_pct": 12.8
+  },
+  "0.02": {
+   "wet_n": 2458,
+   "wet_med_abs": 0.13,
+   "wet_bias": -0.0272,
+   "rwet_gdry": 0.0545,
+   "gwet_r0": 0.0688,
+   "big_n": 1032,
+   "big_med_abs": 0.2,
+   "big_pct": 18.7,
+   "big_ratio": 0.909,
+   "tot_n": 623,
+   "tot_med_abs": 0.2,
+   "tot_pct": 12.9
+  },
+  "0.03": {
+   "wet_n": 2466,
+   "wet_med_abs": 0.13,
+   "wet_bias": -0.0292,
+   "rwet_gdry": 0.0556,
+   "gwet_r0": 0.0677,
+   "big_n": 1032,
+   "big_med_abs": 0.21,
+   "big_pct": 19.6,
+   "big_ratio": 0.907,
+   "tot_n": 623,
+   "tot_med_abs": 0.2,
+   "tot_pct": 12.9
+  },
+  "0.04": {
+   "wet_n": 2473,
+   "wet_med_abs": 0.13,
+   "wet_bias": -0.027,
+   "rwet_gdry": 0.0578,
+   "gwet_r0": 0.0651,
+   "big_n": 1032,
+   "big_med_abs": 0.21,
+   "big_pct": 19.8,
+   "big_ratio": 0.911,
+   "tot_n": 623,
+   "tot_med_abs": 0.2,
+   "tot_pct": 13.3
+  }
  }
 }

@@ -72,7 +72,7 @@ SCHEMA = "agsist-radar-rain/1"
 NI, NJ, DEG = 7000, 3500, 0.01
 LA1, LO1 = 54.995, -129.995          # first cell center (north-west), lon in -180..180
 
-POOL = 2                 # 0.01 deg cells averaged 2 x 2 -> 0.02 deg (about 2.2 km N-S)
+POOL = 4                 # 0.01 deg cells averaged 4 x 4 -> 0.04 deg (about 2.8 x 2 mi); Sig chose it Oct 17, 2026 to halve each run
 PAD = 0.3                # degrees of neighbor around each state's box, for the map
 MM_PER_IN = 25.4
 MISSING = -1
@@ -550,6 +550,8 @@ def build(states, now=None):
     prior = {}
     for st in states:
         h = previous(os.path.join(OUT, st.lower() + ".bin"))
+        if h and abs(h.get("d", 0) - DEG * POOL) > 1e-9:
+            h = None                 # sampled on another grid: fetch the gauge days again
         for g in (h or {}).get("gauges", []):
             prior[(st, g["sid"])] = dict(zip(g.get("dates", []), g.get("radar", [])))
     days = [(last12 - dt.timedelta(days=i)) for i in range(GAUGE_DAYS)]
@@ -682,8 +684,10 @@ def selftest():
     mm = np.array([[0, 2.54, np.nan, 25.4], [1.27, 1.27, 0, 0]], dtype=np.float32)
     q = quantize(mm)
     ok(q.tolist() == [[0, 10, -1, 100], [5, 5, 0, 0]], "quantize %s" % q.tolist())
-    p = pool_mean(np.array([[1, 3, 0, np.nan], [1, 3, 0, 0]], dtype=np.float32))
+    p = pool_mean(np.array([[1, 3, 0, np.nan], [1, 3, 0, 0]], dtype=np.float32), 2)
     ok(p[0, 0] == 2 and np.isnan(p[0, 1]), "pool: mean, and no-data spreads %s" % p)
+    p4 = pool_mean(np.arange(32, dtype=np.float32).reshape(4, 8), 4)
+    ok(p4.shape == (1, 2) and p4[0, 0] == np.arange(32).reshape(4, 8)[:, :4].mean(), "pool 4 x 4 %s" % p4)
     rng = np.random.default_rng(7)
     big = rng.integers(-1, 900, size=(57, 83)).astype(np.int16)
     blob, t = encode_grid(big)
