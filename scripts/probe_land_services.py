@@ -586,6 +586,32 @@ def selftest():
         ck("search answer with empty title and snippet is skipped, not a crash (%s)" % ex, False)
     finally:
         get, save_raw = real_get, real_save
+    G = guess_fields([{"name": n} for n in ["COUNTY_PIN", "OWNER_NAME", "TAX_NAME"]])
+    ck("Minnesota standard: county PIN, and the owner field over the tax bill name", G.get("pid") == ["COUNTY_PIN"] and G.get("owner") == ["OWNER_NAME"])
+    ck("tax bill name only when there is no owner field", guess_fields([{"name": "PIN"}, {"name": "BILLNAME"}]).get("owner") == ["BILLNAME"])
+    ck("deed holder fields", guess_fields([{"name": "PARID"}, {"name": "DeedHolder1"}]).get("owner") == ["DeedHolder1"])
+    rec = '{"dct_references_s":"{\\"urn:x-esri:serviceType:ArcGIS#DynamicMapLayer\\":\\"https://gis.co.x.ia.us/arcgis/rest/services/Parcels/MapServer\\"}","u":"https://a.gov/arcgis/rest/services/P/FeatureServer/3?f=json"}'
+    ck("service URLs out of a geoportal record", rest_urls(rec) == ["https://gis.co.x.ia.us/arcgis/rest/services/Parcels/MapServer", "https://a.gov/arcgis/rest/services/P/FeatureServer/3"])
+    # a statewide layer only some counties fill: passes on the counties that answer with an owner
+    pts = county_points()
+    mn = sorted(f for f, v in pts.items() if v["st"] == "MN")
+    hit = pts[mn[0]]["pt"]
+
+    def fake(url, params=None, origin=False, timeout=45):
+        if url.endswith("/query"):
+            on = params["geometry"] == "%f,%f" % hit
+            return 200, {"access-control-allow-origin": "*"}, json.dumps({"features": [{"attributes": {"PIN": "1", "OWNER_NAME": "SYNTHETIC OWNER" if on else ""}}] if on else []})
+        return 200, {"access-control-allow-origin": "*"}, json.dumps({"geometryType": "esriGeometryPolygon", "fields": [{"name": "PIN"}, {"name": "OWNER_NAME"}]})
+    real_sleep = time.sleep
+    get, save_raw, time.sleep = fake, (lambda *a, **k: None), (lambda *_: None)
+    try:
+        e = {"id": "mn-t", "partial": True, "url": "https://x.gov/arcgis/rest/services/P/FeatureServer/0", "fields": {"pid": ["PIN"], "owner": ["OWNER_NAME"]}}
+        ok, notes = check_state(e, "MN", pts)
+        ck("partial statewide layer passes on the one county that answers", ok and e["covers"] == [mn[0]] and len(e["no_owner_counties"]) == len(mn) - 1)
+        e2 = {"id": "mn-u", "url": "https://x.gov/arcgis/rest/services/P/FeatureServer/0", "fields": {"pid": ["PIN"], "owner": ["OWNER_NAME"]}}
+        ck("a whole-state layer still needs its own test parcel", not check_state(e2, "MN", pts)[0] and "covers" not in e2)
+    finally:
+        get, save_raw, time.sleep = real_get, real_save, real_sleep
     reg = json.load(open(REG))
     ck("registry: Wisconsin statewide entries are builtin", all(e.get("builtin") for e in reg["statewide"]["WI"]))
     ck("registry: nothing is verified by hand (only this script sets it)",

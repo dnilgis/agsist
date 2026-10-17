@@ -369,6 +369,16 @@ def fetch(url, timeout=120):
         return r.read()
 
 
+def strip_scripts(blob):
+    """Page text without its scripts and inline keys: the raw branch keeps what a person reads,
+    and a site's embedded map or analytics key would trip GitHub's secret push protection."""
+    t = blob.decode("utf-8", errors="replace")
+    t = re.sub(r"(?is)<script\b.*?</script>", "", t)
+    t = re.sub(r"(?is)<style\b.*?</style>", "", t)
+    t = re.sub(r"\b(AIza[0-9A-Za-z_-]{20,}|gh[pousr]_[0-9A-Za-z]{20,}|xox[abpr]-[0-9A-Za-z-]{10,}|AKIA[0-9A-Z]{16})", "[key removed]", t)
+    return t.encode()
+
+
 # Pages saved by --probe besides each state's data pages: layouts, data dictionaries and catalogs,
 # so the real columns can be read on the raw branch before any parser trusts them.
 PROBE_DOCS = {
@@ -379,8 +389,7 @@ PROBE_DOCS = {
            "https://www.revenue.state.mn.us/sales-ratio-reports"],
     "IL": ["https://api.us.socrata.com/api/catalog/v1?domains=data.illinois.gov&q=mydec&limit=50",
            "https://tax.illinois.gov/localgovernments/property/mydecdatafiles.html"],
-    "IA": ["https://github.com/ui-libraries/Iowa-Parcels",
-           "https://raw.githubusercontent.com/ui-libraries/Iowa-Parcels/main/README.md",
+    "IA": ["https://raw.githubusercontent.com/ui-libraries/Iowa-Parcels/main/README.md",
            "https://raw.githubusercontent.com/ui-libraries/Iowa-Parcels/master/README.md"],
 }
 
@@ -397,7 +406,7 @@ def file_links(page_url, html):
 
 def probe(states):
     os.makedirs(RAW, exist_ok=True)
-    log = []
+    log, pdf_text = [], []
     for st in states:
         d = os.path.join(RAW, st.lower())
         os.makedirs(d, exist_ok=True)
@@ -407,7 +416,7 @@ def probe(states):
             except Exception as e:  # noqa: BLE001
                 log.append("%s page %s: %s" % (st, pg, e))
                 continue
-            open(os.path.join(d, "page%d.html" % i), "w").write(html)
+            open(os.path.join(d, "page%d.html" % i), "wb").write(strip_scripts(html.encode()))
             links = file_links(pg, html)
             open(os.path.join(d, "page%d-links.txt" % i), "w").write("\n".join(links) + "\n")
             every = sorted(set(urllib.parse.urljoin(pg, h.replace("&amp;", "&")) for h in re.findall(r'href="([^"#]+)"', html, re.I)))
@@ -434,18 +443,38 @@ def probe(states):
                 log.append("%s doc %s: %s" % (st, u, e))
                 continue
             ext = ".pdf" if blob[:4] == b"%PDF" else ".json" if blob[:1] in (b"{", b"[") else ".html"
+            if ext == ".html":
+                blob = strip_scripts(blob)
             fn = os.path.join(d, "doc%d%s" % (j, ext))
             open(fn, "wb").write(blob[:30_000_000])
             if ext == ".pdf":
                 try:
                     import subprocess
                     subprocess.run(["pdftotext", "-layout", fn, fn[:-4] + ".txt"], timeout=120, check=False)
+                    pdf_text.append((st, re.sub(r"[ \t]+", " ", open(fn[:-4] + ".txt", errors="replace").read())))
+                except Exception:  # noqa: BLE001
+                    pass
+            if ext == ".json":
+                try:
+                    for r in (json.loads(blob).get("results") or [])[:40]:
+                        R = r.get("resource") or {}
+                        log.append("  dataset %s %r updated %s; columns %s" % (R.get("id"), R.get("name"), R.get("data_updated_at"), R.get("columns_field_name")))
                 except Exception:  # noqa: BLE001
                     pass
             log.append("%s doc %s: %d bytes -> %s" % (st, u, len(blob), os.path.basename(fn)))
     open(os.path.join(RAW, "probe-log.txt"), "w").write("\n".join(log) + "\n")
     print("\n".join(log))
+    annotate("probe", "\n".join(log))
+    for st, t in pdf_text[:1]:
+        annotate("layout " + st, t, most=5)
     return 0
+
+
+def annotate(title, text, chunk=3000, most=4):
+    """Print text as ::notice annotations, a few chunks at most (the check-run API returns them)."""
+    for i in range(0, min(len(text), chunk * most), chunk):
+        part = text[i:i + chunk].replace("%", "%25").replace("\r", "").replace("\n", "%0A")
+        print("::notice title=%s %d::%s" % (title, i // chunk + 1, part))
 
 
 def run(states, from_dir=None):
