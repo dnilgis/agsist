@@ -205,7 +205,7 @@
       '. Only the days a basis changed are logged: it held flat between dots. A break in the line is a stretch when no open delivery month had a logged basis yet. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price.</p>';
     if (none.length) html += '<p class="cbt-sub">No basis change logged' + (first ? ' since ' + dayText(first) : '') + ' for ' + esc(none.join(', ')) + '.</p>';
     body.innerHTML = intro + html;
-    /* the heading names the log's own first date (2026-10-17 audit N5: "since June" over a log from Aug 27) */
+    /* the heading names the log's own first date (2026-10-17 audit N5: the heading said June over a log from Aug 27) */
     var sum = box.querySelector('summary');
     if (sum && first) sum.textContent = 'Basis since ' + dayText(first);
   }
