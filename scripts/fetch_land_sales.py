@@ -980,7 +980,7 @@ def summary(st, recs, trims):
     """Rows per filing year, counties, rows with names: what the run report needs."""
     by = {}
     for r in recs:
-        y = (r.get("rec") or r["date"])[:4]
+        y = (r.get("rec") or "")[:4] or ("filed date not kept" if st == "WI" else r["date"][:4])
         by[y] = by.get(y, 0) + 1
     named = sum(1 for r in recs if r.get("grantor") or r.get("grantee"))
     known = sum(1 for r in recs if r.get("acres"))
