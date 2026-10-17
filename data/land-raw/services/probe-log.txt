@@ -1,0 +1,35 @@
+ok   wi-sco: ok
+FAIL wi-sco-v11: metadata error: {'code': 400, 'message': 'Invalid URL', 'details': ['Invalid URL']}
+FAIL wi-ltsb: metadata did not answer: Remote end closed connection without response
+ok   candidate WI statewide: https://dnrmaps.wi.gov/arcgis/rest/services/DW_Map_Dynamic/EN_County_Tax_Parcels_WTM_Ext_Dynamic_L16/MapServer/0: ok
+ok   candidate MN statewide: https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer/1: owners in 31 of 87 counties
+FAIL candidate IA 19153: no polygon layer answered
+FAIL candidate IA 19127: https://gis.marshallcountyia.gov/arcgis/rest/services/WebParcels/MapServer/0: test query at 42.0358,-92.9608 returned no parcel
+FAIL candidate IA 19113: no polygon layer answered
+FAIL candidate IA 19163: https://services.arcgis.com/ovln19YRWV44nBqV/ArcGIS/rest/services/Cadastral/FeatureServer/5: no parcel number and owner fields by name
+FAIL candidate IL 17113: https://gis.mcleancountyil.gov/arcgis/rest/services/BnZ/Parcels/MapServer/0: no parcel number and owner fields by name
+ok   candidate IL 17043: https://gis.dupageco.org/arcgis/rest/services/DuPage_County_IL/ParcelsWithRealEstateCC/MapServer/0: ok
+FAIL candidate IL 17097: https://maps.lakecountyil.gov/arcgis/rest/services/CCAO/TaxParcelViewerPro/MapServer/9: no parcel number and owner fields by name
+FAIL candidate IL 17099: https://gis.lasallecounty.org/arcgis/rest/services/TaxParcels/MapServer/1: no Access-Control-Allow-Origin for agsist.com; a browser page cannot read it
+ok   candidate IL 17089: https://gistech.countyofkane.org/arcgis/rest/services/KanePINList/MapServer/0: ok
+FAIL candidate IL 17031: https://gis12.cookcountyil.gov/traditional/rest/services/CookViewer3Parcels/MapServer/0: no parcel number and owner fields by name
+FAIL candidate IL 17201: https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer/0: no parcel number and owner fields by name
+ok   co-27025: ok
+ok   co-27059: ok
+ok   co-27111: ok
+ok   co-27117: ok
+ok   co-27123: ok
+ok   co-27145: ok
+ok   co-27149: ok
+ok   co-27155: ok
+ok   co-27173: ok
+ok   co-19013: ok
+ok   co-19155: ok
+ok   co-17093: ok
+ok   co-17143: ok
+ok   co-17043: ok
+ok   co-17089: ok
+::notice::parcel and owner coverage WI: 72 of 72 counties (statewide)
+::notice::parcel and owner coverage MN: 34 of 87 counties (statewide)
+::notice::parcel and owner coverage IA: 2 of 99 counties
+::notice::parcel and owner coverage IL: 4 of 102 counties
