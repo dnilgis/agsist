@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-17T02:12:45Z",
+ "run_utc": "2026-10-17T02:25:48Z",
  "sources": [
   {
    "bytes": null,
@@ -2729,25 +2729,30 @@
    "text_chars": 396890
   },
   {
-   "bytes": null,
-   "sha256": null,
-   "fetched_utc": null,
+   "bytes": 234483,
+   "sha256": "a399eea0f1e725313fdb95815cce1d0c29315a51db6e5166eb9565a4ffaa6b34",
+   "fetched_utc": "2026-10-17T02:14:05Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": null,
+   "saved_as": "refs/bench-cash-bids-1.html",
    "final_url": null,
-   "content_type": null,
-   "via": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
    "archive_timestamp": null,
    "id": "bench-cash-bids-1",
    "url": "https://www.barchart.com/cmdty/data/grain-prices",
    "title": "Benchmark cash-bids: Barchart cash grain prices",
    "why": "/cash-bids competitor benchmark Oct 16, 2026 (established)",
-   "kind": "html",
-   "checked_utc": "2026-10-17T00:26:26Z",
-   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
-   "status": "failed"
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T02:13:59Z",
+   "error": null,
+   "attempts": [
+    "direct/browser: ok 202"
+   ],
+   "status": "new",
+   "text_chars": 9714,
+   "redacted": null
   },
   {
    "bytes": null,
@@ -2981,8 +2986,8 @@
    "title": "Benchmark grain-emc: OPI Systems EMC calculator",
    "why": "/grain-emc competitor benchmark Oct 16, 2026 (vendor)",
    "kind": "html",
-   "checked_utc": "2026-10-17T00:26:32Z",
-   "error": "direct/python: bot challenge (SiteGround), nothing saved; direct/curl: bot challenge (SiteGround), nothing saved; wayback: no archived copy; the old copy was a SiteGround bot check, removed",
+   "checked_utc": "2026-10-17T02:14:06Z",
+   "error": "direct/python: HTTP 403; direct/curl: HTTP 403; wayback/python: HTTP 429; wayback/python: network: timed out; wayback/curl: network: curl timed out",
    "status": "failed"
   },
   {
@@ -4095,8 +4100,8 @@
    "title": "Benchmark arc-plc: Michigan State (MSU Farm Bill Analyzer 2026)",
    "why": "/arc-plc competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-17T00:26:39Z",
-   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback: no archived copy; the old copy was a Incapsula bot check, removed",
+   "checked_utc": "2026-10-17T02:17:06Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: HTTP 429; wayback/python: network: timed out; wayback/curl: HTTP 429",
    "status": "failed"
   },
   {
@@ -4367,25 +4372,30 @@
    "status": "failed"
   },
   {
-   "bytes": null,
-   "sha256": null,
-   "fetched_utc": null,
+   "bytes": 612392,
+   "sha256": "7526236602c8b9465d33a55d16c3b3a7dc637ce84928842e0c6de49af561467d",
+   "fetched_utc": "2026-10-17T02:19:54Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": null,
+   "saved_as": "refs/bench-futures-1.html",
    "final_url": null,
-   "content_type": null,
-   "via": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
    "archive_timestamp": null,
    "id": "bench-futures-1",
    "url": "https://www.barchart.com/futures/quotes/ZCZ26",
    "title": "Benchmark futures: Barchart",
    "why": "/futures competitor benchmark Oct 16, 2026 (established)",
-   "kind": "html",
-   "checked_utc": "2026-10-17T00:26:46Z",
-   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
-   "status": "failed"
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T02:19:49Z",
+   "error": null,
+   "attempts": [
+    "direct/browser: ok 202"
+   ],
+   "status": "new",
+   "text_chars": 20095,
+   "redacted": null
   },
   {
    "bytes": 987864,
@@ -4934,8 +4944,8 @@
    "title": "Benchmark breakeven: MSU 2026 Corn Cost of Production projection tool",
    "why": "/breakeven competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-17T00:27:31Z",
-   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback: no archived copy; the old copy was a Incapsula bot check, removed",
+   "checked_utc": "2026-10-17T02:19:55Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: HTTP 429; wayback/python: network: timed out; wayback/curl: HTTP 429",
    "status": "failed"
   },
   {
@@ -5631,8 +5641,8 @@
    "title": "Benchmark yield-estimator: MSU estimating grain yields in corn",
    "why": "/yield-estimator competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-17T00:27:38Z",
-   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: HTTP 429; wayback/python: HTTP 429; wayback/curl: HTTP 429; the old copy was a Incapsula bot check, removed",
+   "checked_utc": "2026-10-17T02:22:43Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: HTTP 429; wayback/python: network: timed out; wayback/curl: network: curl timed out",
    "status": "failed"
   },
   {

@@ -1,0 +1,1724 @@
+# Benchmark futures: Barchart
+# https://www.barchart.com/futures/quotes/ZCZ26
+# fetched 2026-10-17T02:19:54Z, sha256 7526236602c8b9465d33a55d16c3b3a7dc637ce84928842e0c6de49af561467d
+
+Corn Dec '26 Futures Price - Barchart.com
+
+FREE WEBINAR
+
+WATCH LIVE:
+
+You are impersonating user . Stop
+
+-
+Barchart for Businesses
+
+Barchart for Businesses
+
+Let's find a solution for your business.
+
+1 Your market
+
+2 What are you looking for?
+
+3 Your information
+
+What industry are you in?
+
+Financial Services
+
+Media
+
+Agriculture
+
+Energy
+
+Metals
+
+Food & Beverage
+
+Other
+
+Explore our Market Data & Technology Solutions
+
+Data →
+
+Market Data Physical Commodity Prices Grain Prices & Yield Forecasts Commodity Fundamentals News Feeds Company Data Weather & Geospatial
+
+Services →
+
+Market Data & APIs Charting & Tools Commodity Workflow Solutions
+
+Platforms →
+
+cmdtyView Front-End producerView CRM Excel Add-In Digital Information Board
+
+See our full suite of services at barchart.com/solutions →
+
+Log In Menu
+
+LOGIN
+
+Try Barchart for Free
+
+false
+
+My Account
+
+-
+
+Watchlist
+
+-
+
+Portfolio
+
+-
+
+Alerts
+
+-
+
+My Charts
+
+-
+
+Custom Views
+
+-
+
+Chart Templates
+
+-
+
+My Profile
+
+-
+
+Site Preferences
+
+-
+
+Log Out
+
+UPGRADE
+
+Stocks | Futures | Watchlist | News | More
+
+Advanced search
+
+or
+
+Watchlist Watchlist | Portfolio Portfolio | Dashboard Dashboard
+
+MAIN MENU
+
+Home Stocks Options Learn
+
+ETFs Futures Currencies Watchlist
+
+Investing News Tools Portfolio
+
+POPULAR
+
+Stocks Percent Change Top 100 Stocks Stocks Highs/Lows Stocks Volume Leaders Unusual Options Activity Options Volume Leaders
+
+Commodities Grains Energies Alerts Pre-Market Post-Market
+
+-
+Stocks Stocks
+
+Market Pulse
+
+- Stock Market Overview
+
+- Market Momentum
+
+- Market Performance
+
+- Top 100 Stocks
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Economic Overview
+
+- Earnings Within 7 Days
+
+- Earnings & Dividends
+
+- Stock Screener
+
+Barchart Trade Picks
+
+- Today's Top Stock Pick
+
+- All Top Stock Picks
+
+Performance Leaders
+
+- Percent Change
+
+- Price Change
+
+- Range Change
+
+- Gap Up & Gap Down
+
+- 3, 4, 5 Day Gainers
+
+Before & After Markets
+
+- Pre-Market Trading
+
+- Post-Market Trading
+
+Most Active
+
+- Volume Leaders
+
+- Price Volume Leaders
+
+- Volume Advances
+
+- Trading Liquidity
+
+Indices
+
+- Market Indices
+
+- S&P Indices
+
+- S&P Sectors
+
+- Dow Jones Indices
+
+- Nasdaq Indices
+
+- Russell Indices
+
+- Volatility Indices
+
+- Commodities Indices
+
+- US Sectors Indices
+
+- World Indices
+
+Trading Signals
+
+- New Recommendations
+
+- Top Stocks to Own
+
+- Top Signal Strength
+
+- Top Signal Direction
+
+- Stock Signal Upgrades
+
+Sectors
+
+- Stock Market Sectors
+
+- Major Markets Heat Map
+
+- Industry Rankings
+
+- Industry Heat Map
+
+- Industry Performance
+
+- Stocks by Grouping
+
+-
+Options Options
+
+Market Pulse
+
+- Options Market Overview
+
+- Unusual Options Activity
+
+- Options Flow
+
+- Upcoming Earnings
+
+Volatility
+
+- IV Rank and IV Percentile
+
+- Implied vs Realized Vol
+
+- Rising vs Falling Volatility
+
+- Highest Implied Volatility
+
+- %Change in Volatility
+
+Volume & Open Interest
+
+- Most Active Options
+
+- Unusual Options Volume
+
+- Options Volume Leaders
+
+- Highest Open Positions
+
+- Change in Open Interest
+
+- %Change in Open Interest
+
+Data & Tools
+
+- Options Time & Sales
+
+- Options Price History
+
+- Options Calculator
+
+- Options Learning Center
+
+Option Screeners
+
+- Options Screener
+
+- Long Call Screener
+
+- Long Put Screener
+
+Income Strategies
+
+- Covered Call
+
+- Naked Put
+
+Vertical Spreads
+
+- Bull Call Spread
+
+- Bear Call Spread
+
+- Bear Put Spread
+
+- Bull Put Spread
+
+Protection Strategies
+
+- Married Put
+
+- Protective Collar
+
+Straddle and Strangle
+
+- Long Straddle
+
+- Short Straddle
+
+- Long Strangle
+
+- Short Strangle
+
+Horizontal Strategies
+
+- Long Call Calendar
+
+- Long Put Calendar
+
+- Long Call Diagonal
+
+- Short Call Diagonal
+
+- Long Put Diagonal
+
+- Short Put Diagonal
+
+Butterfly Strategies
+
+- Long Call Butterfly
+
+- Short Call Butterfly
+
+- Long Put Butterfly
+
+- Short Put Butterfly
+
+- Long Iron Butterfly
+
+- Short Iron Butterfly
+
+Condor Strategies
+
+- Long Call Condor
+
+- Short Call Condor
+
+- Long Put Condor
+
+- Short Put Condor
+
+- Long Iron Condor
+
+- Short Iron Condor
+
+-
+ETFs ETFs
+
+Market Pulse
+
+- ETF Market Overview
+
+- Popular ETFs
+
+- ETF Finder
+
+- Top 100 ETFs
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Top Dividend ETFs
+
+- ETF Screener
+
+Performance Leaders
+
+- Percent Change
+
+- Price Change
+
+- Range Change
+
+- Gap Up & Gap Down
+
+- 3, 4, 5 Day Gainers
+
+Before & After Markets
+
+- Pre-Market Trading
+
+- Post-Market Trading
+
+Most Active
+
+- Volume Leaders
+
+- Price Volume Leaders
+
+- Volume Advances
+
+Trading Signals
+
+- New Recommendations
+
+- Top ETFs to Own
+
+- Top Signal Strength
+
+- Top Signal Direction
+
+- ETFs Signal Upgrades
+
+Mutual Funds
+
+- Today's Price Surprises
+
+- New Highs & Lows
+
+- Performance
+
+- Price Change
+
+- Funds Screener
+
+-
+Futures Futures
+
+Market Pulse
+
+- Futures Market Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Futures Market Map
+
+- Performance Leaders
+
+- Most Active Futures
+
+- Prices by Exchange
+
+Commodity Groupings
+
+- Commodities Prices
+
+- Currencies
+
+- Energies
+
+- Financials
+
+- Grains
+
+- Indices
+
+- Livestock
+
+- Metals
+
+- Softs
+
+- Single Stock Futures
+
+- Mini & Micro Futures
+
+Futures Trading Guide
+
+- Trading Guide
+
+- Historical Performance
+
+Commitment of Traders
+
+- Commitment of Traders
+
+- Legacy Report
+
+- Disaggregated Report
+
+- Financial TFF Report
+
+Resources
+
+- Contract Specifications
+
+- Futures Expirations
+
+- First Notice Dates
+
+- Options Expirations
+
+- Economic Calendar
+
+- Perpetual Futures
+
+Cash Markets
+
+- Cash Markets Overview
+
+- Corn Indexes
+
+- Soybean Indexes
+
+European Futures
+
+- Euro Futures Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Futures Market Map
+
+- Performance Leaders
+
+- Most Active Futures
+
+European Groupings
+
+- Commodities Prices
+
+- Energies
+
+- Financials
+
+- Grains
+
+- Indices
+
+- Metals
+
+- Softs
+
+- Europe Power Futures
+
+- Europe Gas Futures
+
+- Baltic Freight Indices
+
+European Trading Guide
+
+- European Trading Guide
+
+- Historical Performance
+
+-
+Currencies Currencies
+
+Forex Market Pulse
+
+- Forex Market Overview
+
+- Long Term Trends
+
+- Today's Price Surprises
+
+- Highs & Lows
+
+- Forex Market Map
+
+- Performance Leaders
+
+- Currency Converter
+
+Crypto Market Pulse
+
+- Crypto Market Overview
+
+- Market Capitalizations
+
+- Bitcoin Futures
+
+Trading Signals
+
+- New Recommendations
+
+Commitment of Traders
+
+- Commitment of Traders
+
+- Legacy Report
+
+- Financial TFF Report
+
+Currency Groupings
+
+- Popular Cross Rates
+
+- Australian Dollar
+
+- British Pound
+
+- Canadian Dollar
+
+- Euro FX
+
+- Japanese Yen
+
+- Swiss Franc
+
+- US Dollar
+
+- Metals Rates
+
+- All Forex Markets
+
+Crypto Groupings
+
+- Popular Coins
+
+- Bitcoin
+
+- Bitcoin-Cash
+
+- Ethereum
+
+- Litecoin
+
+- Monero
+
+- XRP
+
+- Tether
+
+- Zcash
+
+-
+Investing Investing
+
+Investing Ideas
+
+- Today’s Investing Ideas
+
+- Top Performing Stocks
+
+- Top Trending Tickers
+
+- Barchart Screeners
+
+Insider Trading
+
+- Insider Trading Activity
+
+- Politician Insider Trading
+
+Today's Picks
+
+- Chart of the Day
+
+- Top Stock Pick
+
+- Futures Trading Guide
+
+My Screeners
+
+- Stock Screener
+
+- ETF Screener
+
+- Funds Screener
+
+- Options Screener
+
+Technical Ideas
+
+- Bullish Moving Averages
+
+- Bearish Moving Averages
+
+- Breakouts and Reversals
+
+- Candlestick Patterns
+
+- eMACD Buy Signals
+
+- Hot Penny Stocks
+
+- RSI Bullish Divergence
+
+- RSI Bearish Divergence
+
+- Short Interest Stocks
+
+- Standout Stocks
+
+- Top Stocks Under $10
+
+- TTM Squeeze
+
+- Up Trending Stocks
+
+- Down Trending Stocks
+
+Dividend Ideas
+
+- Best Dividend Stocks
+
+- Dividend Aristocrats
+
+- Dividend Kings
+
+Power Investors
+
+- Cathie Wood Stocks
+
+- Warren Buffett Stocks
+
+Themed Lists
+
+- AI Stocks
+
+- Battery Stocks
+
+- Biotechnology Stocks
+
+- Cannabis Stocks
+
+- Clean Energy Stocks
+
+- Crypto Stocks
+
+- Cybersecurity Stocks
+
+- Data Center Stocks
+
+- Drones & Flying Cars
+
+- EV Stocks
+
+- Fintech Stocks
+
+- Gold Stocks
+
+- Nuclear Energy Stocks
+
+- Oil Stocks
+
+- Power & Infrastructure
+
+- Quantum Computing
+
+- Rare Earth Minerals
+
+- REIT Stocks
+
+- Robotics Stocks
+
+- Semiconductor Stocks
+
+- Space Race Stocks
+
+- Trillion Dollar Stocks
+
+- World Markets
+
+-
+News News
+
+Barchart
+
+- Markets Today
+
+- Barchart News
+
+- Exclusives
+
+- Contributors
+
+- Chart of the Day
+
+- News Feeds
+
+Featured Authors
+
+- Andrew Hecht
+
+- Austin Schroeder
+
+- Caleb Naysmith
+
+- Darin Newsom
+
+- Don Dawson
+
+- Elizabeth Volk
+
+- Gavin McMaster
+
+- Jeannine Mancini
+
+- Jim Van Meerten
+
+- Justin Estes
+
+- Mark Hake
+
+- Oleksandr Pylypenko
+
+- Rich Asplund
+
+- Rick Orford
+
+- Rob Isbitts
+
+- Sarah Holzmann
+
+- All Authors
+
+Commodity News
+
+- All Commodities
+
+- Energy
+
+- Grains
+
+- Livestock
+
+- Metals
+
+- Softs
+
+Financial News
+
+- All Financials
+
+- Crypto
+
+- Dividends
+
+- ETFs
+
+- FX
+
+- Interest Rates
+
+- Options
+
+- Stock Market
+
+Free Newsletters
+
+- All Free Newsletters
+
+- The Barchart Brief
+
+- Active Investor
+
+- Unusual Options Activity
+
+- Dividend Investor
+
+- Pre-Market Bulletin
+
+- Commodity Bulletin
+
+- Chart of the Day
+
+- Ag Market Commentary
+
+Press Releases
+
+- All Press Releases
+
+- ACCESS Newswire
+
+- Business Wire
+
+- GlobeNewswire
+
+- TMX Newsfile
+
+- PR Newswire
+
+-
+Tools Tools
+
+Member Tools
+
+- My Watchlist
+
+- Investor Portfolio
+
+- Standard Portfolio
+
+- Dashboard Dashboard
+
+- Symbol Notes
+
+- Alert Center
+
+- Alert Templates
+
+- Barchart Screeners
+
+- My Charts
+
+- Custom Views
+
+- Barchart Custom Views
+
+- Chart Templates
+
+- Barchart Chart Templates
+
+- Compare Stocks
+
+- Daily Prices Download
+
+- Historical Data Download
+
+My Custom Reports
+
+- Watchlist Emails
+
+- Standard Portfolio Emails
+
+- Investor Portfolio Emails
+
+- Screener Emails
+
+- End-of-Day My Charts
+
+- My Market Reports
+
+Manage Tools
+
+- Organize Watchlists
+
+- Organize Portfolios
+
+- Organize Investor Portfolios
+
+- Organize Screeners
+
+- Organize My Charts
+
+My Account
+
+- My Profile
+
+- Site Preferences
+
+- Subscription Details
+
+- Author Followings
+
+- Trading Alerts & Ideas
+
+-
+Learn Learn
+
+Knowledge Base
+
+- Site Education
+
+- Options Education
+
+- Options Learning Center
+
+- Quick Start Tutorials
+
+- Site News
+
+Barchart Webinars
+
+- Upcoming Webinars
+
+- Archived Webinars
+
+- Popular Webinars
+
+Barchart Live
+
+- Market on Close
+
+- Market on Close Archive
+
+Membership
+
+- Barchart Premier Barchart Premier
+
+- Barchart Plus Barchart Plus
+
+- Membership Comparison
+
+- Barchart for Excel
+
+- Create Free Account
+
+Barchart Resources
+
+- Technical Indicators
+
+- Barchart Trading Signals
+
+- Time & Sales Conditions
+
+- Barchart Special Symbols
+
+- Barchart Data Fields
+
+- Featured Brokerages
+
+Options Resources
+
+- Profit & Loss Charts
+
+- Options Volatility
+
+- Options Greeks
+
+- Covered Call
+
+- Naked Put
+
+- Long Call Option
+
+- Deep ITM Calls
+
+- Long Put Option
+
+- Credit Spreads
+
+- Short Straddles
+
+- Short Iron Condor
+
+- 7 Ways to Make Money
+
+- Hedge Stocks with Options
+
+Hi,
+
+Site News
+Contact
+Market:
+
+- US
+
+- Canada
+
+- UK
+
+- Australia
+
+- Europe
+
+Your Free 7-Day Premier trial ends on . Extend Your Trial For Another 30 Days. Time remaining
+
+NaNd
+Days
+
+:
+
+NaNh
+Hours
+
+:
+
+NaNm
+Minutes
+
+:
+
+NaNs
+Seconds
+
+Faster, Cleaner, Better. Try Barchart Plus for Free
+
+Menu
+
+-
+quotes
+
+- Price Overview
+
+- Performance Report
+
+-
+charts
+
+- Interactive Chart
+
+- Snapshot Chart
+
+-
+technicals
+
+- Trading Guide
+
+- Barchart Opinion
+
+- Trading Strategies
+
+- Technical Analysis
+
+- Trader's Cheat Sheet
+
+- Seasonal Returns
+
+- Price History
+
+- Historical Data
+
+-
+options
+
+- Options Prices
+
+- Volatility & Greeks
+
+-
+spreads
+
+- Futures Spreads
+
+- Synthetic Spreads
+
+-
+commodity info
+
+- News & Headlines
+
+- Comparison
+
+- Contract Specifications
+
+- Futures Prices
+
+- Historical Prices
+
+Corn Dec '26 (ZCZ26)
+
+474-2s -3-6 (-0.78%) 10/16/26 [CBOT]
+
+N/A x N/A N/A x N/A
+
+underlying price ()
+
+Quote Overview for Fri, Oct 16th, 2026
+
+Notes
+
+Alerts
+
+Watch Watch
+
+Add or delete the symbol from one or more Watchlists.
+
++ Create Watchlist
+
+This name already in use.
+
+-
+Create New Watchlist
+
+This name already in use.
+
+-
+
+My Watchlist
+
+Help
+
+Go To:
+
+Day Low
+
+473-0
+
+Day High
+
+481-0
+
+Open 478-0
+
+Previous Close 478-0 478-0
+
+Volume 185,762 185,762
+
+Open Interest 835,215 835,215
+
+Weighted Alpha +1.71 +1.71
+
+Relative Strength 29.35 (-1.61) 29.35
+
+5-Day Change -5-4 (-1.15%) -5-4 (-1.15%)
+
+52-Week High 549-6 (-13.73%) 549-6
+
+52-Week Low 425-6 (+11.39%) 425-6
+
+National Corn Index 4.3466 4.3466
+
+- 1D
+
+- 5D
+
+- 1M
+
+- 3M
+
+- 6M
+
+- 1Y
+
+- 5Y
+
+- MAX
+
+Full Chart
+
+-
+
+OHLC Bars
+
+-
+
+Colored OHLC Bars
+
+-
+
+HLC Bars
+
+-
+
+Candlestick Hollow
+
+-
+
+Candlestick Open-to-Close
+
+-
+
+Candlestick Close-to-Close
+
+-
+
+Heikin-Ashi
+
+-
+
+Line Chart
+
+-
+
+Area Chart
+
+-
+
+Renko
+
+-
+
+Column
+
+-
+
+Baseline
+
+-
+
+Line Break
+
+-
+
+Range
+
+-
+
+Kagi
+
+-
+
+Point And Figure
+
+Corn Futures Market News and Commentary
+
+Corn Falls on Friday as Spec Longs Continue Exit
+Barchart - Fri Oct 16, 5:05PM CDT
+
+Corn futures closed out the Friday session with contracts 1 to 4 ½ cents across the board, as December was 5 ½ cents lower. The CmdtyView national average Cash Corn price was down 3 3/4 cents at $4.35. Now halfway through October the average close for December futures has been $4.91, as the harvest price option for price insurance gets discovered.
+
+USDA reported a private export sale of 127,000 MT of corn for 2026/27 to Japan this morning.
+
+USDA’s Export Sales report from this morning showed 1.122 MMT in 2026/27 corn sales during the week of 10/8. That was a 45.9% hike from last week and a MY high, but 15.4% below the same week last year. Mexico was the top buyer of 544,500 MT, with 220,100 MT sold to Japan and 199,900 MT to South Korea.
+
+The Friday Commitment of Traders report showed managed money slashing another 86,482 contracts from their net long position in corn futures and options as of 10/13. That took their net long to 230,877 contracts as of Tuesday.
+
+A... Read more
+
+Contract Specifications
+See More
+
+Contract
+
+Corn
+
+Contract Size
+
+5,000 bushels
+
+Tick Size
+
+1/4 cent per bushel ($12.50 per contract)
+
+Trading Hours
+
+7:00p.m. - 7:45a.m. and 8:30a.m. - 1:20p.m. (Settles 1:15p.m.) (Sun-Fri) CST
+
+Exchange
+
+CBOT
+
+Point Value
+
+$50
+
+Margin/Maintenance
+
+$1,210/1,100
+
+First Notice Date
+
+11/30/26 (45 days)
+
+Expiration Date
+
+12/14/26 (59 days)
+
+Seasonal Chart
+
+Corn Dec '26
+
+Average Price Chart for 5 Prior Dec Contracts
+
+Commitment of Traders Positions as of Oct 13, 2026
+View Chart Details
+
+Commercials - Long / Short
+
+777,219 (+52,624)
+
+1,104,177 (-31,370)
+
+Non-Commercials - Long / Short
+
+511,857 (-69,854)
+
+153,490 (+24,252)
+
+Producers - Long / Short
+
+405,345 (+43,307)
+
+1,005,834 (-44,581)
+
+Swap Dealers - Long / Short
+
+300,384 (-7,324)
+
+26,853 (-3,430)
+
+Managed Money - Long / Short
+
+330,244 (-63,005)
+
+83,819 (+20,409)
+
+Other Reportables - Long / Short
+
+181,613 (-6,849)
+
+69,671 (+3,843)
+
+Get Realtime - Quotes and Charts for Futures Traders. Learn More >>
+
+Price Performance
+See More
+
+Period Period Low Period High Performance
+
+1-Month
+
+470-2 +0.85%
+
+on 10/09/26
+
+Period Open: 534-2
+
+544-4 -12.90%
+
+on 09/22/26
+
+-60-0 (-11.23%)
+since 09/16/26
+
+3-Month
+
+457-2 +3.72%
+
+on 08/06/26
+
+Period Open: 464-0
+
+549-6 -13.73%
+
+on 09/02/26
+
++10-2 (+2.21%)
+since 07/16/26
+
+52-Week
+
+425-6 +11.39%
+
+on 06/30/26
+
+Period Open: 457-2
+
+549-6 -13.73%
+
+on 09/02/26
+
++17-0 (+3.72%)
+since 10/16/25
+
+More Corn Quotes
+All Futures Prices
+
+false
+
+Most Recent Stories
+More News
+
+The End of the Bull Market in Grains? Best Weather Inc. - 1 hour ago
+Jim takes a careful and enlightened look at the turn of events
+
+ZCZ26 : 474-2s (-0.78%)
+
+DBA : 28.23 (-0.18%)
+
+SOYB : 26.88 (-0.22%)
+
+CORN : 18.19 (-0.87%)
+
+ZSX26 : 1261-2s (-0.14%)
+
+WEAT : 24.00 (-1.15%)
+
+ZWZ26 : 660-4s (-1.42%)
+
+TAGS : 27.10 (-0.95%)
+
+Wheat Weakness Extends into the Weekend Barchart - Fri Oct 16, 5:05PM CDT
+The wheat complex headed into the weekend holding onto the weakness on Friday. Chicago SRW contracts fell lower on Friday, with contracts down 1 ½ to 9 ½ cents on the day and December losing 10 ½ cents...
+
+KEH27 : 715-6s (-1.24%)
+
+KEZ26 : 704-0s (-1.26%)
+
+MWZ26 : 6.7650s (-1.38%)
+
+ZWZ26 : 660-4s (-1.42%)
+
+ZWH27 : 675-0s (-1.35%)
+
+Corn Falls on Friday as Spec Longs Continue Exit Barchart - Fri Oct 16, 5:05PM CDT
+Corn futures closed out the Friday session with contracts 1 to 4 ½ cents across the board, as December was 5 ½ cents lower. The CmdtyView national average Cash Corn price was down 3 3/4 cents at $4.35....
+
+ZCZ26 : 474-2s (-0.78%)
+
+ZCH27 : 486-4s (-0.92%)
+
+ZCZ26 : 474-2s (-0.78%)
+
+ZCPAUS.CM : 4.3466 (-0.93%)
+
+Soybeans Slip Lower into the Weekend as Export Buying Continues Barchart - Fri Oct 16, 5:05PM CDT
+Soybeans pulled off early losses on Friday, as contracts were down 1 ¾ to 3 cents in the front month and up ½ to 1 ¾ cents in the deferreds. November was 30 ¾ cents lower for the week. We are over...
+
+ZSPAUS.CM : 12.0225 (-0.13%)
+
+ZLZ26 : 67.13s (-0.03%)
+
+ZMZ26 : 357.1s (-0.75%)
+
+ZSX26 : 1261-2s (-0.14%)
+
+ZSX26 : 1261-2s (-0.14%)
+
+ZSF27 : 1275-6s (-0.16%)
+
+Corn Froth Is Draining: Is a Value Zone Showing Up? Blue Line Futures - Fri Oct 16, 3:59PM CDT
+Oliver Sloup covers corn holding $4.70 support, funds trimming their long, flash sales to China and Japan, plus wheat, cattle and hogs.
+
+What Were Markets Telling Us at Friday's Close? Barchart - Fri Oct 16, 2:44PM CDT
+With markets coming to an end for the week we finally have the only prices that matter.
+
+ZCZ26 : 474-2s (-0.78%)
+
+KEZ26 : 704-0s (-1.26%)
+
+ZSF27 : 1275-6s (-0.16%)
+
+GCZ26 : 4,181.1s (+0.26%)
+
+ZWZ26 : 660-4s (-1.42%)
+
+HOX26 : 4.8991s (+1.10%)
+
+Soybeans Finding Some Buyers at Midday, Still Facing Weaker Barchart - Fri Oct 16, 12:05PM CDT
+Soybeans are trying to pull off the early near double digit losses on Friday, with contracts down 1 to 3 cents at midday. The cmdtyView national average Cash Bean price is down 1 ¼ cents at $12.03 1/2....
+
+ZSPAUS.CM : 12.0225 (-0.13%)
+
+ZLZ26 : 67.13s (-0.03%)
+
+ZMZ26 : 357.1s (-0.75%)
+
+ZSX26 : 1261-2s (-0.14%)
+
+ZSX26 : 1261-2s (-0.14%)
+
+ZSF27 : 1275-6s (-0.16%)
+
+Wheat Bears Pushing Losses into Friday’s Midday Barchart - Fri Oct 16, 12:05PM CDT
+The wheat complex is heading into the weekend with losses across the three exchanges. Chicago SRW contracts are slipping back 7 to 8 cents to round out the week. KC HRW futures are trading with 7 to 8...
+
+KEH27 : 715-6s (-1.24%)
+
+KEZ26 : 704-0s (-1.26%)
+
+MWZ26 : 6.7650s (-1.38%)
+
+ZWZ26 : 660-4s (-1.42%)
+
+ZWH27 : 675-0s (-1.35%)
+
+Corn Bulls Failing to See Strength on a Pick-up in Export Business Barchart - Fri Oct 16, 12:05PM CDT
+Corn futures are trading with contracts down 2 to 4 cents at midday, getting some slight midday bids off the lows. The CmdtyView national average Cash Corn price was down 2 3/4 cents at $4.36. USDA reported...
+
+ZCZ26 : 474-2s (-0.78%)
+
+ZCH27 : 486-4s (-0.92%)
+
+ZCZ26 : 474-2s (-0.78%)
+
+ZCPAUS.CM : 4.3466 (-0.93%)
+
+The DeCarley Perspective...Corn futures were rocked by WASDE- now what? DeCarley Trading - Fri Oct 16, 10:41AM CDT
+Corn futures were rocked by WASDE- now what?
+
+More news for this symbol
+
+Barchart Trading Guide
+
+Sell Signal
+
+The Barchart Trading Guide is a Sell Signal with a Average Signal Strength.
+
+Relative Strength just crossed below 30%. The market has entered oversold territory.
+
+See More
+
+Related instruments
+
+Symbol Latest Change
+
+ZCZ26 474-2s -3-6
+
+Corn
+
+XNZ26 474-2s -3-6
+
+Corn Mini
+
+ZSX26 1261-2s -1-6
+
+Soybean
+
+ZMZ26 357.1s -2.7
+
+Soybean Meal
+
+ZLZ26 67.13s -0.02
+
+Soybean Oil
+
+ZWZ26 660-4s -9-4
+
+Wheat
+
+KEZ26 704-0s -9-0
+
+Hard Red Winter Wheat
+
+KWH27 717-0s -7-2
+
+Hard Red Spring Wheat
+
+MWZ26 6.7650s -0.0950
+
+Spring Wheat Mpls
+
+ZOZ26 397-6s +1-6
+
+Oats
+
+ZRX26 17.320s +0.065
+
+Rough Rice
+
+RSF27 811.60s -2.10
+
+Canola
+
+$SG3C 391.54 -3.09
+
+S&P GSCI Corn Index
+
+Corn Related ETFs
+
+Symbol Latest 3M %Chg
+
+ZCZ26 474-2s +2.21%
+
+Corn Dec '26
+
+RJA 9.16 +4.27%
+
+Rogers Agriculture ETN Elements
+
+CORN 18.19 +3.23%
+
+Teucrium Corn
+
+DBA 28.23 +2.32%
+
+Invesco DB Agriculture Fund
+
+GRU 5.43 +0.84%
+
+MLCX Grains Index TR ETN Elements
+
+Key Turning Points
+
+Daily
+
+52-Week
+
+3rd Resistance Point 487-1
+
+2nd Resistance Point 484-1
+
+1st Resistance Point 479-1
+
+Last Price 474-2s
+
+1st Support Level 471-1
+
+2nd Support Level 468-1
+
+3rd Support Level 463-1
+
+See More
+
+52-Week High 549-6
+
+Fibonacci 61.8% 502-3
+
+Fibonacci 50% 487-6
+
+Last Price 474-2s
+
+Fibonacci 38.2% 473-1
+
+52-Week Low 425-6
+
+See More
+
+Solutions for Grain Market Professionals barchart.com/cmdty
+
+Commodity Price Reports
+Get Free Access!
+
+cmdtyView for Ag marketers and merchandisers
+Start Free Trial
+
+We help Agribusinesses make better decisions
+Learn Now
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-

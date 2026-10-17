@@ -1,0 +1,231 @@
+# Benchmark cash-bids: Barchart cash grain prices
+# https://www.barchart.com/cmdty/data/grain-prices
+# fetched 2026-10-17T02:14:05Z, sha256 a399eea0f1e725313fdb95815cce1d0c29315a51db6e5166eb9565a4ffaa6b34
+
+Global Grain Prices - Basis and Cash Bids | Barchart Commodities | Barchart CommoditiesBack ButtonFilter Button
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Cash Grain Prices
+
+Best-in-class intraday and historical cash grain prices for North America, and Brazil - power your business with grain prices from Barchart.
+
+Explore Data
+
+Build Better Products
+
+With the leading database for global cash grain prices, you can spend less time on data processing, and more time on building incredible product.
+
+Continuous Pricing
+
+Records are created on price events – not just snapped from end-of-day prices. Our coverage of grain buying activity is unmatched.
+
+Deep Historical Data
+
+Our historical coverage of cash grain prices and local bids is the best available. Easily understand historical pricing trends by analyzing in cmdtyView Pro or via API.
+
+Choose Your Geography
+
+North America
+
+Brazil
+
+Learn More
+
+Request More Info
+
+- Market Coverage
+
+- How We Help
+
+- Tools & Analytics
+
+Choose Your Geography
+
+North America
+
+Best-in-class intraday and historical data from 4,000+ grain buying facilities. Our deep historical data starts from 2008 and contains intraday price changes based on real-time pricing updates. Used by the leaders in global grain markets, our grain price database is unparalleled in coverage, history, and cleanliness.
+
+Brazil
+
+Get exclusive access to inland grain prices from Brazil which includes average transaction, bids, and asks sourced directly from physical trades. With coverage for most municipalities located in the biggest production areas in Brazil, our prices allow you to make better decisions.
+
+How We Help
+
+We Help You Build
+
+With reliable data that scales to your needs, you’re able to deploy product faster than you ever thought possible. Our grain price data has been battle tested by the leaders in global agriculture, and we’re confident that grain prices from Barchart will be one of the stickiest features in your application.
+
+Analyze Everything
+
+Whether you get access to our data through cmdtyView Pro or one of our enterprise data solutions, our reliable information makes it easy to create scalable analysis frameworks for your organization. Build complex pricing models or just know what the rest of the market is doing.
+
+Work More Efficiently
+
+Get all of the data you need in one place so time spent on initial development and ongoing maintenance is reduced - allowing you more time to focus on product development, marketing, and sales.
+
+Help Your Clients
+
+Our products help you provide your clients with better information so they can make improved marketing decisions. With best-in-class grain prices, yield forecasts, and forward basis projections you can create amazing tools for your customers.
+
+Tools & Analytics
+
+- cmdtyView Pro
+Access all of our data including global exchange data, physical commodity prices, and global commodity fundamentals all in one place. With cmdtyView Pro, you can get your feet wet using our data and build a proof-of-concept before committing to our APIs for your enterprise solution. Schedule a demo with one of our product experts today!
+
+- cmdtyView for Excel
+If it’s available in cmdtyView Pro, then it’s available in cmdtyView for Excel. Build highly scalable models using our global data warehouse and keep your internal and external stakeholders informed. Only through the combination of our broad market data, global cash prices, and commodity fundamentals can you deliver a global view of the market in one simple-to-use dashboard. Get all the scale you need with cmdtyView for Excel.
+
+Subscribe to our Grain Price Data
+
+Explore Our Data
+
+In the Barchart Commodities blog
+
+More
+
+Barchart Predicts Corn and Soybean Yield Will Exceed The USDA’s Latest Forecast
+
+Hey there, agriculture aficionados and crop connoisseurs! Buckle up, because we've got some exciting news! We just released our November 2023 Crop Production and Yield Forecasts for US corn and soybeans. The most recent report sees end-of-season yield at 183.7 (bu/ac) for Corn, which is 8.8 (bu/ac) above the USDA’s...
+
+2023-11-21
+|
+Read More
+
+Barchart Expects Corn and Soybean Yields to Exceed USDA's Latest Projections
+
+In the world of agriculture, few things are as crucial as accurate crop forecasts . Today, Barchart has unveiled its October 2023 Crop Production and Yield Forecasts for corn and soybeans in the United States. These forecasts offer valuable insights into what lies ahead for these crops. The most recent...
+
+2023-10-17
+|
+Read More
+
+Introducing 'Favorites’ in Marketplace Apps!
+
+In today's fast-paced world, efficiency and ease of use are essential for businesses of all sizes. Whether you're a producer, grain merchandiser, or anyone involved in the commodities market, having the right tools at your fingertips can make a world of difference. That's why we're excited to introduce a new...
+
+2023-09-19
+|
+Read More
+
+cmdtyView®
+
+Get all of our commodity data and prices in cmdtyView®
+
+All of our exclusive data and prices are available through the cmdtyView® terminal – a fully web-based and responsive commodity trading platform that works seamlessly across all of your devices.
+
+Start Free Trial ›
+
+Explore Barchart’s Commodity Pricing Network
+
+Access data from the leading contributors in Ag and Energy. Available over API or through cmdtyView.
+
+Access Data
+
+Free Commodity Reports
+
+Get access to our proprietary price reports to keep a pulse on global commodity markets.
+
+Get Free Access
+
+Commodity DataData
+
+Commodity ConnectConnect
+
+222 S. Riverside Plaza, Suite 810
+
+Chicago, IL 60606
+
+commodities@barchart.com
+
+877-247-4394
+
+Get updates from Barchart:
+
+© 2026 Barchart.com, Inc. All Rights Reserved.
+
+Terms of Use
+|
+Privacy Policy
+|
+Do Not Sell My Personal Information
+
+Barchart is committed to ensuring digital accessibility for individuals with disabilities. We are continuously working to improve our web experience, and encourage users to Contact Us for feedback and accommodation requests.
+
+We process your personal information to measure and improve our sites and service, to assist our marketing campaigns and to provide personalised content and advertising. By clicking the button on the right, you can exercise your privacy rights. For more information see our Cookie PolicyView our Terms and Privacy Policy
+
+Do Not Sell or Share My Personal Data
+
+Your Opt Out Preference Signal is Honored
+
+-
+
+Your Privacy
+
+-
+
+Strictly Necessary Cookies
+
+-
+
+Opt Out of Sale of Sharing/Targeted Advertising
+
+Your Privacy
+
+When you visit our website, we store cookies on your browser to collect information. The information collected might relate to you, your preferences or your device, and is mostly used to make the site work as you expect it to and to provide a more personalized web experience. However, you can choose not to allow certain types of cookies, which may impact your experience of the site and the services we are able to offer. Click on the different category headings to find out more and change our default settings according to your preference. You cannot opt-out of our First Party Strictly Necessary Cookies as they are deployed in order to ensure the proper functioning of our website (such as prompting the cookie banner and remembering your settings, to log into your account, to redirect you when you log out, etc.). For more information about the First and Third Party Cookies used please follow this link.
+
+More information
+
+Strictly Necessary Cookies
+
+Always Active
+
+These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services, such as setting your privacy preferences, logging in or filling in forms. You can set your browser to block or alert you about these cookies, but some parts of the site will not then work. These cookies do not store any personally identifiable information.
+
+Opt Out of Sale of Sharing/Targeted Advertising
+
+Opt Out of Sale of Sharing/Targeted Advertising Active
+
+As a California consumer, you have the right to opt-out from the sale or sharing of your personal information at any time across business platform, services, businesses and devices. You can opt-out of the sale and sharing of your personal information by using this toggle switch. As a Virginia, Utah, Colorado and Connecticut consumer, you have the right to opt-out from the sale of your personal data and the processing of your personal data for targeted advertising. You can opt-out of the sale of your personal data and targeted advertising by using this toggle switch. For more information on your rights as a United States consumer see our privacy notice.
+
+-
+Targeting Cookies
+
+Switch Label label
+
+These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites. They do not store directly personal information, but are based on uniquely identifying your browser and internet device. If you do not allow these cookies, you will experience less targeted advertising.
+
+-
+Performance Cookies
+
+Switch Label label
+
+These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us to know which pages are the most and least popular and see how visitors move around the site. All information these cookies collect is aggregated and therefore anonymous. If you do not allow these cookies we will not know when you have visited our site, and will not be able to monitor its performance.
+
+Cookie List
+
+Consent Leg.Interest
+
+checkbox label label
+
+checkbox label label
+
+checkbox label label
+
+checkbox label label
