@@ -751,7 +751,7 @@ def mk_board(q, fetched):
         if t.tzinfo is None:
             t = t.replace(tzinfo=timezone.utc)
         c = t.astimezone(CT) if CT else t
-        read = f"{_md(c)}, " + c.strftime("%I:%M").lstrip("0") + " " + c.strftime("%p").lower() + " CT"
+        read = f"{_md(c)}, " + c.strftime("%I:%M").lstrip("0") + "\u00a0" + c.strftime("%p").lower() + " CT"
     except (TypeError, ValueError):
         read = ""
     if not n:
