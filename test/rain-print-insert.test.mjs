@@ -108,6 +108,10 @@ test("the giver's note shows only when the order has one", () => {
   assert.ok(g.svg.includes('data-rp="gift"') && g.svg.includes("A NOTE FOR YOU"));
   assert.ok(letterTexts(g.svg).join(" ").includes("For Dad, for 40 harvests <b>"));
   assert.ok(!g.svg.includes("<b>"), "the note is escaped");
+  // a business's message says who it is from
+  const o = { facts: g.F, mini: "", serial: "No. 0002", gift: "Thanks for another year.", giftFrom: "Chetek Co-op", qr: RP.standardMatrix(), station: { words: "Ames, IA", away: "2.0 miles", kind: "volunteer" } };
+  assert.ok(letterTexts(INS.render(o)).includes("A NOTE FROM CHETEK CO-OP"));
+  assert.equal(INS.copy(Object.assign({}, o, { giftFrom: "" })).giftHead, "A NOTE FOR YOU");
 });
 
 test("the serial and Sig's maker line; a blank to fill in without a serial", () => {
@@ -124,7 +128,7 @@ test("the serial and Sig's maker line; a blank to fill in without a serial", () 
 });
 
 test("nothing runs past the foot, even with the longest note and five marked days", () => {
-  const long = "For Dad, for 40 harvests. ".repeat(10).slice(0, 240);
+  const long = "Thanks for another year. From all of us at the elevator. ".repeat(10).slice(0, 300);
   const marks = [["2012-04-20", "Planted"], ["2012-06-10", "Hail"], ["2012-08-01", "Wedding"], ["2012-10-01", "Harvest"], ["2012-12-01", "Done"]].map(([date, label]) => ({ date, label }));
   for (const st of ["r1", "r2"]) {
     const m = make(st, { gift: long, markers: marks });
@@ -150,8 +154,10 @@ test("the maker page has the button and the note box; the engine makes the lette
   const maker = html.match(/<div class="rp-maker" id="rp-maker" hidden>([\s\S]*?)\n          <\/div>\n        <\/section>/);
   assert.ok(maker, "the maker box");
   assert.match(maker[1], /<button class="btn btn-secondary" type="button" data-size="insert" data-fmt="pdf">Insert letter PDF<\/button>/);
-  assert.match(maker[1], /<textarea id="rp-ins-gift" maxlength="240"/, "the gift note, as long as the order form's");
-  assert.match(html, /id="ro-gift-msg" maxlength="240"/, "the order form's note is 240 letters too");
+  assert.match(maker[1], /<textarea id="rp-ins-gift" maxlength="300"/, "room for the longest note: a gift note (240) or a business's note for every print (300)");
+  assert.match(html, /id="ro-gift-msg" maxlength="240"/);
+  assert.match(html, /id="rb-note-all" maxlength="300"/);
+  assert.match(maker[1], /<input id="rp-ins-from" type="text" maxlength="40">/, "who a business note is from");
   assert.match(js, /sc\.src = '\/components\/rp-insert\.js\?v=\d+'/, "loaded on first use");
   assert.match(js, /root\.AgRainArt\.facts\(I, \{ unplaced: root\.AgRainArt\.lastUnplaced\(\) \}\)/, "the print's own facts, after the print's own render");
   assert.match(js, /pdfFromJpeg\(new Uint8Array\(buf\), c\.width, c\.height, LETTER, 0\)/, "a letter-size PDF with no bleed");
@@ -162,4 +168,43 @@ test("the maker page has the button and the note box; the engine makes the lette
   assert.match(js, /if \(PREVIEW\) \{ out\.textContent = 'The letter is made from the full year/, "no letter from a part year");
   assert.match(js, /data-size'\) === 'insert'\) insertFile\(b\)/);
   assert.ok(!/rp-insert\.js/.test(html), "not loaded with the page");
+});
+
+test("What's in the box: the public block, the sample letter and the FAQ, word for word", () => {
+  const html = read("rain-print.html");
+  const box = html.match(/<section class="rp-sec rp-box" id="rp-box" aria-labelledby="rp-box-h">([\s\S]*?)<\/section>/);
+  assert.ok(box, "the block is on the page");
+  const b = box[1];
+  assert.match(b, /<h2 class="sec-h" id="rp-box-h">What&rsquo;s in the box<\/h2>/);
+  for (const s of ["The print</b>, flat between chipboard", "the framed print</b>, packed with corner guards and foam and double-boxed", "A letter on top</b>", "Your note, printed at the top of the letter</b>, when it&rsquo;s a gift", "There&rsquo;s no separate card", "No prices go in the box.</b>"]) assert.ok(b.includes(s), s);
+  assert.doesNotMatch(b, /on a card/);
+  const img = b.match(/<img [^>]*>/)[0];
+  assert.match(img, /src="\/img\/rain-print-insert-letter-sample\.webp"/);
+  assert.match(img, /width="600" height="776"/); assert.match(img, /loading="lazy"/); assert.match(img, /alt="A sample of the letter for the 2012 Ames/);
+  const f = ROOT + "img/rain-print-insert-letter-sample.webp", buf = readFileSync(f);
+  assert.equal(buf.toString("ascii", 0, 4), "RIFF"); assert.equal(buf.toString("ascii", 8, 12), "WEBP");
+  assert.ok(buf.length <= 60 * 1024, "the sample letter is small: " + buf.length);
+  assert.match(b, /<figcaption>The letter that comes with every print: what it is, how to read it, and your year in numbers\./);
+  // the numbers the alt text names are the letter's (and the print's) for 2012 Ames
+  const F = make("r1").F;
+  assert.ok(img.includes(F.total.toFixed(2) + " inches") && img.includes(F.verdict), "the alt's numbers are the letter's");
+  assert.ok(!/—|&mdash;|sponsor|printer/i.test(b), "no em dash, no sponsor, no printer");
+  // the FAQ: shown and in FAQPage the same
+  const shown = html.match(/<details><summary>What comes in the box\?<\/summary><p>([\s\S]*?)<\/p><\/details>/);
+  assert.ok(shown, "the FAQ entry is on the page");
+  const LD = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  const q = LD["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.find((x) => x.name === "What comes in the box?");
+  assert.ok(q, "in FAQPage");
+  assert.equal(shown[1].replace(/&rsquo;/g, "’"), q.acceptedAnswer.text);
+  assert.match(q.acceptedAnswer.text, /corner guards and foam and double-boxed.*If it’s a gift, your note is printed at the top of that letter\. No prices go in the box\./);
+  // Sig, 2026-10-17: no separate note card anywhere on the page, in the FAQ or in FAQPage; the note is on the letter
+  assert.doesNotMatch(html, /note card|on a card in the box|a note for a card|on a card and put it/);
+  const ship = LD["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.find((x) => x.name === "Can you ship it straight to them with a note?");
+  assert.match(ship.acceptedAnswer.text, /your note printed at the top of the letter in the box, at no charge\. No prices go in the box\./);
+  const js = read("components/rain-print.js");
+  assert.match(js, /I print your note at the top of the letter in the box, free, and no prices go in the box\./, "#rp-gift-line as the page sets it");
+  assert.match(js, /'I print the note at the top of the letter in the box\. No prices go in\.'/, "#ro-gift-line as the page sets it");
+  assert.doesNotMatch(js, /note card|on a card/);
+  // the emailed under-the-tree gift card for this year's Christmas orders stays
+  assert.match(html, /I email you a gift card to print for under the tree/);
 });

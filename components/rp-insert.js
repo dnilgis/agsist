@@ -21,7 +21,8 @@
  *   station: {words: "Ames, IA", away: "2.0 miles" ('' when the distance isn't known), kind: 'volunteer' | 'coop' | 'noaa' | 'canada'},
  *   source: "NOAA’s daily records" (Canada: Environment and Climate Change Canada’s),
  *   mini: the print's own SVG (AgRainArt.render, no px), serial: "No. 0001" or '',
- *   gift: the giver's note from the order, or '' (the block is left off),
+ *   gift: the giver's note or a business's message from the order, or '' (the block is left off),
+ *   giftFrom: a business name for the note's heading ("A NOTE FROM ..."), or '',
  *   qr: the standard code's matrix, fontCss, measure(text, style) -> width (optional), px [w, h]
  * }
  * Copy rules (Sig): plain farm words, no em dashes, no store or printer names,
@@ -98,7 +99,9 @@
     if (F.markers && F.markers.length) key.push(['dot', (F.markers.length === 1 ? 'Your day, with your words.' : 'Your days, with your words.')]);
     c.key = key;
 
-    c.giftHead = 'A NOTE FOR YOU';
+    // a business's message says who it is from (Sig, 2026-10-17: no separate card; the note is on the letter)
+    var from = String(o.giftFrom || '').replace(/\s+/g, ' ').trim();
+    c.giftHead = from ? 'A NOTE FROM ' + from.toUpperCase() : 'A NOTE FOR YOU';
     c.gift = String(o.gift || '').replace(/\s+/g, ' ').trim();
     c.maker = 'Print ' + (o.serial || 'No. ______') + ', made, numbered and initialed by hand by Sigurd Lindquist, CCA.';
     c.makerSub = 'The number is under the code in the corner, my initials beside it in pencil.';

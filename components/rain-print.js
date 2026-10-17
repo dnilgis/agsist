@@ -2895,7 +2895,7 @@
       : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-gift-line').textContent = !link ? 'It\u2019s a gift? Say so on the order form, with their name and your note.'
       : PICK === 'digital' ? 'It\u2019s a gift? At checkout you can add their name and a note, and I send the note with the file. No prices go with it.'
-      : 'It\u2019s a gift? At checkout you can add their name, a note for a card in the box and their address. The card is free, and no prices go in the box.';
+      : 'It\u2019s a gift? At checkout you can add their name, a note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
     $('rp-gift-line').hidden = januaryGift() || !!(GIFT && GIFT.usable);
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
@@ -3343,7 +3343,7 @@
      Payment Link asks who it's for and the note, and Stripe takes the shipping
      address, so the page only says so (#rp-gift-checkout).
      A product WITHOUT a link opens the order request form, which then shows
-     who it's for, a note printed on a card in the box (no prices go in), and
+     who it's for, a note printed at the top of the letter in the box (no prices go in), and
      where it goes. Same gift_ fields, plus gift:true (worker v5.12). */
   function januaryGift() { return giftMode() && canOrder(); }
   function giftTicked() { return !januaryGift() && $('ro-isgift').checked; }
@@ -3368,7 +3368,7 @@
     $('rp-isgift-wrap').hidden = jan;
     syncGiftCheckout();
     $('ro-gift-box').hidden = !plain;
-    $('ro-gift-line').textContent = print ? 'I print the note on a card and put it in the box. No prices go in.'
+    $('ro-gift-line').textContent = print ? 'I print the note at the top of the letter in the box. No prices go in.'
       : 'I send the note with the file. No prices go with it.';
     $('ro-deliver-wrap').hidden = !(jan || plain);
     $('ro-notes').placeholder = jan || giftTicked() ? 'Need it by a certain day? Say so here.' : 'A gift? Need it by a certain day? Say so here.';
@@ -3387,9 +3387,9 @@
   }
   function orderText(x) {
     return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
-      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the full year is in' : '\nGift: yes, a note card in the box, no prices') +
+      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the full year is in' : '\nGift: yes, the note printed at the top of the letter in the box, no prices') +
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
-        (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
+        (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nNote for the letter: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
       '\nDesign code: ' + x.design_code + '\nDesign: ' + x.design_url + (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
@@ -3576,7 +3576,7 @@
       (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') +
       (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
-  /* The quote form's logo (for the note card or the prints): the same reading
+  /* The quote form's logo (for the prints): the same reading
      and saving as the print's, no color switch. BIZ_LOGO = {id, url} once saved. */
   var BIZ_LOGO = null, BIZ_LOGO_ASK = 0;
   function bizLogoMsg(t, bad) { $('rb-logo-msg').textContent = t || ''; $('rb-logo-msg').classList.toggle('rp-bad', !!bad); }
@@ -3627,7 +3627,7 @@
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     x.quantity = String(qn);
     if (BIZ_LOGO && BIZ_LOGO.id) x.logo = BIZ_LOGO.id;
-    // the shared note card goes only to prints shipped one to each customer
+    // the shared note (printed at the top of each box's letter) goes only to prints shipped one to each customer
     if (x.ship === 'each') { var na = $('rb-note-all').value.replace(/\r\n?/g, '\n').trim().slice(0, 300); if (na) x.note_all = na; }
     var hp = doc.querySelector('#rb-form input[name="_gotcha"]');
     var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
@@ -3852,8 +3852,8 @@
      in every print and framed print box: what it is, the year's numbers as the
      print says them (AgRainArt.facts, from the same model the print is drawn
      from), how to read this style beside a small copy of the print drawn by the
-     same engine, the giver's note when the order has one (the box under the
-     buttons: paste it from the order), the serial and Sig's maker line, care,
+     same engine, the giver's note or a business's message when the order has one (the
+     boxes under the buttons: paste it from the order; there is no separate card), the serial and Sig's maker line, care,
      and the standard code to the Rain Print page. components/rp-insert.js lays
      it out; it loads on first use. No short link: the letter's code is the
      standard one. The digital file has no box, so no letter. */
@@ -3879,12 +3879,12 @@
   /* -> {svg, facts, overflow} for the design on the page: the print's own input,
      drawn once small (the miniature, with the serial it carries) so the facts
      leave off exactly the days the print leaves off. */
-  function insertSvg(gift, fontCssText, px) {
+  function insertSvg(gift, fontCssText, px, from) {
     var I = artInput({ serial: SERIAL, idPrefix: 'rpins' });
     var mini = root.AgRainArt.render(I);
     var F = root.AgRainArt.facts(I, { unplaced: root.AgRainArt.lastUnplaced() });
     var svg = root.AgRpInsert.render({
-      facts: F, mini: mini, serial: SERIAL, gift: printable(gift || ''), qr: standardMatrix(), fontCss: fontCssText, px: px,
+      facts: F, mini: mini, serial: SERIAL, gift: printable(gift || ''), giftFrom: printable(cleanText(from, 40)), qr: standardMatrix(), fontCss: fontCssText, px: px,
       station: { words: gaugeWords(META), away: META.approx ? '' : milesText(miles(META.km)).replace(/ mi$/, ' miles'), kind: stationKind(META) },
       source: META && META.ca ? 'Environment and Climate Change Canada\u2019s daily records' : 'NOAA\u2019s daily records'
     });
@@ -3895,11 +3895,11 @@
     if (!DATA || BLOCKED) return;
     if (PREVIEW) { out.textContent = 'The letter is made from the full year, like the print. Make it in January once the year is in.'; return; }
     if (META && META.ca && FR()) { out.textContent = 'The letter is in English only for now.'; return; }
-    var was = btn.textContent, note = $('rp-ins-gift') ? $('rp-ins-gift').value : '';
+    var was = btn.textContent, note = $('rp-ins-gift') ? $('rp-ins-gift').value : '', from = $('rp-ins-from') ? $('rp-ins-from').value : '';
     btn.disabled = true; btn.textContent = 'Making the letter\u2026';
     var pxW = LETTER.w * DPI, pxH = LETTER.h * DPI, info = null;
     insertReady().then(function (ok) { if (!ok) throw 'load'; return fontsReady(); }).then(fontCss).then(function (css) {
-      info = insertSvg(note, css, [pxW, pxH]);
+      info = insertSvg(note, css, [pxW, pxH], from);
       return new Promise(function (resolve, reject) {
         var img = new Image(), url = URL.createObjectURL(new Blob([info.svg], { type: 'image/svg+xml' }));
         img.onload = function () {

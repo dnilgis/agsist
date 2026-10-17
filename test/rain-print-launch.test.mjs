@@ -394,7 +394,10 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.match(HTML, /How many prints \(5 or more\)<\/span><input id="rb-qty" type="number" min="5" max="500"/);
   assert.match(HTML, /Business orders start at 5 prints/);
   assert.match(HTML, /A 2026 print ships in January/);
-  assert.match(HTML, /note card in the box/);
+  // Sig, 2026-10-17: no separate card; the business's message is printed at the top of the letter in the box
+  assert.match(HTML, /Your message is printed at the top of the letter in the box, and on a label on the back of the frame if you want one, at no charge\./);
+  assert.match(faq, /Your message is printed at the top of the letter in the box, not on the print\./);
+  assert.doesNotMatch(HTML, /note card|on a card in the box|a note for a card/);
   assert.match(HTML, /does not go on the print/);
   // Sig, 2026-10-14: a business logo may go on the print, small, if they upload one
   assert.match(HTML, /If you want your logo on it, upload one with your request: it prints small, next to the name/);
@@ -555,7 +558,7 @@ test("copy batch: size, proof, business words", () => {
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
   assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
-  assert.match(HTML, /<p>Yes\. At checkout, give their name, your note for the card and their address\./, "the gift FAQ says what the page does now");
+  assert.match(HTML, /<p>Yes\. At checkout, give their name, your note and their address\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);
   assert.match(S2, /'Rain Print order'/);
