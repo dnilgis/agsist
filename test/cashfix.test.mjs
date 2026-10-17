@@ -162,6 +162,9 @@ test("fertilizer: the lede says Kansas co-ops and the posting date range; the ti
     { key: "bad", price: null, as_of: "2026-01-01" }] };
   assert.equal(ctx.ledeWhen(doc), "Right now: Kansas co-ops only, posted Sep 24 to Oct 12, 2026.");
   assert.equal(ctx.ledeWhen({ prices: [] }), "", "no price, no lede line");
+  // 2026-10-17 audit N7: a middle that took in an older sheet dates the lede from that sheet
+  assert.equal(ctx.ledeWhen({ prices: doc.prices.concat([{ key: "thiosul", price: 420, as_of: "2026-10-06", oldest: "2026-09-10", src: "coop", region: "Kansas" }]) }),
+    "Right now: Kansas co-ops only, posted Sep 10 to Oct 12, 2026.");
   // a row whose region already names two states (Synergy, WI, 2026-10-16): each state once
   assert.equal(ctx.ledeWhen({ prices: [doc.prices[1], { key: "urea", price: 615.95, as_of: "2026-10-06", src: "coop", region: "Kansas and Wisconsin" }] }),
     "Right now: Kansas and Wisconsin co-ops only, posted Sep 24 to Oct 6, 2026.");
