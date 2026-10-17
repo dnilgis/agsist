@@ -1,0 +1,90 @@
+name: Model samples (dry run)
+
+# One-off: the same morning's briefing written on the old models and on the
+# new ones, side by side, with each call's token counts and cost. Lives ONLY on
+# the fx/models-samples branch; it is never merged to main.
+#
+# What it cannot do:
+#   - send: no email, list or send secret is in this job's environment, and no
+#     send step or script runs. The only secret is ANTHROPIC_API_KEY.
+#   - commit to main: nothing here runs git except scripts/push_raw.sh, which
+#     pushes only to the `raw` branch (never deployed). The first step stops
+#     the job on any branch but fx/models-samples, and the last step checks
+#     that main did not move during the run.
+
+on:
+  push:
+    branches: [fx/models-samples]
+    paths: ['.github/workflows/model-samples.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write        # push_raw.sh writes the raw branch
+
+concurrency:
+  group: model-samples
+  cancel-in-progress: false
+
+jobs:
+  samples:
+    if: github.ref == 'refs/heads/fx/models-samples'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Only on fx/models-samples
+        run: '[ "$GITHUB_REF" = "refs/heads/fx/models-samples" ] || { echo "::error::wrong branch"; exit 1; }'
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install feedparser==6.0.14 requests==2.34.2 pillow==12.3.0
+
+      - name: Main before
+        run: git ls-remote origin refs/heads/main | cut -f1 | tee "$RUNNER_TEMP/main-before"
+
+      - name: Latest data from main (read only)
+        run: |
+          git fetch -q --depth 1 origin main
+          git checkout FETCH_HEAD -- data
+          git status --short | tail -3
+
+      - name: Feed pre-flight and edge facts
+        run: |
+          python scripts/preflight_prices.py data/prices.json --repair || true
+          python scripts/daily_edge.py || true
+          mkdir -p "$RUNNER_TEMP/base"
+          cp -r data "$RUNNER_TEMP/base/"
+
+      - name: Write the samples
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set +e
+          OUT=samples/model-samples-$(date -u +%Y%m%dT%H%MZ)
+          mkdir -p "$OUT"
+          for arm in old new; do
+            rm -rf data && cp -r "$RUNNER_TEMP/base/data" data
+            if [ $arm = old ]; then M=claude-sonnet-5; FC=claude-fable-5-1; else M=claude-sonnet-5-5; FC=claude-fable-5-1; fi
+            echo "== $arm: writer and critic $M, fact check $FC (the old pipeline had none; the same judge reads both drafts)" | tee "$OUT/$arm.log"
+            BRIEFING_MODEL=$M python scripts/generate_daily.py 2>&1 | tee -a "$OUT/$arm.log" | grep -E "usage |cost so far|fallback|error" 
+            cp data/daily.json "$OUT/$arm-draft.json"
+            BRIEFING_MODEL=$M python scripts/critique_briefing.py 2>&1 | tee -a "$OUT/$arm.log" | grep -E "usage |fallback|error"
+            cp data/daily.json "$OUT/$arm-daily.json"
+            FACT_CHECK_MODEL=$FC FACT_CHECK_MODE=report python scripts/fact_check_briefing.py 2>&1 | tee -a "$OUT/$arm.log" | tail -25
+            cp "$RUNNER_TEMP/fact-check.json" "$OUT/$arm-fact-check.json" 2>/dev/null
+          done
+          echo "OUT=$OUT" >> "$GITHUB_ENV"
+          exit 0
+
+      - name: Save to the raw branch
+        run: |
+          rm -rf data && cp -r "$RUNNER_TEMP/base/data" data
+          bash scripts/push_raw.sh "model samples (dry run, nothing sent)" "$OUT"
+
+      - name: Main did not move
+        run: |
+          now=$(git ls-remote origin refs/heads/main | cut -f1)
+          echo "main before $(cat "$RUNNER_TEMP/main-before") after $now (a bot commit from another workflow can move it; this job pushes only raw)"
