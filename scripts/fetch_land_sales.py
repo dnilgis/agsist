@@ -813,8 +813,10 @@ def wi_acres(parcels):
 
     Each parcel on a return carries its own Total Acres. Filers often put the whole sale's acres
     on the first parcel and 0.00 on the rest, so a zero can mean "counted above" or "not known";
-    the same parcel can be listed twice; and a large figure can be repeated on every parcel. So:
-      - one parcel: its acres (above 0, under 20,000);
+    the same parcel can be listed twice; and a large figure can be repeated on every parcel.
+    A single parcel over a section is a typing slip, not a farm (the Oct 2026 build had 12,910
+    acres on "the East Half of the Northeast Quarter of Section 20", 80 acres at most). So:
+      - one parcel: its acres (above 0, a section or less);
       - several: the sum, only when every parcel number appears once, every parcel has acres
         above 0, no parcel averages over a section (640 acres), and the parcels do not all
         repeat one figure above a forty (40.5 acres; a run of forties is common, a repeated
@@ -825,7 +827,7 @@ def wi_acres(parcels):
         return None, None
     first = parcels[0]["acres"]
     if n == 1:
-        return (round(first, 2) if first and 0 < first < 20000 else None), None
+        return (round(first, 2) if first and 0 < first <= 640 else None), None
     ac1 = round(first, 2) if first and 0 < first < 20000 else None
     pins = [key(p["pin"]) for p in parcels]
     vals = [p["acres"] for p in parcels]
@@ -1123,6 +1125,8 @@ def selftest():
     ck("WI acres: the same parcel twice is uncertain", by["900004"]["acres"] is None)
     ck("WI acres: one figure above a forty repeated on every parcel is uncertain, a run of forties is summed",
        by["900005"]["acres"] is None and by["900006"]["acres"] == 80)
+    ck("WI acres: one parcel over a section is a slip, not believed (12,910 on an 80-acre legal)",
+       wi_acres([{"pin": "a", "acres": 12910.0}]) == (None, None) and wi_acres([{"pin": "a", "acres": 640.0}])[0] == 640)
     ck("WI acres: over a section per parcel, or a blank parcel number, is uncertain",
        wi_acres([{"pin": "a", "acres": 1000.0}, {"pin": "b", "acres": 500.0}])[0] is None and wi_acres([{"pin": "", "acres": 10.0}, {"pin": "b", "acres": 5.0}])[0] is None)
     ck("WI class: farm codes first, buildings classes kept", by["900002"]["cls"] == "4 1" and by["900008"]["cls"] == "6" and by["900010"]["cls"] == "5M 1")
