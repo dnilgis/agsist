@@ -5,7 +5,10 @@ that needs a browser running its scripts; the monthly historical RETR files sit 
 "Download historical RETR data" screen with no plain link. This opens that public screen in one
 headless Chromium session (no sign-in), the way a person would, and saves what it finds.
 
-  python3 scripts/wi_retr_browser.py --fetch OUTDIR [--months N]
+  python3 scripts/wi_retr_browser.py --fetch OUTDIR [--months N] [--newest-only]
+        --newest-only: just the months data/land/wi does not hold yet, plus the newest month it
+        holds again (DOR keeps adding late returns to it); build with
+        `scripts/fetch_land_sales.py --from OUTDIR/build WI --merge`.
         every month the screen offers (newest first; at most N, or 120), in DOR's XML report,
         which lists every parcel, grantor and grantee on a return. Each file is read as it
         arrives and deleted; the farm and forest returns go to OUTDIR/build/wi-retr.csv for
@@ -283,7 +286,17 @@ def start(page, log):
     return month_links(page)
 
 
-def fetch(out, most=120):
+def newest_only(offered, have):
+    """The months to read when data/land/wi already holds `have` (yyyymm strings): every offered
+    month it lacks, plus the newest one it holds, read again. Newest first."""
+    if not have:
+        return list(offered)
+    top = max(have)
+    want = [m for m in offered if m not in have or m == top]
+    return sorted(set(want), reverse=True)
+
+
+def fetch(out, most=120, only_new=False):
     """Every offered month, newest first, through one browser session, one file at a time."""
     os.makedirs(out, exist_ok=True)
     raw = os.path.join(out, "raw")
@@ -308,6 +321,11 @@ def fetch(out, most=120):
         months = [m for m in start(page, log) if m["on"]]
         months.sort(key=lambda m: (m["year"], m["month"]), reverse=True)
         months = months[:most]
+        if only_new:
+            have = lands().held("WI")[2]
+            keep = set(newest_only(["%04d%02d" % (m["year"], m["month"]) for m in months], have))
+            log.append("newest only: %d months on disk (%s to %s); reading %s" % (len(have), min(have) if have else "-", max(have) if have else "-", ", ".join(sorted(keep)) or "none"))
+            months = [m for m in months if "%04d%02d" % (m["year"], m["month"]) in keep]
         log.append("months offered: %d, %04d-%02d to %04d-%02d" % (len(months), months[-1]["year"], months[-1]["month"], months[0]["year"], months[0]["month"]) if months else "no months offered")
         if not months:
             print("::error::the historical screen offered no month")
@@ -485,10 +503,31 @@ def _explore(out, log):
     return 0
 
 
+def selftest():
+    bad = 0
+
+    def ck(name, ok):
+        nonlocal bad
+        print(("ok   " if ok else "FAIL ") + name)
+        bad += 0 if ok else 1
+    offered = ["202610", "202609", "202608", "202607"]
+    ck("newest only: the new month plus the newest held, read again", newest_only(offered, {"202607", "202608", "202609"}) == ["202610", "202609"])
+    ck("newest only: nothing new still rereads the newest held", newest_only(offered[1:], {"202607", "202608", "202609"}) == ["202609"])
+    ck("newest only: a gap in the middle is filled", newest_only(offered, {"202607", "202609"}) == ["202610", "202609", "202608"])
+    ck("newest only: nothing on file reads every offered month", newest_only(offered, set()) == offered)
+    rb = "User-agent: *\nDisallow: /_layouts/\nDisallow: /Pages/Employment/Badge-Photo.aspx\n"
+    ck("robots: DOR's rules allow the data page", robots_allows(rb, "/Pages/ERETR/data-home.aspx") and not robots_allows(rb, "/_layouts/x"))
+    ck("robots: a disallow of everything stops the fetch", not robots_allows("User-agent: *\nDisallow: /\n", "/Pages/ERETR/data-home.aspx"))
+    print("FAILS=%d" % bad)
+    return 1 if bad else 0
+
+
 if __name__ == "__main__":
     a = sys.argv[1:]
+    if "--selftest" in a:
+        sys.exit(selftest())
     if "--fetch" in a:
-        sys.exit(fetch(a[a.index("--fetch") + 1], int(a[a.index("--months") + 1]) if "--months" in a else 120))
+        sys.exit(fetch(a[a.index("--fetch") + 1], int(a[a.index("--months") + 1]) if "--months" in a else 120, "--newest-only" in a))
     if "--convert" in a:
         i = a.index("--convert")
         sys.exit(convert(a[i + 1], a[i + 2:]))

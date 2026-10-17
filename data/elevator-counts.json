@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-17T17:42:11Z",
+ "generated": "2026-10-17T19:37:08Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1767,
-  "towns": 1387
+  "elevators": 1743,
+  "towns": 1369
  },
  "states": {
   "AL": {
@@ -36,8 +36,8 @@
    "towns": 1
   },
   "IL": {
-   "elevators": 208,
-   "towns": 149
+   "elevators": 206,
+   "towns": 147
   },
   "IN": {
    "elevators": 63,
@@ -56,27 +56,27 @@
    "towns": 1
   },
   "MI": {
-   "elevators": 17,
-   "towns": 17
+   "elevators": 15,
+   "towns": 15
   },
   "MN": {
-   "elevators": 154,
-   "towns": 130
+   "elevators": 150,
+   "towns": 127
   },
   "MO": {
    "elevators": 28,
    "towns": 27
   },
   "MT": {
-   "elevators": 8,
-   "towns": 8
+   "elevators": 7,
+   "towns": 7
   },
   "ND": {
-   "elevators": 48,
-   "towns": 44
+   "elevators": 41,
+   "towns": 38
   },
   "NE": {
-   "elevators": 199,
+   "elevators": 196,
    "towns": 150
   },
   "NY": {
@@ -84,8 +84,8 @@
    "towns": 2
   },
   "OH": {
-   "elevators": 78,
-   "towns": 70
+   "elevators": 77,
+   "towns": 69
   },
   "OK": {
    "elevators": 77,
@@ -104,8 +104,8 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 106,
-   "towns": 91
+   "elevators": 104,
+   "towns": 90
   },
   "TN": {
    "elevators": 4,
@@ -120,8 +120,8 @@
    "towns": 8
   },
   "WI": {
-   "elevators": 82,
-   "towns": 74
+   "elevators": 80,
+   "towns": 72
   },
   "WY": {
    "elevators": 1,
@@ -129,9 +129,9 @@
   }
  },
  "coverage": {
-  "generated": "2026-10-17T15:53:15.832Z",
-  "read": 1852,
-  "quiet": 221,
+  "generated": "2026-10-17T19:29:48.484Z",
+  "read": 1845,
+  "quiet": 228,
   "known": 6330,
   "elevators": 8403
  }
