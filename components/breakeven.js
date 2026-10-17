@@ -29,7 +29,7 @@
   var COST_KEYS = ['seed', 'fertilizer', 'chemicals', 'insurance', 'machinery', 'labor', 'land', 'overhead'];
   var BUDGET_KEYS = ['yield', 'seed', 'chemicals', 'insurance', 'machinery', 'labor', 'land', 'overhead'];
   var FIELD_KEYS = ['yield', 'price', 'basis', 'seed', 'fertilizer', 'chemicals', 'insurance', 'machinery', 'labor', 'land', 'overhead', 'other', 'rentAcres', 'rentRate', 'ownAcres', 'ownRate'];
-  var TAGGED = ['yield', 'seed', 'fertilizer', 'chemicals', 'insurance', 'machinery', 'labor', 'land', 'overhead', 'other'];
+  var TAGGED = ['yield', 'basis', 'seed', 'fertilizer', 'chemicals', 'insurance', 'machinery', 'labor', 'land', 'overhead', 'other'];
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var $ = function (id) { return D.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -37,7 +37,7 @@
   function day(iso) { var m = /^(\d{4})-(\d\d)-(\d\d)/.exec(iso || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
   function money(v) { return '$' + (Math.abs(v) % 1 ? Math.abs(v).toFixed(2) : Math.round(Math.abs(v)).toLocaleString('en-US')); }
 
-  var MORE_JS = '/components/breakeven-more.js?v=1', _hadSaved = false;
+  var MORE_JS = '/components/breakeven-more.js?v=2', _hadSaved = false;
   var _livePrices = null, _pricesFetched = null, _beYear = '0', _suppressSeed = false, _region = 'n';
   var SRC = {};          /* field id -> {k: kind, t: text} */
   var _ls = null; try { _ls = W.localStorage; } catch (e) { _ls = null; }
@@ -66,7 +66,10 @@
     });
     setSrc('fertilizer', FERT ? 'fert' : 'user', '');
     setSrc('other', 'none', '');
+    setSrc('basis', 'none', '');
   }
+  /* basis 0 that nobody chose: the page's default, not his number or a state median */
+  function basisAssumed() { var k = (SRC.basis || {}).k; return k !== 'user' && k !== 'state' && !(num('basis')); }
   function renderSrc() {
     var c = crop(), y = num('yield');
     TAGGED.forEach(function (id) {
@@ -77,6 +80,9 @@
         var f = fertFor(c, y);
         t = f ? (c === 'soybeans' ? '' : f.lb[0] + ' lb N, ') + f.lb[1] + ' lb P\u2082O\u2085, ' + f.lb[2] + ' lb K\u2082O for ' + Math.round(y) + ' bu at co-op prices posted through ' + day(FERT.asof) + '. Follows your yield.' : '';
       } else if (s.t) t = (/^farmdoc/.test(s.t) ? s.t : s.t.charAt(0).toUpperCase() + s.t.slice(1)) + '.';
+      else if (id === 'basis' && basisAssumed()) t = 'Basis 0 assumed; enter yours (your elevator\u2019s bid minus futures).';
+      /* a state median carries its link to /basis */
+      if (s.k === 'state') { el.innerHTML = esc(t) + ' <a href="/basis">Basis by state</a>'; el.hidden = false; return; }
       el.textContent = t; el.hidden = !t;
     });
   }
@@ -111,6 +117,7 @@
       var b = c === 'wheat' ? null : budgetLine(c, k);
       if (b != null && String(b) === String(v)) return;   /* still the budget's number: defaultSrc label stands */
       if (k === 'other' && String(v) === '') return;
+      if (k === 'basis' && (String(v) === '' || Number(v) === 0)) return;   /* the default 0, not a choice */
       if (c === 'wheat' && CROP_DEFAULTS.wheat[k] != null && String(CROP_DEFAULTS.wheat[k]) === String(v)) return;
       setSrc(k, 'user');
     });
@@ -236,6 +243,8 @@
     }
     beEl.textContent = beOK ? ('$' + beBu.toFixed(2) + '/bu' + beState) : BEWHY;
     beEl.className = 'result-value be-highlight ' + (!calc || !beOK ? 'highlight' : cash > beBu && beBu > 0 ? 'positive' : cash < beBu && beBu > 0 ? 'negative' : 'highlight');
+    var flEl = $('futLabel'); if (flEl) flEl.textContent = 'Futures needed at your ' + (basis && !bBad ? (basis > 0 ? '+' : '\u2212') + Math.abs(basis).toFixed(2) + ' basis' : 'basis');
+    var fsEl = $('fut-sub'); if (fsEl) { var as = beOK && basisAssumed(); fsEl.hidden = !as; fsEl.textContent = as ? 'Basis 0 assumed; enter yours.' : ''; }
     var fnEl = $('futNeeded'); if (fnEl) fnEl.textContent = !beOK ? BEWHY : bBad ? DASH + ' \xb7 ' + BWHY : '$' + (beBu - basis).toFixed(2) + '/bu';
     var snEl = $('split-note');
     if (snEl) {
@@ -279,9 +288,11 @@
     if (!r.beOK) { a.textContent = '-'; u.textContent = r.why.replace(/^- \xb7 /, ''); s.textContent = ''; if (f) f.textContent = ''; return; }
     a.textContent = '$' + r.beBu.toFixed(2); u.textContent = 'a bushel, cash';
     if (f) {
-      var t = r.bBad ? '' : 'Futures needed at your basis: $' + (r.beBu - r.basis).toFixed(2) + '.';
+      /* futures needed = cash break-even minus basis: a -0.40 basis adds 40 cents, a +0.10 basis takes 10 off */
+      var bw = r.basis ? (r.basis > 0 ? '+' : '\u2212') + Math.abs(r.basis).toFixed(2) + ' basis' : 'basis';
+      var t = r.bBad ? '' : 'Futures needed at your ' + bw + ': $' + (r.beBu - r.basis).toFixed(2) + (basisAssumed() ? ' (basis 0 assumed; enter yours)' : '') + '.';
       var pd = (W.AG && W.AG.px && W.AG.px.priceDollars) ? W.AG.px.priceDollars(r.price) : '$' + r.price.toFixed(2);
-      if (r.calc) t += ' At ' + pd + ' futures' + (r.basis ? ' and ' + (r.basis > 0 ? '+' : '') + r.basis.toFixed(2) + ' basis' : '') + ' you ' + (r.profit >= 0 ? 'make ' : 'lose ') + money(Math.round(r.profit)) + ' an acre.';
+      if (r.calc) t += ' At ' + pd + ' futures' + (r.basis ? ' and ' + bw : '') + ' you ' + (r.profit >= 0 ? 'make ' : 'lose ') + money(Math.round(r.profit)) + ' an acre.';
       f.textContent = t.trim();
     }
     s.textContent = sensWords(r.yld, r.net, r.acres);
@@ -291,6 +302,7 @@
       var bits = [], k = function (id) { return (SRC[id] || {}).k; };
       if (cnty && (k('land') === 'county' || k('yield') === 'county')) bits.push((k('land') === 'county' && k('yield') === 'county' ? 'Rent and trend yield' : k('land') === 'county' ? 'Rent' : 'Trend yield') + ' from ' + cnty + (ci.auto ? ' (your saved location)' : ''));
       if (k('other') === 'arc') bits.push('an ARC/PLC estimate in other revenue');
+      if (k('basis') === 'state') bits.push('basis: ' + SRC.basis.t.split(',')[0].replace(/ basis$/, ''));
       var rr = region(); if (crop() !== 'wheat' && rr && ['seed', 'chemicals', 'machinery'].some(function (x) { return k(x) === 'budget'; })) bits.push('other costs from farmdoc\u2019s 2027 ' + rr.name + ' budget');
       if (k('fertilizer') === 'fert') bits.push('fertilizer at co-op prices posted through ' + day(FERT.asof));
       var t = bits.join('; ');
@@ -349,7 +361,7 @@
   function fetchLivePrices() {
     fetch('/data/prices.json', { cache: 'no-cache' })  /* revalidate: as fresh as no-store, and a repeat visit gets a 304 instead of the whole file */
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (data) { _livePrices = data.quotes || {}; _pricesFetched = data.fetched || null; updateLiveBar(); calcBreakeven(); }).catch(function () { });
+      .then(function (data) { _livePrices = data.quotes || {}; _pricesFetched = data.fetched || null; updateLiveBar(); if (W.AgBECounty) W.AgBECounty.basis(); calcBreakeven(); }).catch(function () { });
   }
   /* "Settle" only when the price file marks the close a settle (close_kind,
      fetch_prices v3.7); a file from before that counts it a settle only when
@@ -485,7 +497,7 @@
   }
   W.AgBreakeven = { calc: function () { calcBreakeven(); }, sens: sensWords, fertFor: fertFor };
   /* what the county file needs from here */
-  W.AgBE = { $: $, esc: esc, money: money, day: day, crop: crop, cropYear: cropYear, setSrc: setSrc, src: function (k) { return SRC[k] || {}; },
+  W.AgBE = { contract: function () { var q = _livePrices && _livePrices[contractFor(crop())]; return q && q.ticker ? String(q.ticker).replace(/\.CBT$/, '') : ''; }, num: num, $: $, esc: esc, money: money, day: day, crop: crop, cropYear: cropYear, setSrc: setSrc, src: function (k) { return SRC[k] || {}; },
     calc: function () { calcBreakeven(); }, renderSrc: function () { renderSrc(); }, lsGet: lsGet, lsSet: lsSet, savedLoc: savedLoc, hadSaved: function () { return _hadSaved; } };
   if (D.readyState === 'loading') D.addEventListener('DOMContentLoaded', boot); else boot();
 })();
