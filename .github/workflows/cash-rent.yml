@@ -33,7 +33,7 @@ jobs:
       # Runs offline, needs no key. If the parsing rules are broken there is no
       # point spending an hour hammering a public API to find out.
       - name: Selftest (gate)
-        run: python scripts/county_yield.py --selftest && python scripts/fetch_cash_rent.py --selftest
+        run: python scripts/county_yield.py --selftest && python scripts/fetch_cash_rent.py --selftest && python scripts/send_rent_notice.py --selftest
 
       - name: Skip outside the release window
         id: window
@@ -70,6 +70,26 @@ jobs:
           # against main and then fail its push (2026-10-06).
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      # The rent release email (subs worker topic rent:<st>, asked on /rent/<state>):
+      # each notice made before the newest release is mailed once and marked.
+      # Rides this job's schedule (no new cron). The history fetch lets the
+      # sender find a year's first commit when the page has no release date.
+      - name: Rent release emails
+        if: steps.window.outputs.go == '1'
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+        run: |
+          git fetch -q --shallow-since="$(date -u +%Y)-07-01" origin "${GITHUB_REF_NAME}" || true
+          python3 scripts/send_rent_notice.py --send
 
       - name: IndexNow ping (Bing learns about new pages in seconds)
         if: steps.window.outputs.go == '1'

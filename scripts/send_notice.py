@@ -9,8 +9,9 @@ sign-ups for the topic from GET /notice-list, mails each address once, and
 marks it with POST /notice-mark only after the send succeeded. A marked
 address is never mailed again, so any number of runs on the same day is safe.
 
-Only the arcplc: template exists. Other topics the worker accepts (rent:<st>)
-are refused here until they get a template of their own.
+Only the arcplc: template lives here. rent:<st> topics are mailed by
+scripts/send_rent_notice.py (cash-rent.yml); `--topic rent:<st>` here hands the
+run to it, so neither script refuses a rent notice. Other topics are refused.
 
 WHEN IT SENDS (arcplc). The deadlines are build_arc_plc.py's own YEAR_INFO
 closes (2026-12-11, 2027-03-15), the same dates the pages print and the ask
@@ -90,6 +91,8 @@ def due_topics(today):
 
 def check_topic(topic, today, any_day=False):
     """None when the topic may be mailed today, else why not."""
+    if re.fullmatch(r"rent:[a-z]{2}", topic or ""):
+        return "rent topics are mailed by scripts/send_rent_notice.py"
     m = re.fullmatch(r"arcplc:(\d{4}-\d{2}-\d{2})", topic or "")
     if not m:
         return "no template for this topic"
@@ -217,7 +220,7 @@ def mark(http, base, tok, email, topic, sleep):
 
 
 # ---------------------------------------------------------------- the run
-def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, out=print):
+def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, out=print, rent_run=None):
     p = argparse.ArgumentParser(add_help=False)
     p.add_argument("--topic", default="")
     p.add_argument("--send", action="store_true")
@@ -228,6 +231,12 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
     send = a.send and not a.dry_run
     today = (now or datetime.now(TZ)).astimezone(TZ).date()
     topic_in = a.topic.strip().lower()
+    if re.fullmatch(r"rent:[a-z]{2}", topic_in):
+        # the rent release has its own rule (the first release after the sign-up)
+        if rent_run is None:
+            import send_rent_notice
+            rent_run = send_rent_notice.run
+        return rent_run(argv, http=http, connect=connect, now=now, sleep=sleep, out=out)
 
     if topic_in:
         topics = [topic_in]
@@ -374,7 +383,8 @@ def selftest():
     ck("2027 deadline fires Mar 8 2027", due_topics(date(2027, 3, 8)) == ["arcplc:2027-03-15"])
     ck("Dec 4 2027 is not a reminder day", due_topics(date(2027, 12, 4)) == [])
     ck("ask copy matches: reminder day is deadline - 7", remind_day("2026-12-11") == date(2026, 12, 4))
-    ck("rent:wi has no template yet", check_topic("rent:wi", date(2026, 12, 4)) == "no template for this topic")
+    ck("rent:wi points at its own sender", check_topic("rent:wi", date(2026, 12, 4)) == "rent topics are mailed by scripts/send_rent_notice.py")
+    ck("a made-up topic has no template", check_topic("hail:wi", date(2026, 12, 4)) == "no template for this topic")
     ck("a made-up date is refused", check_topic("arcplc:2026-12-12", date(2026, 12, 4), True) is not None)
     ck("past deadline refused even with --any-day", check_topic(T, date(2026, 12, 11), True) is not None)
     ck("--any-day allows an early manual send", check_topic(T, date(2026, 11, 20), True) is None)
@@ -540,8 +550,12 @@ def selftest():
     ck("--max caps a run and the rest wait", rc == 0 and len(s.sent) == 1 and "2 left for the next run" in log, log)
     w = Worker()
     s = SMTP(w)
-    rc, log = go(["--send", "--topic", "rent:wi", "--any-day"], w, s)
-    ck("rent:wi is refused before anything is read", rc == 1 and not w.log, log)
+    handed = []
+    rc = run(["--send", "--topic", "rent:wi", "--any-day"], http=w, connect=s, now=C("2026-12-04 08:10"), sleep=lambda x: None,
+             out=lambda x: None, rent_run=lambda argv, **k: handed.append(argv) or 7)
+    ck("rent:wi is handed to send_rent_notice.py, nothing read here", rc == 7 and handed == [["--send", "--topic", "rent:wi", "--any-day"]] and not w.log)
+    rc, log = go(["--send", "--topic", "hail:wi", "--any-day"], w, s)
+    ck("a topic with no sender is refused before anything is read", rc == 1 and not w.log, log)
     rc, log = go(["--send", "--topic", T], w, s, "2026-11-20 08:10")
     ck("a manual topic still waits for its day without --any-day", rc == 1 and not s.sent, log)
 

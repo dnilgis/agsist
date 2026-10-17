@@ -206,3 +206,15 @@ test("company page box: its own ZIP field, the Daily by ZIP and the 25 mi price 
     assert.ok(al && al.body.ewid === "ab50830025" && al.body.target_cents === 450 && al.body.crop === "corn", JSON.stringify(al));
   } finally { await browser.close(); srv.close(); }
 });
+
+test("rent release emails ride cash-rent.yml with no new schedule, after the commit", () => {
+  const y = read(".github/workflows/cash-rent.yml");
+  assert.deepEqual([...y.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]), ["20 14 * * 3"]);
+  assert.ok(y.includes("python scripts/send_rent_notice.py --selftest"), "offline selftest in the gate");
+  const at = y.indexOf("python3 scripts/send_rent_notice.py --send");
+  assert.ok(at > y.indexOf("- name: Commit"), "after the new rents are committed");
+  const s = read("scripts/send_rent_notice.py");
+  assert.ok(s.includes('TOPIC_RE = re.compile(r"rent:([a-z]{2})")'), "reads the topic the rent pages post");
+  assert.ok(read("scripts/build_state_rent_pages.py").includes('data-topic="rent:{st.lower()}"'));
+  assert.ok(read("scripts/send_notice.py").includes("import send_rent_notice"), "send_notice.py hands rent topics over");
+});
