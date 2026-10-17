@@ -1973,7 +1973,7 @@ AG.json('/data/prices.json')
       var __pxs=pxStampHtml(front,data);
       /* an old settle greys the hero, as the stamp does (price-local.js settleAge) */
       var __age=front&&front.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(front.settle_date||front.close_date):null;
-      var __ph=document.querySelector('.ph');if(__ph)__ph.classList.toggle('px-old',!!(__age&&__age.old));
+      Array.prototype.forEach.call(document.querySelectorAll('.ph,.cg'),function(__ph){__ph.classList.toggle('px-old',!!(__age&&__age.old));});
       if(__st){var __sx=(typeof computeMarketSession==='function')?computeMarketSession():null;
         __st.innerHTML=(__sx&&__sx.state==='closed'?'Market closed \u00b7 ':'')+__pxs;}
       var __sa=document.getElementById('snap-age');if(__sa){__sa.innerHTML=__pxs;__sa.hidden=!__pxs;}
