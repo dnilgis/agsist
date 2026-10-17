@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-10-16T19:10:35+00:00",
+ "built": "2026-10-17T02:14:24+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -5637,108 +5637,108 @@
    "country": "US"
   },
   "bing": {
-   "start": "2026-09-18",
+   "start": "2026-09-25",
    "end": "2026-10-14",
    "rows": [
     {
      "q": "grain markets today",
-     "clicks": 57,
-     "impr": 554
-    },
-    {
-     "q": "feeder cattle futures",
-     "clicks": 31,
-     "impr": 3019
+     "clicks": 60,
+     "impr": 552
     },
     {
      "q": "agsist",
-     "clicks": 28,
-     "impr": 215
+     "clicks": 34,
+     "impr": 260
     },
     {
      "q": "cattle futures prices today",
-     "clicks": 27,
-     "impr": 145
+     "clicks": 30,
+     "impr": 127
     },
     {
      "q": "grain prices today",
-     "clicks": 26,
-     "impr": 707
+     "clicks": 28,
+     "impr": 698
+    },
+    {
+     "q": "feeder cattle futures",
+     "clicks": 21,
+     "impr": 2775
     },
     {
      "q": "corn prices today",
-     "clicks": 24,
-     "impr": 1883
+     "clicks": 21,
+     "impr": 1676
     },
     {
      "q": "corn price today",
-     "clicks": 19,
-     "impr": 207
+     "clicks": 18,
+     "impr": 216
     },
     {
-     "q": "price of corn today",
-     "clicks": 16,
-     "impr": 248
+     "q": "corn futures prices",
+     "clicks": 15,
+     "impr": 260
     },
     {
      "q": "corn prices per bushel today",
      "clicks": 13,
-     "impr": 304
+     "impr": 290
     },
     {
-     "q": "corn futures prices",
-     "clicks": 13,
-     "impr": 287
-    },
-    {
-     "q": "corn and soybean prices today",
-     "clicks": 10,
-     "impr": 77
-    },
-    {
-     "q": "farm grain prices today",
-     "clicks": 10,
-     "impr": 76
+     "q": "corn markets today",
+     "clicks": 11,
+     "impr": 99
     },
     {
      "q": "corn prices near me",
-     "clicks": 8,
-     "impr": 20
+     "clicks": 11,
+     "impr": 30
     },
     {
-     "q": "current grain prices near me",
-     "clicks": 7,
-     "impr": 14
+     "q": "price of corn today",
+     "clicks": 10,
+     "impr": 208
+    },
+    {
+     "q": "local grain prices",
+     "clicks": 9,
+     "impr": 53
     },
     {
      "q": "cme feeder cattle futures",
+     "clicks": 7,
+     "impr": 834
+    },
+    {
+     "q": "farm grain prices today",
+     "clicks": 7,
+     "impr": 86
+    },
+    {
+     "q": "corn and soybean prices today",
+     "clicks": 7,
+     "impr": 55
+    },
+    {
+     "q": "cbot soybeans",
      "clicks": 6,
-     "impr": 921
+     "impr": 687
     },
     {
      "q": "corn prices",
      "clicks": 6,
-     "impr": 583
+     "impr": 613
     },
     {
-     "q": "local grain prices",
+     "q": "cash grain prices by zip code",
      "clicks": 6,
-     "impr": 36
+     "impr": 104
     },
     {
-     "q": "cbot soybeans",
-     "clicks": 5,
-     "impr": 617
-    },
-    {
-     "q": "cattle futures",
-     "clicks": 5,
-     "impr": 492
-    },
-    {
-     "q": "price of corn",
-     "clicks": 5,
-     "impr": 148
+     "q": "local cash grain prices zip",
+     "clicks": 6,
+     "impr": 7
     }
    ],
    "country": "worldwide"
@@ -6127,21 +6127,21 @@
   "ga4": {
    "ok": true,
    "through": "2026-10-14",
-   "fetched": "2026-10-16T19:10:35+00:00"
+   "fetched": "2026-10-17T02:14:24+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-10-16T19:10:35+00:00"
+   "fetched": "2026-10-17T02:14:24+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-10-16T19:10:35+00:00"
+   "fetched": "2026-10-17T02:14:24+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-10-16T19:10:35+00:00"
+   "fetched": "2026-10-17T02:14:24+00:00"
   }
  }
 }
