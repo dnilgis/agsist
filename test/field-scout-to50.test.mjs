@@ -25,7 +25,10 @@ import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const HTML = readFileSync(ROOT + "field-scout.html", "utf8");
-const JS = readFileSync(ROOT + "field-scout.js", "utf8");
+// The page script is split (Oct 16, 2026): field-scout.js is the first screen, the read and the
+// extras load on demand. Text checks below run over all three, the way the browser ends up with them.
+const CORE = readFileSync(ROOT + "field-scout.js", "utf8");
+const JS = [CORE, readFileSync(ROOT + "field-scout-read.js", "utf8"), readFileSync(ROOT + "field-scout-extras.js", "utf8")].join("\n");
 const CSS = readFileSync(ROOT + "components/field-scout.css", "utf8");
 const json = (p) => JSON.parse(readFileSync(ROOT + p, "utf8"));
 

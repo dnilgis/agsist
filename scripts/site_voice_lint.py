@@ -340,7 +340,7 @@ def hits_in(texts):
 FAMILIES = ["cash-bids", "basis", "rent", "yield", "farmland-atlas", "hail", "hail-map", "embed"]
 CODE = ["components/*.js", "workers/subs-worker.js", "scripts/brief_email.py",
         "scripts/send_*.py", "scripts/check_alerts.py", "scripts/sponsor_apply.py",
-        "field-scout.js", "embed.js"]
+        "field-scout.js", "field-scout-read.js", "field-scout-extras.js", "embed.js"]
 
 
 def default_files(all_generated=False):
