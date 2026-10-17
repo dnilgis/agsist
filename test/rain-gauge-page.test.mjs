@@ -1,6 +1,5 @@
-/* /rain-gauge: Sig's three rain things (Oct 17): Rain Print (on sale), the
- * AGSIST rain gauge prototype and its waitlist, and the Lorain, a tipping-bucket
- * concept with its own interest list.
+/* /rain-gauge: Sig's two rain things (Oct 17): Rain Print (on sale) and the
+ * AGSIST rain gauge prototype with its waitlist, in the live page's own words.
  * Guards the things that matter if someone edits it by hand: the FAQ says the
  * same words on the page and in the JSON-LD, no Product or price goes into
  * structured data, the build details stay off the page, every picture has its
@@ -45,7 +44,7 @@ test("no build details, no promises the owner has not made, house style", () => 
     [/\b(PLA|PETG|ABS|ASA|PVC|polycarbonate|acrylic|resin|nylon)\b/, "a material"], [/\b\d+\s?:\s?1\b|\bratio\b|\bbore\b/i, "a ratio or bore"], [/fiducial|aruco|apriltag|threshold|homograph|algorithm|neural|model/i, "how the photo is read"],
     [/accurate to|within [\d.]+|\d+(\.\d+)?\s?%\s+accura/i, "an accuracy figure"], [/gauge-lab/, "a link to the unlisted lab page"],
     [/capacity|holds up to|part count|\d+ parts/i, "capacity or part count"], [/guarantee|forever/i, "guarantee or forever"],
-    [/reading method|\bstrips?\b/i, "the reading method or strip"], [/lorain\.io/i, "the dropped lorain.io name"],
+    [/reading method|\bstrips?\b/i, "the reading method or strip"],
     [/\bLoRa(WAN)?\b|Wi-?Fi|Bluetooth|\bBLE\b|Zigbee|cellular|\bLTE\b|\bGSM\b|softAP|\b(2\.4|915|868|433)\s?(GHz|MHz)/i, "a radio or its protocol"],
     [/\b(reed|hall[- ]effect|magnet|ESP32|microcontroller|circuit|PCB|sensor|load cell|ultrasonic|capacitive|siphon|solar|18650|lithium|Li-?ion|mAh)\b/i, "a part, sensor or cell"],
   ]) assert.ok(!re.test(words), "the page must not carry " + why + ": " + (words.match(re) || [])[0]);
@@ -65,7 +64,7 @@ test("every picture has a size, alt text and a file behind it, and every caption
   for (const m of main.matchAll(/srcset="\/([^"]+)"/g)) assert.ok(existsSync(ROOT + m[1]), "file: " + m[1]);
   const caps = [...main.matchAll(/<figcaption[^>]*>([^<]*)<\/figcaption>/g)].map((m) => m[1]).filter((c) => !/Sigurd/.test(c));
   assert.ok(caps.length >= 7);
-  for (const c of caps) assert.ok(/^(Prototype design, 3D render\. |Concept screen: |A real one: \d{4} at |Concept render, not a product photo\.$)/.test(c), "caption: " + c);
+  for (const c of caps) assert.ok(/^(Prototype design, 3D render\. |Concept screen: |A real one: \d{4} at )/.test(c), "caption: " + c);
   // the renders Sig turned down stay off the page and out of the repo
   for (const old of ["gauge-field-edge", "gauge-phone-scan", "gauge-top-qr", "screen-1-scan", "screen-2-confirm"]) {
     assert.ok(!page.includes(old), "old concept image on the page: " + old);
@@ -135,70 +134,40 @@ test("Sig, 2026-10-14: the first-batch price holds for everyone on the waitlist,
   assert.ok(!/while the first batch lasts/i.test(main));
 });
 
-// Oct 17: three things on one page (Sig, via the lead)
-const ORDER = ["rain-print", "gauge", "lorain", "record", "fit", "rg-faq-h"];
+// Oct 17: two things on one page (Sig, via the lead)
+const ORDER = ["rain-print", "gauge", "rg-faq-h"];
 const sec = (id) => { const i = main.indexOf(`id="${id}"`); assert.ok(i > 0, "section " + id); const nx = ORDER[ORDER.indexOf(id) + 1]; return main.slice(i, nx ? main.indexOf(`id="${nx}"`) : undefined); };
-test("the page runs in order: opening, Rain Print, the AGSIST rain gauge, the Lorain, on the record, how they fit, questions", () => {
-  const at = ["<h1>", 'id="rain-print"', 'id="gauge"', 'id="lorain"', 'id="record"', 'id="fit"', 'id="rg-faq-h"'].map((k) => main.indexOf(k));
+test("the page runs in order: opening with two cards, Rain Print, the AGSIST rain gauge, questions", () => {
+  const at = ["<h1>Two things for the rain at your place</h1>", 'id="rain-print"', 'id="gauge"', 'id="rg-faq-h"'].map((k) => main.indexOf(k));
   for (let i = 0; i < at.length; i++) assert.ok(at[i] > 0 && (i === 0 || at[i] > at[i - 1]), "order at " + i);
   assert.equal((main.match(/<h1>/g) || []).length, 1);
+  assert.equal((main.match(/<ul class="rg-three">[\s\S]*?<\/ul>/)[0].match(/<li>/g) || []).length, 2, "two cards");
   assert.ok(main.indexOf('id="rg-form-1"') > at[2] && main.indexOf('id="rg-form-1"') < at[3], "the waitlist sits with the gauge");
-  assert.ok(main.indexOf('id="rg-form-3"') > at[3] && main.indexOf('id="rg-form-3"') < at[4], "the interest list sits with the Lorain");
   assert.match(main, /Sigurd Lindquist, CCA/);
   assert.ok(!/Sigurd Lindquist, Certified Crop Adviser/.test(main), "short byline on the page (Oct 16)");
 });
-test("the existing gauge keeps the live page's own words, and none of the Lorain's features", () => {
+test("only two things: no second gauge, concept, second list, or anything Sig dropped", () => {
+  // the existing gauge's own "Concept screen" captions and "concept screens" line are the live page's words and stay
+  const words = (text(main) + " " + JSON.stringify(ld) + " " + page.match(/<head>[\s\S]*<\/head>/)[0].replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ""))
+    .replace(/Concept screen:|concept screens/g, "");
+  for (const re of [/lorain/i, /tipping/i, /bucket/i, /\bconcepts?\b/i, /second (gauge|list)/i, /another gauge/i, /interest list/i, /three things/i, /exploring/i])
+    assert.ok(!re.test(words), "must not appear: " + re);
+  assert.ok(!/data-note-prefix|data-list=/.test(page), "no second-list form code");
+  assert.ok(!existsSync(ROOT + "img/rain-gauge/lorain-concept.jpg") && !existsSync(ROOT + "img/rain-gauge/lorain-concept.webp"));
+  assert.equal((main.match(/<form\b/g) || []).length, 2, "only the two waitlist forms");
+  assert.ok(!/id="(record|fit)"/.test(main), "no record or fit section");
+});
+test("the existing gauge keeps the live page's own words", () => {
   const g = text(sec("gauge"));
   for (const s of ["A rain gauge that keeps its own log", "Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field.",
     "a prototype on my bench in Chetek", "Wood post or T-post", "How it would work", "Why I’m building it", "Who it’s for", "A season next to a standard gauge"])
     assert.ok(g.includes(s), "kept: " + s);
-  assert.ok(!/reports on its own|on batteries|every tip|tipping|dashboard|subscription/i.test(g), "a Lorain feature in the gauge section");
+  assert.ok(!/reports on its own|on batteries|every tip|dashboard|subscription/i.test(g));
+  assert.ok(!/\$|\bUSD\b|\d+\s?dollars|per month/i.test(g), "no gauge price");
 });
-test("no price for either gauge, and no date for the Lorain", () => {
-  const g = text(sec("gauge")) + " " + text(sec("lorain")) + " " + text(sec("record")) + " " + text(sec("fit"));
-  assert.ok(!/\$|\bUSD\b|\d+\s?dollars|per month/i.test(g), "a gauge price: " + (g.match(/\$\S*|USD|dollars|per month/) || [])[0]);
-  const l = text(sec("lorain"));
-  assert.match(l, /Exploring: no price, no date/);
-  assert.match(l, /It doesn’t exist yet\./);
-  assert.ok(!/before planting|20\d\d|available|order now|ships?\b/i.test(l), "the Lorain carries no date or sale wording");
-});
-test("each gauge's name is written in one place", () => {
+test("the gauge's name is written in one place", () => {
   assert.equal((page.match(/AGSIST rain gauge/g) || []).length, 1);
   assert.match(main, /<!-- THE GAUGE'S NAME:[^>]*-->\s*<p class="rg-tag"><span><span id="rg-gauge-name">The AGSIST rain gauge<\/span>/);
-  const shown = page.replace(/<!--[\s\S]*?-->/g, "").replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "").replace(/data-note-prefix="[^"]*"/g, "");
-  assert.equal((shown.match(/Lorain/g) || []).length, 1, "the concept's name shows once");
-  assert.match(main, /<h2 class="sec-h" id="rg-lorain-h">The Lorain<\/h2>/);
-});
-test("the Lorain form: its own interest list, same worker topic, note tagged [Lorain]; the waitlist forms unchanged", () => {
-  const f = main.match(/<form class="rg-form rg-form-lorain" id="rg-form-3"[\s\S]*?<\/form>/);
-  assert.ok(f, "the Lorain form");
-  assert.match(f[0], /data-list="rain-gauge-lorain" data-note-prefix="\[Lorain\] "/);
-  assert.match(f[0], /id="rg-email-3"[^>]*required/);
-  assert.ok(!/id="rg-(zip|use)-3"[^>]*required/.test(f[0]));
-  assert.match(f[0], /id="rg-gotcha-3" name="_gotcha"/);
-  assert.match(f[0], /id="rg-use-3" name="use" maxlength="(\d+)"/);
-  assert.ok(+f[0].match(/id="rg-use-3" name="use" maxlength="(\d+)"/)[1] + "[Lorain] ".length <= 280, "within the worker's NOTE_TEXT_MAX");
-  assert.match(text(sec("lorain")), /interest list for this concept only, separate from the gauge waitlist above/);
-  // run the page's own note line the way the submit handler does
-  const line = page.match(/var note = (prefix \? [^;]+);/);
-  assert.ok(line, "the note line");
-  const noteFor = (c, u) => [c && "Gauges: " + c, u && "Use: " + u].filter(Boolean).join(". ");
-  const mk = new Function("prefix", "use", "count", "noteFor", "return " + line[1] + ";");
-  assert.equal(mk("[Lorain] ", "rain   rate on  the home field", "", noteFor), "[Lorain] rain rate on the home field");
-  assert.ok(mk("[Lorain] ", "x".repeat(400), "", noteFor).length === 280 && mk("[Lorain] ", "x".repeat(400), "", noteFor).startsWith("[Lorain] "));
-  assert.equal(mk("", "a few fields", "2-5", noteFor), "Gauges: 2-5. Use: a few fields", "the waitlist note is unchanged");
-  assert.match(page, /topic: 'rain-gauge', source: 'rain-gauge'/);
-  assert.ok(!/topic: '(?!rain-gauge')/.test(page), "no other topic: the worker takes rain-gauge only");
-  // the two waitlist forms keep their markup
-  for (const n of [1, 2]) assert.ok(new RegExp(`<form class="rg-form" id="rg-form-${n}" data-n="${n}" novalidate`).test(main));
-  assert.ok(!/data-note-prefix/.test(main.match(/<form class="rg-form" id="rg-form-1"[^>]*>/)[0] + main.match(/<form class="rg-form" id="rg-form-2"[^>]*>/)[0]));
-});
-test("the Lorain render is drawn, labeled as a concept, and the file is there", () => {
-  const l = sec("lorain");
-  assert.match(l, /src="\/img\/rain-gauge\/lorain-concept\.jpg" width="1600" height="1000"/);
-  assert.match(l, /srcset="\/img\/rain-gauge\/lorain-concept\.webp"/);
-  assert.match(l, /<figcaption>Concept render, not a product photo\.<\/figcaption>/);
-  for (const e of [".jpg", ".webp"]) assert.ok(existsSync(ROOT + "img/rain-gauge/lorain-concept" + e));
 });
 test("Rain Print prices come from data/rain-print.json, never typed on this page", () => {
   const html = page.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "");
@@ -223,11 +192,4 @@ test("the Christmas line is the shared one from the same cutoffs, hidden until f
   assert.equal(P.xmasLine({ ...cfg, print_christmas_cutoff: "2026-12-10", framed_christmas_cutoff: "2026-12-09" }, "2026-10-17"),
     "For Christmas delivery, order a print by Dec 10 or a framed print by Dec 9.");
   assert.equal(P.xmasLine(cfg, "2026-07-01"), "");
-});
-test("on the record and how they fit: no invented results, the Rain Print link belongs to the concept", () => {
-  const r = text(sec("record"));
-  assert.match(r, /no results yet\. The first comparison posts here once a full month is in\./);
-  assert.ok(!/\d+(\.\d+)?\s?(%|in\b|inch)/.test(r));
-  const f = text(sec("fit"));
-  assert.ok(/tipping-bucket concept/.test(f) && /Nothing is built for that yet/.test(f));
 });
