@@ -17,7 +17,7 @@
    Light on first load: nothing is fetched until the page has decided there is no
    ZIP to search, and then price-local.js, basis-states.json (12 KB) and prices.json.
    A search replaces the box, as it replaces the rest of the empty state.
-   Tests: test/cash-bids-answers.test.mjs */
+   Tests: test/search-answers.test.mjs */
 (function (root) {
   'use strict';
   var TOP = 5, CROPS = ['corn', 'soybeans'];
