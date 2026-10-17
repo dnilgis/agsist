@@ -231,25 +231,50 @@ def faq(co, cells, n_loc, n_live, states):
     return qs
 
 
-def nearby(co, towns, limit=NEARBY_MAX, radius=NEARBY_MI):
+def _town_pt(t, bd, ctx):
+    """(lat, lon) of the town a board is listed under: the middle of the town's
+    own ZIPs when the ZIP table has them, else the board's pin. A board's pin
+    can sit at its head office (CoMark's Scammon board is pinned in Columbus),
+    so distances are measured town to town, not pin to pin."""
+    zc = ctx.get("zip_coord")
+    zs = (ctx.get("town_zips") or {}).get((t["state"], CB.town_key(t["name"]))) or []
+    cs = [c for c in (zc(z) for z in zs) if c] if zc else []
+    if cs:
+        return sum(c[0] for c in cs) / len(cs), sum(c[1] for c in cs) / len(cs)
+    return bd.get("pin")
+
+
+def nearby(co, ctx, crops, limit=NEARBY_MAX, radius=NEARBY_MI):
     """[(miles, near location name, town, board, glance)] for the closest other
-    elevators with a current bid, within `radius` of any of the company's
-    located boards, nearest first; one row per board. Used only when the
-    company itself has no current bid, so the page still answers "where can I
-    get a bid around here"."""
-    pins = [(bd["pin"], t["name"]) for t, bd in co["locs"] if bd.get("pin")]
-    if not pins or not towns:
+    elevators with a current bid in one of `crops`, within `radius` of any of
+    the company's locations, nearest first; one row per board. Used only when
+    the company itself has no current bid, so the page still answers "where
+    can I get a bid around here". A board in one of the company's own towns is
+    0 mi from it."""
+    towns = ctx.get("towns") or {}
+    own = {}
+    for t, bd in co["locs"]:
+        pt = _town_pt(t, bd, ctx)
+        if pt:
+            own[(t["state"], t["slug"])] = (pt, t["name"])
+    if not own or not towns:
         return []
     found = []
     for tk in sorted(towns):
         t = towns[tk]
         for bd in t["boards"].values():
-            if bd.get("operator") == co["name"] or not bd.get("pin") or not bd["rows"]:
+            if bd.get("operator") == co["name"] or not bd["rows"]:
                 continue
-            g = glance(bd)
+            g = {c: r for c, r in glance(bd).items() if c in crops}
             if not g:
                 continue
-            mi, at = min((CB.miles(p[0], p[1], bd["pin"][0], bd["pin"][1]), nm) for p, nm in pins)
+            if (t["state"], t["slug"]) in own:
+                mi, at = 0.0, own[(t["state"], t["slug"])][1]
+            else:
+                pt = _town_pt(t, bd, ctx)
+                if not pt:
+                    continue
+                mi, at = min((CB.miles(p[0], p[1], pt[0], pt[1]), nm) for p, nm in own.values())
             if mi <= radius:
                 found.append((mi, at, t, bd, g))
     found.sort(key=lambda x: (x[0], x[3].get("operator") or "", x[2]["name"]))
@@ -277,17 +302,17 @@ def why_none(co):
 
 
 def nearby_html(co, ctx, crops):
-    near = nearby(co, ctx.get("towns"))
+    near = nearby(co, ctx, crops)
     if not near:
         return ""
     snap_ct = ctx["snap_ct"]
     trs = []
     for mi, at, t, bd, g in near:
         tp = f"/cash-bids/{CB.url_slug(STATE_NAMES[t['state']])}/{t['slug']}"
-        dist = "under 1 mi" if mi < 1 else f"{mi:.0f} mi"
+        dist = f"in {esc(at)}" if mi == 0 else f"{max(1, round(mi))} mi from {esc(at)}"
         stamp = CB.asof_time(min(r["priced"] for r in g.values()))
         trs.append(f'<tr><td class="l"><a href="{tp}">{esc(bd.get("operator") or t["name"])}</a> '
-                   f'<span class="mut">{esc(t["name"])}, {dist} from {esc(at)}</span>{stamp}</td>'
+                   f'<span class="mut">{esc(t["name"]) + ", " + dist if mi else dist}</span>{stamp}</td>'
                    + "".join(_cell(g.get(c), snap_ct) for c in crops) + "</tr>")
     ths = "".join(f'<th class="n">{CB.CROP_LABEL[c]}</th>' for c in crops)
     return (f'<h2 id="nearby">Elevators near {esc(co["short"])} with a bid today</h2>'
@@ -587,7 +612,7 @@ def selftest():
         # it still answers "where can I sell": the other boards near its locations, nearest first, never its own
         assert '<h2 id="nearby">Elevators near Acme Co-op with a bid today</h2>' in p
         nb = p[p.index('id="nearby"'):p.index('id="nebraska"')]
-        assert '<a href="/cash-bids/nebraska/fremont">Other 0</a> <span class="mut">Fremont, under 1 mi from Fremont' in nb
+        assert '<a href="/cash-bids/nebraska/fremont">Other 0</a> <span class="mut">in Fremont' in nb
         assert "Two Spot Grain" in nb and "Acme" not in nb.split("not Acme Co-op")[1], "own boards listed as nearby"
         assert "acme-co-op</loc>" not in open(sm, encoding="utf-8").read()
     # a board skipped this pass (not asked, nothing wrong) counts when last read within HELD_SKIP_HOURS;
