@@ -1331,11 +1331,6 @@ def answer_picks(boards):
     return out
 
 
-def _mon_word(dm, snap_ct):
-    y, m = int(dm[:4]), int(dm[5:7])
-    return MONTH_ABBR[m - 1] + ("" if y == snap_ct.year else f" {y}")
-
-
 def _basis_plain(r, vs=True):
     if r["basis"] is None:
         return ""
@@ -1352,10 +1347,25 @@ def _posted_days(rows):
     return f"{a} to {MONTH_ABBR[b[0] - 1] + ' ' if b[0] != ds[0][0] else ''}{b[1]}"
 
 
+def _deliv_phrase(r, first):
+    """The delivery the board itself prints in its Delivery column (r["label"]),
+    not the month AGSIST files it under: an ADM board's "New crop 2026" row was
+    filed as Oct and the answer said "for Oct delivery" over a table with no
+    Oct row (accuracy pass, 2026-10-17)."""
+    lab = re.sub(r"\s+", " ", str(r.get("label") or "")).strip()
+    if not lab:
+        return ""
+    if lab.lower().startswith("by "):
+        return " for delivery by " + lab[3:]
+    return f" for {lab}" + (" delivery" if first else "")
+
+
 def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
-    """"Top bid: corn $4.14 at CDR Farms LLC for Oct delivery (basis -65c) and
-    soybeans $12.04 for Oct (basis -70c), posted Oct 14." Every number is a
-    posted one that prints in the table below it."""
+    """"Nearest-delivery bid: corn $4.14 at CDR Farms LLC for Oct 2026 delivery
+    (basis -65c) and soybeans $12.04 for New crop 2026 (basis -70c), posted
+    Oct 14." The pick is the highest bid in the NEAREST delivery period
+    (answer_picks), not the highest on the board, so it is called that. Every
+    number and delivery label is one the table below prints."""
     cs = [c for c in CROPS if c in picks][:n]
     if not cs:
         return ""
@@ -1365,12 +1375,12 @@ def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
         p = f"{CROP_LABEL[c].lower()} {cash_c(r['cash'])}"
         if name != prev:
             p += f" at {name}"
-        p += f" for {_mon_word(r['dm'], snap_ct)}" + (" delivery" if i == 0 else "")
+        p += _deliv_phrase(r, i == 0)
         if basis and r["basis"] is not None:
             p += f" (basis {_basis_plain(r)})"
         parts.append(p)
         prev = name
-    return (f"Top {'bids' if len(cs) > 1 else 'bid'}: " + " and ".join(parts)
+    return (f"Nearest-delivery {'bids' if len(cs) > 1 else 'bid'}: " + " and ".join(parts)
             + f", posted {_posted_days([picks[c][0] for c in cs])}.")
 
 
@@ -1443,11 +1453,11 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
     crop = CROP_LABEL[c].lower()
     r, name = picks[c]
     qs = []
-    a1 = (f"The top {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name} for "
-          f"{_mon_word(r['dm'], snap_ct)} delivery, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
+    a1 = (f"The nearest-delivery {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name}"
+          f"{_deliv_phrase(r, True)}, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
     qs.append((f"What is {crop} paying in {town} today?", a1))
     if r["basis"] is not None:
-        a2 = f"{name} posts {crop} basis of {_basis_plain(r)} for {_mon_word(r['dm'], snap_ct)} delivery."
+        a2 = f"{name} posts {crop} basis of {_basis_plain(r)}{_deliv_phrase(r, True)}."
         a2 += "".join(" " + x["faq"] for x in cmp_lines if x["crop"] == c)
     else:
         a2 = f"{name} does not post a basis with its {crop} bid, only the cash price."
@@ -2613,11 +2623,19 @@ def selftest():
         # THE ANSWER FIRST (2026-10-15): one sentence from the table's own numbers,
         # the same sentence in the meta description, then the table, then the
         # state line, then the hold box
-        ans = ("Top bids: corn $3.95 at Op kept for Oct delivery (basis \u221225\u00a2 vs Dec &#x27;26) and "
-               "soybeans $9.85 at Op n0 for Oct (basis \u221235\u00a2 vs Nov &#x27;26), posted Oct 7.")
-        short = ("Top bids: corn $3.95 at Op kept for Oct delivery and soybeans $9.85 at Op n0 for Oct, posted Oct 7.")
+        # the delivery named is the label the board prints (accuracy pass 2026-10-17:
+        # "for Oct delivery" stood over an ADM table whose rows read "New crop 2026"),
+        # and the pick is the nearest delivery's best bid, so it is not called the top bid
+        ans = ("Nearest-delivery bids: corn $3.95 at Op kept for delivery by Oct 9 (basis \u221225\u00a2 vs Dec &#x27;26) and "
+               "soybeans $9.85 at Op n0 for Oct 2026 (basis \u221235\u00a2 vs Nov &#x27;26), posted Oct 7.")
+        short = ("Nearest-delivery bids: corn $3.95 at Op kept for delivery by Oct 9 and soybeans $9.85 at Op n0 for Oct 2026, posted Oct 7.")
         a_html = re.search(r'<p class="cbt-answer">(.*?)</p>', fr).group(1)
         assert a_html in (ans, short), a_html
+        assert "<td>By Oct 9</td><td class=\"n\">$3.95</td>" in fr and "<td>Oct 2026</td><td class=\"n\">$9.85</td>" in fr, \
+            "each delivery the answer names is the table row its price sits on"
+        nc = {"label": "New crop 2026", "dm": "2026-10"}
+        assert _deliv_phrase(nc, True) == " for New crop 2026 delivery" and _deliv_phrase(nc, False) == " for New crop 2026"
+        assert "Top bid" not in a_html
         dsc = re.search(r'<meta name="description" content="([^"]*)">', fr).group(1)
         assert dsc.startswith("Fremont, NE cash bids. ") and a_html in dsc and len(html_unescape(dsc)) <= DESC_MAX, dsc
         for v in re.findall(r"\$(\d+\.\d\d)", a_html):
@@ -2638,7 +2656,7 @@ def selftest():
         vis = re.search(r'<div class="cbt-faq">(.*?)</div>', fr).group(1)
         assert re.findall(r"<h3>(.*?)</h3><p>(.*?)</p>", vis) == [(esc(q["name"]), esc(q["acceptedAnswer"]["text"]))
                                                                    for q in faq], "FAQ and JSON-LD word for word"
-        assert faq[0]["acceptedAnswer"]["text"].startswith("The top corn bid we read in Fremont, NE is $3.95 a bushel at Op kept")
+        assert faq[0]["acceptedAnswer"]["text"].startswith("The nearest-delivery corn bid we read in Fremont, NE is $3.95 a bushel at Op kept for delivery by Oct 9")
         assert "That is 6\u00bd\u00a2 stronger than the Nebraska middle" in faq[1]["acceptedAnswer"]["text"]
         assert faq[2]["acceptedAnswer"]["text"] == ("The nearest other elevator with a current bid is Op st in Hooper, NE, "
                                                     "13 miles straight-line from the elevators in Fremont. It posted "
@@ -2834,9 +2852,19 @@ def _selftest_answer():
     pk = answer_picks([a, b])
     assert pk["corn"][0]["cash"] == 4.12 and pk["corn"][1] == "Beta Co-op", \
         "the nearest month's best regular bid: never the non-GMO premium, never a later month"
-    assert answer_sentence(pk, snap) == ("Top bids: corn $4.12 at Beta Co-op for Oct delivery (basis \u221258\u00a2 vs "
-                                         "Dec '26) and soybeans $10.01 for Oct (basis \u221270\u00a2), posted Oct 6."), \
+    assert answer_sentence(pk, snap) == ("Nearest-delivery bids: corn $4.12 at Beta Co-op for Oct 2026 delivery "
+                                         "(basis \u221258\u00a2 vs Dec '26) and soybeans $10.01 for Oct 2026 "
+                                         "(basis \u221270\u00a2), posted Oct 6."), \
         answer_sentence(pk, snap)
+    # the Deerfield, MO case: the board row reads "New crop 2026" (filed under Oct)
+    # and a later row pays more; the answer names the row's own label and does
+    # not call the nearest bid the top one
+    adm = {"operator": "ADM", "city": "Town", "rows": [
+        dict(row("soybeans", 12.71, 0.10, nov), label="New crop 2026"),
+        dict(row("soybeans", 13.04, 0.15, ("ZS", 2, 2027), dm="2027-03"), label="Mar 2027")]}
+    s_adm = answer_sentence(answer_picks([adm]), snap)
+    assert s_adm.startswith("Nearest-delivery bid: soybeans $12.71 at ADM for New crop 2026 delivery"), s_adm
+    assert "for Oct" not in s_adm and "13.04" not in s_adm and "Top" not in s_adm, s_adm
     pk2 = dict(pk, corn=(dict(pk["corn"][0], priced=t1), "Alpha Grain"))
     assert answer_sentence(pk2, snap).endswith("posted Oct 6 to 7."), answer_sentence(pk2, snap)
     sen, dsc = answer_and_desc(pk, snap, "Longname Township Junction, WI")
