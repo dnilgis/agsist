@@ -938,6 +938,9 @@ def _ct_weekday(iso_date):
         return ""
 
 
+QUOTE_PAGE = {"corn": "/corn-futures-prices", "beans": "/soybean-futures-prices", "wheat": "/wheat-futures-prices"}
+
+
 def render_quote_strip_html(strip):
     """One HTML for both surfaces: same classes as daily.html's renderer, so
     the baked archive page and the live page cannot drift apart visually."""
@@ -959,12 +962,16 @@ def render_quote_strip_html(strip):
         aria = (f"{q['name']} {q['contract']}, {price_str}, "
                 + ("unchanged" if direction == "flat" else f"{direction} {abs(pct):.1f}%")
                 + " vs the prior close")
+        # the cell opens the contract's own page, where the settles behind the
+        # number are (twin of qp in daily.html's renderer)
+        page = QUOTE_PAGE.get(str(q.get("key") or "").split("-")[0])
+        open_tag = f'<a class="dv3-quote" href="{page}"' if page else '<div class="dv3-quote" role="img"'
         cells.append(
-            f'<div class="dv3-quote" role="img" aria-label="{html_esc(aria)}">'
+            f'{open_tag} aria-label="{html_esc(aria)}">'
             f'<div class="dv3-quote-top"><span class="dv3-quote-name">{html_esc(q["name"])}</span>'
             f'<span class="dv3-quote-win">{html_esc(q["contract"])}</span></div>'
             f'<span class="dv3-quote-price">{price_str}</span>'
-            f'<span class="dv3-quote-chg {cls}">{html_esc(chg_str)}</span></div>')
+            f'<span class="dv3-quote-chg {cls}">{html_esc(chg_str)}</span>' + ('</a>' if page else '</div>'))
     asof_html = f'<div class="dv3-quote-asof">{html_esc(quote_strip_note(strip))}</div>'
     return '<div class="dv3-quotes">' + "".join(cells) + "</div>" + asof_html
 
@@ -3943,6 +3950,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-quotes{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;margin:0 0 .4rem;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}}
 @media(max-width:480px){{.dv3-quotes{{grid-template-columns:1fr}}}}
 .dv3-quote{{display:flex;flex-direction:column;gap:.28rem;padding:.7rem .85rem;background:var(--surface);min-width:0}}
+a.dv3-quote{{color:inherit;text-decoration:none}}a.dv3-quote:hover .dv3-quote-name,a.dv3-quote:focus-visible .dv3-quote-name{{color:var(--gold);text-decoration:underline}}
 .dv3-quote-top{{display:flex;align-items:baseline;justify-content:space-between;gap:.5rem}}
 .dv3-quote-name{{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}}
 .dv3-quote-win{{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.04em;color:var(--text-muted);white-space:nowrap}}

@@ -57,3 +57,16 @@ print(json.dumps({'kinds':[q.get('kind') for q in s['quotes']],'at':s['quotes'][
   assert.match(out.html, /except the last trade for Wheat as of 1:46 PM CT Fri/);
   assert.ok(!out.html.includes("not CME settlements"));
 });
+
+test("each quote opens its contract's page on both renderers; phones show three recent issues", () => {
+  const out = execFileSync("python3", ["-c", `
+import sys;sys.path.insert(0,'scripts');import generate_daily as g
+print(g.render_quote_strip_html({'quotes':[{'key':'corn-dec','name':'Corn','contract':"Dec '26",'last':4.74,'prev':4.78,'pct':-0.8},
+ {'key':'beans-nov','name':'Soybeans','contract':"Nov '26",'last':12.6,'prev':12.63,'pct':-0.2},{'key':'wheat','name':'Wheat','contract':'nearby','last':6.6,'prev':6.7,'pct':-1.4}]}))`], { cwd: ROOT, encoding: "utf8" });
+  for (const p of ["/corn-futures-prices", "/soybean-futures-prices", "/wheat-futures-prices"]) {
+    assert.ok(out.includes('<a class="dv3-quote" href="' + p + '"'), p);
+    assert.ok(HTML.includes("'" + p + "'"), "daily.html " + p);
+  }
+  assert.equal((out.match(/<a class="dv3-quote"/g) || []).length, (out.match(/<\/a>/g) || []).length);
+  assert.match(HTML, /\.dv3-arc-grid \.dv3-arc-card:nth-child\(n\+4\)\{display:none;\}/);
+});
