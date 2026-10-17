@@ -4064,7 +4064,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     {sparks_html}
     <aside class="ya" data-your-area="daily" hidden></aside>
     {topbar_html}
-    <aside class="dl" data-daily-local data-after="aside.ya[data-your-area]" hidden></aside>
+    <aside class="dl" data-daily-local data-before="article .dv3-quotes" data-after="aside.ya[data-your-area]" hidden></aside>
     {yc_html}
     <div class="dv3-sections">{sections_html}</div>
     {sponsor_html}
@@ -4089,7 +4089,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/your-area.js?v=2" defer></script>
-<script src="/components/daily-local.js?v=1" defer></script>
+<script src="/components/daily-local.js?v=2" defer></script>
 <script>
 (function(){{
   var permalink='{js_permalink}';
