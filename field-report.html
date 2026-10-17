@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>Field land report | AGSIST Field Scout</title>
+  <meta name="description" content="A free printable land report for one field: parcel and owner of record, recorded transfers, sold land nearby, soils, crop history, flood zones and wetlands. No sign-up.">
+  <meta name="author" content="Sigurd Lindquist">
+  <meta name="robots" content="noindex, follow">
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <style>
+    .frp{max-width:860px;margin:0 auto;padding:1rem 1rem 4rem}
+    .frp h1{font-size:clamp(1.35rem,4.3vw,1.9rem);line-height:1.2;margin:.2rem 0 .3rem;color:var(--text)}
+    .frp .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .6rem}
+    .frp h2{font-size:1.1rem;margin:1.6rem 0 .5rem;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:.3rem}
+    .frp p,.frp li{font-size:.94rem;line-height:1.55;color:var(--text-dim)}
+    .frp a{color:var(--link,var(--brand));text-underline-offset:2px}
+    .frp .fs-src{font-size:.76rem;color:var(--text-muted);margin-top:.3rem}
+    .frp .fs-loading{font-size:.85rem;color:var(--text-muted)}
+    .frp-act{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 1rem}
+    .frp-act button,.frp-act a{font:inherit;font-size:.9rem;min-height:42px;padding:0 .9rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+    .frp-act button{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+    .frp-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.5rem;margin:.4rem 0}
+    .frp-sum div{border:1px solid var(--border);border-radius:8px;padding:.5rem .65rem;background:var(--surface)}
+    .frp-sum b{display:block;font-family:var(--font-mono);font-size:1.15rem;color:var(--text)}
+    .frp-sum span{font-size:.74rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+    .frp-rot{display:flex;flex-wrap:wrap;gap:.3rem}.frp-rot span{font-size:.82rem;border:1px solid var(--border);border-radius:6px;padding:.15rem .45rem;color:var(--text)}
+    .frp-err{border:1px dashed var(--border);border-radius:8px;padding:.7rem .8rem;color:var(--text-dim);font-size:.9rem}
+    @media print{
+      #site-header,#site-footer,.skip,.frp-act,.fl-tabs,.no-print{display:none!important}
+      html,body{background:#fff!important;color:#000!important}
+      .frp{max-width:none;padding:0}.frp h1,.frp h2,.frp b,.fl-kv td,.fl-tbl td,.fl-big{color:#000!important}
+      .frp p,.frp li,.fl-note,.fl-kv th,.fl-tbl th,.fs-src{color:#333!important}
+      .fl-p,.frp-sum div,.fl-empty{background:#fff!important;border-color:#bbb!important}
+      .frp h2{break-after:avoid}.fl-p,.fl-hist li,.fl-tbl tr{break-inside:avoid}
+      .fl-tbl{min-width:0!important}a{color:#000!important}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/fall-nitrogen">Fall anhydrous soil temp</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/harvest-or-wait">Harvest now or wait</a> &middot; <a href="/combine-loss">Combine loss check</a> &middot; <a href="/commodity-loan">CCC loan calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="frp">
+      <p class="breadcrumb no-print" style="font-size:.8rem;margin:0"><a href="/field-scout">Field Scout</a> / Land report</p>
+      <h1 id="frp-h">Field land report</h1>
+      <p class="by">Sigurd Lindquist, CCA &middot; <span id="frp-date"></span> &middot; free, no sign-up</p>
+      <div class="frp-act"><button type="button" id="frp-print">Print or save as PDF</button><a id="frp-back" href="/field-scout">Open this field in Field Scout</a></div>
+      <div id="frp-none" class="frp-err" hidden><b>No field on this link.</b> This report is made from a field picked on <a href="/field-scout">Field Scout</a>: pick or trace a field there, then tap "Printable land report".</div>
+      <div id="frp-body" hidden>
+        <div class="frp-sum" id="frp-sum"></div>
+        <h2>Parcel and owner of record</h2>
+        <div id="frp-parcel"><div class="fs-loading">reading parcel lines</div></div>
+        <h2>Recorded transfers of this parcel</h2>
+        <div id="frp-hist"><div class="fs-loading">reading</div></div>
+        <h2>Sold land nearby</h2>
+        <div id="frp-comps"><div class="fs-loading">reading</div></div>
+        <h2>Soils and productivity</h2>
+        <div id="frp-soil"><div class="fs-loading">reading the soil survey</div></div>
+        <h2>Crop history</h2>
+        <div id="frp-rot"><div class="fs-loading">reading</div></div>
+        <h2>Flood zones, wetlands, terrain</h2>
+        <div id="frp-flood"><div class="fs-loading">reading</div></div><div id="frp-wet"></div><div id="frp-relief"></div>
+        <h2>Where this comes from</h2>
+        <p>Parcel lines and owner of record: the state or county's own free public parcel service, read when this page opened. Transfers and sales: the state's public transfer returns. Soils: USDA NRCS soil survey (SSURGO). Crop history: USDA NASS Cropland Data Layer. Flood: FEMA National Flood Hazard Layer. Wetlands: USFWS National Wetlands Inventory. Ground height: USGS 3DEP. Each piece shows as missing when its source did not answer; nothing is filled in by estimate. This is a starting read, not an appraisal, a title search or a survey.</p>
+      </div>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/fall-nitrogen">Fall anhydrous soil temp</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/harvest-or-wait">Harvest now or wait</a> &middot; <a href="/combine-loss">Combine loss check</a> &middot; <a href="/commodity-loan">CCC loan calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/editorial-standards">Editorial standards</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/field-scout-land.js?v=1" defer></script>
+  <script src="/components/field-report.js?v=1" defer></script>
+</body>
+</html>

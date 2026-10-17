@@ -178,6 +178,7 @@
   FSLand.filterComps = function (rows, f, origin) {
     f = f || {};
     var out = (rows || []).filter(function (r) {
+      if (!(num(r.price) > 0) || !(num(r.acres) > 0)) return false;   // a list of prices needs a price
       if (!f.all && !FSLand.marketSale(r)) return false;
       var ac = num(r.acres), ppa = r.ppa != null ? r.ppa : FSLand.perAcre(r.price, r.acres);
       if (f.minAc != null && !(ac >= f.minAc)) return false;
@@ -225,7 +226,12 @@
       return vals.length ? vals : null;
     }
     function one(k) { var v = pick(k); return v ? v[0] : null; }
-    function n1(k) { var v = one(k); var x = num(v); return x; }
+    function n1(k) {   // numbers keep a real 0 (bare land has no improvements)
+      var names = F[k]; if (!names) return null;
+      if (!Array.isArray(names)) names = [names];
+      for (var i = 0; i < names.length; i++) { var x = num(a[names[i]]); if (x != null) return x; }
+      return null;
+    }
     var ids = (pick('pid') || []).concat(pick('pid2') || []);
     var owner = pick('owner');
     var p = {
@@ -239,7 +245,7 @@
       county: one('county'), muni: one('muni'), legal: pick('legal') ? pick('legal').join(' ') : null,
       year: one('year'), date: one('date')
     };
-    if (p.land === 0 && p.imp === 0 && !p.total) { p.land = null; p.imp = null; }   // blank rolls write zeros
+    if (p.land === 0 && p.imp === 0 && !p.total) { p.land = null; p.imp = null; p.total = null; }   // blank rolls write zeros
     if (p.total == null && p.land != null && p.imp != null) p.total = p.land + p.imp;
     return p;
   };
