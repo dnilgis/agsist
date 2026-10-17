@@ -383,8 +383,8 @@ def best_sale(src, slugs, getter):
     return None, slugs[0], "; ".join(whys)
 
 
-def run(root, got=None, now=None):
-    """got = {slug: (raw, text, err)} in tests."""
+def run(root, got=None, now=None, own_got=None):
+    """got = {slug: (raw, text, err)} in tests; own_got = a stand-in for own_fetch."""
     root = Path(root)
     now = now or datetime.datetime.now(datetime.timezone.utc)
     now_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -402,9 +402,10 @@ def run(root, got=None, now=None):
     has = any(b.get("sales") for b in barns + states)
     if not has:
         return None
+    own = run_own(cfg, existing, now_iso, own_got)
     doc = {"updated": now_iso,
            "source": "USDA AMS Livestock, Poultry and Grain Market News, auction reports",
-           "classes": CLASSES, "barns": barns, "states": states}
+           "classes": CLASSES, "barns": barns, "states": states, "own": own}
     FD.atomic_write(root / OUT, doc)
     return doc
 
@@ -508,6 +509,7 @@ def probe(root, scan_spec=None):
     if listing or doc.get("scanned"):
         doc["reports"] = listing
         FD.atomic_write(rd / "listing.json", doc)
+    probe_own(rd, cfg)
     for group in ("barns", "state_reports"):
         for src in cfg.get(group) or []:
             slugs = slugs_for(src, listing)
@@ -536,6 +538,184 @@ def probe_one(rd, src, slug):
             print("  parsed %s: %s" % (sale["date"], {k: sorted(v) for k, v in sale["classes"].items()}))
         else:
             print("  NOT PARSED:", why)
+
+
+# ------------------------------------------------------- barns' own reports
+# Barns USDA AMS does not report (`own_reports` in the sources: no Wisconsin
+# or Minnesota barn is on the AMS feeder auction listing, Oct 16 2026) post
+# their own market report: an HTML page (Equity Cooperative markets) or a
+# weekly PDF linked from a page (Premier Livestock & Auctions, Withee). These
+# give a $/cwt low-high for a weight range ("Beef Str 200#-400# - 375-600"),
+# not USDA's head-weighted averages, so they are kept apart as `ranges` and
+# the page says the barn posted them.
+#
+# NOT YET CHECKED AGAINST A SAVED REPORT: the sandbox this was written in
+# cannot reach the barns' sites, so parse_own was written from report lines
+# quoted in search results. A source is read in the normal run only when its
+# `parser_checked` is true; until then it is listed with its sale day and
+# "needs first read". The probe saves every page and PDF to the raw branch.
+SEX_RE = re.compile(r"\b(?:beef\s+)?(str|strs|steers?|hfr|hfrs|heifers?)\b", re.I)
+NOT_BEEF_RE = re.compile(r"\b(holstein|hol|dairy|jersey|cross(?:bred)?|x-?bred|bulls?|cows?|pairs|bred|fed|market|slaughter|fats?)\b", re.I)
+OWN_WT_RE = re.compile(r"(?<![\d.$])(\d{3,4})\s*(?:#|lbs?\.?)?\s*(?:-|to|–)\s*(\d{3,4})\s*(?:#|lbs?\.?)(?![\d])|"
+                       r"(?<![\d.$])(\d{3,4})\s*(?:-|to|–)\s*(\d{3,4})\s*(?=\s*(?:#|lbs?\b)?\s*(?:-|:|–)?\s*\$?\d{2,4}(?:\.\d{1,2})?\s*(?:-|to|–))", re.I)
+OWN_PX_RE = re.compile(r"\$?(\d{2,4}(?:\.\d{1,2})?)\s*(?:-|to|–)\s*\$?(\d{2,4}(?:\.\d{1,2})?)(?![\d#]|\s*(?:#|lbs?\b))", re.I)
+FILE_DATE_RE = re.compile(r"(20\d\d)[.\-_](\d{1,2})[.\-_](\d{1,2})")
+
+
+def html_text(raw):
+    """HTML bytes or str -> text with one table row, paragraph or line break per line."""
+    import html as H
+    s = raw.decode("utf-8", "replace") if isinstance(raw, bytes) else (raw or "")
+    s = re.sub(r"(?is)<(script|style|noscript)\b.*?</\1>", " ", s)
+    s = re.sub(r"(?i)<br\s*/?>|</(p|tr|li|div|h\d|table|ul|ol)>", "\n", s)
+    s = re.sub(r"(?i)</t[dh]>", " ", s)
+    s = re.sub(r"<[^>]+>", " ", s)
+    return H.unescape(s)
+
+
+def file_date(url):
+    """'.../2026.10.2-Market-Report.pdf' -> '2026-10-02', else None."""
+    m = FILE_DATE_RE.search(url or "")
+    if not m:
+        return None
+    try:
+        return datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3))).isoformat()
+    except ValueError:
+        return None
+
+
+def parse_own(text, date_hint=None):
+    """A barn's own report -> ({"date", "receipts", "ranges"}, None) or (None, reason).
+    Each range: sex, lo-hi lb, plo-phi $/cwt. A steer or heifer line with a
+    weight range and no readable price refuses the whole report."""
+    lines = norm_lines(text)
+    date = date_hint
+    if not date:
+        for ln in [x for x in lines if x][:60]:
+            date = find_date(ln)
+            m = None if date else re.search(r"(?<![\d/])(\d{1,2})/(\d{1,2})/(\d{2})(?![\d/])", ln)
+            if m:
+                try:
+                    date = datetime.date(2000 + int(m.group(3)), int(m.group(1)), int(m.group(2))).isoformat()
+                except ValueError:
+                    date = None
+            if date:
+                break
+    if not date:
+        return None, "no sale date"
+    out, sex = [], None
+    for ln in lines:
+        if not ln:
+            continue
+        sm = SEX_RE.search(ln)
+        wm = OWN_WT_RE.search(ln)
+        if sm and not wm:
+            # a header like "Beef Steers": the lines under it are steers
+            sex = None if NOT_BEEF_RE.search(ln) else ("steers" if sm.group(1).lower().startswith("st") else "heifers")
+            continue
+        if not wm:
+            continue
+        if NOT_BEEF_RE.search(ln):
+            continue
+        this = ("steers" if sm.group(1).lower().startswith("st") else "heifers") if sm else sex
+        if not this:
+            continue
+        lo, hi = (int(wm.group(1)), int(wm.group(2))) if wm.group(1) else (int(wm.group(3)), int(wm.group(4)))
+        pm = OWN_PX_RE.search(ln, wm.end())
+        if not pm:
+            return None, "a %s line with no readable price: %r" % (this, ln[:60])
+        plo, phi = float(pm.group(1)), float(pm.group(2))
+        if not (WT_RANGE[0] <= lo < hi <= WT_RANGE[1] and hi - lo <= 300):
+            return None, "weight range %d-%d not a feeder class: %r" % (lo, hi, ln[:60])
+        if not (plo <= phi and PRICE_RANGE[0] <= plo and phi <= PRICE_RANGE[1]):
+            return None, "price %s-%s outside %s or backwards: %r" % (plo, phi, PRICE_RANGE, ln[:60])
+        r = {"sex": this, "lo": lo, "hi": hi, "plo": plo, "phi": phi}
+        if r not in out:
+            out.append(r)
+    if not out:
+        return None, "no steer or heifer weight range with a $/cwt range"
+    m = re.search(r"\b(\d{1,3}(?:,\d{3})+|\d{2,5})\s+(?:head|hd)\b", joined(text), re.I)
+    return {"date": date, "receipts": int(m.group(1).replace(",", "")) if m else None,
+            "ranges": sorted(out, key=lambda r: (r["sex"], r["lo"]))}, None
+
+
+PDF_LINK_RE = re.compile(r"""href=["']([^"']+\.pdf)["']""", re.I)
+
+
+def newest_pdf(page_url, html_raw):
+    """The newest dated market report PDF linked from a barn's page, or None."""
+    from urllib.parse import urljoin
+    s = html_raw.decode("utf-8", "replace") if isinstance(html_raw, bytes) else (html_raw or "")
+    best = None
+    for m in PDF_LINK_RE.finditer(s):
+        u = urljoin(page_url, m.group(1))
+        d = file_date(u)
+        if d and re.search(r"market[-_ ]?report", u, re.I) and (best is None or d > best[0]):
+            best = (d, u)
+    return best
+
+
+def own_fetch(src, tries=3):
+    """(text, date_hint, url, raws, None) or (None, None, None, raws, reason). raws = [(name, bytes)]."""
+    raws = []
+    raw, err = FD.http_get(src["site"], headers=BROWSER_HEADERS, tries=tries)
+    if raw is None:
+        return None, None, None, raws, "fetch failed: %s" % err
+    raws.append(("own_%s.html" % src["id"], raw))
+    pdf = newest_pdf(src["site"], raw)
+    if not pdf:
+        return html_text(raw), None, src["site"], raws, None
+    praw, perr = FD.http_get(pdf[1], headers=BROWSER_HEADERS, tries=tries)
+    if praw is None or praw[:5] != b"%PDF-":
+        return None, None, None, raws, "report PDF %s: %s" % (pdf[1], perr or "not a PDF")
+    raws.append(("own_%s.pdf" % src["id"], praw))
+    text, e = FD.pdf_to_text(praw)
+    if not text:
+        return None, None, None, raws, "PDF text extraction failed: %s" % e
+    return text, pdf[0], pdf[1], raws, None
+
+
+def merge_own(existing, src, sale, err, now_iso, url):
+    """One own-report barn for the feed. No sale unless its parser is checked."""
+    b = {k: src[k] for k in ("id", "name", "town", "state", "lat", "lon", "sale") if k in src}
+    if src.get("site") and not src.get("check"):
+        b["site"] = src["site"]
+    sales = list((existing or {}).get("sales") or []) if src.get("parser_checked") else []
+    if sale is not None and (not sales or sale["date"] >= sales[0]["date"]):
+        sales = [dict(sale, source_url=url)] + [s for s in sales if s["date"] != sale["date"]]
+    if sales:
+        b["sales"] = sales[:KEEP_SALES]
+    b["status"] = {"ok": sale is not None, "note": err or "", "checked": now_iso}
+    return b
+
+
+def run_own(cfg, existing, now_iso, getter=None):
+    old = {b["id"]: b for b in existing.get("own") or []}
+    out = []
+    for src in cfg.get("own_reports") or []:
+        sale, err, url = None, None, None
+        if not (src.get("parser") == "ranges" and src.get("parser_checked")):
+            err = "needs first read"
+        else:
+            text, hint, url, _raws, err = (getter or own_fetch)(src)
+            if text:
+                sale, err = parse_own(text, hint)
+        out.append(merge_own(old.get(src["id"]), src, sale, err, now_iso, url))
+    return out
+
+
+def probe_own(rd, cfg):
+    for src in cfg.get("own_reports") or []:
+        text, hint, url, raws, err = own_fetch(src)
+        for name, raw in raws:
+            (rd / name).write_bytes(raw)
+        print("%s own report %s" % (src["id"], url or src["site"]))
+        if err:
+            print("  ERROR:", err)
+            continue
+        (rd / ("own_%s.txt" % src["id"])).write_text(text)
+        p, why = parse_own(text, hint)
+        print("  parsed %s: %d ranges" % (p["date"], len(p["ranges"])) if p else "  NOT PARSED: %s" % why)
 
 
 # ---------------------------------------------------------------- selftest
@@ -724,6 +904,61 @@ def selftest():
        pick_slug(dict(src, slug=None), lst2) == "1245"
        and pick_slug({"id": "worthing-sd", "match": "sioux falls|worthing", "slug": None}, lst2) is None)
 
+    # barns' own reports (parse_own): fixtures put together from lines search
+    # results quoted, NOT saved reports (see the fixture headers)
+    pl = "\n".join(ln for ln in (fx / "own-premier-lines.txt").read_text().splitlines() if not ln.startswith("#"))
+    ck("own report: 'Oct 12-15, 2026' is no single sale date, so no hint means no report", parse_own(pl)[0] is None)
+    po, why = parse_own(pl, "2026-10-15")
+    ck("own Premier lines parse with the PDF's file date", po is not None, why)
+    if po:
+        ck("own Premier: beef steers 200-400 375-600 and 400-600 310-470, heifers 400-600 300-430; fed, cows, calves, Holsteins never",
+           po["ranges"] == [{"sex": "heifers", "lo": 400, "hi": 600, "plo": 300.0, "phi": 430.0},
+                            {"sex": "steers", "lo": 200, "hi": 400, "plo": 375.0, "phi": 600.0},
+                            {"sex": "steers", "lo": 400, "hi": 600, "plo": 310.0, "phi": 470.0}], po["ranges"])
+        ck("own Premier: 3,545 head", po["receipts"] == 3545, po["receipts"])
+    eq, why = parse_own(html_text((fx / "own-equity-lines.html").read_text()))
+    ck("own Equity table parses, sale date 9/23/26", eq is not None and eq["date"] == "2026-09-23", why or eq["date"])
+    if eq:
+        ck("own Equity: 3 steer and 2 heifer ranges under their headings, the Holstein table and the script never",
+           [(r["sex"], r["lo"], r["plo"], r["phi"]) for r in eq["ranges"]] ==
+           [("heifers", 300, 380.0, 442.5), ("heifers", 400, 296.0, 410.0), ("steers", 300, 400.0, 465.0),
+            ("steers", 400, 360.0, 440.0), ("steers", 600, 330.0, 372.5)], eq["ranges"])
+        ck("own Equity: 665 head", eq["receipts"] == 665, eq["receipts"])
+    ck("own: an unreadable price on a steer line refuses the report",
+       parse_own(pl.replace("310-470", "31O-470"), "2026-10-15")[0] is None)
+    ck("own: a price outside the sane range refuses the report",
+       parse_own(pl.replace("310-470", "3100-4700"), "2026-10-15")[0] is None)
+    ck("own: a backwards price range refuses the report",
+       parse_own(pl.replace("310-470", "470-310"), "2026-10-15")[0] is None)
+    ck("own: a weight range that is no feeder class refuses the report",
+       parse_own(pl.replace("400#-600# – 310", "600#-400# – 310"), "2026-10-15")[0] is None)
+    ck("own: no steer or heifer range, no report", parse_own("Oct 14, 2026\nMarket cows 120-135\n")[0] is None)
+    page = ('<a href="/wp-content/uploads/2026/10/2026.10.9-Market-Report.pdf">old</a>'
+            '<a href="https://premierlivestockandauctions.com/wp-content/uploads/2026/10/2026.10.16-Market-Report.pdf">new</a>'
+            '<a href="/wp-content/uploads/2026/10/sale-flyer.pdf">flyer</a>')
+    ck("own: the newest dated market report PDF on the page is the one read",
+       newest_pdf("https://premierlivestockandauctions.com/market-reports/", page) ==
+       ("2026-10-16", "https://premierlivestockandauctions.com/wp-content/uploads/2026/10/2026.10.16-Market-Report.pdf"))
+    ck("own: a page with no dated report PDF is read as the page", newest_pdf("https://x.org/", "<a href='/a.pdf'>a</a>") is None)
+    cfgo = {"own_reports": [
+        {"id": "a-wi", "name": "A", "town": "A", "state": "WI", "lat": 44, "lon": -90, "sale": "Tue", "site": "https://a.org/r", "parser": "ranges", "parser_checked": False},
+        {"id": "b-mn", "name": "B", "town": "B", "state": "MN", "lat": 44, "lon": -93, "sale": "Mon", "site": "https://b.org/", "check": True},
+        {"id": "c-wi", "name": "C", "town": "C", "state": "WI", "lat": 44, "lon": -91, "sale": "Wed", "site": "https://c.org/r", "parser": "ranges", "parser_checked": True}]}
+    calls = []
+    def og(src):
+        calls.append(src["id"])
+        return pl, "2026-10-15", "https://c.org/r.pdf", [], None
+    own = run_own(cfgo, {"own": [{"id": "a-wi", "sales": [{"date": "2026-10-01", "ranges": [{"sex": "steers"}]}]}]}, now, og)
+    ck("own: only a source with a checked parser is fetched", calls == ["c-wi"], calls)
+    ck("own: an unchecked parser shows no numbers, even ones left in the old feed, and says needs first read",
+       "sales" not in own[0] and own[0]["status"]["note"] == "needs first read", own[0])
+    ck("own: a site seen in one place only is not linked", "site" not in own[1] and own[0]["site"] == "https://a.org/r")
+    ck("own: a checked parser's sale carries its report link", own[2]["sales"][0]["date"] == "2026-10-15"
+       and own[2]["sales"][0]["source_url"] == "https://c.org/r.pdf" and own[2]["status"]["ok"])
+    own2 = run_own(cfgo, {"own": own}, now, lambda src: (None, None, None, [], "fetch failed: 403"))
+    ck("own: a failed fetch keeps the last good sale and records why",
+       own2[2]["sales"][0]["date"] == "2026-10-15" and own2[2]["status"]["note"] == "fetch failed: 403")
+
     cfg = json.loads((ROOT / SOURCES).read_text())
     ids = [x["id"] for x in cfg["barns"]] + [x["id"] for x in cfg["state_reports"]]
     ck("source ids unique", len(ids) == len(set(ids)))
@@ -731,6 +966,13 @@ def selftest():
         x.get("town") and re.match(r"^[A-Z]{2}$", x.get("state", "")) and 24 < x["lat"] < 50 and -125 < x["lon"] < -66
         and x.get("match") for x in cfg["barns"]))
     ck("every match is a valid pattern", all(re.compile(x["match"]) for x in cfg["barns"] + cfg["state_reports"]))
+    ids += [x["id"] for x in cfg.get("own_reports") or []]
+    ck("source ids unique, own reports too", len(ids) == len(set(ids)))
+    ck("every own-report barn has a sale day, an https site and lat/lon in the lower 48", all(
+        x.get("sale") and x.get("site", "").startswith("https://") and 24 < x["lat"] < 50 and -125 < x["lon"] < -66
+        and re.match(r"^[A-Z]{2}$", x["state"]) for x in cfg.get("own_reports") or []))
+    ck("no own-report parser ships checked before a saved report backs it",
+       not any(x.get("parser_checked") for x in cfg.get("own_reports") or []))
 
     print()
     if fails:
@@ -750,10 +992,10 @@ def main(argv):
     if not doc:
         print("::warning::no barn parsed; data/cattle-auction.json not written")
         return 0
-    for b in doc["barns"] + doc["states"]:
+    for b in doc["barns"] + doc["states"] + doc["own"]:
         s = b.get("status") or {}
         print("[cattle-auction] %s ok=%s %s" % (b["id"], s.get("ok"), s.get("note", "")))
-        if not s.get("ok"):
+        if not s.get("ok") and s.get("note") != "needs first read":
             print("::warning::%s not refreshed: %s" % (b["id"], s.get("note", "")))
     return 0
 
