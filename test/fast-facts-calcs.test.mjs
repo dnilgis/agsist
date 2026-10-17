@@ -165,6 +165,30 @@ test("every fertilizer pill names its source and date, and the arithmetic is wri
   } finally { await browser.close(); srv.close(); }
 });
 
+/* The MAP pill and its written-out math use the same P2O5 figure as the
+ * calculator and data/fertilizer-prices.json per_lb.p: MAP less its 220 lb of
+ * N at the urea price. 615.95 / 920 = 0.66951 a lb of N; 220 x 0.66951 =
+ * 147.29; (980 - 147.29) / 1,040 = 0.8007 -> $0.80, not 980 / 1,040 = $0.94. */
+test("the MAP pill credits its N, the same figure as the calculator", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const fert = { updated: "2026-10-12", prices: [
+      { key: "urea", name: "Urea", symbol: "46-0-0", price: 615.95, as_of: "2026-10-06", src: "coop", n: 5, region: "Kansas and Wisconsin",
+        src_label: "Kansas and Wisconsin co-ops, middle of 5, posted Sep 24 to Oct 6, 2026", short_label: "KS/WI co-ops, Oct 6" },
+      { key: "map", name: "MAP", symbol: "11-52-0", price: 980, as_of: "2026-10-12", src: "coop", n: 2, region: "Kansas",
+        src_label: "Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026", short_label: "Kansas co-ops, Oct 12" } ] };
+    const { pg, errors } = await open(browser, port, "/fast-facts#nitrogen", { fert });
+    await pg.waitForFunction(() => document.querySelectorAll(".fert-pill").length === 2);
+    const how = await pg.$$eval("#fert-deriv li", (els) => els.map((e) => e.textContent));
+    assert.equal(how[1], "MAP $980 a ton, less 220 lb of N at the urea price ($147), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026).");
+    const label = await pg.$$eval(".fert-pill", (els) => els[1].getAttribute("aria-label"));
+    assert.equal(label, "MAP $980/ton, Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026: $0.801/lb P2O5");
+    assert.equal(await pg.inputValue("#eco-p-pplb"), "0.80");
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
 /* Potash is priced at the grade its source names: a sheet quoting white
  * potash 0-0-62 gives $516.36 / (2000 x 0.62) = $0.4164/lb K2O,
  * not the 0-0-60 figure. (Was: the K-Mag pill at 22% K2O; K-Mag has no live

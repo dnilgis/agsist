@@ -101,7 +101,15 @@ function loadFertPrices(){
       var pct=g[pd.nut]/100, pplb=(p.price/2000/pct);
       var price=Math.round(p.price);
       if(pd.nut==='N'&&pd.ncPct&&+pd.ncPct===g.N)N_POSTED[pd.ncPct]={row:p,price:price};
-      deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+' ('+p.src_label+').');
+      // P2O5: the same credited figure as the calculator below and the site's
+      // per_lb.p (components/manure-value.js nutrientPrices, one copy of the math):
+      // MAP or DAP less its N at the urea price.
+      var mvx=(pd.nut==='P'&&window.AgManure)?window.AgManure.nutrientPrices(data):null;
+      if(mvx&&mvx.p!=null&&mvx.pNcredit!=null){
+        pplb=mvx.p;
+        deriv.push(p.name+' $'+price+' a ton, less '+Math.round(mvx.pNlb)+' lb of N at the urea price ($'+Math.round(mvx.pNcredit)+'), / '+Math.round(2000*pct)+' lb of P2O5 = $'+pplb.toFixed(2)+' a lb of P2O5 ('+p.src_label+').');
+      } else
+      deriv.push(p.name+' $'+price+' / (2,000 lb x '+g[pd.nut]+'% '+pd.label+') = $'+pplb.toFixed(2)+' a lb of '+pd.label+(pd.nut==='P'?', no N credit (no urea price)':'')+' ('+p.src_label+').');
       var btn=document.createElement('button');
       btn.className='fert-pill';
       btn.setAttribute('type','button');
