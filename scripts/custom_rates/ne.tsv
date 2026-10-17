@@ -31,10 +31,10 @@ drill-soy	Planting and post planting	Drilling soybeans, conventional drill	acre	
 drill-soy-notill	Planting and post planting	Drilling soybeans, no-till drill	acre	24.02	15	40	26
 	Planting and post planting	Seeding CRP ground	acre	30	15	45	8
 	Planting and post planting	Seeding cover crops, drill	acre	22.27	15	30	28
-plant-row-fert	Planting and post planting	Planting row crops, no coulters, with band applicator	acre	26.36	15	49	14
+	Planting and post planting	Planting row crops, no coulters, with band applicator	acre	26.36	15	49	14
 plant-row	Planting and post planting	Planting row crops, no coulters, without band applicator	acre	29.19	20	44	8
 	Planting and post planting	Planting row crops, coulters, with band applicator	acre	30.01	20	50	20
-plant-notill	Planting and post planting	Planting row crops, coulters, without band applicator	acre	25.95	18	36	15
+	Planting and post planting	Planting row crops, coulters, without band applicator	acre	25.95	18	36	15
 	Planting and post planting	Ridge planting, with band applicator	acre	28.26	20	42	17
 	Planting and post planting	Ridge planting, without band applicator	acre	29.14	20	45	11
 mow-hay	Haying and baling	Mowing hay	acre	18.71	10	25	7
