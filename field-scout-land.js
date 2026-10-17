@@ -253,7 +253,8 @@
     var co = reg.counties && fips && reg.counties[fips];
     if (co) (Array.isArray(co) ? co : [co]).forEach(function (s) { if (s.verified) out.push(s); });
     var sw = reg.statewide && st && reg.statewide[st];
-    if (sw) sw.forEach(function (s) { if (s.verified || s.builtin) out.push(s); });
+    // a statewide layer that leaves some counties out (Minnesota) lists the ones it covers
+    if (sw) sw.forEach(function (s) { if ((s.verified || s.builtin) && (!s.covers || (fips && s.covers.indexOf(fips) >= 0))) out.push(s); });
     return out;
   };
 

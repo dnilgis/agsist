@@ -1,0 +1,92 @@
+name: Land data (parcel services + transfers)
+
+# Field Scout's land card. Two jobs in one workflow:
+#  - parcel services: scripts/probe_land_services.py rechecks every free public parcel
+#    service in data/land/parcel-services.json (fields, a test query, and that a web page
+#    may read it) and, with "discover", searches for county services in MN, IA, IL.
+#    Only this marks a service verified. Coverage counts print as annotations.
+#  - transfers: scripts/fetch_land_sales.py builds data/land/<st>/<county fips>.json from
+#    the state's own public transfer data (WI eRETR, MN eCRV). It refuses a state whose
+#    columns it cannot find by name, so the page keeps its "not yet" note until then.
+#
+# FIRST RUN: dispatch with probe ticked. It saves the state data pages, their file links
+# and the head of the first files to data/land-raw/ on the raw branch (never deployed), so
+# the columns can be read before trusting a number. Then dispatch with task=all.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Probe only: save the raw transfer pages and files to the raw branch"
+        type: boolean
+        default: false
+      task:
+        description: "services, discover (services + county search), transfers, or all"
+        type: string
+        default: "services"
+  schedule:
+    - cron: '23 9 3 * *'    # monthly: recheck services and rebuild transfers
+
+permissions:
+  contents: write
+
+concurrency:
+  group: land-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install openpyxl (xlsx transfer files)
+        run: pip install openpyxl==3.1.5
+      - name: Selftests
+        run: |
+          python scripts/probe_land_services.py --selftest
+          python scripts/fetch_land_sales.py --selftest
+      - name: Probe transfer sources (raw capture)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
+        run: python scripts/fetch_land_sales.py --probe WI MN
+      - name: Check parcel services
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || inputs.task == 'all') }}
+        run: |
+          if [ "${{ inputs.task }}" = "discover" ] || [ "${{ inputs.task }}" = "all" ]; then
+            python scripts/probe_land_services.py --discover
+          else
+            python scripts/probe_land_services.py
+          fi
+      - name: Build transfers
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'all') }}
+        run: python scripts/fetch_land_sales.py WI MN || echo "::warning::no state's transfers were written"
+      - name: Save raw answers to the raw branch
+        if: ${{ !cancelled() }}
+        run: |
+          [ -d data/land-raw ] && bash scripts/push_raw.sh "land-data raw answers" data/land-raw || echo "nothing raw"
+      - name: Site budget
+        run: python scripts/check_site_budget.py
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          rm -rf /tmp/ld && mkdir -p /tmp/ld
+          [ -d data/land ] && cp -r --parents data/land /tmp/ld/ || true
+          [ -n "$(ls -A /tmp/ld)" ] || { echo "No output; nothing to commit."; exit 0; }
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/ld/data/. data/
+            git add data/land
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update land data $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
