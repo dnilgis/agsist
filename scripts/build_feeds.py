@@ -152,6 +152,11 @@ CURATED = {
     # hand by Sig; read by /rain-print, components/rain-print-promo.js (homepage,
     # /cash-bids, /daily) and scripts/brief_email.py. No cadence to keep.
     "data/rain-print.json",
+    # Custom farm work rates (/custom-rates): built by hand-run
+    # scripts/build_custom_rates.py from survey tables typed into
+    # scripts/custom_rates/*.tsv. Each state survey comes out every one to
+    # three years, so there is no cadence to keep.
+    "data/custom-rates/index.json",
 }
 
 # ── feeds another repository publishes, and this one only reads ─────────────
