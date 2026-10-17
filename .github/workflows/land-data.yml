@@ -60,13 +60,18 @@ jobs:
           "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
           "$RUNNER_TEMP/pw/bin/python" -m playwright install --with-deps chromium >/dev/null
           "$RUNNER_TEMP/pw/bin/python" scripts/wi_retr_browser.py --explore "$RUNNER_TEMP/wi-explore"
+      # The screens go to a side branch (<branch>-explore, never deployed) so they can be read
+      # where Actions artifacts and logs cannot be downloaded.
       - name: Keep the explore screens
         if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: wi-explore
-          path: ${{ runner.temp }}/wi-explore
-          retention-days: 7
+        run: |
+          D="$RUNNER_TEMP/wi-explore"; [ -d "$D" ] || exit 0
+          B="${GITHUB_REF_NAME}-explore"
+          cd "$RUNNER_TEMP" && rm -rf ex && mkdir ex && cd ex && git init -q && git checkout -q -b "$B"
+          cp -r "$D" wi-explore && find wi-explore -size +40M -delete
+          git -c user.name="AGSIST Bot" -c user.email=bot@agsist.com add -A
+          git -c user.name="AGSIST Bot" -c user.email=bot@agsist.com commit -qm "WI RETR explore $(date -u +%FT%TZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "HEAD:$B"
       - name: Check parcel services
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || inputs.task == 'all') }}
         run: |

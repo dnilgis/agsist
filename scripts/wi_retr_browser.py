@@ -165,6 +165,7 @@ def explore(out):
         log.append("   %s %s %s %s %s %s post=%s" % (q["m"], q.get("status"), q["type"], q.get("ctype", "")[:40], q.get("disp", "")[:80], q["url"][:200], q["post"][:300]))
     open(os.path.join(out, "explore-log.txt"), "w").write("\n".join(log) + "\n")
     print("\n".join(log))
+    note("wi explore", "\n".join(log), most=8)
     return 0
 
 
