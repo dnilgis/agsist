@@ -259,7 +259,10 @@ def page(ctx):
            f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
            f'<p class="pn-pick" data-pn-pick hidden></p>'
            f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
-           f'<script src="/components/prf-now.js?v=1" defer></script>')
+           f'<script src="/components/prf-now.js?v=1" defer></script>'
+           # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
+           f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
+           f'<script src="/components/prf-notice.js?v=1" defer></script>')
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
     return f"""<!DOCTYPE html>
@@ -342,7 +345,7 @@ def page(ctx):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and sends no one to any agent; its one email box sends a grid&rsquo;s final index when USDA posts it. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
     {rain}

@@ -107,6 +107,7 @@ HTML = f"""<!DOCTYPE html>
               <p class="prf-hint"><span id="prf-co-why">This grid touches <span id="prf-co-n"></span> counties, and each has its own dollar values and limits.</span> <span id="prf-co-how"></span></p>
             </div>
             <details class="prf-about"><summary>Grid edges, size and the official map</summary><p class="prf-fine" id="prf-where-f"></p></details>
+            <div class="prf-notice" data-prf-notice hidden></div>
           </section>
 
           <section class="prf-card prf-block prf-o3" id="prf-setup" aria-labelledby="prf-setup-h">
@@ -205,7 +206,7 @@ HTML = f"""<!DOCTYPE html>
 
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells nothing, asks for no contact details and sends no one to any agent. {mk("built")}. {mk("check")}</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells nothing and sends no one to any agent; its one email box sends your grid&rsquo;s final index when USDA posts it. {mk("built")}. {mk("check")}</p>
 
     <div class="prf-prose">
     <h2 id="example">What PRF costs: a worked example</h2>
@@ -322,6 +323,7 @@ payment              = interval protection
   <script src="/components/prf.js?v=6" defer></script>
   <script src="/components/prf-outlook.js?v=2" defer></script>
   <script src="/components/prf-now.js?v=1" defer></script>
+  <script src="/components/prf-notice.js?v=1" defer></script>
   <script src="/components/prf-optimize.js?v=4" defer></script>
   <script src="/components/prf-optimize-ui.js?v=6" defer></script>
 </body>

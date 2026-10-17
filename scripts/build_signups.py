@@ -5,7 +5,7 @@ Run by .github/workflows/sponsor-report.yml right after build_audience.py,
 with the same LIST_URL + LIST_TOKEN. It reads the subs worker's token-gated
 /list?format=json (one row per address: src, zip, ts) and /notice-list (one
 row per address and one-time notice topic: rent:<st>, arcplc:<date>, rain-gauge,
-rainyear:<year>:<fips>) and
+rainyear:<year>:<fips>, prf:<grid>) and
 writes how many came from each page ask, how many gave a ZIP, the last 30
 days by day, and the notice sign-ups by topic. /seo-report shows it.
 
@@ -185,7 +185,11 @@ def selftest():
              {"email": "c@x.com", "topic": "arcplc:2026-12-11", "ts": ms(2026, 10, 12), "sent": None},
              {"email": "d@x.com", "topic": "rain-gauge", "ts": ms(2026, 10, 13), "sent": None, "zip": "54728", "note": "n"},
              {"email": "f@x.com", "topic": "rainyear:2026:19169", "ts": ms(2026, 10, 12), "sent": None},
-             {"email": "g@x.com", "topic": "rainyear:2026:55005", "ts": ms(2026, 10, 12), "sent": None}]
+             {"email": "g@x.com", "topic": "rainyear:2026:55005", "ts": ms(2026, 10, 12), "sent": None},
+             # v5.29: prf:<grid> recurs; sent = mailed at least once
+             {"email": "e@x.com", "topic": "prf:30452", "ts": ms(2026, 10, 10), "sent": 1, "after": "2026-06", "iv": "2026-07"},
+             {"email": "f@x.com", "topic": "prf:30452", "ts": ms(2026, 9, 1), "sent": None, "after": "2026-06"},
+             {"email": "g@x.com", "topic": "prf:14538", "ts": ms(2026, 10, 11), "sent": None}]
     recs = recs + [{"email": "h@x.com", "zip": "50010", "src": "company:agtegra", "ts": ms(2026, 10, 11), "reports": True},
                    {"email": "i@x.com", "zip": None, "src": "page:rain/iowa/story-county", "ts": ms(2026, 10, 10), "reports": True},
                    {"email": "j@x.com", "zip": None, "src": "page:rain/wisconsin/barron-county", "ts": ms(2026, 10, 2), "reports": True}]
@@ -203,6 +207,8 @@ def selftest():
     n = {x["topic"]: x for x in o["notices"]}
     t(n["rent"]["total"] == 2 and n["rent"]["sent"] == 1 and n["rent"]["detail"] == {"wi": 1, "ia": 1}, "rent notices by state")
     t(n["arcplc"]["last7"] == 1, "ARC/PLC notices")
+    t(n["prf"]["total"] == 3 and n["prf"]["last7"] == 2 and n["prf"]["sent"] == 1
+      and n["prf"]["detail"] == {"30452": 2, "14538": 1}, "PRF grid index notices by grid")
     t(n["rain-gauge"]["total"] == 1 and n["rain-gauge"]["detail"] == {}, "rain gauge waiting list: a count only")
     t(n["rainyear"]["total"] == 2 and n["rainyear"]["detail"] == {"2026": 2}, "rain year emails by year, not by county")
     t("54728" not in json.dumps(o) and "d@x.com" not in json.dumps(o), "no ZIP, note or address from the notice list in the output")
