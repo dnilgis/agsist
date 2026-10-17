@@ -1,0 +1,501 @@
+# Benchmark field-scout: Web Soil Survey FAQ (PDF)
+# https://www.nrcs.usda.gov/sites/default/files/2022-09/WSS-Frequently-Asked-Questions.pdf
+# fetched 2026-10-17T02:08:57Z, sha256 5b161c436734ab7a685cfa853f4b3ba685c1eeeac129680e482c4b425c21fceb
+
+General Issues
+
+Question               Answer
+
+How do I start Web https://websoilsurvey.sc.egov.usda.gov/App/WebSoilSurvey.aspx
+Soil Survey?
+
+When will Web          All data available in Web Soil Survey is stored in the Soils database. Each state is responsible
+Soil Survey have       for populating the Soils database for all counties in that state. For information about when data
+soil information for   will be available for your county, contact your State Soil Scientist at the following link: State
+my particular          Soil Scientists. This link is also available from Web Soil Survey’s Contact Us link.
+county?
+
+When was Web           On August 16, 2005, Secretary of Agriculture Mike Johanns announced the launch of the USDA
+Soil Survey first      Web Soil Survey site.
+released?
+                          You can access context-specific online help throughout Web Soil Survey, by clicking the question-
+How can I get help        mark icon. This opens up help for the particular feature or group of features where the icon is
+using Web Soil            located.
+Survey?
+                          When you open a help item, the question-mark icon turns upside-down. To close the help item, you
+                          can click the upside-down question-mark icon.
+
+                          Or click the Close button at the upper right of the open help item.
+
+                          Many help items are divided into sections, which can be opened and closed. To open a closed
+                          section, click the plus-sign icon.
+
+                          To close an open section, click the minus-sign icon.
+
+
+
+                       If you need additional assistance, click the Contact Us link in the navigation bar, click the email
+                       link soilshotline@usda.gov, and we’ll be glad to help you.
+
+How can I find the Use the Search panel, in the upper left corner of each tab in Web Soil Survey. Enter keywords
+information I’m    or phrases, and use the Advanced Search options if needed, and click Search.
+looking for in Web
+Soil Survey?       The search results are links that navigate to the places in Web Soil Survey that match your
+                   search items.
+
+                         For more information, click the question-mark icon in the Search panel.
+
+How can I get         Web Soil Survey provides data update notifications via RSS. To use the RSS Feed, click on the
+notifications of soil Subscribe link located beneath the USDA logo in the upper-left corner of Web Soil Survey.
+data updates?
+                     Click on a link in the Subscribe to RSS Feeds window to choose either All States and
+                     Territories or a particular state. What you see next depends on the browser you're using.
+
+                     In Internet Explorer, this displays a new page which shows information about the updates for
+                     the state you chose and links Subscribe to this feed and Learn more about feeds. At this point
+                     you are only viewing feeds and you may sort them by date or title, but you have not yet
+                     subscribed to the feed.
+
+                     To subscribe, click Subscribe to this feed and get a pop-up window where you can choose
+                     options, then click Subscribe. You should see a message “You’ve successfully subscribed to
+                     this feed!”. You may wish to adjust the RSS Feed Properties and may do so by clicking on View
+                     feed properties located on the right-side of the page. The Feed Properties allow you to control
+                     the update schedule or how often your computer checks the feed for new updates.
+
+                     Repeat the RSS Feeds Subscription process for each state/territory you are interested in (unless
+                     you subscribed to All States and Territories).
+
+                     You may review your RSS Feeds any time by opening Internet Explorer and going to Favorites
+                     and Feeds.
+
+How can I receive You may subscribe to Web Soil Survey in GovDelivery by clicking the following link:
+updates about Web GovDelivery. The updates are specific to the application and/or web page and are not to be
+Soil Survey?      confused with RSS Feeds. RSS Feeds are explained in the FAQ “How can I get notifications of
+                  soil data updates?”.
+
+How frequently is    A yearly refresh of the official soil survey database (spatial and tabular) will take place on July
+the soil data        1 of each year. The adoption of a regular refresh rate is to allow internal and external users to
+updated?             better coordinate updates of official soils data in support of their activities. Official soil survey
+                     information may be updated on a more frequent than annual basis under the following
+                     exceptions: 1) Completion of an initial survey or an update survey; 2) Completion of a survey
+                     under a reimbursable agreement; 3) Updated information for a particular survey or set of
+                     surveys may be posted if necessary to correct a severe error discovered in the database where
+                     this error is adversely impacting either internal or external customers; 4) Other extenuating
+                     circumstances. The annual refresh will refresh all surveys which were updated during the year.
+                     See also FAQs “How can I get notifications of soil data updates?” and “How can I find out
+                     when soil data was last updated?”
+
+How can I find out   Click on “Download Soils Data” tab. Select a State. Select a County (optional). Enter a date
+when soil data was   (optional) in “Only show Soil Survey Areas updated since…”. In the list of surveys, look at the
+last updated?        dates in the Version column and look at the date in the “Download Link”.
+
+How can I find the   Soil Survey Geographic Database (SSURGO) documentation including table names, columns,
+Soil Survey          user guides and other documentation are available at: SSURGO Documentation.
+Geographic
+Database
+(SSURGO)
+documentation?
+My Internet          If the Microsoft Internet Explorer browser is used, it must be version 11. To see which IE
+Explorer browser     version you are using, navigate to the Help menu and then choose About Internet Explorer. If
+does not seem to     you are using an older version, please upgrade to version 11. A download is available on
+work properly with   Microsoft's Internet Explorer website.
+Web Soil Survey. I
+am seeing errors.
+What can I do?
+
+Can I use Web Soil Yes. Attach a mouse (e.g. wireless mouse) to the smart device.
+Survey on a mobile
+device?
+
+
+
+Area of Interest and Quick Navigation
+
+Question                            Answer
+                                        Here are some basic instructions to get started using Web Soil Survey:
+How do I select the area for
+which I want to get soil                     1.   On the left side of the screen in the Quick Navigation panel, click on one of the
+information?                                      selection methods. For example, open State/County, select your state and county, and
+                                                  click View.
+
+
+                                             2.   After the map image is updated, click the Zoom In tool. Then click and drag a rectangle
+                                                  on the map to zoom to an area. Zoom in as close as you need to so you can see streets
+                                                  and landmarks you recognize.
+
+
+                                             3.   After the map image is updated, click the AOI Rectangle tool.
+
+
+                                             4.   Click and drag a rectangle around the area of the map you wish to set as your Area of
+                                                  Interest.
+
+
+                                             5.   The application will create the AOI you have specified. Now you can navigate to the
+                                                  Soil Map or Soil Data Explorer tabs and start getting soil information.
+
+                                        If the area you are interested in is not rectangular, you can use the AOI Polygon tool. Click points
+                                        on the map to define your AOI. For the final point, Double-click or while holding down the
+                                        Control key on the keyboard, click the left mouse button.
+
+Why am I limited to an area of      For performance reasons. Large AOIs take longer to create. Because they also
+interest of 100,000 or fewer        contain many soil map units, it takes longer to generate reports, ratings, maps, etc.
+acres?
+
+How do I use Google Earth to        Using Google Earth Pro (GEP), and an online converter tool, the non-GIS user
+create multiple AOIs for WSS?       can create a shapefile for import into WSS. Click here for complete instructions.
+
+I want to get an exact definition  This feature is not supported in the current release.
+of a subject property to match the
+Assessor’s Parcel Map for a soil
+survey. Is there a way that I can
+pinpoint an exact parcel number
+or property for a soil survey?
+Can I use nine one one addresses      This feature is not supported in the current release.
+(physical address on county
+roads) in the address search
+feature?
+
+Can I import a shapefile into Web Yes. On the Area of Interest (AOI) tab, navigate to Import AOI then either
+Soil Survey in order to define an choose the option Create AOI from Shapefile or Create AOI from Zipped
+area of interest?                 Shapefile. You can also import a shapefile that contains a multi-part AOI through
+                                  this process. See New Features (version 3.2).
+
+How can I bookmark or save my         You can do this in two different ways. Once you’ve created your AOI:
+AOI so I can come back to it?
+                                         1. On the Area of Interest (AOI) tab, save your AOI using Export AOI and
+                                            then choose the option Export AOI as Zipped Shapefile. After the
+                                            zipped shapefile is saved to your local machine, go back into Web Soil
+                                            Survey and choose Import AOI and then choose the option Create AOI
+                                            from Zipped Shapefile. For the zipped shapefile input, use the zipped
+                                            shapefile you just saved to your local machine.
+
+                                         2. Open the Link control, and save the Uniform Resource Locator (URL)
+                                            displayed there or bookmark it for later use.
+
+                                         3. Note: Multi-part AOI information will not be shown in the link.
+
+                                      See New Features (version 2.3) for details.
+
+My land contains more than one Use the AOI multi-part feature, currently available on the Import AOI section in
+irregular-shaped field area of       the Area of Interest (AOI) tab.
+tillable land that is surrounded by
+non-tillable land. Is it possible to You can do this in two different ways:
+draw each area of tillable land as
+separate sub-parts of the AOI so         1. On the Area of Interest (AOI) tab, use Import AOI and then choose the
+the software can summarize each             option Create AOI from Shapefile.
+soil type from the total of field
+                                         2. On the Area of Interest (AOI) tab, use Import AOI and then choose the
+areas of tillable land that has been
+                                            option Create AOI from Zipped Shapefile.
+sketched?
+                                      See New Features (version 3.2) for details.
+
+When I’m drawing an AOI,              To stop in the middle of drawing an AOI and start over, when using the AOI
+sometimes I make an error and         Rectangle tool, press the Esc key without releasing the mouse button.
+want to stop in the middle of
+drawing it and start over, or after   To start over when using the AOI Polygon tool, just press the Esc key.
+I’ve drawn it, I want to delete the
+AOI and start over. Is there a way    To delete an AOI after drawing it, click the Clear AOI button in the Area of
+to do this?                           Interest Properties panel.
+To navigate by Public Land          Enter both number and direction into the “Township” or “Range” box. For
+Survey System (PLSS), how do I      example: “20 N” or “8 W”.
+specify township and range,
+including the direction?
+
+
+
+Interactive Map
+
+Question                            Answer
+
+Why are the water and road lines    The base map data layers used by Web Soil Survey come from multiple sources
+so far off the photo image?         and were compiled at various scales, generally at a much coarser resolution than
+                                    the soils data or the aerial photos, and they don’t always match perfectly.
+
+Why can’t the Web Soil Survey       Web Soil Survey is only displaying these data layers to assist with navigation and
+development staff fix problems      as auxiliary information to the soils data. These layers are supplied by third
+with these map data layers?         parties, and NRCS does not have the authority to edit them. NRCS is only
+                                    responsible for the soils data layers.
+
+How can I find the source of the To see all available information on a map data layer:
+map data layers displayed in Web
+Soil Survey?                        1. Zoom the map to a scale where the layer you are interested in is visible.
+
+                                       2. Open the Legend tab.
+
+                                       3. Right click the name of the layer to pop-up the context menu.
+
+                                       4. Click View Layer Descriptions.
+
+                                       5. All available information about the source of the data layer is displayed.
+                                          In some cases, the source of the data layer is not known, and No
+                                          descriptions available is displayed.
+
+
+How can I find the date of aerial   To get the date of the aerial photography for a particular spot:
+photography used in Web Soil
+Survey?                                1. Click the Identify tool on the map tool bar.
+
+                                       2. Then click on the map. In the Identify panel below the map, for the
+                                          “Aerial Photography” layer, you will see the dates that the imagery was
+                                          made at the spot you clicked.
+
+                                    The aerial photography date(s) are also included on the Legend page of printable
+                                    maps.
+
+Why do the “Measurement Tool”       The map is presented in the “Web Mercator” projection. The scale bar is based
+and scale bar not always agree?     upon this projection, and represents approximate east-west map distances at the
+                                    center of the image. The actual scale varies north and south of this center point in
+                                    this projection. The measurement tool provides a more accurate distance
+                                    measurement than possible using the “flat earth” Web Mercator projection: the
+                                    Web Mercator coordinates at the measurement points are converted to “WGS 84”
+                                    geographic coordinates and the geodesic distance between these points is then
+                                    calculated.
+
+When I “copy” the map image         A side effect using Quick Maps is that you cannot directly “copy” the map image
+from my browser most of the map     from your browser to paste it into a different application. Should you need to do
+image is missing. How can I copy    this, disable “Quick Maps” (via the “Preferences” link at the top of the page).
+the map that I can see in the       Then you will be able to “copy” the complete map image.
+browser?
+
+Why is the background               Please try refreshing your browser window. The topographic map data may be
+“Topographic Map” missing?          temporarily unavailable due to network or service difficulties. In addition, there
+                                    may be no data available where you are looking.
+
+                                    Is the “Topographic Map” background layer turned on in the Legend?
+
+Why is some (or all) of the     You may occasionally see one or more missing regions in the background if
+background “Aerial Photography” network traffic is congested or if the photographic images are not immediately
+missing?                        available from our provider (Microsoft Bing). Refreshing your browser window
+                                should improve the picture (it may be necessary to refresh several times, each
+                                time should increase the coverage).
+
+                                    Is the “Aerial Photography” background layer turned on in the Legend?
+
+
+
+Soil Data Explorer
+
+Question                   Answer
+
+How can I view             The Ecological Site data is now available in the Ecological Sites inner-tab within the Soil
+Ecological Site data for   Data Explorer tab. For each map unit in the AOI a link to the appropriate “EDIT” data is
+my Area of Interest?       provided (“EDIT” stands for “Ecosystem Dynamics Interpretive Tool”, not all map units
+                           have data available).
+
+                              1.   Define your Area of Interest.
+                              2.   Change to the Soil Data Explorer page.
+                              3.   On that page select the Ecological Sites tab.
+                              4.   Click on View All Ecological Sites Info button.
+                              5.   In the table beneath the thematic map click on Ecological Site Descriptions to
+                                   open full ecological site descriptions in the USDA-NRCS Ecosystem Dynamics
+                                   Interpretative Tool (EDIT). A new Web Browser page will be displayed with
+                                   the ecological site's data associated with that component.
+
+
+How do I print or          Here are some basic instructions to get soil data from Web Soil Survey:
+download the soil data
+maps and tables?
+1. First, create an area of interest (AOI). (See “How do I select the area for which I
+   want to get soil information?”)
+
+2. Then, click the Soil Map tab.
+
+3. You will see the Soil Map for your AOI. Click the Printable Version button, and
+   press View to create a Portable Document Format (PDF) file that you can
+   download or print. For additional help, press the question-mark icon in the
+   Printable Version form.
+
+4. Then, click the Soil Data Explorer tab.
+
+5. The Soil Data Explorer tab contains four inner tabs:
+   • Intro to Soils
+   • Suitabilities and Limitations for Use
+   • Soil Properties and Qualities
+   • Soil Reports
+
+   The default inner tab is Suitabilities and Limitations for Use. On the left side of
+   this tab are a number of “Folders”, which you can click to open.
+
+6. Open a folder, for example Recreational Development.
+
+7. The folders contain one or more interpretive themes. Each has a form that you can
+   fill out to get “Soil Ratings” (on the other inner tabs, other kinds of soil data are
+   available). You can accept the defaults, or you can set the options as you wish.
+   Click one of the interpretive themes, for example, Playgrounds, to open it.
+
+8. You can click View Description to see a description of this rating.
+
+9. Click View Rating to run the rating and view the data map and/or tables.
+
+10. Click the Printable Version button, and press View to create a Portable
+    Document Format (PDF) file of the soil rating map and/or tables that you can
+    download or print.
+
+11. Help for the Suitabilities and Limitations for Use tab, and for all the inner tabs,
+    is available by clicking the question-mark icon at the upper right of the folder
+    panel.
+How do I get the            Define your area of interest, then navigate to the Soil Map tab. On the left side, find the
+description of a soil map   desired soil map unit in the Map Unit Legend. Click on the map unit name to display the
+unit without printing a     description for that map unit in a dialog. The Map Unit Description dialog also contains a
+soil map?                   Printable Version button.
+
+                            You can also view and print a report containing all Map Unit Descriptions for your AOI.
+                            Navigate to the Soil Data Explorer tab, then the Soil Reports inner tab. On the left side,
+                            in the AOI Inventory folder, view the Map Unit Description report.
+
+What is the source of the   The data presented by Web Soil Survey comes from the Soil Data Mart database, which
+soil data presented in      contains the official NRCS soil survey data for the U.S.
+Web Soil Survey?
+
+
+
+Printable Maps and Reports
+
+Question                            Answer
+
+I cannot produce a printable        You may have a popup blocker installed. See the Known Problem “Web Soil
+version of the soil map. I have     Survey doesn’t work if you have popups blocked” at the following link: “Web
+tried several times, and each time Soil Survey doesn’t work if you have popups blocked”.
+it says “Generating printable
+version...”, but when it’s done, no
+printable version appears.
+
+I tried printing an on screen    Since Web Soil Survey Portable Document Format (PDF) files alternate between
+Portable Document Format (PDF) portrait and landscape mode from page to page, you should select “Auto
+file via Printable Version and   portrait/landscape” mode so that the pages are printed correctly. This is typically
+also via the Custom Soil         done in the “Printer Properties Layout Selection” or “Printer Properties Advanced
+Resource Report. The PDF looks Options”. If needed, please check your particular printer's settings, help, or on-
+fine on screen, but when I print line guide.
+using “Portrait” or “Landscape”
+mode, the printed pages get
+clipped, and information is not
+printed correctly. What can I do?
+
+What is the difference between      You can print or save soils data on a page-by-page basis using the Printable
+Printable Version and Add to        Version feature.
+Shopping Cart?
+                                    You can also add maps and data to a “Shopping Cart” for inclusion in a single
+                                    Custom Soil Resource Report. It’s an easy way to get one polished report
+                                    containing all relevant information for your area of interest. Any custom report
+                                    you create on your Shopping Cart is free of charge — we just used the well-
+                                    known internet shopping analogy for collecting and ordering your information.
+
+                                    To try out this feature, define your area of interest (AOI), and navigate to the
+                                    Shopping Cart tab. In the Table of Contents panel, notice several report items
+                                    available by default: Cover, Preface, Contents, How Soil Surveys Are Made, Soil
+                                    Map, Map Unit Legend, Map Unit Descriptions, and References. You can
+                                    preview items in your Shopping Cart by clicking the item’s title in the Table of
+                                    Contents. To make the preview go away, click the title again.
+
+                                    You can add additional information to your report as desired. From the inner tabs
+                                    of the Soil Data Explorer tab, view information and then click Add to Shopping
+                                    Cart. In this way, you can assemble a report customized to your needs.
+
+                                    When you have collected all the data you want in your report, press the Check
+                                    Out button and choose Get Now or Download Later. Larger reports are only
+                                    available for Download Later.
+
+I requested a report for Download The Order Processor normally runs a Download Later order once per day. If it
+Later, but I got an email message gets an error, it does not run it again until the next day. The Order Processor is
+reporting an error, saying “This  configured to run its queue all day long, so if the queue contains reports that had
+was attempt 1 of 3 total.” When   errors yesterday, it runs them again the next morning. It will run each order a
+will my report be run again?      maximum of three times, and once an order has failed three times, it gives up.
+
+Why doesn’t my printable map      In some cases the displayed layers and associated labels may differ due to
+look the same as the map I see on differences in scale. See the Known Problem “The printable map doesn’t show
+the screen?                       what was in the interactive map” at the following link: “The printable map
+                                  doesn’t show what was in the interactive map”.
+
+                                    More subtle differences may be seen in width of linear features, size of symbols
+                                    and size of text. These are associated with differences in scale and resolution.
+                                    Differences in color, especially of linear features, may also be present. These are
+                                    artifacts of creation of the printable maps inside of a Portable Document Format
+                                    (PDF) document.
+Why are soil map units missing       Soil map units are labeled only for map scales 1:50,000 or larger. If some, but not
+labels?                              all, labels are missing it’s because the map software was unable to find enough
+                                     space to fit all labels.
+
+                                     Printable Version Options provides a Map Scale selector. If no soil map unit
+                                     labels appear, setting Map Scale to 1:50,000 or larger may solve the problem.
+
+                                     For very large AOIs, 1:50,000 may not be an option. A smaller AOI may solve
+                                     the problem.
+
+
+
+Data Downloads
+
+Question                             Answer
+
+How can I get soil tabular and       This data is available in various forms, depending on your needs:
+spatial data in a database format?
+                                                                                                         Data
+                                     Scope                   Link                     Scale
+                                                                                                         Format
+                                     User-specified AOI, Web Soil Survey App — SSURGO                    Spatial:
+                                     up to 100,000 acres Download Soils Data   (1:24,000)                ESRI
+                                                         tab                                             Shapefile
+
+                                                                                                         Tabular:
+                                                                                                         ASCII1a
+                                     Soil Survey Area2a      Web Soil Survey App — SSURGO                Spatial:
+                                                             Download Soils Data     (1:24,000)          ESRI
+                                                             tab                                         Shapefile
+                                                             Geospatial Data Gateway
+                                                                                                         Tabular:
+                                                                                                         ASCII1b
+                                     State, or entire U.S.   Web Soil Survey App — STATSGO               Spatial:
+                                                             Download Soils Data     (1:250,000)         ESRI
+                                                             tab                                         Shapefile
+                                                             Geospatial Data Gateway
+                                                                                                         Tabular:
+                                                                                                         ASCII1c
+                                     User-specified AOI, Soil Data Access3a           SSURGO             Spatial:
+                                     up to 2,500,000 acres                            (1:24,000)         ESRI
+                                                                                                         Shapefile
+                                                                                                         GML
+
+                                                                                                         Tabular:4a
+                                                                                                         ASCII
+                                                                                                         XML
+                                                                                                         HTML
+
+                                     Notes:
+                                  1a 1b 1c
+                                       Soil tabular data in an ASCII format that can be imported into a Microsoft
+                                  Access “SSURGO Template Database”. Note that there is a national SSURGO
+                                  Template Database for general use, and a state-specific database for some states.
+
+                                  2a
+                                    You can determine data availability for soil survey areas using the Available
+                                  Soil Survey Data status map.
+
+                                  3a
+                                    The Soil Data Access option requires considerably more technical expertise
+                                  than the others.
+
+                                  4a
+                                    For details, refer to the Soil Data Access Query Guide at the following link:
+                                  Soil Data Access Query Guide.
+
+                                  To utilize this data, you will need:
+
+                                       •     For the spatial data, ArcGIS or other software that can read shapefiles.
+                                       •     For the tabular data, Microsoft Access.
+                                       •     To use the spatial data in conjunction with the tabular data, use the Soil
+                                             Data Viewer application at the following link: Soil Data Viewer.
+
+
+How can I download data for       Download requests for more than one survey area at a time can be submitted
+multiple soil survey areas at a   through the Geospatial Data Gateway at the following link: Geospatial Data
+time?                             Gateway. Going through the Geospatial Data Gateway also provides the option to
+                                  obtain data on CD or DVD.
+
+What is the Geospatial Data       The Geospatial Data Gateway is the One Stop Source for environmental and
+Gateway?                          natural resources data, at any time, from anywhere, to anyone. The Gateway
+                                  allows you to choose your area of interest, browse and select data from our
+                                  catalog, customize the format, and have it downloaded or shipped on CD or
+                                  DVD.
+

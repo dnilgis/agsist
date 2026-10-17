@@ -1,0 +1,5371 @@
+<!doctype html><html lang="en"><head>
+    <meta charset="utf-8">
+    
+      
+        <title>View Parcel Data Through the Property Summary</title>
+      
+    
+
+    
+      <link rel="SHORTCUT ICON" href="https://support.acres.com/hubfs/AC%20%7C%20Trademarked%20Logo_Acres%20Icon%20Green%20TM-1.png">
+    <meta name="description" content="Acres AI-powered Property Summary lets you see comprehensive parcel details all in one centralized location!">
+    
+    
+      
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:description" content="Acres AI-powered Property Summary lets you see comprehensive parcel details all in one centralized location!">
+    <meta property="og:title" content="View Parcel Data Through the Property Summary">
+    <meta name="twitter:description" content="Acres AI-powered Property Summary lets you see comprehensive parcel details all in one centralized location!">
+    <meta name="twitter:title" content="View Parcel Data Through the Property Summary">
+
+    
+
+    
+    <style>
+a.cta_button{-moz-box-sizing:content-box !important;-webkit-box-sizing:content-box !important;box-sizing:content-box !important;vertical-align:middle}.hs-breadcrumb-menu{list-style-type:none;margin:0px 0px 0px 0px;padding:0px 0px 0px 0px}.hs-breadcrumb-menu-item{float:left;padding:10px 0px 10px 10px}.hs-breadcrumb-menu-divider:before{content:'›';padding-left:10px}.hs-featured-image-link{border:0}.hs-featured-image{float:right;margin:0 0 20px 20px;max-width:50%}@media (max-width: 568px){.hs-featured-image{float:none;margin:0;width:100%;max-width:100%}}.hs-screen-reader-text{clip:rect(1px, 1px, 1px, 1px);height:1px;overflow:hidden;position:absolute !important;width:1px}
+</style>
+
+<style>
+/* Theme base styles */
+
+/* Generic */
+
+  
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+
+/* Document
+   ========================================================================== */
+
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+
+html {
+  line-height: 1.15; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+/* Sections
+   ========================================================================== */
+
+/**
+ * Remove the margin in all browsers.
+ */
+
+body {
+  margin: 0;
+}
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+
+main {
+  display: block;
+}
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/* Text-level semantics
+   ========================================================================== */
+
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+
+a {
+  background-color: transparent;
+}
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+
+abbr[title] {
+  border-bottom: none; /* 1 */ /* 2 */
+  text-decoration: underline;
+  text-decoration: underline dotted; /* 2 */
+}
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/**
+ * Add the correct font size in all browsers.
+ */
+
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* Embedded content
+   ========================================================================== */
+
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+
+img {
+  border-style: none;
+}
+
+/* Forms
+   ========================================================================== */
+
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
+}
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+
+button,
+input {
+  /* 1 */
+  overflow: visible;
+}
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+
+button,
+select {
+  /* 1 */
+  text-transform: none;
+}
+
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+}
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+
+button::-moz-focus-inner,
+[type='button']::-moz-focus-inner,
+[type='reset']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+
+button:-moz-focusring,
+[type='button']:-moz-focusring,
+[type='reset']:-moz-focusring,
+[type='submit']:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+/**
+ * Correct the padding in Firefox.
+ */
+
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+
+legend {
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
+}
+
+/**
+ * Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+
+progress {
+  vertical-align: baseline;
+}
+
+/**
+ * Remove the default vertical scrollbar in IE 10+.
+ */
+
+textarea {
+  overflow: auto;
+}
+
+/**
+ * 1. Add the correct box sizing in IE 10.
+ * 2. Remove the padding in IE 10.
+ */
+
+[type='checkbox'],
+[type='radio'] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+
+[type='number']::-webkit-inner-spin-button,
+[type='number']::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/**
+ * Remove the inner padding in Chrome and Safari on macOS.
+ */
+
+[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/* Interactive
+   ========================================================================== */
+
+/*
+ * Add the correct display in Edge, IE 10+, and Firefox.
+ */
+
+details {
+  display: block;
+}
+
+/*
+ * Add the correct display in all browsers.
+ */
+
+summary {
+  display: list-item;
+}
+
+/* Misc
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 10+.
+ */
+
+template {
+  display: none;
+}
+
+/**
+ * Add the correct display in IE 10.
+ */
+
+[hidden] {
+  display: none;
+}
+
+/* Settings */
+
+:root {
+  --container-width: 1000px;
+
+  --column-gap: 2.13%;
+  --column-width-multiplier: 8.333;
+
+  --primary-color: #2a5f8d;
+  --secondary-color: #e2ebf4;
+  --accent-color: #2a8d8a;
+  --body-bg-color: #ffffff;
+
+  --primary-body-font-family: 'Rubik', sans-serif;
+  --primary-body-font-style: normal;
+  --primary-body-font-weight: 400;
+  --primary-body-font-size: 1rem;
+  --primary-body-line-height: 1.4;
+  --primary-body-font-color: #33475b;
+
+  --secondary-header-font-family: 'Rubik', sans-serif;
+  --secondary-header-font-style: normal;
+  --secondary-header-font-weight: 700;
+  --secondary-header-font-size: 1rem;
+  --secondary-header-line-height: 1.5;
+  --secondary-header-font-color: #33475b;
+
+  --header-menu-font-color: #33475b;
+
+  --h1-secondary-header-font-family: var(--secondary-header-font-family);
+  --h1-secondary-header-font-style: var(--secondary-header-font-style);
+  --h1-secondary-header-font-weight: var(--secondary-header-font-weight);
+  --h1-secondary-header-font-size: 32px;
+  --h1-secondary-header-line-height: var(--secondary-header-line-height);
+  --h1-secondary-header-font-color: var(--secondary-header-font-color);
+  --h1-secondary-header-text-decoration: var(
+    --secondary-header-text-decoration
+  );
+  --h1-secondary-header-text-transform: var(--secondary-header-text-transform);
+
+  --h2-secondary-header-font-family: var(--secondary-header-font-family);
+  --h2-secondary-header-font-style: var(--secondary-header-font-style);
+  --h2-secondary-header-font-weight: var(--secondary-header-font-weight);
+  --h2-secondary-header-font-size: 24px;
+  --h2-secondary-header-line-height: var(--secondary-header-line-height);
+  --h2-secondary-header-font-color: var(--secondary-header-font-color);
+  --h2-secondary-header-text-decoration: var(
+    --secondary-header-text-decoration
+  );
+  --h2-secondary-header-text-transform: var(--secondary-header-text-transform);
+
+  --h3-secondary-header-font-family: var(--secondary-header-font-family);
+  --h3-secondary-header-font-style: var(--secondary-header-font-style);
+  --h3-secondary-header-font-weight: var(--secondary-header-font-weight);
+  --h3-secondary-header-font-size: 22px;
+  --h3-secondary-header-line-height: var(--secondary-header-line-height);
+  --h3-secondary-header-font-color: var(--secondary-header-font-color);
+  --h3-secondary-header-text-decoration: var(
+    --secondary-header-text-decoration
+  );
+  --h3-secondary-header-text-transform: var(--secondary-header-text-transform);
+
+  --h4-secondary-header-font-family: var(--secondary-header-font-family);
+  --h4-secondary-header-font-style: var(--secondary-header-font-style);
+  --h4-secondary-header-font-weight: var(--secondary-header-font-weight);
+  --h4-secondary-header-font-size: 18px;
+  --h4-secondary-header-line-height: var(--secondary-header-line-height);
+  --h4-secondary-header-font-color: var(--secondary-header-font-color);
+  --h4-secondary-header-text-decoration: var(
+    --secondary-header-text-decoration
+  );
+  --h4-secondary-header-text-transform: var(--secondary-header-text-transform);
+
+  --h5-secondary-header-font-family: var(--secondary-header-font-family);
+  --h5-secondary-header-font-style: var(--secondary-header-font-style);
+  --h5-secondary-header-font-weight: var(--secondary-header-font-weight);
+  --h5-secondary-header-font-size: 16px;
+  --h5-secondary-header-line-height: var(--secondary-header-line-height);
+  --h5-secondary-header-font-color: var(--secondary-header-font-color);
+  --h5-secondary-header-text-decoration: var(
+    --secondary-header-text-decoration
+  );
+  --h5-secondary-header-text-transform: var(--secondary-header-text-transform);
+
+  --h6-secondary-header-font-family: var(--secondary-header-font-family);
+  --h6-secondary-header-font-style: var(--secondary-header-font-style);
+  --h6-secondary-header-font-weight: var(--secondary-header-font-weight);
+  --h6-secondary-header-font-size: 16px;
+  --h6-secondary-header-line-height: var(--secondary-header-line-height);
+  --h6-secondary-header-font-color: #7c98b6;
+  --h6-secondary-header-text-decoration: var(
+    --secondary-header-text-decoration
+  );
+  --h6-secondary-header-text-transform: var(--secondary-header-text-transform);
+
+  --a-primary-body-font-family: var(--primary-body-font-family);
+  --a-primary-body-font-style: var(--primary-body-font-style);
+  --a-primary-body-font-weight: var(--primary-body-font-weight);
+  --a-primary-body-font-size: 16px;
+  --a-primary-body-line-height: var(--primary-body-line-height);
+  --a-primary-body-font-color: #1773d1;
+  --a-primary-body-text-decoration: var(--primary-body-text-decoration);
+  --a-primary-body-text-transform: var(--primary-body-text-transform);
+
+  --header-top-bar-background-color: var(--secondary-color);
+
+  --top-bar-font-family: var(--primary-body-font-family);
+  --top-bar-font-style: var(--primary-body-font-style);
+  --top-bar-font-weight: var(--primary-body-font-weight);
+  --top-bar-font-size: var(--a-primary-body-font-size);
+  --top-bar-line-height: ;
+  --top-bar-font-color: var(--header-menu-font-color);
+  --top-bar-text-decoration: var(--a-primary-body-text-decoration);
+  --top-bar-text-transform: var(--a-primary-body-text-transform);
+
+  --language-switcher-dropdown-bg: #ff0000;
+  --language-switcher-dropdown-font-family: var(--primary-body-font-family);
+  --language-switcher-dropdown-font-style: var(--primary-body-font-style);
+  --language-switcher-dropdown-font-weight: var(--primary-body-font-weight);
+  --language-switcher-dropdown-font-size: var(--a-primary-body-font-size);
+  --language-switcher-dropdown-line-height: ;
+  --language-switcher-dropdown-font-color: var(--header-menu-font-color);
+  --language-switcher-dropdown-text-decoration: var(
+    --a-primary-body-text-decoration
+  );
+  --language-switcher-dropdown-text-transform: var(
+    --a-primary-body-text-transform
+  );
+
+  --top-bar-hover-dropdown-bg: #00ff00;
+  --top-bar-hover-dropdown-font-family: var(--primary-body-font-family);
+  --top-bar-hover-dropdown-font-style: var(--primary-body-font-style);
+  --top-bar-hover-dropdown-font-weight: var(--primary-body-font-weight);
+  --top-bar-hover-dropdown-font-size: var(--a-primary-body-font-size);
+  --top-bar-hover-dropdown-line-height: ;
+  --top-bar-hover-dropdown-font-color: var(--header-menu-font-color);
+  --top-bar-hover-dropdown-text-decoration: var(
+    --a-primary-body-text-decoration
+  );
+  --top-bar-hover-dropdown-text-transform: var(--a-primary-body-text-transform);
+
+  --header-bottom-bar-background-color: #fff;
+
+  --header-menu-main-font-family: var(--primary-body-font-family);
+  --header-menu-main-font-style: var(--primary-body-font-style);
+  --header-menu-main-font-weight: var(--primary-body-font-weight);
+  --header-menu-main-font-size: var(--a-primary-body-font-size);
+  --header-menu-main-line-height: ;
+  --header-menu-main-font-color: var(--header-menu-font-color);
+  --header-menu-main-text-decoration: var(--a-primary-body-text-decoration);
+  --header-menu-main-text-transform: var(--a-primary-body-text-transform);
+
+  --header-menu-mobile-box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.125);
+
+  --header-menu-main-hover-font-family: var(--primary-body-font-family);
+  --header-menu-main-hover-font-style: var(--primary-body-font-style);
+  --header-menu-main-hover-font-weight: var(--primary-body-font-weight);
+  --header-menu-main-hover-font-size: var(--a-primary-body-font-size);
+  --header-menu-main-hover-line-height: ;
+  --header-menu-main-hover-font-color: var(--header-menu-font-color);
+  --header-menu-main-hover-text-decoration: var(
+    --a-primary-body-text-decoration
+  );
+  --header-menu-main-hover-text-transform: var(--a-primary-body-text-transform);
+
+  --header-menu-submenu-bg: #fff;
+  --header-menu-submenu-font-family: var(--primary-body-font-family);
+  --header-menu-submenu-font-style: var(--primary-body-font-style);
+  --header-menu-submenu-font-weight: var(--primary-body-font-weight);
+  --header-menu-submenu-font-size: var(--a-primary-body-font-size);
+  --header-menu-submenu-line-height: ;
+  --header-menu-submenu-font-color: var(--header-menu-font-color);
+  --header-menu-submenu-text-decoration: var(--a-primary-body-text-decoration);
+  --header-menu-submenu-text-transform: var(--a-primary-body-text-transform);
+
+  --header-menu-hover-submenu-bg: #f00;
+
+  --header-menu-hover-submenu-font-family: var(--primary-body-font-family);
+  --header-menu-hover-submenu-font-style: var(--primary-body-font-style);
+  --header-menu-hover-submenu-font-weight: var(--primary-body-font-weight);
+  --header-menu-hover-submenu-font-size: var(--a-primary-body-font-size);
+  --header-menu-hover-submenu-line-height: ;
+  --header-menu-hover-submenu-font-color: var(--header-menu-font-color);
+  --header-menu-hover-submenu-text-decoration: var(
+    --a-primary-body-text-decoration
+  );
+  --header-menu-hover-submenu-text-transform: var(
+    --a-primary-body-text-transform
+  );
+
+  --header-button-font-family: var(--primary-body-font-family);
+  --header-button-font-style: var(--primary-body-font-style);
+  --header-button-font-weight: var(--primary-body-font-weight);
+  --header-button-font-size: var(--a-primary-body-font-size);
+  --header-button-line-height: 16px;
+  --header-button-font-color: #fff;
+  --header-button-text-decoration: var(--a-primary-body-text-decoration);
+  --header-button-text-transform: var(--a-primary-body-text-transform);
+
+  --header-button-padding: 10px 20px;
+  --header-button-border-radius: 20px;
+  --header-button-border: 3px solid pink;
+
+  --header-button-background-color: var(--accent-color);
+
+  --header-button-hover-text-decoration: var(--a-primary-body-text-decoration);
+  --header-button-hover-background-color: var(--accent-color);
+  --header-button-hover-font-color: #fff;
+  --header-button-hover-border: 3px solid gray;
+
+  --primary-button-font-family: var(--primary-body-font-family);
+  --primary-button-font-style: var(--primary-body-font-style);
+  --primary-button-font-weight: var(--primary-body-font-weight);
+  --primary-button-font-size: var(--a-primary-body-font-size);
+  --primary-button-line-height: 16px;
+  --primary-button-font-color: #fff;
+  --primary-button-text-decoration: var(--a-primary-body-text-decoration);
+  --primary-button-text-transform: var(--a-primary-body-text-transform);
+
+  --primary-button-padding: 10px 20px;
+  --primary-button-border-radius: 20px;
+  --primary-button-border: 3px solid pink;
+
+  --primary-button-background-color: var(--accent-color);
+
+  --primary-button-hover-text-decoration: var(--a-primary-body-text-decoration);
+  --primary-button-hover-background-color: var(--accent-color);
+  --primary-button-hover-font-color: #fff;
+  --primary-button-hover-border: 3px solid gray;
+
+  --secondary-button-font-family: var(--primary-body-font-family);
+  --secondary-button-font-style: var(--primary-body-font-style);
+  --secondary-button-font-weight: var(--primary-body-font-weight);
+  --secondary-button-font-size: var(--a-primary-body-font-size);
+  --secondary-button-line-height: 16px;
+  --secondary-button-font-color: var(--primary-body-font-color);
+  --secondary-button-text-decoration: var(--a-primary-body-text-decoration);
+  --secondary-button-text-transform: var(--a-primary-body-text-transform);
+
+  --secondary-button-padding: 10px 20px;
+  --secondary-button-border-radius: 2px;
+  --secondary-button-border: 3px solid pink;
+
+  --secondary-button-background-color: var(--secondary-color);
+
+  --secondary-button-hover-text-decoration: var(
+    --a-primary-body-text-decoration
+  );
+  --secondary-button-hover-background-color: var(--secondary-color);
+  --secondary-button-hover-font-color: var(--primary-body-font-color);
+  --secondary-button-hover-border: 3px solid gray;
+
+  --search-field-label-font-family: var(--secondary-header-font-family);
+  --search-field-label-font-style: var(--secondary-header-font-style);
+  --search-field-label-font-weight: var(--secondary-header-font-weight);
+  --search-field-label-font-size: 32px;
+  --search-field-label-line-height: var(--secondary-header-line-height);
+  --search-field-label-text-decoration: var(--secondary-header-text-decoration);
+  --search-field-label-text-transform: var(--secondary-header-text-transform);
+
+  --footer-bg-color: #fff;
+
+  --footer-font-style: var(--primary-body-font-style);
+  --footer-font-weight: var(--primary-body-font-weight);
+  --footer-font-size: var(--a-primary-body-font-size);
+  --footer-line-height: ;
+  --footer-font-color: var(--a-primary-body-font-color);
+  --footer-text-decoration: var(--a-primary-body-text-decoration);
+  --footer-text-transform: var(--a-primary-body-text-transform);
+
+  --footer-menu-font-family: var(--primary-body-font-family);
+  --footer-menu-font-style: var(--primary-body-font-style);
+  --footer-menu-font-weight: var(--primary-body-font-weight);
+  --footer-menu-font-size: var(--a-primary-body-font-size);
+  --footer-menu-line-height: 2.2rem;
+  --footer-menu-font-color: var(--header-menu-font-color);
+  --footer-menu-text-decoration: var(--a-primary-body-text-decoration);
+  --footer-menu-text-transform: var(--a-primary-body-text-transform);
+
+  --footer-menu-hover-font-family: var(--primary-body-font-family);
+  --footer-menu-hover-font-style: var(--primary-body-font-style);
+  --footer-menu-hover-font-weight: var(--primary-body-font-weight);
+  --footer-menu-hover-font-size: var(--a-primary-body-font-size);
+  --footer-menu-hover-line-height: ;
+  --footer-menu-hover-font-color: var(--header-menu-font-color);
+  --footer-menu-hover-text-decoration: var(--a-primary-body-text-decoration);
+  --footer-menu-hover-text-transform: var(--a-primary-body-text-transform);
+
+  --social-follow-icon-sizes: 32px;
+  --social-follow-icon-shape: circle;
+  --social-follow-icon-color: #fff;
+  --social-follow-icon-background-color: #494a52;
+  --social-follow-icon-space-between-icons: 12px;
+  --social-follow-icon-alignment: right;
+
+  --hs-kb-card-highlight-border-color: var(--primary-color);
+
+  --hs-kb-home-tiles-background-color: #f2f7fc;
+
+    
+  --hs-kb-home-grid-item-padding: 24px 18px;
+}
+
+.theme-overrides {
+    
+  --primary-color:  #3da675  ;
+  --secondary-color:  #ffffff  ;
+  --accent-color:  #3da675  ;
+  --body-bg-color:  #1e2429  ;
+
+  --footer-bg-color:  #1e2429  ;
+
+    
+   
+  
+    
+      
+        --primary-body-font-family: Roboto, sans-serif;
+      
+    
+      
+        --primary-body-font-style: normal;
+      
+    
+      
+        --primary-body-font-weight: normal;
+      
+    
+      
+        --primary-body-text-decoration: none;
+      
+    
+  
+  
+    --primary-body-font-color: #33475B;
+  
+  
+ 
+   
+  
+    
+      
+        --secondary-header-font-family: Roboto, sans-serif;
+      
+    
+      
+        --secondary-header-font-style: normal;
+      
+    
+      
+        --secondary-header-font-weight: normal;
+      
+    
+      
+        --secondary-header-text-decoration: none;
+      
+    
+  
+  
+    --secondary-header-font-color: #33475B;
+  
+  
+ 
+
+   
+  
+    
+      
+        --h1-secondary-header-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --h1-secondary-header-font-style: normal;
+      
+    
+      
+        --h1-secondary-header-font-weight: 700;
+      
+    
+      
+        --h1-secondary-header-text-decoration: none;
+      
+    
+  
+  
+    --h1-secondary-header-font-color: #ffffff;
+  
+  
+      
+    --h1-secondary-header-font-size: 32px;
+  
+ 
+  --h1-secondary-header-text-transform:  none  ;
+
+   
+  
+    
+      
+        --h2-secondary-header-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --h2-secondary-header-font-style: normal;
+      
+    
+      
+        --h2-secondary-header-font-weight: 300;
+      
+    
+      
+        --h2-secondary-header-text-decoration: none;
+      
+    
+  
+  
+    --h2-secondary-header-font-color: #ffffff;
+  
+  
+      
+    --h2-secondary-header-font-size: 26px;
+  
+ 
+  --h2-secondary-header-text-transform:  none  ;
+
+   
+  
+    
+      
+        --h3-secondary-header-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --h3-secondary-header-font-style: normal;
+      
+    
+      
+        --h3-secondary-header-font-weight: 800;
+      
+    
+      
+        --h3-secondary-header-text-decoration: none;
+      
+    
+  
+  
+    --h3-secondary-header-font-color: #3da675;
+  
+  
+      
+    --h3-secondary-header-font-size: 26px;
+  
+ 
+  --h3-secondary-header-text-transform:  none  ;
+
+   
+  
+    
+      
+        --h4-secondary-header-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --h4-secondary-header-font-style: normal;
+      
+    
+      
+        --h4-secondary-header-font-weight: 500;
+      
+    
+      
+        --h4-secondary-header-text-decoration: none;
+      
+    
+  
+  
+    --h4-secondary-header-font-color: #74ad8a;
+  
+  
+      
+    --h4-secondary-header-font-size: 22px;
+  
+ 
+  --h4-secondary-header-text-transform:  none  ;
+
+   
+  
+    
+      
+        --h5-secondary-header-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --h5-secondary-header-font-style: normal;
+      
+    
+      
+        --h5-secondary-header-font-weight: 500;
+      
+    
+      
+        --h5-secondary-header-text-decoration: none;
+      
+    
+  
+  
+    --h5-secondary-header-font-color: #3da675;
+  
+  
+      
+    --h5-secondary-header-font-size: 20px;
+  
+ 
+  --h5-secondary-header-text-transform:  none  ;
+
+   
+  
+    
+      
+        --h6-secondary-header-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --h6-secondary-header-font-style: normal;
+      
+    
+      
+        --h6-secondary-header-font-weight: 300;
+      
+    
+      
+        --h6-secondary-header-text-decoration: none;
+      
+    
+  
+  
+    --h6-secondary-header-font-color: #ffffff;
+  
+  
+      
+    --h6-secondary-header-font-size: 18px;
+  
+ 
+  --h6-secondary-header-text-transform:  uppercase  ;
+
+   
+  
+    
+      
+        --primary-body-font-family: Roboto, sans-serif;
+      
+    
+      
+        --primary-body-font-style: normal;
+      
+    
+      
+        --primary-body-font-weight: 300;
+      
+    
+      
+        --primary-body-text-decoration: none;
+      
+    
+  
+  
+    --primary-body-font-color: #FFFFFF;
+  
+  
+      
+    --primary-body-font-size: 18px;
+  
+ 
+
+   
+  
+    
+      
+        --a-primary-body-font-family: Roboto, sans-serif;
+      
+    
+      
+        --a-primary-body-font-style: normal;
+      
+    
+      
+        --a-primary-body-font-weight: 600;
+      
+    
+      
+        --a-primary-body-text-decoration: none;
+      
+    
+  
+  
+    --a-primary-body-font-color: #3da675;
+  
+  
+ 
+
+   
+  
+    
+      
+        --a-hover-primary-body-font-family: Roboto, sans-serif;
+      
+    
+      
+        --a-hover-primary-body-font-style: normal;
+      
+    
+      
+        --a-hover-primary-body-font-weight: 600;
+      
+    
+      
+        --a-hover-primary-body-text-decoration: underline;
+      
+    
+  
+  
+    --a-hover-primary-body-font-color: #ffffff;
+  
+  
+ 
+
+   
+  
+    
+      
+        --top-bar-font-weight: normal;
+      
+    
+      
+        --top-bar-text-decoration: none;
+      
+    
+      
+        --top-bar-font-family: Roboto, sans-serif;
+      
+    
+      
+        --top-bar-font-style: normal;
+      
+    
+  
+  
+    --top-bar-font-color: #33475B;
+  
+  
+ 
+   
+  
+    
+      
+        --top-bar-hover-font-weight: normal;
+      
+    
+      
+        --top-bar-hover-text-decoration: underline;
+      
+    
+      
+        --top-bar-hover-font-family: Roboto, sans-serif;
+      
+    
+      
+        --top-bar-hover-font-style: normal;
+      
+    
+  
+  
+    --top-bar-hover-font-color: #33475B;
+  
+  
+ 
+
+  --language-switcher-dropdown-bg:  
+  
+    
+    
+      
+    
+
+
+    rgba(255, 255, 255, 1.0)
+  
+  ;
+   
+  
+  
+  
+ 
+
+  --top-bar-hover-dropdown-bg:  
+  
+    
+    
+      
+    
+
+
+    rgba(61, 166, 117, 1.0)
+  
+  ;
+   
+  
+  
+  
+ 
+
+  --header-max-width:  var(--container-width)  ;
+  --footer-max-width:  auto  ;
+
+   
+  
+    
+      
+        --header-menu-main-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --header-menu-main-font-style: normal;
+      
+    
+      
+        --header-menu-main-font-weight: normal;
+      
+    
+      
+        --header-menu-main-text-decoration: none;
+      
+    
+  
+  
+    --header-menu-main-font-color: #29333c;
+  
+  
+ 
+
+   
+  
+    
+      
+        --header-menu-main-hover-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --header-menu-main-hover-font-style: normal;
+      
+    
+      
+        --header-menu-main-hover-font-weight: normal;
+      
+    
+      
+        --header-menu-main-hover-text-decoration: underline;
+      
+    
+  
+  
+    --header-menu-main-hover-font-color: #3da675;
+  
+  
+ 
+
+  --header-menu-submenu-bg:  
+  
+    
+    
+      
+    
+
+
+    rgba(255, 255, 255, 1.0)
+  
+  ;
+   
+  
+    
+      
+        --header-menu-submenu-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --header-menu-submenu-font-style: normal;
+      
+    
+      
+        --header-menu-submenu-font-weight: normal;
+      
+    
+      
+        --header-menu-submenu-text-decoration: none;
+      
+    
+  
+  
+    --header-menu-submenu-font-color: #29333c;
+  
+  
+ 
+
+  --header-menu-hover-submenu-bg:  
+  
+    
+    
+      
+    
+
+
+    rgba(255, 255, 255, 1.0)
+  
+  ;
+   
+  
+    
+      
+        --header-menu-hover-submenu-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --header-menu-hover-submenu-font-style: normal;
+      
+    
+      
+        --header-menu-hover-submenu-font-weight: normal;
+      
+    
+      
+        --header-menu-hover-submenu-text-decoration: underline;
+      
+    
+  
+  
+    --header-menu-hover-submenu-font-color: #3da675;
+  
+  
+ 
+
+   
+  
+    
+      
+        --header-button-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --header-button-font-style: normal;
+      
+    
+      
+        --header-button-font-weight: normal;
+      
+    
+      
+        --header-button-text-decoration: none;
+      
+    
+  
+  
+    --header-button-font-color: #FFFFFF;
+  
+  
+      
+    --header-button-font-size: 18px;
+  
+ 
+  --header-button-text-transform:  none  ;
+  --header-button-border:  
+  
+    
+     1px solid #3da675;
+
+  
+  ;
+
+   
+  
+    
+      
+        --primary-button-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --primary-button-font-style: normal;
+      
+    
+      
+        --primary-button-font-weight: normal;
+      
+    
+      
+        --primary-button-text-decoration: none;
+      
+    
+  
+  
+    --primary-button-font-color: #FFFFFF;
+  
+  
+      
+    --primary-button-font-size: 18px;
+  
+ 
+  --primary-button-text-transform:  none  ;
+  --primary-button-border:  
+  
+    
+     1px solid #3da675;
+
+  
+  ;
+
+   
+  
+    
+      
+        --header-button-hover-font-family: Roboto, sans-serif;
+      
+    
+      
+        --header-button-hover-font-style: normal;
+      
+    
+      
+        --header-button-hover-font-weight: normal;
+      
+    
+      
+        --header-button-hover-text-decoration: none;
+      
+    
+  
+  
+  
+ 
+
+  --header-button-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(41, 51, 60, 1.0)
+  
+  ;
+  --header-button-border-radius:  20px  ;
+
+  --header-button-hover-border:  
+  
+    
+    
+    
+    
+     1px solid #3da675;
+
+  
+  ;
+  --header-button-hover-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(30, 36, 41, 1.0)
+  
+  ;
+
+  --search-input-wrapper-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(46, 122, 86, 1.0)
+  
+  ;
+  --search-input-wrapper-background-gradient:  linear-gradient(to bottom, rgba(1, 79, 54, 1), rgba(30, 36, 41, 1))  ;
+   
+  
+    
+      
+        --search-field-label-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --search-field-label-font-style: normal;
+      
+    
+      
+        --search-field-label-font-weight: 700;
+      
+    
+      
+        --search-field-label-text-decoration: none;
+      
+    
+  
+  
+    --search-field-label-font-color: #ffffff;
+  
+  
+      
+    --search-field-label-font-size: 28px;
+  
+ 
+
+  --search-field-text-font-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(51, 71, 91, 1.0)
+  
+  ;
+  --search-field-button-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(255, 255, 255, 1.0)
+  
+  ;
+  --search-field-button-icon-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(51, 71, 91, 1.0)
+  
+  ;
+
+  --header-top-bar-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(255, 255, 255, 1.0)
+  
+  ;
+
+  --header-bottom-bar-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(255, 255, 255, 1.0)
+  
+  ;
+
+   
+  
+    
+      
+        --footer-font-family: Roboto, sans-serif;
+      
+    
+      
+        --footer-font-style: normal;
+      
+    
+      
+        --footer-font-weight: 300;
+      
+    
+      
+        --footer-text-decoration: none;
+      
+    
+  
+  
+    --footer-font-color: #29333c;
+  
+  
+      
+    --footer-font-size: 16px;
+  
+ 
+
+   
+  
+    
+      
+        --footer-menu-font-family: Roboto, sans-serif;
+      
+    
+      
+        --footer-menu-font-style: normal;
+      
+    
+      
+        --footer-menu-font-weight: normal;
+      
+    
+      
+        --footer-menu-text-decoration: none;
+      
+    
+  
+  
+    --footer-menu-font-color: #29333c;
+  
+  
+ 
+
+   
+  
+    
+      
+        --footer-menu-hover-font-family: Montserrat, sans-serif;
+      
+    
+      
+        --footer-menu-hover-font-style: normal;
+      
+    
+      
+        --footer-menu-hover-font-weight: normal;
+      
+    
+      
+        --footer-menu-hover-text-decoration: underline;
+      
+    
+  
+  
+    --footer-menu-hover-font-color: #29333c;
+  
+  
+ 
+
+  --hs-kb-card-highlight-border-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(61, 166, 117, 1.0)
+  
+  ;
+
+    
+  --hs-kb-home-tiles-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(30, 36, 41, 1.0)
+  
+  ;
+  --hs-kb-home-tiles-border:  
+  
+    
+     1px none #FFFFFF;
+
+  
+  ;
+  --hs-kb-home-tiles-corner-radius:  3px  ;
+
+  --social-follow-icon-size:  
+  
+  
+    
+  
+  32px
+  ;
+  --social-follow-icon-shape-radius:  
+  
+  
+  50%
+  ;
+  --social-follow-icon-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(255, 255, 255, 1.0)
+  
+  ;
+  --social-follow-icon-background-color:  
+  
+    
+    
+      
+    
+
+
+    rgba(73, 74, 82, 1.0)
+  
+  ;
+  --social-follow-icon-space-between-icons: 12px;
+  --social-follow-icon-alignment:  
+  
+  
+  flex-end
+  ;
+}
+
+/* Objects */
+
+  
+
+.kb-body-wrapper {
+  background-color: #ffffff;
+  background-color: var(--body-bg-color);
+}
+
+#main-content {
+  padding: 0 0 36px 0;
+}
+
+/* Mobile layout */
+
+.row-fluid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+  
+
+ .row-fluid .span1 
+
+ , 
+
+ .row-fluid .span2 
+
+ , 
+
+ .row-fluid .span3 
+
+ , 
+
+ .row-fluid .span4 
+
+ , 
+
+ .row-fluid .span5 
+
+ , 
+
+ .row-fluid .span6 
+
+ , 
+
+ .row-fluid .span7 
+
+ , 
+
+ .row-fluid .span8 
+
+ , 
+
+ .row-fluid .span9 
+
+ , 
+
+ .row-fluid .span10 
+
+ , 
+
+ .row-fluid .span11 
+
+ , 
+
+ .row-fluid .span12 
+
+ {
+  min-height: 1px;
+  width: 100%;
+}
+
+/* Desktop layout */
+
+@media (min-width: 768px) {
+  .row-fluid {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+    
+   .row-fluid .span1 
+   {
+    width: calc(
+      8.333 * 1% * 1 - 2.13% *
+        (11 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 1 - var(--column-gap) *
+        (
+          11 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span2 
+   {
+    width: calc(
+      8.333 * 1% * 2 - 2.13% *
+        (10 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 2 - var(--column-gap) *
+        (
+          10 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span3 
+   {
+    width: calc(
+      8.333 * 1% * 3 - 2.13% *
+        (9 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 3 - var(--column-gap) *
+        (
+          9 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span4 
+   {
+    width: calc(
+      8.333 * 1% * 4 - 2.13% *
+        (8 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 4 - var(--column-gap) *
+        (
+          8 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span5 
+   {
+    width: calc(
+      8.333 * 1% * 5 - 2.13% *
+        (7 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 5 - var(--column-gap) *
+        (
+          7 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span6 
+   {
+    width: calc(
+      8.333 * 1% * 6 - 2.13% *
+        (6 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 6 - var(--column-gap) *
+        (
+          6 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span7 
+   {
+    width: calc(
+      8.333 * 1% * 7 - 2.13% *
+        (5 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 7 - var(--column-gap) *
+        (
+          5 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span8 
+   {
+    width: calc(
+      8.333 * 1% * 8 - 2.13% *
+        (4 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 8 - var(--column-gap) *
+        (
+          4 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span9 
+   {
+    width: calc(
+      8.333 * 1% * 9 - 2.13% *
+        (3 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 9 - var(--column-gap) *
+        (
+          3 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span10 
+   {
+    width: calc(
+      8.333 * 1% * 10 - 2.13% *
+        (2 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 10 - var(--column-gap) *
+        (
+          2 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+   .row-fluid .span11 
+   {
+    width: calc(
+      8.333 * 1% * 11 - 2.13% *
+        (1 * 8.333 / 100)
+    );
+    width: calc(
+      var(--column-width-multiplier) * 1% * 11 - var(--column-gap) *
+        (
+          1 * var(--column-width-multiplier) /
+            100
+        )
+    );
+  }
+    
+}
+
+/* Overall layout */
+
+.hs-kb-content-wrapper--responsive-spacing,
+.hs-kb-home-list {
+  box-sizing: content-box;
+  max-width: 1000px;
+  padding: 0 24px;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 767px) {
+  .hs-kb-search-input-wrapper .hs-search-field__bar {
+    min-height: auto;
+  }
+
+  .hidden-phone {
+    display: none;
+  }
+}
+
+/* Content wrappers for blog post and system templates */
+
+.content-wrapper {
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+/* Drag and drop layout styles */
+
+.dnd-section > .row-fluid {
+  margin: 0 auto;
+}
+
+@media (max-width: 767px) {
+  .dnd-section .dnd-column {
+    padding: 0;
+  }
+}
+
+/* Elements */
+
+body {
+  word-wrap: break-word;
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--primary-body-font-family);
+  font-size: 1rem;
+  font-size: var(--primary-body-font-size);
+  font-weight: 400;
+  font-weight: var(--primary-body-font-weight);
+  line-height: 1.4;
+  line-height: var(--primary-body-line-height);
+  font-style: normal;
+  font-style: var(--primary-body-font-style);
+  color: #33475b;
+  color: var(--primary-body-font-color);
+}
+
+html[lang^='ja'] body,
+html[lang^='zh'] body,
+html[lang^='ko'] body {
+  line-break: strict;
+  word-wrap: normal;
+  word-break: break-all;
+}
+
+/* Paragraphs */
+
+p {
+  margin: 0 0 1.4rem;
+}
+
+/* Anchors */
+
+a {
+  cursor: pointer;
+}
+
+/* Headings */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 1.4rem;
+}
+
+/* Lists */
+
+ul,
+ol {
+  padding-left: 1rem;
+  margin: 0 0 1.4rem;
+}
+
+ul li,
+ol li {
+  margin: 0.7rem;
+}
+
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+  margin: 1.4rem 0;
+}
+
+.no-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.no-list li {
+  margin: 0;
+}
+
+/* Code blocks */
+
+pre {
+  overflow: auto;
+}
+
+code {
+  vertical-align: bottom;
+}
+
+/* Blockquotes */
+
+blockquote {
+  position: relative;
+  margin-bottom: 1.4rem;
+}
+
+blockquote:before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 100%;
+  background-color: #e2ebf4;
+  background-color: var(--secondary-color);
+  position: absolute;
+  left: -13px;
+}
+
+/* Horizontal rules */
+
+hr {
+  border: 0 none;
+  border-bottom: 1px solid;
+}
+
+/* Subscripts and superscripts */
+
+sup,
+sub {
+  position: relative;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+/* Image alt text */
+
+img {
+  font-size: 1rem;
+  word-break: normal;
+}
+
+h1 {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--h1-secondary-header-font-family);
+  font-style: normal;
+  font-style: var(--h1-secondary-header-font-style);
+  font-weight: 700;
+  font-weight: var(--h1-secondary-header-font-weight);
+  font-size: 32px;
+  font-size: var(--h1-secondary-header-font-size);
+  line-height: 1.5;
+  line-height: var(--h1-secondary-header-line-height);
+  color: #33475b;
+  color: var(--h1-secondary-header-font-color);
+  text-decoration: var(--secondary-header-text-decoration);
+  text-decoration: var(--h1-secondary-header-text-decoration);
+  text-transform: var(--secondary-header-text-transform);
+  text-transform: var(--h1-secondary-header-text-transform);
+}
+
+h2 {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--h2-secondary-header-font-family);
+  font-style: normal;
+  font-style: var(--h2-secondary-header-font-style);
+  font-weight: 700;
+  font-weight: var(--h2-secondary-header-font-weight);
+  font-size: 24px;
+  font-size: var(--h2-secondary-header-font-size);
+  line-height: 1.5;
+  line-height: var(--h2-secondary-header-line-height);
+  color: #33475b;
+  color: var(--h2-secondary-header-font-color);
+  text-decoration: var(--secondary-header-text-decoration);
+  text-decoration: var(--h2-secondary-header-text-decoration);
+  text-transform: var(--secondary-header-text-transform);
+  text-transform: var(--h2-secondary-header-text-transform);
+}
+
+h3,
+h3 a,
+h3 a:hover {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--h3-secondary-header-font-family);
+  font-style: normal;
+  font-style: var(--h3-secondary-header-font-style);
+  font-weight: 700;
+  font-weight: var(--h3-secondary-header-font-weight);
+  font-size: 22px;
+  font-size: var(--h3-secondary-header-font-size);
+  line-height: 1.5;
+  line-height: var(--h3-secondary-header-line-height);
+  color: #33475b;
+  color: var(--h3-secondary-header-font-color);
+  text-decoration: var(--secondary-header-text-decoration);
+  text-decoration: var(--h3-secondary-header-text-decoration);
+  text-transform: var(--secondary-header-text-transform);
+  text-transform: var(--h3-secondary-header-text-transform);
+}
+
+h3 a:hover {
+  text-decoration: underline;
+}
+
+h4 {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--h4-secondary-header-font-family);
+  font-style: normal;
+  font-style: var(--h4-secondary-header-font-style);
+  font-weight: 700;
+  font-weight: var(--h4-secondary-header-font-weight);
+  font-size: 18px;
+  font-size: var(--h4-secondary-header-font-size);
+  line-height: 1.5;
+  line-height: var(--h4-secondary-header-line-height);
+  color: #33475b;
+  color: var(--h4-secondary-header-font-color);
+  text-decoration: var(--secondary-header-text-decoration);
+  text-decoration: var(--h4-secondary-header-text-decoration);
+  text-transform: var(--secondary-header-text-transform);
+  text-transform: var(--h4-secondary-header-text-transform);
+}
+
+h5 {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--h5-secondary-header-font-family);
+  font-style: normal;
+  font-style: var(--h5-secondary-header-font-style);
+  font-weight: 700;
+  font-weight: var(--h5-secondary-header-font-weight);
+  font-size: 16px;
+  font-size: var(--h5-secondary-header-font-size);
+  line-height: 1.5;
+  line-height: var(--h5-secondary-header-line-height);
+  color: #33475b;
+  color: var(--h5-secondary-header-font-color);
+  text-decoration: var(--secondary-header-text-decoration);
+  text-decoration: var(--h5-secondary-header-text-decoration);
+  text-transform: var(--secondary-header-text-transform);
+  text-transform: var(--h5-secondary-header-text-transform);
+}
+
+h6 {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--h6-secondary-header-font-family);
+  font-style: normal;
+  font-style: var(--h6-secondary-header-font-style);
+  font-weight: 700;
+  font-weight: var(--h6-secondary-header-font-weight);
+  font-size: 16px;
+  font-size: var(--h6-secondary-header-font-size);
+  line-height: 1.5;
+  line-height: var(--h6-secondary-header-line-height);
+  color: #7c98b6;
+  color: var(--h6-secondary-header-font-color);
+  text-decoration: var(--secondary-header-text-decoration);
+  text-decoration: var(--h6-secondary-header-text-decoration);
+  text-transform: var(--secondary-header-text-transform);
+  text-transform: var(--h6-secondary-header-text-transform);
+}
+
+a {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--a-primary-body-font-family);
+  font-style: normal;
+  font-style: var(--a-primary-body-font-style);
+  font-weight: 400;
+  font-weight: var(--a-primary-body-font-weight);
+  line-height: 1.4;
+  line-height: var(--a-primary-body-line-height);
+  color: #1773d1;
+  color: var(--a-primary-body-font-color);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--a-primary-body-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--a-primary-body-text-transform);
+}
+
+a:hover,
+a:focus {
+  font-family: var(--a-hover-primary-body-font-family);
+  font-style: var(--a-hover-primary-body-font-style);
+  font-weight: var(--a-hover-primary-body-font-weight);
+  color: var(--a-hover-primary-body-font-color);
+  text-decoration: var(--a-hover-primary-body-text-decoration);
+  text-transform: var(--a-hover-primary-body-text-transform);
+}
+
+a:active {
+  color: var(--a-hover-primary-body-font-color);
+}
+
+a.unstyled {
+  font-family: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-decoration: inherit;
+  text-transform: inherit;
+}
+
+/* Primary button */
+
+.button,
+.hs-button {
+  display: inline-flex;
+  padding: 10px 20px;
+  align-items: center;
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.15s linear;
+  white-space: normal;
+}
+
+.button.button--primary {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--primary-button-font-family);
+  font-style: normal;
+  font-style: var(--primary-button-font-style);
+  font-weight: 400;
+  font-weight: var(--primary-button-font-weight);
+  font-size: 16px;
+  font-size: var(--primary-button-font-size);
+  line-height: 16px;
+  line-height: var(--primary-button-line-height);
+  color: #fff;
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--primary-button-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--primary-button-text-transform);
+
+  background-color: #2a8d8a;
+
+  background-color: var(--primary-button-background-color);
+  color: var(--primary-button-font-color);
+  padding: 10px 20px;
+  padding: var(--primary-button-padding);
+  border-radius: 20px;
+  border-radius: var(--primary-button-border-radius);
+}
+
+.button.button--secondary {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--secondary-button-font-family);
+  font-style: normal;
+  font-style: var(--secondary-button-font-style);
+  font-weight: 400;
+  font-weight: var(--secondary-button-font-weight);
+  font-size: 16px;
+  font-size: var(--secondary-button-font-size);
+  line-height: 16px;
+  line-height: var(--secondary-button-line-height);
+  color: #33475b;
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--secondary-button-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--secondary-button-text-transform);
+
+  background-color: #e2ebf4;
+
+  background-color: var(--secondary-button-background-color);
+  color: var(--secondary-button-font-color);
+  padding: 10px 20px;
+  padding: var(--secondary-button-padding);
+  border-radius: 2px;
+  border-radius: var(--secondary-button-border-radius);
+}
+
+/* Disabled button */
+
+.button:disabled,
+.hs-button:disabled {
+  border-color: #f1f1f1;
+  background-color: #f1f1f1;
+  pointer-events: none;
+}
+
+.button:disabled,
+.button.button--secondary:disabled,
+.button.button--simple:disabled {
+  color: #d0d0d0;
+}
+
+/* No button */
+
+.no-button,
+.no-button:hover,
+.no-button:focus,
+.no-button:active {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
+  background: none;
+  color: #000;
+  color: initial;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: left;
+  text-decoration: none;
+  transition: none;
+}
+
+/* Button icons */
+
+.button {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.button.right {
+  flex-flow: row-reverse;
+}
+
+.button .button__icon svg {
+  display: block;
+  height: 1.25rem;
+  fill: inherit;
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .button .button__icon svg {
+    width: 1.25rem;
+  }
+}
+
+.button--icon-right .button__icon {
+  order: 1;
+}
+
+.button--icon-right .button__icon svg {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+/* Form title */
+
+.form-title {
+  margin: 0;
+}
+
+.form-title ~ div > form {
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* Labels */
+
+form label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+/* Form fields */
+
+form .hs-form-field {
+  margin-bottom: 1.4rem;
+}
+
+form input[type='text'],
+form input[type='email'],
+form input[type='password'],
+form input[type='tel'],
+form input[type='number'],
+form input[type='file'],
+form input[type='search'],
+form select,
+form textarea {
+  width: 100% !important;
+}
+
+form input[type='text'],
+form input[type='email'],
+form input[type='password'],
+form input[type='tel'],
+form input[type='number'],
+form input[type='file'],
+form input[type='search'],
+form select,
+form textarea {
+  display: inline-block; /* stylelint-disable-line declaration-no-important */
+}
+
+form fieldset {
+  max-width: 100% !important;
+}
+
+form fieldset {
+  /* stylelint-disable-line declaration-no-important */
+}
+
+/* Form fields - checkbox/radio */
+
+form .inputs-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+form .inputs-list > li {
+  display: block;
+  margin: 0.7rem 0;
+}
+
+form .inputs-list input,
+form .inputs-list span {
+  vertical-align: middle;
+}
+
+form input[type='checkbox'],
+form input[type='radio'] {
+  margin-right: 0.35rem;
+  cursor: pointer;
+}
+
+/* Form fields - date picker */
+
+form .hs-dateinput {
+  position: relative;
+}
+
+form .hs-dateinput:before {
+  position: absolute;
+  top: 50%;
+  content: '\01F4C5';
+  transform: translateY(-50%);
+}
+
+form .is-selected .pika-button {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+form .is-selected .pika-button {
+  /* stylelint-disable-line declaration-no-important */ /* stylelint-disable-line declaration-no-important */
+}
+
+form .fn-date-picker .pika-button:hover,
+form .fn-date-picker .pika-button:focus {
+  border-radius: 0 !important;
+}
+
+form .fn-date-picker .pika-button:hover,
+form .fn-date-picker .pika-button:focus {
+  /* stylelint-disable-line declaration-no-important */
+}
+
+/* Form fields - file picker */
+
+form input[type='file'] {
+  padding: 0;
+  padding: initial;
+  border: medium none currentColor;
+  border: initial;
+  background-color: transparent;
+}
+
+/* Headings and text */
+
+form .hs-richtext,
+form .hs-richtext p {
+  margin: 0 0 1.4rem;
+  font-size: 0.8rem;
+}
+
+form .hs-richtext img {
+  max-width: 100% !important;
+}
+
+form .hs-richtext img {
+  height: auto; /* stylelint-disable-line declaration-no-important */
+}
+
+/* GDPR */
+
+form .legal-consent-container .hs-form-booleancheckbox-display > span {
+  margin-left: 1rem !important;
+}
+
+form .legal-consent-container .hs-form-booleancheckbox-display > span {
+  /* stylelint-disable-line declaration-no-important */
+}
+
+/* Validation */
+
+form .hs-form-required {
+  color: #ef6b51;
+}
+
+form .hs-input.error {
+  border-color: #ef6b51;
+}
+
+form .hs-error-msg,
+form .hs-error-msgs {
+  margin-top: 0.35rem;
+  color: #ef6b51;
+}
+
+/* Submit button */
+
+form input[type='submit'],
+form .hs-button {
+  white-space: normal !important;
+}
+
+form input[type='submit'],
+form .hs-button {
+  display: inline-block;
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s linear; /* stylelint-disable-line declaration-no-important */
+}
+
+/* Captcha */
+
+.grecaptcha-badge {
+  margin: 0 auto;
+}
+
+/* Icon wrapper */
+
+.icon {
+  display: inline-flex;
+  border-radius: 50%;
+}
+
+.icon--square .icon {
+  border-radius: 0;
+}
+
+/* Icon */
+
+.icon svg {
+  vertical-align: middle;
+}
+
+/* Table */
+
+table {
+  border-collapse: collapse;
+  margin-bottom: 1.4rem;
+  word-wrap: break-word;
+}
+
+table p {
+  margin: 0;
+}
+
+table p + p {
+  margin: 1.4rem 0 0;
+}
+
+/* Table cells */
+
+th,
+td {
+  padding: 0.7rem;
+  vertical-align: top;
+}
+
+/* Table header */
+
+thead th,
+thead td {
+  vertical-align: bottom;
+}
+
+/* Components */
+
+/* Navigation skipper */
+
+.header__skip {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+  overflow: hidden;
+  height: 1px;
+  width: 1px;
+  text-align: left;
+}
+
+.header__skip:hover,
+.header__skip:focus,
+.header__skip:active {
+  z-index: 2;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  height: auto;
+  width: auto;
+}
+
+.header__wrapper {
+  max-width: var(--header-max-width);
+}
+
+.header__top {
+  background-color: #e2ebf4;
+  background-color: var(--header-top-bar-background-color);
+}
+
+.header__bottom {
+  background-color: #fff;
+  background-color: var(--header-bottom-bar-background-color);
+   padding: 24px;
+ 
+}
+
+.header__logo-company-name {
+  font-size: 24px;
+  font-weight: 700;
+  font-weight: var(--h2-secondary-header-font-weight);
+  line-height: 42px;
+}
+
+.header__menu-link {
+  color: var(--header-menu-font-color);
+  text-decoration: none;
+}
+
+.header__menu--desktop {
+  display: flex;
+  align-items: flex-start;
+}
+
+.header__menu--mobile {
+  background-color: #ffffff;
+  background-color: var(--body-bg-color);
+  box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.125);
+  box-shadow: var(--header-menu-mobile-box-shadow);
+}
+
+.header__language-switcher-current-label,
+a.header__nav-link {
+  color: #33475b;
+  color: var(--top-bar-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--top-bar-font-family);
+  font-size: 16px;
+  font-size: var(--top-bar-font-size);
+  font-style: normal;
+  font-style: var(--top-bar-font-style);
+  font-weight: 400;
+  font-weight: var(--top-bar-font-weight);
+  line-height: ;
+  line-height: var(--top-bar-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--top-bar-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--top-bar-text-transform);
+}
+
+.header__language-switcher-current-label:hover,
+.header__language-switcher-current-label:focus,
+a.header__nav-link:hover,
+a.header__nav-link:focus {
+  color: var(--top-bar-hover-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--top-bar-font-family);
+  font-style: var(--top-bar-hover-font-style);
+  font-weight: var(--top-bar-hover-font-weight);
+  line-height: var(--top-bar-hover-line-height);
+  text-decoration: var(--top-bar-hover-text-decoration);
+  text-transform: var(--top-bar-hover-text-transform);
+}
+
+.header__language-switcher-child-toggle {
+  color: inherit;
+}
+
+.header__language-switcher-current-label:hover
+  .header__language-switcher-child-toggle,
+.header__language-switcher-current-label:focus
+  .header__language-switcher-current-label {
+  color: var(--top-bar-hover-font-color);
+}
+
+.header__language-switcher .lang_list_class li a {
+  background-color: #ff0000;
+  background-color: var(--language-switcher-dropdown-bg);
+  color: #33475b;
+  color: var(--language-switcher-dropdown-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--language-switcher-dropdown-font-family);
+  font-size: 16px;
+  font-size: var(--language-switcher-dropdown-font-size);
+  font-style: normal;
+  font-style: var(--language-switcher-dropdown-font-style);
+  font-weight: 400;
+  font-weight: var(--language-switcher-dropdown-font-weight);
+  line-height: ;
+  line-height: var(--language-switcher-dropdown-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--language-switcher-dropdown-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--language-switcher-dropdown-text-transform);
+}
+
+.header__language-switcher .lang_list_class a:hover,
+.header__language-switcher .lang_list_class a:focus,
+.header__language-switcher .lang_list_class a:active {
+  background-color: #00ff00;
+  background-color: var(--top-bar-hover-dropdown-bg);
+  color: #33475b;
+  color: var(--top-bar-hover-dropdown-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--top-bar-hover-dropdown-font-family);
+  font-size: 16px;
+  font-size: var(--top-bar-hover-dropdown-font-size);
+  font-style: normal;
+  font-style: var(--top-bar-hover-dropdown-font-style);
+  font-weight: 400;
+  font-weight: var(--top-bar-hover-dropdown-font-weight);
+  line-height: ;
+  line-height: var(--top-bar-hover-dropdown-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--top-bar-hover-dropdown-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--top-bar-hover-dropdown-text-transform);
+}
+
+.header__menu-link {
+  color: #33475b;
+  color: var(--header-menu-main-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--header-menu-main-font-family);
+  font-size: 16px;
+  font-size: var(--header-menu-main-font-size);
+  font-style: normal;
+  font-style: var(--header-menu-main-font-style);
+  font-weight: 400;
+  font-weight: var(--header-menu-main-font-weight);
+  line-height: ;
+  line-height: var(--header-menu-main-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--header-menu-main-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--header-menu-main-text-transform);
+}
+
+a.header__menu-link:hover,
+a.header__menu-link:focus,
+a.header__menu-link:active {
+  color: #33475b;
+  color: var(--header-menu-main-hover-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--header-menu-main-hover-font-family);
+  font-size: 16px;
+  font-size: var(--header-menu-main-hover-font-size);
+  font-style: normal;
+  font-style: var(--header-menu-main-hover-font-style);
+  font-weight: 400;
+  font-weight: var(--header-menu-main-hover-font-weight);
+  line-height: ;
+  line-height: var(--header-menu-main-hover-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--header-menu-main-hover-text-decoration);
+}
+
+.header__menu-submenu {
+  background-color: #fff;
+  background-color: var(--header-menu-submenu-bg);
+}
+
+.header__menu-submenu .header__menu-link {
+  color: #33475b;
+  color: var(--header-menu-submenu-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--header-menu-submenu-font-family);
+  font-size: 16px;
+  font-size: var(--header-menu-submenu-font-size);
+  font-style: normal;
+  font-style: var(--header-menu-submenu-font-style);
+  font-weight: 400;
+  font-weight: var(--header-menu-submenu-font-weight);
+  line-height: ;
+  line-height: var(--header-menu-submenu-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--header-menu-submenu-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--header-menu-submenu-text-transform);
+}
+
+.header__menu-submenu .header__menu-item:hover,
+.header__menu-submenu .header__menu-item:focus,
+.header__menu-submenu .header__menu-item:focus-within {
+  background-color: #f00;
+  background-color: var(--header-menu-hover-submenu-bg);
+}
+
+.header__menu-submenu .header__menu-link:hover,
+.header__menu-submenu .header__menu-link:focus,
+.header__menu-submenu .header__menu-link:active {
+  color: #33475b;
+  color: var(--header-menu-hover-submenu-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--header-menu-hover-submenu-font-family);
+  font-size: 16px;
+  font-size: var(--header-menu-hover-submenu-font-size);
+  font-style: normal;
+  font-style: var(--header-menu-hover-submenu-font-style);
+  font-weight: 400;
+  font-weight: var(--header-menu-hover-submenu-font-weight);
+  line-height: ;
+  line-height: var(--header-menu-hover-submenu-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--header-menu-hover-submenu-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--header-menu-hover-submenu-text-transform);
+}
+
+.header__menu-submenu
+  .header__menu-item:hover
+  > .header__menu-link-toggle-wrapper
+  > .header__menu-link,
+.header__menu-submenu
+  .header__menu-item:focus
+  > .header__menu-link-toggle-wrapper
+  > .header__menu-link {
+  color: #33475b;
+  color: var(--header-menu-hover-submenu-font-color);
+}
+
+.header__menu-child-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: 0.5rem;
+}
+
+.header__button.button {
+  padding: 10px 20px;
+  padding: var(--header-button-padding);
+  border: 3px solid pink;
+  border: var(--header-button-border);
+  border-radius: 20px;
+  border-radius: var(--header-button-border-radius);
+  background-color: #2a8d8a;
+  background-color: var(--header-button-background-color);
+  color: #fff;
+  color: var(--header-button-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--header-button-font-family);
+  font-size: 16px;
+  font-size: var(--header-button-font-size);
+  font-style: normal;
+  font-style: var(--header-button-font-style);
+  font-weight: 400;
+  font-weight: var(--header-button-font-weight);
+  line-height: 16px;
+  line-height: var(--header-button-line-height);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--header-button-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--header-button-text-transform);
+}
+
+.header__button.button:hover,
+.header__button.button:active {
+  border: 3px solid gray;
+  border: var(--header-button-hover-border);
+  background-color: #2a8d8a;
+  background-color: var(--header-button-hover-background-color);
+  color: #fff;
+  color: var(--header-button-hover-font-color);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--header-button-hover-text-decoration);
+}
+
+.header__button.button svg {
+  fill: currentColor;
+}
+
+/* Search input */
+
+.hs-kb-search-input-wrapper {
+  box-sizing: border-box;
+   padding-top: 100px;
+padding-right: 24px;
+padding-bottom: 100px;
+padding-left: 24px;
+ 
+   
+  
+    background: linear-gradient(to bottom, rgba(1, 79, 54, 1), rgba(30, 36, 41, 1));
+  
+ 
+}
+
+.hs-kb-search-input-wrapper .hs-search-field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hs-kb-search-input-wrapper .hs-search-field__form {
+  padding: 0;
+  flex: 1;
+}
+
+.hs-kb-search-input-wrapper .hs-search-field__bar {
+  display: flex;
+  width: 100%;
+  max-width: 1000px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Logo */
+
+.widget-type-logo img {
+  height: auto;
+  max-width: 100%;
+  margin-bottom: 1.4rem;
+}
+
+.header__logo img[src$='.svg'][width='0'],
+.hs_cos_wrapper_type_logo img[src$='.svg'][width='0'] {
+  width: auto !important;
+}
+
+.header__logo img[src$='.svg'][height='0'],
+.hs_cos_wrapper_type_logo img[src$='.svg'][height='0'] {
+  height: auto !important;
+}
+
+.header__logo img[src$='.svg']:not([width]):not([height]),
+.hs_cos_wrapper_type_logo img[src$='.svg']:not([width]):not([height]) {
+  width: auto !important;
+  height: auto !important;
+}
+
+.header__logo img[src$='.svg']:not([width]):not([height]),
+.hs_cos_wrapper_type_logo img[src$='.svg']:not([width]):not([height]) {
+  min-width: 130px;
+}
+
+/* Rich text */
+
+.widget-type-rich_text img {
+  height: auto;
+  max-width: 100%;
+}
+
+/* Search input */
+
+.hs-search-field__label {
+  color: var(--search-field-label-font-color);
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--search-field-label-font-family);
+  font-style: normal;
+  font-style: var(--search-field-label-font-style);
+  font-weight: 700;
+  font-weight: var(--search-field-label-font-weight);
+  font-size: 32px;
+  font-size: var(--search-field-label-font-size);
+  line-height: 1.5;
+  line-height: var(--search-field-label-line-height);
+  text-decoration: var(--secondary-header-text-decoration);
+  text-decoration: var(--search-field-label-text-decoration);
+  text-transform: var(--secondary-header-text-transform);
+  text-transform: var(--search-field-label-text-transform);
+}
+
+.hs-search-field__input {
+  padding: 10px;
+  border: none;
+  color: var(--search-field-text-font-color);
+}
+
+.hs-search-field__input::-moz-placeholder {
+  color: var(--search-field-text-font-color);
+}
+
+.hs-search-field__input::placeholder {
+  color: var(--search-field-text-font-color);
+}
+
+.hs-search-field__button {
+  border-radius: 0px;
+  width: 38px;
+  border: none;
+  background-color: var(--search-field-button-background-color);
+}
+
+.hs-kb-search-input-wrapper .hs-search-field__bar .hs-search-field__button {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hs-kb-search-input-wrapper
+  .hs-search-field__bar
+  .hs-search-field__button
+  span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hs-kb-search-input-wrapper .hs-search-field__bar .hs-search-field__button svg {
+  height: 14px;
+  fill: var(--search-field-button-icon-color);
+}
+
+.hs-search-field:not(.hs-search-field--open) .results-for {
+  color: var(--search-field-label-font-color);
+}
+
+.hs-kb-home-list__icon {
+  color: #2a5f8d;
+  color: var(--primary-color);
+}
+
+/* Only styled for "tiles" and "cards" layout */
+
+.hs-knowledge-listing-layout--tiles #main-content,
+.hs-knowledge-listing-layout--cards #main-content {
+  background-color: #f2f7fc;
+  background-color: var(--hs-kb-home-tiles-background-color);
+}
+
+.hs-kb-home-list--tiles .hs-kb-home-list__category {
+  border: var(--hs-kb-home-tiles-border);
+  padding: 24px 18px;
+  padding: var(--hs-kb-home-grid-item-padding);
+}
+
+.hs-kb-home-list--cards .hs-kb-home-list__category {
+  padding: 24px 18px;
+  padding: var(--hs-kb-home-grid-item-padding);
+}
+
+.hs-kb-social_follow__link {
+  background-color: var(--social-follow-background-color);
+}
+
+/* Prevents a floated image in the end of a rich text from breaking out of the container */
+
+.hs_cos_wrapper_type_inline_richtext_field {
+  overflow-y: auto;
+}
+
+.hs-kb-content .hs-search-results__link h2 {
+  margin: 0;
+}
+
+.hs-kb-content .hs-search-results__category {
+  font-size: 0.875rem;
+}
+
+.footer {
+  background-color: #fff;
+  background-color: var(--footer-bg-color);
+}
+
+.footer__menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 48px 0;
+  margin: 0 auto;
+  list-style: none;
+  max-width: var(--footer-max-width);
+}
+
+.footer__menu-item {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__menu-item--depth-1 > .footer__menu-link:first-child {
+  line-height: 3.2rem;
+}
+
+.footer__menu-link {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0 20px;
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--footer-menu-font-family);
+  font-style: normal;
+  font-style: var(--footer-menu-font-style);
+  font-weight: 400;
+  font-weight: var(--footer-menu-font-weight);
+  font-size: 16px;
+  font-size: var(--footer-menu-font-size);
+  line-height: 2.2rem;
+  line-height: var(--footer-menu-line-height);
+  color: #33475b;
+  color: var(--footer-menu-font-color);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--footer-menu-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--footer-menu-text-transform);
+}
+
+.footer__menu-link:hover,
+.footer__menu-link:focus,
+.footer__menu-link:active {
+  font-family: 'Rubik', sans-serif;
+  font-family: var(--footer-menu-hover-font-family);
+  font-style: normal;
+  font-style: var(--footer-menu-hover-font-style);
+  font-weight: 400;
+  font-weight: var(--footer-menu-hover-font-weight);
+  font-size: 16px;
+  font-size: var(--footer-menu-hover-font-size);
+  color: #33475b;
+  color: var(--footer-menu-hover-font-color);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--footer-menu-hover-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--footer-menu-hover-text-transform);
+}
+
+.footer p {
+  font-family: var(--footer-font-family);
+  font-style: normal;
+  font-style: var(--footer-font-style);
+  font-weight: 400;
+  font-weight: var(--footer-font-weight);
+  font-size: 16px;
+  font-size: var(--footer-font-size);
+  line-height: ;
+  line-height: var(--footer-line-height);
+  color: #1773d1;
+  color: var(--footer-font-color);
+  text-decoration: var(--primary-body-text-decoration);
+  text-decoration: var(--footer-text-decoration);
+  text-transform: var(--primary-body-text-transform);
+  text-transform: var(--footer-text-transform);
+}
+
+@media (max-width: 767px) {
+  .footer__menu {
+    flex-direction: column;
+  }
+
+  .footer__menu-item {
+    margin-bottom: 1.4rem;
+  }
+}
+
+.footer__bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 48px 24px;
+  margin: 0 auto;
+  max-width: var(--footer-max-width);
+  box-sizing: content-box;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer__bottom--left {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+}
+
+.footer__bottom--right {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+
+.hs-kb-social_follow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: right;
+  justify-content: var(--social-follow-icon-alignment);
+  gap: 12px;
+  margin-bottom: 1.4rem;
+}
+
+a.hs-kb-social_follow__link {
+  background-color: #494a52;
+  background-color: var(--social-follow-icon-background-color);
+  color: #fff;
+  color: var(--social-follow-icon-color);
+  display: inline-block;
+  height: var(--social-follow-icon-size);
+  width: var(--social-follow-icon-size);
+  border-radius: var(--social-follow-icon-shape-radius);
+}
+
+.hs-kb-social_follow__icon {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.hs-kb-social_follow__icon svg {
+  height: 50%;
+  width: 50%;
+  fill: currentColor;
+}
+
+#hs_cos_wrapper_footer_copyright {
+  margin-top: auto;
+}
+
+/* Utilities */
+
+/* For content that needs to be visually hidden but stay visible for screenreaders */
+
+/* stylelint-disable declaration-no-important */
+
+.show-for-sr {
+  position: absolute !important;
+  overflow: hidden !important;
+  height: 1px !important;
+  width: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 767px) {
+  .show-for-sr--mobile {
+    position: absolute !important;
+    overflow: hidden !important;
+    height: 1px !important;
+    width: 1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* stylelint-enable declaration-no-important */
+</style>
+
+<link rel="stylesheet" href="//7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/template_assets/DEFAULT_ASSET/1791562893248/template_article.min.css">
+<link rel="stylesheet" href="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-107255593217/1791562976143/module_website-header.min.css">
+
+  <style>
+    #hs_cos_wrapper_knowledgebase_header .header__language-switcher-current-label>span {}
+
+#hs_cos_wrapper_knowledgebase_header .header__language-switcher:hover .header__language-switcher-current-label>span,
+#hs_cos_wrapper_knowledgebase_header .header__language-switcher:focus .header__language-switcher-current-label>span {}
+
+#hs_cos_wrapper_knowledgebase_header .header__language-switcher .lang_list_class a:hover,
+#hs_cos_wrapper_knowledgebase_header .header__language-switcher .lang_list_class a:focus {}
+
+#hs_cos_wrapper_knowledgebase_header .header__language-switcher .lang_list_class a:active {}
+
+#hs_cos_wrapper_knowledgebase_header .header__menu-link,
+#hs_cos_wrapper_knowledgebase_header .header__nav-link {}
+
+#hs_cos_wrapper_knowledgebase_header .header__menu-item--depth-1>.header__menu-link:hover,
+#hs_cos_wrapper_knowledgebase_header .header__menu-item--depth-1>.header__menu-link:focus {}
+
+#hs_cos_wrapper_knowledgebase_header .header__menu-item--depth-1>.header__menu-link:active {}
+
+#hs_cos_wrapper_knowledgebase_header .header__menu-item--depth-1>.header__menu-link--active-link {}
+
+#hs_cos_wrapper_knowledgebase_header .header__menu-submenu .header__menu-link:hover,
+#hs_cos_wrapper_knowledgebase_header .header__menu-submenu .header__menu-link:focus {}
+
+#hs_cos_wrapper_knowledgebase_header .button {}
+
+#hs_cos_wrapper_knowledgebase_header .button:hover,
+#hs_cos_wrapper_knowledgebase_header .button:focus {}
+
+#hs_cos_wrapper_knowledgebase_header .button:active {}
+
+  </style>
+
+<link rel="stylesheet" href="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-153268142413/1791562977249/module_kb-search-input.min.css">
+
+<style>
+  #hs_cos_wrapper_hs_kb-search-input-module .hs-search-field__bar>form { border-radius:px; }
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field__bar>form>label {}
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field__bar>form>.hs-search-field__input { border-radius:px; }
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field__button { border-radius:px; }
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field__button:hover,
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field__button:focus {}
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field__button:active {}
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field--open .hs-search-field__suggestions { border-radius:px; }
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field--open .hs-search-field__suggestions a {}
+
+#hs_cos_wrapper_hs_kb-search-input-module .hs-search-field--open .hs-search-field__suggestions a:hover {}
+
+</style>
+
+<link rel="stylesheet" href="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-112597758981/1791562884767/module_kb_breadcrumbs.min.css">
+<link rel="stylesheet" href="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-112598395238/1791562883171/module_kb_feedback.min.css">
+<link rel="stylesheet" href="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-112595965569/1791562881715/module_kb_related_articles.min.css">
+<link rel="stylesheet" href="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-112597758980/1791562882705/module_kb_accordion_menu.css">
+<style>
+  @font-face {
+    font-family: "Roboto";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Roboto/700.woff2") format("woff2"), url("/_hcms/googlefonts/Roboto/700.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Roboto";
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Roboto/300.woff2") format("woff2"), url("/_hcms/googlefonts/Roboto/300.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Roboto";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Roboto/regular.woff2") format("woff2"), url("/_hcms/googlefonts/Roboto/regular.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Roboto";
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Roboto/600.woff2") format("woff2"), url("/_hcms/googlefonts/Roboto/600.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Montserrat";
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Montserrat/800.woff2") format("woff2"), url("/_hcms/googlefonts/Montserrat/800.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Montserrat";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Montserrat/700.woff2") format("woff2"), url("/_hcms/googlefonts/Montserrat/700.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Montserrat";
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Montserrat/300.woff2") format("woff2"), url("/_hcms/googlefonts/Montserrat/300.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Montserrat/500.woff2") format("woff2"), url("/_hcms/googlefonts/Montserrat/500.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Montserrat";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Montserrat/regular.woff2") format("woff2"), url("/_hcms/googlefonts/Montserrat/regular.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Rubik";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Rubik/700.woff2") format("woff2"), url("/_hcms/googlefonts/Rubik/700.woff") format("woff");
+  }
+  @font-face {
+    font-family: "Rubik";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/_hcms/googlefonts/Rubik/regular.woff2") format("woff2"), url("/_hcms/googlefonts/Rubik/regular.woff") format("woff");
+  }
+</style>
+
+<!-- Editor Styles -->
+<style id="hs_editor_style" type="text/css">
+/* HubSpot Styles (default) */
+.kb-article-row-0-padding {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+</style>
+    
+<script data-search_input-config="config_hs_kb-search-input-module" type="application/json">
+{
+  "autosuggest_results_message": "Results for \u201C[[search_term]]\u201D",
+  "autosuggest_no_results_message": "There are no autosuggest results for \u201C[[search_term]]\u201D",
+  "sr_empty_search_field_message": "There are no suggestions because the search field is empty.",
+  "sr_autosuggest_results_message": "There are currently [[number_of_results]] auto-suggested results for [[search_term]]. Navigate to the results list by pressing the down arrow key, or press return to search for all results.",
+  "sr_search_field_aria_label": "This is a search field with an auto-suggest feature attached.",
+  "sr_search_button_aria_label": "Search"
+}
+</script>
+
+
+    
+    <link rel="canonical" href="https://support.acres.com/property-summary">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.acres.com/#organization",
+      "name": "Acres",
+      "url": "https://www.acres.com",
+      "logo": "https://www.acres.com/logo.png",
+      "sameAs": [
+        "https://www.linkedin.com/company/acres-co",
+        "https://x.com/acres_co"
+      ],
+      "knowsAbout": [
+        "Geographic Information Systems (GIS)",
+        "Land Valuation",
+        "Agricultural Data",
+        "Property Ownership Records",
+        "Soil Productivity Metrics"
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://www.acres.com/#software",
+      "name": "Acres Intelligence",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "author": { "@id": "https://www.acres.com/#organization" },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Subscription-based land research, mapping, and portfolio analysis tools"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "100"
+      },
+      "featureList": [
+        "150M+ Parcel Boundaries",
+        "Soil Productivity Index Mapping",
+        "Historical Land Transaction Records",
+        "Vegetation Index (NDVI)",
+        "Zoning and Risk Management Visualizations"
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://www.acres.com/#dataset",
+      "name": "Acres National Land Parcel & Valuation Database",
+      "description": "Comprehensive national land data covering over 150 million parcels and 45 million transaction records across the United States. Includes soil quality indices, parcel boundaries, ownership data, and historical valuations.",
+      "license": "https://www.acres.com/terms",
+      "creator": { "@id": "https://www.acres.com/#organization" },
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "United States",
+        "geo": {
+          "@type": "GeoShape",
+          "box": "24.396308 -125.000000 49.384358 -66.934570"
+        }
+      },
+      "variableMeasured": [
+        {
+          "@type": "PropertyValue",
+          "name": "Soil Productivity Score",
+          "unitText": "Index",
+          "description": "National soil quality and crop productivity metrics per land parcel."
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Land Market Valuation",
+          "unitText": "USD per Acre",
+          "description": "Estimated property values based on 45M+ historical transaction records."
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Property Ownership Records",
+          "unitText": "Text",
+          "description": "Public parcel ownership and deed metadata across 150M+ US properties."
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Parcel Boundaries",
+          "unitText": "GIS Coordinates",
+          "description": "Spatial vector boundary maps for United States land parcels."
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.acres.com/#website",
+      "name": "Acres",
+      "url": "https://www.acres.com",
+      "publisher": { "@id": "https://www.acres.com/#organization" },
+      "potentialAction": {        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.acres.com/data?query={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+</script>
+<meta property="og:url" content="https://support.acres.com/property-summary">
+<meta http-equiv="content-language" content="en">
+
+
+
+
+
+
+<script src="https://cmp.osano.com/6gSnb1xx2e/6b8e9cf6-139b-48ec-bccc-1c7c3c7c7f16/osano.js"></script>
+  <meta name="generator" content="HubSpot"></head>
+  
+  <body class="  hs-content-id-194093669685   theme-overrides" data-hs-theme-group_header-group_background-background_image="true">
+    <div class="kb-body-wrapper theme-overrides ">
+      
+      
+      
+
+      
+        <div data-global-resource-path="@hubspot/cms-knowledge-base-theme/templates/partials/knowledgebase-header.html">
+
+<header class="header">
+  
+
+  <a href="#main-content" class="header__skip">Skip to content</a>
+  <div id="hs_cos_wrapper_knowledgebase_header" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="header__container header__container--left"><div class="header__top">
+      <div class="header__wrapper header__wrapper--top"><div class="header__nav-wrapper">
+            
+  
+    
+    
+    
+  
+
+          </div></div>
+    </div><div class="header__bottom">
+    <div class="header__wrapper header__wrapper--bottom">
+      
+        <div class="header__logo-col">
+          
+
+  
+    
+  
+
+  <div class="header__logo">
+    
+
+      
+
+      
+
+        <img class="header__logo-image" src="https://support.acres.com/hs-fs/hubfs/acres-logo-fix.png?width=512&amp;height=168&amp;name=acres-logo-fix.png" loading="eager" alt="acres-logo-fix" height="168" width="512" srcset="https://support.acres.com/hs-fs/hubfs/acres-logo-fix.png?width=256&amp;height=84&amp;name=acres-logo-fix.png 256w, https://support.acres.com/hs-fs/hubfs/acres-logo-fix.png?width=512&amp;height=168&amp;name=acres-logo-fix.png 512w, https://support.acres.com/hs-fs/hubfs/acres-logo-fix.png?width=768&amp;height=252&amp;name=acres-logo-fix.png 768w, https://support.acres.com/hs-fs/hubfs/acres-logo-fix.png?width=1024&amp;height=336&amp;name=acres-logo-fix.png 1024w, https://support.acres.com/hs-fs/hubfs/acres-logo-fix.png?width=1280&amp;height=420&amp;name=acres-logo-fix.png 1280w, https://support.acres.com/hs-fs/hubfs/acres-logo-fix.png?width=1536&amp;height=504&amp;name=acres-logo-fix.png 1536w" sizes="(max-width: 512px) 100vw, 512px">
+
+        
+
+      
+
+      
+  </div>
+
+
+        </div>
+      
+      <div class="header__menu-col">
+        
+
+  <nav class="header__menu header__menu--desktop" aria-label="Desktop navigation">
+    <ul class="header__menu-wrapper no-list">
+      
+
+  
+  
+
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link  " href="https://www.acres.com/plat-map/map">Map</a>
+      
+      
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link header__menu-link--toggle " href="https://www.acres.com/solutions" aria-haspopup="true" aria-expanded="false">Solutions</a>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Solutions</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down1_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/value-land">Value Land</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/recent-sales">Find Recent Sales</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/layer-library">Layer Library</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/prospecting">Prospecting</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/analyze-land">Analyze Land</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/mapping">Easy Mapping</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/portfolio">Portfolio Management</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/manage-risk">Risk Management</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/mobile-app">Mobile App</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link header__menu-link--toggle " href="https://www.acres.com/industries" aria-haspopup="true" aria-expanded="false">Industries</a>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Industries</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down2_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/developers">Builders</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/data-center">Data Center</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/energy">Energy</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/finance-and-lending">Finance &amp; Lending</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/retail">Retail</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        <span role="none" data-depth="1" class="header__menu-link header__menu-link--toggle">Products</span>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Products</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down3_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/enterprise">For Business</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/pricing">For Individuals</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/homebuilder-market-intelligence">Home Builder Market Intelligence</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/data-center-index">Data Center Index</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        <span role="none" data-depth="1" class="header__menu-link header__menu-link--toggle">Resources</span>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Resources</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down4_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/about">About Us</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/data">Data Coverage</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://support.acres.com/">How to Use Acres</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/blog">Insider Blog</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/press">Press</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link  " href="https://www.acres.com/demo">Demo Request</a>
+      
+      
+      
+    </li>
+  
+  
+
+
+    </ul>
+  </nav>
+
+
+        
+  <div class="header__menu-container header__menu-container--mobile">
+    <button class="header__menu-toggle header__menu-toggle--open header__menu-toggle--show no-button">
+      <span class="show-for-sr">Open main navigation</span>
+      <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" width="24" aria-hidden="true"><g id="bars5_layer"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" /></g></svg>
+    </button>
+    <button class="header__menu-toggle header__menu-toggle--close no-button">
+      <span class="show-for-sr">Close main navigation</span>
+      <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 384 512" width="24" aria-hidden="true"><g id="times6_layer"><path d="M323.1 441l53.9-53.9c9.4-9.4 9.4-24.5 0-33.9L279.8 256l97.2-97.2c9.4-9.4 9.4-24.5 0-33.9L323.1 71c-9.4-9.4-24.5-9.4-33.9 0L192 168.2 94.8 71c-9.4-9.4-24.5-9.4-33.9 0L7 124.9c-9.4 9.4-9.4 24.5 0 33.9l97.2 97.2L7 353.2c-9.4 9.4-9.4 24.5 0 33.9L60.9 441c9.4 9.4 24.5 9.4 33.9 0l97.2-97.2 97.2 97.2c9.3 9.3 24.5 9.3 33.9 0z" /></g></svg>
+    </button>
+    <nav class="header__menu header__menu--mobile" aria-label="Mobile navigation">
+      <ul class="header__menu-wrapper no-list">
+        
+
+  
+  
+
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link  " href="https://www.acres.com/plat-map/map">Map</a>
+      
+      
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link header__menu-link--toggle " href="https://www.acres.com/solutions" aria-haspopup="true" aria-expanded="false">Solutions</a>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Solutions</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down7_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/value-land">Value Land</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/recent-sales">Find Recent Sales</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/layer-library">Layer Library</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/prospecting">Prospecting</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/analyze-land">Analyze Land</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/mapping">Easy Mapping</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/portfolio">Portfolio Management</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/manage-risk">Risk Management</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/mobile-app">Mobile App</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link header__menu-link--toggle " href="https://www.acres.com/industries" aria-haspopup="true" aria-expanded="false">Industries</a>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Industries</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down8_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/developers">Builders</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/data-center">Data Center</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/energy">Energy</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/finance-and-lending">Finance &amp; Lending</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/industries/retail">Retail</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        <span role="none" data-depth="1" class="header__menu-link header__menu-link--toggle">Products</span>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Products</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down9_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/enterprise">For Business</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/pricing">For Individuals</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/solutions/homebuilder-market-intelligence">Home Builder Market Intelligence</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/data-center-index">Data Center Index</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1 header__menu-item--has-submenu hs-skip-lang-url-rewrite">
+      
+        
+          <div class="header__menu-link-toggle-wrapper">
+        
+      
+      
+        <span role="none" data-depth="1" class="header__menu-link header__menu-link--toggle">Resources</span>
+      
+      
+        
+            <button data-depth="1" class="header__menu-child-toggle no-button" aria-expanded="false">
+              <span class="show-for-sr">Show submenu for Resources</span>
+              <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 448 512" aria-hidden="true"><g id="chevron-down10_layer"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" /></g></svg>
+            </button>
+          </div>
+        
+      
+      
+        
+          
+          <ul class="header__menu-submenu header__menu-submenu--level-2 no-list">
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/about">About Us</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/data">Data Coverage</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://support.acres.com/">How to Use Acres</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/blog">Insider Blog</a>
+      
+      
+      
+    </li>
+  
+            
+            
+    <li class="header__menu-item header__menu-item--depth-2  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="2" class="header__menu-link  " href="https://www.acres.com/press">Press</a>
+      
+      
+      
+    </li>
+  
+            
+          </ul>
+        
+      
+    </li>
+  
+  
+  
+    <li class="header__menu-item header__menu-item--depth-1  hs-skip-lang-url-rewrite">
+      
+      
+        
+          
+        
+        <a data-depth="1" class="header__menu-link  " href="https://www.acres.com/demo">Demo Request</a>
+      
+      
+      
+    </li>
+  
+  
+
+
+        
+        
+  
+    
+    
+    
+  
+
+        
+      </ul>
+    </nav>
+  </div>
+
+
+      </div>
+      
+    </div>
+  </div>
+</div></div>
+
+  
+  
+
+<section class="hs-kb-search-input-wrapper">
+  <div id="hs_cos_wrapper_hs_kb-search-input-module" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="hs-search-field">
+    <div class="hs-search-field__bar hs-search-field__bar--button-inline  ">
+      <form data-hs-do-not-collect="true" class="hs-search-field__form" action="https://support.acres.com/kb-search-results">
+
+        <label class="hs-search-field__label " for="hs_kb-search-input-module-input">
+          Need help using Acres? 
+        </label>
+
+        <input role="combobox" aria-expanded="false" aria-controls="autocomplete-results" aria-label="This is a search field with an auto-suggest feature attached." type="search" class="hs-search-field__input" id="hs_kb-search-input-module-input" name="q" autocomplete="off" aria-autocomplete="list" placeholder="Search for answers">
+
+        
+        
+        
+        
+          <input type="hidden" name="type" value="KNOWLEDGE_ARTICLE">
+        
+        
+          <input type="hidden" name="groupId" value="194092921149">
+        
+
+        <button class="hs-search-field__button " aria-label="Search">
+          <span id="hs_cos_wrapper_hs_kb-search-input-module_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_icon" style="" data-hs-cos-general-type="widget" data-hs-cos-type="icon"><svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 512 512" aria-hidden="true"><g id="search11_layer"><path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z" /></g></svg></span>
+           </button>
+        <div class="hs-search-field__suggestions-container ">
+          <ul id="autocomplete-results" role="listbox" aria-label="term" class="hs-search-field__suggestions">
+            
+              <li role="option" tabindex="-1" aria-posinset="1" aria-setsize="0" class="results-for show-for-sr">There are no suggestions because the search field is empty.</li>
+            
+          </ul>
+        </div>
+      </form>
+    </div>
+    <div id="sr-messenger" class="hs-search-sr-message-container show-for-sr" role="status" aria-live="polite" aria-atomic="true">
+    </div>
+</div>
+
+</div>
+</section>
+</header></div>
+      
+
+      
+      <main id="main-content">
+        
+  <div class="hs-kb-content-wrapper--responsive-spacing">
+    <div class="hs-kb-breadcrumb-container">
+      <div id="hs_cos_wrapper_breadcrumbs" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="hs-kb-breadcrumbs">
+  
+    <li class="hs-kb-breadcrumb_item">
+      <a href="https://support.acres.com/">Knowledge Base</a>
+    </li>
+  
+  
+    
+  
+    <li class="hs-kb-breadcrumb_item">
+      <a href="https://support.acres.com/boundaries-parcel-data" data-slug="/boundaries-parcel-data" data-anchor="boundaries-parcel-data">
+          Boundaries &amp; Parcel Data
+      </a>
+    </li>
+    
+  
+
+  
+</ol></div>
+    </div>
+    <div class="hs-kb-content-wrapper--sidebar -sidebar-left">
+      <div class="hs-kb-content -sidebar-left">
+        <div id="hs_focus_mode">
+          <article class="knowledgebase-post">
+            <div class="container-fluid article-wrapper">
+<div class="row-fluid-wrapper">
+<div class="row-fluid">
+<div class="span12 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-1 dnd-section kb-article-row-0-padding">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell dnd-column" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-2 dnd-row">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget dnd-module" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_kb-article-module-2" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+<div class="hs-search-hidden">
+  <time datetime="2026-08-12">August 12, 2026</time>
+</div>
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-3 dnd-row">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget dnd-module" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_kb-article-module-3" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+  <h1 id="hs_cos_wrapper_kb-article-module-3_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_inline_text_field" style="" data-hs-cos-general-type="widget" data-hs-cos-type="inline_text_field">View Parcel Data Through the Property Summary</h1>
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-4 dnd-row">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget dnd-module" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_kb-article-module-4" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+  <h2 id="hs_cos_wrapper_kb-article-module-4_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_inline_text_field" style="" data-hs-cos-general-type="widget" data-hs-cos-type="inline_text_field">Acres AI-powered Property Summary lets you see comprehensive parcel details all in one centralized location!</h2>
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-5 dnd-row">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget dnd-module" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_kb-article-module-5" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+  <div id="hs_cos_wrapper_kb-article-module-5_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_inline_richtext_field" style="" data-hs-cos-general-type="widget" data-hs-cos-type="inline_richtext_field"><div class="hs-callout-type-warning" data-hs-callout-type="warning">
+<p><strong>Note</strong>: Viewing certain information requires a subscription. <a href="https://www.acres.com/pricing">Click here to compare our plans and upgrade your plan.</a></p>
+<img alt="Information Tiers" height="480" style="height: auto; max-width: 100%; width: 670px;" src="https://support.acres.com/hs-fs/hubfs/Information%20Tiers.png?width=670&amp;height=480&amp;name=Information%20Tiers.png" width="670" loading="lazy" srcset="https://support.acres.com/hs-fs/hubfs/Information%20Tiers.png?width=335&amp;height=240&amp;name=Information%20Tiers.png 335w, https://support.acres.com/hs-fs/hubfs/Information%20Tiers.png?width=670&amp;height=480&amp;name=Information%20Tiers.png 670w, https://support.acres.com/hs-fs/hubfs/Information%20Tiers.png?width=1005&amp;height=720&amp;name=Information%20Tiers.png 1005w, https://support.acres.com/hs-fs/hubfs/Information%20Tiers.png?width=1340&amp;height=960&amp;name=Information%20Tiers.png 1340w, https://support.acres.com/hs-fs/hubfs/Information%20Tiers.png?width=1675&amp;height=1200&amp;name=Information%20Tiers.png 1675w, https://support.acres.com/hs-fs/hubfs/Information%20Tiers.png?width=2010&amp;height=1440&amp;name=Information%20Tiers.png 2010w" sizes="(max-width: 670px) 100vw, 670px"></div>
+<h3><strong>How to View the Property Summary</strong></h3>
+<p>There are three ways you can pull up data associated with a particular parcel:</p>
+<ol>
+<li>From the map, click on a parcel using the <a href="https://support.acres.com/info-cursor-vs-quick-select-cursor"><strong>black Info Cursor</strong></a>.</li>
+<li>From the map, right click on the property and click View Details.</li>
+<li>From the selections panel, click on View Details.</li>
+</ol>
+<p><a href="https://support.acres.com/making-a-selection"><strong>Click here to learn more about making selections.</strong></a></p>
+<p>Depending on your subscription level, the Property Summary includes:</p>
+<ul>
+<li>Parcel Details</li>
+<li>Boundary Measurements (In Feet)</li>
+<li>Suggested Layers</li>
+<li>Asset Intelligence</li>
+<li>Property Taxes</li>
+<li>Sold Land</li>
+<li>Mortgages</li>
+<li>Recent Imagery</li>
+<li>Historical Imagery</li>
+<li>Land Data Insights (such as)
+<ul>
+<li>Elevation</li>
+<li>Flood</li>
+<li>Soils</li>
+<li>Land Cover</li>
+</ul>
+</li>
+<li>County Relevant Data Layers</li>
+</ul>
+<p><strong>TIP</strong>: Collapse and expand each category by clicking the arrow on the right of each summary panel. See the image above for an example of expanded and collapsed categories.</p>
+<p>From the Property Summary panel you can:</p>
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li style="list-style-type: none;">
+<ul>
+<li><strong>Select</strong> and <strong>Deselect</strong> parcels by clicking the Select button.</li>
+<li>Click the <strong>Location Pin icon</strong> to zoom into that particular property.</li>
+<li>Click on the <strong>Carpenter’s Square</strong> icon to open measurements for the boundaries of the property you are looking on the map. The measurements will appear in feet.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img alt="Screenshot 2026-08-12 at 1.59.00 PM" height="508" style="height: auto; max-width: 100%; width: 670px;" src="https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%201.59.00%20PM.png?width=670&amp;height=508&amp;name=Screenshot%202026-08-12%20at%201.59.00%20PM.png" width="670" loading="lazy" srcset="https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%201.59.00%20PM.png?width=335&amp;height=254&amp;name=Screenshot%202026-08-12%20at%201.59.00%20PM.png 335w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%201.59.00%20PM.png?width=670&amp;height=508&amp;name=Screenshot%202026-08-12%20at%201.59.00%20PM.png 670w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%201.59.00%20PM.png?width=1005&amp;height=762&amp;name=Screenshot%202026-08-12%20at%201.59.00%20PM.png 1005w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%201.59.00%20PM.png?width=1340&amp;height=1016&amp;name=Screenshot%202026-08-12%20at%201.59.00%20PM.png 1340w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%201.59.00%20PM.png?width=1675&amp;height=1270&amp;name=Screenshot%202026-08-12%20at%201.59.00%20PM.png 1675w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%201.59.00%20PM.png?width=2010&amp;height=1524&amp;name=Screenshot%202026-08-12%20at%201.59.00%20PM.png 2010w" sizes="(max-width: 670px) 100vw, 670px"></p>
+<p>&nbsp;</p>
+<div class="hs-callout-type-note" data-hs-callout-type="note">
+<p><strong>TIP</strong>: Collapse and expand each category by clicking the arrow on the right of each summary panel. See the image above for an example of expanded and collapsed categories.&nbsp;</p>
+</div>
+<p>From the Property Summary panel you can <strong>Select</strong> and <strong>Deselect</strong> parcels and click the <strong>Location Pin icon</strong> to zoom into that particular property.&nbsp;</p>
+<p>&nbsp;</p>
+<p><img alt="Screenshot 2026-08-12 at 2.01.53 PM" height="272" style="height: auto; max-width: 100%; width: 670px;" src="https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.01.53%20PM.png?width=670&amp;height=272&amp;name=Screenshot%202026-08-12%20at%202.01.53%20PM.png" width="670" loading="lazy" srcset="https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.01.53%20PM.png?width=335&amp;height=136&amp;name=Screenshot%202026-08-12%20at%202.01.53%20PM.png 335w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.01.53%20PM.png?width=670&amp;height=272&amp;name=Screenshot%202026-08-12%20at%202.01.53%20PM.png 670w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.01.53%20PM.png?width=1005&amp;height=408&amp;name=Screenshot%202026-08-12%20at%202.01.53%20PM.png 1005w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.01.53%20PM.png?width=1340&amp;height=544&amp;name=Screenshot%202026-08-12%20at%202.01.53%20PM.png 1340w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.01.53%20PM.png?width=1675&amp;height=680&amp;name=Screenshot%202026-08-12%20at%202.01.53%20PM.png 1675w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.01.53%20PM.png?width=2010&amp;height=816&amp;name=Screenshot%202026-08-12%20at%202.01.53%20PM.png 2010w" sizes="(max-width: 670px) 100vw, 670px"></p>
+<h3><strong>Parcel Details</strong></h3>
+<p>This section is where you will find legal parcel information that is pulled directly from the county assessor’s office.</p>
+<p>The most important information, such as parcel number, recorded acres, and owner name, will be shown by default.&nbsp;</p>
+<p>Click View More to see additional information like Assessed Value or Previous Owner, where available.</p>
+<h3><strong>Reverse Parcel Search</strong></h3>
+<p>To do a reverse parcel search from the map, click the icon next to the Owner Name or Owner Address. This will bring you to Parcel Search results that display all parcels that are associated with that owner name or owner address.</p>
+<p><img alt="Reverse Search from Property Summary" height="384" style="height: auto; max-width: 100%; width: 670px;" src="https://support.acres.com/hs-fs/hubfs/Reverse%20Search%20from%20Property%20Summary.gif?width=670&amp;height=384&amp;name=Reverse%20Search%20from%20Property%20Summary.gif" width="670" loading="lazy" srcset="https://support.acres.com/hs-fs/hubfs/Reverse%20Search%20from%20Property%20Summary.gif?width=335&amp;height=192&amp;name=Reverse%20Search%20from%20Property%20Summary.gif 335w, https://support.acres.com/hs-fs/hubfs/Reverse%20Search%20from%20Property%20Summary.gif?width=670&amp;height=384&amp;name=Reverse%20Search%20from%20Property%20Summary.gif 670w, https://support.acres.com/hs-fs/hubfs/Reverse%20Search%20from%20Property%20Summary.gif?width=1005&amp;height=576&amp;name=Reverse%20Search%20from%20Property%20Summary.gif 1005w, https://support.acres.com/hs-fs/hubfs/Reverse%20Search%20from%20Property%20Summary.gif?width=1340&amp;height=768&amp;name=Reverse%20Search%20from%20Property%20Summary.gif 1340w, https://support.acres.com/hs-fs/hubfs/Reverse%20Search%20from%20Property%20Summary.gif?width=1675&amp;height=960&amp;name=Reverse%20Search%20from%20Property%20Summary.gif 1675w, https://support.acres.com/hs-fs/hubfs/Reverse%20Search%20from%20Property%20Summary.gif?width=2010&amp;height=1152&amp;name=Reverse%20Search%20from%20Property%20Summary.gif 2010w" sizes="(max-width: 670px) 100vw, 670px"><em>&nbsp;</em></p>
+<h3><strong>Suggested Layers</strong></h3>
+<p>This is a list of five data layers most relevant to the property you're viewing. They are ranked by how much data is present in the area around the boundary with a <strong>View More</strong> option for the full list. Add a layer to your map with the <strong>+</strong> icon to visualize the data and toggle it off with the <strong>✓</strong>.</p>
+<h3><strong>Asset Intelligence</strong></h3>
+<p><strong>Asset Intelligence</strong> offers a way to find information associated with land owners, either using the Owner Name, Owner Address, or both.&nbsp;</p>
+<p>Clicking the green starburst icon pulls up the Assets Graph to the right of the Property Summary panel, so you don’t lose your spot as you explore.</p>
+<h3><strong>Property Taxes</strong></h3>
+<p>When collapsed, this panel shows the property tax amount from the most recent year.</p>
+<p>Expand this section to see a graph of historical property tax records.&nbsp;</p>
+<p>Hover over the graph to show the value of individual tax years.</p>
+<h3><em><img alt="AI Property Summary Taxes" height="397" style="height: auto; max-width: 100%; width: 670px;" src="https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Taxes.gif?width=670&amp;height=397&amp;name=AI%20Property%20Summary%20Taxes.gif" width="670" loading="lazy" srcset="https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Taxes.gif?width=335&amp;height=199&amp;name=AI%20Property%20Summary%20Taxes.gif 335w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Taxes.gif?width=670&amp;height=397&amp;name=AI%20Property%20Summary%20Taxes.gif 670w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Taxes.gif?width=1005&amp;height=596&amp;name=AI%20Property%20Summary%20Taxes.gif 1005w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Taxes.gif?width=1340&amp;height=794&amp;name=AI%20Property%20Summary%20Taxes.gif 1340w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Taxes.gif?width=1675&amp;height=993&amp;name=AI%20Property%20Summary%20Taxes.gif 1675w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Taxes.gif?width=2010&amp;height=1191&amp;name=AI%20Property%20Summary%20Taxes.gif 2010w" sizes="(max-width: 670px) 100vw, 670px"></em>Sold Land</h3>
+<p>If the property has any sales associated with it, those will be listed under this section. It will appear as a price and a date with a drop down arrow. Expand this section to view all of the transaction data.</p>
+<h3>Mortgage</h3>
+<p>If there is a mortgage associated with the property, it will be listed here. It will show as a price and a maturity date with an arrow drop down option.</p>
+<p>Expand this section to see the progress on the mortgage, term length, lender, borrower, mortgage type, courthouse and GIS acres.</p>
+<h3>Recent Imagery</h3>
+<p>Recent Imagery is a great way to get a snapshot of any recent activity or changes on a property without having to go out on a site visit. These are low resolution, but high quality in that they are sourced as frequently as every two weeks.</p>
+<h3>Historical Imagery</h3>
+<p>Historical Imagery is a great way to see how a property has changed over time. It’s a great way to do a deeper dive on when a large change happened on the property.</p>
+<p><img alt="Screenshot 2026-08-12 at 2.07.16 PM" height="545" style="height: auto; max-width: 100%; width: 657px;" src="https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.07.16%20PM.png?width=657&amp;height=545&amp;name=Screenshot%202026-08-12%20at%202.07.16%20PM.png" width="657" loading="lazy" srcset="https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.07.16%20PM.png?width=329&amp;height=273&amp;name=Screenshot%202026-08-12%20at%202.07.16%20PM.png 329w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.07.16%20PM.png?width=657&amp;height=545&amp;name=Screenshot%202026-08-12%20at%202.07.16%20PM.png 657w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.07.16%20PM.png?width=986&amp;height=818&amp;name=Screenshot%202026-08-12%20at%202.07.16%20PM.png 986w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.07.16%20PM.png?width=1314&amp;height=1090&amp;name=Screenshot%202026-08-12%20at%202.07.16%20PM.png 1314w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.07.16%20PM.png?width=1643&amp;height=1363&amp;name=Screenshot%202026-08-12%20at%202.07.16%20PM.png 1643w, https://support.acres.com/hs-fs/hubfs/Screenshot%202026-08-12%20at%202.07.16%20PM.png?width=1971&amp;height=1635&amp;name=Screenshot%202026-08-12%20at%202.07.16%20PM.png 1971w" sizes="(max-width: 657px) 100vw, 657px"></p>
+<h3><strong>Insights&nbsp;</strong></h3>
+<p>Viewing <strong>Elevation</strong>, <strong>Flood</strong>, <strong>Soils</strong>, and <strong>Land Cover</strong> insights is easier than ever.&nbsp;</p>
+<p>Here are a few notes to keep in mind as you interact with Property Summary Insights:</p>
+<ul>
+<li aria-level="1">Hover over each Insight section to show the layer on the map.&nbsp;</li>
+<li aria-level="1">Switch the Toggle to ON to persist the Insight overlay on the map.</li>
+<li aria-level="1">Closing out of the Property Summary will close the Insight overlay. However, it will remember what was last toggled ON the next time you open the Property Summary.</li>
+<li aria-level="1">Insights can now be layered! Try turning on Elevation and Flood at the same time to see how this works. (See graphic below)</li>
+<li aria-level="1">On any Insight you can click <strong>View More</strong> to see more information and additional customizations.</li>
+</ul>
+<p><em><img alt="AI Property Summary Insights" height="402" style="height: auto; max-width: 100%; width: 670px;" src="https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Insights.gif?width=670&amp;height=402&amp;name=AI%20Property%20Summary%20Insights.gif" width="670" loading="lazy" srcset="https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Insights.gif?width=335&amp;height=201&amp;name=AI%20Property%20Summary%20Insights.gif 335w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Insights.gif?width=670&amp;height=402&amp;name=AI%20Property%20Summary%20Insights.gif 670w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Insights.gif?width=1005&amp;height=603&amp;name=AI%20Property%20Summary%20Insights.gif 1005w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Insights.gif?width=1340&amp;height=804&amp;name=AI%20Property%20Summary%20Insights.gif 1340w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Insights.gif?width=1675&amp;height=1005&amp;name=AI%20Property%20Summary%20Insights.gif 1675w, https://support.acres.com/hs-fs/hubfs/AI%20Property%20Summary%20Insights.gif?width=2010&amp;height=1206&amp;name=AI%20Property%20Summary%20Insights.gif 2010w" sizes="(max-width: 670px) 100vw, 670px"></em></p>
+<h3><strong>Relevant Data Layers</strong></h3>
+<p>Certain Layers shortcuts will be shown toward the bottom of the Property Summary panel. These are based on our available data layers and the location of this property (i.e., if elements of the layer intersect the property).</p>
+<p>We will have layers for Development and Services, Environmental Risk, Intersecting, and Local data.</p>
+<p>Expand each category to see what is available. You can quickly add these to your map by clicking the <strong>+</strong> icon (and toggle them off by clicking the ✓ icon).</p></div>
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div>
+</div>
+</div>
+          </article>
+        </div>
+        
+        <div class="hs-kb-feedback">
+          <div id="hs_cos_wrapper_feedback" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+
+<div id="ka-feedback-form-container" portal-id="22215745" article-id="203824617040" analytics-page-id="203824617040" knowledge-base-id="194092921149" article-language-tag="en" ungated-for-multi-language="true" enviro="prod" feedback-hubapi-domain="feedback.hubapi.com" js-feedback-domain="js.hubspotfeedback.com">
+  <div id="ka-feedback-form">
+    
+  </div>
+  <script type="text/javascript" src="https://js.hubspotfeedback.com/feedbackknowledge.js"></script>
+</div></div>
+        </div>
+        
+        
+          <div class="hs-kb-related-articles">
+            <div id="hs_cos_wrapper_related-articles" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+
+
+
+
+
+
+
+  <div id="kb-related-articles-container" portal-id="22215745" knowledge-base-id="194092921149" article-id="203824617040" article-language="en" heading="Related articles" enviro="prod" knowledge-base-type="SCP" public-hubapi-domain="public.hubapi.com">
+    
+      <div id="kb-related-articles"></div>
+      <link rel="stylesheet" href="https://js.hubspotfeedback.com/relatedarticles.css">
+      <script type="text/javascript" src="https://js.hubspotfeedback.com/relatedarticles.js"></script>
+    
+  </div>
+</div>
+          </div>
+        
+      </div>
+      
+        <aside class="hs-kb-sidebar -sidebar-left">
+          
+            <div id="hs_cos_wrapper_accordion-menu" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+<ul role="menu" aria-label="Category menu" class="hs-kb-category_accordion_nav_list">
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/account-settings">Account Settings</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/base-map">Base Map</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  hs-kb-category-accordion_link--active"  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/boundaries-parcel-data">Boundaries &amp; Parcel Data</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/custom-map-tools">Custom Map Tools</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/insights">Insights</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/layers">Layers</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/lead-lists">Lead Lists</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/listings">Listings</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/mortgages">Mortgages</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/portfolio-of-saved-maps">Portfolio of Saved Maps</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/reports-sharing">Reports &amp; Sharing</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/sales-data">Sales Data</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/search">Search</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/faq">FAQ</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/mobile-app">Mobile App</a>
+        
+      </li>
+    
+  
+    
+      
+      
+      
+
+      <li role="presentation" class="hs-kb-category_accordion_nav_list_item  "  >
+
+        
+          <a role="menuitem" class="hs-kb-category-accordion_link" href="https://support.acres.com/press">Press</a>
+        
+      </li>
+    
+  
+</ul></div>
+          
+          
+          
+        </aside>
+      
+    </div>
+  </div>
+
+      </main>
+
+      
+        <div data-global-resource-path="@hubspot/cms-knowledge-base-theme/templates/partials/knowledgebase-footer.html">
+
+<footer class="footer">
+  <div id="hs_cos_wrapper_knowledgebase_footer" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+  
+  
+</div>
+  <div class="footer__bottom">
+    <div class="footer__bottom--left">
+      <div id="hs_cos_wrapper_footer_logo" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-logo" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <span id="hs_cos_wrapper_footer_logo_hs_logo_widget" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_logo" style="" data-hs-cos-general-type="widget" data-hs-cos-type="logo"><a href="https://www.acres.com" id="hs-link-footer_logo_hs_logo_widget" style="border-width:0px;border:0px;"><img src="https://support.acres.com/hs-fs/hubfs/acres_logo_white.png?width=160&amp;height=57&amp;name=acres_logo_white.png" class="hs-image-widget " height="57" style="height: auto;width:160px;border-width:0px;border:0px;" width="160" alt="Acres_Logo_White" title="Acres_Logo_White" srcset="https://support.acres.com/hs-fs/hubfs/acres_logo_white.png?width=80&amp;height=29&amp;name=acres_logo_white.png 80w, https://support.acres.com/hs-fs/hubfs/acres_logo_white.png?width=160&amp;height=57&amp;name=acres_logo_white.png 160w, https://support.acres.com/hs-fs/hubfs/acres_logo_white.png?width=240&amp;height=86&amp;name=acres_logo_white.png 240w, https://support.acres.com/hs-fs/hubfs/acres_logo_white.png?width=320&amp;height=114&amp;name=acres_logo_white.png 320w, https://support.acres.com/hs-fs/hubfs/acres_logo_white.png?width=400&amp;height=143&amp;name=acres_logo_white.png 400w, https://support.acres.com/hs-fs/hubfs/acres_logo_white.png?width=480&amp;height=171&amp;name=acres_logo_white.png 480w" sizes="(max-width: 160px) 100vw, 160px"></a></span>
+</div>
+      <div id="hs_cos_wrapper_footer_address" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_footer_address_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><p>For support, visit <a href="https://www.acres.com/contact-us" rel="noopener">our contact page</a><br>or email <a href="mailto:support@acres.com" rel="noopener">support@acres.com</a></p></span></div>
+    </div>
+    <div class="footer__bottom--right">
+      <div id="hs_cos_wrapper_footer_social_follow" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+</div>
+      <div id="hs_cos_wrapper_footer_copyright" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_footer_copyright_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><div style="text-align: right;">
+<div class="hs-content-id-191104832404 hs-site-page">
+<div data-global-resource-path="atlas-theme-child-acres/templates/partials/footer.html">
+<div>
+<div>
+<div>
+<div data-widget-type="cell" data-x="0" data-w="12">
+<div>
+<div>
+<div data-widget-type="cell" data-x="0" data-w="12">
+<div>
+<div>
+<div data-widget-type="custom_widget" data-x="0" data-w="12">
+<div>
+<div>
+<p><span>© 2026&nbsp;Acres.com. All rights reserved.</span><span style="background-color: transparent; font-size: 18px;">&nbsp;</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></span></div>
+    </div>
+  </div>
+</footer></div>
+      
+    </div>
+    
+    
+    
+    
+<!-- HubSpot performance collection script -->
+<script defer src="/hs/hsstatic/content-cwv-embed/static-1.1293/embed.js"></script>
+<script>
+var hsVars = hsVars || {}; hsVars['language'] = 'en';
+</script>
+
+<script src="/hs/hsstatic/cos-i18n/static-1.53/bundles/project.js"></script>
+<script src="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-107255593217/1791562976143/module_website-header.min.js"></script>
+<script src="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-153268142413/1791562977249/module_kb-search-input.min.js"></script>
+<script src="//7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/template_assets/DEFAULT_ASSET/1791562892064/template_purify.min.js"></script>
+<script src="https://7052064.fs1.hubspotusercontent-na1.net/hubfs/7052064/hub_generated/module_assets/1/-112597758980/1791562882705/module_kb_accordion_menu.min.js"></script>
+
+<!-- Start of HubSpot Analytics Code -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "knowledge-article"]);
+_hsq.push(["setCanonicalUrl", "https:\/\/support.acres.com\/property-summary"]);
+_hsq.push(["setPageId", "203824617040"]);
+_hsq.push(["setContentMetadata", {
+    "contentPageId": "203824617040",
+    "legacyPageId": "203824617040",
+    "contentFolderId": null,
+    "contentGroupId": 194092921149,
+    "abTestId": null,
+    "languageVariantId": 194093669685,
+    "languageCode": "en",
+    
+    "scpContentType": "knowledge-base",
+    
+    
+}]);
+</script>
+
+<script type="text/javascript" id="hs-script-loader" async defer src="/hs/scriptloader/22215745.js"></script>
+<!-- End of HubSpot Analytics Code -->
+
+
+<script type="text/javascript">
+var hsVars = {
+    render_id: "3e16e172-3935-4a3b-991d-43fa613dde7d",
+    ticks: 1791754475289,
+    page_id: 194093669685,
+    dynamic_page_id: "203824617040",
+    content_group_id: 194092921149,
+    portal_id: 22215745,
+    app_hs_base_url: "https://app.hubspot.com",
+    cp_hs_base_url: "https://cp.hubspot.com",
+    language: "en",
+    analytics_page_type: "knowledge-article",
+    scp_content_type: "knowledge-base",
+    scp_id: "203824617040", 
+    analytics_page_id: "203824617040",
+    category_id: 12,
+    folder_id: 0,
+    is_hubspot_user: false
+}
+</script>
+
+
+<script defer src="/hs/hsstatic/HubspotToolsMenu/static-1.640/js/index.js"></script>
+
+<!-- !!! Do not put any tracking code in here, or you'll get us sued. -->
+
+
+
+  
+</body></html>

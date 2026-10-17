@@ -1,0 +1,103 @@
+# Benchmark field-scout: Acres.com public sold-land parcel page (Decatur County, IA)
+# https://www.acres.com/plat-map/sold-land/ia/decatur-county-ia/41416-curated
+# fetched 2026-10-17T02:09:12Z, sha256 34547d89064c006426f4a676f40f3ef9b4ce4e1cbe3166334b912f0a7f5ff31d
+
+184 Acres sold in Decatur Co, IA on Thu, Apr 17th, 2025 | Acres<!----><!---->
+
+Opens in a new window Opens an external website Opens an external website in a new window
+
+This website utilizes technologies such as cookies to enable essential site functionality, as well as for analytics, personalization, and targeted advertising. Privacy PolicyTerms of Service
+
+Storage Preferences
+
+© MapTiler © OpenStreetMap contributors
+
+-
+Home
+
+-
+/Plat Map
+
+-
+/Iowa
+
+-
+/Decatur
+
+-
+/Sold Land
+
+Unlock exclusive, weekly-updated data that goes beyond assessor records, even in non-disclosure states.
+
+$123,456
+
+$123,456
+
+/acre
+
+0.00
+
+acres
+
+Sale Details
+
+Price per acre
+
+$123,456
+
+Price per tillable acre
+
+$1,234
+
+Attachments
+
+Insight Overlays
+
+Elevation
+
+Soils
+
+Flood
+
+Layers
+
+Portfolio
+
+Layers added to your map will appear here.
+
+FSA
+
+Parcel
+
+Owner Names
+
+Select land to get started.
+
+Decatur County, Iowa Plat Map and Land Values | Acres GIS
+
+-
+Home
+
+-
+/Iowa
+
+-
+/Decatur County
+
+Iowa
+
+Discover Decatur County, Iowa plat maps and property boundaries.
+Search 15,471 parcel records and view insights like land ownership information, soil maps, and elevation.
+Acres features 252 sold land records in Decatur County with a median price per acre of $6,384.
+
+Ready to unlock nationwide plat maps? Acres brings together land for sale, sold land, and parcel-level insights into one GIS mapping platform for $7.49.
+
+Decatur County ListingsDecatur County Sold Land
+
+Adjacent Counties
+
+Clarke CountyLucas CountyRinggold CountyUnion CountyWayne CountyHarrison CountyMercer County
+
+Compare Plans
+
+Map Loading...

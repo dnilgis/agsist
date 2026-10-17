@@ -1,7 +1,64 @@
 # Benchmark field-scout: CropScape help
 # https://nassgeodata.gmu.edu/CropScape/devhelp/help.html
-# fetched 2026-10-17T00:04:48Z, sha256 042a7c134440cbb007a62ee5837c79ff388e8ef54f06a0227a40caf1a8bf61f4
+# fetched 2026-10-17T01:57:01Z, sha256 827e390f91ef6b37ffce39a6444cf9933df2d8212a60df038c69d58f689c8b48
 
 CropScape Developer Guide
 
-Loading…
+-
+Content
+
+-
+1. Web Data Services
+
+-
+1.1 WMS and WCS of CDL data
+
+-
+1.2 WMS and WFS of CONUS Boundaries
+
+-
+1.3 WMS and WFS of CONUS Roads
+
+-
+1.4 WMS and WFS of CONUS Water Areas
+
+-
+2. Web Geo-Processing Service
+
+-
+2.1 Service Description
+
+-
+2.2 GET Request Examples
+
+-
+2.3 POST Request Examples
+
+-
+2.4 SOAP Request Examples
+
+- Content
+
+-
+
+Table of Contents
+
+1. Web Data Services
+
+1.1 WMS and WCS of CDL data
+
+1.2 WMS and WFS of CONUS Boundaries
+
+1.3 WMS and WFS of CONUS Roads
+
+1.4 WMS and WFS of CONUS Water Areas
+
+2. Web Geo-Processing Service
+
+2.1 Service Description
+
+2.2 GET Request Examples
+
+2.3 POST Request Examples
+
+2.4 SOAP Request Examples
