@@ -348,7 +348,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
       <button class="fetch-btn" id="g-fetch-btn">
         <span><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span> Fetch GDUs from weather data
       </button>
-      <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Until you fetch, the results are an example from the hand-entry temperatures below, not your weather.</div>
+      <div class="fetch-status" id="g-fetch-status" role="status" aria-live="polite">Until you fetch, the results are an example from the hand-entry temperatures below (82/58&deg;F to start, a midsummer day, so it runs ahead of a real season), not your weather.</div>
 
       <details class="gdu-manual"><summary>Or enter temperatures or GDUs by hand</summary>
 
@@ -357,7 +357,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
         <select class="f-select" id="g-method">
           <option value="avg">Average daily high and low</option>
           <option value="cumulative">Enter cumulative GDUs</option>
-          <option value="wi_hist">Upper Midwest 30-year average (WI/MN reference)</option>
+          <option value="wi_hist">Wisconsin 30-year monthly averages (Upper Midwest reference)</option>
         </select>
       </div>
 
@@ -372,7 +372,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
             <input class="f-input" id="g-lo" type="number" value="58" min="30" max="85" step="1">
           </div>
         </div>
-        <div class="f-hint">GDU/day = ((Hi + Lo) &divide; 2) &minus; 50, with Hi and Lo each set to 50&deg;F if below 50 and to 86&deg;F if above 86.</div>
+        <div class="f-hint">GDU/day = ((Hi + Lo) &divide; 2) &minus; 50, with Hi and Lo each set to 50&deg;F if below 50 and to 86&deg;F if above 86. The 82/58&deg;F filled in is a midsummer day (20 GDU), not a season average: the Wisconsin monthly averages below come to 2,269 GDU for May through September, about 15 a day. Type your own season average, or pick the Wisconsin averages.</div>
       </div>
 
       <div id="g-cum-inputs" style="display:none">
@@ -534,7 +534,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     </div>
     <div class="formula-card">
       <div class="formula-card-title">Soybean Notes</div>
-      <p>Soybeans use the same base formula but are <strong>photoperiod-sensitive</strong>: flowering is triggered by day length (short-day plant), not GDUs alone. Maturity groups range from 0.5 (North Dakota) to 5.5 (Gulf Coast); check your local Extension for recommended MGs.<br><br>
+      <p>Soybeans use the same base formula but are <strong>photoperiod-sensitive</strong>: flowering is triggered by day length (short-day plant), not GDUs alone. US maturity groups run from 00 in northern North Dakota to VII and VIII on the Gulf Coast; this calculator takes MG 0.5 to 5.5. Check your local Extension for recommended MGs.<br><br>
       GDU to R8 here is <code>1750 + 280 &times; MG</code>, a straight line through the <a href="https://www.ag.ndsu.edu/news/newsreleases/2016/june-13-2016/ndsu-develops-soybean-growing-degree-day-model" target="_blank" rel="noopener">NDSU soybean GDD model</a> (planting to R8: 1,694 for 00.8, 1,890 for 0.5, 2,058 for 1.1 RM). It is used only for MG 00.8&ndash;1.1. For later groups there is no published GDD-to-maturity figure, so the target, R8 date and frost check are withheld. Use the seed company&rsquo;s rating.</p>
     </div>
     <div class="formula-card">
