@@ -95,6 +95,43 @@ def note(title, text, chunk=6000, most=4):
         print("::notice title=%s %d::%s" % (title, i // chunk + 1, text[i:i + chunk].replace("%", "%25").replace("\r", "").replace("\n", "%0A")))
 
 
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+
+def month_links(page):
+    """Every month link on the historical screen with the year it sits under; on = a file is offered."""
+    got = page.evaluate("""() => {
+        const out = []; let year = null;
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT);
+        while (walker.nextNode()) {
+            const e = walker.currentNode;
+            const t = (e.innerText || '').trim();
+            if (e.children.length === 0 && /^20\\d\\d$/.test(t)) year = +t;
+            if (e.tagName === 'A' && e.id && e.id.startsWith('cl_') && year) out.push({id: e.id, year: year, name: t, on: !!e.getAttribute('href')});
+        }
+        return out; }""")
+    out = []
+    for g in got:
+        if g["name"] in MONTHS:
+            out.append({"id": g["id"], "year": g["year"], "month": MONTHS.index(g["name"]) + 1, "on": g["on"]})
+    return out
+
+
+def grab(page, loc, out, tag, log, wait=180000):
+    """Click loc and keep the file it hands back; None when it opens no download."""
+    try:
+        with page.expect_download(timeout=wait) as dl:
+            loc.click()
+        d = dl.value
+        fn = os.path.join(out, tag + "-" + re.sub(r"[^A-Za-z0-9._-]", "_", d.suggested_filename))
+        d.save_as(fn)
+        log.append("%s: download %s (%d bytes) url %s" % (tag, d.suggested_filename, os.path.getsize(fn), d.url[:200]))
+        return fn
+    except Exception as e:  # noqa: BLE001
+        log.append("%s: no download: %s" % (tag, str(e).splitlines()[0][:200]))
+        return None
+
+
 def explore(out):
     """Every step logged; whatever fails, the log and the screens so far are kept."""
     import traceback
@@ -181,23 +218,19 @@ def _explore(out, log):
             log.append("clicking the disclaimer's Agree")
             agree.first.click()
         snap("02-after-agree")
-        hit = page.get_by_text(re.compile(r"historical", re.I))
-        log.append("'historical' texts: %d" % hit.count())
-        # whatever the screen offers: what a first file click asks for, one file only
-        links = page.locator("a:visible").filter(has_text=re.compile(r"\b(19|20)\d\d\b|\.zip|\.csv|download", re.I))
-        log.append("file-like links: %d" % links.count())
-        if links.count():
-            log.append("first file-like link: %r" % links.first.inner_text())
-            try:
-                with page.expect_download(timeout=120000) as dl:
-                    links.first.click()
-                d = dl.value
-                fn = os.path.join(out, "first-" + re.sub(r"[^A-Za-z0-9._-]", "_", d.suggested_filename))
-                d.save_as(fn)
-                log.append("first download: %s url %s bytes %d" % (d.suggested_filename, d.url, os.path.getsize(fn)))
-            except Exception as e:  # noqa: BLE001
-                log.append("first link gave no download: %s" % str(e)[:300])
-            snap("03-after-first-link")
+        months = month_links(page)
+        log.append("month links: %d enabled of %d; years %s" % (sum(1 for m in months if m["on"]), len(months), sorted({m["year"] for m in months})))
+        for lab, tag in (("View CSV Documentation", "doc-csv"), ("View XML Schema", "doc-xml")):
+            grab(page, page.get_by_text(lab).first, out, tag, log)
+            snap("03-" + tag)
+        on = [m for m in months if m["on"]]
+        if on:
+            m = on[0]
+            for fmt in ("CSV", "XML"):
+                page.locator("label[for=Dc-s_%d]" % (0 if fmt == "CSV" else 1)).click()
+                time.sleep(PAUSE)
+                grab(page, page.locator("#" + m["id"]), out, "%s-%04d-%02d" % (fmt.lower(), m["year"], m["month"]), log)
+                snap("04-after-" + fmt.lower())
         br.close()
     open(os.path.join(out, "requests.json"), "w").write(json.dumps(reqs, indent=1))
     log.append("requests (%d):" % len(reqs))
