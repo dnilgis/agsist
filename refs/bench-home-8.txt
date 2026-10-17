@@ -1,0 +1,102 @@
+# Benchmark home: Successful Farming home (agriculture.com)
+# https://www.agriculture.com/
+# fetched 2026-10-17T02:11:42Z, sha256 b972c095ae34764b9a902b32080441fc4588f69a2029b25b865dcba1ba3efba1
+
+Successful Farming: Practical, Trusted Farming and Ranching Information
+
+USDA Sends “Shock Waves” With Higher Corn Yield and Ending Stocks in Latest WASDE
+
+3 Big Things Today, Oct. 12, 2026
+
+Farm Sector Debt to Reach Record High $605 Billion in 2026
+
+6 Toss-Up House Races Farmers Should Watch
+
+At Weekend, Corn Closes Down 20¢ | Friday, Oct. 9, 2026
+
+Top Picks
+
+Enough Room for the Harvest? Grain Storage Pressure in the Corn Belt
+
+Iowa Harvest Gets More Rain — When Will Fields Dry?
+
+New Trump Rules Will Make It Harder for Farmers to Access U.S. Funds for Energy Projects
+
+Market Commodity Prices
+
+Commodity
+Last
+Change
+Open
+Date
+
+Corn
+483-0s
++3-2
+480-0
+10/12/26
+
+Soybeans
+1287-6s
+-4-2
+1289-0
+10/12/26
+
+Wheat
+672-2s
++1-2
+669-6
+10/12/26
+
+Live Cattle
+226.6s
+-0.45
+227.075
+10/12/26
+
+Lean Hogs
+68.375s
++0.55
+68.1
+10/12/26
+
+An "s" at the end of a price means that commodity has settled.
+The price being displayed is the contract for the closest month.
+
+Copyright © 2026. All market data is provided by Barchart Solutions.
+
+Futures: at least 10 minute delayed. Information is provided 'as is' and solely for informational purposes, not for trading purposes or advice. To see all exchange delays and terms of use, please see disclaimer.
+
+Corn Prices Could Fall Fast if Funds Head for the Exit
+
+Grains Mixed to Start the Week | Monday, Oct. 12, 2026
+
+3 Big Things Today, Oct. 12, 2026
+
+Should Non-Farming Heirs Share in the Family Farm’s Profits?
+
+Grain Cart Inventories Surge as Year-Over-Year Sales Drop 40%
+
+More Than 5,000 Acres of Minnesota Farmland Head to Auction in October 2026
+
+Nearly 7,500 Acres of Nebraska Farmland Head to Auction in October 2026
+
+Machinery
+
+Kubota Introduced BX90 Tractors With Upgraded Loaders and Mower Decks
+
+BranValt Dual Narrow Pan Improves Grain Loss Sampling in Dense Crop Residue
+
+Diesel Price Spike Squeezes Corn Harvest Margins as Combine Fuel Costs Up to $12.58 an Acre
+
+The Missing Middle: Why Used Combines in the Sweet Spot Are Vanishing
+
+Claas Introduced Rovio 5 Corn Head, Combine Automation, and Grain Analysis
+
+Farmland
+
+Wisconsin Farmland Brings More Than $8,000-per-Acre Average at Auction
+
+Want to Rent More Farmland? Here’s How to Become a Landlord’s First Choice
+
+Nebraska Broker Helps Farmers Sell Their Land and Keep Farming It

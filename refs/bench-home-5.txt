@@ -1,0 +1,5 @@
+# Benchmark home: Successful Farming (agriculture.com)
+# https://www.agriculture.com/markets
+# fetched 2026-10-17T02:10:49Z, sha256 599d3163c827e3cdc677e0e3f3286d40a33253db1705d7fac42911eac6b3a770
+
+
