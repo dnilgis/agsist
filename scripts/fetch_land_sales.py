@@ -384,21 +384,23 @@ IL_SODA = "https://data.illinois.gov/resource/it54-y4c6.json"
 # Pages saved by --probe besides each state's data pages: layouts, data dictionaries and catalogs,
 # so the real columns can be read on the raw branch before any parser trusts them.
 PROBE_DOCS = {
-    "WI": ["https://www.revenue.wi.gov/SLFReportsHistSales/RETRmlist.pdf",
+    "WI": ["https://propertyinfo.revenue.wi.gov/",
            "https://www.revenue.wi.gov/Pages/SLF/Assessor-News/2026-02-24.aspx",
            "https://www.revenue.wi.gov/Pages/RETr/Home.aspx"],
     "MN": ["https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv",
            "https://www.revenue.state.mn.us/sales-ratio-reports"],
-    "IL": ["https://data.illinois.gov/api/views/it54-y4c6.json",
-           IL_SODA + "?$select=line_8_current_use,count(*)&$group=line_8_current_use&$order=count(*)%20DESC&$limit=40",
+    "IL": [IL_SODA + "?$select=line_8_current_use,count(*)&$group=line_8_current_use&$order=count(*)%20DESC&$limit=40",
            IL_SODA + "?$select=count(*),min(date_recorded),max(date_recorded)",
            IL_SODA + "?$select=count(step_4_buyer_name)",
            IL_SODA + "?$select=count(step_4_seller_name)",
            IL_SODA + "?$select=line_1_county,count(*)&$group=line_1_county&$order=line_1_county&$limit=200",
-           IL_SODA + "?$limit=2&$where=line_8_current_use%20like%20%27%25arm%25%27",
+           IL_SODA + "?$limit=3&$where=line_8_current_use=%27J%27&$order=date_recorded%20DESC",
+           IL_SODA + "?$select=line_5_instrument_type,count(*)&$group=line_5_instrument_type&$where=line_8_current_use=%27J%27&$order=count(*)%20DESC&$limit=30",
+           IL_SODA + "?$select=count(*),count(step_4_buyer_name),min(date_recorded)&$where=line_8_current_use=%27J%27",
+           "https://tax.illinois.gov/content/dam/soi/en/web/tax/localgovernments/property/documents/ptax-203.pdf",
            "https://data.illinois.gov/api/views/dwt7-rycp.json",
-           "https://data.illinois.gov/resource/dwt7-rycp.json?$select=count(*),count(buyer_name)",
-           "https://data.illinois.gov/api/views/ay2h-5hx3.json"],
+           "https://data.illinois.gov/resource/ay2h-5hx3.json?$limit=3",
+           "https://data.illinois.gov/resource/ay2h-5hx3.json?$select=count(*)"],
 }
 
 
@@ -431,6 +433,8 @@ def probe(states):
             open(os.path.join(d, "page%d-alllinks.txt" % i), "w").write("\n".join(every) + "\n")
             log.append("%s page %s: %d bytes, title %r; links: %s" % (st, pg, len(html), (re.findall(r"(?is)<title>(.*?)</title>", html) or [""])[0].strip()[:80],
                                                                   " ".join(h for h in every if not re.search(r"\.(css|js|png|gif|ico)(\?|$)", h))[:3000]))
+            if len(every) < 15:      # a thin page (a sign-in or cookie wall): say what it says
+                log.append("  text: " + re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", strip_scripts(html.encode()).decode()))[:1500])
             log.append("%s page %s: %d file links" % (st, pg, len(links)))
             for j, u in enumerate(links[:3]):
                 try:
@@ -504,8 +508,8 @@ def probe(states):
     open(os.path.join(RAW, "probe-log.txt"), "w").write("\n".join(log) + "\n")
     print("\n".join(log))
     annotate("probe", "\n".join(log))
-    for st, t in pdf_text[:1]:
-        annotate("layout " + st, t, most=3)
+    for st, t in pdf_text[:2]:
+        annotate("layout " + st, t, most=2)
     return 0
 
 
