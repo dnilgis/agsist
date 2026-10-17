@@ -878,7 +878,7 @@ function renderToday(data,why){
     var qSt=strip.asof&&window.AgAsOf?AgAsOf.html(strip.asof,'daily',{prefix:'Quotes as of'}):'';
     if(strip.asof&&!qSt){var t=ctStamp(strip.asof);if(t)asofBits.push('Quotes as of '+t+' CT');}
     if(strip.vs_session){var wd=ctWeekday(strip.vs_session);if(wd)asofBits.push('change vs '+wd+' close');}
-    asofBits.push('Yahoo Finance, delayed, not CME settlements');
+    asofBits.push('Yahoo Finance, delayed; a close can sit a tick off the CME settle');
     sparks+='<div class="dv3-quote-asof">'+(qSt?qSt+' \u00B7 ':'')+escHtml(asofBits.join(' \u00B7 '))+'</div>';
     }
   }

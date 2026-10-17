@@ -508,7 +508,7 @@
           <tbody id="dp-fut-body"></tbody>
         </table>
       </div>
-      <p class="dp-note-src" id="dp-fut-cap">Cash-settled CME Class III futures, each at its last finished session (Yahoo Finance, delayed, not official CME settlements). Each contract settles to the Class III price USDA announces for its month. This is the market&rsquo;s price, not a forecast the site is making. <span id="dp-fut-asof"></span></p>
+      <p class="dp-note-src" id="dp-fut-cap">Cash-settled CME Class III futures, each at its last finished session (<span id="dp-fut-kind">Yahoo Finance, delayed; a close can sit a tick off the CME settle</span>). Each contract settles to the Class III price USDA announces for its month. This is the market&rsquo;s price, not a forecast the site is making. <span id="dp-fut-asof"></span></p>
     </div>
 
     <h3 class="dp-sub dp-sub-tight" id="dp-h-comp">Component prices</h3>
@@ -1330,6 +1330,15 @@
     function settledQuote(o,fetchedMs){
       if(!o||typeof o.close!=='number'||!isFinite(o.close)||o.close<=0) return null;
       var cd=o.close_date; if(!/^\d{4}-\d{2}-\d{2}$/.test(cd||'')) return null;
+      /* 2026-10-17 audit (N2): fetch_prices.py v3.7 says what each close is.
+         A settle is the CME settle; for a last trade the newest settle on file
+         is the finished session. Files without close_kind use the rule below. */
+      var num=function(x){return typeof x==='number'&&isFinite(x);};
+      if(o.close_kind==='settle') return {close:o.close,date:cd,chg:num(o.settle_net)?o.settle_net:(num(o.netChange)?o.netChange:null),kind:'settle'};
+      if(o.close_kind==='last'){
+        if(num(o.settle)&&o.settle>0&&/^\d{4}-\d{2}-\d{2}$/.test(o.settle_date||'')&&!o.roll) return {close:o.settle,date:o.settle_date,chg:num(o.settle_net)?o.settle_net:null,kind:'settle'};
+        return null;
+      }
       var ct=ctParts(fetchedMs); if(!ct) return null;
       if(cd<ct.day||(cd===ct.day&&ct.hour>=23)) return {close:o.close,date:cd,chg:(typeof o.netChange==='number'&&isFinite(o.netChange))?o.netChange:null};
       if(typeof o.netChange!=='number'||!isFinite(o.netChange)||!/^\d{4}-\d{2}-\d{2}$/.test(o.prev_date||'')||o.roll) return null;
@@ -1352,13 +1361,15 @@
         var mi=MONS.map(function(s){return s.toLowerCase();}).indexOf(m[1]); if(mi<0) return;
         var idx=(2000+ +m[2])*12+mi; if(idx<nowIdx) return;
         var s=settledQuote(q[k],f); if(!s) return;
-        rows.push({idx:idx,label:MONS[mi]+' '+(2000+ +m[2]),close:s.close,chg:s.chg,date:s.date});
+        rows.push({idx:idx,label:MONS[mi]+' '+(2000+ +m[2]),close:s.close,chg:s.chg,date:s.date,kind:s.kind||''});
       });
       rows.sort(function(a,b){return a.idx-b.idx;}); rows=rows.slice(0,6);
       // one date for the table when the rows agree; each row dated when they do not
       var dates={}; rows.forEach(function(r){dates[r.date]=1;});
       var dl=Object.keys(dates).sort(), asof='';
-      if(dl.length===1) asof='Closes from '+dayLabel(dl[0])+'.';
+      var allSettle=rows.length&&rows.every(function(r){return r.kind==='settle';});
+      txt('dp-fut-kind',allSettle?'CME settles, read from Yahoo Finance':'Yahoo Finance, delayed; a close can sit a tick off the CME settle');
+      if(dl.length===1) asof=(allSettle?'Settles from ':'Closes from ')+dayLabel(dl[0])+'.';
       else if(dl.length>1){ rows.forEach(function(r){r.label+=' ('+dayLabel(r.date)+')';}); asof='Contracts closed on different days; each row shows its own.'; }
       fut('Futures not shown: no current Class III contracts in the price file.',rows,asof);
     }
