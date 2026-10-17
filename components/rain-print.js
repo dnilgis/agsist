@@ -1728,10 +1728,11 @@
     return m ? { matrix: m, serial: serial || '' } : null;
   }
   /* The serial goes under the QR on a physical print only: Sig's print files
-     with ?maker=1&serial=N. Never on the digital file, never on the public page. */
+     with ?maker=1&serial=N. Never on the digital file, never on the public page.
+     serial=0 is "No. 0000", Sig's own test prints (Oct 17, 2026); orders start at 1. */
   var SERIAL = (function () {
     var m = /(?:^|[?&])serial=(\d{1,6})(?:&|$)/.exec(root.location.search);
-    return MAKER && m && +m[1] > 0 ? 'No. ' + String(+m[1]).padStart(4, '0') : '';
+    return MAKER && m ? 'No. ' + String(+m[1]).padStart(4, '0') : '';
   })();
 
   function cmpNote() {

@@ -78,7 +78,8 @@ test("the serial is maker-only: never in the share link, only behind ?maker=1, n
   assert.ok(!/serial/.test(RP.toParams({ ...FULL, serial: "12" })));
   assert.ok(!("serial" in RP.normalize({ ...FULL, serial: "12" })));
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /return MAKER && m && \+m\[1\] > 0 \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/);
+  // serial=0 is "No. 0000", Sig's own test prints (Oct 17, 2026); still only behind ?maker=1
+  assert.match(S, /return MAKER && m \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/);
   const draw = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
   assert.equal((draw.match(/o\.serial = SERIAL/g) || []).length, 1, "one place sets it");
   assert.ok(draw.indexOf("o.serial = SERIAL") > draw.indexOf("kind === 'digital'"), "and it is the print branch, after the digital one");
@@ -392,7 +393,7 @@ test("the page offers the two styles, the dedication and both switches, and load
   const i = (s) => html.indexOf(s);
   assert.ok(i("/components/rp-short.js") > 0 && i("/components/rain-print-art.js") > 0);
   assert.ok(i("/components/rp-short.js") < i("/components/rain-print.js?v=") && i("/components/rain-print-art.js") < i("/components/rain-print.js?v="));
-  assert.match(html, /\/components\/rain-print\.js\?v=47"/);
+  assert.match(html, /\/components\/rain-print\.js\?v=48"/);
   for (const f of ["rp-fraunces-opsz.woff2", "rp-fraunces-opsz-400i.woff2", "rp-plex-sans-var.woff2", "rp-plex-sans-400i.woff2"]) {
     assert.ok(html.includes("/fonts/" + f), "the page declares " + f);
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);

@@ -216,10 +216,16 @@
       try {
         if (!S.map) {
           S.map = L.map(el, { scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.25 });
-          var dark = document.documentElement.getAttribute('data-theme') !== 'light';
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/' + (dark ? 'dark_all' : 'light_all') + '/{z}/{x}/{y}{r}.png', {
-            maxZoom: 14, subdomains: 'abcd', attribution: '&copy; OpenStreetMap &copy; CARTO | Rain: NOAA MRMS'
-          }).addTo(S.map);
+          /* No rented tiles (scripts/basemap-checks.mjs): CARTO's basemap turned into
+             "API KEY REQUIRED" watermarks (seen here Oct 17, 2026). The state lines come
+             from this site's own outline, drawn over the rain; the dot is the spot. */
+          S.map.attributionControl.addAttribution('Rain: NOAA MRMS | State lines: Natural Earth');
+          fetch('/data/us-states.geo.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (g) {
+            if (!g || !S.map) return;
+            var line = getComputedStyle(document.body).color || '#888';
+            S.lines = L.geoJSON(g, { interactive: false, style: { color: line, weight: 1.4, opacity: 0.75, fill: false } }).addTo(S.map);
+            if (S.mark) S.mark.bringToFront();
+          }).catch(function () {});
           S.map.on('click', function (e) {
             var hh = S.data.header, v = R.lookup(hh, S.data.grids[S.win], e.latlng.lat, e.latlng.lng);
             L.popup().setLatLng(e.latlng).setContent('<b>' + inTxt(v) + '</b><br>' + esc($('rr-mapwin').textContent)).openOn(S.map);
