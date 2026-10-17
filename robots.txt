@@ -9,6 +9,9 @@ Allow: /
 # There is nothing in /data/ that isn't already painted on the pages.
 Disallow: /api/
 Disallow: /dev/
+# Property transfer files (buyer and seller names from state records) are read
+# by the field scout land card for one picked parcel; not for search indexes.
+Disallow: /data/land/
 
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml
