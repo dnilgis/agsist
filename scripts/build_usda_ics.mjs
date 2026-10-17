@@ -14,8 +14,13 @@
  * one-hour event at that Eastern time, daylight saving applied; "All Day" is
  * an all-day event.
  *
- *   node scripts/build_usda_ics.mjs          # write usda-calendar.ics
- *   node scripts/build_usda_ics.mjs --check  # exit 1 if the file is stale
+ * Two narrower files come from the same list (2026-10-17, the "Your area" box on
+ * /usda-calendar links them): usda-calendar-grain.ics (WASDE, Crop Production,
+ * Grain Stocks, Plantings and Acreage, the Outlook Forum, FSA ARC/PLC dates) and
+ * usda-calendar-livestock.ics (the livestock and dairy reports plus WASDE).
+ *
+ *   node scripts/build_usda_ics.mjs          # write all three files
+ *   node scripts/build_usda_ics.mjs --check  # exit 1 if any file is stale
  */
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -78,17 +83,24 @@ const UID_NAME = {
   "2027 ARC/PLC signup deadline": "arc-plc-2027-signup-deadline",
 };
 
-export function buildIcs({ reports, fsa, mod }) {
-  const rows = reports.filter((r) => r && r.date && r.type !== "export" && r.type !== "croprog");
-  const lastYear = Math.max(...rows.map((r) => +r.date.slice(0, 4)));
+export const SETS = {
+  grain: { types: ["wasde", "supply", "stocks", "plantings", "outlook", "fsa"], name: "USDA Grain Reports - AGSIST",
+    desc: "WASDE, Crop Production, Grain Stocks, Prospective Plantings and Acreage, the Outlook Forum and FSA ARC/PLC signup dates. No livestock, dairy, international or weekly reports. Built from the list on agsist.com/usda-calendar" },
+  livestock: { types: ["livestock", "wasde"], name: "USDA Livestock and Dairy Reports - AGSIST",
+    desc: "Cattle on Feed, Milk Production, Cold Storage and Hogs and Pigs, plus WASDE (it carries the meat and dairy outlook). Built from the list on agsist.com/usda-calendar" },
+};
+export function buildIcs({ reports, fsa, mod }, set) {
+  const S = set ? SETS[set] : null;
+  const rows = reports.filter((r) => r && r.date && r.type !== "export" && r.type !== "croprog" && (!S || S.types.includes(r.type)));
+  const lastYear = Math.max(...reports.filter((r) => r && r.date && r.type !== "export" && r.type !== "croprog").map((r) => +r.date.slice(0, 4)));
   const cutoff = `${lastYear - 1}-01-01`;
   const keep = rows.filter((r) => r.date >= cutoff)
     .sort((a, b) => a.date.localeCompare(b.date) || a.name.localeCompare(b.name));
   const dtstamp = mod.replace(/-/g, "") + "T120000Z";
   const L = [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//AGSIST//USDA Report Calendar//EN", "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH", "X-WR-CALNAME:USDA Reports - AGSIST",
-    "X-WR-CALDESC:" + text("WASDE, Crop Production, Grain Stocks, livestock and dairy (Cattle on Feed, Milk Production, Cold Storage, Hogs and Pigs) and international report dates, plus FSA ARC/PLC signup dates. Weekly Crop Progress and Export Sales are not included. Built from the list on agsist.com/usda-calendar"),
+    "METHOD:PUBLISH", "X-WR-CALNAME:" + (S ? S.name : "USDA Reports - AGSIST"),
+    "X-WR-CALDESC:" + text(S ? S.desc : "WASDE, Crop Production, Grain Stocks, livestock and dairy (Cattle on Feed, Milk Production, Cold Storage, Hogs and Pigs) and international report dates, plus FSA ARC/PLC signup dates. Weekly Crop Progress and Export Sales are not included. Built from the list on agsist.com/usda-calendar"),
     "X-PUBLISHED-TTL:PT48H", "REFRESH-INTERVAL;VALUE=DURATION:PT48H",
   ];
   const seen = new Set();
@@ -118,14 +130,19 @@ export function buildIcs({ reports, fsa, mod }) {
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
-  const ics = buildIcs(readPage(readFileSync(PAGE, "utf8")));
-  if (process.argv.includes("--check")) {
-    let cur = "";
-    try { cur = readFileSync(OUT, "utf8"); } catch (e) { /* missing counts as stale */ }
-    if (cur !== ics) { console.error("usda-calendar.ics is stale: run node scripts/build_usda_ics.mjs"); process.exit(1); }
-    console.log("usda-calendar.ics matches the list on /usda-calendar");
-  } else {
-    writeFileSync(OUT, ics);
-    console.log(`usda-calendar.ics: ${(ics.match(/BEGIN:VEVENT/g) || []).length} events`);
+  const page = readPage(readFileSync(PAGE, "utf8"));
+  let stale = 0;
+  for (const set of [null, "grain", "livestock"]) {
+    const out = set ? ROOT + "usda-calendar-" + set + ".ics" : OUT, f = out.slice(ROOT.length), ics = buildIcs(page, set);
+    if (process.argv.includes("--check")) {
+      let cur = "";
+      try { cur = readFileSync(out, "utf8"); } catch (e) { /* missing counts as stale */ }
+      if (cur !== ics) { console.error(f + " is stale: run node scripts/build_usda_ics.mjs"); stale++; }
+      else console.log(f + " matches the list on /usda-calendar");
+    } else {
+      writeFileSync(out, ics);
+      console.log(`${f}: ${(ics.match(/BEGIN:VEVENT/g) || []).length} events`);
+    }
   }
+  if (stale) process.exit(1);
 }

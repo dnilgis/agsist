@@ -278,6 +278,8 @@
   <main id="main" tabindex="-1">
     <div class="cal-main">
 
+      <aside class="ya" data-your-state="calendar" data-v="1" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
+
       <h2 class="cal-section-head" style="margin-top:1.5rem">2026 USDA Report Schedule</h2>
       <div class="cal-nav" role="group" aria-label="Filter reports">
         <button class="cal-filter active" onclick="filterReports('all',this)">All Reports</button>
@@ -470,6 +472,8 @@
     {date:'2027-03-15',name:'2027 ARC/PLC signup deadline',type:'fsa',time:'All Day',desc:'Last day to sign 2027 ARC or PLC at your FSA office.',link:'/arc-plc'},
   ];
   const FSA_SRC='https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-key-price-revenue-safety-net';
+  /* the "Your area" box (components/ys-calendar.js) reads the same list, weekly rows included */
+  window.AGSIST_REPORTS=REPORTS;
 
   /* US federal holidays 2025-2026 (observed dates). A weekly release that falls on one moves to
      the next business day, which is what USDA does (Crop Progress comes out Tuesday after a Monday

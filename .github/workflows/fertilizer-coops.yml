@@ -49,6 +49,7 @@ jobs:
           python scripts/fetch_coop_fert.py --selftest
           python scripts/build_fert_prices.py --selftest
           python scripts/bake_fert_defaults.py --selftest
+          python scripts/build_coop_places.py --selftest
       - name: Fetch and write data/fertilizer-coops.json
         run: python scripts/fetch_coop_fert.py
 
@@ -80,6 +81,7 @@ jobs:
             mkdir -p data && cp -r /tmp/fcoop/data/. data/
             bash scripts/fert_after_prices.sh
             for f in $FILES $BAKED; do [ -e "$f" ] && git add "$f" || true; done
+            [ -e data/fert-coop-places.json ] && git add data/fert-coop-places.json || true   # co-op town points (scripts/build_coop_places.py)
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Fertilizer co-op posted prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

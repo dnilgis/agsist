@@ -1,0 +1,27 @@
+{
+ "note": "Built by scripts/build_coop_places.py from scripts/coop_fert_sources.json (town from the co-op's own site) and the town points in data/elevator-coverage.json (a town centroid, not the co-op's street address). Co-ops under unplaced have no town on file or no town point, so no distance is shown for them.",
+ "coops": {
+  "mccune-ks": {
+   "town": "McCune",
+   "state": "KS",
+   "lat": 37.3666,
+   "lng": -95.0174
+  },
+  "mulvane-ks": {
+   "town": "Mulvane",
+   "state": "KS",
+   "lat": 37.4764,
+   "lng": -97.232
+  },
+  "farmerscoop-columbus-ks": {
+   "town": "Columbus",
+   "state": "KS",
+   "lat": 37.1699,
+   "lng": -94.8899
+  }
+ },
+ "unplaced": [
+  "synergy-wi",
+  "tworivers-ks"
+ ]
+}

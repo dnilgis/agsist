@@ -48,3 +48,20 @@ test("town cash-bid pages carry at most one promo slot", () => {
   const py = readFileSync(ROOT + "scripts/build_cash_bid_pages.py", "utf8");
   assert.match(py, /RP_PROMO_SEASON = \(\(11, 1\), \(12, 24\)\)/);
 });
+
+test("markets and futures pages: one Rain Print gift line, after the FAQ, with its script (Oct 17)", () => {
+  // the highest-traffic pages after /cash-bids and / (data/audience.json, 28 days)
+  const pages = { "markets.html": 'class="mkt-faq"', "corn-futures-prices.html": 'class="faq-wrap"',
+    "soybean-futures-prices.html": 'class="faq-wrap"', "wheat-futures-prices.html": 'class="faq-wrap"',
+    "cattle-futures-prices.html": 'class="faq-wrap"' };
+  for (const [f, faq] of Object.entries(pages)) {
+    const h = readFileSync(ROOT + f, "utf8");
+    assert.equal(slots(h), 1, f + ": exactly one promo slot");
+    assert.match(h, /<p class="rp-promo" data-rain-print-promo hidden><\/p>/, f + ": the gift line, hidden until the script fills it");
+    const at = h.indexOf("data-rain-print-promo");
+    assert.ok(h.indexOf(faq) > 0 && at > h.indexOf(faq), f + ": after the FAQ");
+    assert.ok(at < h.indexOf("</main>"), f + ": inside main");
+    assert.match(h, /rain-print-promo\.js\?v=\d+" defer/, f);
+    assert.ok(!/data-sponsor-slot/.test(h), f + ": no sponsor slot alongside");
+  }
+});
