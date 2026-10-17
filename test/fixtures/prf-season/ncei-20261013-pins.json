@@ -1,0 +1,15 @@
+{
+ "what": "Values read from NCEI's daily initial-unsynced grid for 2026-10-13 (tarball 20261016.tar.gz, data/prf-season-raw/probe3/ on the raw branch), mm, by RMA grid id. A parser change that moves a box fails.",
+ "boxes": 13533,
+ "mm": {
+  "30025": 0.04,
+  "30152": 0.0,
+  "14538": 0.0,
+  "13937": 0.0,
+  "6196": 0.0,
+  "34941": 14.09,
+  "24678": 33.01,
+  "24679": 31.99,
+  "17774": 31.92
+ }
+}

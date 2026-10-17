@@ -832,6 +832,63 @@ def selftest():
     except LookupError:
         pass
 
+    # NCEI: the real daily file, a broken header, a box off the grid, a bad value
+    nfx = os.path.join(ROOT, "test", "fixtures", "prf-season", "ncei-20261013.usda.csv.gz")
+    day_text = gzip.open(nfx).read().decode() if os.path.exists(nfx) else None
+    ok(day_text is not None, "NCEI fixture missing")
+    if day_text:
+        f = parse_ncei(day_text, True)
+        pins = json.load(open(os.path.join(ROOT, "test", "fixtures", "prf-season", "ncei-20261013-pins.json")))
+        ok(len(f) == pins["boxes"], "NCEI box count")
+        for g, mm in pins["mm"].items():
+            ok(f.get(int(g)) == mm, f"NCEI pin grid {g}: {f.get(int(g))} vs {mm}")
+        lines = day_text.splitlines()
+        for bad, why in (("lat,lon,prcp\n" + "\n".join(lines[1:]), "header"),
+                         (lines[0] + "\n24.6,-81.875,1.0\n" + "\n".join(lines[1:]), "a point off the box centres"),
+                         (lines[0] + "\n" + lines[1].rsplit(",", 1)[0] + ",-3.0\n" + "\n".join(lines[2:]), "negative rain"),
+                         ("\n".join(lines[:500]), "a short file")):
+            try:
+                parse_ncei(bad, True)
+                ok(False, f"NCEI parser took {why}")
+            except ValueError:
+                pass
+        # month_total: month file when NCEI has one and the month is over, else the days
+        d1 = {dt.date(2026, 10, k): {1: 1.0, 2: 2.0} for k in range(1, 14)}
+        tot, how = month_total(2026, 10, dt.date(2026, 10, 13), {}, d1)
+        ok(how == "daily" and tot == {1: 13.0, 2: 26.0}, f"in-month total {tot} {how}")
+        tot, how = month_total(2026, 9, dt.date(2026, 10, 13), {"202609": ({1: 50.0}, "initial")}, d1)
+        ok(how == "initial" and tot == {1: 50.0}, "a finished month uses its month file")
+        del d1[dt.date(2026, 10, 5)]
+        ok(month_total(2026, 10, dt.date(2026, 10, 13), {}, d1)[0] is None, "a missing day gives no total")
+
+        # a whole build on the fixture: every day and every month file is the same grid
+        tgz = io.BytesIO()
+        with tarfile.open(fileobj=tgz, mode="w:gz") as tf:
+            for k in range(1, 14):
+                b = day_text.encode()
+                ti = tarfile.TarInfo(f"./202610{k:02d}.usda.csv")
+                ti.size = len(b)
+                tf.addfile(ti, io.BytesIO(b))
+        files = {NCEI + "daily/initial-unsynced/": b'<a href="20261016.tar.gz">x</a>',
+                 NCEI + "daily/initial-unsynced/20261016.tar.gz": tgz.getvalue(),
+                 NCEI + "monthly/final/202607.usda.csv": day_text.encode(),
+                 NCEI + "monthly/final/202608.usda.csv": day_text.encode(),
+                 NCEI + "monthly/initial/202609.usda.csv": day_text.encode()}
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            build(dt.date(2026, 10, 17), get=files.get, out_dir=tmp, backtest_path=None)
+            d = json.load(open(os.path.join(tmp, "TX.json")))
+            ok(d["through"] == "2026-10-13", "through the newest daily grid")
+            ok([(m["name"], m.get("how")) for m in d["iv"]] == [
+                ("Jul-Aug", [["July", "final"], ["August", "final"]]),
+                ("Aug-Sep", [["August", "final"], ["September", "initial"]]),
+                ("Sep-Oct", [["September", "initial"], ["October", "daily"]]),
+                ("Oct-Nov", [["October", "daily"]])], f"intervals {[(m['name'], m.get('how')) for m in d['iv']]}")
+            p = d["g"]["13937"]     # Anderson County TX, 0 mm on the fixture day
+            ok(p[0][0] == 0 and p[3][0] == 0, f"grid 13937 {p}")
+            any_st = json.load(open(os.path.join(tmp, "MN.json")))
+            ok(all(len(r) == 4 for r in any_st["g"].values()), "one cell per interval")
+
     # summary arithmetic
     rows = [{"g": 1, "y": 2025, "i": 0, "cpc": 90.0, "rma_avg": 100.0, "rma_idx": 0.95},
             {"g": 2, "y": 2025, "i": 0, "cpc": 110.0, "rma_avg": 100.0, "rma_idx": 1.0},
@@ -870,4 +927,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception as e:      # the job log is not always readable; an annotation is
+        import traceback
+        tb = traceback.format_exc().strip().splitlines()
+        print(f"::error::fetch_prf_season: {type(e).__name__}: {e} | " + " / ".join(x.strip() for x in tb[-6:-1]), flush=True)
+        raise
