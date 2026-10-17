@@ -17,6 +17,7 @@
 <script src="/components/sponsor-ad.js?v=2"></script>
 <link rel="stylesheet" href="/components/harvest-clock.css?v=1">
 <script src="/components/harvest-clock.js?v=1"></script>
+<script src="/components/daily-edge.js?v=1"></script>
 <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -744,6 +745,9 @@ function renderToday(data,why){
   /* Harvest price clock (components/harvest-clock.js): RMA figures only,
      inside the discovery window and while fresh; otherwise nothing. */
   var hclock=window.agsistHarvestClock?window.agsistHarvestClock.html(data.harvest_clock):'';
+  /* Only on AGSIST + Sig's note (components/daily-edge.js): counted by
+     scripts/daily_edge.py before the draft; nothing when absent. */
+  var edgeH=window.agsistDailyEdge?(window.agsistDailyEdge.html(data.edge,iso)+window.agsistDailyEdge.note(data.cca_note)):'';
 
   // v5.1: the one thresholded action holds the takeaway's slot. An issue
   // from before the cut has no action and keeps its takeaway.
@@ -1035,7 +1039,7 @@ function renderToday(data,why){
   var perm=iso?'<div class="dv3-perm"><a href="/daily/'+escHtml(iso)+'">Permalink to this briefing \u2192</a></div>':'';
 
   /* 2026-10-03: the sponsor follows the sections, away from The Action. */
-  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+hclock+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
+  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+edgeH+hclock+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
 
   // Point the permalink (and the share links) at the file that exists, once
   // the archive index says which candidate date that is.

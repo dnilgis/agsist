@@ -282,6 +282,9 @@ def cash_change(crop, index, prev, prev_generated, now):
             parts.append(f"{num(stronger)} stronger")
         btail = f"{num(changed)} changed their basis, " + " and ".join(parts)
     sentence = f"{lead}; {btail}."
+    key = (f"none of the {num(len(good))} elevators" if (down == 0 and up == 0)
+           else (f"all {num(len(good))} elevators" if max(down, up) == len(good)
+                 else f"{num(max(down, up))} of the {num(len(good))} elevators"))
     mw = "0\u00a2" if qm == 0 else f"{qc(qm)}\u00a2 {'lower' if qm < 0 else 'higher'}"
     detail = (f"{num(unch)} unchanged. Median change {mw}: {DOW[last.weekday()]}'s last posted bid against "
               f"{pday}'s, same board and delivery period.")
@@ -294,7 +297,7 @@ def cash_change(crop, index, prev, prev_generated, now):
         detail += f" {len(dropped)} board{'s' if len(dropped) != 1 else ''} left out as outliers."
     return {
         "id": fid, "crop": crop, "kind": "cash_change",
-        "sentence": sentence, "detail": detail,
+        "sentence": sentence, "key": key, "detail": detail,
         "value": qm, "unit": "cents per bushel, median change in cash bid",
         "comparison": f"last posted bid on {L} vs {P}, same board, crop and delivery period",
         "n": len(good), "down": down, "up": up, "unchanged": unch,
@@ -363,7 +366,7 @@ def basis_spread(crop, bs, now):
               f". {len(rows)} states have at least {MIN_STATE_N} elevators pricing against {cw}.")
     return {
         "id": fid, "crop": crop, "kind": "basis_spread",
-        "sentence": sentence, "detail": detail,
+        "sentence": sentence, "key": f"{hiw} {cw}", "detail": detail,
         "value": round((hi - lo) * 100, 2), "unit": "cents per bushel between the strongest and weakest state median",
         "comparison": f"state median basis against {main}, states with {MIN_STATE_N}+ elevators",
         "n": sum(r["n"] for r in rows), "states_n": len(rows),
@@ -415,7 +418,9 @@ def over_futures(crop, index, now):
     detail = f"{num(under)} under futures, {num(even)} even. Each board against the futures month it names."
     return {
         "id": fid, "crop": crop, "kind": "over_futures",
-        "sentence": sentence, "detail": detail,
+        "sentence": sentence, "key": (f"None of the {num(total)} elevators" if over == 0 else
+                                      f"{num(over)} {'was' if over == 1 else 'were'} paying over futures"),
+        "detail": detail,
         "value": over, "unit": "elevators bidding over futures",
         "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
         "n": total, "over": over, "under": under, "even": even,
@@ -474,7 +479,7 @@ def for_issue(block, now=None):
     facts = shown(block)
     if not facts:
         return None
-    keep = ("id", "kind", "crop", "sentence", "detail", "value", "unit", "n", "as_of", "source", "url", "link_text")
+    keep = ("id", "kind", "crop", "sentence", "key", "detail", "value", "unit", "n", "as_of", "source", "url", "link_text")
     return {"label": block.get("label") or "Only on AGSIST", "generated": block["generated"],
             "facts": [{k: f.get(k) for k in keep} for f in facts]}
 
@@ -483,6 +488,96 @@ def jsonld_tail(edge):
     """The first fact's sentence, for the NewsArticle description; '' without one."""
     f = shown(edge, 1)
     return f[0]["sentence"] if f else ""
+
+
+# ── Sig's own note ─────────────────────────────────────────────────────────
+CCA_NOTE_PATH = os.path.join(REPO, "data", "cca-note.json")
+CCA_NOTE_MAX = 600
+
+
+def cca_note(issue_date, path=CCA_NOTE_PATH):
+    """Sig's note for this issue, or None. data/cca-note.json is
+    {"date": "YYYY-MM-DD", "text": "..."}, filled by Sig by hand. It shows only
+    on the issue whose date matches, so a note never repeats on the next day.
+    Nothing here writes, rewords or shortens it; a note that is too long or not
+    plain text is not shown at all (the workflow log says why)."""
+    j = load_json(path)
+    if not isinstance(j, dict):
+        return None
+    text = str(j.get("text") or "").strip()
+    if not text or str(j.get("date") or "") != str(issue_date):
+        return None
+    if len(text) > CCA_NOTE_MAX or "<" in text or ">" in text:
+        print(f"  [cca-note] not shown: {len(text)} chars (max {CCA_NOTE_MAX}) or contains < or >")
+        return None
+    return {"date": str(issue_date), "text": text}
+
+
+# ── HTML (the archive page; components/daily-edge.js draws the same on /daily) ──
+def _esc(x):
+    import html
+    return html.escape(str(x if x is not None else ""), quote=True)
+
+
+def _linked(f):
+    """The sentence, escaped, with its key span linked to the page that shows it."""
+    s, k, u = str(f.get("sentence") or ""), str(f.get("key") or ""), str(f.get("url") or "")
+    if not u.startswith("/"):
+        u = ""
+    if k and u and k in s:
+        i = s.index(k)
+        return _esc(s[:i]) + f'<a href="{_esc(u)}">' + _esc(k) + "</a>" + _esc(s[i + len(k):])
+    return _esc(s)
+
+
+def render_html(edge, date_iso=""):
+    """The "Only on AGSIST" block, or '' when there is nothing to show."""
+    facts = shown(edge)
+    if not facts:
+        return ""
+    items = "".join(
+        f'<li class="dv3-edge-fact" id="edge-{_esc(f.get("id"))}">'
+        f'<p class="dv3-edge-s">{_linked(f)}</p>'
+        + (f'<p class="dv3-edge-d">{_esc(f.get("detail"))}</p>' if f.get("detail") else "")
+        + "</li>" for f in facts)
+    cite = (f' Quote it with the date and a link to agsist.com/daily/{_esc(date_iso)}.'
+            if re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(date_iso or "")) else "")
+    return ('<section class="dv3-edge" aria-labelledby="dv3-edge-h">'
+            f'<h2 class="dv3-edge-label" id="dv3-edge-h">{_esc(edge.get("label") or "Only on AGSIST")}</h2>'
+            f'<ol class="dv3-edge-list">{items}</ol>'
+            '<p class="dv3-edge-note">Counted by code from the elevator boards AGSIST reads itself, '
+            f'not by the writer of this briefing.{cite} <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a></p>'
+            '</section>')
+
+
+def render_note_html(note):
+    """Sig's own note, or '' when he did not write one for this issue."""
+    if not isinstance(note, dict) or not str(note.get("text") or "").strip():
+        return ""
+    return ('<aside class="dv3-cca" aria-label="A note from Sig">'
+            '<p class="dv3-cca-label">From Sig</p>'
+            f'<p class="dv3-cca-text">{_esc(note["text"].strip())}</p>'
+            '<p class="dv3-cca-by">Sigurd Lindquist, CCA</p></aside>')
+
+
+CSS = (".dv3-edge{margin:1.1rem 0 0;padding:.85rem 1.05rem;background:var(--surface);border:1px solid var(--border);"
+       "border-left:4px solid var(--green);border-radius:8px}"
+       ".dv3-edge-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;"
+       "text-transform:uppercase;color:var(--green);margin:0 0 .45rem}"
+       ".dv3-edge-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem}"
+       ".dv3-edge-fact{margin:0;padding:0}"
+       ".dv3-edge-s{margin:0;font-size:1rem;line-height:1.55;color:var(--text);font-weight:600}"
+       ".dv3-edge-s a{color:inherit;text-decoration:underline;text-decoration-color:var(--green);"
+       "text-decoration-thickness:2px;text-underline-offset:3px}"
+       ".dv3-edge-d{margin:.15rem 0 0;font-size:.84rem;line-height:1.5;color:var(--text-dim)}"
+       ".dv3-edge-note{margin:.6rem 0 0;font-size:.76rem;line-height:1.5;color:var(--text-muted)}"
+       ".dv3-edge-note a{color:var(--text-muted);text-decoration:underline;display:inline-block;padding:.35rem 0;margin:-.35rem 0}"
+       ".dv3-cca{margin:1rem 0 0;padding:.8rem 1.05rem;background:var(--surface2);border:1px solid var(--border);"
+       "border-left:4px solid var(--gold);border-radius:8px}"
+       ".dv3-cca-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;"
+       "text-transform:uppercase;color:var(--gold);margin:0 0 .3rem}"
+       ".dv3-cca-text{margin:0;font-size:.98rem;line-height:1.6;color:var(--text)}"
+       ".dv3-cca-by{margin:.35rem 0 0;font-size:.8rem;color:var(--text-muted)}")
 
 
 # ── files ──────────────────────────────────────────────────────────────────
@@ -664,14 +759,32 @@ def _selftest():
     ok(e and len(e["facts"]) == 2 and e["label"] == "Only on AGSIST", "for_issue")
     ok(for_issue(blk, now + timedelta(hours=37)) is None, "for_issue stale")
     ok(for_issue({"schema": SCHEMA, "generated": blk["generated"], "facts": []}, now) is None, "for_issue empty")
+    for f in blk["facts"]:
+        ok(f["key"] in f["sentence"], f"key not in sentence: {f['key']!r}")
     many = dict(blk, facts=blk["facts"] * 3)
     ok(len(shown(many)) == 3, "cap 3")
     ok(jsonld_tail(e).startswith("On Thursday, Oct 15, all 120 elevators"), "jsonld tail")
     for f in blk["facts"]:
         for k in ("sentence", "detail"):
-            ok("—" not in f[k] and "first" not in f[k].lower() and "record" not in f[k].lower(), f"words in {k}")
+            ok("\u2014" not in f[k] and "first" not in f[k].lower() and "record" not in f[k].lower(), f"words in {k}")
     ok(fnv("Abbyville Farmers Co-op Grain Co.||Abbyville|KS|corn|2026-08/2026-11") == "0dd84803", "fnv matches build_bids_prev")
     ok(qc(-4.25) == "4¼" and qc(0.5) == "½" and qc(12) == "12", "qc")
+
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        fp = os.path.join(td, "n.json")
+        for body, day, want in (({"date": "2026-10-16", "text": "Basis is the story this week."}, "2026-10-16", True),
+                                ({"date": "2026-10-15", "text": "Old note."}, "2026-10-16", False),
+                                ({"date": "2026-10-16", "text": "   "}, "2026-10-16", False),
+                                ({"date": "2026-10-16", "text": "x" * 601}, "2026-10-16", False),
+                                ({"date": "2026-10-16", "text": "<b>hi</b>"}, "2026-10-16", False)):
+            with open(fp, "w") as f:
+                json.dump(body, f)
+            got = cca_note(day, fp)
+            ok(bool(got) == want, f"cca note {body} -> {got}")
+        ok(cca_note("2026-10-16", os.path.join(td, "missing.json")) is None, "cca note missing file")
+    shipped = load_json(CCA_NOTE_PATH)
+    ok(isinstance(shipped, dict) and not str(shipped.get("text") or "").strip(), "data/cca-note.json ships empty")
 
     for b in bad:
         print("FAIL", b)

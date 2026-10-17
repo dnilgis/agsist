@@ -85,6 +85,8 @@ OPTIONAL_TOP_LEVEL = [
     "harvest_clock",       # 2026-10-09: {asof, start, end, crops, lines, note, url} from scripts/harvest_clock.py
     "corrections",         # 2026-10-16: [{date, text}] dated correction notes, added by hand (editorial-standards#corrections)
     "first_published_at",  # 2026-10-16: ISO UTC, when this date's issue first went up (generate_daily.keep_first_published)
+    "edge",                # 2026-10-17: {label, generated, facts[]} "Only on AGSIST", computed by scripts/daily_edge.py
+    "cca_note",            # 2026-10-17: {date, text} Sig's own note from data/cca-note.json, only on the date he set
 ]
 
 # Deprecated field names — if present, validation warns but does not fail.
