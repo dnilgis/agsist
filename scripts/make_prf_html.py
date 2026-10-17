@@ -147,6 +147,12 @@ HTML = f"""<!DOCTYPE html>
               <div class="prf-outlook-body" id="prf-outlook-body"></div>
             </section>
 
+            <section class="prf-now" id="prf-now" aria-labelledby="prf-now-h" hidden>
+              <h3 id="prf-now-h">This interval so far, <span data-pn-grid></span></h3>
+              <p class="pn-sub">Where the grid stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>
+              <div data-pn-body></div>
+            </section>
+
             <details class="prf-more" id="prf-more">
               <summary><span>Productivity factor</span> <span class="prf-more-v" id="prf-pf-sum"></span></summary>
               <fieldset class="prf-f"><legend class="prf-sr">Productivity factor, 60 to 150</legend>
@@ -315,6 +321,7 @@ payment              = interval protection
   <script src="/components/prf-math.js?v=2" defer></script>
   <script src="/components/prf.js?v=6" defer></script>
   <script src="/components/prf-outlook.js?v=2" defer></script>
+  <script src="/components/prf-now.js?v=1" defer></script>
   <script src="/components/prf-optimize.js?v=4" defer></script>
   <script src="/components/prf-optimize-ui.js?v=6" defer></script>
 </body>
