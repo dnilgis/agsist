@@ -543,7 +543,9 @@
         var wet = r.kind === 'wetYear', L = String(r.label || '');
         if (!fr) return L;   // English years carry no amount: the label is already right
         if (/ year since \d{4}$/.test(L)) return (wet ? 'Année la plus arrosée' : 'Année la plus sèche') + ' depuis ' + sy;
-        if (/on record here/.test(L)) return (wet ? 'Année la plus arrosée' : 'Année la plus sèche') + ' jamais mesurée ici, depuis ' + sy;
+        var span = / year from (\d{4}) to (\d{4})$/.exec(L);
+        if (span) return (wet ? 'Année la plus arrosée' : 'Année la plus sèche') + ' de ' + span[1] + ' à ' + span[2];
+        if (/on record here|station\u2019s record/.test(L)) return (wet ? 'Année la plus arrosée' : 'Année la plus sèche') + ' jamais mesurée ici, depuis ' + sy;
         return (wet ? 'Plus arrosée' : 'Plus sèche') + ' que toutes les années depuis ' + sy;
       }
       case 'wetMonth': case 'dryMonth': case 'warmMonth': case 'coldMonth': {
