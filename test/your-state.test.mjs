@@ -178,8 +178,11 @@ const auction = { barns: [
   { name: "Old Barn", town: "Old", state: "WI", lat: 45.1, lon: -91.8, sales: [sale("2026-09-20", 300, 400)] },
   { name: "Far Barn", town: "Far", state: "SD", lat: 43.5, lon: -96.7, sales: [sale("2026-10-12", 340, null)] },
 ] };
+/* fetch_prices v3.7 at 1:46 p.m. CT Oct 16: close 343.975 is a last trade; the
+   newest settle on file is Oct 15's 343.375 (+2.425 on Oct 14's 340.95). */
 const prices = { quotes: { "feeders-nearby": { ticker: "GFV26.CME", contract: "Oct '26", close: 343.97501, close_date: "2026-10-16",
-  settles: { "2026-10-14": 340.95001220703125, "2026-10-15": 343.375, "2026-10-16": 343.9750061035156 } } } };
+  close_kind: "last", close_time: "2026-10-16T18:05:00Z", settle: 343.375, settle_date: "2026-10-15", settle_net: 2.42499,
+  settles_v: 2, settles: { "2026-10-14": 340.95001220703125, "2026-10-15": 343.375 } } } };
 
 test("cattle: nearest barns' latest sale, and 8-weights against the feeder settle of that same day", () => {
   // 0.4 degrees of latitude = 27.6 miles; the same function as /cattle-auction-prices
@@ -191,7 +194,23 @@ test("cattle: nearest barns' latest sale, and 8-weights against the feeder settl
   assert.match(t, /Near, WI , 28 mi, sale Oct 14: 5-weight steers \$405\.00\/cwt \(7 head\), 8-weight steers \$322\.34\/cwt \(23 head\), Medium and Large 1-2\. 8-weights were \$18\.61 under Oct '26 feeder futures \(\$340\.95\) that day\./);
   assert.doesNotMatch(t, /Old, WI/, "a sale over three weeks old");
   assert.doesNotMatch(t, /Far, SD/, "over 250 miles while a closer barn has a sale");
-  assert.match(t, /Feeder futures, Oct '26, settled \$343\.98 on Oct 16\./);
+  assert.match(t, /Feeder futures, Oct '26, settled \$343\.38 on Oct 15, up \$2\.42\./);
+  assert.doesNotMatch(t, /343\.98/, "the 1:46 p.m. last trade is never called settled");
+});
+
+test("cattle: a last trade is never called settled; a v3.6 file's map is not used", () => {
+  // v3.6: no settle field, and its settles map held the afternoon trades
+  const old = { quotes: { "feeders-nearby": { ticker: "GFV26.CME", contract: "Oct '26", close: 343.97501, close_date: "2026-10-16",
+    settles: { "2026-10-14": 340.95001220703125, "2026-10-15": 343.375, "2026-10-16": 343.9750061035156 } } } };
+  const t = text(run("cattle", WI, { "cattle-auction": auction, prices: old }));
+  assert.doesNotMatch(t, /settled/, "nothing is called settled without a settle field");
+  assert.doesNotMatch(t, /under Oct|over Oct/, "no gap from a map of last trades");
+  // v3.7 after 11:30 p.m. CT: the bar is the settle
+  const done = { quotes: { "feeders-nearby": Object.assign({}, prices.quotes["feeders-nearby"],
+    { close_kind: "settle", close: 342.625, settle: 342.625, settle_date: "2026-10-16", settle_net: -0.75,
+      settles: { "2026-10-14": 340.95, "2026-10-15": 343.375, "2026-10-16": 342.625 } }) } };
+  const d = text(run("cattle", WI, { "cattle-auction": auction, prices: done }));
+  assert.match(d, /Feeder futures, Oct '26, settled \$342\.63 on Oct 16, down \$0\.75\./);
 });
 
 test("cattle: no barn close by says so and shows the closest; no same-day settle, no gap", () => {
@@ -285,7 +304,9 @@ for (const [f, mode, after] of PAGES) {
   test(f + ": one box after the main answer, with its script", () => {
     const h = readFileSync(ROOT + f, "utf8");
     assert.equal((h.match(/data-your-state=/g) || []).length, 1);
-    const at = h.indexOf('<aside class="ya" data-your-state="' + mode + '" data-v="1" hidden></aside>');
+    // data-v is the ys-<mode>.js cache version; it moves when that file changes
+    const m = new RegExp('<aside class="ya" data-your-state="' + mode + '" data-v="\\d+" hidden></aside>').exec(h);
+    const at = m ? m.index : -1;
     assert.ok(at > 0, "box");
     assert.ok(at > h.indexOf(after), "after " + after);
     assert.match(h, /<script src="\/components\/your-state\.js\?v=\d+" defer><\/script>/);

@@ -565,9 +565,24 @@ test("futures wording: a mid-session quote is never called a close (Oct 16 bug)"
   assert.match(old.text, /at 10:45 a\.m\. CT on Oct 16, mid-session, before the close/);
   const bell = L.futuresStamp(f, "2026-10-16T18:10:00Z", new Date("2026-10-16T18:12:00Z"));
   assert.equal(bell.kind, "unsettled", "1:10 p.m. CT: just after the 1:05 close");
+  // 2026-10-17: 2 p.m. CT is after the bell, but Yahoo's bar is still the last
+  // trade until late evening, so it is not called a close or a settle
   const after = L.futuresStamp(f, "2026-10-16T19:00:00Z", new Date("2026-10-16T19:05:00Z"));
-  assert.equal(after.kind, "close");
-  assert.match(after.text, /closed at <b>\$338\.52<\/b> on Oct 16 \(a Yahoo Finance close, not a CME settlement\)/);
+  assert.equal(after.kind, "unsettled");
+  assert.match(after.text, /after the 1:05 p\.m\. close; the settle is not posted yet/);
+  assert.ok(!/closed|settled/.test(after.text));
+  const night = L.futuresStamp(f, "2026-10-17T04:45:00Z", new Date("2026-10-17T04:50:00Z"));
+  assert.equal(night.kind, "close", "11:45 p.m. CT: the bar is the settle");
+  assert.match(night.text, /settled at <b>\$338\.52<\/b> on Oct 16 \(the CME settle as Yahoo Finance posts it\)/);
+  // fetch_prices v3.7 says what the price is, whatever the clock
+  const v37last = L.futuresStamp({ ...f, kind: "last", ctime: "2026-10-16T18:05:00Z" }, "2026-10-16T18:46:00Z", new Date("2026-10-16T18:50:00Z"));
+  assert.equal(v37last.kind, "unsettled");
+  assert.match(v37last.text, /were at <b>\$338\.52<\/b> at 1:05 p\.m\. CT on Oct 16, the last trade; the settle is not posted yet/);
+  const v37set = L.futuresStamp({ ...f, kind: "settle" }, "2026-10-17T15:00:00Z", new Date("2026-10-17T15:05:00Z"));
+  assert.equal(v37set.kind, "close");
+  assert.match(v37set.text, /^settled at/);
+  const ff = L.futuresFor({ quotes: { "feeders-jan27": { close: 338.6, close_date: "2026-10-16", close_kind: "last", close_time: "2026-10-16T18:05:00Z" } } }, "0801", "20270114");
+  assert.equal(ff && ff.kind, "last", "futuresFor carries the kind");
   // read at 7 a.m. CT Oct 16 with Oct 15's close: that close, dated Oct 15
   const pre = L.futuresStamp({ ...f, date: "20261015" }, "2026-10-16T12:00:00Z", new Date("2026-10-16T12:05:00Z"));
   assert.equal(pre.kind, "close");

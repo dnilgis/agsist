@@ -77,6 +77,7 @@ specific page. Each daily briefing has a permanent dated URL.
 PAGES = [
     ("What's my grain worth today?", [
         ("/cash-bids", "Cash Grain Bids", "local elevator bids and basis by ZIP"),
+        ("/cash-bid-index", "AGSIST Cash Bid Index", "monthly cash corn and soybean bids and basis by state, counted from the elevators AGSIST reads"),
         ("/cash-bids/iowa/", "Bids and Basis by State",
          "each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/"),
         ("/basis", "Basis by State and vs Normal",

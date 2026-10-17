@@ -89,17 +89,29 @@ DESC = {
     # percent, no clock time; a snippet can sit in search for a day and this
     # wording is still true when it is read.
     "corn-futures-prices.html": (
-        "Corn {mon} closed ${px}{chg} on {date}. Chicago Board of Trade (CBOT) corn "
+        "Corn {mon} settled ${px}{chg} on {date}. Chicago Board of Trade (CBOT) corn "
         "futures, refreshed every 15 min in session.",
         " December new-crop, basis, daily read."),
     "soybean-futures-prices.html": (
-        "Soybeans {mon} closed ${px}{chg} on {date}. Chicago Board of Trade (CBOT) "
+        "Soybeans {mon} settled ${px}{chg} on {date}. Chicago Board of Trade (CBOT) "
         "soybean futures, refreshed every 15 min in session.",
         " Crush spread, cash bids."),
     "wheat-futures-prices.html": (
-        "Wheat {mon} closed ${px}{chg} on {date}. Chicago SRW wheat futures, refreshed "
+        "Wheat {mon} settled ${px}{chg} on {date}. Chicago SRW wheat futures, refreshed "
         "every 15 min in session{kc}.",
         " Class spreads, cash bids by ZIP."),
+}
+
+
+# No settle in the file (a v3.6 price file, or nothing finished yet): a
+# description with no number, so a wrong one never sits in search (2026-10-17).
+DESC_PLAIN = {
+    "corn-futures-prices.html": "Chicago Board of Trade (CBOT) corn futures, refreshed every 15 min "
+                                "in session. December new-crop, basis, daily read.",
+    "soybean-futures-prices.html": "Chicago Board of Trade (CBOT) soybean futures, refreshed every 15 "
+                                   "min in session. Crush spread, cash bids.",
+    "wheat-futures-prices.html": "Chicago SRW wheat futures, refreshed every 15 min in session. "
+                                 "Class spreads, cash bids by ZIP.",
 }
 
 
@@ -219,6 +231,12 @@ CLOSE_CT = {"grain": (13, 20), "cattle": (13, 5)}
 # "closed $223.95". A cattle bar counts as finished only from 11 p.m. CT on its
 # own date (a fetch before that reads the previous close).
 SETTLE_CT = {"cattle": 23}
+# 2026-10-17: grains the same. Yahoo's bar holds the last trade until late
+# evening: Nov '26 soybeans read 1260.50 at 13:46 CT Oct 16 and were baked as
+# "closed $12.60 1/2 (-3 3/4c)"; CBOT settled them at 1261.25, -1.75. This
+# only matters for a price file written before fetch_prices v3.7, which marks
+# each quote's close_kind itself; quote_state reads that first.
+SETTLE_CT["grain"] = 23
 
 
 def _grain_overnight(fc, cdd, market):
@@ -250,10 +268,27 @@ def quote_state(q, fetched, market="grain"):
         cdd = datetime.strptime(cd, "%Y-%m-%d").date() if cd else None
     except Exception:
         cdd = None
-    if (q or {}).get("settled") and cdd:
-        # fetch_prices.split_settle already moved the evening trade to `last`;
-        # close is that session's finished close (2026-10-15).
+    kind = (q or {}).get("close_kind")
+    if kind == "settle" and cdd:
+        # fetch_prices v3.7: the close is the exchange settle for close_date.
         return False, md(cdd)
+    if kind == "last":
+        # A trade, current as of close_time (the fetch in session, the bell
+        # after it). Never called a close (2026-10-17).
+        try:
+            tt = datetime.strptime(q.get("close_time") or fetched,
+                                   "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        except Exception:
+            return True, md(cdd) if cdd else ""
+        if CT is None:
+            return True, md(cdd) if cdd else ""
+        tc = tt.astimezone(CT)
+        h12 = tc.hour % 12 or 12
+        return True, f"{md(tc)}, {h12}:{tc.minute:02d} {'a.m.' if tc.hour < 12 else 'p.m.'} CT"
+    if (q or {}).get("settled") and cdd:
+        # A v3.6 file: its "settled" close was the afternoon's last trade
+        # recorded before the reopen, not the settle. Nothing safe to call it.
+        return None, md(cdd)
     if fu is None or cdd is None or CT is None:
         lab = md(cdd) if cdd else (md(fu) if fu else "")
         return None, lab
@@ -291,6 +326,28 @@ def settled_close(q, fetched, market="grain"):
     description as "$12.88¼ (+0.35%)" and stood overnight, because the
     post-close run's push was rejected. Beans finished the day lower."""
     if not q:
+        return None
+    if q.get("close_kind") is not None:
+        # fetch_prices v3.7 names the newest exchange settle itself.
+        px, d, net = q.get("settle"), q.get("settle_date"), q.get("settle_net")
+        if not isinstance(px, (int, float)) or not d:
+            return None
+        pct = None
+        if isinstance(net, (int, float)) and (px - net):
+            pct = round(net / (px - net) * 100, 4)
+        else:
+            net = None
+        if q.get("roll") and d == q.get("close_date"):
+            net = pct = None
+        try:
+            dd = datetime.strptime(d, "%Y-%m-%d").date()
+        except Exception:
+            return None
+        return {"px": float(px), "date": d, "label": dd.strftime("%b ") + str(dd.day),
+                "net": net, "pct": pct}
+    if q.get("prev_source") == "recorded settle":
+        # v3.6 put the afternoon's last trade in place of the settle as the
+        # previous close (Oct 15 soybeans: 1264.25 against a 1263.00 settle).
         return None
     st, _ = quote_state(q, fetched, market)
     close = q.get("close")
@@ -339,7 +396,7 @@ def state_words(in_session):
     if in_session is True:
         return "last traded", "Last trade"
     if in_session is False:
-        return "closed", "Last close"
+        return "settled", "Settle"
     return "last quoted", "Last quote"
 
 
@@ -347,10 +404,12 @@ def px_table(rows, flabel, in_session=False):
     """Small crawler-visible last-close table. rows: [(label, quote)] with
     grain quotes in cents; quotes may be None (row skipped)."""
     noun = state_words(in_session)[1]
+    src = ("CBOT settles as Yahoo Finance posts them" if in_session is False
+           else "Yahoo Finance, delayed (not CME settlements)")
     out = ['<table class="seed-tbl"><caption>' + noun + ' &middot; as of ' + flabel +
-           ' &middot; Yahoo Finance, delayed (not CME settlements) &middot; quotes above refresh every 15 minutes in session</caption>',
+           ' &middot; ' + src + ' &middot; quotes above refresh every 15 minutes in session</caption>',
            '<thead><tr><th scope="col">Contract</th><th scope="col" class="num">' +
-           ("Last" if in_session else "Close") + '</th>'
+           ("Settle" if in_session is False else "Last") + '</th>'
            '<th scope="col" class="num">Change</th><th scope="col" class="num">52-wk range</th>'
            '</tr></thead><tbody>']
     n = 0
@@ -2583,7 +2642,7 @@ def seed_futures_pages(prices, today):
             has_tbl = bool(tbl) and "<!--SEED:pxtable-->" in t
             # the table caption names the source and delay; when it is on the
             # page the sentence above it does not repeat them (2026-10-11)
-            note = (front_label + " " + verb + " near <strong>$" + f_usd +
+            note = (front_label + " " + verb + (" at" if live is False else " near") + " <strong>$" + f_usd +
                     "</strong>" + stale +
                     ((" &middot; " + bench_label + " near $" + b_usd) if b_usd else "") +
                     " &middot; as of " + flabel +
@@ -2599,7 +2658,9 @@ def seed_futures_pages(prices, today):
             tmpl = DESC.get(page)
             sc = settled_close(fq, fetched, "grain")
             if tmpl and sc is None:
-                print(f"  {page}: no finished session in the file — description left as-is")
+                print(f"  {page}: no settle in the file — description without a price")
+                t, c5 = stamp_meta_description(t, DESC_PLAIN[page])
+                changed = changed or c5
             if tmpl and sc:
                 kc = settled_close(wheat_class_quote(prices, "kcwheat")[0], fetched, "grain")
                 kc_usd = grain_dollars({"close": kc["px"]}) if kc and kc["date"] == sc["date"] else None
@@ -2643,7 +2704,7 @@ def seed_futures_pages(prices, today):
             live, flabel = quote_state(quotes.get("cattle"), fetched, "cattle")
             flabel = flabel or today
             t, c1 = seed_between(t, "px", "$" + lc)
-            note = ("Live cattle " + state_words(live)[0] + " near <strong>$" + lc + "</strong>" + stale
+            note = ("Live cattle " + state_words(live)[0] + (" at" if live is False else " near") + " <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel
                     + " &middot; Yahoo Finance, delayed &middot; refreshed every 15 minutes during trading hours. Reload for the latest.")

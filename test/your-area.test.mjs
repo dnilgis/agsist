@@ -27,9 +27,13 @@ const basis = {
       soybeans: { contract: "ZSX26", label: "Nov '26", n: 1 } } },
   },
 };
+/* fetch_prices v3.7 after the Friday night run: the bars are the CBOT settles
+   (Dec corn $4.74 1/4, -3 3/4; Nov beans $12.61 1/4, -1 3/4 on Oct 16). */
 const prices = { quotes: {
-  "corn-dec": { ticker: "ZCZ26.CBT", close: 474.25, close_date: "2026-10-16" },
-  "beans-nov": { ticker: "ZSX26.CBT", close: 1260.5, close_date: "2026-10-16" } } };
+  "corn-dec": { ticker: "ZCZ26.CBT", close: 474.25, close_date: "2026-10-16", close_kind: "settle",
+    settle: 474.25, settle_date: "2026-10-16", settle_net: -3.75 },
+  "beans-nov": { ticker: "ZSX26.CBT", close: 1261.25, close_date: "2026-10-16", close_kind: "settle",
+    settle: 1261.25, settle_date: "2026-10-16", settle_net: -1.75 } } };
 const progress = { in_season: true, states: { WI: {
   corn_harvested: { date: "2026-10-11", pct: 16, avg5: 18 },
   soybeans_harvested: { date: "2026-10-11", pct: 54, avg5: 47 } } } };
@@ -66,14 +70,29 @@ test("with a saved location: state basis, implied cash, harvest pace, all dated"
   const t = text(h);
   assert.match(t, /Your area: Wisconsin/);
   assert.match(t, /Corn basis 56½¢ under Dec '26, unchanged on the week \(46 elevators\)\./);
-  assert.match(t, /Dec '26 closed \$4\.74¼ Oct 16: about \$4\.18 at that basis\./);
-  assert.match(t, /Soybeans basis 82¢ under Nov '26, 2¢ weaker on the week \(32 elevators\)\..*about \$11\.79/);
+  assert.match(t, /Dec '26 settled \$4\.74¼ Oct 16: about \$4\.18 at that basis\./);
+  assert.match(t, /Soybeans basis 82¢ under Nov '26, 2¢ weaker on the week \(32 elevators\)\..*Nov '26 settled \$12\.61¼ Oct 16: about \$11\.79/);
+  assert.doesNotMatch(t, /closed/);
   assert.match(t, /Harvest in Wisconsin: corn 16% \(5-yr avg 18%\), soybeans 54% \(5-yr avg 47%\)\./);
   assert.match(t, /bids as of Oct 16, week vs Oct 9/);
   assert.match(t, /USDA NASS crop progress, week ending Oct 11/);
   assert.match(h, /href="\/cash-bids\?zip=54728"/);
   assert.match(h, /href="\/cash-bids\/wisconsin\/#basis"/);
   assert.match(t, /Basis moves on its own and is not in the futures price/);
+});
+
+test("a last trade is never called settled or closed", () => {
+  // 1:46 p.m. CT Oct 16: the bar is the last trade; the newest settle is Oct 15's
+  const live = { quotes: { "beans-nov": { ticker: "ZSX26.CBT", close: 1260.5, close_date: "2026-10-16",
+    close_kind: "last", close_time: "2026-10-16T18:20:00Z", settle: 1263, settle_date: "2026-10-15", settle_net: -14.25 } } };
+  const t = text(Y.build({ loc: WI, mode: "daily", basis, prices: live, progress, now: NOW }));
+  assert.match(t, /Nov '26 settled \$12\.63 Oct 15: about \$11\.81 at that basis\./);
+  assert.doesNotMatch(t, /12\.60½/);
+  // a file with no settle field (fetch_prices before v3.7) says last traded
+  const old = { quotes: { "beans-nov": { ticker: "ZSX26.CBT", close: 1260.5, close_date: "2026-10-16" } } };
+  const o = text(Y.build({ loc: WI, mode: "daily", basis, prices: old, progress, now: NOW }));
+  assert.match(o, /Nov '26 last traded \$12\.60½ Oct 16/);
+  assert.doesNotMatch(o, /closed|settled \$12\.60/);
 });
 
 test("a crop under the state's minimum count stays missing", () => {

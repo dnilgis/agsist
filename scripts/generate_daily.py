@@ -675,8 +675,19 @@ def load_prices():
         # along and was being thrown away one line above.
         locked_changes[key] = {"prev": round(opn / 100, 4) if is_grain else round(opn, 4),
                                "pct": round(pct, 4)}
+        # fetch_prices v3.7: is this price the exchange settle or a trade?
+        # (2026-10-17: "Soybeans closed $12.60 1/2" was a 1:46 p.m. trade.)
+        if q.get("close_kind"):
+            locked_changes[key]["kind"] = q["close_kind"]
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
-        line = f"  {label}: {price_str} ({arrow} {chg_str})"
+        # Name the month for the products whose key is the front month
+        # (fetch_prices.pin_continuous), so "Lean Hogs" is never a dead month.
+        mon = q.get("contract") if key in ("cattle", "feeders", "hogs", "milk") else None
+        line = f"  {label}{(' ' + mon) if mon else ''}: {price_str} ({arrow} {chg_str})"
+        if q.get("close_kind") == "last":
+            line += " [last trade, not the settle]"
+        elif q.get("close_kind") == "settle":
+            line += " [settle]"
         wk52_hi = q.get("wk52_hi"); wk52_lo = q.get("wk52_lo")
         if wk52_hi and wk52_lo:
             hi, lo = float(wk52_hi), float(wk52_lo)
@@ -2133,9 +2144,24 @@ def quote_timing(fetched_iso, market_status=None, locked_changes=None):
         qs, ps = ct.date(), None
     out["quote_session"], out["prev_session"] = qs, ps
     out["as_of"] = ct.strftime("%-I:%M %p").replace("AM", "a.m.").replace("PM", "p.m.") + " CT"
+    # fetch_prices v3.7 says per quote whether the price is the settle. A
+    # last trade after the bell is not a settle either (2026-10-17: Yahoo's
+    # bar holds the last trade until late evening). Any grain benchmark still
+    # on a last trade makes the whole board unsettled, weekend or not.
+    hm = (ct.hour, ct.minute)
+    kinds = {k: (v or {}).get("kind") for k, v in (locked_changes or {}).items()
+             if k in ("corn", "corn-dec", "beans", "beans-nov", "wheat")}
+    if any(kd == "last" for kd in kinds.values()):
+        out["settled"] = False
+        if qs is not None and ct.date() == qs and hm < CBOT_GRAIN_CLOSE_CT:
+            out["phase"] = "overnight" if hm < DAY_OPEN_CT else "intraday"
+        else:
+            out["phase"] = "last trade"
+        return out
+    if kinds and all(kd == "settle" for kd in kinds.values()):
+        return out
     if market_status and market_status.get("is_closed"):
         return out
-    hm = (ct.hour, ct.minute)
     if qs is not None and ct.date() == qs and hm < CBOT_GRAIN_CLOSE_CT:
         out["settled"] = False
         out["phase"] = "overnight" if hm < DAY_OPEN_CT else "intraday"
@@ -2152,8 +2178,10 @@ def price_timing_block(timing):
         v = timing["prev_settles"].get(k)
         if v is None: continue
         lines.append(f"  {label}: " + (_frac_price(v) if k in GRAIN_KEYS else f"{v:,.2f}"))
+    session = ("The exchange settle for today is not posted yet. "
+               if timing.get("phase") == "last trade" else "The day session has not closed. ")
     return (f"PRICE TIMING (HARD RULE): the prices above are {timing['phase'].upper()} quotes, "
-            f"as of {timing['as_of']}, NOT settlements. The day session has not closed. "
+            f"as of {timing['as_of']}, NOT settlements. {session}"
             f"NEVER write that any of them 'closed', 'settled' or 'finished' at a price; say "
             f"'overnight', 'trading at', 'sits at' or 'as of {timing['as_of']}'. The change "
             f"column is measured against the previous settle. The PREVIOUS SETTLES ({psl}), "
@@ -3715,6 +3743,8 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
                      or render_takeaway_block_html(briefing.get("the_takeaway", "")))
     cashbids_html = render_cashbids_footer_html(is_weekend_brief)
     hclock_html = render_harvest_clock_html(briefing.get("harvest_clock"))
+    import daily_edge as _de
+    edge_html = _de.render_html(briefing.get("edge"), date_iso) + _de.render_note_html(briefing.get("cca_note"))
     # v5.5: no "Yesterday's call" block on new issues (the model wrote its
     # note, and it once printed the wrong direction). An archived issue
     # re-rendered from its JSON keeps the block it was published with.
@@ -3805,7 +3835,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
 <link rel="manifest" href="/manifest.json">
 <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){{var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){{w.gtag=function(){{w.dataLayer.push(arguments);}};}}try{{off=w.localStorage.getItem('agsist-ga-off')==='1';}}catch(e){{}}if(n.globalPrivacyControl===true){{off=true;}}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){{return;}}i=function(){{s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);}};if(d.prerendering){{d.addEventListener('prerenderingchange',i,{{once:true}});}}else{{i();}}}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-{daily_page_jsonld(briefing, date_iso, page_desc_raw, og_image_url)}
+{daily_page_jsonld(briefing, date_iso, (page_desc_raw + " " + _de.jsonld_tail(briefing.get("edge"))).strip(), og_image_url)}
 <style>
 button,a,[role="button"]{{touch-action:manipulation;}}
 html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
@@ -3872,6 +3902,7 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 .dv3-takeaway-text{{font-family:'Oswald',sans-serif;font-size:1.1rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}}
 .dv3-action-src{{margin:.5rem 0 0;font-size:.8rem;line-height:1.5;color:var(--text-muted)}}
 .dv3-action-src a{{color:var(--gold)}}
+{_de.CSS}
 .dv3-hclock{{margin:1rem 0 0;padding:.75rem 1rem;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px}}
 .dv3-hclock-label{{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:0 0 .35rem}}
 .dv3-hclock-line{{margin:.15rem 0;font-size:.94rem;line-height:1.5;color:var(--text)}}
@@ -4000,11 +4031,13 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
       {surprise_html}
       {takeaway_html}
       <p class="dv3-lead">{lead}</p>
+      {edge_html}
       {hclock_html}
     </header>
     {sparks_html}
     <aside class="ya" data-your-area="daily" hidden></aside>
     {topbar_html}
+    <aside class="dl" data-daily-local data-after="aside.ya[data-your-area]" hidden></aside>
     {yc_html}
     <div class="dv3-sections">{sections_html}</div>
     {sponsor_html}
@@ -4028,7 +4061,8 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
 </main>
 <div id="site-footer"></div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/your-area.js?v=1" defer></script>
+<script src="/components/your-area.js?v=2" defer></script>
+<script src="/components/daily-local.js?v=1" defer></script>
 <script>
 (function(){{
   var permalink='{js_permalink}';
@@ -5288,6 +5322,25 @@ def main():
             print("  Harvest clock: none (out of window, stale or missing RMA data)")
     except Exception as _e:
         print(f"  [warn] harvest clock skipped ({type(_e).__name__}: {_e})")
+    # 2026-10-17: "Only on AGSIST". Facts counted by code from the elevator
+    # boards AGSIST reads (scripts/daily_edge.py, run by daily.yml right before
+    # this script writes data/daily-edge.json). The model never sees or writes
+    # them. A file older than 36 hours, or one with no fact, adds nothing.
+    try:
+        import daily_edge as _de
+        _edge = _de.for_issue(_de.load_json(_de.OUT_PATH))
+        if _edge:
+            briefing["edge"] = _edge
+            for _f in _edge["facts"]:
+                print("  Only on AGSIST: " + _f["sentence"])
+        else:
+            print("  Only on AGSIST: none (data/daily-edge.json missing, stale or empty)")
+        _note = _de.cca_note(datetime.now().date().isoformat())
+        if _note:
+            briefing["cca_note"] = _note
+            print("  From Sig: note in place")
+    except Exception as _e:
+        print(f"  [warn] Only on AGSIST skipped ({type(_e).__name__}: {_e})")
     chart_series, chart_dates = build_chart_series(
         locked_prices, briefing.get("market_closed") is True)
     if chart_series:

@@ -622,7 +622,7 @@ def seo_cattle(c):
     when = f" {lab}" if lab else ""
     return (f"CME Feeder Cattle Futures ${feed['px']:,.2f} & Live Cattle "
             f"${live['px']:,.2f}{SUFFIX}",
-            f"Feeder cattle closed ${feed['px']:,.2f}, live cattle{when} "
+            f"Feeder cattle settled ${feed['px']:,.2f}, live cattle{when} "
             f"${live['px']:,.2f} on {feed['label']}. CME futures every 15 min, "
             "with 5-year ranges, the feeder-to-live ratio and cost of gain.")
 
@@ -662,6 +662,21 @@ def _label(prices, key):
     return n.get("label")
 
 
+def _known_trade(q):
+    """True when the quote is known to be a trade with no settle to bake: a
+    fetch_prices v3.7 quote with no settle field, or a v3.6 quote whose
+    previous close was the afternoon's last trade. The page then gets a title
+    with no number rather than keeping one that a last trade wrote
+    (2026-10-17: "closed $12.60 1/2" against a $12.61 1/4 settle)."""
+    q = q or {}
+    return q.get("close_kind") is not None or q.get("prev_source") == "recorded settle"
+
+
+MARKETS_PLAIN = ("Ag Markets Today: Grain and Livestock Futures" + SUFFIX,
+                 "Corn, soybean, wheat, cattle and crude futures on one board, refreshed every "
+                 "15 min in session, with cash bids and USDA dates. Free.")
+
+
 def make_futures(page):
     exch, crop, key, extra = FUTURES[page]
 
@@ -673,6 +688,9 @@ def make_futures(page):
         sc = settled_close(_quote(p, key), p.get("fetched", ""),
                            "cattle" if key == "cattle" else "grain")
         lab = _label(p, key)
+        if sc is None and _known_trade(_quote(p, key)):
+            return (f"{exch} {crop} Futures Price Today"
+                    + (f", {extra}" if extra else "") + SUFFIX, None)
         if sc is None or not lab:
             return None
         px = sc["px"]
@@ -723,7 +741,7 @@ def seo_markets(c):
     fetched = p.get("fetched", "")
     corn = settled_close(_quote(p, "corn"), fetched, "grain")
     if corn is None:
-        return None
+        return MARKETS_PLAIN if _known_trade(_quote(p, "corn")) else None
     cd = _d(corn["date"])
     if _too_old(cd, c["today"], 4) or _too_old(_d(fetched), c["today"], 4):
         return None
@@ -749,14 +767,14 @@ def seo_markets(c):
             break
     if not title:
         return None
-    head = (f"Closes {mdY(cd)}: " +
+    head = (f"Settles {mdY(cd)}: " +
             ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
                       for i, (_, nm, px, ct) in enumerate(picks)) + ".")
     tail = " Futures every 15 min, free."
     desc = head + tail if len(head + tail) <= DESC_MAX else head
     while len(desc) > DESC_MAX and len(picks) > 1:   # shed the least-searched quote
         picks = picks[:-1]
-        desc = (f"Closes {mdY(cd)}: " +
+        desc = (f"Settles {mdY(cd)}: " +
                 ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
                           for i, (_, nm, px, ct) in enumerate(picks)) + ".")
     return title, desc
@@ -1492,8 +1510,10 @@ def selftest():
        PAGES[CATTLE_PAGE][0](ctx)[0])
     ck("cattle is skipped if only one of the two prices is there",
        PAGES[CATTLE_PAGE][0](dict(ctx, prices={"quotes": {"cattle": {"close": 223.75}}})) is None)
+    # Fetched after 11:30 p.m. CT, when the bar is the settle (2026-10-17: a
+    # 3:05 p.m. CT bar is the last trade, not a close, and is not baked).
     trap = dict(ctx, prices={
-        "fetched": "2026-08-14T20:05:00Z",
+        "fetched": "2026-08-15T04:45:00Z",
         "quotes": {"beans": {"close": 1176.25, "close_date": "2026-08-14"},         # continuous, Sep
                    "beans-nearby": {"close": 1167.0, "close_date": "2026-08-14"}},  # the dated front, Aug
         "nearby": {"beans": {"label": "Aug '26"}}})
@@ -1544,10 +1564,11 @@ def selftest():
     ck("after the bell but before the settle is posted, the previous close is baked",
        "341.27" not in t_pm + d_pm and "$340.02" in d_pm and "on Oct 5." in d_pm, d_pm)
     t_cl, d_cl = _cat("2026-10-07T04:35:00Z", "2026-10-06")
-    ck("a cattle quote fetched after 11 p.m. CT says closed, with its day",
-       "Feeder cattle closed $341.27" in d_cl and "on Oct 6." in d_cl, d_cl)
+    ck("a cattle quote fetched after 11 p.m. CT says settled, with its day",
+       "Feeder cattle settled $341.27" in d_cl and "on Oct 6." in d_cl, d_cl)
     d_wk = _cat("2026-10-10T13:35:00Z", "2026-10-09")[1]
-    ck("a Saturday run on Friday's quote says closed", "closed" in d_wk and "Oct 9" in d_wk, d_wk)
+    ck("a Saturday run on Friday's quote says settled", "settled" in d_wk and "Oct 9" in d_wk, d_wk)
+    ck("the cattle description never says closed", "closed" not in d_cl + d_wk, d_cl + d_wk)
 
     print("\nfutures titles and the board carry finished sessions only")
     from seed_static import settled_close
@@ -1570,10 +1591,49 @@ def selftest():
     ck("a Sunday-evening overnight is not Friday's close",
        settled_close(dict(corn_night, close_date="2026-10-09", prev_date="2026-10-08"),
                      "2026-10-12T00:30:00Z", "grain") is None)
+    # 2026-10-17: 3:35 p.m. CT is after the bell but before Yahoo swaps the
+    # last trade for the settle. Dec corn's 481.00 that afternoon was a trade;
+    # the Oct 14 settle was 480.75. The bake steps back to the Oct 13 settle.
     sc = settled_close(dict(corn_night, close=481.0, netChange=-1.75),
                        "2026-10-14T20:35:00Z", "grain")
-    ck("after the close and before the overnight, the close is the day's",
-       sc and sc["px"] == 481.0 and sc["date"] == "2026-10-14" and sc["net"] == -1.75, sc)
+    ck("after the bell, before the settle is posted, the last trade is not baked",
+       sc and sc["px"] == 482.75 and sc["date"] == "2026-10-13" and sc["net"] is None, sc)
+    sc = settled_close(dict(corn_night, close=474.25, netChange=-3.75, close_date="2026-10-16",
+                            prev_date="2026-10-15"), "2026-10-17T05:00:00Z", "grain")
+    ck("Friday's bar read after 11 p.m. CT (no evening session) is the settle",
+       sc and sc["px"] == 474.25 and sc["date"] == "2026-10-16" and sc["net"] == -3.75, sc)
+    # fetch_prices v3.7 files say what the close is; the bake reads the settle
+    # fields and nothing else. Oct 16 2026, 1:46 p.m. CT: Nov beans last trade
+    # 1260.50, the Oct 15 settle 1263.00 (-14.25 on Oct 14's 1277.25).
+    v37 = {"close": 1260.5, "open": 1263.0, "netChange": -2.5, "close_date": "2026-10-16",
+           "prev_date": "2026-10-15", "close_kind": "last", "close_time": "2026-10-16T18:20:00Z",
+           "prev_kind": "settle", "settle": 1263.0, "settle_date": "2026-10-15", "settle_net": -14.25}
+    sc = settled_close(v37, "2026-10-16T18:46:22Z", "grain")
+    ck("v3.7 last trade: the bake carries the Oct 15 settle with its own change",
+       sc and sc["px"] == 1263.0 and sc["date"] == "2026-10-15" and sc["net"] == -14.25, sc)
+    v37s = dict(v37, close=1261.25, netChange=-1.75, close_kind="settle", settle=1261.25,
+                settle_date="2026-10-16", settle_net=-1.75)
+    v37s.pop("close_time")
+    sc = settled_close(v37s, "2026-10-17T05:00:00Z", "grain")
+    ck("v3.7 settle: settled $12.61 1/4, -1 3/4 on Oct 16 (the CBOT settle)",
+       sc and sc["px"] == 1261.25 and sc["date"] == "2026-10-16" and sc["net"] == -1.75, sc)
+    ck("v3.7 with no settle field bakes nothing",
+       settled_close(dict(v37, settle=None), "2026-10-16T18:46:22Z", "grain") is None)
+    t_nt = PAGES["soybean-futures-prices.html"][0](dict(ctx, prices={
+        "fetched": "2026-10-16T18:46:22Z", "nearby": {"beans": {"label": "Nov '26"}},
+        "quotes": {"beans-nearby": {"close": 1260.5, "netChange": -3.75, "close_date": "2026-10-16",
+                                    "prev_date": "2026-10-15", "prev_source": "recorded settle"}}}))
+    ck("a v3.6 file with no settle titles the page with no number",
+       t_nt == ("CBOT Soybean Futures Price Today | AGSIST", None), t_nt)
+    mk_nt = seo_markets(dict(ctx, today=date(2026, 10, 16), prices={
+        "fetched": "2026-10-16T18:46:22Z",
+        "quotes": {"corn": {"close": 474.25, "close_kind": "last", "close_date": "2026-10-16"}}}))
+    ck("a board with no settle on file: markets title and description carry no number",
+       mk_nt == MARKETS_PLAIN and not re.search(r"\d", mk_nt[0] + mk_nt[1].replace("15 min", "")), mk_nt)
+    ck("a v3.6 previous close taken from the afternoon trade is never baked",
+       settled_close({"close": 1260.5, "netChange": -3.75, "close_date": "2026-10-16",
+                      "prev_date": "2026-10-15", "prev_source": "recorded settle"},
+                     "2026-10-16T18:46:22Z", "grain") is None)
     ck("no timing in the file means nothing is baked",
        settled_close({"close": 481.0}, "", "grain") is None)
     # Oct 15 03:16 UTC (10:16 p.m. CT Oct 14): Yahoo still carried the last
@@ -1585,7 +1645,7 @@ def selftest():
     ck("an evening cattle run does not call the last trade the close",
        sc and sc["px"] == 224.675 and sc["date"] == "2026-10-13" and sc["net"] is None, sc)
     sc = settled_close(dict(lc_eve, close=223.9), "2026-10-15T05:31:30Z", "cattle")
-    ck("after 11 p.m. CT the cattle bar is the day's settle",
+    ck("after 11 p.m. CT the cattle bar is the day's settle (legacy file)",
        sc and sc["px"] == 223.9 and sc["date"] == "2026-10-14", sc)
     mk = seo_markets(dict(ctx, today=date(2026, 10, 14), prices={
         "fetched": "2026-10-14T13:31:00Z",

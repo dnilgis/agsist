@@ -1,0 +1,31 @@
+name: probe-settles
+
+# Diagnostic (2026-10-17). Asks CME's daily settlements endpoints from the
+# runner and prints what came back, as annotations. Reads only. Writes
+# nothing, commits nothing. See scripts/probe_settles.py.
+on:
+  workflow_dispatch:
+    inputs:
+      trade_date:
+        description: 'Trade date MM/DD/YYYY (blank: last weekday)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe CME settlements
+        env:
+          TRADE_DATE: ${{ inputs.trade_date }}
+        run: python scripts/probe_settles.py

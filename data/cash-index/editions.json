@@ -1,0 +1,680 @@
+{
+ "schema": "agsist-cash-index/1",
+ "url": "https://agsist.com/cash-bid-index",
+ "note": "One entry per month, built by scripts/cash_bid_index.py from the elevator boards AGSIST reads.",
+ "editions": [
+  {
+   "month": "2026-10",
+   "label": "October 1 to 15, 2026, partial month",
+   "partial": true,
+   "first_day": "2026-10-01",
+   "last_day": "2026-10-15",
+   "trading_days": 11,
+   "trading_days_in_month": 22,
+   "left_out": {
+    "implied": 63,
+    "band": 0
+   },
+   "other_rows": 13619,
+   "crops": {
+    "corn": {
+     "overall": {
+      "n": 1651,
+      "companies": 305,
+      "avg_cash": 4.5137,
+      "median_cash": 4.4991,
+      "avg_basis_cents": -40.77,
+      "basis_n": 1615,
+      "basis_outliers": 36,
+      "raised": 17,
+      "cut": 1610,
+      "held": 22,
+      "basis_stronger": 388,
+      "basis_weaker": 320,
+      "basis_held": 941
+     },
+     "states": {
+      "AR": {
+       "state": "AR",
+       "name": "Arkansas",
+       "n": 2
+      },
+      "CO": {
+       "state": "CO",
+       "name": "Colorado",
+       "n": 26,
+       "companies": 7,
+       "avg_cash": 4.993,
+       "median_cash": 4.9805,
+       "avg_basis_cents": 5.35,
+       "basis_n": 25,
+       "basis_outliers": 1,
+       "raised": 0,
+       "cut": 25,
+       "held": 1,
+       "basis_stronger": 21,
+       "basis_weaker": 0,
+       "basis_held": 5
+      },
+      "FL": {
+       "state": "FL",
+       "name": "Florida",
+       "n": 1
+      },
+      "GA": {
+       "state": "GA",
+       "name": "Georgia",
+       "n": 6
+      },
+      "IA": {
+       "state": "IA",
+       "name": "Iowa",
+       "n": 414,
+       "companies": 56,
+       "avg_cash": 4.5097,
+       "median_cash": 4.4855,
+       "avg_basis_cents": -39.84,
+       "basis_n": 414,
+       "basis_outliers": 0,
+       "raised": 2,
+       "cut": 410,
+       "held": 2,
+       "basis_stronger": 121,
+       "basis_weaker": 57,
+       "basis_held": 236
+      },
+      "ID": {
+       "state": "ID",
+       "name": "Idaho",
+       "n": 1
+      },
+      "IL": {
+       "state": "IL",
+       "name": "Illinois",
+       "n": 195,
+       "companies": 47,
+       "avg_cash": 4.5891,
+       "median_cash": 4.5736,
+       "avg_basis_cents": -31.7,
+       "basis_n": 195,
+       "basis_outliers": 0,
+       "raised": 5,
+       "cut": 188,
+       "held": 2,
+       "basis_stronger": 67,
+       "basis_weaker": 29,
+       "basis_held": 99
+      },
+      "IN": {
+       "state": "IN",
+       "name": "Indiana",
+       "n": 55,
+       "companies": 17,
+       "avg_cash": 4.5969,
+       "median_cash": 4.5682,
+       "avg_basis_cents": -29.99,
+       "basis_n": 55,
+       "basis_outliers": 0,
+       "raised": 5,
+       "cut": 48,
+       "held": 1,
+       "basis_stronger": 23,
+       "basis_weaker": 10,
+       "basis_held": 21
+      },
+      "KS": {
+       "state": "KS",
+       "name": "Kansas",
+       "n": 229,
+       "companies": 28,
+       "avg_cash": 4.5904,
+       "median_cash": 4.5627,
+       "avg_basis_cents": -30.75,
+       "basis_n": 229,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 221,
+       "held": 8,
+       "basis_stronger": 32,
+       "basis_weaker": 0,
+       "basis_held": 197
+      },
+      "KY": {
+       "state": "KY",
+       "name": "Kentucky",
+       "n": 8
+      },
+      "LA": {
+       "state": "LA",
+       "name": "Louisiana",
+       "n": 1
+      },
+      "MI": {
+       "state": "MI",
+       "name": "Michigan",
+       "n": 16,
+       "companies": 8,
+       "avg_cash": 4.4944,
+       "median_cash": 4.4599,
+       "avg_basis_cents": -43.17,
+       "basis_n": 16,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 15,
+       "held": 0,
+       "basis_stronger": 2,
+       "basis_weaker": 4,
+       "basis_held": 9
+      },
+      "MN": {
+       "state": "MN",
+       "name": "Minnesota",
+       "n": 138,
+       "companies": 45,
+       "avg_cash": 4.23,
+       "median_cash": 4.2255,
+       "avg_basis_cents": -66.94,
+       "basis_n": 138,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 138,
+       "held": 0,
+       "basis_stronger": 8,
+       "basis_weaker": 86,
+       "basis_held": 44
+      },
+      "MO": {
+       "state": "MO",
+       "name": "Missouri",
+       "n": 22,
+       "companies": 14,
+       "avg_cash": 4.6158,
+       "median_cash": 4.5915,
+       "avg_basis_cents": -29.43,
+       "basis_n": 22,
+       "basis_outliers": 0,
+       "raised": 1,
+       "cut": 20,
+       "held": 1,
+       "basis_stronger": 12,
+       "basis_weaker": 3,
+       "basis_held": 7
+      },
+      "MT": {
+       "state": "MT",
+       "name": "Montana",
+       "n": 1
+      },
+      "ND": {
+       "state": "ND",
+       "name": "North Dakota",
+       "n": 40,
+       "companies": 23,
+       "avg_cash": 4.1369,
+       "median_cash": 4.1548,
+       "avg_basis_cents": -77.37,
+       "basis_n": 40,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 40,
+       "held": 0,
+       "basis_stronger": 0,
+       "basis_weaker": 35,
+       "basis_held": 5
+      },
+      "NE": {
+       "state": "NE",
+       "name": "Nebraska",
+       "n": 187,
+       "companies": 28,
+       "avg_cash": 4.539,
+       "median_cash": 4.508,
+       "avg_basis_cents": -35.36,
+       "basis_n": 187,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 186,
+       "held": 1,
+       "basis_stronger": 60,
+       "basis_weaker": 24,
+       "basis_held": 103
+      },
+      "NY": {
+       "state": "NY",
+       "name": "New York",
+       "n": 1
+      },
+      "OH": {
+       "state": "OH",
+       "name": "Ohio",
+       "n": 66,
+       "companies": 21,
+       "avg_cash": 4.6156,
+       "median_cash": 4.6073,
+       "avg_basis_cents": -28.69,
+       "basis_n": 66,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 62,
+       "held": 4,
+       "basis_stronger": 9,
+       "basis_weaker": 16,
+       "basis_held": 41
+      },
+      "OK": {
+       "state": "OK",
+       "name": "Oklahoma",
+       "n": 42,
+       "companies": 5,
+       "avg_cash": 4.8096,
+       "median_cash": 4.7155,
+       "avg_basis_cents": -10.29,
+       "basis_n": 42,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 42,
+       "held": 0,
+       "basis_stronger": 0,
+       "basis_weaker": 1,
+       "basis_held": 41
+      },
+      "PA": {
+       "state": "PA",
+       "name": "Pennsylvania",
+       "n": 3
+      },
+      "SC": {
+       "state": "SC",
+       "name": "South Carolina",
+       "n": 3
+      },
+      "SD": {
+       "state": "SD",
+       "name": "South Dakota",
+       "n": 93,
+       "companies": 24,
+       "avg_cash": 4.1836,
+       "median_cash": 4.1691,
+       "avg_basis_cents": -72.5,
+       "basis_n": 93,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 93,
+       "held": 0,
+       "basis_stronger": 7,
+       "basis_weaker": 49,
+       "basis_held": 37
+      },
+      "TN": {
+       "state": "TN",
+       "name": "Tennessee",
+       "n": 4
+      },
+      "TX": {
+       "state": "TX",
+       "name": "Texas",
+       "n": 17,
+       "companies": 3,
+       "avg_cash": 5.4655,
+       "median_cash": 5.4655,
+       "avg_basis_cents": 55.0,
+       "basis_n": 17,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 17,
+       "held": 0,
+       "basis_stronger": 0,
+       "basis_weaker": 0,
+       "basis_held": 17
+      },
+      "WA": {
+       "state": "WA",
+       "name": "Washington",
+       "n": 3
+      },
+      "WI": {
+       "state": "WI",
+       "name": "Wisconsin",
+       "n": 76,
+       "companies": 29,
+       "avg_cash": 4.264,
+       "median_cash": 4.2753,
+       "avg_basis_cents": -61.07,
+       "basis_n": 76,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 74,
+       "held": 2,
+       "basis_stronger": 19,
+       "basis_weaker": 4,
+       "basis_held": 53
+      },
+      "WY": {
+       "state": "WY",
+       "name": "Wyoming",
+       "n": 1
+      }
+     },
+     "widest": [
+      "ND",
+      "SD",
+      "MN"
+     ],
+     "narrowest": [
+      "TX",
+      "CO",
+      "OK"
+     ]
+    },
+    "soybeans": {
+     "overall": {
+      "n": 1450,
+      "companies": 246,
+      "avg_cash": 12.253,
+      "median_cash": 12.225,
+      "avg_basis_cents": -58.95,
+      "basis_n": 1445,
+      "basis_outliers": 5,
+      "raised": 57,
+      "cut": 1393,
+      "held": 0,
+      "basis_stronger": 205,
+      "basis_weaker": 811,
+      "basis_held": 434
+     },
+     "states": {
+      "AL": {
+       "state": "AL",
+       "name": "Alabama",
+       "n": 1
+      },
+      "AR": {
+       "state": "AR",
+       "name": "Arkansas",
+       "n": 12
+      },
+      "CO": {
+       "state": "CO",
+       "name": "Colorado",
+       "n": 5
+      },
+      "GA": {
+       "state": "GA",
+       "name": "Georgia",
+       "n": 2
+      },
+      "IA": {
+       "state": "IA",
+       "name": "Iowa",
+       "n": 374,
+       "companies": 43,
+       "avg_cash": 12.2365,
+       "median_cash": 12.217,
+       "avg_basis_cents": -61.46,
+       "basis_n": 373,
+       "basis_outliers": 1,
+       "raised": 3,
+       "cut": 371,
+       "held": 0,
+       "basis_stronger": 18,
+       "basis_weaker": 309,
+       "basis_held": 47
+      },
+      "IL": {
+       "state": "IL",
+       "name": "Illinois",
+       "n": 160,
+       "companies": 42,
+       "avg_cash": 12.4656,
+       "median_cash": 12.4732,
+       "avg_basis_cents": -38.21,
+       "basis_n": 160,
+       "basis_outliers": 0,
+       "raised": 3,
+       "cut": 157,
+       "held": 0,
+       "basis_stronger": 24,
+       "basis_weaker": 87,
+       "basis_held": 49
+      },
+      "IN": {
+       "state": "IN",
+       "name": "Indiana",
+       "n": 45,
+       "companies": 14,
+       "avg_cash": 12.5976,
+       "median_cash": 12.5836,
+       "avg_basis_cents": -30.0,
+       "basis_n": 45,
+       "basis_outliers": 0,
+       "raised": 8,
+       "cut": 37,
+       "held": 0,
+       "basis_stronger": 10,
+       "basis_weaker": 10,
+       "basis_held": 25
+      },
+      "KS": {
+       "state": "KS",
+       "name": "Kansas",
+       "n": 198,
+       "companies": 28,
+       "avg_cash": 12.1413,
+       "median_cash": 12.175,
+       "avg_basis_cents": -68.51,
+       "basis_n": 198,
+       "basis_outliers": 0,
+       "raised": 27,
+       "cut": 171,
+       "held": 0,
+       "basis_stronger": 69,
+       "basis_weaker": 12,
+       "basis_held": 117
+      },
+      "KY": {
+       "state": "KY",
+       "name": "Kentucky",
+       "n": 9
+      },
+      "LA": {
+       "state": "LA",
+       "name": "Louisiana",
+       "n": 1
+      },
+      "MI": {
+       "state": "MI",
+       "name": "Michigan",
+       "n": 16,
+       "companies": 8,
+       "avg_cash": 12.2649,
+       "median_cash": 12.2322,
+       "avg_basis_cents": -58.13,
+       "basis_n": 16,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 16,
+       "held": 0,
+       "basis_stronger": 9,
+       "basis_weaker": 3,
+       "basis_held": 4
+      },
+      "MN": {
+       "state": "MN",
+       "name": "Minnesota",
+       "n": 139,
+       "companies": 34,
+       "avg_cash": 12.1721,
+       "median_cash": 12.1545,
+       "avg_basis_cents": -66.23,
+       "basis_n": 139,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 139,
+       "held": 0,
+       "basis_stronger": 2,
+       "basis_weaker": 110,
+       "basis_held": 27
+      },
+      "MO": {
+       "state": "MO",
+       "name": "Missouri",
+       "n": 15,
+       "companies": 8,
+       "avg_cash": 12.5088,
+       "median_cash": 12.4764,
+       "avg_basis_cents": -32.65,
+       "basis_n": 15,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 15,
+       "held": 0,
+       "basis_stronger": 10,
+       "basis_weaker": 3,
+       "basis_held": 2
+      },
+      "MT": {
+       "state": "MT",
+       "name": "Montana",
+       "n": 1
+      },
+      "ND": {
+       "state": "ND",
+       "name": "North Dakota",
+       "n": 47,
+       "companies": 24,
+       "avg_cash": 12.1521,
+       "median_cash": 12.1439,
+       "avg_basis_cents": -68.82,
+       "basis_n": 47,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 47,
+       "held": 0,
+       "basis_stronger": 1,
+       "basis_weaker": 42,
+       "basis_held": 4
+      },
+      "NE": {
+       "state": "NE",
+       "name": "Nebraska",
+       "n": 149,
+       "companies": 21,
+       "avg_cash": 12.2628,
+       "median_cash": 12.2591,
+       "avg_basis_cents": -56.17,
+       "basis_n": 148,
+       "basis_outliers": 1,
+       "raised": 1,
+       "cut": 148,
+       "held": 0,
+       "basis_stronger": 4,
+       "basis_weaker": 135,
+       "basis_held": 10
+      },
+      "OH": {
+       "state": "OH",
+       "name": "Ohio",
+       "n": 73,
+       "companies": 20,
+       "avg_cash": 12.4323,
+       "median_cash": 12.4127,
+       "avg_basis_cents": -39.55,
+       "basis_n": 73,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 73,
+       "held": 0,
+       "basis_stronger": 12,
+       "basis_weaker": 17,
+       "basis_held": 44
+      },
+      "OK": {
+       "state": "OK",
+       "name": "Oklahoma",
+       "n": 41,
+       "companies": 4,
+       "avg_cash": 12.189,
+       "median_cash": 12.2391,
+       "avg_basis_cents": -65.01,
+       "basis_n": 41,
+       "basis_outliers": 0,
+       "raised": 1,
+       "cut": 40,
+       "held": 0,
+       "basis_stronger": 2,
+       "basis_weaker": 1,
+       "basis_held": 38
+      },
+      "PA": {
+       "state": "PA",
+       "name": "Pennsylvania",
+       "n": 2
+      },
+      "SD": {
+       "state": "SD",
+       "name": "South Dakota",
+       "n": 84,
+       "companies": 20,
+       "avg_cash": 12.1955,
+       "median_cash": 12.1536,
+       "avg_basis_cents": -65.59,
+       "basis_n": 84,
+       "basis_outliers": 0,
+       "raised": 3,
+       "cut": 81,
+       "held": 0,
+       "basis_stronger": 10,
+       "basis_weaker": 64,
+       "basis_held": 10
+      },
+      "TN": {
+       "state": "TN",
+       "name": "Tennessee",
+       "n": 2
+      },
+      "TX": {
+       "state": "TX",
+       "name": "Texas",
+       "n": 9
+      },
+      "WI": {
+       "state": "WI",
+       "name": "Wisconsin",
+       "n": 65,
+       "companies": 25,
+       "avg_cash": 11.9417,
+       "median_cash": 11.9783,
+       "avg_basis_cents": -87.73,
+       "basis_n": 65,
+       "basis_outliers": 0,
+       "raised": 0,
+       "cut": 65,
+       "held": 0,
+       "basis_stronger": 15,
+       "basis_weaker": 17,
+       "basis_held": 33
+      }
+     },
+     "widest": [
+      "WI",
+      "ND",
+      "KS"
+     ],
+     "narrowest": [
+      "IN",
+      "MO",
+      "IL"
+     ]
+    }
+   },
+   "withheld": [],
+   "findings": [
+    "From October 1 to 15, 2026, the average cash corn bid at the 1,651 elevators AGSIST reads was $4.51, 40¾¢ under futures on average.",
+    "From October 1 to 15, 2026, the average cash soybean bid at the 1,450 elevators AGSIST reads was $12.25, 59¢ under futures on average.",
+    "Corn basis was widest in North Dakota (77¼¢ under futures, 40 elevators, 23 companies) and narrowest in Texas (55¢ over futures, 17 elevators, 3 companies), of 15 states with at least 15 elevators.",
+    "Between Oct 1 and Oct 15, 320 elevators weakened their corn basis and 388 strengthened it; 941 held it where it was."
+   ],
+   "first_edition": true
+  }
+ ]
+}

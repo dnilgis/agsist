@@ -401,10 +401,22 @@
             }
             if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
             if(tr&&m>=465&&m<510)return{t:'Pre-open',live:false,title:'Overnight session closed, day session not open yet. '+read};
-            var s=(tr&&m>=815)?dayT:dayT-DY,guard=0;while(!trading(s)&&guard++<10)s-=DY;
+            /* 2026-10-17: after the bell Yahoo's bar is the LAST TRADE until
+               late evening, then the settle (fetch_prices v3.7 RESTATED_BY).
+               The file says which (close_kind); only a settle is labeled one.
+               On Oct 16 this badge said "Close" over soybeans $12.60 1/2, a
+               1:46 PM trade; CBOT settled $12.61 1/4. */
+            var qs=data.quotes||{},cq=qs['corn-nearby']||qs.corn||{};
             var hn=holName(dayT);
-            /* "Close", not "Settle": these are Yahoo Finance closing prices,
-               not CME settlements (the two can differ by a tick or more). */
+            if(cq.close_kind==='settle'&&cq.close_date){
+              var sd=Date.parse(cq.close_date+'T00:00:00Z');
+              return{t:'Settle '+lbl(sd),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Settles for '+lbl(sd)+', '+new Date(sd).getUTCFullYear()+' (the CME settle as Yahoo Finance posts it). '+read};
+            }
+            if(cq.close_kind==='last'||(tr&&m>=815&&m<1410)){
+              var n2=ct(new Date()),same2=(+n2.year===+p.year&&+n2.month===+p.month&&+n2.day===+p.day);
+              return{t:'As of '+(same2?hm(F):lbl(dayT)),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
+            var s=(tr&&m>=815)?dayT:dayT-DY,guard=0;while(!trading(s)&&guard++<10)s-=DY;
+            /* A file from before close_kind: "Close", not "Settle". */
             return{t:'Close '+lbl(s),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Closing prices for '+lbl(s)+', '+new Date(s).getUTCFullYear()+' (Yahoo Finance closes, not CME settlements). '+read};
           })(data.fetched);
           if(_st){_tb.innerHTML='';(/^As of /.test(_st.t)?['As of',_st.t.slice(6)]:_st.t.split(/ (.+)/).slice(0,2)).forEach(function(w,i){if(i)_tb.appendChild(document.createElement('br'));_tb.appendChild(document.createTextNode(w));});_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}

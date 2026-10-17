@@ -290,6 +290,11 @@ def positioning(out, state, held):
                 "notable", "/cot", "CFTC Commitments of Traders", pub))
 
 
+# Where a board item's price comes from: the exchange settle, as Yahoo Finance
+# posts it once it replaces the day's last trade (fetch_prices v3.7).
+SETTLE_SOURCE = "Yahoo Finance, CBOT settle, via the AGSIST board"
+
+
 def session_stamp(fetched):
     """The trading day a prices.json fetch belongs to, and whether its prices
     are a settlement.
@@ -300,9 +305,14 @@ def session_stamp(fetched):
     the same session's move, twice, one of them dated tomorrow. The day is
     the Central calendar date of the fetch.
 
-    "Settled" is only true after the 1:20pm CT grain settle and before the
-    7pm reopen on a weekday. Every other fetch is a last trade, and says so.
-    Returns (iso_day, settled) or (None, False) when the stamp is unreadable."""
+    "Settled" (for a price file with no close_kind, from before fetch_prices
+    v3.7) is only true from 11:30pm CT on a weekday, when Yahoo has swapped
+    the day's last trade for the settle (fetch_prices.RESTATED_BY). Until
+    2026-10-17 it was true from the 1:20pm bell, and the 1:46pm soybean trade
+    went out as the close: $12.60 1/2, against a CBOT settle of $12.61 1/4.
+    Every other fetch is a last trade, and says so. A v3.7 file says it per
+    quote (quote_session). Returns (iso_day, settled) or (None, False) when
+    the stamp is unreadable."""
     s = str(fetched or "").strip()
     if not s:
         return None, False
@@ -316,7 +326,7 @@ def session_stamp(fetched):
         return t.date().isoformat(), False
     ct = t.astimezone(_CT)
     minutes = ct.hour * 60 + ct.minute
-    settled = ct.weekday() < 5 and 13 * 60 + 20 <= minutes < 19 * 60
+    settled = ct.weekday() < 5 and minutes >= 23 * 60 + 30
     return ct.date().isoformat(), settled
 
 
@@ -329,6 +339,10 @@ def quote_session(v, fetch_day, fetch_settled):
     settled only inside the post-settle window session_stamp checks; one
     dated after it is the evening session's trade."""
     cd = iso_day((v or {}).get("close_date"))
+    kind = (v or {}).get("close_kind")
+    if kind is not None:
+        # fetch_prices v3.7 marks each quote: the settle, or a trade.
+        return (cd or fetch_day), kind == "settle"
     if not cd or not fetch_day:
         return fetch_day, fetch_settled
     if cd < fetch_day:
@@ -365,6 +379,12 @@ def board(out, state, held):
         # $13 bean board is held to the same standard as a $5 corn board.
         band = (hi - lo) if (hi is not None and lo is not None and hi > lo) else None
         mark = px.get(key) or {}
+        # A 52-week extreme is filed from the settle too: "closed at a
+        # 52-week high" off a midday trade is the same mistake as a move.
+        if not settled and close is not None and ((hi is not None and close >= hi) or
+                                                  (lo is not None and close <= lo)):
+            held.append(f"{name}: at a 52-week extreme on a trade, waiting for the settle")
+            continue
         if close is not None and hi is not None and close >= hi:
             last = mark.get("hi")
             if last is None:
@@ -387,10 +407,10 @@ def board(out, state, held):
             # Naming the high it took out needs no threshold and no memory of
             # how long ago it was -- it is simply what happened.
             out.append(item(f"px:{day}:{key}:hi", "board",
-                            (f"{name} closed at a 52-week high" if last is None
+                            (f"{name} settled at a 52-week high" if last is None
                              else f"{name} took its 52-week high to {cents(close)}"),
                             detail,
-                            "high", url, "CME settlement via the AGSIST board", iso_day(day)))
+                            "high", url, SETTLE_SOURCE, iso_day(day)))
             px[key] = dict(mark, hi=close, hi_day=day)
         elif close is not None and lo is not None and close <= lo:
             last = mark.get("lo")
@@ -406,10 +426,10 @@ def board(out, state, held):
                             f"on the {cents(last)} already published")
                 continue
             out.append(item(f"px:{day}:{key}:lo", "board",
-                            (f"{name} closed at a 52-week low" if last is None
+                            (f"{name} settled at a 52-week low" if last is None
                              else f"{name} took its 52-week low to {cents(close)}"),
                             detail,
-                            "high", url, "CME settlement via the AGSIST board", iso_day(day)))
+                            "high", url, SETTLE_SOURCE, iso_day(day)))
             px[key] = dict(mark, lo=close, lo_day=day)
         if pct is None or abs(pct) < MOVE_NOTABLE:
             continue
@@ -419,18 +439,18 @@ def board(out, state, held):
         # $6.66, -17.5 cents" while wheat closed $6.70 3/4, down 12 1/2
         # (1.8%, under the bar). An intraday move is not an item.
         if not settled:
-            held.append(f"{name}: {pct:+.1f}% intraday, waiting for the close")
+            held.append(f"{name}: {pct:+.1f}% on a trade, waiting for the settle")
             continue
         direction = "up" if pct > 0 else "down"
         nc = v.get("netChange")
-        detail = f"Closed {cents(close)}" if close is not None else "Closed"
+        detail = f"Settled {cents(close)}" if close is not None else "Settled"
         if nc is not None:
             detail += f", {pricefmt.move(nc, sign=True)} on the session"
         out.append(item(f"px:{day}:{key}:move", "board",
                         f"{name} {direction} {abs(pct):.1f}% on the day",
                         detail + ".",
                         "high" if abs(pct) >= MOVE_HIGH else "notable",
-                        url, "Yahoo Finance close via the AGSIST board", iso_day(day)))
+                        url, SETTLE_SOURCE, iso_day(day)))
 
 
 def ratings(out, state, held):
@@ -699,7 +719,8 @@ def _selftest():
 
     o = []
     board_data = {"fetched": "2026-09-11T19:05:00Z", "quotes": {
-        "corn": {"close": 600.0, "pctChange": 5.0, "netChange": 28, "wk52_hi": 599.0, "wk52_lo": 400.0}}}
+        "corn": {"close": 600.0, "pctChange": 5.0, "netChange": 28, "wk52_hi": 599.0, "wk52_lo": 400.0,
+                 "close_kind": "settle", "close_date": "2026-09-11"}}}
     globals()["load"] = lambda n: board_data if n == "prices.json" else None
     board(o, {}, [])
     check(len(o) == 2, "a new high and a 5% move are two separate items")
@@ -717,8 +738,12 @@ def _selftest():
     # 8:57pm Central on 30 September. The Wire dated it 1 October.
     check(session_stamp("2026-10-01T01:57:02Z") == ("2026-09-30", False),
           "an evening fetch belongs to the Central day, and is not a settlement")
-    check(session_stamp("2026-09-30T19:05:00Z") == ("2026-09-30", True),
-          "2:05pm CT on a Wednesday is a settlement")
+    # 2026-10-17: 2:05pm CT is after the bell, but Yahoo's bar is still the
+    # last trade (Oct 16 soybeans: $12.60 1/2 at 1:46pm, CBOT settle $12.61 1/4).
+    check(session_stamp("2026-09-30T19:05:00Z") == ("2026-09-30", False),
+          "2:05pm CT on a Wednesday is a last trade, not a settlement")
+    check(session_stamp("2026-10-01T04:45:00Z") == ("2026-09-30", True),
+          "11:45pm CT on a Wednesday is the settle")
     check(session_stamp("2026-09-30T17:30:00Z") == ("2026-09-30", False),
           "12:30pm CT is still trading")
     check(session_stamp("2026-10-03T19:05:00Z") == ("2026-10-03", False),
@@ -731,19 +756,30 @@ def _selftest():
     o, held = [], []
     board(o, {}, held)
     check(o == [], "an evening print is not a close: no move item")
-    check(any("waiting for the close" in h for h in held), "...and the run says it is waiting")
+    check(any("waiting for the settle" in h for h in held), "...and the run says it is waiting")
     _mv["fetched"] = "2026-09-30T19:05:00Z"
+    o, held = [], []
+    board(o, {}, held)
+    check(o == [], "a 2:05pm CT trade is not the settle: no move item")
+    for _k in ("corn", "corn-dec"):
+        _mv["quotes"][_k].update(close_kind="last", close_date="2026-09-30")
+    _mv["fetched"] = "2026-10-01T04:45:00Z"
+    o = []
+    board(o, {}, [])
+    check(o == [], "a v3.7 quote marked last is never filed, whatever the clock says")
+    for _k in ("corn", "corn-dec"):
+        _mv["quotes"][_k].update(close_kind="settle")
     o = []
     board(o, {}, [])
     check(len(o) == 1, "corn and December corn carrying one quote is one item, not two")
     check(o[0]["id"] == "px:2026-09-30:corn-dec:move", "...under the named contract, dated 30 September")
-    check(o[0]["detail"] == "Closed $5.01\u00bd, \u221220\u00bd\u00a2 on the session.", o[0]["detail"])
-    check(o[0]["source"].startswith("Yahoo Finance close"), "a Yahoo close is not called a CME settlement")
+    check(o[0]["detail"] == "Settled $5.01\u00bd, \u221220\u00bd\u00a2 on the session.", o[0]["detail"])
+    check(o[0]["source"] == SETTLE_SOURCE, "the source names the settle and who posted it")
     # A quote that did not update on this run keeps its own session's day
     # (2026-10-07 and -08 both filed KC's $7.37 close as that day's move).
     _st = {"fetched": "2026-10-08T19:05:00Z", "quotes": {
         "kcwheat": {"close": 737.0, "open": 756.0, "pctChange": -2.51, "netChange": -19.0,
-                    "close_date": "2026-10-07", "wk52_hi": 800.0, "wk52_lo": 600.0}}}
+                    "close_date": "2026-10-07", "wk52_hi": 800.0, "wk52_lo": 600.0, "close_kind": "settle"}}}
     globals()["load"] = lambda n: _st if n == "prices.json" else None
     o = []
     board(o, {}, [])
@@ -783,7 +819,7 @@ def _selftest():
 
     print("a 52-week high is measured against the last one this wire published")
     _px = {"fetched": "2026-09-22T00:00:00", "quotes": {
-        "corn": {"close": 543.0, "pctChange": 0.1, "wk52_hi": 543.0, "wk52_lo": 398.5}}}
+        "corn": {"close": 543.0, "pctChange": 0.1, "wk52_hi": 543.0, "wk52_lo": 398.5, "close_kind": "settle"}}}
     globals()["load"] = lambda n: _px if n == "prices.json" else None
     o, st = [], {}
     board(o, st, [])
@@ -813,7 +849,7 @@ def _selftest():
     # September corn highs end to end is the whole complaint in one check.
     print("a run of new highs reads as a developing story, not one filed four times")
     _run = {"fetched": "", "quotes": {"corn": {"close": 0, "pctChange": 0.1,
-                                               "wk52_hi": 0, "wk52_lo": 398.5}}}
+                                               "wk52_hi": 0, "wk52_lo": 398.5, "close_kind": "settle"}}}
     globals()["load"] = lambda n: _run if n == "prices.json" else None
     o, st = [], {}
     for _day, _close in (("2026-09-15", 534.0), ("2026-09-16", 536.0),
@@ -824,7 +860,14 @@ def _selftest():
     heads = [i["headline"] for i in o]
     check(len(heads) == 3, "the 22 September repeat is gone and the three breaks remain")
     check(len(set(heads)) == 3, "and no two of them are the same sentence")
-    check(heads[0] == "Corn closed at a 52-week high", "the first one is the break")
+    check(heads[0] == "Corn settled at a 52-week high", "the first one is the break")
+    o, held = [], []
+    globals()["load"] = lambda n: {"fetched": "2026-09-23T17:00:00Z", "quotes": {"corn": {
+        "close": 560.0, "pctChange": 0.4, "wk52_hi": 560.0, "wk52_lo": 398.5, "close_kind": "last",
+        "close_date": "2026-09-23"}}} if n == "prices.json" else None
+    board(o, {}, held)
+    check(o == [] and any("waiting for the settle" in h for h in held),
+          "a midday trade at a 52-week high waits for the settle")
     check(all(h.startswith("Corn took its 52-week high to") for h in heads[1:]),
           "and the ones after it say where they took it")
 
@@ -915,9 +958,9 @@ def _selftest():
     # $6.70 3/4, -12 1/2 (-1.83%), under the 2.5% bar.
     _prior2 = {"updated": "2026-10-09T18:00:00+00:00", "items": [
         _it("px:2026-10-09:wheat:move", "Wheat down 2.6% on the day", "Last $6.66, -17.5 cents on the session.")]}
-    _px2 = {"fetched": "2026-10-09T19:05:00Z", "quotes": {
+    _px2 = {"fetched": "2026-10-10T04:45:00Z", "quotes": {
         "wheat": {"close": 670.75, "open": 683.25, "pctChange": -1.83, "netChange": -12.5,
-                  "close_date": "2026-10-09", "wk52_hi": 795.0, "wk52_lo": 557.25}}}
+                  "close_date": "2026-10-09", "wk52_hi": 795.0, "wk52_lo": 557.25, "close_kind": "settle"}}}
     globals()["load"] = lambda n: _prior2 if n == "news.json" else (_px2 if n == "prices.json" else None)
     _d2, _a2, _ch2, _held2 = build()
     check(not [i for i in _d2["items"] if i["id"] == "px:2026-10-09:wheat:move"],
@@ -927,7 +970,7 @@ def _selftest():
     _px2["quotes"]["wheat"].update(close=666.0, pctChange=-2.53, netChange=-17.25)
     _d3, _a3, _ch3, _held3 = build()
     _w = [i for i in _d3["items"] if i["id"] == "px:2026-10-09:wheat:move"]
-    check(len(_w) == 1 and _w[0]["detail"].startswith("Closed $6.66"), "the close replaces the intraday line")
+    check(len(_w) == 1 and _w[0]["detail"].startswith("Settled $6.66"), "the settle replaces the intraday line")
     # THE 30 SEPTEMBER AND 1 OCTOBER 2026 DUPLICATES: corn and December corn,
     # same day, same numbers. One stays, under the named contract.
     _dup = [_it("px:2026-10-01:corn:move", "Corn down 3.8% on the day", "Settled $5.02, -20 cents on the session."),

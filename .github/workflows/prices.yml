@@ -31,9 +31,15 @@ concurrency:
 
 jobs:
   # CME grains trade Sun 7:00 PM to Fri 1:20 PM CT, shut 1:20-7:00 PM daily.
-  # Fetch from 6:45 PM (lead for the reopen) to 2:00 PM (catch the settle),
-  # in Central time so daylight saving takes care of itself. Outside that the
-  # board does not move and a fetch would only re-stamp `fetched`.
+  # Fetch from 6:45 PM (lead for the reopen) to 2:00 PM, in Central time so
+  # daylight saving takes care of itself. Outside that the board does not
+  # move and a fetch would only re-stamp `fetched`.
+  # Friday 11:30 PM to Saturday 2:00 AM too (2026-10-17): Yahoo's bar holds
+  # the last trade until late evening and only then the exchange settle
+  # (fetch_prices RESTATED_BY). Monday to Thursday the evening runs pick that
+  # up; on Friday nothing ran after 2:00 PM, so all weekend the pages showed
+  # the 1:46 PM last trade (soybeans $12.60 1/2, -3 3/4c, against a CBOT
+  # settle of $12.61 1/4, -1 3/4c on Oct 16).
   hours:
     runs-on: ubuntu-latest
     permissions: {}
@@ -50,7 +56,8 @@ jobs:
           case "$DOW" in
             7)       [ "$HM" -ge 1845 ] && OPEN=1 ;;
             1|2|3|4) { [ "$HM" -lt 1400 ] || [ "$HM" -ge 1845 ]; } && OPEN=1 ;;
-            5)       [ "$HM" -lt 1400 ] && OPEN=1 ;;
+            5)       { [ "$HM" -lt 1400 ] || [ "$HM" -ge 2330 ]; } && OPEN=1 ;;
+            6)       [ "$HM" -lt 200 ] && OPEN=1 ;;
           esac
           [ "$IN_FORCE" = "true" ] && OPEN=1
           echo "CT day $DOW, $HM -> open=$OPEN"
@@ -91,6 +98,7 @@ jobs:
           python scripts/test_prev_close.py
           python scripts/test_overnight_settle.py
           python scripts/test_grain_symbols.py
+          python scripts/test_nearby.py
 
       - name: Fetch once
         env:

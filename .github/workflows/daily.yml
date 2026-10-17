@@ -393,6 +393,17 @@ jobs:
       - name: GATE 1 — feed pre-flight (repair ZC=F roll contamination; block on unrepairable feed)
         run: python scripts/preflight_prices.py data/prices.json --repair
 
+      # 2026-10-17: "Only on AGSIST". Facts counted by code from the elevator
+      # boards AGSIST reads (data/bids-prev, the network index, basis-states),
+      # written to data/daily-edge.json for the generator to attach. The model
+      # never sees them. Any fact it cannot back (small sample, stale file,
+      # outliers) is withheld and logged. Never blocks the briefing.
+      - name: Only on AGSIST facts
+        continue-on-error: true
+        run: |
+          python scripts/daily_edge.py --selftest
+          python scripts/daily_edge.py
+
       - name: Generate daily briefing
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -536,7 +547,7 @@ jobs:
           # file kept shipping the contaminated continuous quotes.
           # archive.html + daily.html: the crawlable briefing link lists that
           # generate_daily.save_archive() rebakes between their SEED markers.
-          git add data/daily.json data/daily-archive/ daily/ archive.html daily.html feed.xml sitemap.xml sitemap-news.xml index.html data/social/ whats-priced-in.html cot.html data/prices.json
+          git add data/daily.json data/daily-edge.json data/daily-archive/ daily/ archive.html daily.html feed.xml sitemap.xml sitemap-news.xml index.html data/social/ whats-priced-in.html cot.html data/prices.json
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           # AUDIT 2026-08-11: three attempts — this is the repo's highest-
           # stakes push (a rejection here silently skips the daily email for

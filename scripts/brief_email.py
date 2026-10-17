@@ -37,7 +37,7 @@ import html as _html
 import json
 import os
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -746,6 +746,54 @@ def clock_text(daily, today=None):
         ((b.get("note") or "") + " Harvest price tracker: " + CLOCK_URL).strip()]
 
 
+# "Only on AGSIST" (scripts/daily_edge.py): facts counted by code from the
+# elevator boards AGSIST reads, carried in the issue's `edge` block, plus Sig's
+# own note when he wrote one for this date (cca_note). Same for every reader;
+# the per-reader local line stays in local_html. Absent block: nothing.
+SITE = "https://agsist.com"
+
+
+def _edge_facts(daily):
+    import daily_edge
+    return daily_edge.shown(daily.get("edge"))
+
+
+def edge_html(daily):
+    facts = _edge_facts(daily)
+    out = ""
+    if facts:
+        rows = "".join(
+            '<div style="padding-top:6px"><strong>%s</strong> <a href="%s%s" style="color:%s">%s</a></div>'
+            % (e(f["sentence"]), SITE, e(f["url"]), GOLD, e(f.get("link_text") or "See it"))
+            for f in facts)
+        out += ('<tr><td style="padding:14px 0 0"><table role="presentation" width="100%%" cellpadding="0" '
+                'cellspacing="0" border="0"><tr><td class="ink" style="border-left:3px solid %s;padding:4px 0 4px 12px;'
+                'font-family:%s;font-size:15px;line-height:1.5;color:%s">'
+                '<div style="font-family:%s;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;'
+                'color:%s">Only on AGSIST</div>%s'
+                '<div class="mute" style="padding-top:6px;font-size:13px;color:%s">Counted by code from the elevator '
+                'boards AGSIST reads itself.</div></td></tr></table></td></tr>'
+                % (UP, SANS, INK, MONO, UP, rows, MUTE))
+    n = daily.get("cca_note")
+    if isinstance(n, dict) and str(n.get("text") or "").strip():
+        out += ('<tr><td class="ink" style="padding:14px 0 0;font-family:%s;font-size:15px;line-height:1.55;color:%s">'
+                '<strong>From Sig:</strong> %s</td></tr>' % (SANS, INK, e(str(n["text"]).strip())))
+    return out
+
+
+def edge_text(daily):
+    L = []
+    facts = _edge_facts(daily)
+    if facts:
+        L += ["", "ONLY ON AGSIST"]
+        for f in facts:
+            L += [f["sentence"] + " " + SITE + f["url"]]
+    n = daily.get("cca_note")
+    if isinstance(n, dict) and str(n.get("text") or "").strip():
+        L += ["", "FROM SIG: " + str(n["text"]).strip()]
+    return L
+
+
 def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=None,
                 local=None, forward_url=None, today=None):
     prior, prior_day = prior_board(daily)
@@ -793,6 +841,9 @@ def render_html(daily, site_href, unsub_url=None, date_display=None, elevators=N
                     'padding:4px 0 4px 12px;font-family:%s;font-size:16px;line-height:1.55;color:%s" '
                     'class="ink"><strong>%s</strong> %s%s</td></tr></table></td></tr>'
                     % (GOLD, SANS, INK, e(take_label), e(take), ""))
+    _edge = edge_html(daily)
+    if _edge:
+        body.append(_edge)
     _clock = clock_html(daily, today)
     if _clock:
         body.append(_clock)
@@ -937,6 +988,7 @@ def render_text(daily, site, unsub_url=None, date_display=None, elevators=None,
         take = strip_md(daily.get("the_takeaway"))
         if take:
             L += ["", "THE TAKEAWAY: " + take]
+    L += edge_text(daily)
     L += clock_text(daily, today)
     # Same slot as the HTML part, same rule: real active sponsor only, never
     # the house ad. A multipart message whose text half quietly drops the
@@ -1086,6 +1138,17 @@ def _selftest():
         got = (line in t, "HARVEST PRICE CLOCK" in t, e(line) in h, CLOCK_URL in h, CLOCK_URL in t)
         if got != (want,) * 5:
             bad.append(("clock " + when.isoformat(), got, want))
+    # Only on AGSIST: carried in both parts with its links; absent block, nothing.
+    ef = {"id": "cash_change_corn", "sentence": "On Thursday, Oct 15, 617 of the 1,455 elevators AGSIST reads posted a lower cash corn bid than Wednesday.",
+          "key": "617 of the 1,455 elevators", "url": "/cash-bids", "link_text": "Cash bids near you"}
+    ed = dict(d, edge={"label": "Only on AGSIST", "facts": [ef]}, cca_note={"date": "2026-10-16", "text": "Basis is the story."})
+    t, h = render_text(ed, "https://agsist.com/"), render_html(ed, "https://agsist.com/")
+    if not ("ONLY ON AGSIST" in t and ef["sentence"] in t and "https://agsist.com/cash-bids" in t and "FROM SIG: Basis is the story." in t):
+        bad.append(("edge text", "", ""))
+    if not ("Only on AGSIST" in h and e(ef["sentence"]) in h and "https://agsist.com/cash-bids" in h and "Basis is the story." in h):
+        bad.append(("edge html", "", ""))
+    if "ONLY ON AGSIST" in render_text(d, "https://agsist.com/") or "Only on AGSIST" in render_html(d, "https://agsist.com/"):
+        bad.append(("edge with no block", "", ""))
     if "HARVEST PRICE CLOCK" in render_text(d, "https://agsist.com/", today=date(2026, 10, 9)):
         bad.append(("clock with no block", "", ""))
     # The Rain Print line: off by default, on only with promote, a line and a date in the window.
@@ -1099,12 +1162,22 @@ def _selftest():
             bad.append(("rain print line", cfg, when))
     with open(RAIN_PRINT_JSON, encoding="utf-8") as f:
         shipped = json.load(f)
-    # 2026-10-13: promote is on since launch (the site card and menu), but the
-    # email line stays off until Sig writes a briefing_line.
-    if not isinstance(shipped.get("promote"), bool) or shipped.get("briefing_line") is not None:
-        bad.append(("data/rain-print.json ships with an email line", shipped.get("promote"), shipped.get("briefing_line")))
-    if "rain-print" in render_text(d, "https://agsist.com/", today=date(2026, 11, 15)):
-        bad.append(("rain print line in the email while the shipped file has no briefing_line", "", ""))
+    # 2026-10-14 (Sig: "give it a fair chance now"): the shipped file carries one
+    # email line, plain words, inside a dated window; outside the window, nothing.
+    line = shipped.get("briefing_line")
+    if not (shipped.get("promote") is True and isinstance(line, str) and 0 < len(line) <= 200
+            and "\u2014" not in line and "agsist.com/rain-print" in line):
+        bad.append(("data/rain-print.json email line", shipped.get("promote"), line))
+    try:
+        lo, hi = date.fromisoformat(shipped["promote_from"]), date.fromisoformat(shipped["promote_until"])
+    except (KeyError, TypeError, ValueError):
+        lo = hi = None
+        bad.append(("data/rain-print.json promote window", shipped.get("promote_from"), shipped.get("promote_until")))
+    if lo and hi:
+        if not (lo <= hi and rain_print_line(lo, shipped) and rain_print_line(hi, shipped)):
+            bad.append(("shipped line on inside its window", lo, hi))
+        if rain_print_line(hi + timedelta(days=1), shipped) or rain_print_line(lo - timedelta(days=1), shipped):
+            bad.append(("shipped line off outside its window", lo, hi))
     for b in bad:
         print("FAIL", b)
     print("brief_email selftest " + ("FAILED" if bad else "ok"))

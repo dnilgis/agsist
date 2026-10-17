@@ -23,6 +23,7 @@ specific page. Each daily briefing has a permanent dated URL.
 ## What's my grain worth today?
 
 - [Cash Grain Bids](https://agsist.com/cash-bids): local elevator bids and basis by ZIP
+- [AGSIST Cash Bid Index](https://agsist.com/cash-bid-index): monthly cash corn and soybean bids and basis by state, counted from the elevators AGSIST reads
 - [Bids and Basis by State](https://agsist.com/cash-bids/iowa/): each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/
 - [Basis by State and vs Normal](https://agsist.com/basis): your state's median corn and soybean basis, USDA regions against their own 5-year same-week normal, barge rates, and this fall's grain vs bin space
 - [Corn Futures](https://agsist.com/corn-futures-prices): CBOT corn with 52-week and 5-year context

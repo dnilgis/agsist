@@ -96,8 +96,13 @@
         var w = wowWords(b.wow);
         s += (w ? ', ' + w : '') + ' (' + b.n + ' elevator' + (b.n === 1 ? '' : 's') + ').';
         var q = quoteFor(o.prices, b.contract);
-        if (q && q.close_date && Math.abs(age(q.close_date + 'T12:00:00Z', Date.parse(bs.generated))) <= 5)
-          s += ' ' + esc(b.label) + ' closed ' + fut(q.close) + ' ' + day(q.close_date) + ': about $' + cashAt(q.close, b.median).toFixed(2) + ' at that basis.';
+        /* Only an exchange settle is called settled (2026-10-17: this line said
+           "Nov '26 closed $12.60½" for a 1:46 p.m. trade; CBOT settled $12.61¼).
+           A quote with no settle field is worded as the trade it is. */
+        var sx = q && typeof q.settle === 'number' && q.settle_date ? { px: q.settle, d: q.settle_date, w: ' settled ' }
+          : q && q.close_date ? { px: q.close, d: q.close_date, w: ' last traded ' } : null;
+        if (sx && Math.abs(age(sx.d + 'T12:00:00Z', Date.parse(bs.generated))) <= 5)
+          s += ' ' + esc(b.label) + sx.w + fut(sx.px) + ' ' + day(sx.d) + ': about $' + cashAt(sx.px, b.median).toFixed(2) + ' at that basis.';
         out.push(s);
       });
       if (out.length) src.push('Median basis of AGSIST network elevators in ' + esc(name) + ', bids as of ' + ct(bs.generated) + (bs.prev ? ', week vs ' + ct(bs.prev) : ''));

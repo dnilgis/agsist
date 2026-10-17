@@ -550,7 +550,8 @@
     while (f.months.indexOf(m) < 0) { m += 1; if (m > 12) { m = 1; y += 1; } }
     var k = f.key + '-' + MKEY[m - 1] + String(y).slice(2), x = q[k];
     if (!x || !isFinite(x.close) || !x.close_date) return null;
-    return { key: k, name: MON[m - 1] + ' ' + y + ' ' + f.name + ' futures', close: +x.close, date: String(x.close_date).replace(/-/g, '') };
+    return { key: k, name: MON[m - 1] + ' ' + y + ' ' + f.name + ' futures', close: +x.close, date: String(x.close_date).replace(/-/g, ''),
+             kind: x.close_kind || null, ctime: x.close_time || null };
   }
 
   /* How to word a futures price from data/prices.json, by when the file was
@@ -562,10 +563,23 @@
      These are Yahoo Finance prices, so a close is never called a settlement.
      Returns { kind: 'delayed'|'intraday'|'unsettled'|'close', text } where
      text follows the contract name. */
+  /* 2026-10-17: only an exchange settle is called settled. fetch_prices v3.7
+     marks each quote (close_kind); Yahoo's bar is the last trade until late
+     evening, so a quote read after the bell is not the settle until then. */
   function futuresStamp(f, fetchedIso, now) {
     var price = money(f.close), F = new Date(fetchedIso || '');
-    var closeWords = 'closed at <b>' + price + '</b> on ' + ymdLong(f.date).replace(/, \d{4}$/, '') + ' (a Yahoo Finance close, not a CME settlement)';
-    if (isNaN(F)) return { kind: 'close', text: closeWords };
+    var dayWords = ymdLong(f.date).replace(/, \d{4}$/, '');
+    var closeWords = 'settled at <b>' + price + '</b> on ' + dayWords + ' (the CME settle as Yahoo Finance posts it)';
+    var lastWords = function (iso) {
+      var t = iso ? centralClock(iso).replace(/^[A-Z][a-z]{2} \d+, /, '') : '';
+      return 'were at <b>' + price + '</b>' + (t ? ' at ' + t : '') + ' on ' + dayWords + ', the last trade; the settle is not posted yet';
+    };
+    if (f.kind === 'settle') return { kind: 'close', text: closeWords };
+    if (f.kind === 'last' && !isNaN(F)) {
+      var c0 = centralNow(F), m0 = +c0.slice(8, 10) * 60 + +c0.slice(10, 12);
+      if (f.date !== c0.slice(0, 8) || m0 >= 785) return { kind: 'unsettled', text: lastWords(f.ctime || F.toISOString()) };
+    }
+    if (isNaN(F)) return { kind: f.kind === 'last' ? 'unsettled' : 'close', text: f.kind === 'last' ? lastWords(f.ctime) : closeWords };
     var c = centralNow(F), day = c.slice(0, 8), m = +c.slice(8, 10) * 60 + +c.slice(10, 12);
     var wd = weekday(day), trading = wd !== 'Sat' && wd !== 'Sun';
     if (!trading || f.date !== day || m < 510) return { kind: 'close', text: closeWords };
@@ -576,6 +590,9 @@
       return { kind: 'intraday', text: 'were at <b>' + price + '</b> at ' + clock + ' on ' + ymdLong(day).replace(/, \d{4}$/, '') + ', mid-session, before the close' };
     }
     if (m < 800) return { kind: 'unsettled', text: 'were at <b>' + price + '</b> at ' + clock + ', just after the 1:05 p.m. close; the closing price may not be final yet' };
+    /* a file with no close_kind read the same evening: the bar is still the
+       last trade (Oct 16 feeders 343.98 at 1:46 p.m.; the bar changed at night) */
+    if (m < 1380) return { kind: 'unsettled', text: 'were at <b>' + price + '</b> at ' + clock + ', after the 1:05 p.m. close; the settle is not posted yet' };
     return { kind: 'close', text: closeWords };
   }
 

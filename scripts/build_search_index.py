@@ -75,6 +75,7 @@ PAGES = [
     ("/milk-prices", "Milk prices", "How the milk check is priced", "milk dairy class iii class iv check price futures dc cheese"),
     ("/basis", "Basis by state and vs normal", "Your state's basis, USDA regions, every state", "basis normal weak strong regions state states national storage crunch bins"),
     ("/cash-bids", "Cash bids near you", "Elevator bids by ZIP", "cash bids elevator elevators prices near me zip local grain bid"),
+    ("/cash-bid-index", "Cash Bid Index (monthly)", "Corn and soybean basis by state, each month", "cash bid index monthly basis by state corn soybean elevators widest narrowest"),
     ("/elevators", "For elevators: coverage and claim your board", "Which elevators we read, claim yours", "elevators coverage map network boards claim board elevator manager"),
     ("/cot", "COT report", "What the funds hold", "cot cftc commitment traders funds managed money positions"),
     ("/#f-kalshi", "Prediction markets", "Odds on the homepage", "odds prediction markets kalshi polymarket bets"),
