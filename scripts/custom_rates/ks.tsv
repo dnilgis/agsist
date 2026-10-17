@@ -1,0 +1,98 @@
+# state: KS
+# name: Kansas
+# survey: Kansas Custom Rates 2026 (Rates Paid by Kansas Farmers for Custom Work)
+# publisher: Kansas Department of Agriculture and the Kansas State University Land Use Survey Office
+# survey_year: 2026
+# collected: Online survey of Kansas custom operators; the report covers custom work during 2025-2026
+# url: https://www.agmanager.info/sites/default/files/pdf/CustomRates_2026.pdf
+# ref: cr-ks-2026
+# spread: minmax
+# includes: The prices include charges for machinery, power, fuel, and the operator. They do not include chemicals, seeds, and other materials unless specified; hay baling materials are the one exception. KDA and K-State say the prices should not be regarded as official or established rates.
+# range_note: Rows are the report's STATE lines (district tables are in the report). The range is the lowest and highest rate reported. The report's table for hauling round bales by the ton disagrees with its own text (which calls it per hour), so that line is left out.
+key	section	operation	unit	avg	lo	hi	n
+	Grain harvesting	Wheat, base rate (plus $0.303 a bushel above 26 bushels an acre)	acre	30.91	20	42	138
+	Grain harvesting	Wheat, extra charge for high yield (above 26 bushels an acre)	bushel	0.303			132
+combine-smallgrain	Grain harvesting	Wheat, flat rate	acre	34.37	22	51	52
+	Grain harvesting	Grain sorghum, base rate (plus $0.297 a bushel above 42 bushels an acre)	acre	31.98	21	45	102
+	Grain harvesting	Grain sorghum, flat rate	acre	38.62	24	55	45
+	Grain harvesting	Corn, base rate (plus $0.279 a bushel above 69 bushels an acre)	acre	35.27	21	55	80
+	Grain harvesting	Corn, base rate	bushel	0.468	0.36	0.65	24
+combine-corn	Grain harvesting	Corn, flat rate	acre	41.87	18	58	82
+	Grain harvesting	Soybeans, base rate (plus $0.301 a bushel above 29 bushels an acre)	acre	38.04	25	57	63
+combine-soy	Grain harvesting	Soybeans, flat rate	acre	38.67	18	55	79
+	Grain harvesting	Sunflower, base rate	acre	39.33	26	50	15
+	Grain harvesting	Canola, base rate	acre	32.22	32	33	9
+	Seed cleaning	Wheat seed cleaning	bushel	1.00	0.65	1.50	14
+	Grain hauling	Hauling wheat, field to farm storage or elevator (17 mile limit; $0.051 a bushel a mile beyond)	bushel	0.280			117
+	Grain hauling	Hauling grain sorghum (17 mile limit; $0.048 a bushel a mile beyond)	bushel	0.291			91
+haul-grain-bu	Grain hauling	Hauling corn, field to farm storage or elevator (16 mile limit; $0.055 a bushel a mile beyond)	bushel	0.239			117
+	Grain hauling	Hauling soybeans (18 mile limit; $0.056 a bushel a mile beyond)	bushel	0.242			82
+	Silage	Chopping, hauling and filling the silo	ton	14.44	11.50	17.00	24
+	Silage	Chopping and hauling	ton	11.62	9.75	13.00	25
+	Silage	Chopping only	ton	9.48	6.00	11.00	21
+	Silage	Hauling only	ton	1.93	0.30	4.25	23
+mow-hay	Haying	Mowing or swathing hay	acre	17.71	10	25	49
+	Haying	Mowing or swathing forage	acre	17.47	10	25	30
+mow-cond	Haying	Swathing and conditioning	acre	17.93	8	25	46
+rake	Haying	Side raking	acre	6.74	4	18	44
+	Haying	Baling small square bales with wire	bale	1.85	1.00	2.75	10
+bale-smallsq	Haying	Baling small square bales with twine	bale	2.56	1.00	5.00	9
+bale-round	Haying	Baling large round bales under 1,500 pounds, without net	bale	17.50	14.00	20.00	4
+	Haying	Baling large round bales under 1,500 pounds, with net	bale	16.06	12.00	20.00	51
+	Haying	Baling large round bales over 1,500 pounds, without net	bale	18.50	17.00	20.00	4
+bale-round-net	Haying	Baling large round bales over 1,500 pounds, with net	bale	18.96	14.00	25.00	54
+	Haying	Hauling large round bales, field to storage	bale	5.64	5	10	28
+	Land tillage	Disking (including one-way disking)	acre	18.50	11	27	51
+disk-tandem	Land tillage	Tandem disking	acre	19.60	13	28	36
+chisel	Land tillage	Chisel (4-12 inches)	acre	21.52	10	30	31
+	Land tillage	Deep chisel (over 12 inches)	acre	25.41	20	32	22
+strip-till	Land tillage	Strip tillage	acre	26.28	15	42	53
+	Land tillage	Deep strip tillage (over 6 inches)	acre	27.07	12	34	22
+vertical-till	Land tillage	Vertical tillage, high speed, shallow (2-4 inches)	acre	20.76	9.5	28	65
+subsoil	Land tillage	Subsoiler/in-line ripper (about 30 hp per shank)	acre	27.40	15	35	35
+field-cult	Land tillage	Field cultivator (5 hp per linear foot)	acre	17.88	11	30	38
+	Land tillage	Undercutter, shallow	acre	17.93	10	25	34
+	Land tillage	Undercutter, large V blade	acre	16.59	7.25	25	53
+drill-smallgrain	Planting, regular till, no fertilizer or chemical	Small grain drilling	acre	19.91	10	28	51
+	Planting, regular till, no fertilizer or chemical	Grain sorghum, row planting	acre	21.27	10	30	26
+plant-row	Planting, regular till, no fertilizer or chemical	Corn, row planting	acre	22.64	10	35	48
+	Planting, regular till, no fertilizer or chemical	Soybeans, row planting	acre	24.71	16	35	35
+drill-soy	Planting, regular till, no fertilizer or chemical	Soybeans, drilling	acre	23.06	16	28	18
+	Planting, regular till, no fertilizer or chemical	Soybeans, twin row planting	acre	23.80	18	35	10
+	Planting, regular till, with fertilizer	Small grain drilling	acre	23.39	10	33	49
+	Planting, regular till, with fertilizer	Grain sorghum, row planting	acre	24.08	15	34	36
+plant-row-fert	Planting, regular till, with fertilizer	Corn, row planting	acre	25.53	15	36	57
+	Planting, regular till, with fertilizer	Soybeans, row planting	acre	26.65	16	37	34
+	Planting, regular till, with fertilizer	Soybeans, drilling	acre	25.11	16	34	27
+	Planting, minimum or no-till, no fertilizer or chemical	Small grain drilling	acre	21.34	14	30	80
+	Planting, minimum or no-till, no fertilizer or chemical	Grain sorghum, row planting	acre	23.10	16	30	49
+plant-notill	Planting, minimum or no-till, no fertilizer or chemical	Corn, row planting	acre	24.07	16	35	81
+	Planting, minimum or no-till, no fertilizer or chemical	Soybeans, row planting	acre	24.56	16	35	55
+drill-soy-notill	Planting, minimum or no-till, no fertilizer or chemical	Soybeans, drilling	acre	23.15	16	30	27
+	Planting, minimum or no-till, with fertilizer	Small grain drilling	acre	23.04	13	36	83
+	Planting, minimum or no-till, with fertilizer	Grain sorghum, row planting	acre	23.60	13	32	68
+	Planting, minimum or no-till, with fertilizer	Corn, row planting	acre	25.18	13	35	84
+	Planting, minimum or no-till, with fertilizer	Soybeans, row planting	acre	25.54	13	36	47
+	Planting, minimum or no-till, with fertilizer	Soybeans, drilling	acre	24.71	13	32	38
+	Planting, other	Grass seeding	acre	21.19	15	35	21
+	Planting, other	Alfalfa-legume seeding	acre	21.88	17	28.5	26
+	Planting, other	Cover crop drilling, regular till	acre	20.04	5	28	27
+	Planting, other	Cover crop drilling, minimum or no-till	acre	22.51	16	30	49
+	Chemical application	Row crop cultivation with fertilizer application	acre	16.93	8.50	32.00	14
+	Chemical application	Row crop cultivation without fertilizer application	acre	16.05	7.50	30.00	19
+fert-dry	Chemical application	Dry fertilizer application	acre	8.40	5.50	15.00	131
+fert-liquid	Chemical application	Liquid fertilizer application	acre	8.28	3.00	24.00	137
+nh3	Chemical application	Anhydrous ammonia application	acre	21.51	6.50	32.00	82
+spray-aerial	Chemical application	Herbicide, aerial	acre	10.11	7.50	16.00	44
+spray-ground	Chemical application	Herbicide, ground rig	acre	8.57	5.00	18.00	196
+	Chemical application	Insecticide/fungicide, aerial	acre	10.23	7.00	13.50	48
+	Chemical application	Insecticide/fungicide, ground rig	acre	8.74	5.00	20.00	136
+	Machine rental	Combine	hour	247.50	100	875	8
+	Machine rental	Skid loader	hour	95.56	80	120	9
+	Machine rental	Corn header	acre	11.22	8	20	9
+	Machine rental	No till drill	acre	17.20	10	22	5
+	Machine rental	Tractor, 250+ hp	hour	203.43	80	260	7
+	Livestock hauling	Belly semi truck, one-way load charge	mile	4.88	4.00	5.50	8
+	Livestock hauling	Flat cattle truck, one-way load charge	mile	5.22	1.60	6.00	21
+	Terracing and dozing	Terracing	foot	1.85	1.10	2.50	11
+	Terracing and dozing	Dozing	hour	202.86	150	275	21
