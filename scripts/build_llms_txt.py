@@ -78,7 +78,6 @@ PAGES = [
     ("What's my grain worth today?", [
         ("/cash-bids", "Cash Grain Bids", "local elevator bids and basis by ZIP"),
         ("/cash-bid-index", "AGSIST Cash Bid Index", "monthly cash corn and soybean bids and basis by state, counted from the elevators AGSIST reads"),
-        ("/cash-bids/company/", "Cash Bids by Elevator Company", "every elevator company with 3 or more network locations, today's bids at all its locations on one page"),
         ("/cash-bids/iowa/", "Bids and Basis by State",
          "each state's best bids, median corn and soybean basis with the number of elevators behind it, and every elevator's bid, at /cash-bids/<state>/"),
         ("/basis", "Basis by State and vs Normal",
