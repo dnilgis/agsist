@@ -155,7 +155,7 @@
 
   // Wisconsin property classes (the assessment classes printed on the tax bill).
   var CLASS = { '1': 'Residential', '2': 'Commercial', '3': 'Manufacturing', '4': 'Agricultural', '5': 'Undeveloped',
-    '5M': 'Agricultural forest', '6': 'Productive forest', '7': 'Other (farm buildings and farm home)', 'X': 'Exempt' };
+    '5M': 'Agricultural forest', '6': 'Productive forest', '7': 'Other (farm buildings)', 'X': 'Exempt' };
   FSLand.classLabel = function (c) {
     return String(c || '').split(/[\s,;/]+/).filter(Boolean).map(function (x) { return CLASS[x.toUpperCase()] || x; }).join(', ');
   };
@@ -393,8 +393,8 @@
     '.fl-tabs button[aria-pressed="true"],.fl-btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}' +
     '.fl-hist{list-style:none;margin:.3rem 0;padding:0}.fl-hist li{border-top:1px solid var(--border);padding:.45rem 0;font-size:.85rem;color:var(--text)}.fl-hist li:first-child{border-top:0}' +
     '.fl-hist .d{font-family:var(--font-mono);font-weight:700}.fl-hist .m{color:var(--text-dim);font-size:.8rem}' +
-    '.fl-filt{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .6rem;margin:.4rem 0;font-size:.8rem;color:var(--text-muted)}.fl-filt label{display:flex;flex-direction:column;gap:.15rem}' +
-    '.fl-filt input,.fl-filt select{font:inherit;font-size:.85rem;padding:.3rem .4rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);min-width:0}' +
+    '.fl-filt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem .6rem;margin:.4rem 0;font-size:.8rem;color:var(--text-muted)}.fl-filt label{display:flex;flex-direction:column;gap:.15rem;min-width:0}' +
+    '.fl-filt input,.fl-filt select{font:inherit;font-size:.85rem;padding:.3rem .4rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);min-width:0;width:100%;box-sizing:border-box}' +
     '.fl-tblw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.3rem 0}.fl-tbl{width:100%;border-collapse:collapse;font-size:.82rem;min-width:420px}' +
     '.fl-tbl th{text-align:left;color:var(--text-muted);font-weight:600;border-bottom:1px solid var(--border);padding:.3rem .4rem;white-space:nowrap}' +
     '.fl-tbl th button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}.fl-tbl td{padding:.3rem .4rem;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}' +
@@ -467,7 +467,7 @@
     function th(k, t, n) { return '<th class="' + (n ? 'n' : '') + '"><button type="button" data-sort="' + k + '">' + t + '</button></th>'; }
     return '<div class="fl-tblw"><table class="fl-tbl"><thead><tr>' + th('date', 'Date') + th('ppa', '$/ac', 1) + th('acres', 'Acres', 1) + th('price', 'Price', 1) + th('mi', 'Miles', 1) + '<th>Town, class</th></tr></thead><tbody>' +
       list.slice(0, max).map(function (r) {
-        return '<tr><td>' + fd(r.date) + '</td><td class="n">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n">' + (+r.acres).toFixed(1) + '</td><td class="n">' + fm(r.price) + '</td><td class="n">' + (r.mi != null ? r.mi.toFixed(0) : '') + '</td><td>' + esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls)) : '') + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">buildings</span>' : '') + '</td></tr>';
+        return '<tr><td>' + fd(r.date) + '</td><td class="n">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n">' + (+r.acres).toFixed(1) + '</td><td class="n">' + fm(r.price) + '</td><td class="n">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td>' + esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls)) : '') + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + '</td></tr>';
       }).join('') + '</tbody></table></div>' + (list.length > max ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + '. Narrow the filters to see the rest.</p>' : '');
   };
 
@@ -575,7 +575,7 @@
         return '<button type="button" data-p="' + i + '" aria-pressed="' + (i === S.sel) + '">' + esc(q.id || 'Parcel ' + (i + 1)) + ' &middot; ' + Math.round(q.share * 100) + '%</button>';
       }).join('') + '</div>' : '';
       set('fl-parcel', '<p class="fl-note">' + (S.parcels.length > 1 ? S.parcels.length + ' parcels lie under this field. Tap one, here or on the map.' : 'The parcel under this field.') + '</p>' + tabs + '<div class="fl-p">' + FSLand.parcelHTML(p, S.svcDate) + '</div>' +
-        '<h4 style="margin:.7rem 0 .2rem">Every recorded transfer of this parcel</h4><div id="fl-hist"><div class="fs-loading"><span class="fs-spin"></span>reading</div></div>');
+        '<h4 style="margin:.7rem 0 .2rem">Recorded transfers of this parcel</h4><div id="fl-hist"><div class="fs-loading"><span class="fs-spin"></span>reading</div></div>');
       var b = document.getElementById('fl-parcel');
       if (b) Array.prototype.forEach.call(b.querySelectorAll('[data-p]'), function (el) { el.addEventListener('click', function () { S.sel = +el.getAttribute('data-p'); renderParcels(); drawParcels(); }); });
       renderHistory();
