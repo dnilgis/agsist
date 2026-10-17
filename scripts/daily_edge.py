@@ -546,7 +546,8 @@ def render_html(edge, date_iso=""):
             f'<ol class="dv3-edge-list">{items}</ol>'
             '<p class="dv3-edge-note">Counted by code from the elevator boards AGSIST reads itself, '
             'not by the writer of this briefing. A day\'s change is each board\'s last posted bid against '
-            f'its own on the trading day before, same delivery period.{cite} <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a></p>'
+            f'its own on the trading day before, same delivery period.{cite} <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>'
+            ' &middot; <a href="/cash-bid-index">Monthly: AGSIST Cash Bid Index</a></p>'
             '</section>')
 
 
