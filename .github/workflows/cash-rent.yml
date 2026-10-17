@@ -60,7 +60,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A data/cash-rent 2>/dev/null || true
+          # the break-even calculator's small per-state county files read the rent file
+          python scripts/build_breakeven_data.py
+          git add -A data/cash-rent data/breakeven 2>/dev/null || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -m "data: NASS county cash rent + trend yield"
           # Rebase onto the branch this run started from (main on schedule; the
