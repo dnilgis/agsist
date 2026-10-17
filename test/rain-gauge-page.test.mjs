@@ -52,12 +52,13 @@ test("no build details, no promises the owner has not made, house style", () => 
     [/tipping bucket|\bbucket\b|\bpivot\b|\bsolar\b|18650|lithium|Li-?ion|\bAA\b|mAh/i, "the mechanism or its power parts"],
   ]) assert.ok(!re.test(words), "the page must not carry " + why + ": " + (words.match(re) || [])[0]);
   assert.ok(/before planting 2027/.test(words), "states the plan");
-  assert.ok(/Early prototype, 3D render/.test(words), "the render says what it is");
+  // the old renders show the private prototype (its scale and markings), and not the gauge that reports on its own
+  assert.ok(!/img\/rain-gauge\//.test(main), "no prototype render on the page (Oct 16)");
 });
 
 test("every picture has a size, alt text and a file behind it, and every caption says what it is", () => {
   const imgs = [...main.matchAll(/<img\b[^>]*>/g)].map((m) => m[0]);
-  assert.ok(imgs.length >= 2);
+  assert.ok(imgs.length >= 1);
   for (const t of imgs) {
     assert.ok(/\swidth="\d+"/.test(t) && /\sheight="\d+"/.test(t), "size: " + t);
     assert.ok(/\salt="/.test(t), "alt: " + t);
@@ -66,12 +67,12 @@ test("every picture has a size, alt text and a file behind it, and every caption
   }
   for (const m of main.matchAll(/srcset="\/([^"]+)"/g)) assert.ok(existsSync(ROOT + m[1]), "file: " + m[1]);
   const caps = [...main.matchAll(/<figcaption[^>]*>([^<]*)<\/figcaption>/g)].map((m) => m[1]).filter((c) => !/Sigurd/.test(c));
-  assert.ok(caps.length >= 2);
-  for (const c of caps) assert.ok(/^(Early prototype, 3D render\. The gauge that ships may look different\.|A real one: \d{4} at )/.test(c), "caption: " + c);
+  assert.ok(caps.length >= 1);
+  for (const c of caps) assert.ok(/^A real one: \d{4} at /.test(c), "caption: " + c);
   assert.ok(main.includes('src="/img/rain-print-example-2012-ames-ia.jpg"'), "the real Rain Print example");
   // the renders Sig turned down stay off the page and out of the repo
   for (const old of ["gauge-field-edge", "gauge-phone-scan", "gauge-top-qr", "screen-1-scan", "screen-2-confirm",
-    "gauge-reading", "gauge-top-code", "screen-3-log", "screen-4-share"]) {
+    "gauge-reading", "gauge-top-code", "screen-3-log", "screen-4-share", "gauge-wood-post", "gauge-t-post"]) {
     assert.ok(!page.includes(old), "old concept image on the page: " + old);
     for (const ext of [".webp", ".jpg"]) assert.ok(!existsSync(ROOT + "img/rain-gauge/" + old + ext), "old concept image in the repo: " + old + ext);
   }
@@ -120,8 +121,8 @@ test("the warranty says where to write, as a link, on the card, in the FAQ and i
   assert.equal((main.match(/Send me a photo and tell me what happened\. Write to me at <a href="mailto:sig@farmers1st\.com">sig@farmers1st\.com<\/a>\./g) || []).length, 2);
   assert.ok(JSON.stringify(ld).includes("Write to me at sig@farmers1st.com."));
 });
-test("phone layout: picture first on a phone, full-width buttons, a full-width email box", () => {
-  assert.match(page, /@media\(max-width:899px\)\{\.rg-split>figure\{order:-1\}\}/);
+test("phone layout: heading, then the picture, on a phone, full-width buttons, a full-width email box", () => {
+  assert.match(page, /\.rg-split\{display:grid;gap:0;grid-template-areas:"head" "fig" "body"/);
   assert.match(page, /@media\(max-width:520px\)\{\.rg-go-link\{width:100%\}\}/);
   assert.match(page, /@media\(max-width:420px\)\{\.rg-grid\{grid-template-columns:1fr\}\}/);
 });

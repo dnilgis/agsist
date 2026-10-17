@@ -19,7 +19,7 @@
   <meta property="og:image"        content="https://agsist.com/img/og/rain-gauge.jpg?v=8fe25a59">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt"    content="3D render of an early prototype rain gauge on a fence post at the edge of a field. Waitlist open.">
+  <meta property="og:image:alt"    content="3D render of an early rain gauge prototype on a fence post at the edge of a field. Waitlist open.">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:title"       content="Rain Print now, a rain gauge before planting 2027">
@@ -57,6 +57,7 @@
   .rg-lede{font-size:var(--fs-md);color:var(--text-dim);line-height:1.6;margin:0 0 1.2rem;max-width:52ch}
   .rg-two{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
   @media(min-width:700px){.rg-two{grid-template-columns:1fr 1fr;gap:1rem}}
+  .rg-two a,#main .rg-two a{text-decoration:none}
   .rg-two a{display:block;height:100%;box-sizing:border-box;padding:14px 16px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text)!important;text-decoration:none}
   .rg-two a:hover,.rg-two a:focus-visible{border-color:var(--brand)}
   .rg-two a:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
@@ -66,12 +67,13 @@
   .rg-by{margin:1rem 0 0;font-size:var(--fs-xs);color:var(--text-muted)}
 
   /* a product: words beside a picture */
-  .rg-split{display:grid;gap:1.3rem;align-items:start}
-  @media(min-width:900px){.rg-split{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:2.6rem;align-items:center}}
+  /* phone: the heading, the picture, then the rest; wide: words left, picture right */
+  .rg-split{display:grid;gap:0;grid-template-areas:"head" "fig" "body";align-items:start}
+  .rg-split>.rg-head{grid-area:head}.rg-split>figure{grid-area:fig;margin:0 0 1.2rem}.rg-split>.rg-body{grid-area:body}
+  @media(min-width:900px){.rg-split{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-areas:"head fig" "body fig";grid-template-rows:auto 1fr;column-gap:2.6rem}.rg-split>figure{margin:0;align-self:center}.rg-nofig{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-areas:"head body";grid-template-rows:auto}}
   .rg-split figure{margin:0}
   .rg-split img{display:block;width:100%;height:auto;border-radius:var(--r-lg);box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -18px rgba(0,0,0,.55)}
   .rg-split figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
-  @media(max-width:899px){.rg-split>figure{order:-1}}
   .rg-price{margin:0 0 .4rem;font-weight:600;color:var(--text);line-height:1.5}
   .rg-xmas{margin:0 0 .9rem;font-size:var(--fs-sm);color:var(--text-dim);line-height:1.5}
   .rg-go-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
@@ -174,10 +176,12 @@
 
     <section class="rg-sec" id="rain-print" aria-labelledby="rg-rp-h">
       <div class="rg-split">
-        <div>
+        <div class="rg-head">
           <p class="rg-tag">Available now</p>
           <h2 class="sec-h" id="rg-rp-h">Rain Print</h2>
           <p class="rg-p">One year of rain at the NOAA station nearest you, drawn day by day on a 12 x 18 print, printed and framed for the wall. Type your town and a year: a drought year, the wet spring, the year you bought the place. Drawing it is free. You pay only if you want it printed.</p>
+        </div>
+        <div class="rg-body">
           <ul class="rg-why">
             <li><b>Every rain and snow of the year,</b> from NOAA&rsquo;s daily records, next to what a usual year brings.</li>
             <li><b>Your name and dates on it.</b> You see a proof before I print.</li>
@@ -195,12 +199,14 @@
     </section>
 
     <section class="rg-sec" id="gauge" aria-labelledby="rg-gauge-h">
-      <div class="rg-split">
-        <div>
+      <div class="rg-split rg-nofig">
+        <div class="rg-head">
           <p class="rg-tag soon">Coming before planting 2027</p>
           <!-- THE GAUGE'S NAME: this heading is the one place it is written. Change it here when the name is picked. -->
           <h2 class="sec-h" id="rg-gauge-h">The AGSIST rain gauge</h2>
           <p class="rg-p">A gauge you put on a post out in the field and leave there. It keeps the record so you don&rsquo;t have to.</p>
+        </div>
+        <div class="rg-body">
           <ul class="rg-why">
             <li><b>It reports on its own.</b> You don&rsquo;t drive out to read it after every rain.</li>
             <li><b>Built to run through a Wisconsin winter on batteries.</b> The first winter is part of the test.</li>
@@ -210,10 +216,6 @@
           </ul>
           <a class="rg-go-link" href="#waitlist" data-rg-jump>Get on the waitlist</a>
         </div>
-        <figure>
-          <picture><source type="image/webp" srcset="/img/rain-gauge/gauge-wood-post.webp" sizes="(min-width: 900px) 540px, 100vw"><img src="/img/rain-gauge/gauge-wood-post.jpg" width="1600" height="1000" alt="3D render of an early prototype rain gauge on a wooden fence post at the edge of a field, with a charcoal top." loading="lazy" decoding="async"></picture>
-          <figcaption>Early prototype, 3D render. The gauge that ships may look different.</figcaption>
-        </figure>
       </div>
       <div class="rg-cards">
         <div>
