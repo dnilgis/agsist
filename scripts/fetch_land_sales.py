@@ -1261,7 +1261,9 @@ def selftest():
         del ix["months"]
         json.dump(ix, open(os.path.join(OUT, "wi", "index.json"), "w"))
         ck("merge: files written before the month list hold every month of their filed span", held("WI")[2] == {"202403", "202404", "202405"})
-        _, _, derived = held("WI", tempfile.mkdtemp(prefix="wi-none-"))
+        none_dir = tempfile.mkdtemp(prefix="wi-none-")
+        _, _, derived = held("WI", none_dir)
+        os.rmdir(none_dir)
         ck("merge: no files on disk means nothing held", derived == set())
     finally:
         import shutil
