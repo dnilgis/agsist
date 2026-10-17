@@ -30,7 +30,7 @@
   // proxy is not called at all, rather than called and ignored.
   var LICENSED_FEED = false;   // Barchart turned off 2026-10-11 (Sig cancelling the subscription)
   var LICENSED_DEADLINE_MS = 6000;
-  var NET_SCRIPT = '/components/bids-network.js?v=5';
+  var NET_SCRIPT = '/components/bids-network.js?v=6';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
@@ -1106,7 +1106,7 @@
   function fromNetwork(zip){
     return ensureNet().then(function(NET){
       if(!NET || typeof NET.snapshotForZip !== 'function') return {rows: [], ok: false, pending: netScriptState === 'pending'};
-      return NET.snapshotForZip(zip, { radiusMi: 50 }).then(function(snap){
+      return NET.snapshotForZip(zip, { radiusMi: 50, maxPlaces: 60 }).then(function(snap){
         if(!snap || !snap.bids){
           /* WAVE1-A: null is "nothing within 50 miles" only when both the
              index and this ZIP's coordinate file actually loaded. A slow or
