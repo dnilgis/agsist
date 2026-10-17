@@ -48,6 +48,7 @@ sys.path.insert(0, HERE)
 import county_rain as R  # noqa: E402
 import build_prf_states as S  # noqa: E402  boot() and text_of()
 import inject_static_nav as nav  # noqa: E402
+import county_stories as CS  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
@@ -633,7 +634,7 @@ def county_page(ctx):
     <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported')}</p>
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
-    <dl class="rc-figs">{figs_html}</dl>
+    {('<p class="rc-story">' + e(ctx['story']) + '</p>' + chr(10) + '    ') if ctx.get('story') else ''}<dl class="rc-figs">{figs_html}</dl>
     {radar_line(st, name, stw)}
     {chart(c, year, name, noun, ready)}
     {sell}
@@ -842,6 +843,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
     NB = NB if NB is not None else R.neighbors()
     files = load(data_dir)
     daily = load_daily(data_dir, files)
+    stories = CS.load_stories(data_dir)   # data/rain/stories/<st>.json, shown only on an exact facts match
     pages = {}   # fips -> (name, href, total text)
     for st, d in files.items():
         for fips, c in d["counties"].items():
@@ -863,7 +865,8 @@ def build(data_dir, C=None, NB=None, img_root=None):
                      pages[f][2] + ("" if pages[f][3] == c["as_of"] else f" to {short_date(pages[f][3])}")) for f in nb[:4]]
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
                                 "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "alt": alt,
-                                "day": daily.get(st, {}).get(fips)})
+                                "day": daily.get(st, {}).get(fips),
+                                "story": CS.story_for(stories.get(st, {}).get(fips), CS.facts(c, d, st)) if stories.get(st, {}).get(fips) else None})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
             if len(body.encode()) > MAX_KB * 1024:
