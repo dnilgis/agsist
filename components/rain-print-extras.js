@@ -19,8 +19,8 @@
  * between 50 and 86 F, averaged, less 50; counted from the planting day itself
  * (the calculator's weather starts on the planting date); the stage thresholds
  * are components/gdu-stages.js, the site's one table (corn: Purdue NCH-40 Table 3,
- * cumulative GDU from planting for a 2,700 GDU hybrid; soybeans: rough marks,
- * since soybean stages follow day length as much as heat). A day with no high
+ * cumulative GDU from planting for a 2,700 GDU hybrid; soybeans: emergence and V3
+ * only, since flowering and maturity follow day length and variety, not heat alone). A day with no high
  * or no low stops the count there: no stage after it is claimed, and nothing is
  * filled in. A stage past the harvest day is not drawn.
  *
@@ -53,10 +53,13 @@
       picks: [['VE', 'Emerged'], ['V6', 'V6'], ['R1', 'Silk'], ['R5', 'Dent'], ['R6', 'Black layer']],
       foot: 'Corn stages: growing degree days (86/50) from planting; stage GDUs for a 2,700 GDU hybrid (Purdue NCH-40)'
     },
+    /* Soybeans: emergence and V3 only (2026-10-17, review). Flowering, pod fill and maturity follow day length
+       and maturity group, so a heat-only count puts them weeks early (R7 on Aug 4 for May 10 beans in 2012,
+       when Iowa beans reach it in September); they are not drawn, and the foot line says so. */
     soy: {
-      name: 'Soybeans', table: 'bean', key: 'R1',
-      picks: [['VE', 'Emerged'], ['V3', 'V3'], ['R1', 'Flowering'], ['R5', 'Seed fill'], ['R7', 'Maturing']],
-      foot: 'Soybean stages: growing degree days (86/50) from planting; rough, since day length matters too'
+      name: 'Soybeans', table: 'bean', key: 'V3',
+      picks: [['VE', 'Emerged'], ['V3', 'V3']],
+      foot: 'Soybean stages: growing degree days (86/50) from planting; soybean flowering and maturity depend on day length and variety, so they are not drawn'
     }
   };
   var KINDS = ['corn', 'soy'];

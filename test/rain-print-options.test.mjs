@@ -57,11 +57,20 @@ test("corn stages by hand: 20 GDU a day from May 1 (Purdue NCH-40 thresholds in 
   assert.deepEqual(plain(r.stages.map((s) => s.gdu)), ["VE", "V6", "R1", "R5", "R6"].map((k) => g.find((x) => x.s === k).gdu), "the site's one table");
 });
 
-test("soybean stages by hand: 20 GDU a day from May 10", () => {
+test("soybean stages by hand: 20 GDU a day from May 10; emergence and V3 only", () => {
   const td = X.tempDays(temps(2025, () => [80, 60]), 2025);
   const r = X.cropStages("soy", td, "2025-05-10", "2025-10-15");
-  // VE 130: 7 days -> May 16; V3 400: 20 days -> May 29; R1 800: 40 days -> Jun 18; R5 1600: 80 days -> Jul 28; R7 1900: 95 days -> Aug 12
-  assert.deepEqual(plain(r.stages.map((s) => [s.key, s.date])), [["VE", "2025-05-16"], ["V3", "2025-05-29"], ["R1", "2025-06-18"], ["R5", "2025-07-28"], ["R7", "2025-08-12"]]);
+  // VE 130: 7 days -> May 16; V3 400: 20 days -> May 29. Flowering, seed fill and maturity follow day length and variety: not drawn
+  assert.deepEqual(plain(r.stages.map((s) => [s.key, s.date])), [["VE", "2025-05-16"], ["V3", "2025-05-29"]]);
+  assert.equal(r.stop, null, "the season is done once V3 is placed");
+  assert.equal(X.CROPS.soy.key, "V3", "the usual-year comparison is for V3");
+  assert.match(X.CROPS.soy.foot, /soybean flowering and maturity depend on day length and variety, so they are not drawn/);
+  // the usual-year note for soybeans, by hand: 24 a day reaches V3 400 on day 17 (May 26), 20 a day on day 20 (May 29): 3 days ahead
+  const warm = X.tempDays(temps(2025, () => [84, 64]), 2025);
+  const s = RP.normalize({ place: "Ames, IA", year: 2025, crop: "soy", cropPlant: "2025-05-10", cropHarvest: "2025-10-15", plants: true, ghost: true });
+  const c = RP.cropInput(s, warm, td);
+  assert.deepEqual(plain(c.note), { key: "V3", days: 3, text: "3 days ahead of a usual year" });
+  assert.deepEqual(plain(c.ghost.map((g) => g.key)), ["VE", "V3"]);
 });
 
 test("a day with no high or low stops the count; harvest ends the season; nothing is filled in", () => {
