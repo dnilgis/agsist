@@ -2920,6 +2920,11 @@
       : PICK === 'digital' ? 'It\u2019s a gift? At checkout you can add their name and a note, and I send the note with the file. No prices go with it.'
       : 'It\u2019s a gift? At checkout you can add their name, a note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
     $('rp-gift-line').hidden = januaryGift() || !!(GIFT && GIFT.usable);
+    // the same offer above the button (2026-10-17, field audit: most buyers never scroll past Pay)
+    $('rp-gift-pre').innerHTML = PICK === 'digital' ? 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note.'
+      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address.';
+    $('rp-gift-pre').hidden = $('rp-gift-line').hidden || !canOrder();
+    pgSync();
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
     $('rp-madeby').textContent = MADE_BY[PICK === 'digital' ? 'file' : 'print'];
@@ -3084,6 +3089,11 @@
       return;
     }
     if (GIFT && GIFT.usable) { closeProof(true); useGift(); return; }
+    var gift = pgOn();
+    if (gift) {
+      var chk = pgOrder('');
+      if (chk.bad) { proofSay(chk.bad[1]); try { $(chk.bad[0]).focus(); } catch (err) {} return; }
+    }
     var link = payLink(id), long = encodeCode(ST).length > 200;
     /* A design past Stripe's 200 letters goes as its short-link id, and the
        id is asked of the worker at this press every time, never taken from
@@ -3095,7 +3105,25 @@
       return;
     }
     var code = link && long && !(opts && opts.ok) ? '' : refFor();
-    ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : 0 });
+    // a gift goes to Sig first, then to checkout; if it can't be saved, the buyer stays here and is told
+    if (gift && link && code && !(opts && opts.giftSent)) {
+      var g = pgOrder(code).x, send = root.agsistFormPost;
+      var fs = Object.assign({ _subject: orderSubject(g) + ' (paying at checkout)', _replyto: g.email, form: 'rain-print-order' }, g);
+      var btn = $('rp-proof-order');
+      proofSay('Saving the gift details\u2026', true);
+      btn.disabled = true;
+      (send ? send('rain-print-order', g, fs) : Promise.reject(new Error('no form helper'))).then(function () {
+        btn.disabled = false;
+        pay({ minted: opts && opts.minted, ok: opts && opts.ok, giftSent: true });
+      }, function () {
+        btn.disabled = false;
+        ga('rain_print_gift_save', { result: 'fail', choice: id });
+        var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
+        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name, your note and their address to ' + ORDER_TO + '.', true);
+      });
+      return;
+    }
+    ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : gift ? 2 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters: the design code, or its short-link id when the code is longer
     if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
@@ -3293,6 +3321,68 @@
       : PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
       : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-proof-ok-wrap').hidden = !can;
+    pgSync();
+  }
+  /* THE GIFT ON THE REVIEW SHEET (2026-10-17, field audit). The last AGSIST
+     screen before Stripe never said the print could be a gift, and the order
+     form's own "It's a gift" box (#ro-isgift) only shows on the order-request
+     path. Now the sheet has the tick and the fields. They mirror the order
+     form's (PG_MIRROR), so a fall-back to the form keeps what was typed. With
+     a payment link, Pay first posts the gift as a rain-print-order (gift: yes,
+     the same fields an order request sends) for scripts/form_digest.py to mail
+     Sig, whose note goes on the letter (rp-insert), then opens checkout. Not
+     offered for this year's January gift (#rp-gift has its own boxes) or an
+     order a gift card pays for. */
+  var PG_MIRROR = { 'rp-pg-to': 'ro-gift-to', 'rp-pg-msg': 'ro-gift-msg', 'rp-pg-deliver': 'ro-deliver', 'rp-pg-email': 'ro-gift-email',
+    'rp-pg-addr': 'ro-address', 'rp-pg-name': 'ro-name', 'rp-pg-me': 'ro-email' };
+  function pgOffered() { return canOrder() && !januaryGift() && !(GIFT && GIFT.usable); }
+  function pgOn() { return pgOffered() && $('rp-pg-on').checked; }
+  function pgTheirs() { return $('rp-pg-deliver').value === 'recipient'; }
+  function pgPull() {
+    // what the order form already holds comes onto the sheet
+    Object.keys(PG_MIRROR).forEach(function (k) { var v = $(PG_MIRROR[k]).value; if (v && !$(k).value) $(k).value = v; });
+    if ($('ro-isgift').checked) $('rp-pg-on').checked = true;
+  }
+  function pgSync() {
+    var offered = pgOffered(), on = offered && $('rp-pg-on').checked, file = PICK === 'digital', theirs = pgTheirs();
+    $('rp-pgift').hidden = !offered;
+    $('rp-pg-box').hidden = !on;
+    $('rp-pg-msg-l').textContent = file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
+    $('rp-pg-addr-wrap').hidden = file;
+    $('rp-pg-addr-l').textContent = (theirs ? 'Their address' : 'Your address') + ' (name, street, town, ' + (caOrder() ? 'province, postal code' : 'state, ZIP') + ')';
+    $('rp-pg-email-wrap').hidden = !(file && theirs);
+    $('rp-pg-me-l').textContent = file ? 'Your email' : 'Your email, for the proof';
+    $('rp-pg-line').textContent = (file ? 'No prices go with it.' : 'No prices go in the box.') +
+      ' These come to me with your order; at checkout, Stripe takes the payment' + (file ? '.' : ' and a shipping address: give the same one.');
+    var sum = $('rp-pg-sum');
+    sum.hidden = !on;
+    if (on) {
+      var to = cleanText($('rp-pg-to').value, GIFT_TO_MAX), msg = $('rp-pg-msg').value.trim();
+      sum.innerHTML = [['Gift for', to || '(say who it\u2019s for)'], [file ? 'Note with the file' : 'Note on the letter', msg || '(none)'],
+        ['Goes to', theirs ? (to || 'them') : 'you']].map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
+    }
+  }
+  // the gift as an order post, or {bad: [field id, words]}
+  function pgOrder(ref) {
+    var file = PICK === 'digital', theirs = pgTheirs();
+    var x = {
+      name: cleanText($('rp-pg-name').value, 80), email: $('rp-pg-me').value.trim(), choice: PICK,
+      address: file ? '' : $('rp-pg-addr').value.trim().slice(0, 600),
+      design_url: designUrl(ST), design_code: orderCode(), page: '/rain-print',
+      gift: true, gift_to: cleanText($('rp-pg-to').value, GIFT_TO_MAX), gift_deliver: theirs ? 'recipient' : 'buyer',
+      gift_email: file && theirs ? $('rp-pg-email').value.trim() : '',
+      gift_message: $('rp-pg-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX)
+    };
+    if (ST.logo) x.logo = ST.logo;
+    // the worker keeps known fields only, so the checkout and the proof tick ride in the notes
+    x.notes = ('Paying now at Stripe checkout' + (ref ? ', reference ' + ref : '') + '. Gift details from the review sheet; no payment link needed.' +
+      (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.')).slice(0, 2000);
+    var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
+      : !file && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
+      : file && theirs && !EMAIL_RE.test(x.gift_email) ? ['rp-pg-email', 'Add their email for the file, or choose Me under Send it to.']
+      : !x.name ? ['rp-pg-name', 'Add your name.']
+      : !EMAIL_RE.test(x.email) ? ['rp-pg-me', 'Add your email, so I can send you the proof.'] : null;
+    return bad ? { bad: bad } : { x: x };
   }
   // when it comes, in words, for the review sheet
   function whenWords(id) {
@@ -3329,6 +3419,7 @@
     proofSay('');
     PROOF_FROM = doc.activeElement && doc.activeElement !== doc.body ? doc.activeElement : $('rp-zoom');
     PROOF_HANDOFF = false;
+    pgPull();
     proofRender();
     try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
     try { $('rp-proof-stage').scrollTop = 0; $('rp-proof-stage').scrollLeft = 0; dlg.scrollTop = 0; } catch (e) {}
@@ -4147,6 +4238,20 @@
   })();
   $('ro-deliver').addEventListener('change', syncAddress);
   $('ro-isgift').addEventListener('change', syncAddress);
+  // the review sheet's gift fields write through to the order form's
+  $('rp-pg-on').addEventListener('change', function () {
+    $('ro-isgift').checked = $('rp-pg-on').checked;
+    if ($('rp-pg-on').checked && !$('rp-pg-deliver').value) $('rp-pg-deliver').value = 'recipient';
+    syncAddress(); pgSync(); proofSay('');
+    if ($('rp-pg-on').checked) try { $('rp-pg-to').focus({ preventScroll: false }); } catch (e) {}
+  });
+  Object.keys(PG_MIRROR).forEach(function (k) {
+    $(k).addEventListener(k === 'rp-pg-deliver' ? 'change' : 'input', function () {
+      $(PG_MIRROR[k]).value = $(k).value;
+      if (k === 'rp-pg-deliver') syncAddress();
+      pgSync();
+    });
+  });
   $('ro-form').addEventListener('submit', submitOrder);
   $('rb-form').addEventListener('submit', submitBiz);
   $('rb-qty').addEventListener('input', syncBizTier);
