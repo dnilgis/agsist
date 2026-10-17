@@ -73,10 +73,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DAILY_PATH = REPO_ROOT / "data" / "daily.json"
 ARCHIVE_DIR = REPO_ROOT / "data" / "daily-archive"
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
-# Matches the generator: BRIEFING_MODEL, else claude-sonnet-5, with one fall
-# back to claude-sonnet-4-6 if the API does not know the model.
-MODEL = os.environ.get("BRIEFING_MODEL", "").strip() or "claude-sonnet-5"
-FALLBACK_MODEL = "claude-sonnet-4-6"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import claude_models  # noqa: E402  ONE table of models, thinking-off words and prices
+# Matches the generator: BRIEFING_MODEL, else claude-sonnet-5-5 (2026-10-17;
+# was claude-sonnet-5), with one fall back to claude-sonnet-5 if the API does
+# not know the model or refuses. The critic stays on Sonnet, not Haiku: it
+# scores voice and the forward test and rewrites sections a reader sees.
+MODEL = os.environ.get("BRIEFING_MODEL", "").strip() or claude_models.WRITER
+FALLBACK_MODEL = claude_models.WRITER_FALLBACK
+USAGE_LOG = []
 
 
 def _refused_model(e):
@@ -281,7 +286,21 @@ def _voice_payload(briefing):
     return out
 
 
-def critique_briefing(briefing, threshold=7):
+def critic_payload(model, user_message, cache=False):
+    """The critic's request body. CRITIC_SYSTEM never changes, so it is cached
+    when a second pass can follow inside five minutes (--max-rewrites above 1);
+    a single pass would pay the cache write's 25% and never read it."""
+    return {
+        "model": model,
+        "max_tokens": 4000,
+        # no extended thinking: it eats max_tokens and is billed (claude_models.no_thinking)
+        "thinking": claude_models.no_thinking(model),
+        "system": claude_models.cached_system(CRITIC_SYSTEM) if cache else CRITIC_SYSTEM,
+        "messages": [{"role": "user", "content": user_message}],
+    }
+
+
+def critique_briefing(briefing, threshold=7, cache=False):
     """Send the full briefing to Claude as editor. Return scores + rewrite payload."""
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
@@ -337,13 +356,7 @@ DRAFT:
 
 Respond with ONLY the JSON output. No preamble, no markdown."""
 
-    payload = {
-        "model": MODEL,
-        "max_tokens": 4000,
-        "thinking": {"type": "disabled"},   # Sonnet 5 thinks by default; that eats max_tokens and is billed
-        "system": CRITIC_SYSTEM,
-        "messages": [{"role": "user", "content": user_message}],
-    }
+    payload = critic_payload(MODEL, user_message, cache=cache)
     headers = {
         "Content-Type": "application/json",
         "x-api-key": api_key,
@@ -352,16 +365,25 @@ Respond with ONLY the JSON output. No preamble, no markdown."""
 
     try:
         result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
+        _refusal = result.get("stop_reason") == "refusal"
     except Exception as e:
         _ref = _refused_model(e)
-        if _ref and payload["model"] != FALLBACK_MODEL:
-            print(f"::warning title=Critic model fallback::'{payload['model']}' refused "
-                  f"(HTTP {_ref[0]}); the critic pass runs on {FALLBACK_MODEL}", flush=True)
-            payload["model"] = FALLBACK_MODEL
-            globals()["MODEL"] = FALLBACK_MODEL
-            result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
-        else:
+        if not (_ref and payload["model"] != FALLBACK_MODEL):
             raise
+        _refusal = False
+        result = None
+    if result is None or (_refusal and payload["model"] != FALLBACK_MODEL):
+        print(f"::warning title=Critic model fallback::'{payload['model']}' refused; "
+              f"the critic pass runs on {FALLBACK_MODEL}", flush=True)
+        # with_model rewrites the thinking word too ("between_tools" is Sonnet 5.5 only)
+        payload = claude_models.with_model(payload, FALLBACK_MODEL)
+        globals()["MODEL"] = FALLBACK_MODEL
+        result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
+    if result.get("stop_reason") == "refusal":
+        raise RuntimeError("critic refused on both models")
+    if result.get("usage"):
+        USAGE_LOG.append((payload["model"], result["usage"]))
+        print("  " + claude_models.usage_line(payload["model"], result["usage"]), flush=True)
     text = ""
     for block in result.get("content", []):
         if block.get("type") == "text":
@@ -569,7 +591,8 @@ def main():
     rewrite_log = []
     for pass_num in range(1, args.max_rewrites + 1):
         print(f"\n--- Critic pass {pass_num}/{args.max_rewrites} ---")
-        critique = critique_briefing(briefing, threshold=args.threshold)
+        critique = critique_briefing(briefing, threshold=args.threshold,
+                                     cache=args.max_rewrites > 1)
 
         scores = critique.get("scores", {})
         if scores:
