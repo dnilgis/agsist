@@ -148,7 +148,20 @@ jobs:
             g add -A || exit 1
             if git diff --cached --quiet; then echo "no change"; exit 0; fi
             g commit -q -m "refs $(date -u +%Y-%m-%dT%H:%M:%SZ)${IN_IDS:+: $IN_IDS}" || exit 1
-            if g push -q origin HEAD:references; then echo "pushed $(git rev-parse --short HEAD)"; exit 0; fi
+            if out=$(git push -q origin HEAD:references 2>&1); then echo "pushed $(git rev-parse --short HEAD)"; exit 0; fi
+            # the whole answer, not a tail: on Oct 17 the tail hid which file push protection named
+            echo "::group::git push output (try $i)"; printf '%s\n' "$out"; echo "::endgroup::"
+            echo "::warning::git push failed: $(printf '%s' "$out" | grep -iE 'GH0|rule|secret|refs/[a-z0-9-]+\.' | head -8 | tr '\n' ' ')"
+            # Push protection names each file with a key in it. Leave those
+            # pages out (rows marked failed) and push the rest of the run.
+            flagged=$(printf '%s\n' "$out" | grep -oE 'refs/[a-z0-9][a-z0-9-]*\.(html|txt|pdf)' \
+                      | sed -E 's#^refs/##; s#\.(html|txt|pdf)$##' | sort -u | paste -sd, -)
+            if [ -n "$flagged" ]; then
+              echo "::warning::push protection flagged $flagged; left out of this commit"
+              python3 "$GITHUB_WORKSPACE/scripts/fetch_refs.py" --drop --out /tmp/refsout --ids "$flagged" \
+                --reason "push protection found a key-shaped string in this page; not saved" || exit 1
+              continue
+            fi
             sleep $((10 * i))
           done
           echo "::error::could not push the references branch after 5 tries (see the warnings above)"; exit 1
