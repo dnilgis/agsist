@@ -414,7 +414,7 @@ def selftest():
     ck("unsubscribe stops this grid", "topic=prf%3A30452" in txt and m["List-Unsubscribe-Post"] == "List-Unsubscribe=One-Click")
     low = (txt + htm).lower()
     ck("no em or en dash, no hype, no sales or agent words",
-       not any(x in txt + htm for x in ("—", "–", "&mdash;", "&ndash;")) and "!" not in txt and
+       not any(x in txt + htm for x in ("\u2014", "\u2013", "&mdash;", "&ndash;")) and "!" not in txt and
        not any(x in low for x in ("agent", "insurance", "coverage", "premium", "buy", "quote", "don't miss", "act now",
                                   "farmers first", "farmers1st", "best")), low[:300])
     ctx.update(items=[("2026-05", 807), ("2026-06", 980)])
