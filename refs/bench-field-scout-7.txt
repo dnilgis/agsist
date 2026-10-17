@@ -1,0 +1,157 @@
+# Benchmark field-scout: AcreValue home
+# https://www.acrevalue.com/
+# fetched 2026-10-17T01:54:14Z, sha256 f0b5d21873af5c4f6ae32a6618ee0d3c5c5bf60399da95094d491a6030d78738
+
+Farmland Values, Soil Survey, & GIS Maps | AcreValue
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+View parcel ownershipGet soil maps
+
+Choose a data layer
+
+FieldsSold LandLand for SaleCommunity
+
+Parcel Map
+
+Sold Land Database
+
+Land for Sale
+
+Market Explorer
+
+Resources
+
+Webinars
+
+Community
+
+Bulk Data
+
+Comp Sales
+
+Browse agricultural land sales across the U.S. View sale price, sale date, acreage, land use, buyer and seller names, and GIS data for each sale, and build a comparable sales report.
+
+Parcel Ownership
+
+Access nationwide GIS plat map. View parcel number, acreage, and owner name for all parcels of land in over 2,700 counties. Register as the owner of your land to receive inquiries from other users and connect with the agricultural community. Connect with landowners and engage with professional farmers to build your agricultural network.
+
+Crop History
+
+Instantly view crops grown on a field in the past year, or download a full report for a history of the last five years of crop rotation.
+
+Land Valuation
+
+AcreValue analyzes terabytes of data about soils, climate, crop rotations, taxes, interest rates, and corn prices to calculate the estimated value of an individual field. Generate impactful land reports to gain advanced land value insights.
+
+Currently available in California, Florida, Georgia, Illinois, Indiana, Iowa, Kentucky, Michigan, Minnesota, Nebraska, North Carolina, Ohio, Oklahoma, South Carolina, South Dakota, Tennessee, and Wisconsin.
+
+Soil Survey
+
+Simply select a field to view its average productivity rating (CSR2 in IA, PI in IL, CPI in MN, NCCPI in all other states). Download a free soil report for a detailed map of soil composition for that field or group of fields.
+
+Land Sale Mortgage Data
+
+Check out the new Mortgage Data additions to AcreValue's comp sales database. AcreValue users can now use available mortgage information for monitoring trends, observing activity, tracking prices, and identifying marketing opportunities. Discover a lender’s name, the mortgage’s amount and interest rate, and the loan’s type and term today!
+
+Land for Sale
+
+View thousands of active listings from across the U.S. Browse farms, ranches, timberland, hunting land, and other properties by location, size, and price. Find land and connect with real a estate agent to buy or sell property.
+
+Critical Energy Infrastructure Data
+
+AcreValue has launched Critical Energy Infrastructure Data on its landowner map, land sales database, and listings map. Using this data, you will now be able to assess a property's access and proximity to key energy and infrastructure resources, including: substations, wind turbines, oil & gas wells, power plants, ethanol plants, biodiesel plants, and soybeans plants.
+
+Claim Parcels
+
+Claim land that you own and operate. Generate impactful land reports. Allow others users to message you about your land to build your agricultural network.
+
+AcreValue Community
+
+Leverage the nationwide reach of the AcreValue Community to search for land sales, real estate support, and new potential opportunities near you. To ensure meaningful connections and conversations, build your personal user profile to showcase your land, interests, services, and potential opportunities. Connect with landowners, farmers, and land professionals in your area today!
+
+AcreValue Market Reports
+
+Stay current on trends in the rural and agricultrual land markets with the AcreValue Market Reports. Subscribe to our free newsletter to receive AcreValue Market Reports directly to your inbox.
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-

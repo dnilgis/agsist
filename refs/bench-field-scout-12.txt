@@ -1,0 +1,189 @@
+# Benchmark field-scout: FBN AcreVision launch post (July 2023)
+# https://www.fbn.com/community/blog/acrevision
+# fetched 2026-10-17T01:55:52Z, sha256 2ad2112929f4c77ed6f940f65b96eb8dac99ae1ef6b1ad8d2874fd809a3281a4
+
+AcreVision℠ by FBN Finance | FBNFarmer's Business Network's main logohome
+
+Assess Farmland for Free with AcreVision℠
+
+Use the tool to understand land value, productivity, soil quality, cropping history, and more.
+
+Enter an address or zip code
+
+-
+
+-
+
+-
+
+-
+
+-
+
+AcreVision℠
+
+Know the value of every acre before you bid. AcreVision℠ uncovers professional-grade soil productivity, crop history, recent sales & more land details
+
+Evaluate Every Acre Before You Bid.
+
+You shouldn't have to guess at a farmland parcel's potential.
+
+With AcreVision℠, you get a transparent, high-definition look at key land insights — from identifying high-value soil types to tracking historical land use and ownership boundaries — ensuring every new acre you add is the right fit for your operation.
+
+Get Started
+
+What to Expect in an AcreVision℠ Report
+
+Instantly gain access to quality insights about land across the U.S., including:
+
+Soil Productivity
+
+Learn the quality of the soil with a detailed composition breakdown. Discover the percentage of total of tillable acres.
+
+Cropping History
+
+Explore crop rotation history and coverage percentage over the last 10 years.
+
+Recent Sales
+
+View land sales in the past 18 months within a 50 mile radius of the parcel you're researching.
+
+Advanced Filters
+
+Drill down into the details of Recent Sales Nearby with advanced filtering options.
+
+Terrain
+
+Unlock the specific details about the landscape such as land elevation, slope and terrain wetness. Easily compare this information to county averages.
+
+Terrain Wetness
+
+Learn the terrain wetness distribution for the parcel of land and broader county you're researching.
+
+Ready for a Land Loan?
+
+Pre-Qualify for an FBN® Land Loan
+
+Estimate your buying power without affecting your credit score with pre-qualification. Pre-qualification is valid for up to 6 months, and applying will not affect your credit score.
+
+Whether AcreVision helped you find a property you’re interested in purchasing or you're just beginning your land search, see the loan amount you could qualify for up to $5 million.
+
+Overview
+
+What is the goal of AcreVision℠?
+
+Land is one of the most important assets to a farming operation. This land evaluation tool provides everything you need to know about farm land parcels and local market trends in order to make the best decision around buying, selling, and financing land.
+
+Does the tool list land for sale?
+
+Our surveys of farmers tell us that most farm land transactions happen privately, without a public listing. In this tool, you can find detailed information for nearly every farm parcel in the United States, regardless of listing status. Currently we do not publish land listings.
+
+When can I get access?
+
+You can access this tool when you sign up as an FBN member!
+
+Data Sources & Availability
+
+Why can I only download a limited number of parcels per report?
+
+FBN created this tool to make it easy for all farmers to access trustworthy farm land insights. We limit the number of parcels to aid in our mission of providing this data for farmers and not other audience sets.
+
+How many reports or parcels can I access?
+
+FBN members can view 3 reports (with a maximum of 4 parcels per report) every week. The week starts from Monday and ends on Sunday.
+
+Can I see all the research and insights in the U.S.?
+
+We currently have coverage in the lower 48 states.
+
+Where does the data come from and how often is it updated?
+
+This tool has a database of over 15.5 million agricultural parcels. We gather from a wide range of public data sources including local, state and federal government agencies, universities and private entities. We review the data to make sure that only the most relevant data is included
+
+Parcels
+
+Boundaries shown in the tool refer to tax parcel boundaries. They are sourced from county assessor records. For each parcel, we provide the boundary and the parcel identification (parcel ID), also commonly known as Assessor Parcel Number (APN) or property identification number (PIN). Parcels records are usually updated on an annual or semi-annual basis. How often parcel boundaries are updated will vary by county.
+
+Land Use & Cropping History
+
+This tool shows historical land use and cropping patterns derived from the Cropland Data Layer (CDL) published by United States Department of Agriculture National Agricultural Statistics Service (USDA-NASS). The CDL is a crop-specific land cover data layer created annually using moderate resolution satellite imagery. Land use and cropping history data are updated annually on AcreVision℠ in the first quarter of each calendar year when the USDA makes this data available.
+
+Soil
+
+We obtain soil information from the United States Department of Agriculture- Natural Resources Conservation Service (USDA-NRCS) and National Cooperative Soil Survey Geographic Database (SSURGO).
+
+We show nation-wide productivity indices from SSURGO and state-specific soil productivity indices if those are available:
+
+In Illinois we use the Illinois Soil Productivity Index (ILPI) for optimal management. Read more about ILPI and how it relates to yield and land values. Soil types with ILPI ranging from 133-147 are in Class A, from 117-132 are in Class B, and from 100-116 are in Class C.
+
+In Iowa, soil productivity is measured by the Iowa C Suitability Rating (CSR2) which ranges from 0 to 100.
+
+In all other states, soil productivity indices are determined by the overall National Commodity Crop Productivity Index (NCCPI) developed by the USDA-NRCS.
+
+Soil survey information in AcreVision℠ is updated when new releases are published by the USDA-NRCS, typically every 1-2 years.
+
+Terrain
+
+The report presents farmland slope, elevation and terrain wetness index (estimating the propensity for water accumulation) using data from the United States Geological Survey (USGS).
+
+Comparison of farmland to its county only considers cropland and not other land types.
+
+Recent Sales
+
+We obtain sales information from county records wherever the counties or states are disclosure states.
+
+Sales information is updated weekly.
+
+Why doesn’t the data in my report match what I see on my farm?
+
+This tool was created to serve farmers across the country with detailed parcel-level analytics.
+
+In order to provide information about 600 million+ acres, we incorporate many datasets derived from satellite imagery. For example, the USDA Cropland Data Layer used satellite imagery to estimate annually which areas produce what type of crops. However, errors may occur leading, for example, to one area of a field being classified as not planted when it actually was.
+
+We always recommend supporting your analysis and research with on-the-ground information.
+
+I want to share feedback about this tool. How can I do so?
+
+You can reach us at explore-finance@farmersbusinessnetwork.com and share your feedback!
+
+Using AcreVision℠
+
+How much does it cost to use?
+
+This tool is free to use. By being an FBN member, you will receive bonus data points such as an extended cropping history, plantable acres and comparisons between the farmland with the county.
+
+Why is my report missing information for certain parcels?
+
+We do our best to provide you with all the data and insights that we can for the parcels that you have selected. Even though we use a variety of sources, sometimes there are cases where data is not available for each parcel.
+
+What are the terms of use?
+
+By accessing this report and the information therein, you agree that the information in this report is provided for your individual informational use only, and may not be disclosed, reproduced, summarized, distributed, excerpted, or used for any reason other than for research purposes to aid in your potential purchase, sale, or rental of property. Any unauthorized use of this report or its information is prohibited. Information is reliable but not guaranteed, may be incomplete, and should be independently verified. Farmer’s Business Network, Inc. and its subsidiaries are not responsible for the accuracy of this information.
+
+Using FBN Estimate
+
+What is FBN Estimate and how is it derived?
+
+FBN Estimate is FBN’s estimate of a farmland parcel’s market value. It leverages proprietary machine learning models that incorporate datasets on farmland transactions, land productivity, land use and more to inform the estimate.
+
+How often is FBN Estimate updated?
+
+FBN Estimate is updated at least on a weekly basis, or whenever there are factors that warrant a significant change in the Estimate. These factors can include new comparable sale transactions and updates to estimated land productivity.
+
+FBN Estimate seems too high or too low. Why?
+
+The amount of data, especially comparable sales, for farmland in your selected area affects the accuracy of FBN Estimate. We also obtain information from publicly available data sources, such as the United States Department of Agriculture National Agricultural Statistics Service (USDA-NASS) and United States Department of Agriculture - Natural Resources Conservation Service (USDA-NRCS). However, we do not factor in buildings, improvements or irrigation, which can also affect estimates.
+
+Can I use FBN Estimate to get a loan?
+
+FBN Estimate is provided for informational purposes only and should not to be construed as an appraisal or evaluation for any individual parcel, nor should they be considered a reliable indicator of the current or future valuation of the land, as various factors can significantly influence an individual parcel's value. Please discuss with your lender any questions on using FBN Estimate to obtain a loan.
+
+Why is FBN Estimate only available for certain parcels?
+
+FBN Estimate is currently available in six states (Iowa, Illinois, Indiana, Ohio, Minnesota and Nebraska). Compared to other states, we have more complete information in these states that inform our data-driven models to arrive at an estimate. Watch this space as we continue to expand our coverage across the country!
+
+Is FBN Estimate an appraisal?
+
+FBN Estimate is not an appraisal and cannot be used in place of an appraisal. It is a computer-generated estimate of the value of a parcel of farmland today given the available data.
+
+We encourage users to supplement FBN Estimate with other research, including getting a professional appraisal of the farmland as needed.
