@@ -913,9 +913,9 @@ var PRICE_MAP = {
   'beans-nov':  { label:"Beans Nov'26",  priceEl:'pcp-bean-nov',  chgEl:'pcc-bean-nov',  dec:2, grain:true  },
   'wheat':      { label:'Wheat',         priceEl:'pcp-wheat',     chgEl:'pcc-wheat',     dec:2, grain:true  },
   'oats':       { label:'Oats',          priceEl:'pcp-oats',      chgEl:'pcc-oats',      dec:2, grain:true  },
-  'cattle':     { label:'Live Cattle',   priceEl:'pcp-cattle',    chgEl:'pcc-cattle',    dec:2, grain:false, prefix:'$' },
-  'feeders':    { label:'Feeder Cattle', priceEl:'pcp-feeders',   chgEl:'pcc-feeders',   dec:2, grain:false, prefix:'$' },
-  'hogs':       { label:'Lean Hogs',     priceEl:'pcp-hogs',      chgEl:'pcc-hogs',      dec:2, grain:false, prefix:'$' },
+  'cattle':     { label:'Live Cattle',   priceEl:'pcp-cattle',    chgEl:'pcc-cattle',    dec:2, grain:false, prefix:'$', tick:true },
+  'feeders':    { label:'Feeder Cattle', priceEl:'pcp-feeders',   chgEl:'pcc-feeders',   dec:2, grain:false, prefix:'$', tick:true },
+  'hogs':       { label:'Lean Hogs',     priceEl:'pcp-hogs',      chgEl:'pcc-hogs',      dec:2, grain:false, prefix:'$', tick:true },
   'milk':       { label:'Class III Milk',priceEl:'pcp-milk',      chgEl:'pcc-milk',      dec:2, grain:false, prefix:'$' },
   'meal':       { label:'Soy Meal',      priceEl:'pcp-meal',      chgEl:'pcc-meal',      dec:2, grain:false, prefix:'$' },
   'soyoil':     { label:'Soy Oil',       priceEl:'pcp-soyoil',    chgEl:'pcc-soyoil',    dec:2, grain:false },
@@ -934,9 +934,14 @@ var PRICE_MAP = {
 // ─────────────────────────────────────────────────────────────────
 // PRICE FORMATTING
 // ─────────────────────────────────────────────────────────────────
-function fmtPrice(val, dec, grain, suffix, prefix, comma) {
+// Livestock (tick: cattle, feeders, hogs) print to the board's tick, the site's
+// one rule (AG.px.cash): $343.625, $227.55. toFixed(2) printed the Oct 16
+// feeder settle 343.625 as $343.63 here and $343.62 in the page title.
+function tickNum(v) { return AG.px.cash(v, {dollar: false}); }
+function fmtPrice(val, dec, grain, suffix, prefix, comma, tick) {
   var p = parseFloat(val);
   if (isNaN(p)) return '--';
+  if (tick) return (p < 0 ? '\u2212' : '') + (prefix || '') + tickNum(Math.abs(p)) + (suffix || '');
   // Grains: the site's one formatter (components/util.js), to the quarter
   // cent. toFixed(2) on dollars printed 480.5 as $4.80 or $4.81 by float luck.
   if (grain) { return AG.px.price(p, {style: 'slash'}); }
@@ -964,7 +969,7 @@ function fmtPrice(val, dec, grain, suffix, prefix, comma) {
 function fmtCentsDiff(d){
   return AG.px.move(d, {style: 'slash'});
 }
-function fmtChange(close, open, grain, netChg, pctChg) {
+function fmtChange(close, open, grain, netChg, pctChg, tick) {
   var c = parseFloat(close), o = parseFloat(open);
   if (isNaN(c) || isNaN(o)) return {text:'--', cls:'nc'};
   var diff  = netChg !== undefined && netChg !== null ? parseFloat(netChg) : (c - o);
@@ -972,13 +977,13 @@ function fmtChange(close, open, grain, netChg, pctChg) {
   var dir   = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'nc';
   var arrow = diff > 0 ? '\u25B2' : diff < 0 ? '\u25BC' : '';
   var sign  = diff > 0 ? '+' : diff < 0 ? '\u2212' : '';
-  var mv    = grain ? fmtCentsDiff(diff) : Math.abs(diff).toFixed(2);
+  var mv    = grain ? fmtCentsDiff(diff) : tick ? tickNum(Math.abs(diff)) : Math.abs(diff).toFixed(2);
   // one decimal on the homepage cards and the ticker: they are narrow, and a
   // second decimal pushed the corn card's line out of its column at 390px
   return {text: (arrow ? arrow + ' ' : '') + sign + mv + ' (' + AG.px.pct(pct, {dp: 1}) + ')', cls: dir};
 }
 
-function fmtTickerChange(close, open, grain, netChg, pctChg, prefix) {
+function fmtTickerChange(close, open, grain, netChg, pctChg, prefix, tick) {
   var c = parseFloat(close), o = parseFloat(open);
   if (isNaN(c) || isNaN(o)) return {text:'--', cls:'nc'};
   var diff  = netChg !== undefined && netChg !== null ? parseFloat(netChg) : (c - o);
@@ -988,13 +993,14 @@ function fmtTickerChange(close, open, grain, netChg, pctChg, prefix) {
   var arrow = diff > 0 ? '\u25B2' : '\u25BC';
   var sgn   = diff > 0 ? '+' : '\u2212';      // a true minus, as fmtChange uses
   // the board prints '+$3.83' for cattle; the ticker dropped the $ (prefix)
-  var mv    = grain ? fmtCentsDiff(diff) : (prefix || '') + Math.abs(diff).toFixed(2);
+  var mv    = grain ? fmtCentsDiff(diff) : (prefix || '') + (tick ? tickNum(Math.abs(diff)) : Math.abs(diff).toFixed(2));
   return {text: arrow + ' ' + sgn + mv + ' \u00b7 ' + AG.px.pct(pct, {dp: 1}), cls: dir};
 }
 
-function fmtTickerPrice(val, grain, dec, prefix, comma) {
+function fmtTickerPrice(val, grain, dec, prefix, comma, tick) {
   var p = parseFloat(val);
   if (isNaN(p)) return '--';
+  if (tick) return (prefix || '') + tickNum(p);
   if (grain) return AG.px.price(p, {style: 'slash'});
   var d = dec != null ? dec : 2;
   var str = p.toFixed(d);
@@ -1062,8 +1068,8 @@ function update52WeekRange(priceElId, price, wk52Lo, wk52Hi, isGrain, prefix) {
 function applyPriceResult(key, q, close, open, netChg, pctChg) {
   var meta = PRICE_MAP[key];
   if (!meta) return;
-  var priceTxt = fmtPrice(close, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma);
-  var chgObj   = fmtChange(close, open, meta.grain, netChg, pctChg);
+  var priceTxt = fmtPrice(close, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma, meta.tick);
+  var chgObj   = fmtChange(close, open, meta.grain, netChg, pctChg, meta.tick);
   if (meta.priceEl) updatePriceEl(meta.priceEl, priceTxt);
   if (meta.chgEl)   updatePriceEl(meta.chgEl, chgObj.text, chgObj.cls);
 
@@ -1077,7 +1083,7 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
   }
   var prevEl = (prevElId && prevElId !== meta.priceEl) ? document.getElementById(prevElId) : null;
   if (prevEl && open != null) {
-    var prevTxt = fmtPrice(open, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma);
+    var prevTxt = fmtPrice(open, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma, meta.tick);
     prevEl.textContent = 'prev: ' + prevTxt + ' ' + (q && q.ticker ? q.ticker : '');
   }
   if (meta.priceEl && q) {
@@ -1086,8 +1092,8 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
       update52WeekRange(meta.priceEl, parseFloat(close), wk52Lo, wk52Hi, meta.grain, meta.prefix);
     }
   }
-  var tickerPriceTxt = fmtTickerPrice(close, meta.grain, meta.dec, meta.prefix, meta.comma);
-  var tickerChgObj = fmtTickerChange(close, open, meta.grain, netChg, pctChg, meta.prefix);
+  var tickerPriceTxt = fmtTickerPrice(close, meta.grain, meta.dec, meta.prefix, meta.comma, meta.tick);
+  var tickerChgObj = fmtTickerChange(close, open, meta.grain, netChg, pctChg, meta.prefix, meta.tick);
   document.querySelectorAll('[data-sym="' + key + '"]').forEach(function(el) {
     var pe = el.querySelector('.t-price');
     var ce = el.querySelector('.t-chg');

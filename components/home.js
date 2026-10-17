@@ -1389,7 +1389,7 @@ try {
 'use strict';
 var MON={jan:'Jan',feb:'Feb',mar:'Mar',apr:'Apr',may:'May',jun:'Jun',jul:'Jul',aug:'Aug',sep:'Sep',oct:'Oct',nov:'Nov',dec:'Dec'};
 /* g: price in cents per bu; bp: change in basis points; nod: no dollar sign. */
-var CFG={wheat:{g:1},oats:{g:1},meal:{},cattle:{},feeders:{},hogs:{},milk:{},crude:{},natgas:{},
+var CFG={wheat:{g:1},oats:{g:1},meal:{},cattle:{tk:1},feeders:{tk:1},hogs:{tk:1},milk:{},crude:{},natgas:{},
   dollar:{nod:1,cm:'Spot'},treasury10:{bp:1,pctSfx:1,cm:'Spot'},gold:{},silver:{},
   /* WAVE1-C 2026-10-03. own: geo.js has no PRICE_MAP entry for these, so
      this script writes their price and ticker cells itself. cl: cents per
@@ -1467,6 +1467,7 @@ function chg(k,q){
   else if(c.cl)t=s+a.toFixed(2)+'\u00a2';
   else if(c.bp){var b=a*100;t=s+(b<1?b.toFixed(1):String(Math.round(b)))+(Math.round(b)===1&&b>=1?' basis point':' basis points');}
   else if(c.nod)t=s+a.toFixed(2);
+  else if(c.tk)t=s+'$'+AG.px.cash(a,{dollar:false});   /* livestock to the tick: +$0.25, +$1.625 */
   else t=s+'$'+a.toFixed(2);
   var p='',pc=+q.pctChange;
   if(!c.bp&&!isNaN(pc)&&q.pctChange!=null)p=AG.px.pct(pc,{dp:Math.abs(pc)<0.05?2:1});
@@ -1478,6 +1479,7 @@ function rangeFmt(k,v,dir){
      an off-quarter end is never moved inside the range. */
   var c=CFG[k];if(c.g)return AG.px.price(v*100,{style:'slash',mode:dir<0?'down':'up'});
   if(c.cl)return v.toFixed(2)+'\u00a2';
+  if(c.tk)return AG.px.cash(v);   /* livestock ends as traded: $375.575 */
   var d=(c.nod||c.bp)?2:(v>=1000?0:2);
   var s=Number(v.toFixed(d)).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
   return c.bp?s+'%':c.nod?s:'$'+s;

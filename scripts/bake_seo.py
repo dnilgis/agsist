@@ -620,10 +620,12 @@ def seo_cattle(c):
         return None
     lab = _label(p, "cattle")
     when = f" {lab}" if lab else ""
-    return (f"CME Feeder Cattle Futures ${feed['px']:,.2f} & Live Cattle "
-            f"${live['px']:,.2f}{SUFFIX}",
-            f"Feeder cattle settled ${feed['px']:,.2f}, live cattle{when} "
-            f"${live['px']:,.2f} on {feed['label']}. CME futures every 15 min, "
+    # livestock to the tick, the site's one rule (pricefmt.cash): $343.625, $227.55
+    fp, lp = pricefmt.cash(feed["px"]), pricefmt.cash(live["px"])
+    return (f"CME Feeder Cattle Futures {fp} & Live Cattle "
+            f"{lp}{SUFFIX}",
+            f"Feeder cattle settled {fp}, live cattle{when} "
+            f"{lp} on {feed['label']}. CME futures every 15 min, "
             "with 5-year ranges, the feeder-to-live ratio and cost of gain.")
 
 
@@ -695,7 +697,7 @@ def make_futures(page):
             return None
         px = sc["px"]
         # grain boards quote in cents; cattle already quotes in dollars per cwt
-        money = pricefmt.price(px) if key != "cattle" else f"${px:,.2f}"
+        money = pricefmt.price(px) if key != "cattle" else pricefmt.cash(px)
         if extra is None:
             return (f"{exch} {crop} Futures Price: {lab} {money}{SUFFIX}", None)
         return (f"{exch} {crop} Futures Price: {lab} {money}, {extra}{SUFFIX}", None)
