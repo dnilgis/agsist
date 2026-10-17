@@ -150,6 +150,8 @@ import random
 import re
 from datetime import datetime, timezone, timedelta, date
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import claude_models                        # ONE table of models, thinking-off words and prices
 from contract_calendar import is_expired, holiday_name, next_live_year   # ONE expiry rule + ONE trading calendar
 import briefing_cut                         # ONE definition of the word budget
 import arc_plc_link                         # first ARC/PLC mention links /arc-plc
@@ -175,13 +177,84 @@ QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
 DAILY_QUOTE_ENABLED = False   # 2026-10-09: off; the pool's attributions are unsourced (see main)
 ANTHROPIC_API = "https://api.anthropic.com/v1/messages"
 # 2026-09-19: claude-sonnet-5 by default, $2/$10 per million tokens against
-# $3/$15 for claude-sonnet-4-6 on Anthropic's pricing page that day. The
+# $3/$15 for claude-sonnet-4-6 on Anthropic's pricing page that day.
+# 2026-10-17: claude-sonnet-5-5, the newest Sonnet, at the same $2/$10, with
+# claude-sonnet-5 as the fallback (claude_models.py has the table). The
 # repository variable BRIEFING_MODEL overrides it without a code change, and a
 # model the API does not know falls back to FALLBACK_MODEL once, in the same
 # run, with a ::warning:: on the run page -- so a name change at Anthropic
-# costs an annotation and not a morning.
-MODEL = os.environ.get("BRIEFING_MODEL", "").strip() or "claude-sonnet-5"
-FALLBACK_MODEL = "claude-sonnet-4-6"
+# costs an annotation and not a morning. A refusal (stop_reason "refusal")
+# takes the same one fallback.
+MODEL = os.environ.get("BRIEFING_MODEL", "").strip() or claude_models.WRITER
+FALLBACK_MODEL = claude_models.WRITER_FALLBACK
+
+# PROMPT CACHING (2026-10-17). The system prompt opens with about 5,000 tokens
+# of rules that are the same every day; the day's context blocks (weekend
+# note, editorial notes, ongoing situations, USDA release, the self-heal
+# corrections) come after them. The rules go in their own system block marked
+# for caching, so a regeneration in the same run (the WASDE and voice
+# self-heals, a malformed-JSON retry) reads them at a tenth of the input price
+# instead of paying full price again. The text the model sees is unchanged:
+# the two blocks join to exactly build_system_prompt()'s string. If the anchor
+# below ever leaves the prompt, the request goes out as one uncached block.
+CACHE_SPLIT_AFTER = ("There is no separate catalyst field; the why lives in the "
+                     "bullets or it does not exist.\n")
+USAGE_LOG = []   # one usage dict per API response this run, for the cost line
+
+
+def system_blocks(system_prompt):
+    """build_system_prompt()'s string as API system blocks: the stable rules
+    under cache_control, then the day's part. Joined, they are the string."""
+    i = system_prompt.find(CACHE_SPLIT_AFTER)
+    if i < 0:
+        return [{"type": "text", "text": system_prompt}]
+    j = i + len(CACHE_SPLIT_AFTER)
+    head, tail = system_prompt[:j], system_prompt[j:]
+    blocks = [{"type": "text", "text": head, "cache_control": dict(claude_models.CACHE)}]
+    if tail:
+        blocks.append({"type": "text", "text": tail})
+    return blocks
+
+
+def briefing_inputs_path():
+    """Where this run keeps what the model was handed, for fact_check_briefing.py.
+    The runner's temp dir, never data/: it holds the news digest, which is not
+    published, and it is not committed."""
+    import tempfile
+    return (os.environ.get("BRIEFING_INPUTS_PATH")
+            or os.path.join(os.environ.get("RUNNER_TEMP") or tempfile.gettempdir(),
+                            "agsist-briefing-inputs.json"))
+
+
+def save_briefing_inputs(user_message, system_prompt):
+    """The exact day-specific input of the latest briefing call: the user
+    message (locked price table, timing block, surprises, seasonal note, past
+    issues, news digest) and the system prompt's day part (context blocks,
+    calendar, weekly release line). Fail-open: the fact check says when it is
+    missing and does not treat a news number as unsourced then."""
+    try:
+        blocks = system_blocks(system_prompt)
+        with open(briefing_inputs_path(), "w") as f:
+            json.dump({"saved": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                       "user_message": user_message,
+                       "system_day_part": blocks[-1]["text"] if len(blocks) > 1 else system_prompt},
+                      f, ensure_ascii=False)
+    except Exception as _e:
+        print(f"  [warn] briefing inputs not saved for the fact check ({type(_e).__name__}: {_e})")
+
+
+def briefing_payload(model, system_prompt, user_message):
+    """The request body for one briefing. Kept apart so a test can check its
+    shape (model, thinking word, cache marker, max_tokens) without a key."""
+    return {"model": model, "max_tokens": 4500,
+            # no extended thinking: it eats max_tokens and is billed (claude_models.no_thinking)
+            "thinking": claude_models.no_thinking(model),
+            "system": system_blocks(system_prompt),
+            "messages": [{"role": "user", "content": user_message}]}
+
+
+class RefusedError(RuntimeError):
+    """The API answered 200 with stop_reason "refusal": try the fallback model."""
 
 
 def _refused_model(e):
@@ -2353,9 +2426,9 @@ Attribution: "{todays_quote['attribution']}"
 
 Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no wire-service neutral, no hype, no invented first person. Forward test the lead before you finalize, and check its last sentence against RULE 3. About 400 words, 450 is cut by a machine. Thread NEWS into every section's body, generic "fund positioning" without a specific news tie is wire filler. Rule 13 (level coherence) is failure-mode-zero: the post-gen validator will reject contradictory break claims."""
 
-    payload = {"model": MODEL, "max_tokens": 4500, "thinking": {"type": "disabled"},   # Sonnet 5 thinks by default; that eats max_tokens and is billed
-               "system": build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread, ongoing_situations, editorial_notes, past_one_number_topics, past_phrases, usda_release),
-               "messages": [{"role": "user", "content": user_message}]}
+    _sp = build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread, ongoing_situations, editorial_notes, past_one_number_topics, past_phrases, usda_release)
+    save_briefing_inputs(user_message, _sp)
+    payload = briefing_payload(MODEL, _sp, user_message)
     headers = {"Content-Type": "application/json", "x-api-key": api_key, "anthropic-version": "2023-06-01"}
 
     # v4.2 (Phase 2 C5): retry with exponential backoff on transient failures.
@@ -2385,6 +2458,8 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no 
                     raise requests.exceptions.HTTPError(f"retryable HTTP {resp.status_code}")
                 resp.raise_for_status()
                 _parts = []
+                _usage = {}
+                _stop = None
                 for _line in resp.iter_lines(decode_unicode=True):
                     if not _line or not _line.startswith("data:"):
                         continue
@@ -2396,7 +2471,12 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no 
                     except Exception:
                         continue
                     _t = _evt.get("type")
-                    if _t == "content_block_delta":
+                    if _t == "message_start":
+                        _usage.update((_evt.get("message") or {}).get("usage") or {})
+                    elif _t == "message_delta":
+                        _usage.update(_evt.get("usage") or {})
+                        _stop = (_evt.get("delta") or {}).get("stop_reason") or _stop
+                    elif _t == "content_block_delta":
                         _d = _evt.get("delta", {})
                         if _d.get("type") == "text_delta":
                             _parts.append(_d.get("text", ""))
@@ -2405,7 +2485,10 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no 
                             f"stream error: {_evt.get('error')}")
                     elif _t == "message_stop":
                         break
-                result = {"content": [{"type": "text", "text": "".join(_parts)}]}
+                result = {"content": [{"type": "text", "text": "".join(_parts)}],
+                          "usage": _usage, "stop_reason": _stop}
+                if _stop == "refusal":
+                    raise RefusedError("stop_reason refusal")
                 if not result["content"][0]["text"].strip():
                     raise RuntimeError("empty stream (no text deltas received)")
             else:
@@ -2415,16 +2498,20 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no 
                 req = urllib.request.Request(ANTHROPIC_API, data=data_bytes, headers=headers, method="POST")
                 with urllib.request.urlopen(req, timeout=600) as resp:
                     result = json.loads(resp.read().decode("utf-8"))
+                if result.get("stop_reason") == "refusal":
+                    raise RefusedError("stop_reason refusal")
             break
         except Exception as e:
             last_err = e
             _sc = getattr(getattr(e, "response", None), "status_code", None)
-            _ref = _refused_model(e)
+            _ref = _refused_model(e) or ((200, "stop_reason refusal") if isinstance(e, RefusedError) else None)
             if _ref and payload["model"] != FALLBACK_MODEL:
                 print(f"::warning title=Briefing model fallback::'{payload['model']}' refused "
                       f"(HTTP {_ref[0]}: {_ref[1][:120]}); this briefing is written on {FALLBACK_MODEL}",
                       flush=True)
-                payload["model"] = FALLBACK_MODEL
+                # with_model rewrites the thinking word too: "between_tools"
+                # is a 400 on every model but Sonnet 5.5
+                payload = claude_models.with_model(payload, FALLBACK_MODEL)
                 # and for the rest of this run, so a regenerate after a bad
                 # parse does not ask for the refused model a second time
                 globals()["MODEL"] = FALLBACK_MODEL
@@ -2445,6 +2532,11 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no 
                 _time.sleep(wait)
     if result is None:
         raise last_err if last_err else RuntimeError("API call failed with no error captured")
+    if result.get("usage"):
+        USAGE_LOG.append((payload["model"], result["usage"]))
+        print("  " + claude_models.usage_line(payload["model"], result["usage"]), flush=True)
+        _tot = sum(claude_models.cost_usd(m, u) or 0 for m, u in USAGE_LOG)
+        print(f"  generator cost so far this run: ${_tot:.4f} over {len(USAGE_LOG)} call(s)", flush=True)
     text = ""
     for block in result.get("content", []):
         if block.get("type") == "text": text += block["text"]

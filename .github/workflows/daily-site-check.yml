@@ -1,0 +1,62 @@
+name: Daily site check
+
+# Sig approved 2026-10-17. Once a day after the morning data runs: the number
+# consistency check in --strict mode (with its staleness rule), the cron clocks
+# (scripts/cron_health.py, to the runner's temp dir) and the Daily's date.
+# Findings become annotations, a run summary, and ONE issue titled
+# "Daily site check", opened or replaced while there are findings and closed
+# on the first clean run (scripts/daily_site_check.py).
+#
+# Read-only on the repository: no commit, no push, no email, no model call.
+# The token can write issues and nothing else that matters.
+
+on:
+  schedule:
+    - cron: '37 11 * * *'     # 11:37 UTC, after the morning price, bids and Daily runs
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "Checks and summary only; do not touch the issue"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+  actions: read          # cron_health.py reads the workflow run list
+
+concurrency:
+  group: daily-site-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Prove the checks
+        run: |
+          python3 scripts/check_number_consistency.py --selftest
+          python3 scripts/cron_health.py --selftest
+          python3 scripts/daily_site_check.py --selftest
+
+      - name: Check the site
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          DRY: ${{ github.event.inputs.dry }}
+        run: |
+          if [ "$DRY" = "true" ]; then
+            python3 scripts/daily_site_check.py --dry
+          else
+            python3 scripts/daily_site_check.py
+          fi
