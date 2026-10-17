@@ -258,7 +258,7 @@ def page(ctx):
            f'<h2 id="prf-now-h">This interval so far</h2>'
            f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
            f'<p class="pn-pick" data-pn-pick hidden></p>'
-           f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s daily data when the page opens.</p></div></section>'
+           f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
            f'<script src="/components/prf-now.js?v=1" defer></script>')
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""

@@ -2,20 +2,24 @@
    county pages.
 
    WHAT IT SHOWS, for one grid, for each pair of months still open
-     * rain so far (NOAA CPC's real-time daily gauge analysis) against the
-       grid's average for the whole interval in RMA's record
+     * rain so far (NOAA NCEI's nClimGrid on RMA's grid, the data RMA's index
+       is built from) against the grid's average for the whole interval in
+       RMA's record
      * the index so far: rain so far / that average x 100, preliminary
      * the days left, and for each coverage level, the rain still to come that
        would lift the index to that level (a policy at that level pays only
        when the final index ends under it)
-     * how close CPC has come to RMA's final index in the backtest
-   An interval that has ended and that RMA has not published yet shows the
-   CPC total for the whole interval, labeled as an estimate.
+     * which NCEI file each month came from (final, preliminary month, or
+       daily so far) and how close each kind has run to RMA's final index
+   An interval that has ended shows its total for the whole interval: equal
+   to RMA's when both months are final, an estimate otherwise.
 
    WHAT IT WILL NOT SAY
      * a forecast. The index so far only counts rain that has fallen.
-     * any number when CPC's newest day is more than MAX_AGE days old, when a
-       grid has a gap in CPC's data, or for an interval the builder withheld.
+     * any number when NCEI's newest day is more than MAX_AGE days old, when a
+       grid has a gap in NCEI's data, or for an interval the builder withheld.
+     * that the current month is solid: NCEI's early daily grids ran low in the
+       one month checked, and the card says by how much.
      * anything about buying, coverage choices or agents. The page is neutral.
 
    DATA: data/prf/now/<ST>.json (scripts/fetch_prf_season.py), fetched only
@@ -37,6 +41,7 @@
     'November to December'];
   var COV = [70, 75, 80, 85, 90];
   var MAX_AGE = 10;          // days; past this the card withholds its numbers
+  var MIN_AVG_MM = 5;        // the same as MIN_AVG_MM in scripts/fetch_prf_season.py
   var MM = 25.4;
 
   function ymd(s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5 : null; }
@@ -62,10 +67,12 @@
       var m = doc.iv[k], cell = row[k];
       var left = ymd(m.to) - ymd(doc.through);
       var iv = { name: m.name, long: LONG[m.i], y: m.y, from: m.from, to: m.to, days: m.days, have: m.have,
-        left: left > 0 ? left : 0, ended: left <= 0, withheld: m.withheld || null };
+        left: left > 0 ? left : 0, ended: left <= 0, withheld: m.withheld || null, how: m.how || [] };
+      iv.allFinal = iv.ended && iv.how.length === 2 && iv.how[0][1] === 'final' && iv.how[1][1] === 'final';
       if (!iv.withheld) {
         var p = cell && cell[0] != null ? cell[0] / 10 : null, a = cell && cell[1] != null ? cell[1] / 10 : null;
-        if (p == null || !a) iv.withheld = 'CPC has a gap at this grid in these months, so there is no number for it.';
+        if (p == null || !a) iv.withheld = 'NCEI has no value at this grid for part of these months, so there is no number for it.';
+        else if (a < MIN_AVG_MM) iv.withheld = 'The average for these months here is under 0.2 in, too little for an index so far to mean much.';
         else {
           iv.precipIn = inches(p); iv.avgIn = inches(a); iv.index = indexSoFar(p, a);
           iv.need = COV.map(function (c) { var r = rainToReach(p, a, c); return { cov: c, mm: r, inches: inches(r) }; });
@@ -76,26 +83,35 @@
     return out;
   }
 
+  var KIND = { final: 'final', initial: 'preliminary month', daily: 'daily so far' };
+  function howLine(how) {
+    return how.map(function (h) { return h[0] + ': ' + (KIND[h[1]] || h[1]); }).join(' &middot; ');
+  }
+
   function accLine(acc) {
-    if (!acc || !acc.n) return 'Not yet checked against RMA&rsquo;s final index, so how close it runs is not known.';
-    return 'How close this has run: over ' + acc.n.toLocaleString('en-US') + ' grid and interval pairs (' + acc.grids +
-      ' grids, ' + acc.first + ' to ' + acc.last + '), CPC&rsquo;s total for the whole interval landed a median ' +
-      acc.median_abs.toFixed(1) + ' points from RMA&rsquo;s final index, and within ' + acc.p90_abs.toFixed(1) +
-      ' points 9 times in 10.';
+    if (!acc || !acc.final_n) return 'Not yet checked against RMA&rsquo;s final index, so how close it runs is not known.';
+    var n = function (x) { return Number(x).toLocaleString('en-US'); };
+    return 'How close this runs: NCEI&rsquo;s final months gave RMA&rsquo;s published index exactly in ' + n(acc.final_exact) + ' of ' + n(acc.final_n) +
+      ' grid and interval pairs checked (' + acc.final_grids + ' grids, ' + acc.final_first + ' to ' + acc.final_last + '). ' +
+      'A preliminary month has not been checked against its final yet. ' +
+      'The daily grids for the current month ran low in ' + acc.prelim_month + ', the one month checked: a median ' + acc.prelim_pct_under +
+      '% under NCEI&rsquo;s month file, under at ' + acc.prelim_share_under + '% of grids, and the ' + acc.prelim_interval + ' index moved a median ' +
+      acc.prelim_median_pts.toFixed(1) + ' points (9 in 10 within ' + acc.prelim_p90_pts.toFixed(1) + ') once NCEI wrote the month. ' +
+      'So rain so far in the current month is likely a low reading, and the index so far likely low with it.';
   }
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   function ivHtml(iv, through) {
     var h = '<div class="pn-iv"><h3 class="pn-iv-h">' + esc(iv.long) + ' ' + iv.y + '</h3>';
-    if (iv.ended) h += '<p class="pn-when">Ended ' + fmtDate(iv.to) + '. RMA has not published the final index yet.</p>';
+    if (iv.ended) h += '<p class="pn-when">Ended ' + fmtDate(iv.to) + '. ' + (iv.allFinal ? 'Both months are NCEI&rsquo;s final data, the same data RMA&rsquo;s index uses.' : 'Not all final yet, so this is still an estimate.') + '</p>';
     else h += '<p class="pn-when">Day ' + (iv.days - iv.left) + ' of ' + iv.days + ', ' + iv.left + (iv.left === 1 ? ' day' : ' days') + ' left (to ' + fmtDate(iv.to) + ').</p>';
     if (iv.withheld) return h + '<p class="pn-held">' + esc(iv.withheld) + '</p></div>';
     h += '<dl class="pn-figs">' +
       '<div><dt>' + (iv.ended ? 'Rain, whole interval' : 'Rain so far') + '</dt><dd>' + fmtIn(iv.precipIn) + '</dd></div>' +
       '<div><dt>Average, whole interval</dt><dd>' + fmtIn(iv.avgIn) + '</dd></div>' +
-      '<div><dt>' + (iv.ended ? 'Index, estimate' : 'Index so far') + '</dt><dd>' + iv.index.toFixed(1) + ' <span class="pn-pre">preliminary</span></dd></div>' +
-      '</dl>';
+      '<div><dt>' + (iv.allFinal ? 'Index' : iv.ended ? 'Index, estimate' : 'Index so far') + '</dt><dd>' + iv.index.toFixed(1) + ' <span class="pn-pre">' + (iv.allFinal ? 'from final data' : 'preliminary') + '</span></dd></div>' +
+      '</dl><p class="pn-fine pn-how">' + howLine(iv.how) + '</p>';
     if (!iv.ended) {
       h += '<table class="pn-need"><caption>More rain by ' + fmtDate(iv.to) + ' that would lift the index to each coverage level</caption>' +
         '<thead><tr><th scope="col">Coverage</th><th scope="col">Rain still to fall</th></tr></thead><tbody>';
@@ -108,19 +124,18 @@
   }
 
   function render(m) {
-    if (m.state === 'nodata') return '<p class="pn-held">The interval so far shows here after the first read of NOAA&rsquo;s daily rain.</p>';
+    if (m.state === 'nodata') return '<p class="pn-held">The interval so far shows here after the first read of NOAA&rsquo;s rain data.</p>';
     if (m.state === 'nogrid') return '<p class="pn-held">No interval-so-far numbers for grid ' + esc(m.grid) + ' in this file.</p>';
     var h = '';
     if (m.state === 'stale') return '<p class="pn-held">NOAA&rsquo;s newest day here is ' + fmtDateY(m.through) + ', more than ' + MAX_AGE + ' days ago, so the numbers are held back until it updates.</p>';
     m.ivs.forEach(function (iv) { h += ivHtml(iv, m.through); });
-    h += '<p class="pn-fine pn-src"><b>An estimate, not RMA&rsquo;s index.</b> Rain from NOAA CPC&rsquo;s real-time daily gauge analysis through ' + fmtDateY(m.through) +
-      ' (preliminary; CPC reworks each day once more gauges report). The final index RMA publishes can differ. The index so far counts only rain that has fallen against the whole interval&rsquo;s average, so it climbs as the interval goes on. It is not a forecast. ' +
-      accLine(m.acc) + ' RMA moves the index to NOAA NCEI&rsquo;s nClimGrid from crop year 2027. ' +
-      '<a href="https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS/" rel="noopener">CPC data</a></p>';
+    h += '<p class="pn-fine pn-src"><b>An estimate, not RMA&rsquo;s index.</b> Rain from NOAA NCEI&rsquo;s nClimGrid on RMA&rsquo;s grid, the data RMA builds the index from, with daily grids through ' + fmtDateY(m.through) +
+      ' (NCEI runs 3 days behind). Until both months are final, the index RMA publishes can differ. The index so far counts only rain that has fallen against the whole interval&rsquo;s average, so it climbs as the interval goes on. It is not a forecast. ' +
+      accLine(m.acc) + ' <a href="https://www.ncei.noaa.gov/pub/data/cirs/usda/" rel="noopener">NCEI data</a></p>';
     return h;
   }
 
-  var api = { model: model, render: render, indexSoFar: indexSoFar, rainToReach: rainToReach, accLine: accLine, MAX_AGE: MAX_AGE };
+  var api = { model: model, render: render, indexSoFar: indexSoFar, rainToReach: rainToReach, accLine: accLine, howLine: howLine, MAX_AGE: MAX_AGE, MIN_AVG_MM: MIN_AVG_MM };
   root.AgPrfNow = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;

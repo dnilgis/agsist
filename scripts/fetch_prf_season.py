@@ -1,66 +1,66 @@
 #!/usr/bin/env python3
 """
 fetch_prf_season.py: where each PRF grid stands in the intervals that are still
-open, from NOAA CPC's daily rain, before RMA publishes the final index.
+open, before RMA publishes the final index.
 -> data/prf/now/<ST>.json (one small file per state, loaded on demand by
    components/prf-now.js on /prf and the PRF county pages)
 
 WHY THIS EXISTS
   A PRF interval is two months long and RMA publishes the final index weeks
   after it ends. A rancher sees nothing in between, so one late rain can turn
-  a payment he was counting on into almost nothing with no warning. CPC posts
-  its gauge analysis every day. Totaling it over the interval so far, against
-  the grid's long-run average, shows where the grid stands now.
+  a payment he was counting on into almost nothing with no warning.
 
-THE SOURCE (read on a GitHub runner, Oct 17, 2026; data/prf-season-raw/ on the
-raw branch keeps the listings, the README and one daily file)
-  NOAA CPC Unified Gauge-Based Analysis of Daily Precipitation over CONUS,
-  real-time version (RT), 0.25 degree:
-    https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS/RT/<YYYY>/
-        PRCP_CU_GAUGE_V1.0CONUS_0.25deg.lnx.<YYYYMMDD>.RT
-  (NOAA PSL serves the same analysis as yearly netCDF at
-   https://downloads.psl.noaa.gov/Datasets/cpc_us_precip/RT/.)
-  CPC's README (DOCU/PRCP_CU_GAUGE_V1.0CONUS_0.25deg.README) and RT.ctl:
-    * two fields of 300 x 120 4-byte little-endian floats: daily rain in
-      0.1 mm, then the number of gauges in the box; undefined is -999.0
-    * the first box is centred at 129.875W 20.125N, west to east, then south
-      to north. That is RMA's grid numbering exactly: grid id - 1 is the
-      index into the field (all 13,414 PRF grids land on a defined box; the
-      field read north-first misses 7,153 of them)
-    * a day ends at 12Z. An RT file is posted the next afternoon and posted
-      again a day later with more gauges ("the analysis for the day is based
-      on the real-time station data and will be reprocessed later")
-  RMA says (Rainfall Index Data, 2027 and Beyond, June 2026) the index used
-  CPC data through crop year 2026 and uses NOAA NCEI's nClimGrid, monthly
-  final, from crop year 2027. So this file tracks crop year 2026 intervals
-  from CPC and WITHHOLDS 2027 intervals (CPC_LAST_CROP_YEAR) until it reads
-  NCEI's files.
+THE SOURCE: NOAA NCEI's USDA grids (nClimGrid on RMA's 0.25 degree grid)
+    https://www.ncei.noaa.gov/pub/data/cirs/usda/
+      monthly/final/YYYYMM.usda.csv          every month through 2 months ago
+      monthly/initial/YYYYMM.usda.csv        last month, preliminary
+      daily/initial-unsynced/YYYYMMDD.tar.gz the last 40 days, 5 days a tarball,
+                                             3 days behind, not yet scaled to
+                                             the month (NCEI's Readme.docx)
+  CSV columns latitude, longitude (box centre), precipitation or prcp (mm).
+  WHY NOT CPC. The brief named CPC's real-time daily gauge analysis, the
+  index's source through crop year 2026, and this file still decodes it
+  (decode_cpc) for the backtest. But RMA's record today follows NCEI:
+  on 537 grids (every 25th), Jan-Feb 2024 to Jun-Jul 2026, NCEI's final
+  months equal RMA's published interval rain in 15,036 of 15,036 cases and
+  give RMA's index exactly, while CPC lands a median 10.9 index points off
+  (test/fixtures/prf-season/backtest.json). RMA's June 2026 note "Rainfall
+  Index Data, 2027 and Beyond" says the same: NCEI nClimGrid, monthly final,
+  average 1951 to the year minus 2. Probes, the README and sample files are on
+  the raw branch under data/prf-season-raw/.
 
 THE ARITHMETIC (components/prf-now.js does the same, test/prf-now.test.mjs)
-  precip so far   = sum of CPC's daily rain at the grid, first day of the
-                    interval through the newest day CPC has posted, mm
+  rain so far     = for each month of the interval: NCEI's month file when the
+                    month is over and NCEI has one (final, else initial), else
+                    the sum of its daily grids through the newest day posted
   average         = the grid's average for the whole interval in RMA's record
-                    for that crop year. RMA's PRF service gives every past
-                    year against one average (the 'a' fetch_prf.py keeps,
-                    1951-2025) and each year Y against 1951 to Y-2, so
-                    average(Y) = a x mean(index 1951..Y-2). Checked against
-                    the service's own 2026 averages in the backtest.
-  index so far    = precip so far / average x 100, preliminary
-  rain to reach c = c/100 x average - precip so far (none when already there)
-  A grid with a missing CPC value on any day of the interval gets no number.
-  A day missing from CPC in the middle of an interval stops that interval.
+                    for that year. RMA's PRF service gives every past year
+                    against one average (the 'a' fetch_prf.py keeps, 1951-2025)
+                    and year Y against 1951 to Y-2, so
+                    average(Y) = a x mean(index 1951..Y-2). On the backtest
+                    grids that is RMA's own 2026 average to a median 0.02%;
+                    it is off by more only where the average is a few mm, so an
+                    average under MIN_AVG_MM gets no index.
+  index so far    = rain so far / average x 100, preliminary
+  rain to reach c = c/100 x average - rain so far (none when already there)
+  A missing day stops that interval; a grid NCEI leaves out gets no number.
 
-HOW GOOD IT IS: --backtest-collect on a runner, --backtest-analyze here. The
-end-of-interval CPC total for past intervals, against RMA's published final
-index, for a sample of grids. test/fixtures/prf-season/ pins the rows and the
-summary; the card prints the summary.
+HOW GOOD IT IS (test/fixtures/prf-season/backtest.json, pinned by
+test/prf-now.test.mjs; the card prints it)
+  * final months: equal to RMA's (above)
+  * last month, preliminary: not yet checked against its final; each build
+    saves the initial file to the raw branch so that check can be made
+  * this month, daily grids: in September 2026, the one month checked, their
+    sum came in a median 18% under NCEI's month file (under at 83% of grids),
+    which moved the Aug-Sep index a median 9.5 points. The card says so.
 
 USAGE
   python scripts/fetch_prf_season.py --selftest
-  python scripts/fetch_prf_season.py                  # build data/prf/now/
-  python scripts/fetch_prf_season.py --check          # the files are well formed
-  python scripts/fetch_prf_season.py --backtest-collect OUT_DIR
-  python scripts/fetch_prf_season.py --backtest-analyze ROWS.json[.gz]
+  python scripts/fetch_prf_season.py                   # build data/prf/now/
+  python scripts/fetch_prf_season.py --check
+  python scripts/fetch_prf_season.py --backtest-collect OUT_DIR    (runner: CPC, NCEI, RMA)
+  python scripts/fetch_prf_season.py --prelim-collect OUT_DIR      (runner: daily vs month file)
+  python scripts/fetch_prf_season.py --backtest-analyze ROWS PRELIM
 """
 
 import argparse
@@ -107,7 +107,6 @@ MONTHS = ["January", "February", "March", "April", "May", "June", "July", "Augus
 MAX_DAY_TENTHS = 15000          # 1,500 mm in a day is not rain, it is a broken file
 LAND_MIN, LAND_MAX = 13000, 14500   # boxes with a value; 13,626 on 2026-10-15
 FIRST_YEAR = 1951
-CPC_LAST_CROP_YEAR = 2026       # RMA: CPC through crop year 2026, NCEI nClimGrid from 2027
 KEEP_ENDED_DAYS = 75            # an ended interval stays on the card this long, or until RMA publishes it
 MIN_AVG_MM = 5.0                # a whole-interval average under this (desert summer) gets no index
 PUBLISHED_SHARE = 0.9           # RMA has published an interval when this share of grids has it
@@ -291,17 +290,6 @@ def fetch_days(days, cache=None, fresh_from=None):
         for day, field in ex.map(one, days):
             out[day] = field
     return out
-
-
-def newest_day(today, fetch=http_get):
-    """The newest day CPC has posted, looking back up to 10 days."""
-    for back in range(1, 11):
-        d = today - dt.timedelta(days=back)
-        raw = fetch(cpc_url(d))
-        if raw is not None:
-            decode_cpc(raw)
-            return d
-    raise RuntimeError("CPC has posted nothing in the last 10 days")
 
 
 # ---------------------------------------------------------------- build
@@ -675,7 +663,7 @@ def prelim_summary(doc, rec):
     the unsynced daily sum and NCEI's month file."""
     y, m = int(doc["month"][:4]), int(doc["month"][4:])
     i = m - 2                       # the interval whose second month this is
-    pts, pct, same = [], [], 0
+    pts, pct, same, ratio = [], [], 0, []
     for g, before, uns, mon, syn in doc["rows"]:
         if None in (before, uns, mon) or g not in rec:
             continue
@@ -687,10 +675,13 @@ def prelim_summary(doc, rec):
         pts.append(abs((before + uns) - (before + mon)) / av * 100)
         if mon >= 5:
             pct.append(abs(uns - mon) / mon * 100)
+            ratio.append(uns / mon)
     s = sorted(pts)
     return {"month": MONTHS[m - 1] + " " + str(y), "interval": f"{IV[i]} {y}", "n": len(pts),
             "median_pts": round(statistics.median(pts), 1), "p90_pts": round(s[int(0.9 * len(s))], 1),
-            "median_pct_of_month": round(statistics.median(pct), 1), "synced_equals_month_file": same,
+            "median_pct_of_month": round(statistics.median(pct), 1),
+            "median_pct_under": round(100 - 100 * statistics.median(ratio)),
+            "share_under": round(100 * sum(1 for x in ratio if x < 1) / len(ratio)), "synced_equals_month_file": same,
             "month_kind": doc["month_kind"], "unsynced_days": doc["unsynced_days"]}
 
 
@@ -735,6 +726,8 @@ def final_match(rows):
 def backtest_analyze(rows_path, prelim_path, out=BACKTEST, prf=PRF):
     op = lambda p: (gzip.open if p.endswith(".gz") else open)(p, "rt")
     doc = json.load(op(rows_path))
+    if "cols" in doc:       # the pinned copy keeps rows as lists
+        doc["rows"] = [dict(zip(doc["cols"], r)) for r in doc["rows"]]
     pre = json.load(op(prelim_path))
     cpc = summarize(doc["rows"])
     fm = final_match(doc["rows"])
@@ -752,6 +745,7 @@ def backtest_analyze(rows_path, prelim_path, out=BACKTEST, prf=PRF):
                      "final_first": fm["first"], "final_last": fm["last"],
                      "prelim_month": ps["month"], "prelim_interval": ps["interval"], "prelim_n": ps["n"],
                      "prelim_median_pts": ps["median_pts"], "prelim_p90_pts": ps["p90_pts"],
+                     "prelim_pct_under": ps["median_pct_under"], "prelim_share_under": ps["share_under"],
                      "cpc_median_abs": cpc["median_abs"], "cpc_n": cpc["n"]}}
     os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump(full, open(out, "w"), indent=1, sort_keys=True)
