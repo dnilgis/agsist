@@ -264,16 +264,22 @@ def _explore(out, log):
         if on:
             m = on[0]
             log.append("newest offered month: %04d-%02d" % (m["year"], m["month"]))
-            for fmt in ("XML", "CSV"):
+            for fmt in ("XML",):
                 page.locator("label[for=Dc-s_%d]" % (0 if fmt == "CSV" else 1)).click()
                 time.sleep(PAUSE)
                 fn = grab(page, page.locator("#" + m["id"]), out, "%s-%04d-%02d" % (fmt.lower(), m["year"], m["month"]), log)
                 if fn and fmt == "XML":
                     xml_shape(fn, log)
-                    with open(fn, "rb") as f, open(fn + ".head.xml", "wb") as g:
-                        g.write(f.read(3_000_000))
+                    import gzip
+                    import shutil
+                    with open(fn, "rb") as f, gzip.open(fn + ".gz", "wb", 9) as g:
+                        shutil.copyfileobj(f, g)
                     os.remove(fn)
-                snap("04-after-" + fmt.lower())
+                elif fn:
+                    os.remove(fn)
+            # the XML schema screen last (it replaces the month list)
+            grab(page, page.get_by_text("View XML Schema").first, out, "doc-xml", log, wait=20000)
+            snap("05-doc-xml")
         br.close()
     open(os.path.join(out, "requests.json"), "w").write(json.dumps(reqs, indent=1))
     log.append("requests (%d):" % len(reqs))
