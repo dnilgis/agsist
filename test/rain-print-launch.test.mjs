@@ -57,7 +57,7 @@ test("one name for the $19 product, curly apostrophes in FAQ titles, no 'made-up
   const G = readFileSync(ROOT + "gifts-for-farmers.html", "utf8"), P = readFileSync(ROOT + "components/rain-print-promo.js", "utf8"), C = readFileSync(ROOT + "rp-gift.html", "utf8");
   assert.match(G, /<li>Digital file <b>\$<span data-gf-price="digital">/);
   for (const [n, t] of [["rain-print", HTML], ["gifts", G], ["gift card", C]]) assert.ok(!/print files?\b[^.]{0,40}\$19|Print file <b>|print file of the whole year|A print file is/.test(t), n + ": the $19 product is the Digital file");
-  assert.match(HTML, /<li>A PNG and a PDF, 12 x 18 in at 300 dpi, no watermark<\/li>/, "the file says its types (2026-10-15)");
+  assert.match(HTML, /<li>A PNG and a PDF of the picture alone, 12 x 18 in at 300 dpi, no watermark; it fits a 12 x 18 frame<\/li>/, "the file says its types (2026-10-15)");
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const faq = ld["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.map((q) => q.name);
   const shown = [...HTML.matchAll(/<details><summary>([^<]*)<\/summary>/g)].map((m) => m[1].replace(/&rsquo;/g, "\u2019").replace(/&ldquo;/g, "\u201c").replace(/&rdquo;/g, "\u201d"));
@@ -503,7 +503,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
 
 test("station words are honest and the same everywhere", () => {
   assert.match(HTML, /<option value="">Nearest with a good record<\/option>/);
-  assert.match(HTML, /<p class="rp-lede">Type a town and a year, and I draw every rain and snow the nearest weather station caught\. A gift for a farmer, or for the year you married or a child was born\. Drawing it is free\.<\/p>/);
+  assert.match(HTML, /<p class="rp-lede">A framed print of the farm&rsquo;s year of rain, from the gauge nearest it\. Type a town and a year, and I draw every rain and snow the nearest weather station caught\. A gift for a farmer, or for the year you married or a child was born\. Drawing it is free\.<\/p>/);
   assert.match(HTML, /A morning reading is filed under the day it was read/);
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);

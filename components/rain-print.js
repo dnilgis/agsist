@@ -2593,7 +2593,9 @@
     var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
     // one product past its date and the other not: say which (2026-10-14, panel 3)
-    top.textContent = late ? 'For Christmas: past years ordered now ship after Christmas.'
+    var lateMail = ' Too late for the mail? The digital file comes by email in 1 business day, or give the gift card now and the print after Christmas.';
+    top.textContent = giftMode() && canOrder() ? 'For Christmas: a gift card now, the print in January.'
+      : late ? 'For Christmas: past years ordered now ship after Christmas.' + lateMail
       : TODAY <= pc && TODAY <= fc ? 'For Christmas: order framed by ' + shortDate(fc) + ', a print by ' + shortDate(pc) + '.'
       : TODAY <= pc ? 'For Christmas: order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.'
       : 'For Christmas: order framed by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
@@ -3221,6 +3223,8 @@
         });
       }
       syncCutoffs();
+      var xp = !PICK_CHOSEN && !januaryGift() ? xmasPick(TODAY, OJ().j) : '';
+      if (xp && xp !== PICK) setPick(xp);
       syncXmas();
       var o = $('rp-year').querySelector('option[value="' + CURRENT_YEAR + '"]');
       if (o) o.textContent = giftYearLabel();
@@ -3243,7 +3247,18 @@
      button that pays. Checkout is Stripe in the same tab (Sig): the design is
      in the address bar and saved for the way back, and Stripe sends the buyer
      back to rain-print?paid=<product>&s=<session> (PAID below). */
-  var PICK = 'framed12x18', NONAME_OK = false;
+  var PICK = 'framed12x18', NONAME_OK = false, PICK_CHOSEN = false;
+  /* PAST A CUTOFF (2026-10-17, gift-buyers panel): Framed stays picked only
+     while it still makes Christmas. Past its date the page starts on the best
+     choice that still does, the print through its own date, then the digital
+     file, unless the reader (or their link) already picked. Outside Oct 1 to
+     Dec 25, or for this year's January gift, nothing moves. */
+  function xmasPick(today, j) {
+    var pc = j && j.print_christmas_cutoff, fc = j && j.framed_christmas_cutoff, M = /^\d{4}-\d{2}-\d{2}$/;
+    if (!M.test(String(pc || '')) || !M.test(String(fc || '')) || !M.test(String(today || ''))) return '';
+    if (today < fc.slice(0, 4) + '-10-01' || today > fc.slice(0, 4) + '-12-25' || today <= fc) return '';
+    return today <= pc ? 'print12x18' : 'digital';
+  }
   var PICK_WORD = { framed12x18: 'Framed', print12x18: 'Print', digital: 'Digital file' };
   // a Canadian design reads "US$19": the prices are in US dollars
   function pickPrice(id) { var J = OJ().j || {}; return typeof J[id] === 'number' ? (caOrder() ? 'US' : '') + money(J[id]) : ''; }
@@ -3273,6 +3288,7 @@
     $('rp-gift-pre').innerHTML = PICK === 'digital' ? 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note. I send the note with the file, and no prices go with it.'
       : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
     $('rp-gift-pre').hidden = giftOff || !link || !canOrder();
+    $('rp-another-wrap').hidden = !canOrder() || !!(GIFT && GIFT.usable);
     pgSync();
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
@@ -4448,10 +4464,11 @@
      else the radio the browser kept, else Framed. */
   function startPick() {
     var u = new URLSearchParams(root.location.search).get('pick');
-    if (PRODUCTS.indexOf(u) >= 0) return u;
+    if (PRODUCTS.indexOf(u) >= 0) { PICK_CHOSEN = true; return u; }
     var sv = savedCheckout();
-    if (sv && !PAID && sv.code === encodeCode(ST) && PRODUCTS.indexOf(sv.choice) >= 0) return sv.choice;
+    if (sv && !PAID && sv.code === encodeCode(ST) && PRODUCTS.indexOf(sv.choice) >= 0) { PICK_CHOSEN = true; return sv.choice; }
     var r = radios('rp-product').filter(function (x) { return x.checked; })[0];
+    if (r && r !== radios('rp-product')[0]) PICK_CHOSEN = true;   // a pick the browser kept
     return r && PRODUCTS.indexOf(r.value) >= 0 ? r.value : 'framed12x18';
   }
   setPick(startPick());
@@ -4568,7 +4585,7 @@
   $('rp-logo-remove').addEventListener('click', removeLogo);
   $('rb-logo-remove').addEventListener('click', function () { BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg(''); try { $('rb-logo-pick').focus(); } catch (e) {} });
   // step 3: the picker (and its copy in the review sheet), the button, the no-name question, the phone bar
-  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); setPick(r.value); if (DATA) updateUrl(); ga('rain_print_pick', { choice: r.value, where: r.name === 'rp-pproduct' ? 'review' : 'step3' }); } }); });
+  radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); PICK_CHOSEN = true; setPick(r.value); if (DATA) updateUrl(); ga('rain_print_pick', { choice: r.value, where: r.name === 'rp-pproduct' ? 'review' : 'step3' }); } }); });
   $('rp-pay').addEventListener('click', checkIt);
   $('rp-bar-go').addEventListener('click', checkIt);
   $('rp-noname-add').addEventListener('click', function () {
@@ -4667,6 +4684,22 @@
     else root.prompt('Copy this link', u);
   });
   $('rp-gift-use').addEventListener('click', function () { useGift(); });
+  /* "Make another" (2026-10-17, farm-buyers panel: Dad's last year, then my
+     first): the town and the words stay; the Year box comes up to change. */
+  $('rp-start').addEventListener('click', function (ev) {
+    ev.preventDefault();
+    var p = $('rp-place');
+    try { p.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) {}
+    try { p.focus({ preventScroll: true }); } catch (e) { p.focus(); }
+    ga('rain_print_start', {});
+  });
+  $('rp-another').addEventListener('click', function () {
+    var y = $('rp-year');
+    try { y.scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) {}
+    try { y.focus({ preventScroll: true }); } catch (e) {}
+    try { if (typeof y.showPicker === 'function') y.showPicker(); } catch (e) {}
+    ga('rain_print_another', {});
+  });
   $('rp-retry').addEventListener('click', function () {
     // the button is about to vanish: keep the keyboard on the town box
     try { $('rp-place').focus({ preventScroll: true }); } catch (e) {}
