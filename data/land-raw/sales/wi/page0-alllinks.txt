@@ -4,8 +4,8 @@ https://www.revenue.wi.gov/Pages/ContactUs/home.aspx
 https://www.revenue.wi.gov/Pages/FAQS/home.aspx
 https://www.revenue.wi.gov/Pages/HTML/formpub.aspx
 https://www.revenue.wi.gov/Pages/HTML/pubs.aspx
-https://www.revenue.wi.gov/Pages/Icon/favicon.ico?_=639277857512778494
-https://www.revenue.wi.gov/Pages/Icon/favicon.png?_=639277857512778494
+https://www.revenue.wi.gov/Pages/Icon/favicon.ico?_=639277898360354666
+https://www.revenue.wi.gov/Pages/Icon/favicon.png?_=639277898360354666
 https://www.revenue.wi.gov/Pages/Resource/Controls.External._.min.css.v.1928595295
 https://www.revenue.wi.gov/Pages/Resource/WDC.External._.min.css.v.1383359047
 https://www.revenue.wi.gov/Pages/Resource/jquery.qtip.min.css.v.1181754721
