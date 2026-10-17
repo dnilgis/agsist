@@ -43,17 +43,23 @@ test("every <img> on a hand-made page or written by a component has an alt attri
   assert.deepEqual(bad, []);
 });
 
-test("every picture from /img/ on a hand-made page has real alt text under 300 characters", () => {
+test("every picture from /img/ on a hand-made page has real alt text under 125 characters", () => {
+  // Two long alts are deliberate: the Rain Print example and the sample letter on
+  // /rain-print read out the year's numbers from the saved data, and
+  // test/rain-print-examples.test.mjs and test/rain-print-insert.test.mjs pin them.
+  const LONG_ON_PURPOSE = new Set(["rain-print.html /img/rain-print-example-2012-ames-ia.jpg", "rain-print.html /img/rain-print-insert-letter-sample.webp"]);
   const bad = [];
   let n = 0;
   for (const f of [...PAGES, "components/rain-print-promo.js"]) {
     const s = read(f);
     for (const m of s.matchAll(/<img\b[^>]*\bsrc="\/img\/[^"]+"[^>]*>/gi)) {
       n++;
-      const alt = (m[0].match(/\balt="([^"]*)"/) || [])[1];
+      const raw = (m[0].match(/\balt="([^"]*)"/) || [])[1];
+      // count what a screen reader reads: entities as one character
+      const alt = raw === undefined ? undefined : raw.replace(/&[a-z]+;|&#\d+;/g, "x");
       const decorative = /aria-hidden="true"|role="(presentation|none)"/.test(m[0]);
       if (alt === undefined || (!alt.trim() && !decorative)) bad.push(`${f}:${line(s, m.index)} empty alt on a content image`);
-      else if (alt.length > 300) bad.push(`${f}:${line(s, m.index)} alt is ${alt.length} characters`);
+      else if (alt.length >= 125 && !LONG_ON_PURPOSE.has(f + " " + m[0].match(/src="([^"]+)"/)[1])) bad.push(`${f}:${line(s, m.index)} alt is ${alt.length} characters`);
       else if (/^(image|picture|photo) of\b/i.test(alt) || /\u2014/.test(alt)) bad.push(`${f}:${line(s, m.index)} alt wording: ${alt.slice(0, 60)}`);
     }
   }
