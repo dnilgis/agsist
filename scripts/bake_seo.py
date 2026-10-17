@@ -659,6 +659,21 @@ def _label(prices, key):
     return n.get("label")
 
 
+def _known_trade(q):
+    """True when the quote is known to be a trade with no settle to bake: a
+    fetch_prices v3.7 quote with no settle field, or a v3.6 quote whose
+    previous close was the afternoon's last trade. The page then gets a title
+    with no number rather than keeping one that a last trade wrote
+    (2026-10-17: "closed $12.60 1/2" against a $12.61 1/4 settle)."""
+    q = q or {}
+    return q.get("close_kind") is not None or q.get("prev_source") == "recorded settle"
+
+
+MARKETS_PLAIN = ("Ag Markets Today: Grain and Livestock Futures" + SUFFIX,
+                 "Corn, soybean, wheat, cattle and crude futures on one board, refreshed every "
+                 "15 min in session, with cash bids and USDA dates. Free.")
+
+
 def make_futures(page):
     exch, crop, key, extra = FUTURES[page]
 
@@ -670,6 +685,9 @@ def make_futures(page):
         sc = settled_close(_quote(p, key), p.get("fetched", ""),
                            "cattle" if key == "cattle" else "grain")
         lab = _label(p, key)
+        if sc is None and _known_trade(_quote(p, key)):
+            return (f"{exch} {crop} Futures Price Today"
+                    + (f", {extra}" if extra else "") + SUFFIX, None)
         if sc is None or not lab:
             return None
         px = sc["px"]
@@ -720,7 +738,7 @@ def seo_markets(c):
     fetched = p.get("fetched", "")
     corn = settled_close(_quote(p, "corn"), fetched, "grain")
     if corn is None:
-        return None
+        return MARKETS_PLAIN if _known_trade(_quote(p, "corn")) else None
     cd = _d(corn["date"])
     if _too_old(cd, c["today"], 4) or _too_old(_d(fetched), c["today"], 4):
         return None
@@ -1598,6 +1616,17 @@ def selftest():
        sc and sc["px"] == 1261.25 and sc["date"] == "2026-10-16" and sc["net"] == -1.75, sc)
     ck("v3.7 with no settle field bakes nothing",
        settled_close(dict(v37, settle=None), "2026-10-16T18:46:22Z", "grain") is None)
+    t_nt = PAGES["soybean-futures-prices.html"][0](dict(ctx, prices={
+        "fetched": "2026-10-16T18:46:22Z", "nearby": {"beans": {"label": "Nov '26"}},
+        "quotes": {"beans-nearby": {"close": 1260.5, "netChange": -3.75, "close_date": "2026-10-16",
+                                    "prev_date": "2026-10-15", "prev_source": "recorded settle"}}}))
+    ck("a v3.6 file with no settle titles the page with no number",
+       t_nt == ("CBOT Soybean Futures Price Today | AGSIST", None), t_nt)
+    mk_nt = seo_markets(dict(ctx, today=date(2026, 10, 16), prices={
+        "fetched": "2026-10-16T18:46:22Z",
+        "quotes": {"corn": {"close": 474.25, "close_kind": "last", "close_date": "2026-10-16"}}}))
+    ck("a board with no settle on file: markets title and description carry no number",
+       mk_nt == MARKETS_PLAIN and not re.search(r"\d", mk_nt[0] + mk_nt[1].replace("15 min", "")), mk_nt)
     ck("a v3.6 previous close taken from the afternoon trade is never baked",
        settled_close({"close": 1260.5, "netChange": -3.75, "close_date": "2026-10-16",
                       "prev_date": "2026-10-15", "prev_source": "recorded settle"},
