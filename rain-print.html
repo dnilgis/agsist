@@ -129,8 +129,9 @@
     .rp-pv{position:sticky;top:calc(var(--rp-nav,72px) + 12px)}
     .rp-wall{margin:0;padding:24px 26px 2px;border-radius:var(--r-lg)}
     .rp-frame,.rp-cap{max-width:600px}
-    /* the pay button stays at the bottom of the right column while step 3 is on screen */
-    .rp-pay-wrap{position:sticky;bottom:0;z-index:3;margin:0 -14px;padding:10px 14px 8px;background:var(--surface);border-radius:0 0 var(--r-md) var(--r-md)}
+    /* the pay block sits in the page under the three choices: pinned to the bottom of the screen it covered
+       the Digital file card while scrolling (2026-10-17, farm-buyers panel, fb-d-04) */
+    .rp-pay-wrap{margin:0;padding:10px 0 8px}
   }
   /* phone: once the print scrolls away, a slim copy pins under the menu (never
      over a focused box: the page keeps focus below it), and after a draw a bar
@@ -746,7 +747,7 @@
           </div>
           <!-- 2026-10-16: the framed picture sits open under Pay (it used to hide inside What you get), so a phone's Pay
                button stays where it was. It is a render, labeled so, until Sig sends photos of real prints. -->
-          <figure class="rp-onwall" id="rp-onwall"><div class="rp-onwall-i"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="lazy" decoding="async" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop."></picture><span class="rp-ex-tag" aria-hidden="true">Mockup</span></div><figcaption>Mockup of a framed print. Photos of real prints coming soon.</figcaption></figure>
+          <figure class="rp-onwall" id="rp-onwall"><div class="rp-onwall-i"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="eager" fetchpriority="low" decoding="async" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop."></picture><span class="rp-ex-tag" aria-hidden="true">Mockup</span></div><figcaption>Mockup of a framed print. Photos of real prints coming soon.</figcaption></figure>
           <p class="rp-note rp-gift-line" id="rp-gift-line" hidden>It&rsquo;s a gift? Say so on the order form, with their name and your note.</p>
           <p class="rp-note" id="rp-ships">Prints and framed prints ship within 3 business days after you approve the proof, anywhere in the 50 states.</p>
           <p class="rp-note" id="rp-xmas-why" hidden></p>
