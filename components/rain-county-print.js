@@ -31,7 +31,7 @@
   root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf };   // for test/rain-county-print.test.mjs
   if (!fig || !fig.dataset) return;
   var D = fig.dataset;
-  var ART = '/components/rain-print-art.js?v=13', ENGINE = '/components/rain-print.js?v=44';
+  var ART = '/components/rain-print-art.js?v=14', ENGINE = '/components/rain-print.js?v=45';
   var MISS_BLOCK = 31, MIN_DAYS = 60;
   var FONTS = [
     ['Fraunces', '/fonts/rp-fraunces-opsz.woff2', { weight: '300 600' }],

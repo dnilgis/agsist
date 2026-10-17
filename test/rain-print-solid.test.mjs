@@ -447,7 +447,7 @@ test("D1: a gauge stuck at 0.00 for months against a wet normal is found; a real
   assert.equal(RP.stuckRun(days(365, (i) => (i >= 120 && i < 200 && i % 10 === 0 ? { flag: "T" } : i % 4 === 0 ? { v: 0.3 } : {})), wet), null, "a trace breaks the run");
   assert.equal(RP.stuckRun(stuck, null), null, "no normal, no check");
   const S2 = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S2, /records: ST\.records && !STUCK \? recordsFor\(\) : \[\]/);
+  assert.match(S2, /records: ST\.records && !STUCK \? withoutTemp\(recordsFor\(\), ST\) : \[\]/);
   assert.match(S2, /showDry: showDry\(DATA\.d\) && !STUCK/);
   assert.match(S2, /The gauge may have been stuck, so the print leaves off the dry stretch and the remarkable days\./);
 });
