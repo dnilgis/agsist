@@ -379,6 +379,8 @@ def strip_scripts(blob):
     return t.encode()
 
 
+IL_SODA = "https://data.illinois.gov/resource/it54-y4c6.json"
+
 # Pages saved by --probe besides each state's data pages: layouts, data dictionaries and catalogs,
 # so the real columns can be read on the raw branch before any parser trusts them.
 PROBE_DOCS = {
@@ -387,10 +389,16 @@ PROBE_DOCS = {
            "https://www.revenue.wi.gov/Pages/RETr/Home.aspx"],
     "MN": ["https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv",
            "https://www.revenue.state.mn.us/sales-ratio-reports"],
-    "IL": ["https://data.illinois.gov/api/catalog/v1?q=PTAX-203&limit=50",
-           "https://data.illinois.gov/api/catalog/v1?q=real%20estate%20transfer%20declaration&limit=50",
-           "https://tax.illinois.gov/localgovernments/property/mydecdatafiles.html"],
-    "IA": ["https://ui-libraries.github.io/Iowa-Parcels/"],
+    "IL": ["https://data.illinois.gov/api/views/it54-y4c6.json",
+           IL_SODA + "?$select=line_8_current_use,count(*)&$group=line_8_current_use&$order=count(*)%20DESC&$limit=40",
+           IL_SODA + "?$select=count(*),min(date_recorded),max(date_recorded)",
+           IL_SODA + "?$select=count(step_4_buyer_name)",
+           IL_SODA + "?$select=count(step_4_seller_name)",
+           IL_SODA + "?$select=line_1_county,count(*)&$group=line_1_county&$order=line_1_county&$limit=200",
+           IL_SODA + "?$limit=2&$where=line_8_current_use%20like%20%27%25arm%25%27",
+           "https://data.illinois.gov/api/views/dwt7-rycp.json",
+           "https://data.illinois.gov/resource/dwt7-rycp.json?$select=count(*),count(buyer_name)",
+           "https://data.illinois.gov/api/views/ay2h-5hx3.json"],
 }
 
 
@@ -481,9 +489,15 @@ def probe(states):
                 except Exception:  # noqa: BLE001
                     pass
                 try:
-                    for r in (json.loads(blob).get("results") or [])[:40]:
+                    J = json.loads(blob)
+                    for r in (J.get("results") or [])[:40] if isinstance(J, dict) else []:
                         R = r.get("resource") or {}
-                        log.append("  dataset %s %r updated %s; columns %s" % (R.get("id"), R.get("name"), R.get("data_updated_at"), R.get("columns_field_name")))
+                        if re.search(r"PTAX|MyDec|Transfer Declaration", R.get("name") or "", re.I):
+                            log.append("  dataset %s %r updated %s; %d columns" % (R.get("id"), R.get("name"), R.get("data_updated_at"), len(R.get("columns_field_name") or [])))
+                    if isinstance(J, dict) and J.get("columns"):            # a Socrata view: every column
+                        log.append("  columns: " + " ".join("%s(%s)" % (c.get("fieldName"), c.get("dataTypeName")) for c in J["columns"]))
+                    if isinstance(J, list):                                 # a SoQL answer
+                        log.append("  rows: " + json.dumps(J[:60])[:4000])
                 except Exception:  # noqa: BLE001
                     pass
             log.append("%s doc %s: %d bytes -> %s" % (st, u, len(blob), os.path.basename(fn)))
