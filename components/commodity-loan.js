@@ -5,7 +5,7 @@
  *
  * A marketing assistance loan (MAL) from the Commodity Credit Corporation,
  * made at the county FSA office, lends the county loan rate per bushel on
- * grain you keep, for up to nine months (7 U.S.C. 9032). Interest is at the
+ * grain you keep, for up to nine months (7 U.S.C. 9033). Interest is at the
  * CCC commodity loan rate FSA sets each month.
  *
  * Here interest is figured simple, by the month, as an estimate:

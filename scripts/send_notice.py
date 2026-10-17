@@ -427,7 +427,7 @@ def selftest():
     htm = m.get_body(("html",)).get_content()
     ck("subject", m["Subject"] == "ARC/PLC signup closes Dec 11", m["Subject"])
     ck("deadline named with its weekday", "closes Friday, December 11, 2026." in txt)
-    ck("signup facts are build_arc_plc's own", "Every owner and operator on the farm signs." in txt
+    ck("signup facts are build_arc_plc's own", "Producers with a share in the crop sign. FSA says a landowner with no share interest, such as a cash-rent landlord, cannot enroll." in txt
        and "FSA-156EZ" in txt and "Do nothing for 2026 and that farm gets no 2026 payment." in txt)
     ck("signature", SIGNATURE in txt and H.escape(SIGNATURE) in htm)
     ck("footer and postal address, both parts", POSTAL in txt and POSTAL in htm and "Unsubscribe: " + unsub_link("https://w.dev", "sec", "a@farm.com", T) in txt)

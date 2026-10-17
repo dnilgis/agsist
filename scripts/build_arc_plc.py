@@ -914,7 +914,7 @@ def signup_copy(today):
     st = {py: ("upcoming" if today < dt.date.fromisoformat(YEAR_INFO[py]["open"]) else
                "open" if today <= dt.date.fromisoformat(YEAR_INFO[py]["close"]) else "closed") for py in YEARS}
     c6, o7, c7 = nice_date(a["close"]), nice_date(b["open"]), nice_date(b["close"])
-    sign = ("Sign", "Every owner and operator on the farm signs.")
+    sign = ("Sign", "Producers with a share in the crop sign. FSA says a landowner with no share interest, such as a cash-rent landlord, cannot enroll.")
     bring = ("Bring", "Bring the farm&rsquo;s FSA-156EZ. It lists the base acres and PLC yields.")
     if st[2026] != "closed":
         items = [(nice_date(a["close"], False), f"2026 signup ends {c6}."),

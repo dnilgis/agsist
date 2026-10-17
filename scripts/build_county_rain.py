@@ -525,7 +525,7 @@ def county_page(ctx):
     if c.get("dry") and c["dry"][0] >= 2:
         n, a, b = c["dry"]
         still = (b == asof and not done)
-        facts.append(f"<li><b>Longest dry stretch:</b> {n} days in a row with the gauge at zero, {short_date(a)} to {short_date(b)}"
+        facts.append(f"<li><b>Longest dry stretch:</b> {n} days in a row with nothing in the gauge, not even a trace, {short_date(a)} to {short_date(b)}"
                      + (f", still going as of {short_date(asof)}" if still else "") + ".</li>")
     if c.get("last"):
         L = c["last"]
@@ -552,7 +552,7 @@ def county_page(ctx):
                  + (f"It reported {c['reported']} of the {c['days']} days from Jan 1 to {short_date(asof)}; "
                     f"{'the one day' if miss == 1 else 'the ' + str(miss) + ' days'} with no report count as unknown, not as dry."
                     if miss else f"It reported every one of the {c['days']} days from Jan 1 to {short_date(asof)}.")
-                 + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace counts as zero."
+                 + " Rain here means everything the gauge caught: rain, and snow melted down to water. A trace, too little to measure, adds nothing to the totals, but it ends a dry stretch: something fell that day."
                  + (" It is read once a day, usually in the morning, and each reading is filed under the day it was read, "
                     "so an evening storm can show up on the next day." if morning_read(stw) else ""))
     usual_p = (f"Usual means {norm_words}, added up over the same {c['reported']} days the {noun} reported, so a missing day counts on neither side.{norm_note}"

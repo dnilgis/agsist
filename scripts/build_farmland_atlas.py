@@ -1213,7 +1213,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         "thesis_test": thesis_test(counties),
         "counts": {"counties": len(counties),
                    # records with a polygon: the 7 Connecticut planning regions carry RMA's
-                   # 2024-25 book but have no shape in the 2019 boundary file
+                   # 2024-25 book but have no shape in the boundary file (2010 vintage, scripts/atlas_geometry.py)
                    "mapped": sum(1 for f in counties if f in geometry_names) if geometry_names else len(counties),
                    "rent_ok": sum(1 for c in counties.values() if c["rent"].get("status") == "ok"),
                    "yield_ok": sum(1 for c in counties.values() if c["yield"].get("status") == "ok"),
