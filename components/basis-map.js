@@ -43,7 +43,12 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   }
-  function cents(c) { return c === 0 ? 'even' : (c > 0 ? '+' : '−') + Math.abs(c) + '¢'; }
+  /* The table under the map prints the median to the quarter cent (AG.px.basis: +12½¢); the map
+     used to round it to whole cents (+13¢). One formatter for both (audit N13, Oct 17). */
+  function cents(c) {
+    if (window.AG && AG.px && AG.px.basis) return AG.px.basis(c);
+    var r = Math.round(c); return r === 0 ? 'even' : (r > 0 ? '+' : '−') + Math.abs(r) + '¢';
+  }
 
   /* -> {paths: [{st, d, cx, cy, area}], w, h} for the lower 48 */
   function project(geo, W) {
@@ -98,7 +103,7 @@
     var labels = [];
     m.paths.forEach(function (p) {
       var v = states[p.st], c = v && v.crops && v.crops[crop];
-      var has = c && c.median != null, cv = has ? Math.round(c.median * 100) : null;
+      var has = c && c.median != null, cv = has ? Math.round(c.median * 10000) / 100 : null;
       var fill = 'none', op = 1, cls = 'bm-st';
       if (has) {
         var b = BANDS[band(cv)];

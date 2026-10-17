@@ -18,7 +18,14 @@ import os
 import sys
 import urllib.request
 import urllib.parse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+
+
+def ct_today():
+    """The Central-time date. The runner's clock is UTC, so an evening run stamped tomorrow
+    and the pages disagreed with /conditions by a day (audit N13, Oct 17)."""
+    return datetime.now(timezone.utc).astimezone(ZoneInfo("America/Chicago")).strftime("%Y-%m-%d")
 
 OUT_FILE = "data/crop-progress.json"
 BASE_URL = "https://quickstats.nass.usda.gov/api/api_GET/"
@@ -370,7 +377,7 @@ def main():
         print("WARNING: NASS_API_KEY not set. Get a free key at https://quickstats.nass.usda.gov/api/")
         print("Writing off-season placeholder.")
         out = {
-            "updated": datetime.now().strftime("%Y-%m-%d"),
+            "updated": ct_today(),
             "report_date": None,
             "in_season": False,
             "error": "NASS_API_KEY not configured",
@@ -389,7 +396,7 @@ def main():
     in_season = is_in_season()
 
     result: dict = {
-        "updated":     datetime.now().strftime("%Y-%m-%d"),
+        "updated":     ct_today(),
         "report_date": None,
         "in_season":   in_season,
         "corn":         None,
