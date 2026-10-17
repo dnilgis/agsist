@@ -10,7 +10,13 @@ name: Accuracy pass (one-time)
 #                  is already on raw, submit one batch, then wait and collect
 #   mode=collect   wait for the batch and write accuracy-pass/results.json
 
+# The push trigger exists only so GitHub registers this workflow from a branch
+# that is not main (dispatch needs that); a push runs the selftest and nothing
+# else, no API call and no spend.
 on:
+  push:
+    branches: [fx/accpass]
+    paths: [.github/workflows/accuracy-pass.yml]
   workflow_dispatch:
     inputs:
       mode:
