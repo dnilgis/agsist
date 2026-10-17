@@ -1827,8 +1827,9 @@
       return Promise.resolve(TEMP);
     }
     var town = META.city;
-    return tempStationsNear(META.lat, META.lon, year).then(function (list) {
-      var c = list.filter(function (x) { return x.sid !== META.sid; }).slice(0, 3);
+    /* First the rain stations already listed (most of them were read for the print already, so no new ask),
+       the five nearest; then, if none kept highs and lows, NOAA's list of stations that do, the three nearest. */
+    var tryList = function (c) {
       return Promise.all(c.map(function (x) { return daily(x.sid, year).then(function (d) { return d; }, function () { return null; }); })).then(function (ds) {
         var best = null;
         c.forEach(function (x, i) {
@@ -1836,9 +1837,18 @@
           var td = X.tempDays(ds[i].raw, year);
           if (tempStationOk(td, last)) best = { sid: x.sid, td: td, rows: ds[i].raw, tm: { same: false, name: stationName(ds[i].meta.name || x.name), words: tempAway(x.km) } };
         });
-        if (TEMP_KEY !== key) return;
-        TEMP = best || { none: 'No weather station near ' + town + ' kept daily highs and lows for ' + year + ', so frost, the hottest and coldest day, crop stages and the temperature band are off.' };
+        return best;
       });
+    };
+    var near = STATIONS.filter(function (x) { return x.sid !== META.sid && !(CA() && CA().isSid(x.sid)); }).slice(0, 5);
+    return tryList(near).then(function (best) {
+      if (best) return best;
+      return tempStationsNear(META.lat, META.lon, year).then(function (list) {
+        return tryList(list.filter(function (x) { return x.sid !== META.sid && !near.some(function (n) { return n.sid === x.sid; }); }).slice(0, 3));
+      });
+    }).then(function (best) {
+      if (TEMP_KEY !== key) return;
+      TEMP = best || { none: 'No weather station near ' + town + ' kept daily highs and lows for ' + year + ', so frost, the hottest and coldest day, crop stages and the temperature band are off.' };
     }).then(null, function () { if (TEMP_KEY === key) { TEMP = { none: 'The temperature records didn’t load just now, so frost, the hottest and coldest day, crop stages and the temperature band are off. Try again in a minute.' }; TEMP_KEY = ''; } });
   }
   function tempFound() {

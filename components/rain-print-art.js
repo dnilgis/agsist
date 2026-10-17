@@ -1238,7 +1238,7 @@
       if (E.cmp) { ends.push(T(EX, endN + 5, uw, { size: 15, fill: C.mute })); endBoxes.push(box(EX, endN + 5, uw, { size: 15 })); }
       var gap = E.cmp ? E.normalRec - E.total : 0;
       if (E.cmp && Math.abs(gap) >= 0.5 && Math.abs(endY - endN) > 60) {
-        var bx = X1 + 6, ya = Math.min(endY, endN) + 16, yb = Math.max(endY, endN) - 16, mid = (ya + yb) / 2, bt = rainAmt(Math.abs(gap), 'tot') + (LOC.fr ? (gap > 0 ? ' de moins' : ' de plus') : gap > 0 ? ' short' : ' ahead');
+        var bx = X1 + 6, ya = Math.min(endY, endN) + 16, yb = Math.max(endY, endN) - 16, mid = (ya + yb) / 2, bt = rainAmt(Math.abs(gap), 'tot') + (LOC.fr ? (gap > 0 ? ' de moins' : ' de plus') : gap > 0 ? ' short' : ' more');
         ends.push('<path d="M' + n2(bx + 5) + ',' + n2(ya) + 'H' + n2(bx) + 'V' + n2(yb) + 'H' + n2(bx + 5) + '" fill="none" stroke="' + X.date + '" stroke-width="0.8"/>' + T(bx + 12, mid + 5, bt, { size: 15, w: 500, fill: X.ink }));
         endBoxes.push({ x: bx - 2, y: ya, w: 14 + W(bt, { size: 15, w: 500 }), h: yb - ya });
       }
