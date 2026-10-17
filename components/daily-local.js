@@ -157,7 +157,7 @@
     if (Math.abs(c.cents) < 0.125) return ', unchanged since ' + esc(c.since);
     return ', ' + (c.cents < 0 ? 'down ' : 'up ') + qc(c.cents) + '¢ since ' + esc(c.since);
   }
-  function inches(v) { return v < 0.005 ? 'none' : v.toFixed(2) + ' in'; }
+  function inches(v) { return v < 0.005 ? 'no rain' : v.toFixed(2) + ' inch'; }
 
   /* Pure. The box as HTML. o = {loc, picks, changes: {corn, soybeans}, rain, status} */
   function build(o) {
@@ -177,7 +177,7 @@
       src.push('Posted bids within ' + RADIUS + ' miles, last 36 hours, nearest delivery month, from the elevator boards AGSIST reads');
     }
     if (o.rain) {
-      lines.push('<b>Rain</b>: ' + inches(o.rain.h24) + ' in the last 24 hours, ' + inches(o.rain.d7) + ' in the last 7 days.');
+      lines.push('<b>Rain</b>: ' + inches(o.rain.h24) + ' over the last 24 hours, ' + inches(o.rain.d7) + ' over the last 7 days.');
       src.push('Rain is Open-Meteo’s estimate for your area, not a gauge');
     }
     var links = loc.zip ? '<p class="dl-l"><a href="/cash-bids?zip=' + esc(loc.zip) + '">All bids near ' + esc(loc.zip) + ' &rarr;</a></p>' : '<p class="dl-l"><a href="/cash-bids">All bids near you &rarr;</a></p>';
@@ -191,7 +191,7 @@
       '<form class="dl-f" novalidate><label class="dl-lab" for="dl-zip">ZIP code</label>' +
       '<input id="dl-zip" name="zip" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" placeholder="54728">' +
       '<button type="submit">Show my line</button></form>' +
-      '<p class="dl-s">Saved in this browser only. Nothing about you is sent to AGSIST.</p>';
+      '<p class="dl-s">Saved in this browser only.</p>';
   }
 
   var api = { readLoc: readLoc, pick: pick, change: change, rain: rain, build: build, empty: empty, fnv: fnv, cash: cash, qc: qc, periodKey: periodKey };

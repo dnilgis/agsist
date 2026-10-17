@@ -63,7 +63,7 @@ test("the line reads plainly, and missing pieces stay missing", () => {
   assert.match(h, /Your local line: Chetek, WI/);
   assert.match(h, /<b>Corn<\/b> best bid \$3\.95 at Best, Town \(\d+\.\d mi\), 80¢ under futures, down 4¢ since Thu\. Nearest: Near, Town \(1\.\d mi\) \$3\.80\./);
   assert.match(h, /<b>Soybeans<\/b>: no bid posted in the last 36 hours within 50 miles\./);
-  assert.match(h, /none in the last 24 hours, 1\.23 in in the last 7 days/);
+  assert.match(h, /no rain over the last 24 hours, 1\.23 inch over the last 7 days/);
   assert.match(h, /\/cash-bids\?zip=54728/);
   assert.match(L.build({ loc: { zip: "54728" }, status: "failed" }), /could not be read/);
 });

@@ -286,15 +286,14 @@ def cash_change(crop, index, prev, prev_generated, now):
            else (f"all {num(len(good))} elevators" if max(down, up) == len(good)
                  else f"{num(max(down, up))} of the {num(len(good))} elevators"))
     mw = "0\u00a2" if qm == 0 else f"{qc(qm)}\u00a2 {'lower' if qm < 0 else 'higher'}"
-    detail = (f"{num(unch)} unchanged. Median change {mw}: {DOW[last.weekday()]}'s last posted bid against "
-              f"{pday}'s, same board and delivery period.")
+    detail = f"{num(unch)} unchanged; median change {mw}."
     big = states[0] if states and abs(states[0]["median_cents"]) >= 0.125 else None
     if big:
         q = round(big["median_cents"] * 4) / 4
-        detail += (f" Biggest state move: {big['name']}, a median {qc(q)}¢ "
-                   f"{'lower' if q < 0 else 'higher'} at {num(big['n'])} elevators.")
+        detail += (f" Biggest state move: {big['name']}, {qc(q)}¢ "
+                   f"{'lower' if q < 0 else 'higher'} ({num(big['n'])} elevators).")
     if dropped:
-        detail += f" {len(dropped)} board{'s' if len(dropped) != 1 else ''} left out as outliers."
+        detail += f" {len(dropped)} outlier{'s' if len(dropped) != 1 else ''} left out."
     return {
         "id": fid, "crop": crop, "kind": "cash_change",
         "sentence": sentence, "key": key, "detail": detail,
@@ -362,8 +361,8 @@ def basis_spread(crop, bs, now):
     sentence = (f"{CROP_NAME[crop]} basis on {short(asof)} ran from {hiw} {cw} in {join_names([r['name'] for r in top])} "
                 f"to {low} in {join_names([r['name'] for r in bot])}, state medians of the elevators AGSIST reads.")
     detail = ("Elevators behind each median: " +
-              "; ".join(f"{r['name']} {num(r['n'])}" for r in top + bot) +
-              f". {len(rows)} states have at least {MIN_STATE_N} elevators pricing against {cw}.")
+              ", ".join(f"{r['name']} {num(r['n'])}" for r in top + bot) +
+              f". {len(rows)} states with {MIN_STATE_N} or more.")
     return {
         "id": fid, "crop": crop, "kind": "basis_spread",
         "sentence": sentence, "key": f"{hiw} {cw}", "detail": detail,
@@ -546,7 +545,8 @@ def render_html(edge, date_iso=""):
             f'<h2 class="dv3-edge-label" id="dv3-edge-h">{_esc(edge.get("label") or "Only on AGSIST")}</h2>'
             f'<ol class="dv3-edge-list">{items}</ol>'
             '<p class="dv3-edge-note">Counted by code from the elevator boards AGSIST reads itself, '
-            f'not by the writer of this briefing.{cite} <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a></p>'
+            'not by the writer of this briefing. A day\'s change is each board\'s last posted bid against '
+            f'its own on the trading day before, same delivery period.{cite} <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a></p>'
             '</section>')
 
 
@@ -566,10 +566,10 @@ CSS = (".dv3-edge{margin:1.1rem 0 0;padding:.85rem 1.05rem;background:var(--surf
        "text-transform:uppercase;color:var(--green);margin:0 0 .45rem}"
        ".dv3-edge-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem}"
        ".dv3-edge-fact{margin:0;padding:0}"
-       ".dv3-edge-s{margin:0;font-size:1rem;line-height:1.55;color:var(--text);font-weight:600}"
+       ".dv3-edge-s{margin:0;font-size:.97rem;line-height:1.5;color:var(--text);font-weight:600}"
        ".dv3-edge-s a{color:inherit;text-decoration:underline;text-decoration-color:var(--green);"
        "text-decoration-thickness:2px;text-underline-offset:3px}"
-       ".dv3-edge-d{margin:.15rem 0 0;font-size:.84rem;line-height:1.5;color:var(--text-dim)}"
+       ".dv3-edge-d{margin:.1rem 0 0;font-size:.8rem;line-height:1.45;color:var(--text-muted)}"
        ".dv3-edge-note{margin:.6rem 0 0;font-size:.76rem;line-height:1.5;color:var(--text-muted)}"
        ".dv3-edge-note a{color:var(--text-muted);text-decoration:underline;display:inline-block;padding:.35rem 0;margin:-.35rem 0}"
        ".dv3-cca{margin:1rem 0 0;padding:.8rem 1.05rem;background:var(--surface2);border:1px solid var(--border);"
@@ -647,7 +647,7 @@ def _selftest():
                 "Wednesday; 13 changed their basis, 10 weaker and 3 stronger.")
         ok(f["sentence"] == want, f"sentence {f['sentence']!r}")
         ok(f["as_of"] == "2026-10-15" and f["from"] == "2026-10-14", "dates")
-        ok("Biggest state move: Iowa, a median 4¢ lower at 120 elevators." in f["detail"], f["detail"])
+        ok("Biggest state move: Iowa, 4¢ lower (120 elevators)." in f["detail"], f["detail"])
     # Monday's issue compares Friday with Thursday (weekend skipped)
     idx2, prev2, _ = _fixture()
     for k in prev2["IA"]:
@@ -687,7 +687,7 @@ def _selftest():
         prev["IA"][k][-1][2] = -40
     f, w = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
     ok(f and f["sentence"] == "On Thursday, Oct 15, none of the 120 elevators AGSIST reads changed its cash corn bid from Wednesday; none changed its basis.", f and f["sentence"])
-    ok(f and f["detail"].startswith("120 unchanged. Median change 0¢:"), f and f["detail"])
+    ok(f and f["detail"].startswith("120 unchanged; median change 0¢."), f and f["detail"])
     # mixed day: 70 lower 4c, 30 higher 1c, 20 unchanged -> lower first, median of all 120
     idx, prev, now = _fixture()
     keys = list(prev["IA"])
