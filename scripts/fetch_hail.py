@@ -81,9 +81,16 @@ def mag_of(row):
     if v in (None, "", "M"):
         return None
     try:
-        return float(v)
+        m = float(v)
     except (TypeError, ValueError):
         return None
+    # The US record stone is 8.0 in (Vivian, SD, 2010). A bigger "hail size" is
+    # a mis-filed report (a 65.0 in Goodlett, TX entry was a wind gust in mph),
+    # so it counts as size unknown, not as a giant stone.
+    return m if 0 < m <= MAX_HAIL_IN else None
+
+
+MAX_HAIL_IN = 8.0
 
 
 def intensity(mag):

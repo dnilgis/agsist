@@ -88,3 +88,11 @@ test("published day pages carry a day-rule line that matches the manifest", () =
     assert.match(page, spc ? /A storm day runs 7 a\.m\. to 7 a\.m\. Central/ : /grouped by UTC calendar day/, f);
   }
 });
+
+test("a hail size past the 8.0 in US record counts as unknown (a 65.0 in entry was a mis-filed wind gust)", () => {
+  const out = execFileSync("python3", ["-c",
+    "import sys; sys.path.insert(0, 'scripts'); import fetch_hail as f; " +
+    "print(f.mag_of({'magnitude': '65.0'}), f.mag_of({'magnitude': '8.0'}), f.mag_of({'magnitude': '1.75'}), f.mag_of({'magnitude': '0'}))"],
+    { encoding: "utf8" }).trim();
+  assert.equal(out, "None 8.0 1.75 None");
+});
