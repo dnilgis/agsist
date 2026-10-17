@@ -947,6 +947,18 @@
     var same = m && m.city && P.name.toLowerCase() === String(m.city).trim().toLowerCase();
     return P.name + (st ? ', ' + st : '') + (P.off && !same ? ' (' + P.off + ' of ' + P.name + ')' : '');
   }
+  /* The station in the status line (2026-10-17, panels): its own name in
+     quotes, so the "2.6 NNW" in "AMES 2.6 NNW" reads as a name and never as a
+     second distance, then the one distance the print gives: 'the volunteer
+     gauge "AMES 2.6 NNW", 2.0 mi from Ames'. While a draw is on its way (no
+     town distance yet), the name alone. */
+  function stationSaid(m, dist) {
+    if (!m) return '';
+    if (m.ca) return stationName(m.name);
+    var p = String(m.sid || '').trim().split(/\s+/), raw = String(m.name || '').trim().replace(/\s+/g, ' ');
+    var kind = /^US1/.test(p[0]) ? 'the volunteer gauge ' : p[1] === '2' ? 'the co-op station ' : 'the weather station ';
+    return kind + '\u201c' + raw + '\u201d' + (dist && m.city ? ', ' + distText(m) : '');
+  }
   function milesText(mi) { return mi < 0.1 ? 'under 0.1 mi' : (mi < 10 ? mi.toFixed(1) : String(Math.round(mi))) + ' mi'; }
 
   /* A PNG's bytes with pHYs (pixels per inch, so it opens at its print size,
@@ -2751,7 +2763,7 @@
     render();
     if (err && err.pick) { showPick(err.pick); setStatus('There\u2019s more than one ' + err.pick[0].name + '. Which one?' + ' Your ' + ST.year + ' print is still here.'); return; }
     // NOAA or the town lookup slow: a plain note with Try again, not the warning color (2026-10-16)
-    setStatus(keepWords(want, ST, err), !(err && err.retry));
+    setStatus(againWords(keepWords(want, ST, err)), !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
   }
   function failDraw(err) {
@@ -2769,8 +2781,16 @@
     sampleLine(false);
     if (err && err.pick) { showPick(err.pick); setStatus('There\u2019s more than one ' + err.pick[0].name + '. Which one?'); return; }
     // a slow NOAA is nobody's fault: said plainly, with Try again, not in the warning color (2026-10-16)
-    setStatus(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.', !(err && err.retry));
+    setStatus(againWords(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.'), !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
+  }
+  /* The same failure again (2026-10-17, money panel: after a town lookup 504,
+     a second Draw looked like it did nothing, because the same words came
+     back). Draw does ask again; the line says so and counts the tries. */
+  var FAIL_LAST = '', FAIL_N = 0;
+  function againWords(msg) {
+    FAIL_N = msg === FAIL_LAST ? FAIL_N + 1 : 1; FAIL_LAST = msg;
+    return FAIL_N > 1 ? 'Asked again just now (' + FAIL_N + ' tries). ' + msg : msg;
   }
   // "Which Springfield?": one button per town, with its county
   function showPick(list) {
@@ -3043,7 +3063,7 @@
       var yearLen = isLeap(ST.year) ? 366 : 365, notIn = !ST.gift && lastYearOpen(ST.year) && picked.days.length < yearLen;
       PREVIEW = ST.gift || notIn ? { last: picked.days[picked.days.length - 1].date, yearLen: yearLen } : null;
       SETTLE = notIn || (!ST.gift && settlingByDate(ST.year));
-      setStatus(META.ca ? L('Reading the 1991\u20132020 averages…', 'Lecture des moyennes 1991\u20132020…') : 'Reading the 30-year normal at ' + stationName(META.name) + '…');
+      setStatus(META.ca ? L('Reading the 1991\u20132020 averages…', 'Lecture des moyennes 1991\u20132020…') : 'Reading the 30-year normal at ' + stationSaid(META) + '…');
       /* The station's full record (every year it has kept) is the big download
          and only the station-average comparison and the year and month records
          need it, so the print draws without waiting for it and draws again when
@@ -3064,7 +3084,7 @@
       if (ST.cmp !== 'station' && !NORM_CACHE.has(chosen.sid + '|' + ST.year)) {
         NORM30 = null; STUCK = null; NORM_WAIT = true;
         render();
-        if (!SAMPLE) { setStatus(META.ca ? L('Drawn. Adding the usual year\u2026', 'Dessiné. Ajout de l’année normale\u2026') : 'Drawn. Adding the 30-year normal from ' + stationName(META.name) + '\u2026'); if (e && !e.auto) { showArt(); artShown = true; } }
+        if (!SAMPLE) { setStatus(META.ca ? L('Drawn. Adding the usual year\u2026', 'Dessiné. Ajout de l’année normale\u2026') : 'Drawn. Adding the 30-year normal from ' + stationSaid(META) + '\u2026'); if (e && !e.auto) { showArt(); artShown = true; } }
       }
       return Promise.all([ST.cmp === 'station' ? por : null, normP]);
     }).then(function (res) {
@@ -3106,8 +3126,9 @@
   // the status line once a print is up
   function drawnStatus() {
     if (!DATA || !META) return;
+    FAIL_LAST = ''; FAIL_N = 0;
     if (META.ca && FR()) { setStatus('Dessiné à partir des relevés de ' + META.name + '.' + (PREVIEW ? ' Aperçu jusqu’au ' + PREVIEW.last.slice(8).replace(/^0/, '') + ' ' + ((root.AgRainArt && root.AgRainArt.MON_FR) || MON3)[+PREVIEW.last.slice(5, 7) - 1] + '.' : '')); return; }
-    setStatus('Drawn from the records at ' + stationName(META.name) + '.' +
+    setStatus('Drawn from the records at ' + stationSaid(META, true) + '.' +
       (PREVIEW ? ' Preview through ' + longDate(PREVIEW.last) + '.' : '') +
       (EXT_WAIT && ST.records && !PREVIEW ? ' Still reading the station\u2019s full history for the remarkable days\u2026' : ''));
   }

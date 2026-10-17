@@ -103,16 +103,46 @@ test("2: a town lookup that failed (504) draws on the next Draw, no reload", { s
     await page.selectOption("#rp-year", "2025");
     await page.click("#rp-go");
     await page.waitForFunction(() => /error 504/.test(document.getElementById("rp-status").textContent), null, { timeout: 30000 });
+    await idle(page);
+    // a second Draw while the lookup is still down: asked again, and the line says so
+    let asks = st.geoAsks;
+    await page.click("#rp-go");
+    await page.waitForFunction(() => /Asked again just now \(\d+ tries\)\. The town lookup didn\u2019t answer \(error 504\)/.test(document.getElementById("rp-status").textContent), null, { timeout: 30000 });
+    assert.ok(st.geoAsks > asks, "Draw asked the lookup again");
     st.geoFail = 0;
     await idle(page);
     const before = st.geoAsks;
-    console.log("S2", await page.textContent("#rp-status"), await page.$eval("#rp-go", (b) => b.disabled), st);
+    assert.equal(await page.$eval("#rp-go", (b) => b.disabled), false, "Draw is on after the failure");
     await page.click("#rp-go");
-    await page.waitForTimeout(3000);
-    console.log("S3", await page.textContent("#rp-status"), st);
     await drawn(page);
     assert.ok(st.geoAsks > before, "the lookup was asked again");
-    assert.match(await page.textContent("#rp-status"), /Drawn from the records at Ames/);
+    assert.match(await page.textContent("#rp-status"), /^Drawn from the records at the co-op station \u201cAMES 2 NNW\u201d, \d\.\d mi from Ames\.$/);
     assert.deepEqual(errors, []);
   });
+});
+
+test("1: one distance for one station: the status line gives the print's distance, the station's name in quotes", { skip }, async () => {
+  await withPage(async (page, base, errors) => {
+    await page.goto(base + "/rain-print.html");
+    await idle(page);
+    await page.fill("#rp-place", "Ames, IA");
+    await page.selectOption("#rp-year", "2025");
+    await page.click("#rp-go");
+    await drawn(page);
+    await page.waitForFunction(() => /^Drawn from/.test(document.getElementById("rp-status").textContent), null, { timeout: 30000 });
+    const status = await page.textContent("#rp-status"), source = await page.textContent("#rp-source");
+    const svg = await page.$eval("#rp-art svg", (el) => el.textContent);
+    const mi = /, (\d+\.\d) mi from Ames/.exec(status);
+    assert.ok(mi, "the status line names one distance: " + status);
+    assert.ok(source.includes(mi[1] + " mi from Ames"), "the source line says the same: " + source);
+    assert.ok(svg.includes(mi[1] + " mi from Ames"), "and so does the print");
+    assert.ok(!/\b2 mi NNW\b/.test(status), "no second distance made from the station's name: " + status);
+    assert.match(status, /\u201cAMES 2 NNW\u201d/, "the name is quoted as NOAA has it");
+    assert.deepEqual(errors, []);
+  });
+});
+
+test("1: stationSaid in the code: every status line that names the drawn station uses it", () => {
+  assert.ok(!/setStatus\([^;]*stationName\(META\.name\)/.test(S), "no status line builds the station from its raw name");
+  assert.match(S, /'Drawn from the records at ' \+ stationSaid\(META, true\)/);
 });
