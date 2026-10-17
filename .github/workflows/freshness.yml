@@ -102,6 +102,17 @@ jobs:
           python scripts/bake_faq.py --selftest
           python scripts/bake_faq.py
 
+      # Same number, same everywhere (2026-10-17 cross-page audit): reads the
+      # data files and the pages just baked and annotates what disagrees.
+      # REPORT ONLY for now: warnings, never a failed job, and it runs after
+      # the bakes so it sees what this run will commit. Make it --strict once
+      # it has run clean for a few days.
+      - name: Number consistency (report only)
+        continue-on-error: true
+        run: |
+          python scripts/check_number_consistency.py --selftest
+          python scripts/check_number_consistency.py
+
       # Push with retries. 2026-10-14 20:38 UTC: the post-close run's push was
       # rejected ("cannot lock ref") by another workflow's push in the same
       # second; the gate then counted the tick as served, and the 8:31 a.m.

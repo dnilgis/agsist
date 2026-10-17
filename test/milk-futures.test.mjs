@@ -56,5 +56,20 @@ test('the table reads only the settled helper, and says what its numbers are', (
   const body = page.slice(i, page.indexOf('\n    }\n', i));
   assert.match(body, /settledQuote\(q\[k\],f\)/);
   assert.doesNotMatch(body, /close:o\.close/, 'no raw last trade in the table');
-  assert.match(page, /each at its last finished session \(Yahoo Finance, delayed, not official CME settlements\)/);
+  // 2026-10-17 (N2): the words follow close_kind; never "not settlements" over a settle
+  assert.match(page, /each at its last finished session \(<span id="dp-fut-kind">Yahoo Finance, delayed; a close can sit a tick off the CME settle<\/span>\)/);
+  assert.match(body, /allSettle\?'CME settles, read from Yahoo Finance'/);
+  assert.doesNotMatch(page, /not official CME settlements/);
+});
+
+test('close_kind from fetch_prices v3.7: a settle is the settle, a last trade steps back to the settle on file', () => {
+  const { settledQuote } = load();
+  const f = Date.parse('2026-10-17T14:35:00Z');
+  assert.deepEqual(settledQuote({ close: 17.34, netChange: 0.09, close_date: '2026-10-16', prev_date: '2026-10-15',
+    close_kind: 'settle', settle: 17.34, settle_date: '2026-10-16', settle_net: 0.09 }, f),
+    { close: 17.34, date: '2026-10-16', chg: 0.09, kind: 'settle' });
+  assert.deepEqual(settledQuote({ close: 17.5, netChange: 0.16, close_date: '2026-10-19', prev_date: '2026-10-16',
+    close_kind: 'last', settle: 17.34, settle_date: '2026-10-16', settle_net: 0.09 }, f),
+    { close: 17.34, date: '2026-10-16', chg: 0.09, kind: 'settle' });
+  assert.equal(settledQuote({ close: 17.5, close_date: '2026-10-19', close_kind: 'last' }, f), null, 'a last trade with no settle on file shows nothing');
 });

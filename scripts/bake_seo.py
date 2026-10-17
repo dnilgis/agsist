@@ -898,12 +898,20 @@ def seo_fertilizer(c):
         return FERT_PLAIN
     # a row's region may already name two states ("Kansas and Wisconsin"):
     # split it so the states are each named once
-    regs = sorted({x for _, r, _ in named if r.get("src") == "coop" and r.get("region")
-                   for x in re.split(r", (?:and )?| and ", r["region"]) if x})
-    regs = [", ".join(regs[:-1]) + " and " + regs[-1]] if len(regs) > 2 else regs
-    who = (" and ".join(regs) + " Co-op") if regs else "Co-op"
+    def regions(r):
+        if r.get("src") != "coop" or not r.get("region"):
+            return frozenset()
+        return frozenset(x for x in re.split(r", (?:and )?| and ", r["region"]) if x)
+
+    def and_join(xs):
+        xs = sorted(xs)
+        return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 2 else " and ".join(xs)
+
     title = None
     for n in range(len(named), 0, -1):
+        # the states of the prices this title names, not of every product
+        regs_n = set().union(*[regions(r) for _, r, _ in named[:n]])
+        who = (and_join(regs_n) + " Co-op") if regs_n else "Co-op"
         bits = ", ".join(f"{s} ${r['price']:,.0f}" for s, r, _ in named[:n])
         # "per Ton" stays (2026-10-13): the page's named queries are
         # "... fertilizer price(s) per ton".
@@ -915,10 +923,19 @@ def seo_fertilizer(c):
             break
     if not title:
         return None
+    # 2026-10-17 audit (N7): "Kansas and Wisconsin co-op cash prices ...:
+    # anhydrous $832, DAP $936, potash $470" put Wisconsin on three Kansas-only
+    # prices. The lead names the states every named price shares; a price
+    # that also takes in another state says so after it.
+    sets = [x for x in (regions(r) for _, r, _ in named) if x]
+    base = frozenset.intersection(*sets) if sets else frozenset()
     parts = []
     for i, (s, r, _) in enumerate(named):
         bit = f"{s if s.isupper() else s.lower()} ${r['price']:,.0f}" + ("/ton" if i == 0 else "")
+        if regions(r) and regions(r) != base:
+            bit += f" ({and_join(regions(r))})"
         parts.append(bit)
+    regs = [and_join(base)] if base else []
     # lo is the oldest sheet inside any named middle (2026-10-16: "posted Oct 6"
     # was printed for a middle that took in Sep 24 sheets)
     lo = min(min(a, _d(r.get("oldest")) or a) for _, r, a in named)
@@ -1759,8 +1776,20 @@ def selftest():
         {"key": "anhydrous", "price": 832.1, "as_of": "2026-10-06", "src": "coop", "region": "Kansas"}]})
     t3, d3 = seo_fertilizer(two)
     ck("fertilizer: a two-state region names each state once (Synergy, WI, 2026-10-16)",
-       t3.startswith("Kansas and Wisconsin Co-op Fertilizer") and d3.startswith("Kansas and Wisconsin co-op cash prices")
-       and "Kansas and Kansas" not in t3 + d3, (t3, d3))
+       t3.startswith("Kansas and Wisconsin Co-op Fertilizer") and "Kansas and Kansas" not in t3 + d3, (t3, d3))
+    # 2026-10-17 audit N7: Wisconsin goes on the urea price only, never on Kansas-only anhydrous
+    ck("fertilizer: the description names each price's own states",
+       d3.startswith("Kansas co-op cash prices posted Oct 6, 2026: urea $616/ton (Kansas and Wisconsin), anhydrous $832.")
+       and "anhydrous $832 (" not in d3, d3)
+    one = dict(two, fertilizer={"prices": [two["fertilizer"]["prices"][0]]})
+    t4, d4 = seo_fertilizer(one)
+    ck("fertilizer: a title naming only urea names urea's states; the description needs no tag",
+       t4.startswith("Kansas and Wisconsin Co-op Fertilizer") and d4.startswith("Kansas and Wisconsin co-op cash prices")
+       and "(Kansas" not in d4, (t4, d4))
+    ks = dict(two, fertilizer={"prices": [dict(two["fertilizer"]["prices"][1], key="urea"),
+                                          dict(two["fertilizer"]["prices"][1])]})
+    ck("fertilizer: Kansas-only prices put no Wisconsin in the title", seo_fertilizer(ks)[0].startswith("Kansas Co-op"),
+       seo_fertilizer(ks)[0])
     ck("fertilizer: the date range is the named prices' own, not a product left out of them",
        "posted Sep 24 to Oct 6, 2026" in d2 and "Oct 12" not in d2, d2)
     old_in = dict(two, fertilizer={"prices": [

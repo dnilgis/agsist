@@ -143,6 +143,13 @@ def ct_date(dt_):
     return dt_.astimezone(CT).date()
 
 
+def ct_clock(dt_):
+    """'5:36 a.m. CT' for a UTC stamp."""
+    t = dt_.astimezone(CT)
+    h = t.hour % 12 or 12
+    return f"{h}:{t.minute:02d} {'a.m.' if t.hour < 12 else 'p.m.'} CT"
+
+
 def short(d):
     return f"{MON[d.month - 1]} {d.day}"
 
@@ -359,7 +366,13 @@ def basis_spread(crop, bs, now):
     cw = contract_words(main, top[0]["label"])
     hiw, low = basis_words(hi), basis_words(lo)
     sentence = (f"{CROP_NAME[crop]} basis on {short(asof)} ran from {hiw} {cw} in {join_names([r['name'] for r in top])} "
-                f"to {low} in {join_names([r['name'] for r in bot])}, state medians of the elevators AGSIST reads.")
+                f"to {low} in {join_names([r['name'] for r in bot])}, state medians of the elevators AGSIST "
+                f"read at {ct_clock(parse_iso(bs['generated']))}.")
+    # 2026-10-17 audit (N4): /basis is rebuilt every two hours from a newer
+    # snapshot, so a state's median and count can move a cent or an elevator
+    # after the Daily is written. The sentence names its snapshot, and the
+    # fact carries it (snapshot) so scripts/check_number_consistency.py can
+    # compare like with like.
     detail = ("Elevators behind each median: " +
               ", ".join(f"{r['name']} {num(r['n'])}" for r in top + bot) +
               f". {len(rows)} states with {MIN_STATE_N} or more.")
@@ -371,8 +384,8 @@ def basis_spread(crop, bs, now):
         "n": sum(r["n"] for r in rows), "states_n": len(rows),
         "high": [{"state": r["state"], "name": r["name"], "median": r["median"], "n": r["n"]} for r in top],
         "low": [{"state": r["state"], "name": r["name"], "median": r["median"], "n": r["n"]} for r in bot],
-        "contract": main, "as_of": asof.isoformat(),
-        "source": "AGSIST elevator network, state median basis (scripts/basis_method.py)",
+        "contract": main, "as_of": asof.isoformat(), "snapshot": bs["generated"],
+        "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
         "url": "/basis", "link_text": "Basis by state",
     }, None
 
@@ -724,8 +737,9 @@ def _selftest():
     ok(f is not None, f"spread refused {w}")
     if f:
         want = ("Corn basis on Oct 15 ran from 11¢ over December futures in Colorado to 80¢ under in "
-                "North Dakota and South Dakota, state medians of the elevators AGSIST reads.")
+                "North Dakota and South Dakota, state medians of the elevators AGSIST read at 7:37 p.m. CT.")
         ok(f["sentence"] == want, f"spread sentence {f['sentence']!r}")
+        ok(f["snapshot"] == "2026-10-16T00:37:10Z", f"spread snapshot {f.get('snapshot')}")
         ok(f["value"] == 91.0 and f["states_n"] == 5, f"spread value {f['value']} {f['states_n']}")
     bs4 = json.loads(json.dumps(bs))
     del bs4["states"]["IL"]

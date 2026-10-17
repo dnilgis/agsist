@@ -1001,7 +1001,10 @@ def quote_strip_note(strip):
         asof = _ct_stamp(strip.get("asof")) if strip.get("asof") else ""
         if asof: bits.append(f"Quotes as of {asof}")
         if vs: bits.append(f"change vs {vs} close")
-        bits.append("Yahoo Finance, delayed, not CME settlements")
+        # 2026-10-17 audit (N2): this said "not CME settlements" under issues
+        # whose body said "corn settled Friday". Without a kind on file the
+        # strip cannot say which it was, so it says only what is sure.
+        bits.append("Yahoo Finance, delayed; a close can sit a tick off the CME settle")
         return " · ".join(bits)
     st = [q["name"] for q in qs if q.get("kind") == "settle"]
     la = [q for q in qs if q.get("kind") != "settle"]

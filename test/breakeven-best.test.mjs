@@ -223,7 +223,8 @@ test("every cost line says where it came from; a budget region swaps the budget 
     const { pg, errors } = await open(browser, port);
     for (const id of ["seed", "chemicals", "insurance", "machinery", "labor", "overhead"]) assert.equal(await txt(pg, "#src-" + id), "From farmdoc\u2019s 2027 budget, northern Illinois (Aug 2026).", id);
     assert.equal(await txt(pg, "#src-land"), "farmdoc\u2019s 2027 budget: northern Illinois average cash rent.");
-    assert.match(await txt(pg, "#src-fertilizer"), /^213 lb N, 88 lb P₂O₅, 57 lb K₂O for 237 bu at co-op prices posted through [A-Z][a-z]{2} \d+, 2026\. Follows your yield\.$/);
+    // A2809 removal (2026-10-17, scripts/crop_removal.py): 237 x 0.38 = 90 lb P2O5, 237 x 0.29 = 69 lb K2O
+    assert.match(await txt(pg, "#src-fertilizer"), /^213 lb N, 90 lb P₂O₅, 69 lb K₂O for 237 bu at co-op prices posted through [A-Z][a-z]{2} \d+, 2026\. Follows your yield\.$/);
     assert.match(await txt(pg, "#be-region-note"), /farmdoc daily, Illinois Crop Budgets for 2027, Table 1 \(Aug 2026 release, published Sep 1, 2026\)/);
     await type(pg, "#seed", "120");
     assert.equal(await txt(pg, "#src-seed"), "Your number.");

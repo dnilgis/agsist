@@ -1280,9 +1280,9 @@ def quiet_line(bd):
 # answer; it carries its posted date and is rewritten on every build.
 ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
-HIST_NOTE = (" &ldquo;Basis since June&rdquo; reads AGSIST&rsquo;s daily basis log, which keeps the day each "
+HIST_NOTE = (" The &ldquo;Basis since&rdquo; box reads AGSIST&rsquo;s daily basis log, which keeps the day each "
              "elevator&rsquo;s basis changed; until Oct 11, 2026 that log also drew on a licensed bid feed.")
-HIST_JS = '<script src="/components/cb-basis-hist.js?v=1" defer></script>\n'
+HIST_JS = '<script src="/components/cb-basis-hist.js?v=2" defer></script>\n'
 
 
 def head_name(bd, with_town=True):
@@ -1534,20 +1534,32 @@ def parse_dm(s, date):
 
 
 def history_index(path):
-    """{(norm_fac, norm_town)} with at least one logged basis change in one
-    state's data/basis-sparklines/<ST>.json; empty when it cannot be read."""
+    """{(norm_fac, norm_town): first logged date} for each elevator with at
+    least one logged basis change in one state's data/basis-sparklines/<ST>.json;
+    empty when it cannot be read. The date heads the box ("Basis since Aug 27";
+    2026-10-17 audit N5: it said "since June" over a log that began Aug 27)."""
     try:
         with open(path, encoding="utf-8") as f:
             series = (json.load(f) or {}).get("series") or {}
     except (OSError, ValueError):
         return set()
-    out = set()
+    out = {}
     for k, pts in series.items():
         p = k.split("|")
         if len(p) >= 6 and p[3] in ("corn", "soybeans", "wheat") and pts and isinstance(pts[0], dict) \
                 and parse_dm(p[5], str(pts[0].get("date") or "")) is not None:
-            out.add((norm_fac(p[1]), norm_town(p[2])))
+            fk, d0 = (norm_fac(p[1]), norm_town(p[2])), str(pts[0].get("date") or "")
+            if fk not in out or d0 < out[fk]:
+                out[fk] = d0
     return out
+
+
+def since_words(iso):
+    """'2026-08-27' -> 'Aug 27'; '' when unparseable."""
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", str(iso or ""))
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        return ""
+    return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(m.group(2)) - 1] + " " + str(int(m.group(3)))
 
 
 def history_box(t, boards, logged):
@@ -1557,19 +1569,24 @@ def history_box(t, boards, logged):
     data/basis-sparklines/<ST>.json the first time the box is opened and draws
     each elevator's nearest-delivery basis from its logged changes. No box
     when none of them has one."""
-    names = []
+    names, first = [], ""
     for bd in boards:
         n = bd["operator"] or bd["city"]
         cities = sorted({x for x in (bd["city"], t["name"]) if x})
-        if not n or not any((norm_fac(n), norm_town(c)) in logged for c in cities):
+        hits = [logged[(norm_fac(n), norm_town(c))] for c in cities if n and (norm_fac(n), norm_town(c)) in logged]
+        if not hits:
             continue
+        d0 = min(h for h in hits if h) if any(hits) else ""
+        if d0 and (not first or d0 < first):
+            first = d0
         if (n, cities) not in names:
             names.append((n, cities))
     if not names:
         return ""
+    head = "Basis since " + since_words(first) if since_words(first) else "Basis log"
     data = json.dumps([[n, c] for n, c in names], separators=(",", ":"), ensure_ascii=False)
     return (f'<details class="cbt-hist" data-basis-hist="{t["state"]}" data-boards="{esc(data)}">'
-            f'<summary>Basis since June</summary><div class="cbt-hist-body">'
+            f'<summary>{head}</summary><div class="cbt-hist-body">'
             f'<p class="cbt-sub">Opens the basis log for these elevators.</p></div></details>')
 
 
@@ -2250,7 +2267,7 @@ def stamp_live_page(path, metas, counts=None):
         n_tw = counts["bids"]["towns"] if counts else len(live)
         text = (f"Find local cash grain bids by ZIP. The AGSIST network has current bids from {n_el:,} "
                 f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}. "
-                f"Updated {fmt_share_time(max(m['latest'] for m in live))}.")
+                f"Updated {fmt_share_time(max(m['latest'] for m in live))} CT.")   # time zone named (2026-10-17 audit N11)
     out = html
     for key, generic in LIVE_SHARE_GENERIC.items():
         attr = "property" if key.startswith("og:") else "name"
@@ -2708,7 +2725,7 @@ def selftest():
             f.write(f"<head>{gen_tags}</head>")
         txt = stamp_live_page(lp, metas)
         live_html = open(lp).read()
-        assert txt.endswith("Updated Oct 7, 12:00 pm.") and live_html.count(esc(txt)) == 2, live_html
+        assert txt.endswith("Updated Oct 7, 12:00 pm CT.") and live_html.count(esc(txt)) == 2, live_html
         assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
         assert open(lp).read() == f"<head>{gen_tags}</head>"
         assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
@@ -2864,9 +2881,10 @@ def _selftest_answer():
     assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
-    assert fr.count('/components/cb-basis-hist.js?v=1') == 1 and "&ldquo;Basis since June&rdquo; reads" in fr
+    assert fr.count('/components/cb-basis-hist.js?v=2') == 1 and "&ldquo;Basis since&rdquo; box reads" in fr
+    assert "<summary>Basis since Sep 1</summary>" in fr and "since June" not in fr, "the heading is the first logged date"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
-    assert "cb-basis-hist.js" not in ia and "Basis since June" not in ia, "no logged change in the state: no box"
+    assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"
 
 
 

@@ -2208,8 +2208,13 @@ def milk_mailbox_seeds(mb, today):
            f'{" (an older month: newer AMS figures are out and not loaded here yet)" if behind else ""}. '
            "This is the only number that pays your bills, and it's the one the market reports never lead with.</div></div>"
            f'<div class="dp-row-val">{_cwt(v)}<span class="u">/cwt</span></div></div>')
+    # 2026-10-17 audit (N6): the FAQ answer (and its FAQPage copy) still read
+    # "In March 2026 ... $18.84" under a June $20.18 card. Same month, same file.
+    faq = (f"In {ml} the federal-order mailbox average was {_cwt(v)} per hundredweight"
+           f"{' (an older month; newer AMS figures are out and not loaded here yet)' if behind else ''}.")
     return {"milkmbli": f'<li><span class="n">{sh}</span><span id="dp-v-mb">{li_txt}</span></li>',
-            "milkmbcell": cell, "milkmbrow": row, "milkmbareas": milk_mailbox_areas(mb, idx, behind)}
+            "milkmbcell": cell, "milkmbrow": row, "milkmbareas": milk_mailbox_areas(mb, idx, behind),
+            "milkmbfaq": faq}
 
 
 # What each starred AMS reporting area covers (MMPR-0626 footnote, page 3).

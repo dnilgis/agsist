@@ -35,7 +35,8 @@ test("settles, trades and a mix each say what they are", () => {
   assert.equal(py[0], "Exchange settles, Fri Oct 16 · change vs Thu settle · Yahoo Finance, delayed");
   assert.equal(py[1], "Exchange settles, Fri Oct 16, except the last trade for Wheat as of 1:46 PM CT Fri · change vs Thu settle · Yahoo Finance, delayed");
   assert.equal(py[2], "Last trades as of 1:46 PM CT Fri, not the settle · change vs Thu settle · Yahoo Finance, delayed");
-  assert.equal(py[3], "Quotes as of 1:46 AM CT Sat · change vs Thu close · Yahoo Finance, delayed, not CME settlements", "an older issue keeps its words");
+  assert.equal(py[3], "Quotes as of 1:46 AM CT Sat · change vs Thu close · Yahoo Finance, delayed; a close can sit a tick off the CME settle", "an older issue: no claim either way about the settle (2026-10-17 audit N2)");
+  assert.ok(!py[3].includes("not CME settlements"));
   for (const t of py) assert.ok(!t.includes("—"));
 });
 
