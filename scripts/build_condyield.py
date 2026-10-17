@@ -71,9 +71,16 @@ def rows_for(data, crop):
         latest = d.get("latest") or {}
         wk = latest.get("week")
         weeks = d.get("weeks") or {}
-        cur = weeks.get(str(wk))
-        if wk is None or not cur or cur.get("r2") is None:
+        if wk is None:
             continue
+        # Late in the season the newest week can have under min_n paired years
+        # (past ratings ended before it). Then the row uses the newest week at
+        # or before it that has a fit, and says so (fit_week vs latest_week).
+        # conditions-yield.html's map (buildVerdicts) applies the same rule.
+        fw = fit_week(weeks, wk)
+        if fw is None:
+            continue
+        cur = weeks[str(fw)]
         peak_wk, peak = None, None
         for w, v in weeks.items():
             if v.get("r2") is None:
@@ -82,13 +89,27 @@ def rows_for(data, crop):
                 peak, peak_wk = v, int(w)
         out.append({
             "st": st, "name": ST_NAME.get(st, st),
-            "week": int(wk), "year": latest.get("year"),
+            "week": int(fw), "latest_week": int(wk), "year": latest.get("year"),
             "r2": cur["r2"], "n": cur.get("n"),
             "peak_r2": peak["r2"], "peak_wk": peak_wk,
             "peak_slope": peak.get("slope"), "peak_n": peak.get("n"),
         })
     out.sort(key=lambda r: (-r["r2"], r["name"]))
     return out
+
+
+def fit_week(weeks, wk):
+    """The newest week at or before wk with an R2, or None."""
+    ok = [int(w) for w, v in (weeks or {}).items() if (v or {}).get("r2") is not None and int(w) <= int(wk)]
+    return max(ok) if ok else None
+
+
+def week_note(rows):
+    """'' when the rows use this week; otherwise why they use an earlier one."""
+    r = rows[0] if rows else None
+    if not r or r["week"] == r.get("latest_week", r["week"]):
+        return ""
+    return f' (the last week with a fit; week {r["latest_week"]} has under 15 paired years)'
 
 
 def colour(r2):
@@ -166,7 +187,7 @@ def render_tiles(data, rows):
         cmp = (f' &middot; not the same years as week {ia["peak_wk"]} ({ia["n"]} vs {ia["peak_n"]}), '
                f'so the two are not like for like') if mixed_n(ia) else ""
         t.append(f'<div class="cy-stat"><div class="v">{round(ia["r2"]*100)}%</div>'
-                 f'<div class="l">Iowa corn, this week (wk {ia["week"]})</div>'
+                 f'<div class="l">Iowa corn, {"this week" if ia["week"] == ia.get("latest_week", ia["week"]) else "last fitted week"} (wk {ia["week"]})</div>'
                  f'<div class="s">of yield deviation from trend explained by G+E &middot; '
                  f'{n_note(ia)}{cmp}</div></div>')
         t.append(f'<div class="cy-stat"><div class="v">{round(ia["peak_r2"]*100)}%</div>'
@@ -174,7 +195,7 @@ def render_tiles(data, rows):
                  f'<div class="s">the season seals it late &middot; n={ia["peak_n"]} yrs</div></div>')
     if top:
         t.append(f'<div class="cy-stat"><div class="v">{round(top["r2"]*100)}%</div>'
-                 f'<div class="l">{esc(top["name"])}, this week</div>'
+                 f'<div class="l">{esc(top["name"])}, {"this week" if top["week"] == top.get("latest_week", top["week"]) else f"wk {top['week']}"}</div>'
                  f'<div class="s">the clearest read in the country right now &middot; {n_note(top)}</div></div>')
     t.append(f'<div class="cy-stat"><div class="v">n&ge;{data.get("min_n", 15)}</div>'
              f'<div class="l">years per fit, minimum</div>'
@@ -187,7 +208,8 @@ def render_seed(data, rows):
     il = pick(rows, "IL")
     wk = rows[0]["week"] if rows else "?"
     yr = rows[0]["year"] if rows else "?"
-    bits = [f"week {wk} of {yr}: corn ratings currently explain "]
+    late = bool(rows) and rows[0]["week"] != rows[0].get("latest_week", rows[0]["week"])
+    bits = [f"week {wk} of {yr}{week_note(rows)}: corn ratings {'explained' if late else 'currently explain'} "]
     parts = []
     if ia:
         # r2 is the fit on DETRENDED yield; r2_raw (0.29 for IA wk38) is the
@@ -219,12 +241,13 @@ def faq_answer(rows):
     miss = (f", missing {', '.join(str(y) for y in ia['missing'])}" if ia.get("missing") else "")
     cmp = (f" The two weeks rest on different years ({ia['n']} vs {ia['peak_n']}), so the gap "
            f"between them is partly a change of sample, not only of signal." if mixed_n(ia) else "")
-    return (f"Partially, late, and it depends where you farm. In week {ia['week']}, the "
+    return (f"Partially, late, and it depends where you farm. In week {ia['week']}{week_note(rows)}, the "
             f"Good+Excellent share explains about {round(ia['r2'] * 100)}% of how Iowa's final corn "
             f"yield differs from its trend ({ia['n']} years{miss}). Iowa's fit peaks at week "
             f"{ia['peak_wk']}, at about {round(ia['peak_r2'] * 100)}% ({ia['peak_n']} years).{cmp} "
-            f"In {top['name']}, this week's ratings already explain {round(top['r2'] * 100)}% "
-            f"({top['n']} years). This page computes the number for every state and week "
+            + (f"In {top['name']}, this week's ratings already explain {round(top['r2'] * 100)}% " if top["week"] == top.get("latest_week", top["week"])
+             else f"In {top['name']}, week {top['week']}'s ratings explained {round(top['r2'] * 100)}% ")
+            + f"({top['n']} years). This page computes the number for every state and week "
             f"instead of asserting it.")
 
 
@@ -358,6 +381,13 @@ def selftest():
     ck("FAQ prints both n and names the gap", "22 years, missing 2000" in faq and "26 years" in faq, faq)
     stale = attach_years(rows_for(data, "corn"), {"crops": {"corn": {"week": 39, "states": pairs["crops"]["corn"]["states"]}}})
     ck("pairs from another week name nothing", pick(stale, "IA")["missing"] is None)
+    late = {"min_n": 15, "crops": {"corn": {"states": {
+        "IA": {"latest": {"year": 2026, "week": 41}, "weeks": {"39": {"r2": 0.641, "n": 26}, "40": {"r2": 0.357, "n": 22}}}}}}}
+    lr = rows_for(late, "corn")
+    ck("a week with no fit falls back to the last fitted week, and says so",
+       lr and lr[0]["week"] == 40 and lr[0]["latest_week"] == 41 and "week 41 has under 15" in render_seed(late, lr), lr)
+    ck("no week at or before the latest with a fit: the state is left out",
+       rows_for({"crops": {"corn": {"states": {"IA": {"latest": {"year": 2026, "week": 30}, "weeks": {"39": {"r2": 0.6, "n": 26}}}}}}}, "corn") == [])
     print("build_condyield selftest: " + ("all passed" if not fails else f"{len(fails)} FAILED"))
     return 1 if fails else 0
 
