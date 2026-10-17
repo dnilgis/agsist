@@ -1,0 +1,44 @@
+# state: OK
+# name: Oklahoma
+# survey: Oklahoma Farm and Ranch Custom Rates, 2021-2022 (OSU Extension Current Report CR-205, revised March 2022)
+# publisher: Oklahoma State University Extension, with the USDA NASS Oklahoma Field Office mailing
+# survey_year: 2021
+# collected: Survey of Oklahoma farmers, ranchers and custom operators, fall 2021; about 675 usable surveys
+# url: https://extension.okstate.edu/fact-sheets/print-publications/cr/cr-205-farm-and-ranch-custom-rates-2021-2022.pdf
+# ref: cr-ok-2022
+# spread: none
+# includes: Custom work means the operator furnishes the implement, fuel, labor and other inputs tied to the job; seed or fertilizer only when stated.
+# range_note: This report prints the average and the median, not a range. It is the newest Oklahoma edition we could find, from a 2021 survey, so it runs older than its neighbors. Rows with the state average withheld (D) are left out.
+key	section	operation	unit	avg	lo	hi	n
+	Tillage	Discing, offset	acre	10.79			12
+disk-tandem	Tillage	Discing, tandem	acre	12.27			11
+	Tillage	Blade or wide sweeps	acre	13.17			6
+fert-dry	Fertilizer and chemical	Applying bulk dry fertilizer	acre	6.09			64
+fert-liquid	Fertilizer and chemical	Applying liquid fertilizer	acre	5.82			20
+	Fertilizer and chemical	Applying liquid fertilizer, side-dress	acre	7.88			8
+lime-ton	Fertilizer and chemical	Lime application	ton	9.92			6
+spray-ground	Fertilizer and chemical	Ground application, herbicides with boom sprayer	acre	6.48			56
+spray-aerial	Fertilizer and chemical	Air application, herbicides	acre	10.20			13
+	Fertilizer and chemical	Ground application, fungicides with boom sprayer	acre	5.33			10
+	Fertilizer and chemical	Air application, fungicides	acre	7.53			8
+drill-smallgrain	Planting	Drill small grains, conventional tillage	acre	12.55			10
+mow-hay	Haying	Mowing hay	acre	16.19			27
+rake	Haying	Raking hay	acre	4.22			27
+swath	Haying	Swathing	acre	16.09			116
+bale-smallsq	Haying	Baling a small square bale	bale	2.05			20
+bale-largesq	Haying	Baling a large square bale, 4-foot width	bale	17.58			8
+	Haying	Baling a round bale, 4-foot width	bale	14.67			22
+	Haying	Cutting, raking, baling round bales, 4-foot width	bale	22.56			166
+bale-round	Haying	Baling a round bale, 5-foot width	bale	16.16			123
+	Haying	Cutting, raking, baling round bales, 5-foot width	bale	25.55			175
+combine-smallgrain	Small grain harvest	Combining wheat and small grains (flat rate)	acre	23.89			61
+	Small grain harvest	Base rate for combining small grains (plus $0.24 a bushel over about 21.68 bushels an acre)	acre	23.61			38
+	Small grain harvest	Flat rate for hauling small grains	bushel	0.24			28
+combine-soy	Small grain harvest	Combining soybeans (flat rate)	acre	27.11			9
+	Livestock	Pregnancy test cattle	head	4.78			27
+	Livestock	Worming cattle	head	4.43			20
+	Livestock	Hauling cattle, belly semi truck	mile	3.92			21
+	Miscellaneous	Brush hogging	hour	55.24			29
+	Miscellaneous	Dozing (D6 or smaller)	hour	107.44			43
+	Miscellaneous	Dozing (D7 or larger)	hour	143.18			17
+	Miscellaneous	Welding	hour	54.46			28

@@ -22,7 +22,6 @@ combine-corn	Grain harvesting	Corn, flat rate	acre	41.87	18	58	82
 combine-soy	Grain harvesting	Soybeans, flat rate	acre	38.67	18	55	79
 	Grain harvesting	Sunflower, base rate	acre	39.33	26	50	15
 	Grain harvesting	Canola, base rate	acre	32.22	32	33	9
-	Seed cleaning	Wheat seed cleaning	bushel	1.00	0.65	1.50	14
 	Grain hauling	Hauling wheat, field to farm storage or elevator (17 mile limit; $0.051 a bushel a mile beyond)	bushel	0.280			117
 	Grain hauling	Hauling grain sorghum (17 mile limit; $0.048 a bushel a mile beyond)	bushel	0.291			91
 haul-grain-bu	Grain hauling	Hauling corn, field to farm storage or elevator (16 mile limit; $0.055 a bushel a mile beyond)	bushel	0.239			117
