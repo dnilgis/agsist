@@ -1,0 +1,76 @@
+# state: NE
+# name: Nebraska
+# survey: 2026 Nebraska Agricultural Custom Rates (Nebraska Extension EC823, April 24, 2026)
+# publisher: University of Nebraska-Lincoln Extension, Center for Agricultural Profitability
+# survey_year: 2026
+# collected: 108 responses; rates reflect late winter 2025 and early 2026
+# url: https://cap.unl.edu/sites/unl.edu.ianr.agecon.center-for-ag-profitability/files/media/file/2026-nebraska-custom-rates-report_ada.pdf
+# ref: cr-ne-2026
+# spread: minmax
+# includes: Reported rates include charges for equipment, fuel, labor, and supplies such as baling wire or twine. Seed, fertilizer, and chemical costs are not included unless otherwise specified.
+# range_note: Rows are from the report's State Summary (operations with six or more answers). The range is the lowest and highest answer.
+# withheld: The State Summary's dryland corn contract farming row repeats the CRP mowing row's numbers exactly and has no matching detail table, so it is left out. The summary labels small grain hauling "cents per bushel"; the detail table says "flat rate per bushel" and shows dollars, so it is listed per bushel.
+key	section	operation	unit	avg	lo	hi	n
+	Land tillage	Disk harrowing, primary (heavy)	acre	20.69	7	30	27
+disk-tandem	Land tillage	Disk harrowing, finishing (light)	acre	19.47	7	26	29
+	Land tillage	Harrowing, spike or spring tooth	acre	14.75	8	28	8
+chisel	Land tillage	Chisel plow for primary tillage	acre	25.75	17	36	8
+	Land tillage	Deep chisel	acre	36	28	60	8
+subsoil	Land tillage	Subsoil or rip	acre	27.40	15	35	15
+field-cult	Land tillage	Field cultivator	acre	19.28	9	26	16
+vertical-till	Land tillage	Vertical or turbo tillage	acre	21.31	14	28	18
+strip-till	Land tillage	Strip tilling	acre	25.67	14	36	9
+	Land tillage	Strip tilling with fertilizer application	acre	26.71	18	36	14
+	Land tillage	Rolling stalk chopper, not PTO driven	acre	15.29	12	20	7
+	Land tillage	Cultivation tillage, conventional	acre	21.33	12	40	6
+	Land tillage	Cultivation tillage, handling residue	acre	18.75	12	26	8
+	Land tillage	Cultivation tillage, hill or ditch	acre	21.62	12	50	13
+	Planting and post planting	Drilling small grains, conventional drill	acre	17.86	10	25	14
+drill-smallgrain	Planting and post planting	Drilling small grains, no-till drill	acre	22.55	15	40	31
+drill-soy	Planting and post planting	Drilling soybeans, conventional drill	acre	22.33	18	25	6
+drill-soy-notill	Planting and post planting	Drilling soybeans, no-till drill	acre	24.02	15	40	26
+	Planting and post planting	Seeding CRP ground	acre	30	15	45	8
+	Planting and post planting	Seeding cover crops, drill	acre	22.27	15	30	28
+plant-row-fert	Planting and post planting	Planting row crops, no coulters, with band applicator	acre	26.36	15	49	14
+plant-row	Planting and post planting	Planting row crops, no coulters, without band applicator	acre	29.19	20	44	8
+	Planting and post planting	Planting row crops, coulters, with band applicator	acre	30.01	20	50	20
+plant-notill	Planting and post planting	Planting row crops, coulters, without band applicator	acre	25.95	18	36	15
+	Planting and post planting	Ridge planting, with band applicator	acre	28.26	20	42	17
+	Planting and post planting	Ridge planting, without band applicator	acre	29.14	20	45	11
+mow-hay	Haying and baling	Mowing hay	acre	18.71	10	25	7
+rake	Haying and baling	Raking hay	acre	8.17	5	12.5	15
+swath	Haying and baling	Swathing with crushing/crimping	acre	19.26	14	25	17
+	Haying and baling	Raking cornstalks	acre	9.67	4	15	6
+bale-round-net	Haying and baling	Baling large round bales with net wrap	bale	17.88	12	25	26
+	Haying and baling	Baling cornstalks, large round bales with net wrap	bale	21.22	18	27	9
+	Haying and baling	Loading and moving large round bales	mile	4.82	2	7	11
+combine-smallgrain	Small grain harvest	Combining small grains (no hauling), flat rate	acre	47.39	36	65	9
+	Small grain harvest	Combining small grains, minimum rate (plus an average $0.24 a bushel above 24 bushels)	acre	33.57	30	45	7
+	Small grain harvest	Hauling small grain to local storage	bushel	0.21	0.15	0.33	11
+fert-dry	Application of fertilizer	Dry fertilizer solid broadcast, including labor and applicator	acre	9.66	8	17	14
+	Application of fertilizer	Dry fertilizer, variable rate	acre	12.48	9	22	12
+fert-liquid	Application of fertilizer	Liquid fertilizer, constant rate, labor and applicator	acre	12.82	8	25	22
+	Application of fertilizer	Liquid fertilizer, variable rate, labor and applicator	acre	15.25	9.5	23	18
+nh3	Application of fertilizer	Anhydrous ammonia, knife with coulters	acre	19.69	10	25	16
+spray-selfprop	Insect, disease and weed control	Spraying weed control, self-propelled sprayer	acre	9.85	7	12.5	29
+spray-drone	Insect, disease and weed control	Crop spraying by drone (fungicides, insecticides and/or herbicides)	acre	15.17	13	20	6
+combine-corn	Harvesting grains and soybeans	Combining irrigated corn, flat rate	acre	50.70	25	82	30
+	Harvesting grains and soybeans	Combining irrigated corn, flat rate	bushel	0.32	0.26	0.45	8
+	Harvesting grains and soybeans	Combining dryland corn, flat rate	acre	49.29	30	82	42
+	Harvesting grains and soybeans	Combining high moisture corn, flat rate	acre	58.60	47	75	10
+	Harvesting grains and soybeans	Combining high moisture corn	bushel	0.34	0.26	0.45	8
+combine-soy	Harvesting grains and soybeans	Combining soybeans, flat rate	acre	50.87	28	85	38
+	Hauling operations	Hauling irrigated corn, field to local storage (15 miles or less)	bushel	0.14	0.05	0.28	31
+	Hauling operations	Hauling dryland corn, field to local storage (15 miles or less)	bushel	0.15	0.06	0.28	39
+	Hauling operations	Hauling high moisture corn, field to local storage (15 miles or less)	bushel	0.15	0.1	0.25	15
+	Hauling operations	Hauling soybeans, field to local storage (15 miles or less)	bushel	0.15	0.06	0.27	34
+grain-cart	Hauling operations	Grain from combine with tractor and grain cart to edge of field	acre	5.83	4	8	6
+haul-grain-bu	Hauling operations	Grain with truck to storage or elevator, flat rate	bushel	0.16	0.07	0.30	22
+	Other custom services	Grain bin storage, no air or electric charge included	bushel / month	0.02	0.01	0.04	7
+	Other custom services	Grain bin storage, with air or electric charge included	bushel / month	0.03	0.01	0.06	6
+	Other custom services	Mowing grass (CRP or pasture)	hour	154.29	100	250	7
+	Other custom services	Checking pivots during irrigation season	acre	14.19	5	35	9
+	Other custom services	Closing pivot tracks	hour	161.11	50	250	9
+	Other custom services	Closing pivot tracks	pivot	357.14	100	1000	7
+	Other custom services	Tractor rent, greater than 250 hp	metered hour	158.57	85	400	7
+custom-farm-soy	Custom contract farming	Dryland soybeans (average 6.8 trips over the field; no input costs)	acre	125	100	180	6
