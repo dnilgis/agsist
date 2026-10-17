@@ -543,38 +543,56 @@ def probe_one(rd, src, slug):
 # ------------------------------------------------------- barns' own reports
 # Barns USDA AMS does not report (`own_reports` in the sources: no Wisconsin
 # or Minnesota barn is on the AMS feeder auction listing, Oct 16 2026) post
-# their own market report: an HTML page (Equity Cooperative markets) or a
-# weekly PDF linked from a page (Premier Livestock & Auctions, Withee). These
-# give a $/cwt low-high for a weight range ("Beef Str 200#-400# - 375-600"),
-# not USDA's head-weighted averages, so they are kept apart as `ranges` and
-# the page says the barn posted them.
+# their own market report. These give a $/cwt low-high for a weight range
+# ("Beef Steers 400 to 600 lbs 300-415"), not USDA's head-weighted averages,
+# so they are kept apart as `ranges` and the page says the barn posted them.
 #
-# NOT YET CHECKED AGAINST A SAVED REPORT: the sandbox this was written in
-# cannot reach the barns' sites, so parse_own was written from report lines
-# quoted in search results. A source is read in the normal run only when its
-# `parser_checked` is true; until then it is listed with its sale day and
-# "needs first read". The probe saves every page and PDF to the raw branch.
-SEX_RE = re.compile(r"\b(?:beef\s+)?(str|strs|steers?|hfr|hfrs|heifers?)\b", re.I)
-NOT_BEEF_RE = re.compile(r"\b(holstein|hol|dairy|jersey|cross(?:bred)?|x-?bred|bulls?|cows?|pairs|bred|fed|market|slaughter|fats?)\b", re.I)
-OWN_WT_RE = re.compile(r"(?<![\d.$])(\d{3,4})\s*(?:#|lbs?\.?)?\s*(?:-|to|–)\s*(\d{3,4})\s*(?:#|lbs?\.?)(?![\d])|"
-                       r"(?<![\d.$])(\d{3,4})\s*(?:-|to|–)\s*(\d{3,4})\s*(?=\s*(?:#|lbs?\b)?\s*(?:-|:|–)?\s*\$?\d{2,4}(?:\.\d{1,2})?\s*(?:-|to|–))", re.I)
-OWN_PX_RE = re.compile(r"\$?(\d{2,4}(?:\.\d{1,2})?)\s*(?:-|to|–)\s*\$?(\d{2,4}(?:\.\d{1,2})?)(?![\d#]|\s*(?:#|lbs?\b))", re.I)
+# Each layout has its own reader (`parser` in the sources), written against the
+# probe's saved copies (raw branch, Oct 17 2026; fixtures in
+# test/fixtures/cattle-auction/own-*.html with the URL and fetch date on top):
+#   equity     Equity Cooperative market pages ("Beef Steers 400 to 600 lbs  300-415")
+#   premier    Premier Livestock & Auctions, Withee ("Beef Str 400#-600# – 310-470")
+#   lanesboro  Lanesboro Sales Commission ("300-500LB STEERS 395.00 To 555.00 CWT")
+# A source is read in the normal run only when `parser_checked` is true, which
+# is set by hand after the numbers were checked against the saved copy.
+# What a reader keeps: beef steer and heifer rows with a closed weight range
+# (no "under 400" or "over 800"), a low-high price, a sale date it can tie to
+# the feeder table. "NT", "& down", "Up to" rows are left out (no range posted).
+# Anything else it cannot read refuses the whole report.
+OWN_KINDS = ("equity", "premier", "lanesboro")
 FILE_DATE_RE = re.compile(r"(20\d\d)[.\-_](\d{1,2})[.\-_](\d{1,2})")
+OWN_MAX_AGE = 45            # days; an older newest report is not shown as current
+NO_RANGE_RE = re.compile(r"^(?:n\.?\s?t\.?|no test|none|light test|call\b.*|up to\b.*|below\b.*|"
+                         r"\$?\d[\d,]*(?:\.\d+)?\s*(?:&|and)\s*(?:down|up|under|less)\b.*)?$", re.I)
+PX_PAIR_RE = re.compile(r"^\$?(\d{2,4}(?:\.\d{1,2})?)\s*(?:-|–|—|to)\s*\$?(\d{2,4}(?:\.\d{1,2})?)$", re.I)
+EQ_ROW_RE = re.compile(
+    r"^(beef|holstein|crossbred|cross\s?bred|dairy(?:\s+beef)?(?:\s+cross)?)\s+(steers?|heifers?)\s+"
+    r"(?:(\d{3,4})\s*(?:-|–|to)\s*(\d{3,4})|(?:under|over)\s+\d{3,4})\s*(?:lbs?\.?|#)\s*(.*)$", re.I)
+PR_ROW_RE = re.compile(r"^(beef|holstein|dairy beef x)\s+(str|hfr|str/hfr)\s+(\d{3,4})#\s*-\s*(\d{3,4})#\s*[–—-]\s*(.*)$", re.I)
+LB_ROW_RE = re.compile(r"\b(\d{3,4})-(\d{3,4})\s*LB\s+(STEERS|HEIFERS)\s+(\S+)\s+To\s+(\S+)", re.I)
+WD = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+LOOSE_DATE_RE = re.compile(
+    r"(?:\b(?P<wd>mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?,?\s+)?"
+    r"(?:\b(?P<mn>" + "|".join(MONTHS) + r")[a-z]*\.?\s+(?P<d1>\d{1,2})(?:st|nd|rd|th)?\b(?:,?\s+(?P<y1>20\d\d)\b)?"
+    r"|(?<![\d/.])(?P<m2>\d{1,2})/(?P<d2>\d{1,2})(?:/(?P<y2>(?:20)?\d\d))?(?![\d/]))", re.I)
 
 
 def html_text(raw):
-    """HTML bytes or str -> text with one table row, paragraph or line break per line."""
+    """HTML bytes or str -> text with one table row, paragraph or line break per line.
+    Inline tags go without a space, so '400 to 50</span><span>0 lbs' reads 500."""
     import html as H
     s = raw.decode("utf-8", "replace") if isinstance(raw, bytes) else (raw or "")
     s = re.sub(r"(?is)<(script|style|noscript)\b.*?</\1>", " ", s)
+    s = re.sub(r"(?s)<!--.*?-->", " ", s)
     s = re.sub(r"(?i)<br\s*/?>|</(p|tr|li|div|h\d|table|ul|ol)>", "\n", s)
     s = re.sub(r"(?i)</t[dh]>", " ", s)
+    s = re.sub(r"(?i)</?(span|font|strong|b|i|em|u|a|sup|sub|small)\b[^>]*>", "", s)
     s = re.sub(r"<[^>]+>", " ", s)
     return H.unescape(s)
 
 
 def file_date(url):
-    """'.../2026.10.2-Market-Report.pdf' -> '2026-10-02', else None."""
+    """'.../2026.10.2-Market-Report.pdf' or '.../2026-10-12-mr.pdf' -> ISO date, else None."""
     m = FILE_DATE_RE.search(url or "")
     if not m:
         return None
@@ -584,95 +602,268 @@ def file_date(url):
         return None
 
 
-def parse_own(text, date_hint=None):
-    """A barn's own report -> ({"date", "receipts", "ranges"}, None) or (None, reason).
-    Each range: sex, lo-hi lb, plo-phi $/cwt. A steer or heifer line with a
-    weight range and no readable price refuses the whole report."""
-    lines = norm_lines(text)
-    date = date_hint
-    if not date:
-        for ln in [x for x in lines if x][:60]:
-            date = find_date(ln)
-            m = None if date else re.search(r"(?<![\d/])(\d{1,2})/(\d{1,2})/(\d{2})(?![\d/])", ln)
-            if m:
-                try:
-                    date = datetime.date(2000 + int(m.group(3)), int(m.group(1)), int(m.group(2))).isoformat()
-                except ValueError:
-                    date = None
-            if date:
-                break
-    if not date:
-        return None, "no sale date"
-    out, sex = [], None
-    for ln in lines:
-        if not ln:
+def loose_dates(s, ref):
+    """Dates in s as [(start, end, date or None, is_next)]. A missing year is the
+    latest year that puts the date on or before ref (+1 day) and no more than
+    200 days back, else None; a weekday that does
+    not match gives None. is_next: the word 'next' stands between the previous
+    date (or the start) and this one ('Next Sale is on November 5th')."""
+    out, prev_end = [], 0
+    for m in LOOSE_DATE_RE.finditer(s):
+        if m.group("mn"):
+            mo, d, y = MONTHS.index(m.group("mn").lower()[:3]) + 1, int(m.group("d1")), m.group("y1")
+        else:
+            mo, d, y = int(m.group("m2")), int(m.group("d2")), m.group("y2")
+        dt = None
+        try:
+            if y:
+                dt = datetime.date(int(y) if len(y) == 4 else 2000 + int(y), mo, d)
+            else:
+                for yy in (ref.year, ref.year - 1):
+                    c = datetime.date(yy, mo, d)
+                    if c <= ref + datetime.timedelta(days=1):
+                        # a yearless date months back is more likely a coming sale than last year's
+                        dt = c if (ref - c).days <= 200 else None
+                        break
+        except ValueError:
+            dt = None
+        if dt and m.group("wd") and WD[dt.weekday()] != m.group("wd").lower()[:3]:
+            dt = None
+        out.append((m.start(), m.end(), dt, bool(re.search(r"\bnext\b", s[prev_end:m.start()], re.I))))
+        prev_end = m.end()
+    return out
+
+
+def _ref(today):
+    if isinstance(today, datetime.date):
+        return today
+    return datetime.date.fromisoformat(today) if today else datetime.datetime.now(datetime.timezone.utc).date()
+
+
+def _price(sex, lo, hi, cell, line):
+    """(range dict, None) | (None, None) for a no-range cell | (None, reason)."""
+    cell = cell.strip().rstrip(".").strip()
+    m = PX_PAIR_RE.match(cell)
+    if not m:
+        if NO_RANGE_RE.match(cell):
+            return None, None
+        return None, "a %s line with no readable price: %r" % (sex, line[:70])
+    plo, phi = float(m.group(1)), float(m.group(2))
+    if not (WT_RANGE[0] <= lo < hi <= WT_RANGE[1] and hi - lo <= 300):
+        return None, "weight range %d-%d not a feeder class: %r" % (lo, hi, line[:70])
+    if not (plo <= phi and PRICE_RANGE[0] <= plo and phi <= PRICE_RANGE[1]):
+        return None, "price %s-%s outside %s or backwards: %r" % (plo, phi, PRICE_RANGE, line[:70])
+    return {"sex": sex, "lo": lo, "hi": hi, "plo": plo, "phi": phi}, None
+
+
+def _sex(word):
+    return "steers" if word.lower().startswith("st") else "heifers"
+
+
+def _check_date(dt, ref):
+    if dt is None:
+        return "no sale date tied to the feeder prices"
+    if dt > ref + datetime.timedelta(days=1):
+        return "sale date %s is after the read date %s" % (dt, ref)
+    if (ref - dt).days > OWN_MAX_AGE:
+        return "newest report is %s, over %d days old" % (dt, OWN_MAX_AGE)
+    return None
+
+
+def parse_equity(text, ref):
+    """Equity Cooperative market page. The feeder table's own date ('Date: 10/02/2026
+    325 Head', 'Saturday, September 26', 'October 15th Results'; never a 'Next
+    sale' date), else the page's 'As of' date. Head only from the dated line."""
+    lines = [ln for ln in norm_lines(text) if ln]
+    rows, first, out = [], None, []
+    for i, ln in enumerate(lines):
+        m = EQ_ROW_RE.match(ln)
+        if not m:
             continue
-        sm = SEX_RE.search(ln)
-        wm = OWN_WT_RE.search(ln)
-        if sm and not wm:
-            # a header like "Beef Steers": the lines under it are steers
-            sex = None if NOT_BEEF_RE.search(ln) else ("steers" if sm.group(1).lower().startswith("st") else "heifers")
+        if first is None:
+            first = i
+        if m.group(1).lower() != "beef" or not m.group(3):
             continue
-        if not wm:
-            continue
-        if NOT_BEEF_RE.search(ln):
-            continue
-        this = ("steers" if sm.group(1).lower().startswith("st") else "heifers") if sm else sex
-        if not this:
-            continue
-        lo, hi = (int(wm.group(1)), int(wm.group(2))) if wm.group(1) else (int(wm.group(3)), int(wm.group(4)))
-        pm = OWN_PX_RE.search(ln, wm.end())
-        if not pm:
-            return None, "a %s line with no readable price: %r" % (this, ln[:60])
-        plo, phi = float(pm.group(1)), float(pm.group(2))
-        if not (WT_RANGE[0] <= lo < hi <= WT_RANGE[1] and hi - lo <= 300):
-            return None, "weight range %d-%d not a feeder class: %r" % (lo, hi, ln[:60])
-        if not (plo <= phi and PRICE_RANGE[0] <= plo and phi <= PRICE_RANGE[1]):
-            return None, "price %s-%s outside %s or backwards: %r" % (plo, phi, PRICE_RANGE, ln[:60])
-        r = {"sex": this, "lo": lo, "hi": hi, "plo": plo, "phi": phi}
-        if r not in out:
+        sex, lo, hi = _sex(m.group(2)), int(m.group(3)), int(m.group(4))
+        r, why = _price(sex, lo, hi, m.group(5), ln)
+        if why:
+            return None, why
+        if r and r not in out:
             out.append(r)
     if not out:
+        return None, "no beef steer or heifer weight range with a $/cwt range"
+    head = max([i for i in range(first) if re.match(r"^feeder cattle\b", lines[i], re.I)] or [-1])
+    if head < 0:
+        return None, "no Feeder Cattle heading above the price rows"
+    # the heading down to the first row as one string, so a 'Next sale' on one
+    # line still marks the date on the next; head only from the dated line's rest
+    win = " | ".join(lines[head:first])
+    dated, rec = [], None
+    for _s, e, dt, nxt in loose_dates(win, ref):
+        if nxt:
+            continue
+        if dt is None:
+            return None, "a feeder date that does not check out: %r" % win[max(0, _s - 30):e + 10]
+        dated.append(dt)
+        m = re.match(r"[^|]*?\b(\d{1,3}(?:,\d{3})+|\d{1,5})\s+head\b", win[e:], re.I)
+        if m:
+            rec = int(m.group(1).replace(",", ""))
+    if len(set(dated)) > 1:
+        return None, "two dates over the feeder table: %s" % sorted(set(dated))
+    dt = dated[0] if dated else None
+    if dt is None:
+        for ln in lines:
+            if re.search(r"\bas of\b", ln, re.I):
+                ds = [x for x in loose_dates(ln, ref) if not x[3]]
+                if ds and ds[0][2]:
+                    dt = ds[0][2]
+                break
+    why = _check_date(dt, ref)
+    if why:
+        return None, why
+    return {"date": dt.isoformat(), "receipts": rec, "ranges": sorted(out, key=lambda r: (r["sex"], r["lo"]))}, None
+
+
+def parse_premier(text, ref):
+    """Premier Livestock & Auctions market page. Feeder 'Date: 10-6 and 10-13-2026'
+    (two sales in one report: the later is the date, the note says so); head from
+    '835 head sold on 10-6 and 245 head sold on 10-13' when those dates match."""
+    lines = [ln for ln in norm_lines(text) if ln]
+    out, dline = [], None
+    for ln in lines:
+        if dline is None and re.match(r"^date:\s*\d", ln, re.I):
+            dline = ln
+        m = PR_ROW_RE.match(ln)
+        if not m:
+            continue
+        if m.group(1).lower() != "beef" or m.group(2).lower() == "str/hfr":
+            continue
+        r, why = _price(_sex(m.group(2)), int(m.group(3)), int(m.group(4)), m.group(5), ln)
+        if why:
+            return None, why
+        if r and r not in out:
+            out.append(r)
+    if not out:
+        return None, "no beef steer or heifer weight range with a $/cwt range"
+    if not dline:
+        return None, "no feeder Date: line"
+    ds = re.findall(r"(?<!\d)(\d{1,2})-(\d{1,2})(?:-(20\d\d))?(?!\d)", dline)
+    years = [y for _m, _d, y in ds if y]
+    if not ds or len(set(years)) != 1:
+        return None, "feeder date line not read: %r" % dline[:70]
+    try:
+        dates = sorted({datetime.date(int(years[0]), int(mo), int(d)) for mo, d, _y in ds})
+    except ValueError:
+        return None, "feeder date line not read: %r" % dline[:70]
+    dt = dates[-1]
+    why = _check_date(dt, ref)
+    if why:
+        return None, why
+    if (dates[-1] - dates[0]).days > 21:
+        return None, "feeder dates too far apart for one report: %r" % dline[:70]
+    heads = {}
+    for n, mo, d in re.findall(r"(\d{1,3}(?:,\d{3})*|\d+)\s+head sold on (\d{1,2})-(\d{1,2})\b", joined(text), re.I):
+        try:
+            heads[datetime.date(dt.year, int(mo), int(d))] = int(n.replace(",", ""))
+        except ValueError:
+            pass
+    rec = sum(heads.values()) if set(heads) == set(dates) else None
+    sale = {"date": dt.isoformat(), "receipts": rec, "ranges": sorted(out, key=lambda r: (r["sex"], r["lo"]))}
+    if len(dates) > 1:
+        sale["note"] = "One report for the %s sales%s" % (
+            " and ".join(x.strftime("%b ") + str(x.day) for x in dates),
+            " (%s head)" % " and ".join("{:,}".format(heads[x]) for x in dates) if rec else "")
+    return sale, None
+
+
+def parse_lanesboro(text, ref):
+    """Lanesboro Sales Commission feeder page: 'Market Reports October 9th 2026
+    1722 Head Sold', then '300-500LB STEERS 395.00 To 555.00 CWT' (one cell a line)."""
+    s = joined(text)
+    m = re.search(r"\bMarket Reports\s+(" + "|".join(MONTHS) + r")[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(20\d\d)\s+"
+                  r"(\d{1,3}(?:,\d{3})*|\d+)\s+Head Sold\b", s, re.I)
+    if not m:
+        return None, "no 'Market Reports <date> <n> Head Sold' line"
+    try:
+        dt = datetime.date(int(m.group(3)), MONTHS.index(m.group(1).lower()[:3]) + 1, int(m.group(2)))
+    except ValueError:
+        return None, "sale date not read"
+    why = _check_date(dt, ref)
+    if why:
+        return None, why
+    out = []
+    for r in LB_ROW_RE.finditer(s, m.end()):
+        lo, hi, sex = int(r.group(1)), int(r.group(2)), _sex(r.group(3))
+        a, b = r.group(4), re.sub(r"(?i)cwt$", "", r.group(5))
+        if a.upper() == "UP" or b in ("#", ""):
+            continue
+        rr, why = _price(sex, lo, hi, a + "-" + b, r.group(0))
+        if why:
+            return None, why
+        if rr and rr not in out:
+            out.append(rr)
+    if not out:
         return None, "no steer or heifer weight range with a $/cwt range"
-    m = re.search(r"\b(\d{1,3}(?:,\d{3})+|\d{2,5})\s+(?:head|hd)\b", joined(text), re.I)
-    return {"date": date, "receipts": int(m.group(1).replace(",", "")) if m else None,
+    return {"date": dt.isoformat(), "receipts": int(m.group(4).replace(",", "")),
             "ranges": sorted(out, key=lambda r: (r["sex"], r["lo"]))}, None
 
 
-PDF_LINK_RE = re.compile(r"""href=["']([^"']+\.pdf)["']""", re.I)
+def parse_own(text, kind, today=None):
+    """A barn's own report -> ({"date", "receipts", "ranges"[, "note"]}, None) or (None, reason).
+    kind = the source's `parser`; today = the read date (dates without a year, age check)."""
+    fn = {"equity": parse_equity, "premier": parse_premier, "lanesboro": parse_lanesboro}.get(kind)
+    if not fn:
+        return None, "no reader for layout %r" % kind
+    return fn(text or "", _ref(today))
 
 
-def newest_pdf(page_url, html_raw):
-    """The newest dated market report PDF linked from a barn's page, or None."""
+PDF_A_RE = re.compile(r"""<a\b[^>]*href=["']([^"']+\.pdf)["'][^>]*>(.*?)</a>""", re.I | re.S)
+
+
+def newest_pdf(page_url, html_raw, today=None):
+    """(date, url) of the newest cattle market report PDF linked from a barn's page, or None.
+    The date is the link's own text ('October 12th, 2026 Market Report', 'CATTLE OCTOBER
+    15, 2026'), else the file name's; hay, sheep, goat and horse reports never."""
     from urllib.parse import urljoin
     s = html_raw.decode("utf-8", "replace") if isinstance(html_raw, bytes) else (html_raw or "")
+    ref = _ref(today)
     best = None
-    for m in PDF_LINK_RE.finditer(s):
+    for m in PDF_A_RE.finditer(s):
         u = urljoin(page_url, m.group(1))
-        d = file_date(u)
-        if d and re.search(r"market[-_ ]?report", u, re.I) and (best is None or d > best[0]):
+        label = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(2))).strip()
+        if re.search(r"\b(hay|straw|sheep|goats?|horses?|tack|machinery)\b", label + " " + u, re.I):
+            continue
+        if not re.search(r"market[-_ ]?report|\bcattle\b|-mr\d*\.pdf$", label + " " + u, re.I):
+            continue
+        d = None
+        for _s, _e, dt, _n in loose_dates(label, ref):
+            if dt and re.search(r"20\d\d", label):
+                d = dt.isoformat()
+                break
+        d = d or file_date(u)
+        if d and (best is None or d > best[0]):
             best = (d, u)
     return best
 
 
 def own_fetch(src, tries=3):
-    """(text, date_hint, url, raws, None) or (None, None, None, raws, reason). raws = [(name, bytes)]."""
+    """(text, url, raws, None) or (None, None, raws, reason). raws = [(name, bytes)]."""
     raws = []
     raw, err = FD.http_get(src["site"], headers=BROWSER_HEADERS, tries=tries)
     if raw is None:
-        return None, None, None, raws, "fetch failed: %s" % err
+        return None, None, raws, "fetch failed: %s" % err
     raws.append(("own_%s.html" % src["id"], raw))
     pdf = newest_pdf(src["site"], raw)
     if not pdf:
-        return html_text(raw), None, src["site"], raws, None
+        return html_text(raw), src["site"], raws, None
     praw, perr = FD.http_get(pdf[1], headers=BROWSER_HEADERS, tries=tries)
     if praw is None or praw[:5] != b"%PDF-":
-        return None, None, None, raws, "report PDF %s: %s" % (pdf[1], perr or "not a PDF")
+        return None, None, raws, "report PDF %s: %s" % (pdf[1], perr or "not a PDF")
     raws.append(("own_%s.pdf" % src["id"], praw))
     text, e = FD.pdf_to_text(praw)
     if not text:
-        return None, None, None, raws, "PDF text extraction failed: %s" % e
-    return text, pdf[0], pdf[1], raws, None
+        return None, None, raws, "PDF text extraction failed: %s" % e
+    return text, pdf[1], raws, None
 
 
 def merge_own(existing, src, sale, err, now_iso, url):
@@ -691,22 +882,23 @@ def merge_own(existing, src, sale, err, now_iso, url):
 
 def run_own(cfg, existing, now_iso, getter=None):
     old = {b["id"]: b for b in existing.get("own") or []}
+    today = now_iso[:10]
     out = []
     for src in cfg.get("own_reports") or []:
         sale, err, url = None, None, None
-        if not (src.get("parser") == "ranges" and src.get("parser_checked")):
+        if not (src.get("parser") in OWN_KINDS and src.get("parser_checked")):
             err = "needs first read"
         else:
-            text, hint, url, _raws, err = (getter or own_fetch)(src)
+            text, url, _raws, err = (getter or own_fetch)(src)
             if text:
-                sale, err = parse_own(text, hint)
+                sale, err = parse_own(text, src["parser"], today)
         out.append(merge_own(old.get(src["id"]), src, sale, err, now_iso, url))
     return out
 
 
 def probe_own(rd, cfg):
     for src in cfg.get("own_reports") or []:
-        text, hint, url, raws, err = own_fetch(src)
+        text, url, raws, err = own_fetch(src)
         for name, raw in raws:
             (rd / name).write_bytes(raw)
         print("%s own report %s" % (src["id"], url or src["site"]))
@@ -714,7 +906,10 @@ def probe_own(rd, cfg):
             print("  ERROR:", err)
             continue
         (rd / ("own_%s.txt" % src["id"])).write_text(text)
-        p, why = parse_own(text, hint)
+        if src.get("parser") not in OWN_KINDS:
+            print("  no reader yet (parser %r)" % src.get("parser"))
+            continue
+        p, why = parse_own(text, src["parser"])
         print("  parsed %s: %d ranges" % (p["date"], len(p["ranges"])) if p else "  NOT PARSED: %s" % why)
 
 
