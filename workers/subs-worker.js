@@ -5,6 +5,12 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.27 (2026-10-17): RAIN PRINT OPTIONS IN SHORT LINKS. POST /rp-short takes a design
+ *   code whose key field carries the units-and-language letter (A to H, 2026-10-16)
+ *   and the 2026-10-17 options after a ~ (crop and its two days, plant drawings,
+ *   a usual year, history, frost, hottest and coldest, the temperature band); both
+ *   were refused before, so those designs had no short link. Every other route
+ *   answers as before.
  * v5.26 (2026-10-15): RAIN PRINT GIFT CARDS. POST /rp-gift/redeem compares a
  *   locked card's design with the design the buyer sends after expanding an
  *   RPS-<id> reference (a design past 300 letters goes as its short id) from
@@ -1001,7 +1007,8 @@ function rpsCodeOk(code) {
   if (v2 && (f.length - 6) % 2 && !f.pop().trim()) return false;   // the dedication, when there is one
   if ((f.length - 6) % 2) return false;
   if (!f[1].trim()) return false;
-  if (!(v2 ? /^[a-z0-9]{5}(?:[ic][0-9a-hjkmnp-tv-z]{12})?$/ : /^[a-z0-9]{4}$/).test(f[4])) return false;   // v5.23: + a logo
+  // v5.23: + a logo; v5.27: + the units-and-language letter and the options after a ~ (components/rain-print.js optCode)
+  if (!(v2 ? /^[a-z0-9]{5}(?:[ic][0-9a-hjkmnp-tv-z]{12})?[A-H]?(?:~(?:[cs][0-9a-z]{4})?p?g?h?f?t?r?)?$/ : /^[a-z0-9]{4}$/).test(f[4])) return false;
   const year = parseInt(f[3], 10);
   if (!(year >= 1850 && year <= 2200) || String(year) !== f[3]) return false;
   for (let i = 6; i + 1 < f.length; i += 2) {

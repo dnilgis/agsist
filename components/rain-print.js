@@ -1780,7 +1780,9 @@
      or {none: why}. Read after the print draws (extrasLoad), never holding it up; the print draws again when
      it is in. The gauge's own highs and lows are used when it keeps them; else the nearest station that does
      (StnMeta maxt over the same box), up to three read, nearest first. */
-  var TEMP = null, TEMP_KEY = '', TEMP_P = null, HIST_WHY = '', FULL_CACHE = new Map();
+  var TEMP = null, TEMP_KEY = '', TEMP_P = null, HIST_WHY = '', FULL_CACHE = new Map(), EXTRAS_P = null;
+  // the maker's files wait for the options' data, so the file Sig prints shows what the buyer saw
+  function extrasGate() { return Promise.resolve(EXTRAS_P).then(function () { return true; }, function () { return true; }); }
   var TEMP_ELEMS = ['pcpn', 'avgt', 'snow', 'maxt', 'mint'];
   function wantTemp() { return !!(ST.crop || ST.frost || ST.heat || ST.ribbon); }
   function wantHist() { return !!(ST.hist && ST.style !== 'r2'); }
@@ -1807,7 +1809,7 @@
     var key = META.sid + '|' + META.year + '|' + (PREVIEW ? PREVIEW.last : '');
     var go = wantTemp() || wantHist();
     if (!go) { syncExtrasUi(); return; }
-    extrasReady().then(function (ok) {
+    EXTRAS_P = extrasReady().then(function (ok) {
       if (!ok || my !== reqToken) return null;
       var jobs = [];
       if (wantHist() && !FULL_CACHE.has(META.sid)) jobs.push(stationExtremes(META.sid).then(function (x) { FULL_CACHE.set(META.sid, root.AgRainExtras.fullYears(x.rows, 1)); }, function () { FULL_CACHE.set(META.sid, null); }));
@@ -4050,7 +4052,7 @@
        no worker call, no serial, so it works when the link service doesn't. */
     if (btn.getAttribute('data-qr') === 'standard') {
       var tname = slug() + '-' + kind + '-test-print-standard-code';
-      logoGate().then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, null); }).then(function (c) {
+      logoGate().then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, null); }).then(function (c) {
         return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
           saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, SHEET), tname + '.pdf');
           out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.';
@@ -4082,7 +4084,7 @@
     makerMsg('');
     // the logo is drawn from its data URL, so it is in the file at full size; a file waits for it (NO_LOGO when it never comes)
     var NO_LOGO = {};
-    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !own) throw NO_QR; return logoGate(); }).then(function (ok) { if (!ok) throw NO_LOGO; return f(); }); };
+    var go = function (f) { return gate.then(function () { if (kind !== 'preview' && !own) throw NO_QR; return logoGate(); }).then(function (ok) { return extrasGate().then(function () { return ok; }); }).then(function (ok) { if (!ok) throw NO_LOGO; return f(); }); };
     if (fmt === 'svg') {
       job = go(function () { return fontCss(); }).then(function (css) { return new Blob([buildSvg({ fontCss: css, px: ['18in', '12in'], qrMatrix: own })], { type: 'image/svg+xml' }); }).then(function (b) { saveBlob(b, slug() + '.svg'); return qrNote('SVG saved.'); });
     } else {

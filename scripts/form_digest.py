@@ -273,6 +273,38 @@ def gift_tag(p):
     return " (%s gift, January)" % m.group(1) if m else " (gift, January)"
 
 
+# The 2026-10-17 Rain Print options, read from the design link the order carries (components/rain-print.js toParams),
+# so Sig sees what the print must show without opening it: crop and its days, plant drawings, a usual year,
+# every year behind, frost marks, hottest and coldest day, the temperature band.
+RP_CROP = {"corn": "Corn", "soy": "Soybeans"}
+MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def _md(iso):
+    m = re.fullmatch(r"\d{4}-(\d\d)-(\d\d)", iso or "")
+    return "%s %d" % (MON3[int(m.group(1)) - 1], int(m.group(2))) if m and 1 <= int(m.group(1)) <= 12 else ""
+
+
+def rp_options(url):
+    """The options in a Rain Print design link, in plain words, or '' when it has none."""
+    if not DESIGN_RE.fullmatch(str(url or "")):
+        return ""
+    q = urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)
+    on = lambda k: q.get(k, [""])[0] == "1"
+    out = []
+    crop = q.get("crop", [""])[0]
+    if crop in RP_CROP:
+        out.append("%s, planted %s, harvested %s%s%s" % (RP_CROP[crop], _md(q.get("plant", [""])[0]), _md(q.get("harvest", [""])[0]),
+                                                         ", plant drawings" if on("plants") else ", stages labeled",
+                                                         ", against a usual year" if on("ghost") else ""))
+    if on("hist"):
+        out.append("every year behind (Staircase)")
+    for k, words in (("frost", "frost marks"), ("heat", "hottest and coldest day"), ("ribbon", "daily temperature band")):
+        if on(k):
+            out.append(words)
+    return "; ".join(out)
+
+
 def value(p, f):
     v = p[f]
     if f == "choice":
@@ -320,6 +352,8 @@ def blocks(posts):
             rows.append(("Next", EL_NEXT))
         if p["kind"] == "prf-sponsor":
             rows.append(("Next", PRF_NEXT))
+        if p["kind"] == "rain-print-order" and rp_options(p.get("design_url")):
+            rows.append(("Options", rp_options(p.get("design_url"))))
         if p["kind"] == "rain-print-order" and p.get("choice") == "digital":
             rows.append(("Next", RP_FILE_NEXT_JAN if is_january(p) else RP_FILE_NEXT))
         out.append(("%s%s, %s" % (KIND_NAME[p["kind"]], gift_tag(p), when(p.get("ts") or 0)), rows))
@@ -767,6 +801,14 @@ def selftest():
     if fails:
         print("%d FAILED: %s" % (len(fails), "; ".join(fails)))
         return 1
+    # 2026-10-17: the Rain Print options come out of the design link in plain words
+    opt_url = ("https://agsist.com/rain-print?place=Ames%2C+IA&year=2012&style=r1&crop=corn&plant=2012-05-01&harvest=2012-10-20"
+               "&plants=1&ghost=1&frost=1&heat=1&ribbon=1&hist=1")
+    ck("rain print options in words", rp_options(opt_url) == "Corn, planted May 1, harvested Oct 20, plant drawings, against a usual year; "
+       "every year behind (Staircase); frost marks; hottest and coldest day; daily temperature band", rp_options(opt_url))
+    ck("no options, no line", rp_options("https://agsist.com/rain-print?place=X&year=2012") == "")
+    t = build([dict(rp, design_url=opt_url)], "s").get_body(("plain",)).get_content()
+    ck("the order mail lists the options", "Options: Corn, planted May 1" in t, t)
     print("form_digest: all checks pass")
     return 0
 
