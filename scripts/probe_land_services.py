@@ -428,18 +428,26 @@ def check_state(e, st, pts):
     return ok, notes
 
 
-def layers_of(url):
-    """A layer URL as is; a service URL becomes its polygon (or parcel-named) layers."""
+def layers_of(url, why=None):
+    """A layer URL as is; a service URL becomes its polygon (or parcel-named) layers.
+    why, a list, gets the reason when nothing comes back."""
     url = url.rstrip("/")
     if re.search(r"/\d+$", url):
         return [url]
     try:
         _, _, sb = get(url, {"f": "json"})
         sv = json.loads(sb)
-    except Exception:  # noqa: BLE001
+    except Exception as e:  # noqa: BLE001
+        if why is not None:
+            why.append("service did not answer: %s" % e)
         return []
-    return ["%s/%s" % (url, L["id"]) for L in sv.get("layers") or []
-            if "polygon" in str(L.get("geometryType", "")).lower() or re.search(r"parcel|tax", L.get("name") or "", re.I)][:6]
+    if sv.get("error") and why is not None:
+        why.append("service error: %s" % sv["error"])
+    out = ["%s/%s" % (url, L["id"]) for L in sv.get("layers") or []
+           if "polygon" in str(L.get("geometryType", "")).lower() or re.search(r"parcel|tax", L.get("name") or "", re.I)][:6]
+    if not out and why is not None:
+        why.append("layers: %s" % ", ".join("%s %s" % (L.get("id"), L.get("name")) for L in (sv.get("layers") or [])[:30]))
+    return out
 
 
 def check_candidate(c, pts, now):
@@ -447,8 +455,10 @@ def check_candidate(c, pts, now):
     it is added to the registry only when check() passes, never on the say-so of the list."""
     st, fips = c["st"], c.get("fips")
     tag = "cand-%s" % (fips or c.get("id") or st.lower())
-    last = ["no polygon layer answered"]
-    for i, lu in enumerate(layers_of(c["url"])):
+    why = []
+    lays = layers_of(c["url"], why)
+    last = ["no polygon layer answered" + (": " + "; ".join(why) if why else "")]
+    for i, lu in enumerate(lays):
         try:
             _, _, mb = get(lu, {"f": "json"})
             save_raw("%s-%d-meta.json" % (tag, i), mb)
@@ -457,7 +467,8 @@ def check_candidate(c, pts, now):
             last = ["metadata did not answer: %s" % ex]
             continue
         if "pid" not in F or "owner" not in F:
-            last = ["%s: no parcel number and owner fields by name" % lu]
+            names = [f.get("name") for f in json.loads(mb).get("fields") or []]
+            last = ["%s: no parcel number and owner fields by name (fields: %s)" % (lu, ", ".join(map(str, names[:60])))]
             continue
         e = {"id": "co-%s" % fips if fips else c.get("id") or "%s-statewide" % st.lower(), "verified": False,
              "name": c.get("name") or ("%s County parcels" % pts[fips]["name"] if fips else "%s statewide parcels" % st),
