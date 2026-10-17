@@ -54,7 +54,7 @@
           var list = F.filterComps(sales.rows, { since: since.toISOString().slice(0, 10), maxMi: 25, minAc: 10, sort: 'date', dir: 'desc' }, c);
           var med = F.medianPpa(list);
           set('frp-comps', (med ? '<p><span class="fl-big">' + F.fmtMoney(med.ppa) + '/ac</span> middle of ' + med.n + ' market sales of 10 acres or more within 25 miles, last 5 years.</p>' : miss('Fewer than 3 market sales of 10 acres or more within 25 miles in the last 5 years; no middle price shown.')) +
-            F.compsTable(list, 20) + miss(esc(home.source) + '. Price covers the whole sale, buildings included unless the class is bare land. Miles run to the center of the town where the sale was filed.'));
+            F.compsTable(list, 20) + miss(esc(home.source) + '. Price covers the whole sale, buildings included unless the class is bare land. Miles run to the center of the town where the sale was filed. Sales on several parcels whose acres are uncertain are left out.'));
           if (med) drawSum([['County', co.name + ', ' + co.abbr], ['Nearby sales, middle $/ac', F.fmtMoney(med.ppa)]]);
         } else set('frp-comps', noSales);
 
@@ -79,7 +79,7 @@
             set('frp-hist', ps.map(function (p, k) {
               var m = F.matchTransfers(p, rows);
               return (ps.length > 1 ? '<h3 style="font-size:.95rem;margin:.8rem 0 .2rem">Parcel ' + esc(p.id || k + 1) + '</h3>' : '') +
-                F.historyHTML(m, { from: home.coverage && home.coverage.from, to: home.coverage && home.coverage.to, names: !!home.names, county: home.county, src: home.source_short, links: home.links });
+                F.historyHTML(m, F.covOf(home));
             }).join(''));
           }, function () { tryNext(i + 1); });
         })(0);
