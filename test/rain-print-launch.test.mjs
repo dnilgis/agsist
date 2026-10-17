@@ -355,7 +355,7 @@ test("the proof view and the order summary are on the page", () => {
 // ---------- gift cards on the page (components/rp-gift.js, worker v5.16) ----------
 test("a ?gift= card is redeemed on the page; the free pre-payment card is gone", () => {
   const H = readFileSync(ROOT + "rain-print.html", "utf8"), S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=4" defer><\/script>/);
+  assert.match(H, /<script src="\/components\/rp-gift\.js\?v=5" defer><\/script>/);
   assert.ok(H.indexOf("/components/rain-print.js?v=") < H.indexOf("/components/rp-gift.js"), "the page script is in place before the gift script runs");
   for (const id of ["rp-gift-banner", "rp-gift-use"]) assert.ok(H.includes(`id="${id}"`), id);
   assert.ok(!/Print a gift card|id="rp-card"|id="rp-giftcard"|rp-carding/.test(H + S), "no free printable card before payment");
@@ -394,7 +394,10 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.match(HTML, /How many prints \(5 or more\)<\/span><input id="rb-qty" type="number" min="5" max="500"/);
   assert.match(HTML, /Business orders start at 5 prints/);
   assert.match(HTML, /A 2026 print ships in January/);
-  assert.match(HTML, /note card in the box/);
+  // Sig, 2026-10-17: no separate card; the business's message is printed at the top of the letter in the box
+  assert.match(HTML, /Your message is printed at the top of the letter in the box, and on a label on the back of the frame if you want one, at no charge\./);
+  assert.match(faq, /Your message is printed at the top of the letter in the box, not on the print\./);
+  assert.doesNotMatch(HTML, /note card|on a card in the box|a note for a card/);
   assert.match(HTML, /does not go on the print/);
   // Sig, 2026-10-14: a business logo may go on the print, small, if they upload one
   assert.match(HTML, /If you want your logo on it, upload one with your request: it prints small, next to the name/);
@@ -405,13 +408,14 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.ok(!/limit to how many|order cap/i.test(HTML), "no order cap");
 });
 
-test("prints ship flat between chipboard, never rolled; no mat is sold", () => {
+test("prints ship flat between chipboard, never rolled; the framed one has a white mat (Sig, 2026-10-17)", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   for (const [n, t] of [["page", HTML], ["json", JSON.stringify(J)], ["script", S]]) {
     assert.ok(!/\btube\b|rolled in|ships rolled/i.test(t.replace(/rolled into a later/g, "")), n + " says nothing about a tube");
   }
   assert.match(HTML, /<li>Ships flat between chipboard<\/li>/);
-  assert.match(HTML, /black frame, no mat/);
+  assert.match(HTML, /<li>A 13 x 19 black frame with a white mat, ready to hang<\/li>/);
+  assert.doesNotMatch(HTML, /no mat|trim it to size|a little bigger than 12 x 18/);
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape
   assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos of real prints coming soon\.<\/figcaption>/);
@@ -520,9 +524,9 @@ test("type, keyboard and screen reader fixes", () => {
   // "Your print" (2026-10-14): a labeled Close, the details as a plain list beside the print, no long paragraph
   assert.match(HTML, /<button type="button" class="rp-proof-x" id="rp-proof-close" aria-label="Close">/);
   assert.match(HTML, /<h3>Check the details<\/h3><dl class="rp-proof-sum" id="rp-proof-sum"><\/dl>/);
-  assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. Actual size is 12 x 18 in\.<\/p>/);
+  assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\.<\/p>/);
   assert.ok(!/rp-proof-more|What&rsquo;s on it, in words/.test(HTML), "the old words box is gone");
-  assert.match(HTML, /When I print it, the paper is a little bigger than the print and I trim it to size\./, "the trim sentence lives in the FAQ now");
+  assert.match(HTML, /with the picture 16\.5 x 11 inches in the middle and white all around it\. It fits a standard 13 x 19 frame with an 11 x 17 mat\./, "the paper and the picture's size live in the FAQ (13 x 19, untrimmed, Sig 2026-10-17)");
   for (const i of [1, 2, 3, 4, 5]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named, its message under its own row");
   // each day its own row: "Day 2" at its start and a small x named for it at its end (one line on a laptop, 2026-10-15); no datalist (read as a combobox, a second arrow on Android)
   for (const i of [1, 2, 3, 4, 5]) {
@@ -549,13 +553,13 @@ test("type, keyboard and screen reader fixes", () => {
 
 test("copy batch: size, proof, business words", () => {
   // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
-  assert.match(HTML, /It&rsquo;s 12 x 18 inches, hung sideways, on matte paper\./);
-  assert.match(HTML, /Actual size is 12 x 18 in\./);
+  assert.match(HTML, /It&rsquo;s printed on 13 x 19 inch matte paper, hung sideways,/);
+  assert.match(HTML, /On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\./);
   // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
   assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
-  assert.match(HTML, /<p>Yes\. At checkout, give their name, your note for the card and their address\./, "the gift FAQ says what the page does now");
+  assert.match(HTML, /<p>Yes\. At checkout, give their name, your note and their address\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);
   assert.match(S2, /'Rain Print order'/);

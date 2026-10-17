@@ -84,7 +84,7 @@ PRF_NEXT = ("Reply with your price for these states (Reply goes to them). Terms:
             "(name, url, line, phone, logo in img/sponsors/ under 50 KB, through YYYY-12-31) and commit. It shows on the state "
             "page, every county page and the /prf result for that state on that commit. Farmers First never goes in a slot.")
 # What a rain print order's choice means, in the subject and the body.
-RP_CHOICE = {"digital": "Digital file", "print12x18": "12 x 18 print", "framed12x18": "12 x 18 framed print"}
+RP_CHOICE = {"digital": "Digital file", "print12x18": "13 x 19 print", "framed12x18": "13 x 19 framed print"}
 DESIGN_RE = re.compile(r"https://agsist\.com/rain-print\?[A-Za-z0-9%+._~=&-]+")
 YEAR_RE = re.compile(r"[?&]year=(\d{4})(?:&|$)")
 # A Rain Print logo (worker v5.23): its id, printed as a link to the PNG the buyer uploaded.
@@ -92,7 +92,7 @@ LOGO_URL = "https://agsist-subs.dnilgis.workers.dev/rp-logo/"
 LOGO_ID_RE = re.compile(r"[0-9a-hjkmnp-tv-z]{12}")
 RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
 # A business quote's product and shipping choice, spelled out.
-RPB_PRODUCT = {"print": "12 x 18 print", "framed": "12 x 18 framed print", "digital": "Digital file", "not-sure": "Not sure yet"}
+RPB_PRODUCT = {"print": "13 x 19 print", "framed": "13 x 19 framed print", "digital": "Digital file", "not-sure": "Not sure yet"}
 RPB_SHIP = {"one": "All to one address", "each": "One to each customer", "not-sure": "Not sure yet"}
 GIFT_NOTE = "Yes: make it after January 1, once the full year is in"
 # A digital file has no proof step (2026-10-14, Sig): the finished file goes out after payment.
@@ -100,7 +100,7 @@ RP_FILE_NEXT = ("No proof for the file. Email them the finished file within 1 bu
                 "If they ask for any change, fix it or redo it by hand and send it again, no charge.")
 RP_FILE_NEXT_JAN = ("No proof for the file. Email them the finished file in January, once the full year is in. "
                     "If they ask for any change, fix it or redo it by hand and send it again, no charge.")
-PLAIN_GIFT_NOTE = "Yes: a note card in the box, no prices"
+PLAIN_GIFT_NOTE = "Yes: the note printed at the top of the letter in the box, no prices"
 CARD_TWICE_NOTE = "THIS GIFT CARD WAS USED MORE THAN ONCE. Honour the first order only."
 CARD_UPGRADE_NOTE = "Yes: they chose more than the card paid for. Email a link for the difference."
 # Values printed as a mailto link.
@@ -484,19 +484,19 @@ def selftest():
     ck("several: counted by kind", subject([claim, fb, atlas]) ==
        "AGSIST forms: 1 elevator claim, 1 sponsor request, 1 parcel report waitlist", subject([claim, fb, atlas]))
     ck("plural", "2 elevator claims" in subject([claim, dict(claim, key="form:claim:1:00000000")]))
-    ck("one rain print order: choice and buyer", subject([rp]) == "Rain print order: 12 x 18 framed print for Jane Olson", subject([rp]))
+    ck("one rain print order: choice and buyer", subject([rp]) == "Rain print order: 13 x 19 framed print for Jane Olson", subject([rp]))
     ck("rain print orders counted", "2 rain print orders" in subject([rp, dict(rp, key="form:rain-print-order:1:00000000")]))
     gift = dict(rp, gift_january="yes", gift_to="Dad Olson", gift_deliver="recipient", gift_message="For every inch\nyou <b>farmed</b>",
                 design_code="GIFT-MXxDaGV0ZWs",
                 design_url="https://agsist.com/rain-print?place=Chetek%2C+WI&year=2026&layout=staircase&gift=1")
-    ck("one gift order: year, gift and January in the subject", subject([gift]) == "Rain print order (2026 gift, January): 12 x 18 framed print for Jane Olson", subject([gift]))
+    ck("one gift order: year, gift and January in the subject", subject([gift]) == "Rain print order (2026 gift, January): 13 x 19 framed print for Jane Olson", subject([gift]))
     ck("a gift order with no year in its link still says gift", subject([dict(gift, design_url="https://agsist.com/rain-print?place=X")]) ==
-       "Rain print order (gift, January): 12 x 18 framed print for Jane Olson")
-    ck("gift fields without the flag do not make a gift", subject([dict(rp, gift_to="Dad")]) == "Rain print order: 12 x 18 framed print for Jane Olson")
+       "Rain print order (gift, January): 13 x 19 framed print for Jane Olson")
+    ck("gift fields without the flag do not make a gift", subject([dict(rp, gift_to="Dad")]) == "Rain print order: 13 x 19 framed print for Jane Olson")
 
     card = dict(rp, gift_card="RP-\u2026-X2F4 (No. 7)", gift_card_paid="digital", gift_card_order="RP-1042",
                 gift_card_from="Kate", gift_card_upgrade="yes")
-    ck("a gift card order says so in the subject", subject([card]) == "Rain print order (gift card): 12 x 18 framed print for Jane Olson", subject([card]))
+    ck("a gift card order says so in the subject", subject([card]) == "Rain print order (gift card): 13 x 19 framed print for Jane Olson", subject([card]))
     t = build([card], "s").get_body(("plain",)).get_content()
     ck("a gift card order shows the card lines", all(x in t for x in (
         "Gift card: RP-\u2026-X2F4 (No. 7)", "Card paid for: Digital file", "Card order: RP-1042", "Card from: Kate",
@@ -528,7 +528,7 @@ def selftest():
     ck("rain print order: Reply-To is the buyer", m["Reply-To"] == "jane@farm.com", m["Reply-To"])
     t = m.get_body(("plain",)).get_content()
     ck("rain print order: every field, choice spelled out", all(s in t for s in (
-        "Choice: 12 x 18 framed print", "Name: Jane Olson", "Ship to: 12 Main St", "Design code: MXxDaGV0ZWs",
+        "Choice: 13 x 19 framed print", "Name: Jane Olson", "Ship to: 12 Main St", "Design code: MXxDaGV0ZWs",
         "Design: https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025")), t)
     h = m.get_body(("html",)).get_content()
     ck("rain print order: design link is clickable", '<a href="https://agsist.com/rain-print?place=Chetek%2C+WI&amp;year=2025&amp;layout=staircase&amp;name=The+Olson+Farm">' in h, h)
@@ -563,10 +563,10 @@ def selftest():
     print("\ngift orders that are not January gifts")
     pg = dict(rp, gift="yes", gift_to="Dad Olson", gift_deliver="recipient", gift_message="Thanks for\nevery year")
     ck("plain gift: (gift) in the subject, apart from a January gift",
-       subject([pg]) == "Rain print order (gift): 12 x 18 framed print for Jane Olson" and "January" not in subject([pg]), subject([pg]))
+       subject([pg]) == "Rain print order (gift): 13 x 19 framed print for Jane Olson" and "January" not in subject([pg]), subject([pg]))
     t = build([pg], "s").get_body(("plain",)).get_content()
-    ck("plain gift: note card line, recipient, where it goes and the note", all(x in t for x in (
-        "Rain print order (gift), ", "Gift: Yes: a note card in the box, no prices", "Gift for: Dad Olson",
+    ck("plain gift: note line, recipient, where it goes and the note", all(x in t for x in (
+        "Rain print order (gift), ", "Gift: Yes: the note printed at the top of the letter in the box, no prices", "Gift for: Dad Olson",
         "Deliver to: The person it is for", "Card message: Thanks for\nevery year")) and "January" not in t, t)
     t = build([dict(gift, gift="yes")], "s").get_body(("plain",)).get_content()
     ck("both flags: one Gift line, the January one", t.count("Gift: ") == 1 and GIFT_NOTE in t, t)
@@ -578,7 +578,7 @@ def selftest():
           "business": "Chetek <Co-op>", "name": "Al Smith", "email": "al@chetek.coop", "phone": "715-555-0100", "quantity": "12",
           "product": "framed", "ship": "each", "towns": "Chetek, WI 2025\nRice Lake, WI 2012", "notes": "Card in each box", "page": "/rain-print#rp-biz"}
     ck("one business quote: business, count and product in the subject",
-       subject([rb]) == "Rain Print business quote: Chetek <Co-op>, 12 prints, 12 x 18 framed print", subject([rb]))
+       subject([rb]) == "Rain Print business quote: Chetek <Co-op>, 12 prints, 13 x 19 framed print", subject([rb]))
     ck("one print is singular", subject([dict(rb, quantity="1", product="not-sure")]) == "Rain Print business quote: Chetek <Co-op>, 1 print, not sure yet",
        subject([dict(rb, quantity="1", product="not-sure")]))
     ck("business quotes counted", "2 rain print business quotes" in subject([rb, dict(rb, key="form:rain-print-business:1:00000000")]),
@@ -588,7 +588,7 @@ def selftest():
     t = m.get_body(("plain",)).get_content()
     ck("business quote: every field, named and spelled out", all(s in t for s in (
         "Rain Print business quote, Oct 11", "Business: Chetek <Co-op>", "Contact: Al Smith", "Email: al@chetek.coop",
-        "Phone: 715-555-0100", "How many: 12", "Product: 12 x 18 framed print", "Ship to: One to each customer",
+        "Phone: 715-555-0100", "How many: 12", "Product: 13 x 19 framed print", "Ship to: One to each customer",
         "Towns and years: Chetek, WI 2025\nRice Lake, WI 2012", "Notes: Card in each box")), t)
     ck("business quote: page and internal fields not printed", "rp-biz" not in t and "form:rain" not in t, t)
     h = m.get_body(("html",)).get_content()

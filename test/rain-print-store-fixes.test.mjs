@@ -43,7 +43,7 @@ test("the framed mockup is open under Pay, tagged Mockup, not inside What you ge
   const fig = HTML.match(/<figure class="rp-onwall"[\s\S]*?<\/figure>/g) || [];
   assert.equal(fig.length, 1, "one mockup picture");
   assert.match(fig[0], /<span class="rp-ex-tag" aria-hidden="true">Mockup<\/span>/);
-  assert.match(fig[0], /alt="Mockup: a framed 12 x 18 Rain Print/);
+  assert.match(fig[0], /alt="Mockup: a framed Rain Print in a black frame/, "the mockup is an older render: its alt names no size");
   assert.match(fig[0], /<figcaption>Mockup of a framed print\. Photos of real prints coming soon\.<\/figcaption>/);
   assert.match(fig[0], /loading="lazy"/, "it doesn't hold up the page");
   const at = HTML.indexOf('<figure class="rp-onwall"');
@@ -57,12 +57,14 @@ test("the framed mockup is open under Pay, tagged Mockup, not inside What you ge
 
 test("the frame: only what Sig has said, no made-up sizes", () => {
   const box = HTML.match(/<h3>Framed<\/h3><ul>[\s\S]*?<\/ul>/)[0];
-  for (const want of [/<li>The same 12 x 18 print in a black frame, no mat<\/li>/, /<li>Real glass front, packed with corner guards and foam, double-boxed<\/li>/,
-    /<li>The frame goes around the print, so it hangs a little bigger than 12 x 18<\/li>/, /<li>Arrives ready to hang<\/li>/]) assert.match(box, want);
+  // Sig, 2026-10-17: a 13 x 19 black frame with a white mat; the real glass front confirmed the same day
+  for (const want of [/<li>A 13 x 19 black frame with a white mat, ready to hang<\/li>/, /<li>Real glass front, packed with corner guards and foam, double-boxed<\/li>/]) assert.match(box, want);
+  assert.doesNotMatch(box, /no mat|a little bigger/);
   const big = HTML.match(/<details><summary>How big is it\?<\/summary><p>[\s\S]*?<\/details>/)[0];
-  assert.match(big, /The framed one is that same 12 x 18 print in a black frame with a real glass front and no mat, ready to hang\. The frame goes around the print, so it hangs a little bigger than 12 x 18\./);
+  assert.match(big, /The framed one comes in a 13 x 19 black frame with a white mat and a real glass front, ready to hang\./);
+  assert.doesNotMatch(big, /no mat|trim|a little bigger/);
   // the structured data says the same
-  assert.match(HTML, /"text": "[^"]*The framed one is that same 12 x 18 print in a black frame with a real glass front and no mat, ready to hang\. The frame goes around the print, so it hangs a little bigger than 12 x 18\./);
+  assert.match(HTML, /"text": "[^"]*The framed one comes in a 13 x 19 black frame with a white mat and a real glass front, ready to hang\./);
   // no moulding width, outside size, weight or hanger until Sig measures them
   const vis = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
   assert.ok(!/moulding|molding|sawtooth|wire hanger|\b\d+(\.\d+)?\s?(x|by)\s?\d+(\.\d+)?\s?(in|inches)? (outside|overall)|\d+(\.\d+)?[- ]?(inch|in\.?) (wide|deep)|\b\d+(\.\d+)? ?(lb|lbs|pounds)\b/i.test(vis), "no frame size or weight invented");

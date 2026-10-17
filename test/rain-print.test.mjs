@@ -537,7 +537,7 @@ test("a saved PNG says 300 dpi and sRGB (a canvas PNG says neither and opens at 
   assert.match(tb, /pngWithDpi\(new Uint8Array\(buf\), DPI\)/, "toBlob marks every PNG it saves");
 });
 
-test("print and digital files: short-link QR or no file; crop marks in the bleed; full-quality PDF; SVG at its size", () => {
+test("print and digital files: short-link QR or no file; the 13 x 19 sheet, untrimmed; full-quality PDF; SVG at its size", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   const ex = S.slice(S.indexOf("function exportFile("), S.indexOf("// ---------- wire up ----------"));
   // 2026-10-14 (Sig): the short link is made at export, once, not waited on from a redraw; the preview carries the standard code
@@ -546,13 +546,15 @@ test("print and digital files: short-link QR or no file; crop marks in the bleed
   assert.match(ex, /if \(kind !== 'preview' && !own\) throw NO_QR/, "and saves nothing without it");
   assert.ok(ex.includes("The link service didn\\u2019t give this print its own short link (it may be busy), so no file was saved. An order file never uses the standard code."));
   assert.match(ex, /msg \+ ' QR: ' \+ qrLink \+ '\.'/, "the note names the QR link it used");
-  assert.ok(ex.includes("12 x 18 in at 300 dpi") && !ex.includes("18 x 12 in"), "one way to write the size");
+  assert.ok(ex.includes("12 x 18 in at 300 dpi") && !ex.includes("18 x 12 in"), "one way to write the digital file's size");
+  assert.ok((ex.match(/SHEET_WORDS/g) || []).length >= 3, "every print file note names the sheet");
   assert.match(ex, /toBlob\(c, 'image\/jpeg', 1\)/, "PDF JPEG at quality 1");
   assert.match(ex, /px: \['18in', '12in'\]/, "the SVG says its physical size");
   const dc = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
-  assert.match(dc, /if \(o\.bleed\) \{/, "crop marks on print files only");
-  assert.match(dc, /lineWidth = 2/);
-  assert.match(dc, /gap = DPI \/ 16/, "stopping 1/16 in short of the trim corner");
+  // Sig, 2026-10-17: 13 x 19 paper, shipped untrimmed: no bleed, no crop marks (test/rain-print-sheet.test.mjs measures the art inside the mat)
+  assert.match(dc, /pxW = Math\.round\(SHEET\.w \* DPI\); pxH = Math\.round\(SHEET\.h \* DPI\);/, "the print file is the whole sheet at 300 dpi");
+  assert.ok(!/crop|o\.bleed/.test(dc.replace(/\/\*[\s\S]*?\*\//g, "")), "no crop marks, no bleed");
+  assert.match(S, /var SHEET_WORDS = SHEET\.h \+ ' x ' \+ SHEET\.w \+ ' in sheet, the art ' \+ SHEET\.art\.w \+ ' x ' \+ SHEET\.art\.h/);
 });
 
 test("county-page links: a station town with a field name falls back to shorter towns", () => {

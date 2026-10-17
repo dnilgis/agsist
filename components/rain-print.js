@@ -41,8 +41,8 @@
  * /rain-print?d=<code> and the same print draws again.
  *
  * DOWNLOADS. The public button gives a watermarked preview PNG. /rain-print?maker=1
- * shows Sig's clean 300 dpi print files (12x18 in, 0.125 in bleed, so 12.25 x 18.25 in
- * and fits a 13 x 19 sheet),
+ * shows Sig's clean 300 dpi print files (the 13 x 19 in sheet, untrimmed, the art
+ * 16.5 x 11 in in the middle: SHEET, 2026-10-17),
  * a PDF of the same and the SVG. That switch is a convenience, not security:
  * the art is drawn in the reader's browser and anyone can save it.
  *
@@ -57,7 +57,7 @@
  * gift card is issued by Sig after payment (components/rp-gift.js, worker v5.16);
  * a ?gift=CODE link redeems one here (see THE GIFT CARD below).
  *
- * PRODUCTS (2026-10-11): digital file, 12 x 18 print, 12 x 18 framed; Sig
+ * PRODUCTS (2026-10-11; paper 13 x 19 from 2026-10-17, SHEET): digital file (the art, 18 x 12 in), print, framed; Sig
  * prints, frames and ships them. 18 x 24 is gone; an old code with its size
  * letter still opens as 12 x 18. The maker's seal is square to the page.
  *
@@ -115,6 +115,28 @@
      print's own short link. Uppercase keeps it in QR alphanumeric mode: version
      2 at level M, 25 x 25 modules, the same printed size as the short link. */
   var STANDARD_LINK = 'HTTPS://AGSIST.COM/RAIN-PRINT', STD_M = null;
+  /* THE SHEET (2026-10-17, Sig): prints and framed prints are printed on 13 x 19 in
+     paper and ship untrimmed. The 3:2 art (1800 x 1200 units) is scaled to 16.5 x
+     11 in and centred on the sheet; the margin is the print's own white. The
+     framed print sits in a 13 x 19 black frame with a white mat (the stock
+     "matted to 11 x 17" kind, window about 16.5 x 10.5 in), so everything the
+     art draws stays inside the centred safe window, which
+     test/rain-print-sheet.test.mjs measures on the drawn sheet. When Sig
+     measures the real mat, change mat and safe here (inches, landscape). The
+     digital file is the art alone, 18 x 12 in at 300 dpi, as before. */
+  var SHEET = { w: 19, h: 13, art: { w: 16.5, h: 11 }, mat: { w: 16.5, h: 10.5 }, safe: { w: 16.25, h: 10.25 } };
+  // where the art and the windows sit on the sheet, in inches from the sheet's top left
+  function sheetBoxes(S) {
+    S = S || SHEET;
+    var at = function (b) { return { x: (S.w - b.w) / 2, y: (S.h - b.h) / 2, w: b.w, h: b.h }; };
+    return { sheet: { x: 0, y: 0, w: S.w, h: S.h }, art: at(S.art), mat: at(S.mat), safe: at(S.safe) };
+  }
+  // the safe window in the art's own units (1800 x 1200 across the art): what the art must keep its ink inside
+  function safeInArt(S) {
+    S = S || SHEET;
+    var B = sheetBoxes(S), k = 1800 / S.art.w;
+    return { x0: (B.safe.x - B.art.x) * k, y0: (B.safe.y - B.art.y) * k, x1: (B.safe.x - B.art.x + B.safe.w) * k, y1: (B.safe.y - B.art.y + B.safe.h) * k };
+  }
   function standardMatrix() {
     if (!STD_M && root.AgQR) STD_M = root.AgQR.matrix(STANDARD_LINK, null, 'alnum');
     return STD_M ? STD_M.map(function (r) { return r.slice(); }) : null;
@@ -1365,7 +1387,7 @@
      proof or the file date is the next business day (proof_business_days, the
      same holidays as the Christmas dates). The order line is left off when the
      saved design is missing or was for another product. */
-  var PAID_WHAT = { framed12x18: 'framed print', print12x18: '12 x 18 print', digital: 'digital file' };
+  var PAID_WHAT = { framed12x18: 'framed print', print12x18: '13 x 19 print', digital: 'digital file' };
   var WEEKDAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   function dayWords(iso) { return WEEKDAY[new Date(iso + 'T12:00:00Z').getUTCDay()] + ', ' + shortDate(iso); }
   // "Ordered today, it should arrive by about Mon, Nov 2." for a print or framed print; '' for the file
@@ -1405,7 +1427,7 @@
   }
 
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
-    designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
+    designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
@@ -1419,9 +1441,10 @@
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   /* Print sizes, landscape: trim width and height in inches. The art is 1800 x 1200 units, 100 to the inch. */
   var PRINT = { '12x18': { w: 18, h: 12, label: '12 x 18 in' } };
-  var ART_UNITS_IN = 100, BLEED_IN = 0.125, DPI = 300;
+  var DPI = 300;
+  var SHEET_WORDS = SHEET.h + ' x ' + SHEET.w + ' in sheet, the art ' + SHEET.art.w + ' x ' + SHEET.art.h + ' in in the middle, untrimmed';
   var MAKER = /(?:^|[?&])maker=1(?:&|$)/.test(root.location.search);
-  var CHOICE = { digital: 'Digital file', print12x18: '12 x 18 print', framed12x18: '12 x 18 framed print' };
+  var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
   var ORDER_TO = 'sig@farmers1st.com';
 
@@ -1589,7 +1612,16 @@
   function buildSvg(o) {
     o = o || {};
     var ex = !!o.example;
-    var input = {
+    var svg = root.AgRainArt.render(artInput(o));
+    SKIPPED = root.AgRainArt.lastSkipped();
+    UNPLACED = ex ? [] : unplacedRows();
+    return svg;
+  }
+  // what the art is drawn from: the page, every export and the insert letter share it
+  function artInput(o) {
+    o = o || {};
+    var ex = !!o.example;
+    return {
       style: ST.style, year: META.year, place: placeLong(), name: ex ? EXAMPLE.name : ST.name, dedication: ex ? EXAMPLE.dedication : ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: locMarkers(ex ? markersOn(exampleMarkers(META.year), META.year, DATA.d.n) : printMarkers()),
@@ -1597,10 +1629,6 @@
       gauge: META ? gaugeLine(META) : '', logo: logoArt(), loc: META && META.ca ? LOC() : null,
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
-    var svg = root.AgRainArt.render(input);
-    SKIPPED = root.AgRainArt.lastSkipped();
-    UNPLACED = ex ? [] : unplacedRows();
-    return svg;
   }
   /* Marked days the art could not place cleanly, as day numbers on the page,
      so that day's row can say so (2026-10-15, up to five days). The art names
@@ -1767,7 +1795,7 @@
     var t = EMPTY_CAP, ex = SHOW_EX && DATA && !BLOCKED;
     if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + (ex ? ', with example words. Yours start blank.' : '.');
     else if (ex && META) t = (NEAR && ST.place === NEAR ? 'Your area, ' : '') + META.place + ', ' + META.year + ', with example words. Yours start blank.';
-    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '12 x 18 print.' : '12 x 18, framed.') +
+    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '13 x 19 print.' : '13 x 19, framed with a white mat.') +
       (NEAR && ST.place === NEAR ? ' Your area, near you. Not your town? Type it below.' : '');
     $('rp-sample-txt').textContent = t;
   }
@@ -2213,7 +2241,7 @@
      for a print or framed (a plain date from data/rain-print.json), the file
      by email. This year's gift and a year NOAA hasn't finished say so instead. */
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
-  var SUB_BASE = { framed12x18: 'Black frame, real glass.', print12x18: '12 x 18, ships flat.' };
+  var SUB_BASE = { framed12x18: 'Black frame, white mat, real glass.', print12x18: '13 x 19 paper, ships flat.' };
   function syncCutoffs() {
     var gift = giftMode() && canOrder(), settle = SETTLE && canOrder();
     PRODUCTS.forEach(function (id) {
@@ -2890,7 +2918,7 @@
       : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-gift-line').textContent = !link ? 'It\u2019s a gift? Say so on the order form, with their name and your note.'
       : PICK === 'digital' ? 'It\u2019s a gift? At checkout you can add their name and a note, and I send the note with the file. No prices go with it.'
-      : 'It\u2019s a gift? At checkout you can add their name, a note for a card in the box and their address. The card is free, and no prices go in the box.';
+      : 'It\u2019s a gift? At checkout you can add their name, a note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
     $('rp-gift-line').hidden = januaryGift() || !!(GIFT && GIFT.usable);
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
@@ -3338,7 +3366,7 @@
      Payment Link asks who it's for and the note, and Stripe takes the shipping
      address, so the page only says so (#rp-gift-checkout).
      A product WITHOUT a link opens the order request form, which then shows
-     who it's for, a note printed on a card in the box (no prices go in), and
+     who it's for, a note printed at the top of the letter in the box (no prices go in), and
      where it goes. Same gift_ fields, plus gift:true (worker v5.12). */
   function januaryGift() { return giftMode() && canOrder(); }
   function giftTicked() { return !januaryGift() && $('ro-isgift').checked; }
@@ -3363,7 +3391,7 @@
     $('rp-isgift-wrap').hidden = jan;
     syncGiftCheckout();
     $('ro-gift-box').hidden = !plain;
-    $('ro-gift-line').textContent = print ? 'I print the note on a card and put it in the box. No prices go in.'
+    $('ro-gift-line').textContent = print ? 'I print the note at the top of the letter in the box. No prices go in.'
       : 'I send the note with the file. No prices go with it.';
     $('ro-deliver-wrap').hidden = !(jan || plain);
     $('ro-notes').placeholder = jan || giftTicked() ? 'Need it by a certain day? Say so here.' : 'A gift? Need it by a certain day? Say so here.';
@@ -3382,9 +3410,9 @@
   }
   function orderText(x) {
     return orderSubject(x) + '\n\nName: ' + x.name + '\nEmail: ' + x.email +
-      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the full year is in' : '\nGift: yes, a note card in the box, no prices') +
+      (x.gift_january || x.gift ? (x.gift_january ? '\nGift: yes, make it after January 1 once the full year is in' : '\nGift: yes, the note printed at the top of the letter in the box, no prices') +
         (x.gift_to ? '\nGift for: ' + x.gift_to : '') + '\nDeliver to: ' + (x.gift_deliver === 'recipient' ? 'the person it is for' : 'the buyer') +
-        (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nCard message: ' + x.gift_message : '') : '') +
+        (x.gift_email ? '\nTheir email: ' + x.gift_email : '') + (x.gift_message ? '\nNote for the letter: ' + x.gift_message : '') : '') +
       (x.address ? '\nShip to:\n' + x.address : '') + (x.notes ? '\nNotes: ' + x.notes : '') +
       '\nDesign code: ' + x.design_code + '\nDesign: ' + x.design_url + (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
@@ -3571,7 +3599,7 @@
       (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') +
       (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
-  /* The quote form's logo (for the note card or the prints): the same reading
+  /* The quote form's logo (for the prints): the same reading
      and saving as the print's, no color switch. BIZ_LOGO = {id, url} once saved. */
   var BIZ_LOGO = null, BIZ_LOGO_ASK = 0;
   function bizLogoMsg(t, bad) { $('rb-logo-msg').textContent = t || ''; $('rb-logo-msg').classList.toggle('rp-bad', !!bad); }
@@ -3622,7 +3650,7 @@
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
     x.quantity = String(qn);
     if (BIZ_LOGO && BIZ_LOGO.id) x.logo = BIZ_LOGO.id;
-    // the shared note card goes only to prints shipped one to each customer
+    // the shared note (printed at the top of each box's letter) goes only to prints shipped one to each customer
     if (x.ship === 'each') { var na = $('rb-note-all').value.replace(/\r\n?/g, '\n').trim().slice(0, 300); if (na) x.note_all = na; }
     var hp = doc.querySelector('#rb-form input[name="_gotcha"]');
     var data = Object.assign({ _gotcha: hp ? hp.value : '' }, x);
@@ -3687,14 +3715,15 @@
     a.href = url; a.download = name; doc.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
   }
-  /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide, no bleed),
-     'digital' (the $19 file: 300 dpi at the trim, no bleed, no serial) or a print
-     size key (the printer's file: bleed, and the serial when the link has one). */
+  /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide), 'digital' (the
+     $19 file: the art alone, 18 x 12 in at 300 dpi, no serial) or a print size key
+     (Sig's print file: the 13 x 19 in sheet at 300 dpi, the art 16.5 x 11 in in the
+     middle (SHEET), and the serial when the link has one; untrimmed, so no bleed and no crop marks). */
   /* own: the QR matrix of the print's own short link (an order file); without
      it the file carries the standard code. */
   function drawCanvas(kind, own) {
     var P = PRINT[kind === 'preview' || kind === 'digital' ? ST.size : kind];
-    var o = { qrMatrix: own || null }, pxW, pxH;
+    var o = { qrMatrix: own || null }, pxW, pxH, sheet = null;
     if (kind === 'preview') {
       pxW = 2000; pxH = Math.round(2000 * P.h / P.w); o.watermark = true;
     } else if (kind === 'digital') {
@@ -3702,10 +3731,13 @@
     } else {
       o.serial = SERIAL;
       if (!own) o.serial = '';   // a test print is no numbered print
-      pxW = Math.round((P.w + 2 * BLEED_IN) * DPI); pxH = Math.round((P.h + 2 * BLEED_IN) * DPI);
-      o.bleed = ART_UNITS_IN * BLEED_IN;
+      sheet = sheetBoxes();
+      pxW = Math.round(SHEET.w * DPI); pxH = Math.round(SHEET.h * DPI);
     }
-    o.px = [pxW, pxH];
+    // the art's own pixels: the whole canvas, or its box on the sheet
+    var artPx = sheet ? [Math.round(sheet.art.w * DPI), Math.round(sheet.art.h * DPI)] : [pxW, pxH];
+    var artAt = sheet ? [Math.round(sheet.art.x * DPI), Math.round(sheet.art.y * DPI)] : [0, 0];
+    o.px = artPx;
     var saved = ST.size;
     if (PRINT[kind]) ST.size = kind;
     // The page's own fonts first (document.fonts), then the same files inlined
@@ -3721,20 +3753,9 @@
             var c = doc.createElement('canvas');
             c.width = pxW; c.height = pxH;
             var cx = c.getContext('2d');
-            cx.drawImage(img, 0, 0, pxW, pxH);
-            /* A print file: crop marks in the bleed, on each trim edge carried out
-               to the sheet's edge, stopping 1/16 in short of the trim corner, so
-               they are cut away with the bleed. 2 px (about 0.5 pt), black. */
-            if (o.bleed) {
-              var bx = BLEED_IN * DPI, gap = DPI / 16;
-              cx.save(); cx.strokeStyle = '#000000'; cx.lineWidth = 2; cx.lineCap = 'butt'; cx.beginPath();
-              [[bx, bx, -1, -1], [pxW - bx, bx, 1, -1], [bx, pxH - bx, -1, 1], [pxW - bx, pxH - bx, 1, 1]].forEach(function (k) {
-                var x = k[0], y = k[1];
-                cx.moveTo(k[2] < 0 ? 0 : pxW, y); cx.lineTo(x + k[2] * gap, y);   // along the top or bottom trim edge
-                cx.moveTo(x, k[3] < 0 ? 0 : pxH); cx.lineTo(x, y + k[3] * gap);   // along the left or right trim edge
-              });
-              cx.stroke(); cx.restore();
-            }
+            // a sheet: the print's own white all round, the art in the middle
+            if (sheet) { cx.fillStyle = '#FFFFFF'; cx.fillRect(0, 0, pxW, pxH); }
+            cx.drawImage(img, artAt[0], artAt[1], artPx[0], artPx[1]);
             URL.revokeObjectURL(url);
             resolve(c);
           } catch (e) { reject(e); } });
@@ -3751,11 +3772,13 @@
       return b.arrayBuffer().then(function (buf) { return new Blob([pngWithDpi(new Uint8Array(buf), DPI)], { type: 'image/png' }); });
     });
   }
-  /* A one-page PDF around a JPEG: MediaBox = bleed size, TrimBox inset 0.125 in. No library. */
-  function pdfFromJpeg(jpeg, pxW, pxH, P) {
+  /* A one-page PDF around a JPEG, P inches wide and high (the 13 x 19 sheet, or the
+     insert letter). bleedIn: a bleed in inches round P (TrimBox inset by it); 0 when left out. No library. */
+  function pdfFromJpeg(jpeg, pxW, pxH, P, bleedIn) {
     var enc = new TextEncoder(), parts = [], offs = [], len = 0;
     var put = function (x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; };
-    var wPt = (P.w + 2 * BLEED_IN) * 72, hPt = (P.h + 2 * BLEED_IN) * 72, bl = BLEED_IN * 72;
+    var bi = bleedIn || 0;
+    var wPt = (P.w + 2 * bi) * 72, hPt = (P.h + 2 * bi) * 72, bl = bi * 72;
     var content = 'q ' + wPt.toFixed(2) + ' 0 0 ' + hPt.toFixed(2) + ' 0 0 cm /Im0 Do Q';
     put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
     var obj = function (n, body) { offs[n] = len; put(n + ' 0 obj\n'); body(); put('\nendobj\n'); };
@@ -3774,15 +3797,15 @@
     if (!DATA || BLOCKED) return;
     var was = btn.textContent, out = $('rp-dl-note');
     btn.disabled = true; btn.textContent = 'Making the file…';
-    /* Sig's test print (2026-10-14): the 12 x 18 PDF with the standard code to
+    /* Sig's test print (2026-10-14): the 13 x 19 sheet PDF with the standard code to
        the Rain Print page, for his own test prints and samples. No short link,
        no worker call, no serial, so it works when the link service doesn't. */
     if (btn.getAttribute('data-qr') === 'standard') {
       var tname = slug() + '-' + kind + '-test-print-standard-code';
       logoGate().then(function (ok) { if (!ok) throw 'logo'; return drawCanvas(kind, null); }).then(function (c) {
         return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
-          saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), tname + '.pdf');
-          out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.';
+          saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, SHEET), tname + '.pdf');
+          out.textContent = 'Test print PDF saved, with the standard code (it opens the Rain Print page, not this design). Not for an order. ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.';
           ga('rain_print_download', { kind: 'test', fmt: 'pdf' });
         });
       }).then(null, function (e) { out.textContent = e === 'logo' ? 'The logo didn\u2019t load, so no file was saved. Try again in a minute.' : 'This browser couldn\u2019t make the file. Try it on a computer.'; })
@@ -3818,15 +3841,15 @@
       job = go(function () { return drawCanvas(kind, own); }).then(function (c) {
         if (fmt === 'pdf') {
           return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
-            saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, PRINT[kind]), name + '.pdf');
-            return qrNote('PDF saved: ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px.');
+            saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, SHEET), name + '.pdf');
+            return qrNote('PDF saved: ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px.');
           });
         }
         return toBlob(c, 'image/png').then(function (b) {
           saveBlob(b, name + '.png');
           return qrNote(kind === 'preview' ? 'Preview saved (' + c.width + ' x ' + c.height + ' px, watermarked).'
             : kind === 'digital' ? 'Digital file saved: ' + c.width + ' x ' + c.height + ' px, 12 x 18 in at 300 dpi, no serial.'
-            : 'Print file saved' + (SERIAL ? ' with ' + SERIAL : ', no serial (add &serial=N to the link)') + ': ' + PRINT[kind].label + ' plus 0.125 in bleed on each side, ' + c.width + ' x ' + c.height + ' px at 300 dpi.');
+            : 'Print file saved' + (SERIAL ? ' with ' + SERIAL : ', no serial (add &serial=N to the link)') + ': ' + SHEET_WORDS + ', ' + c.width + ' x ' + c.height + ' px at 300 dpi.');
         });
       });
     }
@@ -3841,6 +3864,79 @@
       })
       .then(function () { btn.disabled = false; btn.textContent = was; });
   }
+  /* THE INSERT LETTER (2026-10-17, Sig): one letter-size page that goes on top
+     in every print and framed print box: what it is, the year's numbers as the
+     print says them (AgRainArt.facts, from the same model the print is drawn
+     from), how to read this style beside a small copy of the print drawn by the
+     same engine, the giver's note or a business's message when the order has one (the
+     boxes under the buttons: paste it from the order; there is no separate card), the serial and Sig's maker line, care,
+     and the standard code to the Rain Print page. components/rp-insert.js lays
+     it out; it loads on first use. No short link: the letter's code is the
+     standard one. The digital file has no box, so no letter. */
+  var INS_P = null;
+  function insertReady() {
+    if (root.AgRpInsert) return Promise.resolve(true);
+    if (INS_P) return INS_P;
+    INS_P = new Promise(function (res) {
+      var sc = doc.createElement('script');
+      sc.src = '/components/rp-insert.js?v=1';
+      sc.onload = function () { res(!!root.AgRpInsert); };
+      sc.onerror = function () { INS_P = null; res(false); };
+      doc.head.appendChild(sc);
+    });
+    return INS_P;
+  }
+  function stationKind(m) {
+    if (m && m.ca) return 'canada';
+    var p = String((m && m.sid) || '').trim().split(/\s+/);
+    return /^US1/.test(p[0]) ? 'volunteer' : p[1] === '2' ? 'coop' : 'noaa';
+  }
+  var LETTER = { w: 8.5, h: 11, label: '8.5 x 11 in' };
+  /* -> {svg, facts, overflow} for the design on the page: the print's own input,
+     drawn once small (the miniature, with the serial it carries) so the facts
+     leave off exactly the days the print leaves off. */
+  function insertSvg(gift, fontCssText, px, from) {
+    var I = artInput({ serial: SERIAL, idPrefix: 'rpins' });
+    var mini = root.AgRainArt.render(I);
+    var F = root.AgRainArt.facts(I, { unplaced: root.AgRainArt.lastUnplaced() });
+    var svg = root.AgRpInsert.render({
+      facts: F, mini: mini, serial: SERIAL, gift: printable(gift || ''), giftFrom: printable(cleanText(from, 40)), qr: standardMatrix(), fontCss: fontCssText, px: px,
+      station: { words: gaugeWords(META), away: META.approx ? '' : milesText(miles(META.km)).replace(/ mi$/, ' miles'), kind: stationKind(META) },
+      source: META && META.ca ? 'Environment and Climate Change Canada\u2019s daily records' : 'NOAA\u2019s daily records'
+    });
+    return { svg: svg, facts: F, overflow: root.AgRpInsert.lastOverflow() };
+  }
+  function insertFile(btn) {
+    var out = $('rp-dl-note');
+    if (!DATA || BLOCKED) return;
+    if (PREVIEW) { out.textContent = 'The letter is made from the full year, like the print. Make it in January once the year is in.'; return; }
+    if (META && META.ca && FR()) { out.textContent = 'The letter is in English only for now.'; return; }
+    var was = btn.textContent, note = $('rp-ins-gift') ? $('rp-ins-gift').value : '', from = $('rp-ins-from') ? $('rp-ins-from').value : '';
+    btn.disabled = true; btn.textContent = 'Making the letter\u2026';
+    var pxW = LETTER.w * DPI, pxH = LETTER.h * DPI, info = null;
+    insertReady().then(function (ok) { if (!ok) throw 'load'; return fontsReady(); }).then(fontCss).then(function (css) {
+      info = insertSvg(note, css, [pxW, pxH], from);
+      return new Promise(function (resolve, reject) {
+        var img = new Image(), url = URL.createObjectURL(new Blob([info.svg], { type: 'image/svg+xml' }));
+        img.onload = function () {
+          (img.decode ? img.decode().catch(function () {}) : Promise.resolve()).then(function () { return new Promise(function (r) { setTimeout(r, 60); }); }).then(function () {
+            try { var c = doc.createElement('canvas'); c.width = pxW; c.height = pxH; c.getContext('2d').drawImage(img, 0, 0, pxW, pxH); URL.revokeObjectURL(url); resolve(c); } catch (e) { reject(e); }
+          });
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('image')); };
+        img.src = url;
+      });
+    }).then(function (c) {
+      return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
+        saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, LETTER, 0), slug() + '-insert-letter' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : '') + '.pdf');
+        out.textContent = 'Insert letter saved: ' + LETTER.label + ', ' + c.width + ' x ' + c.height + ' px at 300 dpi' + (SERIAL ? ', ' + SERIAL : ', no serial (a blank to fill in by hand; add &serial=N to the link)') +
+          (note.trim() ? ', with the gift note' : ', no gift note') + '.' + (info.overflow ? ' The page ran long by ' + info.overflow + ' units: shorten the gift note.' : '');
+        ga('rain_print_download', { kind: 'insert', fmt: 'pdf' });
+      });
+    }).then(null, function (e) { out.textContent = e === 'load' ? 'The letter\u2019s layout file didn\u2019t load. Try again in a minute.' : 'This browser couldn\u2019t make the letter. Try it on a computer.'; })
+      .then(function () { btn.disabled = false; btn.textContent = was; });
+  }
+
   /* A plain message in the maker box; with retry (the button that failed) it
      ends in a Try again button that runs the same export again. */
   function makerMsg(text, retry) {
@@ -4058,7 +4154,7 @@
   radios('rb-ship').forEach(function (r) { r.addEventListener('change', syncBizShip); });
   $('rp-dl').addEventListener('click', function () { exportFile('preview', 'png', $('rp-dl')); });
   doc.querySelectorAll('#rp-maker button').forEach(function (b) {
-    b.addEventListener('click', function () { exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
+    b.addEventListener('click', function () { if (b.getAttribute('data-size') === 'insert') insertFile(b); else exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
   });
   $('rp-copy').addEventListener('click', function () {
     // a logo still saving has no id: the link would leave it off (panel 3 F1)
