@@ -106,7 +106,10 @@ async function open(browser, port, { width = 390, theme = "dark", ls = {} } = {}
   pg.on("pageerror", (e) => errors.push(String(e)));
   pg.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push(m.text()); });
   await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
-  await pg.addInitScript(([theme, ls]) => { localStorage.setItem("agsist-theme", theme); for (const k in ls) localStorage.setItem(k, ls[k]); }, [theme, ls]);
+  /* These checks were written on the 2026 crop's board. Since 2026-10-17 the page opens on
+     the budget's crop year (Dec '27); a reader who picked Dec '26 keeps it, so each page here
+     starts as that reader unless the test brings its own saved state. */
+  await pg.addInitScript(([theme, ls]) => { localStorage.setItem("agsist-theme", theme); for (const k in ls) localStorage.setItem(k, ls[k]); if (!localStorage.getItem("agsist-breakeven")) localStorage.setItem("agsist-breakeven", JSON.stringify({ year: "0", yearPicked: 1 })); }, [theme, ls]);
   await pg.goto(`http://127.0.0.1:${port}/breakeven`);
   await pg.waitForFunction(() => document.getElementById("price").value !== "");
   return { pg, errors, ctx };

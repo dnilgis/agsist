@@ -78,8 +78,26 @@ def main():
         finally:
             g.PRICES_PATH = old_path
     line = [x for x in pdata["price_block"].splitlines() if "Lean Hogs" in x]
-    chk(line and "Lean Hogs Dec '26: $66.88" in line[0] and "[last trade, not the settle]" in line[0],
-        "the hogs line names Dec '26 and says it is a last trade (%s)" % line)
+    # 2026-10-17: livestock print to the tick ($66.875, the site's one rule) and a last
+    # trade says its hour, so the Daily and /markets name the same quote the same way.
+    chk(line and "Lean Hogs Dec '26: $66.875" in line[0] and "[last trade as of 1:46 p.m. CT Fri, not the settle]" in line[0],
+        "the hogs line names Dec '26, prints the tick and says it is a last trade with its hour (%s)" % line)
+    q["quotes"]["crude"] = {"ticker": "CL=F", "close": 99.25, "open": 97.97, "netChange": 1.28, "pctChange": 1.3065,
+                            "close_date": "2026-10-16"}       # the Oct 16 1:46 p.m. file: no close_kind
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "prices.json"
+        p.write_text(json.dumps(q))
+        old_path = g.PRICES_PATH
+        g.PRICES_PATH = p
+        try:
+            pdata2, _ = g.load_prices()
+        finally:
+            g.PRICES_PATH = old_path
+    cl = [x for x in pdata2["price_block"].splitlines() if "Crude" in x or "WTI" in x]
+    chk(cl and "$99.25" in cl[0] and "[last trade as of 1:46 p.m. CT Fri, not the settle]" in cl[0],
+        "a quote with no close_kind is a last trade as of the fetch, never a settle (%s)" % cl)
+    chk(pdata2["locked_changes"]["crude"].get("kind") == "last" and pdata2["locked_changes"]["crude"].get("at") == fetched,
+        "the lock carries kind last and the fetch time")
     chk("75.55" not in pdata["price_block"], "the dead Oct '26 price is nowhere")
     chk(pdata["locked_changes"]["hogs"].get("kind") == "last", "the lock carries the kind")
 

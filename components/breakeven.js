@@ -38,7 +38,7 @@
   function money(v) { return '$' + (Math.abs(v) % 1 ? Math.abs(v).toFixed(2) : Math.round(Math.abs(v)).toLocaleString('en-US')); }
 
   var MORE_JS = '/components/breakeven-more.js?v=2', _hadSaved = false;
-  var _livePrices = null, _pricesFetched = null, _beYear = '0', _suppressSeed = false, _region = 'n';
+  var _livePrices = null, _pricesFetched = null, _beYear = '0', _yearPicked = false, _suppressSeed = false, _region = 'n';
   var SRC = {};          /* field id -> {k: kind, t: text} */
   var _ls = null; try { _ls = W.localStorage; } catch (e) { _ls = null; }
   function lsGet(k) { try { return _ls ? _ls.getItem(k) : null; } catch (e) { return null; } }
@@ -95,7 +95,7 @@
       var o = {}; FIELD_KEYS.forEach(function (k) { var el = $(k); if (el) o[k] = el.value; });
       if (priceIsSeeded() || !($('price') && $('price').dataset.userEdited === '1')) delete o.price;
       var src = {}; TAGGED.forEach(function (k) { if (SRC[k] && SRC[k].k !== 'user') src[k] = SRC[k]; }); o._src = src;
-      st.perCrop[c] = o; st.acres = $('acres').value; st.year = _beYear; st.region = _region;
+      st.perCrop[c] = o; st.acres = $('acres').value; st.year = _beYear; st.region = _region; if (_yearPicked) st.yearPicked = 1; else delete st.yearPicked;
       lsSet('agsist-breakeven', JSON.stringify(st));
     } catch (e) { }
   }
@@ -131,7 +131,8 @@
       var o = (st.perCrop || {})[c]; if (o) applySaved(c, o);
       markPriceOwnedIfSaved(c);
       if (st.acres) $('acres').value = st.acres;
-      if (st.year === '1') _beYear = '1';
+      if (st.yearPicked) { _yearPicked = true; _beYear = st.year === '1' ? '1' : '0'; }   /* a contract he picked stays his */
+      else if (st.year === '1') _beYear = '1';
       return !!o;
     } catch (e) { return false; }
   }
@@ -383,7 +384,7 @@
   }
   function updateLiveBar() {
     var bar = $('live-bar'); if (!_livePrices) { bar.style.display = 'none'; return; }
-    var c = crop(), ck = contractFor(c), q = _livePrices[ck]; syncYearSelect(c);
+    var c = crop(); autoYear(c); var ck = contractFor(c), q = _livePrices[ck]; syncYearSelect(c);
     if (!q || q.close == null) { bar.style.display = 'none'; return; }
     var ft = _pricesFetched ? new Date(_pricesFetched).getTime() : NaN, stale = !(isFinite(ft) && (Date.now() - ft) <= 60 * 3600000);
     var ub = bar.querySelector('button'), ce = $('live-chg-val');
@@ -411,6 +412,16 @@
   function tickerYM(key) { var q = _livePrices && _livePrices[key], m = q && /([FGHJKMNQUVXZ])(\d\d)\.CBT$/.exec(q.ticker || ''); return m ? { mon: MONTHS[m[1]], yy: +m[2] } : null; }
   function nextYearKey(c) { if (c === 'wheat') return null; var ym = tickerYM(CROP_PRICE_KEY[c]); if (!ym) return null; var k = (c === 'corn' ? 'corn-dec' : 'beans-nov') + String(ym.yy + 1).padStart(2, '0'), q = _livePrices && _livePrices[k]; return (q && q.close != null) ? k : null; }
   function contractFor(c) { if (_beYear === '1') { var k = nextYearKey(c); if (k) return k; } return CROP_PRICE_KEY[c]; }
+  /* When the cost lines are farmdoc's budget for next year's crop (BUDGETS.year 2027 while the
+     front December is Dec '26), the contract opens on that crop year too: Dec '27 corn, Nov '27
+     beans, so price and costs are one crop (Oct 17, 2026 re-score). A reader who picks a contract
+     keeps it. */
+  function autoYear(c) {
+    if (_yearPicked || c === 'wheat' || !BUDGETS || !BUDGETS.year) return;
+    var ym = tickerYM(CROP_PRICE_KEY[c]);
+    if (ym && BUDGETS.year === 2000 + ym.yy + 1 && nextYearKey(c) && _beYear !== '1') { _beYear = '1'; syncRegionUI(); coFill(true, true); }
+  }
+  W.__beAutoYear = function () { return { year: _beYear, picked: _yearPicked }; };
   function contractLabel(c, key) { if (c === 'wheat') return CROP_CONTRACT.wheat; var ym = tickerYM(key); if (!ym) return CROP_CONTRACT[c] || CROP_NAMES[c]; return ym.mon + " '" + String(ym.yy).padStart(2, '0') + ' ' + (c === 'corn' ? 'corn' : 'soybeans') + ' (' + (2000 + ym.yy) + ' crop)'; }
   function cropYear() {
     var ym = tickerYM(CROP_PRICE_KEY.corn);
@@ -426,7 +437,7 @@
     if (nt) { var ym = tickerYM(k1); nt.hidden = _beYear !== '1'; if (ym) nt.innerHTML = 'Planning the ' + (2000 + ym.yy) + ' crop: the cost lines are farmdoc&rsquo;s ' + (2000 + ym.yy) + ' budget and fertilizer at this fall&rsquo;s posted prices. Put in your own as you book them.'; }
   }
   function onYearChange() {
-    var sel = $('be-year'); _beYear = sel && sel.value === '1' ? '1' : '0';
+    var sel = $('be-year'); _beYear = sel && sel.value === '1' ? '1' : '0'; _yearPicked = true;
     var el = $('price'); if (el && el.dataset.userEdited !== '1') { el.value = ''; delete el.dataset.seeded; }   /* a board price follows the contract; a typed one stays his */
     updateLiveBar(); syncRegionUI(); coFill(true, true); calcBreakeven();
   }

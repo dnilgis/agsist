@@ -337,7 +337,7 @@ USDA recurring report release times (use these exact day/time pairings):
   - Crop Progress:        Monday 3:00 PM CT, early April to late November.
                           If Monday is a federal holiday (Columbus Day included,
                           though markets trade), releases Tuesday 3:00 PM CT.
-                          The THIS WEEK line below gives the exact day.
+                          The NEXT WEEKLY RELEASES line below gives the exact day.
   - WASDE:                Monthly, around the 9th-12th, 11:00 AM CT.
   - Weekly Export Sales:  Every Thursday, 7:30 AM CT.
   - Cattle on Feed:       Monthly, third or fourth Friday, 2:00 PM CT.
@@ -367,19 +367,25 @@ def weekly_release_line(today=None):
     ref = today + timedelta(days=(7 - today.weekday()) % 7) if today.weekday() >= 5 else today
     parts = []
     cp = usda_dates.crop_progress_date(ref)
+    if cp and cp < today:
+        cp = usda_dates.next_crop_progress(today)     # this week's is out: next week's, dated
     if cp and cp >= today:
         normal = cp - timedelta(days=cp.weekday())
         parts.append("Crop Progress: %s, %s" % (usda_dates.describe_release(cp, normal),
                                                 usda_dates.CROP_PROGRESS_TIME_CT))
     es = usda_dates.export_sales_date(ref)
+    if es < today:
+        # 2026-10-17: a Friday issue got no line, and its watch list said "Thursday"
+        # for a release six days out. Name next week's, with its date.
+        es = usda_dates.export_sales_date(ref + timedelta(days=7))
     if es >= today:
         normal = es - timedelta(days=es.weekday()) + timedelta(days=3)
         parts.append("Weekly Export Sales: %s, %s" % (usda_dates.describe_release(es, normal),
                                                       usda_dates.EXPORT_SALES_TIME_CT))
     if not parts:
         return ""
-    return ("THIS WEEK (computed from the federal holiday calendar; use these exact days "
-            "in the watch list):\n  - " + "\n  - ".join(parts))
+    return ("NEXT WEEKLY RELEASES (computed from the federal holiday calendar; use these exact "
+            "days and dates in the watch list, weekday and date together):\n  - " + "\n  - ".join(parts))
 
 
 def fix_crop_progress_day(briefing, today=None):
@@ -663,6 +669,9 @@ def load_prices():
             price_str = f"${close:,.0f}"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
         elif key == "treasury10":
             price_str = f"{close:.2f}%"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
+        elif key in ("cattle", "feeders", "hogs"):
+            # livestock to the tick, the site's one rule (pricefmt.cash): $343.625, $227.55
+            price_str = pricefmt.cash(close); chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
         else:
             price_str = f"${close:.2f}"; chg_str = f"{pct:+.1f}%"; locked_prices[key] = close
         # v5.4 (2026-09-13): LOCK THE CHANGE, not just the price.
@@ -677,16 +686,24 @@ def load_prices():
                                "pct": round(pct, 4)}
         # fetch_prices v3.7: is this price the exchange settle or a trade?
         # (2026-10-17: "Soybeans closed $12.60 1/2" was a 1:46 p.m. trade.)
-        if q.get("close_kind"):
-            locked_changes[key]["kind"] = q["close_kind"]
+        # 2026-10-17: a quote the file does not mark is a trade as of the fetch, never
+        # a settle. The Oct 16 Friday issue read the 1:46 p.m. CT file (no close_kind;
+        # no price pull ran from 18:46 to 04:54 UTC) and was told those were settles:
+        # "WTI crude rose 1.3% to $99.25" while /markets later showed the 4 p.m. trade,
+        # $101.41 +3.51%. Same file, different hour; now the Daily says which hour.
+        kind = q.get("close_kind") or "last"
+        locked_changes[key]["kind"] = kind
+        if kind == "last":
+            locked_changes[key]["at"] = q.get("close_time") or fetched
         arrow = "UP" if pct > 0 else ("DN" if pct < 0 else "FLAT")
         # Name the month for the products whose key is the front month
         # (fetch_prices.pin_continuous), so "Lean Hogs" is never a dead month.
         mon = q.get("contract") if key in ("cattle", "feeders", "hogs", "milk") else None
         line = f"  {label}{(' ' + mon) if mon else ''}: {price_str} ({arrow} {chg_str})"
-        if q.get("close_kind") == "last":
-            line += " [last trade, not the settle]"
-        elif q.get("close_kind") == "settle":
+        if kind == "last":
+            _at = _ct_hm(q.get("close_time") or fetched)
+            line += " [last trade" + (" as of " + _at if _at else "") + ", not the settle]"
+        elif kind == "settle":
             line += " [settle]"
         wk52_hi = q.get("wk52_hi"); wk52_lo = q.get("wk52_lo")
         if wk52_hi and wk52_lo:
@@ -892,6 +909,16 @@ def _ct_stamp(iso_utc, with_day=True):
         out = dt.strftime("%I:%M %p").lstrip("0") + " CT"
         if with_day: out += " " + dt.strftime("%a")
         return out
+    except Exception:
+        return ""
+
+
+def _ct_hm(iso_utc):
+    """"1:46 p.m. CT Fri" from an ISO UTC stamp; '' when unparseable."""
+    try:
+        from zoneinfo import ZoneInfo
+        dt = datetime.fromisoformat(str(iso_utc).replace("Z", "+00:00")).astimezone(ZoneInfo("America/Chicago"))
+        return dt.strftime("%-I:%M ") + ("a.m." if dt.hour < 12 else "p.m.") + " CT " + dt.strftime("%a")
     except Exception:
         return ""
 
@@ -5237,6 +5264,12 @@ def main():
     briefing, _cp_fixes = fix_crop_progress_day(briefing)
     if _cp_fixes:
         print(f"  Crop Progress day corrections: {_cp_fixes}")
+    # 2026-10-17: every weekday in the watch list carries its date ("Thursday, Oct 22"),
+    # by code (scripts/watch_dates.py); the critic does it again after a rewrite.
+    import watch_dates
+    briefing, _wdt = watch_dates.apply(briefing)
+    if _wdt:
+        print(f"  Watch list dated: {_wdt}")
 
     # v5.1 the cut, in this order: drop what the prompt retired, then cut to
     # the budget deterministically (weakest block first), then grade the call

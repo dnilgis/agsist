@@ -477,8 +477,22 @@ def _be_defaults(crop, page_text=None):
     return cost, yld
 
 
+def _be_budget_year(page_text=None):
+    """The crop year of the cost lines the calculator opens with (breakeven.html BUDGETS.year)."""
+    t = page_text if page_text is not None else (REPO / "breakeven.html").read_text(encoding="utf-8")
+    m = re.search(r"var BUDGETS=\{year:(\d{4}),", t)
+    return int(m.group(1)) if m else None
+
+
 def seo_breakeven(c):
-    px = _px(c["prices"], "corn")
+    # 2026-10-17: the costs are farmdoc's 2027 budget, so the board quoted beside them is
+    # Dec '27 (the calculator opens on it too), not the 2026 crop's Dec '26.
+    by = _be_budget_year()
+    key, mon = ("corn-dec%02d" % (by % 100), "Dec '%02d " % (by % 100)) if by else ("corn", "")
+    px = _px(c["prices"], key)
+    if px is None and key != "corn":
+        key, mon = "corn", ""
+        px = _px(c["prices"], key)
     if px is None:
         return None
     cents = px if px > 50 else px * 100.0      # cents vs dollars
@@ -492,7 +506,7 @@ def seo_breakeven(c):
     if d:
         cost, yld = d
         desc = (f"Example: ${cost:,.0f} an acre at {yld:g} bu/ac is a ${cost / yld:.2f} corn "
-                f"break-even; futures are near {pricefmt.price(cents)}. Put in your own costs "
+                f"break-even; {mon}futures are near {pricefmt.price(cents)}. Put in your own costs "
                 f"for corn, soybeans or wheat.")
         if len(desc) <= DESC_MAX:
             return title, desc
@@ -620,10 +634,12 @@ def seo_cattle(c):
         return None
     lab = _label(p, "cattle")
     when = f" {lab}" if lab else ""
-    return (f"CME Feeder Cattle Futures ${feed['px']:,.2f} & Live Cattle "
-            f"${live['px']:,.2f}{SUFFIX}",
-            f"Feeder cattle settled ${feed['px']:,.2f}, live cattle{when} "
-            f"${live['px']:,.2f} on {feed['label']}. CME futures every 15 min, "
+    # livestock to the tick, the site's one rule (pricefmt.cash): $343.625, $227.55
+    fp, lp = pricefmt.cash(feed["px"]), pricefmt.cash(live["px"])
+    return (f"CME Feeder Cattle Futures {fp} & Live Cattle "
+            f"{lp}{SUFFIX}",
+            f"Feeder cattle settled {fp}, live cattle{when} "
+            f"{lp} on {feed['label']}. CME futures every 15 min, "
             "with 5-year ranges, the feeder-to-live ratio and cost of gain.")
 
 
@@ -695,7 +711,7 @@ def make_futures(page):
             return None
         px = sc["px"]
         # grain boards quote in cents; cattle already quotes in dollars per cwt
-        money = pricefmt.price(px) if key != "cattle" else f"${px:,.2f}"
+        money = pricefmt.price(px) if key != "cattle" else pricefmt.cash(px)
         if extra is None:
             return (f"{exch} {crop} Futures Price: {lab} {money}{SUFFIX}", None)
         return (f"{exch} {crop} Futures Price: {lab} {money}, {extra}{SUFFIX}", None)
@@ -1427,6 +1443,14 @@ def selftest():
         ck("the visible example line agrees", f"${_live[0] / _live[1]:.2f} a bushel" in body_breakeven(ctx))
     _bp = (REPO / "breakeven.html").read_text(encoding="utf-8")
     ck("breakeven.html carries the be-example markers", bake_body(_bp, "be-example", "x")[1])
+    ck("the cost lines' crop year is read from the page", _be_budget_year("var BUDGETS={year:2027,src:'x'") == 2027
+       and _be_budget_year("nothing") is None)
+    _p27 = {"quotes": {"corn": {"close": 474.25}, "corn-dec27": {"close": 506.75}}}
+    if _be_budget_year() == 2027:
+        ck("the snippet quotes the budget's crop year board: Dec '27, not Dec '26",
+           "Dec '27 futures are near $5.06" in seo_breakeven(dict(ctx, prices=_p27))[1], seo_breakeven(dict(ctx, prices=_p27))[1])
+        ck("no Dec '27 quote: the front board, unnamed",
+           "; futures are near $4.74" in seo_breakeven(dict(ctx, prices={"quotes": {"corn": {"close": 474.25}}}))[1])
 
     print("\nusda calendar rolls at the print")
     ck("report morning, not printed: Oct 9 is next",

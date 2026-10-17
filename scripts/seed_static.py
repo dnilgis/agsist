@@ -178,7 +178,8 @@ def cwt_dollars(q):
     c = q.get("close")
     if c is None:
         return None
-    return "%.2f" % float(c)
+    # livestock to the tick, the site's one rule: 343.625, 227.55 (was "%.2f": 343.62 by float luck)
+    return pricefmt.cash(c, dollar=False)
 
 
 def seed_between(text, tag, replacement):
@@ -694,6 +695,39 @@ def _chg_str(net, pct, grain, key=None):
     return f"{a + ' ' if a else ''}{s}{_mk_num(abs(net), key)}{'¢' if key in _MK_CENTS else ''} ({pricefmt.pct(pct)})"
 
 
+# 2026-10-17: the footer said "not CME settlements" while the cards showed the
+# Oct 16 settles. It now follows each card's close_kind. Twin of mkSource in
+# markets.html (test/markets-close-kind.test.mjs runs both on one file).
+MK_NAMES = {"corn": "Corn", "corn-dec": "Dec corn", "beans": "Soybeans", "beans-nov": "Nov soybeans", "wheat": "Wheat",
+            "oats": "Oats", "cattle": "Live cattle", "feeders": "Feeder cattle", "hogs": "Lean hogs", "milk": "Class III milk",
+            "crude": "Crude WTI", "natgas": "Natural gas", "meal": "Soybean meal", "soyoil": "Soybean oil", "gold": "Gold",
+            "silver": "Silver", "dollar": "Dollar Index", "sp500": "S&P 500"}
+
+
+def _and_list(xs):
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
+def mk_source(q):
+    """The /markets source line, from each shown card's close_kind (plain text)."""
+    st, la = [], []
+    for _, _, _, key, _ in MK_MAP:
+        d = q.get(key) or {}
+        if d.get("close") is None:
+            continue
+        (st if d.get("close_kind") == "settle" else la).append(MK_NAMES.get(key, key))
+    tail = " Quotes from Yahoo Finance, refreshed every 15 minutes in session."
+    if not st and not la:
+        return "Quotes from Yahoo Finance, refreshed every 15 minutes in session."
+    if not la:
+        return "Every card shows the exchange settle." + tail
+    if not st:
+        return "Every card shows the latest delayed trade, not the exchange settle." + tail
+    if len(la) <= len(st):
+        return "Exchange settles, except the latest delayed trade for " + _and_list(la) + "." + tail
+    return "Latest delayed trades, except the exchange settle for " + _and_list(st) + "." + tail
+
+
 def seed_markets(prices, today):
     seeds = {}
     q = dict((prices or {}).get("quotes") or {})
@@ -760,6 +794,7 @@ def seed_markets(prices, today):
         if nb and dq and nb.get("ticker") and nb.get("ticker") == dq.get("ticker"):
             dup.append("#" + card)
     seeds["mk:dup"] = ('<style id="mk-dup-css">' + ",".join(dup) + "{display:none}</style>") if dup else ""
+    seeds["mk:src"] = _e(mk_source(q))
     seeds["mk:status"] = _asof_time(fetched, "prices", fd) + " &middot; each change line carries its own close date"
     print(f"  markets.html: {n} of {len(MK_MAP)} quotes seeded")
     return _write_seeds("markets.html", seeds)

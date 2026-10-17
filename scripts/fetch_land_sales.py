@@ -52,6 +52,9 @@ GAZ = "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2024_Gazetteer/
 UA = "Mozilla/5.0 (AGSIST land data; agsist.com; sig@farmers1st.com)"
 MAX_STATE_MB = 25          # all county files of one state together (CLAUDE.md budget: data/ is 300 MB)
 LEGAL_MAX = 140
+# 2: multi-parcel acres only when every added PIN reads once, in acres (il_acres); otherwise blank.
+# The page treats a multi-parcel row's acres as uncertain in any file without this mark.
+ACRES_RULE = 2
 
 STATES = {
     "WI": {
@@ -110,6 +113,9 @@ COLS = {
     "grantor_last": ["GRANTORLASTNAME"], "grantor_first": ["GRANTORFIRSTNAME"],
     "grantee_last": ["GRANTEELASTNAME"], "grantee_first": ["GRANTEEFIRSTNAME"],
     "np": ["TOTALPARCELS", "NUMBEROFPARCELS"],
+    # recorded (filed) date, kept apart from the sale date for the coverage line; Line 3a acres as reported
+    "rec": ["DATERECORDED", "RECORDINGDATE", "RECORDEDDATE"],
+    "ac1": ["ACRESLINE1"],
     "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
 }
 WI_CONVEYANCE = {"1": "Warranty Deed", "2": "Land Contract", "3": "Quit Claim Deed", "4": "Other"}
@@ -295,6 +301,8 @@ def parse_rows(tables):
                 "county": g("county", 40), "legal": g("legal", LEGAL_MAX),
                 "grantor": who("grantor"), "grantee": who("grantee"),
                 "np": int(npv) if npv and npv >= 1 else None,
+                "rec": parse_date(g("rec")) if "rec" in m else None,
+                "ac1": parse_num(g("ac1")) if "ac1" in m else None,
                 "exempt": 1 if ex and not re.match(r"^(0|N|NO|NONE|FALSE)$", ex, re.I) else 0,
             })
     return recs, rep
@@ -358,6 +366,19 @@ def county_index(st):
     return out
 
 
+def coverage(rs):
+    """The sale (instrument) dates, and the filed (recorded) dates when the file has them.
+    A 2018 filing can carry a 1999 deed date, so the filed range is the file's real span;
+    older_deeds counts the rows whose deed date is before the first filing year."""
+    ds = sorted(r["date"] for r in rs)
+    cov = {"from": ds[0], "to": ds[-1], "n": len(rs)}
+    recd = sorted(r["rec"] for r in rs if r.get("rec"))
+    if recd:
+        cov["filed_from"], cov["filed_to"] = recd[0], recd[-1]
+        cov["older_deeds"] = sum(1 for r in rs if r["date"] < recd[0][:4] + "-01-01")
+    return cov
+
+
 def build(st, recs, gaz, now):
     cfg = STATES[st]
     cix = county_index(st)
@@ -370,7 +391,8 @@ def build(st, recs, gaz, now):
             continue
         by.setdefault(c["fips"], []).append(r)
     names = any(r.get("grantor") for r in recs)
-    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else [])
+    ac1 = any(r.get("ac1") for r in recs)
+    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else [])
     os.makedirs(os.path.join(OUT, st.lower()), exist_ok=True)
     index, total = [], 0
     for fips, rs in sorted(by.items()):
@@ -401,11 +423,13 @@ def build(st, recs, gaz, now):
         for r in rs:
             a = r["acres"]
             rows.append([r["doc"], r["date"], r["price"], round(a, 2) if a else None, r.get("tac"), r.get("np") or 1, r["cls"], r["conv"],
-                         r["pid"], mcode.get(r["muni"], ""), r["legal"], r["exempt"]] + ([r["grantor"], r["grantee"]] if names else []))
+                         r["pid"], mcode.get(r["muni"], ""), r["legal"], r["exempt"]] + ([r["grantor"], r["grantee"]] if names else [])
+                        + ([r.get("ac1")] if ac1 else []))
         c = next(v for v in cix.values() if v["fips"] == fips)
+        cov = coverage(rs)
         doc = {"state": st, "county": c["name"], "fips": fips, "source": cfg["source"], "source_short": cfg["short"],
                "links": cfg["links"], "since_note": cfg["since_note"], "fetched_utc": now, "names": names,
-               "coverage": {"from": rs[-1]["date"], "to": rs[0]["date"], "n": len(rs)}, "cols": cols, "munis": munis, "rows": rows}
+               "coverage": cov, "acres_rule": ACRES_RULE, "cols": cols, "munis": munis, "rows": rows}
         s = json.dumps(doc, separators=(",", ":"))
         total += len(s)
         with open(os.path.join(OUT, st.lower(), fips + ".json"), "w") as f:
@@ -581,36 +605,71 @@ def annotate(title, text, chunk=6000, most=6):
         print("::notice title=%s %d::%s" % (title, i // chunk + 1, part))
 
 
+def il_acres(line1, n, adds, primary_pin=""):
+    """Total acres on one Illinois declaration, or None when the return does not say for sure.
+
+    PTAX-203 has no total-acres line. Line 3 lists each parcel's PIN with its own lot size
+    or acreage; Line 3a (line_1_lot_size_or_acreage in the open data) is the primary PIN's,
+    and the instructions say that when only a combined figure is known it goes on Line 3a
+    for all the parcels. The added-PIN table (ay2h-5hx3) has one row per added PIN with its
+    own lot size and units, but the same PIN can come back more than once (the Oct 2026 build
+    summed a 2-parcel Livingston sale, legal "the northwest quarter of section 17 ... excepting",
+    to 894.9 acres, six times 149.15). So:
+      - one parcel: Line 3a is the sale's acres;
+      - several: Line 3a plus each added PIN, only when each added PIN appears once (the
+        primary PIN repeated in the added list with Line 3a's own figure is skipped), there
+        are exactly total-parcels minus one of them,
+        every lot size is in acres or square feet, none is blank or zero (a blank there can
+        mean Line 3a already holds the combined figure), and no parcel averages over a
+        section (640 acres). Anything else is uncertain: None, never a guess."""
+    if line1 is None or not (0 < line1 < 20000):
+        return None
+    if n <= 1:
+        return round(line1, 2)
+    pk = key(primary_pin)
+    seen = {}
+    for x in adds:
+        p = key(x.get("pin"))
+        v, u = parse_num(x.get("lot_size_or_acreage")), str(x.get("lot_size_units") or "").upper()
+        if v is not None and u.startswith("SQ"):
+            v = v / 43560.0
+        elif v is not None and not u.startswith("ACRE"):
+            return None
+        if p and p == pk:
+            if v is None or abs(v - line1) > 0.01:
+                return None        # Line 3a is not this parcel's own figure
+            continue
+        if not p or v is None or v <= 0:
+            return None
+        if p in seen:
+            return None            # the same added PIN twice: the table does not say which rows are real
+        seen[p] = v
+    if len(seen) != n - 1:
+        return None
+    tot = line1 + sum(seen.values())
+    if tot / n > 640:
+        return None
+    return round(tot, 2)
+
+
 def il_table(decls, extra):
     """Illinois MyDec rows (Socrata JSON, Line 8 current use 'j' Farm) as one table with our column names.
     One row per declaration: the price is for every parcel on it, so acres are the whole sale's
-    (Line 1 acreage plus each added PIN's, in acres) or left blank when a lot size is not in acres.
-    extra: {declaration_id: [additional PIN rows]}."""
+    (il_acres) or left blank when the return does not say for sure; ACRESLINE1 keeps what Line 3a
+    says so the page can show it as reported. extra: {declaration_id: [additional PIN rows]}."""
     head = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
-            "TOWNSHIP", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS"]
+            "TOWNSHIP", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1"]
     yield head
     for d in decls:
         did = str(d.get("declaration_id") or "")
         n = parse_num(d.get("line_2_total_parcels"))
         n = int(n) if n and n >= 1 else 1
-        ac = parse_num(d.get("line_1_lot_size_or_acreage"))
-        ac = ac if ac and 0 < ac < 20000 else None
         adds = extra.get(did, [])
-        if n > 1 or d.get("line_3_additional_pins") in (True, "true"):
-            tot = ac
-            for x in adds:
-                v, u = parse_num(x.get("lot_size_or_acreage")), str(x.get("lot_size_units") or "").upper()
-                if v is None or tot is None:
-                    tot = None
-                    break
-                if u.startswith("ACRE"):
-                    tot += v
-                elif u.startswith("SQ"):
-                    tot += v / 43560.0
-                else:
-                    tot = None
-                    break
-            ac = round(tot, 2) if tot and len(adds) + 1 >= n else None
+        l1 = parse_num(d.get("line_1_lot_size_or_acreage"))
+        l1 = l1 if l1 and 0 < l1 < 20000 else None
+        ac = il_acres(l1, n, adds, d.get("line_1_primary_pin") or "")
+        if n == 1 and d.get("line_3_additional_pins") in (True, "true"):
+            ac = None       # one parcel counted, yet added PINs ticked: the return contradicts itself
         price = d.get("line_13_net_consideration")
         if parse_num(price) is None:
             price = d.get("line_11_full_consideration")
@@ -620,7 +679,8 @@ def il_table(decls, extra):
         yield [str(d.get("document_number") or did), str(d.get("line_4_instrument_date") or d.get("date_recorded") or "")[:10],
                "" if price is None else str(price), "" if ac is None else str(ac), "4", conv, str(d.get("line_1_primary_pin") or ""),
                str(d.get("line_1_township") or ""), str(d.get("line_1_county") or ""), str(d.get("step_3_legal_description") or ""),
-               str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n)]
+               str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n),
+               str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(l1)]
 
 
 def soda(url, params):
@@ -753,6 +813,42 @@ def selftest():
     ck("IL: acres for the whole sale when every lot size is in acres", il[0]["acres"] == 80 and il[0]["np"] == 2)
     ck("IL: acres left blank when an added lot size is not in acres", il[2]["acres"] is None and il[2]["np"] == 2)
     ck("IL: one parcel keeps its Line 1 acres", il[1]["acres"] == 20 and il[1]["np"] == 1)
+    ck("IL: recorded date read apart from the sale date", il[0]["rec"] == "2026-10-09" and il[0]["date"] == "2026-09-23")
+    ck("IL: Line 3a acres kept as reported on a multi-parcel row only", il[0]["ac1"] == 35 and il[1]["ac1"] is None)
+    # Multi-parcel acres, shaped like real Oct 2026 rows (names and numbers synthetic, the shapes are the real ones)
+    liv = {"declaration_id": "9", "document_number": "2026R-00009", "date_recorded": "2026-08-20T00:00:00.000",
+           "line_4_instrument_date": "2026-08-17T00:00:00.000", "line_1_county": "Livingston", "line_1_township": "Nebraska",
+           "line_1_primary_pin": "13-13-17-100-002", "line_1_lot_size_or_acreage": "149.15", "line_2_total_parcels": "2",
+           "line_3_additional_pins": True, "line_5_instrument_type": "Warranty Deed", "line_13_net_consideration": "2182500.0",
+           "step_3_legal_description": "THE NORTHWEST QUARTER OF SECTION 17, TOWNSHIP 28 NORTH, RANGE 3 EAST OF THE THIRD PRINCIPAL MERIDIAN; EXCEPTING"}
+    pin2 = {"pin": "13-13-17-100-003", "lot_size_or_acreage": "149.15", "lot_size_units": "Acres"}
+    ck("IL: an added PIN that comes back five times is not summed five times (894.9 ac before)",
+       il_acres(149.15, 2, [dict(pin2) for _ in range(5)], "13-13-17-100-002") is None)
+    ck("IL: the same sale with its added PIN once sums both parcels", il_acres(149.15, 2, [{"pin": "13-13-17-100-003", "lot_size_or_acreage": "10.85", "lot_size_units": "Acres"}], "13-13-17-100-002") == 160)
+    ck("IL: the primary PIN repeated in the added list with its own acres is skipped",
+       il_acres(80, 3, [{"pin": "13131710000 2", "lot_size_or_acreage": "80", "lot_size_units": "Acres"},
+                        {"pin": "13-13-17-200-001", "lot_size_or_acreage": "40", "lot_size_units": "Acres"},
+                        {"pin": "13-13-17-200-002", "lot_size_or_acreage": "40", "lot_size_units": "Acres"}], "13-13-17-100-002") == 160)
+    ck("IL: the primary PIN in the added list with other acres means Line 3a is a combined figure: uncertain",
+       il_acres(160, 2, [{"pin": "13-13-17-100-002", "lot_size_or_acreage": "120", "lot_size_units": "Acres"},
+                         {"pin": "13-13-17-100-003", "lot_size_or_acreage": "40", "lot_size_units": "Acres"}], "13-13-17-100-002") is None)
+    ck("IL: a blank or zero added lot size (Line 3a may already hold the total) is uncertain",
+       il_acres(160, 2, [{"pin": "13-13-17-100-003", "lot_size_or_acreage": "", "lot_size_units": "Acres"}], "x") is None
+       and il_acres(160, 2, [{"pin": "13-13-17-100-003", "lot_size_or_acreage": "0", "lot_size_units": "Acres"}], "x") is None)
+    ck("IL: fewer added PINs than the parcel count is uncertain", il_acres(40, 3, [dict(pin2)], "x") is None)
+    ck("IL: square feet convert, dimensions do not", il_acres(40, 2, [{"pin": "a", "lot_size_or_acreage": "43560", "lot_size_units": "Sq. Feet"}], "x") == 41
+       and il_acres(40, 2, [{"pin": "a", "lot_size_or_acreage": "56' x 208'", "lot_size_units": "Dimensions"}], "x") is None)
+    ck("IL: over a section per parcel is not believed", il_acres(1000, 2, [{"pin": "a", "lot_size_or_acreage": "500", "lot_size_units": "Acres"}], "x") is None)
+    one_more = dict(liv, declaration_id="10", line_2_total_parcels="1")
+    old_deed = dict(liv, declaration_id="11", line_2_total_parcels="1", line_3_additional_pins=False, date_recorded="2018-03-02T00:00:00.000",
+                    line_4_instrument_date="1999-06-29T00:00:00.000", line_1_lot_size_or_acreage="40")
+    il2, _ = parse_rows([il_table([liv, one_more, old_deed], {"9": [dict(pin2) for _ in range(6)]})])
+    ck("IL: the duplicated-PIN sale is written with acres blank and Line 3a kept", il2[0]["acres"] is None and il2[0]["ac1"] == 149.15 and il2[0]["np"] == 2)
+    ck("IL: one parcel counted but added PINs ticked: acres blank", il2[1]["acres"] is None)
+    cv = coverage(il2)
+    ck("IL: coverage gives the filed range and counts the older deed dates", cv["from"] == "1999-06-29" and cv["filed_from"] == "2018-03-02"
+       and cv["filed_to"] == "2026-08-20" and cv["older_deeds"] == 1)
+    ck("IL: a 2018 filing with a 1999 deed date keeps both dates", il2[2]["date"] == "1999-06-29" and il2[2]["rec"] == "2018-03-02" and il2[2]["acres"] == 40)
     ck("IL: names from Step 4", il[0]["grantor"] == "SYNTHETIC SELLER A" and il[0]["grantee"] == "SYNTHETIC BUYER A")
     ck("IL: related-party sales say so", il[1]["conv"].endswith("Related Parties"))
     ck("IL: township as the place", il[0]["muni"] == "ABINGTON" and muni_key(il[0]["muni"]) == ("T", "ABINGTON"))

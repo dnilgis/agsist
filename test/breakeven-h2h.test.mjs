@@ -74,11 +74,14 @@ function serve() {
   srv.hits = hits;
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function open(browser, port, width = 390) {
+async function open(browser, port, width = 390, pick26 = true) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 } });
   const pg = await ctx.newPage();
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
+  /* the checks below were written on the 2026 crop's board: start as a reader who picked
+     Dec '26 (the page opens on Dec '27 since 2026-10-17, and keeps a reader's pick) */
+  if (pick26) await pg.addInitScript(() => { if (!localStorage.getItem("agsist-breakeven")) localStorage.setItem("agsist-breakeven", JSON.stringify({ year: "0", yearPicked: 1 })); });
   await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
   await pg.goto(`http://127.0.0.1:${port}/breakeven`);
   await pg.waitForFunction(() => document.getElementById("price").value !== "");
@@ -91,17 +94,26 @@ test("the crop-year pick switches the board price to next year's contract and la
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg, errors } = await open(browser, port);
-    assert.equal(await pg.inputValue("#price"), "4.7875");
+    const { pg, errors } = await open(browser, port, 390, false);
+    /* Since 2026-10-17 the cost lines are farmdoc's 2027 budget, so the page opens on the
+       2027 crop's board, Dec '27 (one crop year for price and costs). */
+    assert.equal(await pg.inputValue("#be-year"), "1", "2027 costs open on the 2027 crop's contract");
+    assert.equal(await pg.inputValue("#price"), "5.0975");
+    assert.equal(await pg.isVisible("#yr-note"), true);
     assert.equal(CORN.yield, 237, "farmdoc's 2027 northern Illinois trend yield");
     assert.equal(CORN.fertilizer, fertAt("corn", 237), "the baked fertilizer is the page's own formula at 237 bu");
-    assert.equal(await txt(pg, "#breakeven"), `$${(TOTAL / Y).toFixed(2)}/bu, ${TOTAL / Y > 4.7875 ? "above" : "below"} your price`);
-    assert.equal(await txt(pg, "#profit"), usd(Y * 4.7875 - TOTAL) + "/ac", "237 x 4.7875 - total");
+    assert.equal(await txt(pg, "#profit"), usd(Y * 5.0975 - TOTAL) + "/ac", "237 x 5.0975 - total");
     const opts = await pg.$$eval("#be-year option", (o) => o.map((x) => x.textContent));
     assert.deepEqual(opts, ["Dec '26 corn (2026 crop)", "Dec '27 corn (2027 crop)"]);
     assert.equal(await pg.isVisible("#be-year"), true);
-    assert.equal(await pg.isVisible("#yr-note"), false);
     assert.doesNotMatch(HTML, /new crop\)'/, "the old 'Dec corn (new crop)' label is gone");
+
+    await pg.selectOption("#be-year", "0");
+    assert.equal(await pg.inputValue("#price"), "4.7875", "the board price follows the contract");
+    assert.equal(await txt(pg, "#breakeven"), `$${(TOTAL / Y).toFixed(2)}/bu, ${TOTAL / Y > 4.7875 ? "above" : "below"} your price`);
+    assert.equal(await txt(pg, "#profit"), usd(Y * 4.7875 - TOTAL) + "/ac", "237 x 4.7875 - total");
+    assert.equal(await pg.isVisible("#yr-note"), false);
+    assert.match(await txt(pg, "#be-region-note"), /These are 2027 costs, the newest published; for the 2026 crop, type what you spent\./);
 
     await pg.selectOption("#be-year", "1");
     assert.equal(await pg.inputValue("#price"), "5.0975", "the board price follows the contract");
@@ -124,8 +136,25 @@ test("the crop-year pick switches the board price to next year's contract and la
     await pg.selectOption("#crop", "corn");
     await pg.reload();
     await pg.waitForFunction(() => document.getElementById("price").value !== "");
-    assert.equal(await pg.inputValue("#be-year"), "0", "the pick is remembered");
+    assert.equal(await pg.inputValue("#be-year"), "0", "the pick is remembered: a reader who picks Dec '26 keeps it");
+    assert.equal(await pg.inputValue("#price"), "4.5");
     assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("a saved page from before the default moved (year 0, never picked) opens on the 2027 crop", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1280, height: 900 } });
+    await ctx.addInitScript(() => { try { if (!sessionStorage.getItem("x")) { localStorage.setItem("agsist-breakeven", JSON.stringify({ crop: "corn", year: "0", perCrop: {} })); sessionStorage.setItem("x", "1"); } } catch (e) {} });
+    const pg = await ctx.newPage();
+    await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
+    await pg.goto(`http://127.0.0.1:${port}/breakeven`);
+    await pg.waitForFunction(() => document.getElementById("price").value !== "");
+    assert.equal(await pg.inputValue("#be-year"), "1");
+    assert.equal(await pg.inputValue("#price"), "5.0975");
+    assert.match(await txt(pg, "#live-crop-name"), /Dec '27 corn \(2027 crop\)/);
   } finally { await browser.close(); srv.close(); }
 });
 

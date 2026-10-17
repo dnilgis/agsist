@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
   <link rel="manifest"                            href="/manifest.json">
   <title>Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST</title>
-  <meta name="description" content="Example: $1,160 an acre at 237 bu/ac is a $4.89 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
+  <meta name="description" content="Example: $1,160 an acre at 237 bu/ac is a $4.89 corn break-even; Dec '27 futures are near $5.06¾. Put in your own costs for corn, soybeans or wheat.">
   <meta name="author" content="Sigurd Lindquist">
   <meta name="keywords"    content="farm break even calculator, farmer corn break even calculator, soybean break even price, cost per bushel calculator, crop profit calculator, farm cost analysis, break-even price corn">
   <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -25,7 +25,7 @@
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
   <meta property="og:title"        content="Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST">
-  <meta property="og:description"  content="Example: $1,160 an acre at 237 bu/ac is a $4.89 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
+  <meta property="og:description"  content="Example: $1,160 an acre at 237 bu/ac is a $4.89 corn break-even; Dec '27 futures are near $5.06¾. Put in your own costs for corn, soybeans or wheat.">
   <meta property="og:url"          content="https://agsist.com/breakeven">
   <meta property="og:image"        content="https://agsist.com/img/og/breakeven.jpg?v=cad343a2">
   <meta property="og:image:width"  content="1200">
@@ -35,7 +35,7 @@
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
   <meta name="twitter:title"       content="Corn &amp; Soybean Break-Even Price per Bushel Calculator | AGSIST">
-  <meta name="twitter:description" content="Example: $1,160 an acre at 237 bu/ac is a $4.89 corn break-even; futures are near $4.74¼. Put in your own costs for corn, soybeans or wheat.">
+  <meta name="twitter:description" content="Example: $1,160 an acre at 237 bu/ac is a $4.89 corn break-even; Dec '27 futures are near $5.06¾. Put in your own costs for corn, soybeans or wheat.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/breakeven.jpg?v=cad343a2">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
@@ -235,7 +235,7 @@
             <span class="chg-tag" id="live-chg-val"></span>
             <button type="button" class="btn btn-secondary" id="be-use">Use this price</button>
           </div>
-          <p class="yr-note" id="yr-note" hidden>Planning the 2027 crop: the cost lines below are still this page&rsquo;s example. Put in your 2027 costs.</p>
+          <p class="yr-note" id="yr-note" hidden>Planning the 2027 crop: the cost lines are farmdoc&rsquo;s 2027 budget and fertilizer at this fall&rsquo;s posted prices. Put in your own as you book them.</p>
           <div style="margin-bottom:20px">
             <h2 class="sec-label" style="margin:0 0 8px">CROP &amp; YIELD</h2>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px">
@@ -400,12 +400,12 @@
      machinery = machine hire/lease + utilities + machine repair + fuel and oil + light vehicle + machinery depreciation (their total power costs);
      overhead = drying + storage + building repair and rent + building depreciation + insurance + misc + interest (non-land);
      labor = hired labor; land = their average cash rent; yield = their trend yield. Fertilizer is not theirs: it is priced from posted co-op prices. */
-  var BUDGETS={src:'farmdoc daily, Illinois Crop Budgets for 2027, Table 1 (Aug 2026 release, published Sep 1, 2026)',url:'https://farmdocdaily.illinois.edu/2026/09/illinois-crop-budgets-for-2027.html',r:{
+  var BUDGETS={year:2027,src:'farmdoc daily, Illinois Crop Budgets for 2027, Table 1 (Aug 2026 release, published Sep 1, 2026)',url:'https://farmdocdaily.illinois.edu/2026/09/illinois-crop-budgets-for-2027.html',r:{
     n:{name:'northern Illinois',corn:{yield:237,seed:137,chemicals:101,insurance:37,machinery:210,labor:25,overhead:122,land:293},soybeans:{yield:71,seed:84,chemicals:63,insurance:16,machinery:171,labor:24,overhead:79,land:293}},
     ch:{name:'central Illinois, high-productivity',corn:{yield:245,seed:134,chemicals:119,insurance:35,machinery:186,labor:28,overhead:120,land:321},soybeans:{yield:77,seed:87,chemicals:72,insurance:12,machinery:165,labor:25,overhead:96,land:321}},
     cl:{name:'central Illinois, low-productivity',corn:{yield:233,seed:134,chemicals:121,insurance:37,machinery:179,labor:27,overhead:115,land:279},soybeans:{yield:71,seed:78,chemicals:73,insurance:12,machinery:161,labor:27,overhead:90,land:279}},
     s:{name:'southern Illinois',corn:{yield:197,seed:132,chemicals:110,insurance:37,machinery:195,labor:27,overhead:111,land:186},soybeans:{yield:60,seed:80,chemicals:72,insurance:15,machinery:178,labor:25,overhead:85,land:186}}}};
   </script>
-  <script src="/components/breakeven.js?v=2" defer></script>
+  <script src="/components/breakeven.js?v=3" defer></script>
 </body>
 </html>

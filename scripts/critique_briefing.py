@@ -510,6 +510,8 @@ def apply_rewrite(briefing, critique):
         import report_day
         from datetime import datetime as _dt, timezone as _tz
         briefing = report_day.apply(briefing, _dt.now().date(), _dt.now(_tz.utc))
+        import watch_dates     # a rewritten watch list gets its dates again
+        briefing, _ = watch_dates.apply(briefing)
         n = briefing_cut.word_count(briefing)
         print(f"  Word count after rewrite: {n} (ceiling {briefing_cut.HARD_CEILING})")
         if isinstance(briefing.get("meta"), dict):

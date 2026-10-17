@@ -167,7 +167,7 @@ test("lazy: the land card is not on Field Scout's first screen and loads by vers
   assert.doesNotMatch(read("field-scout.html"), /field-scout-land\.js/);
   assert.match(read("field-scout-read.js"), /var FS_LAND_SRC='\/field-scout-land\.js\?v=\d+'/);
   assert.match(read("field-scout-read.js"), /section\('land',ICONS\.rent,'Parcel, Owner &amp; Sales','fs-land'\)/);
-  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=2'/);
+  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=3'/);
 });
 
 test("the land report is one shared page with a query parameter, kept out of search", () => {
@@ -191,4 +191,70 @@ test("no em dashes in the new copy", () => {
     "scripts/probe_land_services.py", "scripts/fetch_land_sales.py", ".github/workflows/land-data.yml"]) {
     assert.ok(!read(f).includes("—"), f + " has an em dash");
   }
+});
+
+// Illinois MyDec rows shaped like the real Oct 2026 file (data/land/il/17105.json, 17113.json); names left out.
+const IL_COLS = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"];
+const ilFile = (rows, extra) => Object.assign({ state: "IL", county: "Livingston", fips: "17105", cols: IL_COLS, munis: { "6": ["Nebraska township", 40.9, -88.6] }, rows }, extra || {});
+const LIV_MULTI = ["2026R-03806", "2026-08-17", 2182500, 894.9, null, 2, "4", "Warranty Deed", "13-13-17-100-002", "6",
+  "THE NORTHWEST QUARTER OF SECTION 17, TOWNSHIP 28 NORTH, RANGE 3 EAST OF THE THIRD PRINCIPAL MERIDIAN, LIVINGSTON COUNTY, ILLINOIS; EXCEPTING", 0];
+const ONE = ["2026R-04000", "2026-09-04", 400000, 40, null, 1, "4", "Warranty Deed", "13-13-18-100-001", "6", "THE NORTHEAST QUARTER OF THE NORTHEAST QUARTER OF SECTION 18", 0];
+
+test("Illinois multi-parcel acres: uncertain in a file built before the checked rule, no $/acre, out of the middle", () => {
+  const [m, one] = F.rowObjs(ilFile([LIV_MULTI, ONE]));
+  // a quarter section (160 ac, less the exception) plus one more parcel cannot be 894.9 acres; $2,182,500 / 894.9 = $2,439 was the bad figure
+  assert.equal(m.acres, null); assert.equal(m.ppa, null); assert.equal(m.acUnsure, true);
+  assert.equal(one.acres, 40); assert.equal(one.ppa, 10000);   // 400,000 / 40
+  assert.ok(F.marketSale(m), "still a market sale, listed");
+  const list = F.filterComps([m, one], {}, null);
+  assert.equal(list.length, 2);
+  assert.equal(F.medianPpa(list), null, "one known $/acre is not a middle price");
+  assert.equal(F.filterComps([m, one], { minAc: 20 }, null).length, 1, "an acres filter drops unknown acres");
+  assert.match(F.compsTable(list), /title="2 parcels on one return; acres uncertain">\?</);
+  assert.match(F.historyHTML([{ r: m, how: "exact" }], F.covOf(ilFile([]))), /2 parcels, acres uncertain/);
+  assert.doesNotMatch(F.historyHTML([{ r: m, how: "exact" }], F.covOf(ilFile([]))), /\/ac/);
+});
+
+test("Illinois multi-parcel acres: trusted from a file built with the checked rule, blank stays uncertain", () => {
+  const ok = LIV_MULTI.slice(); ok[3] = 160;   // Line 3a 149.15 + the added PIN 10.85, each read once
+  const blank = LIV_MULTI.slice(); blank[3] = null;
+  const [a, b] = F.rowObjs(ilFile([ok, blank], { acres_rule: 2 }));
+  assert.equal(a.acres, 160); assert.equal(a.ppa, 13641); assert.ok(!a.acUnsure);   // 2,182,500 / 160 = 13,640.6
+  assert.equal(b.acres, null); assert.equal(b.acUnsure, true);
+});
+
+test("market sales leave out related parties, court and partition deeds (MyDec Line 10b)", () => {
+  const base = { price: 1010587, acres: 1793.99, cls: "4", exempt: 0 };
+  for (const c of ["Executor Deed, Related Parties", "Trustee Deed, Related Parties", "Warranty Deed, Related Parties", "Sheriff'S Deed",
+    "Judicial Sale", "Judge'S Deed", "Deed Of Partition", "Mineral Deed", "Commissioner'S Deed", "Court Officer'S Deed", "Beneficial Interest", "Quit Claim Deed"]) {
+    assert.equal(F.marketSale(Object.assign({ conv: c }, base)), false, c);
+  }
+  for (const c of ["Warranty Deed", "Trustee Deed", "Executor Deed", "Special Warranty Deed", "Deed In Trust", "Administrator'S Deed"]) {
+    assert.equal(F.marketSale(Object.assign({ conv: c }, base)), true, c);
+  }
+  // and the median follows: 3 market rows give 9,000; the related-party $563/ac row is not in it
+  const rows = [9000, 10000, 8000].map((p, i) => ({ price: p * 100, acres: 100, conv: "Warranty Deed", date: "2026-0" + (i + 1) + "-01" }))
+    .concat([{ price: 1010587, acres: 1793.99, conv: "Executor Deed, Related Parties", date: "2026-05-01" }]);
+  assert.deepEqual(F.medianPpa(F.filterComps(rows, {}, null)), { ppa: 9000, n: 3 });
+});
+
+test("coverage: filed dates when the file has them, MyDec's real start otherwise, never a 1999 deed date as the start", () => {
+  const old = F.coverageText({ from: "1999-06-28", to: "2026-09-04", n: 2000 }, "IL");
+  assert.equal(old, "Illinois MyDec declarations filed from 2014 to Sep 4, 2026; some filings carry older deed dates");
+  assert.doesNotMatch(old, /1999/);
+  const filed = F.coverageText({ from: "1999-06-28", to: "2026-09-04", filed_from: "2014-04-02", filed_to: "2026-10-09", older_deeds: 31 }, "IL");
+  assert.equal(filed, "Declarations filed Apr 2, 2014 to Oct 9, 2026; 31 carry deed dates before 2014");
+  assert.equal(F.coverageText({ from: "2016-01-04", to: "2026-01-02" }, "WI"), "Transfer returns from Jan 4, 2016 to Jan 2, 2026");
+  assert.match(F.historyHTML([], F.covOf(ilFile([], { coverage: { from: "1999-06-28", to: "2026-09-04" } }))), /filed from 2014 to Sep 4, 2026/);
+});
+
+test("sources list names only transfer data on file", () => {
+  const h = read("field-scout.html");
+  const li = h.match(/<li><strong>Recorded transfers and sold land<\/strong>[\s\S]*?<\/li>/)[0];
+  const named = { Wisconsin: "wi", Illinois: "il", Minnesota: "mn", Iowa: "ia" };
+  for (const [st, ab] of Object.entries(named)) {
+    if (li.includes(st)) assert.ok(existsSync(join(ROOT, "data/land", ab, "index.json")), st + " named as a transfer source with no data on file");
+  }
+  assert.match(li, /Illinois/);
+  assert.doesNotMatch(li, /revenue\.wi\.gov/);
 });
