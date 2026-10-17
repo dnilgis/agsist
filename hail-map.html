@@ -630,7 +630,7 @@
       gradient:{0.2:'#2c7fb8',0.4:'#41b6c4',0.55:'#7fcdbb',0.7:'#fed976',0.85:'#fd8d3c',1.0:'#e31a1c'} };
 
     var map, heat=null, markers=null, cache={}, recentCache=null,
-        manifest=null, current=null, anim=null,
+        manifest=null, manifestP=null, current=null, anim=null,
         countyData=null, countyState=null,
         meshIdx=null, meshLayer=null, meshCache={}, meshPos=-1;
     var MESH_COLORS={0.75:'#7cd2ff',1:'#fed976',1.5:'#fd8d3c',2:'#e31a1c'};
@@ -742,7 +742,7 @@
         })
         .catch(function(){});
 
-      fetch(DATA+'manifest.json', {cache:'no-cache'})
+      manifestP = fetch(DATA+'manifest.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(m){
           if(!m || !m.years || !m.years.length){ mapFail('The hail reports are being rebuilt. Try again in a few minutes.'); return; }
@@ -890,6 +890,10 @@
       }).then(function(d){ evCache[y]=d; return d; });
     }
     function loadAllEvents(){
+      /* A shared link (?lat=&lon=) runs its lookup 400 ms after the map; on a slow phone the
+         manifest was not in yet, the lookup fell to the old worker and said the service had not
+         answered (2026-10-17). Wait for the manifest that is already on its way. */
+      if(!manifest && manifestP) return manifestP.then(function(){ return manifest ? loadAllEvents() : Promise.reject(new Error('no manifest')); });
       var yrs=(manifest&&manifest.years)||[];
       if(!yrs.length) return Promise.reject(new Error('no manifest'));
       return Promise.all(yrs.map(function(y){ return loadEvents(y).catch(function(){ return null; }); }))

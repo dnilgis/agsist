@@ -65,3 +65,8 @@ test("the phone's pinned year bar stays under the site header", () => {
   assert.ok(+m[1] < 400, "z-index under the header's 400, got " + m[1]);
   assert.ok(+m[1] > 1, "still over the map (z-index 1)");
 });
+
+test("a shared ?lat=&lon= link waits for the manifest instead of falling to the old worker", () => {
+  assert.match(HTML, /manifestP = fetch\(DATA\+'manifest\.json'/);
+  assert.match(HTML, /if\(!manifest && manifestP\) return manifestP\.then\(function\(\)\{ return manifest \? loadAllEvents\(\) : Promise\.reject\(new Error\('no manifest'\)\); \}\);/);
+});
