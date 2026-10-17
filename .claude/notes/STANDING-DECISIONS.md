@@ -112,3 +112,6 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - Rain Print box letter: one letter-size page on top in every print/framed box. The buyer's gift note and a business's message print on the letter; no separate note card. No prices in the box.
 - Rain Print paper: Sig wants heavy, textured paper (testing Epson Velvet Fine Art on his own printer). Site paper wording changes only once he picks. Never name the printer on the site.
 - FFAI (farmers1st): Sig approved the audit fixes: price-position labels vs 1995-2019 instead of STRESSED/STRONG, year-ago comparison first, v3 JSON marked retired, in-sample quarters marked, stricter NASS parse, stress run.
+- (Oct 17, Sig) Radar rain at any address (NOAA MRMS, 24 h / 3 day / 7 day): approved to run a few times a day on its own schedule.
+- (Oct 17, Sig) Wisconsin transfer data: OK to fetch with an automated browser from DOR's public pages. Minnesota eCRV extract: Sig emails ecrv.support@state.mn.us.
+- (Oct 17, Sig) Oct 16 Daily correction added (expired hogs, afternoon trades). FFAI audit fixes pushed live on farmers1st.
