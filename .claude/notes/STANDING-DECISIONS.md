@@ -123,3 +123,4 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 17, Sig) land-data monthly run approved: the 3rd of each month (Illinois MyDec, Wisconsin RETR newest months, parcel probe).
 - (Oct 17, Sig) No "Gifts" menu group for now.
 - (Oct 17, Sig) Farmland Atlas gets recorded farm sales (IL, WI) with unusually large sales noted; no buyer or seller names on indexed atlas pages.
+- (Oct 17, Sig) Daily briefing gets a second, stronger fact-check pass (newest strongest model) that can block the send. New daily-site-check.yml approved: once a day, runs the number check and staleness checks, keeps one GitHub issue "Daily site check" updated.
