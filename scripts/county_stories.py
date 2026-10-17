@@ -161,9 +161,9 @@ BANNED_RE = re.compile(r"\b(" + "|".join(re.escape(w) for w in BANNED) + r")\b",
 BAD_CHARS = {"\u2014": "em dash", "\u2013": "en dash", "!": "exclamation mark", "?": "question mark",
              ";": "semicolon", "&": "ampersand", "<": "angle bracket", ">": "angle bracket", "*": "asterisk",
              "#": "hash", '"': "double quote", "“": "curly quote", "”": "curly quote", "\n": "line break"}
-UP = re.compile(r"\b(more|wetter|above|ahead|over|extra|surplus)\b", re.I)
-DOWN = re.compile(r"\b(less|drier|below|behind|under|short|shy|deficit|fewer)\b", re.I)
-SAME = re.compile(r"\b(same|even|level|close to|near|about usual)\b", re.I)
+UPW = {"more", "wetter", "above", "ahead", "over", "beats", "tops", "outpaces"}
+DIRW = re.compile(r"\b(more|wetter|above|ahead|over|beats|tops|outpaces|less|drier|below|behind|under|short|fewer|trails)\b", re.I)
+SAME = re.compile(r"\b(about the same|the same as|even with (?:last|the|a|20\d\d)|level with|close to even|close to a usual|close to usual|about usual|about where)\b", re.I)
 
 
 def _forms(x):
@@ -200,8 +200,6 @@ def validate(story, f):
             bad.append(name)
     if "--" in s or " - " in s:
         bad.append("dash")
-    for m in BANNED_RE.finditer(s):
-        bad.append(f"banned word {m.group(0)!r}")
     # ---- what the facts allow
     year, ly = f["year"], f.get("last_year")
     wm, bd, dry, vs = f.get("wettest_month"), f.get("biggest_day"), f.get("longest_dry_stretch"), f.get("vs_usual")
@@ -224,7 +222,8 @@ def validate(story, f):
     day_counts = {f["days_in_year_so_far"], f["days_reported"], f["days_missing"]} | ({dry["days"]} if dry else set()) \
         | ({ly["days_missed"]} if ly else set()) | ({ly["compare"]["days_both_reported"]} if ly and ly["compare"] else set()) \
         | ({f["multi_day_reports"]} if f["multi_day_reports"] else set())
-    miles = {int(x) for x in re.findall(r"\b(\d+) miles?\b", f["gauge_from_middle"] + " " + f["gauge_where"])}
+    # the gauge's distance as the facts print it ("5.5 miles north of Albertville", "4 miles from the middle")
+    miles = set(re.findall(r"\b(\d+(?:\.\d+)?) miles?\b", f["gauge_from_middle"] + " " + f["gauge_where"]))
     years = {year} | ({year - 1} if ly else set())
     # ---- dates first, then take them out so their day numbers are not read as amounts
     for m in DATE_RE.finditer(s):
@@ -232,14 +231,51 @@ def validate(story, f):
         if key not in dates:
             bad.append(f"date {m.group(0)!r} is not in the facts")
     rest = DATE_RE.sub(lambda m: f" DATE{m.group(1)[:3]}{int(m.group(2))}", s)
+    # the gauge's place as the facts give it ("5.5 miles north of Albertville", "less than a mile from")
+    # is a location, not an amount or a direction
+    for ph in sorted({f["gauge_where"], f["gauge_from_middle"], f["gauge_from_middle"].replace(" the middle of the county", "")}, key=len, reverse=True):
+        if ph and len(ph) > 6:
+            rest = rest.replace(ph, " PLACE ")
+    rest = re.sub(r"\bless than a mile\b", " PLACE ", rest)
+    if len(f["county"]) > 6:
+        rest = rest.replace(f["county"], " COUNTY ")
+    # ---- banned words (place names like Mammoth Spring or Two Harbors are out by now), with
+    # the few cases the facts do back: a season or a month on its own only when every date in
+    # its sentence falls in it, and "bone dry" or "heavy lifting" as plain farm talk
+    SEASON = {"spring": {3, 4, 5}, "summer": {6, 7, 8}, "fall": {9, 10, 11}, "autumn": {9, 10, 11}, "winter": {12, 1, 2}}
+    sents = re.split(r"(?<=[a-z0-9%)])\.(?=\s|$)", rest)
+
+    def sent_months(pos):
+        start = 0
+        for se in sents:
+            end = start + len(se) + 1
+            if start <= pos < end:
+                return {M3.index(a) + 1 for a, _ in re.findall(r"DATE([A-Z][a-z]{2})(\d+)", se)}, se
+            start = end
+        return set(), ""
+    for m in BANNED_RE.finditer(rest):
+        w = m.group(0).lower()
+        ms, se = sent_months(m.start())
+        if w in SEASON and ms and ms <= SEASON[w]:
+            continue
+        if w == "heavy" and re.match(r"heavy lifting\b", rest[m.start():], re.I):
+            continue
+        if w == "bone" and re.match(r"bone (dry|empty)\b", rest[m.start():], re.I) and dry and re.search(r"\bin a row\b|\bdays\b", se):
+            continue
+        bad.append(f"banned word {m.group(0)!r}")
     for m in re.finditer(r"\b" + MONTH_RE + r"\b", rest):
         if m.group(0) == "May" and m.start() == 0:
             continue
-        if m.group(0)[:3] not in months_ok:
+        ms, _ = sent_months(m.start())
+        if m.group(0)[:3] not in months_ok and not (ms and ms == {M3.index(m.group(0)[:3]) + 1}):
             bad.append(f"month {m.group(0)!r} is not in the facts")
     # ---- every number, with what follows it
     for m in re.finditer(r"(?<![\w.])(\d+(?:,\d{3})*(?:\.\d+)?)(\s*%|\s*percent\b|\s+(?:inch|inches|in)\b|\s+(?:day|days)\b|\s+(?:mile|miles)\b|\s+(?:report|reports)\b)?", rest):
         num, unit = m.group(1).replace(",", ""), (m.group(2) or "").strip().lower()
+        if unit.startswith("mile"):
+            if num not in miles:
+                bad.append(f"{num} miles is not the gauge's distance in the facts")
+            continue
         if "." in num:
             if unit and not unit.startswith("in"):
                 bad.append(f"{num} {unit}: a decimal that is not inches")
@@ -255,14 +291,14 @@ def validate(story, f):
         elif unit.startswith("day"):
             if n not in day_counts:
                 bad.append(f"{n} days is not in the facts")
-        elif unit.startswith("mile"):
-            if n not in miles:
-                bad.append(f"{n} miles is not in the facts")
         elif unit.startswith("report"):
             if n != f["multi_day_reports"]:
                 bad.append(f"{n} reports is not in the facts")
         elif unit == "in":
             pass
+        elif n in (f["days_reported"], f["days_in_year_so_far"], f["days_missing"]) and \
+                re.search(r"\breport", sent_months(m.start())[1], re.I) and re.search(r"\bdays?\b", sent_months(m.start())[1]):
+            pass     # "reported on 268 of 286 days"
         elif n not in years:
             bad.append(f"number {n} is not in the facts")
     # ---- each claim tied to its own fact. A clause's topic comes from its own words
@@ -272,13 +308,15 @@ def validate(story, f):
     big_re = r"\b(biggest|largest|most in (?:one|a single) day|one-day|single day|single-day)\b"
     dry_re = r"\b(dry|without rain|no rain|nothing in the gauge)\b"
     last_re = (r"\b" + str(year - 1) + r"\b|\blast year\b|\ba year ago\b") if ly else r"\blast year\b|\ba year ago\b"
+    last_ref = r"\b(?:" + str(year - 1) + r"|last year|a year ago|the year before)\b"
+    this_ref = r"\b(?:" + str(year) + r"|this year|the year so far|this season)\b"
     allow = {"wet": inch["wet"], "big": inch["big"], "dry": set(), "last": inch["last"] | inch["lastdiff"] | inch["total"],
              "usual": inch["usual"] | inch["diff"] | inch["total"], "total": inch["total"]}
 
     def topics(cl):
         low, T = cl.lower(), set()
         cd = {f"{a} {b}" for a, b in re.findall(r"DATE([A-Z][a-z]{2})(\d+)", cl)}
-        if "wettest" in low or (wm and re.search(r"\b(" + wm["month"] + "|" + wm["month"][:3] + r")\b(?!\d)", cl)):
+        if "wettest" in low or re.search(r"\b(that|the) month\b", low) or (wm and re.search(r"\b(" + wm["month"] + "|" + wm["month"][:3] + r")\b(?!\d)", cl)):
             T.add("wet")
         if re.search(big_re, low) or (bd and bd["date"] in cd):
             T.add("big")
@@ -288,10 +326,12 @@ def validate(story, f):
             T.add("last")
         if re.search(r"\b(usual|typical|typically)\b|%|\bpercent\b", low):
             T.add("usual")
-        if re.search(r"\b(total|so far|in all|altogether|year to date|this year)\b", low) or f"DATE{f['through'].replace(' ', '')}" in cl:
+        if re.search(r"\b(total|in all|altogether|year to date|this year)\b", low) or "THROUGHDAY" in cl:
             T.add("total")
         return T
 
+    # "Through Oct 13" names the snapshot's day; any other mention of that date is a claim about it
+    rest = re.sub(r"\b[Tt]hrough\s+DATE" + f["through"].replace(" ", "") + r"\b", " THROUGHDAY", rest)
     for sent in re.split(r"(?<=[a-z0-9%)])\.(?=\s|$)", rest):
         cls = _clauses(sent)
         tops = [topics(cl) for cl in cls]
@@ -313,55 +353,125 @@ def validate(story, f):
         for cl, T in zip(cls, tops):
             T = T or st_tops
             low = cl.lower()
-            nums = set(re.findall(r"(?<![\w.])(\d+\.\d+)", cl))
+            nums = set(re.findall(r"(?<![\w.])(\d+\.\d+)(?!\d|\s*miles?\b)", cl))   # a distance is not an amount
             cd = {f"{a} {b}" for a, b in re.findall(r"DATE([A-Z][a-z]{2})(\d+)", cl)}
             days = {int(x) for x in re.findall(r"\b(\d+)\s+days?\b", cl)}
-            if T:
-                ok_in = set().union(*(allow[k] for k in T))
-                if nums - ok_in:
-                    bad.append(f"amount {sorted(nums - ok_in)} does not belong to {sorted(T)}")
-            if "big" in T and bd and cd - {bd["date"]} - ({f["through"]} if T - {"big"} else set()):
+            if "big" in T and bd and cd - {bd["date"]}:
                 bad.append(f"biggest day date wrong: {sorted(cd - {bd['date']})}")
             if "dry" in T and dry:
                 if days - {dry["days"]}:
                     bad.append(f"dry stretch length wrong: {sorted(days - {dry['days']})}")
                 if cd - {dry["from"], dry["to"], f["through"]}:
                     bad.append(f"dry stretch dates wrong: {sorted(cd - {dry['from'], dry['to'], f['through']})}")
-            if re.search(r"\bstill\b", low) and not (dry and dry["still_going"]):
+            # "still" only matters when it is about the dry stretch ("still going"); "it is still 4.02 more" is fine
+            if re.search(r"\bstill\b", low) and re.search(dry_re + r"|\b(stretch|run|in a row)\b", low) and not (dry and dry["still_going"]):
                 bad.append("'still' with no stretch still going")
-            up, down = UP.search(cl), DOWN.search(cl)
-            same = SAME.search(cl) and not up and not down
-            if "last" in T and (up or down or same or re.search(r"\b(wetter|drier)\b", low)):
-                cmp_ = ly and ly["compare"]
-                if not cmp_:
-                    bad.append("this year against last, which the page does not compare")
+            # ---- more/less: for each direction word, what is compared with what.
+            # "X more than 2025" or "ahead of last year": this year is the subject.
+            # "Last year by this date the gauge had X more": last year is, so the way flips.
+            dirs = []
+            for w in DIRW.finditer(cl):
+                sign = "more" if w.group(1).lower() in UPW else "less"
+                after, before = cl[w.end():], cl[:w.start()]
+                target, subject = None, "this"
+                cm = re.match(r"\s+(?:than|of|from)?\s*(.*)", after, re.I)
+                comp = cm.group(1) if re.match(r"\s+(?:than|of|from)\b", after, re.I) else (after if re.match(r"\s+(?:" + last_ref + r"|a usual|the usual|usual)\b", after, re.I) else "")
+                if comp and re.match(r"\s*" + this_ref, comp, re.I):
+                    target, subject = "last", "last"     # "last year had 5.08 more than this year"
+                elif comp and re.search(last_ref + r"|^\s*last\b|\bthe year before\b", comp, re.I):
+                    target = "last"
+                elif comp and re.search(r"\b(usual|typical)\b", comp, re.I):
+                    target = "usual"
                 else:
-                    want = cmp_["dir"]
-                    # 'more/less than <last year>' is about this year; 'last year had more' would be the other way
-                    flip = re.search(r"\b" + str(year - 1) + r"\s+(had|was|got|caught)\b", cl) or re.search(r"\blast year\s+(had|was|got|caught)\b", low)
-                    say = "same" if same else ("more" if up else "less")
-                    if flip and say != "same":
-                        say = "less" if say == "more" else "more"
-                    if (say == "same") != (want == "about the same") or (say != "same" and say != want):
-                        bad.append(f"this year against last says the wrong way (facts: {want})")
-                    if cmp_["diff_in"] and nums & inch["lastdiff"] and not cmp_["every_day"] and not re.search(r"\bboth\b", sent, re.I):
-                        bad.append("the difference with last year without saying it is on the days both reported")
-            elif "usual" in T:
-                if not vs and (up or down or nums - inch["usual"]):
-                    bad.append("a comparison with a usual year the page does not make")
-                if vs:
-                    if up and vs["dir"] != "more":
-                        bad.append(f"says more than usual (facts: {vs['dir']})")
-                    if down and vs["dir"] != "less":
-                        bad.append(f"says less than usual (facts: {vs['dir']})")
-                    if re.search(r"\b(wetter|drier)\b", low):
-                        w = "wetter" if "wetter" in low else "drier"
-                        if not vs["word"].startswith(w):
-                            bad.append(f"{w} when the page says {vs['word']}")
-                    if inch["diff"] and nums & inch["diff"] and not (up or down):
-                        bad.append("a difference with no direction")
-    if not f.get("year_over") and re.search(r"\b(the year ended|for the year|all year|whole year|full year)\b", s, re.I):
-        bad.append("speaks of the whole year before it is over")
+                    # "against 2025, it sits X less": a last-year comparator in front keeps this year the subject
+                    # who is talking: the nearest year named before the word, in this sentence
+                    before = sent[:max(0, sent.find(cl)) + w.start()] if cl in sent else before
+                    refs = [(m.end(), "this" if re.search(r"\b(against|compared with|compared to|next to|versus|vs|than|from|over|behind|ahead of)\s+$", before[:m.start()], re.I) else "last")
+                            for m in re.finditer(last_ref, before, re.I)] + \
+                           [(m.end(), "this") for m in re.finditer(this_ref, before, re.I)]
+                    if refs and max(refs)[1] == "last":
+                        target, subject = "last", "last"
+                    elif "usual" in T:
+                        target = "usual"
+                    elif "last" in T:
+                        target = "last"
+                    elif "last" in st_tops and "usual" not in st_tops:
+                        target = "last"      # "Last year it had 8.23 inches, so this year sits 3.53 less."
+                    elif "usual" in st_tops and "last" not in st_tops:
+                        target = "usual"
+                if not target and sign == "more" and wm and re.search(r"\b(?:" + wm["month"] + "|" + wm["month"][:3] + r")\b(?!\d)", cl) \
+                        and re.search(r"\bthan (?:any other month|anywhere else in the year|any month)\b", cl[w.end():]):
+                    continue     # "more rain in August than any other month" is the wettest month said another way
+                if not target:
+                    bad.append(f"'{w.group(1)}' compares something the facts do not")
+                if target:
+                    if subject == "last":
+                        sign = "less" if sign == "more" else "more"
+                    dirs.append((target, sign, w.group(1).lower()))
+                    # the amount right before the word ("4.29 inches ahead") is that comparison's difference
+                    nb = re.search(r"(\d+\.\d+)(?:\s+(?:inches|inch|in))?(?:\s+[a-z]+){0,2}\s*$", cl[:w.start()])
+                    if nb:
+                        dn = nb.group(1)
+                        want_d = inch["lastdiff"] if target == "last" else inch["diff"]
+                        if dn not in want_d:
+                            bad.append(f"{dn} is not the {'last year' if target == 'last' else 'usual year'} difference")
+            # with the wettest month and the biggest day in one clause, each amount goes with the nearer one
+            if {"wet", "big"} <= T and wm and bd:
+                marks = [(m.start(), m.end(), "wet") for m in re.finditer(r"\bwettest\b|\b(?:that|the) month\b|\b(?:" + wm["month"] + "|" + wm["month"][:3] + r")\b(?!\d)", cl)] + \
+                        [(m.start(), m.end(), "big") for m in re.finditer(big_re[:-3] + r"|alone)\b|DATE" + bd["date"].replace(" ", ""), cl)]
+                for m in re.finditer(r"(?<![\w.])(\d+\.\d+)(?!\d|\s*miles?\b)", cl):
+                    if marks:
+                        # "4.45 inches on May 12", "11.23 inches that month": the words right after bind it
+                        if re.match(r"(?:\s+inch(?:es)?)?(?:\s+of (?:it|that))?\s+(?:on|in|that|the|came|fell)\b", cl[m.end():]) and \
+                                any(a >= m.end() for a, _, _ in marks):
+                            t = min((k for k in marks if k[0] >= m.end()), key=lambda k: k[0])[2]
+                        else:
+                            t = min(marks, key=lambda k: (k[0] - m.end()) if k[0] >= m.end() else (m.start() - k[1]))[2]
+                        if m.group(1) not in allow[t]:
+                            bad.append(f"amount {m.group(1)} sits with the {'wettest month' if t == 'wet' else 'biggest day'}, not its own fact")
+            # every inch figure must belong to a topic of its clause (or the comparison it makes)
+            TT = T | {t for t, _, _ in dirs}
+            if TT:
+                ok_in = set().union(*(allow[k] for k in TT))
+                if nums - ok_in:
+                    bad.append(f"amount {sorted(nums - ok_in)} does not belong to {sorted(TT)}")
+            same = SAME.search(cl) and not dirs
+            if "last" in T and same:
+                dirs.append(("last", "same", "same"))
+            elif "usual" in T and same and vs:
+                dirs.append(("usual", "same", "same"))
+            for target, sign, word in dirs:
+                if target == "last":
+                    cmp_ = ly and ly["compare"]
+                    if not cmp_:
+                        bad.append("this year against last, which the page does not compare")
+                    elif (sign == "same") != (cmp_["dir"] == "about the same") or (sign != "same" and sign != cmp_["dir"]):
+                        bad.append(f"this year against last says the wrong way (facts: {cmp_['dir']})")
+                else:
+                    if not vs:
+                        bad.append("a comparison with a usual year the page does not make")
+                    elif sign == "same":
+                        if vs["word"] != "about usual" and vs["dir"] != "about the same":
+                            bad.append(f"says about usual (facts: {vs['word']})")
+                    elif sign != vs["dir"]:
+                        bad.append(f"says {sign} than usual (facts: {vs['dir']})")
+                    elif word in ("wetter", "drier") and vs["word"] == "about usual":
+                        bad.append(f"{word} when the page says about usual")
+            cmp_ = ly and ly["compare"]
+            if "last" in T and cmp_ and cmp_["diff_in"] and nums & inch["lastdiff"] and not cmp_["every_day"] \
+                    and not re.search(r"\bboth\b", sent, re.I):
+                bad.append("the difference with last year without saying it is on the days both reported")
+            if "usual" in T and not vs and nums - inch["usual"] - inch["total"]:
+                bad.append("a comparison with a usual year the page does not make")
+            if inch["diff"] and nums & inch["diff"] and not dirs and not (inch["diff"] & (inch["last"] | inch["lastdiff"] | inch["wet"] | inch["big"] | inch["total"])):
+                bad.append("a difference with no direction")
+    if not f.get("year_over"):
+        if re.search(r"\b(the year ended|all year|whole year|full year)\b", s, re.I):
+            bad.append("speaks of the whole year before it is over")
+        # "for the year" reads as the year so far only in the sentence that names the through day
+        for se in re.split(r"(?<=[a-z0-9%)])\.(?=\s|$)", s):
+            if re.search(r"\bfor the year\b", se, re.I) and not re.search(r"\b[Tt]hrough " + re.escape(f["through"]) + r"\b", se):
+                bad.append("speaks of the whole year before it is over")
     return sorted(set(bad))
 
 
@@ -618,6 +728,56 @@ def selftest():
         ok(validate("Through Oct 13, the station had 30.02 inches by this date in 2025. On the days both years reported, 2026 had 13.10 inches more than 2025.", f2) == [], "last year, both days, passes")
         ok(validate("Through Oct 13, the station had 30.02 inches by this date in 2025. On the days both years reported, 2026 had 13.10 inches less than 2025.", f2) != [], "last year the wrong way")
         ok(validate("Through Oct 13, the station had 30.02 inches by this date in 2025. This year had 13.10 inches more than 2025 at this point.", f2) != [], "last year difference without the both-days words")
+        # false positives seen in the first batch (Oct 2026): true stories that must pass, each
+        # next to the wrong version the rule still has to catch
+        f3 = dict(f, gauge_where="5.5 miles north of Albertville")
+        f4 = dict(f, total_in="41.19", last_year={"year": 2025, "through": "Oct 13", "total_in": "51.13", "days_missed": 0,
+                  "compare": {"days_both_reported": 286, "every_day": True, "dir": "less", "diff_in": "9.94", "means": "x"}})
+        f5 = dict(f, last_year=f2["last_year"])
+        f6 = dict(f, gauge_where="in Mammoth Spring")
+        f7 = dict(f, gauge_where="less than a mile northeast of Deerfield")
+        pairs = [
+            (f3, "Through Oct 13, the gauge 5.5 miles north of Albertville caught 12.89 inches in September, the wettest month. The biggest single day was 4.56 inches on Aug 5.",
+                 "Through Oct 13, the gauge 6.5 miles north of Albertville caught 12.89 inches in September, the wettest month. The biggest single day was 4.56 inches on Aug 5."),
+            (f4, "Through Oct 13, the station had 41.19 inches so far this year. Last year by this date the gauge had 9.94 inches more.",
+                 "Through Oct 13, the station had 41.19 inches so far this year. Last year by this date the gauge had 9.94 inches less."),
+            (f4, "Through Oct 13, the gauge at Corning had 41.19 inches. That is 9.94 inches less than 2025 had by this day.",
+                 "Through Oct 13, the gauge at Corning had 41.19 inches. That is 9.94 inches more than 2025 had by this day."),
+            (f4, "Through Oct 13, the gauge at Corning had 41.19 inches. Against 2025 it sits 9.94 inches less at this point.",
+                 "Through Oct 13, the gauge at Corning had 41.19 inches. Against 2025 it sits 9.94 inches more at this point."),
+            (f4, "Through Oct 13, the gauge at Corning had 41.19 inches. Last year still had it beat, with 9.94 inches more than this year.",
+                 "Through Oct 13, the gauge at Corning had 41.19 inches. Last year trailed, with 9.94 inches less than this year."),
+            (f5, "Through Oct 13, September was the wettest month at 12.89 inches. On the days both years reported, that is 13.10 inches more than 2025 had.",
+                 "Through Oct 13, September was the wettest month at 12.89 inches. On the days both years reported, that is 13.10 inches less than 2025 had."),
+            (f5, "Through Oct 13, the gauge sits 13.10 inches more than last year on the days both years reported, when 2025 had 30.02 inches.",
+                 "Through Oct 13, the gauge sits 30.02 inches more than last year on the days both years reported, when 2025 had 13.10 inches."),
+            (f, "Through Oct 13, September was the wettest month at 12.89 inches. It is still 14.97 inches more than a usual year.",
+                "Through Oct 13, September was the wettest month at 12.89 inches. The longest dry stretch ran 18 days and is still going."),
+            (f, "Through Oct 13, September was the wettest month at 12.89 inches. Back in winter the gauge went 18 days in a row with nothing in it, Jan 25 to Feb 11.",
+                "Through Oct 13, September was the wettest month at 12.89 inches. Back in spring the gauge went 18 days in a row with nothing in it, Jan 25 to Feb 11."),
+            (f, "Through Oct 13, September was the wettest month at 12.89 inches. Back in January the gauge went 18 days in a row with nothing in it, Jan 25 to Feb 11.".replace("Back in January the gauge went 18 days in a row with nothing in it, Jan 25 to Feb 11", "The biggest single day was 4.56 inches on Aug 5, back in August"),
+                "Through Oct 13, September was the wettest month at 12.89 inches. Back in July the gauge went 18 days in a row with nothing in it, Jan 25 to Feb 11."),
+            (f6, "Through Oct 13, the weather station in Mammoth Spring caught 12.89 inches in September, the wettest month. The biggest single day was 4.56 inches on Aug 5.",
+                 "Through Oct 13, the weather station near Mammoth Spring caught 12.89 inches in September, the wettest month, a spring of rain. The biggest single day was 4.56 inches on Aug 5."),
+            (f7, "Through Oct 13, the gauge less than a mile northeast of Deerfield caught 12.89 inches in September, the wettest month. It sits 14.97 inches more than a usual year.",
+                 "Through Oct 13, the gauge less than a mile northeast of Deerfield caught 12.89 inches in September, the wettest month. It sits 14.97 inches less than a usual year."),
+            (f, "Through Oct 13, September did the heavy lifting with 12.89 inches. The gauge reported on 269 of 286 days.",
+                "Through Oct 13, September brought heavy rain with 12.89 inches. The gauge reported on 270 of 286 days."),
+            (f, "Through Oct 13, most of the year came in September, with 12.89 inches that month and 4.56 inches on Aug 5 alone. That is the page.".replace(" That is the page.", " The gauge sits 14.97 inches more than a usual year."),
+                "Through Oct 13, most of the year came in September, with 4.56 inches that month and 12.89 inches on Aug 5 alone. The gauge sits 14.97 inches more than a usual year."),
+            (f, "Through Oct 13, the station had more rain in September than any other month, 12.89 inches. The biggest single day was 4.56 inches on Aug 5.",
+                "Through Oct 13, the station had more of its rain come late than early. The biggest single day was 4.56 inches on Aug 5."),
+            (f, "Through Oct 13, the gauge had caught 44.58 inches for the year. September was the wettest month at 12.89 inches.",
+                "Through Oct 13, the gauge had caught 44.58 inches. September was the wettest month at 12.89 inches, the most for the year."),
+            (f, "Through Oct 13, September was the wettest month at 12.89 inches. The biggest single day was 4.56 inches on Aug 5.",
+                "Through Oct 13, September was the wettest month at 12.89 inches. The biggest single day was 4.56 inches on Oct 13."),
+        ]
+        for i, (ff, true_s, wrong_s) in enumerate(pairs):
+            pad = " The station at Corning is the one this page uses for the county."
+            if len(true_s) < 140 or true_s.count(". ") < 1:
+                true_s, wrong_s = true_s + pad, wrong_s + pad
+            ok(validate(true_s, ff) == [], f"false positive {i} now passes: {validate(true_s, ff)} {true_s}")
+            ok(validate(wrong_s, ff) != [], f"real error {i} still caught: {wrong_s}")
         # render only on a hash match, and the story comes off when the data moves on
         e = {"story": good, "hash": facts_hash(f), "through": "2026-10-13", "sid": "131833 2", "facts": f}
         now = {"sid": "131833 2", "county": "Adams County", "year": 2026, "as_of": "2026-10-13", "read": "2026-10-15"}
