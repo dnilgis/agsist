@@ -163,13 +163,13 @@ def parse_json_block(text):
     blocks = re.findall(r"```json\s*(\{.*?\})\s*```", text, re.S)
     for b in reversed(blocks):
         try:
-            return json.loads(b)
+            return json.loads(b, strict=False)  # tabs copied from tables
         except ValueError:
             pass
     i = text.rfind('{"page"')
     if i >= 0:
         try:
-            return json.loads(text[i:text.rfind("}") + 1])
+            return json.loads(text[i:text.rfind("}") + 1], strict=False)
         except ValueError:
             pass
     return None
