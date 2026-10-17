@@ -1,0 +1,425 @@
+"""Check (and find) the free public parcel services Field Scout reads.
+
+data/land/parcel-services.json lists where the land card asks for parcel lines
+and the owner of record. This script is the only thing that marks an entry
+verified. An entry passes when all of these hold, read from a GitHub runner:
+
+  * the layer answers its metadata (?f=json) and is a polygon layer,
+  * the fields the entry names for the parcel number and the owner exist,
+  * a test query at a point inside the county (or state) returns a parcel,
+  * the answer carries Access-Control-Allow-Origin for agsist.com (or *), so a
+    reader's browser is allowed to read it from the page. Same header a browser
+    checks; a service that leaves it out cannot be used from the page at all.
+
+  python3 scripts/probe_land_services.py              # recheck every entry, rewrite the file
+  python3 scripts/probe_land_services.py --discover   # also search ArcGIS Online for county
+                                                      # parcel layers in discover.states
+  python3 scripts/probe_land_services.py --selftest
+
+--discover keeps only layers published by a government office (the publishing
+organization reads like a county, state or city office, or the service runs on
+a .gov or .us host) and never a vendor assessor site. Every answer it read is
+saved under data/land-raw/ (the workflow moves that to the raw branch), so a
+person can check what was accepted and why. Coverage counts print at the end
+and go into the file as coverage.
+"""
+import json
+import os
+import re
+import sys
+import time
+import urllib.parse
+import urllib.request
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REG = os.path.join(ROOT, "data", "land", "parcel-services.json")
+RAW = os.path.join(ROOT, "data", "land-raw", "services")
+GEO = os.path.join(ROOT, "data", "atlas", "counties.geo.json")
+ORIGIN = "https://agsist.com"
+UA = "AGSIST land service check (agsist.com; sig@farmers1st.com)"
+COUNTY_TOTAL = {"WI": 72, "MN": 87, "IA": 99, "IL": 102}
+
+PID = re.compile(r"^(PIN|PARCEL_?ID|PARCELID|PARCEL_?NO|PARCELNUM|PARCEL_NUMBER|PID|TAX_?ID|TAXPARCELID|GPIN|PARCEL)$", re.I)
+OWN = re.compile(r"^(OWNER_?NAME\d?|OWNERNME\d|OWNER\d?|OWN_?NAME\d?|DEEDHOLDER|TAXPAYER_?NAME|TAXPAYER|OWNER_?1|NAME_?1|OWNNAME)$", re.I)
+MAIL = re.compile(r"^(MAIL(ING)?_?(ADDR(ESS)?)?\d?|PSTLADRESS|OWNER_?ADDR(ESS)?\d?|OWN_?ADD(R)?\d?|TAXPAYER_?ADDR(ESS)?\d?|MAIL_?CITY|MAIL_?STATE|MAIL_?ZIP)$", re.I)
+SITE = re.compile(r"^(SITE_?ADDR(ESS)?|SITEADRESS|PROP(ERTY)?_?ADDR(ESS)?|SITUS(_?ADDR(ESS)?)?|PHYSICAL_?ADDR(ESS)?)$", re.I)
+ACRES = re.compile(r"^(GIS_?ACRES|DEED_?ACRES|ACRES|ACREAGE|CALC_?ACRES|TOTAL_?ACRES|ASSD_?ACRES|DEEDACRES|GISACRES)$", re.I)
+LAND = re.compile(r"^(LAND_?VAL(UE)?|LNDVALUE|ASSESSED_?LAND|LAND_?ASSESS(ED)?|EMV_?LAND)$", re.I)
+IMP = re.compile(r"^(IMP(R(OVEMENT)?)?_?VAL(UE)?|IMPVALUE|BLDG_?VAL(UE)?|BUILDING_?VAL(UE)?|EMV_?BLDG)$", re.I)
+TOTAL = re.compile(r"^(TOTAL_?VAL(UE)?|ASSESSED_?VAL(UE)?|TOT_?VAL|CNTASSDVALUE|EMV_?TOTAL|TOTAL_?ASSESS(ED)?)$", re.I)
+CLS = re.compile(r"^(PROP(ERTY)?_?CLASS|PROPCLASS|CLASS(_?CODE)?|USE_?CODE|LAND_?USE|USECLASS\d?)$", re.I)
+LEGAL = re.compile(r"^(LEGAL(_?DESC(RIPTION)?)?\d?|LEGALDESC\d?|ABBREV_?LEGAL)$", re.I)
+GOV = re.compile(r"\b(county|state|city|township|town of|village|dept|department|division|office|commission|authority|"
+                 r"gis|government|dnr|dot|mngeo|geospatial|land information|assessor|auditor|recorder|treasurer|"
+                 r"university|survey)\b", re.I)
+VENDOR = re.compile(r"beacon|schneider|qpublic|vanguard|tyler|devnet|fidlar|landmark|regrid|loveland|reportall|"
+                    r"acrevalue|plat ?book|mapping solutions|arch ?beacon|esri (inc|staff)|wthgis", re.I)
+
+
+def get(url, params=None, origin=False, timeout=45):
+    if params:
+        url = url + ("&" if "?" in url else "?") + urllib.parse.urlencode(params)
+    h = {"User-Agent": UA, "Accept": "application/json"}
+    if origin:
+        h["Origin"] = ORIGIN
+    req = urllib.request.Request(url, headers=h)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        body = r.read()
+        return r.status, dict((k.lower(), v) for k, v in r.headers.items()), body
+
+
+def cors_ok(headers):
+    a = (headers or {}).get("access-control-allow-origin", "").strip()
+    return a == "*" or a.rstrip("/") == ORIGIN
+
+
+def guess_fields(fields):
+    """Field map for a layer, from its field names. Only names that look like the thing."""
+    names = [f.get("name", "") for f in fields or []]
+
+    def all_of(rx):
+        return [n for n in names if rx.match(n)]
+    out = {}
+    for key, rx in (("pid", PID), ("owner", OWN), ("mail", MAIL), ("site", SITE), ("land", LAND),
+                    ("imp", IMP), ("total", TOTAL), ("cls", CLS), ("legal", LEGAL)):
+        hit = all_of(rx)
+        if hit:
+            out[key] = hit[:4]
+    ac = all_of(ACRES)
+    for n in ac:
+        u = n.upper()
+        k = "deed_acres" if "DEED" in u else "assd_acres" if "ASSD" in u else "gis_acres"
+        out.setdefault(k, [n])
+    return out
+
+
+def is_gov(publisher, url):
+    host = urllib.parse.urlparse(url).hostname or ""
+    if VENDOR.search(publisher or "") or VENDOR.search(host):
+        return False
+    if host.endswith(".gov") or host.endswith(".us") or ".state." in host or host.endswith(".edu"):
+        return True
+    return bool(GOV.search(publisher or ""))
+
+
+def county_points():
+    g = json.load(open(GEO))
+    out = {}
+    for f in g["features"]:
+        gm = f["geometry"]
+        ring = gm["coordinates"][0] if gm["type"] == "Polygon" else max(gm["coordinates"], key=lambda p: len(p[0]))[0]
+        # a point inside: try the vertex average, then nudge toward vertices until inside
+        x = sum(p[0] for p in ring) / len(ring)
+        y = sum(p[1] for p in ring) / len(ring)
+        pt = (x, y)
+        if not inside(pt, ring):
+            for p in ring[:: max(1, len(ring) // 40)]:
+                q = ((p[0] + x) / 2, (p[1] + y) / 2)
+                if inside(q, ring):
+                    pt = q
+                    break
+        out[str(f["id"])] = {"name": f["properties"]["name"], "st": f["properties"]["st"], "pt": pt}
+    return out
+
+
+def inside(pt, ring):
+    x, y = pt
+    ins = False
+    j = len(ring) - 1
+    for i in range(len(ring)):
+        xi, yi = ring[i][0], ring[i][1]
+        xj, yj = ring[j][0], ring[j][1]
+        if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / ((yj - yi) or 1e-12) + xi:
+            ins = not ins
+        j = i
+    return ins
+
+
+def save_raw(name, body):
+    os.makedirs(RAW, exist_ok=True)
+    safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", name)[:120]
+    with open(os.path.join(RAW, safe), "wb") as f:
+        f.write(body if isinstance(body, bytes) else body.encode())
+
+
+def check(entry, pt, tag):
+    """Returns (verified, notes). pt = (lng, lat) inside the area the entry covers."""
+    notes = []
+    url = entry["url"].rstrip("/")
+    try:
+        st, h, body = get(url, {"f": "json"}, origin=True)
+        save_raw(tag + "-meta.json", body)
+        meta = json.loads(body)
+    except Exception as e:  # noqa: BLE001
+        return False, ["metadata did not answer: %s" % e]
+    if meta.get("error"):
+        return False, ["metadata error: %s" % meta["error"]]
+    if "Polygon" not in str(meta.get("geometryType", "")):
+        notes.append("not a polygon layer: %s" % meta.get("geometryType"))
+    names = set(f.get("name") for f in meta.get("fields") or [])
+    F = entry.get("fields") or {}
+    for k in ("pid", "owner"):
+        have = [n for n in F.get(k, []) if n in names]
+        if not have:
+            notes.append("no %s field (wanted %s)" % (k, F.get(k)))
+    missing = sorted(n for v in F.values() for n in v if n not in names)
+    if missing:
+        notes.append("named fields not in the layer: %s" % ", ".join(missing))
+        entry["fields"] = {k: [n for n in v if n in names] for k, v in F.items() if any(n in names for n in v)}
+    t = (meta.get("editingInfo") or {}).get("dataLastEditDate") or (meta.get("editingInfo") or {}).get("lastEditDate")
+    if t:
+        entry["data_last_edit"] = time.strftime("%Y-%m-%d", time.gmtime(t / 1000))
+    try:
+        st, h, body = get(url + "/query", {"f": "json", "geometry": "%f,%f" % pt, "geometryType": "esriGeometryPoint", "inSR": 4326,
+                                           "spatialRel": "esriSpatialRelIntersects", "outFields": "*", "returnGeometry": "false"}, origin=True)
+        save_raw(tag + "-query.json", body)
+        q = json.loads(body)
+    except Exception as e:  # noqa: BLE001
+        return False, notes + ["test query failed: %s" % e]
+    feats = q.get("features") or []
+    if not feats:
+        notes.append("test query at %.4f,%.4f returned no parcel" % (pt[1], pt[0]))
+    else:
+        a = feats[0].get("attributes") or {}
+        own = [a.get(n) for n in (entry.get("fields") or {}).get("owner", [])]
+        if not any(str(v or "").strip() for v in own):
+            notes.append("test parcel has a blank owner (the publisher may withhold owners)")
+    if not cors_ok(h):
+        notes.append("no Access-Control-Allow-Origin for agsist.com; a browser page cannot read it")
+    ok = not [n for n in notes if not n.startswith("named fields")]
+    return ok, notes or ["ok"]
+
+
+def discover_county(fips, c, seen):
+    """Search ArcGIS Online for a public parcel layer this county publishes."""
+    q = '"%s County" parcels (type:"Feature Service" OR type:"Map Service")' % c["name"]
+    try:
+        _, _, body = get("https://www.arcgis.com/sharing/rest/search", {"q": q, "f": "json", "num": 25})
+        save_raw("search-%s.json" % fips, body)
+        items = json.loads(body).get("results") or []
+    except Exception as e:  # noqa: BLE001
+        return None, "search failed: %s" % e
+    stname = {"MN": "Minnesota", "IA": "Iowa", "IL": "Illinois", "WI": "Wisconsin"}.get(c["st"], c["st"])
+    for it in items:
+        title = it.get("title", "") + " " + it.get("snippet", "") + " " + " ".join(it.get("tags") or [])
+        if c["name"].lower() not in title.lower() or not re.search(r"parcel", title, re.I):
+            continue
+        if it.get("access") != "public" or not it.get("url"):
+            continue
+        pub = "%s %s" % (it.get("owner", ""), it.get("orgName", "") or "")
+        if it.get("orgId"):
+            try:
+                _, _, ob = get("https://www.arcgis.com/sharing/rest/portals/%s" % it["orgId"], {"f": "json"})
+                pub += " " + (json.loads(ob).get("name") or "")
+            except Exception:  # noqa: BLE001
+                pass
+        if stname.lower() not in (title + pub).lower() and c["st"].lower() not in (it.get("url") or "").lower() and "county" not in pub.lower():
+            continue
+        if not is_gov(pub, it["url"]):
+            continue
+        base = it["url"].rstrip("/")
+        layers = [base] if re.search(r"/\d+$", base) else []
+        if not layers:
+            try:
+                _, _, sb = get(base, {"f": "json"})
+                sv = json.loads(sb)
+                for L in sv.get("layers") or []:
+                    if "polygon" in str(L.get("geometryType", "")).lower() or re.search(r"parcel", L.get("name", ""), re.I):
+                        layers.append("%s/%s" % (base, L["id"]))
+            except Exception:  # noqa: BLE001
+                continue
+        for lu in layers[:4]:
+            if lu in seen:
+                continue
+            seen.add(lu)
+            try:
+                _, _, mb = get(lu, {"f": "json"})
+                meta = json.loads(mb)
+            except Exception:  # noqa: BLE001
+                continue
+            F = guess_fields(meta.get("fields"))
+            if "pid" not in F or "owner" not in F:
+                continue
+            e = {"id": "co-%s" % fips, "verified": False, "name": "%s County parcels" % c["name"], "by": pub.strip(),
+                 "url": lu, "about": "https://www.arcgis.com/home/item.html?id=%s" % it.get("id"), "fields": F, "found": "arcgis-search"}
+            ok, notes = check(e, c["pt"], "co-%s" % fips)
+            e["verified"], e["notes"] = ok, notes
+            e["checked_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            if ok:
+                return e, "ok"
+    return None, "no public government parcel layer with owner fields found"
+
+
+def owner_at(e, pt):
+    """True when the layer has a parcel with a non-blank owner at this point."""
+    try:
+        _, _, body = get(e["url"].rstrip("/") + "/query", {"f": "json", "geometry": "%f,%f" % pt, "geometryType": "esriGeometryPoint", "inSR": 4326,
+                                                         "spatialRel": "esriSpatialRelIntersects", "outFields": "*", "returnGeometry": "false"})
+        feats = json.loads(body).get("features") or []
+    except Exception:  # noqa: BLE001
+        return None
+    if not feats:
+        return False
+    a = feats[0].get("attributes") or {}
+    return any(str(a.get(n) or "").strip() for n in (e.get("fields") or {}).get("owner", []))
+
+
+def county_cover(e, st, pts):
+    """A statewide layer can leave counties out or blank their owners (Minnesota counties choose).
+    Ask once per county and keep the list of counties where an owner came back."""
+    got, blank = [], []
+    for fips, c in sorted(pts.items()):
+        if c["st"] != st:
+            continue
+        r = owner_at(e, c["pt"])
+        (got if r else blank).append(fips)
+        time.sleep(0.2)
+    e["covers"] = got
+    e["no_owner_counties"] = blank
+    return e
+
+
+def discover_statewide(st, cand, pts, seen):
+    try:
+        _, _, body = get("https://www.arcgis.com/sharing/rest/search", {"q": '%s (type:"Feature Service" OR type:"Map Service")' % cand["search"], "f": "json", "num": 25})
+        save_raw("search-statewide-%s.json" % st, body)
+        items = json.loads(body).get("results") or []
+    except Exception as e:  # noqa: BLE001
+        return None
+    cos = [v for v in pts.values() if v["st"] == st]
+    for it in items:
+        if it.get("access") != "public" or not it.get("url"):
+            continue
+        pub = "%s %s" % (it.get("owner", ""), it.get("orgName", "") or "")
+        if not is_gov(pub, it["url"]):
+            continue
+        base = it["url"].rstrip("/")
+        layers = [base] if re.search(r"/\d+$", base) else []
+        if not layers:
+            try:
+                _, _, sb = get(base, {"f": "json"})
+                layers = ["%s/%s" % (base, L["id"]) for L in json.loads(sb).get("layers") or [] if "polygon" in str(L.get("geometryType", "")).lower()]
+            except Exception:  # noqa: BLE001
+                continue
+        for lu in layers[:3]:
+            if lu in seen:
+                continue
+            seen.add(lu)
+            try:
+                _, _, mb = get(lu, {"f": "json"})
+                F = guess_fields(json.loads(mb).get("fields"))
+            except Exception:  # noqa: BLE001
+                continue
+            if "pid" not in F or "owner" not in F:
+                continue
+            e = {"id": "%s-statewide" % st.lower(), "verified": False, "name": cand["name"], "by": pub.strip(), "url": lu,
+                 "about": cand.get("about"), "fields": F, "found": "arcgis-search"}
+            ok, notes = check(e, cos[len(cos) // 2]["pt"], e["id"])
+            e["verified"], e["notes"] = ok, notes
+            e["checked_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            if ok:
+                return county_cover(e, st, pts)
+    return None
+
+
+def coverage(reg, pts):
+    out = {}
+    for st, total in COUNTY_TOTAL.items():
+        sw = [s for s in (reg.get("statewide") or {}).get(st, []) if s.get("verified")]
+        whole = any("covers" not in s for s in sw)
+        covered = set(f for s in sw for f in s.get("covers", []))
+        cos = [f for f, v in pts.items() if v["st"] == st]
+        n = 0
+        for f in cos:
+            ents = (reg.get("counties") or {}).get(f) or []
+            if whole or f in covered or any(e.get("verified") for e in ents):
+                n += 1
+        out[st] = {"parcels_statewide_verified": bool(sw), "parcels_counties_verified": n, "of": total}
+    return out
+
+
+def run(discover):
+    reg = json.load(open(REG))
+    pts = county_points()
+    now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    for st, ents in (reg.get("statewide") or {}).items():
+        cos = [v for v in pts.values() if v["st"] == st]
+        for e in ents:
+            ok, notes = check(e, cos[len(cos) // 2]["pt"], e["id"])
+            e["verified"], e["notes"], e["checked_utc"] = ok, notes, now
+            print("%s %s: %s" % ("ok  " if ok else "FAIL", e["id"], "; ".join(notes)))
+    for fips, ents in list((reg.get("counties") or {}).items()):
+        for e in ents:
+            ok, notes = check(e, pts[fips]["pt"], e["id"])
+            e["verified"], e["notes"], e["checked_utc"] = ok, notes, now
+            print("%s %s: %s" % ("ok  " if ok else "FAIL", e["id"], "; ".join(notes)))
+    if discover:
+        seen = set(e["url"] for v in (reg.get("counties") or {}).values() for e in v)
+        for st, cands in ((reg.get("discover") or {}).get("statewide_candidates") or {}).items():
+            if any(x.get("verified") for x in (reg.get("statewide") or {}).get(st, [])):
+                continue
+            for cand in cands:
+                e = discover_statewide(st, cand, pts, seen)
+                print("%s statewide %s: %s" % (st, cand["name"], "found %s, owners in %d counties" % (e["url"], len(e["covers"])) if e else "none verified"))
+                if e:
+                    reg.setdefault("statewide", {}).setdefault(st, []).append(e)
+                    break
+        for st in (reg.get("discover") or {}).get("states", []):
+            sw = [x for x in (reg.get("statewide") or {}).get(st, []) if x.get("verified")]
+            if sw and not any("covers" in x for x in sw):
+                continue
+            covered = set(f for x in sw for f in x.get("covers", []))
+            for fips, c in sorted(pts.items()):
+                if c["st"] != st or fips in covered or any(e.get("verified") for e in (reg.get("counties") or {}).get(fips, [])):
+                    continue
+                e, why = discover_county(fips, c, seen)
+                print("%s %s %s County: %s" % (st, fips, c["name"], why))
+                if e:
+                    reg.setdefault("counties", {})[fips] = [e]
+                time.sleep(0.4)
+    reg["checked_utc"] = now
+    reg["coverage"] = coverage(reg, pts)
+    for st, v in reg["coverage"].items():
+        print("::notice::parcel and owner coverage %s: %d of %d counties%s" % (st, v["parcels_counties_verified"], v["of"], " (statewide)" if v["parcels_statewide_verified"] else ""))
+    with open(REG, "w") as f:
+        json.dump(reg, f, indent=1)
+        f.write("\n")
+    return 0
+
+
+def selftest():
+    bad = 0
+
+    def ck(name, ok):
+        nonlocal bad
+        print(("ok   " if ok else "FAIL ") + name)
+        bad += 0 if ok else 1
+    F = guess_fields([{"name": n} for n in ["OBJECTID", "PIN", "OWNER_NAME", "OWNER_NAME2", "MAIL_ADDR", "SITE_ADDR", "DEED_ACRES", "GIS_ACRES", "LAND_VALUE", "BLDG_VALUE", "LEGAL_DESC", "Shape"]])
+    ck("finds parcel number", F.get("pid") == ["PIN"])
+    ck("finds both owner fields", F.get("owner") == ["OWNER_NAME", "OWNER_NAME2"])
+    ck("finds acres by kind", F.get("deed_acres") == ["DEED_ACRES"] and F.get("gis_acres") == ["GIS_ACRES"])
+    ck("finds values", F.get("land") == ["LAND_VALUE"] and F.get("imp") == ["BLDG_VALUE"])
+    ck("no owner field, no owner", "owner" not in guess_fields([{"name": "PIN"}, {"name": "ZONING"}]))
+    ck("WI V11 schema", guess_fields([{"name": n} for n in ["PARCELID", "OWNERNME1", "PSTLADRESS", "GISACRES", "LNDVALUE", "IMPVALUE", "PROPCLASS"]]).get("owner") == ["OWNERNME1"])
+    ck("county office is government", is_gov("Story County Iowa GIS", "https://services.arcgis.com/x/arcgis/rest/services/Parcels/FeatureServer/0"))
+    ck(".gov host is government", is_gov("someone", "https://gis.co.example.mn.us/arcgis/rest/services/Parcels/MapServer/0"))
+    ck("vendor assessor site is not", not is_gov("Schneider Geospatial Beacon", "https://beacon.schneidercorp.com/x"))
+    ck("a private publisher is not", not is_gov("Joe Smith", "https://services.arcgis.com/x/arcgis/rest/services/Parcels/FeatureServer/0"))
+    ck("CORS star passes", cors_ok({"access-control-allow-origin": "*"}))
+    ck("CORS our origin passes", cors_ok({"access-control-allow-origin": "https://agsist.com"}))
+    ck("CORS missing fails", not cors_ok({}))
+    ck("CORS other site fails", not cors_ok({"access-control-allow-origin": "https://example.com"}))
+    ck("point in ring", inside((0.5, 0.5), [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]) and not inside((2, 2), [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]))
+    reg = json.load(open(REG))
+    ck("registry: Wisconsin statewide entries are builtin", all(e.get("builtin") for e in reg["statewide"]["WI"]))
+    ck("registry: nothing is verified by hand (only this script sets it)",
+       all(e.get("checked_utc") or not e.get("verified") for v in reg["statewide"].values() for e in v))
+    print("FAILS=%d" % bad)
+    return 1 if bad else 0
+
+
+if __name__ == "__main__":
+    a = sys.argv[1:]
+    if "--selftest" in a:
+        sys.exit(selftest())
+    sys.exit(run("--discover" in a))

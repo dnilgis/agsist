@@ -284,8 +284,12 @@ test("a failed bid read says so in the readout, not 'none nearby'", { skip }, as
   try {
     const { pg, errors } = await openPage(browser, port, 1280, { bidsDown: true });
     await pg.click("#fs-demo2");
-    await pg.waitForFunction(() => /reach the cash-bid feed/.test(document.getElementById("fs-bids").textContent), null, { timeout: 20000 });
-    await pg.waitForFunction(() => /feed didn.t answer/.test(document.getElementById("fs-vitals").textContent), null, { timeout: 20000 });
+    // #fs-bids and #fs-vitals exist only once field-scout-read.js has loaded and drawn the deck, which can
+    // land after the first poll. A predicate that throws on the missing node ends waitForFunction at once
+    // (it does not retry), so the test failed or passed on load order. Read a missing node as empty text.
+    const shows = (id, re) => pg.waitForFunction(([id, re]) => new RegExp(re).test((document.getElementById(id) || {}).textContent || ""), [id, re], { timeout: 20000 });
+    await shows("fs-bids", "reach the cash-bid feed");
+    await shows("fs-vitals", "feed didn.t answer");
     assert.doesNotMatch(await pg.textContent("#fs-vitals"), /none nearby/);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
