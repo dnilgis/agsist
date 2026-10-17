@@ -25,21 +25,24 @@ COST, AND WHY THIS NOW RUNS AS A BATCH (2026-09-19)
   1. Message Batches, 50% off input and output. A monthly job does not need
      its answers in seconds. Batches usually finish within the hour and are
      allowed 24.
-  2. The model is a setting: ATLAS_READS_MODEL, default claude-haiku-4-5-20251001
+  2. The model is a setting: ATLAS_READS_MODEL, default the cheaper model
      since 2026-10-11 (Sig: use the cheaper model; was claude-sonnet-5,
-     $2/$10 per million tokens against $1/$5 for Haiku 4.5). The number
+     $2/$10 per million tokens against $1/$5 for Haiku 4.5). 2026-10-17:
+     claude-haiku-5-5, the newest Haiku, $0.10/$0.50 (claude_models.py). The number
      check and the voice check still gate every read, whichever model wrote it. `--trial N` writes N
      counties on two models side by side into data/atlas/reads-trial.json so
-     the cheaper one (claude-haiku-4-5-20251001, $1/$5) can be judged on this
+     the cheaper one can be judged on this
      gate's own pass rate before it is used for real.
   3. A read is carried forward, not rewritten, when the block of numbers it
      was written from has not changed. The county fingerprint changes every
      month because heat and the partial-year loss record move; most of the
      numbers a read uses do not. Each read stores the hash of its block.
 
-  Prompt caching is NOT used: the system prompt is about 900 tokens since the
-  voice section went in (2026-10-11) and the documented minimum is 1,024
-  (Sonnet) and 4,096 (Haiku 4.5). Marking it would change nothing.
+  Prompt caching (2026-10-17): the system prompt is about 900 tokens and the
+  minimum cacheable prefix is 512 on Haiku 5.5 and Sonnet 5.5 (it was 4,096 on
+  Haiku 4.5, so it was not marked before). The same prompt goes out about
+  3,000 times a run, so it is marked; batches cache on a best-effort basis
+  and the usage line in the log shows how many reads hit.
 
 VOICE (2026-10-11)
   The 9/19 reads passed every number check and still read as machine-written:
@@ -90,7 +93,8 @@ ATLAS = "data/atlas/atlas.json"
 DETAIL_DIR = "data/atlas/counties"
 OUT = "data/atlas/reads.json"
 API = "https://api.anthropic.com/v1/messages"
-MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or "claude-haiku-4-5-20251001"   # Sig 2026-10-11: the cheaper model
+import claude_models  # noqa: E402  ONE table of models, thinking-off words and prices
+MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or claude_models.CHECKER   # Sig 2026-10-11: the cheaper model
 MODE = os.environ.get("ATLAS_READS_MODE", "").strip() or "batch"      # batch | sync
 BATCH_WAIT_MIN = float(os.environ.get("ATLAS_READS_BATCH_WAIT_MIN", "") or 180)
 # ONE DEADLINE, AND IT COUNTS FROM THE JOB'S START WHEN THE WORKFLOW SAYS WHEN
@@ -109,7 +113,7 @@ if _JOB_T0:
 if MODE not in ("batch", "sync"):
     sys.exit(f"ATLAS_READS_MODE must be batch or sync, not {MODE!r}")
 TRIAL_MODELS = [m.strip() for m in (os.environ.get("ATLAS_READS_TRIAL_MODELS", "")
-                or "claude-haiku-4-5-20251001,claude-sonnet-5").split(",") if m.strip()]
+                or f"{claude_models.CHECKER},{claude_models.WRITER}").split(",") if m.strip()]
 # NOT under data/atlas: that directory is committed and served on agsist.com,
 # and a trial is rejected model text by design. The file goes in the runner's
 # temp dir and every text is printed to the log, which is where it is read.
@@ -461,7 +465,10 @@ def request_params(block, model, why=None):
         retry = f"\n\nA first read of these numbers failed the check: {why}. Write a new one that passes; stay under 110 words."
     else:
         retry = ""
-    return {"model": model, "max_tokens": 400, "thinking": {"type": "disabled"}, "system": SYSTEM,
+    # SYSTEM is the same for every county: cached (claude_models.cached_system).
+    # The thinking word differs by model: Sonnet 5.5 400s on "disabled".
+    return {"model": model, "max_tokens": 400, "thinking": claude_models.no_thinking(model),
+            "system": claude_models.cached_system(SYSTEM),
             "messages": [{"role": "user", "content": "Numbers for this county:\n\n" + block + "\n\nWrite the read." + retry}]}
 
 
@@ -492,6 +499,14 @@ def _entry(text, sha, block, model, hits):
     return e
 
 
+USAGE = {}   # summed usage of every answer this run, for the cost line
+
+
+def _add_usage(u):
+    for k in ("input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"):
+        USAGE[k] = USAGE.get(k, 0) + int((u or {}).get(k) or 0)
+
+
 def parse_results(jsonl_bytes):
     """{custom_id: ("text", str) | ("error", str)} from a batch results file."""
     out = {}
@@ -506,6 +521,7 @@ def parse_results(jsonl_bytes):
         cid, res = d.get("custom_id"), d.get("result") or {}
         if res.get("type") == "succeeded":
             msg = res.get("message") or {}
+            _add_usage(msg.get("usage"))
             if msg.get("stop_reason") in ("refusal", "max_tokens"):
                 out[cid] = ("error", f"stop_reason {msg.get('stop_reason')}")
                 continue
@@ -569,6 +585,7 @@ def _wait_and_collect(api_key, bid, label, t0):
         time.sleep(30)
     log(f"  {label}: ended in {time.time() - t0:.0f}s, {st.get('request_counts')}")
     res = parse_results(api_json(api_key, "GET", f"/v1/messages/batches/{bid}/results", timeout=300))
+    log(f"  {label}: run so far, " + claude_models.usage_line(MODEL, USAGE, batch=True))
     # EVERY REQUEST ERRORED THE SAME WAY: that is an account or model problem,
     # not 3,000 county problems. Treat it as fatal so nothing is overwritten.
     errs = [v[1] for v in res.values() if v[0] == "error"]
@@ -593,6 +610,7 @@ def call_model(api_key, block, model=None):
         try:
             with urllib.request.urlopen(req, timeout=120) as r:
                 d = json.load(r)
+            _add_usage(d.get("usage"))
             if d.get("stop_reason") in ("refusal", "max_tokens"):
                 raise ApiError(f"stop_reason {d.get('stop_reason')}")
             return "".join(p.get("text", "") for p in d.get("content", []) if p.get("type") == "text").strip()
@@ -690,6 +708,13 @@ def carry(have, rec, block):
 
 def selftest():
     assert request_params('x', 'claude-sonnet-5').get('thinking') == {'type': 'disabled'}, 'reads must not think: it eats max_tokens'
+    # 2026-10-17: the same rule on the current models, each in its own word
+    assert request_params('x', 'claude-haiku-5-5').get('thinking') == {'type': 'disabled'}, 'reads must not think: it eats max_tokens'
+    assert request_params('x', 'claude-sonnet-5-5').get('thinking') == {'type': 'between_tools'}, 'Sonnet 5.5 400s on disabled'
+    _rp = request_params('x', MODEL)
+    assert _rp['max_tokens'] == 400 and _rp['system'][0]['text'] == SYSTEM
+    assert _rp['system'][0].get('cache_control') == {'type': 'ephemeral'}, 'the shared prompt is cached'
+    assert 'temperature' not in _rp, 'Haiku 5.5 and Sonnet 5.5 400 on a non-default temperature'
     rec = {"name": "Adams", "state": "NE", "sha": "abc",
            "rent": {"status": "ok", "nonirr": {"year": 2025, "value": 138.0},
                     "nonirr_change10": {"from_year": 2014, "to_year": 2025, "pct": 7.8}, "irr": {"year": 2025, "value": 289.0}},
