@@ -365,5 +365,11 @@
     "consistency": [],
     "dry_run": false
   },
-  "first_published_at": "2026-10-16T10:47:49.880541+00:00"
+  "first_published_at": "2026-10-16T10:47:49.880541+00:00",
+  "corrections": [
+    {
+      "date": "2026-10-17",
+      "text": "The hog price in this issue, $75.55, was the October contract, which expired Oct 14. December lean hogs settled at $66.925 on Oct 16, up 35 cents. Other prices here were afternoon trades read before the settle; the Oct 16 settles were corn $4.74¼ (down 3¾ cents), soybeans $12.61¼ (down 1¾ cents), wheat $6.60½ (down 9½ cents), live cattle $227.55 and feeder cattle $343.625. Crude oil's $99.25 was a 1:46 p.m. trade, not the close."
+    }
+  ]
 }
