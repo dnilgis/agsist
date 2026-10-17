@@ -1095,7 +1095,8 @@
     var ticks = [];
     for (var v = 0; v <= dom + 1e-9; v += step) if (v === 0 || y(v) > HB + 18) ticks.push(v);
     var topTick = ticks[ticks.length - 1];
-    var tickNum = function (v) { return LOC.mm ? num(Math.round(v * MM), 0) : String(+v.toFixed(6)); };
+    // the top number carries the unit, "40 in" (2026-10-17, art panel: a bare scale read as a count)
+    var tickNum = function (v) { return (LOC.mm ? num(Math.round(v * MM), 0) : String(+v.toFixed(6))) + (v > 0 && v === topTick ? (LOC.mm ? ' mm' : ' in') : ''); };
     ticks.forEach(function (v) { if (v > 0) room.seg(X0, y(v), X1, y(v), 0.7, 'axis', 'soft'); room.text(box(X0 - 12, y(v) + 4.5, tickNum(v), { size: 13, anchor: 'end' }), 'axis'); });
     room.seg(X0, PB, X1, PB, 0.9 * PT, 'axis', 'axis');
     E.starts.concat([isLeap(E.year) ? 366 : 365]).forEach(function (b) { if (b <= N) room.seg(xs(b), PB, xs(b), PB + 7, 0.75 * PT, 'axis', 'axis'); });

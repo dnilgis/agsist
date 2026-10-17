@@ -2123,6 +2123,7 @@
   // Framed or print only: the same art, with or without the CSS frame. Step 3's pick sets it (setPick).
   function setView(v) {
     $('rp-wall').setAttribute('data-view', v);
+    $('rp-strip').setAttribute('data-view', v);   // the phone's sticky thumbnail wears the same mat
     sampleLine(!!SAMPLE);
   }
   // After the reader's own draw, bring the frame into view if it is above the screen.
