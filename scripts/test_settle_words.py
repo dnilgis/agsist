@@ -101,6 +101,19 @@ def main():
     chk("75.55" not in pdata["price_block"], "the dead Oct '26 price is nowhere")
     chk(pdata["locked_changes"]["hogs"].get("kind") == "last", "the lock carries the kind")
 
+    # 2026-10-17: the watch list follows close_kind too. A last trade called a
+    # close there is refused; a look-ahead "today's close" is not.
+    t = g.quote_timing(fetched, {"is_closed": False}, last)
+    b = {"headline": "Corn eases", "lead": "Corn is trading at $4.74.", "sections": [],
+         "watch_list": [{"time": "Mon", "desc": "Corn closed $4.74 1/4; a settle under $4.70 opens $4.60."},
+                        {"time": "Tue", "desc": "Watch today's close against $4.70 on Dec corn."}]}
+    _, w = g.validate_briefing(b, {"corn-dec": 4.7425}, t)
+    wl = [x for x in w if "(watch list)" in x]
+    chk(len(wl) == 1 and "closed $4.74" in wl[0], "a watch item calling a last trade closed is refused, the look-ahead one is not (%s)" % wl)
+    t2 = g.quote_timing("2026-10-17T05:00:00Z", {"is_closed": True}, done)
+    _, w2 = g.validate_briefing(b, {"corn-dec": 4.7425}, t2)
+    chk(not [x for x in w2 if "(watch list)" in x], "on a settled board the same watch item passes")
+
     print("PASS" if ok else "FAIL")
     return 0 if ok else 1
 

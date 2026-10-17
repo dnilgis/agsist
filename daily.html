@@ -806,6 +806,28 @@ function renderToday(data,why){
   // day, with no window label, against this page's own lead (audit 2026-09-22).
   function ctStamp(iso){try{return new Date(iso).toLocaleString('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'2-digit'});}catch(e){return '';}}
   function ctWeekday(isoDate){try{return new Date(isoDate+'T12:00:00Z').toLocaleString('en-US',{timeZone:'America/Chicago',weekday:'short'});}catch(e){return '';}}
+  /* stripNote:start -- twin of quote_strip_note() in scripts/generate_daily.py
+     (test/daily-strip-kind.test.mjs holds them equal). '' for a strip whose
+     quotes carry no kind (issues before 2026-10-17): those keep their old words. */
+  function stripNote(strip){
+    var qs=(strip&&strip.quotes)||[],D=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    if(!qs.some(function(q){return q.kind;}))return '';
+    function ymd(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s||''));return m?new Date(Date.UTC(+m[1],+m[2]-1,+m[3])):null;}
+    function wd(s){var d=ymd(s);return d?D[d.getUTCDay()]:'';}
+    function sess(s){var d=ymd(s);return d?D[d.getUTCDay()]+' '+M[d.getUTCMonth()]+' '+d.getUTCDate():'';}
+    function ct(iso){try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit',hour12:true,weekday:'short'}).formatToParts(new Date(iso)).forEach(function(x){p[x.type]=x.value;});if(!p.hour)return '';return p.hour+':'+p.minute+' '+String(p.dayPeriod||'').toUpperCase()+' CT '+p.weekday;}catch(e){return '';}}
+    function and(xs){return xs.length===1?xs[0]:xs.slice(0,-1).join(', ')+' and '+xs[xs.length-1];}
+    var st=qs.filter(function(q){return q.kind==='settle';}),la=qs.filter(function(q){return q.kind!=='settle';});
+    var vs=strip.vs_session?wd(strip.vs_session):'',when=strip.session?sess(strip.session):'';
+    var at=null;la.forEach(function(q){if(!at&&q.at)at=q.at;});at=at||strip.asof;var atS=at?ct(at):'';
+    var head;
+    if(!la.length)head='Exchange settles'+(when?', '+when:'');
+    else if(!st.length)head='Last trades'+(atS?' as of '+atS:'')+', not the settle';
+    else head='Exchange settles'+(when?', '+when:'')+', except the last trade for '+and(la.map(function(q){return q.name;}))+(atS?' as of '+atS:'');
+    var bits=[head];if(vs)bits.push('change vs '+vs+' settle');bits.push('Yahoo Finance, delayed');
+    return bits.join(' \u00B7 ');
+  }
+  /* stripNote:end */
   var sparks='';
   var strip=data.quote_strip;
   if(!strip&&data.locked_prices&&data.locked_changes){
@@ -816,9 +838,11 @@ function renderToday(data,why){
       var last=lpF[key],ch=lcF[key]||{};
       if(typeof last!=='number'||last<=0)return;
       if(typeof ch.prev!=='number'||ch.prev<=0||typeof ch.pct!=='number')return;
-      qsF.push({key:key,name:pair[1],contract:'',last:last,prev:ch.prev,pct:ch.pct});
+      var qf={key:key,name:pair[1],contract:'',last:last,prev:ch.prev,pct:ch.pct};
+      if(ch.kind==='settle'||ch.kind==='last'){qf.kind=ch.kind;if(ch.kind==='last'&&ch.at)qf.at=ch.at;}
+      qsF.push(qf);
     });
-    if(qsF.length)strip={asof:(data.board||{}).fetched||null,vs_session:(data.board||{}).prev_close_session||null,quotes:qsF};
+    if(qsF.length)strip={asof:(data.board||{}).fetched||null,session:(data.board||{}).quote_session||null,vs_session:(data.board||{}).prev_close_session||null,quotes:qsF};
   }
   if(strip&&strip.quotes&&strip.quotes.length){
     sparks='<div class="dv3-quotes">';
@@ -842,12 +866,16 @@ function renderToday(data,why){
       '</div>';
     });
     sparks+='</div>';
+    var kindNote=stripNote(strip);
+    if(kindNote){sparks+='<div class="dv3-quote-asof">'+escHtml(kindNote)+'</div>';}
+    else{
     var asofBits=[];
     var qSt=strip.asof&&window.AgAsOf?AgAsOf.html(strip.asof,'daily',{prefix:'Quotes as of'}):'';
     if(strip.asof&&!qSt){var t=ctStamp(strip.asof);if(t)asofBits.push('Quotes as of '+t+' CT');}
     if(strip.vs_session){var wd=ctWeekday(strip.vs_session);if(wd)asofBits.push('change vs '+wd+' close');}
     asofBits.push('Yahoo Finance, delayed, not CME settlements');
     sparks+='<div class="dv3-quote-asof">'+(qSt?qSt+' \u00B7 ':'')+escHtml(asofBits.join(' \u00B7 '))+'</div>';
+    }
   }
 
   // Sections

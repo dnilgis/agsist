@@ -890,8 +890,15 @@ def build_quote_strip(locked_prices, locked_changes, board):
             contract = f"{parts[1]} {parts[2]}" if len(parts) == 3 else key.split("-", 1)[1].capitalize()
         else:
             contract = "nearby"
-        quotes.append({"key": key, "name": name, "contract": contract,
-                       "last": last, "prev": prev, "pct": pct})
+        q = {"key": key, "name": name, "contract": contract,
+             "last": last, "prev": prev, "pct": pct}
+        # 2026-10-17: the strip says settle or last trade per quote (fetch_prices
+        # v3.7 close_kind, carried in locked_changes), never "not CME
+        # settlements" over a row of settles.
+        if ch.get("kind") in ("settle", "last"):
+            q["kind"] = ch["kind"]
+            if ch["kind"] == "last" and ch.get("at"): q["at"] = ch["at"]
+        quotes.append(q)
     if not quotes: return None
     b = board or {}
     return {"asof": b.get("fetched") or None,
@@ -958,14 +965,53 @@ def render_quote_strip_html(strip):
             f'<span class="dv3-quote-win">{html_esc(q["contract"])}</span></div>'
             f'<span class="dv3-quote-price">{price_str}</span>'
             f'<span class="dv3-quote-chg {cls}">{html_esc(chg_str)}</span></div>')
-    bits = []
-    asof = _ct_stamp(strip.get("asof")) if strip.get("asof") else ""
-    if asof: bits.append(f"Quotes as of {asof}")
-    vs = _ct_weekday(strip.get("vs_session")) if strip.get("vs_session") else ""
-    if vs: bits.append(f"change vs {vs} close")
-    bits.append("Yahoo Finance, delayed, not CME settlements")
-    asof_html = f'<div class="dv3-quote-asof">{html_esc(" · ".join(bits))}</div>'
+    asof_html = f'<div class="dv3-quote-asof">{html_esc(quote_strip_note(strip))}</div>'
     return '<div class="dv3-quotes">' + "".join(cells) + "</div>" + asof_html
+
+
+def _and_names(xs):
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
+def _session_words(iso_date):
+    """"Fri Oct 16" from an ISO date; '' when unparseable."""
+    try:
+        d = datetime.strptime(str(iso_date)[:10], "%Y-%m-%d")
+        return f"{d.strftime('%a %b')} {d.day}"
+    except Exception:
+        return ""
+
+
+def quote_strip_note(strip):
+    """The line under the strip. A strip written before quotes carried their
+    kind (issues before 2026-10-17) keeps the words it was published with.
+    Twin of stripNote() in daily.html; test/daily-strip-kind.test.mjs holds
+    the two equal."""
+    qs = (strip or {}).get("quotes") or []
+    vs = _ct_weekday(strip.get("vs_session")) if strip.get("vs_session") else ""
+    if not any(q.get("kind") for q in qs):
+        bits = []
+        asof = _ct_stamp(strip.get("asof")) if strip.get("asof") else ""
+        if asof: bits.append(f"Quotes as of {asof}")
+        if vs: bits.append(f"change vs {vs} close")
+        bits.append("Yahoo Finance, delayed, not CME settlements")
+        return " · ".join(bits)
+    st = [q["name"] for q in qs if q.get("kind") == "settle"]
+    la = [q for q in qs if q.get("kind") != "settle"]
+    when = _session_words(strip.get("session")) if strip.get("session") else ""
+    at = next((q.get("at") for q in la if q.get("at")), None) or strip.get("asof")
+    at_s = _ct_stamp(at) if at else ""
+    if not la:
+        head = "Exchange settles" + (f", {when}" if when else "")
+    elif not st:
+        head = "Last trades" + (f" as of {at_s}" if at_s else "") + ", not the settle"
+    else:
+        head = ("Exchange settles" + (f", {when}" if when else "") + ", except the last trade for "
+                + _and_names([q["name"] for q in la]) + (f" as of {at_s}" if at_s else ""))
+    bits = [head]
+    if vs: bits.append(f"change vs {vs} settle")
+    bits.append("Yahoo Finance, delayed")
+    return " · ".join(bits)
 
 
 def load_issue_number():
@@ -2221,9 +2267,11 @@ _CLOSE_CLAIM_RE = re.compile(
     r"\s*\$([0-9]+(?:\.[0-9]+)?)\s*(\u00bc|\u00bd|\u00be|\s1/4|\s1/2|\s3/4)?",
     re.I)
 
-def close_claims_on_live_quotes(text, timing):
+def close_claims_on_live_quotes(text, timing, bare=True):
     """Every 'closed $X' / 'settled at $X' in `text` whose X is not a previous
-    settle, while the board is live. [] when the board is settled."""
+    settle, while the board is live. [] when the board is settled.
+    bare=False skips the bare-noun check ("today's close"): a watch-list item
+    looks ahead, and "watch today's close against $4.70" is fine there."""
     if not timing or timing.get("settled"):
         return []
     prevs = list(timing.get("prev_settles", {}).values())
@@ -2241,7 +2289,7 @@ def close_claims_on_live_quotes(text, timing):
     # "the close didn't blink" (2026-10-06, an overnight board): the bare noun
     # names a settle that has not happened. A named past session ("Monday's
     # close", "Friday's settle") is fine and is not matched.
-    for m in _BARE_CLOSE_RE.finditer(text or ""):
+    for m in (_BARE_CLOSE_RE.finditer(text or "") if bare else ()):
         bad.append(m.group(0).strip())
     return bad
 
@@ -2468,6 +2516,14 @@ def validate_briefing(briefing, locked_prices, timing=None):
     for _c in close_claims_on_live_quotes(full_text, timing):
         warnings.append(f"Live quote called a close: \"{_c}\" -- the board is {timing['phase']} "
                         f"as of {timing['as_of']}; only a previous settle may be called closed/settled")
+    # 2026-10-17: the watch list is held to close_kind too. "Corn closed $4.74;
+    # a settle under $4.70 ..." in a watch item on a last-trade board is the
+    # same false statement in a smaller box.
+    for _w in briefing.get("watch_list") or []:
+        _d = (_w or {}).get("desc", "") if isinstance(_w, dict) else ""
+        for _c in close_claims_on_live_quotes(_d, timing, bare=False):
+            warnings.append(f"Live quote called a close: \"{_c}\" (watch list) -- the board is {timing['phase']} "
+                            f"as of {timing['as_of']}; only a previous settle may be called closed/settled")
     em = full_text.count("\u2014"); en = full_text.count("\u2013")
     if em: warnings.append(f"Em dash {em}x")
     if en: warnings.append(f"En dash {en}x")
