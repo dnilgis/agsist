@@ -102,3 +102,13 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - LRP: calculator first on /lrp; stats and tests on /lrp/record. Sells nothing, never routes to agents. 25,000 head limit counts every endorsement together (each class its own 25,000).
 - Stripe: payment-link redirects, shipping, glass description and descriptor done (Oct 15). Still open: STRIPE_READ_KEY secret and an 85-cent test order (refund returns the $19 minus Stripe's fee).
 - (Oct 16, Sig) Byline reads 'Sigurd Lindquist, CCA' everywhere on the site; structured data jobTitle keeps the full credential.
+
+## 2026-10-17 (Sig)
+- Homepage: no byline line in the hero band (Sig: "i dont like highlighted text"). test/home-to50.test.mjs.
+- Cash Bid Index: monthly page /cash-bid-index, scheduled run on the 1st of each month (approved). No reporter email drafts, ever.
+- Elevator widgets: on hold.
+- land-data.yml monthly schedule: NOT approved yet (proposed the 3rd); runs by hand only.
+- Rain Print size: printed on 13 x 19 paper, untrimmed. Framed = 13 x 19 black frame, real glass front, small white mat (11 x 17 mat). All art text and the code stay inside the mat window. Unframed ships as the 13 x 19 sheet.
+- Rain Print box letter: one letter-size page on top in every print/framed box. The buyer's gift note and a business's message print on the letter; no separate note card. No prices in the box.
+- Rain Print paper: Sig wants heavy, textured paper (testing Epson Velvet Fine Art on his own printer). Site paper wording changes only once he picks. Never name the printer on the site.
+- FFAI (farmers1st): Sig approved the audit fixes: price-position labels vs 1995-2019 instead of STRESSED/STRONG, year-ago comparison first, v3 JSON marked retired, in-sample quarters marked, stricter NASS parse, stress run.
