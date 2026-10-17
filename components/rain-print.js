@@ -1889,7 +1889,7 @@
       : HIST_WHY ? HIST_WHY : wantHist() && full && full.length < HIST_MIN ? stationName(META.name) + ' has ' + full.length + ' full years; it takes ' + HIST_MIN + '. Pick the nearest station again under Weather station, or turn this off.' : '');
   }
   function syncCropDays() {
-    var opts = '<option value="">Pick a marked day</option>' + ST.markers.map(function (m) { return '<option value="' + esc(m.date) + '">' + esc(markerWords(m)) + '</option>'; }).join('');
+    var opts = '<option value="">Pick a marked day</option>' + ST.markers.map(function (m) { return '<option value="' + esc(m.date) + '">' + esc(shortDate(m.date) + (m.label ? ', ' + m.label : '')) + '</option>'; }).join('');
     ['rp-crop-plant', 'rp-crop-harvest'].forEach(function (id) {
       var el = $(id); if (!el) return;
       var v = id === 'rp-crop-plant' ? ST.cropPlant : ST.cropHarvest;
@@ -2653,6 +2653,7 @@
     if (!$('rp-order').hidden) syncSummary();
     if ($('rp-proof').open) proofRender();
     syncStrip();
+    syncExtrasUi();
   }
 
   function blockPrint(msg) {

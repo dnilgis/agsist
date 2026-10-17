@@ -801,12 +801,18 @@
      Corn: emerged, V6, silk (tassel and silks), dent (the ear filled), black layer (leaves down, ear angled).
      Soybeans: emerged (two seed leaves), V3, flowering, seed fill (pods), maturing (pods, leaves gone).
      Returns {svg, top (how high the ink reaches above b), half (half its width)}. */
+  // a quadratic curve as short straight pieces (absolute L only, so every reader of the SVG sees the same lines)
+  function qL(x0, y0, cx, cy, x1, y1) {
+    var d = '';
+    for (var k = 1; k <= 4; k++) { var t = k / 4, u = 1 - t; d += 'L' + n2(u * u * x0 + 2 * u * t * cx + t * t * x1) + ',' + n2(u * u * y0 + 2 * u * t * cy + t * t * y1); }
+    return d;
+  }
   function plantArt(kind, key, x, b, ink, h) {
     var p = [], top = 8, half = 6;
     var L = function (d) { p.push('<path d="' + d + '"/>'); };
     var leaf = function (y, side, len, droop) {
       var ex = x + side * len, ey = b - y + (droop === undefined || droop === null ? -len * 0.35 : droop);
-      L('M' + n2(x) + ',' + n2(b - y) + 'Q' + n2(x + side * len * 0.55) + ',' + n2(b - y - len * 0.45) + ' ' + n2(ex) + ',' + n2(ey));
+      L('M' + n2(x) + ',' + n2(b - y) + qL(x, b - y, x + side * len * 0.55, b - y - len * 0.45, ex, ey));
       half = Math.max(half, len + 1);
     };
     if (kind === 'corn') {
@@ -818,9 +824,11 @@
         [0.18, 0.32, 0.46, 0.6, 0.74].forEach(function (f, k) { leaf(h * f, k % 2 ? 1 : -1, dry ? 9 : 12, droop ? (dry ? 9 : 3) : null); });
         L('M' + n2(x) + ',' + n2(b - h) + 'l-4,-6M' + n2(x) + ',' + n2(b - h) + 'l4,-6M' + n2(x) + ',' + n2(b - h) + 'v-8');
         var ey = b - h * 0.5;
-        if (key === 'R1') p.push('<path d="M' + n2(x + 1) + ',' + n2(ey) + 'q4,-2 4,-9q0,-4 -3,-4"/><path d="M' + n2(x + 4) + ',' + n2(ey - 13) + 'q3,-4 6,-3M' + n2(x + 4) + ',' + n2(ey - 13) + 'q4,-1 7,2"/>');
-        else if (key === 'R5') p.push('<path d="M' + n2(x + 1) + ',' + n2(ey) + 'q6,-2 6,-11q0,-4 -4,-4z"/>');
-        else if (dry) p.push('<path d="M' + n2(x + 1) + ',' + n2(ey) + 'q8,1 10,8q-6,3 -10,-2z"/>');
+        // the ear at half height: silks at R1, filled at R5, angled down at black layer
+        if (key === 'R1') { L('M' + n2(x + 1) + ',' + n2(ey) + qL(x + 1, ey, x + 5, ey - 2, x + 5, ey - 9) + qL(x + 5, ey - 9, x + 5, ey - 13, x + 2, ey - 13));
+          L('M' + n2(x + 4) + ',' + n2(ey - 13) + qL(x + 4, ey - 13, x + 7, ey - 17, x + 10, ey - 16)); L('M' + n2(x + 4) + ',' + n2(ey - 13) + qL(x + 4, ey - 13, x + 8, ey - 14, x + 11, ey - 11)); }
+        else if (key === 'R5') L('M' + n2(x + 1) + ',' + n2(ey) + qL(x + 1, ey, x + 7, ey - 2, x + 7, ey - 11) + qL(x + 7, ey - 11, x + 7, ey - 15, x + 3, ey - 15) + 'Z');
+        else if (dry) L('M' + n2(x + 1) + ',' + n2(ey) + qL(x + 1, ey, x + 9, ey + 1, x + 11, ey + 8) + qL(x + 11, ey + 8, x + 5, ey + 11, x + 1, ey + 6) + 'Z');
         top = h + 8; half = Math.max(half, 13);
       }
     } else {
@@ -836,7 +844,7 @@
         [[0.3, -1], [0.5, 1], [0.7, -1]].forEach(function (q) { L('M' + n2(x) + ',' + n2(b - bh * q[0]) + 'l' + n2(q[1] * 8) + ',-5'); if (key !== 'R7') tri(x + q[1] * 9, b - bh * q[0] - 7, 2.6); });
         if (key !== 'R7') tri(x, b - bh - 4, 3);
         if (key === 'R1') p.push('<circle cx="' + n2(x + 3) + '" cy="' + n2(b - bh * 0.45) + '" r="1.4"/>');
-        if (key === 'R5' || key === 'R7') [0.25, 0.45, 0.65].forEach(function (f) { p.push('<path d="M' + n2(x + 1) + ',' + n2(b - bh * f) + 'q4,1 4,6"/>'); });
+        if (key === 'R5' || key === 'R7') [0.25, 0.45, 0.65].forEach(function (f) { var py = b - bh * f; L('M' + n2(x + 1) + ',' + n2(py) + qL(x + 1, py, x + 5, py + 1, x + 5, py + 6)); });
         top = bh + 8; half = 13;
       }
     }
@@ -1305,7 +1313,7 @@
       hist.threads.forEach(function (h) {
         var s = 'M' + X0 + ',' + PB;
         for (var i = 0; i < Math.min(h.cum.length, N); i++) s += 'L' + n2(xs(i + 1)) + ',' + n2(y(h.cum[i]));
-        hpath += '<path d="' + s + '"/>';
+        hpath += '<path d="' + s + '" stroke="' + X.thread + '"/>';
       });
       o.push(G0('hist') + '<g fill="none" stroke="' + X.thread + '" stroke-width="0.7" stroke-linejoin="round">' + hpath + '</g>' + G1);
     }
