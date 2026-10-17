@@ -201,12 +201,12 @@ def discover_county(fips, c, seen):
         return None, "search failed: %s" % e
     stname = {"MN": "Minnesota", "IA": "Iowa", "IL": "Illinois", "WI": "Wisconsin"}.get(c["st"], c["st"])
     for it in items:
-        title = it.get("title", "") + " " + it.get("snippet", "") + " " + " ".join(it.get("tags") or [])
+        title = (it.get("title") or "") + " " + (it.get("snippet") or "") + " " + " ".join(t for t in (it.get("tags") or []) if t)
         if c["name"].lower() not in title.lower() or not re.search(r"parcel", title, re.I):
             continue
         if it.get("access") != "public" or not it.get("url"):
             continue
-        pub = "%s %s" % (it.get("owner", ""), it.get("orgName", "") or "")
+        pub = "%s %s" % (it.get("owner") or "", it.get("orgName") or "")
         if it.get("orgId"):
             try:
                 _, _, ob = get("https://www.arcgis.com/sharing/rest/portals/%s" % it["orgId"], {"f": "json"})
@@ -224,7 +224,7 @@ def discover_county(fips, c, seen):
                 _, _, sb = get(base, {"f": "json"})
                 sv = json.loads(sb)
                 for L in sv.get("layers") or []:
-                    if "polygon" in str(L.get("geometryType", "")).lower() or re.search(r"parcel", L.get("name", ""), re.I):
+                    if "polygon" in str(L.get("geometryType", "")).lower() or re.search(r"parcel", L.get("name") or "", re.I):
                         layers.append("%s/%s" % (base, L["id"]))
             except Exception:  # noqa: BLE001
                 continue
@@ -290,7 +290,7 @@ def discover_statewide(st, cand, pts, seen):
     for it in items:
         if it.get("access") != "public" or not it.get("url"):
             continue
-        pub = "%s %s" % (it.get("owner", ""), it.get("orgName", "") or "")
+        pub = "%s %s" % (it.get("owner") or "", it.get("orgName") or "")
         if not is_gov(pub, it["url"]):
             continue
         base = it["url"].rstrip("/")
@@ -372,7 +372,10 @@ def run(discover):
             for fips, c in sorted(pts.items()):
                 if c["st"] != st or fips in covered or any(e.get("verified") for e in (reg.get("counties") or {}).get(fips, [])):
                     continue
-                e, why = discover_county(fips, c, seen)
+                try:
+                    e, why = discover_county(fips, c, seen)
+                except Exception as ex:  # noqa: BLE001  one odd answer must not stop the other counties
+                    e, why = None, "discovery error: %s" % ex
                 print("%s %s %s County: %s" % (st, fips, c["name"], why))
                 if e:
                     reg.setdefault("counties", {})[fips] = [e]
@@ -410,6 +413,16 @@ def selftest():
     ck("CORS missing fails", not cors_ok({}))
     ck("CORS other site fails", not cors_ok({"access-control-allow-origin": "https://example.com"}))
     ck("point in ring", inside((0.5, 0.5), [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]) and not inside((2, 2), [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]]))
+    global get, save_raw
+    real_get, real_save = get, save_raw
+    get = lambda *a, **k: (200, {}, json.dumps({"results": [{"title": None, "snippet": None, "tags": None, "owner": None, "access": "public", "url": None}]}))
+    save_raw = lambda *a, **k: None
+    try:
+        ck("search answer with empty title and snippet is skipped, not a crash", discover_county("00000", {"name": "Test", "st": "IA"}, set())[0] is None)
+    except Exception as ex:  # noqa: BLE001
+        ck("search answer with empty title and snippet is skipped, not a crash (%s)" % ex, False)
+    finally:
+        get, save_raw = real_get, real_save
     reg = json.load(open(REG))
     ck("registry: Wisconsin statewide entries are builtin", all(e.get("builtin") for e in reg["statewide"]["WI"]))
     ck("registry: nothing is verified by hand (only this script sets it)",
