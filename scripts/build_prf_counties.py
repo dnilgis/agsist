@@ -250,6 +250,16 @@ def page(ctx):
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
     exh = example_html(fx.get("example"), cy, y0, y1, many, ng)
+    # "This interval so far" (components/prf-now.js): the numbers come from
+    # data/prf/now/<ST>.json when the reader opens the page, never baked here.
+    ex_g = (fx.get("example") or {}).get("grid")
+    now_g = ex_g if ex_g in grids else grids[len(grids) // 2]
+    now = (f'<section class="prf-now" id="prf-now" data-st="{stc}" data-grids="{",".join(str(g) for g in grids)}" data-grid="{now_g}" aria-labelledby="prf-now-h">'
+           f'<h2 id="prf-now-h">This interval so far</h2>'
+           f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
+           f'<p class="pn-pick" data-pn-pick hidden></p>'
+           f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
+           f'<script src="/components/prf-now.js?v=1" defer></script>')
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
     return f"""<!DOCTYPE html>
@@ -303,6 +313,7 @@ def page(ctx):
     <p class="prf-fine">USDA&rsquo;s {cy} county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is {money2(prot)} an acre.</p>
     {exh}
     {sod}
+    {now}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
     <p>At 90% coverage{', across the ' + str(ng) + ' grids that touch the county: first the middle of the ' + str(ng) + ' for that pair of months (it can be a different grid in each row), then the lowest and highest' if many else ''}. The premium is the full rate per $100 of protection; USDA pays {subrow}. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the {ny} from {y0} to {y1}, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.</p>
