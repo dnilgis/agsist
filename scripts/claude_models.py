@@ -13,6 +13,11 @@ WHO USES WHAT (2026-10-17)
                                there on 2026-10-11; every read is held to a
                                program's number check and voice check whatever
                                wrote it.
+  REVIEWER claude-opus-5-5     the fact check before the send
+                               (fact_check_briefing.py): the strongest
+                               current model for a careful read of every
+                               number against the source data. It cannot
+                               turn thinking off; effort is the control.
   A model the API does not know (404) falls back once to WRITER_FALLBACK, so a
   name change at Anthropic costs a warning and not a morning.
 
@@ -36,8 +41,10 @@ half price on all four.
 WRITER = "claude-sonnet-5-5"
 WRITER_FALLBACK = "claude-sonnet-5"
 CHECKER = "claude-haiku-5-5"
+REVIEWER = "claude-opus-5-5"
 
 PRICES = {
+    "claude-opus-5-5": (4.00, 20.00, 5.00, 0.20),
     "claude-sonnet-5-5": (2.00, 10.00, 2.50, 0.20),
     "claude-sonnet-5": (2.00, 10.00, 2.50, 0.20),
     "claude-sonnet-4-6": (3.00, 15.00, 3.75, 0.30),
@@ -49,6 +56,7 @@ PRICES = {
 # Smallest prefix each model will cache. A marker on a shorter prefix is ignored
 # without an error (cache_creation_input_tokens stays 0).
 CACHE_MIN_TOKENS = {
+    "claude-opus-5-5": 512,
     "claude-sonnet-5-5": 512,
     "claude-haiku-5-5": 512,
     "claude-sonnet-5": 1024,
@@ -61,7 +69,10 @@ CACHE = {"type": "ephemeral"}
 
 
 def no_thinking(model):
-    """The thinking field that turns extended thinking off on this model."""
+    """The thinking field that turns extended thinking off on this model.
+    Opus 5.5 has none ("disabled" is a 400 there): never send it this."""
+    if model.startswith("claude-opus-5-5") or model.startswith("claude-fable"):
+        raise ValueError(f"{model} cannot turn thinking off; omit thinking and set effort")
     if model.startswith("claude-sonnet-5-5"):
         return {"type": "between_tools"}
     return {"type": "disabled"}
@@ -121,6 +132,11 @@ def selftest():
     # 1M cache reads on Haiku 5.5 is a tenth of its $0.10 input rate; batch halves it
     assert abs(cost_usd(CHECKER, {"cache_read_input_tokens": 10**6}) - 0.01) < 1e-12
     assert abs(cost_usd(CHECKER, {"input_tokens": 10**6}, batch=True) - 0.05) < 1e-12
+    try:
+        no_thinking(REVIEWER)
+        raise AssertionError("Opus 5.5 has no thinking-off word")
+    except ValueError:
+        pass
     assert cost_usd("claude-unknown", {"input_tokens": 1}) is None
     for m in PRICES:
         assert m in CACHE_MIN_TOKENS, m

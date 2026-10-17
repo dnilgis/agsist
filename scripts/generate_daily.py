@@ -216,6 +216,33 @@ def system_blocks(system_prompt):
     return blocks
 
 
+def briefing_inputs_path():
+    """Where this run keeps what the model was handed, for fact_check_briefing.py.
+    The runner's temp dir, never data/: it holds the news digest, which is not
+    published, and it is not committed."""
+    import tempfile
+    return (os.environ.get("BRIEFING_INPUTS_PATH")
+            or os.path.join(os.environ.get("RUNNER_TEMP") or tempfile.gettempdir(),
+                            "agsist-briefing-inputs.json"))
+
+
+def save_briefing_inputs(user_message, system_prompt):
+    """The exact day-specific input of the latest briefing call: the user
+    message (locked price table, timing block, surprises, seasonal note, past
+    issues, news digest) and the system prompt's day part (context blocks,
+    calendar, weekly release line). Fail-open: the fact check says when it is
+    missing and does not treat a news number as unsourced then."""
+    try:
+        blocks = system_blocks(system_prompt)
+        with open(briefing_inputs_path(), "w") as f:
+            json.dump({"saved": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                       "user_message": user_message,
+                       "system_day_part": blocks[-1]["text"] if len(blocks) > 1 else system_prompt},
+                      f, ensure_ascii=False)
+    except Exception as _e:
+        print(f"  [warn] briefing inputs not saved for the fact check ({type(_e).__name__}: {_e})")
+
+
 def briefing_payload(model, system_prompt, user_message):
     """The request body for one briefing. Kept apart so a test can check its
     shape (model, thinking word, cache marker, max_tokens) without a key."""
@@ -2399,8 +2426,9 @@ Attribution: "{todays_quote['attribution']}"
 
 Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no wire-service neutral, no hype, no invented first person. Forward test the lead before you finalize, and check its last sentence against RULE 3. About 400 words, 450 is cut by a machine. Thread NEWS into every section's body, generic "fund positioning" without a specific news tie is wire filler. Rule 13 (level coherence) is failure-mode-zero: the post-gen validator will reject contradictory break claims."""
 
-    payload = briefing_payload(MODEL, build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread, ongoing_situations, editorial_notes, past_one_number_topics, past_phrases, usda_release),
-                               user_message)
+    _sp = build_system_prompt(market_status, past_tmyk_topics, yesterdays_call, weekly_thread, ongoing_situations, editorial_notes, past_one_number_topics, past_phrases, usda_release)
+    save_briefing_inputs(user_message, _sp)
+    payload = briefing_payload(MODEL, _sp, user_message)
     headers = {"Content-Type": "application/json", "x-api-key": api_key, "anthropic-version": "2023-06-01"}
 
     # v4.2 (Phase 2 C5): retry with exponential backoff on transient failures.

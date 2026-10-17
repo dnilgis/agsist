@@ -12,7 +12,7 @@ run budget python3 scripts/check_site_budget.py
 run nav python3 scripts/inject_static_nav.py --check
 run feeds bash -c 'python3 scripts/build_feeds.py && python3 scripts/test_feeds.py'
 for f in network-checks delivery-checks market-clock-checks network-safety-checks homepage-bids-checks; do run $f node scripts/$f.mjs; done
-for t in scripts/test_send_loops.py scripts/test_basis_states.py scripts/test_share_images.py; do [ -f $t ] && run "$(basename $t)" python3 $t; done
+for t in scripts/test_send_loops.py scripts/test_basis_states.py scripts/test_share_images.py scripts/test_fact_check.py; do [ -f $t ] && run "$(basename $t)" python3 $t; done
 run llms python3 scripts/build_llms_txt.py --check
 # number consistency: rule selftests must pass; on the real data it reports only (prints, never fails) until it has run clean
 run numbers bash -c "python3 scripts/check_number_consistency.py --selftest >/dev/null && python3 scripts/check_number_consistency.py > '$OUT/numbers.out' 2>&1; tail -1 '$OUT/numbers.out' >&2; true"
