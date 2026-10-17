@@ -79,10 +79,10 @@
     if (!ISO.test(pc || '') || !ISO.test(fc || '') || !ISO.test(today || '')) return '';
     var y = pc.slice(0, 4);
     if (fc.slice(0, 4) !== y || today < y + '-10-01' || today > y + '-12-25') return '';
-    if (today <= pc && today <= fc) return 'For Christmas delivery, order a print by ' + shortDate(pc) + ' or a framed print by ' + shortDate(fc) + '.';
+    if (today <= pc && today <= fc) return 'For Christmas delivery, order a framed print by ' + shortDate(fc) + ', a print by ' + shortDate(pc) + '.';
     if (today <= pc) return 'For Christmas delivery, order a print by ' + shortDate(pc) + '. A framed print ordered now ships after Christmas.';
     if (today <= fc) return 'For Christmas delivery, order a framed print by ' + shortDate(fc) + '. A print ordered now ships after Christmas.';
-    return 'A past year ordered now ships after Christmas. This year\u2019s print still works: you get a card to give now, and the print follows in January.';
+    return 'A past year ordered now ships after Christmas. The digital file still comes by email in 1 business day, or give this year\u2019s print: a gift card now, the print in January.';
   }
   // Where "see" points: the saved ZIP and last year when known, else the plain page.
   function seeHref(zip, today) {

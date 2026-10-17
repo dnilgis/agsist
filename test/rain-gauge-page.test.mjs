@@ -190,6 +190,6 @@ test("the Christmas line is the shared one from the same cutoffs, hidden until f
   const P = createRequire(import.meta.url)("../components/rain-print-promo.js");
   const cfg = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
   assert.equal(P.xmasLine({ ...cfg, print_christmas_cutoff: "2026-12-10", framed_christmas_cutoff: "2026-12-09" }, "2026-10-17"),
-    "For Christmas delivery, order a print by Dec 10 or a framed print by Dec 9.");
+    "For Christmas delivery, order a framed print by Dec 9, a print by Dec 10.");
   assert.equal(P.xmasLine(cfg, "2026-07-01"), "");
 });

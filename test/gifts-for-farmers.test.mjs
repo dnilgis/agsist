@@ -59,7 +59,7 @@ test("Christmas dates come from data/rain-print.json, never from the page", () =
   const short = (iso) => P.xmasLine({ print_christmas_cutoff: iso, framed_christmas_cutoff: iso }, iso.slice(0, 4) + "-10-02").match(/by (\w+ \d+)/)[1];
   const pc = short(J.print_christmas_cutoff), fc = short(J.framed_christmas_cutoff);
   const y = J.print_christmas_cutoff.slice(0, 4);
-  assert.equal(P.xmasLine(J, y + "-11-15"), "For Christmas delivery, order a print by " + pc + " or a framed print by " + fc + ".");
+  assert.equal(P.xmasLine(J, y + "-11-15"), "For Christmas delivery, order a framed print by " + fc + ", a print by " + pc + ".");
   assert.equal(P.xmasLine(J, y + "-10-01").startsWith("For Christmas delivery"), true, "Oct 1 counts");
   assert.equal(P.xmasLine(J, y + "-09-30"), "", "nothing before October");
   assert.equal(P.xmasLine(J, y + "-12-26"), "", "nothing after Christmas");
