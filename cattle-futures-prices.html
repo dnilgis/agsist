@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=18"></script>
 <script src="/components/asof.js?v=1"></script>
+<script src="/components/price-local.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
@@ -56,6 +57,17 @@
 {"@type":"Question","name":"When is the USDA Cattle on Feed report?","acceptedAnswer":{"@type":"Answer","text":"USDA releases Cattle on Feed monthly, typically on the third or fourth Friday at 2:00 PM CT, covering feedlots with 1,000+ head capacity. The USDA Cattle inventory report, released in January and in some years again mid-year, sizes the whole herd. These, not WASDE, are the cattle market's scheduled movers."}}
 ]}
 ]}</script>
+<style id="fold-css">/* 2026-10-17 phone fold: long secondary sections sit behind a labeled <details>; open on wide screens (data-wide-open). Content stays in the HTML. */
+details.fold{margin:0 0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+details.fold>summary.fold-sum{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:.7rem 2.4rem .7rem .95rem;min-height:48px;justify-content:center;position:relative}
+details.fold>summary.fold-sum::-webkit-details-marker{display:none}
+details.fold>summary.fold-sum::after{content:"";position:absolute;right:1rem;top:50%;width:9px;height:9px;margin-top:-6px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);transition:transform .15s}
+details.fold[open]>summary.fold-sum::after{transform:rotate(-135deg);margin-top:-1px}
+.fold-t{font-weight:700;color:var(--text);font-size:.95rem}.fold-d{font-size:.8rem;color:var(--text-dim);line-height:1.4}
+details.fold>.fold-body{padding:0 .6rem .6rem}details.fold>.fold-body>*:last-child{margin-bottom:0}
+details.fold[hidden]{display:none}
+@media(max-width:520px){.seas-chart{gap:2px}.seas-mo{font-size:.66rem;white-space:nowrap}.fold-body .seas-wrap{padding:10px 8px}.rg .ra{display:grid;grid-template-columns:auto 1fr;align-items:center;justify-items:start;text-align:left;column-gap:8px;padding:8px 10px}.rg .ra-i{margin:0;grid-row:span 2}.rg .ra-n{font-size:.85rem}.rg .ra-d{font-size:.74rem}}
+</style>
 </head>
 <body>
 <style id="ct-base">
@@ -346,13 +358,18 @@
   </script>
 
   <!-- ░░ forward curve · live cattle ░░ -->
-  <section class="fwd-card" id="fwd-card" style="display:none" aria-label="Live cattle forward curve">
-    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Forward curve · live cattle</span><span class="fwd-shape" id="fwd-shape">-</span></div>
-    <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
-    <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
-    <div class="method-note"><b>Method</b> &middot; Each live cattle contract from this month on, <span id="fwd-kind">the settle after the close, the latest delayed trade in session</span>, in $/cwt (hundredweight, 100 lb live), the next five contracts. The per-month figure is the peak contract minus the first, divided by the months between them. A futures curve, not a cash forecast. &middot; <b>Sources</b> &middot; CME live cattle futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, CCA</div>
-  </section>
+  <details class="fold" id="fold-fwd" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Forward curve, every live cattle contract</span><span class="fold-d">Carry or discount from the nearby out</span></summary>
+    <div class="fold-body">
+    <section class="fwd-card" id="fwd-card" style="display:none" aria-label="Live cattle forward curve">
+      <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Forward curve · live cattle</span><span class="fwd-shape" id="fwd-shape">-</span></div>
+      <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
+      <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
+      <div class="method-note"><b>Method</b> &middot; Each live cattle contract from this month on, <span id="fwd-kind">the settle after the close, the latest delayed trade in session</span>, in $/cwt (hundredweight, 100 lb live), the next five contracts. The per-month figure is the peak contract minus the first, divided by the months between them. A futures curve, not a cash forecast. &middot; <b>Sources</b> &middot; CME live cattle futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, CCA</div>
+    </section>
+    </div>
+  </details>
   <script>
   (function(){
     /* The contracts are read from the price file (cattle-oct26, cattle-dec26...),
@@ -410,63 +427,73 @@
   </script>
 
   <!-- ░░ managed money positioning (COT) ░░ -->
-  <section class="ctcot" id="cot-cattle" aria-label="Managed money positioning">
-    <style>
-    .ctcot{--g:var(--gold,#d4a23f);--up:var(--up,#5fc28a);--dn:var(--dn,#d9534f);--pnl:var(--surface,#161b14);--ln:var(--border,#2a3324);--tx:var(--text,#e7ece8);--mut:var(--text-dim,#9bb0a3);
-      background:var(--pnl);border:1px solid var(--ln);border-radius:14px;padding:1rem 1.1rem;margin:12px 0;display:none}
-    .ctcot *{box-sizing:border-box}
-    .ctcot-head{font-size:0.795rem;font-weight:700;color:var(--g);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
-    .ctcot-asof{font-size:0.755rem;color:var(--mut);font-weight:400;font-family:'JetBrains Mono',monospace}
-    .ctcot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-    @media(max-width:560px){.ctcot-grid{grid-template-columns:1fr}}
-    .ctcot-box{background:rgba(255,255,255,.02);border:1px solid var(--ln);border-radius:10px;padding:.8rem .9rem}
-    .ctcot-name{font-size:0.765rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
-    .ctcot-net{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.5rem;line-height:1.1;margin-top:.15rem;color:var(--tx)}
-    .ctcot-net.long{color:var(--up)} .ctcot-net.short{color:var(--dn)}
-    .ctcot-sub{font-size:0.765rem;color:var(--mut);margin-bottom:.6rem}
-    .ctcot-gauge{position:relative;height:7px;background:linear-gradient(to right,rgba(217,83,79,.5),rgba(230,176,66,.5),rgba(74,171,76,.5));border-radius:4px;margin-top:.3rem}
-    .ctcot-dot{position:absolute;top:-3px;width:13px;height:13px;border-radius:50%;background:var(--pnl);border:2px solid #fff;box-shadow:0 0 0 2px var(--g);transition:left .5s}
-    .ctcot-labels{display:flex;justify-content:space-between;font-size:0.745rem;color:var(--mut);margin-top:5px;font-family:'JetBrains Mono',monospace}
-    .ctcot-pct{font-size:0.775rem;color:var(--tx);margin-top:.4rem;line-height:1.4}.ctcot-pct strong{color:var(--g)}
-    .ctcot-chg{font-size:0.77rem;color:var(--mut);margin-top:.3rem}
-    .ctcot-chg .d{font-family:'JetBrains Mono',monospace;font-weight:700}.ctcot-chg .d.up{color:var(--up)}.ctcot-chg .d.dn{color:var(--dn)}
-    .ctcot-interp{font-size:0.785rem;color:var(--mut);line-height:1.6;margin-top:.9rem;border-top:1px solid var(--ln);padding-top:.7rem}.ctcot-interp strong{color:var(--tx)}
-    .ctcot-src{font-size:0.75rem;color:var(--mut);margin-top:.7rem;line-height:1.5}.ctcot-src a{color:var(--g);text-decoration:none}
-    </style>
-    <div class="ctcot-head"><span><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · cattle</span><span class="ctcot-asof" id="cot-asof"></span></div>
-    <div class="ctcot-grid">
-      <div class="ctcot-box">
-        <div class="ctcot-name">Live Cattle (LE)</div>
-        <div class="ctcot-net" id="le-cot-net">-</div>
-        <div class="ctcot-sub" id="le-cot-sub">net contracts</div>
-        <div class="ctcot-gauge"><div class="ctcot-dot" id="le-cot-dot" style="left:50%"></div></div>
-        <div class="ctcot-labels"><span id="le-cot-lo">-</span><span id="le-cot-hi">-</span></div>
-        <div class="ctcot-pct" id="le-cot-pct"></div>
-        <div class="ctcot-chg" id="le-cot-chg"></div>
+  <details class="fold" id="fold-cot" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Fund positioning (CFTC)</span><span class="fold-d">What managed money holds in live and feeder cattle</span></summary>
+    <div class="fold-body">
+    <section class="ctcot" id="cot-cattle" aria-label="Managed money positioning">
+      <style>
+      .ctcot{--g:var(--gold,#d4a23f);--up:var(--up,#5fc28a);--dn:var(--dn,#d9534f);--pnl:var(--surface,#161b14);--ln:var(--border,#2a3324);--tx:var(--text,#e7ece8);--mut:var(--text-dim,#9bb0a3);
+        background:var(--pnl);border:1px solid var(--ln);border-radius:14px;padding:1rem 1.1rem;margin:12px 0;display:none}
+      .ctcot *{box-sizing:border-box}
+      .ctcot-head{font-size:0.795rem;font-weight:700;color:var(--g);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+      .ctcot-asof{font-size:0.755rem;color:var(--mut);font-weight:400;font-family:'JetBrains Mono',monospace}
+      .ctcot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+      @media(max-width:560px){.ctcot-grid{grid-template-columns:1fr}}
+      .ctcot-box{background:rgba(255,255,255,.02);border:1px solid var(--ln);border-radius:10px;padding:.8rem .9rem}
+      .ctcot-name{font-size:0.765rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+      .ctcot-net{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.5rem;line-height:1.1;margin-top:.15rem;color:var(--tx)}
+      .ctcot-net.long{color:var(--up)} .ctcot-net.short{color:var(--dn)}
+      .ctcot-sub{font-size:0.765rem;color:var(--mut);margin-bottom:.6rem}
+      .ctcot-gauge{position:relative;height:7px;background:linear-gradient(to right,rgba(217,83,79,.5),rgba(230,176,66,.5),rgba(74,171,76,.5));border-radius:4px;margin-top:.3rem}
+      .ctcot-dot{position:absolute;top:-3px;width:13px;height:13px;border-radius:50%;background:var(--pnl);border:2px solid #fff;box-shadow:0 0 0 2px var(--g);transition:left .5s}
+      .ctcot-labels{display:flex;justify-content:space-between;font-size:0.745rem;color:var(--mut);margin-top:5px;font-family:'JetBrains Mono',monospace}
+      .ctcot-pct{font-size:0.775rem;color:var(--tx);margin-top:.4rem;line-height:1.4}.ctcot-pct strong{color:var(--g)}
+      .ctcot-chg{font-size:0.77rem;color:var(--mut);margin-top:.3rem}
+      .ctcot-chg .d{font-family:'JetBrains Mono',monospace;font-weight:700}.ctcot-chg .d.up{color:var(--up)}.ctcot-chg .d.dn{color:var(--dn)}
+      .ctcot-interp{font-size:0.785rem;color:var(--mut);line-height:1.6;margin-top:.9rem;border-top:1px solid var(--ln);padding-top:.7rem}.ctcot-interp strong{color:var(--tx)}
+      .ctcot-src{font-size:0.75rem;color:var(--mut);margin-top:.7rem;line-height:1.5}.ctcot-src a{color:var(--g);text-decoration:none}
+      </style>
+      <div class="ctcot-head"><span><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · cattle</span><span class="ctcot-asof" id="cot-asof"></span></div>
+      <div class="ctcot-grid">
+        <div class="ctcot-box">
+          <div class="ctcot-name">Live Cattle (LE)</div>
+          <div class="ctcot-net" id="le-cot-net">-</div>
+          <div class="ctcot-sub" id="le-cot-sub">net contracts</div>
+          <div class="ctcot-gauge"><div class="ctcot-dot" id="le-cot-dot" style="left:50%"></div></div>
+          <div class="ctcot-labels"><span id="le-cot-lo">-</span><span id="le-cot-hi">-</span></div>
+          <div class="ctcot-pct" id="le-cot-pct"></div>
+          <div class="ctcot-chg" id="le-cot-chg"></div>
+        </div>
+        <div class="ctcot-box">
+          <div class="ctcot-name">Feeder Cattle (GF)</div>
+          <div class="ctcot-net" id="gf-cot-net">-</div>
+          <div class="ctcot-sub" id="gf-cot-sub">net contracts</div>
+          <div class="ctcot-gauge"><div class="ctcot-dot" id="gf-cot-dot" style="left:50%"></div></div>
+          <div class="ctcot-labels"><span id="gf-cot-lo">-</span><span id="gf-cot-hi">-</span></div>
+          <div class="ctcot-pct" id="gf-cot-pct"></div>
+          <div class="ctcot-chg" id="gf-cot-chg"></div>
+        </div>
       </div>
-      <div class="ctcot-box">
-        <div class="ctcot-name">Feeder Cattle (GF)</div>
-        <div class="ctcot-net" id="gf-cot-net">-</div>
-        <div class="ctcot-sub" id="gf-cot-sub">net contracts</div>
-        <div class="ctcot-gauge"><div class="ctcot-dot" id="gf-cot-dot" style="left:50%"></div></div>
-        <div class="ctcot-labels"><span id="gf-cot-lo">-</span><span id="gf-cot-hi">-</span></div>
-        <div class="ctcot-pct" id="gf-cot-pct"></div>
-        <div class="ctcot-chg" id="gf-cot-chg"></div>
-      </div>
+      <div class="ctcot-interp" id="cot-interp"></div>
+      <div class="ctcot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a></div>
+    </section>
     </div>
-    <div class="ctcot-interp" id="cot-interp"></div>
-    <div class="ctcot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a></div>
-  </section>
+  </details>
 
   <!-- ░░ seasonal price tendency ░░ -->
-  <section class="seas-wrap" id="seas-wrap" aria-label="Cattle seasonal price tendency" style="display:none">
-    <div class="seas-head">
-      <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Cattle seasonal price tendency</span>
-      <span class="seas-note">Live cattle, continuous series &middot; current month highlighted</span>
+  <details class="fold" id="fold-seas" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Seasonal price tendency</span><span class="fold-d">What weekly closes did by month over recent years</span></summary>
+    <div class="fold-body">
+    <section class="seas-wrap" id="seas-wrap" aria-label="Cattle seasonal price tendency" style="display:none">
+      <div class="seas-head">
+        <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Cattle seasonal price tendency</span>
+        <span class="seas-note">Live cattle, continuous series &middot; current month highlighted</span>
+      </div>
+      <div id="seas-chart" class="seas-chart"></div>
+      <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast.</div>
+    </section>
     </div>
-    <div id="seas-chart" class="seas-chart"></div>
-    <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast.</div>
-  </section>
+  </details>
   <script>
   (function(){
     var MOS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -485,55 +512,60 @@
   </script>
 
   <!-- ░░ cost-of-gain / breakeven calculator ░░ -->
-  <section class="cog" id="cost-of-gain-calculator" aria-labelledby="cog-h">
-    <style>
-    .cog{--g:var(--gold,#d4a23f);--grn:var(--green,#6ab04c);--up:var(--up,#5fc28a);--dn:var(--dn,#d9534f);
-      --pnl:var(--surface,#161b14);--pnl2:var(--card-2,#1d2419);--ln:var(--border,#2a3324);--tx:var(--text,#e7ece8);--mut:var(--text-dim,#9bb0a3);
-      background:var(--pnl);border:1px solid var(--ln);border-radius:16px;padding:1.1rem 1.1rem 1.2rem;margin:16px 0}
-    .cog *{box-sizing:border-box}
-    .cog-h{display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;margin:0 0 .2rem;color:var(--tx)}
-    .cog-sub{color:var(--mut);font-size:.88rem;line-height:1.5;margin:0 0 1rem}
-    .cog-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
-    .cog-f label{display:block;font-size:0.785rem;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);font-weight:700;margin-bottom:.3rem}
-    .cog-f .h{font-size:0.77rem;color:var(--mut);text-transform:none;letter-spacing:0;font-weight:400}
-    .cog input{width:100%;min-height:48px;font-size:1.02rem;background:var(--pnl2);border:1px solid var(--ln);border-radius:10px;color:var(--tx);padding:.5rem .65rem;font-family:'JetBrains Mono',monospace;font-weight:700;-webkit-appearance:none;appearance:none}
-    .cog input:focus{outline:none;border-color:var(--grn)}
-    .cog-out{background:var(--pnl2);border:1px solid var(--ln);border-radius:13px;padding:1rem}
-    .cog-be{text-align:center;border-bottom:1px solid var(--ln);padding-bottom:.8rem;margin-bottom:.8rem}
-    .cog-be .k{font-size:0.785rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:700}
-    .cog-be .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:2.4rem;color:var(--g);line-height:1.05;margin-top:.15rem}
-    .cog-be .v small{font-size:1rem;color:var(--mut);font-weight:400}
-    .cog-rows{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .9rem}
-    .cog-row{display:flex;justify-content:space-between;gap:.5rem;font-size:.84rem;padding:.25rem 0;border-bottom:1px solid var(--ln)}
-    .cog-row .rk{color:var(--mut)} .cog-row .rv{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--tx);white-space:nowrap}
-    .cog-pl{margin-top:.9rem;text-align:center;font-size:.92rem;line-height:1.5}
-    .cog-pl .big{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.5rem;display:block}
-    .cog-pl.up .big{color:var(--up)} .cog-pl.dn .big{color:var(--dn)}
-    .cog-pl .note{color:var(--mut);font-size:1rem}
-    .cog-disc{font-size:0.785rem;color:var(--mut);line-height:1.45;margin-top:.9rem;border-top:1px solid var(--ln);padding-top:.7rem}
-    @media(max-width:560px){.cog-grid{grid-template-columns:1fr 1fr}.cog-rows{grid-template-columns:1fr}}
-    </style>
-    <h2 class="cog-h" id="cog-h"><span aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-calculator"/></svg></span> Cattle feeding cost-of-gain calculator</h2>
-    <p class="cog-sub">What sale price do you need to break even? Enter your feeder cost, finished weight, and cost of gain. Feeder and fed-cattle prices are pre-filled from today's delayed board quotes. The feeder price is the front feeder futures, which settles to the CME Feeder Cattle Index for 700–899 lb steers (default weight 800 lb); lighter calves usually bring more per cwt, so adjust for yours. The sale price comes from the live cattle contract nearest the month your cattle would finish, assuming 3.5 lb/day average gain. Cost of gain typically runs $0.90–$1.30/lb (feed, yardage, interest, death loss).</p>
-    <div class="cog-grid">
-      <div class="cog-f"><label for="cog-wtin">Feeder weight <span class="h">(lb)</span></label><input type="number" id="cog-wtin" inputmode="decimal" value="800" min="1" step="10"></div>
-      <div class="cog-f"><label for="cog-pin">Feeder price <span class="h">($/cwt)</span></label><input type="number" id="cog-pin" inputmode="decimal" value="" placeholder="-" min="0" step="1"></div>
-      <div class="cog-f"><label for="cog-wtfin">Finished weight <span class="h">(lb)</span></label><input type="number" id="cog-wtfin" inputmode="decimal" value="1400" min="1" step="10"></div>
-      <div class="cog-f"><label for="cog-cog">Cost of gain <span class="h">($/lb)</span></label><input type="number" id="cog-cog" inputmode="decimal" value="1.15" min="0" step="0.05"></div>
-      <div class="cog-f" style="grid-column:1/-1"><label for="cog-fed">Fed-cattle sale price <span class="h" id="cog-fed-h">($/cwt, live cattle contract nearest your sale month)</span></label><input type="number" id="cog-fed" inputmode="decimal" value="" placeholder="-" min="0" step="1"></div>
-    </div>
-    <div class="cog-out" aria-live="polite">
-      <div class="cog-be"><div class="k">Breakeven sale price</div><div class="v" id="cog-be">-</div></div>
-      <div class="cog-rows">
-        <div class="cog-row"><span class="rk">Purchase cost</span><span class="rv" id="cog-pcost">-</span></div>
-        <div class="cog-row"><span class="rk">Pounds of gain</span><span class="rv" id="cog-gain">-</span></div>
-        <div class="cog-row"><span class="rk">Feeding cost</span><span class="rv" id="cog-fcost">-</span></div>
-        <div class="cog-row"><span class="rk">Total cost / head</span><span class="rv" id="cog-total">-</span></div>
+  <details class="fold" id="fold-cog" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Cost-of-gain calculator</span><span class="fold-d">What sale price covers your feeder, feed and yardage</span></summary>
+    <div class="fold-body">
+    <section class="cog" id="cost-of-gain-calculator" aria-labelledby="cog-h">
+      <style>
+      .cog{--g:var(--gold,#d4a23f);--grn:var(--green,#6ab04c);--up:var(--up,#5fc28a);--dn:var(--dn,#d9534f);
+        --pnl:var(--surface,#161b14);--pnl2:var(--card-2,#1d2419);--ln:var(--border,#2a3324);--tx:var(--text,#e7ece8);--mut:var(--text-dim,#9bb0a3);
+        background:var(--pnl);border:1px solid var(--ln);border-radius:16px;padding:1.1rem 1.1rem 1.2rem;margin:16px 0}
+      .cog *{box-sizing:border-box}
+      .cog-h{display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;margin:0 0 .2rem;color:var(--tx)}
+      .cog-sub{color:var(--mut);font-size:.88rem;line-height:1.5;margin:0 0 1rem}
+      .cog-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
+      .cog-f label{display:block;font-size:0.785rem;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);font-weight:700;margin-bottom:.3rem}
+      .cog-f .h{font-size:0.77rem;color:var(--mut);text-transform:none;letter-spacing:0;font-weight:400}
+      .cog input{width:100%;min-height:48px;font-size:1.02rem;background:var(--pnl2);border:1px solid var(--ln);border-radius:10px;color:var(--tx);padding:.5rem .65rem;font-family:'JetBrains Mono',monospace;font-weight:700;-webkit-appearance:none;appearance:none}
+      .cog input:focus{outline:none;border-color:var(--grn)}
+      .cog-out{background:var(--pnl2);border:1px solid var(--ln);border-radius:13px;padding:1rem}
+      .cog-be{text-align:center;border-bottom:1px solid var(--ln);padding-bottom:.8rem;margin-bottom:.8rem}
+      .cog-be .k{font-size:0.785rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:700}
+      .cog-be .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:2.4rem;color:var(--g);line-height:1.05;margin-top:.15rem}
+      .cog-be .v small{font-size:1rem;color:var(--mut);font-weight:400}
+      .cog-rows{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .9rem}
+      .cog-row{display:flex;justify-content:space-between;gap:.5rem;font-size:.84rem;padding:.25rem 0;border-bottom:1px solid var(--ln)}
+      .cog-row .rk{color:var(--mut)} .cog-row .rv{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--tx);white-space:nowrap}
+      .cog-pl{margin-top:.9rem;text-align:center;font-size:.92rem;line-height:1.5}
+      .cog-pl .big{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.5rem;display:block}
+      .cog-pl.up .big{color:var(--up)} .cog-pl.dn .big{color:var(--dn)}
+      .cog-pl .note{color:var(--mut);font-size:1rem}
+      .cog-disc{font-size:0.785rem;color:var(--mut);line-height:1.45;margin-top:.9rem;border-top:1px solid var(--ln);padding-top:.7rem}
+      @media(max-width:560px){.cog-grid{grid-template-columns:1fr 1fr}.cog-rows{grid-template-columns:1fr}}
+      </style>
+      <h2 class="cog-h" id="cog-h"><span aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-calculator"/></svg></span> Cattle feeding cost-of-gain calculator</h2>
+      <p class="cog-sub">What sale price do you need to break even? Enter your feeder cost, finished weight, and cost of gain. Feeder and fed-cattle prices are pre-filled from today's delayed board quotes. The feeder price is the front feeder futures, which settles to the CME Feeder Cattle Index for 700–899 lb steers (default weight 800 lb); lighter calves usually bring more per cwt, so adjust for yours. The sale price comes from the live cattle contract nearest the month your cattle would finish, assuming 3.5 lb/day average gain. Cost of gain typically runs $0.90–$1.30/lb (feed, yardage, interest, death loss).</p>
+      <div class="cog-grid">
+        <div class="cog-f"><label for="cog-wtin">Feeder weight <span class="h">(lb)</span></label><input type="number" id="cog-wtin" inputmode="decimal" value="800" min="1" step="10"></div>
+        <div class="cog-f"><label for="cog-pin">Feeder price <span class="h">($/cwt)</span></label><input type="number" id="cog-pin" inputmode="decimal" value="" placeholder="-" min="0" step="1"></div>
+        <div class="cog-f"><label for="cog-wtfin">Finished weight <span class="h">(lb)</span></label><input type="number" id="cog-wtfin" inputmode="decimal" value="1400" min="1" step="10"></div>
+        <div class="cog-f"><label for="cog-cog">Cost of gain <span class="h">($/lb)</span></label><input type="number" id="cog-cog" inputmode="decimal" value="1.15" min="0" step="0.05"></div>
+        <div class="cog-f" style="grid-column:1/-1"><label for="cog-fed">Fed-cattle sale price <span class="h" id="cog-fed-h">($/cwt, live cattle contract nearest your sale month)</span></label><input type="number" id="cog-fed" inputmode="decimal" value="" placeholder="-" min="0" step="1"></div>
       </div>
-      <div class="cog-pl" id="cog-pl"><span class="big" id="cog-pl-big">-</span><span class="note" id="cog-pl-note"></span></div>
+      <div class="cog-out" aria-live="polite">
+        <div class="cog-be"><div class="k">Breakeven sale price</div><div class="v" id="cog-be">-</div></div>
+        <div class="cog-rows">
+          <div class="cog-row"><span class="rk">Purchase cost</span><span class="rv" id="cog-pcost">-</span></div>
+          <div class="cog-row"><span class="rk">Pounds of gain</span><span class="rv" id="cog-gain">-</span></div>
+          <div class="cog-row"><span class="rk">Feeding cost</span><span class="rv" id="cog-fcost">-</span></div>
+          <div class="cog-row"><span class="rk">Total cost / head</span><span class="rv" id="cog-total">-</span></div>
+        </div>
+        <div class="cog-pl" id="cog-pl"><span class="big" id="cog-pl-big">-</span><span class="note" id="cog-pl-note"></span></div>
+      </div>
+      <p class="cog-disc">Decision-support only, not a guarantee. Real returns depend on actual cost of gain, death loss, basis, yield grade, interest, and the sale-month board, which all move. Use it to compare scenarios, then confirm with your own closeouts.</p>
+    </section>
     </div>
-    <p class="cog-disc">Decision-support only, not a guarantee. Real returns depend on actual cost of gain, death loss, basis, yield grade, interest, and the sale-month board, which all move. Use it to compare scenarios, then confirm with your own closeouts.</p>
-  </section>
+  </details>
 
   <!-- ░░ FAQ ░░ -->
   <div class="faq-wrap">
@@ -581,7 +613,8 @@
   <!-- Rain Print gift line (components/rain-print-promo.js): the one cross-promo on this page, after the main content; shows only while data/rain-print.json promote is on and inside promote_from..promote_until. Empty and hidden otherwise. -->
   <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=4" defer></script>
 
-  <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min): delayed quotes, not official CME settlements. 5-year percentile from Yahoo weekly closes of the continuous front-month LE=F and GF=F series (not roll-adjusted). Quoted in $/cwt. Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</div>
+  <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min): the exchange settle after the close, the latest delayed trade in session. 5-year percentile from Yahoo weekly closes of the continuous front-month LE=F and GF=F series (not roll-adjusted). Quoted in $/cwt. Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</div>
+<script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 <div id="site-footer">
 <!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
@@ -625,7 +658,7 @@
     if(lbG)lbG.textContent=(gf===nGF&&gfm)?'52-Week Range \u00b7 '+gfm[1].charAt(0).toUpperCase()+gfm[1].slice(1)+" '"+gfm[2]+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
     var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
-    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
+    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgPxStamp&&le?dot+'CME futures \u00b7 '+AgPxStamp.html(le,d.fetched):window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
     else if(st)st.innerHTML=dot+'Live CME futures · updated through the trading day';
     // hero price = live cattle
     var hp=$('hero-price');if(hp&&le&&le.close!=null)hp.textContent=cwt(le.close);
