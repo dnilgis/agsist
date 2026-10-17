@@ -68,7 +68,7 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           FILES="data/fertilizer-coops.json data/fertilizer-coops-history.json"
-          BAKED="data/fertilizer-prices.json data/fert-coop-places.json fertilizer.html breakeven.html manure-value.html fast-facts.html img/og"
+          BAKED="data/fertilizer-prices.json fertilizer.html breakeven.html manure-value.html fast-facts.html img/og"
           rm -rf /tmp/fcoop && mkdir -p /tmp/fcoop
           for f in $FILES; do
             [ -e "$f" ] && cp --parents "$f" /tmp/fcoop/ || true
@@ -81,6 +81,7 @@ jobs:
             mkdir -p data && cp -r /tmp/fcoop/data/. data/
             bash scripts/fert_after_prices.sh
             for f in $FILES $BAKED; do [ -e "$f" ] && git add "$f" || true; done
+            [ -e data/fert-coop-places.json ] && git add data/fert-coop-places.json || true   # co-op town points (scripts/build_coop_places.py)
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Fertilizer co-op posted prices $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
