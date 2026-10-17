@@ -840,15 +840,7 @@ def snapshot_prices(root="."):
     """Freeze the futures the scenarios are centered on, so a build is reproducible."""
     pj = _read(root, "data/prices.json")
     hp = _read(root, "data/harvest-prices.json")
-    snap = {"taken": pj.get("fetched"), "harvest": {}, "futures": {}}
-    lab = {"Corn": "corn", "Soybeans": "soybeans"}
-    for c in hp.get("commodities", []):
-        k = lab.get(c.get("label"))
-        h = c.get("harvest") or {}
-        if k and h.get("running_avg"):
-            # days: the settles in the series, the one count every page uses
-            snap["harvest"][k] = {"contract": c.get("contract"), "price": h["running_avg"], "days": len(h.get("series") or []),
-                                  "of": h.get("days_total"), "status": h.get("status"), "updated": hp.get("updated")}
+    snap = {"taken": pj.get("fetched"), "harvest": harvest_block(hp), "futures": {}}
     for k, key in (("corn", "corn-dec27"), ("soybeans", "beans-nov27")):
         q = (pj.get("quotes") or {}).get(key)
         if q and q.get("close"):
@@ -860,6 +852,46 @@ def snapshot_prices(root="."):
         json.dump(snap, f, indent=1)
         f.write("\n")
     return snap
+
+
+def harvest_block(hp):
+    """The Dec 2026 corn / Nov 2026 soybean October average so far, from data/harvest-prices.json
+    (the file /harvest-price-tracker reads), shaped for the snapshot."""
+    out = {}
+    lab = {"Corn": "corn", "Soybeans": "soybeans"}
+    for c in (hp or {}).get("commodities", []):
+        k = lab.get(c.get("label"))
+        h = c.get("harvest") or {}
+        if k and h.get("running_avg"):
+            # days: the settles in the series, the one count every page uses
+            out[k] = {"contract": c.get("contract"), "price": h["running_avg"], "days": len(h.get("series") or []),
+                      "of": h.get("days_total"), "status": h.get("status"), "updated": hp.get("updated")}
+    return out
+
+
+def refresh_harvest(root="."):
+    """Every build that writes (not --check) takes the current October average from
+    data/harvest-prices.json, so the county pages match /harvest-price-tracker on the day
+    they are built. The futures half of the snapshot stays as --snapshot-prices froze it.
+    A harvest file older than the snapshot's, or one with fewer settles, is ignored."""
+    sp = os.path.join(root, SNAPSHOT)
+    hpp = os.path.join(root, "data/harvest-prices.json")
+    if not (os.path.exists(sp) and os.path.exists(hpp)):
+        return False
+    snap = _read(root, SNAPSHOT)
+    new = harvest_block(_read(root, "data/harvest-prices.json"))
+    old = snap.get("harvest") or {}
+    if not new or new == old:
+        return False
+    for k, h in new.items():
+        o = old.get(k) or {}
+        if o.get("contract") == h.get("contract") and ((h.get("updated") or "") < (o.get("updated") or "") or (h.get("days") or 0) < (o.get("days") or 0)):
+            return False
+    snap["harvest"] = {**old, **new}
+    with open(sp, "w") as f:
+        json.dump(snap, f, indent=1)
+        f.write("\n")
+    return True
 
 
 def snapshot_problem(snap, today, max_days=SNAP_MAX_DAYS):
@@ -1780,7 +1812,7 @@ def method_html(D):
     c6, s6, c7, s7, w6 = y6["corn"]["scen"], y6["soybeans"]["scen"], y7["corn"]["scen"], y7["soybeans"]["scen"], y6["wheat"]["scen"]
     corn_sd = sd1(v for v in c6["ratios"].values()) if c6.get("ratios") else None
     def altp(sc):
-        return (f'{usd(sc["alt"])} ({esc(sc.get("alt_contract") or "")} October average so far, {usd(sc["alt_fut"])} over {sc.get("alt_days")} of {sc.get("alt_of")} trading days, '
+        return (f'{usd(sc["alt"])} ({esc(sc.get("alt_contract") or "")} October average{(" through " + nice_date(sc["alt_date"], False)) if sc.get("alt_date") else " so far"}, {usd(sc["alt_fut"])} over {sc.get("alt_days")} of {sc.get("alt_of")} trading days, '
                 f'times {sc["oct_mean"]:.3f}: from {yrs[0]} to {yrs[-1]}, the years with FSA county yields that the scenarios use, the final season-average price averaged '
                 f'{sc["oct_mean"]:.3f} times that year&rsquo;s October average of the harvest contract, RMA&rsquo;s harvest price)') if sc.get("alt") else "not available"
     return f"""<h2 id="method">How the ARC or PLC verdict is figured</h2>
@@ -2238,6 +2270,13 @@ def why_text(v, cd, by, py):
             f"protects against a deep price drop. ARC-CO is capped at {usd(max_arc)} per base acre but also pays when the county&rsquo;s "
             f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {XC.pf(cd, center)}, "
             f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre.")
+
+
+def practice_split(es):
+    """True when FSA gives this crop separate irrigated and non-irrigated benchmarks in the county.
+    Then the title and description name the practice: the one benchmark shown is not the county's only one."""
+    ds = {e["d"] for e in es if e.get("by")}
+    return "irr" in ds and "non" in ds
 
 
 def default_entries(es):
@@ -2734,7 +2773,7 @@ def math_globals(D, ks):
              "why": sc_.get("why") or "",
              "hub": (f'{XC.XCROPS[k].get("note", "")} <a href="{XC.hub_path(k)}">All {esc(CROP_LC[k])} counties</a>.' if k in XC.XCROPS else "")}
         if k in ("corn", "soybeans") and sc_.get("alt"):
-            x["alt"] = (f"{CROP_LC[k].capitalize()}: USDA {usd(sc_['center'])}; futures-based {usd(sc_['alt'])} ({esc(sc_.get('alt_contract') or '')} October average so far, "
+            x["alt"] = (f"{CROP_LC[k].capitalize()}: USDA {usd(sc_['center'])}; futures-based {usd(sc_['alt'])} ({esc(sc_.get('alt_contract') or '')} October average{(' through ' + nice_date(sc_['alt_date'], False)) if sc_.get('alt_date') else ' so far'}, "
                         f"{usd(sc_['alt_fut'])} over {sc_.get('alt_days')} of {sc_.get('alt_of')} trading days, times {sc_['oct_mean']:.3f}: from {min(sc_['ratios'])} to {max(sc_['ratios'])}, "
                         f"the final season-average price averaged {sc_['oct_mean']:.3f} times that year&rsquo;s October average of the harvest contract).")
         if k in ("corn", "soybeans") and (y7.get(k) or {}).get("scen"):
@@ -2896,11 +2935,17 @@ def county_page(st, S, c, D, ch):
         le = next((c["k"][lead][i] for i in default_entries(c["k"][lead]) if c["k"][lead][i]["by"]), None)
         cdl = y6[lead]
         lab = XC.XCROPS[lead].get("short", cdl["label"]) if lead in XC.XCROPS else cdl["label"]
-        if le and le["d"] == "irr":
-            lab = "Irrigated " + lab.lower()
+        split = practice_split(c["k"][lead])
+        if le and (le["d"] == "irr" or split):
+            lab = DLABEL[le["d"]] + " " + lab.lower()
         by_txt = (f"{le['by']:.1f} bu" if cdl["unit"] == "bu" else f"{le['by']:,.0f} lb") if le else ""
         title = county_title(cname, st, lab, LY, by_txt)
         bm = f"FSA {LY if LY == '2026' else '2026'} ARC-CO benchmark {XC.yf(cdl, le['by'], 1)}" if le else "FSA ARC-CO benchmarks"
+        if le and split:
+            # the other practice's benchmark beside it, so neither number reads as the county's only one
+            oth = next((e for e in c["k"][lead] if e["by"] and e["d"] in ("irr", "non") and e["d"] != le["d"]), None)
+            if oth:
+                bm += f" ({XC.yf(cdl, oth['by'], 1)} {DLABEL[oth['d']].lower()})"
         if head_v:
             vv = head_v[0]
             desc = (f"{cname}, {name} {lab.lower()}: {bm}. Typical farm {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
@@ -2908,6 +2953,9 @@ def county_page(st, S, c, D, ch):
             if len(desc) > 155:
                 desc = (f"{cname}, {st} {lab.lower()}: {bm}. {head_v[2]}: {VWORD[vv['verdict']]}, est. {usd_pay(vv['plc'])} PLC vs "
                         f"{usd_pay(vv['arc'])} ARC-CO per base acre.")
+            if len(desc) > 155 and split:
+                desc = (f"{cname}, {st} {lab.lower()}: {bm.replace(' ARC-CO benchmark', ' benchmark')}. {head_v[2]}: {VWORD[vv['verdict']]}, est. "
+                        f"{usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC per base acre.")
             if len(desc) > 155:
                 desc = f"{cname}, {st}: {VWORD[vv['verdict']]} for {lab.lower()} in {head_v[2]}, est. {usd_pay(vv['plc'])} PLC vs {usd_pay(vv['arc'])} ARC-CO per base acre."
         else:
@@ -3239,6 +3287,8 @@ def budget_problems(out):
 
 
 def main_build(root=".", check=False):
+    if not check:
+        refresh_harvest(root)
     inp = load_inputs(root)
     bad = None if check else snapshot_problem(inp["snap"], build_date())
     if bad:
@@ -3601,6 +3651,10 @@ def selftest():
         ck("2027 long grain rice fixed at 0.169 whatever the 2025 price; sorghum waits on its final 2025 price",
            c27.get("rice_long", {}).get("erp", {}).get("erp") == 0.169 and c27["rice_long"]["bp"]["value"] == 0.169 and "sorghum" in p27, str(p27.get("sorghum")))
     # 65 characters with the yield, so the yield goes first; a longer name then takes "Co."
+    ck("practice split: both irrigated and non-irrigated benchmarks -> the title names the practice",
+       practice_split([{"d": "irr", "by": 238.96}, {"d": "non", "by": 187.38}])
+       and not practice_split([{"d": "all", "by": 203.4}]) and not practice_split([{"d": "irr", "by": 230.0}])
+       and not practice_split([{"d": "irr", "by": 230.0}, {"d": "non", "by": None}]))
     ck("title: Pottawattamie drops the yield, Prince George's takes Co.",
        county_title("Pottawattamie County", "IA", "Corn", "2026", "203.4 bu") == "Pottawattamie County, IA ARC or PLC 2026: Corn Benchmark"
        and county_title("Prince George's County", "MD", "Soybeans", "2026", "45.1 bu") == "Prince George's Co., MD ARC or PLC 2026: Soybeans Benchmark")
