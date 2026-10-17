@@ -385,7 +385,7 @@ details.fold[hidden]{display:none}
     <div class="fold-body">
     <section class="fwd-card" id="fwd-card" style="display:none" aria-label="Live cattle forward curve">
       <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Forward curve · live cattle</span><span class="fwd-shape" id="fwd-shape">-</span></div>
-      <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Futures price by contract month, loading"></svg>
       <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
       <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
       <div class="method-note"><b>Method</b> &middot; Each live cattle contract from this month on, <span id="fwd-kind">the settle after the close, the latest delayed trade in session</span>, in $/cwt (hundredweight, 100 lb live), the next five contracts. The per-month figure is the peak contract minus the first, divided by the months between them. A futures curve, not a cash forecast. &middot; <b>Sources</b> &middot; CME live cattle futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, CCA</div>
@@ -424,7 +424,8 @@ details.fold[hidden]{display:none}
       var pad=(maxP-minP)*0.18||1;minP-=pad;maxP+=pad;
       var W=700,H=140,mL=52,mR=36,mT=14,mB=26,pw=W-mL-mR,ph=H-mT-mB;
       function X(i){return mL+(i/(pts.length-1))*pw;}function Y(v){return mT+ph-((v-minP)/(maxP-minP))*ph;}
-      var a=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
+      var aria='Cattle futures price by contract month, dollars per hundredweight: '+pts.map(function(p){return p.label+' '+AG.px.cash(p.price,{dollar:false});}).join(', ').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      var a=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+aria+'">'];
       a.push('<text x="4" y="'+(mT+8)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="12" font-family="JetBrains Mono,monospace">$'+maxP.toFixed(0)+'/cwt</text>');
       a.push('<text x="4" y="'+(mT+ph)+'" style="fill:var(--text-muted,#9bb0a3)" font-size="12" font-family="JetBrains Mono,monospace">$'+minP.toFixed(0)+'/cwt</text>');
       var path='';pts.forEach(function(p,i){path+=(i===0?'M':'L')+X(i).toFixed(1)+','+Y(p.price).toFixed(1);});

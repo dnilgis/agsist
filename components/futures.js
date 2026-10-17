@@ -1784,7 +1784,12 @@ function renderForwardCurve(cropKey,contractList,quotes,isGrain){
   var pw=W-mL-mR,ph=H-mT-mB;
   function x(i){return mL+(pts.length===1?pw/2:(i/(pts.length-1))*pw);}
   function y(p){return mT+ph-((p-minP)/(maxP-minP))*ph;}
-  var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'];
+  /* The label is built from the same points the chart draws, so a screen
+     reader hears what a sighted reader sees. */
+  var aria='Futures price by contract month, dollars per bushel: '+pts.map(function(p){
+    return p.label+' '+(isGrain?AG.px.priceDollars(p.price,{style:'slash',dollar:false}):p.price.toFixed(2))+(p.tag?' ('+p.tag+')':'');
+  }).join(', ').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  var s=['<svg class="fwd-svg" id="fwd-svg" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+aria+'">'];
   var path='';
   pts.forEach(function(p,i){path+=(i===0?'M':'L')+x(i)+','+y(p.price);});
   s.push('<path d="'+path+'" style="stroke:var(--gold,#d4a23f)" stroke-width="2" fill="none"/>');
