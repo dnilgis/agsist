@@ -1940,6 +1940,14 @@
     {"id": "cr-mo-mospace", "kind": "pdf",
      "url": "https://mospace.umsystem.edu/server/api/core/bitstreams/d2707ac0-5a64-467d-862b-1e5767839334/content",
      "title": "MU Extension G302 Custom Rates for Farm Services in Missouri (MOspace copy)",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-mo-g302-legacy", "kind": "pdf",
+     "url": "https://extension.missouri.edu/sites/default/files/legacy_media/wysiwyg/Extensiondata/Pub/pdf/agguides/agecon/g00302.pdf",
+     "title": "MU Extension G302 Custom Rates for Farm Services in Missouri (PDF linked from the March 2026 page)",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-oh-2024-pdf", "kind": "pdf",
+     "url": "https://farmoffice.osu.edu/sites/aglaw/files/site-library/farmmgtpdf/Ohio%20Farm%20Custom%20Rate_Nov%202024.pdf",
+     "title": "Ohio Farm Custom Rates 2024 (OSU Extension, PDF on the Farm Office site)",
      "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"}
 ]
 }
