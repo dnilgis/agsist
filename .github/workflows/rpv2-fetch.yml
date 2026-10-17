@@ -1,0 +1,18 @@
+name: rpv2 mockup data fetch (scratch branch only)
+on:
+  push:
+    branches: [fx/rpv2]
+    paths: [scratch-rpv2/fetch.py, .github/workflows/rpv2-fetch.yml]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scratch-rpv2/fetch.py
+      - run: |
+          git config user.name dnilgis; git config user.email dnilgis@gmail.com
+          git add scratch-rpv2/out
+          git commit -m "rpv2 mockup: fetched station data" || true
+          git push origin HEAD:fx/rpv2
