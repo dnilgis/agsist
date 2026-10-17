@@ -1,19 +1,17 @@
+ok   wi-dnr: ok
 ok   wi-sco: ok
 FAIL wi-sco-v11: metadata error: {'code': 400, 'message': 'Invalid URL', 'details': ['Invalid URL']}
 FAIL wi-ltsb: metadata did not answer: Remote end closed connection without response
-ok   candidate WI statewide: https://dnrmaps.wi.gov/arcgis/rest/services/DW_Map_Dynamic/EN_County_Tax_Parcels_WTM_Ext_Dynamic_L16/MapServer/0: ok
-ok   candidate MN statewide: https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer/1: owners in 31 of 87 counties
-FAIL candidate IA 19153: no polygon layer answered
+ok   mn-open: owners in 31 of 87 counties
+FAIL candidate IA 19153: no polygon layer answered: service did not answer: HTTP Error 403: Forbidden
 FAIL candidate IA 19127: https://gis.marshallcountyia.gov/arcgis/rest/services/WebParcels/MapServer/0: test query at 42.0358,-92.9608 returned no parcel
-FAIL candidate IA 19113: no polygon layer answered
-FAIL candidate IA 19163: https://services.arcgis.com/ovln19YRWV44nBqV/ArcGIS/rest/services/Cadastral/FeatureServer/5: no parcel number and owner fields by name
-FAIL candidate IL 17113: https://gis.mcleancountyil.gov/arcgis/rest/services/BnZ/Parcels/MapServer/0: no parcel number and owner fields by name
-ok   candidate IL 17043: https://gis.dupageco.org/arcgis/rest/services/DuPage_County_IL/ParcelsWithRealEstateCC/MapServer/0: ok
-FAIL candidate IL 17097: https://maps.lakecountyil.gov/arcgis/rest/services/CCAO/TaxParcelViewerPro/MapServer/9: no parcel number and owner fields by name
+FAIL candidate IA 19113: no polygon layer answered: service error: {'code': 404, 'message': 'Service not found', 'details': []}; layers: 
+FAIL candidate IA 19163: https://services.arcgis.com/ovln19YRWV44nBqV/ArcGIS/rest/services/Cadastral/FeatureServer/5: no parcel number and owner fields by name (fields: OBJECTID, Lot_Number, From_Date, GlobalID, Shape__Area, Shape__Length)
+FAIL candidate IL 17113: https://gis.mcleancountyil.gov/arcgis/rest/services/BnZ/Parcels/MapServer/0: no parcel number and owner fields by name (fields: OBJECTID, PIN, DEED_AC, COMPUTED_AC, ADDED, CHANGED, RETIRED, PAST, INITIALS, CONDOMAX, DATA_SOURCE, GlobalID, Shape, Shape.STArea(), Shape.STLength())
+FAIL candidate IL 17097: https://maps.lakecountyil.gov/arcgis/rest/services/CCAO/TaxParcelViewerPro/MapServer/9: no parcel number and owner fields by name (fields: OBJECTID, TownshipNumber, RangeNumber, Shape, PAGE, Shape.STArea(), Shape.STLength())
 FAIL candidate IL 17099: https://gis.lasallecounty.org/arcgis/rest/services/TaxParcels/MapServer/1: no Access-Control-Allow-Origin for agsist.com; a browser page cannot read it
-ok   candidate IL 17089: https://gistech.countyofkane.org/arcgis/rest/services/KanePINList/MapServer/0: ok
-FAIL candidate IL 17031: https://gis12.cookcountyil.gov/traditional/rest/services/CookViewer3Parcels/MapServer/0: no parcel number and owner fields by name
-FAIL candidate IL 17201: https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer/0: no parcel number and owner fields by name
+FAIL candidate IL 17031: https://gis12.cookcountyil.gov/traditional/rest/services/CookViewer3Parcels/MapServer/0: no parcel number and owner fields by name (fields: OBJECTID, Shape, GlobalID, PARID, TAXYR, CUR, STATUS, CITYNAME, STATECODE, UNITDESC, UNITNO, LOC2, ZIP1, ZIP2, TAXDIST, XCOORD, YCOORD, USER1, DEACTIVAT, PIN10, street_address, township_number, township_name, latitude, longitude, PIN14_dash, Shape.STArea(), Shape.STLength(), city_state_zip, PIN14, find_my_dist_link, class_info_display, assessor_link, current_procname, current_value_desc, LANDSF, CURRENTVALUE_TOTAL, CURRENTVALUE_LAND, CURRENTVALUE_BLDG, CURRENTVALUE_HIE_TOT, hist_assessval_link, BLDGSQFT, bldg_const_desc, oblique_link, historical_photo_link, clerk_prop_records_link, property_portal_link, hist_sf_mf_imp_chars_link, BCLASS, major_class_description, class_description, BCONST, NBHD, BLDGAGE, created_date, last_edited_date, XMin, XMax, YMin, YMax)
+FAIL candidate IL 17201: https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer/0: no parcel number and owner fields by name (fields: OBJECTID, PrimaryPIN, PIN, DashPIN, AltParcelNumber, ParcelYear, LOPHouseNumber, LOPHouseNbrSuffix, LOPPrefixDirectional, LOPStreetName, LOPStreetSuffix, LOPPostDirectional, LOPCommunityName, LegalDesc, TownshipName, OwnerLastName, OwnerFirstName, OwnerMiddleInit, OwnerSuffix, OwnerAddress1, OwnerAddress2, OwnerCity, OwnerState, OwnerZip, TaxpayerLastName, TaxpayerFirstName, TaxpayerMiddleInit, TaxpayerSuffix, TaxpayerAddress1, TaxpayerAddress2, TaxpayerCity, TaxpayerState, TaxpayerZip, OptOut, GlobalID, OwnerLastChange, Shape, Shape.STArea(), Shape.STLength())
 ok   co-27025: ok
 ok   co-27059: ok
 ok   co-27111: ok
@@ -29,7 +27,257 @@ ok   co-17093: ok
 ok   co-17143: ok
 ok   co-17043: ok
 ok   co-17089: ok
+IA statewide Iowa statewide parcels: none verified
+IL statewide Illinois statewide parcels: none verified
+MN 27003 Anoka County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27007 Beltrami County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27009 Benton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27011 Big Stone County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27013 Blue Earth County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27015 Brown County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27019 Carver County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27027 Clay County: no geoportal record (HTTP Error 404: Not Found); ok
+MN 27029 Clearwater County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27033 Cottonwood County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27039 Dodge County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27043 Faribault County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27045 Fillmore County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27047 Freeborn County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27049 Goodhue County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27051 Grant County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27055 Houston County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27057 Hubbard County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27061 Itasca County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27065 Kanabec County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27067 Kandiyohi County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27069 Kittson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27077 Lake of the Woods County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27079 Le Sueur County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27081 Lincoln County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27085 McLeod County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27087 Mahnomen County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27089 Marshall County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27091 Martin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27093 Meeker County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27095 Mille Lacs County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27103 Nicollet County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27105 Nobles County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27107 Norman County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27109 Olmsted County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27113 Pennington County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27115 Pine County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27121 Pope County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27125 Red Lake County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27127 Redwood County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27129 Renville County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27131 Rice County: no geoportal record (HTTP Error 404: Not Found); ok
+MN 27133 Rock County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27135 Roseau County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27139 Scott County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27141 Sherburne County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27143 Sibley County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27151 Swift County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27153 Todd County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27159 Wadena County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27161 Waseca County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27165 Watonwan County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+MN 27167 Wilkin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19001 Adair County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19003 Adams County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19005 Allamakee County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19007 Appanoose County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19009 Audubon County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19011 Benton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19015 Boone County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19017 Bremer County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19019 Buchanan County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19021 Buena Vista County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19023 Butler County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19025 Calhoun County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19027 Carroll County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19029 Cass County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19031 Cedar County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19033 Cerro Gordo County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19035 Cherokee County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19037 Chickasaw County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19039 Clarke County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19041 Clay County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19043 Clayton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19045 Clinton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19047 Crawford County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19049 Dallas County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19051 Davis County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19053 Decatur County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19055 Delaware County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19057 Des Moines County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19059 Dickinson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19061 Dubuque County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19063 Emmet County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19065 Fayette County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19067 Floyd County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19069 Franklin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19071 Fremont County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19073 Greene County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19075 Grundy County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19077 Guthrie County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19079 Hamilton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19081 Hancock County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19083 Hardin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19085 Harrison County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19087 Henry County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19089 Howard County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19091 Humboldt County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19093 Ida County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19095 Iowa County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19097 Jackson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19099 Jasper County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19101 Jefferson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19103 Johnson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19105 Jones County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19107 Keokuk County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19109 Kossuth County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19111 Lee County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19113 Linn County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19115 Louisa County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19117 Lucas County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19119 Lyon County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19121 Madison County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19123 Mahaska County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19125 Marion County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19127 Marshall County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19129 Mills County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19131 Mitchell County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19133 Monona County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19135 Monroe County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19137 Montgomery County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19139 Muscatine County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19141 O'Brien County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19143 Osceola County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19145 Page County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19147 Palo Alto County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19149 Plymouth County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19151 Pocahontas County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19153 Polk County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19157 Poweshiek County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19159 Ringgold County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19161 Sac County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19163 Scott County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19165 Shelby County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19167 Sioux County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19169 Story County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19171 Tama County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19173 Taylor County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19175 Union County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19177 Van Buren County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19179 Wapello County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19181 Warren County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19183 Washington County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19185 Wayne County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19187 Webster County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19189 Winnebago County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19191 Winneshiek County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19193 Woodbury County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19195 Worth County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IA 19197 Wright County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17001 Adams County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17003 Alexander County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17005 Bond County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17007 Boone County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17009 Brown County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17011 Bureau County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17013 Calhoun County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17015 Carroll County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17017 Cass County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17019 Champaign County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17021 Christian County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17023 Clark County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17025 Clay County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17027 Clinton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17029 Coles County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17031 Cook County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17033 Crawford County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17035 Cumberland County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17037 DeKalb County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17039 De Witt County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17041 Douglas County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17045 Edgar County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17047 Edwards County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17049 Effingham County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17051 Fayette County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17053 Ford County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17055 Franklin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17057 Fulton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17059 Gallatin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17061 Greene County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17063 Grundy County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17065 Hamilton County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17067 Hancock County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17069 Hardin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17071 Henderson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17073 Henry County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17075 Iroquois County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17077 Jackson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17079 Jasper County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17081 Jefferson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17083 Jersey County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17085 Jo Daviess County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17087 Johnson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17091 Kankakee County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17095 Knox County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17097 Lake County: no geoportal record (HTTP Error 404: Not Found); ok
+IL 17099 LaSalle County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17101 Lawrence County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17103 Lee County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17105 Livingston County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17107 Logan County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17109 McDonough County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17111 McHenry County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17113 McLean County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17115 Macon County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17117 Macoupin County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17119 Madison County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17121 Marion County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17123 Marshall County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17125 Mason County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17127 Massac County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17129 Menard County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17131 Mercer County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17133 Monroe County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17135 Montgomery County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17137 Morgan County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17139 Moultrie County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17141 Ogle County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17145 Perry County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17147 Piatt County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17149 Pike County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17151 Pope County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17153 Pulaski County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17155 Putnam County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17157 Randolph County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17159 Richland County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17161 Rock Island County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17163 St. Clair County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17165 Saline County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17167 Sangamon County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17169 Schuyler County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17171 Scott County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17173 Shelby County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17175 Stark County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17177 Stephenson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17179 Tazewell County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17181 Union County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17183 Vermilion County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17185 Wabash County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17187 Warren County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17189 Washington County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17191 Wayne County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17193 White County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17195 Whiteside County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17197 Will County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17199 Williamson County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17201 Winnebago County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
+IL 17203 Woodford County: no geoportal record (HTTP Error 404: Not Found); no public government parcel layer with owner fields found
 ::notice::parcel and owner coverage WI: 72 of 72 counties (statewide)
-::notice::parcel and owner coverage MN: 34 of 87 counties (statewide)
+::notice::parcel and owner coverage MN: 36 of 87 counties (statewide)
 ::notice::parcel and owner coverage IA: 2 of 99 counties
-::notice::parcel and owner coverage IL: 4 of 102 counties
+::notice::parcel and owner coverage IL: 5 of 102 counties
