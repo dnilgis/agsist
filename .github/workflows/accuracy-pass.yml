@@ -1,0 +1,69 @@
+name: Accuracy pass (one-time)
+
+# One-time accuracy pass over the 40 most-visited pages through the Message
+# Batches API (scripts/accuracy_pass.py). Dispatch only, from the fx/accpass
+# branch; no schedule. Input and every output live on the raw branch under
+# accuracy-pass/ (never deployed).
+#
+#   mode=estimate  count tokens and print the worst-case cost, spend nothing
+#   mode=submit    estimate, refuse over $80, refuse if accuracy-pass/batch.json
+#                  is already on raw, submit one batch, then wait and collect
+#   mode=collect   wait for the batch and write accuracy-pass/results.json
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "estimate | submit | collect"
+        required: true
+        default: estimate
+      wait_minutes:
+        description: "How long collect waits for the batch to end"
+        default: "330"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: accuracy-pass
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: python scripts/accuracy_pass.py selftest
+      - name: Get the input and any earlier batch record from raw
+        run: |
+          git fetch -q --depth 1 origin raw
+          mkdir -p accuracy-pass
+          git show FETCH_HEAD:accuracy-pass/input/bundle.json > /tmp/bundle.json
+          git show FETCH_HEAD:accuracy-pass/batch.json > accuracy-pass/batch.json 2>/dev/null || rm -f accuracy-pass/batch.json
+          ls -la accuracy-pass /tmp/bundle.json
+      - name: Estimate
+        if: ${{ inputs.mode == 'estimate' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/accuracy_pass.py estimate /tmp/bundle.json
+      - name: Submit
+        if: ${{ inputs.mode == 'submit' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/accuracy_pass.py submit /tmp/bundle.json
+      - name: Save the batch record to raw
+        if: ${{ !cancelled() && inputs.mode == 'submit' }}
+        run: bash scripts/push_raw.sh "accuracy-pass batch" accuracy-pass/batch.json accuracy-pass/estimate.json
+      - name: Wait and collect
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: test -f accuracy-pass/batch.json && python scripts/accuracy_pass.py collect "${{ inputs.wait_minutes }}"
+      - name: Save results to raw
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        run: bash scripts/push_raw.sh "accuracy-pass results" accuracy-pass/batch-status.json accuracy-pass/results.json accuracy-pass/results-raw.jsonl
