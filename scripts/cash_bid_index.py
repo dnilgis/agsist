@@ -60,6 +60,7 @@ REFUSALS (same spirit as the Daily)
     python3 scripts/cash_bid_index.py --selftest
 """
 import csv
+import hashlib
 import glob
 import html
 import io
@@ -603,8 +604,20 @@ CSS = """
 """
 
 
+def share_card():
+    """The page's own share card (scripts/build_share_images.py makes it), with
+    the same ?v=<hash> that script stamps; the site card until it exists."""
+    path = os.path.join(REPO, "img", "og", "cash-bid-index.jpg")
+    if not os.path.exists(path):
+        return "https://agsist.com/img/og/agsist.jpg", "AGSIST Cash Bid Index: cash corn and soybean bids and basis by state"
+    with open(path, "rb") as f:
+        v = hashlib.sha1(f.read()).hexdigest()[:8]
+    return "https://agsist.com/img/og/cash-bid-index.jpg?v=" + v, "AGSIST Cash Bid Index. Corn and soybean basis by state, each month."
+
+
 def page_html(editions):
     head_nav, foot_nav, fonts, early = _nav_blocks()
+    og_img, og_alt = share_card()
     eds = sorted(editions, key=lambda e: e["month"], reverse=True)
     latest = eds[0] if eds else None
     if latest:
@@ -668,12 +681,12 @@ def page_html(editions):
   <meta property="og:title" content="{esc(title)}">
   <meta property="og:description" content="{esc(desc)}">
   <meta property="og:url" content="{URL}">
-  <meta property="og:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta property="og:image" content="{og_img}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="AGSIST Cash Bid Index: cash corn and soybean bids and basis by state">
+  <meta property="og:image:alt" content="{esc(og_alt)}">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://agsist.com/img/og/agsist.jpg">
+  <meta name="twitter:image" content="{og_img}">
   <meta name="twitter:title" content="{esc(title)}">
   <meta name="twitter:description" content="{esc(desc)}">
   {early}
