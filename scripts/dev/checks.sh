@@ -16,5 +16,5 @@ for t in scripts/test_send_loops.py scripts/test_basis_states.py scripts/test_sh
 run llms python3 scripts/build_llms_txt.py --check
 run worker node scripts/test_form_worker.mjs
 run share python3 scripts/build_share_images.py --check
-for b in build_arc_plc build_prf_states build_prf_counties build_county_rain stamp_prf build_croptour build_farmbill; do [ -f scripts/$b.py ] && run $b python3 scripts/$b.py --check; done
+for b in build_arc_plc build_breakeven_data build_prf_states build_prf_counties build_county_rain stamp_prf build_croptour build_farmbill; do [ -f scripts/$b.py ] && run $b python3 scripts/$b.py --check; done
 echo "FAILS=$fails"
