@@ -81,11 +81,13 @@
     "arc-plc.html"
    ],
    "written_by": [
-    "ARC/PLC refresh"
+    "ARC/PLC refresh",
+    "cash-rent"
    ],
    "touched_by": [
     "ARC/PLC refresh",
     "cash-bid-pages",
+    "cash-rent",
     "Fetch COT Data",
     "county rain",
     "Fetch Crop Progress",
@@ -98,7 +100,7 @@
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "3 launches on a fixed schedule at about 1am, 5pm Central",
+   "cadence": "4 launches on a fixed schedule at about 1am, 9am, 5pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -106,9 +108,10 @@
    "crons": [
     "23 22 * * 1",
     "23 6 12 12 *",
-    "23 6 16 3 *"
+    "23 6 16 3 *",
+    "20 14 * * 3"
    ],
-   "max_gap_hours": 168.0,
+   "max_gap_hours": 128.1,
    "quiet": null,
    "why_quiet": null
   },

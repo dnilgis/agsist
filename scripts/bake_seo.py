@@ -519,7 +519,10 @@ def body_breakeven(c):
         cost, yld = d
         bits.append((name, cost, yld))
     (n1, c1, y1), (n2, c2, y2) = bits
-    return (f"<strong>Example with this page's default costs:</strong> {n1} at "
+    # 2026-10-17: the corn and soybean defaults are farmdoc's 2027 northern
+    # Illinois budget lines (breakeven.html BUDGETS), so the example says so.
+    return (f"<strong>Example with this page's default costs</strong> (farmdoc's 2027 northern Illinois budget, "
+            f"fertilizer at posted co-op prices): {n1} at "
             f"${c1:,.0f} an acre and {y1:g} bu/ac breaks even at ${c1 / y1:.2f} a bushel; "
             f"{n2} at ${c2:,.0f} and {y2:g} bu/ac at ${c2 / y2:.2f}. "
             f"Change any line below to get yours.")
