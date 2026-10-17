@@ -420,6 +420,16 @@ def crumbs_ld(items):
 RP_ANY_YEAR = 'Want another year, like the drought or the year you married? <a href="/rain-print">Rainfall art of any town and year</a>.'
 
 
+def radar_line(st, name, stw):
+    """One line to /rain-radar (NOAA MRMS radar and gauge estimate) at the
+    county's station. MRMS covers the lower 48 only, so none in AK or HI."""
+    ll = stw.get("ll")
+    if st in ("AK", "HI") or not ll:
+        return ""
+    q = urllib.parse.urlencode({"lat": f"{ll[1]:.3f}", "lon": f"{ll[0]:.3f}", "label": f"{name}, near the {stw.get('name') or 'county'} gauge"})
+    return f'<p class="rc-radar"><a href="/rain-radar?{e(q)}">Rain on your field in the last 7 days, from radar</a></p>'
+
+
 def county_page(ctx):
     c, st, fips, year, d = ctx["c"], ctx["st"], ctx["fips"], ctx["year"], ctx["d"]
     stn = R.STATES[st]
@@ -613,6 +623,7 @@ def county_page(ctx):
     <h1>{h1}</h1>
     <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>
     <dl class="rc-figs">{figs_html}</dl>
+    {radar_line(st, name, stw)}
     {chart(c, year, name, noun, ready)}
     {sell}
     <h2>Month by month</h2>

@@ -138,6 +138,7 @@ PAGES = [
         ("/harvest-price-tracker", "Harvest Price Tracker",
          "the RMA projected and harvest prices that set Revenue Protection guarantees, what your guarantee is worth, and how many bushels you can safely pre-sell"),
         ("/grain-bin-calculator", "Grain Bin Calculator", "bushels in a bin and moisture shrink"),
+        ("/rain-radar", "Rain on Your Field (Radar)", "rain in the last 24 hours, 3 days, 7 days and this month at any spot in the lower 48, from NOAA MRMS radar corrected with rain gauges, updated four times a day; checked against 1,175 NOAA co-op gauges"),
         ("/grain-emc", "Grain EMC Calculator", "when to run aeration fans for corn, soybeans or wheat: drying wet grain (against its own moisture), cooling (outside air 10 F or more under the grain) or holding dry grain, hour by hour for 3 days at your ZIP; printable corn, soybean and wheat EMC charts from published equations"),
         ("/grain-shrink", "Grain Shrink Calculator", "what wet corn, soybeans, wheat or sorghum nets after the elevator's shrink and drying charges, and the bushels and dollars given away delivering below base moisture (soybeans under 13%); at your bid, a ZIP's nearest posted bid, or a labeled state estimate"),
         ("/harvest-or-wait", "Harvest now or wait", "Corn drying cost now vs after field drydown, against the field loss you expect; break-even loss when you do not know it"),
