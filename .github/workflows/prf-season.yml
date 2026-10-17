@@ -105,6 +105,43 @@ jobs:
           cat "$D/status.txt"
           bash scripts/push_raw.sh "prf-season probe2" "$D"
 
+      - name: Backtest (collect)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'backtest' }}
+        timeout-minutes: 45
+        env:
+          PYTHONUNBUFFERED: "1"
+          PRF_SEASON_CACHE: /tmp/cpc
+        run: |
+          python scripts/fetch_prf_season.py --backtest-collect data/prf-season-raw/backtest
+          gzip -9 -n -k data/prf-season-raw/backtest/backtest-rows.json
+          python scripts/fetch_prf_season.py --backtest-analyze data/prf-season-raw/backtest/backtest-rows.json.gz
+          bash scripts/push_raw.sh "prf-season backtest" data/prf-season-raw/backtest
+
+      # A source that fails writes nothing: the script refuses a file it
+      # cannot check, and the card keeps showing the last good one with its date.
       - name: Build
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'build' }}
-        run: echo "not yet"
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'build') }}
+        timeout-minutes: 20
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python scripts/fetch_prf_season.py
+          python scripts/fetch_prf_season.py --check
+          python scripts/check_site_budget.py
+
+      - name: Commit
+        if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'build') }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/prf/now
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          THRU=$(python -c "import json;print(json.load(open('data/prf/now/TX.json'))['through'])")
+          git commit -q -m "data: prf interval so far (CPC through $THRU)"
+          BR="${GITHUB_REF_NAME}"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull -q --rebase origin "$BR" && git push -q origin "HEAD:$BR"; then exit 0; fi
+            sleep $((20 * i))
+          done
+          echo "push failed after 5 attempts"; exit 1
