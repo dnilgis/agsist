@@ -225,6 +225,91 @@ def _net(r):
     return float(r.get('currentMYNetSales') or 0)
 
 
+# CHINA, BY DESTINATION (2026-10-17). /tariffs prints China's soybean count
+# beside the 25 MMT a year pledge. The allCountries call above already returns
+# one record per destination, so this reads China's row out of the same week
+# the totals came from: no extra schedule, one extra request (/countries).
+# China is matched by name or GENC code from FAS's own country list, never a
+# typed integer, and anything that does not add up is withheld, not printed.
+def match_china(rec):
+    """True for the People's Republic of China, never Taiwan, Hong Kong or Macau."""
+    genc = str(rec.get('gencCode') or '').strip().upper()
+    if genc:
+        return genc == 'CHN'
+    n = ' '.join(str(rec.get('countryName') or rec.get('countryDescription') or '').lower().split())
+    if not n.startswith('china'):
+        return False
+    return not any(w in n for w in ('taiwan', 'hong kong', 'macao', 'macau'))
+
+
+def match_unknown(rec):
+    n = ' '.join(str(rec.get('countryName') or rec.get('countryDescription') or '').lower().split())
+    return n in ('unknown', 'unknown destinations')
+
+
+def resolve_countries():
+    """{'china': code, 'unknown': code} from /countries. A key that resolves to
+    more than one code is dropped, so a doubtful match is never summed."""
+    data = api_get('/countries')
+    found = {'china': set(), 'unknown': set()}
+    for rec in data or []:
+        code = rec.get('countryCode')
+        if code is None:
+            continue
+        if match_china(rec):
+            found['china'].add(code)
+        elif match_unknown(rec):
+            found['unknown'].add(code)
+    out = {}
+    for k, v in found.items():
+        if len(v) == 1:
+            out[k] = next(iter(v))
+            log.info(f'resolved country {k:7s} -> code {out[k]}')
+        elif v:
+            log.warning(f'country {k}: {len(v)} codes matched ({sorted(v)}); not used')
+    return out
+
+
+def _num(r, k):
+    v = r.get(k)
+    try:
+        return float(v) if v is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def destination_row(lw, country_code, scale, total_commit_mt):
+    """China's (or Unknown's) row in the latest week, in metric tons.
+
+    commitments = shipped so far this marketing year + sold, not yet shipped.
+    Returns None when the destination has no row, more than one row, a missing
+    or negative field, or commitments above the all-destination total."""
+    rows = [r for r in lw if r.get('countryCode') == country_code]
+    if len(rows) != 1:
+        return None
+    r = rows[0]
+    commit = _num(r, 'currentMYTotalCommitment')
+    shipped = _num(r, 'accumulatedExports')
+    outst = _num(r, 'outstandingSales')
+    net = _num(r, 'currentMYNetSales')
+    if commit is None or shipped is None or outst is None:
+        return None
+    if commit < 0 or shipped < 0 or outst < 0:
+        return None
+    # commitments are shipped plus outstanding; allow rounding in the source
+    if abs(commit - (shipped + outst)) > max(2.0, commit * 0.002):
+        return None
+    commit_mt = round(commit * scale)
+    if total_commit_mt is not None and commit_mt > total_commit_mt:
+        return None
+    return {
+        'commitments_mt': commit_mt,
+        'shipped_mt': round(shipped * scale),
+        'outstanding_mt': round(outst * scale),
+        'weekly_net_mt': round(net * scale) if net is not None else None,
+    }
+
+
 def fetch_year(code, year):
     """Query one (commodityCode, marketYear) and summarize the most recent week.
 
@@ -370,6 +455,9 @@ def retire_stale(out: dict, today: date):
         # when it was last true; nothing is left that could be read as this week.
         for k in ('weekly_net_mt', 'cumulative_mt', 'pct_of_target'):
             row[k] = None
+        # China's row is from the same week, so it goes with the totals.
+        row.pop('china', None)
+        row.pop('unknown_outstanding_mt', None)
         retired.append(comm)
     if retired:
         log.warning('withheld as stale: %s', ', '.join(retired))
@@ -439,6 +527,11 @@ def selftest():
     check('371 days ago' in (doc['corn'].get('withheld') or ''),
           "and the reason counts the days", str(doc['corn'].get('withheld'))[:70])
     check('wheat' in retired, "the June wheat week is withheld too")
+    doc2 = {'soybeans': {'weekly_net_mt': 1, 'cumulative_mt': 2, 'report_date': '2026-08-27',
+                         'china': {'commitments_mt': 1}, 'unknown_outstanding_mt': 5}}
+    retire_stale(doc2, date(2026, 10, 1))
+    check('china' not in doc2['soybeans'] and 'unknown_outstanding_mt' not in doc2['soybeans'],
+          "a stale week's China row is withheld with it")
 
     print("\nA GOOD WEEK IS NOT THROWN AWAY TO EXPLAIN A BAD PACE")
     # Soybeans has a current week and a target from a marketing year that has
@@ -498,6 +591,31 @@ def selftest():
     bad = wheat_classes({'wheat_hrw': 'h', 'wheat_srw': 's'}, pick, {'cumulative_mt': 60000}, fake)
     check(bad == {}, "classes summing past all wheat are not published")
 
+    print("\nCHINA BY DESTINATION")
+    check(match_china({'countryName': 'CHINA, PEOPLES REPUBLIC OF'}), "PRC by name")
+    check(match_china({'countryName': 'CHINA'}), "plain 'CHINA'")
+    check(not match_china({'countryName': 'TAIWAN'}), "Taiwan is not China here")
+    check(not match_china({'countryName': 'CHINA, TAIWAN'}), "'China, Taiwan' is not the PRC")
+    check(not match_china({'countryName': 'HONG KONG'}), "Hong Kong is its own destination")
+    check(match_china({'countryName': 'whatever', 'gencCode': 'CHN'}) and
+          not match_china({'countryName': 'CHINA', 'gencCode': 'TWN'}), "GENC code wins over the name")
+    check(match_unknown({'countryName': 'UNKNOWN '}), "Unknown destinations")
+    lw = [{'countryCode': 5700, 'currentMYTotalCommitment': 9969.0, 'accumulatedExports': 1200.5,
+           'outstandingSales': 8768.5, 'currentMYNetSales': 410.0},
+          {'countryCode': 2010, 'currentMYTotalCommitment': 3000.0, 'accumulatedExports': 1000.0,
+           'outstandingSales': 2000.0, 'currentMYNetSales': 1.0}]
+    cn = destination_row(lw, 5700, 1000, 20_000_000)
+    check(cn == {'commitments_mt': 9_969_000, 'shipped_mt': 1_200_500, 'outstanding_mt': 8_768_500,
+                 'weekly_net_mt': 410_000},
+          "9,969 thousand MT x 1000 = 9,969,000 MT; 1,200.5 + 8,768.5 = 9,969", str(cn))
+    check(destination_row(lw, 5700, 1000, 9_000_000) is None, "more than the all-destination total -> withheld")
+    check(destination_row(lw, 9999, 1000, None) is None, "no China row -> withheld")
+    check(destination_row(lw + [lw[0]], 5700, 1000, None) is None, "two China rows -> withheld")
+    badsum = [dict(lw[0], outstandingSales=5000.0)]
+    check(destination_row(badsum, 5700, 1, None) is None, "shipped + outstanding must equal commitments")
+    neg = [dict(lw[0], accumulatedExports=-1.0, outstandingSales=9970.0)]
+    check(destination_row(neg, 5700, 1, None) is None, "a negative field -> withheld")
+
     print()
     if fails:
         print("FAILED (%d): %s" % (len(fails), "; ".join(fails)))
@@ -523,6 +641,12 @@ def main():
     except Exception as e:
         log.error(f'/commodities request failed: {e}')
         return preserve(existing, today)
+
+    try:
+        countries = resolve_countries()
+    except Exception as e:
+        log.warning(f'/countries request failed ({e}); China rows not published this run')
+        countries = {}
 
     missing = [k for k in ('corn', 'soybeans', 'wheat') if k not in codes]
     if missing:
@@ -624,6 +748,20 @@ def main():
             'vs_prev_year_pct': (round((pick['cumul'] - ly_mt) / ly_mt * 100, 1)
                                  if ly_mt else None),
         }
+        if countries.get('china') is not None:
+            cn = destination_row(pick['lw'], countries['china'], pick['scale'], pick['cumul'])
+            if cn:
+                cn['week_ending'] = rd
+                cn['marketing_year'] = my_label
+                out[comm]['china'] = cn
+                log.info(f'{comm:9s} China commitments {cn["commitments_mt"]:,} MT '
+                         f'(shipped {cn["shipped_mt"]:,}, outstanding {cn["outstanding_mt"]:,})')
+            else:
+                log.warning(f'{comm}: China row missing or did not add up; not published')
+        if countries.get('unknown') is not None:
+            un = destination_row(pick['lw'], countries['unknown'], pick['scale'], pick['cumul'])
+            if un:
+                out[comm]['unknown_outstanding_mt'] = un['outstanding_mt']
         if comm == 'wheat':
             cls = wheat_classes(codes, pick, out[comm], prev_scale=prev_c['scale'] if prev_c else None)
             if cls:

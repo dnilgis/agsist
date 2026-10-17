@@ -191,7 +191,10 @@ details.pd-d .pd-db{padding:0 1rem 1rem;}
 .pd-ps-cau{display:block;margin-top:.5rem}
 .pd-ps{margin-top:1rem;scroll-margin-top:80px;}
 .pd-ps h3{font-size:1.08rem;margin:0 0 .35rem;}
-.pd-ps .pd-r3{grid-template-columns:minmax(0,22rem);}
+.pd-ps .pd-r3{grid-template-columns:repeat(3,minmax(0,13rem));}
+@media(max-width:620px){.pd-ps .pd-r3{grid-template-columns:1fr;}}
+.pd-ps-short,.pd-ps-season{margin-top:.6rem}
+.pd-ps-short .pd-ex-k,.pd-ps-season .pd-ex-k{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pd-mut);margin-bottom:.25rem}
 .pd-ps-ex{margin-top:.6rem}
 .pd-ps-ex .pd-ex-k{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pd-mut);margin-bottom:.25rem}
 
@@ -430,10 +433,17 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
     <div class="pd-r3">
       <div><label for="pd-acres">Acres <span style="text-transform:none">(optional)</span></label>
         <input id="pd-acres" type="number" inputmode="decimal" min="0" max="100000" placeholder="e.g. 500"></div>
+      <div><label for="pd-raise">Short crop to test <span style="text-transform:none" id="pd-raiseu">(bu/ac)</span></label>
+        <input id="pd-raise" type="number" inputmode="decimal" min="0" max="20000" placeholder="60% of APH"></div>
+      <div><label for="pd-cprice">Contract price <span style="text-transform:none">(optional, $)</span></label>
+        <input id="pd-cprice" type="number" inputmode="decimal" min="0" max="1000" step="0.01" placeholder="e.g. 4.40"></div>
     </div>
     <div class="pd-out" id="pd-psbox" hidden><b id="pd-psout"></b><span id="pd-pssub"></span></div>
+    <div class="pd-out pd-ps-short" id="pd-psshort" hidden><span class="pd-ex-k">Short-crop check, from your numbers</span><b id="pd-psshort-out"></b><span id="pd-psshort-sub"></span></div>
+    <div class="pd-out2 flat pd-ps-season" id="pd-psseason" hidden></div>
     <div class="pd-out pd-ps-ex" id="pd-psex" hidden><span class="pd-ex-k">Example, not your farm</span><b id="pd-psex-out"></b><span id="pd-psex-sub"></span></div>
     <p class="pd-note"><b>RP protects revenue, not delivery.</b> If you sell ahead more than your guaranteed bushels and then raise a short crop, you may have to buy bushels back at a higher price. The harvest price feature softens that, but it does not erase it. Basis is not covered, because the guarantee is built on futures. This is the arithmetic, not marketing or insurance advice.</p>
+    <p class="pd-note" id="pd-ps-rule">The short-crop math follows Revenue Protection as RMA writes it in the Common Crop Insurance Policy Basic Provisions and the Commodity Exchange Price Provisions: the guarantee is APH &times; coverage &times; the higher of the projected and harvest price, the harvest price counts only up to 200% of the projected price, and the crop you raise is counted at the harvest price. The indemnity is the guarantee minus that revenue. The 75% mark is a common rule of thumb, not an RMA rule. Unit structure, quality and replant are left out. Policy text: <a href="https://www.rma.usda.gov/" target="_blank" rel="noopener" style="color:var(--pd-gold2)">rma.usda.gov</a>.</p>
   </div>
 
   <h2 id="history">Fifteen years of projected vs. harvest</h2>
@@ -956,7 +966,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   // guarantee above has no answer, so it never shows a number the box above does not.
   function presell(aph,cov,cu,g){
     var box=$('pd-psbox'); if(!box) return;
-    if(!(aph>0)||!(cov>0)||!g||!cu){ box.hidden=true; presellExample(true); return; }
+    if(!(aph>0)||!(cov>0)||!g||!cu){ box.hidden=true; presellShort(null); presellSeason(null); presellExample(true); return; }
     presellExample(false);
     var per=aph*cov, f1=function(n){return n.toLocaleString('en-US',{maximumFractionDigits:1});};
     var ac=Number(String($('pd-acres').value).trim());
@@ -979,7 +989,66 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       ' It is a guarantee on revenue, not a price for each bushel.'+
       (cau?'<span class="pd-ps-cau"><strong>A more cautious mark: '+f1(cau)+' '+cu+'/ac</strong>'+
         (tot?' ('+Math.round(cau*ac).toLocaleString('en-US')+' '+cu+')':'')+
-        ', 75% of your APH. It leaves room for a short crop before you are selling bushels you may not raise.</span>':'');
+        ', 75% of your APH. It is a common rule of thumb, not an RMA rule, and it leaves room for a short crop before you are selling bushels you may not raise.</span>':'');
+    box.hidden=false;
+    presellShort({aph:aph,cu:cu,g:g,per:per,H:H,live:isOpen(g)});
+    presellSeason(g);
+  }
+
+  /* 2026-10-17 (scorecard: presell todo 1 and 3). The short-crop line priced from the reader's
+     own inputs: sell every guaranteed unit ahead, raise the test yield (60% of APH unless the
+     reader types one). RP as RMA writes it (Basic Provisions; Commodity Exchange Price
+     Provisions): guarantee = APH x coverage x max(projected, harvest), harvest capped at 200%
+     of projected; revenue to count = units raised x harvest price; indemnity = the difference,
+     never below zero. Shown only while there is a harvest price to count with, like the
+     example. With a contract price: contract revenue + indemnity - buyback of the shortfall at
+     the harvest futures price (the cash buyback adds basis, which RP does not cover). */
+  function presellShort(o){
+    var box=$('pd-psshort'); if(!box) return;
+    if(!o||o.H==null||!(o.H>0)){ box.hidden=true; return; }
+    var g=o.g, Hc=Math.min(o.H,2*g.p), cu=o.cu;
+    var ru=$('pd-raiseu'); if(ru) ru.textContent='('+cu+'/ac)';
+    var raw=String($('pd-raise').value).trim(), r=Number(raw), typed=raw!==''&&isFinite(r)&&r>=0&&r<=20000;
+    var raised=typed?r:Math.round(o.aph*0.6*10)/10;
+    if(!(raised<o.per)){ box.hidden=false;
+      $('pd-psshort-out').textContent='No shortfall';
+      $('pd-psshort-sub').textContent='At '+raised.toLocaleString('en-US')+' '+cu+'/ac you raise at least the '+o.per.toLocaleString('en-US',{maximumFractionDigits:1})+' '+cu+'/ac you sold ahead, so nothing is bought back. Try a smaller number in Short crop to test.';
+      return; }
+    var price=Math.max(g.p,Hc), gtee=o.per*price, ind=Math.max(0,gtee-raised*Hc), short=o.per-raised;
+    var f0=function(n){ return '$'+Math.round(n).toLocaleString('en-US'); }, f1=function(n){ return n.toLocaleString('en-US',{maximumFractionDigits:1}); };
+    var hw=(o.live?'today&rsquo;s running harvest price ':(isDone(g)?'the final harvest price ':'RMA&rsquo;s harvest price, not yet final, '))+'<b class="pd-num">'+money(Hc,cu)+'</b>';
+    $('pd-psshort-out').textContent='RP pays about '+f0(ind)+' /ac';
+    var t='Sell all '+f1(o.per)+' '+cu+'/ac ahead and raise '+f1(raised)+(typed?'':' (60% of your APH)')+': '+
+      f0(gtee)+' guarantee minus '+f1(raised)+' &times; '+hw+' = <b class="pd-num">'+f0(ind)+' /ac</b>. '+
+      'You still owe '+f1(short)+' '+cu+'/ac you did not raise, bought back at the cash price. Basis is not covered.';
+    var craw=String($('pd-cprice').value).trim(), c=Number(craw);
+    if(craw!==''&&isFinite(c)&&c>0&&c<=1000){
+      var rev=o.per*c, buy=short*Hc, net=rev+ind-buy;
+      t+=' <span class="pd-ps-cau"><strong>With your contract at '+money(c,cu)+': about '+f0(net)+' /ac</strong> = '+
+        f1(o.per)+' &times; '+money(c,cu)+' contract ('+f0(rev)+') + '+f0(ind)+' indemnity &minus; '+f1(short)+' &times; '+money(Hc,cu)+' buyback ('+f0(buy)+
+        ', at the futures price; your elevator&rsquo;s basis comes on top).</span>';
+    }
+    if(o.live) t+=' The harvest price is still being set, so this moves until the window closes.';
+    $('pd-psshort-sub').innerHTML=t;
+    box.hidden=false;
+  }
+
+  /* 2026-10-17 (scorecard: presell todo 2). After this crop's harvest window closes, say when the
+     next projected price is set. The month comes from this year's projected-price window in the
+     RMA file the page already loads (Feb for corn and soybeans in most states). */
+  function presellSeason(g){
+    var box=$('pd-psseason'); if(!box) return;
+    if(!g||!g.ps||!g.he||!isClosed(g)){ box.hidden=true; return; }
+    var yr=d(g.hs).getFullYear()+1, mPs=d(g.ps).getMonth(), mPe=d(g.pe||g.ps).getMonth();
+    var ny=d(g.ps).getFullYear()+1;
+    // Only while next year's window is still ahead. Fall-seeded crops set next year's price
+    // before this year's harvest window closes; for them there is nothing to announce.
+    var psN=d(g.ps); psN.setFullYear(ny);
+    if(!(psN>TODAY)){ box.hidden=true; return; }
+    var when=MON[mPs]+(mPe!==mPs?' to '+MON[mPe]:'')+' '+ny;
+    box.innerHTML='<b>Season note</b><span>The '+(yr-1)+' '+esc(g.crop.toLowerCase())+' harvest window has closed. '+
+      'For '+yr+' crop policies, RMA sets a new projected price from settlements in '+esc(when)+
+      ', the same window that set this year&rsquo;s ('+shortd(g.ps)+' to '+shortd(g.pe||g.ps)+'). Until then there is no '+yr+' guarantee to size a '+yr+' sale against; the numbers above are '+(yr-1)+'&rsquo;s.</span>';
     box.hidden=false;
   }
 
@@ -1216,7 +1285,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     $('pd-clear').addEventListener('click',function(){ setState('',true);
       document.getElementById('pd-state').focus(); });
     $('pd-crop').addEventListener('change',function(){ calc(true); });
-    ['pd-aph','pd-cov','pd-acres'].forEach(function(id){
+    ['pd-aph','pd-cov','pd-acres','pd-raise','pd-cprice'].forEach(function(id){
       $(id).addEventListener('input',function(){ calc(false); });
       $(id).addEventListener('change',function(){ calc(false); });
     });

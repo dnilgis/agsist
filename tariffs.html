@@ -54,7 +54,7 @@
       "description": "Current tariff rates on US corn, soybean, wheat, and pork exports to China, Canada and Mexico, and US ethanol into the EU. Updated as trade policy changes.",
       "inLanguage": "en-US",
       "datePublished": "2025-03-01",
-      "dateModified": "2026-10-14",
+      "dateModified": "2026-10-17",
       "author": { "@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about", "email": "sig@farmers1st.com" },
       "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "isPartOf": { "@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST" },
@@ -292,6 +292,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 [data-theme="light"]{--on-green:#fff}
 .tariff-by{font-size:.8rem;color:var(--text-dim,#8a948f);margin:.5rem 0 0}
 .tariff-by a{color:var(--gold);text-decoration:none}
+/* China purchase gauge (2026-10-17): USDA FAS export sales to China, read
+   from data/export-sales.json, which the weekly export sales run writes. */
+.cn-gauge{padding:.9rem 1rem 1rem}
+.cn-big{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:800;color:var(--text);line-height:1.1}
+.cn-big small{font-size:.8rem;font-weight:600;color:var(--text-muted);margin-left:.35rem}
+.cn-bar{position:relative;height:14px;border-radius:7px;background:var(--surface2,rgba(127,127,127,.15));margin:.7rem 0 .35rem;overflow:visible}
+.cn-bar span{position:absolute;top:0;bottom:0;left:0}
+.cn-bar .cn-ship{background:var(--gold-fill,var(--gold));border-radius:7px 0 0 7px}
+.cn-bar .cn-out{background:rgba(var(--gold-rgb),.38)}
+.cn-bar .cn-mark{width:2px;top:-4px;bottom:-4px;background:var(--text)}
+.cn-key{display:flex;flex-wrap:wrap;gap:.25rem 1rem;font-size:.76rem;color:var(--text-muted);margin-bottom:.55rem}
+.cn-key i{display:inline-block;width:.7rem;height:.7rem;border-radius:2px;margin-right:.3rem;vertical-align:-1px}
+.cn-p{font-size:.84rem;color:var(--text-dim);line-height:1.6;margin:.35rem 0 0}
+.cn-src{font-size:.74rem;color:var(--text-muted);margin-top:.6rem;line-height:1.5}
+.cn-src a{color:var(--gold);text-decoration:none}
+.cn-empty{font-size:.84rem;color:var(--text-muted);line-height:1.6}
+.tsb-more{margin-top:.35rem;font-size:.84rem;color:var(--text-muted)}
+.tsb-more summary{cursor:pointer;color:var(--gold);font-weight:600;font-size:.8rem}
+.tsb-more p{margin:.4rem 0 0;line-height:1.55}
 </style>
 </head>
 <body>
@@ -410,6 +429,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
       </table>
     </div>
   </div>
+
+  <section class="tariff-section" id="china-gauge" aria-labelledby="cn-t">
+    <div class="tariff-section-head"><h2 class="tariff-section-title" id="cn-t">China soybean buying: USDA's count</h2><span id="cn-week" style="font-size:0.763rem;color:var(--text-muted);letter-spacing:0;text-transform:none"></span></div>
+    <div class="cn-gauge" id="cn-body">
+      <div class="cn-empty">USDA's count of US soybeans sold to China loads after the next weekly export sales read. USDA publishes it Thursdays at 7:30 a.m. Central.</div>
+    </div>
+  </section>
 
   <aside class="ya" data-your-state="tariffs" data-v="1" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
 
@@ -551,7 +577,19 @@ fetch('/data/tariffs.json')
     if(banner){ banner.className='tariff-status-banner '+cls; }
     if(label){ label.textContent=data.status_label; label.className='tsb-label '+cls; }
     var tsbIcon=document.getElementById('tsb-icon'); if(tsbIcon){ tsbIcon.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-'+statusIconName(data.status)+'"/></svg>'; }
-    if(note)  note.textContent = data.headline || data.status_note;
+    if(note){
+      /* One sentence on the first screen; the rest folds (Oct 17 scorecard: the
+         banner ran about 13 lines on a phone before the table). */
+      var full = data.headline || data.status_note || '';
+      var m = full.match(/^(.+?[.!?])\s+(?=[A-Z])/);
+      if(m && m[1].length < full.length - 20){
+        note.textContent = m[1];
+        var more = document.createElement('details'); more.className='tsb-more';
+        var sm = document.createElement('summary'); sm.textContent='More on what applies today';
+        var mp = document.createElement('p'); mp.textContent = full.slice(m[0].length);
+        more.appendChild(sm); more.appendChild(mp); note.parentNode.insertBefore(more, note.nextSibling);
+      } else note.textContent = full;
+    }
     if(date)  date.textContent = 'Updated '+fmtDate(data.updated);
 
     var upd = document.getElementById('tariff-updated');
@@ -609,6 +647,48 @@ fetch('/data/tariffs.json')
     var tbody = document.getElementById('tariff-tbody');
     if(tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">Data unavailable. Try refreshing.</td></tr>';
   });
+
+
+/* CHINA GAUGE. Every number is USDA FAS weekly export sales to China, as
+   data/export-sales.json carries it (scripts/fetch_export_sales.py reads
+   China's row from the same week as the totals and withholds it when it does
+   not add up). No row, no number: the empty state stays. */
+var PLEDGE_MMT = 25; /* the yearly pledge, Busan, Oct 30, 2025 (timeline below) */
+function mmt(t){ return (t/1e6).toFixed(2); }
+fetch('/data/export-sales.json')
+  .then(function(r){ if(!r.ok) throw new Error('no-es'); return r.json(); })
+  .then(function(es){
+    var body=document.getElementById('cn-body'), wk=document.getElementById('cn-week');
+    if(!body) return;
+    var soy=es&&es.soybeans, cn=soy&&soy.china;
+    if(!cn || soy.withheld || typeof cn.commitments_mt!=='number' || typeof cn.shipped_mt!=='number' || typeof cn.outstanding_mt!=='number'){
+      if(soy && soy.withheld){ body.innerHTML='<div class="cn-empty">USDA\u2019s China count is withheld this week: '+esc(soy.withheld)+'.</div>'; }
+      return;
+    }
+    var c=cn.commitments_mt, sh=cn.shipped_mt, ou=cn.outstanding_mt;
+    var scale=Math.max(PLEDGE_MMT*1e6, c)*1.04;
+    var pct=Math.round(c/(PLEDGE_MMT*1e6)*100);
+    var wkTxt=fmtDate(cn.week_ending);
+    if(wk) wk.textContent='Week ending '+wkTxt;
+    var h='<div class="cn-big">'+mmt(c)+' MMT<small>committed to China, '+esc(cn.marketing_year||'')+' marketing year</small></div>'
+      +'<div class="cn-bar" role="img" aria-label="'+mmt(sh)+' MMT shipped and '+mmt(ou)+' MMT sold, not yet shipped, against the 25 MMT a year pledge">'
+      +'<span class="cn-ship" style="width:'+(sh/scale*100).toFixed(1)+'%"></span>'
+      +'<span class="cn-out" style="left:'+(sh/scale*100).toFixed(1)+'%;width:'+(ou/scale*100).toFixed(1)+'%"></span>'
+      +'<span class="cn-mark" style="left:'+(PLEDGE_MMT*1e6/scale*100).toFixed(1)+'%"></span></div>'
+      +'<div class="cn-key"><span><i style="background:var(--gold-fill,var(--gold))"></i>Shipped '+mmt(sh)+' MMT</span>'
+      +'<span><i style="background:rgba(var(--gold-rgb),.38)"></i>Sold, not yet shipped '+mmt(ou)+' MMT</span>'
+      +'<span><i style="background:var(--text);width:2px"></i>25 MMT a year pledge</span></div>'
+      +'<p class="cn-p">That is '+pct+'% of the 25 MMT a year pledge, counted as USDA counts sales: shipped plus sold but not yet shipped, for the marketing year that runs Sep 1 to Aug 31. Neither government has said whether the pledge counts sales, shipments or arrivals, or a calendar or marketing year, so counts in the news can differ from this one.</p>';
+    if(typeof soy.unknown_outstanding_mt==='number' && soy.unknown_outstanding_mt>0){
+      h+='<p class="cn-p">Another '+mmt(soy.unknown_outstanding_mt)+' MMT of US soybeans is sold to unknown destinations. Some of it may be China; exporters move a sale to a named country once they report one.</p>';
+    }
+    var other=[];
+    ['corn','wheat'].forEach(function(k){ var r=es[k]; if(r&&!r.withheld&&r.china&&typeof r.china.commitments_mt==='number') other.push((k==='corn'?'Corn':'Wheat')+' '+mmt(r.china.commitments_mt)+' MMT ('+esc(r.china.marketing_year||r.marketing_year||'')+')'); });
+    if(other.length) h+='<p class="cn-p">Also committed to China: '+other.join(', ')+'.</p>';
+    h+='<div class="cn-src">Source: <a href="https://www.fas.usda.gov/programs/export-sales-reporting-program" target="_blank" rel="noopener">USDA FAS weekly export sales</a>, China, week ending '+esc(wkTxt)+'. Read '+esc(fmtDate(es.updated))+'.</div>';
+    body.innerHTML=h;
+  })
+  .catch(function(){});
 
 })();
 </script>
