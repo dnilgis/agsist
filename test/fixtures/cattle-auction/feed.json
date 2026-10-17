@@ -301,5 +301,81 @@
   }
  ],
  "states": [],
- "note": "TEST FIXTURE built from the made-up sample in scripts/fetch_cattle_auction.py (ROW_FIX), not real prices."
+ "note": "TEST FIXTURE built from the made-up sample in scripts/fetch_cattle_auction.py (ROW_FIX), not real prices. own: test barns USDA does not report; the Stratford ranges are test numbers (from the own-equity-lines fixture), not a read.",
+ "own": [
+  {
+   "id": "withee-wi",
+   "name": "Premier Livestock & Auctions",
+   "town": "Withee",
+   "state": "WI",
+   "lat": 44.95,
+   "lon": -90.6,
+   "sale": "Feeder cattle the 1st, 2nd and 3rd Tuesday",
+   "site": "https://premierlivestockandauctions.com/market-reports/",
+   "status": {
+    "ok": false,
+    "note": "needs first read",
+    "checked": "2026-10-16T12:00:00Z"
+   }
+  },
+  {
+   "id": "stratford-wi",
+   "name": "Equity Livestock",
+   "town": "Stratford",
+   "state": "WI",
+   "lat": 44.8,
+   "lon": -90.08,
+   "sale": "Feeder cattle Wed",
+   "site": "https://www.equitycoop.com/index.cfm?show=10&mid=303",
+   "sales": [
+    {
+     "date": "2026-09-23",
+     "receipts": 665,
+     "source_url": "https://www.equitycoop.com/index.cfm?show=10&mid=303",
+     "ranges": [
+      {
+       "sex": "steers",
+       "lo": 400,
+       "hi": 600,
+       "plo": 360.0,
+       "phi": 440.0
+      },
+      {
+       "sex": "steers",
+       "lo": 300,
+       "hi": 400,
+       "plo": 400.0,
+       "phi": 465.0
+      },
+      {
+       "sex": "heifers",
+       "lo": 300,
+       "hi": 400,
+       "plo": 380.0,
+       "phi": 442.5
+      }
+     ]
+    }
+   ],
+   "status": {
+    "ok": true,
+    "note": "",
+    "checked": "2026-10-16T12:00:00Z"
+   }
+  },
+  {
+   "id": "zumbrota-mn",
+   "name": "Central Livestock Association",
+   "town": "Zumbrota",
+   "state": "MN",
+   "lat": 44.29,
+   "lon": -92.67,
+   "sale": "See the barn's site",
+   "status": {
+    "ok": false,
+    "note": "needs first read",
+    "checked": "2026-10-16T12:00:00Z"
+   }
+  }
+ ]
 }
