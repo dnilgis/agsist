@@ -84,12 +84,9 @@ async function open(browser, port, { width = 390, init = null, routes = {}, ctxO
   return { pg, errors, seen, ctx };
 }
 
-test("first screen carries the byline and the how-the-numbers-are-made link", () => {
-  const m = /<p class="hb-by">([\s\S]*?)<\/p>/.exec(HTML);
-  assert.ok(m, "hb-by line in the hero band");
-  assert.match(m[1], /Sigurd Lindquist, CCA/);
-  assert.match(m[1], /href="\/editorial-standards"/);
-  assert.ok(HTML.indexOf('class="hb-by"') < HTML.indexOf('id="daily-hero"'), "byline sits in the first band, above the briefing");
+test("first screen has no byline line (Sig, Oct 17: removed from the hero band)", () => {
+  assert.ok(!/class="hb-by"/.test(HTML), "no hb-by line in the hero band");
+  assert.ok(!/Built and checked by/.test(HTML), "no byline sentence on the homepage first screen");
 });
 
 test("install banner markup lives in home.js, not in every page load", () => {
@@ -104,8 +101,6 @@ test("new homepage copy has no em dashes", () => {
   const tail = JS.slice(start);
   const strings = tail.match(/'[^'\n]*'/g) || [];
   for (const s of strings) assert.ok(!s.includes("—"), s);
-  const by = /<p class="hb-by">[\s\S]*?<\/p>/.exec(HTML)[0];
-  assert.ok(!by.includes("—") && !by.includes("&mdash;"));
   assert.ok(CSS.includes("#bids-noloc"), "no-location styles present");
 });
 
