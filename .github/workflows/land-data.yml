@@ -21,7 +21,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "services, discover (services + county search), transfers (or sales), or all"
+        description: "services, discover (services + county search), transfers (or sales), all, or wi-explore (open WI DOR's public RETR screens in a browser, save screenshots)"
         type: string
         default: "services"
   # schedule: monthly run waits for Sig's OK (proposed cron '23 9 3 * *')
@@ -53,6 +53,20 @@ jobs:
         run: |
           sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1 || echo "no pdftotext; layouts saved as PDF only"
           python scripts/fetch_land_sales.py --probe
+      - name: Wisconsin RETR screens in a browser (explore only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}
+        run: |
+          python3 -m venv "$RUNNER_TEMP/pw"
+          "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
+          "$RUNNER_TEMP/pw/bin/python" -m playwright install --with-deps chromium >/dev/null
+          "$RUNNER_TEMP/pw/bin/python" scripts/wi_retr_browser.py --explore "$RUNNER_TEMP/wi-explore"
+      - name: Keep the explore screens
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: wi-explore
+          path: ${{ runner.temp }}/wi-explore
+          retention-days: 7
       - name: Check parcel services
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || inputs.task == 'all') }}
         run: |
