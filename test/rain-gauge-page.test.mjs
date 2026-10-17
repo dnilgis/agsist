@@ -1,4 +1,5 @@
-/* /rain-gauge: the concept page and its waitlist.
+/* /rain-gauge: Sig's two rain things (Oct 17): Rain Print (on sale) and the
+ * AGSIST rain gauge prototype with its waitlist, in the live page's own words.
  * Guards the things that matter if someone edits it by hand: the FAQ says the
  * same words on the page and in the JSON-LD, no Product or price goes into
  * structured data, the build details stay off the page, every picture has its
@@ -43,6 +44,9 @@ test("no build details, no promises the owner has not made, house style", () => 
     [/\b(PLA|PETG|ABS|ASA|PVC|polycarbonate|acrylic|resin|nylon)\b/, "a material"], [/\b\d+\s?:\s?1\b|\bratio\b|\bbore\b/i, "a ratio or bore"], [/fiducial|aruco|apriltag|threshold|homograph|algorithm|neural|model/i, "how the photo is read"],
     [/accurate to|within [\d.]+|\d+(\.\d+)?\s?%\s+accura/i, "an accuracy figure"], [/gauge-lab/, "a link to the unlisted lab page"],
     [/capacity|holds up to|part count|\d+ parts/i, "capacity or part count"], [/guarantee|forever/i, "guarantee or forever"],
+    [/reading method|\bstrips?\b/i, "the reading method or strip"],
+    [/\bLoRa(WAN)?\b|Wi-?Fi|Bluetooth|\bBLE\b|Zigbee|cellular|\bLTE\b|\bGSM\b|softAP|\b(2\.4|915|868|433)\s?(GHz|MHz)/i, "a radio or its protocol"],
+    [/\b(reed|hall[- ]effect|magnet|ESP32|microcontroller|circuit|PCB|sensor|load cell|ultrasonic|capacitive|siphon|solar|18650|lithium|Li-?ion|mAh)\b/i, "a part, sensor or cell"],
   ]) assert.ok(!re.test(words), "the page must not carry " + why + ": " + (words.match(re) || [])[0]);
   assert.ok(/before planting 2027/.test(words), "states the plan");
   assert.ok(/Prototype design/.test(words));
@@ -60,7 +64,7 @@ test("every picture has a size, alt text and a file behind it, and every caption
   for (const m of main.matchAll(/srcset="\/([^"]+)"/g)) assert.ok(existsSync(ROOT + m[1]), "file: " + m[1]);
   const caps = [...main.matchAll(/<figcaption[^>]*>([^<]*)<\/figcaption>/g)].map((m) => m[1]).filter((c) => !/Sigurd/.test(c));
   assert.ok(caps.length >= 7);
-  for (const c of caps) assert.ok(/^(Prototype design, 3D render\. |Concept screen: )/.test(c), "caption: " + c);
+  for (const c of caps) assert.ok(/^(Prototype design, 3D render\. |Concept screen: |A real one: \d{4} at )/.test(c), "caption: " + c);
   // the renders Sig turned down stay off the page and out of the repo
   for (const old of ["gauge-field-edge", "gauge-phone-scan", "gauge-top-qr", "screen-1-scan", "screen-2-confirm"]) {
     assert.ok(!page.includes(old), "old concept image on the page: " + old);
@@ -128,4 +132,64 @@ test("Sig, 2026-10-14: the first-batch price holds for everyone on the waitlist,
   assert.equal((main.match(/Everyone on the waitlist gets (that|that first-batch) price, even if the first batch runs out before your turn\./g) || []).length, 2);
   assert.ok(JSON.stringify(ld).includes("Everyone on the waitlist gets that first-batch price, even if the first batch runs out before your turn."));
   assert.ok(!/while the first batch lasts/i.test(main));
+});
+
+// Oct 17: two things on one page (Sig, via the lead)
+const ORDER = ["rain-print", "gauge", "rg-faq-h"];
+const sec = (id) => { const i = main.indexOf(`id="${id}"`); assert.ok(i > 0, "section " + id); const nx = ORDER[ORDER.indexOf(id) + 1]; return main.slice(i, nx ? main.indexOf(`id="${nx}"`) : undefined); };
+test("the page runs in order: opening with two cards, Rain Print, the AGSIST rain gauge, questions", () => {
+  const at = ["<h1>Two things for the rain at your place</h1>", 'id="rain-print"', 'id="gauge"', 'id="rg-faq-h"'].map((k) => main.indexOf(k));
+  for (let i = 0; i < at.length; i++) assert.ok(at[i] > 0 && (i === 0 || at[i] > at[i - 1]), "order at " + i);
+  assert.equal((main.match(/<h1>/g) || []).length, 1);
+  assert.equal((main.match(/<ul class="rg-three">[\s\S]*?<\/ul>/)[0].match(/<li>/g) || []).length, 2, "two cards");
+  assert.ok(main.indexOf('id="rg-form-1"') > at[2] && main.indexOf('id="rg-form-1"') < at[3], "the waitlist sits with the gauge");
+  assert.match(main, /Sigurd Lindquist, CCA/);
+  assert.ok(!/Sigurd Lindquist, Certified Crop Adviser/.test(main), "short byline on the page (Oct 16)");
+});
+test("only two things: no second gauge, concept, second list, or anything Sig dropped", () => {
+  // the existing gauge's own "Concept screen" captions and "concept screens" line are the live page's words and stay
+  const words = (text(main) + " " + JSON.stringify(ld) + " " + page.match(/<head>[\s\S]*<\/head>/)[0].replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ""))
+    .replace(/Concept screen:|concept screens/g, "");
+  for (const re of [/lorain/i, /tipping/i, /bucket/i, /\bconcepts?\b/i, /second (gauge|list)/i, /another gauge/i, /interest list/i, /three things/i, /exploring/i])
+    assert.ok(!re.test(words), "must not appear: " + re);
+  assert.ok(!/data-note-prefix|data-list=/.test(page), "no second-list form code");
+  assert.ok(!existsSync(ROOT + "img/rain-gauge/lorain-concept.jpg") && !existsSync(ROOT + "img/rain-gauge/lorain-concept.webp"));
+  assert.equal((main.match(/<form\b/g) || []).length, 2, "only the two waitlist forms");
+  assert.ok(!/id="(record|fit)"/.test(main), "no record or fit section");
+});
+test("the existing gauge keeps the live page's own words", () => {
+  const g = text(sec("gauge"));
+  for (const s of ["A rain gauge that keeps its own log", "Read it like any good gauge. Or scan the code on it, take a photo, and the rain goes into your log for that field.",
+    "a prototype on my bench in Chetek", "Wood post or T-post", "How it would work", "Why I’m building it", "Who it’s for", "A season next to a standard gauge"])
+    assert.ok(g.includes(s), "kept: " + s);
+  assert.ok(!/reports on its own|on batteries|every tip|dashboard|subscription/i.test(g));
+  assert.ok(!/\$|\bUSD\b|\d+\s?dollars|per month/i.test(g), "no gauge price");
+});
+test("the gauge's name is written in one place", () => {
+  assert.equal((page.match(/AGSIST rain gauge/g) || []).length, 1);
+  assert.match(main, /<!-- THE GAUGE'S NAME:[^>]*-->\s*<p class="rg-tag"><span><span id="rg-gauge-name">The AGSIST rain gauge<\/span>/);
+});
+test("Rain Print prices come from data/rain-print.json, never typed on this page", () => {
+  const html = page.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, "");
+  assert.ok(!/\$\s?\d/.test(html), "a typed price");
+  const fn = page.match(/function rpPriceLine\(cfg\) \{[\s\S]*?\n  \}/);
+  assert.ok(fn);
+  const rpPriceLine = new Function(fn[0] + "; return rpPriceLine;")();
+  const cfg = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  assert.equal(rpPriceLine(cfg), `Digital file $${cfg.digital}, print $${cfg.print12x18}, framed $${cfg.framed12x18}. Shipping included in the 50 states.`);
+  assert.equal(rpPriceLine({ ...cfg, framed12x18: null }), "");
+  assert.equal(rpPriceLine(null), "");
+  assert.match(page, /fetch\('\/data\/rain-print\.json'/);
+  assert.match(sec("rain-print"), /id="rg-rp-price">Digital file, print or framed print\. Shipping included in the 50 states\.</);
+  assert.match(sec("rain-print"), /src="\/img\/rain-print-example-2012-ames-ia\.jpg"/);
+});
+test("the Christmas line is the shared one from the same cutoffs, hidden until filled", async () => {
+  assert.match(page, /<script src="\/components\/rain-print-promo\.js\?v=\d+" defer><\/script>/);
+  assert.match(sec("rain-print"), /<p class="rg-xmas" id="rg-rp-xmas" hidden><\/p>/);
+  const { createRequire } = await import("node:module");
+  const P = createRequire(import.meta.url)("../components/rain-print-promo.js");
+  const cfg = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
+  assert.equal(P.xmasLine({ ...cfg, print_christmas_cutoff: "2026-12-10", framed_christmas_cutoff: "2026-12-09" }, "2026-10-17"),
+    "For Christmas delivery, order a print by Dec 10 or a framed print by Dec 9.");
+  assert.equal(P.xmasLine(cfg, "2026-07-01"), "");
 });
