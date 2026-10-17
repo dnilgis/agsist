@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "probe | probe2 | build | backtest"
+        description: "probe | probe2 | probe3 | build | backtest"
         required: true
         default: probe
 
@@ -104,6 +104,51 @@ jobs:
           PY
           cat "$D/status.txt"
           bash scripts/push_raw.sh "prf-season probe2" "$D"
+
+      - name: Probe 3 (NCEI daily and initial files)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe3' }}
+        run: |
+          D=data/prf-season-raw/probe3
+          mkdir -p "$D"
+          get() { curl -sS -L -m 300 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          N=https://www.ncei.noaa.gov/monitoring-content/data/us/usda
+          get readme.docx "$N/Readme.docx"
+          get m-initial.html "$N/monthly/initial/"
+          get d-final.html "$N/daily/final/"
+          get d-is.html "$N/daily/initial-synced/"
+          get d-iu.html "$N/daily/initial-unsynced/"
+          python3 - "$D" "$N" <<'PY'
+          import re, sys, os, urllib.request
+          d, base = sys.argv[1], sys.argv[2]
+          picks = {}
+          for f, sub in (("m-initial.html", "monthly/initial/"), ("d-final.html", "daily/final/"), ("d-is.html", "daily/initial-synced/"), ("d-iu.html", "daily/initial-unsynced/")):
+              p = os.path.join(d, f)
+              if not os.path.exists(p):
+                  continue
+              hrefs = [h for h in re.findall(r'href="([^"?]+)"', open(p, errors="replace").read()) if not h.startswith("/") and h != "../"]
+              print("==", sub, len(hrefs), hrefs[:6], hrefs[-6:])
+              picks[sub] = hrefs
+          # one level down where the listing is folders, then the newest file
+          for sub, hrefs in picks.items():
+              if not hrefs:
+                  continue
+              last = hrefs[-1]
+              url = base + "/" + sub + last
+              if last.endswith("/"):
+                  t = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "agsist"}), timeout=120).read().decode("utf-8", "replace")
+                  inner = [h for h in re.findall(r'href="([^"?]+)"', t) if not h.startswith("/") and h != "../"]
+                  print("   ", sub + last, len(inner), inner[:4], inner[-4:])
+                  open(os.path.join(d, sub.replace("/", "_") + last.strip("/") + ".html"), "w").write(t)
+                  if not inner:
+                      continue
+                  url = url + inner[-1]
+              raw = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "agsist"}), timeout=300).read()
+              name = sub.replace("/", "_") + os.path.basename(url)
+              open(os.path.join(d, name), "wb").write(raw)
+              print("    saved", url, len(raw))
+          PY
+          cat "$D/status.txt"
+          bash scripts/push_raw.sh "prf-season probe3" "$D"
 
       - name: Backtest (collect)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'backtest' }}
