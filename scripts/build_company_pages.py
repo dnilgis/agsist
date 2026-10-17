@@ -309,6 +309,15 @@ def build_page(co, ctx):
     if qs:
         jsonld["@graph"].append(CB.faq_jsonld(qs))
     hdr, ftr = ctx["chrome"]
+    # The bid email box (components/cb-signup.js, the same one the town pages
+    # carry): AGSIST Daily with the reader's ZIP, and the 25-mile ZIP price
+    # alert (send_zip_alert.py). A company page has no one ZIP, so the box
+    # shows its own ZIP field (data-zip-input names a hidden input it syncs from).
+    box = ""
+    if indexable:
+        cs = " ".join(c for c in crops if c in ("corn", "soybeans", "wheat"))
+        box = (f'<input type="hidden" id="co-zip" value=""><div id="bid-email" data-bid-alerts data-zip-input="co-zip" '
+               f'data-source="company:{co["slug"][:50]}" data-crops="{cs}"></div>')
     links = " &middot; ".join([f'<a href="/cash-bids/{SUBDIR}/">Every company</a>']
                               + [f'<a href="/cash-bids/{CB.url_slug(STATE_NAMES[s])}/">{esc(STATE_NAMES[s])} bids and basis</a>'
                                  for s in states[:4]])
@@ -327,6 +336,7 @@ def build_page(co, ctx):
   {intro}
   {jump}
   {''.join(secs)}
+  {box}
   {CB.faq_html(qs, short)}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each {esc(short)} location&rsquo;s
   posted bid board directly; no third-party bid feed is used. A bid shows only if the board was confirmed on the latest
@@ -338,7 +348,11 @@ def build_page(co, ctx):
 """
     h = CB.head(title, desc, path, jsonld, indexable)
     h = h.replace("  </style>", CSS_EXTRA + "\n  </style>", 1)
-    page = h + body + CB.page_end(ftr)
+    if box:
+        sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
+        assert sheet in h, "CB.head() changed shape; update build_page()"
+        h = h.replace(sheet, sheet + CB.SIGNUP_CSS, 1)
+    page = h + body + CB.page_end(ftr, signup=bool(box))
     meta = {"slug": co["slug"], "name": co["name"], "short": short, "path": path, "indexable": indexable,
             "locations": n_loc, "live": n_live, "states": states, "title": title,
             "latest": max((r["priced"] for g in cells for r in g.values()), default=None)}
@@ -478,6 +492,11 @@ def selftest():
         assert 'content="index,follow"' in p and "<title>Acme Co-op Cash Bids Today | AGSIST</title>" in p
         assert "ga-guard" in p and 'id="site-header"' in p, "same head and static chrome as the town pages"
         assert "\u2014" not in p, "no em dashes"
+        # the bid email box: its own ZIP field, the company as the source, loaded once
+        assert ('<input type="hidden" id="co-zip" value=""><div id="bid-email" data-bid-alerts data-zip-input="co-zip" '
+                'data-source="company:acme-co-op" data-crops="corn soybeans wheat"></div>') in p
+        assert p.count("/components/cb-signup.js?v=") == 1 and p.count("/components/cb-signup.css?v=") == 1
+        assert p.index('id="bid-email"') > p.index('id="iowa"'), "the box comes after the bids"
         ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">\n(.*?)\n  </script>', p, re.S)]
         types = [g["@type"] for g in ld[0]["@graph"]]
         assert types == ["BreadcrumbList", "WebPage", "FAQPage"], types
