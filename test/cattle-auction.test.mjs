@@ -171,8 +171,9 @@ test("the parser says plainly it has not been checked against a real report yet"
 test("the barn list: unique ids, town and lower-48 coordinates, a title pattern for every source", () => {
   const ids = srcs.barns.map((b) => b.id).concat(srcs.state_reports.map((b) => b.id));
   assert.equal(new Set(ids).size, ids.length);
-  // 47 barns on Oct 16 2026 after the barn fill; the cap keeps the list a hand-checked set, not a dump
-  assert.ok(srcs.barns.length >= 20 && srcs.barns.length <= 60);
+  // 47 barns on Oct 16 2026 after the barn fill, 88 on Oct 17 (Sig: more barns, Upper Midwest first);
+  // the cap keeps the list a hand-picked set of feeder sales, not every report AMS has
+  assert.ok(srcs.barns.length >= 20 && srcs.barns.length <= 120);
   for (const b of srcs.barns) {
     assert.ok(b.town && /^[A-Z]{2}$/.test(b.state), b.id);
     assert.ok(b.lat > 24 && b.lat < 50 && b.lon > -125 && b.lon < -66, b.id + " coordinates");
@@ -186,6 +187,37 @@ test("the page's barn list names every barn the fetcher reads, and no other", ()
     .flatMap((m) => m[2].split("; ").map((x) => m[1] + " " + x.replace(/&#x27;/g, "'").replace(/&amp;/g, "&")));
   const want = srcs.barns.map((b) => `${b.state} ${b.name}, ${b.town}`);
   assert.deepEqual([...listed].sort(), [...want].sort());
+});
+
+test("the page's list of barns USDA does not report is the own_reports list; unconfirmed sites get no link", () => {
+  const sec = page.split("<h2>Barns USDA does not report</h2>")[1].split("</ul>")[0];
+  const items = [...sec.matchAll(/<li><b>([A-Z]{2})<\/b> ([\s\S]*?) <span class="sb-day">\(([^)]*)\)<\/span><\/li>/g)].map((m) =>
+    m[1] + " " + m[2].replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'").replace(/&amp;/g, "&"));
+  assert.deepEqual(items.sort(), srcs.own_reports.map((b) => `${b.state} ${b.name}, ${b.town}`).sort());
+  for (const b of srcs.own_reports) {
+    const linked = sec.includes('href="' + b.site.replace(/&/g, "&amp;") + '"');
+    if (b.check) assert.ok(!sec.includes(b.site), b.id + " unconfirmed site linked");
+    else assert.ok(linked, b.id + " site not linked");
+  }
+  // Premier (Withee), Equity and Central Livestock are what Sig asked for by name
+  for (const id of ["withee-wi", "lomira-wi", "stratford-wi", "reedsville-wi", "bonduel-wi", "johnson-creek-wi", "richland-center-wi", "rock-creek-mn", "zumbrota-mn"])
+    assert.ok(srcs.own_reports.some((b) => b.id === id), id);
+  assert.ok(srcs.own_reports.every((b) => !b.parser_checked), "no barn-posted price ships before a checked read");
+  assert.match(strip(page), /not shown here until AGSIST has read one of their reports and checked the reading by hand/);
+});
+
+test("barns USDA does not report: nearest first within range; ranges per sex, lightest first", () => {
+  const own = [{ id: "w", lat: 44.95, lon: -90.6 }, { id: "s", lat: 44.8, lon: -90.08 }, { id: "z", lat: 44.29, lon: -92.67 }, { id: "far", lat: 30, lon: -97 }];
+  // from Withee (44.95, -90.60): Stratford about 28 mi, Zumbrota about 115 mi
+  const n = A.nearOwn(own, { lat: 44.95, lon: -90.6 }, 6, 400);
+  assert.equal(n.map((x) => x.barn.id).join(), "w,s,z");
+  near(n[1].mi, 28, 3, "Withee-Stratford");
+  near(n[2].mi, 115, 6, "Withee-Zumbrota");
+  assert.equal(A.nearOwn(own, { lat: 44.95, lon: -90.6 }, 2, 400).map((x) => x.barn.id).join(), "w,s");
+  const st = fixture.own.find((b) => b.id === "stratford-wi");
+  assert.equal(A.ownRanges(st, "steers").map((r) => r.lo).join(), "300,400");
+  assert.equal(A.ownRanges(st, "heifers").map((r) => r.lo).join(), "300");
+  assert.equal(A.ownRanges(fixture.own[0], "steers").length, 0);
 });
 
 test("barns with a second sale day: also is a list of other report numbers, never the slug again", () => {
@@ -250,7 +282,7 @@ async function open(browser, srv) {
   p.on("pageerror", (e) => errs.push(e.message));
   await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => {
     if (r.request().url().startsWith("https://dnilgis.github.io/bids/data/zips/"))
-      return r.fulfill({ body: JSON.stringify({ "64836": [37.17, -94.31, "Carthage"] }), contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" } });
+      return r.fulfill({ body: JSON.stringify({ "64836": [37.17, -94.31, "Carthage"], "54498": [44.95, -90.6, "Withee"] }), contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" } });
     return r.abort();
   });
   await p.goto(`http://127.0.0.1:${srv.address().port}/cattle-auction-prices`, { waitUntil: "load" });
@@ -292,6 +324,32 @@ test("browser: a ZIP shows the nearest barns with sale date, classes, change and
     assert.match(await p.textContent(".sb-card"), /400-499.*14.*391\.75/s);
     await p.click('[data-grade="1-2"]');
     assert.match(await p.textContent(".sb-card"), /No heifers graded Medium and Large 1-2/);
+    assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    assert.deepEqual(errs, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("browser: a Wisconsin ZIP lists the barns USDA does not report, nearest first, no price until a checked read", { skip }, async () => {
+  const srv = await serve(true), browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { p, errs } = await open(browser, srv);
+    await p.waitForSelector("#sb-controls:not([hidden])");
+    await p.fill("#sb-zip", "54498");
+    await p.click("#sb-go");
+    await p.waitForSelector(".sb-own");
+    assert.match(await p.textContent(".sb-ownh"), /Near you, not in a USDA report/);
+    const own = await p.$$eval(".sb-own", (x) => x.map((e) => e.textContent));
+    assert.equal(own.length, 3);
+    assert.match(own[0], /Premier Livestock & Auctions.*Withee, WI.*0 mi.*Sale day: Feeder cattle the 1st, 2nd and 3rd Tuesday/s);
+    assert.match(own[0], /has not read and checked its own report yet, so no price is shown/);
+    assert.doesNotMatch(own[0], /\d{3}\.\d{2}/);
+    assert.match(own[1], /Equity Livestock.*Stratford.*Barn report of Sep 23, 2026.*665 head.*300-400.*400\.00-465\.00.*400-600.*360\.00-440\.00/s);
+    assert.match(own[1], /Posted by the barn, not USDA/);
+    assert.match(own[2], /Zumbrota.*Ask the barn for its latest market report/s);
+    assert.equal(await p.$$eval(".sb-own", (x) => x[2].querySelectorAll("a").length), 0);
+    assert.equal(await p.$$eval(".sb-own", (x) => x[0].querySelector("a").href), "https://premierlivestockandauctions.com/market-reports/");
+    await p.selectOption("#sb-state", "MN");
+    assert.match(await p.textContent("#sb-results"), /Minnesota barns USDA does not report.*Central Livestock Association/s);
     assert.equal(await p.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     assert.deepEqual(errs, []);
   } finally { await browser.close(); srv.close(); }
