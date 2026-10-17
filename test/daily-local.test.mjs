@@ -88,3 +88,16 @@ test("no em dashes, no tracking calls", () => {
   assert.ok(!s.includes("—"));
   assert.ok(!/gtag\(|sendBeacon|dataLayer/.test(s), "the local line reports nothing about the reader");
 });
+
+test("a reader with a saved location gets the line above the quote strip; no location keeps the ZIP box below it", () => {
+  const el = (a) => ({ getAttribute: (k) => (k in a ? a[k] : null) });
+  const box = el({ "data-before": "article .dv3-quotes", "data-after": "aside.ya[data-your-area]" });
+  assert.deepEqual(L.spot(box, true), { sel: "article .dv3-quotes", before: true, fallback: "aside.ya[data-your-area]" });
+  assert.deepEqual(L.spot(box, false), { sel: "aside.ya[data-your-area]", before: false, fallback: null });
+  assert.deepEqual(L.spot(el({ "data-after": "x" }), true), { sel: "x", before: false, fallback: null }, "old issue pages keep their place");
+  const page = readFileSync(join(ROOT, "daily.html"), "utf8");
+  assert.match(page, /<aside class="dl" data-daily-local data-before="#dv3-today \.dv3-quotes" data-after="#dv3-today \.dv3-quote-asof" hidden><\/aside><script src="\/components\/daily-local\.js\?v=2" defer><\/script>/);
+  const gen = readFileSync(join(ROOT, "scripts/generate_daily.py"), "utf8");
+  assert.match(gen, /<aside class="dl" data-daily-local data-before="article \.dv3-quotes" data-after="aside\.ya\[data-your-area\]" hidden><\/aside>/);
+  assert.match(gen, /daily-local\.js\?v=2/);
+});
