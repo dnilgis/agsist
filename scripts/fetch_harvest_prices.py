@@ -2,7 +2,8 @@
 """
 AGSIST harvest/projected price maintainer.
 
-Runs weekday evenings after CBOT settlement. During the two discovery
+Runs Monday to Saturday evenings after CBOT settlement (Saturday picks up
+Friday's settle, 2026-10-17). During the two discovery
 windows (February = projected, October = harvest) it rebuilds each
 commodity's daily-settlement series for the month from exchange data,
 recomputes the running average exactly as RMA's Commodity Exchange Price
@@ -34,6 +35,7 @@ PAGE = REPO / "harvest-price-tracker.html"
 CENTRAL = ZoneInfo("America/Chicago")
 
 RMA = REPO / "data" / "rma-prices.json"
+PRICES = REPO / "data" / "prices.json"
 ROOTS = {"Corn": "ZC", "Soybeans": "ZS"}
 MONTH_CODE = {"Dec": "Z", "Nov": "X"}
 FULL_CODE = {"January": "F", "February": "G", "March": "H", "April": "J", "May": "K", "June": "M",
@@ -121,6 +123,41 @@ def mark_provisional(rows, today):
         else:
             r.pop("p", None)
     return rows
+
+
+def exchange_settles(ticker, prices):
+    """The CBOT settles data/prices.json holds for this contract, in dollars.
+
+    2026-10-17 audit (N1): Friday Oct 16 Nov beans stayed at Yahoo's afternoon
+    close, $12.60 1/2 and "provisional", all weekend, while prices.json had the
+    settle, $12.61 1/4, from 06:46 UTC Saturday and every other page showed it.
+    fetch_prices.py keeps a settles map of true settles only (settles_v 2), so
+    a day it holds is a settle and replaces the Yahoo bar here."""
+    out = {}
+    for q in ((prices or {}).get("quotes") or {}).values():
+        if not isinstance(q, dict) or q.get("ticker") != ticker or q.get("settles_v") != 2:
+            continue
+        for d, px in (q.get("settles") or {}).items():
+            if isinstance(px, (int, float)) and px > 0:
+                out[str(d)[:10]] = round(px / 100, 4)
+    return out
+
+
+def apply_settles(series, settles):
+    """Swap in each exchange settle on file and drop its provisional flag."""
+    for r in series:
+        if r["d"] in settles:
+            r["s"] = settles[r["d"]]
+            r.pop("p", None)
+    return series
+
+
+def load_prices():
+    try:
+        return json.loads(PRICES.read_text())
+    except (OSError, ValueError) as e:
+        print("prices.json unreadable, Yahoo bars kept as they are: " + str(e), file=sys.stderr)
+        return None
 
 
 def finish_line(leg, projected):
@@ -316,6 +353,19 @@ def selftest():
     out = stamp_head(page, dd)
     assert "<title>2026 Harvest vs Projected Price: Crop Insurance | AGSIST</title>" in out
     assert "<!--SEED:hph1-->When does your <em>price</em> get set?<!--/SEED:hph1-->" in out
+    # 2026-10-17 (N1): the settle in prices.json replaces Friday's provisional bar
+    pj = {"quotes": {"beans-nov": {"ticker": "ZSX26.CBT", "settles_v": 2,
+                                   "settles": {"2026-10-15": 1263.0, "2026-10-16": 1261.25}},
+                     "beans": {"ticker": "ZS=F", "settles_v": 2, "settles": {"2026-10-16": 9999.0}},
+                     "old": {"ticker": "ZSX26.CBT", "settles": {"2026-10-14": 1.0}}}}
+    st = exchange_settles("ZSX26.CBT", pj)
+    assert st == {"2026-10-15": 12.63, "2026-10-16": 12.6125}, st
+    ser = [{"d": "2026-10-14", "s": 12.7725}, {"d": "2026-10-15", "s": 12.63}, {"d": "2026-10-16", "s": 12.605, "p": True}]
+    apply_settles(ser, st)
+    assert ser[-1] == {"d": "2026-10-16", "s": 12.6125} and ser[0]["s"] == 12.7725, ser
+    assert exchange_settles("ZSX26.CBT", None) == {} and exchange_settles("ZCZ26.CBT", pj) == {}
+    ser = [{"d": "2026-10-19", "s": 12.5, "p": True}]
+    assert apply_settles(ser, st)[0].get("p") is True, "a day with no settle on file stays provisional"
     selftest_windows()
     print("selftest ok")
     return 0
@@ -340,6 +390,7 @@ def update_leg(commodity, leg_name, month, crop_year, today):
         if "no settled day yet" in str(e):
             return False                      # first day of the window: nothing settled to count
         raise
+    apply_settles(series, exchange_settles(ticker, load_prices()))
     with_running_avg(series)
     avg = series[-1]["a"]
     changed = (series != leg.get("series") or leg.get("status") == "pending")
@@ -605,7 +656,7 @@ def seed_note(d):
             'it covers fewer days than ours the two can differ by a cent or two, and RMA&rsquo;s is the official one.')
     if last.get("p"):
         tail += (' ' + _md(last["d"]) + ' is Yahoo Finance&rsquo;s close that afternoon, which can sit a tick off '
-                 'the exchange settle; the next evening&rsquo;s run replaces it with the settle.')
+                 'the exchange settle; it is replaced with the CBOT settle once that is posted.')
     return base + tail
 
 
