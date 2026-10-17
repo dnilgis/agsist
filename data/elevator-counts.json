@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-17T06:36:48Z",
+ "generated": "2026-10-17T08:37:08Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1843,
-  "towns": 1458
+  "elevators": 1597,
+  "towns": 1260
  },
  "states": {
   "AL": {
@@ -28,24 +28,24 @@
    "towns": 8
   },
   "IA": {
-   "elevators": 416,
-   "towns": 313
+   "elevators": 337,
+   "towns": 240
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 210,
-   "towns": 151
+   "elevators": 204,
+   "towns": 146
   },
   "IN": {
-   "elevators": 64,
-   "towns": 49
+   "elevators": 61,
+   "towns": 48
   },
   "KS": {
-   "elevators": 251,
-   "towns": 180
+   "elevators": 197,
+   "towns": 139
   },
   "KY": {
    "elevators": 9,
@@ -60,8 +60,8 @@
    "towns": 17
   },
   "MN": {
-   "elevators": 156,
-   "towns": 131
+   "elevators": 153,
+   "towns": 129
   },
   "MO": {
    "elevators": 28,
@@ -72,24 +72,24 @@
    "towns": 8
   },
   "ND": {
-   "elevators": 48,
-   "towns": 44
+   "elevators": 47,
+   "towns": 43
   },
   "NE": {
-   "elevators": 199,
-   "towns": 149
+   "elevators": 184,
+   "towns": 140
   },
   "NY": {
    "elevators": 2,
    "towns": 2
   },
   "OH": {
-   "elevators": 79,
-   "towns": 70
+   "elevators": 75,
+   "towns": 68
   },
   "OK": {
-   "elevators": 77,
-   "towns": 65
+   "elevators": 11,
+   "towns": 10
   },
   "OR": {
    "elevators": 1,
@@ -104,7 +104,7 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 106,
+   "elevators": 104,
    "towns": 91
   },
   "TN": {
@@ -112,8 +112,8 @@
    "towns": 4
   },
   "TX": {
-   "elevators": 18,
-   "towns": 12
+   "elevators": 5,
+   "towns": 3
   },
   "WA": {
    "elevators": 9,
