@@ -70,8 +70,9 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - Bunge Ladoga (Haw Creek) email bid reader in dnilgis/bids (waits on Sig's Gmail app password).
 - Sale barns: 21 of 40 sources read. 18 barns need their AMS report number (the probe's listing fetch failed; fix listing_slugs/probe);
   Sioux Falls is wired to a slaughter report. scripts/cattle_auction_sources.json.
-- dnilgis/bids: week rows can hide month rows in merge_bids.mjs dedupe(); patch drafted (session scratchpad, bids-dedupe.patch) but needs the
-  agsist side to prefer whole-month rows first. This session could not attach the bids repo.
+- dnilgis/bids: week rows can hide month rows in merge_bids.mjs dedupe(); patch drafted (old session scratchpad, bids-dedupe.patch) but needs the
+  agsist side to prefer whole-month rows first. The bids repo IS attached to Claude Code sessions now (/home/user/bids); push to its main
+  as dnilgis after `npm test` passes (Oct 17: nearestOpen held-skip pushed that way, f76748c9d5).
 - USDA payments: data/payments covers 21 states only; Sig downloads all FY2025 FSA payment xlsx files (FSA blocks datacenters), then
   scripts/process_payments.py runs locally. Build /payments only with all states or a clear "21 states" label.
 - Soybean EMC low fit (Modified Henderson constants) is from ASAE D245 memory, matched to Minnesota and Hellevang's two figures (10.2% 2015 slide, 13.5% 2020 release); NDSU's 2011 table matches neither fit (22 of 30 cells outside the range, pinned in tests). D245 itself is paywalled; listing saved to references.
@@ -85,3 +86,32 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - Weak share where AGSIST has a page: WASDE (3%), crop progress (4%), Pro Farmer crop tour 2026 (2%), fertilizer prices (9%),
   crop yield (4%). Opportunity queries on mission: farm bill 2026, cattle prices / beef shortage / screwworm, USDA payments
   to farmers, heifer retention, tariff impact. Sugar, rice and general weather are off mission.
+
+## State on Oct 17 (evening, cache v164)
+- Subscribers 146 (about 17 in 7 days; the cash-bids page is the best signup source). Rent notice list 5, gauge waitlist 2.
+- Live: radar rain map draws our own state outline (CARTO tiles turned into "API KEY REQUIRED"; no rented tiles, scripts/basemap-checks.mjs);
+  Rain Print maker ?maker=1&serial=0 prints "No. 0000" (Sig's own test prints), real orders start at serial 1 (Sig's wife's print is No. 0001);
+  box letter code line (data/rain-print.json letter_offer, OFF until Sig makes the Stripe promotion code and turns on "Allow promotion codes";
+  placeholder $10); accuracy round 3 (Kansas statewide hail counts etc.); search answers (cash-bids company line + no-ZIP state sample, cattle
+  side by side, rent state picker + pasture map, futures H1s); PRF "interval so far" runs DAILY 14:23 UTC (Sig OK'd).
+- Alert asks (v164): county rain pages "email me the full-year total in January" (notice topic rainyear:<year>:<fips>, worker v5.28,
+  scripts/send_rain_year.py inside county-rain.yml in January); co-op company pages get the town bid box; whats-priced-in gets the report-day ask;
+  rent notices finally have a sender (scripts/send_rent_notice.py in cash-rent.yml). signup-ask.js data-daily="on" ticks the briefing box.
+- Bid boards a pass did not ask ("skipped") now count for 6 h after their last good read, with their own read time: town/state/company pages,
+  data/bids.json ZIP feed, /cash-bids ZIP search, and the bids repo's nearestOpen (homepage card). NEW Cooperative 0/66 -> 66/66, Landus 6/48 -> 48/48.
+  Still thin: Farmers Coop Columbus (cashgrid.php times out at the reader's 6 s; needs a longer timeout in dnilgis/bids); stale location ids
+  Farmers Win 12589 and Country Partners 16684.
+- Co-op / extension link outreach list (119 co-ops, 23 extension offices, two notes, top 20) sent to Sig as files; contacts are from search
+  results only, Sig checks each before sending. Only ~11 referring domains: links are the main lever for the futures pages (page 2).
+- Fact check (GATE 2f) runs on Opus in report mode for a week; Oct 24 reminder to ask Sig about block mode.
+
+## Tabled / waiting on Sig (carry forward)
+- Off-repo hosting (tabled). Needed for: radar rain history at any house (MRMS archive ~2020+, Stage IV ~2002+; a test comparing one
+  spot's radar year with its Rain Print gauge was offered, not run), radar "email me my field's total after a storm".
+- PRF "email me when my grid's final index posts" (offered; PRF rule: no lead capture, no agent routing).
+- Rain Print: family code undecided; paper pick (Epson Velvet Fine Art test on Artisan 1430; then change "matte paper" wording); real mat
+  window measurement; real photos of a framed print and the letter in the box (biggest conversion lever); gift guide pitches (Progressive Dairy,
+  Agweek, WEAU, Chetek Alert, WisconsinMade; most close early November); 2027 Christmas cutoffs Dec 8 framed / Dec 9 print.
+- No Gifts menu; Elevator widgets on hold; Bing report automation skipped (bing-reports.yml is Sig-run only).
+- Sig: API credits (expiring Oct 28 and Nov 19), MN eCRV email, Westfield / ZIP 44410 check (Mon Oct 19 reminder), "hose clamps vs clips".
+
