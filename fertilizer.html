@@ -335,7 +335,7 @@
   </div>
 
   <section id="fert-coops" aria-labelledby="fert-coops-h" hidden></section>
-  <aside class="nc" data-near-coop="fert" aria-label="Your area" hidden></aside>
+  <aside class="nc-n" data-near-coop="fert" aria-label="Your area"><p><a href="/cash-bids">See this for your area</a></p></aside>
 
   <div class="fert-verdict" id="fert-verdict" hidden>
     <div class="fv-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Cheapest of the products tracked here</div>
@@ -466,7 +466,7 @@
 <script src="/components/geo.js?v=26" defer></script>
 <script src="/components/fert-sources.js?v=6"></script>
 <script src="/components/fert-coops.js?v=5"></script>
-<script src="/components/near-coop.js?v=1" defer></script>
+<script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=1';document.head.appendChild(s);}}catch(e){}</script>
 
 <script>
 (function(){

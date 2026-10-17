@@ -1,29 +1,16 @@
-/* components/near-coop.js: the "Your area" box on /fertilizer and
-   /nutrient-removal. A page opts in with one hidden element plus this script
-   (defer):
-     <aside class="nc" data-near-coop="fert|nr" hidden></aside>
-   READS ONLY the location the site already saved (agsist-wx-loc from geo.js,
-   else agsist_zip from the cash bids ZIP search). Writes nothing, sends
-   nothing about the reader. With only a ZIP it asks the bids site for that
-   ZIP's two-digit table (the same file the cash bids search loads) to get a
-   point for distances; the state comes from the ZIP's first three digits.
-   Public files only, arithmetic here:
-     co-op posted prices, as each co-op posted them (data/fertilizer-coops.json)
-     co-op town points (data/fert-coop-places.json; straight-line miles to the
-       town, never a street address; no town on file = no distance)
-     state median corn basis (data/basis-states.json) + the same futures
-       contract's close within 5 days (data/prices.json)
-     the shared price list (data/fertilizer-prices.json) for N per lb.
-   Stale or missing data stays missing. No location: one link to the ZIP
-   search. Tests: test/near-coop.test.mjs. */
+/* components/near-coop.js: "Your area" on /fertilizer and /nutrient-removal.
+   The page holds <aside class="nc" data-near-coop="fert|nr"> with a link to the
+   ZIP search, and loads this file only when a location is saved (agsist-wx-loc,
+   else agsist_zip). Reads that location, writes and sends nothing about the
+   reader (a ZIP with no point asks the bids site for its two-digit ZIP table,
+   as the cash bids search does). Public files, arithmetic here; a stale or
+   missing number stays missing. Tests: test/near-coop.test.mjs. */
 (function (root) {
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' };
   var DAY = 864e5, FAR_MI = 150;
-  var NAMES = { AL: 'Alabama', AR: 'Arkansas', AZ: 'Arizona', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia', IA: 'Iowa', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', MA: 'Massachusetts', MD: 'Maryland', ME: 'Maine', MI: 'Michigan', MN: 'Minnesota', MO: 'Missouri', MS: 'Mississippi', MT: 'Montana', NC: 'North Carolina', ND: 'North Dakota', NE: 'Nebraska', NH: 'New Hampshire', NJ: 'New Jersey', NM: 'New Mexico', NV: 'Nevada', NY: 'New York', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VA: 'Virginia', VT: 'Vermont', WA: 'Washington', WI: 'Wisconsin', WV: 'West Virginia', WY: 'Wyoming', AK: 'Alaska', HI: 'Hawaii', DC: 'District of Columbia' };
-  /* USPS three-digit ZIP prefixes: each entry starts a run that lasts until
-     the next one. '' = military or territory, no state. */
+  var NM = {};
   var Z3 = '005NY006--010MA028RI030NH039ME050VT055MA056VT060CT070NJ090--100NY150PA197DE200DC201VA202DC206MD220VA247WV270NC290SC300GA320FL340--341FL350AL370TN386MS398GA400KY430OH460IN480MI500IA530WI550MN569DC570SD580ND590MT600IL630MO660KS680NE700LA716AR730OK733TX734OK750TX800CO820WY832ID840UT850AZ870NM885TX889NV900CA962--967HI969--970OR980WA995AK';
   function zipState(zip) {
     if (!/^\d{5}$/.test(zip || '')) return '';
@@ -65,11 +52,8 @@
     return '$' + w + '.' + (rc < 10 ? '0' : '') + rc + FR[Math.round((r - rc) * 100)];
   }
   function qc(c) { var q = Math.round(Math.abs(c) * 4) / 4, w = Math.floor(q), f = Math.round((q - w) * 100); return (w || !f ? String(w) : '') + FR[f]; }
-  function stName(st) { return NAMES[st] || st; }
-
-  /* Co-ops with their current posted rows, nearest first. A row counts when
-     the co-op file summarizes its product, it is not stale or flagged, and it
-     has a cash price and a date. One row per product: the first listed. */
+  function stName(st) { return NM[st] || st; }
+  function names(bs) { NM = {}; var s = bs && bs.states; for (var k in s) if (s[k] && s[k].name) NM[k] = s[k].name; }
   function coops(doc, places, loc) {
     var names = {}, out = [];
     ((doc && doc.summary) || []).forEach(function (s) { if (s && s.key) names[s.key] = s.name; });
@@ -102,9 +86,6 @@
     var ds = c.rows.map(function (r) { return r.date; }).sort(), lo = ds[0], hi = ds[ds.length - 1];
     return 'posted ' + (lo === hi ? day(hi) : day(lo) + ' to ' + day(hi)) + ' (' + esc(c.basis) + ')';
   }
-
-  /* State cash corn: futures close + the state's median basis, only for the
-     same contract and within 5 days of the basis read. */
   function stateCorn(bs, prices, st, now) {
     var s = bs && bs.states && st ? bs.states[st] : null, b = s && s.crops && s.crops.corn;
     if (!b || typeof b.median !== 'number' || !isFinite(b.median) || !bs.generated || age(bs.generated, now) > 10) return null;
@@ -118,8 +99,6 @@
   function cornWords(sc) {
     return sc.label + ' corn ' + fut(sc.close) + ' (close ' + day(sc.closeDate) + ') ' + (sc.basis < 0 ? 'less' : 'plus') + ' the ' + esc(sc.name) + ' median basis of ' + qc(Math.abs(sc.basis * 100)) + '¢';
   }
-  /* The cheapest straight-N product in the shared list, $ a lb of N; the
-     same pick as the N:corn line on /fertilizer. */
   function cheapN(pl) {
     var best = null;
     ((pl && pl.prices) || []).forEach(function (r) {
@@ -161,9 +140,8 @@
   function milesNote(list) {
     return list.some(function (c) { return c.mi != null; }) ? 'Miles are straight line from your saved spot to the co-op’s town (a town point, not its address); roads run farther.' : '';
   }
-
-  /* /fertilizer: nearest co-op's posted prices, and N:corn at the state's basis. */
   function buildFert(o) {
+    names(o.basis);
     var loc = o.loc, now = o.now || Date.now(), list = coops(o.coops, o.places, loc), out = coopLines(list, loc), src = [];
     var sc = stateCorn(o.basis, o.prices, loc.state, now), n = cheapN(o.list);
     if (sc && n) {
@@ -177,11 +155,8 @@
     if (!out.length) out.push('No co-op prices or state basis to show for your area right now.');
     return head(loc) + out.map(function (s) { return '<p>' + s + '</p>'; }).join('') + links(loc, sc) + srcLine(src.filter(Boolean));
   }
-
-  /* /nutrient-removal: the page's stalk ton in bushels of the state's cash
-     corn, and the stalk ton's potash (and phosphate, when the co-op posts it)
-     at the nearest co-op that posts potash. NR = components/nutrient-removal.js. */
   function buildNR(o) {
+    names(o.basis);
     var loc = o.loc, now = o.now || Date.now(), NR = o.NR, out = [], src = [];
     var sc = stateCorn(o.basis, o.prices, loc.state, now);
     var stover = NR && NR.crop && NR.crop('corn_stover'), pr = NR && o.list ? NR.nutrientPrices(o.list) : null;
@@ -213,7 +188,7 @@
   root.AGSIST_NEAR_COOP = api;
 
   var doc = root.document;
-  var CSS = 'aside.nc{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}aside.nc p{margin:.3rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.nc b{color:var(--text)}aside.nc .nc-k{font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}aside.nc a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.nc .nc-s{font-size:.76rem;color:var(--text-muted)}aside.nc.nc-n{border:0;background:none;padding:0;margin:.5rem 0}';
+  var CSS = 'aside.nc{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}aside.nc p{margin:.3rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.nc b{color:var(--text)}aside.nc .nc-k{font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}aside.nc a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.nc .nc-s{font-size:.76rem;color:var(--text-muted)}';
   function get(u) { return fetch(u, { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function point(loc) {
     if (loc.lat != null || !loc.zip) return Promise.resolve(loc);
@@ -231,20 +206,14 @@
     });
   }
   function boot() {
-    var els = doc.querySelectorAll('[data-near-coop]');
-    if (!els.length) return;
     var loc = null;
     try { loc = readLoc(root.localStorage); } catch (e) { loc = null; }
+    if (!loc) return;
     var st = doc.createElement('style'); st.textContent = CSS; doc.head.appendChild(st);
-    Array.prototype.forEach.call(els, function (el) {
-      el.hidden = false;
-      if (!loc) { el.className += ' nc-n'; el.innerHTML = none(); return; }
+    Array.prototype.forEach.call(doc.querySelectorAll('[data-near-coop]'), function (el) {
+      el.className = 'nc';
       el.innerHTML = head(loc) + '<p>Loading prices for your area&hellip;</p>';
-      if (!('IntersectionObserver' in root)) return fill(el, loc);
-      var io = new IntersectionObserver(function (es) {
-        if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); fill(el, loc); }
-      }, { rootMargin: '600px 0px' });
-      io.observe(el);
+      fill(el, loc);
     });
   }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();
