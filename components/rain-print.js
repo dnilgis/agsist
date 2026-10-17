@@ -1586,6 +1586,15 @@
   }
   /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix,
      example (the page's own preview only: the example words in place of the reader's, while SHOW_EX)}. */
+  function buildSvg(o) {
+    o = o || {};
+    var ex = !!o.example;
+    var svg = root.AgRainArt.render(artInput(o));
+    SKIPPED = root.AgRainArt.lastSkipped();
+    UNPLACED = ex ? [] : unplacedRows();
+    return svg;
+  }
+  // what the art is drawn from: the page, every export and the insert letter share it
   function artInput(o) {
     o = o || {};
     var ex = !!o.example;
@@ -1597,14 +1606,6 @@
       gauge: META ? gaugeLine(META) : '', logo: logoArt(), loc: META && META.ca ? LOC() : null,
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
-  }
-  function buildSvg(o) {
-    o = o || {};
-    var ex = !!o.example;
-    var svg = root.AgRainArt.render(artInput(o));
-    SKIPPED = root.AgRainArt.lastSkipped();
-    UNPLACED = ex ? [] : unplacedRows();
-    return svg;
   }
   /* Marked days the art could not place cleanly, as day numbers on the page,
      so that day's row can say so (2026-10-15, up to five days). The art names
