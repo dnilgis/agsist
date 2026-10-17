@@ -192,7 +192,7 @@ jobs:
           git add data/prf/now
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
           THRU=$(python -c "import json;print(json.load(open('data/prf/now/TX.json'))['through'])")
-          git commit -q -m "data: prf interval so far (CPC through $THRU)"
+          git commit -q -m "data: prf interval so far (NCEI daily grids through $THRU)"
           BR="${GITHUB_REF_NAME}"
           for i in 1 2 3 4 5; do
             git rebase --abort 2>/dev/null || true

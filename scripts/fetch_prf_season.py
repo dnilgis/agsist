@@ -915,7 +915,7 @@ def main():
         backtest_collect(args.backtest_collect)
         return
     if args.backtest_analyze:
-        backtest_analyze(*args.backtest_analyze)
+        backtest_analyze(*args.backtest_analyze, out=os.environ.get("PRF_BACKTEST_OUT") or BACKTEST)
         return
     if args.prelim_collect:
         prelim_collect(args.prelim_collect)
