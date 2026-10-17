@@ -203,8 +203,8 @@ test("a preview ends at the last recorded day; late days are not counted as gaps
 test("Christmas lines come from the cutoff date: a plain date before, after-Christmas after, nothing out of season", () => {
   const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
   for (const k of ["print_christmas_cutoff", "framed_christmas_cutoff"]) assert.match(J[k], /^\d{4}-\d{2}-\d{2}$/, k);
-  assert.equal(RP.cutoffNote("2026-10-11", "2026-12-12"), "Order by Dec 12 for Christmas delivery. OK your proof the day it comes.");
-  assert.equal(RP.cutoffNote("2026-12-12", "2026-12-12"), "Order by Dec 12 for Christmas delivery. OK your proof the day it comes.", "the cutoff day itself still makes it");
+  assert.equal(RP.cutoffNote("2026-10-11", "2026-12-12"), "Order by Dec 12 for Christmas, if you OK the proof the day it comes.");
+  assert.equal(RP.cutoffNote("2026-12-12", "2026-12-12"), "Order by Dec 12 for Christmas, if you OK the proof the day it comes.", "the cutoff day itself still makes it");
   assert.equal(RP.cutoffNote("2026-12-13", "2026-12-12"), "Orders placed now ship after Christmas.");
   assert.equal(RP.cutoffNote("2026-12-26", "2026-12-12"), "");
   assert.equal(RP.cutoffNote("2026-09-30", "2026-12-12"), "");

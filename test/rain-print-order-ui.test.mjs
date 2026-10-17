@@ -214,8 +214,8 @@ test("one picker, framed first: the button, the print's look, the phone bar and 
     await settle(page);
     assert.equal(await page.$eval('input[name="rp-product"]:checked', (r) => r.value), "framed12x18", "framed is picked first");
     assert.equal(await page.textContent("#rp-pay"), "Check it and pay $" + J.framed12x18);
-    assert.match(await page.textContent("#rp-sub-framed12x18"), /^Black frame, white mat, real glass\. Order by Dec 9 for Christmas delivery\. OK your proof the day it comes\.$/);
-    assert.match(await page.textContent("#rp-sub-print12x18"), /Order by Dec 10 for Christmas delivery\./);
+    assert.match(await page.textContent("#rp-sub-framed12x18"), /^Black frame, white mat, real glass\. Order by Dec 9 for Christmas, if you OK the proof the day it comes\.$/);
+    assert.match(await page.textContent("#rp-sub-print12x18"), /Order by Dec 10 for Christmas, if you OK the proof the day it comes\./);
     assert.equal(await page.textContent("#rp-xmas-top"), "For Christmas: order framed by Dec 9, a print by Dec 10.");
     await page.click('.rp-prod[data-choice="print12x18"]');
     assert.equal(await page.textContent("#rp-pay"), "Check it and pay $" + J.print12x18);

@@ -308,6 +308,7 @@
   .rp-noname .rp-acts{margin:0}
   .rp-pay-wrap .rp-note:not(:empty){margin:.5rem 0 0}
   .rp-gift-line{margin:.6rem 0 .2rem}
+  .rp-pg-box .field>.rp-pg-hint{display:block;margin:0;font-weight:400;color:var(--text-muted)}
   .rp-pay-wrap .rp-gift-pre{margin:0 0 .5rem}
   .rp-pgift{border-top:1px solid var(--border);padding-top:10px}
   .rp-pg-box{display:flex;flex-direction:column;gap:.6rem;margin:.6rem 0 0}
@@ -419,6 +420,7 @@
   .rp-proof-pin{position:sticky;bottom:0;z-index:2;display:flex;flex-direction:column;gap:10px;margin:0 -20px;padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -8px 14px -10px rgba(0,0,0,.35)}
   .rp-proof-pin .rp-proof-msg{margin:0}
   .rp-proof-pin{margin-top:auto}
+  .rp-proof-when{margin:0;font-size:var(--fs-sm);line-height:1.4;color:var(--text)}
   .rp-proof-first{margin:0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
   .rp-proof-act>p{margin:.45rem 0 0;font-size:var(--fs-xs);color:var(--text-dim);text-align:center}
   .rp-popts{display:grid;gap:12px}
@@ -713,7 +715,7 @@
           </details>
           <p class="rp-note rp-bad" id="rp-buy-why" hidden></p>
           <div class="rp-pay-wrap" id="rp-pay-wrap">
-            <p class="rp-note rp-gift-pre" id="rp-gift-pre">A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address.</p>
+            <p class="rp-note rp-gift-pre" id="rp-gift-pre">A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.</p>
             <button class="btn btn-primary rp-pay" id="rp-pay" type="button">Check it and pay $89</button>
             <p class="rp-promise" id="rp-promise">You see a proof first, and get a full refund any time before I print.</p>
             <p class="rp-note rp-madeby" id="rp-madeby">Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes from sig@farmers1st.com, your receipt from Stripe.</p>
@@ -725,7 +727,7 @@
           <!-- 2026-10-16: the framed picture sits open under Pay (it used to hide inside What you get), so a phone's Pay
                button stays where it was. It is a render, labeled so, until Sig sends photos of real prints. -->
           <figure class="rp-onwall" id="rp-onwall"><div class="rp-onwall-i"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="lazy" decoding="async" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop."></picture><span class="rp-ex-tag" aria-hidden="true">Mockup</span></div><figcaption>Mockup of a framed print. Photos of real prints coming soon.</figcaption></figure>
-          <p class="rp-note rp-gift-line" id="rp-gift-line">It&rsquo;s a gift? At checkout you can add their name, a note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.</p>
+          <p class="rp-note rp-gift-line" id="rp-gift-line" hidden>It&rsquo;s a gift? Say so on the order form, with their name and your note.</p>
           <p class="rp-note" id="rp-ships">Prints and framed prints ship within 3 business days after you approve the proof, anywhere in the 50 states.</p>
           <p class="rp-note" id="rp-xmas-why" hidden></p>
           <p class="rp-note" id="rp-code-wrap" hidden>Design code: <span class="rp-code" id="rp-code"></span></p>
@@ -955,7 +957,7 @@
             <label class="field"><span>Who it&rsquo;s for</span><input id="rp-pg-to" type="text" maxlength="80" placeholder="Dad"></label>
             <label class="field"><span id="rp-pg-msg-l">Your note, printed at the top of the letter in the box (optional)</span><textarea id="rp-pg-msg" maxlength="240" rows="2" placeholder="Every inch of the year you farmed."></textarea></label>
             <label class="field"><span>Send it to</span><select id="rp-pg-deliver"><option value="recipient">Them</option><option value="buyer">Me</option></select></label>
-            <label class="field" id="rp-pg-addr-wrap"><span id="rp-pg-addr-l">Their address (name, street, town, state, ZIP)</span><textarea id="rp-pg-addr" maxlength="600" rows="3" autocomplete="off"></textarea></label>
+            <label class="field" id="rp-pg-addr-wrap"><span id="rp-pg-addr-l">Their address (name, street, town, state, ZIP)</span><textarea id="rp-pg-addr" maxlength="600" rows="3" autocomplete="off" aria-describedby="rp-pg-addr-hint"></textarea><span class="rp-note rp-pg-hint" id="rp-pg-addr-hint">At checkout, Stripe asks for the shipping address again. Use the same one: theirs.</span></label>
             <label class="field" id="rp-pg-email-wrap" hidden><span>Their email, for the file</span><input id="rp-pg-email" type="email" maxlength="254" autocomplete="off"></label>
             <label class="field"><span>Your name</span><input id="rp-pg-name" type="text" maxlength="80" autocomplete="name"></label>
             <label class="field"><span id="rp-pg-me-l">Your email, for the proof</span><input id="rp-pg-me" type="email" maxlength="254" autocomplete="email"></label>
@@ -968,6 +970,7 @@
         <p class="rp-proof-help">Use the magnifier to check every word. On the paper the picture is 16.5 x 11 in, on a 13 x 19 sheet.</p>
         <div class="rp-proof-pin" id="rp-proof-pin">
           <label class="rp-check" id="rp-proof-ok-wrap"><input type="checkbox" id="rp-proof-ok"><span>The spelling and the dates are right</span></label>
+          <p class="rp-proof-when" id="rp-proof-when" hidden></p>
           <button type="button" class="btn btn-primary" id="rp-proof-order">Pay $89 at checkout</button>
           <p class="rp-proof-first" id="rp-proof-first">You see a proof first, and get a full refund any time before I print.</p>
           <p class="rp-proof-msg" id="rp-proof-msg" role="alert" hidden></p>

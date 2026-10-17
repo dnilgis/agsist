@@ -267,14 +267,14 @@
     return year < cy ? 'done' : year === cy ? 'gift' : 'future';
   }
   /* The Christmas line on a product, from its cutoff date in data/rain-print.json.
-     October 1 through the cutoff: "Order by Dec 12 for Christmas delivery."
+     October 1 through the cutoff: "Order by Dec 12 for Christmas, if you OK the proof the day it comes."
      After it, through Dec 25: new orders ship after Christmas. Otherwise nothing.
      A plain date, never a countdown. */
   function cutoffNote(todayIso, cutoffIso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(cutoffIso || ''));
     if (!m || !/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || ''))) return '';
     if (todayIso < m[1] + '-10-01' || todayIso > m[1] + '-12-25') return '';
-    if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas delivery. OK your proof the day it comes.';
+    if (todayIso <= cutoffIso) return 'Order by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + ' for Christmas, if you OK the proof the day it comes.';
     return 'Orders placed now ship after Christmas.';
   }
   /* CHRISTMAS DATES (2026-10-13). The last day to order and still have it by
@@ -3228,14 +3228,15 @@
     $('rp-bar-what').textContent = PICK_WORD[PICK] + (p ? ' \u00b7 ' + p : '');
     $('rp-promise').textContent = PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
       : 'You see a proof first, and get a full refund any time before I print.';
-    $('rp-gift-line').textContent = !link ? 'It\u2019s a gift? Say so on the order form, with their name and your note.'
-      : PICK === 'digital' ? 'It\u2019s a gift? At checkout you can add their name and a note, and I send the note with the file. No prices go with it.'
-      : 'It\u2019s a gift? At checkout you can add their name, a note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
-    $('rp-gift-line').hidden = januaryGift() || !!(GIFT && GIFT.usable);
-    // the same offer above the button (2026-10-17, field audit: most buyers never scroll past Pay)
-    $('rp-gift-pre').innerHTML = PICK === 'digital' ? 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note.'
-      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address.';
-    $('rp-gift-pre').hidden = $('rp-gift-line').hidden || !canOrder();
+    /* One gift instruction, said once (2026-10-17, gift-buyers panel): with a
+       payment link, the line above Pay says what to do on the next screen, and
+       the line under the mockup goes. Without one, the order form takes it. */
+    var giftOff = januaryGift() || !!(GIFT && GIFT.usable);
+    $('rp-gift-line').textContent = 'It\u2019s a gift? Say so on the order form, with their name and your note.';
+    $('rp-gift-line').hidden = giftOff || link;
+    $('rp-gift-pre').innerHTML = PICK === 'digital' ? 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note. I send the note with the file, and no prices go with it.'
+      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
+    $('rp-gift-pre').hidden = giftOff || !link || !canOrder();
     pgSync();
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
@@ -3641,7 +3642,24 @@
       : PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
       : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-proof-ok-wrap').hidden = !can;
+    var when = can && !gift ? payWhen(PICK, TODAY) : '';
+    $('rp-proof-when').textContent = when;
+    $('rp-proof-when').hidden = !when;
     pgSync();
+  }
+  /* RIGHT ABOVE PAY (2026-10-17, panels): who the next email comes from and
+     when, so a proof from a farmers1st.com address isn't taken for spam, and a
+     design of this year says it arrives in January before anyone pays. The
+     Christmas date on each card holds only if the proof is OK'd the day it
+     comes; this says what happens when it isn't. */
+  function payWhen(id, today) {
+    if (januaryGift()) return 'Arrives in January, once the year is done. A gift card for under the tree comes by email within 1 business day.';
+    var J = OJ().j || {}, hol = holidaysFor(J, today), next = addBizDays(today, 1, hol);
+    var by = next === isoMinusDays(today, -1) ? 'tomorrow' : 'by ' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(next + 'T12:00:00Z').getUTCDay()];
+    if (id === 'digital') return 'The finished file comes by email from Sig at ' + ORDER_TO + ' within 1 business day. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.';
+    var cut = cutoffNote(today, J[CUTOFF_KEY[id]]);
+    return 'Watch for an email from Sig at ' + ORDER_TO + ' with your proof. Check spam if it\u2019s not there ' + (by === 'tomorrow' ? 'by tomorrow' : by) + '.' +
+      (/^Order by/.test(cut) ? ' OK it late? I\u2019ll tell you the new date the same day.' : '');
   }
   /* THE GIFT ON THE REVIEW SHEET (2026-10-17, field audit). The last AGSIST
      screen before Stripe never said the print could be a gift, and the order
@@ -3672,8 +3690,10 @@
     $('rp-pg-addr-l').textContent = (theirs ? 'Their address' : 'Your address') + ' (name, street, town, ' + (caOrder() ? 'province, postal code' : 'state, ZIP') + ')';
     $('rp-pg-email-wrap').hidden = !(file && theirs);
     $('rp-pg-me-l').textContent = file ? 'Your email' : 'Your email, for the proof';
-    $('rp-pg-line').textContent = (file ? 'No prices go with it.' : 'No prices go in the box.') +
-      ' These come to me with your order; at checkout, Stripe takes the payment' + (file ? '.' : ' and a shipping address: give the same one.');
+    /* Until Stripe's address is filled in from this box, it asks again: the
+       buyer is told once, right under the box (2026-10-17, panels). */
+    $('rp-pg-addr-hint').textContent = 'At checkout, Stripe asks for the shipping address again. Use the same one' + (theirs ? ': theirs.' : '.');
+    $('rp-pg-line').textContent = (file ? 'No prices go with it.' : 'No prices go in the box.') + ' These come to me with your order; at checkout, Stripe takes the payment.';
     var sum = $('rp-pg-sum');
     sum.hidden = !on;
     if (on) {
