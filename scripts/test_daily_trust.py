@@ -62,6 +62,18 @@ check("Monday" not in line.replace("moved from Monday", ""), "and no bare Monday
 check("Crop Progress: Monday, Oct 19" in g.weekly_release_line(date(2026, 10, 17)),
       "Saturday Oct 17: next week's is an ordinary Monday")
 check("Crop Progress" not in g.weekly_release_line(date(2026, 12, 13)), "December: no Crop Progress line")
+_fri = g.weekly_release_line(date(2026, 10, 16))
+check("Weekly Export Sales: Thursday, Oct 22, 7:30 AM CT" in _fri,
+      "Friday Oct 16: this week's export sales are out, so next week's is named with its date", _fri)
+check("Crop Progress: Monday, Oct 19" in _fri, "and next Monday's Crop Progress", _fri)
+import watch_dates as _wd
+_b = {"watch_list": [{"time": "Thursday 7:30 a.m. CT", "desc": "Export sales report."}]}
+_wd.apply(_b, g.datetime(2026, 10, 16, 17, 27))
+check(_b["watch_list"][0]["time"] == "Thursday, Oct 22, 7:30 a.m. CT",
+      "the Oct 16 watch item 'Thursday 7:30 a.m. CT' carries its date", _b["watch_list"][0]["time"])
+_src = open(g.__file__).read()
+check("watch_dates.apply(briefing)" in _src and "watch_dates.apply(briefing)" in open(g.__file__.replace("generate_daily.py", "critique_briefing.py")).read(),
+      "the generator and the critic both date the watch list")
 check("Columbus Day" in g.CALENDAR_FACTS_2026 and "Crop Progress moves to Tue Oct 13" in g.CALENDAR_FACTS_2026,
       "the calendar block knows Columbus Day closes USDA")
 
