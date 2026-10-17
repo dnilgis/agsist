@@ -15,7 +15,7 @@
       if (typeof u === 'number') {
         /* PLC rate = effective reference price - the higher of the season-average price and the loan rate */
         var rate = Math.round(Math.max(0, e - Math.max(u, k.loan || 0)) * 100) / 100;
-        s += ' At USDA’s ' + h.money(u) + ' season-average price (' + h.esc(k.scen.usda_date || '') + '), ' + (rate > 0 ? 'the PLC rate is ' + Math.round(rate * 100) + '¢ a bushel of your PLC yield, paid on ' + Math.round((a.params && a.params.payment_acres_pct || 0.85) * 100) + '% of base acres.' : 'no PLC payment.');
+        s += ' At USDA’s ' + h.money(u) + ' season-average price (' + h.esc(k.scen.usda_date || '') + '), ' + (rate > 0 ? 'the PLC rate is ' + (rate < 1 ? Math.round(rate * 100) + '¢' : h.money(rate)) + ' a bushel of your PLC yield, paid on ' + Math.round((a.params && a.params.payment_acres_pct || 0.85) * 100) + '% of base acres.' : 'no PLC payment.');
       }
       out.push(s); n++;
     });
