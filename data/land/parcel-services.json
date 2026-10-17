@@ -1,73 +1,707 @@
 {
-  "about": "Free public government parcel services Field Scout reads at the moment a reader picks a field. Nothing here is a copy of the parcels; each entry is where to ask. scripts/probe_land_services.py checks every entry (fields, a test query, and that the service lets a web page read it) and sets verified and checked_utc. A county or state entry is used only when verified is true; Wisconsin's statewide map is builtin, tried even before the first check, and the page says so when it does not answer.",
-  "checked_utc": null,
-  "statewide": {
-    "WI": [
-      {
-        "id": "wi-sco",
-        "builtin": true,
-        "verified": false,
-        "checked_utc": null,
-        "name": "Wisconsin Statewide Parcel Map",
-        "by": "Wisconsin Department of Administration and the State Cartographer's Office (V11, from the 72 county parcel files)",
-        "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels/FeatureServer/0",
-        "about": "https://www.sco.wisc.edu/parcels/data/",
-        "fields": {
-          "pid": ["PARCELID"], "pid2": ["TAXPARCELID", "STATEID"],
-          "owner": ["OWNERNME1", "OWNERNME2"], "mail": ["PSTLADRESS"], "site": ["SITEADRESS"],
-          "gis_acres": ["GISACRES"], "deed_acres": ["DEEDACRES"], "assd_acres": ["ASSDACRES"],
-          "land": ["LNDVALUE"], "imp": ["IMPVALUE"], "total": ["CNTASSDVALUE"], "fmv": ["ESTFMKVALUE"],
-          "cls": ["PROPCLASS", "AUXCLASS"], "county": ["CONAME"], "muni": ["PLACENAME"],
-          "year": ["TAXROLLYEAR"], "date": ["PARCELDATE"]
-        }
-      },
-      {
-        "id": "wi-ltsb",
-        "builtin": true,
-        "verified": false,
-        "checked_utc": null,
-        "name": "Wisconsin Statewide Parcel Map (Legislative Technology Services Bureau copy)",
-        "by": "Wisconsin Legislative Technology Services Bureau, same V11 parcels",
-        "url": "https://mapservices.legis.wisconsin.gov/arcgis/rest/services/WLIP/Parcels/FeatureServer/0",
-        "about": "https://www.sco.wisc.edu/parcels/data/",
-        "fields": {
-          "pid": ["PARCELID"], "pid2": ["TAXPARCELID", "STATEID"],
-          "owner": ["OWNERNME1", "OWNERNME2"], "mail": ["PSTLADRESS"], "site": ["SITEADRESS"],
-          "gis_acres": ["GISACRES"], "deed_acres": ["DEEDACRES"], "assd_acres": ["ASSDACRES"],
-          "land": ["LNDVALUE"], "imp": ["IMPVALUE"], "total": ["CNTASSDVALUE"], "fmv": ["ESTFMKVALUE"],
-          "cls": ["PROPCLASS", "AUXCLASS"], "county": ["CONAME"], "muni": ["PLACENAME"],
-          "year": ["TAXROLLYEAR"], "date": ["PARCELDATE"]
-        }
-      }
+ "about": "Free public government parcel services Field Scout reads at the moment a reader picks a field. Nothing here is a copy of the parcels; each entry is where to ask. scripts/probe_land_services.py checks every entry (fields, a test query, and that the service lets a web page read it) and sets verified and checked_utc. A county or state entry is used only when verified is true; Wisconsin's statewide map is builtin, tried even before the first check, and the page says so when it does not answer.",
+ "checked_utc": "2026-10-17T03:30:23Z",
+ "statewide": {
+  "WI": [
+   {
+    "id": "wi-sco",
+    "builtin": true,
+    "verified": false,
+    "checked_utc": "2026-10-17T03:30:23Z",
+    "name": "Wisconsin Statewide Parcel Map",
+    "by": "Wisconsin Department of Administration and the State Cartographer's Office (V11, from the 72 county parcel files)",
+    "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels/FeatureServer/0",
+    "about": "https://www.sco.wisc.edu/parcels/data/",
+    "fields": {
+     "pid": [
+      "PARCELID"
+     ],
+     "pid2": [
+      "TAXPARCELID",
+      "STATEID"
+     ],
+     "owner": [
+      "OWNERNME1",
+      "OWNERNME2"
+     ],
+     "mail": [
+      "PSTLADRESS"
+     ],
+     "site": [
+      "SITEADRESS"
+     ],
+     "gis_acres": [
+      "GISACRES"
+     ],
+     "deed_acres": [
+      "DEEDACRES"
+     ],
+     "assd_acres": [
+      "ASSDACRES"
+     ],
+     "land": [
+      "LNDVALUE"
+     ],
+     "imp": [
+      "IMPVALUE"
+     ],
+     "total": [
+      "CNTASSDVALUE"
+     ],
+     "fmv": [
+      "ESTFMKVALUE"
+     ],
+     "cls": [
+      "PROPCLASS",
+      "AUXCLASS"
+     ],
+     "county": [
+      "CONAME"
+     ],
+     "muni": [
+      "PLACENAME"
+     ],
+     "year": [
+      "TAXROLLYEAR"
+     ],
+     "date": [
+      "PARCELDATE"
+     ]
+    },
+    "notes": [
+     "metadata error: {'code': 400, 'message': 'Invalid URL', 'details': ['Invalid URL']}"
+    ]
+   },
+   {
+    "id": "wi-ltsb",
+    "builtin": true,
+    "verified": false,
+    "checked_utc": "2026-10-17T03:30:23Z",
+    "name": "Wisconsin Statewide Parcel Map (Legislative Technology Services Bureau copy)",
+    "by": "Wisconsin Legislative Technology Services Bureau, same V11 parcels",
+    "url": "https://mapservices.legis.wisconsin.gov/arcgis/rest/services/WLIP/Parcels/FeatureServer/0",
+    "about": "https://www.sco.wisc.edu/parcels/data/",
+    "fields": {
+     "pid": [
+      "PARCELID"
+     ],
+     "pid2": [
+      "TAXPARCELID",
+      "STATEID"
+     ],
+     "owner": [
+      "OWNERNME1",
+      "OWNERNME2"
+     ],
+     "mail": [
+      "PSTLADRESS"
+     ],
+     "site": [
+      "SITEADRESS"
+     ],
+     "gis_acres": [
+      "GISACRES"
+     ],
+     "deed_acres": [
+      "DEEDACRES"
+     ],
+     "assd_acres": [
+      "ASSDACRES"
+     ],
+     "land": [
+      "LNDVALUE"
+     ],
+     "imp": [
+      "IMPVALUE"
+     ],
+     "total": [
+      "CNTASSDVALUE"
+     ],
+     "fmv": [
+      "ESTFMKVALUE"
+     ],
+     "cls": [
+      "PROPCLASS",
+      "AUXCLASS"
+     ],
+     "county": [
+      "CONAME"
+     ],
+     "muni": [
+      "PLACENAME"
+     ],
+     "year": [
+      "TAXROLLYEAR"
+     ],
+     "date": [
+      "PARCELDATE"
+     ]
+    },
+    "notes": [
+     "metadata did not answer: Remote end closed connection without response"
+    ]
+   }
+  ],
+  "MN": []
+ },
+ "counties": {
+  "27025": [
+   {
+    "id": "co-27025",
+    "verified": true,
+    "name": "Chisago County parcels",
+    "by": "MurphySE_metrocouncil",
+    "url": "https://gis.chisagocounty.us/arcgis/rest/services/AssessmentInformation/TaxParcels/MapServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=d2221b2bab78486eaf7510a23653287a",
+    "fields": {
+     "pid": [
+      "PIN"
+     ],
+     "owner": [
+      "Ownname"
+     ],
+     "mail": [
+      "MailAddr",
+      "MailCity",
+      "MailState",
+      "MailZip"
+     ],
+     "site": [
+      "PropAddr"
+     ],
+     "land": [
+      "LandValue"
+     ],
+     "imp": [
+      "BldgValue"
+     ],
+     "total": [
+      "TotalValue"
+     ],
+     "legal": [
+      "LegalDesc"
+     ],
+     "gis_acres": [
+      "gisacres"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
     ],
-    "MN": []
-  },
-  "counties": {},
-  "discover": {
-    "states": ["MN", "IA", "IL"],
-    "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first.",
-    "statewide_candidates": {
-      "MN": [
-        {"name": "Minnesota statewide parcels (MnGeo, counties that share)", "search": "Minnesota statewide parcels MnGeo", "about": "https://gisdata.mn.gov/dataset/plan-parcels-open"}
-      ],
-      "IA": [
-        {"name": "Iowa statewide parcels", "search": "Iowa statewide parcels", "about": "https://geodata.iowa.gov/"}
-      ],
-      "IL": [
-        {"name": "Illinois statewide parcels", "search": "Illinois statewide parcels", "about": "https://clearinghouse.isgs.illinois.edu/"}
-      ]
+    "checked_utc": "2026-10-17T03:32:25Z"
+   }
+  ],
+  "27059": [
+   {
+    "id": "co-27059",
+    "verified": true,
+    "name": "Isanti County parcels",
+    "by": "IC.GIS.Admin  Isanti County",
+    "url": "https://gis.co.isanti.mn.us/arcgis/rest/services/LandRecords/TaxParcels_Public/FeatureServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=1ecbd057d10a43b7976f6ae9957019d5",
+    "fields": {
+     "pid": [
+      "PARCELID"
+     ],
+     "owner": [
+      "OWNERNME1"
+     ],
+     "site": [
+      "SITEADDRESS"
+     ],
+     "land": [
+      "LNDVALUE",
+      "EMVLand"
+     ],
+     "imp": [
+      "IMPRVALUE"
+     ],
+     "total": [
+      "EMVTotal"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:33:06Z"
+   }
+  ],
+  "27111": [
+   {
+    "id": "co-27111",
+    "verified": true,
+    "name": "Otter Tail County parcels",
+    "by": "Ottertail_GIS",
+    "url": "https://web2.co.ottertail.mn.us/arcgis/rest/services/LandInformation/LandlgimH/MapServer/25",
+    "about": "https://www.arcgis.com/home/item.html?id=95c20bc0e75a45049cf2881cef8f8868",
+    "fields": {
+     "pid": [
+      "PIN"
+     ],
+     "owner": [
+      "OWNNAME"
+     ],
+     "legal": [
+      "LEGAL"
+     ],
+     "gis_acres": [
+      "ACRES"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:34:04Z"
+   }
+  ],
+  "27117": [
+   {
+    "id": "co-27117",
+    "verified": true,
+    "name": "Pipestone County parcels",
+    "by": "GDITAdmin",
+    "url": "https://gis.pcmn.us/arcgis/rest/services/AssessmentInformation/TaxParcels/MapServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=47d2f7a7a69247d68c036038281ec24d",
+    "fields": {
+     "pid": [
+      "PARCEL_NUMBER"
+     ],
+     "owner": [
+      "TAXPAYER_NAME",
+      "OWNER_NAME"
+     ],
+     "site": [
+      "PHYSICAL_ADDRESS"
+     ],
+     "land": [
+      "EMV_LAND"
+     ],
+     "imp": [
+      "EMV_BLDG"
+     ],
+     "total": [
+      "EMV_TOTAL"
+     ],
+     "legal": [
+      "LEGAL"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:34:08Z"
+   }
+  ],
+  "27123": [
+   {
+    "id": "co-27123",
+    "verified": true,
+    "name": "Ramsey County parcels",
+    "by": "jonathan.mortensen7",
+    "url": "https://maps.co.ramsey.mn.us/arcgis/rest/services/OpenData/OpenData/FeatureServer/12",
+    "about": "https://www.arcgis.com/home/item.html?id=a8b8a31d9b6b42d29885a9fc3baf1272",
+    "fields": {
+     "pid": [
+      "ParcelID"
+     ],
+     "owner": [
+      "OwnerName",
+      "OwnerName1",
+      "OwnerName2"
+     ],
+     "mail": [
+      "OwnerAddress1",
+      "OwnerAddress2"
+     ],
+     "site": [
+      "SiteAddress"
+     ],
+     "land": [
+      "EMVLand"
+     ],
+     "total": [
+      "EMVTotal"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:34:13Z"
+   }
+  ],
+  "27145": [
+   {
+    "id": "co-27145",
+    "verified": true,
+    "name": "Stearns County parcels",
+    "by": "BoltonMenk_Rockville",
+    "url": "https://gis.co.stearns.mn.us/arcgis/rest/services/Vendor/Parcels/MapServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=1fa761900d354373a1992f8b40976120",
+    "fields": {
+     "pid": [
+      "PARCEL"
+     ],
+     "owner": [
+      "OWNER"
+     ],
+     "mail": [
+      "OWNERADDR"
+     ],
+     "site": [
+      "PROPADDR"
+     ],
+     "land": [
+      "EMV_LAND"
+     ],
+     "imp": [
+      "EMV_BLDG"
+     ],
+     "total": [
+      "emvtotal"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:34:48Z"
+   }
+  ],
+  "27149": [
+   {
+    "id": "co-27149",
+    "verified": true,
+    "name": "Stevens County parcels",
+    "by": "GDITAdmin",
+    "url": "https://gis.co.stevens.mn.us/arcgis/rest/services/LandRecords/MapServer/4",
+    "about": "https://www.arcgis.com/home/item.html?id=6c0b725178a94efdad7c752a280e485a",
+    "fields": {
+     "pid": [
+      "PIN"
+     ],
+     "owner": [
+      "Owner_Name",
+      "Taxpayer"
+     ],
+     "mail": [
+      "Owner_Address"
+     ],
+     "deed_acres": [
+      "Deed_Acres"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:34:52Z"
+   }
+  ],
+  "27155": [
+   {
+    "id": "co-27155",
+    "verified": true,
+    "name": "Traverse County parcels",
+    "by": "GDITAdmin",
+    "url": "https://gis.co.traverse.mn.us/arcgis/rest/services/Assessor/TaxParcels/MapServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=7f8070caa8044b1a91823d7e9751265f",
+    "fields": {
+     "pid": [
+      "PARCEL_NUMBER"
+     ],
+     "owner": [
+      "TAXPAYER_NAME",
+      "OWNER_NAME"
+     ],
+     "mail": [
+      "TAXPAYER_ADDRESS"
+     ],
+     "site": [
+      "PROPERTY_ADDRESS"
+     ],
+     "legal": [
+      "LEGAL"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:34:56Z"
+   }
+  ],
+  "27173": [
+   {
+    "id": "co-27173",
+    "verified": true,
+    "name": "Yellow Medicine County parcels",
+    "by": "GDITAdmin",
+    "url": "https://gis.co.ym.mn.gov/arcgis/rest/services/Assessors/TaxParcels/MapServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=5c9b36efbc1e48768fa275230a5a397c",
+    "fields": {
+     "pid": [
+      "PARCEL_NUMBER"
+     ],
+     "owner": [
+      "TAXPAYER_NAME",
+      "OWNER_NAME"
+     ],
+     "mail": [
+      "TAXPAYER_ADDRESS"
+     ],
+     "site": [
+      "PROPERTY_ADDRESS"
+     ],
+     "legal": [
+      "LEGAL"
+     ],
+     "gis_acres": [
+      "GIS_ACRES"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:35:17Z"
+   }
+  ],
+  "19013": [
+   {
+    "id": "co-19013",
+    "verified": true,
+    "name": "Black Hawk County parcels",
+    "by": "ben.wagner@waterloo-ia.org  City of Waterloo, Iowa",
+    "url": "https://maps.cityofwaterlooiowa.com/arcgisserver/rest/services/LandRecords/TaxParcels/MapServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=b076defc0cfa4342a54875129cb0d5a8",
+    "fields": {
+     "pid": [
+      "PIN",
+      "ParcelID",
+      "parcel"
+     ],
+     "owner": [
+      "deedholder"
+     ],
+     "land": [
+      "landval"
+     ],
+     "imp": [
+      "bldgval"
+     ],
+     "legal": [
+      "legal"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:35:24Z"
+   }
+  ],
+  "19155": [
+   {
+    "id": "co-19155",
+    "verified": true,
+    "name": "Pottawattamie County parcels",
+    "by": "PottawattamieGIS",
+    "url": "https://gis.pottcounty-ia.gov/arcgis/rest/services/PublicDataEnterprise/PublicData_Parcels/FeatureServer/0",
+    "about": "https://www.arcgis.com/home/item.html?id=05161ee013a84e4784072c8fc0dbe1d9",
+    "fields": {
+     "pid": [
+      "PIN"
+     ],
+     "owner": [
+      "OWNER"
+     ],
+     "land": [
+      "LANDVALUE"
+     ],
+     "imp": [
+      "BLDGVALUE"
+     ],
+     "total": [
+      "TOTALVALUE"
+     ],
+     "cls": [
+      "PROPCLASS"
+     ],
+     "legal": [
+      "LEGAL"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:37:31Z"
+   }
+  ],
+  "17093": [
+   {
+    "id": "co-17093",
+    "verified": true,
+    "name": "Kendall County parcels",
+    "by": "Oswego",
+    "url": "https://maps.co.kendall.il.us/server/rest/services/Hosted/Current_Cadastral_Features/FeatureServer/1",
+    "about": "https://www.arcgis.com/home/item.html?id=b3dce2bf0f49437c8bfb70a61d9aecea",
+    "fields": {
+     "pid": [
+      "pin"
+     ],
+     "owner": [
+      "owner_name"
+     ],
+     "mail": [
+      "owner_addr1",
+      "owner_addr2"
+     ],
+     "site": [
+      "site_address"
+     ],
+     "total": [
+      "total_assessed"
+     ],
+     "cls": [
+      "class"
+     ],
+     "legal": [
+      "legal"
+     ],
+     "gis_acres": [
+      "gis_acres"
+     ]
+    },
+    "found": "arcgis-search",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:39:19Z"
+   }
+  ],
+  "17143": [
+   {
+    "id": "co-17143",
+    "verified": true,
+    "name": "Peoria County parcels",
+    "by": "GISAdmin  County of Peoria",
+    "url": "https://services.arcgis.com/iPiPjILCMYxPZWTc/arcgis/rest/services/Tax_Parcels/FeatureServer/5",
+    "about": "https://www.arcgis.com/home/item.html?id=00b0e55fe72d414395418dd76691daf4",
+    "fields": {
+     "pid": [
+      "PIN"
+     ],
+     "owner": [
+      "owner_name"
+     ],
+     "cls": [
+      "PropClass"
+     ],
+     "legal": [
+      "LEGAL"
+     ],
+     "gis_acres": [
+      "Acres"
+     ]
+    },
+    "found": "arcgis-search",
+    "data_last_edit": "2026-10-15",
+    "notes": [
+     "ok"
+    ],
+    "checked_utc": "2026-10-17T03:41:15Z"
+   }
+  ]
+ },
+ "discover": {
+  "states": [
+   "MN",
+   "IA",
+   "IL"
+  ],
+  "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first.",
+  "statewide_candidates": {
+   "MN": [
+    {
+     "name": "Minnesota statewide parcels (MnGeo, counties that share)",
+     "search": "Minnesota statewide parcels MnGeo",
+     "about": "https://gisdata.mn.gov/dataset/plan-parcels-open"
     }
-  },
-  "links": {
-    "WI": [{"t": "Wisconsin statewide parcel data (State Cartographer's Office)", "url": "https://www.sco.wisc.edu/parcels/data/"}],
-    "MN": [{"t": "Minnesota statewide parcel data (MnGeo; counties choose what they share)", "url": "https://gisdata.mn.gov/dataset/plan-parcels-open"}],
-    "IA": [{"t": "Iowa geospatial data", "url": "https://geodata.iowa.gov/"}],
-    "IL": [{"t": "Illinois Geospatial Data Clearinghouse", "url": "https://clearinghouse.isgs.illinois.edu/"}]
-  },
-  "countyLinks": {},
-  "salesNote": {
-    "MN": "Minnesota sales are filed on the state's electronic Certificate of Real Estate Value (eCRV). We add them here once we have checked that the state's public copy is free and carries parcel numbers.",
-    "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We add a statewide copy only once we have checked one that is free.",
-    "IL": "Illinois sales are filed on the state transfer declaration (PTAX-203) with the county. We add a statewide copy only once we have checked one that is free."
+   ],
+   "IA": [
+    {
+     "name": "Iowa statewide parcels",
+     "search": "Iowa statewide parcels",
+     "about": "https://geodata.iowa.gov/"
+    }
+   ],
+   "IL": [
+    {
+     "name": "Illinois statewide parcels",
+     "search": "Illinois statewide parcels",
+     "about": "https://clearinghouse.isgs.illinois.edu/"
+    }
+   ]
   }
+ },
+ "links": {
+  "WI": [
+   {
+    "t": "Wisconsin statewide parcel data (State Cartographer's Office)",
+    "url": "https://www.sco.wisc.edu/parcels/data/"
+   }
+  ],
+  "MN": [
+   {
+    "t": "Minnesota statewide parcel data (MnGeo; counties choose what they share)",
+    "url": "https://gisdata.mn.gov/dataset/plan-parcels-open"
+   }
+  ],
+  "IA": [
+   {
+    "t": "Iowa geospatial data",
+    "url": "https://geodata.iowa.gov/"
+   }
+  ],
+  "IL": [
+   {
+    "t": "Illinois Geospatial Data Clearinghouse",
+    "url": "https://clearinghouse.isgs.illinois.edu/"
+   }
+  ]
+ },
+ "countyLinks": {},
+ "salesNote": {
+  "MN": "Minnesota sales are filed on the state's electronic Certificate of Real Estate Value (eCRV). We add them here once we have checked that the state's public copy is free and carries parcel numbers.",
+  "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We add a statewide copy only once we have checked one that is free.",
+  "IL": "Illinois sales are filed on the state transfer declaration (PTAX-203) with the county. We add a statewide copy only once we have checked one that is free."
+ },
+ "coverage": {
+  "WI": {
+   "parcels_statewide_verified": false,
+   "parcels_counties_verified": 0,
+   "of": 72
+  },
+  "MN": {
+   "parcels_statewide_verified": false,
+   "parcels_counties_verified": 9,
+   "of": 87
+  },
+  "IA": {
+   "parcels_statewide_verified": false,
+   "parcels_counties_verified": 2,
+   "of": 99
+  },
+  "IL": {
+   "parcels_statewide_verified": false,
+   "parcels_counties_verified": 2,
+   "of": 102
+  }
+ }
 }
