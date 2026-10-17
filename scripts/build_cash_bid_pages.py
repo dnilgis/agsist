@@ -2264,7 +2264,7 @@ def stamp_live_page(path, metas, counts=None):
         n_tw = counts["bids"]["towns"] if counts else len(live)
         text = (f"Find local cash grain bids by ZIP. The AGSIST network has current bids from {n_el:,} "
                 f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}. "
-                f"Updated {fmt_share_time(max(m['latest'] for m in live))}.")
+                f"Updated {fmt_share_time(max(m['latest'] for m in live))} CT.")   # time zone named (2026-10-17 audit N11)
     out = html
     for key, generic in LIVE_SHARE_GENERIC.items():
         attr = "property" if key.startswith("og:") else "name"
@@ -2706,7 +2706,7 @@ def selftest():
             f.write(f"<head>{gen_tags}</head>")
         txt = stamp_live_page(lp, metas)
         live_html = open(lp).read()
-        assert txt.endswith("Updated Oct 7, 12:00 pm.") and live_html.count(esc(txt)) == 2, live_html
+        assert txt.endswith("Updated Oct 7, 12:00 pm CT.") and live_html.count(esc(txt)) == 2, live_html
         assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
         assert open(lp).read() == f"<head>{gen_tags}</head>"
         assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
