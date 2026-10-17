@@ -3885,7 +3885,7 @@
     var F = root.AgRainArt.facts(I, { unplaced: root.AgRainArt.lastUnplaced() });
     var svg = root.AgRpInsert.render({
       facts: F, mini: mini, serial: SERIAL, gift: printable(gift || ''), qr: standardMatrix(), fontCss: fontCssText, px: px,
-      station: { words: gaugeWords(META), dist: distText(META), kind: stationKind(META) },
+      station: { words: gaugeWords(META), away: META.approx ? '' : milesText(miles(META.km)).replace(/ mi$/, ' miles'), kind: stationKind(META) },
       source: META && META.ca ? 'Environment and Climate Change Canada\u2019s daily records' : 'NOAA\u2019s daily records'
     });
     return { svg: svg, facts: F, overflow: root.AgRpInsert.lastOverflow() };

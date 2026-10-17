@@ -52,7 +52,7 @@ function make(style, opts) {
   const art = A.render(I);
   const F = A.facts(I, { unplaced: A.lastUnplaced() });
   const o = { facts: F, mini: art, serial: opts.serial === undefined ? "No. 0001" : opts.serial, gift: opts.gift || "", qr: RP.standardMatrix(),
-    station: { words: "Ames, IA", dist: "2.0 mi from Ames", kind: "volunteer" }, source: "NOAA’s daily records" };
+    station: { words: "Ames, IA", away: "2.0 miles", kind: "volunteer" }, source: "NOAA’s daily records" };
   const svg = INS.render(o);
   return { art, F, svg, copy: INS.copy(o), overflow: INS.lastOverflow() };
 }
@@ -113,7 +113,10 @@ test("the giver's note shows only when the order has one", () => {
 test("the serial and Sig's maker line; a blank to fill in without a serial", () => {
   const a = letterTexts(make("r1").svg).join(" ");
   assert.match(a, /Print No\. 0001, made, numbered and initialed/);
-  assert.match(a, /Sig Lindquist, CCA, Chetek, Wisconsin\./);
+  assert.match(a, /initialed by hand by Sigurd Lindquist, CCA\./, "the standing byline, no town");
+  assert.doesNotMatch(a, /Sig Lindquist|Chetek/);
+  assert.match(a, /From the NOAA gauge at Ames, IA, 2\.0 miles away, kept by a volunteer observer\./);
+  assert.equal((a.match(/Ames/g) || []).length, 2, "the town once in the opening line, once in the station's name: " + a);
   assert.match(a, /Draw another year at agsist\.com\/rain-print/);
   const b = letterTexts(make("r1", { serial: "" }).svg).join(" ");
   assert.match(b, /Print No\. ______, made/);
@@ -153,6 +156,9 @@ test("the maker page has the button and the note box; the engine makes the lette
   assert.match(js, /root\.AgRainArt\.facts\(I, \{ unplaced: root\.AgRainArt\.lastUnplaced\(\) \}\)/, "the print's own facts, after the print's own render");
   assert.match(js, /pdfFromJpeg\(new Uint8Array\(buf\), c\.width, c\.height, LETTER, 0\)/, "a letter-size PDF with no bleed");
   assert.match(js, /var LETTER = \{ w: 8\.5, h: 11/);
+  // the care line's frame size is the print's own trimmed size
+  assert.match(js, /var PRINT = \{ '12x18': \{ w: 18, h: 12, label: '12 x 18 in' \} \}/);
+  assert.match(read("components/rp-insert.js"), /A loose print fits a standard 12 x 18 frame\./);
   assert.match(js, /if \(PREVIEW\) \{ out\.textContent = 'The letter is made from the full year/, "no letter from a part year");
   assert.match(js, /data-size'\) === 'insert'\) insertFile\(b\)/);
   assert.ok(!/rp-insert\.js/.test(html), "not loaded with the page");

@@ -18,7 +18,7 @@
  *
  * o = {
  *   facts: AgRainArt.facts(input, {unplaced}),
- *   station: {words: "Ames, IA", dist: "2.0 mi from Ames", kind: 'volunteer' | 'coop' | 'noaa' | 'canada'},
+ *   station: {words: "Ames, IA", away: "2.0 miles" ('' when the distance isn't known), kind: 'volunteer' | 'coop' | 'noaa' | 'canada'},
  *   source: "NOAA’s daily records" (Canada: Environment and Climate Change Canada’s),
  *   mini: the print's own SVG (AgRainArt.render, no px), serial: "No. 0001" or '',
  *   gift: the giver's note from the order, or '' (the block is left off),
@@ -45,11 +45,14 @@
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
 
   // ------------------------------------------------------------------ the words
+  /* "From the NOAA gauge at Ames, IA, 2.0 miles away, kept by a volunteer observer."
+     The station's words never name the buyer's town twice (stationLabel drops the
+     offset when the station carries the town's own name). */
   var STATION_KIND = {
-    volunteer: 'a rain gauge a volunteer keeps and reports to NOAA',
-    coop: 'a NOAA co-op weather station',
-    noaa: 'a NOAA weather station',
-    canada: 'an Environment and Climate Change Canada weather station'
+    volunteer: ['the NOAA gauge at ', ', kept by a volunteer observer'],
+    coop: ['the NOAA co-op weather station at ', ''],
+    noaa: ['the NOAA weather station at ', ''],
+    canada: ['the Environment and Climate Change Canada weather station at ', '']
   };
   function copy(o) {
     var F = o.facts, S = o.station || {}, r2 = F.style === 'r2';
@@ -57,7 +60,8 @@
     c.eyebrow = 'RAIN PRINT';
     c.head = 'What you’re holding';
     c.intro = 'Every rain and snow of ' + F.year + ' near ' + F.place + ', drawn day by day from ' + (o.source || 'NOAA’s daily records') + '.';
-    c.station = S.words ? 'The gauge is ' + S.words + (S.dist ? ', ' + S.dist : '') + (STATION_KIND[S.kind] ? ', ' + STATION_KIND[S.kind] : '') + '.' : '';
+    var K = STATION_KIND[S.kind] || STATION_KIND.noaa;
+    c.station = S.words ? 'From ' + K[0] + S.words + (S.away ? ', ' + S.away + ' away' : '') + K[1] + '.' : '';
 
     // the year in numbers: what the print itself says
     var nums = [];
@@ -96,7 +100,7 @@
 
     c.giftHead = 'A NOTE FOR YOU';
     c.gift = String(o.gift || '').replace(/\s+/g, ' ').trim();
-    c.maker = 'Print ' + (o.serial || 'No. ______') + ', made, numbered and initialed by hand by Sig Lindquist, CCA, Chetek, Wisconsin.';
+    c.maker = 'Print ' + (o.serial || 'No. ______') + ', made, numbered and initialed by hand by Sigurd Lindquist, CCA.';
     c.makerSub = 'The number is under the code in the corner, my initials beside it in pencil.';
     c.care = ['Hang it out of direct sun. Sunlight fades any print in time.',
       'Keep it dry, away from a damp wall.',
