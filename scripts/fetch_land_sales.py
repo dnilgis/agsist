@@ -60,7 +60,7 @@ STATES = {
         "name": "Minnesota", "fips": "27",
         "source": "Minnesota Department of Revenue, electronic Certificates of Real Estate Value (eCRV)",
         "short": "Minnesota eCRV",
-        "pages": ["https://www.revenue.state.mn.us/ecrv-data", "https://www.revenue.state.mn.us/sales-ratio-studies"],
+        "pages": [],
         "links": [{"t": "Minnesota eCRV", "url": "https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv"}],
         "since_note": "Minnesota's eCRV began in 2014; older certificates and deeds are at the county recorder.",
     },
@@ -380,27 +380,21 @@ def strip_scripts(blob):
 
 
 IL_SODA = "https://data.illinois.gov/resource/it54-y4c6.json"
+IL_FIELDS = ["declaration_id", "document_number", "date_recorded", "line_4_instrument_date", "line_1_county", "line_1_township",
+             "line_1_city", "line_1_primary_pin", "line_1_lot_size_or_acreage", "line_2_total_parcels", "line_3_additional_pins",
+             "line_5_instrument_type", "line_11_full_consideration", "line_13_net_consideration", "line_16_state_exemption",
+             "line_10b_sale_between_related", "step_4_seller_name", "step_4_buyer_name"]
 
 # Pages saved by --probe besides each state's data pages: layouts, data dictionaries and catalogs,
 # so the real columns can be read on the raw branch before any parser trusts them.
 PROBE_DOCS = {
     "WI": ["https://propertyinfo.revenue.wi.gov/",
-           "https://www.revenue.wi.gov/Pages/SLF/Assessor-News/2026-02-24.aspx",
-           "https://www.revenue.wi.gov/Pages/RETr/Home.aspx"],
-    "MN": ["https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv",
-           "https://www.revenue.state.mn.us/sales-ratio-reports"],
-    "IL": [IL_SODA + "?$select=line_8_current_use,count(*)&$group=line_8_current_use&$order=count(*)%20DESC&$limit=40",
-           IL_SODA + "?$select=count(*),min(date_recorded),max(date_recorded)",
-           IL_SODA + "?$select=count(step_4_buyer_name)",
-           IL_SODA + "?$select=count(step_4_seller_name)",
-           IL_SODA + "?$select=line_1_county,count(*)&$group=line_1_county&$order=line_1_county&$limit=200",
-           IL_SODA + "?$limit=3&$where=line_8_current_use=%27J%27&$order=date_recorded%20DESC",
-           IL_SODA + "?$select=line_5_instrument_type,count(*)&$group=line_5_instrument_type&$where=line_8_current_use=%27J%27&$order=count(*)%20DESC&$limit=30",
-           IL_SODA + "?$select=count(*),count(step_4_buyer_name),min(date_recorded)&$where=line_8_current_use=%27J%27",
-           "https://tax.illinois.gov/content/dam/soi/en/web/tax/localgovernments/property/documents/ptax-203.pdf",
-           "https://data.illinois.gov/api/views/dwt7-rycp.json",
-           "https://data.illinois.gov/resource/ay2h-5hx3.json?$limit=3",
-           "https://data.illinois.gov/resource/ay2h-5hx3.json?$select=count(*)"],
+           "https://www.revenue.wi.gov/SLFReportsHistSales/RETRmlist.pdf"],
+    "IL": [IL_SODA + "?$select=" + ",".join(IL_FIELDS) + "&$where=line_8_current_use=%27J%27&$order=date_recorded%20DESC&$limit=6",
+           IL_SODA + "?$select=line_16_state_exemption,count(*)&$where=line_8_current_use=%27J%27&$group=line_16_state_exemption&$order=count(*)%20DESC&$limit=20",
+           IL_SODA + "?$select=line_1_lot_size_or_acreage,count(*)&$where=line_8_current_use=%27J%27&$group=line_1_lot_size_or_acreage&$order=count(*)%20DESC&$limit=25",
+           "https://data.illinois.gov/resource/ay2h-5hx3.json?$limit=4",
+           "https://tax.illinois.gov/content/dam/soi/en/web/tax/localgovernments/property/documents/ptax-203.pdf"],
 }
 
 
