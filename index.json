@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-17T02:25:48Z",
+ "run_utc": "2026-10-17T02:28:27Z",
  "sources": [
   {
    "bytes": null,
@@ -5767,25 +5767,30 @@
    "text_chars": 2149
   },
   {
-   "bytes": null,
-   "sha256": null,
-   "fetched_utc": null,
+   "bytes": 230543,
+   "sha256": "2be6bb3927002974aa5e095148296b01aa62181b5d8113217182d8f0bbc43ac5",
+   "fetched_utc": "2026-10-17T02:27:05Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": null,
+   "saved_as": "refs/bench-basis-5.html",
    "final_url": null,
-   "content_type": null,
-   "via": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
    "archive_timestamp": null,
    "id": "bench-basis-5",
    "url": "https://www.barchart.com/cmdty/indexes/grain",
    "title": "Benchmark basis: Barchart cash bids / cmdty basis indexes",
    "why": "/basis competitor benchmark Oct 16, 2026 (established)",
-   "kind": "html",
-   "checked_utc": "2026-10-17T00:27:49Z",
-   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
-   "status": "failed"
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T02:26:59Z",
+   "error": null,
+   "attempts": [
+    "direct/browser: ok 202"
+   ],
+   "status": "new",
+   "text_chars": 8429,
+   "redacted": null
   },
   {
    "bytes": 16833,
@@ -6414,25 +6419,30 @@
    "redacted": null
   },
   {
-   "bytes": null,
-   "sha256": null,
-   "fetched_utc": null,
+   "bytes": 290574,
+   "sha256": "6ff8e3a2e22fc379b76df6015228d90138bf5a54c1563462e070d72eb3ea4912",
+   "fetched_utc": "2026-10-17T02:27:11Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": null,
+   "saved_as": "refs/bench-daily-1.html",
    "final_url": null,
-   "content_type": null,
-   "via": null,
+   "content_type": "text/html; charset=utf-8",
+   "via": "direct",
    "archive_timestamp": null,
    "id": "bench-daily-1",
    "url": "https://www.barchart.com/news/barchart-newsletters/ag-market-commentary",
    "title": "Benchmark daily: Barchart Ag Market Commentary newsletter",
    "why": "/daily competitor benchmark Oct 16, 2026 (established)",
-   "kind": "html",
-   "checked_utc": "2026-10-17T00:28:07Z",
-   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
-   "status": "failed"
+   "kind": "rendered",
+   "checked_utc": "2026-10-17T02:27:06Z",
+   "error": null,
+   "attempts": [
+    "direct/browser: ok 202"
+   ],
+   "status": "new",
+   "text_chars": 1024,
+   "redacted": null
   },
   {
    "bytes": 188287,
@@ -7536,8 +7546,8 @@
    "title": "Benchmark presell-calculator: MSU Extension, how many bushels should I market",
    "why": "/presell-calculator competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-17T00:28:13Z",
-   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: network: [Errno 111] Connection refused; wayback/python: HTTP 429; wayback/curl: network: curl exit 7: curl: (7) Failed to connect to web.archive.org port 443 after 23836 ms: Couldn't connect to server; the old copy was a Incapsula bot check, removed",
+   "checked_utc": "2026-10-17T02:27:13Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback/python: HTTP 429; wayback/python: network: [Errno 111] Connection refused; wayback/curl: HTTP 429",
    "status": "failed"
   },
   {

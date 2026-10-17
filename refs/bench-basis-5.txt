@@ -1,0 +1,272 @@
+# Benchmark basis: Barchart cash bids / cmdty basis indexes
+# https://www.barchart.com/cmdty/indexes/grain
+# fetched 2026-10-17T02:27:05Z, sha256 2be6bb3927002974aa5e095148296b01aa62181b5d8113217182d8f0bbc43ac5
+
+Grain Price and Basis Indexes | Barchart CommoditiesBack ButtonFilter Button
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+Grain Price and Basis Indexes
+
+Best-in-class intraday and historical data delivering precise, transparent price indicators for Corn, Soybeans, and Wheat. Our comprehensive dataset—integrating extensive historical data with real-time streaming updates—empowers trading strategies with accurate, actionable market insights.
+
+Explore Data
+
+Leading Alternative Data
+
+Our indicator methodology uses a transparent weighting process, incorporating price, capacity, and throughput to deliver objective prices that accurately reflect market dynamics.
+
+Comprehensive Indexing
+
+We calculate continuous and end-of-day price and basis levels for individual Counties up to our benchmark National Index – historical data is available from 2014.
+
+Seamless Integration
+
+Grain Price & Basis Indexes integrate effortlessly into applications, websites, or workflows with flexible delivery options, including APIs, high-performance streaming feeds, and cmdtyView.
+
+Barchart’s Commodity Grain Price Benchmarks
+
+Price Index
+Symbol
+Value
+Day Change
+% Change
+Date
+
+US Corn Price Idx
+ZCPAUS.CM
+4.347
+
+-0.041
+
+-0.93%
+
+10/16/26
+
+US Soybean Price Idx
+ZSPAUS.CM
+12.023
+
+-0.015
+
+-0.13%
+
+10/16/26
+
+Iowa Corn Price Idx
+ZCPAIA.CM
+4.335
+
+-0.033
+
+-0.74%
+
+10/16/26
+
+Illinois Corn Price Idx
+ZCPAIL.CM
+4.424
+
+-0.026
+
+-0.59%
+
+10/16/26
+
+Illinois Soybean Price Idx
+ZSPAIL.CM
+12.216
+
+-0.013
+
+-0.10%
+
+10/16/26
+
+Iowa Soybean Price Idx
+ZSPAIA.CM
+11.983
+
+0.000
+
+unch
+
+10/16/26
+
+Get Free Report
+
+* Prices are delayed and represent only a small portion of our overall coverage. Subscribe to cmdtyView or contact sales for more information on how you can access streaming data, forward curves, and county-level indexes.
+
+Barchart’s Commodity Indexes is the authority for grain bids and price assessments
+
+Our methodology uses a sophisticated - but transparent - weighting process to ensure the commodity prices we generate reflect underlying market economics. By combining price with capacity and throughput, Barchart’s Commodity Indexes is the only source for grain pricing that isn’t just “average.”
+
+Methodology
+
+Download PDF
+
+Factsheet
+
+Download PDF
+
+Symbology
+
+Download PDF
+
+FIPS Code Lookup
+
+Download CSV
+
+Subscribe to Grain Price and Basis Indexes
+
+Explore Our Data
+
+In the Barchart Commodities blog
+
+More
+
+Barchart Predicts Corn and Soybean Yield Will Exceed The USDA’s Latest Forecast
+
+Hey there, agriculture aficionados and crop connoisseurs! Buckle up, because we've got some exciting news! We just released our November 2023 Crop Production and Yield Forecasts for US corn and soybeans. The most recent report sees end-of-season yield at 183.7 (bu/ac) for Corn, which is 8.8 (bu/ac) above the USDA’s...
+
+2023-11-21
+|
+Read More
+
+Barchart Expects Corn and Soybean Yields to Exceed USDA's Latest Projections
+
+In the world of agriculture, few things are as crucial as accurate crop forecasts . Today, Barchart has unveiled its October 2023 Crop Production and Yield Forecasts for corn and soybeans in the United States. These forecasts offer valuable insights into what lies ahead for these crops. The most recent...
+
+2023-10-17
+|
+Read More
+
+Introducing 'Favorites’ in Marketplace Apps!
+
+In today's fast-paced world, efficiency and ease of use are essential for businesses of all sizes. Whether you're a producer, grain merchandiser, or anyone involved in the commodities market, having the right tools at your fingertips can make a world of difference. That's why we're excited to introduce a new...
+
+2023-09-19
+|
+Read More
+
+cmdtyView®
+
+Get all of our commodity data and prices in cmdtyView®
+
+All of our exclusive data and prices are available through the cmdtyView® terminal – a fully web-based and responsive commodity trading platform that works seamlessly across all of your devices.
+
+Start Free Trial ›
+
+Explore Barchart’s Commodity Pricing Network
+
+Access data from the leading contributors in Ag and Energy. Available over API or through cmdtyView.
+
+Access Data
+
+Free Commodity Reports
+
+Get access to our proprietary price reports to keep a pulse on global commodity markets.
+
+Get Free Access
+
+Commodity DataData
+
+Commodity ConnectConnect
+
+222 S. Riverside Plaza, Suite 810
+
+Chicago, IL 60606
+
+commodities@barchart.com
+
+877-247-4394
+
+Get updates from Barchart:
+
+© 2026 Barchart.com, Inc. All Rights Reserved.
+
+Terms of Use
+|
+Privacy Policy
+|
+Do Not Sell My Personal Information
+
+Barchart is committed to ensuring digital accessibility for individuals with disabilities. We are continuously working to improve our web experience, and encourage users to Contact Us for feedback and accommodation requests.
+
+We process your personal information to measure and improve our sites and service, to assist our marketing campaigns and to provide personalised content and advertising. By clicking the button on the right, you can exercise your privacy rights. For more information see our Cookie PolicyView our Terms and Privacy Policy
+
+Do Not Sell or Share My Personal Data
+
+Your Opt Out Preference Signal is Honored
+
+-
+
+Your Privacy
+
+-
+
+Strictly Necessary Cookies
+
+-
+
+Opt Out of Sale of Sharing/Targeted Advertising
+
+Your Privacy
+
+When you visit our website, we store cookies on your browser to collect information. The information collected might relate to you, your preferences or your device, and is mostly used to make the site work as you expect it to and to provide a more personalized web experience. However, you can choose not to allow certain types of cookies, which may impact your experience of the site and the services we are able to offer. Click on the different category headings to find out more and change our default settings according to your preference. You cannot opt-out of our First Party Strictly Necessary Cookies as they are deployed in order to ensure the proper functioning of our website (such as prompting the cookie banner and remembering your settings, to log into your account, to redirect you when you log out, etc.). For more information about the First and Third Party Cookies used please follow this link.
+
+More information
+
+Strictly Necessary Cookies
+
+Always Active
+
+These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services, such as setting your privacy preferences, logging in or filling in forms. You can set your browser to block or alert you about these cookies, but some parts of the site will not then work. These cookies do not store any personally identifiable information.
+
+Opt Out of Sale of Sharing/Targeted Advertising
+
+Opt Out of Sale of Sharing/Targeted Advertising Active
+
+As a California consumer, you have the right to opt-out from the sale or sharing of your personal information at any time across business platform, services, businesses and devices. You can opt-out of the sale and sharing of your personal information by using this toggle switch. As a Virginia, Utah, Colorado and Connecticut consumer, you have the right to opt-out from the sale of your personal data and the processing of your personal data for targeted advertising. You can opt-out of the sale of your personal data and targeted advertising by using this toggle switch. For more information on your rights as a United States consumer see our privacy notice.
+
+-
+Targeting Cookies
+
+Switch Label label
+
+These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites. They do not store directly personal information, but are based on uniquely identifying your browser and internet device. If you do not allow these cookies, you will experience less targeted advertising.
+
+-
+Performance Cookies
+
+Switch Label label
+
+These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site. They help us to know which pages are the most and least popular and see how visitors move around the site. All information these cookies collect is aggregated and therefore anonymous. If you do not allow these cookies we will not know when you have visited our site, and will not be able to monitor its performance.
+
+Cookie List
+
+Consent Leg.Interest
+
+checkbox label label
+
+checkbox label label
+
+checkbox label label
+
+checkbox label label
