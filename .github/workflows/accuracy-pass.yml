@@ -57,6 +57,9 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scripts/accuracy_pass.py estimate /tmp/bundle.json
+      - name: Save the estimate to raw
+        if: ${{ !cancelled() && inputs.mode == 'estimate' }}
+        run: bash scripts/push_raw.sh "accuracy-pass estimate" accuracy-pass/estimate.json
       - name: Submit
         if: ${{ inputs.mode == 'submit' }}
         env:

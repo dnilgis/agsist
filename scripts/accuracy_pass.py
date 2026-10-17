@@ -152,7 +152,10 @@ def estimate(bundle, today):
         rows.append({"page": e["page"], "input_tokens": n, "worst_case_usd": round(c, 3)})
         total += c
         print(f"{e['page']}: {n} input tokens, worst case ${c:.2f}", flush=True)
-    print(f"TOTAL worst case ${total:.2f} for {len(rows)} requests (cap ${COST_CAP:.0f})", flush=True)
+    print(f"::notice title=Accuracy pass estimate::worst case ${total:.2f} for {len(rows)} requests, "
+          f"{sum(r['input_tokens'] for r in rows)} prompt tokens (cap ${COST_CAP:.0f})", flush=True)
+    os.makedirs(OUT, exist_ok=True)
+    json.dump({"worst_case_usd": round(total, 2), "rows": rows}, open(f"{OUT}/estimate.json", "w"), indent=1)
     return total, rows
 
 
@@ -196,8 +199,6 @@ def cmd_submit(bundle_path):
     bundle = json.load(open(bundle_path))
     today = bundle.get("today") or time.strftime("%B %-d, %Y")
     total, rows = estimate(bundle, today)
-    os.makedirs(OUT, exist_ok=True)
-    json.dump({"worst_case_usd": round(total, 2), "rows": rows}, open(f"{OUT}/estimate.json", "w"), indent=1)
     if total > COST_CAP:
         sys.exit(f"::error::worst-case estimate ${total:.2f} is over the ${COST_CAP:.0f} cap; not submitting")
     reqs = [{"custom_id": custom_id(e["page"]), "params": build_params(e, today)} for e in bundle["pages"]]
@@ -207,7 +208,7 @@ def cmd_submit(bundle_path):
            "model": MODEL, "requests": len(reqs), "pages": {custom_id(e["page"]): e["page"] for e in bundle["pages"]},
            "worst_case_usd": round(total, 2)}
     json.dump(rec, open(f"{OUT}/batch.json", "w"), indent=1)
-    print(f"submitted batch {b['id']} with {len(reqs)} requests", flush=True)
+    print(f"::notice title=Accuracy pass submitted::batch {b['id']} with {len(reqs)} requests", flush=True)
 
 
 def cmd_collect(wait_min):
@@ -259,7 +260,7 @@ def cmd_collect(wait_min):
            "verdict_counts": counts, "claims_total": sum(counts.values()),
            "results": {k: pages[k]["result"] for k in pages}, "pages": pages}
     json.dump(out, open(f"{OUT}/results.json", "w"), indent=1)
-    print(f"actual cost ${cost:.2f}; claims {sum(counts.values())}; {counts}", flush=True)
+    print(f"::notice title=Accuracy pass results::actual cost ${cost:.2f}; claims {sum(counts.values())}; {counts}", flush=True)
 
 
 def selftest():
