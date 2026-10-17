@@ -1,14 +1,5 @@
 {
- "bad_files": {
-  "2025_ADMLivestockLrp_Daily_20260325.zip": {
-   "error": "BadZipFile: File is not a zip file",
-   "first": "2026-10-15",
-   "last": "2026-10-16",
-   "last_utc": "2026-10-16T19:23:54Z",
-   "size": 0,
-   "tries": 2
-  }
- },
+ "bad_files": {},
  "files": {
   "2014_ADMLivestockLrp_Daily_20130701.zip": 22149,
   "2014_ADMLivestockLrp_Daily_20130702.zip": 25595,
@@ -6412,6 +6403,7 @@
   "2025_ADMLivestockLrp_Daily_20260320.zip": 78003,
   "2025_ADMLivestockLrp_Daily_20260321.zip": 77792,
   "2025_ADMLivestockLrp_Daily_20260324.zip": 77212,
+  "2025_ADMLivestockLrp_Daily_20260325.zip": 0,
   "2025_ADMLivestockLrp_Daily_20260326.zip": 76917,
   "2025_ADMLivestockLrp_Daily_20260327.zip": 76821,
   "2025_ADMLivestockLrp_Daily_20260328.zip": 77426,
@@ -6857,6 +6849,7 @@
   "2026_ADMLivestockLrp_Daily_20261014.zip": 32333,
   "2026_ADMLivestockLrp_Daily_20261015.zip": 23114,
   "2026_ADMLivestockLrp_Daily_20261016.zip": 23097,
+  "2026_ADMLivestockLrp_Daily_20261017.zip": 23108,
   "2027_ADMLivestockLrp_Daily_20260701.zip": 1432416,
   "2027_ADMLivestockLrp_Daily_20260702.zip": 1430101,
   "2027_ADMLivestockLrp_Daily_20260706.zip": 1433495,
@@ -6933,11 +6926,10 @@
   "2027_ADMLivestockLrp_Daily_20261013.zip": 1457819,
   "2027_ADMLivestockLrp_Daily_20261014.zip": 1451122,
   "2027_ADMLivestockLrp_Daily_20261015.zip": 1454991,
-  "2027_ADMLivestockLrp_Daily_20261016.zip": 1458438
+  "2027_ADMLivestockLrp_Daily_20261016.zip": 1458438,
+  "2027_ADMLivestockLrp_Daily_20261017.zip": 3747
  },
  "listed": {
-  "2026_ADMLivestockLrp_Daily_20250908.zip": "2025-09-08T14:21",
-  "2026_ADMLivestockLrp_Daily_20250909.zip": "2025-09-09T14:21",
   "2026_ADMLivestockLrp_Daily_20250910.zip": "2025-09-10T14:21",
   "2026_ADMLivestockLrp_Daily_20250911.zip": "2025-09-11T14:21",
   "2026_ADMLivestockLrp_Daily_20250912.zip": "2025-09-12T14:21",
@@ -7259,6 +7251,7 @@
   "2026_ADMLivestockLrp_Daily_20261014.zip": "2026-10-14T15:31",
   "2026_ADMLivestockLrp_Daily_20261015.zip": "2026-10-15T08:35",
   "2026_ADMLivestockLrp_Daily_20261016.zip": "2026-10-16T08:36",
+  "2026_ADMLivestockLrp_Daily_20261017.zip": "2026-10-17T08:36",
   "2027_ADMLivestockLrp_Daily_20260701.zip": "2026-07-01T14:58",
   "2027_ADMLivestockLrp_Daily_20260702.zip": "2026-07-02T14:23",
   "2027_ADMLivestockLrp_Daily_20260706.zip": "2026-07-06T14:29",
@@ -7335,7 +7328,8 @@
   "2027_ADMLivestockLrp_Daily_20261013.zip": "2026-10-13T14:18",
   "2027_ADMLivestockLrp_Daily_20261014.zip": "2026-10-14T15:31",
   "2027_ADMLivestockLrp_Daily_20261015.zip": "2026-10-15T14:29",
-  "2027_ADMLivestockLrp_Daily_20261016.zip": "2026-10-16T14:19"
+  "2027_ADMLivestockLrp_Daily_20261016.zip": "2026-10-16T14:19",
+  "2027_ADMLivestockLrp_Daily_20261017.zip": "2026-10-17T08:36"
  },
  "sob": {
   "lrp_2003.zip": {
@@ -7442,12 +7436,12 @@
  "stats": {
   "aev_deleted": 0,
   "aev_restated": 399,
-  "aev_rows": 729788,
+  "aev_rows": 729939,
   "last_run": {
    "failed": 0,
    "left": 1,
-   "read": 1,
-   "seconds": 3,
+   "read": 2,
+   "seconds": 1,
    "stopped_for_time": false,
    "unreadable": 0
   },
@@ -7460,5 +7454,15 @@
   "rate_price_off": 425998,
   "rate_rows": 2318701
  },
- "updated": "2026-10-16T19:23:56Z"
+ "unreadable": {
+  "2025_ADMLivestockLrp_Daily_20260325.zip": {
+   "error": "BadZipFile: File is not a zip file",
+   "first": "2026-10-15",
+   "last": "2026-10-17",
+   "last_utc": "2026-10-17T15:08:28Z",
+   "size": 0,
+   "tries": 3
+  }
+ },
+ "updated": "2026-10-17T15:08:29Z"
 }
