@@ -1,0 +1,211 @@
+{
+ "generated": "2026-10-16T22:46:43Z",
+ "summary": [
+  {
+   "key": "anhydrous",
+   "name": "Anhydrous ammonia",
+   "symbol": "82-0-0",
+   "n": 4,
+   "median": 832.1,
+   "low": 817.0,
+   "high": 965.0,
+   "oldest": "2026-09-24",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "urea",
+   "name": "Urea",
+   "symbol": "46-0-0",
+   "n": 5,
+   "median": 615.95,
+   "low": 608.0,
+   "high": 840.0,
+   "oldest": "2026-09-24",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks",
+    "synergy-wi"
+   ],
+   "far": [
+    "mulvane-ks"
+   ]
+  },
+  {
+   "key": "uan28",
+   "name": "UAN 28%",
+   "symbol": "28-0-0",
+   "n": 4,
+   "median": 415.33,
+   "low": 400.0,
+   "high": 490.0,
+   "oldest": "2026-09-24",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "uan32",
+   "name": "UAN 32%",
+   "symbol": "32-0-0",
+   "n": 1,
+   "median": null,
+   "low": 451.05,
+   "high": 451.05,
+   "oldest": "2026-09-24",
+   "newest": "2026-09-24",
+   "undated": 0,
+   "coops": [
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "dap",
+   "name": "DAP",
+   "symbol": "18-46-0",
+   "n": 3,
+   "median": 936.05,
+   "low": 921.5,
+   "high": 970.0,
+   "oldest": "2026-09-24",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "map",
+   "name": "MAP",
+   "symbol": "11-52-0",
+   "n": 2,
+   "median": 980.0,
+   "low": 980.0,
+   "high": 980.0,
+   "oldest": "2026-10-06",
+   "newest": "2026-10-12",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "potash",
+   "name": "Potash",
+   "symbol": "0-0-60",
+   "n": 4,
+   "median": 470.4,
+   "low": 460.0,
+   "high": 500.0,
+   "oldest": "2026-09-24",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mccune-ks",
+    "mulvane-ks",
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "ams",
+   "name": "AMS",
+   "symbol": "21-0-0-24S",
+   "n": 1,
+   "median": null,
+   "low": 509.25,
+   "high": 509.25,
+   "oldest": "2026-09-24",
+   "newest": "2026-09-24",
+   "undated": 0,
+   "coops": [
+    "farmerscoop-columbus-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "10-34-0",
+   "name": "10-34-0",
+   "symbol": "10-34-0",
+   "n": 1,
+   "median": null,
+   "low": 640.0,
+   "high": 640.0,
+   "oldest": "2026-10-06",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "mulvane-ks"
+   ],
+   "far": []
+  },
+  {
+   "key": "thiosul",
+   "name": "Thio-Sul",
+   "symbol": "12-0-0-26S",
+   "n": 2,
+   "median": 420.0,
+   "low": 390.0,
+   "high": 450.0,
+   "oldest": "2026-09-10",
+   "newest": "2026-10-06",
+   "undated": 0,
+   "coops": [
+    "tworivers-ks",
+    "mulvane-ks"
+   ],
+   "far": []
+  }
+ ],
+ "coops": [
+  {
+   "id": "tworivers-ks",
+   "name": "Two Rivers Coop",
+   "state": "KS"
+  },
+  {
+   "id": "mccune-ks",
+   "name": "McCune Farmers Union Coop",
+   "state": "KS"
+  },
+  {
+   "id": "mulvane-ks",
+   "name": "Mulvane Cooperative Union",
+   "state": "KS"
+  },
+  {
+   "id": "farmerscoop-columbus-ks",
+   "name": "Farmers Coop",
+   "state": "KS"
+  },
+  {
+   "id": "synergy-wi",
+   "name": "Synergy Cooperative",
+   "state": "WI"
+  }
+ ]
+}

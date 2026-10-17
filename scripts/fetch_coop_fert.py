@@ -722,10 +722,16 @@ def compose(cfgs, results, existing, now, carry=False):
 
 
 def append_history(hist, doc, now):
-    """One row per (co-op, product name) when its cash price or date changes."""
-    hist = hist or {"note": "Co-op posted fertilizer prices: one row each time a co-op's cash price or its date changes. "
-                            "Columns: seen (UTC date), co-op id, product, raw name, cash $/ton, basis, date shown or null.",
-                    "rows": []}
+    """One row per (co-op, product name) when its cash price or date changes.
+
+    2026-10-17, for the trend line on /fertilizer (components/fert-trend.js
+    replays this file): a price the reader flags (kept on the page, out of
+    every summary) carries an 8th column "flagged", and a price an ok co-op
+    stops posting gets one row with cash, basis and date null ("gone"), so a
+    replay leaves out what the summary left out on that day. Rows written
+    before then have 7 columns and no flags or gone rows."""
+    hist = hist or {"note": "", "rows": []}
+    hist["note"] = HIST_NOTE
     last = {}
     for r in hist["rows"]:
         last[(r[1], r[3])] = r
@@ -733,16 +739,31 @@ def append_history(hist, doc, now):
     for c in doc["coops"]:
         if not c.get("ok"):
             continue
+        here = set()
         for r in c["rows"]:
             if r["cash"] is None:
                 continue
+            here.add(r["raw"])
             new = [seen, c["id"], r["product"], r["raw"], r["cash"], r["cash_basis"], r["date"]]
+            if r.get("flags"):
+                new.append("flagged")
             old = last.get((c["id"], r["raw"]))
             if old and old[4:] == new[4:]:
                 continue
             hist["rows"].append(new)
             last[(c["id"], r["raw"])] = new
+        for (cid, raw), old in list(last.items()):
+            if cid == c["id"] and raw not in here and old[4] is not None:
+                gone = [seen, cid, old[2], raw, None, None, None]
+                hist["rows"].append(gone)
+                last[(cid, raw)] = gone
     return hist
+
+
+HIST_NOTE = ("Co-op posted fertilizer prices: one row each time a co-op's cash price or its date changes. "
+             "Columns: seen (UTC date), co-op id, product, raw name, cash $/ton, basis, date shown or null; "
+             "from 2026-10-17 an 8th column \"flagged\" marks a price the reader kept out of the summary, and a row "
+             "with cash null means the co-op stopped posting that price.")
 
 
 def run(root, now=None, fetcher=None, sheets_only=False):
@@ -968,6 +989,20 @@ def selftest():
     ck("history: nothing appended when nothing changed", len(h["rows"]) == n1 and n1 > 30)
     h = append_history(h, d6, later)
     ck("history: one row appended for one changed price", len(h["rows"]) == n1 + 1 and h["rows"][-1][4] == 815.0)
+    d6g = json.loads(json.dumps(d6))
+    mc = [c for c in d6g["coops"] if c["id"] == "mccune-ks"][0]
+    gone_raw = mc["rows"][0]["raw"]
+    mc["rows"] = mc["rows"][1:]
+    mc["rows"][0]["flags"] = ["test flag"]
+    n2 = len(h["rows"])
+    h = append_history(h, d6g, later + datetime.timedelta(days=1))
+    new_rows = h["rows"][n2:]
+    ck("history: a price the co-op stopped posting gets one gone row (cash null)",
+       any(r[3] == gone_raw and r[4] is None and r[1] == "mccune-ks" for r in new_rows))
+    ck("history: a flagged price carries the 8th column", any(r[1] == "mccune-ks" and r[-1] == "flagged" for r in new_rows))
+    n3 = len(h["rows"])
+    h = append_history(h, d6g, later + datetime.timedelta(days=2))
+    ck("history: gone and flagged rows are not repeated", len(h["rows"]) == n3)
     # dates
     ck("row date 10.1.26", row_date("10.1.26", today) == datetime.date(2026, 10, 1))
     ck("row date in the future is no date", row_date("12.1.26", today) is None)

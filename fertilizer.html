@@ -237,13 +237,14 @@
 .fert-nutrient-table td.prod{font-family:inherit;font-weight:600}
 .fert-nutrient-table td.prod .gr{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-muted);margin-left:.3rem}
 .fert-nutrient-table td.na{color:var(--text-muted)}
+@media(max-width:560px){.fert-nutrient>.fert-nutrient-table thead{display:none}.fert-nutrient>.fert-nutrient-table,.fert-nutrient>.fert-nutrient-table tbody{display:block}.fert-nutrient>.fert-nutrient-table tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem 1rem;padding:.55rem 0;border-bottom:1px solid var(--border)}.fert-nutrient>.fert-nutrient-table td{border:0;padding:0;text-align:left}.fert-nutrient>.fert-nutrient-table td.prod{flex-basis:100%}.fert-nutrient>.fert-nutrient-table td.na:not(.nq){display:none}.fert-nutrient>.fert-nutrient-table td[data-l]::after{content:attr(data-l);color:var(--text-muted);font-size:.72rem;margin-left:.15rem}.fert-nutrient>.fert-nutrient-table td[colspan]{flex-basis:100%;text-align:center}}
 #fert-nutrient-note{font-size:1rem;color:var(--text-muted);line-height:1.55;margin-top:.5rem}
 
 .fert-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.15rem;margin-bottom:1.25rem}
 .fert-calc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0 0 .25rem}
 .fert-calc-sub{font-size:0.785rem;color:var(--text-muted);margin:0 0 .9rem;line-height:1.5}
 .calc-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-bottom:1rem}
-.calc-field{display:flex;flex-direction:column;gap:.25rem}
+.calc-field{display:flex;flex-direction:column;gap:.25rem}.calc-field-wide{grid-column:1/-1}
 .calc-field label{font-size:0.755rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
 .calc-field input,.calc-field select{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:7px;padding:.5rem .6rem;color:var(--text);font-size:max(16px,.85rem);font-family:inherit;min-height:44px}
 .calc-field input:focus,.calc-field select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
@@ -335,6 +336,7 @@
   </div>
 
   <section id="fert-coops" aria-labelledby="fert-coops-h" hidden></section>
+  <details class="fert-trend" id="fert-trend"><summary>How the middle price has moved, by product</summary><div class="ft-body"></div></details>
   <aside class="nc-n" data-near-coop="fert" aria-label="Your area"><p><a href="/cash-bids">See this for your area</a></p></aside>
 
   <div class="fert-verdict" id="fert-verdict" hidden>
@@ -357,12 +359,15 @@
 
   <section class="fert-calc" aria-labelledby="calc-h">
     <h2 class="fert-calc-h" id="calc-h">Build your fertility bill</h2>
-    <p class="fert-calc-sub">Enter your crop and yield goal. This prices out the cheapest program to replace what the crop removes, using the co-op prices above. Phosphate and potash are costed at crop removal. Nitrogen is an N budget estimate at a yield-goal rate, not a rate recommendation; for a corn N rate use the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a>.</p>
+    <p class="fert-calc-sub">Enter your crop and yield goal, and pick the phosphate and nitrogen you use if you know them. This prices out the program to replace what the crop removes, using the co-op prices above. Phosphate and potash are costed at crop removal. Nitrogen is an N budget estimate at a yield-goal rate, not a rate recommendation; for a corn N rate use the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a>.</p>
     <div class="calc-inputs">
       <div class="calc-field"><label for="calc-crop">Crop</label><select id="calc-crop"><option value="corn">Corn</option><option value="soybean">Soybeans</option><option value="wheat">Wheat</option></select></div>
       <div class="calc-field"><label for="calc-yield">Yield goal (bu/acre)</label><input id="calc-yield" type="number" inputmode="numeric" min="0" step="5" value="180"></div>
       <div class="calc-field" id="calc-nrate-row"><label for="calc-nrate">N rate (lb N/bu)</label><input id="calc-nrate" type="number" inputmode="decimal" min="0" step="0.05" value="0.9"></div>
       <div class="calc-field"><label for="calc-acres">Acres (optional)</label><input id="calc-acres" type="number" inputmode="numeric" min="0" step="10" value=""></div>
+      <div class="calc-field"><label for="calc-psrc">Phosphate from</label><select id="calc-psrc"><option value="">Cheapest per lb</option></select></div>
+      <div class="calc-field" id="calc-nsrc-row"><label for="calc-nsrc">Nitrogen from</label><select id="calc-nsrc"><option value="">Cheapest per lb</option></select></div>
+      <div class="calc-field calc-field-wide"><label for="calc-app">Your application cost, $/acre (optional)</label><input id="calc-app" type="number" inputmode="decimal" min="0" step="1" value="" placeholder="Blank: product only"></div>
     </div>
     <div id="calc-out"><p class="calc-hint">Enter a yield goal to see your per-acre fertility bill.</p></div>
     <details class="calc-method">
@@ -466,6 +471,7 @@
 <script src="/components/geo.js?v=27" defer></script>
 <script src="/components/fert-sources.js?v=6"></script>
 <script src="/components/fert-coops.js?v=5"></script>
+<script src="/components/fert-trend.js?v=1" defer></script>
 <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=1';document.head.appendChild(s);}}catch(e){}</script>
 
 <script>
@@ -500,19 +506,22 @@ function straightN(pr){return !!(pr.grade&&pr.grade.N>0&&!(pr.grade.P>0)&&!(pr.g
 function primary(products,nut,ok){var b=null;products.forEach(function(p){if(ok&&!ok(p))return;if(p.grade&&p.grade[nut]>0&&(b===null||p.grade[nut]>b.grade[nut]))b=p;});return b;}
 function cheapest(products,nut,ok){var best=null;products.forEach(function(pr){if(!pr.grade||!pr.grade[nut]||pr.price==null)return;if(ok&&!ok(pr))return;var c=costPerLb(pr.price,pr.grade[nut]);if(c!=null&&(best===null||c<best.cost))best={name:pr.name,cost:c,product:pr};});return best;}
 var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.38,k2o:0.29,sNeed:18,fixesN:false},soybean:{label:'Soybeans',nRate:0.00,p2o5:0.80,k2o:1.40,sNeed:12,fixesN:true},wheat:{label:'Wheat',nRate:1.20,p2o5:0.50,k2o:0.35,sNeed:12,fixesN:false}};
-function buildProgram(products,cropKey,yieldGoal,nRateOverride){var c=CROPS[cropKey];var nr=(nRateOverride!=null?nRateOverride:c.nRate);var Nreq=nr*yieldGoal;var Preq=c.p2o5*yieldGoal;var Kreq=c.k2o*yieldGoal;var lines=[],missing=[],cost=0,sSupplied=0,mgSupplied=0,nFromP=0;
+function chosen(products,name,nut){if(!name)return null;var pr=null;products.forEach(function(x){if(!pr&&x.name===name&&x.grade&&x.grade[nut]>0&&validPrice(x.price)&&(nut!=='N'||mainlyN(x)))pr=x;});return pr?{name:pr.name,cost:costPerLb(pr.price,pr.grade[nut]),product:pr,picked:true}:null;}
+/* sourcesFor(): the products a reader may pick for P or N (a real price, the nutrient in it; N only from a mainly-N product). */
+function sourcesFor(products,nut){return products.filter(function(x){return x.grade&&x.grade[nut]>0&&validPrice(x.price)&&(nut!=='N'||mainlyN(x));}).map(function(x){return x.name;});}
+function buildProgram(products,cropKey,yieldGoal,nRateOverride,pick0){pick0=pick0||{};var c=CROPS[cropKey];var nr=(nRateOverride!=null?nRateOverride:c.nRate);var Nreq=nr*yieldGoal;var Preq=c.p2o5*yieldGoal;var Kreq=c.k2o*yieldGoal;var lines=[],missing=[],cost=0,sSupplied=0,mgSupplied=0,nFromP=0;
 /* pick(): the cheapest quoted source. If the main product for the nutrient has no quote there is no substitute: the line says so and the total is marked incomplete. */
-function pick(nut){var ok=nut==='N'?mainlyN:null;var pri=primary(products,nut,ok),src=cheapest(products,nut,ok),note='',unavail=null;
+function pick(nut){var ok=nut==='N'?mainlyN:null;var mine=chosen(products,pick0[nut],nut);if(mine)return{src:mine,note:'',unavail:null};var pri=primary(products,nut,ok),src=cheapest(products,nut,ok),note='',unavail=null;
   if(pri&&!validPrice(pri.price)){src=null;unavail=pri;missing.push(pri.name);}
   return{src:src,note:note,unavail:unavail};}
 var P=pick('P'),K=pick('K'),N=pick('N');
-if(Preq>0&&P.src){var pp=P.src.product,tp=Preq/(20*pp.grade.P);var cp=tp*pp.price;cost+=cp;nFromP=tp*20*pp.grade.N;sSupplied+=tp*20*pp.grade.S;mgSupplied+=tp*20*pp.grade.Mg;lines.push({role:'Phosphate (P\u2082O\u2085)',product:P.src.name,lbs:Math.round(tp*2000),cost:cp,note:P.note,asof:pp.as_of,srcLabel:pp.srcLabel});}
+if(Preq>0&&P.src){var pp=P.src.product,tp=Preq/(20*pp.grade.P);var cp=tp*pp.price;cost+=cp;nFromP=tp*20*pp.grade.N;sSupplied+=tp*20*pp.grade.S;mgSupplied+=tp*20*pp.grade.Mg;lines.push({role:'Phosphate (P\u2082O\u2085)',product:P.src.name,lbs:Math.round(tp*2000),cost:cp,note:P.note,asof:pp.as_of,srcLabel:pp.srcLabel,picked:!!P.src.picked});}
 else if(Preq>0&&P.unavail){lines.push({role:'Phosphate (P\u2082O\u2085)',product:P.unavail.name,lbs:null,cost:null,noquote:true});}
 else if(Preq>0)missing.push('phosphate source');
 if(Kreq>0&&K.src){var kp=K.src.product,tk=Kreq/(20*kp.grade.K);var ck=tk*kp.price;cost+=ck;sSupplied+=tk*20*kp.grade.S;mgSupplied+=tk*20*kp.grade.Mg;lines.push({role:'Potash (K\u2082O)',product:K.src.name,lbs:Math.round(tk*2000),cost:ck,note:K.note,asof:kp.as_of,srcLabel:kp.srcLabel});}
 else if(Kreq>0&&K.unavail){lines.push({role:'Potash (K\u2082O)',product:K.unavail.name,lbs:null,cost:null,noquote:true});}
 else if(Kreq>0)missing.push('potash source');
-var remN=Math.max(0,Nreq-nFromP);if(remN>0&&N.src){var np=N.src.product,tn=remN/(20*np.grade.N);var cn=tn*np.price;cost+=cn;sSupplied+=tn*20*np.grade.S;lines.push({role:'Nitrogen (N)',product:N.src.name,lbs:Math.round(tn*2000),cost:cn,note:N.note,asof:np.as_of,srcLabel:np.srcLabel});}
+var remN=Math.max(0,Nreq-nFromP);if(remN>0&&N.src){var np=N.src.product,tn=remN/(20*np.grade.N);var cn=tn*np.price;cost+=cn;sSupplied+=tn*20*np.grade.S;lines.push({role:'Nitrogen (N)',product:N.src.name,lbs:Math.round(tn*2000),cost:cn,note:N.note,asof:np.as_of,srcLabel:np.srcLabel,picked:!!N.src.picked});}
 else if(remN>0&&N.unavail){lines.push({role:'Nitrogen (N)',product:N.unavail.name,lbs:null,cost:null,noquote:true});}
 else if(remN>0)missing.push('nitrogen source');
 return{crop:c.label,nRate:nr,Nreq:Nreq,Preq:Preq,Kreq:Kreq,lines:lines,missing:missing,costPerAcre:cost,costPerBu:yieldGoal>0?cost/yieldGoal:0,sSupplied:sSupplied,sNeed:c.sNeed,mgSupplied:mgSupplied,fixesN:c.fixesN};}
@@ -541,7 +550,9 @@ function renderAfford(){
 function renderTable(products){
   var t=document.getElementById('fert-nutrient-body');if(!t)return;
   t.innerHTML=products.filter(function(p){return p.grade;}).map(function(p){
-    function cell(k){var c=costPerLb(p.price,p.grade[k]);if(c!=null)return '<td>$'+c.toFixed(2)+'</td>';return (!validPrice(p.price)&&p.grade[k]>0)?'<td class="na">no quote</td>':'<td class="na">n/a</td>';}
+    /* data-l names the nutrient so a phone shows one line per product with only the nutrients it carries (the n/a cells hide). */
+    var LB={N:'/lb N',P:'/lb P\u2082O\u2085',K:'/lb K\u2082O',S:'/lb S'};
+    function cell(k){var c=costPerLb(p.price,p.grade[k]);if(c!=null)return '<td data-l="'+LB[k]+'">$'+c.toFixed(2)+'</td>';return (!validPrice(p.price)&&p.grade[k]>0)?'<td class="na nq" data-l="'+LB[k]+'">no quote</td>':'<td class="na">n/a</td>';}
     return '<tr><td class="prod">'+esc(p.name)+' <span class="gr">'+esc(p.symbol)+'</span>'+provTag(p,p.as_of)+'</td>'+cell('N')+cell('P')+cell('K')+cell('S')+'</tr>';}).join('');
   var amend=products.filter(function(p){return !p.grade;}).map(function(p){return esc(p.name);});
   var note=document.getElementById('fert-nutrient-note');
@@ -561,13 +572,18 @@ function runCalc(){
   // and priced a full nitrogen program anyway. Blank still gets the default.
   var _nrv=parseFloat(nrEl.value);
   var nr=c.fixesN?0:(isFinite(_nrv)&&_nrv>=0?_nrv:c.nRate);
-  var prog=buildProgram(STATE.products,crop,y,nr);
+  var psel=document.getElementById('calc-psrc'),nsel=document.getElementById('calc-nsrc'),nsRow=document.getElementById('calc-nsrc-row');
+  if(nsRow)nsRow.style.display=c.fixesN?'none':'';
+  var prog=buildProgram(STATE.products,crop,y,nr,{P:psel?psel.value:'',N:nsel&&!c.fixesN?nsel.value:''});
+  /* The reader's own application cost: no default, never a number of ours. */
+  var appv=parseFloat((document.getElementById('calc-app')||{}).value),app=isFinite(appv)&&appv>0?appv:0;
   var out=document.getElementById('calc-out');if(!out)return;
   if(y<=0){out.innerHTML='<p class="calc-hint">Enter a yield goal to see your per-acre fertility bill.</p>';return;}
-  var progRows=prog.lines.map(function(l){var prod=esc(l.product)+(l.note?'<br><small>'+esc(l.note)+'</small>':'')+provTag(l,l.asof);
+  var progRows=prog.lines.map(function(l){var prod=esc(l.product)+(l.picked?' <small>(your pick)</small>':' <small>(cheapest per lb)</small>')+(l.note?'<br><small>'+esc(l.note)+'</small>':'')+provTag(l,l.asof);
     if(l.cost==null)return '<tr><td>'+l.role+'</td><td>'+esc(l.product)+'</td><td>n/a</td><td class="r">'+'no quote'+'</td></tr>';
     return '<tr><td>'+l.role+'</td><td>'+prod+'</td><td>'+fmtLb(l.lbs)+' lb</td><td class="r">'+money2(l.cost)+'</td></tr>';}).join('');
   var inc=prog.missing.length>0||prog.lines.some(function(l){return l.cost==null;});
+  if(app>0){progRows+='<tr><td>Application</td><td>Your figure</td><td></td><td class="r">'+money2(app)+'</td></tr>';prog.costPerAcre+=app;prog.costPerBu=y>0?prog.costPerAcre/y:0;}
   var missNote=inc?'<div class="calc-note">Total is incomplete: no quote for '+prog.missing.map(esc).join(', ')+'.</div>':'';
   var partTxt=prog.costPerAcre>0?'<small> \u00b7 '+money2(prog.costPerAcre)+'/ac excluding '+prog.missing.map(esc).join(', ')+'</small>':'';
   var incTxt='incomplete, quote missing<small> '+prog.missing.map(esc).join(', ')+'</small>'+partTxt;
@@ -576,14 +592,17 @@ function runCalc(){
   var sAdv=(prog.sSupplied<prog.sNeed)?' Most '+prog.crop.toLowerCase()+' wants roughly '+prog.sNeed+' lb S/acre. Consider moving some nitrogen to ammonium sulfate to close the gap.':'';
   var nNote=c.fixesN?'<div class="calc-note">Soybeans fix their own nitrogen; no N purchase needed. This bill is phosphate and potash to replace what '+y+'-bu beans remove.</div>':'';
   out.innerHTML=(c.fixesN?'':'<div class="calc-needs"><span>N budget estimate, not a rate recommendation: about</span> <b>'+fmtLb(prog.Nreq)+' lb N</b> <span>at '+prog.nRate+' lb per bushel. For a corn rate, use the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">MRTN calculator</a>.</span></div>')+'<div class="calc-needs"><span>'+(c.fixesN?'This crop needs about':'Also about')+'</span> <b>'+fmtLb(prog.Preq)+' lb P\u2082O\u2085</b> &middot; <b>'+fmtLb(prog.Kreq)+' lb K\u2082O</b> <span>per acre</span></div>'+
-    '<table class="calc-prog"><thead><tr><th scope="col">Nutrient</th><th scope="col">Cheapest source</th><th scope="col">Rate</th><th scope="col" class="r">$/acre</th></tr></thead><tbody>'+progRows+'</tbody></table>'+
-    '<div class="calc-headline"><div><span>Fertility cost</span><strong>'+(inc?incTxt:money2(prog.costPerAcre)+'<small> /acre</small>')+'</strong></div><div><span>Per bushel</span><strong>'+(inc?'incomplete, quote missing':money2(prog.costPerBu)+'<small> /bu</small>')+'</strong></div></div>'+
-    missNote+totalAc+nNote+(prog.lines.some(function(l){return /^anhydrous/i.test(l.product)&&l.cost!=null;})?'<div class="calc-note">Anhydrous is priced as product only. Applying it costs more than spreading urea or spraying UAN, so compare what each costs you on the field.</div>':'')+(sLine?'<div class="calc-note">'+sLine+sAdv+'</div>':(!inc&&prog.costPerAcre>0&&sAdv?'<div class="calc-note">This program supplies no sulfur.'+sAdv+'</div>':''))+
+    '<table class="calc-prog"><thead><tr><th scope="col">Nutrient</th><th scope="col">Source</th><th scope="col">Rate</th><th scope="col" class="r">$/acre</th></tr></thead><tbody>'+progRows+'</tbody></table>'+
+    '<div class="calc-headline"><div><span>Fertility cost'+(app>0?', with your application':', product only')+'</span><strong>'+(inc?incTxt:money2(prog.costPerAcre)+'<small> /acre</small>')+'</strong></div><div><span>Per bushel</span><strong>'+(inc?'incomplete, quote missing':money2(prog.costPerBu)+'<small> /bu</small>')+'</strong></div></div>'+
+    missNote+totalAc+nNote+(app>0?'':'<div class="calc-note">Product only. Type what applying costs you per acre above to add it; AGSIST does not supply an application cost.</div>')+(sLine?'<div class="calc-note">'+sLine+sAdv+'</div>':(!inc&&prog.costPerAcre>0&&sAdv?'<div class="calc-note">This program supplies no sulfur.'+sAdv+'</div>':''))+
     '<div class="calc-note muted">Lime is a multi-year pH investment, not an annual nutrient, and has no live price here, so it is not in this per-season bill.</div>';
   if(window.gtag)gtag('event','fertilizer_calc',{crop:crop,yieldGoal:y});
 }
 function initCalc(){
-  ['calc-yield','calc-acres','calc-nrate'].forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('input',runCalc);el.addEventListener('change',runCalc);}});
+  [['calc-psrc','P'],['calc-nsrc','N']].forEach(function(x){var sel=document.getElementById(x[0]);if(!sel)return;
+    sel.innerHTML='<option value="">Cheapest per lb</option>'+sourcesFor(STATE.products,x[1]).map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('');
+    sel.addEventListener('change',runCalc);});
+  ['calc-yield','calc-acres','calc-nrate','calc-app'].forEach(function(id){var el=document.getElementById(id);if(el){el.addEventListener('input',runCalc);el.addEventListener('change',runCalc);}});
   var crop=document.getElementById('calc-crop');
   // Reset the N rate to the new crop's default BEFORE pricing, or corn->wheat prices wheat at corn's lb N/bu.
   function onCrop(){var c=CROPS[crop.value];var nr=document.getElementById('calc-nrate');if(c&&nr&&!c.fixesN)nr.value=c.nRate;runCalc();}
@@ -639,7 +658,7 @@ fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(fu
   if(!data)return;var q=data.quotes||{};
   // Henry Hub: the NG=F front-month quote, dated by its own close_date (2026-10-16: it showed no date at all).
   var ng=q.natgas||null;if(ng){var price=ng.close||ng.price||ng.last||null;var el=document.getElementById('natgas-price');var nd=/^\d{4}-\d{2}-\d{2}$/.test(ng.close_date||'')?ng.close_date:null;
-    if(el&&price!=null&&nd){el.textContent='$'+parseFloat(price).toFixed(3);var nw=document.getElementById('natgas-when');if(nw)nw.textContent='NYMEX front-month futures, as of '+shortDate(nd);}}
+    if(el&&price!=null&&nd){el.textContent='$'+parseFloat(price).toFixed(3);var nw=document.getElementById('natgas-when');if(nw)nw.textContent='NYMEX front-month futures, '+(ng.close_kind==='settle'?'settled ':ng.close_kind==='last'?'latest delayed trade, not the settle, ':'as of ')+shortDate(nd)+', '+nd.slice(0,4);}}
   // Next live Dec corn: the dated contract dies Dec 15 (scripts/contract_calendar.py), so from then on
   // next year's Dec is the harvest contract. The dated key wins; the rolling corn-dec alias is used only
   // when its ticker names that same year (a prices.json written before the roll still points at the dead one).
