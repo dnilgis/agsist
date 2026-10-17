@@ -346,7 +346,8 @@
     function th(k, t, n) { return '<th class="' + (n ? 'n' : '') + '"><button type="button" data-sort="' + k + '">' + t + '</button></th>'; }
     return '<div class="fl-tblw"><table class="fl-tbl"><thead><tr>' + th('date', 'Date') + th('ppa', '$/ac', 1) + th('acres', 'Acres', 1) + th('price', 'Price', 1) + th('mi', 'Miles', 1) + '<th>Town, class</th></tr></thead><tbody>' +
       list.slice(0, max).map(function (r) {
-        return '<tr><td>' + fd(r.date) + '</td><td class="n">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td class="n">' + fm(r.price) + '</td><td class="n">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td>' + esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls)) : '') + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + '</td></tr>';
+        /* data-l: the column name a phone shows over each value when the rows stack into cards (2026-10-17) */
+        return '<tr><td data-l="Date">' + fd(r.date) + '</td><td class="n" data-l="$/ac">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n" data-l="Acres">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td class="n" data-l="Price">' + fm(r.price) + '</td><td class="n" data-l="Miles">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td class="t" data-l="Town, class">' + esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls)) : '') + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + '</td></tr>';
       }).join('') + '</tbody></table></div>' + (list.length > max ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + '. Narrow the filters to see the rest.</p>' : '');
   };
 
@@ -468,6 +469,13 @@
     '.fl-tbl th{text-align:left;color:var(--text-muted);font-weight:600;border-bottom:1px solid var(--border);padding:.3rem .4rem;white-space:nowrap}' +
     '.fl-tbl th button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}.fl-tbl td{padding:.3rem .4rem;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}' +
     '.fl-tbl td.n,.fl-tbl th.n{text-align:right;font-family:var(--font-mono)}' +
+    /* phones: the sort buttons become a row of chips and each sale a small card, no sideways scroll */
+    '@media(max-width:560px){.fl-tblw{overflow:visible}.fl-tbl{min-width:0;display:block}.fl-tbl thead,.fl-tbl tbody{display:block}' +
+    '.fl-tbl thead tr{display:flex;flex-wrap:wrap;gap:.3rem;margin:0 0 .4rem}.fl-tbl th{border:1px solid var(--border);border-radius:999px;padding:.25rem .6rem;font-size:.75rem}.fl-tbl thead th:last-child{display:none}' +
+    '.fl-tbl th button{min-height:28px}.fl-tbl thead tr::before{content:"Sort by";align-self:center;font-size:.75rem;color:var(--text-muted);margin-right:.1rem}' +
+    '.fl-tbl tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.1rem .5rem;border:1px solid var(--border);border-radius:8px;padding:.4rem .55rem;margin:0 0 .4rem}' +
+    '.fl-tbl td,.fl-tbl td.n{border:0;padding:.05rem 0;text-align:left;white-space:normal}.fl-tbl td.t{grid-column:1/-1;font-family:inherit;color:var(--text-dim);font-size:.78rem}' +
+    '.fl-tbl td[data-l]:not(.t)::before{content:attr(data-l);display:block;font-family:var(--font-mono);font-size:.64rem;color:var(--text-muted)}}' +
     '.fl-big{font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:var(--text)}' +
     '.fl-links a{color:var(--gold)}.fl-empty{border:1px dashed var(--border);border-radius:8px;padding:.7rem .8rem;margin:.5rem 0}.fl-empty b{color:var(--text)}' +
     '.fl-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0}.fl-chip{font-size:.8rem;border:1px solid var(--border);border-radius:999px;padding:.15rem .55rem;color:var(--text)}';
