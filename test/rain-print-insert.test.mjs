@@ -162,9 +162,9 @@ test("the maker page has the button and the note box; the engine makes the lette
   assert.match(js, /root\.AgRainArt\.facts\(I, \{ unplaced: root\.AgRainArt\.lastUnplaced\(\) \}\)/, "the print's own facts, after the print's own render");
   assert.match(js, /pdfFromJpeg\(new Uint8Array\(buf\), c\.width, c\.height, LETTER, 0\)/, "a letter-size PDF with no bleed");
   assert.match(js, /var LETTER = \{ w: 8\.5, h: 11/);
-  // the care line's frame size is the print's own trimmed size
-  assert.match(js, /var PRINT = \{ '12x18': \{ w: 18, h: 12, label: '12 x 18 in' \} \}/);
-  assert.match(read("components/rp-insert.js"), /A loose print fits a standard 12 x 18 frame\./);
+  // the care line's frame is the paper's own size (13 x 19, Sig 2026-10-17) and its mat's
+  assert.match(js, /var SHEET = \{ w: 19, h: 13, art: \{ w: 16\.5, h: 11 \}, mat: \{ w: 16\.5, h: 10\.5 \}/);
+  assert.match(read("components/rp-insert.js"), /A loose print fits a standard 13 x 19 frame with an 11 x 17 mat\./);
   assert.match(js, /if \(PREVIEW\) \{ out\.textContent = 'The letter is made from the full year/, "no letter from a part year");
   assert.match(js, /data-size'\) === 'insert'\) insertFile\(b\)/);
   assert.ok(!/rp-insert\.js/.test(html), "not loaded with the page");
@@ -172,10 +172,11 @@ test("the maker page has the button and the note box; the engine makes the lette
 
 test("What's in the box: the public block, the sample letter and the FAQ, word for word", () => {
   const html = read("rain-print.html");
-  const box = html.match(/<section class="rp-sec rp-box" id="rp-box" aria-labelledby="rp-box-h">([\s\S]*?)<\/section>/);
+  const box = html.match(/<section class="rp-sec rp-inbox" id="rp-inbox" aria-labelledby="rp-inbox-h">([\s\S]*?)<\/section>/);
   assert.ok(box, "the block is on the page");
   const b = box[1];
-  assert.match(b, /<h2 class="sec-h" id="rp-box-h">What&rsquo;s in the box<\/h2>/);
+  assert.match(b, /<h2 class="sec-h" id="rp-inbox-h">What&rsquo;s in the box<\/h2>/);
+  assert.ok(!/\.rp-box\{/.test(html.slice(html.indexOf(".rp-inbox"), html.indexOf(".rp-inbox") + 50)) && !/class="[^"]*\brp-box\b[^"]*" id="rp-inbox"/.test(html), "its own class, not the price box's .rp-box");
   for (const s of ["The print</b>, flat between chipboard", "the framed print</b>, packed with corner guards and foam and double-boxed", "A letter on top</b>", "Your note, printed at the top of the letter</b>, when it&rsquo;s a gift", "There&rsquo;s no separate card", "No prices go in the box.</b>"]) assert.ok(b.includes(s), s);
   assert.doesNotMatch(b, /on a card/);
   const img = b.match(/<img [^>]*>/)[0];

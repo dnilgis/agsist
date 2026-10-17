@@ -2,7 +2,7 @@
  *
  * One page, letter size (8.5 x 11 in, 850 x 1100 units, 100 to the inch), so
  * whoever opens the box knows what it is before they see the print. It lies
- * flat on the print in the 12 x 18 box, no fold. Made on Sig's print files page
+ * flat on the print in the box (13 x 19 paper), no fold. Made on Sig's print files page
  * (/rain-print?maker=1, "Insert letter PDF") the way the order files are made:
  * this SVG, drawn into a 300 dpi canvas, wrapped in a one-page PDF. Prints and
  * framed prints only; a digital file has no box.
@@ -107,7 +107,7 @@
     c.makerSub = 'The number is under the code in the corner, my initials beside it in pencil.';
     c.care = ['Hang it out of direct sun. Sunlight fades any print in time.',
       'Keep it dry, away from a damp wall.',
-      'Framed, it hangs on one nail. A loose print fits a standard 12 x 18 frame.'];
+      'Framed, it hangs on one nail. A loose print fits a standard 13 x 19 frame with an 11 x 17 mat.'];
     c.footer = 'Draw another year at agsist.com/rain-print';
     c.footerSub = 'Any town, any year the nearest station kept records.';
     return c;

@@ -400,7 +400,7 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.equal(s.place, "Chetek, WI"); assert.equal(s.year, 2025); assert.equal(s.name, "The Olson Farm"); assert.equal(s.style, "Roots");
   const open = G._state({ ok: true, kind: "open", product: "framed12x18", to: "Dad", from_line: "Kate", ships: "now", status: "issued" }, good);
   assert.equal(open.usable, true);
-  assert.match(open.text, /^A gift from Kate: one framed 12 x 18 Rain Print, shipping included\. Pick the farm and the year/);
+  assert.match(open.text, /^A gift from Kate: one framed 13 x 19 Rain Print, shipping included\. Pick the farm and the year/);
   const lk = G._state({ ok: true, kind: "locked", product: "print12x18", lock: { design_code: CODE, edit: "name" }, ships: "january", status: "issued" }, good);
   assert.deepEqual(lk.locked.includes("name"), false);
   assert.ok(lk.locked.includes("year") && lk.locked.includes("place"));
@@ -450,7 +450,8 @@ test("rp-gift.html: the card's words (station, marked days, full year, card numb
   assert.doesNotMatch(h, /NOAA gauge|since 1890|last rain is in|print on letter and trim/);
   assert.equal((h.match(/once the full year is in\./g) || []).length, 6, "both January lines on the small cards, and the 8 x 10's what's-coming lines");
   assert.match(h, /Your ' \+ s\.year \+ ' print comes in January, once the full year is in\./);
-  assert.match(h, /framed12x18: \['A 12 x 18 print of the whole year, framed with glass, ready to hang\.', 'It ships in January, once the full year is in\.'\]/);
+  assert.match(h, /framed12x18: \['A print of the whole year in a 13 x 19 black frame with a white mat and glass, ready to hang\.', 'It ships in January, once the full year is in\.'\]/);
+  assert.match(h, /print12x18: \['A print of the whole year on 13 x 19 matte paper\.', 'It ships in January, once the full year is in\.'\]/);
   assert.match(h, /digital: \['The 12 x 18 digital file of the whole year, to print anywhere\.', 'It comes by email in January, once the full year is in\.'\]/);
   assert.equal((h.match(/class="foot">Card ' \+ String\(C\.no/g) || []).length, 3, "every foot says Card 0017 (the small cards' two and the 8 x 10's)");
   assert.doesNotMatch(h, /class="foot">No\. /);

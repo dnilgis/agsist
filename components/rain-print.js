@@ -57,7 +57,7 @@
  * gift card is issued by Sig after payment (components/rp-gift.js, worker v5.16);
  * a ?gift=CODE link redeems one here (see THE GIFT CARD below).
  *
- * PRODUCTS (2026-10-11): digital file, 12 x 18 print, 12 x 18 framed; Sig
+ * PRODUCTS (2026-10-11; paper 13 x 19 from 2026-10-17, SHEET): digital file (the art, 18 x 12 in), print, framed; Sig
  * prints, frames and ships them. 18 x 24 is gone; an old code with its size
  * letter still opens as 12 x 18. The maker's seal is square to the page.
  *
@@ -1387,7 +1387,7 @@
      proof or the file date is the next business day (proof_business_days, the
      same holidays as the Christmas dates). The order line is left off when the
      saved design is missing or was for another product. */
-  var PAID_WHAT = { framed12x18: 'framed print', print12x18: '12 x 18 print', digital: 'digital file' };
+  var PAID_WHAT = { framed12x18: 'framed print', print12x18: '13 x 19 print', digital: 'digital file' };
   var WEEKDAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   function dayWords(iso) { return WEEKDAY[new Date(iso + 'T12:00:00Z').getUTCDay()] + ', ' + shortDate(iso); }
   // "Ordered today, it should arrive by about Mon, Nov 2." for a print or framed print; '' for the file
@@ -1444,7 +1444,7 @@
   var DPI = 300;
   var SHEET_WORDS = SHEET.h + ' x ' + SHEET.w + ' in sheet, the art ' + SHEET.art.w + ' x ' + SHEET.art.h + ' in in the middle, untrimmed';
   var MAKER = /(?:^|[?&])maker=1(?:&|$)/.test(root.location.search);
-  var CHOICE = { digital: 'Digital file', print12x18: '12 x 18 print', framed12x18: '12 x 18 framed print' };
+  var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
   var ORDER_TO = 'sig@farmers1st.com';
 
@@ -1795,7 +1795,7 @@
     var t = EMPTY_CAP, ex = SHOW_EX && DATA && !BLOCKED;
     if (on) t = 'Sample: ' + SAMPLE.place + ', ' + SAMPLE.year + (ex ? ', with example words. Yours start blank.' : '.');
     else if (ex && META) t = (NEAR && ST.place === NEAR ? 'Your area, ' : '') + META.place + ', ' + META.year + ', with example words. Yours start blank.';
-    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '12 x 18 print.' : '12 x 18, framed.') +
+    else if (DATA && META && !BLOCKED) t = META.place + ', ' + META.year + (PREVIEW ? ', preview through ' + longDate(PREVIEW.last) : '') + '. ' + ($('rp-wall').getAttribute('data-view') === 'print' ? '13 x 19 print.' : '13 x 19, framed with a white mat.') +
       (NEAR && ST.place === NEAR ? ' Your area, near you. Not your town? Type it below.' : '');
     $('rp-sample-txt').textContent = t;
   }
@@ -2241,7 +2241,7 @@
      for a print or framed (a plain date from data/rain-print.json), the file
      by email. This year's gift and a year NOAA hasn't finished say so instead. */
   var CUTOFF_KEY = { print12x18: 'print_christmas_cutoff', framed12x18: 'framed_christmas_cutoff' };
-  var SUB_BASE = { framed12x18: 'Black frame, real glass.', print12x18: '12 x 18, ships flat.' };
+  var SUB_BASE = { framed12x18: 'Black frame, white mat, real glass.', print12x18: '13 x 19 paper, ships flat.' };
   function syncCutoffs() {
     var gift = giftMode() && canOrder(), settle = SETTLE && canOrder();
     PRODUCTS.forEach(function (id) {
@@ -3797,7 +3797,7 @@
     if (!DATA || BLOCKED) return;
     var was = btn.textContent, out = $('rp-dl-note');
     btn.disabled = true; btn.textContent = 'Making the file…';
-    /* Sig's test print (2026-10-14): the 12 x 18 PDF with the standard code to
+    /* Sig's test print (2026-10-14): the 13 x 19 sheet PDF with the standard code to
        the Rain Print page, for his own test prints and samples. No short link,
        no worker call, no serial, so it works when the link service doesn't. */
     if (btn.getAttribute('data-qr') === 'standard') {

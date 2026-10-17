@@ -104,7 +104,11 @@ test("standing rules: no sponsor, name off the print, honest copy", () => {
   assert.ok(!/sponsor/i.test(MAIN), "no sponsor on a Rain Print page");
   assert.match(COPY, /business name stays off the print/);
   assert.match(COPY, /logo can go on it, small, next to their name/);
-  assert.match(COPY, /note card in the box/);
+  // Sig, 2026-10-17: no separate card; the business's message is printed at the top of the letter in each box
+  assert.match(COPY, /Your message is printed at the top of the letter in the box, at no charge\./);
+  assert.doesNotMatch(COPY, /note card|on a card/);
+  assert.match(COPY, /13 x 19 black frame with a white mat and a real glass front, ready to hang/);
+  assert.doesNotMatch(COPY, /12 x 18/);
   assert.match(COPY, /No prices go in the box/);
   assert.match(COPY, /net 30/);
   assert.match(COPY, /W-9 on request/);

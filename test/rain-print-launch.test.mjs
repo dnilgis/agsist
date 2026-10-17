@@ -408,13 +408,14 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.ok(!/limit to how many|order cap/i.test(HTML), "no order cap");
 });
 
-test("prints ship flat between chipboard, never rolled; no mat is sold", () => {
+test("prints ship flat between chipboard, never rolled; the framed one has a white mat (Sig, 2026-10-17)", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   for (const [n, t] of [["page", HTML], ["json", JSON.stringify(J)], ["script", S]]) {
     assert.ok(!/\btube\b|rolled in|ships rolled/i.test(t.replace(/rolled into a later/g, "")), n + " says nothing about a tube");
   }
   assert.match(HTML, /<li>Ships flat between chipboard<\/li>/);
-  assert.match(HTML, /black frame, no mat/);
+  assert.match(HTML, /<li>A 13 x 19 black frame with a white mat, ready to hang<\/li>/);
+  assert.doesNotMatch(HTML, /no mat|trim it to size|a little bigger than 12 x 18/);
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape
   assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos of real prints coming soon\.<\/figcaption>/);
@@ -523,9 +524,9 @@ test("type, keyboard and screen reader fixes", () => {
   // "Your print" (2026-10-14): a labeled Close, the details as a plain list beside the print, no long paragraph
   assert.match(HTML, /<button type="button" class="rp-proof-x" id="rp-proof-close" aria-label="Close">/);
   assert.match(HTML, /<h3>Check the details<\/h3><dl class="rp-proof-sum" id="rp-proof-sum"><\/dl>/);
-  assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. Actual size is 12 x 18 in\.<\/p>/);
+  assert.match(HTML, /<p class="rp-proof-help">Use the magnifier to check every word\. On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\.<\/p>/);
   assert.ok(!/rp-proof-more|What&rsquo;s on it, in words/.test(HTML), "the old words box is gone");
-  assert.match(HTML, /When I print it, the paper is a little bigger than the print and I trim it to size\./, "the trim sentence lives in the FAQ now");
+  assert.match(HTML, /with the picture 16\.5 x 11 inches in the middle and white all around it\. It fits a standard 13 x 19 frame with an 11 x 17 mat\./, "the paper and the picture's size live in the FAQ (13 x 19, untrimmed, Sig 2026-10-17)");
   for (const i of [1, 2, 3, 4, 5]) assert.ok(HTML.includes(`aria-label="Month for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Day for day ${i}" aria-describedby="rp-m${i}err"`) && HTML.includes(`aria-label="Label for day ${i}"`), "day " + i + " is named, its message under its own row");
   // each day its own row: "Day 2" at its start and a small x named for it at its end (one line on a laptop, 2026-10-15); no datalist (read as a combobox, a second arrow on Android)
   for (const i of [1, 2, 3, 4, 5]) {
@@ -552,8 +553,8 @@ test("type, keyboard and screen reader fixes", () => {
 
 test("copy batch: size, proof, business words", () => {
   // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
-  assert.match(HTML, /It&rsquo;s 12 x 18 inches, hung sideways, on matte paper\./);
-  assert.match(HTML, /Actual size is 12 x 18 in\./);
+  assert.match(HTML, /It&rsquo;s printed on 13 x 19 inch matte paper, hung sideways,/);
+  assert.match(HTML, /On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\./);
   // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
