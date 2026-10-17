@@ -1586,10 +1586,10 @@
   }
   /* o: {bleed (art units, 100 to the inch), watermark, px [w,h], fontCss, serial, idPrefix,
      example (the page's own preview only: the example words in place of the reader's, while SHOW_EX)}. */
-  function buildSvg(o) {
+  function artInput(o) {
     o = o || {};
     var ex = !!o.example;
-    var input = {
+    return {
       style: ST.style, year: META.year, place: placeLong(), name: ex ? EXAMPLE.name : ST.name, dedication: ex ? EXAMPLE.dedication : ST.dedication,
       days: DATA.days, D: DATA.d, showDry: showDry(DATA.d) && !STUCK, axisLen: PREVIEW ? PREVIEW.yearLen : DATA.d.n,
       ov: overlaySeries(), ovNote: cmpNote(), showNormals: ST.normals, markers: locMarkers(ex ? markersOn(exampleMarkers(META.year), META.year, DATA.d.n) : printMarkers()),
@@ -1597,7 +1597,11 @@
       gauge: META ? gaugeLine(META) : '', logo: logoArt(), loc: META && META.ca ? LOC() : null,
       watermark: !!o.watermark, bleed: o.bleed || 0, px: o.px, fontCss: o.fontCss, idPrefix: o.idPrefix
     };
-    var svg = root.AgRainArt.render(input);
+  }
+  function buildSvg(o) {
+    o = o || {};
+    var ex = !!o.example;
+    var svg = root.AgRainArt.render(artInput(o));
     SKIPPED = root.AgRainArt.lastSkipped();
     UNPLACED = ex ? [] : unplacedRows();
     return svg;
@@ -3752,10 +3756,12 @@
     });
   }
   /* A one-page PDF around a JPEG: MediaBox = bleed size, TrimBox inset 0.125 in. No library. */
-  function pdfFromJpeg(jpeg, pxW, pxH, P) {
+  /* bleedIn: the bleed in inches (the print's 0.125 when left out; 0 for the insert letter, MediaBox = TrimBox). */
+  function pdfFromJpeg(jpeg, pxW, pxH, P, bleedIn) {
     var enc = new TextEncoder(), parts = [], offs = [], len = 0;
     var put = function (x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; };
-    var wPt = (P.w + 2 * BLEED_IN) * 72, hPt = (P.h + 2 * BLEED_IN) * 72, bl = BLEED_IN * 72;
+    var bi = bleedIn === undefined ? BLEED_IN : bleedIn;
+    var wPt = (P.w + 2 * bi) * 72, hPt = (P.h + 2 * bi) * 72, bl = bi * 72;
     var content = 'q ' + wPt.toFixed(2) + ' 0 0 ' + hPt.toFixed(2) + ' 0 0 cm /Im0 Do Q';
     put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
     var obj = function (n, body) { offs[n] = len; put(n + ' 0 obj\n'); body(); put('\nendobj\n'); };
@@ -3841,6 +3847,79 @@
       })
       .then(function () { btn.disabled = false; btn.textContent = was; });
   }
+  /* THE INSERT LETTER (2026-10-17, Sig): one letter-size page that goes on top
+     in every print and framed print box: what it is, the year's numbers as the
+     print says them (AgRainArt.facts, from the same model the print is drawn
+     from), how to read this style beside a small copy of the print drawn by the
+     same engine, the giver's note when the order has one (the box under the
+     buttons: paste it from the order), the serial and Sig's maker line, care,
+     and the standard code to the Rain Print page. components/rp-insert.js lays
+     it out; it loads on first use. No short link: the letter's code is the
+     standard one. The digital file has no box, so no letter. */
+  var INS_P = null;
+  function insertReady() {
+    if (root.AgRpInsert) return Promise.resolve(true);
+    if (INS_P) return INS_P;
+    INS_P = new Promise(function (res) {
+      var sc = doc.createElement('script');
+      sc.src = '/components/rp-insert.js?v=1';
+      sc.onload = function () { res(!!root.AgRpInsert); };
+      sc.onerror = function () { INS_P = null; res(false); };
+      doc.head.appendChild(sc);
+    });
+    return INS_P;
+  }
+  function stationKind(m) {
+    if (m && m.ca) return 'canada';
+    var p = String((m && m.sid) || '').trim().split(/\s+/);
+    return /^US1/.test(p[0]) ? 'volunteer' : p[1] === '2' ? 'coop' : 'noaa';
+  }
+  var LETTER = { w: 8.5, h: 11, label: '8.5 x 11 in' };
+  /* -> {svg, facts, overflow} for the design on the page: the print's own input,
+     drawn once small (the miniature, with the serial it carries) so the facts
+     leave off exactly the days the print leaves off. */
+  function insertSvg(gift, fontCssText, px) {
+    var I = artInput({ serial: SERIAL, idPrefix: 'rpins' });
+    var mini = root.AgRainArt.render(I);
+    var F = root.AgRainArt.facts(I, { unplaced: root.AgRainArt.lastUnplaced() });
+    var svg = root.AgRpInsert.render({
+      facts: F, mini: mini, serial: SERIAL, gift: printable(gift || ''), qr: standardMatrix(), fontCss: fontCssText, px: px,
+      station: { words: gaugeWords(META), dist: distText(META), kind: stationKind(META) },
+      source: META && META.ca ? 'Environment and Climate Change Canada\u2019s daily records' : 'NOAA\u2019s daily records'
+    });
+    return { svg: svg, facts: F, overflow: root.AgRpInsert.lastOverflow() };
+  }
+  function insertFile(btn) {
+    var out = $('rp-dl-note');
+    if (!DATA || BLOCKED) return;
+    if (PREVIEW) { out.textContent = 'The letter is made from the full year, like the print. Make it in January once the year is in.'; return; }
+    if (META && META.ca && FR()) { out.textContent = 'The letter is in English only for now.'; return; }
+    var was = btn.textContent, note = $('rp-ins-gift') ? $('rp-ins-gift').value : '';
+    btn.disabled = true; btn.textContent = 'Making the letter\u2026';
+    var pxW = LETTER.w * DPI, pxH = LETTER.h * DPI, info = null;
+    insertReady().then(function (ok) { if (!ok) throw 'load'; return fontsReady(); }).then(fontCss).then(function (css) {
+      info = insertSvg(note, css, [pxW, pxH]);
+      return new Promise(function (resolve, reject) {
+        var img = new Image(), url = URL.createObjectURL(new Blob([info.svg], { type: 'image/svg+xml' }));
+        img.onload = function () {
+          (img.decode ? img.decode().catch(function () {}) : Promise.resolve()).then(function () { return new Promise(function (r) { setTimeout(r, 60); }); }).then(function () {
+            try { var c = doc.createElement('canvas'); c.width = pxW; c.height = pxH; c.getContext('2d').drawImage(img, 0, 0, pxW, pxH); URL.revokeObjectURL(url); resolve(c); } catch (e) { reject(e); }
+          });
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('image')); };
+        img.src = url;
+      });
+    }).then(function (c) {
+      return toBlob(c, 'image/jpeg', 1).then(function (j) { return j.arrayBuffer(); }).then(function (buf) {
+        saveBlob(pdfFromJpeg(new Uint8Array(buf), c.width, c.height, LETTER, 0), slug() + '-insert-letter' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : '') + '.pdf');
+        out.textContent = 'Insert letter saved: ' + LETTER.label + ', ' + c.width + ' x ' + c.height + ' px at 300 dpi' + (SERIAL ? ', ' + SERIAL : ', no serial (a blank to fill in by hand; add &serial=N to the link)') +
+          (note.trim() ? ', with the gift note' : ', no gift note') + '.' + (info.overflow ? ' The page ran long by ' + info.overflow + ' units: shorten the gift note.' : '');
+        ga('rain_print_download', { kind: 'insert', fmt: 'pdf' });
+      });
+    }).then(null, function (e) { out.textContent = e === 'load' ? 'The letter\u2019s layout file didn\u2019t load. Try again in a minute.' : 'This browser couldn\u2019t make the letter. Try it on a computer.'; })
+      .then(function () { btn.disabled = false; btn.textContent = was; });
+  }
+
   /* A plain message in the maker box; with retry (the button that failed) it
      ends in a Try again button that runs the same export again. */
   function makerMsg(text, retry) {
@@ -4058,7 +4137,7 @@
   radios('rb-ship').forEach(function (r) { r.addEventListener('change', syncBizShip); });
   $('rp-dl').addEventListener('click', function () { exportFile('preview', 'png', $('rp-dl')); });
   doc.querySelectorAll('#rp-maker button').forEach(function (b) {
-    b.addEventListener('click', function () { exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
+    b.addEventListener('click', function () { if (b.getAttribute('data-size') === 'insert') insertFile(b); else exportFile(b.getAttribute('data-size'), b.getAttribute('data-fmt'), b); });
   });
   $('rp-copy').addEventListener('click', function () {
     // a logo still saving has no id: the link would leave it off (panel 3 F1)

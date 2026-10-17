@@ -429,7 +429,7 @@
       year: year, N: N, n: n, days: days, P: P, cum: cum, ncum: ncum, cmp: !!ov, ov: ov, normalRec: ov ? ov.total : null,
       starts: starts, ends: ends, monthHas: monthHas, month: D.month || Array(12).fill(0), mN: mN,
       total: total, T: Ts, TU: Ts + ' ' + rU(), liquid: liquid, full: full, snowState: snowState, snowNote: snowNote, snowTot: Math.round(snowTot * 10) / 10, snowRaw: snowTot,
-      wi: wi, wet: wet, // the day in gray after the amount, like every other date on the print (2026-10-15)
+      wi: wi, wet: wet, wetLabel: wetLabel, // the day in gray after the amount, like every other date on the print (2026-10-15)
       wetText: wet ? colon(wetLabel) + rainAmt(wet.p, 'day') + '\u0001' + fmtDate(wet.date) + '\u0002' : null,
       daysText: colon(tr(snowState === 'none' ? 'Days with rain' : 'Days with rain or snow')) + D.wet,
       // metric: the cm come from the days' own sum, not from the inches rounded to a tenth
@@ -1551,8 +1551,41 @@
     return svg;
   }
 
+  /* What the print says, in words, for the letter that goes in the box with it
+     (components/rp-insert.js, 2026-10-17). Read from the same model the print
+     is drawn from, with the same rules for what is on the sheet: the dry
+     stretch only where this style marks it, the usual year only when there is
+     one, the reader's days minus any the last render left off (pass
+     opts.unplaced, AgRainArt.lastUnplaced() after render(I)). Nothing here is
+     worked out a second way. Amounts come as the print writes them. */
+  function facts(I, opts) {
+    opts = opts || {};
+    setLoc(I.loc);
+    var E = model(I), style = I.style === 'r2' ? 'r2' : 'r1', days = E.days, off = opts.unplaced || [];
+    var dryOn = !!(E.dry && (style === 'r2' || E.dry.len >= printDryMin(I)));
+    var marks = (I.markers || []).map(function (mk, k) { return { mk: mk, k: k }; })
+      .filter(function (m) { return off.indexOf(m.k) < 0 && m.mk && m.mk.doy >= 0 && m.mk.doy < E.n; }).slice(0, MAX_MARKS)
+      .map(function (m) {
+        var dt = days[m.mk.doy] && days[m.mk.doy].date, f = dt ? fmtDate(dt) : '', lb = String(m.mk.label || '').replace(/[\u0001\u0002]/g, '');
+        return { date: dt, dateText: f, words: lb && lb !== f ? lb : '' };
+      }).sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    return {
+      style: style, year: E.year, place: E.place, name: E.name, dedication: E.dedication, preview: !!E.preview,
+      total: E.total, totalText: E.TU, liquid: E.liquid,
+      snowState: E.snowState, snowNote: E.snowNote,
+      snowText: E.full ? (LOC.mm ? snowAmt(E.snowRaw) : E.snowTot.toFixed(1) + ' in') : null,
+      wet: E.wet ? { label: E.wetLabel, amount: rainAmt(E.wet.p, 'day'), date: E.wet.date, dateText: fmtDate(E.wet.date) } : null,
+      wetDays: I.D.wet, daysLabel: tr(E.snowState === 'none' ? 'Days with rain' : 'Days with rain or snow'),
+      verdict: E.verdict, usual: E.cmp ? rainAmt(E.normalRec, 'tot') : null, usualNote: E.cmp ? E.ovNote : '', normals: E.showN,
+      dry: dryOn ? { len: E.dry.len, from: days[E.dry.s].date, to: days[E.dry.e].date, range: E.dry.range } : null,
+      markers: marks, gaps: E.gaps, missing: E.missing, units: LOC.mm ? 'mm' : 'in'
+    };
+  }
+
   root.AgRainArt = {
-    render: render, model: model, recordPoints: recordPoints, plain: plain, lastSkipped: function () { return last_skipped.slice(); },
+    render: render, model: model, facts: facts,
+    // the print's colors and its QR ink, for the letter's key (rp-insert.js)
+    COLORS: Object.assign({}, C), SERIAL_INK: SERIAL_INK, SANS: SANS, SERIF: SERIF, recordPoints: recordPoints, plain: plain, lastSkipped: function () { return last_skipped.slice(); },
     // marked days (indexes into the input's markers) the last render left off because they could not fit cleanly
     lastUnplaced: function () { return last_unplaced.slice(); }, MAX_MARKS: MAX_MARKS,
     // the buyer's logo: its size for a shape (w / h) in a style, and where the last render put it (art units)
