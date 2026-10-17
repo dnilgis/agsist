@@ -202,6 +202,11 @@ function serve() {
 async function open(browser, port, path, ready) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
   const pg = await ctx.newPage();
+  /* The board above is a mid-October 2026 file with October livestock months.
+     The pages roll expired contracts off (price-local.js roll, 2026-10-17),
+     so the browser runs on the board's own week: Oct 14, the last trading day
+     of Oct '26 hogs, when every month on the board still trades. */
+  await pg.clock.setFixedTime(new Date("2026-10-14T20:00:00Z"));
   await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
   await pg.goto(`http://127.0.0.1:${port}${path}`);
   await pg.waitForFunction(ready, null, { timeout: 15000 });

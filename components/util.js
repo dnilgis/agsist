@@ -226,10 +226,12 @@
     try { if (typeof AbortController === 'function') ctl = new AbortController(); } catch (e) { ctl = null; }
     var o = {}; for (var k in (opts || {})) o[k] = opts[k];
     if (ctl && !o.signal) o.signal = ctl.signal;
+    /* no timers (a bare script context): no deadline, the request as before */
+    var hasT = typeof setTimeout === 'function' && typeof clearTimeout === 'function';
     var dead = new Promise(function (res, rej) {
-      timer = setTimeout(function () { rej(new Error(url + ' timeout')); if (ctl) { try { ctl.abort(); } catch (e) {} } }, ms);
+      if (hasT) timer = setTimeout(function () { rej(new Error(url + ' timeout')); if (ctl) { try { ctl.abort(); } catch (e) {} } }, ms);
     });
-    return { dead: dead, ctl: ctl, done: function () { clearTimeout(timer); }, p: fetch(url, o) };
+    return { dead: dead, ctl: ctl, done: function () { if (hasT) clearTimeout(timer); }, p: fetch(url, o) };
   }
   /* fetch() with the deadline, for pages that read a file themselves:
      AG.fetch(url, opts, ms) -> resolves with the Response, rejects past ms. */

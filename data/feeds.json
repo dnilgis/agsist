@@ -864,7 +864,8 @@
   {
    "path": "data/export-sales.json",
    "pages": [
-    "index.html"
+    "index.html",
+    "tariffs.html"
    ],
    "written_by": [
     "Fetch Export Sales"
