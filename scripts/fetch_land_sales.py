@@ -953,6 +953,19 @@ def held(st, out=None):
     return recs, covs, months
 
 
+def wi_merge(old, new, read_now):
+    """Newest-only merge: the rows on disk plus the rows read now. A month read again (the newest
+    one on disk, which DOR keeps adding to) is replaced whole: rows on disk filed in a month read
+    now are dropped first, so a return DOR took out of that month does not linger. Rows with no
+    filed date on disk cannot be placed in a month and are kept; wi_dedupe then keeps one copy of
+    each return (the latest filing). Returns (rows, how many rows on disk were replaced)."""
+    def ym(r):
+        d = r.get("rec") or ""
+        return d[:4] + d[5:7] if len(d) >= 7 else ""
+    keep = [r for r in old if not (ym(r) and ym(r) in read_now)]
+    return wi_dedupe(keep + list(new)), len(old) - len(keep)
+
+
 def wi_dedupe(recs):
     """A return can come back in a later month's file (an amended filing): keep the latest filing
     of each county and document number, so a sale is one row and its acres are counted once."""
@@ -1043,9 +1056,11 @@ def run(states, from_dir=None, merge=False):
                 months = None
         if st == "WI" and merge:
             old, prior, had = held(st)
-            print("%s: %d rows on disk from %d months; %d rows read now" % (st, len(old), len(had), len(recs)))
-            recs = old + recs
-            months = (months or set()) | had
+            read_now = set(months or ())
+            recs, dropped = wi_merge(old, recs, read_now)
+            print("%s: %d rows on disk from %d months; %d rows read now from %s; %d rows on disk from those months replaced"
+                  % (st, len(old), len(had), len(recs) - len(old) + dropped, ", ".join(sorted(read_now)) or "no month", dropped))
+            months = read_now | had
         if st == "WI":
             recs = wi_dedupe(recs)
         gaz = gazetteer(STATES[st]["fips"], gzblob)
@@ -1226,7 +1241,12 @@ def selftest():
            and b1["grantor"] == "SYNTHETIC, SELLER B; SYNTHETIC, SELLER C" and muni_key(b1["muni"]) == ("T", "CHETEK"))
         again = dict(by["900002"], rec="2024-05-03", price=730000)      # the same return, read again in a later month
         late = dict(by["900006"], rec="2024-05-10")                     # a return the first build did not have
-        merged = wi_dedupe(old + [again, late])
+        gone = [r for r in old if r["doc"] == "900003"][0]
+        gone_rec = gone["rec"]
+        merged, n_drop = wi_merge(old, [again, late], {gone_rec[:4] + gone_rec[5:7], "202405"})
+        ck("merge: the month read again is replaced whole (a return gone from it is gone)",
+           "900003" not in {r["doc"] for r in merged} and n_drop == sum(1 for r in old if (r["rec"] or "")[:7] == gone_rec[:7]))
+        merged, _ = wi_merge(old, [again, late], {"202405"})
         build("WI", merged, {}, "2026-11-03T00:00:00Z", covs, had | {"202405"})
         back, covs2, had2 = held("WI")
         docs = [r["doc"] for r in back]
