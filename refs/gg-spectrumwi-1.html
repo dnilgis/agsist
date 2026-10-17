@@ -1,0 +1,3451 @@
+<!DOCTYPE HTML>
+
+
+
+
+
+<html lang="en">
+
+
+
+<head>
+
+
+
+
+
+<title>Wisconsin holiday gift guide</title>
+
+<meta charset="utf-8"/>
+<meta http-equiv="x-ua-compatible" content="ie=edge"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+
+    <meta name="description" content="From wine to herbal tea to grass fed beef, there&#39;s something special from Wisconsin for everyone on your list."/>
+
+
+
+
+
+
+
+
+<meta name="tp:preferredRuntimes" content="HTML5,Flash"/>
+<meta name="tp:PreferredFormats" content="MPEG4"/>
+<meta name="x-client-id" content="spectrumnews1.com"/>
+
+
+
+
+<meta name="keywords" content="Holidays, APP  Top Stories, VOD, Hot Holiday Gifts, Holiday Tips, Wisconsin, Spectrum News Staff, News, Top Stories, Christmas"/>
+<meta name="news_keywords" content="Holidays, APP  Top Stories, VOD, Hot Holiday Gifts, Holiday Tips, Wisconsin, Spectrum News Staff, News, Top Stories, Christmas"/>
+
+
+
+<!--Preconnect and DNS-Prefetch to improve page load time.-->
+<link rel="preconnect" href="//roadrunner.tt.omtrdc.net"/>
+<link rel="preconnect" href="//metrics.timewarnercable.com"/>
+
+<link rel="dns-prefetch" href="//roadrunner.tt.omtrdc.net"/>
+<link rel="dns-prefetch" href="//metrics.timewarnercable.com"/>
+
+
+<!--/Preconnect and DNS-Prefetch-->
+<!--Data Layer to enable rich data collection and targeting-->
+<script type="text/javascript">
+
+    var template = "";
+    var pageType, region, parentRegion, vodAuth = "", articleStorage = "";
+
+    switch (template) {
+        case '/apps/news/templates/article':
+            template = 'Article Template';
+            pageType = 'Article';
+            articleStorage = 'live'
+            break;
+        case '/apps/news/templates/full-width-page':
+            template = 'Standard Full Width Template';
+            pageType = 'Home';
+            break;
+        case '/apps/news/templates/event':
+            template = 'Calendar Event Template';
+            pageType = 'Event';
+        case '/apps/news/templates/archive':
+            template = 'Archive Article Template';
+            pageType = 'Archive';
+            articleStorage = 'archived';
+        default:
+            template = 'Standard Full Width Template';
+            pageType = 'Home';
+    }
+
+    // Initialize variables to store page region and title values
+    let pageRegionValue, pageTitleValue = '';
+    // Define the page name 
+    let pageNameValue = "wisconsin\u002Dholiday\u002Dgift\u002Dguide";
+    // Check if the page name includes 'splash'
+    if (pageNameValue === 'splash') {
+        // Set page region to 'All Regions' and page title to 'Spectrum News Market Map' for splash pages
+        pageRegionValue = 'All Regions';
+        pageTitleValue = 'Spectrum News Market Map';
+    } else {
+        //set page region and title for non-splash pages
+        pageRegionValue = "Wisconsin";
+        pageTitleValue = "Wisconsin Holiday Gift Guide";
+    }
+
+    // COX analytics (NEWS-9927): resolve the auth data points synchronously from the stored
+    // id_token at bootstrap so they are present on the DOM-Ready page-view beacon for
+    // authenticated users, instead of arriving late via the async auth chain (validateSession
+    // etc.). These are claims already in the browser; reading them here (like isAuthenticated)
+    // is independent of the async flow. Self-contained (no dependency on News.App.Pinxt being
+    // loaded yet) and adds no new storage.
+    //   - mvpd:       raw token mvpd value (matches the async digitalData.user.mvpd)
+    //   - hhid:       householdID, falling back to userID (matches trackLoginSuccess)
+    //   - legacyMVPD: raw mso lowercased, else raw mvpd lowercased (NEWS-9886/9889/9891)
+    // Returns empty strings on any error / when not authenticated.
+    function getBootstrapUserMetadata() {
+        var result = { mvpd: "", hhid: "", legacyMVPD: "" };
+        try {
+            var raw = localStorage.getItem('regular_auth_token_v2');
+            if (!raw) { return result; }
+            var idToken = (JSON.parse(raw) || {}).id_token;
+            if (!idToken) { return result; }
+            var segment = idToken.split('.')[1];
+            if (!segment) { return result; }
+            var base64 = segment.replace(/-/g, '+').replace(/_/g, '/');
+            var payload = JSON.parse(decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join('')));
+            var meta = payload && payload.userMetaData;
+            if (!meta) { return result; }
+            var attrs = (meta[Object.keys(meta)[0]] || {}).attributes || {};
+            var mvpd = (attrs.mvpd && attrs.mvpd.value) || "";
+            var householdID = (attrs.householdID && attrs.householdID.value) || "";
+            var userID = (attrs.userID && attrs.userID.value) || "";
+            var mso = (attrs.mso && attrs.mso.value) || (attrs.MSO && attrs.MSO.value) || "";
+            result.mvpd = mvpd ? String(mvpd).trim() : "";
+            result.hhid = householdID || userID || "";
+            result.legacyMVPD = mso ? String(mso).trim().toLowerCase()
+                : (mvpd ? String(mvpd).trim().toLowerCase() : "");
+        } catch (e) {
+            // leave defaults ("")
+        }
+        return result;
+    }
+
+    var bootstrapUser = getBootstrapUserMetadata();
+
+    window.digitalData = window.digitalData || {
+        event: {
+            eventName: "pageView",
+            adobeEventName: ''
+
+        },
+        user: {
+            isAuthenticated: localStorage.getItem('authenticatedV2') && localStorage.getItem('authenticatedV2') === 'true'  ? 'Yes' : 'No',
+            isAuthorized: localStorage.getItem('authenticatedV2') && localStorage.getItem('authenticatedV2') === 'true' ? 'true' : 'false',
+            mvpd: bootstrapUser.mvpd,
+            hhid: bootstrapUser.hhid,
+            legacyMVPD: bootstrapUser.legacyMVPD
+        },
+        page: {
+            adsOnPage: "",
+            appID: "AEM 6.4", // hardcoded
+            domain: window.location.hostname,
+            flow: "",
+            // Determine page language based on 'spectrumnoticias' domain and HTML lang attribute
+            language: window.location.host.includes('spectrumnoticias') ? 'es' : document.getElementsByTagName('html')[0].getAttribute('lang'),
+            pageID: "\/content\/news\/stories\/2022\/11\/21\/w\/wisconsin\u002Dholiday\u002Dgift\u002Dguide",
+            pageName: pageNameValue,
+            pageRegion: pageRegionValue,
+            pageRegionParent: "WI",
+            pageTemplate: template,
+            pageTitle: pageTitleValue,
+            pageFunction: pageType,
+            platformName: "web", // hardcoded
+            previousLink: "",
+            siteSection: "",
+            siteSubsection: "",
+            sourceMarketTag: "regions:wi/milwaukee",
+            tags: "pageCategories:news,pageCategories:spectrum\u002Dnews\u002Dprimary\u002Dcategories\/top\u002Dstories,pageCategories:news\/top\u002Dstories,pageCategories:holidays,regions:wi\/wisconsin,pageCategories:vod,pageCategories:news\/hot\u002Dholiday\u002Dgifts,pageCategories:lifestyles\/christmas,pageCategories:holidays\/holiday\u002Dtips,reporters:spectrum\u002Dnews\u002Dstaff",
+            url: window.location.href,
+            uxStyle: "empire",
+            contentAccessLevel: "openMode",
+            mktgCampaignShown: "no",
+            mktgCampaignName: ""
+        },
+        content: {
+            Article: {
+                articleGUID: "",
+                articleHeadline: "Your guide to uniquely Wisconsin holiday gifts",
+                articleTitle: "wisconsin\u002Dholiday\u002Dgift\u002Dguide",
+                author: "Spectrum News Staff",
+                publicationDate: "1669417200000",
+                articleViewedAge: "",
+                canonicalRegion: "",
+                articleSource: "",
+                articleStorage: articleStorage,
+                liveToggleOn:"No"
+            },
+            Page: {
+                pageContentNetwork: "",
+                pageContentShow: ""
+            },
+            Video: {
+                epgsDescription: "",
+                epgsTitle: "",
+                tmsProgramId: "",
+                tmsSeriesId: "",
+                videoBrand: "",
+                videoNetwork: "",
+                programType: ""
+            }
+        },
+        visit: {
+            visitId: "",
+            ab: "",
+            behindModem: "",
+            homeFlag: ""
+        },
+        errors: {
+            cmRuleName: "",
+            cmDisplayText: "",
+            errorType: "",
+            errorDescription: ""
+        },
+        search: {
+            searchNumResults: "",
+            searchResultsPages: "",
+            searchType: "",
+            searchKeyword: ""
+        },
+        siteTool: {
+            shareMethod: ""
+        }
+
+    }
+
+      window.addEventListener('userStatus', function (event) {
+        if (event.detail.usrAuth ) {
+            window.digitalData.user.isAuthorized = 'true';
+            window.digitalData.user.isAuthenticated = 'Yes';
+        }else{
+            window.digitalData.user.isAuthorized = 'false';
+             window.digitalData.user.isAuthenticated = 'No';
+        }
+    });
+
+    window.addEventListener("userInteraction", function (event) {
+        if (event.detail.action === "loginSuccess") {
+            window.digitalData.user.hhid = event.detail.hhid;
+            window.digitalData.user.mvpd = event.detail.mvpd;
+            window.digitalData.user.legacyMVPD = event.detail.legacyMVPD;
+            window.analyticsDataLayer.hhid = event.detail.hhid;
+            let autoAuth = localStorage.getItem("autoAuth");
+            if (autoAuth && autoAuth === 'true') {
+                News.App.QuantumAnalytics.autoLoginSuccess(event.detail.hhid, event.detail.mvpd);
+            } else {
+                News.App.QuantumAnalytics.firesQuantumLoginStopSuccess(event.detail.hhid, event.detail.mvpd);
+            }
+        }
+    });
+
+    function updateDigitalData(newCampaignElements){
+        window.digitalData.page.mktgCampaignShown = 'yes';
+        newCampaignElements.forEach(newElement => {
+            let newCampaignName;
+            let newCampaignContent = newElement.querySelector('.campaign__content');
+            if (newCampaignContent) newCampaignName = newCampaignContent.dataset.campaignName; 
+            if (newCampaignName && window.digitalData.page.mktgCampaignName) {
+                window.digitalData.page.mktgCampaignName = window.digitalData.page.mktgCampaignName + "," + newCampaignName;
+            } else if (newCampaignName) {
+                window.digitalData.page.mktgCampaignName = newCampaignName;
+            }
+        })
+    }
+
+    function findNewMatchingElements(nodes) {
+        const matches = [];
+        nodes.forEach(node => {
+            if (!(node instanceof Element)) return;
+            if (node.classList.contains('campaign--container')) {
+                matches.push(node);
+            }
+            // check descendants
+            const descendant = node.querySelector('.campaign--container');
+            if (descendant && descendant.length) matches.push(descendant);
+        })
+        return matches;
+    }
+
+    const campaignObserver = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                const newCampaignElements = findNewMatchingElements(Array.from(mutation.addedNodes));
+                if (newCampaignElements.length) updateDigitalData(newCampaignElements);
+            }
+        }
+    })
+
+    campaignObserver.observe(document.documentElement || document.body, {
+        childList: true,
+        subtree: true,
+    });
+
+    // Initial handler in case some campaign elements already exist in DOM
+    findNewMatchingElements(Array.from(document.querySelectorAll('.campaign--container')));
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        digitalData.event.adobeEventName = document.getElementById('analyticsDataLayer').getAttribute('data-content-type') === 'article' ? "pageview, contentView, articleView" : '';
+        campaignObserver.disconnect();
+    });
+
+    /**
+     * workaround to get the hhid that is coming in late
+     * NEWS-1055
+     **/
+    var _interval = setInterval(fetchLateHHID, 3000);
+
+    function fetchLateHHID() {
+        try {
+            const authState = News.App.Pinxt.AuthState;
+            if (authState.isAuthenticated) {
+                const hhid = authState.hhid || Cookies.get('player-hhid');
+                const mvpd = authState.mvpd;
+                if (window.digitalData.user.hhid !== "" && window.analyticsDataLayer.hhid !== "") {
+                    clearInterval(_interval);
+                } else if (hhid) {
+                    $('#analyticsDataLayer').attr('data-hhid', hhid);
+                    window.analyticsDataLayer.hhid = hhid;
+                    window.analyticsDataLayer.mvpd = mvpd;
+                    window.digitalData.user.hhid = hhid;
+                    window.digitalData.user.isAuthenticated = 'Yes';
+                    window.digitalData.user.mvpd = mvpd;
+                    window.digitalData.user.legacyMVPD = authState.legacyMVPD;
+                }
+            } else {
+                clearInterval(_interval);
+            }
+        } catch (e) {
+        }
+    }
+
+</script>
+<!--/Data Layer-->
+<!--jQuery or other helper libraries go here-->
+<script src="https://www.google.com/recaptcha/api.js?query=nocache" async defer></script>
+<!--  Helix -->
+<script>
+    // use the following to check for the events
+    // https://cdn.pi-charter.net/SpectrumLocal/Web/1.146.json
+
+    // Update packageReleaseVersion here when releasing AEM package deploys between full releases. Ex: 1, 2, 3
+    // Value should be a blank string for full releases.
+    var packageReleaseVersion = "0";
+
+    var appReleaseVersion = "9.6.0.SNAPSHOT";
+    appReleaseVersion = appReleaseVersion.replace('.SNAPSHOT', '');
+    appReleaseVersion = appReleaseVersion + (packageReleaseVersion ? '.' + packageReleaseVersion : '');
+
+    var helixSetting = {
+        domain: "video",
+        appName: "SpectrumLocal",
+        appVersion: appReleaseVersion,
+        requirementsVersion: "2.829",
+        msgTriggeredBy: "user",
+        startSession: "SpectrumLocal_Web_startSession",
+        logLevel: "critical",
+        endpoint: "video_prod",
+        appEnvName: "prod",
+        drmEnabled: true,
+        cwvVerbose: true,
+        cwvEnabled: true
+    };
+
+    localStorage.setItem(
+        "helix-library-settings",
+        JSON.stringify(helixSetting)
+    );
+</script>
+
+<!--prehiding snippet for Adobe Target with asynchronous Launch deployment-->
+<script>(function (g, b, d, f) {
+    (function (a, c, d) {
+        if (a) {
+            var e = b.createElement("style");
+            e.id = c;
+            e.innerHTML = d;
+            a.appendChild(e)
+        }
+    })(b.getElementsByTagName("head")[0], "at-body-style", d);
+    setTimeout(function () {
+        var a = b.getElementsByTagName("head")[0];
+        if (a) {
+            var c = b.getElementById("at-body-style");
+            c && a.removeChild(c)
+        }
+    }, f)
+})(window, document, "body {opacity: 0 !important}", 3E3);
+</script>
+<!--/prehiding snippet for Adobe Target with asynchronous Launch deployment-->
+<script>
+    var metaTitleEn = "Wisconsin holiday gift guide";
+    var metaTitleEs = "";
+    // NEWS-7559 - Add WebSite schema for default home pages on spectrumnews1, spectrumlocalnews, baynews9, ny1, mynews13, spectruminfocus
+     (function(){
+        const regionalHomepageRegEx = /^\/[^\/]+\/[^\/]+[a-zA-Z0-9]$/;
+        const isRegionalHomepage = regionalHomepageRegEx.test(location.pathname);
+        let siteInfo;
+        if (location.pathname === '/splash') {
+            let newCanonical;
+            if (location.hostname.includes('spectrumnews1.com')) {
+                siteInfo = {name: metaTitleEn || 'Spectrum News 1', url: 'https://spectrumnews1.com'}
+            } else if (location.hostname.includes('spectrumlocalnews.com')) {
+                siteInfo = {name: metaTitleEn || 'Spectrum News', url: 'https://spectrumlocalnews.com'}
+            } else if (location.hostname.includes('spectrumnoticias.com')) {
+                siteInfo = {name: metaTitleEs || 'Spectrum Noticias', url: 'https://spectrumnoticias.com'}
+                document.addEventListener('DOMContentLoaded', function() {
+                    // NEWS-8611 - Point to root of domain as /splash page canonical
+                    document.querySelector('link[rel="canonical"]')?.setAttribute('href', siteInfo.url);
+                    document.querySelector('meta[name="description"]')?.setAttribute('content', "Spectrum Noticias es el único canal de noticias en español las 24 horas del día, en todo el país.");
+                });
+            } else if (location.hostname.includes('spectrumnewsnecn.com')) {
+                siteInfo = {name: 'Spectrum News NECN', url: 'https://spectrumnewsnecn.com'}
+            }
+            
+
+        } else if (isRegionalHomepage) {
+            // add schema only if page is the default home page for the domain 
+            if (location.hostname.includes('baynews9.com') && location.pathname === '/fl/tampa') {
+                siteInfo = {name: 'Spectrum Bay News 9', url: 'https://baynews9.com'}
+            } else if (location.hostname.includes('ny1.com') && location.pathname === '/nyc/all-boroughs') {
+                siteInfo = {name: 'Spectrum News NY1', url: 'https://ny1.com' }
+            } else if (location.hostname.includes('mynews13.com') && location.pathname === '/fl/orlando') {
+                siteInfo = {name: 'Spectrum News 13', url: 'https://mynews13.com'}
+            } else if (location.hostname.includes('spectruminfocus.com') && location.pathname === '/section/in-focus') {
+                siteInfo = {name: 'Spectrum News In Focus', url: 'https://spectruminfocus.com'}
+            } else if (location.hostname.includes('spectrumnoticias.com') && location.pathname === '/us/noticias') {
+                siteInfo = {name: 'Spectrum Noticias', url: 'https://spectrumnoticias.com'}
+            } else if (location.hostname.includes('spectrumlocalnews.com') && location.pathname === '/us/snplus') {
+                siteInfo = {name: 'Spectrum News', url: 'https://spectrumlocalnews.com'}
+            }
+        }
+        if (!siteInfo) return;
+        let structuredDataText = '{"@context": "https://schema.org", "name": "' + siteInfo.name +'", "alternateName": "' + siteInfo.name + '", "url": "' + siteInfo.url + '","@type": "WebSite"}';
+        const script = document.createElement('script');
+        script.setAttribute('type', 'application/ld+json');
+        script.textContent = structuredDataText;
+        document.head.appendChild(script);
+
+        // Update document.title and add a meta tag for og:site_name
+        document.title = siteInfo.name;
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', 'og:site_name');
+        meta.setAttribute('content', siteInfo.name);
+        document.head.appendChild(meta)
+     })();
+
+     (function(){
+        // Fire pageview event when userStatus has been resolved
+        window.addEventListener('userStatus', function() {
+            if (!window.helixPageViewFiredOnce){
+                News.App.QuantumAnalytics.trackHelixPageviewEvents(window.digitalData);
+                window.helixPageViewFiredOnce = true;
+            }
+        });
+
+        // Set quantum visitId when the Helix library fires the event indicating it has been set
+        document.addEventListener('quantumVisitIdSet', function() {
+            window.digitalData.visit.visitId = window.Helix.get("visitId");
+            window.digitalData.visit.uuid = localStorage.getItem('deviceUUID') || "";
+            window.digitalData.visit.appVersion = appReleaseVersion;
+            helixSetting.appIdentifier = window.digitalData.page.domain;
+            helixSetting.deviceUuid = window.digitalData.visit.uuid;
+            helixSetting.referrerAppVisitId = window.digitalData.visit.visitId;
+         })
+     })();
+</script>
+
+
+<script>
+    window.addEventListener("beforeunload", function (e) {
+        if (typeof News !== 'undefined' && News.App.Pinxt.AuthState.isAuthenticated) {
+            News.App.QuantumAnalytics.setQuantumLoginResumeCookie();
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+<script src="//assets.adobedtm.com/c19d5759b404/bd5aea4c4170/launch-ccc23cfc1556.min.js" async></script>
+
+
+    
+<script>CQURLInfo={"requestPath":"/content/news/stories/2022/11/21/w/wisconsin-holiday-gift-guide","selectorString":"news","extension":"html","selectors":["news"],"systemId":"842bdb46-528f-4536-b372-c46cab0cd50c","runModes":"prod,s7connect,crx3,production,nosamplecontent,publish,aem65,crx3tar"};</script>
+<script src="/etc/clientlibs/news/vendor/jquery-3-6-1.min.ACSHASH88b7ada45d73ce1600d55453fc301b3d.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/etc/designs/news/clientlibs/css/images/favicon-latest/favicon.svg"/>
+<link rel="alternate icon" type="image/vnd.microsoft.icon" href="https://images.spectrumnews1.com/is/image/TWCNews/news-favicon"/>
+<!-- IMA HTML5 SDK (for serving Client Side ads): -->
+<script type="text/javascript" src="https://imasdk.googleapis.com/js/sdkloader/ima3.js" defer></script>
+ <!-- Loads Helix Library -->
+  
+      <script async="true" src='https://cdn.pi.spectrum.net/tools/video/HelixVideo4.50.0.js' charset="UTF-8" type="application/javascript" onload="window.setCwvConfigInterval = setInterval(() => {
+            if (window.Helix.set) {
+                window.Helix.set('visitIdFormat', 'extended');
+                window.Helix.set(`cwvVerbose`, true);
+                window.Helix.set(`cwvEnabled`, true);
+                clearInterval(window.setCwvConfigInterval)
+            }
+       }, 100)"></script>
+  
+   <!--  END Helix -->
+
+
+
+
+    <meta name="robots" content="index, follow"/>
+
+
+
+    <link rel="canonical" href="https://spectrumnews1.com/wi/milwaukee/news/2022/11/21/wisconsin-holiday-gift-guide"/>
+ 
+
+
+    <meta property="og:title" content="Your guide to uniquely Wisconsin holiday gifts"/>
+
+
+
+    <meta name="twitter:title" content="Your guide to uniquely Wisconsin holiday gifts"/>
+
+
+<meta property="og:type" content="article"/>
+
+
+<meta property="og:url" content="https://spectrumnews1.com/wi/milwaukee/news/2022/11/21/wisconsin-holiday-gift-guide"/>
+
+
+
+    <meta property="og:description" content="Give the gift of something special from Wisconsin."/>
+    <meta name="twitter:description" content="Give the gift of something special from Wisconsin."/>
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+
+<meta name="twitter:url" content="https://spectrumnews1.com/wi/milwaukee/news/2022/11/21/wisconsin-holiday-gift-guide"/>
+
+<meta name="story:headline" content="Your guide to uniquely Wisconsin holiday gifts"/>
+<meta name="story:description" content="From wine to herbal tea to grass fed beef, there&#39;s something special from Wisconsin for everyone on your list."/>
+
+
+
+
+
+     
+          <meta property="og:image" content="https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg"/>
+          <meta name="twitter:image" content="https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg"/>
+     
+     
+     
+
+
+
+
+
+
+     
+          
+                
+                    <!-- Preload video hero image -->
+                    <link rel="preload" as="image" href="https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1250&hei=703&$wide-bg$" imagesrcset="https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=320&hei=180&$wide-bg$ 320w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=568&hei=319&$wide-bg$ 568w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=767&hei=431&$wide-bg$ 767w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1024&hei=576&$wide-bg$ 1024w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1050&hei=590&$wide-bg$ 1050w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1250&hei=703&$wide-bg$ 1250w" imagesizes="(max-width: 1050px) 100vw, (max-width: 1439px) 1050px, 1250px" fetchpriority="high"/> 
+               
+          
+     
+
+
+
+<script>
+    let dfpSiteId = "";
+</script>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "legalName": "Spectrum News 1 Wisconsin",
+  "url": "https://spectrumnews1.com",
+  "logo": {
+    "url": "https://s7d2.scene7.com/is/image/TWCNews/spectrum-news-1",
+    "@type": "ImageObject"
+  },
+  "sameAs": [
+    "https://www.facebook.com/SpectrumNews1WI",
+    "https://www.twitter.com/SpectrumNews1WI",
+    "https://www.instagram.com/SpectrumNews1WI"
+  ],
+  "@type": "Organization"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@type": "StructuredDataType"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "mainEntityOfPage": {
+        "@id": "https://spectrumnews1.com/wi/milwaukee/news/2022/11/21/wisconsin-holiday-gift-guide",
+        "@type": "WebPage"
+      },
+      "image": [
+        "https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg"
+      ],
+      "headline": "Your guide to uniquely Wisconsin holiday gifts",
+      "datePublished": "2022-11-25T17:00:00.000-06:00",
+      "dateModified": "2022-11-25T17:00:00.000-06:00",
+      "author": [
+        {
+          "name": "Spectrum News Staff",
+          "@type": "Person"
+        }
+      ],
+      "publisher": {
+        "name": "Spectrum News 1 Wisconsin",
+        "logo": {
+          "url": "https://s7d2.scene7.com/is/image/TWCNews/spectrum-news-1",
+          "@type": "ImageObject"
+        },
+        "@type": "Organization"
+      },
+      "@type": "NewsArticle"
+    }
+  ]
+}
+</script>
+
+
+
+
+
+
+
+
+<!-- Load empire CSS library -->
+
+    
+<script>CQURLInfo={"requestPath":"/content/news/stories/2022/11/21/w/wisconsin-holiday-gift-guide","selectorString":"news","extension":"html","selectors":["news"],"systemId":"842bdb46-528f-4536-b372-c46cab0cd50c","runModes":"prod,s7connect,crx3,production,nosamplecontent,publish,aem65,crx3tar"};</script>
+<link rel="stylesheet" href="/etc/designs/bootstrap-css/clientlibs/news-empire.min.ACSHASHe8ffd41ce253478b40265ffa7e1314fd.css" type="text/css">
+<link rel="stylesheet" href="/etc/designs/news-empire/clientlibs/css.min.ACSHASHb7e13e8643aea949e2b50662171054a3.css" type="text/css">
+
+
+
+
+
+<!-- Manually include shared icons dependency before SSI -->
+
+    
+<link rel="stylesheet" href="/etc/designs/news/clientlibs/icons.min.ACSHASH509d9393e688a116162693111569d29d.css" type="text/css">
+
+
+
+
+<!-- Load empire icons library -->
+
+    
+<link rel="stylesheet" href="/etc/designs/news-empire/clientlibs/icons.min.ACSHASHe0213322783b2eafc86272f29f1d3db8.css" type="text/css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="/etc/designs/news/clientlibs/js/head-scripts.min.ACSHASHfc56392a6db76319b4c5d235888ea38a.js"></script>
+<script src="/etc/designs/news/clientlibs/js/ads.min.ACSHASHb21b82ad3b35139f992e66b9c4204b51.js"></script>
+<script src="/etc/clientlibs/news/vendor/simple-namespace-0-2-1.min.ACSHASH07f4ab70fa2c1e52b28c6ee763ff5a1f.js"></script>
+
+
+
+
+
+
+<!-- This code handles smartlink redirect logic to navigate user based on device -->
+<script type="text/javascript">
+    var smartRedirectLocations = {};
+
+        smartRedirectLocations.desktopLocation="",
+        smartRedirectLocations.iOSOutsideAppLocation="",
+        smartRedirectLocations.androidOutsideAppLocation="",
+        smartRedirectLocations.inAppLocation=""
+
+</script>
+
+    
+<script src="/etc/designs/news/clientlibs/js/smart-redirect.min.ACSHASH56dbcd932f4b442cbf01a8f74e63f5c8.js"></script>
+
+
+
+
+
+
+<!-- Adding critical css used by components above the fold for optimizing the Core Web Vitals-->
+<style type="text/css">
+    .image img{width: 100%;}
+    .aspect-ratio-container::before {content: ""; width: 1px; margin-left: -1px; float: left; height: 0; padding-bottom: 56.25%;}
+    .aspect-ratio-container::after {content: "";display: table;clear: both;}/* to clear float */
+    .aspect-ratio-container img {max-width: 100%;width: 100%; /* scale with content width */height: auto; /* compute a height that preserves the aspect ratio */}
+    .gallery-slide .img-responsive{width: auto;height: auto;}
+    .site-header header:not([data-ad-enable="true"]) .article-header .articleAdWrapper, .site-header .site-header-inner:not([data-ad-enable="true"]) .article-header .articleAdWrapper{display:none;}
+    .dfp-ad-tags-wrapper[data-position="x30"]{width:100%; min-height:107px;}
+    .dfp-ad-tags-wrapper > .dfp-ad-tags{ min-height:calc(100% - 17px);}
+    .articleAdWrapper{width:340px; min-height:290px}
+    .icon-advertisement {height: 5px; margin: 2px auto 10px;}
+    @media (max-width: 767px){
+        .dfp-ad-tags-wrapper[data-position="x30"]{min-height: 70px; }
+        .dfp-ad-tags[data-hidemobilead="true"],.dfp-ad-tags[data-hidemobilead="true"] + .icon-advertisement, .dfp-ad-tags-wrapper[data-hidemobilead="true"] {display: none}
+    }
+    .widemode #wxHourlyWeather { min-height: 120px;}
+    .content-list-layout--hero .article__details { min-height: 75px;}
+    @media (min-width: 768px) {
+        .widemode #wxHourlyWeather { min-height: 80px;}
+        .content-list-layout--hero .article__details { min-height: 150px;}
+    }
+    .linear-stream-promo, .mini-live-player .mini-player.unauthenticated { min-height: 160px;}
+    .wxAlertBar { display: none; }
+    .sf_mobile { min-height: 65px; }
+    .content-list-layout--1x1:not([data-limit="0"]):not(.content-list__mode--) .articles-container:not(.content-list__hide-image--true) { min-height: 270px;}
+    .content-list-layout--4x1-single-column-mobile:not([data-limit="0"]):not(.content-list__mode--) { min-height: 150px;}
+    .wx-current-weekly-combo { min-height: 590px;}
+    .wx-sunrise-sunset { min-height: 300px;}
+    @media (max-width: 767px) {
+	    .wx-current-weekly-combo { min-height: 835px;}
+    }
+</style>
+
+
+
+</head>
+<body class="has-fixed-navbar design--empire" data-stationcode="SpecNewsWI" data-timezone-offset="-14400000" data-statename="WI" data-ravenid="5b68c355ee34435f5c949c63" data-requestid="SPECTRUMNEWS" data-mediaanalyticsapi="https://twctsg.hb-api.omtrdc.net" data-softwarestatement="eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxZjYyNmUxOS0xZDhlLTRlODgtOTAxMi02NzY2YzUyZTNiYTciLCJuYmYiOjE2NTI3MjMzNTQsImlzcyI6ImF1dGguYWRvYmUuY29tIiwiaWF0IjoxNjUyNzIzMzU0fQ.Ob_grAySSYrMM-zuiW_4pLXFB30E73IHRxqn1I3ClioDngQ--PZtT5jGlJDklizczh3H0Y4CparDhnhbKgxoUCIZ4t9qipPVvz1kiUGxOt4EBEmBikEvBJFVQjXyF_NsAQEUM_2B6Af3JqSN5CUCvGZVHLRS0rG2zjyI90wlMY93occ02buK54rwcH0eftGsbbXCxoa7QAbGUFv9EWkXr5jpZYds5aPJ5Kbpy8Cyn_VvZCDQh7tLMvFXddHvhOKARPOrvTNfnj-13akz6ZS2UnXuYhF8SCuF4fbxDoemicKYyRvIlmcjzV-QwM8CRgTnfVr4mYleB5oqtRtKdam9Cg" data-adobe-endpoint="https://sp.auth.adobe.com" data-pinxtendpoint="https://apis.spectrum.net" data-userprofileapi="https://apis.spectrum.net/userprofsvc/userprofileservice/subgraphs/query" data-userprofileswitch="true" data-ipvs-v5-switch="true" data-channel-finder-v2="true" data-cox-auto-auth-switch="false" data-ravenapi="https://content.raven.news" data-hdcpenabler="true" data-onplantapi="https://apis.spectrum.net/id/services/v1/on-plant"><span id="analyticsDataLayer" data-author="Spectrum News Staff" data-content-type="article" data-headline="Your guide to uniquely Wisconsin holiday gifts" data-hhid="" data-is-internal="false" data-is-authenticated="false" data-language="English" data-page-category="21" data-publication-date="1669417200000" data-region="Wisconsin" data-tags="pageCategories:news,pageCategories:spectrum-news-primary-categories/top-stories,pageCategories:news/top-stories,pageCategories:holidays,regions:wi/wisconsin,pageCategories:vod,pageCategories:news/hot-holiday-gifts,pageCategories:lifestyles/christmas,pageCategories:holidays/holiday-tips,reporters:spectrum-news-staff"></span>
+
+<div class="article-app-prompt">
+    <div class="title-bar">
+        <div class="title-bar-col">
+            <strong class="title">Open in Our App</strong>
+        </div>
+        <div class="title-bar-col">
+            <a href="#" class="continue-link">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAGKADAAQAAAABAAAAGAAAAADiNXWtAAAA0klEQVRIDe1U2w2DMAxEXaDsUTaDwdsuEc5VkMA6nZ0IvmgkK4p9j8SEDMN/9HSglDK28tIcABfEG/HKmhi2chbJAWisQEzlgwhNDFOxmH4be0Yme4I0ceISezDNEDOYg6hfKAFV8zpyzYRYTopERSJovbaR73mjSZP4IxK/vI7t+mt7XouIuJl5w/BnpF1QQqpGxXyyCnwx26C3Bfn9SQybOwmAE0KKbxsiJtNWozMI9tg1fURnYlz91AMwI3qf65nu3CdhoJ9cT8C6h0Nk7phaAVML8WWIJGM8AAAAAElFTkSuQmCC"/>
+            </a>
+        </div>
+    </div>
+    <div class="prompt-description">
+        <p><p>Get the best experience and stay connected to your community with our Spectrum News app. <a href="https://spectrumlocalnews.com/app">Learn More</a></p>
+</p>
+    </div>
+    <hr/>
+    <div class="buttons">
+        <a class="btn btn-primary app-button" href="https://spectrumnews.smart.link/186a99z7m?cid=article_prompt&article=/milwaukee/news/2022/11/21/wisconsin-holiday-gift-guide">
+            Open in Spectrum News App
+        </a>
+        <p>
+            <a class="continue-link" href="#">Continue in Browser</a>
+        </p>
+    </div>
+</div>
+
+
+
+
+
+
+
+    
+        
+        
+        <div class="site-header">
+
+
+<header class="header-ele" data-ad-preroll-disable="true">
+    <div class="header_logo">
+        <a href="/wi/milwaukee" class="header_logo__icon icon-SpectrumNews1Logo"></a>
+    </div>
+    <div class="navbar-default">
+        <div class="header_weather">
+            <a class="wx-icon" href="/wi/milwaukee/weather"></a>
+            <a class="tempF" href="/wi/milwaukee/weather"></a>
+        </div>
+        <button type="button" class="navbar-toggle collapsed open-menu" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="close"></span>
+        </button>
+    </div>
+    <div class="header_region-time-weather">
+        
+<span class="header_region">
+    <a href="//spectrumnews1.com/splash.html#wi">Milwaukee</a>
+</span>
+        <span class="header_date"></span>
+<span class="header_time"></span>
+        <div>
+            <div class="header_weather">
+                <a class="wx-icon" href="/wi/milwaukee/weather"></a>
+                <a class="tempF" href="/wi/milwaukee/weather"></a>
+                <a class="city" href="/wi/milwaukee/weather"></a>
+                <a class="edit" href="javascript:void(0)">EDIT</a>
+            </div>
+        </div>
+
+    </div>
+    <div class="header_social-media-login__wrapper">
+
+        <div class="header_login-watch">
+            <a id="header-watch-live" data-watch-live-url="/content/news/wi/milwaukee/live-video/watch_spectrum_news_live.html" data-watch-live-label="WATCH LIVE" class="btn header_watch hidden-xs" href="/wi/milwaukee/live-video/watch_spectrum_news_live.html">
+                WATCH LIVE
+            </a>
+            
+            <nav class="empire-nav-wrapper">
+                <ul class="empire-nav-item-list header-profile-icon">
+                    <li class="profile-icon-separator" style="font-size:16px;line-height:normal;padding: 14px 0;">|</li>
+                    <li class="recent-activity-list">
+                        <a data-root=".empire-nav" href="#" class="profile-icon-container">
+                        <img class="profile-icon" alt="profile icon" src="/etc/designs/news/clientlibs/css/images/ki-accountSignOut-icon.png" style="width:32px;height:32px;flex-grow:0;object-fit:contain;"/></a>
+                        <div class="empire-link-list list parbase ">
+                            <ul class="recent-activity-dropdown">
+                                <li>
+                                    <a href="/wi/milwaukee/recent-activity" class="recent-activity-list-span recent-activity-path">Recent Activity</a>
+                                    <span class="menu-item-divider"></span>
+                                </li>
+                                <li>
+                                    <a id="logout-button" data-logout-text="Log Out" data-login-text="Log In" href="#" class="recent-activity-list-span">Log Out</a>
+                                    <span class="menu-item-divider"></span>
+                                </li>
+                            </ul>
+                            <ul class="sign-in-dropdown">
+                                <li>
+                                    <a href="/wi/milwaukee/recent-activity" class="recent-activity-list-span recent-activity-signed-out">Recent Activity</a>
+                                    <span class="menu-item-divider"></span>
+                                </li>
+                                <li>
+                                    <a id="login-button" class="sign-in-list-span" href="/wi/milwaukee/live-video/login" data-login-text="Log In" data-logout-text="Log Out">Log In</a>
+                                    <span class="menu-item-divider"></span>
+                                </li>
+
+                            </ul>
+                        </div>
+
+
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="searchNav">
+        
+            <input name="search" placeholder="Search" type="text" class="empire-header-search icon-search-gray empire-header-search-field" data-url="/wi/milwaukee/search"/>
+        
+        <nav class="empire-nav-wrapper">
+            
+    
+    <ul class="empire-nav-item-list">
+        <li>
+           
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-42c43922-5aa5-6b97-f1ba-9f51ccd6c883" href="#">
+            Latest News
+        </a>
+        
+    
+
+            
+                <div id="site-header-megamenu-42c43922-5aa5-6b97-f1ba-9f51ccd6c883">
+                        
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="http://spectrumnewsapp.com/" target="_blank">
+            Spectrum News App
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news" target="_blank">
+            News Homepage
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/public-safety" target="_blank">
+            Public Safety
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/education" target="_blank">
+            Education
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/local-business" target="_blank">
+            Local Business
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/now-hiring" target="_blank">
+            Now Hiring
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/health" target="_blank">
+            Health
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/recalls" target="_blank">
+            Recalls
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/honoring-our-veterans" target="_blank">
+            Honoring Our Veterans
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/Agriculture" target="_blank">
+            Wisconsin Agriculture
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/ArtsEntertainment" target="_blank">
+            Arts &amp; Entertainment
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/WisconsinVoices" target="_blank">
+            Wisconsin Voices
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/Everyday-Heroes" target="_blank">
+            Everyday Heroes
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/america-250-wisconsin" target="_blank">
+            America 250
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                </div>
+            
+        </li>
+    
+        <li>
+           
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-d432e77d-ea0c-304d-3e39-961df80d1ee6" href="#">
+            Weather
+        </a>
+        
+    
+
+            
+                <div id="site-header-megamenu-d432e77d-ea0c-304d-3e39-961df80d1ee6">
+                        
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather" target="_blank">
+            Today's Forecast
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/radar" target="_blank">
+            Interactive Radar
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/forecast" target="_blank">
+            7-Day Forecast
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/weather-blogs" target="_blank">
+            Weather Blog
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/traffic" target="_blank">
+            Interactive Traffic Map
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/climate" target="_blank">
+            Climate Change
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                </div>
+            
+        </li>
+    
+        <li>
+           
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-ee7b6a56-1fe3-ef0b-960b-4a16ac3b96ad" href="#">
+            Politics
+        </a>
+        
+    
+
+            
+                <div id="site-header-megamenu-ee7b6a56-1fe3-ef0b-960b-4a16ac3b96ad">
+                        
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/politics" target="_blank">
+            Political News
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/politics/Washington-DC-bureau1" target="_blank">
+            Washington D.C. Bureau
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/politics/wisconsin-state-government" target="_blank">
+            Wisconsin State Government
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                </div>
+            
+        </li>
+    
+        <li>
+           
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-18aea66a-89c6-6189-f405-0104ab684e1a" href="#">
+            SHOWS
+        </a>
+        
+    
+
+            
+                <div id="site-header-megamenu-18aea66a-89c6-6189-f405-0104ab684e1a">
+                        
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/section/in-focus/regions/wi" target="_blank">
+            In Focus
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/section/the-big-deal">
+            The Big Deal with Errol Louis
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/section/your-mental-health">
+            Your Mental Health
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/health/exploring-your-health">
+            Exploring your health
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="https://spectrumnews1.com/wi/milwaukee/shows/spectrum-news-challenge">
+            SN Challenge
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                </div>
+            
+        </li>
+    
+        <li>
+           
+    
+    
+        <a href="/wi/milwaukee/lottery">
+            Lottery
+        </a>
+        
+    
+
+            
+        </li>
+    
+        <li>
+           
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-102442fa-2b79-9370-6659-3e58355d6ba5" href="#">
+            SPORTS
+        </a>
+        
+    
+
+            
+                <div id="site-header-megamenu-102442fa-2b79-9370-6659-3e58355d6ba5">
+                        
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="https://spectrumnews1.com/wi/milwaukee/Sports" target="_blank">
+            Latest Sports Stories
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/Sports/wisconsin-scholar-athletes" target="_blank">
+            Wisconsin Scholar Athlete
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                </div>
+            
+        </li>
+    
+        <li>
+           
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-704f571f-6e57-f475-a3ce-a00f10e3b7c1" href="#">
+            + MORE
+        </a>
+        
+    
+
+            
+                <div id="site-header-megamenu-704f571f-6e57-f475-a3ce-a00f10e3b7c1">
+                        
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/about/bios">
+            Our Team
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/about/in-the-community">
+            This is Community
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/about/contact-us">
+            Contact Us
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/Sports/wisconsin-scholar-athletes">
+            Wisconsin Scholar Athlete
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                </div>
+            
+        </li>
+    </ul>
+    
+<div class="empire-full-mobile-menu">
+        
+                <input name="search" placeholder="Search" type="text" class="icon-search-gray mobile-search empire-header-search-field" data-url="/wi/milwaukee/search"/>
+        
+        <ul class="empire-mobile-item-list mobile-recent-activity-dropdown">
+             <li><a id="empire-watch-live_loggedIn" class="empire-watch-live" href="#"></a>
+             <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+            </li>
+            <li>
+                <a href="#" data-root=".empire-nav" class="my-account">ACCOUNT</a>
+                <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                <div class="empire-link-list list parbase">
+                    <ul style="flex-direction: column;">
+                        <li>
+                            <a id="sign-out-btn" class="sing-out-mobile sign-in-label" href="#">Log Out</a>
+                            <span class="menu-item-divider"></span>
+                        </li>
+                        <li style="padding: 0;" class="signed-in-recent-activity">
+                            <a href="" class="recent-activity-mobile">Recent Activity</a>
+                            <span class="menu-item-divider"></span>
+                        </li>
+                    </ul>
+    
+                </div>
+    
+            </li>
+
+        </ul>
+        <ul class="empire-mobile-item-list mobile-sign-in-dropdown">
+            <li><a id="empire-watch-live_loggedOut" class="empire-watch-live" href="#"></a>
+             <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+            </li>
+            <li>
+                <a href="#" data-root=".empire-nav" class="my-account">ACCOUNT</a>
+                <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                <div class="empire-link-list list parbase">
+                    <ul style="flex-direction: column;">
+                        <li>
+                            <a id="sign-in-btn" class="sign-in-mobile sign-in-label" href="">Log In</a>
+                            <span class="menu-item-divider"></span>
+                        </li>
+                        <li style="padding: 0;" class="sign-out-recent-activity">
+                            <a href="" class="recent-activity-mobile">Recent Activity</a>
+                            <span class="menu-item-divider"></span>
+                        </li>
+                    </ul>
+    
+                </div>
+    
+            </li>
+
+        </ul>
+        <ul class="empire-mobile-item-list">
+        
+            <li>
+                
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-42c43922-5aa5-6b97-f1ba-9f51ccd6c883" href="#">
+            Latest News
+        </a>
+        
+    
+
+                    <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                    
+                        <div id="mobile-site-header-megamenu-42c43922-5aa5-6b97-f1ba-9f51ccd6c883">
+                                
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="http://spectrumnewsapp.com/" target="_blank">
+            Spectrum News App
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news" target="_blank">
+            News Homepage
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/public-safety" target="_blank">
+            Public Safety
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/education" target="_blank">
+            Education
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/local-business" target="_blank">
+            Local Business
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/now-hiring" target="_blank">
+            Now Hiring
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/health" target="_blank">
+            Health
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/recalls" target="_blank">
+            Recalls
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/honoring-our-veterans" target="_blank">
+            Honoring Our Veterans
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/Agriculture" target="_blank">
+            Wisconsin Agriculture
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/ArtsEntertainment" target="_blank">
+            Arts &amp; Entertainment
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/WisconsinVoices" target="_blank">
+            Wisconsin Voices
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/Everyday-Heroes" target="_blank">
+            Everyday Heroes
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/america-250-wisconsin" target="_blank">
+            America 250
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                        </div>
+                    
+            </li>
+        
+        
+            <li>
+                
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-d432e77d-ea0c-304d-3e39-961df80d1ee6" href="#">
+            Weather
+        </a>
+        
+    
+
+                    <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                    
+                        <div id="mobile-site-header-megamenu-d432e77d-ea0c-304d-3e39-961df80d1ee6">
+                                
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather" target="_blank">
+            Today's Forecast
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/radar" target="_blank">
+            Interactive Radar
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/forecast" target="_blank">
+            7-Day Forecast
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/weather-blogs" target="_blank">
+            Weather Blog
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/traffic" target="_blank">
+            Interactive Traffic Map
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/weather/climate" target="_blank">
+            Climate Change
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                        </div>
+                    
+            </li>
+        
+        
+            <li>
+                
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-ee7b6a56-1fe3-ef0b-960b-4a16ac3b96ad" href="#">
+            Politics
+        </a>
+        
+    
+
+                    <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                    
+                        <div id="mobile-site-header-megamenu-ee7b6a56-1fe3-ef0b-960b-4a16ac3b96ad">
+                                
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/politics" target="_blank">
+            Political News
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/politics/Washington-DC-bureau1" target="_blank">
+            Washington D.C. Bureau
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/politics/wisconsin-state-government" target="_blank">
+            Wisconsin State Government
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                        </div>
+                    
+            </li>
+        
+        
+            <li>
+                
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-18aea66a-89c6-6189-f405-0104ab684e1a" href="#">
+            SHOWS
+        </a>
+        
+    
+
+                    <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                    
+                        <div id="mobile-site-header-megamenu-18aea66a-89c6-6189-f405-0104ab684e1a">
+                                
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/section/in-focus/regions/wi" target="_blank">
+            In Focus
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/section/the-big-deal">
+            The Big Deal with Errol Louis
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/section/your-mental-health">
+            Your Mental Health
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/news/health/exploring-your-health">
+            Exploring your health
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="https://spectrumnews1.com/wi/milwaukee/shows/spectrum-news-challenge">
+            SN Challenge
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                        </div>
+                    
+            </li>
+        
+        
+            <li>
+                
+    
+    
+        <a href="/wi/milwaukee/lottery">
+            Lottery
+        </a>
+        
+    
+
+                    <div class="empire-mobile-divider empire-type-clickthrough-bar"></div>
+                    
+            </li>
+        
+        
+            <li>
+                
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-102442fa-2b79-9370-6659-3e58355d6ba5" href="#">
+            SPORTS
+        </a>
+        
+    
+
+                    <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                    
+                        <div id="mobile-site-header-megamenu-102442fa-2b79-9370-6659-3e58355d6ba5">
+                                
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="https://spectrumnews1.com/wi/milwaukee/Sports" target="_blank">
+            Latest Sports Stories
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/Sports/wisconsin-scholar-athletes" target="_blank">
+            Wisconsin Scholar Athlete
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                        </div>
+                    
+            </li>
+        
+        
+            <li>
+                
+    
+    
+        <a data-root=".empire-nav" data-target="#site-header-megamenu-704f571f-6e57-f475-a3ce-a00f10e3b7c1" href="#">
+            + MORE
+        </a>
+        
+    
+
+                    <div class="empire-mobile-divider empire-type-megamenu-bar"></div>
+                    
+                        <div id="mobile-site-header-megamenu-704f571f-6e57-f475-a3ce-a00f10e3b7c1">
+                                
+
+
+
+
+    
+    
+    <div class="empire-link-list list parbase">
+
+<ul>
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/about/bios">
+            Our Team
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/about/in-the-community">
+            This is Community
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/about/contact-us">
+            Contact Us
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+
+    <li>
+        
+    
+    
+        <a href="/wi/milwaukee/Sports/wisconsin-scholar-athletes">
+            Wisconsin Scholar Athlete
+        </a>
+        
+    
+
+        <span class="menu-item-divider"></span>
+    </li>
+</ul>
+
+
+</div>
+
+
+
+                        </div>
+                    
+            </li>
+        </ul>
+</div>
+
+<!-- Getting the value from site-header.html to empire-nav.html -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const headerLink = document.querySelector('#header-watch-live');
+        const loggedInNavLink = document.querySelector('#empire-watch-live_loggedIn');
+        const loggedOutNavLink = document.querySelector('#empire-watch-live_loggedOut');
+
+        if (headerLink) {
+            const url = headerLink.dataset.watchLiveUrl?.trim();
+            const label = headerLink.dataset.watchLiveLabel?.trim();
+
+            // If either url or label is missing or empty hide parent <li> elements
+            if (!url || !label) {
+                [loggedInNavLink, loggedOutNavLink].forEach(link => {
+                    if (link && link.closest('li')) {
+                        link.closest('li').style.display = 'none';
+                    }
+                });
+                return; // stop further execution
+            }
+
+            // Otherwise populate the links normally
+            [loggedInNavLink, loggedOutNavLink].forEach(link => {
+                if (link) {
+                    link.href = url;
+                    link.textContent = label;
+                    link.hidden = false;
+                }
+            });
+        } else {
+            // If no #header-watch-live found, also hide both <li>
+            [loggedInNavLink, loggedOutNavLink].forEach(link => {
+                if (link && link.closest('li')) {
+                    link.closest('li').style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+
+
+
+
+        </nav>
+    </div>
+    <div id="edit-location-modal" class="location-modal">
+        <div class="modal-content">
+            <span class="edit-location-modal-close">&times;</span>
+            <span class="modal-title-text">Set Weather Location</span>
+            <p class="modal-desc-text">Get hyperlocal forecasts, radar and weather alerts.</p>
+            <input id="edit-location-zip" name="zip" type="text" maxlength="5" placeholder="Enter a 5-digit ZIP code" pattern="[0-9]+"/>
+            <p class="zip-error-message">Please enter a valid zipcode.</p>
+            <div class="edit-location-save">
+                <p class="save-button-text">Save</p>
+            </div>
+        </div>
+    </div>
+    
+<!-- regionalization modal -->
+ 
+    <div class="ip-regionalization-modal" style="display:none">
+        <div class="ip-regional">
+            <img alt="close" aria-label="close" role='button' src="/etc/designs/news/clientlibs/css/images/ki-x-alt.png" class="ip-modal-close"/>
+            <div class="ip-regional-modal-content">
+                
+                    <span class="ip-modal-heading">Confirm Your Location</span> 
+                
+                
+               
+                <span class="ip-modal-text">We automatically picked a Spectrum News market that we believe is most relevant to you.</span>
+                <img alt="region image" src="https://images.spectrumnews1.com/is/image/SpectrumNews/Milwaukee-WI_1?fmt=png-alpha" class="region-img"/>
+                <span class="ip-location">Milwaukee</span>
+                
+                    <div class="ip-location-info info-block1">
+                        <img alt="check" src="/etc/designs/news/clientlibs/css/images/ki-checkmark-circle-f.png" class="check-icon"/>
+                        <span class="info1" data-browser-lang-translation="News and information that matter to your community" data-other-lang-translation="">News and information that matter to your community</span>
+                    </div>
+                
+                    <div class="ip-location-info info-block1">
+                        <img alt="check" src="/etc/designs/news/clientlibs/css/images/ki-checkmark-circle-f.png" class="check-icon"/>
+                        <span class="info1" data-browser-lang-translation="Local weather forecasts" data-other-lang-translation="">Local weather forecasts</span>
+                    </div>
+                
+                
+                
+                    <button class="confirm-button-container"><span class="confirm-text">Confirm</span></button>
+                    <a href="" class="change-button-container"><span class="button-text">Change Location</span></a>
+                    <span class="info-footer">You can change your news source and language at any time.</span>
+                
+                
+               
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--source selector modal-->
+
+    <div class="ip-regionalization-modal source-selector-modal" style="display:none" data-domain-logo="https://images.spectrumnews1.com/is/image/SpectrumNews/logo-spectrum-news-1-lm-v2?fmt=png-alpha">
+        <div class="ip-regional">
+            <img alt="close" aria-label="close" role='button' src="/etc/designs/news/clientlibs/css/images/ki-x-alt.png" class="source-selector-modal-close"/>
+            <div class="ip-regional-modal-content">
+                
+                
+                    <span class="ip-modal-heading">Choose News Source &amp; Language</span>
+                
+                
+                <span class="ip-modal-text">Select your news source and language for Spectrum News.</span>
+             <div class="language-selector" role="radiogroup">
+             </div>
+             
+                <div class="ip-location-info">
+                    <img alt="check" src="/etc/designs/news/clientlibs/css/images/ki-checkmark-circle-f.png" class="check-icon-info"/>
+                    <span class="info1 feature-info" data-browser-lang-translation="Local news coverage, weather forecasts, and developing stories impacting the Milwaukee community." data-other-lang-translation="">Local news coverage, weather forecasts, and developing stories impacting the Milwaukee community.</span>
+                </div>
+            
+                
+                    <a class="selector-continue-button"><span class="confirm-text">Continue</span></a>
+                    <span class="info-footer">You can change your news source and language at any time.</span>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+    <!-- show  ip-modal if source-selector-switch is on -->
+
+    <!--regionalisation user notification popup-->
+    <div class="notification-popup" style="display:none">
+        <div class="pointer"></div>
+        <div class="notification-container">
+            <div class="description-container">
+                <span class="notification-title">Change Location</span>
+                <span class="notification-description">You can change your news source or language here at any time</span>
+            </div>
+            <img tabindex="0" role="button" aria-label="close" alt="close" class="ip-notification-close" src="/etc/designs/news/clientlibs/css/images/ki-x.png"/>
+        </div>
+       
+    </div>
+
+ <!--returning user EN  popup-->
+    
+
+<!--returning user ES  popup-->
+    
+
+</header>
+<div class="region-data" data-ravenid="5b68c355ee34435f5c949c63" data-organization-name="Spectrum News 1 Wisconsin" data-outoffreeviews="Stay connected to your community. Log in for unlimited access to Spectrum News content." data-numofviews="5" data-softwallwelcome="Enjoy access to five videos from Spectrum. Log in for unlimited access." data-paywallmessage="This video is available exclusively to our customers">
+</div>
+</div>
+
+    
+        
+        
+        <div class="wxAlertBar">
+<div class="alert-bar">
+    <div class="alert-bar__displayed-alerts">
+        
+
+        
+    </div>
+</div>
+
+<div>
+    <div class="alert-bar__raven-alerts">
+        
+    <div class="ticker-item alert-bar__li alert-bar__li--weather" style="display: none; position: absolute">
+        <a href="/wi/milwaukee/weather/watches-warnings">
+            <div>
+                <span class="alert-bar__text-box"><span class="alert-bar__title">WEATHER ALERT</span><span class="alert-bar__text">View full list of active weather alerts</span></span>
+            </div>
+        </a>
+    </div>
+
+        
+    <div class="ticker-item alert-bar__li alert-bar__li--closings" style="display: none; position: absolute">
+        <a href="/wi/milwaukee/weather/closings">
+            <div>
+                <span class="alert-bar__text-box"><span class="alert-bar__title">CLOSINGS ALERT</span><span class="alert-bar__text">View full list of closings</span></span>
+            </div>
+        </a>
+    </div>
+
+    </div>
+</div>
+
+<script>
+    ns("News.App").tickerConfig = {
+        effect : "slideUp",
+        interval : 4000,
+        duration : 600
+    }
+</script>
+
+    
+<script>CQURLInfo={"requestPath":"/content/news/wi/milwaukee/jcr:content/main-website-header/wx_alert_bar","extension":"html","selectors":[],"systemId":"842bdb46-528f-4536-b372-c46cab0cd50c","runModes":"prod,s7connect,crx3,production,nosamplecontent,publish,aem65,crx3tar"};</script>
+<script src="/etc/designs/news/clientlibs/js/weather/alertBar.min.ACSHASH6b8cdd84145071930d987c4519b12dcd.js"></script>
+
+
+</div>
+
+    
+        
+        
+        <div class="newpar new section">
+
+</div>
+
+    
+        
+        
+        <div class="par iparys_inherited">
+
+    
+    
+    
+    
+
+</div>
+
+    
+
+
+
+
+
+    <div class="header-player">
+        
+    
+        <div class="componentWrapper">
+            <div id='video-player' class="player-wrapper">
+                <video id="vod-player" width="1250" height="703"></video>
+                
+                    <!-- temporary image to overlay the player -->
+                    <img width="1250" height="703" class="img-responsive img-hero overlay-image vod-image-placeholder" src="https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1250&hei=703&$wide-bg$" srcset="https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=320&hei=180&$wide-bg$ 320w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=568&hei=319&$wide-bg$ 568w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=767&hei=431&$wide-bg$ 767w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1024&hei=576&$wide-bg$ 1024w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1050&hei=590&$wide-bg$ 1050w, https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1250&hei=703&$wide-bg$ 1250w" sizes="(max-width: 768px) 100vw, 100vw"/>
+                
+            </div>
+            
+                <div class="imageCaption">
+                    <span>(File photo)</span>
+                </div>
+            
+
+            <!-- "Limited Free Views" is treated the same as "Open" on the web (no soft wall),
+                 so it intentionally falls through to the default "open" analytics label. -->
+            
+            
+            <div class="platform-video-data" data-identifier="9dbc152c-f808-4308-aa2c-56f21bcf0da5" data-videothumbnail="https://s7d2.scene7.com/is/image/TWCNews/1217_presents_jpg?wid=1250&amp;hei=703&amp;$wide-bg$" data-pid="D4OK0m3C_Pw3" data-platformFeedURL="https://content-catalog.amp.spectrum.net/api/media" data-autoplay="false" data-logobranding="spectrum_news_1" data-authtype="openMode" data-analytics-authtype="open" data-platformfeedmpxurl="https://content-catalog.amp.spectrum.net/api/media" data-unsupportedBrowserMsg="Unsupported Browser">
+            </div>
+
+            
+
+
+
+
+
+
+
+            
+                
+    <div class="overlay">
+        <div id="paywallModal" class="overlay-text" data-allowedviews="">
+            <div class="platform-icon"></div>
+            <div id="paywallMsg" class="paywall-title"></div>
+            <div id="no-views-message" class="paywall-title hidden"></div>
+            <div class="platform-video-login">
+                <a id="softwall-login-button" href="" class="btn btn-platform btn-hollow" target="_self"></a>
+                <a id="paywall-login-button" href="" class="btn btn-platform btn-hollow" target="_self"></a>
+            </div>
+            <div class="overlay-close"></div>
+        </div>
+    </div>
+
+            
+
+        </div>
+    
+    
+    
+
+
+    </div>
+
+    
+    
+    <div class="container body-container" data-pdfhost="https://ny1.com" data-pdfpath="/embedpdf/spectrum-news-pdf.html" data-spanish-article-page="false" data-hide-campaign="false">
+        <div class="row">
+            <div class="col-sm-12">
+                
+                
+                
+    
+    
+
+
+
+
+
+
+
+                <article>
+    
+    
+    <div class="article-header">
+        
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div>
+
+
+
+
+</div>
+            </div>
+            <div class="col-xs-12 clearfix">
+                
+                <div class="flair-container story-page-flair">
+                    
+                    <div class="flair flair--human-interest empire-visible" data-flair-text="HOLIDAYS"></div>
+                </div>
+                
+                <h1 class="article-headline">Your guide to uniquely Wisconsin holiday gifts</h1>
+                <div class="article-subheader small">
+                    
+                    
+                    <div class="article-information">
+                        
+                        <div class="article-byline-information">
+                            <span>BY  </span>
+                            <span class="article-byline-reporter-list">
+                                
+                                
+                                   
+                                    
+                                    Spectrum News Staff
+                                
+                            </span>
+                            
+                                <span class="article-location">Milwaukee</span>
+                            
+
+                        </div>
+                        <div class="article-date-information">
+                            <span class="article-date-publish-updated"></span>
+                            <span class="article-date-publish empire-visible empire-byline noUpdatedDate">PUBLISHED 6:00 PM ET Nov. 25, 2022</span>
+                            <span class="classic-visible article-date-publish noUpdatedDate">PUBLISHED 6:00 PM EST Nov. 25, 2022</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="share-text-article pull-left">SHARE</div>
+                <div class="share-bar-container">
+    <button class="share-bar-link icon-share-facebook desktop-uri mobile-uri" title="Share with Facebook" aria-label="Share with Facebook" href="https://www.facebook.com/sharer/sharer.php?u=URL_TO_SHARE?cid=share_fb" target="_blank" data-empire-order="10"></button>
+    <button class="share-bar-link icon-share-twitter desktop-uri mobile-uri" title="Share with Twitter" aria-label="Share with Twitter" href="https://twitter.com/intent/tweet?text=HEADLINE&url=URL_TO_SHARE?cid=share_twitter" target="_blank" data-empire-order="20"></button>
+    <!-- SMS for mobile only-->
+    <button class="share-bar-link icon-share-message mobile-uri os-not-ios" title="Share with SMS" aria-label="Share with SMS" href="sms:?body=URL_TO_SHARE?cid=share_sms" data-empire-order="25"></button>
+    <!-- Dedicated iOS button b/c URI syntax varies from what's used by Desktop and Android -->
+    <button class="share-bar-link icon-share-message mobile-uri os-ios" title="Share with SMS" aria-label="Share with SMS" href="sms:&body=URL_TO_SHARE%3Fcid%3Dshare_sms" data-urlencode="true" data-empire-order="25"></button>
+    <button class="share-bar-link icon-share-reddit" title="Share with Reddit" aria-label="Share with Reddit" href="https://www.reddit.com/submit/?title=HEADLINE&url=URL_TO_SHARE?cid=share_reddit" target="_blank" data-empire-order="0"></button>
+    <!-- messenger button start -->
+    <button class="share-bar-link icon-share-messenger desktop-uri" title="Share with Facebook Messenger" aria-label="Share with Facebook Messenger" href="https://www.facebook.com/dialog/send?app_id=FB_APP_ID&link=URL_TO_SHARE?cid=share_fbmsg&redirect_uri=REDIRECT_URL?cid=share_fbmsg" target="_blank" data-empire-order="60"></button>
+    <!-- messenger button has a mobile app URI -->
+    <button class="share-bar-link icon-share-messenger mobile-uri" title="Share with Facebook Messenger" aria-label="Share with Facebook Messenger" href="fb-messenger://share?link=URL_TO_SHARE%3Fcid%3Dshare_fbmsg&app_id=FB_APP_ID" data-urlencode="true" data-empire-order="60"></button>
+    <!-- messenger button end -->
+    <!-- whatsapp button start -->
+    <!-- URL encode the share url. Note that the CID for the share url is url encoded. -->
+    <button class="share-bar-link icon-share-whatsapp desktop-uri" title="Share with Whatsapp" aria-label="Share with Whatsapp" href="https://web.whatsapp.com/send?text=URL_TO_SHARE%3Fcid%3Dshare_whatsapp" target="_blank" data-urlencode="true" data-empire-order="50"></button>
+    <!-- whatsapp button has a mobile app URI -->
+    <button class="share-bar-link icon-share-whatsapp mobile-uri" title="Share with Whatsapp" aria-label="Share with Whatsapp" href="whatsapp://send?text=URL_TO_SHARE?cid=share_whatsapp" data-empire-order="50"></button>
+    <!-- whatsapp button end -->
+    <button class="share-bar-link icon-share-linkedin desktop-uri mobile-uri" title="Share with LinkedIn" aria-label="Share with LinkedIn" href="https://www.linkedin.com/shareArticle?mini=true&url=URL_TO_SHARE?share_linkedin&title=HEADLINE&source=WEBSITE_URL&summary=DESCRIPTION" target="_blank" data-empire-order="0"></button>
+    <button class="share-bar-link icon-share-email desktop-uri mobile-uri" title="Share with Email" aria-label="Share with Email" href="mailto:?subject=HEADLINE&body=URL_TO_SHARE?cid=share_email" data-empire-order="30"></button>
+    <!-- Copy to clipboard start -->
+    <!-- success icon shows for 5 sec. Shows on opposite side for mobile. -->
+    <div class="share-bar-link icon-clipboard-copied-mobile"></div>
+    <!-- this is a button not an anchor tag because anchor tag (link) will set the window.location to the href -->
+    <button class="share-bar-link icon-share-link desktop-uri mobile-uri" title="Copy article link" aria-label="Copy article link" href="URL_TO_SHARE?cid=share_clip" data-empire-order="40"></button>
+    <div class="share-bar-link icon-clipboard-copied-desktop"></div>
+    <!-- Copy to clipboard end -->
+</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="article-body">
+                    
+
+
+
+
+    
+    
+    <div class="text parbase"><p>MILWAUKEE — Black Friday used to mean the start of the holiday shopping season, but these days, that shopping season started weeks earlier.</p>
+<p>From candlemakers to cheese shops, small businesses around Wisconsin are ready to help you find the perfect holiday gift for friends and family. And Taylor Schaefer, the 75th Alice in Dairyland, has some gift suggestions to create magical moments with your family this holiday season.</p>
+<div class="data-image-wrapper img-hash-0a9e666c-e839-49c0-b112-f0ed0aa9540f hashed-image center percent-hundred caption-container image" contenteditable="false" style="display: inline;"><img src="https://s7d2.scene7.com/is/image/TWCNews/full_products_dairyland" class="hashed-image image" img-data-alignment="center" img-data-width="percent-hundred" img-data-caption="(Courtesy of Taylor Schaefer/75th Alice in Dairyland)" img-data-wrap-text="true" img-data-editing="true"><div class="caption">(Courtesy of Taylor Schaefer/75th Alice in Dairyland)</div>
+</div>
+<p>“The Something Special from Wisconsin program is a great place to go if you are looking for unique Wisconsin gifts for anyone in your life, especially for those people who are hard to shop for,” said Schaefer.</p>
+<p>The Something Special from Wisconsin Program began in 1983 to showcase local products and businesses. Shoppers can spot the signature red logo on items from herbal tea to grass fed beef. In order to earn that red logo, a business must certify that at least 50% of its packaging, production or ingredients come from Wisconsin.</p>
+<p>“It’s a great way to support our state’s producers and processors and drive local economies too,” said Schaefer.</p>
+<p>Here’s your gifting guide to products harvested and created in America’s Dairyland:</p>
+<h2>For adults</h2>
+<p>Wine and chocolates from Northleaf Winery: <a href="https://northleafwinery.com/" target="_blank">https://northleafwinery.com/</a></p>
+<div class="data-image-wrapper img-hash-dd30cc03-3ed3-42ad-8b8e-6d41667eaf57 hashed-image center percent-hundred caption-container image" contenteditable="false" style="display: inline;"><img src="https://s7d2.scene7.com/is/image/TWCNews/dairyland_northleaf_winery" class="hashed-image image" img-data-alignment="center" img-data-width="percent-hundred" img-data-caption="(Courtesy of Taylor Schaefer/75th Alice in Dairyland)" img-data-wrap-text="true" img-data-editing="true"><div class="caption">(Courtesy of Taylor Schaefer/75th Alice in Dairyland)</div>
+</div>
+<p>Craft beer from&nbsp;Valkyrie Brewing Company: <a href="http://www.valkyriebrewery.com/products.html">http://www.valkyriebrewery.com/products.html</a></p>
+<p>Organic coffee from Bowers Lake Organic Coffee: <a href="https://www.bowerslakecoffee.com/">https://www.bowerslakecoffee.com/</a></p>
+<h2>For kids</h2>
+<p>Knitted mittens and hats from Nana's Knits: <a href="https://www.etsy.com/shop/NanasKnits" target="_blank">https://www.etsy.com/shop/NanasKnits</a></p>
+<p>The Jake + Jack enduring legacy bank from Small Legacies: <a href="https://smalllegacies.com/">https://smalllegacies.com/</a></p>
+<div class="data-image-wrapper img-hash-bcf6cde8-573c-4c0c-a776-23d207b77ed3 hashed-image center percent-hundred caption-container image" contenteditable="false" style="display: inline;"><img src="https://s7d2.scene7.com/is/image/TWCNews/dairyland_small_legacies_jake_jack" class="hashed-image image" img-data-alignment="center" img-data-width="percent-hundred" img-data-caption="(Courtesy of Taylor Schaefer/75th Alice in Dairyland)" img-data-wrap-text="true" img-data-editing="true"><div class="caption">(Courtesy of Taylor Schaefer/75th Alice in Dairyland)</div>
+</div>
+<p>Wisconsin themed clothes and hats from Wiki Woolz &amp; Wares: <a href="https://www.getwikiwoolz.com/" target="_blank">https://www.getwikiwoolz.com/</a></p>
+<h2>For pet owners</h2>
+<p>Freeze-dried pet food and treats from Vital Essentials: <a href="https://www.vitalessentialsraw.com/" target="_blank">https://www.vitalessentialsraw.com/</a></p>
+<p>CBD treats from Mrs. Beaster's Biskits: <a href="http://mrsbeastersbiskits.com/">http://mrsbeastersbiskits.com/</a></p>
+<p>Bandanas and accessories from JoJo &amp; Sparks: <a href="http://www.jojoandsparks.com/" target="_blank">jojoandsparks.com</a></p>
+<h2>Something sweet</h2>
+<p>Fine chocolate and candy from Driftless Chocolates: <a href="https://driftlesschocolates.com/">https://driftlesschocolates.com/</a></p>
+<div class="data-image-wrapper img-hash-aa731d81-5535-478f-ae9c-59e9b8e63f96 hashed-image center percent-hundred caption-container image" contenteditable="false" style="display: inline;"><img src="https://s7d2.scene7.com/is/image/TWCNews/gold_coast_square_dairyland" class="hashed-image image" img-data-alignment="center" img-data-width="percent-hundred" img-data-caption="(Courtesy of Taylor Schaefer/75th Alice in Dairyland)" img-data-wrap-text="true" img-data-editing="true"><div class="caption">(Courtesy of Taylor Schaefer/75th Alice in Dairyland)</div>
+</div>
+<p>Ghana Style Brittle from Gold Coast Candy: <a href="https://sharaysgsb.com/">https://sharaysgsb.com/</a></p>
+<p>Caramels from Cream City Caramels &amp; Confections: <a href="https://www.creamcitycaramels.com/" target="_blank">https://www.creamcitycaramels.com/</a></p>
+<h2>Something savory</h2>
+<p>Beef Jerky from Mike's Country Meats: <a href="https://mikescountrymeats.com/" target="_blank">https://mikescountrymeats.com/</a></p>
+<p>Bloody Mary mix from 100 Mile Sauce Company: <a href="https://www.100milesauce.com/">https://www.100milesauce.com/</a></p>
+<div class="data-image-wrapper img-hash-64ad97fb-2173-4dcf-a3a2-3ebe8331ed1d hashed-image center percent-hundred caption-container image" contenteditable="false" style="display: inline;"><img src="https://s7d2.scene7.com/is/image/TWCNews/christinekitchensquare" class="hashed-image image" img-data-alignment="center" img-data-width="percent-hundred" img-data-caption="(Courtesy of Taylor Schaefer/75th Alice in Dairyland)" img-data-wrap-text="true" img-data-editing="true"><div class="caption">(Courtesy of Taylor Schaefer/75th Alice in Dairyland)</div>
+</div>
+<h2>For the home</h2>
+<p>Wind chimes from Ken's Copper Chimes: <a href="https://kenscopperchimes.com/">https://kenscopperchimes.com/</a></p>
+<p>Soy candles from Fox Ridge Candles:&nbsp;<a href="https://foxridgecandles.com/" target="_blank">https://foxridgecandles.com/</a></p>
+<p>Room &amp; linen sprays from Commah: <a href="https://commah.co/" target="_blank">https://commah.co/</a></p>
+<div class="data-image-wrapper img-hash-5a241c02-beb9-48dc-b93b-95f426141467 hashed-image center percent-hundred caption-container image" contenteditable="false" style="display: inline;"><img src="https://s7d2.scene7.com/is/image/TWCNews/farmer_book_dairyland" class="hashed-image image" img-data-alignment="center" img-data-width="percent-hundred" img-data-caption="(Courtesy of Taylor Schaefer/75th Alice in Dairyland)" img-data-wrap-text="true" img-data-editing="true"><div class="caption">(Courtesy of Taylor Schaefer/75th Alice in Dairyland)</div>
+</div>
+<p>Handmade wooden bowls from Bob’s Wooden Bowls: <a href="https://bobswoodenbowls.com/">https://bobswoodenbowls.com/</a></p>
+<p>Hand woven rugs from Whataview Farm &amp; Weaver: <a href="http://www.whataviewfarmandfiber.com/">http://www.whataviewfarmandfiber.com/</a></p>
+<p>You can explore local options by clicking&nbsp;<a href="https://www.somethingspecialwi.com/">here</a>.</p>
+
+
+</div>
+
+
+    
+    
+    <div class="box-wrapper">
+
+
+
+    
+</div>
+
+
+
+                    <div>
+                        <div id="x33" class="dfp-ad-tags" data-position="x33"></div>
+                        <div class="icon-advertisement hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+                <div id="story-rail">
+                    
+
+
+
+
+    
+        
+        
+        <div class="content-list related-stories">
+
+     
+     
+     
+     <div class="content-list-layout content-list-layout--4x1-single-column-mobile  ajax--true content-list__mode--tag-based-dynamic " data-limit="4" data-requiredtags="regions:wi/milwaukee,regions:wi/green-bay,regions:wi/madison,pageCategories:news" data-pagePath="/content/news/stories/2022/11/21/w/wisconsin-holiday-gift-guide" data-resourcePath="/content/news/stories/2022/11/21/w/wisconsin-holiday-gift-guide/jcr:content/story/rail/related-stories" data-mode="tag-based-dynamic" data-contentListLayoutType="4x1-single-column-mobile">
+          
+
+          <h1></h1>
+          <div class="articles-container content-list__preview--false content-list__hide-flair--false content-list__hide-videoIndicator--false content-list__hide-image--false content-list__hide-location--false content-list__hide-date--false ">
+               
+
+     </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+    
+        
+        
+        <div class="newpar new section">
+
+</div>
+
+    
+        
+        
+        <div class="par iparys_inherited">
+
+    
+    
+    
+    
+
+</div>
+
+    
+
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                
+
+
+
+
+    
+    
+    <div class="content-list">
+
+     
+     
+     
+     <div class="content-list-layout content-list-layout--2x2  ajax--true content-list__mode--tag-based-dynamic " data-limit="4" data-requiredtags="regions:wi/milwaukee,regions:wi/green-bay,regions:wi/madison,pageCategories:news" data-pagePath="/content/news/stories/2022/11/21/w/wisconsin-holiday-gift-guide" data-resourcePath="/content/news/stories/2022/11/21/w/wisconsin-holiday-gift-guide/jcr:content/below-main-content/latest-news" data-mode="tag-based-dynamic" data-contentListLayoutType="2x2" data-heading="LATEST NEWS">
+          
+
+          <h1>LATEST NEWS</h1>
+          <div class="articles-container content-list__preview--false content-list__hide-flair--false content-list__hide-videoIndicator--false content-list__hide-image--false content-list__hide-location--false content-list__hide-date--false ">
+               
+
+     </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+                <div id="below-main-content-right">
+                    
+
+
+
+
+    
+        
+        
+        <div class="newpar new section">
+
+</div>
+
+    
+        
+        
+        <div class="par iparys_inherited">
+
+    
+    
+    
+    
+
+</div>
+
+    
+
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                
+
+
+
+
+    
+        
+        
+        <div class="newpar new section">
+
+</div>
+
+    
+        
+        
+        <div class="par iparys_inherited">
+
+    
+    
+    
+    
+
+</div>
+
+    
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
+    
+        
+        
+        <div class="site-footer">
+
+<footer class="news-empire">
+    <div class="social-gradient"></div>
+    <div id="footerLinks" class="container main-footer__body">
+        <div class="row">
+            <div class="col-xs-12">
+                
+                    <div class="footer-branding">
+                        <a href="/wi/milwaukee">
+                            <div class="logo icon-SpectrumNews1Logo-black"></div>
+                        </a>
+                    </div>
+                
+                <div class="footer__links text-uppercase ">
+
+<ul class="list-inline list-unstyled">
+    <li>
+    
+    
+        <a href="/splash">
+            Spectrum News
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="/wi/milwaukee/about/contact-us">
+            CONTACT
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="/wi/milwaukee/about">
+            ABOUT
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="/wi/milwaukee/rss">
+            RSS
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="/wi/milwaukee/about/faq">
+            FAQ
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="/wi/milwaukee/sitemap">
+            SITEMAP
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="https://jobs.spectrum.com/content-media-news" target="_blank">
+            CAREERS
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="https://go2.spectrumreach.com/midnorth_spectrumnews_tv" target="_blank">
+            ADVERTISE WITH US
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="/wi/milwaukee/about/certifications" target="_blank">
+            Certifications
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="https://www.spectrum.com/policies/residential-terms.html" target="_blank">
+            TERMS
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="https://www.spectrum.com/policies/your-privacy-rights" target="_blank">
+            Your Privacy Rights
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="https://www.spectrum.com/policies/california" target="_blank">
+            California Consumer Privacy Rights
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="https://www.spectrum.com/policies/your-privacy-rights-opt-out" target="_blank">
+            California Consumer Limit the Use of My Sensitive Personal Information
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="https://spectrum.com/policies/your-privacy-rights-opt-out" target="_blank">
+            Do Not Sell or Share My Personal Information/Opt-Out of Targeted Advertising
+        </a>
+        
+    
+</li>
+
+    <li>
+    
+    
+        <a href="http://spectrumnewsapp.com/" target="_blank">
+            Spectrum News App
+        </a>
+        
+    
+</li>
+</ul>
+
+
+</div>
+                
+                    <div id="footerSocialLinks" class="social-icons">
+                        <ul class="list-inline">
+                            <li>
+                                <a href="https://www.facebook.com/SpectrumNews1WI" class="icon--facebook-gray" data-provider="Facebook" target="_blank"></a>
+                            </li>
+                        
+                            <li>
+                                <a href="https://twitter.com/SpectrumNews1WI" class="icon--twitter-gray" data-provider="Twitter" target="_blank"></a>
+                            </li>
+                        
+                            <li>
+                                <a href="https://www.instagram.com/SpectrumNews1WI" class="icon--instagram-gray" data-provider="Instagram" target="_blank"></a>
+                            </li>
+                        
+                            <li>
+                                <a href="https://www.youtube.com/@spectrumlocalnews" class="icon--youtube-gray" data-provider="YouTube" target="_blank"></a>
+                            </li>
+                        
+                            <li>
+                                <a href="https://www.threads.net/spectrumnews1wi/" class="icon--threads-gray" data-provider="Threads" target="_blank"></a>
+                            </li>
+                        </ul>
+                    </div>
+                
+            </div>
+        </div>
+    <div class="legal-copy ">
+© 2024, Charter Communications, all rights reserved.
+
+<style>*.componentWrapper {
+	margin: 0.0px auto;
+}
+</style></div>
+    </div>
+</footer>
+</div>
+
+    
+        
+        
+        <div class="newpar new section">
+
+</div>
+
+    
+        
+        
+        <div class="par iparys_inherited">
+
+    
+    
+    
+    
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Manually include shared clientlib dependencies outside of the SSI directives. -->
+
+
+    
+<script src="/etc/clientlibs/news/vendor/bowser.min.ACSHASH66fb5ded26b5d86decaa5cc59ba79320.js"></script>
+<script src="/etc/designs/news/clientlibs/js/pinxt-authentication.min.ACSHASHa18457627cec6544499fb4ee0d14fed6.js"></script>
+<script src="/etc/designs/news/clientlibs/js.min.ACSHASH7b03e7fbfa607f63001bceceaa5ed9cb.js"></script>
+
+
+
+
+
+    
+<script src="/etc/designs/news/clientlibs/js/article-app-prompt.min.ACSHASHce40a79fa9e435394e8ada2c37b9c036.js"></script>
+
+
+
+
+
+
+
+
+
+<!-- Import design specific JS within SSI includes -->
+
+<!-- Load empire JS library -->
+
+    
+<script src="/etc/designs/news-empire/clientlibs/js.min.ACSHASH06084e7ec22830adba7f6546612bcb11.js"></script>
+
+
+
+
+
+
+
+
+
+<script src="https://documentservices.adobe.com/view-sdk/viewer.js"></script>
+
+
+
+
+
+
+<!--Open in App Component -->
+
+    
+
+
+
+
+    
+<script src="/etc/designs/news/clientlibs/js/footer-year.min.ACSHASH3d09f78678547bd9e7d0c2c3f7c19348.js"></script>
+
+
+
+
+
+
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+<script src="/etc/clientlibs/news/vendor/spectrum-player.min.ACSHASH9b24daba557e982b944497a3fce529d4.js"></script>
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+<script src="/etc/designs/news/clientlibs/js/softwall.min.ACSHASHda452009d49be1d576dbc5711b546088.js"></script>
+<script src="/etc/designs/news/clientlibs/js/user-profile.min.ACSHASH2394c0f7636a409669d7e244599581d8.js"></script>
+<script src="/etc/designs/news/clientlibs/js/video-controller.min.ACSHASH7db7f58a574d7c3db619151633ced39f.js"></script>
+<script src="/etc/designs/news/clientlibs/js/video-player.min.ACSHASHb3bf6c29a9a65dcb617d8e4bfa98e1c7.js"></script>
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+<script src="/etc/designs/news/clientlibs/js/podcast.min.ACSHASH1768ad348ea61fc4018b3aa1413429b7.js"></script>
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+<script src="/etc/designs/news/clientlibs/js/article.min.ACSHASHcd75149b2e581dc4fc3c5e88a895f5e2.js"></script>
+
+
+
+        
+
+    
+
+        
+        
+
+        
+
+        
+        
+
+        
+        
+            
+    
+
+
+
+        
+
+    
+
+        
+        
+            <script type="text/javascript">
+(function($) {
+    if (!isMobile.any) {
+        /* By default the panels should be only be expanded on a desktop */
+        $('footer .panel-collapse.collapse').addClass('in');
+        /* Remove collapse functionality on desktop */
+        $('footer .panel-title').removeAttr('data-toggle');
+    }
+    if (isMobile.any) {
+        /* Only display the + sign on a mobile device */
+        $('footer .expand-control').removeClass('hidden');
+        /* BUGFIX: Include an empty onclick function on footer accordions to fix an iOS device bug with bootstrap collapse.
+        Sometimes iOS does not seem to treat divs as clickable elements, but adding a blank on-click handler allows
+        the rest of bootstrap collapse to function without side effects. */
+        $('footer .panel-title').on('click', function(){})
+    }
+})(jQuery);
+</script>
+        
+
+        
+
+        
+        
+
+        
+        
+
+    
+
+
+
+
+
+
+
+<script>
+    /**
+     * sets the  quantum visitId in the 'digitalData'
+     * layer at: window.digitalData.visit.visitId
+     *
+     **/
+    var timeit = window.setInterval(setVisitId, 2000);
+
+    function setVisitId() {
+        if (window && window.Helix && window.Helix.track) {
+            window.digitalData.visit.visitId = window.Helix.get("visitId");
+        }
+        if (window.digitalData.visit.visitId && typeof window.digitalData.visit.visitId !== 'undefined') {
+            clearInterval(timeit);
+        }
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+    window.addEventListener("load", function (e) {
+        var auth = localStorage.getItem('authenticatedV2')
+        var docClicked = Cookies.get('clicked-resumed')
+        if ((auth && auth === "true") && (!docClicked)) {
+            News.App.QuantumAnalytics.checkQuantumLoginResume();
+        } else if ((auth && auth === "true") && docClicked) {
+            Cookies.remove('clicked-resumed')
+        }
+    });
+
+    $(document).ready(function () {
+        $(document).on('click', function (e) {
+            var auth = localStorage.getItem('authenticatedV2')
+            if (auth && auth === "true") {
+                News.App.QuantumAnalytics.cookieGeneral("clicked-resumed");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
