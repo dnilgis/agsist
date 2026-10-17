@@ -9,7 +9,7 @@ import sys
 from datetime import datetime, timezone
 
 sys.path.insert(0, "scripts")
-from fetch_prices import add_nearby, _month_label, build_symbols, planting_year, planting_ratio
+from fetch_prices import add_nearby, _month_label, build_symbols, planting_year, planting_ratio, pin_continuous
 from datetime import date
 
 T = lambda y, m, d: datetime(y, m, d, 13, 0, tzinfo=timezone.utc)
@@ -94,14 +94,40 @@ def main():
     quotes6 = {"kcwheat": q(702.5), "kcwheat-dec26": q(701.5), "kcwheat-mar27": q(714.25),
                "meal": q(356.6), "meal-dec26": q(356.5), "oats-dec26": q(399.0),
                "soyoil-dec26": q(67.14), "feeders-oct26": q(343.7), "feeders-nov26": q(342.1),
-               "hogs-oct26": q(75.55), "milk-oct26": q(15.32), "milk-nov26": q(17.49)}
+               "hogs-oct26": q(75.55), "hogs-dec26": q(66.875),
+               "milk-oct26": q(15.32), "milk-nov26": q(17.49)}
     n6 = add_nearby(quotes6, SYMBOLS_AT(now6), now6)
     chk(quotes6["kcwheat-nearby"]["close"] == 701.5 and n6["kcwheat"]["label"] == "Dec '26",
         "kcwheat-nearby = KEZ26 701.5, not continuous KE=F 702.5")
     chk(quotes6["meal-nearby"]["close"] == 356.5, "meal-nearby = Dec '26 meal, the crush leg")
-    chk(n6["feeders"]["key"] == "feeders-oct26" and n6["hogs"]["key"] == "hogs-oct26"
+    # 2026-10-17: hogs-oct26 here was the bug. Oct '26 lean hogs stopped
+    # trading on Oct 14 (10th business day); on Oct 16 the front is Dec.
+    chk(n6["feeders"]["key"] == "feeders-oct26" and n6["hogs"]["key"] == "hogs-dec26"
         and n6["milk"]["key"] == "milk-oct26" and n6["oats"]["key"] == "oats-dec26"
         and n6["soyoil"]["key"] == "soyoil-dec26", "livestock, milk, oats and oil name their month")
+    chk(quotes6["hogs-nearby"]["close"] == 66.875 and quotes6["hogs-nearby"]["contract"] == "Dec '26",
+        "Oct 16: hogs-nearby is Dec '26 $66.875, never the expired Oct '26 $75.55")
+    q14 = {"hogs-oct26": q(75.55), "hogs-dec26": q(66.075)}
+    n14 = add_nearby(q14, SYMBOLS_AT(T(2026, 10, 14)), T(2026, 10, 14))
+    chk(n14["hogs"]["key"] == "hogs-oct26", "Oct 14 (last trading day): hogs-nearby is still Oct '26")
+    # feeders: Oct '26 trades through Thu Oct 29, then Nov
+    q30 = {"feeders-oct26": q(343.7), "feeders-nov26": q(342.1)}
+    n30 = add_nearby(q30, SYMBOLS_AT(T(2026, 10, 30)), T(2026, 10, 30))
+    chk(n30["feeders"]["key"] == "feeders-nov26", "Oct 30: feeders roll to Nov '26")
+
+    # continuous livestock keys follow the front month (2026-10-17): HE=F sat
+    # stale at the dead Oct contract's 75.55; GF=F had moved to Nov early.
+    sk = ["hogs"]
+    quotes6["hogs"] = dict(q(75.55), stale=True, ticker="HE=F")
+    quotes6["feeders"] = dict(q(342.075), ticker="GF=F")
+    quotes6["kcwheat"] = dict(q(702.5), ticker="KE=F")
+    done = pin_continuous(quotes6, n6, sk)
+    chk(quotes6["hogs"]["close"] == 66.875 and quotes6["hogs"]["alias_of"] == "hogs-dec26"
+        and "hogs" not in sk and not quotes6["hogs"].get("stale"), "continuous hogs = Dec '26, no longer stale")
+    chk(quotes6["feeders"]["close"] == 343.7 and quotes6["feeders"]["continuous_ticker"] == "GF=F",
+        "continuous feeders = Oct '26 (GF=F had moved to Nov)")
+    chk(quotes6["kcwheat"]["close"] == 702.5 and "kcwheat" not in done,
+        "a fresh grain continuous series is left alone")
     chk("mplswheat" not in n6, "no MGEX months on file -> no alias")
 
     # --- label helper ----------------------------------------------------------

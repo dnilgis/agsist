@@ -253,7 +253,8 @@ def run(data, today=None, repair=False):
                              "repaired_from":fk,"repair_reason":"continuous-roll-contamination","_orig":orig})
                 # The evening-trade split (fetch_prices.split_settle) belongs to
                 # the close it came with, so it travels with the repaired close.
-                for _sk in ("settled","last","last_time","last_date","last_net","settle_pending"):
+                for _sk in ("settled","last","last_time","last_date","last_net","settle_pending",
+                            "close_kind","close_time","prev_kind","settle","settle_date","settle_net"):
                     if _sk in f: cont[_sk]=f[_sk]
                     else: cont.pop(_sk,None)
                 old = _carry_dates(cont, f, data, commodity)
@@ -282,6 +283,9 @@ def run(data, today=None, repair=False):
             if repair:
                 orig={k:cont.get(k) for k in ("ticker","close","open","netChange","pctChange")}
                 orig["prev_date"]=cont.get("prev_date")
+                for _sk in ("prev_kind","settle","settle_date","settle_net"):
+                    if _sk in f: cont[_sk]=f[_sk]
+                    else: cont.pop(_sk,None)
                 cont.update({"open":f.get("open"),"netChange":f.get("netChange"),
                              "pctChange":f.get("pctChange"),
                              "repaired_from":fk,"repair_reason":"prior-close-roll-contamination",
