@@ -1,9 +1,19 @@
 name: API jobs (one-time)
 
-# Two one-time review jobs through the Message Batches API (scripts/api_jobs.py):
-# unanswered searches per page, and alt text for the images on hand-made pages.
-# Dispatch only, from the fx/apijobs branch; no schedule. Input and every
-# output live on the raw branch under apijobs/<run>/ (never deployed).
+# Jobs through the Message Batches API (scripts/api_jobs.py): unanswered
+# searches per page, alt text for the images on hand-made pages, and the short
+# written story on each county rain page (build=county-stories).
+# Dispatch only; no schedule. Input and every output live on the raw branch
+# under apijobs/<run>/ (never deployed).
+#
+# County stories (scripts/county_stories.py): with build=county-stories the
+# input is built here from data/rain on the dispatched ref (the facts each page
+# states), not read from raw, and saved to raw as apijobs/<run>/input/bundle.json.
+# After collect, the stories are checked against those facts and the ones that
+# pass are saved to raw as apijobs/<run>/stories/<st>.json (rejects with reasons in apijobs/<run>/rejected.json).
+# Nothing here touches main: the lead copies the stories into data/rain/stories
+# and rebuilds the pages. At most one run a month (Sig's OK each time); use a new
+# run name each time, e.g. stories-2026-10.
 #
 #   mode=estimate  count tokens and print the worst-case cost, spend nothing
 #   mode=submit    estimate, refuse over $20, refuse if apijobs/<run>/batch.json
@@ -29,6 +39,9 @@ on:
       wait_minutes:
         description: "How long collect waits for the batch to end"
         default: "120"
+      build:
+        description: "county-stories to build the input from data/rain here (estimate and submit); empty to read it from raw"
+        default: ""
 
 permissions:
   contents: write
@@ -56,9 +69,18 @@ jobs:
           git fetch -q --depth 1 origin raw
           D="apijobs/$APIJOBS_RUN"
           mkdir -p "$D"
-          git show "FETCH_HEAD:$D/input/bundle.json" > /tmp/bundle.json
+          if [ "${{ inputs.build }}" = "county-stories" ] && [ "${{ inputs.mode }}" != "collect" ]; then
+            mkdir -p "$D/input"
+            python scripts/county_stories.py bundle "$D/input/bundle.json"
+            cp "$D/input/bundle.json" /tmp/bundle.json
+          else
+            git show "FETCH_HEAD:$D/input/bundle.json" > /tmp/bundle.json
+          fi
           git show "FETCH_HEAD:$D/batch.json" > "$D/batch.json" 2>/dev/null || rm -f "$D/batch.json"
           ls -la "$D" /tmp/bundle.json
+      - name: Save the built input to raw
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.build == 'county-stories' && inputs.mode != 'collect' }}
+        run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN input" "apijobs/$APIJOBS_RUN/input/bundle.json"
       - name: Estimate
         if: ${{ inputs.mode == 'estimate' }}
         env:
@@ -83,3 +105,13 @@ jobs:
       - name: Save results to raw
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
         run: bash scripts/push_raw.sh "apijobs $APIJOBS_RUN results" "apijobs/$APIJOBS_RUN/batch-status.json" "apijobs/$APIJOBS_RUN/results.json" "apijobs/$APIJOBS_RUN/results-raw.jsonl"
+      - name: Check the county stories against their facts
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        run: |
+          R="apijobs/$APIJOBS_RUN/results.json"
+          if [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('story') else 1)"; then
+            python scripts/county_stories.py collect /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
+            bash scripts/push_raw.sh "apijobs $APIJOBS_RUN stories" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
+          else
+            echo "no county stories in this run"
+          fi
