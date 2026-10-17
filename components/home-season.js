@@ -457,6 +457,17 @@
     progress().then(function(d){
       var asof=d&&d.report_date?'USDA Crop Progress, week ending '+isoDay(d.report_date)+'.':'';
       var cpSt=d&&d.updated&&window.AgAsOf?' '+AgAsOf.html(d.updated,'usda'):'';
+      /* chaos-3 (2026-10-17): NASS Crop Progress stops in late November and
+         restarts in early April. A report from an earlier year is last
+         season's: the cells say so in their visible line, never last year's
+         97% planted as this spring's. The week is in the visible line too. */
+      var ry=d&&/^(\d{4})-\d{2}-\d{2}/.exec(d.report_date||''),cy=NOW.getFullYear();
+      if(ry&&+ry[1]<cy){
+        var lastTxt='<span class="s7-nl">Last report: '+esc(isoDay(d.report_date))+'</span>',lastSub=esc(ry[1]+' season. The first '+cy+' Crop Progress comes out in early April.');
+        ['harvest','condition','planting'].forEach(function(m){if(cells[m])put(m,lastTxt,lastSub);});
+        return;
+      }
+      var wk=d&&d.report_date?', week ending '+isoDay(d.report_date).replace(/, \d{4}$/,''):'';
       if(cells.harvest){
         /* WAVE1-C 2026-10-03: every number says what it is. National corn and
            soybeans: harvested, same week last year, 5-year average (computed
@@ -491,12 +502,12 @@
       }
       if(cells.condition){
         var c1=d&&cropLine('Corn',d.corn,'good_excellent','good_excellent_prev_year'),c2=d&&cropLine('Soybeans',d.soybeans,'good_excellent','good_excellent_prev_year');
-        if(c1||c2)put('condition',[c1,c2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Good or excellent. '+asof)+cpSt);
+        if(c1||c2)put('condition',[c1,c2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Good or excellent'+wk+'. '+asof)+cpSt);
         else put('condition',NL(),'');
       }
       if(cells.planting){
         var p1=d&&cropLine('Corn',d.corn,'planting_pct','planting_prev_year'),p2=d&&cropLine('Soybeans',d.soybeans,'planting_pct','planting_prev_year');
-        if(p1||p2)put('planting',[p1,p2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Planted. '+asof)+cpSt);
+        if(p1||p2)put('planting',[p1,p2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Planted'+wk+'. '+asof)+cpSt);
         else put('planting',NL(),'');
       }
     });

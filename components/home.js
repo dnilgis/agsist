@@ -856,7 +856,18 @@ window.hydrateDaily = function(data) {
       var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
       var ds=dOk?days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear():dateStr;
       setText('daily-date',ds);
-      setHTML('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily, '+(dOk?months[d.getMonth()]+' '+d.getDate():dateStr));
+      /* chaos-8 (2026-10-17): an old issue is not "today's briefing". Not
+         today (Central): the action says "latest". Over 2 days old: the badge
+         says "latest issue" with the full date. */
+      var tz='',age=0;
+      try{tz=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(now);}catch(e2){tz='';}
+      var dIso=dOk?d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2):'';
+      if(tz&&dIso)age=Math.round((Date.parse(tz+'T12:00:00Z')-Date.parse(dIso+'T12:00:00Z'))/864e5);
+      var tdd=dOk?months[d.getMonth()]+' '+d.getDate():dateStr;
+      if(age>2&&dOk)tdd='latest issue '+months[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear();
+      setHTML('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily, '+tdd);
+      var tAct=document.querySelector('#daily-teaser .teaser-action')||document.querySelector('.teaser-action');
+      if(tAct&&age>=1)tAct.textContent='Read the latest briefing \u2193';
     }catch(e){}
   }
   if(data.teaser){setText('daily-teaser-text',data.teaser);window.__s7daily=data;if(window.S7)window.S7.teaser(data);}

@@ -138,8 +138,8 @@ test("grain futures pages: key table up, labeled folds, FAQ kept, scripts in ord
     const ld = JSON.parse(/<script type="application\/ld\+json">(\{"@context": "https:\/\/schema.org", "@graph".*?)<\/script>/.exec(h)[1]);
     const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
     for (const q of faq.mainEntity) assert.ok(h.includes(q.name.replace(/&/g, "&amp;")) || h.includes(q.name), page + " FAQ: " + q.name);
-    assert.ok(h.indexOf("components/price-local.js?v=1") < h.indexOf("components/futures.js?v=14"), page + ": stamp helper before futures.js");
-    assert.ok(!h.includes("futures.js?v=13"));
+    assert.ok(h.indexOf("components/price-local.js?v=2") > 0 && h.indexOf("components/price-local.js?v=2") < h.indexOf("components/futures.js?v=15"), page + ": stamp helper before futures.js");
+    assert.ok(!h.includes("futures.js?v=13") && !h.includes("futures.js?v=14"));
     assert.match(h, /matchMedia\('\(min-width:900px\)'\)\.matches\)document\.querySelectorAll\('details\.fold\[data-wide-open\]'\)/);
   }
 });

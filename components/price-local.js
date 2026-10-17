@@ -61,12 +61,112 @@
     if (!p) return '';
     return (sameDay(p, q) ? '' : MON[p.m - 1] + ' ' + p.d + ', ') + hm(p) + ' CT';
   }
-  function isoDay(s) { var m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) : ''; }
+  /* "Oct 16", or "Sep 11, 2025" when the day is not in this year (Central time) */
+  function isoDay(s, now) {
+    var m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s || '');
+    if (!m) return '';
+    var q = ct(now || new Date());
+    return MON[+m[2] - 1] + ' ' + (+m[3]) + (q && q.y !== +m[1] ? ', ' + m[1] : '');
+  }
+
+  /* ---- the exchange calendar: twin of scripts/contract_calendar.py ----
+     Full-closure holidays (market_holidays) and the expiry rules per product
+     (dead_from). test/chaosfix.test.mjs runs both against the Python. */
+  function isoOf(t) { return new Date(t).toISOString().slice(0, 10); }
+  function tOf(iso) { return Date.parse(iso + 'T00:00:00Z'); }
+  function wdOf(t) { return new Date(t).getUTCDay(); }
+  function U(y, m, d) { return Date.UTC(y, m - 1, d); }
+  function nthW(y, m, w, n) { var t = U(y, m, 1); t += ((w - wdOf(t) + 7) % 7) * DAY; return t + (n - 1) * 7 * DAY; }
+  function lastW(y, m, w) { var t = Date.UTC(y, m, 0); return t - ((wdOf(t) - w + 7) % 7) * DAY; }
+  function obs(t) { var x = wdOf(t); return x === 6 ? t - DAY : x === 0 ? t + DAY : t; }
+  function easter(y) {
+    var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3),
+      h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, mm = Math.floor((a + 11 * h + 22 * l) / 451);
+    return U(y, Math.floor((h + l - 7 * mm + 114) / 31), ((h + l - 7 * mm + 114) % 31) + 1);
+  }
+  var HOL = {};
+  function marketHolidays(y) {
+    if (HOL[y]) return HOL[y];
+    var o = {};
+    [[obs(U(y, 1, 1)), "New Year's Day"], [nthW(y, 1, 1, 3), 'MLK Day'], [nthW(y, 2, 1, 3), 'Presidents Day'], [easter(y) - 2 * DAY, 'Good Friday'],
+      [lastW(y, 5, 1), 'Memorial Day'], [obs(U(y, 6, 19)), 'Juneteenth'], [obs(U(y, 7, 4)), 'Independence Day'], [nthW(y, 9, 1, 1), 'Labor Day'],
+      [nthW(y, 11, 4, 4), 'Thanksgiving'], [obs(U(y, 12, 25)), 'Christmas Day']].forEach(function (p) { o[isoOf(p[0])] = p[1]; });
+    return (HOL[y] = o);
+  }
+  function holidayName(iso) {
+    var y = +String(iso).slice(0, 4);
+    for (var i = -1; i <= 1; i++) { var n = marketHolidays(y + i)[iso]; if (n) return n; }
+    return null;
+  }
+  function isTradingDay(iso) { var w = wdOf(tOf(iso)); return w >= 1 && w <= 5 && !holidayName(iso); }
+  function ctIso(now) { var p = ct(now || new Date()); return p ? p.y + '-' + (p.m < 10 ? '0' : '') + p.m + '-' + (p.d < 10 ? '0' : '') + p.d : ''; }
+
+  /* HOW OLD A SETTLE IS (2026-10-17, chaos-1). lag: the trading sessions
+     after the settle's day and before today (Central), each one a settle the
+     file should have and does not. A Friday settle on Monday morning is lag 0;
+     on Tuesday it is lag 1. stale (lag 1+) adds "N days old" to the stamp;
+     old (lag OLD_SESSIONS+) also greys the price. */
+  var OLD_SESSIONS = 4;
+  function settleAge(dayIso, now) {
+    var m = /^(\d{4}-\d{2}-\d{2})/.exec(dayIso || ''), today = ctIso(now);
+    if (!m || !today) return null;
+    var t = tOf(m[1]) + DAY, end = tOf(today), lag = 0, n = 0;
+    for (; t < end && n < 800; t += DAY, n++) if (isTradingDay(isoOf(t))) lag++;
+    var days = Math.max(0, Math.round((end - tOf(m[1])) / DAY));
+    return { lag: lag, days: days, stale: lag >= 1, old: lag >= OLD_SESSIONS, note: lag >= 1 ? days + (days === 1 ? ' day old' : ' days old') : '' };
+  }
+
+  /* WHEN A CONTRACT STOPS TRADING (contract_calendar.py dead_from): the first
+     Central-time day it is dead. GRAIN dead from the 15th; MONTH_END (live
+     cattle, and milk unverified) from the 1st of the next month; LAST_THURSDAY
+     (feeders; November: the Thursday before Thanksgiving) and
+     TENTH_BUSINESS_DAY (hogs) from the day after. Unknown product: null. */
+  var RULE = { ZC: 'G', ZS: 'G', ZW: 'G', KE: 'G', MW: 'G', ZO: 'G', ZM: 'G', ZL: 'G', LE: 'ME', DC: 'ME', GF: 'LT', HE: 'TB' };
+  var FCODE = 'FGHJKMNQUVXZ';
+  function deadFrom(ticker) {
+    var x = /^([A-Z]{2})([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(ticker || '')), r = x && RULE[x[1]];
+    if (!r) return null;
+    var y = 2000 + (+x[3]), m = FCODE.indexOf(x[2]) + 1;
+    if (r === 'G') return isoOf(U(y, m, 15));
+    if (r === 'ME') return isoOf(Date.UTC(y, m, 1));
+    if (r === 'LT') return isoOf((m === 11 ? nthW(y, 11, 4, 3) : lastW(y, m, 4)) + DAY);
+    for (var t = U(y, m, 1), seen = 0; ; t += DAY) if (isTradingDay(isoOf(t)) && ++seen === 10) return isoOf(t + DAY);
+  }
+  function expired(ticker, now) { var d = deadFrom(ticker); return !!d && ctIso(now) >= d; }
+  function label(ticker) { var x = /^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(ticker || '')); return x ? MON[FCODE.indexOf(x[1])] + " '" + x[2] : ''; }
+  /* ROLL OFF EXPIRED CONTRACTS (chaos-1). A price file that stopped updating
+     still names Dec '26 corn on Jan 2. -> a copy of quotes where every dead
+     dated key (corn-dec26) is gone and every alias on a dead contract
+     (corn-nearby, corn-dec, cattle) points at the nearest live month of the
+     same product on file (the same month for a month alias: corn-dec -> the
+     next Dec), labeled with its own contract, or is gone when none is. */
+  var M3 = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  function roll(quotes, now) {
+    var out = {}, k;
+    if (!quotes) return quotes;
+    for (k in quotes) out[k] = quotes[k];
+    function dead(x) { return !!(x && x.ticker && expired(x.ticker, now)); }
+    for (k in out) if (/^[a-z]+-[a-z]{3}\d{2}$/.test(k) && dead(out[k])) delete out[k];
+    for (k in out) {
+      if (!dead(out[k])) continue;
+      var root = k.split('-')[0], am = /^[a-z]+-([a-z]{3})$/.exec(k), mon = am && M3.indexOf(am[1]) >= 0 ? am[1] : null;
+      var re = new RegExp('^' + root + '-(' + (mon || '[a-z]{3}') + ')(\\d{2})$'), best = null, bi = Infinity;
+      for (var j in out) {
+        var mm = re.exec(j), x = out[j];
+        if (!mm || !x || x.close == null || M3.indexOf(mm[1]) < 0) continue;
+        var i = (+mm[2]) * 12 + M3.indexOf(mm[1]);
+        if (i < bi) { bi = i; best = x; }
+      }
+      if (best) { var c = {}; for (var f in best) c[f] = best[f]; c.contract = label(best.ticker) || c.contract; c.rolled_from = label(out[k].ticker); out[k] = c; }
+      else delete out[k];
+    }
+    return out;
+  }
 
   /* The stamp for one quote: "Oct 16 settle" | "Last trade as of 1:46 pm CT" | "Updated 1:46 am CT" */
   function stamp(q, fetched, now) {
     var k = q && q.close_kind;
-    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date); if (d) return d + ' settle'; }
+    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return d + ' settle'; }
     if (k === 'last') { var t = clock(q.close_time || fetched, now); if (t) return 'Last trade as of ' + t; }
     var u = fetched ? clock(fetched, now) : '';
     return u ? 'Updated ' + u : '';
@@ -82,8 +182,8 @@
     });
     var read = fetched ? clock(fetched, now) : '', out;
     if (!n) return read ? 'Read ' + read : '';
-    if (st && !last) out = isoDay(st) + ' settle';
-    else if (st) out = isoDay(st) + ' settle where posted, latest delayed trade otherwise';
+    if (st && !last) out = isoDay(st, now) + ' settle';
+    else if (st) out = isoDay(st, now) + ' settle where posted, latest delayed trade otherwise';
     else out = 'Latest delayed trades';
     return out + (read ? '. Read ' + read : '');
   }
@@ -93,7 +193,20 @@
     if (!s) return '';
     var t = (q && q.close_kind === 'last' && q.close_time) || fetched || '';
     var dt = (q && q.close_kind === 'settle' && (q.settle_date || q.close_date)) || t;
-    return '<time class="px-stamp" datetime="' + esc(dt) + '"' + (fetched ? ' title="Price file read ' + esc(clock(fetched, now)) + '"' : '') + '>' + esc(s) + '</time>';
+    /* a settle the file should have moved past says how old it is; past
+       OLD_SESSIONS it is greyed like any stale stamp (asof.css is-stale) */
+    var a = q && q.close_kind === 'settle' ? settleAge(q.settle_date || q.close_date, now) : null;
+    return '<time class="px-stamp' + (a && a.old ? ' is-stale' : '') + '" datetime="' + esc(dt) + '"' + (a && a.old ? ' data-stale=""' : '') +
+      (fetched ? ' title="Price file read ' + esc(clock(fetched, now)) + '"' : '') + '>' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
+  }
+  /* The age of a whole board: the newest settle on it (as board() names it). */
+  function boardAge(quotes, keys, now) {
+    var st = '';
+    (keys || Object.keys(quotes || {})).forEach(function (k) {
+      var q = quotes && quotes[k];
+      if (q && q.close != null && q.close_kind === 'settle') { var d = q.settle_date || q.close_date || ''; if (d > st) st = d; }
+    });
+    return st ? settleAge(st, now) : null;
   }
 
   /* ---- the state line ---- */
@@ -135,7 +248,7 @@
         var q = quoteFor(prices, r.contract), cash = '';
         if (q && q.close_date && (now - Date.parse(q.close_date + 'T18:00:00Z')) / DAY <= 5) {
           var v = Math.round(Math.round((q.close + r.median * 100) * 1e6) / 1e6) / 100;
-          var on = q.close_kind === 'settle' ? 'the ' + isoDay(q.settle_date || q.close_date) + ' settle' : 'the latest delayed trade';
+          var on = q.close_kind === 'settle' ? 'the ' + isoDay(q.settle_date || q.close_date, now) + ' settle' : 'the latest delayed trade';
           if (v > 0) cash = ', about <b>$' + v.toFixed(2) + '</b> cash on ' + on;
         }
         out.push('<b>' + esc(s.name) + ' ' + c[1] + ':</b> median basis <b>' + basisWords(r.median) + '</b> ' + esc(fut + (r.label || r.contract)) + ' futures' + cash +
@@ -156,7 +269,8 @@
       (b.when ? '. <span class="pl-s">' + esc(b.when) + '.</span>' : '.') + ' <a href="/cash-bids">All bids near you &rarr;</a>';
   }
 
-  var api = { stamp: stamp, board: board, html: html, clock: clock, readState: readState, zipState: zipState, lines: lines, build: build, nearLine: nearLine, NAMES: NAMES };
+  var api = { stamp: stamp, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+    deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, lines: lines, build: build, nearLine: nearLine, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
   var doc = root.document;
@@ -227,7 +341,8 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', folds); else folds();
 
   var css = doc.createElement('style');
-  css.textContent = '.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}';
+  css.textContent = '.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
+    '.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
   (doc.head || doc.documentElement).appendChild(css);
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();
 })(typeof window !== 'undefined' ? window : this);

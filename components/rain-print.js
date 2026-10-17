@@ -260,6 +260,28 @@
      framed_christmas_cutoff in the same file must equal what this gives
      (test/rain-print-launch.test.mjs), so the promo line reads the right date.
      null when a number is missing. */
+  /* USPS HOLIDAYS, COMPUTED (2026-10-17, chaos-5). The 11 federal holidays
+     the Postal Service observes: New Year's Day, Martin Luther King Jr. Day,
+     Washington's Birthday, Memorial Day, Juneteenth, Independence Day, Labor
+     Day, Columbus Day, Veterans Day, Thanksgiving and Christmas. One that
+     falls on a Saturday is observed the Friday before, on a Sunday the Monday
+     after (5 U.S.C. 6103; Jan 1 2028 is a Saturday, so Dec 31 2027 is off).
+     data/rain-print.json holidays adds any other closed day (an override),
+     so the list in the file no longer has to be moved each year. */
+  function uspsHolidays(y) {
+    function iso(t) { return new Date(t).toISOString().slice(0, 10); }
+    function nth(m, w, n) { var t = Date.UTC(y, m - 1, 1); t += ((w - new Date(t).getUTCDay() + 7) % 7) * 864e5; return t + (n - 1) * 7 * 864e5; }
+    function last(m, w) { var t = Date.UTC(y, m, 0); return t - ((new Date(t).getUTCDay() - w + 7) % 7) * 864e5; }
+    function obs(m, d) { var t = Date.UTC(y, m - 1, d), x = new Date(t).getUTCDay(); return x === 6 ? t - 864e5 : x === 0 ? t + 864e5 : t; }
+    return [obs(1, 1), nth(1, 1, 3), nth(2, 1, 3), last(5, 1), obs(6, 19), obs(7, 4), nth(9, 1, 1), nth(10, 1, 2), obs(11, 11), nth(11, 4, 4), obs(12, 25)].map(iso);
+  }
+  /* The closed days around a date: computed for the year before through two
+     years after, plus the file's own list. */
+  function holidaysFor(j, iso) {
+    var y = parseInt(String(iso || '').slice(0, 4), 10) || new Date().getUTCFullYear(), out = [];
+    for (var k = y - 1; k <= y + 2; k++) out = out.concat(uspsHolidays(k));
+    return out.concat(j && Array.isArray(j.holidays) ? j.holidays : []);
+  }
   function isBizDay(iso, hol) { var d = new Date(iso + 'T12:00:00Z').getUTCDay(); return d !== 0 && d !== 6 && (hol || []).indexOf(iso) < 0; }
   function addBizDays(iso, n, hol) {
     var t = Date.parse(iso + 'T12:00:00Z'), k = 0, cur = iso;
@@ -270,7 +292,7 @@
     var tr = j && j.transit_business_days && j.transit_business_days[id];
     var parts = [j && j.proof_business_days, j && j.approve_business_days, j && j.ship_business_days, tr];
     if (!parts.every(function (x) { return Number.isInteger(x) && x >= 0 && x < 40; })) return null;
-    var n = parts.reduce(function (a, b) { return a + b; }, 0), by = year + '-12-24', hol = Array.isArray(j.holidays) ? j.holidays : [];
+    var n = parts.reduce(function (a, b) { return a + b; }, 0), by = year + '-12-24', hol = holidaysFor(j, by);
     var t = Date.parse(by + 'T12:00:00Z');
     for (var i = 0; i < 90; i++, t -= 86400000) {
       var d = new Date(t).toISOString().slice(0, 10);
@@ -286,10 +308,25 @@
     var tr = j && j.transit_business_days && j.transit_business_days[id];
     var parts = [j && j.proof_business_days, j && j.approve_business_days, j && j.ship_business_days, tr];
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || '')) || !parts.every(function (x) { return Number.isInteger(x) && x >= 0 && x < 40; })) return '';
-    return addBizDays(todayIso, parts.reduce(function (a, b) { return a + b; }, 0), Array.isArray(j.holidays) ? j.holidays : []);
+    return addBizDays(todayIso, parts.reduce(function (a, b) { return a + b; }, 0), holidaysFor(j, todayIso));
   }
   function shortDate(iso) { var m = /^\d{4}-(\d{2})-(\d{2})$/.exec(String(iso || '')); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[1] - 1] + ' ' + (+m[2]) : ''; }
 
+  /* THE BUSINESS PAGE'S CHRISTMAS SENTENCE (2026-10-17, chaos-6), tied to the
+     same dates as the gift line: through business_cutoff, send the list by
+     then; after it, through the print cutoff, ask (a small list can still
+     make it); after that, through Dec 25, plainly after Christmas; outside
+     Oct 1 to Dec 25 of the cutoff's year, no Christmas clause at all. */
+  function bizChristmasLine(todayIso, j) {
+    var t = String(todayIso || ''), bc = j && j.business_cutoff, pc = j && j.print_christmas_cutoff, M = /^(\d{4})-(\d{2})-(\d{2})$/;
+    var tail = ' Last year, or a year your customers still talk about, works well.';
+    var plain = 'Any past year ships within ' + ((j && j.ship_business_days) || 3) + ' business days after you OK the proof sheet.' + tail;
+    var m = M.exec(String(bc || ''));
+    if (!M.test(t) || !m || t < m[1] + '-10-01' || t > m[1] + '-12-25') return plain;
+    if (t <= bc) return 'Any past year ships before Christmas if the list comes in time: send it by ' + shortDate(bc) + '.' + tail;
+    if (M.test(String(pc || '')) && t <= pc) return 'The ' + shortDate(bc) + ' list date has passed. A small list may still make Christmas if it is in by ' + shortDate(pc) + ': ask me for dates.' + tail;
+    return 'Orders placed now arrive after Christmas.' + tail;
+  }
   /* FOR BUSINESSES (2026-10-12). The list cutoff line, from business_cutoff in
      data/rain-print.json: "For Christmas, send your list by Nov 20." through
      that date; nothing after it, or while it is null. */
@@ -1401,7 +1438,7 @@
     return { choice: c, session: /^cs_[A-Za-z0-9_]{8,250}$/.test(sid) ? sid : '' };
   }
   function paidText(o) {
-    var id = o.choice, j = o.prices || {}, hol = Array.isArray(j.holidays) ? j.holidays : [], file = id === 'digital';
+    var id = o.choice, j = o.prices || {}, hol = holidaysFor(j, o.today), file = id === 'digital';
     var sv = o.saved && o.saved.choice === id ? o.saved : null, ship = Number.isInteger(j.ship_business_days) ? j.ship_business_days : 3;
     var pd = Number.isInteger(j.proof_business_days) ? j.proof_business_days : 1;
     var by = /^\d{4}-\d{2}-\d{2}$/.test(String(o.today || '')) ? dayWords(addBizDays(o.today, pd, hol)) : '';
@@ -1429,7 +1466,7 @@
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind };
   root.RainPrint = api;

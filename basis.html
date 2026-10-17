@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/components/asof.css?v=1">
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-  <script src="/components/util.js?v=18"></script>
+  <script src="/components/util.js?v=20"></script>
   <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -431,6 +431,9 @@
     fetch('/data/transport/journey.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
   ]).then(function(res){
     basis=res[0]; journey=res[1];
+    /* chaos-12: an empty or reshaped file ({}) is a file that did not load, not a TypeError with "Loading barge rates" left up */
+    if(basis&&(!basis.series||typeof basis.series!=='object'))basis=null;
+    if(journey&&(!journey.barge||typeof journey.barge!=='object'||!journey.spreads||typeof journey.spreads!=='object'))journey=null;
     if(!basis||!journey){
       /* the baked table above is real (dated) data: keep it, and say what did not load where it would have gone */
       var showErr=function(){ $('bs-walk').removeAttribute('aria-busy'); $('bs-walk').innerHTML='';
