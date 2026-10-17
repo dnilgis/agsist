@@ -132,6 +132,34 @@ def grab(page, loc, out, tag, log, wait=180000):
         return None
 
 
+def xml_shape(fn, log):
+    """Tag paths with counts, and how many children of each repeating kind a return has."""
+    import collections
+    import xml.etree.ElementTree as ET
+    paths, depth, stack = collections.Counter(), 0, []
+    per = collections.defaultdict(collections.Counter)
+    kids = None
+    for ev, el in ET.iterparse(fn, events=("start", "end")):
+        tag = el.tag.split("}")[-1]
+        if ev == "start":
+            stack.append(tag)
+            if len(stack) <= 6:
+                paths["/".join(stack)] += 1
+            if len(stack) == 2:
+                kids = collections.Counter()
+            elif len(stack) == 3 and kids is not None:
+                kids[tag] += 1
+        else:
+            if len(stack) == 2 and kids is not None:
+                for k, v in kids.items():
+                    per[k][min(v, 10)] += 1
+                el.clear()
+            stack.pop()
+    log.append("xml paths: " + "; ".join("%s=%d" % kv for kv in paths.most_common(140)))
+    for k, c in sorted(per.items()):
+        log.append("children per return, %s: %s" % (k, dict(sorted(c.items()))))
+
+
 def explore(out):
     """Every step logged; whatever fails, the log and the screens so far are kept."""
     import traceback
@@ -227,7 +255,12 @@ def _explore(out, log):
             for fmt in ("XML", "CSV"):
                 page.locator("label[for=Dc-s_%d]" % (0 if fmt == "CSV" else 1)).click()
                 time.sleep(PAUSE)
-                grab(page, page.locator("#" + m["id"]), out, "%s-%04d-%02d" % (fmt.lower(), m["year"], m["month"]), log)
+                fn = grab(page, page.locator("#" + m["id"]), out, "%s-%04d-%02d" % (fmt.lower(), m["year"], m["month"]), log)
+                if fn and fmt == "XML":
+                    xml_shape(fn, log)
+                    with open(fn, "rb") as f, open(fn + ".head.xml", "wb") as g:
+                        g.write(f.read(3_000_000))
+                    os.remove(fn)
                 snap("04-after-" + fmt.lower())
         br.close()
     open(os.path.join(out, "requests.json"), "w").write(json.dumps(reqs, indent=1))
