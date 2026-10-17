@@ -372,7 +372,7 @@ test("the thank-you names the print only when it knows which one was paid for", 
     await page.waitForSelector("#rp-paid:not([hidden])");
     await page.waitForTimeout(800);
     const txt = await page.textContent("#rp-paid");
-    if (named) assert.match(txt, /Your 12 x 18 print of Chetek, WI, 2025 is ordered\./, name);
+    if (named) assert.match(txt, /Your 13 x 19 print of Chetek, WI, 2025 is ordered\./, name);
     else assert.ok(!/Your .* is ordered/.test(txt) && !/Rice Lake/.test(txt), name + ": " + txt);
     if (!named) assert.equal(await page.inputValue("#rp-place"), "", name + ": no design drawn under it");
     assert.deepEqual(errors, []);

@@ -32,7 +32,7 @@
  *     box. choice is the product ordered (the card's when left out): a print
  *     gets a proof first; the digital file comes finished, no proof step, and
  *     Sig redoes it free on request (2026-10-14).
- *   Smaller pieces: norm(code), product(p) ("one framed 12 x 18 Rain Print"),
+ *   Smaller pieces: norm(code), product(p) ("one framed 13 x 19 Rain Print"),
  *   dayText(day) ("Dec 26, 2026" from that or from 2026-12-26),
  *   summary(designCode) (place, year, name, dedication, style), LOCKABLE.
  *
@@ -49,8 +49,8 @@
   var RE = /^[0-9A-HJKMNP-TV-Z]{12}$/;
   var PRODUCT = {
     digital: ['the digital file of one Rain Print', 'Rain Print digital file'],
-    print12x18: ['one 12 x 18 Rain Print, shipping included', '12 x 18 print'],
-    framed12x18: ['one framed 12 x 18 Rain Print, shipping included', 'Framed 12 x 18 print']
+    print12x18: ['one 13 x 19 Rain Print, shipping included', '13 x 19 print'],
+    framed12x18: ['one framed 13 x 19 Rain Print, shipping included', 'Framed 13 x 19 print']
   };
   // Every design input on rain-print.html a locked card can hold still.
   var LOCKABLE = ['place', 'station', 'year', 'style', 'layout', 'palette', 'size', 'cmp', 'name', 'dedication', 'markers', 'normals', 'records'];

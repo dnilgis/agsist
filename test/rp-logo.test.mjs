@@ -199,7 +199,7 @@ test("the page: the upload under the name, its help line, the color switch, the 
   assert.match(H, /value="1" checked><span>Ink color<\/span>/);
   assert.match(H, /<span>Keep its colors<\/span>/);
   assert.match(H, /id="rp-logo-remove" hidden>Remove</);
-  assert.match(H, />Logo for the note card or prints \(optional\)</);
+  assert.match(H, />Logo for the prints \(optional\)</);   // no separate note card (Sig, 2026-10-17)
   const i = (s) => H.indexOf(s);
   assert.ok(i("/components/rp-logo.js?v=") > 0 && i("/components/rp-logo.js?v=") < i("/components/rain-print.js?v="), "loaded before the engine");
   assert.match(read("rp-gift.html"), /\/components\/rp-logo\.js\?v=2/);

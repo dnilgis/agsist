@@ -70,7 +70,7 @@
         text: 'Give this year’s Rain Print. Print a gift card for under the tree now; the print ships in January, once the year is in.', price: price };
     }
     return { angle: 'evergreen', title: 'A year of rain, printed for the wall', href: '/rain-print', cta: 'Make yours',
-      text: 'Type your town and see every rain of the year at the nearest weather station, drawn on one 12 x 18 print. Free to make.', price: price };
+      text: 'Type your town and see every rain of the year at the nearest weather station, printed on 13 x 19 paper. Free to make.', price: price };
   }
   /* The Christmas order-by sentence for /gifts-for-farmers, or '' outside
      Oct 1..Dec 25 of the cutoffs' year or when a cutoff is missing. */
