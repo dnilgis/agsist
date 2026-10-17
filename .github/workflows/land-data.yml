@@ -50,7 +50,7 @@ jobs:
           python scripts/fetch_land_sales.py --selftest
       - name: Probe transfer sources (raw capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
-        run: python scripts/fetch_land_sales.py --probe WI MN
+        run: python scripts/fetch_land_sales.py --probe
       - name: Check parcel services
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || inputs.task == 'all') }}
         run: |

@@ -7,10 +7,76 @@
     "id": "wi-sco",
     "builtin": true,
     "verified": false,
+    "name": "Wisconsin Statewide Parcel Map (V12, 2026)",
+    "by": "Wisconsin Department of Administration and the State Cartographer's Office (V12, from the 72 county parcel files)",
+    "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels_DB/FeatureServer/0",
+    "about": "https://www.sco.wisc.edu/parcels/data/",
+    "fields": {
+     "pid": [
+      "PARCELID"
+     ],
+     "pid2": [
+      "TAXPARCELID",
+      "STATEID"
+     ],
+     "owner": [
+      "OWNERNME1",
+      "OWNERNME2"
+     ],
+     "mail": [
+      "PSTLADRESS"
+     ],
+     "site": [
+      "SITEADRESS"
+     ],
+     "gis_acres": [
+      "GISACRES"
+     ],
+     "deed_acres": [
+      "DEEDACRES"
+     ],
+     "assd_acres": [
+      "ASSDACRES"
+     ],
+     "land": [
+      "LNDVALUE"
+     ],
+     "imp": [
+      "IMPVALUE"
+     ],
+     "total": [
+      "CNTASSDVALUE"
+     ],
+     "fmv": [
+      "ESTFMKVALUE"
+     ],
+     "cls": [
+      "PROPCLASS",
+      "AUXCLASS"
+     ],
+     "county": [
+      "CONAME"
+     ],
+     "muni": [
+      "PLACENAME"
+     ],
+     "year": [
+      "TAXROLLYEAR"
+     ],
+     "date": [
+      "PARCELDATE"
+     ]
+    },
+    "notes": []
+   },
+   {
+    "id": "wi-sco-v11",
+    "builtin": true,
+    "verified": false,
     "checked_utc": "2026-10-17T03:30:23Z",
-    "name": "Wisconsin Statewide Parcel Map",
-    "by": "Wisconsin Department of Administration and the State Cartographer's Office (V11, from the 72 county parcel files)",
-    "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels/FeatureServer/0",
+    "name": "Wisconsin Statewide Parcel Map (V11, 2025)",
+    "by": "Wisconsin Department of Administration and the State Cartographer's Office (V11)",
+    "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/ArcGIS/rest/services/Wisconsin_Statewide_Parcels/FeatureServer/0",
     "about": "https://www.sco.wisc.edu/parcels/data/",
     "fields": {
      "pid": [
@@ -625,7 +691,7 @@
    "IA",
    "IL"
   ],
-  "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first.",
+  "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first. Candidates are services found by hand; each is checked the same way and added only when it passes. Iowa counties are also looked up in the Big Ten Academic Alliance geoportal's record of each county's parcel service.",
   "statewide_candidates": {
    "MN": [
     {
@@ -648,7 +714,92 @@
      "about": "https://clearinghouse.isgs.illinois.edu/"
     }
    ]
-  }
+  },
+  "candidates": [
+   {
+    "st": "WI",
+    "id": "wi-dnr",
+    "name": "Wisconsin statewide parcels (DNR copy of the State Cartographer's map)",
+    "by": "Wisconsin Department of Natural Resources",
+    "url": "https://dnrmaps.wi.gov/arcgis/rest/services/DW_Map_Dynamic/EN_County_Tax_Parcels_WTM_Ext_Dynamic_L16/MapServer",
+    "about": "https://www.sco.wisc.edu/parcels/data/"
+   },
+   {
+    "st": "MN",
+    "id": "mn-open",
+    "partial": true,
+    "name": "Minnesota parcels, compiled from the counties that share (MnGeo)",
+    "by": "Minnesota IT Services, Minnesota Geospatial Information Office",
+    "url": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_mngeo/plan_parcels_open/FeatureServer",
+    "about": "https://gisdata.mn.gov/dataset/plan-parcels-open"
+   },
+   {
+    "st": "IA",
+    "fips": "19153",
+    "by": "Polk County, Iowa",
+    "url": "https://gis4.polkcountyiowa.gov/server/rest/services/Public/Polk_County_Parcels/MapServer"
+   },
+   {
+    "st": "IA",
+    "fips": "19127",
+    "by": "Marshall County, Iowa",
+    "url": "https://gis.marshallcountyia.gov/arcgis/rest/services/WebParcels/MapServer"
+   },
+   {
+    "st": "IA",
+    "fips": "19113",
+    "by": "Linn County, Iowa GIS",
+    "url": "https://gis.linncountyiowa.gov/ags/rest/services/RealEstate/mapLandRecords/MapServer"
+   },
+   {
+    "st": "IA",
+    "fips": "19163",
+    "by": "Scott County, Iowa GIS",
+    "url": "https://services.arcgis.com/ovln19YRWV44nBqV/ArcGIS/rest/services/Cadastral/FeatureServer"
+   },
+   {
+    "st": "IL",
+    "fips": "17113",
+    "by": "McLean County, Illinois GIS",
+    "url": "https://gis.mcleancountyil.gov/arcgis/rest/services/BnZ/Parcels/MapServer"
+   },
+   {
+    "st": "IL",
+    "fips": "17043",
+    "by": "DuPage County, Illinois GIS",
+    "url": "https://gis.dupageco.org/arcgis/rest/services/DuPage_County_IL/ParcelsWithRealEstateCC/MapServer/0"
+   },
+   {
+    "st": "IL",
+    "fips": "17097",
+    "by": "Lake County, Illinois",
+    "url": "https://maps.lakecountyil.gov/arcgis/rest/services/CCAO/TaxParcelViewerPro/MapServer"
+   },
+   {
+    "st": "IL",
+    "fips": "17099",
+    "by": "LaSalle County, Illinois",
+    "url": "https://gis.lasallecounty.org/arcgis/rest/services/TaxParcels/MapServer"
+   },
+   {
+    "st": "IL",
+    "fips": "17089",
+    "by": "Kane County, Illinois",
+    "url": "https://gistech.countyofkane.org/arcgis/rest/services/KanePINList/MapServer/0"
+   },
+   {
+    "st": "IL",
+    "fips": "17031",
+    "by": "Cook County, Illinois",
+    "url": "https://gis12.cookcountyil.gov/traditional/rest/services/CookViewer3Parcels/MapServer/0"
+   },
+   {
+    "st": "IL",
+    "fips": "17201",
+    "by": "City of Rockford, Illinois",
+    "url": "https://rockgis.rockfordil.gov/arcgissvr/rest/services/Parcel_Ownership/MapServer"
+   }
+  ]
  },
  "links": {
   "WI": [

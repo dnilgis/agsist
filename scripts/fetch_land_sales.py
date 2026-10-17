@@ -353,10 +353,36 @@ def build(st, recs, gaz, now):
     return {"counties": len(index), "rows": sum(i["n"] for i in index), "mb": round(total / 1048576, 2), "names": names, "unplaced": unplaced}
 
 
+_JAR = None
+
+
 def fetch(url, timeout=120):
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    """GET with a cookie jar: Wisconsin's data pages sit behind a cookie check and answer
+    'cookies disabled' to a client that drops them."""
+    global _JAR
+    import http.cookiejar
+    if _JAR is None:
+        _JAR = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,application/json,application/xhtml+xml,*/*;q=0.8",
+                                               "Accept-Language": "en-US,en;q=0.9"})
+    with _JAR.open(req, timeout=timeout) as r:
         return r.read()
+
+
+# Pages saved by --probe besides each state's data pages: layouts, data dictionaries and catalogs,
+# so the real columns can be read on the raw branch before any parser trusts them.
+PROBE_DOCS = {
+    "WI": ["https://www.revenue.wi.gov/SLFReportsHistSales/RETRmlist.pdf",
+           "https://www.revenue.wi.gov/Pages/SLF/Assessor-News/2026-02-24.aspx",
+           "https://www.revenue.wi.gov/Pages/RETr/Home.aspx"],
+    "MN": ["https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv",
+           "https://www.revenue.state.mn.us/sales-ratio-reports"],
+    "IL": ["https://api.us.socrata.com/api/catalog/v1?domains=data.illinois.gov&q=mydec&limit=50",
+           "https://tax.illinois.gov/localgovernments/property/mydecdatafiles.html"],
+    "IA": ["https://github.com/ui-libraries/Iowa-Parcels",
+           "https://raw.githubusercontent.com/ui-libraries/Iowa-Parcels/main/README.md",
+           "https://raw.githubusercontent.com/ui-libraries/Iowa-Parcels/master/README.md"],
+}
 
 
 def file_links(page_url, html):
@@ -375,7 +401,7 @@ def probe(states):
     for st in states:
         d = os.path.join(RAW, st.lower())
         os.makedirs(d, exist_ok=True)
-        for i, pg in enumerate(STATES[st]["pages"]):
+        for i, pg in enumerate(STATES.get(st, {}).get("pages", [])):
             try:
                 html = fetch(pg).decode("utf-8", errors="replace")
             except Exception as e:  # noqa: BLE001
@@ -384,6 +410,8 @@ def probe(states):
             open(os.path.join(d, "page%d.html" % i), "w").write(html)
             links = file_links(pg, html)
             open(os.path.join(d, "page%d-links.txt" % i), "w").write("\n".join(links) + "\n")
+            every = sorted(set(urllib.parse.urljoin(pg, h.replace("&amp;", "&")) for h in re.findall(r'href="([^"#]+)"', html, re.I)))
+            open(os.path.join(d, "page%d-alllinks.txt" % i), "w").write("\n".join(every) + "\n")
             log.append("%s page %s: %d file links" % (st, pg, len(links)))
             for j, u in enumerate(links[:3]):
                 try:
@@ -399,6 +427,22 @@ def probe(states):
                     log.append("  %s: %d bytes; header %s; we read %s" % (u, len(blob), hdr, sorted(map_columns(hdr))))
                 except Exception as e:  # noqa: BLE001
                     log.append("  %s: %d bytes; could not read: %s" % (u, len(blob), e))
+        for j, u in enumerate(PROBE_DOCS.get(st, [])):
+            try:
+                blob = fetch(u)
+            except Exception as e:  # noqa: BLE001
+                log.append("%s doc %s: %s" % (st, u, e))
+                continue
+            ext = ".pdf" if blob[:4] == b"%PDF" else ".json" if blob[:1] in (b"{", b"[") else ".html"
+            fn = os.path.join(d, "doc%d%s" % (j, ext))
+            open(fn, "wb").write(blob[:30_000_000])
+            if ext == ".pdf":
+                try:
+                    import subprocess
+                    subprocess.run(["pdftotext", "-layout", fn, fn[:-4] + ".txt"], timeout=120, check=False)
+                except Exception:  # noqa: BLE001
+                    pass
+            log.append("%s doc %s: %d bytes -> %s" % (st, u, len(blob), os.path.basename(fn)))
     open(os.path.join(RAW, "probe-log.txt"), "w").write("\n".join(log) + "\n")
     print("\n".join(log))
     return 0
@@ -468,8 +512,8 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if "--selftest" in a:
         sys.exit(selftest())
-    sts = [x for x in a if x in STATES] or ["WI", "MN"]
     if "--probe" in a:
-        sys.exit(probe(sts))
+        sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS] or sorted(set(STATES) | set(PROBE_DOCS))))
+    sts = [x for x in a if x in STATES] or ["WI", "MN"]
     fd = a[a.index("--from") + 1] if "--from" in a else None
     sys.exit(run(sts, fd))
