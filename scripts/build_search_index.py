@@ -16,6 +16,7 @@ that exists in this checkout)
   states    rent/, yield/, hail-map/, cash-bids/<state>/,
             farmland-atlas/<state>/ pages that exist and are not noindex
   towns     cash-bids/<state>/<town>.html (title "Cash Grain Bids in X, ST")
+  companies cash-bids/company/<slug>.html (title "X Cash Bids Today"), with the elevators
   counties  farmland-atlas/data/counties-index.json, kept only where the page
             exists and is not noindex
   futures   data/prices.json quote keys with a contract month (corn-dec26),
@@ -311,11 +312,30 @@ def norm_co(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
+CO_T = re.compile(r"^(.+?) Cash Bids(?: Today)?(?: \| AGSIST)?$")
+
+
+def build_companies():
+    """cash-bids/company/<slug>.html (scripts/build_company_pages.py): one
+    entry per indexable company page, titled by the company, no number."""
+    out = []
+    for f in sorted(glob.glob(os.path.join(ROOT, "cash-bids", "company", "*.html"))):
+        rel = os.path.relpath(f, ROOT).replace(os.sep, "/")
+        if rel.endswith("/index.html"):
+            continue
+        text = rd(rel)
+        m = CO_T.match(title_of(text))
+        if not m or noindex(text):
+            continue
+        out.append([5, clean(m.group(1)), "Every location", "/" + rel[:-5], "company cash bids grain bids"])
+    return out
+
+
 def build_elevators(by_town, boards):
-    """Network board names first (they have a town page); then directory
-    facilities, titled by company, skipped when that company is already listed
-    for the same town."""
-    out, seen = [], set()
+    """Company pages first, then network board names (they have a town page);
+    then directory facilities, titled by company, skipped when that company is
+    already listed for the same town."""
+    out, seen = build_companies(), set()
     for name, town, st, url in boards:
         k = (norm_co(name), town.lower(), st)
         if k in seen:

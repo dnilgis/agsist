@@ -65,7 +65,9 @@ NAME_TAIL = re.compile(r"[\s,]*\b(inc|incorporated|llc|l\.l\.c|ltd|lp)\b\.?\s*$"
 CSS_EXTRA = (".cbc-t td{white-space:nowrap}.cbc-t td.l{white-space:normal;min-width:7.5em}"
              ".cbc-t td.l a{color:var(--text);font-weight:600}.cbc-t .asof{display:block}"
              ".cbc-t td.q{white-space:normal;color:var(--text-muted);font-size:.82rem}"
-             "@media (max-width:640px){.cbc-t td,.cbc-t th{padding:6px 4px}.cbc-t{font-size:.84rem}}")
+             "@media (max-width:640px){.cbc-t td,.cbc-t th{padding:6px 3px}.cbc-t{font-size:.82rem}"
+             ".cbc-t td.n .mut{font-size:.66rem}.cbc-t td.l{min-width:0}"
+             ".cbc-t .asof,.cbc-t .asof-t,.cbc-t .asof-note{white-space:normal;font-size:.7rem}}")
 
 
 def short_name(name):
@@ -201,10 +203,11 @@ def faq(co, cells, n_loc, n_live, states):
         rows = [(g[c], t) for g, t in cells if c in g]
         if not rows:
             continue
+        # on a tie, the location first by name, both ends
         lo = min(rows, key=lambda x: (x[0]["cash"], x[1]))
-        hi = max(rows, key=lambda x: (x[0]["cash"], x[1]))
+        hi = min(rows, key=lambda x: (-x[0]["cash"], x[1]))
         d, _ = _days([r["priced"] for r, _ in rows])
-        crop = CB.CROP_LABEL[c].lower()
+        crop = CB.ADJ[c]
         if len(rows) == 1 or CB.cash_c(lo[0]["cash"]) == CB.cash_c(hi[0]["cash"]):
             a = (f"The {short} {crop} bid we read is {CB.cash_c(hi[0]['cash'])} a bushel at "
                  f"{len(rows)} location{'s' if len(rows) != 1 else ''}, for the nearest delivery each posts, "
@@ -213,11 +216,12 @@ def faq(co, cells, n_loc, n_live, states):
             a = (f"The {short} {crop} bids we read run from {CB.cash_c(lo[0]['cash'])} a bushel at {lo[1]} to "
                  f"{CB.cash_c(hi[0]['cash'])} at {hi[1]}, across {len(rows)} locations, for the nearest delivery "
                  f"each posts, posted {d}.")
-        qs.append((f"What is {short} paying for {crop} today?", a + " Call the location to confirm before you haul."))
+        qs.append((f"What is {short} paying for {CB.CROP_LABEL[c].lower()} today?", a + " Call the location to confirm before you haul."))
     st_txt = ", ".join(STATE_NAMES[s] for s in states[:-1]) + (" and " if len(states) > 1 else "") + STATE_NAMES[states[-1]]
     qs.append((f"How many {short} locations does AGSIST read?",
-               f"{n_loc} {short} locations in {st_txt}. {n_live} of them have a current bid on this page; "
-               f"the rest show when their board was last read."))
+               f"{n_loc} {short} locations in {st_txt}. " + (
+                   "Every one has a current bid on this page." if n_live == n_loc else
+                   f"{n_live} of them have a current bid on this page; the rest show when their board was last read.")))
     src = f" ({co['host']})" if co.get("host") else ""
     qs.append((f"Is AGSIST part of {short}?",
                f"No. AGSIST is not affiliated with {short}. These bids are read from {short}'s public bid "
@@ -351,7 +355,7 @@ def build_index(metas, ctx):
     for m in sorted(metas, key=lambda m: m["short"].lower()):
         sts = ", ".join(m["states"][:4]) + (f" +{len(m['states']) - 4}" if len(m["states"]) > 4 else "")
         rows.append(f'<tr><td class="l"><a href="{m["path"]}">{esc(m["short"])}</a></td><td class="n">{m["locations"]}</td>'
-                    f'<td class="n">{m["live"]}</td><td>{esc(sts)}</td></tr>')
+                    f'<td class="n">{m["live"]}</td><td class="l">{esc(sts)}</td></tr>')
     jsonld = {"@context": "https://schema.org", "@graph": [
         CB.breadcrumb([("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"), ("By company", f"{SITE}{path}")]),
         {"@type": "ItemList", "name": "Cash bids by elevator company", "numberOfItems": n,
@@ -473,7 +477,7 @@ def selftest():
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/company/acme-co-op">' in p
         assert 'content="index,follow"' in p and "<title>Acme Co-op Cash Bids Today | AGSIST</title>" in p
         assert "ga-guard" in p and 'id="site-header"' in p, "same head and static chrome as the town pages"
-        assert "—" not in p, "no em dashes"
+        assert "\u2014" not in p, "no em dashes"
         ld = [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">\n(.*?)\n  </script>', p, re.S)]
         types = [g["@type"] for g in ld[0]["@graph"]]
         assert types == ["BreadcrumbList", "WebPage", "FAQPage"], types
