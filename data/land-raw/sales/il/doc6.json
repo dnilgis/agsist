@@ -1,1 +1,23 @@
-[]
+[{"line_5_instrument_type":"Warranty Deed","count":"39592"}
+,{"line_5_instrument_type":"Trustee Deed","count":"15005"}
+,{"line_5_instrument_type":"Executor Deed","count":"3256"}
+,{"line_5_instrument_type":"Special Warranty Deed","count":"2450"}
+,{"line_5_instrument_type":"Quit Claim Deed","count":"1836"}
+,{"line_5_instrument_type":"Other","count":"1519"}
+,{"line_5_instrument_type":"Deed in Trust","count":"1143"}
+,{"line_5_instrument_type":"Administrator's Deed","count":"587"}
+,{"line_5_instrument_type":"Beneficial interest","count":"278"}
+,{"line_5_instrument_type":"Limited Warranty Deed","count":"106"}
+,{"line_5_instrument_type":"Guardian's Deed","count":"48"}
+,{"line_5_instrument_type":"Sheriff's Deed","count":"29"}
+,{"line_5_instrument_type":"Judge's Deed","count":"15"}
+,{"line_5_instrument_type":"Deed of Partition","count":"13"}
+,{"line_5_instrument_type":"Judicial Sale","count":"8"}
+,{"line_5_instrument_type":"Mineral Deed","count":"6"}
+,{"line_5_instrument_type":"Court Officer's Deed","count":"4"}
+,{"line_5_instrument_type":"Commissioner's Deed","count":"3"}
+,{"count":"2"}
+,{"line_5_instrument_type":"Special Commissioner's Deed","count":"2"}
+,{"line_5_instrument_type":"Corrective Deed","count":"1"}
+,{"line_5_instrument_type":"Conservator's Deed","count":"1"}
+,{"line_5_instrument_type":"Deed in lieu of Foreclosure","count":"1"}]

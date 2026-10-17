@@ -1,0 +1,305 @@
+                           Use your mouse or Tab key to move through the fields. Use your mouse or space bar to enable check boxes.
+
+                    PTAX-203
+                    Illinois Real Estate                                                                                       County:
+
+
+
+
+                                                                                               County Recorder’s Office use.
+                                                                                                Do not write in this area.
+                    Transfer Declaration                                                                                       Date:
+Please read the instructions before completing this form.
+For electronic filing information, visit the MyDec Helpful Resource page.                                                      Doc. No.:
+Step 1: Identify the property and sale information.
+                                                                                                                               Vol.:
+1
+      Street address of property (or 911 address, if available)
+                                                                                                                               Page:
+		
+
+		    City or village                                                 ZIP		
+		
+                                                                                                                               Received by:
+		    Township
+                                                                                                9 Identify any significant physical changes in the property since
+2 Enter the total number of parcels to be transferred.                                         		 January 1 of the previous year and enter the date of the change.
+3 Enter the parcel identifying numbers and lot sizes or acreage.		                             		 Date of significant change:            /
+		           Property index number (PIN)         Lot size or acreage                           		                              Month       Year
+                                                                                               		 (Mark with an “X.”)
+		    a­­­­­                                                                             Demolition/damage            Additions         Major remodeling
+		    b                                                                                        		
+                                                                                         New construction             Other (specify):
+		    c­­­­­                                                                    10 Identify only the items that apply to this sale. (Mark with an “X.”)
+		    d                                                                         		 a        Fulfillment of installment contract —
+		    Enter additional property index numbers, lot sizes or acreage in 		       				        year contract initiated :
+		    Step 3.                                                                   		 b        Sale between related individuals or corporate affiliates
+ 4    Date of instrument:              /                                        		 c        Transfer of less than 100 percent interest
+		                          Month           Year
+                                                                                		 d        Court-ordered sale
+ 5 Type of instrument (Mark with an “X.” ):                    Warranty deed
+                                                                                		 e        Sale in lieu of foreclosure
+		        Quit claim deed               Executor deed         Trustee deed
+                                                                                		 f        Condemnation
+		        Beneficial interest               Other (specify):
+                                                                                		 g        Short sale
+ 6       Yes        No Will the property be the buyer’s principal residence?
+                                                                                		 h        Bank REO (real estate owned)
+ 7       Yes        No Was the property advertised for sale?		 		 i                         Auction sale
+					               (i.e., media, sign, newspaper, realtor)
+ 8 Identify the property’s current and intended primary use.                    		 j        Seller/buyer  is a relocation company
+		 Current Intended        (Mark only one item per column with an “X.”)         		 k        Seller/buyer is a financial institution or government agency
+   a                Land/lot only                                               		 l        Buyer is a real estate investment trust
+		 b                Residence (single-family, condominium, townhome, or duplex) 		 m        Buyer is a pension fund
+		 c                Mobile home residence                                       		 n        Buyer is an adjacent property owner
+		 d                Apartment building (6 units or less) No. of units:          		 o        Buyer is exercising an option to purchase
+		 e                Apartment building (over 6 units) 		 No. of units:          		 p        Trade of property (simultaneous)
+   f                Office					                                                 		 q        Sale-leaseback
+		   g                    Retail establishment                                                 		 r                                    Other (specify):
+		   h                    Commercial building (specify):                                       			
+		 i                      Industrial building                                                  		 s                                    Homestead exemptions on most recent tax bill:
+       
+		 j                      Farm                                                                 				                                    1 General/Alternative               $
+		 k                      Other (specify):                                                     				                                    2 Senior Citizens                   $
+                                                                                               				                                    3 Senior Citizens Assessment Freeze $
+Step 2: Calculate the amount of transfer tax due.
+Note: Round Lines 11 through 18 to the next highest whole dollar. If the amount on Line 11 is over $1 million and the property’s current use on Line 8
+above is marked “e,” “f,” “g,” “h,” “i,” or “k,” complete Form PTAX-203-A, Illinois Real Estate Transfer Declaration Supplemental Form A. If you are record-
+ing a beneficial interest transfer, do not complete this step. Complete Form PTAX-203-B, Illinois Real Estate Transfer Declaration Supplemental Form B.
+ 11       Full actual consideration                                                                                                                        11    $
+12a       Amount of personal property included in the purchase                                                                                            12a    $
+12b       Was the value of a mobile home included on Line 12a?                                                                                            12b            Yes         No
+ 13       Subtract Line 12a from Line 11. This is the net consideration for real property.                                                                 13    $
+ 14       Amount for other real property transferred to the seller (in a simultaneous exchange)
+		        as part of the full actual consideration on Line 11                                                                                               14 $
+ 15       Outstanding mortgage amount to which the transferred real property remains subject                                                                15 $
+ 16       If this transfer is exempt, use an “X” to identify the provision.                                                                                 16          b        k
+ 17       Subtract Lines 14 and 15 from Line 13. This is the net consideration subject to transfer tax.                                                     17 $
+ 18       Divide Line 17 by 500. Round the result to the next highest whole number (e.g., 61.002 rounds to 62).                                             18   		
+ 19       Illinois tax stamps — multiply Line 18 by 0.50.                                                                                                   19 $
+ 20       County tax stamps — multiply Line 18 by 0.25.                                                                                                     20 $
+ 21       Add Lines 19 and 20. This is the total amount of transfer tax due.                                                                                21 $
+                                 This form is authorized in accordance with 35 ILCS 200/31-1 et seq. Disclosure of this information
+PTAX-203 (R-10/24)               is REQUIRED. This form has been approved by the Forms Management Center.            IL-492-0227                                                          Page 1 of 4
+Step 3: Enter the legal description from the deed. Write, type (minimum 10-point font required), or attach the legal description
+from the deed. If you prefer, submit an 81/2” x 11” copy of the extended legal description with this form. You may also use the space below to enter
+additional property index numbers, lots sizes or acreage from Step 1, Line 3.
+
+
+
+
+Step 4: Complete the requested information.
+The buyer and seller (or their agents) hereby verify that to the best of their knowledge and belief, the full actual consideration and facts stated in this declaration are true and correct. If this
+transaction involves any real estate located in Cook County, the buyer and seller (or their agents) hereby verify that to the best of their knowledge, the name of the buyer shown on the
+deed or assignment of beneficial interest in a land trust is either a natural person, an Illinois corporation or foreign corporation authorized to do business or acquire and hold title to real
+estate in Illinois, a partnership authorized to do business or acquire and hold title to real estate in Illinois, or other entity recognized as a person and authorized to do business or acquire
+and hold title to real estate under the laws of the State of Illinois. Any person who willfully falsifies or omits any information required in this declaration shall be guilty of a Class B misde-
+meanor for the first offense and a Class A misdemeanor for subsequent offenses. Any person who knowingly submits a false statement concerning the identity of a grantee shall be guilty
+of a Class C misdemeanor for the first offense and of a Class A misdemeanor for subsequent offenses.
+
+Seller Information (Please print.)
+                                                                                                                             		
+Seller’s or trustee’s name		 Seller’s trust number (if applicable - not an SSN or FEIN)
+
+
+Street address (after sale)		 City                                                                                                                                        State       ZIP
+
+                                                                                                                             		 (              )                                               		
+Seller’s or agent’s signature		 Seller’s daytime phone
+
+
+Buyer Information (Please print.)
+                                                                                                                             		
+Buyer’s or trustee’s name		 Buyer’s trust number (if applicable - not an SSN or FEIN)
+
+
+Street address (after sale)		 City                                                                                                                                        State       ZIP
+
+                                                                                                                             		 (              )                                               		
+Buyer’s or agent’s signature		 Buyer’s daytime phone
+
+Mail tax bill to:
+
+Name or company                                      Street address 		 City                                                                                               State       ZIP
+
+
+Preparer Information (Please print.)
+                                                                                                                             		
+Preparer’s and company’s name		 Preparer’s file number (if applicable)
+
+
+Street address		 City                                                                                                                                                     State       ZIP
+                                                                                                                                  (            )
+                                                                                                                             		
+Preparer’s signature		 Preparer’s daytime phone
+
+
+Preparer’s e-mail address (if available)
+
+Identify any required documents submitted with this form. (Mark with an “X.”)                                    Extended legal description                            Form PTAX-203-A
+						                                                                                                           Itemized list of personal property                    Form PTAX-203-B
+
+  To be completed by the Chief County Assessment Officer
+  1                                                                                                         3 Year prior to sale
+		 County             Township         Class            Cook-Minor             Code 1     Code 2
+                                                                                                            4 Does the sale involve a mobile home assessed as
+ 2 Board of Review’s final assessed value for the assessment year 		 real estate?                                                             Yes           No
+		 prior to the year of sale.		                                     5 Comments
+   Land                 ,             ,                ,
+   Buildings            ,             ,                ,           			
+   Total                ,             ,                ,           				
+
+Illinois Department of Revenue Use                                                                               Tab number
+
+
+Page 2 of 4                                                                                                                                                                     PTAX-203 (R-10/24)
+                                                                                 Reset                     Print
+  Instructions for Form PTAX-203, Illinois Real Estate Transfer Declaration
+                     General Information                                   Can criminal penalties be imposed?
+The information requested on this form is required by the Real Estate      Anyone who willfully falsifies or omits any required information on
+Transfer Tax Law (35 ILCS 200/31-1 et seq.). All parties involved in       Form PTAX-203 is guilty of a Class B misdemeanor for the first
+the transaction must answer each question completely and truthfully.       offense and a Class A misdemeanor for subsequent offenses.
+                                                                           Anyone who knowingly submits a false statement concerning the
+What is the purpose of this form?                                          identity of a grantee of property in Cook County is guilty of a Class
+County offices and the Illinois Department of Revenue use this form to     C misdemeanor for the first offense and a Class A misdemeanor for
+collect sales data and to determine if a sale can be used in assessment    subsequent offenses. The penalties that could be imposed for each
+ratio studies. This information is used to compute equalization factors.   type of misdemeanor are listed below (35 ILCS 200/31-50 and
+Equalization factors are used to help achieve a state-wide uniform         730 ILCS 5/5-8-3 and 5/5-9-1).
+valuation of properties based on their fair market value.
+                                                                              Misdemeanor               Prison Term             Maximum Fines
+Must I file Form PTAX-203?                                                        Class A         less than 1 year                    $2,500
+You must file either (1) Form PTAX-203 and any required documents
+with the deed or trust document or (2) an exemption notation on the               Class B         not more than 6 months              $1,500
+original deed or trust document at the County Recorder’s office within            Class C         not more than 30 days               $1,500
+the county where the property is located. File Form PTAX-203 for all
+real estate transfers except those qualifying for exempt status under
+(a), (c), (d), (e), (f), (g), (h), (i), (j), or (l) listed below.                           Line-by-line Instructions
+Which property transfers are exempt from real                              The sellers and buyers or their agents must complete Steps 1 through
+estate transfer tax?                                                       4 of this form. For transfers of a beneficial interest of a land trust,
+                                                                           complete the form substituting the words “assignor” for “seller” and
+The following transactions are exempt from the transfer tax under
+                                                                           “assignee” for “buyer.”
+35 ILCS 200/31-45.
+ (a) Deeds representing real estate transfers made before January 1,       Step 1:     Identify the property and sale information.
+     1968, but recorded after that date and trust documents executed       Line 1 — Enter the property’s street address (or 911 address, if
+     before January 1, 1986, but recorded after that date.                 available), city or village, zip code, and township in which the property
+ (b) Deeds to or trust documents relating to (1) property acquired         is located.
+     by any governmental body or from any governmental body,
+     (2) property or interests transferred between governmental            Line 3 — Enter all the parcel identifying numbers and the properties’
+     bodies, or (3) property acquired by or from any corporation,          lot sizes (e.g., 80’ x 100’) or acreage. If only the combined lot size or
+     society, association, foundation or institution organized and         acreage is available for multiple parcels, enter the total on Line 3a
+     operated exclusively for charitable, religious or educational         under the “lot size or acreage” column. If transferring only a part of
+     purposes. However, deeds or trust documents, other than those         the parcel, enter the letters “PT” before the parcel identifying number
+     in which the Administrator of Veterans’ Affairs of the United         and enter the lot size or acreage of the split parcel. If transferring a
+     States is the grantee pursuant to a foreclosure proceeding, shall     condominium, enter the parcel identifying number and the square feet
+     not be exempt from filing the declaration.                            of the condominium unit. If surface rights are not being transferred,
+ (c) Deeds or trust documents that secure debt or other obligation.        indicate the rights being transferred (e.g., “minerals only”). If transfer-
+ (d) Deeds or trust documents that, without additional consideration,      ring right-of-way (ROW) property that does not have a parcel identify-
+     confirm, correct, modify, or supplement a deed or trust document      ing number, enter “ROW only.” If five or more parcels are involved, use
+     previously recorded.                                                  the space provided on Page 2, Step 3. The parcel identifying number
+ (e) Deeds or trust documents where the actual consideration is less       is printed on the real estate tax bill and assessment notice. The chief
+     than $100.                                                            county assessment officer can assist you with this information.
+ (f) Tax deeds.                                                            Line 4 — Enter the month and year from the instrument.
+ (g) Deeds or trust documents that release property that is security
+     for a debt or other obligation.                                       Line 5 — Use an “X” to identify the type of instrument (i.e., deed,
+ (h) Deeds of partition.                                                   trust document, or facsimile) to be recorded with this form. For a
+ (i) Deeds or trust documents made pursuant to mergers,                    deed-in-trust, limited warranty, special warranty, trust deed, or other
+     consolidations or transfers or sales of substantially all of the      deed types not listed on this form, select “Other” and enter the deed
+     assets of corporations under plans of reorganization under the        type. “Joint tenancy” and “tenants-in-common” identify ownership
+     Federal Internal Revenue Code (26 USC 368) or Title 11 of the         rights and cannot be used as a deed type.
+     Federal Bankruptcy Act.                                               Line 6 — Select “Yes” if the property will be used as the buyer’s
+ (j) Deeds or trust documents made by a subsidiary corporation             principal dwelling place and legal residence.
+     to its parent corporation for no consideration other than the         Line 7 — Select “Yes” if the property was sold using a real estate
+     cancellation or surrender of the subsidiary’s stock.                  agent or advertised for sale by newspaper, trade publication, radio/
+ (k) Deeds when there is an actual exchange of real estate and             electronic media, or sign.
+     trust documents when there is an actual exchange of beneficial
+     interests, except that that money difference or money’s worth         Line 8 — Use an “X” to select one item under each of the column
+     paid from one to the other is not exempt from the tax. These          headings “Current” and “Intended.” “Current” identifies the current or
+     deeds or trust documents, however, shall not be exempt from           most recent use of the property. “Intended” identifies the intended or
+     filing the declaration.                                               expected use of the property after the sale. If the property has more
+ (l) Deeds issued to a holder of a mortgage, as defined in                 than one use, identify the primary use only.
+     Section 15-103 (now Section 15-1207) of the Code of Civil             Line 8h, Commercial building — Enter the type of business (bank,
+     Procedure, pursuant to a mortgage foreclosure proceeding or           hotel/motel, parking garage, gas station, theater, golf course, bowling
+     pursuant to a transfer in lieu of foreclosure.                        alley, supermarket, shopping center, etc.).
+Note: If a transfer qualifies for an exemption under both
+Section 31-45(e) and 31-45(b), then the Section 31-45(e) exemption         Line 8k, Other — Choose this item only if the primary use is not listed
+shall be selected, and no transfer declaration or supplemental             and enter the primary use of the property.
+information shall be required. In such case, a notation of exempt          Note: For Lines 8h and 8k, if the current and intended categories are
+status must appear on the face of the deed, document transferring a        the same but the specific use will change, (i.e., from bank to theater),
+controlling interest in real property, or trust document.                  enter the current use on the line provided and enter the intended
+PTAX-203 (R-10/24)                                                         use directly below the line provided.                           Page 3 of 4
+Line 9 — Use an “X” to identify any significant physical changes in         On 81/2” x 11” paper, submit an itemized list of personal property (in-
+the property since January 1 of the previous year. Enter the date the       clude values) transferred from the seller to the buyer if this sale meets
+change was completed or the property was damaged.                           either of the following conditions:
+Line 10 — Select only the items that apply to this sale. A definition is      • residential property — if the amount of personal property (not
+provided below for all items marked with an asterisk.                           including the value of a mobile home) on Line 12a is greater than 5
+Line 10a, Fulfillment of installment contract — The installment                 percent of the sale price on Line 11, or
+contract for deed is initiated in a calendar year prior to the calendar       • non-residential property — if the amount of personal property on
+year in which the deed is recorded. Enter the year the contract was             Line 12a is greater than 25 percent of the sale price on Line 11.
+initiated between the seller and buyer. Do not select this item if the      Residential personal property — Generally, “personal property”
+installment contract for deed was initiated and the property was            includes items that are not attached (built-in) to the home and that are
+transferred within the same calendar year.                                  normally removed by the seller when vacating the property. Examples
+Line 10c, Transfer of less than 100 percent interest — The seller           include artwork, automobiles and boats, draperies, furniture, free-
+transfers a portion of the total interest in the property. Other owners     standing appliances (e.g., refrigerators, stoves, washers and dryers,
+will keep an interest in the property. Do not consider severed mineral      but not built-in appliances), lawn mowers, tractors, snow blowers, rugs
+rights when answering this question.                                        (excludes wall-to-wall carpets), and window air-conditioners (excludes
+                                                                            central air). Include the value of a mobile home as personal property on
+Line 10d, Court-ordered sale — The property’s sale was ordered by           Line 12a if it meets all of the following conditions:
+a court (e.g., bankruptcy, foreclosure, probate).
+                                                                              • The value of the mobile home was included on Line 11.
+Line 10g, Short sale — The property was sold for less than the                • The value of the mobile home was not included on the real estate
+amount owed to the mortgage lender or mortgagor, if the mortgagor               tax bill.
+has agreed to the sale.
+                                                                            Commercial/industrial personal property — Generally, “personal
+Line 10h, Bank REO (real estate owned) — The first sale of the              property” is any item that is not a permanent improvement to the
+property owned by a financial institution as a result of a judgment of      land and includes, but is not limited to, intangibles such as goodwill,
+foreclosure, transfer pursuant to a deed in lieu of foreclosure, or con-    licenses, patents, franchises, business or enterprise values; and
+sent judgment occurring after the foreclosure proceeding is complete.       certain tangibles such as inventories, cash registers and shopping
+Line 10k, Seller/buyer is a financial institution — “Financial institu-     carts, free-standing shelving and displays, furniture, office equipment
+tion” includes a bank, savings and loan, credit union, Resolution Trust     and supplies, vehicles, and machinery and equipment not assessed
+Company, and any entity with “mortgage company” or “mortgage                as real estate.
+corporation” as part of the business name.                                  Generally, “personal property” does not include building components
+Line 10o, Buyer is exercising an option to purchase — The sale              (e.g., wiring and lighting, heating, air-conditioning, plumbing, fire pro-
+price was predicated upon the exercise of an option to purchase at a        tection); foundations, pits and other building components for special-
+predetermined price.                                                        ized or heavy machinery; permanent fixtures including, but not limited
+Line 10p, Trade of property (simultaneous) — Buyer trades or                to, machinery and equipment and cranes assessed as real estate,
+exchanges with the seller one or more items of real estate for part or      craneways, and non-portable tanks; and site improvements such as
+all of the full actual consideration (sale price) on Line 11.               paving and fencing.
+Line 10r, Other — Explain any special facts or circumstances                Line 14 — Enter the amount of other real estate transferred from the
+involving this transaction that may have affected the sale price or sale    buyer to the seller that was included in the sale price on Line 11. This
+agreement or forced the sale of the property. This includes property that   value only applies to a simultaneous exchange between the par-
+is subject to an existing lease or property that is part of an IRC §1031    ties involved in this transaction. Do not include the value of property
+Exchange.                                                                   involved in a deferred exchange under IRC §1031.
+Line 10s, Homestead exemptions on most recent tax bill — Enter              Line 15 — Enter an amount only if the deed or trust document states
+the dollar amount for any homestead exemption reflected on the most         that the transferred property remains subject to a mortgage at the
+recent annual tax bill.                                                     time of the transfer.
+                                                                            Line 16 — Use an “X” to identify the letter of the provision for the
+Step 2:       Calculate the amount of transfer tax due.                     exemption from the transfer tax (i.e., (b) or (k)) that applies to this
+Round Lines 11 through 18 to the next highest whole dollar.                 transfer. See “Which property transfers are exempt from real estate
+Note: File PTAX-203-B, Illinois Real Estate Transfer Declaration            transfer tax?” in these instructions.
+Supplemental Form B, when filing instruments other than deeds, or
+trust documents. (Do not complete Step 2, of the PTAX-203 when              Step 3:      Enter the legal description from the deed.
+filing the PTAX-203-B).                                                     Enter the legal description from the deed. Use a minimum 10-point
+Line 11 — Enter the full actual consideration (sale price). Full actual     font if the legal description is typed. If the legal description will not fit
+consideration is the amount actually paid, excluding any amount             in the space provided, submit an 81/2” x 11” copy of the extended legal
+credited against the purchase price or refunded to the buyer for            description from the deed with this form.
+improvements or repairs to the property. Include the amount for other       Step 4:      Complete the requested information.
+real estate transferred in a simultaneous exchange from the buyer
+to the seller, even if the transfer involves an even exchange. Also         Enter the requested information for the seller, buyer, and preparer.
+include the amount of outstanding mortgages to which the property           Enter the addresses and daytime phone numbers where the seller
+remains subject at the time of the transfer.                                and buyer can be contacted after the sale.
+Note: File PTAX-203-A, Illinois Real Estate Transfer Declaration            The seller and buyer (or their agents) and preparer must sign this
+Supplemental Form A, if the amount on Line 11 is over $1 million and        form. By signing the form, the parties involved in the real estate
+the property’s current use on Line 8 is marked “Apartment building          transfer verify that
+(over 6 units),” “Office,” “Retail establishment,” “Commercial building,”     • they have examined the completed Form PTAX-203,
+“Industrial building,” or “Other.”                                            • the information provided on this form is true and correct, and
+Line 12a — Enter the amount of personal property items included               • they are aware of the criminal penalties of law associated with
+in the sale price on Line 11. Do not include the value of a beneficial          falsifying or omitting any information on this form.
+interest of a land trust. Personal property items are generally listed      Use an “X” to identify any required documents submitted with this
+on the “bill of sale.” If you are uncertain as to whether an item is real   form.
+estate or personal property, consult your attorney, tax advisor, or the
+chief county assessment officer.
+
+
+Page 4 of 4                                                                                                                             PTAX-203 (R-10/24)
+
