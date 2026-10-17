@@ -22,6 +22,8 @@ The contract a basis is quoted against is named ("vs Dec '26"), never priced.
 WHAT IS SHOWN (every rule must hold for a row to print)
   - row: stale false, sourceStatus "ok", USD, a US state
   - board in index.json with status "ok" and health "live"
+    (or: board and row "skipped", i.e. not asked this pass, with its last
+    successful read within SB.HELD_SKIP_HOURS; see held_skip())
   - pricedAt within FRESH_HOURS (72 h) of the snapshot -- the same window the
     state basis pages use, so a board unchanged over a weekend still counts
   - delivery not expired: periodPast false, the month window not behind the
@@ -435,10 +437,11 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             drops[k] += 1
             bd["why"][k] += 1
 
-        if b.get("stale") is not False or b.get("sourceStatus") != "ok":
+        held = SB.held_skip(b, src, gen)   # skipped this pass, read within HELD_SKIP_HOURS
+        if not held and (b.get("stale") is not False or b.get("sourceStatus") != "ok"):
             no("stale_or_unconfirmed")
             continue
-        if src.get("status") != "ok" or src.get("health") != "live":
+        if not held and (src.get("status") != "ok" or src.get("health") != "live"):
             no("board_not_live")
             continue
         if pt is None or (gen - pt).total_seconds() > FRESH_HOURS * 3600:
@@ -1755,7 +1758,7 @@ def build_town_page(t, ctx):
   {known_html}
   <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
   posted bid board directly; no third-party bid feed is used for the bids on this page. A bid shows only if the board was
-  confirmed on the latest read, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
+  read successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
   has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
   has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</div>
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
@@ -2236,8 +2239,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {lst}
   {quiet_html}
   <div class="cbt-note"><b>How these numbers are made.</b> Source: the AGSIST elevator network (dnilgis/bids),
-  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was confirmed
-  live on the latest read and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
+  boards read directly; no third-party bid feed is used on this page. A bid counts only if its board was read
+  successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
   over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved)
   are left out of the basis. A middle number needs at least {BM.MIN_STAT} elevators on the same futures month.{wow_note}
   Prices move through the day; call the elevator before you haul.</div>
@@ -2505,6 +2508,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         with open(os.path.join(tmp, url_slug(STATE_NAMES[st]), "index.html"), "w", encoding="utf-8") as f:
             f.write(page)
         smetas.append(sm)
+    ctx["towns"] = towns              # a company with no current bid lists elevators near it
     cmetas, cindex = CO.write_all(companies, ctx, tmp)
     if companies_out is not None:      # /cash-bids names them (stamp_live_coverage)
         companies_out.extend(cmetas)

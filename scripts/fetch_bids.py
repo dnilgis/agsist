@@ -508,6 +508,39 @@ BIDS_NETWORK_BASE = os.environ.get(
     "BIDS_NETWORK_BASE", "https://dnilgis.github.io/bids/")
 MERGE_RADIUS_MI = float(os.environ.get("BIDS_MERGE_RADIUS_MI", "50"))
 
+# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+# repo flags a row stale whenever its board was not read on the latest pass,
+# for three reasons: "refused" and "broken" (the read failed) and "skipped"
+# (not asked this pass: Landus is paced 5 boards a pass, NEW Cooperative
+# answers most passes with a bot check the reader does not try to pass). A
+# skipped row counts when its board's last successful read (checkedAt) is
+# within HELD_SKIP_HOURS of the snapshot. Refused and broken never count.
+# ONE RULE: the page builders (build_state_basis_pages.held_skip) call this,
+# and components/cash-bids.js heldSkip() mirrors it in the browser.
+HELD_SKIP_HOURS = 6
+
+
+def held_skip_row(b, generated):
+    """True when network row b was skipped this pass and its board was last
+    read successfully within HELD_SKIP_HOURS of `generated` (ISO string or
+    aware datetime). Anything unreadable is False."""
+    if not isinstance(b, dict) or b.get("sourceStatus") != "skipped":
+        return False
+
+    def ts(x):
+        if isinstance(x, datetime):
+            return x
+        try:
+            return datetime.fromisoformat(str(x).replace("Z", "+00:00")).astimezone(timezone.utc)
+        except (TypeError, ValueError):
+            return None
+    gen, ck = ts(generated) if generated else None, ts(b.get("checkedAt")) if b.get("checkedAt") else None
+    if gen is None or ck is None:
+        return False
+    age = (gen - ck).total_seconds() / 3600
+    return -0.25 <= age <= HELD_SKIP_HOURS
+
+
 def _net_get_json(base, rel, timeout=60):
     """Read base+rel as JSON. base may be an http(s) URL or a local directory
     (used by the self-test and any offline run).
@@ -858,6 +891,7 @@ def network_rows(grid, base=None):
     rows = []
     dropped_stale = 0
     dropped_currency = 0
+    n_held = 0
     for b in bids:
         if not b:
             continue
@@ -865,12 +899,17 @@ def network_rows(grid, base=None):
         # republishes its last-known price flagged stale (sourceStatus
         # "broken"/"refused"); merging that would show an unconfirmed price
         # as today's cash. Drop it -- the same call the browser merge makes.
-        if b.get("stale") is True:
+        # A board only skipped this pass and read within HELD_SKIP_HOURS is
+        # kept, and carries its own read time (held_skip_row).
+        held = held_skip_row(b, _NET_GENERATED)
+        if b.get("stale") is True and not held:
             dropped_stale += 1
             continue
-        if (b.get("sourceStatus") or "ok") not in ("ok",):
+        if (b.get("sourceStatus") or "ok") not in ("ok",) and not held:
             dropped_stale += 1
             continue
+        if held:
+            n_held += 1
         # A PRICE IN ANOTHER CURRENCY IS NOT A PRICE THESE PAGES CAN DRAW.
         # The feed declares it and every row here renders as "$" + number.
         # Dropped rather than converted: there is no exchange rate in this
@@ -928,8 +967,14 @@ def network_rows(grid, base=None):
             "lat": la if isinstance(la, (int, float)) else None,
             "lon": lo if isinstance(lo, (int, float)) else None,
         })
+        if held:
+            # A HELD ROW SHOWS ITS OWN READ TIME. Every surface that prints a
+            # row time reads `timestamp` before the file's `fetched`, so a price
+            # read five hours ago never borrows this run's clock.
+            rows[-1].update({"held": True, "timestamp": b.get("checkedAt"),
+                             "checkedAt": b.get("checkedAt"), "pricedAt": b.get("pricedAt") or None})
     print(f"[fetch_bids] network: {len(bids)} rows in the feed, "
-          f"{dropped_stale} stale/broken dropped, "
+          f"{dropped_stale} stale/broken dropped, {n_held} held (skipped, read within {HELD_SKIP_HOURS} h), "
           f"{dropped_currency} not priced in USD, {len(rows)} merged in")
     return rows
 
@@ -2543,6 +2588,45 @@ def selftest():
     with redirect_stdout(buf), redirect_stderr(buf):
         net = network_rows(grid_n, base=tmp)
     ck("the stale row is not merged", not any(r["cashPrice"] == 9.99 for r in net))
+    ck("a refused board's row is not merged", not any(r["cashPrice"] == 8.88 for r in net))
+
+    # A BOARD SKIPPED THIS PASS (not asked) counts while its last good read is
+    # within HELD_SKIP_HOURS of the snapshot, and carries that read time;
+    # older, or refused/broken at any age, it never counts.
+    held_feed = {"schema": "agsist-merged-all/1", "generated": "2026-10-17T21:37:31Z", "bids": [
+        dict(feed["bids"][0], operator="Paced Co-op", cash=5.01, stale=True, sourceStatus="skipped",
+             checkedAt="2026-10-17T21:00:27Z", pricedAt="2026-10-16T18:57:56Z"),
+        dict(feed["bids"][0], operator="Old Skip Co-op", cash=5.02, stale=True, sourceStatus="skipped",
+             checkedAt="2026-10-17T15:00:00Z"),
+        dict(feed["bids"][0], operator="Refused Co-op", cash=5.03, stale=True, sourceStatus="refused",
+             checkedAt="2026-10-17T21:30:00Z"),
+        dict(feed["bids"][0], operator="Broken Co-op", cash=5.04, stale=True, sourceStatus="broken",
+             checkedAt="2026-10-17T21:30:00Z"),
+        dict(feed["bids"][0], operator="No Clock Co-op", cash=5.05, stale=True, sourceStatus="skipped"),
+    ]}
+    with open(os.path.join(tmp, "data", "merged-all.json"), "w") as f:
+        json.dump(held_feed, f)
+    buf = io.StringIO()
+    with redirect_stdout(buf), redirect_stderr(buf):
+        hnet = network_rows(grid_n, base=tmp)
+    paced = [r for r in hnet if r["cashPrice"] == 5.01]
+    ck("a skipped board read 37 min before the snapshot is merged", len(paced) == 1)
+    ck("...flagged held, with its own read time as the row time",
+       bool(paced) and paced[0].get("held") is True and paced[0].get("timestamp") == "2026-10-17T21:00:27Z"
+       and paced[0].get("pricedAt") == "2026-10-16T18:57:56Z")
+    ck("a skipped board last read 6.6 h before the snapshot is not merged",
+       not any(r["cashPrice"] == 5.02 for r in hnet))
+    ck("refused and broken boards are never held",
+       not any(r["cashPrice"] in (5.03, 5.04) for r in hnet))
+    ck("a skipped row with no read time is not merged", not any(r["cashPrice"] == 5.05 for r in hnet))
+    ck("a live row carries no held flag or row time",
+       all("held" not in r and "timestamp" not in r for r in net))
+    ck("held_skip_row: exactly 6 h counts, a clock 20 min ahead does not",
+       held_skip_row({"sourceStatus": "skipped", "checkedAt": "2026-10-17T15:37:31Z"}, "2026-10-17T21:37:31Z")
+       and not held_skip_row({"sourceStatus": "skipped", "checkedAt": "2026-10-17T21:57:31Z"},
+                             "2026-10-17T21:37:31Z"))
+    with open(os.path.join(tmp, "data", "merged-all.json"), "w") as f:
+        json.dump(feed, f)
     ck("a bid priced in another currency is not merged",
        not any(r["cashPrice"] == 99.00 for r in net))
 

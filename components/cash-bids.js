@@ -2066,6 +2066,23 @@ function netContract(b){
     return{symbol:t,month:MON[m[3]]+' 202'+m[2]};
   return{symbol:raw,month:raw};
 }
+/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+   repo flags a row stale whenever its board was not read on the latest pass:
+   "refused" or "broken" (the read failed) or "skipped" (not asked: Landus is
+   read 5 boards a pass, NEW Cooperative answers most passes with a bot check).
+   A skipped row whose board was last read successfully within HELD_SKIP_H
+   counts as read, and shows its own times, never the page's. Refused and
+   broken never do. The same rule as scripts/fetch_bids.py held_skip_row(),
+   measured here from the reader's clock, which is never earlier than the
+   snapshot, so it is the stricter of the two. */
+var HELD_SKIP_H=6;
+function heldSkip(b,now){
+  if(!b||b.sourceStatus!=='skipped')return false;
+  var c=Date.parse(String(b.checkedAt||''));
+  if(!isFinite(c))return false;
+  var h=((now!=null?now:Date.now())-c)/36e5;
+  return h>=-0.25&&h<=HELD_SKIP_H;
+}
 function netRowsFrom(shard,distanceMi){
   if(!shard||!Array.isArray(shard.bids))return [];
   var rows=[],nonUsd=0;
@@ -2077,6 +2094,7 @@ function netRowsFrom(shard,distanceMi){
        basis on a board as "unknown" and sorted it below minus eighty cents. */
     var basis=(typeof b.basis==='number'&&isFinite(b.basis))?b.basis:null;
     if(cash===null&&basis===null)return;
+    var held=heldSkip(b);
     /* A PRICE IN ANOTHER CURRENCY IS NOT A PRICE THIS PAGE CAN DRAW.
        The feed declares it; this function did not read it, and the render is
        '$'+price. Sixteen Ontario rows in Canadian dollars were reaching US ZIP
@@ -2117,14 +2135,15 @@ function netRowsFrom(shard,distanceMi){
       symbol:netContract(b).symbol,
       basisMonth:netContract(b).month,
       futRaw:String(b.futuresMonth||''),
-      asOf:shard.pricedAt||shard.checkedAt||'',
+      /* a held row carries its own board's times (heldSkip) */
+      asOf:(held?(b.pricedAt||b.checkedAt):(shard.pricedAt||shard.checkedAt))||'',
       /* NO ELEVATOR-SIDE TIME, NO "POSTED". The network stamps pricedAt with
          the read that first saw a price, unless the board states when it
          posted; when pricedAt is the read itself (equal to checkedAt) or is
          missing, the time is when AGSIST read the board, and the card says
          "Read 8:40 pm". 1,985 of 2,094 boards carried no posted time on
          2026-10-15. */
-      asOfRead:readTimeOnly(shard.pricedAt,shard.checkedAt),
+      asOfRead:held?readTimeOnly(b.pricedAt,b.checkedAt):readTimeOnly(shard.pricedAt,shard.checkedAt),
       category:classify(b.commodity||b.crop||''),
       /* THE SEASON THE FEED ALREADY WORKED OUT, CARRIED RATHER THAN REDERIVED.
          An elevator's delivery label is often a season, not a month: Flash
@@ -2140,7 +2159,8 @@ function netRowsFrom(shard,distanceMi){
          published both fields all along and this page read neither, so 122
          rows whose read had failed were drawn as ordinary live prices under a
          badge claiming they came straight from the elevator. */
-      stale:b.stale===true,
+      stale:b.stale===true&&!held,
+      held:held,
       sourceStatus:b.sourceStatus||'',
       /* THE FEED'S OWN ANSWER TO "HAS THIS MONTH GONE", WHEN IT HAS ONE.
          Published by dnilgis/bids from 2026-09-23. Null until the merge next

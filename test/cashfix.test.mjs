@@ -75,7 +75,7 @@ test('a board with no posted time of its own says "Read", never "Posted"', () =>
   assert.equal(ctx.readTimeOnly(null, null), true);
   assert.equal(ctx.readTimeOnly("2026-10-15T19:02:00Z", t), false, "an earlier pricedAt is kept as posted");
   /* the network row carries it and the Best card uses it */
-  assert.match(JS, /asOfRead:readTimeOnly\(shard\.pricedAt,shard\.checkedAt\)/);
+  assert.match(JS, /asOfRead:held\?readTimeOnly\(b\.pricedAt,b\.checkedAt\):readTimeOnly\(shard\.pricedAt,shard\.checkedAt\)/);
   assert.match(liftFn(JS, "renderBestBids"), /prefix:best\.asOfRead\?'Read':'Posted'/);
   /* store-or-sell: the same rule, and the words */
   const SS = read("components/storesell.js"), SOS = read("components/store-or-sell.js");
@@ -192,4 +192,27 @@ test("breakeven: the FAQ and the results panel quote the calculator's own corn d
   assert.ok(B.includes(`id="totalCost"><!--BAKE:be-total-->${money}/ac<!--/BAKE-->`));
   assert.equal((B.match(new RegExp(`<!--BAKE:be-cpb-->\\$${be.replace(".", "\\.")}/bu<!--/BAKE-->`, "g")) || []).length, 4);
   assert.doesNotMatch(B, /\$905|\$5\.03/, "the old typed example is back");
+});
+
+test("a board skipped this pass counts while read within 6 h; refused or broken never (held rows keep their own time)", () => {
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext("var HELD_SKIP_H=6;" + liftFn(JS, "heldSkip"), ctx);
+  const now = Date.parse("2026-10-17T21:37:31Z");
+  const row = (st, ck) => ({ sourceStatus: st, stale: true, checkedAt: ck });
+  assert.equal(ctx.heldSkip(row("skipped", "2026-10-17T21:00:27Z"), now), true, "read 37 min ago");
+  assert.equal(ctx.heldSkip(row("skipped", "2026-10-17T15:37:31Z"), now), true, "exactly 6 h");
+  assert.equal(ctx.heldSkip(row("skipped", "2026-10-17T15:00:00Z"), now), false, "6.6 h");
+  assert.equal(ctx.heldSkip(row("skipped", "2026-10-17T22:00:00Z"), now), false, "a clock ahead of ours");
+  assert.equal(ctx.heldSkip(row("skipped", ""), now), false, "no read time");
+  assert.equal(ctx.heldSkip(row("refused", "2026-10-17T21:30:00Z"), now), false);
+  assert.equal(ctx.heldSkip(row("broken", "2026-10-17T21:30:00Z"), now), false);
+  assert.match(JS, /var HELD_SKIP_H=6;/);
+  /* the row: not stale when held, flagged held, and its time is its own board's */
+  const rows = liftFn(JS, "netRowsFrom");
+  assert.match(rows, /var held=heldSkip\(b\);/);
+  assert.match(rows, /stale:b\.stale===true&&!held,/);
+  assert.match(rows, /asOf:\(held\?\(b\.pricedAt\|\|b\.checkedAt\):\(shard\.pricedAt\|\|shard\.checkedAt\)\)\|\|'',/);
+  /* the same 6 h in the Python feed and pages */
+  assert.match(read("scripts/fetch_bids.py"), /^HELD_SKIP_HOURS = 6$/m);
 });
