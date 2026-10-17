@@ -53,7 +53,7 @@ drill-smallgrain	Planting, Drilling, and Seeding	Drilling small grain	acre	19.45
 	Planting, Drilling, and Seeding	Drilling cover crop seed	acre	19.05	9.00	25.00	39
 spray-tractor	Spraying (materials not included)	Ground, broadcast, not incorporated, tractor	acre	8.50	5.00	14.00	35
 	Spraying (materials not included)	Ground, incorporated, tractor	acre	12.30	7.00	18.00	10
-spray-selfprop	Spraying (materials not included)	Ground, broadcast, not incorporated, self-propelled	acre	9.35	5.00	18.00	121
+spray-ground	Spraying (materials not included)	Ground, broadcast, not incorporated, self-propelled	acre	9.35	5.00	18.00	121
 	Spraying (materials not included)	Ground, broadcast, self-propelled tall-crop	acre	11.15	6.00	20.00	65
 	Spraying (materials not included)	Ground, banded, tractor	acre	12.20	8.50	16.00	8
 	Spraying (materials not included)	Ground, road ditches	hour	90.45	25.00	145.00	40

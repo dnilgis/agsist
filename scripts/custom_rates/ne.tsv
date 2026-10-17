@@ -52,7 +52,7 @@ fert-dry	Application of fertilizer	Dry fertilizer solid broadcast, including lab
 fert-liquid	Application of fertilizer	Liquid fertilizer, constant rate, labor and applicator	acre	12.82	8	25	22
 	Application of fertilizer	Liquid fertilizer, variable rate, labor and applicator	acre	15.25	9.5	23	18
 nh3	Application of fertilizer	Anhydrous ammonia, knife with coulters	acre	19.69	10	25	16
-spray-selfprop	Insect, disease and weed control	Spraying weed control, self-propelled sprayer	acre	9.85	7	12.5	29
+spray-ground	Insect, disease and weed control	Spraying weed control, self-propelled sprayer	acre	9.85	7	12.5	29
 spray-drone	Insect, disease and weed control	Crop spraying by drone (fungicides, insecticides and/or herbicides)	acre	15.17	13	20	6
 combine-corn	Harvesting grains and soybeans	Combining irrigated corn, flat rate	acre	50.70	25	82	30
 	Harvesting grains and soybeans	Combining irrigated corn, flat rate	bushel	0.32	0.26	0.45	8
