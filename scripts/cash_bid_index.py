@@ -508,6 +508,9 @@ def _cell(v, fmt):
     return "" if v is None else fmt(v)
 
 
+PHONE_ROWS = 8
+
+
 def table_html(ed, crop):
     c = ed["crops"].get(crop)
     if not c:
@@ -520,31 +523,38 @@ def table_html(ed, crop):
             + "<th scope=\"col\">Raised / cut</th><th scope=\"col\">Basis stronger / weaker</th></tr>")
 
     def row(name, r, cls=""):
+        # data-l: the column name, which a phone shows beside each value when the rows stack into cards
         if r.get("avg_cash") is None:
-            return (f'<tr class="{cls}"><th scope="row">{esc(name)}</th><td>{r["n"]}</td>'
+            return (f'<tr class="{cls}"><th scope="row">{esc(name)}</th><td data-l="Elevators">{r["n"]}</td>'
                     f'<td colspan="{6 if has_chg else 5}" class="cbi-few">fewer than {MIN_STATE_N} elevators</td></tr>')
         chg = ""
         if has_chg:
             d = r.get("chg_cash_cents")
-            chg = "<td>" + ("" if d is None else (f"{'+' if d > 0 else '-'}{de.qc(d)}¢" if abs(d) >= 0.125 else "unch")) + "</td>"
-        return (f'<tr class="{cls}"><th scope="row">{esc(name)}</th><td>{de.num(r["n"])}</td>'
-                f'<td>{money(r["avg_cash"])}</td><td>{money(r["median_cash"])}</td>'
-                f'<td>{esc(_cell(r.get("avg_basis_cents"), cents_words).replace(" futures", ""))}</td>{chg}'
-                f'<td>{r["raised"]} / {r["cut"]}</td><td>{r["basis_stronger"]} / {r["basis_weaker"]}</td></tr>')
+            chg = '<td data-l="Cash vs last month">' + ("" if d is None else (f"{'+' if d > 0 else '-'}{de.qc(d)}¢" if abs(d) >= 0.125 else "unch")) + "</td>"
+        return (f'<tr class="{cls}"><th scope="row">{esc(name)}</th><td data-l="Elevators">{de.num(r["n"])}</td>'
+                f'<td data-l="Avg cash">{money(r["avg_cash"])}</td><td data-l="Median">{money(r["median_cash"])}</td>'
+                f'<td data-l="Avg basis">{esc(_cell(r.get("avg_basis_cents"), cents_words).replace(" futures", ""))}</td>{chg}'
+                f'<td data-l="Bids raised / cut">{r["raised"]} / {r["cut"]}</td><td data-l="Basis firmer / weaker">{r["basis_stronger"]} / {r["basis_weaker"]}</td></tr>')
 
     body = row("All states", c["overall"], "cbi-all")
-    few = []
+    few, k = [], 0
     for st, r in sorted(c["states"].items(), key=lambda kv: (-kv[1]["n"], kv[0])):
         if r.get("avg_cash") is None:
             few.append(r)
             continue
-        body += row(r["name"], r)
+        k += 1
+        # on a phone the first PHONE_ROWS states show; the rest open with "Show all states" (no script needed)
+        body += row(r["name"], r, "cbi-more" if k > PHONE_ROWS else "")
     if few:
         names = ", ".join(f'{esc(r["name"])} {r["n"]}' for r in few)
-        body += (f'<tr><th scope="row">Other states</th><td>{sum(r["n"] for r in few)}</td>'
+        body += (f'<tr class="{"cbi-more" if k > PHONE_ROWS else ""}"><th scope="row">Other states</th><td data-l="Elevators">{sum(r["n"] for r in few)}</td>'
                  f'<td colspan="{6 if has_chg else 5}" class="cbi-few">fewer than {MIN_STATE_N} elevators each: {names}</td></tr>')
-    return (f'<div class="cbi-tw"><table class="cbi-t"><caption>{CROP_NAME[crop]}, {esc(ed["label"])}</caption>'
-            f'<thead>{head}</thead><tbody>{body}</tbody></table></div>')
+    more = sum(1 for r in c["states"].values() if r.get("avg_cash") is not None) - PHONE_ROWS + (1 if few else 0)
+    tid = f'cbi-mt-{esc(ed["month"])}-{crop}'
+    tog = f'<input type="checkbox" class="cbi-mt" id="{tid}">' if more > 0 else ""
+    lab = f'<label class="cbi-ml" for="{tid}">Show all states ({more} more)</label>' if more > 0 else ""
+    return ('<div class="cbi-tg">' + tog + f'<div class="cbi-tw"><table class="cbi-t"><caption>{CROP_NAME[crop]}, {esc(ed["label"])}</caption>'
+            f'<thead>{head}</thead><tbody>{body}</tbody></table></div>' + lab + '</div>')
 
 
 def edition_html(ed, latest):
@@ -601,6 +611,24 @@ CSS = """
 .cbi-dl a{display:inline-block;padding:.55rem .9rem;border:1px solid var(--border);border-radius:6px;text-decoration:none!important}
 .cbi-method li{margin:.35rem 0}
 .cbi-past{margin-top:2.5rem;border-top:2px solid var(--border)}
+@media (max-width:600px){
+.cbi-tw{overflow:visible;border:0}
+.cbi-t{min-width:0;display:block}
+.cbi-t caption{display:block;padding:.2rem 0 .4rem}
+.cbi-t thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.cbi-t tbody{display:block}
+.cbi-t tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:.6rem;margin:0 0 .45rem;padding:.45rem .65rem;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.cbi-t th,.cbi-t td{border:0;padding:.15rem 0;white-space:normal;text-align:left}
+.cbi-t th[scope=row]{grid-column:1/-1;font-size:.95rem;padding-bottom:.25rem}
+.cbi-t td[data-l]::before{content:attr(data-l);display:block;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.03em;color:var(--text-muted);font-weight:400}
+.cbi-t td.cbi-few{grid-column:2/-1}
+.cbi-t tr.cbi-more{display:none}
+.cbi-mt:checked~.cbi-tw tr.cbi-more{display:grid}
+.cbi-ml{display:inline-block;margin:0 0 .6rem;padding:.55rem .9rem;border:1px solid var(--border);border-radius:6px;color:var(--link,var(--brand));font-size:.88rem;cursor:pointer}
+.cbi-mt:checked~.cbi-ml{display:none}
+}
+.cbi-mt{position:absolute;opacity:0;width:1px;height:1px}
+@media (min-width:601px){.cbi-ml{display:none}}
 """
 
 
