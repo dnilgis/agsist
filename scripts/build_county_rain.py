@@ -584,7 +584,10 @@ def county_page(ctx):
             more.append((f"{label} {e(name)}", f"/{top}/{st_slug}/{ctx['slug']}"))
     more_html = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in more)
     rp = rain_print_href(c, st, year)
-    ship = "" if done else f"Prints of {year} ship in January, once the full year is in."
+    # Oct 1 to Dec 24 (by the page's own as-of day): the gift card is the Christmas answer for this year's print
+    xmas = not done and f"{year}-10-01" <= c["as_of"] <= f"{year}-12-24"
+    ship = "" if done else (f"Give it for Christmas: a gift card to put under the tree now, the {year} print in January." if xmas
+                            else f"Prints of {year} ship in January, once the full year is in.")
     miss_note = ""
     if miss > RP_MISS_BLOCK:
         # rain_print_href leaves the station off: say why the print draws another
@@ -1011,7 +1014,7 @@ def selftest():
         lyw = S.text_of(re.sub(r"<script(?! type=.application/ld).*?</script>", "", lyh, flags=re.S))
         ok(not re.search(r"2\.8 inches|\bahead\b|\bbehind\b", lyw), "last year's gaps are not counted as rain this year had")
         ok("(it missed 28 days)" in lyw and "On the 257 days both years reported, 2026 had about the same as 2025." in lyw, "last year's gaps said, and the comparison on common days")
-        ok("ship in January" in story, "this year's prints ship in January")
+        ok("Give it for Christmas: a gift card to put under the tree now, the 2026 print in January." in story, "this year's print before Christmas: the gift card now, the print in January")
         ok('"@type":"FAQPage"' in story and '"@type":"Dataset"' in story and '"@type":"BreadcrumbList"' in story, "structured data")
         ok("As of Oct 12, 2026" in story, "as-of date shown")
         ok('<svg viewBox' in story and 'class="rc-us"' in story, "chart with the usual line")
