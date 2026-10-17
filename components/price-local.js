@@ -59,7 +59,7 @@
   function clock(t, now) {
     var p = ct(t), q = ct(now || new Date());
     if (!p) return '';
-    return (sameDay(p, q) ? '' : MON[p.m - 1] + ' ' + p.d + ', ') + hm(p) + ' CT';
+    return (sameDay(p, q) ? '' : MON[p.m - 1] + ' ' + p.d + ', ' + (q && q.y !== p.y ? p.y + ', ' : '')) + hm(p) + ' CT';
   }
   /* "Oct 16", or "Sep 11, 2025" when the day is not in this year (Central time) */
   function isoDay(s, now) {

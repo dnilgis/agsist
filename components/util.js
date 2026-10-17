@@ -227,7 +227,7 @@
     var o = {}; for (var k in (opts || {})) o[k] = opts[k];
     if (ctl && !o.signal) o.signal = ctl.signal;
     var dead = new Promise(function (res, rej) {
-      timer = setTimeout(function () { if (ctl) { try { ctl.abort(); } catch (e) {} } rej(new Error(url + ' timeout')); }, ms);
+      timer = setTimeout(function () { rej(new Error(url + ' timeout')); if (ctl) { try { ctl.abort(); } catch (e) {} } }, ms);
     });
     return { dead: dead, ctl: ctl, done: function () { clearTimeout(timer); }, p: fetch(url, o) };
   }

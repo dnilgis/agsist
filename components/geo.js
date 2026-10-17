@@ -1145,6 +1145,9 @@ function fetchAllPrices() {
     }))
     .then(function(data) {
       var quotes = data.quotes || {};
+      /* chaos-1 (2026-10-17): contracts that expired since the file was
+         written roll off (components/price-local.js roll, where loaded). */
+      if (window.AgPxStamp && AgPxStamp.roll) data.quotes = quotes = AgPxStamp.roll(quotes);
       /* True front month. The continuous Yahoo series (ZC=F, ZS=F, LE=F) tracks
          the MOST-ACTIVE contract, not the nearby one — on the homepage that
          printed Dec corn under a "Front Month" label (22.75c off September) and

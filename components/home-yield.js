@@ -329,6 +329,8 @@
     return r.json();
   })).then(function(data){
     if(!data||typeof data!=='object'||!data.quotes||typeof data.quotes!=='object')throw new Error('prices.json malformed');
+    /* chaos-1: expired contracts roll off (components/price-local.js roll) */
+    if(window.AgPxStamp&&AgPxStamp.roll)data.quotes=AgPxStamp.roll(data.quotes);
     return data;
   }).then(function(data){
     _pxDone=true;clearTimeout(_pxTimer);
