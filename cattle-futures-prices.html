@@ -709,7 +709,7 @@ details.fold[hidden]{display:none}
     [['le','cattle'],['gf','feeders']].forEach(function(p){
       var s=d&&d[p[1]];if(!s||s.pct==null)return;
       var lq=pr&&pr.q&&pr.q[p[1]],live=(lq&&lq.close!=null)?Number(lq.close):null,h=s.hist,pct,nn,note;
-      if(h&&h.length>=29&&live!=null){var c=1;for(var i=0;i<h.length;i++)if(h[i]<=live)c++;nn=h.length+1;pct=Math.round(100*c/nn);note='Ranks today\u2019s quote ('+cwt(live)+(pr.fetched?', '+ctT(pr.fetched):'')+') against the prior '+h.length+' weekly closes.';}
+      if(h&&h.length>=29&&live!=null){var c=1;for(var i=0;i<h.length;i++)if(h[i]<=live)c++;nn=h.length+1;pct=Math.round(100*c/nn);var pw=window.AgPxStamp?AgPxStamp.stamp(lq,pr.fetched):'';pw=/ settle$/.test(pw)?'the '+pw:/^Last trade/.test(pw)?'the l'+pw.slice(1):'today\u2019s quote'+(pr.fetched?' ('+ctT(pr.fetched)+')':'');note='Ranks '+pw+' ('+cwt(live)+') against the prior '+h.length+' weekly closes.';}
       else{pct=s.pct;nn=s.n;note='Position of '+cwt(s.cur)+' as of the '+(d.updated?ctT(d.updated):'last')+' update, not today\u2019s quote.';}
       var el=$(p[0]+'-read');if(el)el.textContent='5-year: at the '+pct+ordn(pct)+' percentile: '+band(pct)+'. n = '+nn+' weekly closes, continuous front-month (Yahoo Finance, delayed, not CME settlements). '+note;
     });
