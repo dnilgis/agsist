@@ -759,10 +759,11 @@ def validate(day_list, out_json=None, shift=0):
                     continue
                 rn = sample_native(a, g["ll"][1], g["ll"][0])
                 rp = sample_pooled(a, g["ll"][1], g["ll"][0])
-                if rn is None or rp is None:
+                alt = {"p%d" % k: sample_pooled(a, g["ll"][1], g["ll"][0], k) for k in (2, 3, 4)}
+                if rn is None or rp is None or None in alt.values():
                     continue
                 rows.append({"day": day.isoformat(), "st": st, "sid": g["sid"], "net": g["net"],
-                             "gauge": gv, "native": rn, "pooled": rp})
+                             "gauge": gv, "native": rn, "pooled": rp, **alt})
         log(day, len(rows))
     res = summarize(rows)
     if out_json:
@@ -786,7 +787,7 @@ def summarize(rows):
     wet = [r for r in rows if r["gauge"] >= 10 or r["native"] >= 10]
     big = [r for r in rows if r["gauge"] >= 50]
     out = {}
-    for k in ("native", "pooled"):
+    for k in ("native", "pooled", "p2", "p3", "p4"):
         out[k] = {"all_days": stats(rows, k), "wet_days_0.10": stats(wet, k), "gauge_0.50_plus": stats(big, k),
                   "cocorahs_wet": stats([r for r in wet if r["net"] == "cocorahs"], k),
                   "coop_wet": stats([r for r in wet if r["net"] != "cocorahs"], k)}
