@@ -49,7 +49,20 @@ def norm_symbol(sym):
     return m.group(1) + m.group(2) + yy
 
 
-def screen(state_keys, days=SCREEN_DAYS):
+def screen(state_keys, days=SCREEN_DAYS, passes=5):
+    """screen_once until nothing more drops: taking a misread out can tighten
+    the spread of its neighbors enough to show the next one (Iowa, Oct 17:
+    24 more -200c soybean points on a second pass). -> (kept, dropped)."""
+    kept, dropped = dict(state_keys), []
+    for _ in range(passes):
+        kept, d = screen_once(kept, days)
+        dropped += d
+        if not d:
+            break
+    return kept, dropped
+
+
+def screen_once(state_keys, days=SCREEN_DAYS):
     """Drop logged points the cash-bid pages would call a misread.
 
     2026-10-17 audit (N5): the Decatur log printed "low -200c" for Primient
