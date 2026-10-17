@@ -272,3 +272,21 @@ test("no sideways scroll at 390 or 1280, light and dark, the what-if grid includ
     }
   } finally { await browser.close(); srv.close(); }
 });
+
+test("the ? tips and the county code load on demand, not with the page", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { pg, errors } = await open(browser, port);
+    await pg.waitForTimeout(200);
+    assert.equal(srv.hits.some((h) => h.startsWith("/components/breakeven-more.js")), false, "not loaded for a new visitor who has not touched it");
+    assert.equal(await pg.$$eval(".hint-popup", (x) => x.length), 0);
+    await pg.click('label[for="seed"] .hint-icon');
+    await pg.waitForSelector(".hint-popup.hint-open");
+    assert.match(await txt(pg, ".hint-popup.hint-open"), /Technology \/ trait fees/);
+    assert.equal(await pg.$eval('label[for="seed"] .hint-icon', (b) => b.getAttribute("aria-expanded")), "true");
+    await pg.click("h1");
+    assert.equal(await pg.$$eval(".hint-popup.hint-open", (x) => x.length), 0, "a tap elsewhere closes it");
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
