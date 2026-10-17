@@ -73,8 +73,10 @@ test("county files are small, current with their sources, and carry the build's 
 });
 
 /* ------------------------------------------------------------ browser */
-function prices(settled) {
-  const q = (ticker, close) => settled
+function prices(settled, kind) {
+  const q = (ticker, close) => kind
+    ? { ticker, close, close_date: "2026-10-16", prev_date: "2026-10-15", close_kind: kind, prev_kind: "settle", settle_net: kind === "settle" ? -3.75 : null, settles: { "2026-10-15": close + 3.75, "2026-10-16": close } }
+    : settled
     ? { ticker, close, close_date: "2026-10-16", prev_date: "2026-10-15", settles: { "2026-10-15": close + 4, "2026-10-16": close }, pctChange: -0.8 }
     : { ticker, close, pctChange: 0.1, close_date: "2026-10-16" };
   return JSON.stringify({ fetched: new Date().toISOString(), quotes: {
@@ -87,7 +89,7 @@ function serve(settled = true) {
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname); hits.push(p);
     if (p === "/breakeven") p = "/breakeven.html";
-    if (p === "/data/prices.json") { res.writeHead(200, { "content-type": "application/json" }); res.end(prices(srv.settled)); return; }
+    if (p === "/data/prices.json") { res.writeHead(200, { "content-type": "application/json" }); res.end(prices(srv.settled, srv.kind)); return; }
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" }); res.end(readFileSync(f));
@@ -251,6 +253,15 @@ test("the price box says settle only for a recorded settle, else last trade", { 
     assert.match(t2, /^last trade as of /, t2);
     assert.doesNotMatch(t2, /close|%/, "no settle claim and no change with no settles to measure it from");
     assert.doesNotMatch(JS, /last close/);
+    await ctx.close();
+    /* the file's own mark (fetch_prices v3.7): close_kind "last" is a last trade even when a settle sits in settles */
+    srv.kind = "last";
+    ({ pg, errors, ctx } = await open(browser, port));
+    assert.match(await txt(pg, "#live-chg-val"), /^last trade as of /);
+    await ctx.close();
+    srv.kind = "settle";
+    ({ pg, errors, ctx } = await open(browser, port));
+    assert.match(await txt(pg, "#live-chg-val"), /^\u25bc \u22123\u00be\u00a2 \(\u22120\.78%\) \u00b7 Oct 16 settle, change from Oct 15$/);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });

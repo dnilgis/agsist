@@ -351,13 +351,19 @@
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) { _livePrices = data.quotes || {}; _pricesFetched = data.fetched || null; updateLiveBar(); calcBreakeven(); }).catch(function () { });
   }
+  /* "Settle" only when the price file marks the close a settle (close_kind,
+     fetch_prices v3.7); a file from before that counts it a settle only when
+     the day's recorded settle equals it. Anything else is the last trade. The
+     change shown is settle to settle, or none at all. */
   function quoteWords(q) {
-    var st = q.settles || {}, cd = q.close_date, isSettle = !!(cd && st[cd] != null && Math.abs(st[cd] - q.close) < 1e-9);
-    var prev = q.prev_date && st[q.prev_date] != null ? st[q.prev_date] : null;
-    if (isSettle) {
-      var ch = prev != null ? q.close - prev : null;
+    var st = q.settles || {}, cd = q.close_date || q.settle_date;
+    var isSettle = q.close_kind ? q.close_kind === 'settle' : !!(cd && st[cd] != null && Math.abs(st[cd] - q.close) < 1e-9);
+    if (isSettle && cd) {
+      var prev = q.prev_date && st[q.prev_date] != null ? st[q.prev_date] : null;
+      var ch = q.close_kind === 'settle' && q.settle_net != null && q.prev_kind === 'settle' ? q.settle_net : prev != null && (!q.prev_kind || q.prev_kind === 'settle') ? q.close - prev : null;
+      if (ch != null && prev == null) prev = q.close - ch;
       var md = cd.slice(5).split('-'), when = MON[+md[0] - 1] + ' ' + (+md[1]);
-      return { chg: ch, prev: prev, text: when + ' settle' + (ch != null ? ', change from ' + day(q.prev_date).replace(/, \d{4}$/, '') : '') };
+      return { chg: ch, prev: prev, text: when + ' settle' + (ch != null && q.prev_date ? ', change from ' + day(q.prev_date).replace(/, \d{4}$/, '') : '') };
     }
     var t = '';
     if (_pricesFetched) { try { var ft = new Date(_pricesFetched); t = ' as of ' + ft.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch (e) { } }
