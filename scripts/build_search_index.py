@@ -112,6 +112,7 @@ PAGES = [
     ("/drought-monitor", "Drought monitor", "Weekly drought map", "drought dry monitor map rain weather"),
     ("/rain-print", "Rain Print", "Your farm's rainfall year as wall art", "rain print rainfall precipitation year poster wall art gift noaa station farm name"),
     ("/rain", "Rain by county", "Rain so far this year, every county", "rain rainfall precipitation county year to date normal dry wet noaa"),
+    ("/rain-radar", "Rain on your field (radar)", "Radar rain at your spot, last 24 hours to this month", "rain radar field farm how much rain last night 24 hours week month rainfall mrms noaa gauge my spot"),
     ("/conditions", "Crop conditions", "Good to excellent by state", "crop conditions ratings good excellent progress"),
     ("/crop-tour", "Crop tour", "Pro Farmer tour results", "crop tour pro farmer yield"),
     ("/conditions-yield", "2026 crop size", "Every yield forecast, side by side", "crop size yield forecast estimate usda ratings conditions predict nowcast"),
