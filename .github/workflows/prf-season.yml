@@ -1,0 +1,80 @@
+name: PRF interval so far
+
+# The "This interval so far" card on /prf and the PRF county pages reads
+# data/prf/now/<ST>.json, written by scripts/fetch_prf_season.py from NOAA
+# CPC's real-time daily gauge analysis (0.25 degree, CONUS), the same daily
+# rain RMA's Rainfall Index is built from.
+#
+# Dispatch only. No schedule until Sig approves one.
+#   mode=probe     save directory listings, one daily file and the RMA source
+#                  notes to the raw branch (data/prf-season-raw/), nothing else
+#   mode=build     fetch the open intervals and commit data/prf/now/
+#   mode=backtest  rebuild past intervals from CPC and compare with RMA's final
+#                  index; the result goes to the raw branch and the job log
+#
+# The push trigger exists only so GitHub registers this workflow from a branch
+# that is not main (dispatch needs that); a push runs the selftest only.
+on:
+  push:
+    branches: [fx/prfseason]
+    paths: [.github/workflows/prf-season.yml]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "probe | build | backtest"
+        required: true
+        default: probe
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prf-season
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Selftest
+        run: |
+          if [ -f scripts/fetch_prf_season.py ]; then python scripts/fetch_prf_season.py --selftest; fi
+
+      - name: Probe
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'probe' }}
+        run: |
+          D=data/prf-season-raw/probe
+          mkdir -p "$D"
+          get() { curl -sS -L -m 90 -A "agsist.com PRF tracker (sig@farmers1st.com)" -o "$D/$1" -w "$1 %{http_code} %{size_download} %{url_effective}\n" "$2" >> "$D/status.txt" 2>>"$D/errors.txt" || echo "$1 FAILED" >> "$D/status.txt"; }
+          C=https://ftp.cpc.ncep.noaa.gov/precip/CPC_UNI_PRCP/GAUGE_CONUS
+          get cpc-root.html "$C/"
+          get cpc-rt.html "$C/RT/"
+          get cpc-rt-2026.html "$C/RT/2026/"
+          get cpc-rt-2025.html "$C/RT/2025/"
+          get cpc-docs.html "$C/DOCU/"
+          get cpc-v1.html "$C/V1.0/"
+          F=PRCP_CU_GAUGE_V1.0CONUS_0.25deg.lnx.20261015.RT
+          get sample.bin "$C/RT/2026/$F"
+          get sample.bin.gz "$C/RT/2026/$F.gz"
+          get psl-rt.html https://downloads.psl.noaa.gov/Datasets/cpc_us_precip/RT/
+          get psl-root.html https://downloads.psl.noaa.gov/Datasets/cpc_us_precip/
+          get psl-page.html https://psl.noaa.gov/data/gridded/data.unified.daily.conus.html
+          get rma-source-news.html "https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source"
+          get rma-processing-2027.pdf "https://www.rma.usda.gov/sites/default/files/2026-06/Rainfall%20Indexa%20Data%202027%20and%20Beyond%20Rainfall%20Index%20Processing.pdf"
+          get rma-ri-page.html "https://www.rma.usda.gov/policy-procedure/insurance-plans/pasture-rangeland-forage"
+          # the index service also returns the interval rain in mm: one grid, one call, to compare later
+          get rma-api-30025.json "https://public-rma.fpac.usda.gov/apps/PrfWebApi/PrfExternalIndexes/GetIndexValues?intervalType=BiMonthly&sampleYearMinimum=2024&sampleYearMaximum=2026&gridId=30025"
+          sudo apt-get -qq install -y poppler-utils >/dev/null 2>&1 || true
+          [ -s "$D/rma-processing-2027.pdf" ] && pdftotext -layout "$D/rma-processing-2027.pdf" "$D/rma-processing-2027.txt" || true
+          ls -la "$D"; cat "$D/status.txt"; cat "$D/errors.txt" || true
+          bash scripts/push_raw.sh "prf-season probe" "$D"
+
+      - name: Build
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'build' }}
+        run: echo "not yet"
