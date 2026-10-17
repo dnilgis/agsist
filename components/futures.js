@@ -122,6 +122,15 @@ var CROPS={
         ncEl.innerHTML=ncHtml;
         ncEl.style.display='';
       }else if(ncEl){ncEl.style.display='none';}
+      /* corn beside beans (2026-10-17 search-terms check: "corn and soybean prices today"); the corn page's own hero quote, with its stamp */
+      var cEl=document.getElementById('corn-line'),cq=(q['corn-nearby']&&q['corn-nearby'].close!=null)?q['corn-nearby']:q.corn;
+      if(cEl&&cq&&cq.close!=null){
+        var cH='Corn '+(contractLabel(cq)||'')+': <strong>'+grain$(cq.close)+'</strong>';
+        if(cq.pctChange!=null&&!cq.roll)cH+=' <span class="'+(cq.pctChange>=0?'up':'dn')+'">('+AG.px.pct(cq.pctChange)+')</span>';
+        var cS=window.AgPxStamp&&AgPxStamp.html?AgPxStamp.html(cq,data&&data.fetched):'';
+        cEl.innerHTML=cH+(cS?' &middot; '+cS:'')+' &middot; <a href="/corn-futures-prices">Corn futures</a>';
+        cEl.style.display='';
+      }
       renderRatio(data,function(r){return r<2.4?'Corn favored: soybeans historically the weaker per-acre choice':r<2.6?'Neutral: an even acre split is common at these levels':'Beans favored: soybeans historically earn more per acre';});
       var BC=boardCrush(q,front),cw=document.getElementById('crush-card');
       if(BC){

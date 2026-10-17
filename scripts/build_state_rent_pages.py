@@ -998,6 +998,25 @@ HUB_EXPLAIN = """<h2>How to read rent</h2>
   on paper with the free <a href="/cash-lease" style="color:var(--gold)">AGSIST cash farm lease</a>.</p></details>"""
 
 
+RH_STYLE = """<style>
+    .rh-find{{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:10px 0 4px;padding:10px 12px;border:1px solid var(--border);border-left:3px solid #d4a23f;border-radius:8px;background:var(--surface)}}
+    .rh-find label{{font-weight:700;color:var(--text);font-size:.92rem}}
+    .rh-fr{{display:flex;gap:8px;flex:1 1 260px}}
+    .rh-find select{{flex:1;min-height:42px;font-size:1rem;padding:0 8px;border:1px solid var(--border-2);border-radius:7px;background:var(--bg);color:var(--text)}}
+    .rh-find button{{min-height:42px;padding:0 14px;border:0;border-radius:7px;background:#a8823c;color:#fff;font-weight:700;cursor:pointer}}
+    .rh-sw{{display:inline-flex;margin:14px 0 0;border:1px solid var(--border-2);border-radius:8px;overflow:hidden}}
+    .rh-sw button{{min-height:38px;padding:0 16px;border:0;background:transparent;color:var(--text-muted);font-weight:700;cursor:pointer}}
+    .rh-sw button.on{{background:#a8823c;color:#fff}}
+    .rh-pcap{{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px}}
+  </style>""".replace("{{", "{").replace("}}", "}")
+RH_SCRIPT = ("(function(){var sw=document.querySelector('.rh-sw');if(!sw)return;var cc=document.querySelector('.rh-ccap'),pc=document.querySelector('.rh-pcap');"
+             "sw.addEventListener('click',function(e){var b=e.target.closest('button[data-rh]');if(!b)return;var p=b.getAttribute('data-rh')==='p';"
+             "Array.prototype.forEach.call(sw.querySelectorAll('button'),function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});"
+             "if(cc)cc.hidden=p;if(pc)pc.hidden=!p;"
+             "Array.prototype.forEach.call(document.querySelectorAll('.rh-tile[data-cv]'),function(t){t.style.background=t.getAttribute(p?'data-pbg':'data-cbg');"
+             "var v=t.querySelector('.rh-tge');if(v)v.textContent=t.getAttribute(p?'data-pv':'data-cv');});});})();")
+
+
 def hub_view(s):
     """What the hub shows for a state: its dryland figures whenever NASS has
     them (the hub compares like with like), whatever the state page leads with;
@@ -1022,14 +1041,37 @@ def build_hub(states, stats, generated):
         peers = meds_by_type.get(ptype, meds)
         i = sum(1 for m in peers if m < v) / max(1, len(peers))
         return "#af3a32" if i >= .8 else ("#9c4b3d" if i >= .6 else ("#a8823c" if i >= .4 else ("#5a656a" if i >= .2 else "#396d4f")))
+    # 2026-10-17 search-terms check: "pasture rental rates by county" 123, "usda pasture lease rates",
+    # "pasture rental rates" and the desktop first screen showed cropland only. The tiles carry each
+    # state's pasture median too (the table's Pasture column), colored against the other pasture
+    # medians only, and a switch above the map shows them.
+    def pmed(s):
+        if s["primary"] == "pasture":
+            return s["median"]
+        o = s["other"].get("pasture")
+        return o["median"] if o else None
+    pvals = sorted(v for v in (pmed(s2) for s2 in stats.values()) if v is not None)
+
+    def pcolor(v):
+        i = sum(1 for m in pvals if m < v) / max(1, len(pvals))
+        return "#af3a32" if i >= .8 else ("#9c4b3d" if i >= .6 else ("#a8823c" if i >= .4 else ("#5a656a" if i >= .2 else "#396d4f")))
     tiles = []
     for ab, (c, r) in TILE.items():
         if ab in stats:
             hk, hm = hub_view(stats[ab])[:2]
-            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(hm, hk)}"><span class="rh-tst">{ab}</span><span class="rh-tge">${round(hm):,}</span></a>')
+            pv = pmed(stats[ab])
+            # a 64px tile fits "$9.80" or "$65", not "$65.25": whole dollars from $10 up (the table keeps cents)
+            pt = (f"${round(pv):,}" if pv >= 10 else f"${pv:.2f}") if pv is not None else "n/a"
+            pa = (f' data-pv="{pt}" data-pbg="{pcolor(pv)}"' if pv is not None else ' data-pv="n/a" data-pbg="#2a3133"')
+            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(hm, hk)}"'
+                         f' data-cv="${round(hm):,}" data-cbg="{quint_color(hm, hk)}"{pa}><span class="rh-tst">{ab}</span><span class="rh-tge">${round(hm):,}</span></a>')
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
-    tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
+    tile_html = ('<div class="rh-sw" role="group" aria-label="Land type on the map"><button type="button" class="on" aria-pressed="true" data-rh="c">Cropland</button>'
+        '<button type="button" aria-pressed="false" data-rh="p">Pasture</button></div>'
+        f'<div class="rh-pcap" hidden>Median county rent per acre, {yr}, permanent pasture, colored against the other states&rsquo; pasture. '
+        f'Tap a state for every county&rsquo;s pasture rate.</div>'
+        '<div class="rh-ccap" style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
         f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + ('No dryland rent published for ' + ', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', so the tile shows ' + '; '.join(STATE_NAMES[x] + ' ' + TYPE_LABEL[stats[x]["primary"]] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', not colored against the rest' if any(not s2["dry"] for s2 in stats.values()) else '') + '</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:var(--text-muted);flex-wrap:wrap">'
@@ -1091,6 +1133,15 @@ def build_hub(states, stats, generated):
             f"{money(medians[0][0])}/ac &middot; lowest: {STATE_NAMES[medians[-1][1]]} {money(medians[-1][0])}/ac"
             + (f" &middot; no dryland rent published for {len(no_dry)} ({', '.join(STATE_NAMES[x] for x in no_dry)})" if no_dry else "")
             + f" &middot; data refreshed {esc(generated)}")
+    # County rates were one click deep and the first screen did not say how to reach them
+    # ("cash rents by county per acre" 492, "cash rents by county" 277): a state picker that opens
+    # the state's county table, first thing under the heading.
+    opts = "".join(f'<option value="/rent/{slug(STATE_NAMES[st])}">{STATE_NAMES[st]}</option>'
+                   for st in sorted(states, key=lambda s_: STATE_NAMES[s_]))
+    finder = (RH_STYLE + '<form class="rh-find" action="/rent/" onsubmit="var v=this.st.value;if(v)location.href=v;return false">'
+              '<label for="rh-st">Your county&rsquo;s rent per acre: pick your state</label>'
+              f'<span class="rh-fr"><select id="rh-st" name="st"><option value="">Choose a state</option>{opts}</select>'
+              '<button type="submit">Show counties</button></span></form>')
     page = head(f"Cash Rent by State {yr}: Every County\u2019s USDA Rate", desc, "/rent/", jsonld) + f"""
 <body>
 <div id="site-header"></div>
@@ -1099,6 +1150,7 @@ def build_hub(states, stats, generated):
   <p class="sub">Pick a state for every published county&rsquo;s USDA cash rental rate, history to 2008, and the
   statutory lease-termination deadline where the state has one.
   <span id="rs-seed"><!--SEED:renthub-->{seed}<!--/SEED--></span></p>
+  {finder}
   {atlas_line("/farmland-atlas")}
   {tile_html}
   <aside class="ag-sponsor-ribbon"><span class="ag-sponsor-tag">Sponsor this page</span> Your name on the cash rent page for every state. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">{PAGE_RATE}</span> <a href="/sponsor-apply?slot=rent-hub&amp;utm_source=rent-hub&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
@@ -1117,6 +1169,7 @@ def build_hub(states, stats, generated):
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
+<script>{RH_SCRIPT}</script>
 <script src="/components/loader.js?v=19"></script>
 {SORT_JS}
 </body>
