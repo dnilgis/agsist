@@ -253,6 +253,16 @@ jobs:
         continue-on-error: true
         run: python scripts/build_bids_prev.py
 
+      # 2026-10-17: the AGSIST Cash Bid Index keeps its month here. Each
+      # COMPLETE trading day in data/bids-prev not yet folded goes into
+      # data/cash-index/acc-YYYY-MM.json (per elevator: first and last day,
+      # count, sums). Usually a no-op; it reads the network index only when
+      # there is a new day. bids-prev keeps 4 trading days, so a few failed
+      # runs lose nothing. Never costs the bids their commit.
+      - name: Fold the day into the Cash Bid Index month
+        continue-on-error: true
+        run: python scripts/cash_bid_index.py --fold
+
       - name: Sizes
         run: |
           ls -lh data/bids.json bids-full.json
@@ -274,6 +284,7 @@ jobs:
           [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
           # WAVE1-A: the day-change record and the contacts shards.
           [ -d data/bids-prev ] && git add -A data/bids-prev || true
+          [ -d data/cash-index ] && git add -A data/cash-index || true
           [ -d data/elevator-contacts ] && git add -A data/elevator-contacts || true
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"

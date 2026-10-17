@@ -1,0 +1,71 @@
+name: Cash Bid Index
+
+# The AGSIST Cash Bid Index (scripts/cash_bid_index.py, page /cash-bid-index).
+# The month's days are folded in by fetch_bids.yml as they complete; this run
+# folds any last days, then writes LAST MONTH's edition: data/cash-index/
+# editions.json (one small entry per month), data/cash-index/YYYY-MM.csv and
+# cash-bid-index.html. Schedule approved by Sig 2026-10-17: the 1st of each
+# month, early morning UTC (off the hour).
+on:
+  schedule:
+    - cron: '23 11 1 * *'
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "Edition month, YYYY-MM (blank: last month)"
+        type: string
+        default: ""
+      partial_ok:
+        description: "Publish a partial month, labeled with its real dates"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cash-bid-index
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: |
+          python scripts/daily_edge.py --selftest
+          python scripts/cash_bid_index.py --selftest
+      - name: Build the edition
+        env:
+          MONTH: ${{ github.event.inputs.month }}
+          PARTIAL: ${{ github.event.inputs.partial_ok }}
+        run: |
+          args="--build"
+          [ -n "$MONTH" ] && args="$args $MONTH"
+          [ "$PARTIAL" = "true" ] && args="$args --partial-ok"
+          python scripts/cash_bid_index.py $args
+          python scripts/cash_bid_index.py --check
+      - name: Commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          rm -rf /tmp/cbi && mkdir -p /tmp/cbi
+          cp -r --parents data/cash-index cash-bid-index.html /tmp/cbi/
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data && cp -r /tmp/cbi/data/. data/ && cp /tmp/cbi/cash-bid-index.html .
+            git add -A data/cash-index cash-bid-index.html
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Cash Bid Index edition $(date -u +%Y-%m-%d) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
