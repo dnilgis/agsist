@@ -1269,8 +1269,9 @@ PAPER_CARD = (
     '<div class="ct-paper"><a class="ct-paper-a" href="/pod-counts">'
     '<span class="ct-paper-k">Working paper</span>'
     '<span class="ct-paper-t">Do pod counts predict soybean yield?</span>'
-    '<span class="ct-paper-d">The tour counts pods and never publishes a bean '
-    'yield. We measured what those counts actually predict, against USDA&rsquo;s '
+    '<span class="ct-paper-d">The tour counts pods and publishes no state bean '
+    'yield; Pro Farmer\'s only bean yield is a national one, at the end of the '
+    'week. We measured what those counts actually predict, against USDA&rsquo;s '
     'final state numbers, and what the rule of thumb everyone repeats '
     'gets wrong.</span>'
     '<span class="ct-paper-go">Read it &rarr;</span></a></div>')

@@ -335,6 +335,7 @@ var shDirty=false,sent=false;
 D.c.forEach(function(c,i){var o=document.createElement('option');o.value=i;o.textContent=c[0];if(c[0]===D.mid)o.selected=true;sel.appendChild(o);});
 function cur(){return D.c[+sel.value];}
 function usd(v){return '$'+Math.round(v).toLocaleString('en-US');}
+function rent(v){return Math.round(v)===v?usd(v):'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function num(e){var v=parseFloat(String(e.value).replace(/[$,%\s]/g,''));return isFinite(v)?v:NaN;}
 function cname(c){return c[0]+' '+D.unit;}
 function ownShare(c,p){return p>0?Math.round(10000*c[1]/(c[2]*p))/100:NaN;}
@@ -344,7 +345,7 @@ function draw(){var c=cur(),Y=num(y),p=num(pr);
  if(!(Y>=1&&Y<=400)){$('gr-out').textContent='Type a yield between 1 and 400 bushels.';$('gr-math').textContent='';}
  else{var est=c[1]*Y/c[2];
   $('gr-out').innerHTML='At <b>'+Y+' bu</b> ground in '+cname(c)+', the '+D.unit.toLowerCase()+'&rsquo;s rent per bushel says about <b>'+usd(est)+' an acre</b>.';
-  $('gr-math').textContent=cname(c)+': '+usd(c[1])+' rent ÷ '+c[2]+' bu trend = $'+c[3].toFixed(2)+' a bushel. '+usd(c[1])+' × '+Y+' ÷ '+c[2]+' = '+usd(est)+'.';}
+  $('gr-math').textContent=cname(c)+': '+rent(c[1])+' rent ÷ '+c[2]+' bu trend = $'+c[3].toFixed(2)+' a bushel. '+rent(c[1])+' × '+Y+' ÷ '+c[2]+' = '+usd(est)+'.';}
  if(Y>=1&&Y<=400&&p>0&&S>0&&S<100){var g=Y*p;$('gr-sg').textContent=Y+' bu × $'+p.toFixed(2)+' = '+usd(g)+' gross. '+S+'% of that is '+usd(g*S/100)+' an acre.';}
  else $('gr-sg').textContent='Type a yield, a price and a share to see it.';
  var V=num(lv),R=num(rr);
