@@ -9,7 +9,7 @@
 # spread: sd
 # includes: Unless otherwise stated, the rates include payments for fuel, operator labor, and machinery ownership costs.
 # range_note: Purdue does not print a low-high range. Where 30 or more answered, it prints the average plus and minus one standard deviation, where about two thirds of answers fall; that band is shown in the range column. Rows with fewer than five answers are left out.
-key	section	operation	unit	avg	lo	hi	n
+key	section	operation	unit	avg	lo	hi	n	printed
 	Land preparation	Rotary hoeing	acre	9.40			5
 chisel	Land preparation	Chisel plowing	acre	19.13			20
 vertical-till	Land preparation	Vertical tillage	acre	17.12			26
@@ -42,15 +42,15 @@ harvest-haul-soy	Grain harvesting	Soybeans, combine and haul to bin	acre	40.79		
 	Grain harvesting	Small grain, combine and haul to bin	acre	41.14			7
 custom-farm-corn	Machinery and operator for all growing and harvesting operations	Corn	acre	122.34			8
 custom-farm-soy	Machinery and operator for all growing and harvesting operations	Soybeans	acre	107.23			8
-	On-farm corn drying	Five points of moisture removed	bushel	0.19			11
-	On-farm corn drying	Ten points of moisture removed	bushel	0.32			10
-haul-grain-bu	Grain hauling	Total cost of hauling grain to market (average one-way haul 23.2 miles)	bushel	0.188	0.126	0.251	47
+	On-farm corn drying	Five points of moisture removed	bushel	19			11	cents
+	On-farm corn drying	Ten points of moisture removed	bushel	32			10	cents
+haul-grain-bu	Grain hauling	Total cost of hauling grain to market (average one-way haul 23.2 miles)	bushel	18.8	12.6	25.1	47	cents
 mow-cond	Hay, straw or corn stover	Tractor and mower/conditioner	acre	20.10			10
 ted	Hay, straw or corn stover	Tedding	acre	8.17			6
 rake	Hay, straw or corn stover	Raking (windrowing)	acre	11.44			9
 bale-smallsq	Hay, straw or corn stover	Baling small rectangular bales (25-60 lbs)	bale	1.12			9
 bale-largesq	Hay, straw or corn stover	Baling large rectangular bales (over 1,000 lbs)	bale	13.17			6
 bale-round	Hay, straw or corn stover	Baling large round bales (5 feet wide)	bale	19.58			13
-	Miscellaneous	Tiling (excluding cost of tile)	foot	0.95			6
+	Miscellaneous	Tiling (excluding cost of tile)	foot	95			6	cents
 mow-crp	Miscellaneous	Mowing pasture or CRP acres	acre	30.85			9
 	Miscellaneous	Bulldozing (blade 9 feet wide or less)	hour	129			9

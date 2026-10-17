@@ -1932,6 +1932,14 @@
     {"id": "cr-oh-2026-wfin", "kind": "html",
      "url": "https://wfin.com/?p=1940258",
      "title": "News of the Ohio Farm Custom Rates 2026 release (to find the report link)",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-oh-farmoffice", "kind": "html",
+     "url": "https://farmoffice.osu.edu/farm-management/custom-rates-and-machinery-costs",
+     "title": "OSU Farm Office: custom rates and machinery costs (links the Ohio Farm Custom Rates PDFs)",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-mo-mospace", "kind": "pdf",
+     "url": "https://mospace.umsystem.edu/server/api/core/bitstreams/d2707ac0-5a64-467d-862b-1e5767839334/content",
+     "title": "MU Extension G302 Custom Rates for Farm Services in Missouri (MOspace copy)",
      "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"}
 ]
 }
