@@ -1,0 +1,104 @@
+name: Radar rain (MRMS)
+
+# Writes data/radar-rain/<st>.bin (one per state, every window) and
+# index.json for /rain-radar: NOAA MRMS multi-sensor rain totals, Pass 2
+# (radar corrected with rain gauges), from NOAA's open data bucket on AWS.
+# scripts/radar_rain.py has the details. The hail map's MESH workflow runs
+# once a day, too slow for "the last 24 hours", so this has its own schedule.
+#
+# Validate against the county gauges: dispatch with validate_from/validate_to
+# (dates the county rain files cover). The summary prints to the log and is
+# kept as a run artifact; nothing is committed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      states:
+        description: "Only these states, comma separated (default: all of the lower 48)"
+        required: false
+      validate_from:
+        description: "Validate radar vs county gauges from this day (YYYY-MM-DD); no data is written"
+        required: false
+      validate_to:
+        description: "...to this day (YYYY-MM-DD)"
+        required: false
+  schedule:
+    # Sig approved Oct 17, 2026: four runs a day. NOAA posts each hour's Pass 2
+    # 24H and 72H totals about 58 minutes after the hour (checked on the bucket,
+    # Oct 16, 2026), so these read the 00, 06, 12 and 18 UTC totals. The 12 UTC
+    # one lines up with the 7 am gauge day.
+    - cron: '17 1,7,13,19 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: radar-rain
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python deps (numpy, Pillow for the PNG inside each GRIB2 file)
+        run: pip install --quiet numpy==2.5.4 pillow==12.3.0
+      - name: Selftest (decoder on a real cropped MRMS file, encoder, lookup)
+        run: python scripts/radar_rain.py --selftest
+
+      - name: Validate radar vs county gauges
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.validate_from != '' }}
+        env:
+          VF: ${{ inputs.validate_from }}
+          VT: ${{ inputs.validate_to }}
+        run: |
+          printf '%s' "$VF" | grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' || { echo "::error::validate_from must be YYYY-MM-DD"; exit 1; }
+          [ -z "$VT" ] && VT="$VF"
+          printf '%s' "$VT" | grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' || { echo "::error::validate_to must be YYYY-MM-DD"; exit 1; }
+          mkdir -p /tmp/rr
+          python scripts/radar_rain.py --validate "$VF" "$VT" --out /tmp/rr/validation.json
+      - name: Keep the validation rows
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.validate_from != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-rain-validation
+          path: /tmp/rr/validation.json
+
+      - name: Build the state files
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.validate_from != '') }}
+        env:
+          ST: ${{ inputs.states }}
+        run: |
+          if [ -n "$ST" ]; then
+            printf '%s' "$ST" | grep -Eq '^[A-Za-z]{2}(,[A-Za-z]{2})*$' || { echo "::error::states must look like IA,KS"; exit 1; }
+            python scripts/radar_rain.py --states "$ST"
+          else
+            python scripts/radar_rain.py
+          fi
+          python scripts/radar_rain.py --check
+          python scripts/check_site_budget.py
+
+      - name: Commit if changed (race-tolerant)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.validate_from != '') }}
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          rm -rf /tmp/rrout && mkdir -p /tmp/rrout && cp -r data/radar-rain /tmp/rrout/
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            mkdir -p data/radar-rain && cp -r /tmp/rrout/radar-rain/. data/radar-rain/
+            git add -A data/radar-rain
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update radar rain $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1

@@ -1,0 +1,36 @@
+{
+ "what": "NOAA MRMS MultiSensor QPE 24H Pass 2 ending 12:00Z, at the 0.02 degree squares /rain-radar ships, vs NOAA co-op morning gauges (county rain stations, data/rain/daily). Same day convention as ACIS: a report dated D covers the 24 hours ending that morning; radar ending 12Z on D matched far better than 12Z on D-1 (wet-day median gap 0.12 vs 0.42 in).",
+ "period": [
+  "2026-10-01",
+  "2026-10-13"
+ ],
+ "run": "2026-10-17, scripts/radar_rain.py --validate",
+ "gauge_days": 14476,
+ "stations": 1175,
+ "states": 47,
+ "wet_days": {
+  "rule": "gauge or radar 0.10 in or more",
+  "n": 2458,
+  "median_abs_in": 0.13,
+  "mean_bias_in": -0.027,
+  "radar_wet_gauge_dry_share": 0.055,
+  "gauge_wet_radar_zero_share": 0.069
+ },
+ "heavy_days": {
+  "rule": "gauge 0.50 in or more",
+  "n": 1032,
+  "median_abs_in": 0.2,
+  "median_abs_pct": 19,
+  "median_radar_over_gauge": 0.91
+ },
+ "period_totals": {
+  "rule": "stations reporting every day, gauge total 0.50 in or more",
+  "n": 623,
+  "median_abs_in": 0.2,
+  "median_abs_pct": 13
+ },
+ "native_vs_pooled": {
+  "wet_median_abs_in_native": 0.12,
+  "wet_median_abs_in_pooled": 0.125
+ }
+}

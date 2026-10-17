@@ -189,13 +189,15 @@
 
   function overlayCanvas() {
     var h = S.data.header, q = S.data.grids[S.win], pt = S.pt;
-    var c0 = Math.round((pt.lon - h.x0) / h.d) - MAP_CELLS, r0 = Math.round((h.y0 - pt.lat) / h.d) - MAP_CELLS;
-    var n = MAP_CELLS * 2 + 1;
+    // as many miles east-west as north-south: more columns the farther north
+    var cx = Math.round(MAP_CELLS / Math.max(0.5, Math.cos(pt.lat * Math.PI / 180)));
+    var c0 = Math.round((pt.lon - h.x0) / h.d) - cx, r0 = Math.round((h.y0 - pt.lat) / h.d) - MAP_CELLS;
+    var n = MAP_CELLS * 2 + 1, w = cx * 2 + 1;
     var cv = document.createElement('canvas');
-    cv.width = n; cv.height = n;
+    cv.width = w; cv.height = n;
     var ctx = cv.getContext('2d');
     for (var r = 0; r < n; r++) {
-      for (var c = 0; c < n; c++) {
+      for (var c = 0; c < w; c++) {
         var rr = r0 + r, cc = c0 + c, v = null, inGrid = rr >= 0 && rr < h.ny && cc >= 0 && cc < h.nx;
         if (inGrid) v = q[rr * h.nx + cc];
         var col = !inGrid || v < 0 ? 'rgba(120,120,120,.55)' : color(v);
@@ -204,7 +206,7 @@
     }
     var d = h.d, half = d / 2;
     var west = h.x0 + c0 * d - half, north = h.y0 - r0 * d + half;
-    return { canvas: cv, bounds: [[north - n * d, west], [north, west + n * d]] };
+    return { canvas: cv, cx: cx, bounds: [[north - n * d, west], [north, west + w * d]] };
   }
 
   function renderMap() {
@@ -213,7 +215,7 @@
     if (window.L && !S.mapFailed) {
       try {
         if (!S.map) {
-          S.map = L.map(el, { scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.5 });
+          S.map = L.map(el, { scrollWheelZoom: false, attributionControl: true, zoomSnap: 0.25 });
           var dark = document.documentElement.getAttribute('data-theme') !== 'light';
           L.tileLayer('https://{s}.basemaps.cartocdn.com/' + (dark ? 'dark_all' : 'light_all') + '/{z}/{x}/{y}{r}.png', {
             maxZoom: 14, subdomains: 'abcd', attribution: '&copy; OpenStreetMap &copy; CARTO | Rain: NOAA MRMS'
@@ -240,8 +242,8 @@
     x.fillStyle = getComputedStyle(document.body).backgroundColor || '#fff';
     x.fillRect(0, 0, big.width, big.height);
     x.drawImage(cv, 0, 0, big.width, big.height);
-    var m = MAP_CELLS * k + k / 2;
-    x.beginPath(); x.arc(m, m, 7, 0, 2 * Math.PI); x.fillStyle = '#ffd23f'; x.fill(); x.lineWidth = 2; x.strokeStyle = '#111'; x.stroke();
+    var m = MAP_CELLS * k + k / 2, mx = o.cx * k + k / 2;
+    x.beginPath(); x.arc(mx, m, 7, 0, 2 * Math.PI); x.fillStyle = '#ffd23f'; x.fill(); x.lineWidth = 2; x.strokeStyle = '#111'; x.stroke();
     big.className = 'rr-flat';
     big.setAttribute('role', 'img');
     big.setAttribute('aria-label', 'Radar rain around the point, about 55 miles across');
@@ -253,8 +255,6 @@
     var near = R.nearestGauge(h, pt.lat, pt.lon, GAUGE_MI);
     var a = [];
     if (near && near.g.page) a.push('<a href="' + esc(near.g.page) + '">Rain this year in ' + esc(near.g.county) + ', from the gauge</a>');
-    a.push('<a href="/hail-map">Hail map: radar hail swaths</a>');
-    a.push('<a href="/field-scout">Field Scout: draw your field</a>');
     $('rr-more').innerHTML = a.map(function (x) { return '<li>' + x + '</li>'; }).join('');
   }
 

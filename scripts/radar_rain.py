@@ -591,7 +591,7 @@ def build(states, now=None):
                 gl.append({"sid": g["sid"], "name": g["name"], "county": g["county"], "net": g["net"],
                            "ll": g["ll"], "page": g.get("page"), "dates": dates, "gauge": gv, "radar": rv})
         hdr = {
-            "schema": SCHEMA, "st": st, "source": SOURCE, "updated": iso(now), "data_end": iso(end),
+            "schema": SCHEMA, "st": st, "source": SOURCE, "data_end": iso(end),
             "x0": round(LO1 + (c0 + (POOL - 1) / 2) * DEG, 4), "y0": round(LA1 - (r0 + (POOL - 1) / 2) * DEG, 4),
             "d": round(DEG * POOL, 4), "nx": nx, "ny": ny, "unit": "0.01 in", "missing": MISSING,
             "gauge_day_end": "12:00Z", "gauges": gl,
@@ -599,7 +599,7 @@ def build(states, now=None):
         n = write_bin(os.path.join(OUT, st.lower() + ".bin"), hdr, grids)
         total += n
         log("  %s %dx%d %d KB, %d gauges" % (st, nx, ny, n // 1024, len(gl)))
-    idx = {"schema": SCHEMA, "updated": iso(now), "data_end": iso(end),
+    idx = {"schema": SCHEMA, "data_end": iso(end),
            "windows": {w: {"start": iso(end - dt.timedelta(hours=s)), "end": iso(end), "hours": s}
                        for w, (_, s) in fields.items()},
            "states": {st: [round(v, 2) for v in (boxes[st][0] - PAD, boxes[st][1] - PAD,

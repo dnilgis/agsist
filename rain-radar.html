@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#111a0a">
+  <title>How much rain fell on my field? Radar rain, last 24 hours to 7 days | AGSIST</title>
+  <meta name="description" content="Rain on your field in the last 24 hours, 3 days, 7 days and this month, from NOAA radar corrected with rain gauges (MRMS), for any spot in the lower 48.">
+  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+  <link rel="canonical"    href="https://agsist.com/rain-radar">
+  <meta property="og:type"         content="website">
+  <meta property="og:site_name"    content="AGSIST">
+  <meta property="og:locale"       content="en_US">
+  <meta property="og:title"        content="How much rain fell on your field?">
+  <meta property="og:description"  content="Rain on your field in the last 24 hours, 3 days, 7 days and this month, from NOAA radar corrected with rain gauges (MRMS), for any spot in the lower 48.">
+  <meta property="og:url"          content="https://agsist.com/rain-radar">
+  <meta property="og:image" content="https://agsist.com/img/og/rain-radar.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="How much rain fell on your field? NOAA radar and gauge estimate for the last 24 hours, 3 days and 7 days.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agsist.com/img/og/rain-radar.jpg">
+  <meta name="twitter:title"       content="How much rain fell on your field?">
+  <meta name="twitter:description" content="Rain on your field in the last 24 hours, 3 days, 7 days and this month, from NOAA radar corrected with rain gauges (MRMS), for any spot in the lower 48.">
+
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+
+  <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
+  <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- /static-nav:fonts -->
+  <link rel="preconnect" href="https://a.basemaps.cartocdn.com">
+  <link rel="preload" href="/components/styles.css?v=24" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=24">
+  <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">
+  <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+  <style>
+    .rr{max-width:780px;margin:0 auto;padding:1rem 1rem 4rem}
+    .rr .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
+    .rr h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
+    .rr .rr-label{display:inline-block;font-size:.8rem;line-height:1.35;color:var(--text-dim);border:1px dashed var(--gold);border-radius:6px;padding:.2rem .5rem;margin:0 0 .4rem}
+    .rr .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .8rem}
+    .rr h2{font-size:1.2rem;line-height:1.3;margin:2.2rem 0 .7rem;color:var(--text)}
+    .rr p,.rr li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
+    .rr p{margin:0 0 1rem}
+    .rr a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
+    .rr b{color:var(--text)}
+    .rr-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid #2b8cbe;border-radius:0 12px 12px 0;padding:.8rem 1rem .9rem;margin:0 0 .6rem}
+    .rr h2.rr-v{display:block;font-size:clamp(1.45rem,6.4vw,2.05rem);font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .35rem;outline:none}
+    .rr-answer p.fine,.rr .fine{font-size:.84rem;color:var(--text-muted);margin:.25rem 0 .5rem}
+    .rr-loc{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.3rem 0 0}
+    .rr-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+    .rr-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .rr-btn.go{background:var(--gold);color:#111;border-color:var(--gold)}
+    .rr-link{background:none;border:0;padding:0;color:var(--link,var(--brand));text-decoration:underline;font:inherit;font-size:.85rem;cursor:pointer;min-height:32px}
+    .rr-status{font-size:.86rem;color:var(--text-muted);margin:.4rem 0 0}
+    .rr-status.err{color:var(--red)}
+    .rr-status:empty{display:none}
+    .rr-stale{border:1px solid var(--red);color:var(--text)!important;background:var(--bg);border-radius:8px;padding:.5rem .7rem;font-size:.9rem!important;margin:.5rem 0!important}
+    .rr-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:.6rem 0 .4rem}
+    @media(min-width:640px){.rr-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    .rr-tile{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:.15rem;min-height:44px;padding:.55rem .65rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;cursor:pointer;min-width:0}
+    .rr-tile.on{border-color:#2b8cbe;box-shadow:0 0 0 2px #2b8cbe inset}
+    .rr-tile .k{font-size:.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em}
+    .rr-tile .v{font-family:'JetBrains Mono',monospace;font-size:1.45rem;font-weight:800;line-height:1.1}
+    .rr-tile .v small{font-size:.8rem;font-weight:600}
+    .rr-tile .t{font-size:.74rem;line-height:1.3;color:var(--text-muted);overflow-wrap:anywhere}
+    .rr-h3{font-size:.95rem;margin:1rem 0 .4rem;color:var(--text)}
+    .rr-map{width:100%;aspect-ratio:1/1;max-height:440px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg)}
+    .rr-map .rr-px,.rr-flat{image-rendering:pixelated;image-rendering:crisp-edges}
+    .rr-flat{width:100%;height:100%;display:block;object-fit:contain}
+    .rr-key{display:flex;flex-wrap:wrap;gap:.2rem .7rem;margin:.45rem 0 .1rem;font-size:.76rem;color:var(--text-muted)}
+    .rr-key i{display:inline-block;width:.85rem;height:.85rem;border-radius:2px;margin-right:.25rem;vertical-align:-2px}
+    .rr-key i.nd{background:rgba(120,120,120,.55)}
+    .rr-gauge{border-top:1px solid var(--border);margin:.8rem 0 0;padding:.7rem 0 0}
+    .rr-gauge .rr-gk{font-size:.78rem!important;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text-muted)!important;margin:0 0 .25rem!important}
+    .rr-gv{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;margin:0 0 .3rem;font-size:.95rem;color:var(--text-dim)}
+    .rr-gv b{font-family:'JetBrains Mono',monospace;font-size:1.15rem}
+    .rr-list{padding-left:1.1rem;margin:0 0 1rem}
+    .rr details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
+    .rr details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
+    .rr-faq details{border-top:1px solid var(--border);padding:.75rem 0}
+    .rr-faq details:last-child{border-bottom:1px solid var(--border)}
+    .rr-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+    .rr-faq details p{margin:.6rem 0 .2rem}
+    .rr .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 .4rem}
+    .rr .rel:empty{display:none}
+    .rr .src{font-size:.82rem;color:var(--text-muted);margin-top:1.2rem}
+    .leaflet-container{font:inherit}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/rain-radar#app","name":"Rain on your field (radar)","url":"https://agsist.com/rain-radar","description":"Rain on your field in the last 24 hours, 3 days, 7 days and this month, from NOAA radar corrected with rain gauges (MRMS), for any spot in the lower 48.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-17","dateModified":"2026-10-17","inLanguage":"en-US","image":"https://agsist.com/img/og/rain-radar.jpg","isBasedOn":{"@type":"Dataset","name":"NOAA MRMS MultiSensor QPE Pass 2","url":"https://registry.opendata.aws/noaa-mrms-pds/","creator":{"@type":"Organization","name":"NOAA"}}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Rain on your field","item":"https://agsist.com/rain-radar"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Where does this rain number come from?","acceptedAnswer":{"@type":"Answer","text":"From NOAA’s Multi-Radar Multi-Sensor system (MRMS), which blends the national radar network with rain gauges that report every hour. This page uses its Pass 2 multi-sensor totals, the gauge-corrected run, averaged into squares about 1.4 miles by 1 mile. It is an estimate for the square your field sits in, not a reading from a gauge."}},{"@type":"Question","name":"How close is the radar estimate to a rain gauge?","acceptedAnswer":{"@type":"Answer","text":"Checked against 1,175 NOAA co-op gauges in 47 states from October 1 to 13, 2026, radar and gauge were a median 0.13 inch apart on days with a tenth of an inch or more. On days a gauge caught half an inch or more, the median miss was 0.20 inch (19%), and radar read about 9% under the gauge. Over the 13 days added up, the median gap was 0.20 inch (13%)."}},{"@type":"Question","name":"Why does my rain gauge read different from the radar?","acceptedAnswer":{"@type":"Answer","text":"A gauge catches rain in a few square inches; the radar number is an average over about a square mile and a half. Radar sees rain above the ground, sometimes a mile up or more far from the radar, and wind, evaporation and hail all change what reaches the field. Gauges miss rain too, in wind and when they are read late. The two usually land close; on a heavy day expect a few tenths either way."}},{"@type":"Question","name":"How often does it update?","acceptedAnswer":{"@type":"Answer","text":"About four times a day. NOAA posts its gauge-corrected totals about an hour after each hour ends, and the page reads the 0, 6, 12 and 18 UTC totals shortly after. The page shows the newest hour in your time zone and says so if the data is more than 9 hours old."}},{"@type":"Question","name":"Does it count snow?","acceptedAnswer":{"@type":"Answer","text":"It counts melted water, so snow shows up as its water content. Radar is weaker with snow than with rain, so treat winter numbers loosely."}},{"@type":"Question","name":"Can I check a field instead of my ZIP?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open a field or a point on Field Scout and follow its rain link, or tap anywhere on the map here to read that square. The page covers the lower 48 states; NOAA’s radar rain grid does not cover Alaska or Hawaii."}}]}]}</script>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to content</a>
+  <div id="site-header">
+<!-- static-nav:header (scripts/inject_static_nav.py; source components/header-fallback.html) -->
+  <!-- Static header for crawlers and no-JS (loader.js swaps in the live nav). Edit here, then run scripts/inject_static_nav.py. -->
+  <header class="snav" style="border-bottom:1px solid var(--border);background:var(--surface)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}.snav b{color:var(--text-dim)}</style>
+    <div style="max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.1rem">
+      <a href="/" aria-label="AGSIST Home" style="font-family:var(--font-display);font-weight:800;font-size:1.05rem;letter-spacing:.04em;color:var(--text)">AGSIST</a>
+      <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
+        <b>Markets:</b> <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/cash-bid-index">Cash Bid Index (monthly)</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a><br>
+        <b>Crop &amp; Field:</b> <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/fall-nitrogen">Fall anhydrous soil temp</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/tools">All tools</a><br>
+        <b>Money &amp; Land:</b> <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/harvest-or-wait">Harvest now or wait</a> &middot; <a href="/combine-loss">Combine loss check</a> &middot; <a href="/commodity-loan">CCC loan calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a><br>
+        <b>Daily:</b> <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a>
+      </nav>
+    </div>
+  </header>
+<!-- /static-nav:header -->
+</div>
+  <main id="main" tabindex="-1">
+    <article class="rr">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> &rarr; Rain on your field</nav>
+      <h1>How much rain fell on your field?</h1>
+      <p class="rr-label">NOAA radar and gauge estimate (MRMS), not a rain gauge reading.</p>
+      <p class="by">Sigurd Lindquist, CCA</p>
+
+      <div id="rr-answer" class="rr-answer">
+        <div aria-live="polite" aria-atomic="true">
+          <h2 id="rr-verdict" class="rr-v">Where is the field?</h2>
+        </div>
+        <p class="fine"><span id="rr-place"></span> <button type="button" id="rr-change" class="rr-link" hidden>Change spot</button></p>
+        <div id="rr-locbox" class="rr-loc" hidden>
+          <input id="rr-zip" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="ZIP code" aria-label="ZIP code">
+          <button type="button" id="rr-zipgo" class="rr-btn go">Check</button>
+          <button type="button" id="rr-geo" class="rr-btn">Use my location</button>
+        </div>
+        <p id="rr-status" class="rr-status" role="status"></p>
+        <noscript><p>The rain lookup needs JavaScript.</p></noscript>
+
+        <div id="rr-results" hidden>
+          <p id="rr-stale" class="rr-stale" role="alert" hidden></p>
+          <div id="rr-tiles" class="rr-tiles" role="group" aria-label="Rain totals at this spot. Pick one to map it."></div>
+          <p id="rr-asof" class="fine"></p>
+          <h3 class="rr-h3">Map: <span id="rr-mapwin">last 7 days</span> around the spot</h3>
+          <div id="rr-map" class="rr-map" aria-label="Map of radar rain around the spot"></div>
+          <div class="rr-key" aria-label="Inches of rain">
+            <span><i style="background:#d9f0d3"></i>0.01</span><span><i style="background:#a6dba0"></i>0.10</span><span><i style="background:#5aae61"></i>0.25</span><span><i style="background:#4eb3d3"></i>0.50</span><span><i style="background:#2b8cbe"></i>1</span><span><i style="background:#0868ac"></i>1.5</span><span><i style="background:#6a51a3"></i>2</span><span><i style="background:#ae017e"></i>3</span><span><i style="background:#f768a1"></i>4+ in</span><span><i class="nd"></i>no data</span>
+          </div>
+          <p class="fine">Each square is about 1.4 miles north to south and 1 mile across. Tap the map to read any square.</p>
+          <div id="rr-gauge" class="rr-gauge" hidden></div>
+        </div>
+      </div>
+
+      <h2 id="how-close">How close radar comes to a gauge</h2>
+      <p>I checked the estimate against <b>1,175 NOAA co-op rain gauges in 47 states</b>, every morning report from October 1 to 13, 2026 (14,476 gauge-days), using the same squares this page shows.</p>
+      <ul class="rr-list">
+        <li>On days with a tenth of an inch or more at the gauge or on radar (2,458 of them), radar and gauge were a <b>median 0.13 in apart</b>. Radar ran a little low: 0.03 in under on average.</li>
+        <li>On days the gauge caught half an inch or more (1,032), the median miss was <b>0.20 in, or 19%</b>, and radar read about 9% under the gauge.</li>
+        <li>Added up over the 13 days, at the 623 gauges that reported every day and caught half an inch or more, the median gap was <b>0.20 in (13%)</b>.</li>
+        <li>About 1 wet day in 18, radar showed a tenth or more where the gauge caught nothing, and about 1 in 14 the other way.</li>
+      </ul>
+      <p>That is two weeks of fall rain. Summer thunderstorms are harder on radar, and I will run the check again in storm season. Your own gauge can differ from both: a storm can drop an inch on one side of a section and a quarter inch on the other.</p>
+
+      <details class="box">
+        <summary>How the numbers are worked</summary>
+        <p><b>Source.</b> NOAA&rsquo;s Multi-Radar Multi-Sensor system (MRMS) blends every NWS radar with rain gauges that report each hour. This page uses its Pass 2 multi-sensor totals, the run that waits about an hour for more gauges to come in, from NOAA&rsquo;s open data copy on AWS (noaa-mrms-pds). NOAA&rsquo;s grid is about 0.6 mile; I average it 2 by 2 into squares of 0.02 degree and round to the hundredth of an inch.</p>
+        <p><b>Windows.</b> All of them end at the newest hour NOAA has posted. Last 24 hours and last 3 days are NOAA&rsquo;s own 24- and 72-hour totals. Last 7 days adds NOAA&rsquo;s two most recent 72-hour totals and the 24 hours before them. This month runs from midnight Central on the 1st, built the same way from NOAA&rsquo;s 72, 24, 12, 6, 3 and 1-hour totals. If any piece is missing, that window is left off rather than guessed.</p>
+        <p><b>Bad squares.</b> MRMS has a few fixed bad cells (one near Mount Baker, Washington, read 95 inches for half of October 2026). A square of 2 inches or more that is 20 times the middle of the 24 squares around it shows as no data.</p>
+        <p><b>The gauge beside it.</b> The county gauges are the NOAA co-op and CoCoRaHS stations on the <a href="/rain">county rain pages</a>. Their days end at the morning reading, about 7 am, so the radar number beside them is NOAA&rsquo;s 24-hour total ending 12:00 UTC (7 am Central daylight time), added over the same days. Airport stations close their day at midnight and are left out. Gauge reports come in about once a week.</p>
+        <p><b>Updates.</b> About four times a day, an hour or so after NOAA posts the 0, 6, 12 and 18 UTC totals. If the newest total is more than 9 hours old, the page says so.</p>
+      </details>
+
+      <h2 id="questions">Questions</h2>
+      <div class="rr-faq">
+        <details><summary>Where does this rain number come from?</summary><p>From NOAA&rsquo;s Multi-Radar Multi-Sensor system (MRMS), which blends the national radar network with rain gauges that report every hour. This page uses its Pass 2 multi-sensor totals, the gauge-corrected run, averaged into squares about 1.4 miles by 1 mile. It is an estimate for the square your field sits in, not a reading from a gauge.</p></details>
+        <details><summary>How close is the radar estimate to a rain gauge?</summary><p>Checked against 1,175 NOAA co-op gauges in 47 states from October 1 to 13, 2026, radar and gauge were a median 0.13 inch apart on days with a tenth of an inch or more. On days a gauge caught half an inch or more, the median miss was 0.20 inch (19%), and radar read about 9% under the gauge. Over the 13 days added up, the median gap was 0.20 inch (13%).</p></details>
+        <details><summary>Why does my rain gauge read different from the radar?</summary><p>A gauge catches rain in a few square inches; the radar number is an average over about a square mile and a half. Radar sees rain above the ground, sometimes a mile up or more far from the radar, and wind, evaporation and hail all change what reaches the field. Gauges miss rain too, in wind and when they are read late. The two usually land close; on a heavy day expect a few tenths either way.</p></details>
+        <details><summary>How often does it update?</summary><p>About four times a day. NOAA posts its gauge-corrected totals about an hour after each hour ends, and the page reads the 0, 6, 12 and 18 UTC totals shortly after. The page shows the newest hour in your time zone and says so if the data is more than 9 hours old.</p></details>
+        <details><summary>Does it count snow?</summary><p>It counts melted water, so snow shows up as its water content. Radar is weaker with snow than with rain, so treat winter numbers loosely.</p></details>
+        <details><summary>Can I check a field instead of my ZIP?</summary><p>Yes. Open a field or a point on <a href="/field-scout">Field Scout</a> and follow its rain link, or tap anywhere on the map here to read that square. The page covers the lower 48 states; NOAA&rsquo;s radar rain grid does not cover Alaska or Hawaii.</p></details>
+      </div>
+
+      <h2>Related</h2>
+      <ul class="rel rr-rel" id="rr-more"></ul>
+      <ul class="rel rr-rel">
+        <li><a href="/rain">Rain this year by county, from the gauge</a></li>
+        <li><a href="/hail-map">Hail map</a></li>
+        <li><a href="/field-scout">Field Scout</a></li>
+        <li><a href="/rain-print">Rain Print: a year of rain, printed</a></li>
+        <li><a href="/spray">Spray advisory</a></li>
+      </ul>
+      <p class="src">Sources: NOAA National Severe Storms Laboratory and NCEP, Multi-Radar Multi-Sensor (MRMS) MultiSensor_QPE 24H, 72H and shorter Pass 2 products, NOAA Open Data Dissemination (noaa-mrms-pds); NOAA co-op and CoCoRaHS daily reports via RCC-ACIS for the gauge comparison. Map: OpenStreetMap, CARTO.</p>
+    </article>
+  </main>
+  <div id="site-footer">
+<!-- static-nav:footer (scripts/inject_static_nav.py; source components/footer-fallback.html) -->
+  <!-- Static footer for crawlers and no-JS (loader.js swaps in the live footer). Edit here, then run scripts/inject_static_nav.py. -->
+  <nav class="snav" aria-label="AGSIST site links" style="max-width:1100px;margin:0 auto;padding:1.4rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:2.1;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)">
+    <style>.snav a{color:var(--text-muted);text-decoration:none}</style>
+    <a href="/cash-bids">Cash bids near me</a> &middot; <a href="/cash-bid-index">Cash Bid Index (monthly)</a> &middot; <a href="/corn-futures-prices">Corn</a> &middot; <a href="/soybean-futures-prices">Soybeans</a> &middot; <a href="/wheat-futures-prices">Wheat</a> &middot; <a href="/cattle-futures-prices">Cattle</a> &middot; <a href="/milk-prices">Milk</a> &middot; <a href="/hay-prices">Hay prices</a> &middot; <a href="/cattle-auction-prices">Sale barn prices</a> &middot; <a href="/basis">Basis: your state, vs normal</a> &middot; <a href="/markets">All markets</a> &middot; <a href="/usda-calendar">USDA report calendar</a> &middot; <a href="/whats-priced-in">What&rsquo;s priced in (trade vs USDA, graded)</a> &middot; <a href="/usda-quick-stats">USDA crop data by state</a> &middot; <a href="/cot">Fund positioning (COT)</a> &middot; <a href="/tariffs">Tariffs and trade</a> &middot; <a href="/elevators">For elevators</a> &middot; <a href="/crop-tour">Crop tour</a> &middot; <a href="/conditions-yield">2026 crop size: every forecast</a> &middot; <a href="/conditions">Crop ratings and harvest progress</a> &middot; <a href="/yield-estimator">Yield estimator</a> &middot; <a href="/hail-map">Hail map</a> &middot; <a href="/rain-print">Rain Print: a year of rain, printed</a> &middot; <a href="/rain">Rain by county</a> &middot; <a href="/rain-gauge">Rain gauge (in the works)</a> &middot; <a href="/spray">Spray advisory</a> &middot; <a href="/gdu-calculator">GDU calculator</a> &middot; <a href="/fertilizer">Fertilizer prices</a> &middot; <a href="/fall-nitrogen">Fall anhydrous soil temp</a> &middot; <a href="/manure-value">Manure value</a> &middot; <a href="/nutrient-removal">Nutrient removal value</a> &middot; <a href="/tools">All tools</a> &middot; <a href="/pod-counts">Pod counts vs yield</a> &middot; <a href="/drought-monitor">Drought monitor</a> &middot; <a href="/urea">Urea loss risk</a> &middot; <a href="/field-scout">Field Scout</a> &middot; <a href="/planting-date">Planting date</a> &middot; <a href="/fast-facts">Fast Facts reference tables</a> &middot; <a href="/store-or-sell">Sell now or store?</a> &middot; <a href="/breakeven">Break-even</a> &middot; <a href="/harvest-price-tracker">Harvest price</a> &middot; <a href="/grain-bin-calculator">Grain bin calculator</a> &middot; <a href="/grain-emc">Grain EMC: fans on or off</a> &middot; <a href="/grain-shrink">Grain shrink: wet or too dry</a> &middot; <a href="/harvest-or-wait">Harvest now or wait</a> &middot; <a href="/combine-loss">Combine loss check</a> &middot; <a href="/commodity-loan">CCC loan calculator</a> &middot; <a href="/rent/">Cash rent by state and county</a> &middot; <a href="/farmland-atlas">Farmland Atlas</a> &middot; <a href="/arc-plc">ARC or PLC</a> &middot; <a href="/prf">PRF pasture insurance</a> &middot; <a href="/lrp">LRP livestock price insurance</a> &middot; <a href="/farm-bill">Farm bill</a> &middot; <a href="/cash-lease">Cash lease form</a> &middot; <a href="/foreign-land">Foreign-owned land</a> &middot; <a href="/daily">AGSIST Daily</a> &middot; <a href="/news">The Wire</a> &middot; <a href="/archive">Briefing archive</a> &middot; <a href="/scorecard">Prediction bot</a> &middot; <a href="/about">About</a> &middot; <a href="/editorial-standards">Editorial standards</a> &middot; <a href="/contact">Contact</a> &middot; <a href="/data-sources">Data sources</a> &middot; <a href="/status">System status</a> &middot; <a href="/changelog">What&rsquo;s new</a> &middot; <a href="/developer">Embeds and data feeds</a> &middot; <a href="/sponsor">Sponsor</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/accessibility">Accessibility</a> &middot; <a href="/terms">Terms</a>
+  </nav>
+<!-- /static-nav:footer -->
+</div>
+  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/vendor/leaflet-1.9.4/leaflet.js" defer></script>
+  <script src="/components/radar-rain.js?v=1" defer></script>
+  <script src="/components/radar-rain-page.js?v=1" defer></script>
+</body>
+</html>
