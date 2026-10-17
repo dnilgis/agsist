@@ -75,8 +75,22 @@ def note(title, text, chunk=6000, most=4):
 
 
 def explore(out):
+    """Every step logged; whatever fails, the log and the screens so far are kept."""
+    import traceback
     os.makedirs(out, exist_ok=True)
     log = []
+    try:
+        rc = _explore(out, log)
+    except Exception:  # noqa: BLE001
+        log.append("ERROR " + traceback.format_exc()[-3000:])
+        rc = 1
+    open(os.path.join(out, "explore-log.txt"), "w").write("\n".join(log) + "\n")
+    print("\n".join(log))
+    note("wi explore", "\n".join(log), most=8)
+    return rc
+
+
+def _explore(out, log):
     try:
         rb = get("https://www.revenue.wi.gov/robots.txt")
     except Exception as e:  # noqa: BLE001
@@ -88,7 +102,6 @@ def explore(out):
         log.append("robots allows %s: %s" % (p, robots_allows(rb, p, "AGSIST-land-data")))
     if not robots_allows(rb, "/Pages/ERETR/data-home.aspx", "AGSIST-land-data"):
         log.append("STOP: robots.txt disallows the data page")
-        note("wi explore", "\n".join(log))
         return 2
     from playwright.sync_api import sync_playwright
     reqs = []
@@ -163,9 +176,6 @@ def explore(out):
     log.append("requests (%d):" % len(reqs))
     for q in reqs[:120]:
         log.append("   %s %s %s %s %s %s post=%s" % (q["m"], q.get("status"), q["type"], q.get("ctype", "")[:40], q.get("disp", "")[:80], q["url"][:200], q["post"][:300]))
-    open(os.path.join(out, "explore-log.txt"), "w").write("\n".join(log) + "\n")
-    print("\n".join(log))
-    note("wi explore", "\n".join(log), most=8)
     return 0
 
 
