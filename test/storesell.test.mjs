@@ -158,6 +158,8 @@ test("holdLine and costNote read the same on every surface", () => {
   assert.equal(S.costNote(d, 3, 4.18),
     "3 months of storage at 3.5¢ a month (default), interest at 7% a year on $4.18 (default), no shrink (default).");
   assert.match(S.holdLine({ to: "Jul", carry: 0.1775, months: 7, spot: 4.805, kind: "futures", inputs: d }), /^Hold to Jul\? \+17 3\/4¢ futures carry/);
+  // a net of zero reads "about even.", never "about even a bushel." (2026-10-17)
+  assert.match(S.holdLine({ to: "Nov", carry: 0.0935, months: 1, spot: 10, inputs: d }), /net of storage and interest: about even\.$/);
 });
 
 import { execFileSync } from "node:child_process";
@@ -169,6 +171,8 @@ test("scripts/storesell.py (the town pages' twin) prints exactly what storesell.
     { to: "Dec", carry: -0.03, months: 2, spot: 12.13, inputs: { cost: 0.04 } },
     { to: "May", carry: 0.2325, months: 7, spot: 6.7075, inputs: { cost: 0, rate: 0, shrink: 0 } },
     { to: "Nov", carry: 0, months: 1, spot: 10.5 },
+    // nets about zero: 3.5c storage + 10 x 7% / 12 = 5.83c interest against a 9.35c carry
+    { to: "Nov", carry: 0.0935, months: 1, spot: 10 },
   ];
   const py = JSON.parse(execFileSync("python3", [ROOT + "scripts/storesell.py", "--json"], { input: JSON.stringify(cases) }).toString());
   cases.forEach((c, i) => {

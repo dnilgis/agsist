@@ -38,5 +38,5 @@ test("the page says the same rule and no longer calls every quote a close", () =
   const html = readFileSync(new URL("store-or-sell.html", ROOT), "utf8");
   assert.ok(!/'closes of ' \+ fm\.date/.test(js));
   assert.match(html, /labeled as closes only once read after the 1:20 pm CT day close/);
-  assert.match(html, /store-or-sell\.js\?v=6/);
+  assert.match(html, /store-or-sell\.js\?v=7/);
 });

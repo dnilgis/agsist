@@ -114,7 +114,9 @@ test("board answer counts from today, and the nearest elevator posting a later b
   try {
     const { pg, errors } = await open(browser, port, "/store-or-sell?zip=54728&crop=corn", "farther");
     await pg.waitForFunction(() => /nearest elevator we found/.test(document.getElementById("sos-where").textContent), null, { timeout: 15000 });
-    assert.equal((await pg.textContent("#sos-answer")).trim(), "Hold to Jul? +27¢ futures carry, net of storage and interest: −30¢ a bushel.");
+    // 2026-10-17 (field audit): the result first, unsigned, then the two amounts; no plus and minus in one sentence.
+    // Same numbers as before: +27¢ carry less 57¢ storage and interest is −30¢.
+    assert.equal((await pg.textContent("#sos-answer")).trim(), "Storing to Jul '27 loses 30¢ a bushel. The futures carry is 27¢; storage and interest come to 57¢.");
     const where = await pg.textContent("#sos-where");
     assert.ok(where.includes("None of the 6 elevators nearest 54728 posts a later corn bid right now, so this is the board."), where);
     assert.ok(where.includes("Storage and interest from now: Oct '26 to Jul '27, 9 months."), where);
@@ -147,8 +149,47 @@ test("a carry that nets above zero at the elevator says it can be locked with a 
     const { pg, errors } = await open(browser, port, "/store-or-sell?zip=54728&crop=corn", "lock");
     await pg.waitForFunction(() => /posted carry/.test(document.getElementById("sos-answer").textContent), null, { timeout: 15000 });
     /* 80 - 31.5 - 4.20 x 7% x 9/12 (22.05) = 26.45 */
-    assert.equal((await pg.textContent("#sos-answer")).trim(), "Hold to Jul? +80¢ posted carry, net of storage and interest: +26¢ a bushel.");
+    // +80¢ carry less 54¢ storage and interest is +26¢ (wording changed 2026-10-17, numbers unchanged)
+    assert.equal((await pg.textContent("#sos-answer")).trim(), "Storing to July nets 26¢ a bushel. The posted carry is 80¢; storage and interest come to 54¢.");
     assert.ok((await pg.textContent("#sos-note")).includes("You can lock this today with a forward contract for Jul '27 delivery at this elevator. That fixes both the futures and the basis; ask the elevator for its terms."));
     assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* 2026-10-17 (field audit): the board's verdict used to paint, then the elevator's replaced it
+   3 to 6 s later with another month and sign. With the elevator read held back 2 s, the answer
+   box shows "Working it out" and then one verdict, never two. */
+test("one verdict, from the final inputs: no board answer painted while the elevators are read", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
+    await ctx.addInitScript(() => {
+      window.__answers = [];
+      document.addEventListener("DOMContentLoaded", () => {
+        const a = document.getElementById("sos-answer");
+        const log = () => { const t = a.textContent.trim(); if (t && window.__answers[window.__answers.length - 1] !== t) window.__answers.push(t); };
+        new MutationObserver(log).observe(a, { childList: true, characterData: true, subtree: true });
+      });
+    });
+    const pg = await ctx.newPage();
+    await pg.route("**/*", async (r) => {
+      const u = r.request().url();
+      if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
+      if (u.startsWith("https://dnilgis.github.io/bids/")) {
+        await new Promise((ok) => setTimeout(ok, 2000));
+        const j = bidsFixture("lock", new URL(u).pathname);
+        return j ? r.fulfill({ contentType: "application/json", body: JSON.stringify(j) }) : r.fulfill({ status: 404, body: "" });
+      }
+      return r.abort();
+    });
+    await pg.goto(`http://127.0.0.1:${port}/store-or-sell?zip=54728&crop=corn`);
+    await pg.waitForFunction(() => /posted carry/.test(document.getElementById("sos-answer").textContent), null, { timeout: 20000 });
+    await pg.waitForTimeout(500);
+    const seen = await pg.evaluate(() => window.__answers);
+    const verdicts = seen.filter((t) => !/^Working it out/.test(t));
+    assert.equal(verdicts.length, 1, "one verdict ever shown: " + JSON.stringify(seen));
+    assert.ok(seen.some((t) => /^Working it out from the elevators near 54728/.test(t)), "a working line while the elevators are read");
+    assert.doesNotMatch(verdicts[0], /[+−]/, "no signs in the headline");
   } finally { await browser.close(); srv.close(); }
 });
