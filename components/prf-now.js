@@ -147,7 +147,7 @@
     '.pn-figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .6rem}.pn-figs div{min-width:0}' +
     '.pn-figs dt{font-size:.78rem;color:var(--text-muted,#999)}.pn-figs dd{margin:0;font-size:1.1rem;font-weight:600;font-variant-numeric:tabular-nums}' +
     '.pn-pre{display:block;font-size:.72rem;font-weight:400;color:var(--text-muted,#999)}' +
-    '.pn-need{border-collapse:collapse;font-size:.9rem;margin:0 0 .3rem;font-variant-numeric:tabular-nums}' +
+    '.pn-need{min-width:min(100%,24rem);border-collapse:collapse;font-size:.9rem;margin:0 0 .3rem;font-variant-numeric:tabular-nums}' +
     '.pn-need caption{text-align:left;font-size:.85rem;color:var(--text-muted,#999);padding-bottom:.25rem}' +
     '.pn-need th,.pn-need td{padding:.15rem .9rem .15rem 0;text-align:left;font-weight:400}.pn-need thead th{font-size:.78rem;color:var(--text-muted,#999)}' +
     '.pn-fine{font-size:.8rem;color:var(--text-muted,#999);margin:.3rem 0 0}.pn-src{border-top:1px solid var(--border,#333);padding-top:.6rem}' +
