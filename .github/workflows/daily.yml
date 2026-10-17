@@ -455,13 +455,15 @@ jobs:
       # stops the job here, before GATE 2, the commit and the send; the next
       # morning cron regenerates. It never edits daily.json. Its own failure
       # (no key, API error, refusal) is a warning and exit 0, so an outage at
-      # Anthropic never stops a briefing the code gates pass. Set the
-      # FACT_CHECK_MODE variable to "report" to log without blocking.
+      # Anthropic never stops a briefing the code gates pass.
+      # Sig, Oct 17 2026: Opus 5.5, and report mode (log, never block) for a
+      # calibration week; then switch the default below to 'block'. A repo
+      # variable FACT_CHECK_MODEL / FACT_CHECK_MODE overrides either default.
       - name: GATE 2f, fact check against the source data
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL }}
-          FACT_CHECK_MODE: ${{ vars.FACT_CHECK_MODE }}
+          FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
+          FACT_CHECK_MODE: ${{ vars.FACT_CHECK_MODE || 'report' }}
         run: |
           python scripts/test_fact_check.py
           python scripts/fact_check_briefing.py
