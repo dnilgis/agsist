@@ -175,3 +175,81 @@ test("Planting Date card does not promise county windows everywhere", () => {
   assert.match(c, /Wisconsin and Minnesota only/, "frost odds scoped to WI and MN");
   assert.match(c, /<div class="short">Soil temp and planting dates<\/div>/);
 });
+
+/* Oct 17 (Sig approved): each data card shows its own as-of date and source
+ * from data/tools-fresh.json, and "Everything else" folds behind one tap on
+ * phones while the find box and chips still reach into it. */
+async function freshKit() {
+  const vm = await import("node:vm");
+  const src = script();
+  const mo = src.match(/var MO=\[[^\]]+\];/)[0];
+  const when = src.match(/function when\(s\)\{[\s\S]*?\n  return [^\n]*\}/)[0];
+  const fl = src.match(/function freshLines\(j,now\)\{[\s\S]*?\n  return n;\}/)[0];
+  const mk = (href, withTag) => {
+    const kids = [];
+    const a = { kids, getAttribute: (k) => (k === "href" ? href : null), querySelector: (q) => (q === ".tag" && withTag ? "TAG" : null),
+      insertBefore(el, ref) { kids.push(["before", ref, el]); }, appendChild(el) { kids.push(["end", null, el]); } };
+    return a;
+  };
+  const items = [mk("/cash-bids", true), mk("/fertilizer", true), mk("/rain", false), mk("/breakeven", true)];
+  const ctx = { items, d: { createElement: () => ({}) }, Date };
+  vm.runInNewContext(mo + when + fl + ";this.when=when;this.freshLines=freshLines;", ctx);
+  return { ...ctx, items };
+}
+
+test("card date line: the tool's own date, in plain words, never a guess", async () => {
+  const prev = process.env.TZ; process.env.TZ = "America/Chicago";
+  try {
+    const { when, freshLines, items } = await freshKit();
+    assert.equal(when("2026-10-17T19:10:00Z"), "2:10 pm Oct 17");
+    assert.equal(when("2026-10-17T05:05:00Z"), "12:05 am Oct 17");
+    assert.equal(when("2026-10-12"), "Oct 12", "a date-only value never shifts a day by time zone");
+    assert.equal(when(""), ""); assert.equal(when("Oct 12"), ""); assert.equal(when(undefined), "");
+    const now = Date.parse("2026-10-17T20:00:00Z");
+    const j = { generated: "2026-10-17T19:41:00Z", tools: {
+      "/cash-bids": { asof: "2026-10-17T19:10:00Z", verb: "Bids read", src: "elevator websites" },
+      "/fertilizer": { asof: "2026-10-12", verb: "Prices posted", src: "co-ops" },
+      "/rain": { asof: "not a date", verb: "Read", src: "x" } } };
+    assert.equal(freshLines(j, now), 2, "two cards with good dates, none for a bad date or a tool not in the file");
+    assert.equal(items[0].kids[0][2].textContent, "Bids read 2:10 pm Oct 17 \u00b7 elevator websites");
+    assert.equal(items[0].kids[0][0], "before", "line sits above the tag");
+    assert.equal(items[1].kids[0][2].textContent, "Prices posted Oct 12 \u00b7 co-ops");
+    assert.equal(items[2].kids.length + items[3].kids.length, 0);
+    const k2 = await freshKit();
+    assert.equal(k2.freshLines({ ...j, generated: "2026-10-16T07:00:00Z" }, now), 0, "a file over 36 hours old shows no dates");
+    assert.equal(k2.freshLines({ ...j, generated: "garbage" }, now), 0);
+    assert.equal(k2.freshLines(null, now), 0);
+  } finally { if (prev === undefined) delete process.env.TZ; else process.env.TZ = prev; }
+});
+
+test("tools-fresh builder: selftest passes and the committed file only names tools on this page", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const out = execFileSync("python3", [join(ROOT, "scripts/build_tools_fresh.py"), "--selftest"], { encoding: "utf8" });
+  assert.match(out, /selftest ok/);
+  const j = JSON.parse(readFileSync(join(ROOT, "data/tools-fresh.json"), "utf8"));
+  const hrefs = new Set([...html.matchAll(/<a (?:href="([^"]+)" class="tool-card"|class="tool-more-item" href="([^"]+)")/g)].map((m) => m[1] || m[2]));
+  assert.ok(hrefs.size > 40);
+  for (const [h, t] of Object.entries(j.tools)) {
+    assert.ok(hrefs.has(h), `${h} is a card or link on /tools`);
+    assert.match(t.asof, /^\d{4}-\d\d-\d\d(T\d\d:\d\d(:\d\d)?Z)?$/, h);
+    assert.ok(t.verb && typeof t.src === "string", h);
+  }
+  const wf = readFileSync(join(ROOT, ".github/workflows/tools-fresh.yml"), "utf8");
+  assert.match(wf, /build_tools_fresh\.py --selftest/);
+  assert.match(wf, /for i in 1 2 3 4 5/, "retrying commit loop");
+  assert.match(wf, /cron: '41 \* \* \* \*'/);
+});
+
+test("Everything else folds on phones, opens for a matching filter, and counts its links", () => {
+  const m = html.match(/<details class="more-fold" id="more-fold" open>([\s\S]*?)<\/details>/);
+  assert.ok(m, "the list sits in one fold, open in the markup (wide screens, no script)");
+  assert.match(m[1], /<summary><h2 class="tool-more-hd" id="more-hd">Everything else on the site <span class="mf-n">\((\d+)\)<\/span><\/h2><\/summary>/);
+  const n = +m[1].match(/mf-n">\((\d+)\)/)[1];
+  assert.equal(n, [...m[1].matchAll(/class="tool-more-item"/g)].length, "count matches the links");
+  assert.match(m[1], /matchMedia\('\(max-width: 600px\)'\)\.matches\)document\.getElementById\('more-fold'\)\.open=false/);
+  const src = script();
+  assert.match(src, /if\(key\|\|words\.length\)\{if\(!more\.hidden\)fold\.open=true;\}else fold\.open=foldDefault;/);
+  assert.match(src, /fold\.hidden=more\.hidden/);
+  // Pod counts and Rain by county stay in the page body, inside the fold
+  assert.ok(m[1].includes('href="/pod-counts"') && m[1].includes('href="/rain"'));
+});
