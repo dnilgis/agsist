@@ -96,6 +96,19 @@ test("Iowa: the panel's arithmetic, worked by hand", () => {
   assert.equal(els["gr-atlas"].href, "/farmland-atlas/iowa/story-county");
 });
 
+test("North Dakota: a rent in cents is shown as posted, so the worked math adds up", () => {
+  // accuracy pass 2026-10-17: Pierce County rents $64.50; the line printed "$65 x 108 / 108.4 = $64"
+  const ND = readFileSync(ROOT + "rent/north-dakota.html", "utf8");
+  const { els, set } = runPanel(ND);
+  const c = JSON.parse(els["gr-data"].textContent).c;
+  const i = c.findIndex((x) => x[0] === "Pierce");
+  assert.equal(c[i][1], 64.5);
+  set("gr-co", i, "change");
+  set("gr-y", 108);
+  // by hand: 64.50 / 108.4 = 0.595 -> $0.60 a bushel; 64.50 x 108 / 108.4 = 64.26 -> $64
+  assert.equal(els["gr-math"].textContent, "Pierce County: $64.50 rent ÷ 108.4 bu trend = $0.60 a bushel. $64.50 × 108 ÷ 108.4 = $64.");
+});
+
 test("the panel is labeled derived, and absent where no county has a same-practice trend", () => {
   assert.match(IA, /Derived by AGSIST, not a NASS number/);
   assert.match(IA, /83 of 99 Iowa\s+counties have both numbers/);
