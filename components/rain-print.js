@@ -344,6 +344,17 @@
      then; after it, through the print cutoff, ask (a small list can still
      make it); after that, through Dec 25, plainly after Christmas; outside
      Oct 1 to Dec 25 of the cutoff's year, no Christmas clause at all. */
+  /* A LIST THAT DOESN'T ADD UP (2026-10-17, farm-buyers panel: 30 prints and
+     3 towns sent with no question). From 10 prints, a list with more than one
+     line but fewer lines than prints, none saying "all", "each", "every" or a
+     count like "x 10", asks once before sending. A header row ("Town, State,
+     Year") is not a town. '' when the list looks right. Pure: the tests run it. */
+  function bizTownCheck(qn, towns) {
+    var lines = String(towns || '').split(/\n/).map(function (l) { return l.trim(); }).filter(function (l) { return l && !/^(town|place|city)\b/i.test(l); });
+    if (!(qn >= 10) || lines.length < 2 || lines.length >= qn) return '';
+    if (lines.some(function (l) { return /\b(all|each|every|both)\b|\b[x\u00d7]\s*\d+\b|\b\d+\s*[x\u00d7]\b|\b\d+\s*(copies|prints|of them)\b/i.test(l); })) return '';
+    return qn + ' prints and ' + lines.length + ' towns: is one town for several? Say how many go with each (like "Chetek, WI, 2012, x 10"), or press Send again to send it as it is.';
+  }
   function bizChristmasLine(todayIso, j) {
     var t = String(todayIso || ''), bc = j && j.business_cutoff, pc = j && j.print_christmas_cutoff, M = /^(\d{4})-(\d{2})-(\d{2})$/;
     var tail = ' Last year, or a year your customers still talk about, works well.';
@@ -1574,7 +1585,7 @@
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
@@ -4113,6 +4124,7 @@
     }).then(function () { try { $('rb-logo-file').value = ''; } catch (err) {} });
   }
   var bizSending = false;
+  var BIZ_ASKED = '';   // the list the mismatch question was asked about: Send again sends it
   function submitBiz(e) {
     e.preventDefault();
     if (bizSending) return;
@@ -4131,6 +4143,8 @@
       : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
     if (!bad && BIZ_LOGO && BIZ_LOGO.saving) bad = ['rb-logo-file', 'The logo is still saving. Send again in a moment.'];
     if (bad) { out.innerHTML = '<p class="rp-msg rp-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
+    var ask = bizTownCheck(qn, x.towns), sig = qn + '|' + x.towns;
+    if (ask && BIZ_ASKED !== sig) { BIZ_ASKED = sig; out.innerHTML = '<p class="rp-msg rp-bad">' + esc(ask) + '</p>'; try { $('rb-towns').focus(); } catch (err) {} return; }
     x.quantity = String(qn);
     if (BIZ_LOGO && BIZ_LOGO.id) x.logo = BIZ_LOGO.id;
     // the shared note (printed at the top of each box's letter) goes only to prints shipped one to each customer
@@ -4145,7 +4159,7 @@
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-business', data, fs).then(function () {
       ga('rain_print_business', { result: 'ok', product: x.product, qty: qn });
-      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' with a quote, then a proof sheet.</p>' +
+      out.innerHTML = '<div class="rp-msg rp-ok" tabindex="-1"><p><b>Sent.</b> I\u2019ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
         '<p>Nothing is printed or charged until you OK both.</p></div>';
       $('rb-form').reset(); syncBizShip(); syncBizTier();
       BIZ_LOGO_ASK++; BIZ_LOGO = null; syncBizLogo(); bizLogoMsg('');

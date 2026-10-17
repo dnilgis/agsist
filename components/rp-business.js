@@ -179,7 +179,7 @@
       (x.note_all ? '\nNote for every print: ' + x.note_all : '') + '\nTowns and years:\n' + x.towns + (x.notes ? '\nNotes: ' + x.notes : '') +
       (x.logo ? '\nLogo: ' + LOGO_LINK + x.logo : '') + '\n';
   }
-  var sending = false;
+  var sending = false, ASKED = '';   // ASKED: the list the mismatch question was asked about
   function submit(e) {
     e.preventDefault();
     if (sending) return;
@@ -199,6 +199,9 @@
       : !x.towns ? ['rb-towns', 'Add the towns and years, or the one town for all of them.'] : null;
     if (!bad && LOGO && LOGO.saving) bad = ['rb-logo-file', 'The logo is still saving. Send again in a moment.'];
     if (bad) { out.innerHTML = '<p class="rbz-out rbz-bad">' + esc(bad[1]) + '</p>'; try { $(bad[0]).focus(); } catch (err) {} return; }
+    // 30 prints and 3 towns: asked once (RainPrint.bizTownCheck); Send again sends it as it is
+    var ask = R && R.bizTownCheck ? R.bizTownCheck(qn, x.towns) : '', sig = qn + '|' + x.towns;
+    if (ask && ASKED !== sig) { ASKED = sig; out.innerHTML = '<p class="rbz-out rbz-bad">' + esc(ask) + '</p>'; try { $('rb-towns').focus(); } catch (err) {} return; }
     x.quantity = String(qn);
     if (LOGO && LOGO.id) x.logo = LOGO.id;
     if (x.ship === 'each') { var na = $('rb-note-all').value.replace(/\r\n?/g, '\n').trim().slice(0, 300); if (na) x.note_all = na; }
@@ -212,7 +215,7 @@
     var send = root.agsistFormPost || function () { return Promise.reject(new Error('no form helper')); };
     send('rain-print-business', data, fs).then(function () {
       ga('rain_print_business', { result: 'ok', product: x.product, qty: qn, placement: 'landing' });
-      out.innerHTML = '<div class="rbz-out ok" tabindex="-1"><p><b>Sent.</b> I’ll write to ' + esc(x.email) + ' with a quote, then a proof sheet.</p>' +
+      out.innerHTML = '<div class="rbz-out ok" tabindex="-1"><p><b>Sent.</b> I’ll write to ' + esc(x.email) + ' within 1 business day with a quote, then a proof sheet.</p>' +
         '<p>Nothing is printed or charged until you OK both.</p></div>';
       $('rb-form').reset(); syncShip(); syncTier(); csvMsg('');
       LOGO_ASK++; LOGO = null; syncLogo(); logoMsg('');
