@@ -1916,6 +1916,22 @@
     {"id": "cr-sd-survey", "kind": "html",
      "url": "https://extension.sdstate.edu/custom-rates-survey",
      "title": "SDSU Extension custom rates survey page",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-mo-g302-pdf", "kind": "pdf",
+     "url": "https://extension.missouri.edu/media/wysiwyg/Extensiondata/Pub/pdf/agguides/agecon/g00302.pdf",
+     "title": "MU Extension G302 Custom Rates for Farm Services in Missouri (PDF)",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-oh-2024-blog", "kind": "html",
+     "url": "https://farmoffice.osu.edu/blog/mon-07012024-900am/ohio-farm-custom-rates-2024",
+     "title": "Ohio Farm Custom Rates 2024 (OSU Farm Office, Barry Ward)",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-oh-2026-oac", "kind": "html",
+     "url": "https://ohioagconnection.com/news/ohio-farm-custom-rates-rise-across-key-field-operations",
+     "title": "News of the Ohio Farm Custom Rates 2026 release (to find the report link)",
+     "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"},
+    {"id": "cr-oh-2026-wfin", "kind": "html",
+     "url": "https://wfin.com/?p=1940258",
+     "title": "News of the Ohio Farm Custom Rates 2026 release (to find the report link)",
      "why": "/custom-rates: custom farm work rates by state from the published survey (operation, unit, average, range, survey year)"}
 ]
 }
