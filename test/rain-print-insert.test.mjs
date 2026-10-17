@@ -52,7 +52,7 @@ function make(style, opts) {
   const art = A.render(I);
   const F = A.facts(I, { unplaced: A.lastUnplaced() });
   const o = { facts: F, mini: art, serial: opts.serial === undefined ? "No. 0001" : opts.serial, gift: opts.gift || "", qr: RP.standardMatrix(),
-    station: { words: "Ames, IA", away: "2.0 miles", kind: "volunteer" }, source: "NOAA’s daily records" };
+    station: { words: "Ames, IA", away: "2.0 miles", kind: "volunteer" }, source: "NOAA’s daily records", offer: opts.offer, today: opts.today };
   const svg = INS.render(o);
   return { art, F, svg, copy: INS.copy(o), overflow: INS.lastOverflow() };
 }
@@ -208,4 +208,59 @@ test("What's in the box: the public block, the sample letter and the FAQ, word f
   assert.doesNotMatch(js, /note card|on a card/);
   // the emailed under-the-tree gift card for this year's Christmas orders stays
   assert.match(html, /I email you a gift card to print for under the tree/);
+});
+
+// the "next print" code line (Sig, 2026-10-17): off until data/rain-print.json letter_offer has a code
+const OFFER = { code: "rain10", dollars_off: 10, expires: "2027-12-31" };
+const OFFER_WORDS = "Want one for another year or another farm? Use code RAIN10 for $10 off at agsist.com/rain-print. Good through December 31, 2027.";
+
+test("the code line: off while data/rain-print.json letter_offer has no code", () => {
+  const J = JSON.parse(read("data/rain-print.json"));
+  assert.deepEqual(J.letter_offer, { code: "", dollars_off: 0, expires: "" }, "ships switched off until Sig sets the code");
+  assert.ok(J._letter_offer.includes("Allow promotion codes"), "the note says what to turn on in Stripe");
+  for (const st of ["r1", "r2"]) {
+    const m = make(st, { offer: J.letter_offer, today: "2027-01-10" });
+    assert.ok(!m.svg.includes('data-rp="offer"'), st + ": no code line");
+    assert.doesNotMatch(letterTexts(m.svg).join(" "), /Use code|\$/);
+  }
+  // anything it cannot read prints nothing
+  for (const bad of [null, {}, { code: "", dollars_off: 10, expires: "2027-12-31" }, { code: "RAIN10", dollars_off: 0, expires: "2027-12-31" },
+    { code: "RAIN10", dollars_off: "10", expires: "2027-12-31" }, { code: "RAIN10", dollars_off: 9.5, expires: "2027-12-31" },
+    { code: "RAIN 10", dollars_off: 10, expires: "2027-12-31" }, { code: "RAIN10", dollars_off: 10, expires: "2027-02-30" }, { code: "RAIN10", dollars_off: 10, expires: "12/31/2027" }])
+    assert.equal(INS.offerLine(bad, "2027-01-10"), "", JSON.stringify(bad));
+  // past its last day: no line; on the last day: the line
+  assert.equal(INS.offerLine(OFFER, "2028-01-01"), "");
+  assert.equal(INS.offerLine(OFFER, "2027-12-31"), OFFER_WORDS);
+  // no end date: no "Good through"
+  assert.equal(INS.offerLine({ code: "RAIN10", dollars_off: 15, expires: "" }, "2027-01-10"), "Want one for another year or another farm? Use code RAIN10 for $15 off at agsist.com/rain-print.");
+});
+
+test("the code line: on the letter when set, and the page still fits with the longest note and five marked days", () => {
+  const long = "Thanks for another year. From all of us at the elevator. ".repeat(10).slice(0, 300);
+  const marks = [["2012-04-20", "Planted"], ["2012-06-10", "Hail"], ["2012-08-01", "Wedding"], ["2012-10-01", "Harvest"], ["2012-12-01", "Done"]].map(([date, label]) => ({ date, label }));
+  for (const st of ["r1", "r2"]) for (const full of [false, true]) {
+    const m = make(st, full ? { gift: long, markers: marks, offer: OFFER, today: "2027-01-10" } : { offer: OFFER, today: "2027-01-10" });
+    const L = letterTexts(m.svg).join(" ");
+    assert.ok(m.svg.includes('data-rp="offer"'), st + ": the code line");
+    assert.ok(L.replace(/\s+/g, " ").includes(OFFER_WORDS), st + ": the words: " + L);
+    assert.equal(m.overflow, 0, st + (full ? " full" : "") + " fits");
+    const body = m.svg.replace(/<svg x="[\s\S]*?<\/svg>/, "");
+    const ys = [...body.matchAll(/<text x="[^"]*" y="([\d.]+)"/g)].map((x) => +x[1]);
+    assert.ok(Math.max(...ys) <= INS.H - 50, st + ": inside the bottom margin: " + Math.max(...ys));
+    // the line sits under everything above the foot, never on top of it
+    const oys = [...body.match(/<g data-rp="offer">([\s\S]*?)<\/g>/)[1].matchAll(/y="([\d.]+)"/g)].map((x) => +x[1]);
+    const before = [...body.slice(0, body.indexOf('<g data-rp="offer">')).matchAll(/<text x="[^"]*" y="([\d.]+)"/g)].map((x) => +x[1]);
+    assert.ok(Math.min(...oys) - Math.max(...before) >= 18, st + ": room above the code line");
+    assert.ok(!L.includes("—"), "no em dash");
+    assert.doesNotMatch(L, /archival|Stripe|hurry|act now|limited|!/i, "plain words");
+  }
+  assert.doesNotMatch(read("components/rp-insert.js"), /—|&mdash;/);
+});
+
+test("the engine hands the letter the offer from the prices it already loads", () => {
+  const js = read("components/rain-print.js");
+  assert.match(js, /offer: \(PRICES && PRICES\.letter_offer\) \|\| null, today: TODAY/);
+  assert.match(js, /sc\.src = '\/components\/rp-insert\.js\?v=2'/);
+  // checkout: the Stripe link only gains client_reference_id; nothing strips a promotion code
+  assert.doesNotMatch(js, /promotion_code|promo_code/i);
 });

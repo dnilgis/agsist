@@ -23,8 +23,12 @@
  *   mini: the print's own SVG (AgRainArt.render, no px), serial: "No. 0001" or '',
  *   gift: the giver's note or a business's message from the order, or '' (the block is left off),
  *   giftFrom: a business name for the note's heading ("A NOTE FROM ..."), or '',
- *   qr: the standard code's matrix, fontCss, measure(text, style) -> width (optional), px [w, h]
+ *   qr: the standard code's matrix, fontCss, measure(text, style) -> width (optional), px [w, h],
+ *   offer: data/rain-print.json letter_offer {code, dollars_off, expires} or null, today: YYYY-MM-DD (the day the letter is made)
  * }
+ * The offer line (Sig, 2026-10-17) prints only when the code, the dollars and the
+ * date all read clean and the letter is made on or before the last day; otherwise
+ * nothing. It is worded for whoever opens the box, the giver or the one who got it.
  * Copy rules (Sig): plain farm words, no em dashes, no store or printer names,
  * never "archival", no prices, no counts of buyers. */
 (function (root) {
@@ -42,6 +46,25 @@
   function rangeWords(a, b) {
     var p = String(a).split('-').map(Number), q = String(b).split('-').map(Number);
     return p[1] === q[1] ? MONTHS[p[1] - 1] + ' ' + p[2] + ' to ' + q[2] : longDate(a) + ' to ' + longDate(b);
+  }
+  function validIso(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ''));
+    if (!m) return false;
+    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+    return d.getUTCFullYear() === +m[1] && d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3];
+  }
+  /* "Want one for another year or another farm? Use code RAIN10 for $10 off at
+     agsist.com/rain-print. Good through December 31, 2026." or '' (off, unreadable, or past its day). */
+  function offerLine(of, today) {
+    if (!of || typeof of !== 'object') return '';
+    var code = String(of.code || '').trim(), off = of.dollars_off, exp = String(of.expires || '').trim();
+    if (!/^[A-Za-z0-9]{3,20}$/.test(code)) return '';
+    if (typeof off !== 'number' || !(off > 0) || off !== Math.round(off) || off > 500) return '';
+    if (exp && !validIso(exp)) return '';
+    if (exp && validIso(today) && today > exp) return '';
+    var p = exp.split('-').map(Number);
+    return 'Want one for another year or another farm? Use code ' + code.toUpperCase() + ' for $' + off + ' off at agsist.com/rain-print.' +
+      (exp ? ' Good through ' + MONTHS[p[1] - 1] + ' ' + p[2] + ', ' + p[0] + '.' : '');
   }
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
 
@@ -110,6 +133,7 @@
       'Framed, it hangs on one nail. A loose print fits a standard 13 x 19 frame with an 11 x 17 mat.'];
     c.footer = 'Draw another year at agsist.com/rain-print';
     c.footerSub = 'Any town, any year the nearest station kept records.';
+    c.offer = offerLine(o.offer, o.today);
     return c;
   }
 
@@ -198,7 +222,7 @@
   /* The page never runs long: a full page (a long gift note, five marked days)
      draws the small print smaller until everything fits above the foot. */
   function render(o) {
-    var fits = [[400, 0], [360, 0], [340, 1], [320, 2], [320, 3], [280, 3]], svg = '';
+    var fits = [[400, 0], [360, 0], [340, 1], [320, 2], [320, 3], [280, 3], [280, 4], [240, 4]], svg = '';
     for (var k = 0; k < fits.length; k++) {
       svg = draw(Object.assign({}, o, { miniW: fits[k][0], tight: fits[k][1] }));
       if (!render.overflow) break;
@@ -206,7 +230,7 @@
     return svg;
   }
   /* tight 1: the care list keeps its first line and the pencil line goes; tight 2: the note and the days a size smaller too;
-     tight 3: the foot moves up beside the maker line. */
+     tight 3: the foot moves up beside the maker line; tight 4 (only a full page with the code line): the key a size smaller and closer. */
   function draw(o) {
     var c = copy(o), meas = measureWith(o), out = [], y;
     var size = o.px ? ' width="' + o.px[0] + '" height="' + o.px[1] + '"' : '';
@@ -243,14 +267,14 @@
       var inner = String(o.mini).replace(/^<svg\b/, '<svg x="' + M + '" y="' + n2(miniTop) + '" width="' + miniW + '" height="' + n2(miniH) + '"').replace(/<style>[\s\S]*?<\/style>/, '');
       out.push('<rect x="' + (M - 0.5) + '" y="' + n2(miniTop - 0.5) + '" width="' + (miniW + 1) + '" height="' + n2(miniH + 1) + '" fill="none" stroke="' + RULE + '" stroke-width="1"/>' + inner);
     }
-    var kx = M + miniW + 26, kw = W0 - M - kx - 50, kst = { size: 13.5, fill: INK }, ky = miniTop + 10;
+    var kx = M + miniW + 26, kw = W0 - M - kx - 50, kst = { size: o.tight > 3 ? 12.5 : 13.5, fill: INK }, ky = miniTop + 10, klh = o.tight > 3 ? 16 : 18, kgap = o.tight > 3 ? 4 : 8;
     out.push(T(kx, ky, 'HOW TO READ IT', eb));
     ky += 26;
     c.key.forEach(function (k) {
       out.push(swatch(k[0], kx, ky));
       var ls = wrap(meas, k[1], kst, kw);
-      ls.forEach(function (t, i) { out.push(T(kx + 50, ky + i * 18, t, kst)); });
-      ky += ls.length * 18 + 8;
+      ls.forEach(function (t, i) { out.push(T(kx + 50, ky + i * klh, t, kst)); });
+      ky += ls.length * klh + kgap;
     });
     y = Math.max(miniTop + miniH, ky - 8) + 40;
 
@@ -285,7 +309,7 @@
       y += 4;
     }
 
-    var qs = 76, fb = H0 - M, half = CW / 2 - 16, bst = { size: 13.5, fill: INK }, mk = { fam: SERIF, size: 15 }, cx2 = M + CW / 2 + 16, y1, y2;
+    var qs = 76, fb = H0 - M, half = CW / 2 - 16, bst = { size: 13.5, fill: INK }, mk = { fam: SERIF, size: 15 }, cx2 = M + CW / 2 + 16, y1, y2, ost = { size: 14, w: 500, fill: INK };
     y += 16;
     out.push(line(M, y - 22, W0 - M, y - 22, RULE, 1));
     y1 = y2 = y;
@@ -298,11 +322,20 @@
       out.push(T(cx2, y2, 'TAKING CARE OF IT', eb)); y2 += 24;
       (o.tight ? c.care.slice(0, 1) : c.care).forEach(function (p) { wrap(meas, p, bst, half).forEach(function (t) { out.push(T(cx2, y2, t, bst)); y2 += 19; }); y2 += 3; });
       y = Math.max(y1 - 19, y2 - 22);
+      // the code line, when there is one, sits just above the foot (its last line 16 over the rule)
+      var lim = fb - qs - 30;
+      if (c.offer) {
+        var ol = wrap(meas, c.offer, ost, CW), oy = fb - qs - 30 - (ol.length - 1) * 19;
+        out.push('<g data-rp="offer">');
+        ol.forEach(function (t, k) { out.push(T(M, oy + k * 19, t, ost)); });
+        out.push('</g>');
+        lim = oy - 30;
+      }
       out.push(line(M, fb - qs - 14, W0 - M, fb - qs - 14, RULE, 1));
       out.push(T(M, fb - 38, c.footer, { fam: SERIF, w: 500, size: 21 }));
       out.push(T(M, fb - 14, c.footerSub, { size: 13.5, fill: MUTE }));
       out.push(qrMark(o.qr, W0 - M, fb, qs));
-      render.overflow = y > fb - qs - 30 ? Math.round(y - (fb - qs - 30)) : 0;
+      render.overflow = y > lim ? Math.round(y - lim) : 0;
     } else {
       // the fullest page: care goes under the maker line, and the foot (words and code) takes the right half of the same row
       wrap(meas, c.care[0], bst, half).forEach(function (t) { out.push(T(M, y1, t, bst)); y1 += 19; });
@@ -311,11 +344,17 @@
       wrap(meas, c.footerSub, bst, fw).forEach(function (t) { out.push(T(cx2, y2, t, Object.assign({}, bst, { fill: MUTE }))); y2 += 19; });
       out.push(qrMark(o.qr, W0 - M, y - 14 + qs, qs));
       y = Math.max(y1 - 19, y2 - 19, y - 14 + qs);
+      if (c.offer) {
+        y += 28;
+        out.push('<g data-rp="offer">');
+        wrap(meas, c.offer, ost, CW).forEach(function (t, k) { if (k) y += 19; out.push(T(M, y, t, ost)); });
+        out.push('</g>');
+      }
       render.overflow = y > fb ? Math.round(y - fb) : 0;
     }
     out.push('</svg>');
     return out.join('');
   }
 
-  root.AgRpInsert = { copy: copy, render: render, W: W0, H: H0, lastOverflow: function () { return render.overflow || 0; } };
+  root.AgRpInsert = { copy: copy, render: render, offerLine: offerLine, W: W0, H: H0, lastOverflow: function () { return render.overflow || 0; } };
 })(typeof window !== 'undefined' ? window : this);
