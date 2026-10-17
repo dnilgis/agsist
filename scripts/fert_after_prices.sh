@@ -7,6 +7,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 scripts/build_fert_prices.py
+python3 scripts/build_coop_places.py            # co-op town points for the nearest-co-op lines (components/near-coop.js)
 python3 scripts/bake_fert_defaults.py          # breakeven.html CROP_DEFAULTS fertilizer and its source line
 node scripts/bake_manure_value.mjs              # manure-value.html, fast-facts.html manure table
 python3 scripts/bake_seo.py --page fertilizer.html

@@ -1687,6 +1687,8 @@ function renderBids(bids,keepLimit){
   currentElevators=elevators;
   /* Saved elevators on screen are the compare pins (components/cb-myelev.js). */
   if(window.CBMyElev){if(!cbPinsHidden)pinnedKeys=CBMyElev.pinKeys(elevators,pinnedKeys).filter(function(k){return !cbPinsDropped[k];});CBMyElev.feed(elevators,myElevPick,function(){cbVisibleLimit=1e4;renderBids(cbLastBids,true);},function(){cbPinsHidden=false;pinnedKeys=CBMyElev.pinKeys(currentElevators,[]);openCompareModal();});}
+  /* This search's middle basis vs the ZIP's state middle (components/cb-vs-state.js). */
+  if(window.CBVsState&&window.cbRank)CBVsState.draw(elevators,{nearest:getNearestBid,cents:basisCents,contract:cbRank.contractKey,zip:(($('cb-zip')||{}).value||'').trim(),crop:currentFilter,delivery:currentDelivery});
   elevCount.textContent=elevators.length+' elevator'+(elevators.length!==1?'s':'');
   /* Per-elevator "as of" line removed — freshness is surfaced once
      in the status bar timer (cb-status-timer) so it doesn't repeat

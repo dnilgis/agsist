@@ -217,6 +217,33 @@ function savedState(){
   try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');if(w&&/^[A-Z]{2}$/.test(w.state||''))return w.state;}catch(e){}
   return '';
 }
+/* Your state in the notes under the N box (Sig, Oct 17: local from what is on
+   disk). Wisconsin: this is its own guide. Illinois: Illinois Extension runs
+   the Corn N Rate Calculator by region of Illinois and last crop (Illinois
+   Extension, Feb 27, 2026). The fall line links straight to the reader's
+   saved ZIP on /fall-nitrogen and to their state's rule there when that page
+   has one. Reads the saved location only; writes nothing. */
+var FALL_RULE={IA:1,IL:1,MN:1,KS:1,NE:1};
+function savedZip(){
+  try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');if(w&&/^\d{5}$/.test(w.zip||''))return w.zip;}catch(e){}
+  try{var z=localStorage.getItem('agsist_zip')||'';if(/^\d{5}$/.test(z))return z;}catch(e){}
+  return '';
+}
+function localNotes(st){
+  var note=document.getElementById('ans-note'),fall=document.getElementById('ans-fall');
+  if(note){
+    if(!note.getAttribute('data-base'))note.setAttribute('data-base',note.innerHTML);
+    var h=note.getAttribute('data-base'),out=/ Outside Wisconsin,[^<]*<a href="https:\/\/www\.cornnratecalc\.org\/">[^<]*<\/a>[^.]*\./;
+    if(st==='WI')h=h.replace(out,' That is your state&rsquo;s own guide.');
+    else if(st==='IL')h=h.replace(out,' In Illinois, Illinois Extension runs the same prices through the <a href="https://www.cornnratecalc.org/">Corn N Rate Calculator</a> by your region of Illinois and last crop (<a href="https://extension.illinois.edu/blogs/nutrient-loss-reduction/2026-02-27-how-mrtn-works-and-economics-behind-nitrogen-rates">how it works</a>).');
+    note.innerHTML=h;
+  }
+  var a=fall&&fall.querySelector('a[href^="/fall-nitrogen"]'),z=savedZip();
+  if(a){a.href='/fall-nitrogen'+(z?'?zip='+z:'');a.textContent=z?'Soil temps near '+z:'Soil temps near you';}
+  var r=fall&&document.getElementById('ans-fall-rule');
+  if(fall&&!r&&FALL_RULE[st]){r=document.createElement('span');r.id='ans-fall-rule';fall.appendChild(r);}
+  if(r)r.innerHTML=FALL_RULE[st]?' &middot; <a href="/fall-nitrogen#rule-'+st+'">'+esc(BASIS[st]?BASIS[st].name:st)+' rule</a>':'';
+}
 function loadBasis(){
   getJSON('/data/basis-states.json').then(function(d){
     var sel=document.getElementById('ans-state');
@@ -230,6 +257,7 @@ function loadBasis(){
     });
     var pick=savedState();
     if(pick==='fut'||(pick&&BASIS[pick]))sel.value=pick;
+    localNotes(sel.value);
     fillCorn();
   }).catch(function(){});
 }
@@ -400,7 +428,7 @@ function fmtDay(iso){var d=new Date(iso+'T12:00:00');return isNaN(d)?iso:d.toLoc
   var cb=document.getElementById('nc-corn');
   if(cb)cb.addEventListener('input',function(){cornTyped=cb.value!=='';if(!cornTyped)fillCorn();else calcNC();});
   var st=document.getElementById('ans-state');
-  if(st)st.addEventListener('change',function(){try{localStorage.setItem('agsist-ff-state',st.value);}catch(e){}cornTyped=false;fillCorn();});
+  if(st)st.addEventListener('change',function(){try{localStorage.setItem('agsist-ff-state',st.value);}catch(e){}cornTyped=false;localNotes(st.value);fillCorn();});
   ['ans-soil','ans-prev'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('change',calcNC);});
 })();
 loadFertPrices();

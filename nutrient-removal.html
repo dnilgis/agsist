@@ -134,6 +134,8 @@
         <p class="nr-fine">Pounds from UW Extension A2809, Table 4.2. Stalks, straw and hay are per ton of dry matter. Nitrogen and sulfur are left out: A2809 gives no N or S removal per ton, and we print only what we have read in a published table.</p>
       </div>
 
+      <aside class="nc-n" data-near-coop="nr" aria-label="Your area"><p><a href="/cash-bids">See this for your area</a></p></aside>
+
       <ul class="nr-prices" id="nr-prices" aria-label="Fertilizer prices used">
         <li>N a lb<b>&nbsp;</b>loading</li><li>P&#8322;O&#8325; a lb<b>&nbsp;</b>loading</li><li>K&#8322;O a lb<b>&nbsp;</b>loading</li>
       </ul>
@@ -224,5 +226,6 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/nutrient-removal.js?v=2" defer></script>
+  <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=1';document.head.appendChild(s);}}catch(e){}</script>
 </body>
 </html>
