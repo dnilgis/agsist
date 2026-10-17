@@ -58,8 +58,12 @@
     var c1 = $('rbz-cutoff'), c2 = $('rbz-cutoff2');
     if (c1) { c1.textContent = cut; c1.hidden = !cut; }
     if (c2) {
-      var m = /by (\w+ \d+)\.$/.exec(cut);
+      var m = /by (\w+ \d+)\.$/.exec(cut), px = $('rbz-xmas');
       if (m) c2.textContent = 'send it by ' + m[1];
+      /* chaos-6: past the list date the sentence follows the gift line's own
+         cutoffs (RainPrint.bizChristmasLine): ask through the print cutoff,
+         then plainly after Christmas, and no Christmas clause after Dec 25 */
+      else if (px && R.bizChristmasLine) px.textContent = R.bizChristmasLine(chicagoToday(), j) + ' This year\u2019s print ships in January, once the full year\u2019s numbers are in.';
       else c2.textContent = 'ask me for dates';
     }
     var rows = R.bizRows(j), body = $('rbz-tiers-body');

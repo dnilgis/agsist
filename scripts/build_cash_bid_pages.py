@@ -1218,6 +1218,9 @@ def board_section(bd, snap_ct):
             else f"call{who} to confirm")
     name = bd["operator"] or bd["city"]
     loc = near_text(bd) or (bd["city"] if bd["city"] and bd["city"].lower() != name.lower() else "")
+    # the company's own page (scripts/build_company_pages.py), when it has one
+    co = (f'<div class="loc"><a href="{esc(bd["company_path"])}">Every {esc(bd["company_short"])} location</a></div>'
+          if bd.get("company_path") else "")
     trs = []
     for r in rows:
         com = r["commodity"]
@@ -1241,7 +1244,7 @@ def board_section(bd, snap_ct):
     holds = hold_lines(bd)
     more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t, _ in holds)
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
-            + (f'<div class="loc">{esc(loc)}</div>' if loc else "")
+            + (f'<div class="loc">{esc(loc)}</div>' if loc else "") + co
             + portal_html(pi, snap_ct)
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
@@ -1277,9 +1280,9 @@ def quiet_line(bd):
 # answer; it carries its posted date and is rewritten on every build.
 ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
-HIST_NOTE = (" &ldquo;Basis since June&rdquo; reads AGSIST&rsquo;s daily basis log, which keeps the day each "
+HIST_NOTE = (" The &ldquo;Basis since&rdquo; box reads AGSIST&rsquo;s daily basis log, which keeps the day each "
              "elevator&rsquo;s basis changed; until Oct 11, 2026 that log also drew on a licensed bid feed.")
-HIST_JS = '<script src="/components/cb-basis-hist.js?v=1" defer></script>\n'
+HIST_JS = '<script src="/components/cb-basis-hist.js?v=2" defer></script>\n'
 
 
 def head_name(bd, with_town=True):
@@ -1531,20 +1534,32 @@ def parse_dm(s, date):
 
 
 def history_index(path):
-    """{(norm_fac, norm_town)} with at least one logged basis change in one
-    state's data/basis-sparklines/<ST>.json; empty when it cannot be read."""
+    """{(norm_fac, norm_town): first logged date} for each elevator with at
+    least one logged basis change in one state's data/basis-sparklines/<ST>.json;
+    empty when it cannot be read. The date heads the box ("Basis since Aug 27";
+    2026-10-17 audit N5: it said "since June" over a log that began Aug 27)."""
     try:
         with open(path, encoding="utf-8") as f:
             series = (json.load(f) or {}).get("series") or {}
     except (OSError, ValueError):
         return set()
-    out = set()
+    out = {}
     for k, pts in series.items():
         p = k.split("|")
         if len(p) >= 6 and p[3] in ("corn", "soybeans", "wheat") and pts and isinstance(pts[0], dict) \
                 and parse_dm(p[5], str(pts[0].get("date") or "")) is not None:
-            out.add((norm_fac(p[1]), norm_town(p[2])))
+            fk, d0 = (norm_fac(p[1]), norm_town(p[2])), str(pts[0].get("date") or "")
+            if fk not in out or d0 < out[fk]:
+                out[fk] = d0
     return out
+
+
+def since_words(iso):
+    """'2026-08-27' -> 'Aug 27'; '' when unparseable."""
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", str(iso or ""))
+    if not m or not 1 <= int(m.group(2)) <= 12:
+        return ""
+    return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(m.group(2)) - 1] + " " + str(int(m.group(3)))
 
 
 def history_box(t, boards, logged):
@@ -1554,19 +1569,24 @@ def history_box(t, boards, logged):
     data/basis-sparklines/<ST>.json the first time the box is opened and draws
     each elevator's nearest-delivery basis from its logged changes. No box
     when none of them has one."""
-    names = []
+    names, first = [], ""
     for bd in boards:
         n = bd["operator"] or bd["city"]
         cities = sorted({x for x in (bd["city"], t["name"]) if x})
-        if not n or not any((norm_fac(n), norm_town(c)) in logged for c in cities):
+        hits = [logged[(norm_fac(n), norm_town(c))] for c in cities if n and (norm_fac(n), norm_town(c)) in logged]
+        if not hits:
             continue
+        d0 = min(h for h in hits if h) if any(hits) else ""
+        if d0 and (not first or d0 < first):
+            first = d0
         if (n, cities) not in names:
             names.append((n, cities))
     if not names:
         return ""
+    head = "Basis since " + since_words(first) if since_words(first) else "Basis log"
     data = json.dumps([[n, c] for n, c in names], separators=(",", ":"), ensure_ascii=False)
     return (f'<details class="cbt-hist" data-basis-hist="{t["state"]}" data-boards="{esc(data)}">'
-            f'<summary>Basis since June</summary><div class="cbt-hist-body">'
+            f'<summary>{head}</summary><div class="cbt-hist-body">'
             f'<p class="cbt-sub">Opens the basis log for these elevators.</p></div></details>')
 
 
@@ -2247,7 +2267,7 @@ def stamp_live_page(path, metas, counts=None):
         n_tw = counts["bids"]["towns"] if counts else len(live)
         text = (f"Find local cash grain bids by ZIP. The AGSIST network has current bids from {n_el:,} "
                 f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}. "
-                f"Updated {fmt_share_time(max(m['latest'] for m in live))}.")
+                f"Updated {fmt_share_time(max(m['latest'] for m in live))} CT.")   # time zone named (2026-10-17 audit N11)
     out = html
     for key, generic in LIVE_SHARE_GENERIC.items():
         attr = "property" if key.startswith("og:") else "name"
@@ -2335,6 +2355,13 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
            "counts": state_counts(towns, near), "zip_coord": zip_coord, "summaries": summaries,
            "hist": _hist_lookup(hist_dir) if hist_dir else None, "live_all": live_board_list(towns),
            "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {}}
+    # one page per company with COMPANY_MIN or more boards in towns; each board
+    # learns its page first, so its town page can link it
+    import build_company_pages as CO
+    companies = CO.group(towns, {s_["id"]: s_ for s_ in index.get("sources") or [] if s_.get("id")})
+    for co in companies.values():
+        for _, bd in co["locs"]:
+            bd["company_path"], bd["company_short"] = co["path"], co["short"]
     before = set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
@@ -2361,6 +2388,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         with open(os.path.join(tmp, url_slug(STATE_NAMES[st]), "index.html"), "w", encoding="utf-8") as f:
             f.write(page)
         smetas.append(sm)
+    cmetas, cindex = CO.write_all(companies, ctx, tmp)
     assert not os.path.exists(os.path.join(tmp, "index.html")), "cash-bids/index.html would capture /cash-bids"
     # swap in: towns that no longer have any network board disappear with the old tree
     shutil.rmtree(out_dir, ignore_errors=True)
@@ -2398,6 +2426,9 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             stamp_basis_hub(hub, doc)
     entries = [(SITE + m["path"], m["latest"]) for m in smetas if m["indexable"]]
     entries += [(SITE + m["path"], m["latest"]) for m in metas if m["indexable"]]
+    if cindex["indexable"]:
+        entries.append((SITE + cindex["path"], cindex["latest"] or gen))
+    entries += [(SITE + m["path"], m["latest"]) for m in cmetas if m["indexable"]]
     if sitemap:
         write_sitemap(sitemap, entries)
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(out_dir) for f in fs)
@@ -2410,6 +2441,11 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
           f"{len(smetas)} state indexes, {sum(m['elevators'] for m in metas)} elevators, "
           f"{sum(m['rows'] for m in metas)} bid rows, {size / 1024:.0f} KB -> {out_dir}/; "
           f"{len(entries)} sitemap URLs; {len(new_urls)} new pages")
+    if cmetas:
+        big = max(cmetas, key=lambda m: m["kb"])
+        print(f"[cash-bid-pages] {len(cmetas)} company pages ({sum(1 for m in cmetas if m['indexable'])} with a current "
+              f"bid), {sum(m['kb'] for m in cmetas):.0f} KB in all, biggest {big['slug']} {big['kb']:.0f} KB "
+              f"({big['locations']} locations)")
     return metas, smetas, drops, new_urls
 
 
@@ -2689,7 +2725,7 @@ def selftest():
             f.write(f"<head>{gen_tags}</head>")
         txt = stamp_live_page(lp, metas)
         live_html = open(lp).read()
-        assert txt.endswith("Updated Oct 7, 12:00 pm.") and live_html.count(esc(txt)) == 2, live_html
+        assert txt.endswith("Updated Oct 7, 12:00 pm CT.") and live_html.count(esc(txt)) == 2, live_html
         assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
         assert open(lp).read() == f"<head>{gen_tags}</head>"
         assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
@@ -2775,6 +2811,8 @@ def selftest():
         assert bool(got) == on, d
         assert got in ("", '<p class="rp-promo" data-rain-print-promo hidden></p>')
     assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
+    import build_company_pages as CO      # the company pages, built inside build_all()
+    CO.selftest()
     print("selftest OK")
 
 
@@ -2843,9 +2881,10 @@ def _selftest_answer():
     assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
-    assert fr.count('/components/cb-basis-hist.js?v=1') == 1 and "&ldquo;Basis since June&rdquo; reads" in fr
+    assert fr.count('/components/cb-basis-hist.js?v=2') == 1 and "&ldquo;Basis since&rdquo; box reads" in fr
+    assert "<summary>Basis since Sep 1</summary>" in fr and "since June" not in fr, "the heading is the first logged date"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
-    assert "cb-basis-hist.js" not in ia and "Basis since June" not in ia, "no logged change in the state: no box"
+    assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"
 
 
 

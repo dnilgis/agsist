@@ -260,6 +260,28 @@
      framed_christmas_cutoff in the same file must equal what this gives
      (test/rain-print-launch.test.mjs), so the promo line reads the right date.
      null when a number is missing. */
+  /* USPS HOLIDAYS, COMPUTED (2026-10-17, chaos-5). The 11 federal holidays
+     the Postal Service observes: New Year's Day, Martin Luther King Jr. Day,
+     Washington's Birthday, Memorial Day, Juneteenth, Independence Day, Labor
+     Day, Columbus Day, Veterans Day, Thanksgiving and Christmas. One that
+     falls on a Saturday is observed the Friday before, on a Sunday the Monday
+     after (5 U.S.C. 6103; Jan 1 2028 is a Saturday, so Dec 31 2027 is off).
+     data/rain-print.json holidays adds any other closed day (an override),
+     so the list in the file no longer has to be moved each year. */
+  function uspsHolidays(y) {
+    function iso(t) { return new Date(t).toISOString().slice(0, 10); }
+    function nth(m, w, n) { var t = Date.UTC(y, m - 1, 1); t += ((w - new Date(t).getUTCDay() + 7) % 7) * 864e5; return t + (n - 1) * 7 * 864e5; }
+    function last(m, w) { var t = Date.UTC(y, m, 0); return t - ((new Date(t).getUTCDay() - w + 7) % 7) * 864e5; }
+    function obs(m, d) { var t = Date.UTC(y, m - 1, d), x = new Date(t).getUTCDay(); return x === 6 ? t - 864e5 : x === 0 ? t + 864e5 : t; }
+    return [obs(1, 1), nth(1, 1, 3), nth(2, 1, 3), last(5, 1), obs(6, 19), obs(7, 4), nth(9, 1, 1), nth(10, 1, 2), obs(11, 11), nth(11, 4, 4), obs(12, 25)].map(iso);
+  }
+  /* The closed days around a date: computed for the year before through two
+     years after, plus the file's own list. */
+  function holidaysFor(j, iso) {
+    var y = parseInt(String(iso || '').slice(0, 4), 10) || new Date().getUTCFullYear(), out = [];
+    for (var k = y - 1; k <= y + 2; k++) out = out.concat(uspsHolidays(k));
+    return out.concat(j && Array.isArray(j.holidays) ? j.holidays : []);
+  }
   function isBizDay(iso, hol) { var d = new Date(iso + 'T12:00:00Z').getUTCDay(); return d !== 0 && d !== 6 && (hol || []).indexOf(iso) < 0; }
   function addBizDays(iso, n, hol) {
     var t = Date.parse(iso + 'T12:00:00Z'), k = 0, cur = iso;
@@ -270,7 +292,7 @@
     var tr = j && j.transit_business_days && j.transit_business_days[id];
     var parts = [j && j.proof_business_days, j && j.approve_business_days, j && j.ship_business_days, tr];
     if (!parts.every(function (x) { return Number.isInteger(x) && x >= 0 && x < 40; })) return null;
-    var n = parts.reduce(function (a, b) { return a + b; }, 0), by = year + '-12-24', hol = Array.isArray(j.holidays) ? j.holidays : [];
+    var n = parts.reduce(function (a, b) { return a + b; }, 0), by = year + '-12-24', hol = holidaysFor(j, by);
     var t = Date.parse(by + 'T12:00:00Z');
     for (var i = 0; i < 90; i++, t -= 86400000) {
       var d = new Date(t).toISOString().slice(0, 10);
@@ -286,10 +308,25 @@
     var tr = j && j.transit_business_days && j.transit_business_days[id];
     var parts = [j && j.proof_business_days, j && j.approve_business_days, j && j.ship_business_days, tr];
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || '')) || !parts.every(function (x) { return Number.isInteger(x) && x >= 0 && x < 40; })) return '';
-    return addBizDays(todayIso, parts.reduce(function (a, b) { return a + b; }, 0), Array.isArray(j.holidays) ? j.holidays : []);
+    return addBizDays(todayIso, parts.reduce(function (a, b) { return a + b; }, 0), holidaysFor(j, todayIso));
   }
   function shortDate(iso) { var m = /^\d{4}-(\d{2})-(\d{2})$/.exec(String(iso || '')); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[1] - 1] + ' ' + (+m[2]) : ''; }
 
+  /* THE BUSINESS PAGE'S CHRISTMAS SENTENCE (2026-10-17, chaos-6), tied to the
+     same dates as the gift line: through business_cutoff, send the list by
+     then; after it, through the print cutoff, ask (a small list can still
+     make it); after that, through Dec 25, plainly after Christmas; outside
+     Oct 1 to Dec 25 of the cutoff's year, no Christmas clause at all. */
+  function bizChristmasLine(todayIso, j) {
+    var t = String(todayIso || ''), bc = j && j.business_cutoff, pc = j && j.print_christmas_cutoff, M = /^(\d{4})-(\d{2})-(\d{2})$/;
+    var tail = ' Last year, or a year your customers still talk about, works well.';
+    var plain = 'Any past year ships within ' + ((j && j.ship_business_days) || 3) + ' business days after you OK the proof sheet.' + tail;
+    var m = M.exec(String(bc || ''));
+    if (!M.test(t) || !m || t < m[1] + '-10-01' || t > m[1] + '-12-25') return plain;
+    if (t <= bc) return 'Any past year ships before Christmas if the list comes in time: send it by ' + shortDate(bc) + '.' + tail;
+    if (M.test(String(pc || '')) && t <= pc) return 'The ' + shortDate(bc) + ' list date has passed. A small list may still make Christmas if it is in by ' + shortDate(pc) + ': ask me for dates.' + tail;
+    return 'Orders placed now arrive after Christmas.' + tail;
+  }
   /* FOR BUSINESSES (2026-10-12). The list cutoff line, from business_cutoff in
      data/rain-print.json: "For Christmas, send your list by Nov 20." through
      that date; nothing after it, or while it is null. */
@@ -1401,7 +1438,7 @@
     return { choice: c, session: /^cs_[A-Za-z0-9_]{8,250}$/.test(sid) ? sid : '' };
   }
   function paidText(o) {
-    var id = o.choice, j = o.prices || {}, hol = Array.isArray(j.holidays) ? j.holidays : [], file = id === 'digital';
+    var id = o.choice, j = o.prices || {}, hol = holidaysFor(j, o.today), file = id === 'digital';
     var sv = o.saved && o.saved.choice === id ? o.saved : null, ship = Number.isInteger(j.ship_business_days) ? j.ship_business_days : 3;
     var pd = Number.isInteger(j.proof_business_days) ? j.proof_business_days : 1;
     var by = /^\d{4}-\d{2}-\d{2}$/.test(String(o.today || '')) ? dayWords(addBizDays(o.today, pd, hol)) : '';
@@ -1429,7 +1466,7 @@
   var api = { encodeCode: encodeCode, decodeCode: decodeCode, toParams: toParams, fromParams: fromParams,
     designUrl: designUrl, shortUrl: shortUrl, STANDARD_LINK: STANDARD_LINK, SHEET: SHEET, sheetBoxes: sheetBoxes, safeInArt: safeInArt, standardMatrix: standardMatrix, normalize: normalize, defaults: defaults, dayIndex: dayIndex, LIMITS: LIMITS, STYLES: Object.keys(STYLE),
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
-    bizCutoffNote: bizCutoffNote, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
+    bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
     parsePcpn: parsePcpn, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, snowStateOf: snowStateOf, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind };
   root.RainPrint = api;
@@ -2920,6 +2957,11 @@
       : PICK === 'digital' ? 'It\u2019s a gift? At checkout you can add their name and a note, and I send the note with the file. No prices go with it.'
       : 'It\u2019s a gift? At checkout you can add their name, a note and their address. I print your note at the top of the letter in the box, free, and no prices go in the box.';
     $('rp-gift-line').hidden = januaryGift() || !!(GIFT && GIFT.usable);
+    // the same offer above the button (2026-10-17, field audit: most buyers never scroll past Pay)
+    $('rp-gift-pre').innerHTML = PICK === 'digital' ? 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name and your note.'
+      : 'A gift? On the next screen, before you pay, tick <b>This is a gift</b> and add their name, your note and their address.';
+    $('rp-gift-pre').hidden = $('rp-gift-line').hidden || !canOrder();
+    pgSync();
     // the file: no shipping line, no Christmas proof dates; it says what the file is (2026-10-15)
     $('rp-ships').hidden = PICK === 'digital';
     $('rp-madeby').textContent = MADE_BY[PICK === 'digital' ? 'file' : 'print'];
@@ -3084,6 +3126,11 @@
       return;
     }
     if (GIFT && GIFT.usable) { closeProof(true); useGift(); return; }
+    var gift = pgOn();
+    if (gift) {
+      var chk = pgOrder('');
+      if (chk.bad) { proofSay(chk.bad[1]); try { $(chk.bad[0]).focus(); } catch (err) {} return; }
+    }
     var link = payLink(id), long = encodeCode(ST).length > 200;
     /* A design past Stripe's 200 letters goes as its short-link id, and the
        id is asked of the worker at this press every time, never taken from
@@ -3095,7 +3142,25 @@
       return;
     }
     var code = link && long && !(opts && opts.ok) ? '' : refFor();
-    ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : 0 });
+    // a gift goes to Sig first, then to checkout; if it can't be saved, the buyer stays here and is told
+    if (gift && link && code && !(opts && opts.giftSent)) {
+      var g = pgOrder(code).x, send = root.agsistFormPost;
+      var fs = Object.assign({ _subject: orderSubject(g) + ' (paying at checkout)', _replyto: g.email, form: 'rain-print-order' }, g);
+      var btn = $('rp-proof-order');
+      proofSay('Saving the gift details\u2026', true);
+      btn.disabled = true;
+      (send ? send('rain-print-order', g, fs) : Promise.reject(new Error('no form helper'))).then(function () {
+        btn.disabled = false;
+        pay({ minted: opts && opts.minted, ok: opts && opts.ok, giftSent: true });
+      }, function () {
+        btn.disabled = false;
+        ga('rain_print_gift_save', { result: 'fail', choice: id });
+        var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
+        proofSay('The gift details didn\u2019t save just now. Tap Pay to try again, or <a href="' + esc(u) + '">go to checkout</a> and write their name, your note and their address to ' + ORDER_TO + '.', true);
+      });
+      return;
+    }
+    ga('rain_print_buy', { choice: id, via: link && code ? 'checkout' : 'form', gift: ST.gift ? 1 : gift ? 2 : 0 });
     // Stripe's client_reference_id takes A-Z a-z 0-9 - _ and at most 200 characters: the design code, or its short-link id when the code is longer
     if (link && code) {
       var u = link + (link.indexOf('?') >= 0 ? '&' : '?') + 'client_reference_id=' + code;
@@ -3293,6 +3358,68 @@
       : PICK === 'digital' ? 'No proof for the file: it comes finished. Want a change after? Write to me and I\u2019ll redo it.'
       : 'You see a proof first, and get a full refund any time before I print.';
     $('rp-proof-ok-wrap').hidden = !can;
+    pgSync();
+  }
+  /* THE GIFT ON THE REVIEW SHEET (2026-10-17, field audit). The last AGSIST
+     screen before Stripe never said the print could be a gift, and the order
+     form's own "It's a gift" box (#ro-isgift) only shows on the order-request
+     path. Now the sheet has the tick and the fields. They mirror the order
+     form's (PG_MIRROR), so a fall-back to the form keeps what was typed. With
+     a payment link, Pay first posts the gift as a rain-print-order (gift: yes,
+     the same fields an order request sends) for scripts/form_digest.py to mail
+     Sig, whose note goes on the letter (rp-insert), then opens checkout. Not
+     offered for this year's January gift (#rp-gift has its own boxes) or an
+     order a gift card pays for. */
+  var PG_MIRROR = { 'rp-pg-to': 'ro-gift-to', 'rp-pg-msg': 'ro-gift-msg', 'rp-pg-deliver': 'ro-deliver', 'rp-pg-email': 'ro-gift-email',
+    'rp-pg-addr': 'ro-address', 'rp-pg-name': 'ro-name', 'rp-pg-me': 'ro-email' };
+  function pgOffered() { return canOrder() && !januaryGift() && !(GIFT && GIFT.usable); }
+  function pgOn() { return pgOffered() && $('rp-pg-on').checked; }
+  function pgTheirs() { return $('rp-pg-deliver').value === 'recipient'; }
+  function pgPull() {
+    // what the order form already holds comes onto the sheet
+    Object.keys(PG_MIRROR).forEach(function (k) { var v = $(PG_MIRROR[k]).value; if (v && !$(k).value) $(k).value = v; });
+    if ($('ro-isgift').checked) $('rp-pg-on').checked = true;
+  }
+  function pgSync() {
+    var offered = pgOffered(), on = offered && $('rp-pg-on').checked, file = PICK === 'digital', theirs = pgTheirs();
+    $('rp-pgift').hidden = !offered;
+    $('rp-pg-box').hidden = !on;
+    $('rp-pg-msg-l').textContent = file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
+    $('rp-pg-addr-wrap').hidden = file;
+    $('rp-pg-addr-l').textContent = (theirs ? 'Their address' : 'Your address') + ' (name, street, town, ' + (caOrder() ? 'province, postal code' : 'state, ZIP') + ')';
+    $('rp-pg-email-wrap').hidden = !(file && theirs);
+    $('rp-pg-me-l').textContent = file ? 'Your email' : 'Your email, for the proof';
+    $('rp-pg-line').textContent = (file ? 'No prices go with it.' : 'No prices go in the box.') +
+      ' These come to me with your order; at checkout, Stripe takes the payment' + (file ? '.' : ' and a shipping address: give the same one.');
+    var sum = $('rp-pg-sum');
+    sum.hidden = !on;
+    if (on) {
+      var to = cleanText($('rp-pg-to').value, GIFT_TO_MAX), msg = $('rp-pg-msg').value.trim();
+      sum.innerHTML = [['Gift for', to || '(say who it\u2019s for)'], [file ? 'Note with the file' : 'Note on the letter', msg || '(none)'],
+        ['Goes to', theirs ? (to || 'them') : 'you']].map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
+    }
+  }
+  // the gift as an order post, or {bad: [field id, words]}
+  function pgOrder(ref) {
+    var file = PICK === 'digital', theirs = pgTheirs();
+    var x = {
+      name: cleanText($('rp-pg-name').value, 80), email: $('rp-pg-me').value.trim(), choice: PICK,
+      address: file ? '' : $('rp-pg-addr').value.trim().slice(0, 600),
+      design_url: designUrl(ST), design_code: orderCode(), page: '/rain-print',
+      gift: true, gift_to: cleanText($('rp-pg-to').value, GIFT_TO_MAX), gift_deliver: theirs ? 'recipient' : 'buyer',
+      gift_email: file && theirs ? $('rp-pg-email').value.trim() : '',
+      gift_message: $('rp-pg-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX)
+    };
+    if (ST.logo) x.logo = ST.logo;
+    // the worker keeps known fields only, so the checkout and the proof tick ride in the notes
+    x.notes = ('Paying now at Stripe checkout' + (ref ? ', reference ' + ref : '') + '. Gift details from the review sheet; no payment link needed.' +
+      (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.')).slice(0, 2000);
+    var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
+      : !file && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
+      : file && theirs && !EMAIL_RE.test(x.gift_email) ? ['rp-pg-email', 'Add their email for the file, or choose Me under Send it to.']
+      : !x.name ? ['rp-pg-name', 'Add your name.']
+      : !EMAIL_RE.test(x.email) ? ['rp-pg-me', 'Add your email, so I can send you the proof.'] : null;
+    return bad ? { bad: bad } : { x: x };
   }
   // when it comes, in words, for the review sheet
   function whenWords(id) {
@@ -3329,6 +3456,7 @@
     proofSay('');
     PROOF_FROM = doc.activeElement && doc.activeElement !== doc.body ? doc.activeElement : $('rp-zoom');
     PROOF_HANDOFF = false;
+    pgPull();
     proofRender();
     try { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); } catch (e) { dlg.setAttribute('open', ''); }
     try { $('rp-proof-stage').scrollTop = 0; $('rp-proof-stage').scrollLeft = 0; dlg.scrollTop = 0; } catch (e) {}
@@ -4147,6 +4275,20 @@
   })();
   $('ro-deliver').addEventListener('change', syncAddress);
   $('ro-isgift').addEventListener('change', syncAddress);
+  // the review sheet's gift fields write through to the order form's
+  $('rp-pg-on').addEventListener('change', function () {
+    $('ro-isgift').checked = $('rp-pg-on').checked;
+    if ($('rp-pg-on').checked && !$('rp-pg-deliver').value) $('rp-pg-deliver').value = 'recipient';
+    syncAddress(); pgSync(); proofSay('');
+    if ($('rp-pg-on').checked) try { $('rp-pg-to').focus({ preventScroll: false }); } catch (e) {}
+  });
+  Object.keys(PG_MIRROR).forEach(function (k) {
+    $(k).addEventListener(k === 'rp-pg-deliver' ? 'change' : 'input', function () {
+      $(PG_MIRROR[k]).value = $(k).value;
+      if (k === 'rp-pg-deliver') syncAddress();
+      pgSync();
+    });
+  });
   $('ro-form').addEventListener('submit', submitOrder);
   $('rb-form').addEventListener('submit', submitBiz);
   $('rb-qty').addEventListener('input', syncBizTier);

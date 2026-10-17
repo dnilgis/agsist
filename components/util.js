@@ -214,14 +214,41 @@
      so a later call tries again. cache:'no-cache' revalidates with the server
      every time the page loads, so the copy is never older than a fresh fetch.
      Not for polling: a refresh that must see a newer file calls fetch(). */
+  /* A DEADLINE (2026-10-17, chaos-4). A request that never answers left
+     skeletons and "Loading..." up for good, because nothing here ever
+     rejected, so a page's own "did not load, try again" never showed. Past
+     TIMEOUT_MS the request is aborted (where AbortController exists) and the
+     promise rejects either way, headers and body together. */
+  var TIMEOUT_MS = 15000;
+  function timed(url, opts, ms) {
+    ms = ms || TIMEOUT_MS;
+    var ctl = null, timer = null;
+    try { if (typeof AbortController === 'function') ctl = new AbortController(); } catch (e) { ctl = null; }
+    var o = {}; for (var k in (opts || {})) o[k] = opts[k];
+    if (ctl && !o.signal) o.signal = ctl.signal;
+    /* no timers (a bare script context): no deadline, the request as before */
+    var hasT = typeof setTimeout === 'function' && typeof clearTimeout === 'function';
+    var dead = new Promise(function (res, rej) {
+      if (hasT) timer = setTimeout(function () { rej(new Error(url + ' timeout')); if (ctl) { try { ctl.abort(); } catch (e) {} } }, ms);
+    });
+    return { dead: dead, ctl: ctl, done: function () { if (hasT) clearTimeout(timer); }, p: fetch(url, o) };
+  }
+  /* fetch() with the deadline, for pages that read a file themselves:
+     AG.fetch(url, opts, ms) -> resolves with the Response, rejects past ms. */
+  function tfetch(url, opts, ms) {
+    var t = timed(String(url), opts, ms);
+    return Promise.race([t.p, t.dead]).then(function (r) { t.done(); return r; }, function (e) { t.done(); throw e; });
+  }
   var ONCE = {};
   function text(url) {
     var k = String(url);
     if (!ONCE[k]) {
-      var p = fetch(k, { cache: 'no-cache' }).then(function (r) {
+      var t = timed(k, { cache: 'no-cache' });
+      var p = Promise.race([t.p.then(function (r) {
         if (!r.ok) throw new Error(k + ' ' + r.status);
         return r.text();
-      });
+      }), t.dead]);
+      p.then(t.done, t.done);
       ONCE[k] = p;
       p.catch(function () { if (ONCE[k] === p) delete ONCE[k]; });
     }
@@ -234,5 +261,5 @@
   if (typeof w.gaEvent !== 'function') w.gaEvent = gaEvent;
   w.AG = w.AG || {};
   w.AG.esc = esc; w.AG.el = el; w.AG.gaEvent = gaEvent; w.AG.px = px;
-  w.AG.json = json; w.AG.text = text;
+  w.AG.json = json; w.AG.text = text; w.AG.fetch = tfetch; w.AG.TIMEOUT_MS = TIMEOUT_MS;
 })(window);

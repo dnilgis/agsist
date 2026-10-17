@@ -6,8 +6,12 @@ name: Land data (parcel services + transfers)
 #    may read it) and, with "discover", searches for county services in MN, IA, IL.
 #    Only this marks a service verified. Coverage counts print as annotations.
 #  - transfers: scripts/fetch_land_sales.py builds data/land/<st>/<county fips>.json from
-#    the state's own public transfer data (IL MyDec open data; WI eRETR and MN eCRV once a free file is reachable). It refuses a state whose
-#    columns it cannot find by name, so the page keeps its "not yet" note until then.
+#    the state's own public transfer data (IL MyDec open data; WI eRETR monthly reports; MN eCRV
+#    once a free file is reachable). It refuses a state whose columns it cannot find by name.
+#    Wisconsin's files come from DOR's public My Tax Account screen, which needs a browser:
+#    scripts/wi_retr_browser.py opens it in headless Chromium (one session, one file at a time,
+#    a pause between files) and reads each month's XML report as it arrives.
+#    task=wi-transfers builds Wisconsin alone; transfers, sales and all build every state.
 #
 # FIRST RUN: dispatch with probe ticked. It saves the state data pages, their file links
 # and the head of the first files to data/land-raw/ on the raw branch (never deployed), so
@@ -21,7 +25,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "services, discover (services + county search), transfers (or sales), or all"
+        description: "services, discover (services + county search), transfers (or sales), all, wi-transfers (Wisconsin only; wi-transfers:N for the newest N months), or wi-explore (WI screens to a side branch)"
         type: string
         default: "services"
   # schedule: monthly run waits for Sig's OK (proposed cron '23 9 3 * *')
@@ -36,7 +40,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -53,6 +57,25 @@ jobs:
         run: |
           sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1 || echo "no pdftotext; layouts saved as PDF only"
           python scripts/fetch_land_sales.py --probe
+      - name: Wisconsin RETR screens in a browser (explore only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}
+        run: |
+          python3 -m venv "$RUNNER_TEMP/pw"
+          "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
+          "$RUNNER_TEMP/pw/bin/python" -m playwright install --with-deps chromium >/dev/null
+          "$RUNNER_TEMP/pw/bin/python" scripts/wi_retr_browser.py --explore "$RUNNER_TEMP/wi-explore"
+      # The screens go to a side branch (<branch>-explore, never deployed) so they can be read
+      # where Actions artifacts and logs cannot be downloaded.
+      - name: Keep the explore screens
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.task == 'wi-explore' }}
+        run: |
+          D="$RUNNER_TEMP/wi-explore"; [ -d "$D" ] || exit 0
+          B="${GITHUB_REF_NAME}-explore"
+          cd "$RUNNER_TEMP" && rm -rf ex && mkdir ex && cd ex && git init -q && git checkout -q -b "$B"
+          cp -r "$D" wi-explore && find wi-explore -size +40M -delete
+          git -c user.name="AGSIST Bot" -c user.email=bot@agsist.com add -A
+          git -c user.name="AGSIST Bot" -c user.email=bot@agsist.com commit -qm "WI RETR explore $(date -u +%FT%TZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "HEAD:$B"
       - name: Check parcel services
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || inputs.task == 'all') }}
         run: |
@@ -63,7 +86,19 @@ jobs:
           fi
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
-        run: python scripts/fetch_land_sales.py WI MN IL || echo "::warning::no state's transfers were written"
+        run: python scripts/fetch_land_sales.py MN IL || echo "::warning::no state's transfers were written"
+      - name: Wisconsin transfer returns (browser)
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
+        run: |
+          python3 -m venv "$RUNNER_TEMP/pw"
+          "$RUNNER_TEMP/pw/bin/pip" install -q playwright==1.56.0
+          "$RUNNER_TEMP/pw/bin/python" -m playwright install --with-deps chromium >/dev/null
+          # wi-transfers:N reads only the newest N months (a quick check)
+          M=$(echo "${{ inputs.task }}" | sed -n 's/^wi-transfers:\([0-9][0-9]*\)$/\1/p')
+          "$RUNNER_TEMP/pw/bin/python" scripts/wi_retr_browser.py --fetch "$RUNNER_TEMP/wi" --months "${M:-120}" || echo "::warning::Wisconsin monthly reports were not read"
+          if [ -f "$RUNNER_TEMP/wi/build/wi-retr.csv" ]; then
+            python scripts/fetch_land_sales.py --from "$RUNNER_TEMP/wi/build" WI || echo "::warning::Wisconsin transfers were not written"
+          fi
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
         run: |

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <meta name="theme-color" content="#0a0c0d">  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');function gaEvent(n,p){try{gtag('event',n,p||{});}catch(e){}}</script>
   <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -149,6 +149,12 @@ button,a,[role="button"]{touch-action:manipulation}
 .fa-note{font-size:.82rem;color:var(--text-muted);line-height:1.55}
 .fa-loading:not([hidden]){min-height:calc(min(100vw,1180px)*.625 + 220px)}
 .fa-loading .fa-sk-bar{height:44px;margin:0 0 .8rem;border-radius:6px}.fa-loading .fa-sk-map{height:calc(min(100vw,1180px)*.625);border-radius:8px}
+.fa-cc-u{font-size:.55em;font-weight:600;color:var(--text-dim)}
+.fa-quick{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:0 0 1rem}
+.fa-quick input{flex:1 1 220px;min-width:0;background:var(--surface);color:var(--text);border:1px solid var(--border-2);border-radius:8px;padding:.55rem .8rem;font-size:max(16px,.9rem);min-height:44px}
+.fa-quick button,.fa-mycty{padding:.5rem .9rem;border-radius:8px;border:1px solid var(--gold);background:var(--surface);color:var(--text);font-weight:700;min-height:44px;cursor:pointer}
+.fa-mycty{display:inline-flex;align-items:center;text-decoration:none;margin:0 0 .8rem}
+.fa-mycty[hidden],.fa-quick[hidden]{display:none}
 .fa-notice{border:1px solid var(--border);border-left:2px solid var(--gold);padding:.7rem .9rem;border-radius:6px;font-size:.85rem;color:var(--text-dim);margin:0 0 1rem;line-height:1.55}
 .fa-mono{font-family:var(--font-mono)}
 .fa-seedbox{border:1px solid var(--border);border-radius:10px;padding:.2rem 1rem;margin:0 0 1.2rem;background:var(--surface)}
@@ -514,6 +520,14 @@ details.fa-arith .body a{color:var(--gold)}
   <div id="fa-outline-banner" class="fa-notice" role="status" hidden></div>
   <div id="fa-nodata" class="fa-notice" hidden>The Atlas data has not been published yet. The county layers appear here after the first data run.</div>
 
+  <!-- 2026-10-17 (field audit): a reader after one county gets its page without waiting on the national map.
+       Your county comes from the saved location; the finder works off the small county index, before atlas.json lands. -->
+  <a class="fa-mycty" id="fa-mycty" href="/farmland-atlas/states/" hidden></a>
+  <form class="fa-quick" id="fa-quick" role="search" aria-label="Open one county's page">
+    <input type="search" id="fa-qq" placeholder="One county? e.g. Story, IA" autocomplete="off" aria-label="Open one county's page">
+    <button type="submit">Open county page</button>
+    <span class="fa-note" id="fa-qq-status" role="status"></span>
+  </form>
   <div id="fa-loading" class="fa-notice fa-loading" role="status" aria-live="polite" aria-busy="true"><span class="sr-only">Loading the map: 3,141 counties.</span><span class="st-sk fa-sk-bar" aria-hidden="true"></span><span class="st-sk fa-sk-map" aria-hidden="true"></span></div>
   <div id="fa-app" hidden>
 
@@ -1267,7 +1281,7 @@ function renderRail(){
     var c=ATLAS.counties[SEL], v=L.v(c,SEL), rk=RK[SEL]||{}, nbs=neighbours(SEL);
     h+='<div class="fa-cc" role="region" aria-labelledby="fa-cc-n" tabindex="-1"><div class="fa-cc-top"><div><h3 class="fa-cc-n" id="fa-cc-n" style="margin:0">'+esc(cname(c))+'</h3><div class="fa-cc-l">'+esc(L.label)+'</div></div><span style="display:flex;gap:6px;align-items:center"><a class="fa-cc-pr" href="/farmland-atlas/sheet#'+SEL+'" target="_blank" rel="noopener" aria-label="Printable county sheet">Print</a><button type="button" class="fa-cc-x" id="fa-cc-x" aria-label="Close this county">×</button></span></div>';
     if(v==null||isNaN(v)) h+='<div class="fa-cc-v dim">'+esc(missingWhy(c,L,SEL))+'</div>';
-    else { var yr=ryear(L,c), RL=rlatest(L); h+='<div class="fa-cc-v">'+esc(fmtv(L,v))+(L.key==='rent_rev'?' <small>'+esc(rnote(L,SEL).replace(/^ \(|\)$/g,''))+'</small>':yr&&yr!==RL?' <small>'+esc(yr)+'</small>':'')+'</div>';
+    else { var yr=ryear(L,c), RL=rlatest(L); h+='<div class="fa-cc-v">'+esc(fmtv(L,v))+(L.money&&L.unit==='$/acre'?'<span class="fa-cc-u"> an acre</span>':'')+(L.key==='rent_rev'?' <small>'+esc(rnote(L,SEL).replace(/^ \(|\)$/g,''))+'</small>':yr&&yr!==RL?' <small>'+esc(yr)+'</small>':'')+'</div>';
       var rs=[];
       if(!SIDE.tenure.done){}
       else if(!SIDE.tenure.ok) rs.push('Not ranked: the census farm-acres file did not load');
@@ -1527,7 +1541,10 @@ function buildSearch(){
       b.addEventListener('click',function(){ box.textContent=''; open(b.getAttribute('data-fips')); }); });
     return null;
   }
-  function open(f){ var c=ATLAS.counties[f]; if(PATHS[f]&&c&&c.state!==STATE&&ATLAS.states.indexOf(c.state)>=0) zoomState(c.state); select(f,'search'); }
+  /* A typed county opens its own page (2026-10-17): the reader came for that county. A tap on the map
+     still selects it here; the county page links back to the map. */
+  function open(f){ if(PAGES&&PAGES[f]){ gaEvent('atlas_search_page',{fips:f}); location.assign(PAGES[f]); return; }
+    var c=ATLAS.counties[f]; if(PATHS[f]&&c&&c.state!==STATE&&ATLAS.states.indexOf(c.state)>=0) zoomState(c.state); select(f,'search'); }
   var lastQ='';
   q.addEventListener('input',function(){ lastQ=''; });
   function go(){ var raw=q.value.trim(); if(!raw||raw===lastQ) return; lastQ=raw;
@@ -1541,6 +1558,7 @@ function buildSearch(){
   q.addEventListener('change',go); q.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } });
   // AGSIST_STATE carries a county when the visitor has set a location on another page
   var S=window.AGSIST_STATE;
+  countyIndex();
   if(S&&S.fips&&ATLAS.counties[String(S.fips)]){ var b2=$('fa-mine'); b2.hidden=false; b2.addEventListener('click',function(){ select(String(S.fips)); }); }
 }
 
@@ -2205,8 +2223,54 @@ function renderScatters(){
   $('fa-price').hidden=pts.length<3;
 }
 
+// ---------- one county: its page (2026-10-17, field audit)
+// A reader who came for one county waited 18 s on the national map for one number. The county index
+// (38 KB gzipped) names every county page; with it, the saved location becomes a one-tap link and a
+// typed county opens its page. The map stays one tap away: every county page links "Open on the map".
+var CIDX=null, CIDXP=null;
+function countyIndex(){
+  if(!CIDXP) CIDXP=fetch('/farmland-atlas/data/counties-index.json').then(function(r){ if(!r.ok) throw new Error('index'); return r.json(); })
+    .then(function(a){ CIDX=a; var m={}; for(var i=0;i<a.length;i++) m[a[i][0]]=a[i][2]; if(!PAGES) PAGES=m; return a; }).catch(function(){ CIDXP=null; return null; });
+  return CIDXP;
+}
+var ST2={alabama:'AL',alaska:'AK',arizona:'AZ',arkansas:'AR',california:'CA',colorado:'CO',connecticut:'CT',delaware:'DE',florida:'FL',georgia:'GA',hawaii:'HI',idaho:'ID',illinois:'IL',indiana:'IN',iowa:'IA',kansas:'KS',kentucky:'KY',louisiana:'LA',maine:'ME',maryland:'MD',massachusetts:'MA',michigan:'MI',minnesota:'MN',mississippi:'MS',missouri:'MO',montana:'MT',nebraska:'NE',nevada:'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND',ohio:'OH',oklahoma:'OK',oregon:'OR',pennsylvania:'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD',tennessee:'TN',texas:'TX',utah:'UT',vermont:'VT',virginia:'VA',washington:'WA','west virginia':'WV',wisconsin:'WI',wyoming:'WY'};
+// "Story", "Story County, IA", "story iowa" -> the index rows that fit (exact name before the unit word is dropped)
+function findCounty(idx,raw){
+  var t=' '+String(raw||'').toLowerCase().replace(/[.,]/g,' ').replace(/\s+/g,' ').trim()+' ', st='';
+  for(var nm in ST2){ var f=' '+nm+' '; if(t.length>f.length&&t.slice(-f.length)===f){ st=ST2[nm]; t=t.slice(0,-f.length)+' '; break; } }
+  var m=/ ([a-z]{2}) $/.exec(t); if(!st&&m&&t.trim().indexOf(' ')>0){ var up=m[1].toUpperCase(); for(var k in ST2) if(ST2[k]===up){ st=up; t=t.slice(0,-3)+' '; break; } }
+  t=t.replace(/ saint /g,' st ').trim();
+  if(!t) return [];
+  var rows=idx.filter(function(r){ return !st||r[1].slice(-2)===st; });
+  var whole=rows.filter(function(r){ return nkey(r[1].slice(0,-4).replace(/ saint /gi,' st '))===nkey(t); });
+  if(whole.length) return whole;
+  return rows.filter(function(r){ return bkey(r[1].slice(0,-4).replace(/\bSaint\b/g,'St'))===bkey(t); });
+}
+function savedCounty(){
+  try{ var o=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'); if(!o||!o.county) return null;
+    var st=String(o.state||'').trim(); st=st.length===2?st.toUpperCase():(ST2[st.toLowerCase()]||'');
+    return st?{county:String(o.county),state:st}:null; }catch(e){ return null; }
+}
+function quickStart(){
+  var form=$('fa-quick'), qq=$('fa-qq'), say=$('fa-qq-status'), my=$('fa-mycty'), sc=savedCounty();
+  if(sc) countyIndex().then(function(idx){ if(!idx) return; var hit=findCounty(idx,sc.county+', '+sc.state); if(hit.length!==1) return;
+    my.href=hit[0][2]; my.textContent='Your county: '+hit[0][1]+' \u2192'; my.hidden=false; });
+  if(!form) return;
+  form.addEventListener('submit',function(e){ e.preventDefault(); var raw=qq.value.trim(); if(!raw) return;
+    say.textContent='Looking\u2026';
+    countyIndex().then(function(idx){
+      if(!idx){ say.textContent='The county list did not load. The map below has every county once it draws.'; return; }
+      var hit=findCounty(idx,raw);
+      if(hit.length===1){ gaEvent('atlas_quick',{fips:hit[0][0]}); location.assign(hit[0][2]); return; }
+      if(!hit.length){ say.textContent='No county called "'+raw+'" in the Atlas. Try "Name, ST".'; return; }
+      say.innerHTML=esc('"'+raw+'" is in '+hit.length+' states: ')+hit.slice(0,12).map(function(r){ return '<a href="'+esc(r[2])+'">'+esc(r[1])+'</a>'; }).join(' \u00b7 ');
+    });
+  });
+}
+
 // ---------- boot
 function boot(){
+  quickStart();
   // a stalled file on a rural signal used to leave a blank space for good; after 25 s, say so
   var WHY=null, lw=$('fa-loading'), slowT=setTimeout(function(){ if(lw&&!lw.hidden) lw.textContent='Still loading the map: the data is slow on this connection.'; },9000);
   function timed(u,opt,mark){ var ac=window.AbortController?new AbortController():null, t=ac?setTimeout(function(){ ac.abort(); },30000):0;
@@ -2263,6 +2327,7 @@ function boot(){
     renderPremium();
     renderScatters();
     $('fa-app').hidden=false;      // only once everything drew; a throw above lands in the catch
+    var qf=$('fa-quick'); if(qf) qf.hidden=true;   // the full search is up now
     var dec=$('fa-decade'); dec.setAttribute('aria-valuetext',DECADES[DEC]);
     dec.addEventListener('input',function(){ DEC=Number(this.value); $('fa-decade-out').textContent=DECADES[DEC]; this.setAttribute('aria-valuetext',DECADES[DEC]); paint(); });
     $('fa-line').addEventListener('change',function(){ paint(); });

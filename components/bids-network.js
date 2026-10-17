@@ -261,6 +261,47 @@
     };
   }
 
+  /* THE NEAREST FORTY WAS THE WRONG FORTY (2026-10-17). Ames IA (50010) has
+     87 places inside 50 miles. Cutting by distance alone stopped at about 36
+     miles, so the homepage named ADM Des Moines at $12.21 1/4 as the top
+     soybean bid within 50 mi while /cash-bids, which already spends its
+     budget this way (netRankPlaces in components/cash-bids.js), named AGP
+     Eagle Grove at $12.26, 46 miles out. Same rule here: the top
+     TOP_PER_CROP places per crop on `now` and on `best` first, then the
+     nearest, until the budget is used. Ties keep the nearer place.
+     `list` is sorted nearest first and comes back that way. */
+  var TOP_PER_CROP = 5;
+  function pickPlaces(list, cap) {
+    if (list.length <= cap) return list;
+    /* The nearest place always stays: it is the anchor the card measures
+       "local" from, and the reader's own elevator. */
+    var pick = [true], n = 1, crops = {}, keys = [];
+    for (var i = 0; i < list.length; i++) {
+      var p = list[i].p;
+      for (var f = 0; f < 2; f++) {
+        var o = p[f ? 'best' : 'now'];
+        if (!o) continue;
+        for (var c in o) {
+          if (!Object.prototype.hasOwnProperty.call(o, c)) continue;
+          var v = o[c] && o[c].cash;
+          if (typeof v !== 'number' || !isFinite(v)) continue;
+          var k = (f ? 'best|' : 'now|') + c;
+          if (!crops[k]) { crops[k] = []; keys.push(k); }
+          crops[k].push({ i: i, v: v });
+        }
+      }
+    }
+    for (var j = 0; j < keys.length; j++) {
+      var arr = crops[keys[j]].slice().sort(function (a, b) { return b.v - a.v || a.i - b.i; });
+      for (var m = 0; m < arr.length && m < TOP_PER_CROP; m++)
+        if (!pick[arr[m].i] && n < cap) { pick[arr[m].i] = true; n++; }
+    }
+    for (var q = 0; q < list.length && n < cap; q++) if (!pick[q]) { pick[q] = true; n++; }
+    var out = [];
+    for (var r = 0; r < list.length; r++) if (pick[r]) out.push(list[r]);
+    return out;
+  }
+
   /* Everything within MAX_MILES, nearest first, as { fetched, bids, zip_grid }.
      Resolves null when there is nothing to say. */
   function snapshot(lat, lon, opts) {
@@ -286,7 +327,7 @@
       }
       if (!near.length) return null;
       near.sort(function (a, b) { return a.d - b.d; });
-      if (near.length > MAX_PLACES) near.length = MAX_PLACES;
+      near = pickPlaces(near, opts.maxPlaces || MAX_PLACES);
 
       /* The nearest place is the anchor: the grid entry findNearestGridZip
          will land on, and therefore the one the card measures "local" from. */
@@ -379,6 +420,7 @@
     reset: reset,
     sourceFile: sourceFile,
     snapshot: snapshot,
+    pickPlaces: pickPlaces,
     snapshotForZip: snapshotForZip,
     snapshotForLoc: snapshotForLoc,
     zipCoord: zipCoord,

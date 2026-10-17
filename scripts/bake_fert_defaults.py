@@ -58,6 +58,12 @@ def rates():
     return RATES
 
 
+def rate_words(r):
+    """(0.9, 0.38, 0.29) -> "0.90, 0.38 and 0.29"."""
+    a = ["%.2f" % x for x in r]
+    return ", ".join(a[:-1]) + " and " + a[-1]
+
+
 def page_yield(src, crop):
     m = re.search(r"\b" + crop + r":\{[^}]*?\byield:([\d.]+)", src[src.find("CROP_DEFAULTS"):])
     return float(m.group(1)) if m else None
@@ -109,11 +115,12 @@ def bake(src, data):
     if c:
         how = "; ".join(esc(per[x]["how"]) for x in "npk" if x in per)
         line = ("Fertilizer default, corn: $%d an acre = %d lb N, %d lb P&#8322;O&#8325; and %d lb K&#8322;O for %s bu "
-                "(0.90, 0.37 and 0.24 lb a bushel), at prices posted through %s. It follows your yield until you type your own. "
+                "(%s lb a bushel, UW A2809 removal for P and K), at prices posted through %s. It follows your yield until you type your own. "
                 "Soybeans and wheat use their own rates. "
                 "Your soil test and rates beat this. How each price per lb is worked out: %s. "
                 "<a href=\"/fertilizer\">Fertilizer prices</a>."
-                % (c["per_acre"], c["n_lb"], c["p_lb"], c["k_lb"], c["yield"], day(c["as_of"]), how))
+                % (c["per_acre"], c["n_lb"], c["p_lb"], c["k_lb"], c["yield"], rate_words(rates()["corn"]),
+                   day(c["as_of"]), how))
     else:
         line = "No live fertilizer price right now, so there is no fertilizer default. Type your own cost per acre."
     out, n = re.subn(r"(<!--FERT:SRC-->).*?(<!--/FERT:SRC-->)", lambda m: m.group(1) + line + m.group(2), out, count=1, flags=re.S)
@@ -139,17 +146,19 @@ def selftest():
     data = {"per_lb": {"n": {"usd": 0.68, "how": "urea a", "as_of": "2026-10-06"}, "p": {"usd": 0.74, "how": "DAP b", "as_of": "2026-10-05"},
                        "k": {"usd": 0.39, "how": "potash c", "as_of": "2026-10-04"}}}
     out = bake(page, data)
-    # 180 bu: 162 lb N x 0.68 + 67 lb P2O5 x 0.74 + 43 lb K2O x 0.39 = 176.51
-    ck("corn default and input priced at the page's own yield", "corn:{yield:180,seed:125,fertilizer:177,x:1}" in out and 'value="177"' in out)
-    # 55 bu: 44 x 0.74 + 72 x 0.39 = 60.64
-    ck("soybeans at its own rates", "soybeans:{yield:55,fertilizer:61}" in out)
-    # 70 bu: 84 x 0.68 + 35 x 0.74 + 21 x 0.39 = 91.11
-    ck("wheat at its own rates", "wheat:{yield:70,fertilizer:91}" in out and "110" not in out)
-    ck("the line names rates, date and the arithmetic", "162 lb N" in out and "Oct 6, 2026" in out and "urea a; DAP b; potash c" in out)
-    ck("the page gets the $/lb and rates to price another yield", "var FERT={n:0.68,p:0.74,k:0.39,asof:'2026-10-06',r:{corn:[0.9,0.37,0.24],soybeans:[0,0.8,1.3],wheat:[1.2,0.5,0.3]}};" in out)
+    # A2809 rates (2026-10-17, scripts/crop_removal.py): corn 0.90 / 0.38 / 0.29,
+    # soybeans 0 / 0.80 / 1.40, wheat 1.20 / 0.50 / 0.35 lb a bushel.
+    # 180 bu: 162 lb N x 0.68 + 68 lb P2O5 x 0.74 + 52 lb K2O x 0.39 = 180.76
+    ck("corn default and input priced at the page's own yield", "corn:{yield:180,seed:125,fertilizer:181,x:1}" in out and 'value="181"' in out)
+    # 55 bu: 44 x 0.74 + 77 x 0.39 = 62.59
+    ck("soybeans at its own rates", "soybeans:{yield:55,fertilizer:63}" in out)
+    # 70 bu: 84 x 0.68 + 35 x 0.74 + 24 x 0.39 = 92.38
+    ck("wheat at its own rates", "wheat:{yield:70,fertilizer:92}" in out and "110" not in out)
+    ck("the line names rates, date and the arithmetic", "162 lb N" in out and "(0.90, 0.38 and 0.29 lb a bushel" in out and "Oct 6, 2026" in out and "urea a; DAP b; potash c" in out)
+    ck("the page gets the $/lb and rates to price another yield", "var FERT={n:0.68,p:0.74,k:0.39,asof:'2026-10-06',r:{corn:[0.9,0.38,0.29],soybeans:[0,0.8,1.4],wheat:[1.2,0.5,0.35]}};" in out)
     big = bake(page.replace("yield:180", "yield:237"), data)
-    # 237 bu: 213 x 0.68 + 88 x 0.74 + 57 x 0.39 = 232.19
-    ck("a different page yield is priced at that yield", "corn:{yield:237,seed:125,fertilizer:232,x:1}" in big and "213 lb N" in big and "for 237 bu" in big)
+    # 237 bu: 213 x 0.68 + 90 x 0.74 + 69 x 0.39 = 238.35
+    ck("a different page yield is priced at that yield", "corn:{yield:237,seed:125,fertilizer:238,x:1}" in big and "213 lb N" in big and "for 237 bu" in big)
     nok = bake(page, {"per_lb": {"n": data["per_lb"]["n"], "p": data["per_lb"]["p"]}})
     ck("a nutrient with no live price: empty, not an old number", "corn:{yield:180,seed:125,fertilizer:'',x:1}" in nok and "var FERT=null;" in nok)
     none = bake(page, None)
