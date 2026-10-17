@@ -38,7 +38,7 @@ test("replay: middle per day, withheld under 2 co-ops, set changes named", () =>
   assert.equal(d[0].withheld, true, "one co-op: no middle");
   assert.equal(d[0].mid, null);
   assert.match(T.html(s, null), /withheld/);
-  assert.match(T.html(s, null), /fewer than 2 co-ops/i);
+  assert.match(T.html(s, null), /no day in the record has 2 or more co-ops/i);
 });
 
 test("replay: undated, flagged and over-60-day prices are not counted; the day one ages out is a point", () => {

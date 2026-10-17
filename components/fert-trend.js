@@ -114,7 +114,7 @@
   function chart(pts, name) {
     var shown = pts.filter(function (p) { return !p.withheld; });
     if (shown.length < 2) return '';
-    var W = 320, H = 96, L = 8, R = 8, T = 12, B = 18;
+    var W = 320, H = 100, L = 8, R = 8, T = 18, B = 18;
     var x0 = dayNum(shown[0].date), x1 = dayNum(shown[shown.length - 1].date);
     var lo = Math.min.apply(null, shown.map(function (p) { return p.mid; }));
     var hi = Math.max.apply(null, shown.map(function (p) { return p.mid; }));
@@ -133,6 +133,8 @@
     return '<svg class="ft-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(name + ' middle price, ' + short(a.date, true) + ' ' + money(a.mid) + ' to ' + short(z.date, true) + ' ' + money(z.mid)) + '">' +
       '<line class="ft-base" x1="' + L + '" x2="' + (W - R) + '" y1="' + (H - B) + '" y2="' + (H - B) + '"/>' +
       '<path class="ft-line" d="' + path + '"/>' + marks +
+      '<text class="ft-val" x="' + X(a.date).toFixed(1) + '" y="' + (Y(a.mid) - 8).toFixed(1) + '">' + esc(money(a.mid)) + '</text>' +
+      '<text class="ft-val" x="' + X(z.date).toFixed(1) + '" y="' + (Y(z.mid) - 8).toFixed(1) + '" text-anchor="end">' + esc(money(z.mid)) + '</text>' +
       '<text class="ft-ax" x="' + L + '" y="' + (H - 4) + '">' + esc(short(a.date)) + '</text>' +
       '<text class="ft-ax" x="' + (W - R) + '" y="' + (H - 4) + '" text-anchor="end">' + esc(short(z.date)) + '</text></svg>';
   }
@@ -161,7 +163,7 @@
       var pts = s.products[k], shown = pts.filter(function (p) { return !p.withheld; });
       var head = '<h3 class="ft-h">' + esc(NAMES[k]) + '</h3>';
       if (!shown.length) {
-        return '<div class="ft-p">' + head + '<p class="ft-note">Fewer than 2 co-ops have posted it on every day in the record, so no middle price is shown.</p>' + table(pts, coops) + '</div>';
+        return '<div class="ft-p">' + head + '<p class="ft-note">No day in the record has 2 or more co-ops posting it, so no middle price is shown.</p>' + table(pts, coops) + '</div>';
       }
       var c = chart(pts, NAMES[k]);
       return '<div class="ft-p">' + head + (c || '<p class="ft-note">One point so far: the line starts when the middle price moves or the co-ops change.</p>') + table(pts, coops) + '</div>';
@@ -181,7 +183,7 @@
     '.ft-line{fill:none;stroke:var(--gold);stroke-width:2;stroke-linejoin:round}' +
     '.ft-dot{fill:var(--gold);stroke:var(--bg-card,var(--bg,#fff));stroke-width:2}.ft-hit{fill:transparent}' +
     '.ft-base{stroke:var(--border);stroke-width:1}.ft-set{stroke:var(--text-muted);stroke-width:1;stroke-dasharray:2 3}' +
-    '.ft-ax{fill:var(--text-muted);font-size:10px;font-family:inherit}' +
+    '.ft-ax{fill:var(--text-muted);font-size:10px;font-family:inherit}.ft-val{fill:var(--text);font-size:11px;font-weight:600;font-family:inherit}' +
     '.ft-t{width:100%;border-collapse:collapse;font-size:.78rem}.ft-t th,.ft-t td{text-align:left;padding:.3rem .35rem;border-bottom:1px solid var(--border);vertical-align:top}' +
     '.ft-t th{color:var(--text-muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em}.ft-t td.r,.ft-t th:nth-child(2){text-align:right;white-space:nowrap}' +
     '.ft-sub{display:block;color:var(--text-muted);font-size:.72rem}.ft-wh{color:var(--text-muted);font-style:italic}';
