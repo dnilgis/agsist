@@ -1,0 +1,84 @@
+# state: OH
+# name: Ohio
+# survey: Ohio Farm Custom Rates 2024 (Ward, Richer, Barker and Bennett)
+# publisher: Ohio State University Extension
+# survey_year: 2024
+# collected: Surveys mailed, emailed and handed out at Extension programs through the winter of 2024; 333 farmers, custom operators, farm managers and landowners
+# url: https://farmoffice.osu.edu/sites/aglaw/files/site-library/farmmgtpdf/Ohio%20Farm%20Custom%20Rate_Nov%202024.pdf
+# ref: cr-oh-2024-pdf
+# spread: minmax
+# includes: These rates, except where noted, include the implement and tractor if required, all variable machinery costs such as fuel, oil, lube, twine, etc., and labor for the operation. Diesel ran about $3.20 to $3.50 a gallon off-road during the survey (January to April 2024).
+# range_note: The range is the lowest and highest answer (OSU also prints a one standard deviation band, not shown). OSU released a 2026 edition in late summer 2026; it could not be opened from here yet, so this is the 2024 edition. Rows OSU did not summarize for too few answers are left out.
+key	section	operation	unit	avg	lo	hi	n
+	Soil preparation	Stalk chopper	acre	17.33	13.00	30.00	9
+moldboard	Soil preparation	Moldboard plow	acre	26.80	15.00	40.00	10
+chisel	Soil preparation	Chisel plow	acre	25.28	6.00	50.00	22
+disk-chisel	Soil preparation	Disk chisel	acre	22.71	6.00	50.00	28
+disk-tandem	Soil preparation	Disk, tandem	acre	20.13	6.00	35.00	15
+	Soil preparation	Disk, high speed	acre	27.05	13.75	45.00	14
+	Soil preparation	Soil finishing	acre	19.88	12.00	39.00	28
+field-cult	Soil preparation	Field cultivator	acre	21.61	6.00	50.00	26
+subsoil	Soil preparation	Subsoiling, 8-15 inches deep	acre	31.11	20.00	60.00	18
+	Soil preparation	V-ripping, over 15 inches deep	acre	27.36	20.00	35.00	7
+strip-till	Soil preparation	Strip tillage	acre	28.28	21.00	38.00	9
+	Soil preparation	Strip tillage with fertilizer injection	acre	34.00	25.00	40.00	8
+fert-dry	Fertilizer application, ground	Dry bulk, fixed rate	acre	8.73	5.00	15.00	56
+	Fertilizer application, ground	Variable rate fertilizer application	acre	9.82	4.25	16.00	47
+	Fertilizer application, ground	Liquid, knife	acre	14.15	7.50	35.00	21
+fert-liquid	Fertilizer application, ground	Liquid, spray	acre	9.87	6.00	18.00	37
+nh3	Fertilizer application, ground	Anhydrous	acre	18.43	12.00	35.00	17
+	Fertilizer application, ground	Late season nitrogen with drops	acre	14.00	10.00	20.00	11
+	Fertilizer application, ground	Lime application (material not included)	acre	8.89	6.00	14.00	9
+lime-ton	Fertilizer application, ground	Lime application (material not included)	ton	9.14	6.00	15.00	7
+spray-ground	Chemical control of weeds, insects, disease	Spraying, self-propelled sprayer	acre	9.89	6.00	18.00	97
+spray-tractor	Chemical control of weeds, insects, disease	Spraying, pull-type sprayer	acre	9.28	5.00	15.00	16
+	Chemical control of weeds, insects, disease	Spraying late season (high clearance)	acre	12.61	7.00	22.00	37
+	Mechanical weed control	Rotary hoeing	acre	12.73	6.00	20.00	11
+	Mechanical weed control	Conventional cultivating	acre	17.50	7.00	30.00	10
+	Mechanical weed control	Weed electrocution	acre	46.89	25.00	100.00	27
+spray-aerial	Aerial application	Airplane/helicopter, chemical (fungicide etc.)	acre	15.59	9.00	40.00	32
+	Aerial application	Airplane/helicopter, seed	acre	13.00	9.00	16.00	9
+spray-drone	Aerial application	Drone/UAV, chemical (fungicide etc.)	acre	14.64	7.00	20.00	22
+	Aerial application	Drone/UAV, seed	acre	15.42	12.00	20.00	12
+	Aerial application	Drone/UAV, fertilizer	acre	16.50	12.00	22.00	8
+plant-row	Planting	Plant corn, 30 inch rows	acre	23.51	6.00	40.00	44
+plant-row-fert	Planting	Plant corn, 30 inch rows with fertilizer application	acre	24.77	6.00	50.00	55
+	Planting	Variable rate corn planting	acre	26.18	17.00	45.00	14
+	Planting	Plant soybeans, 15 or 30 inch rows	acre	23.21	10.00	45.00	59
+drill-soy	Planting	Drill soybeans	acre	20.77	5.00	40.00	30
+drill-smallgrain	Planting	Drill small grains	acre	20.68	10.00	40.00	34
+	Forage, pasture, cover crop seeding	Seeding cover crops	acre	17.91	4.00	40.00	30
+harvest-haul-corn	Grain harvest	Harvest corn: combine, grain cart, haul local to farm	acre	40.99	20.00	90.00	61
+harvest-haul-soy	Grain harvest	Harvest soybeans: combine, grain cart, haul local to farm	acre	37.92	20.00	85.00	65
+	Grain harvest	Harvest wheat: combine, grain cart, haul local to farm	acre	37.80	20.00	88.00	40
+combine-corn	Grain harvest	Combine only, corn	acre	34.61	15.00	65.00	60
+combine-soy	Grain harvest	Combine only, soybeans	acre	33.53	12.00	60.00	58
+combine-smallgrain	Grain harvest	Combine only, small grains	acre	33.56	12.00	62.00	39
+grain-cart	Grain harvest	Grain cart	acre	7.72	2.00	20.00	18
+	Grain storage and drying	On farm storage charge	bushel / month	0.07	0.03	0.15	23
+	Grain storage and drying	On farm storage charge	bushel / year	0.31	0.05	0.72	12
+dry-corn-pt	Grain storage and drying	On farm moisture removed	point per bushel	0.05	0.02	0.10	12
+	Grain storage and drying	Commercial elevator storage	bushel / month	0.11	0.03	0.15	36
+haul-grain-bu	Grain hauling	Farm to market (average 22.7 miles one way)	bushel	0.17	0.03	0.35	68
+	Grain hauling	Field to farm (average 12.2 miles one way)	bushel	0.13	0.02	0.30	25
+mow-hay	Hay harvest	Mowing	acre	15.29	7.00	25.00	14
+mow-cond	Hay harvest	Mowing/conditioning	acre	17.03	7.00	40.00	26
+rake	Hay harvest	Raking	acre	10.52	4.00	40.00	26
+	Hay harvest	Merging windrows	acre	12.00	7.00	17.00	7
+ted	Hay harvest	Tedding	acre	10.11	4.00	40.00	23
+bale-smallsq	Hay harvest	Small square bales, baled and dropped on ground	bale	0.81	0.35	1.50	10
+	Hay harvest	Small square bales, baled and loaded on wagon	bale	1.25	0.50	2.50	8
+bale-round	Hay harvest	Large round bales, baled and left in field	bale	12.09	6.50	20.00	38
+	Hay harvest	Large round bales, baled and hauled from field	bale	17.25	8.50	25.00	6
+bale-largesq	Hay harvest	Large square bales, baled and left in field	bale	11.16	8.00	15.00	7
+	Hay harvest	Mow, rake, bale, haul and store, custom hired	ton	53.12	30.00	90.00	5
+custom-farm-corn	Custom farming, all machinery operations	Corn	acre	154.50	90.00	240.00	10
+custom-farm-soy	Custom farming, all machinery operations	Soybeans	acre	142.00	80.00	225.00	10
+	Custom farming, all machinery operations	Small grains	acre	141.67	70.00	215.00	6
+	Manure application	Hauling liquid manure with semi	hour	126.48	90.00	200.00	22
+	Manure application	Spreading solid manure at field	ton	9.68	3.00	15.00	17
+	Farm labor	Machinery operation	hour	22.22	15.00	40.00	59
+	Drainage and tile	Drainage plow, 4 inch plastic	foot	0.40	0.15	1.00	41
+	Drainage and tile	Wheel or trencher, 4 inch plastic	foot	1.04	0.29	3.00	13
+	Drainage and tile	Excavator	hour	136.20	80.00	200.00	27
+backhoe	Drainage and tile	Backhoe	hour	112.69	50.00	200.00	27
