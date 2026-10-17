@@ -383,7 +383,11 @@ def untar_days(raw, need=None):
             if not m.isfile() or not name.endswith(".usda.csv"):
                 continue
             day = dt.datetime.strptime(name[:8], "%Y%m%d").date()
-            out[day] = parse_ncei(tf.extractfile(m).read().decode("utf-8", "replace"), True, need)
+            text = tf.extractfile(m).read().decode("utf-8", "replace")
+            if len(text.strip().splitlines()) <= 1:     # seen Oct 17, 2026: a header and no rows
+                log(f"  NCEI daily grid {name} is empty; skipped")
+                continue
+            out[day] = parse_ncei(text, True, need)
     return out
 
 
