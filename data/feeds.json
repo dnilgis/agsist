@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 93,
- "with_known_cadence": 93,
+ "count": 94,
+ "with_known_cadence": 94,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -270,7 +270,8 @@
    ],
    "touched_by": [
     "Fetch Grain Bids",
-    "Morning report"
+    "Morning report",
+    "Tools hub dates"
    ],
    "cadence": "about every 60 minutes",
    "curated": false,
@@ -600,6 +601,7 @@
     "Rebuild Feed Manifest",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "Tools hub dates",
     "yield-panel"
    ],
    "cadence": "6 launches on a fixed schedule at about 7am, 3pm, 4pm, 8pm Central",
@@ -892,7 +894,8 @@
     "Fall nitrogen soil temperature"
    ],
    "touched_by": [
-    "Fall nitrogen soil temperature"
+    "Fall nitrogen soil temperature",
+    "Tools hub dates"
    ],
    "cadence": "2 launches every day at about 8am, 5pm Central",
    "curated": false,
@@ -954,6 +957,7 @@
     "Build Price Stats (5-year percentile)",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "Tools hub dates",
     "yield-panel"
    ],
    "cadence": "1 launch weekdays at about 8am Central",
@@ -983,7 +987,8 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Hail data refresh",
-    "MESH radar hail swaths \u2014 daily"
+    "MESH radar hail swaths \u2014 daily",
+    "Tools hub dates"
    ],
    "cadence": "2 launches every day at about 1am, 3am Central",
    "curated": false,
@@ -1078,6 +1083,7 @@
     "Rebuild Feed Manifest",
     "Share images",
     "Build State Stats (USDA NASS)",
+    "Tools hub dates",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
     "yield-panel"
@@ -1926,7 +1932,8 @@
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",
     "Rebuild Feed Manifest",
-    "Report day \u2014 USDA vs the trade email"
+    "Report day \u2014 USDA vs the trade email",
+    "Tools hub dates"
    ],
    "cadence": "every 15 minutes while CBOT trades, started by cron-job.org (the workflow's own hourly :11 cron is the fallback)",
    "curated": false,
@@ -2303,7 +2310,8 @@
    ],
    "touched_by": [
     "Rebuild Feed Manifest",
-    "Tariff data check"
+    "Tariff data check",
+    "Tools hub dates"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
@@ -2338,6 +2346,29 @@
     "25 6 15 2 *"
    ],
    "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/tools-fresh.json",
+   "pages": [
+    "tools.html"
+   ],
+   "written_by": [
+    "Tools hub dates"
+   ],
+   "touched_by": [
+    "Tools hub dates"
+   ],
+   "cadence": "about every 60 minutes",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "41 * * * *"
+   ],
+   "max_gap_hours": 1.0,
    "quiet": null,
    "why_quiet": null
   },

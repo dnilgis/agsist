@@ -138,26 +138,26 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .page-header .byline { font-size: .8rem; color: var(--text-muted); margin: 6px 0 0; line-height: 1.5; }
-    .page-header .byline a { color: var(--text-dim); }
-    .finder { max-width: 760px; margin: 0 auto 8px; }
-    .tf-lab { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    #tf-q { width: 100%; box-sizing: border-box; min-height: 46px; padding: .6rem .85rem; font: inherit; font-size: 1rem; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 9px; }
-    #tf-q:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
-    .tf-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
-    .tf-chips button, .tf-none button { flex: none; min-height: 36px; padding: .3rem .75rem; font: inherit; font-size: .85rem; color: var(--text-dim); background: none; border: 1px solid var(--border); border-radius: 18px; cursor: pointer; }
-    .tf-chips button[aria-pressed="true"] { color: var(--text); border-color: var(--gold); background: var(--surface); font-weight: 700; }
-    .tf-none { color: var(--text-dim); margin: 14px 0 0; }
-    [hidden] { display: none !important; }
-    .mystate { margin: 24px 0 0; padding: 14px 16px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
-    .ms-h { display: inline; font-size: .95rem; margin: 0 8px 0 0; }
-    #ms-st { min-height: 40px; font: inherit; font-size: .95rem; color: var(--text); background: var(--bg, var(--surface)); border: 1px solid var(--border); border-radius: 7px; padding: .3rem .5rem; }
-    .ms-note { font-size: .85rem; color: var(--text-muted); margin: 8px 0 0; line-height: 1.5; }
-    .ms-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-    .ms-links:empty { display: none; }
-    .ms-links a { display: inline-flex; align-items: center; min-height: 36px; padding: .25rem .7rem; border: 1px solid var(--border); border-radius: 18px; font-size: .88rem; color: var(--text); text-decoration: none; }
-    .ms-links a:hover { border-color: var(--gold); }
-    .ms-links a.cty { border-style: dashed; }
+    .page-header .byline{font-size:.8rem;color:var(--text-muted);margin:6px 0 0;line-height:1.5;}
+.page-header .byline a{color:var(--text-dim);}
+.finder{max-width:760px;margin:0 auto 8px;}
+.tf-lab{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+#tf-q{width:100%;box-sizing:border-box;min-height:46px;padding:.6rem .85rem;font:inherit;font-size:1rem;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:9px;}
+#tf-q:focus{outline:2px solid var(--gold);outline-offset:1px;}
+.tf-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;}
+.tf-chips button, .tf-none button{flex:none;min-height:36px;padding:.3rem .75rem;font:inherit;font-size:.85rem;color:var(--text-dim);background:none;border:1px solid var(--border);border-radius:18px;cursor:pointer;}
+.tf-chips button[aria-pressed="true"]{color:var(--text);border-color:var(--gold);background:var(--surface);font-weight:700;}
+.tf-none{color:var(--text-dim);margin:14px 0 0;}
+[hidden]{display:none !important;}
+.mystate{margin:24px 0 0;padding:14px 16px;border:1px solid var(--border);border-radius:9px;background:var(--surface);}
+.ms-h{display:inline;font-size:.95rem;margin:0 8px 0 0;}
+#ms-st{min-height:40px;font:inherit;font-size:.95rem;color:var(--text);background:var(--bg, var(--surface));border:1px solid var(--border);border-radius:7px;padding:.3rem .5rem;}
+.ms-note{font-size:.85rem;color:var(--text-muted);margin:8px 0 0;line-height:1.5;}
+.ms-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.ms-links:empty{display:none;}
+.ms-links a{display:inline-flex;align-items:center;min-height:36px;padding:.25rem .7rem;border:1px solid var(--border);border-radius:18px;font-size:.88rem;color:var(--text);text-decoration:none;}
+.ms-links a:hover{border-color:var(--gold);}
+.ms-links a.cty{border-style:dashed;}
 
     @media (max-width: 600px) {
       .page-header h1 { font-size: 1.5rem; }
@@ -202,6 +202,12 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
 .tool-more{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:.45rem}
 .tool-more-item{display:block;min-height:44px;padding:.55rem .7rem;border:1px solid var(--border);border-radius:9px;text-decoration:none}
 .tool-more-item:hover{border-color:var(--gold)}
+.more-fold>summary{list-style:none;cursor:pointer}.more-fold>summary::-webkit-details-marker{display:none}
+.more-fold>summary .tool-more-hd{display:inline-flex;align-items:center;gap:.4rem;min-height:44px}
+.more-fold>summary .tool-more-hd::after{content:'';width:.5rem;height:.5rem;border:solid var(--text-dim);border-width:0 2px 2px 0;transform:rotate(45deg);margin:-.2rem 0 0 .3rem;transition:transform .15s}
+.more-fold[open]>summary .tool-more-hd::after{transform:rotate(-135deg);margin-top:.25rem}
+.mf-n{font-size:.85rem;font-weight:600;color:var(--text-muted)}
+.tool-card .fresh,.tool-more-item .fresh{display:block;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-muted);line-height:1.4}
 .tm-name{display:block;font-weight:700;font-size:.93rem;color:var(--text)}
 .tm-desc{display:block;font-size:.82rem;color:var(--text-muted);line-height:1.45;margin-top:.1rem}
 </style>
@@ -488,23 +494,28 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
          The markup keeps the view-count order; this moves the group on the page. -->
     <script>(function(){var m=new Date().getMonth();if(m!==9&&m!==10)return;var ls=document.querySelectorAll('.cat-label'),st=null,ct=null;for(var i=0;i<ls.length;i++){var t=ls[i].textContent.trim();if(t==='Grain storage')st=ls[i];if(t==='Crop tracking')ct=ls[i];}if(!st||!ct)return;var g=st.nextElementSibling;ct.parentNode.insertBefore(st,ct);ct.parentNode.insertBefore(g,ct);})();</script>
 
-    <h2 class="tool-more-hd" id="more-hd">Everything else on the site</h2>
+    <details class="more-fold" id="more-fold" open>
+    <summary><h2 class="tool-more-hd" id="more-hd">Everything else on the site <span class="mf-n">(23)</span></h2></summary>
     <p class="tool-more-sub" id="more-sub">The cards above are the tools people use most. These are the rest.</p>
+    <script>/* folded on phones */try{if(matchMedia('(max-width: 600px)').matches)document.getElementById('more-fold').open=false;}catch(e){}</script>
     <div class="tool-more"><a class="tool-more-item" href="/crop-tour" data-t="field"><span class="tm-name">Pro Farmer Crop Tour</span><span class="tm-desc">Nightly state results and the tour’s accuracy record</span></a><a class="tool-more-item" href="/harvest-price-tracker" data-t="ins sell"><span class="tm-name">Harvest Price Tracker</span><span class="tm-desc">Insurance projected and harvest price discovery, plus how many bushels you can safely price ahead</span></a><a class="tool-more-item" href="/farmland-atlas" data-t="land"><span class="tm-name">Farmland Atlas</span><span class="tm-desc">Every county on 37 public records: heat, water, losses, land value, rent</span></a><a class="tool-more-item" href="/rent/" data-t="land"><span class="tm-name">Cash Rent by State</span><span class="tm-desc">USDA county rent survey</span></a><a class="tool-more-item" href="/cash-lease" data-t="land"><span class="tm-name">Cash Farm Lease</span><span class="tm-desc">State-adaptive printable lease</span></a><a class="tool-more-item" href="/farmland-atlas#l=ten_rent" data-t="land"><span class="tm-name">Rented vs Owner-Farmed</span><span class="tm-desc">Owned vs rented farmland, in the Farmland Atlas</span></a><a class="tool-more-item" href="/foreign-land" data-t="land"><span class="tm-name">Foreign-Owned Land</span><span class="tm-desc">AFIDA filings by country and county</span></a><a class="tool-more-item" href="/conditions" data-t="field"><span class="tm-name">Crop Conditions Rank</span><span class="tm-desc">This week’s ratings against every year since 2000</span></a><a class="tool-more-item" href="/pod-counts" data-t="field"><span class="tm-name">Pod Counts vs Yield</span><span class="tm-desc">What the tour&rsquo;s soybean pod counts say about state yield, measured</span></a><a class="tool-more-item" href="/rain" data-t="field"><span class="tm-name">Rain by County</span><span class="tm-desc">This year&rsquo;s rain in your county, from the nearest station, against its normal</span></a><a class="tool-more-item" href="/conditions-yield" data-t="field"><span class="tm-name">Ratings vs Yield</span><span class="tm-desc">How well condition ratings predict yield</span></a><a class="tool-more-item" href="/drought-monitor" data-t="field stock"><span class="tm-name">Drought Monitor</span><span class="tm-desc">This week&rsquo;s US Drought Monitor map, national and by region and state</span></a><a class="tool-more-item" href="/basis" data-t="sell"><span class="tm-name">Basis vs Normal</span><span class="tm-desc">Your region’s basis against its own five-year normal</span></a><a class="tool-more-item" href="/basis#storage" data-t="sell harvest"><span class="tm-name">Storage Crunch</span><span class="tm-desc">Grain grown vs bin space, by state</span></a><a class="tool-more-item" href="/elevators" data-t="sell"><span class="tm-name">Elevator Coverage</span><span class="tm-desc">Which elevators post bids here</span></a><a class="tool-more-item" href="/cot" data-t="sell"><span class="tm-name">COT Report</span><span class="tm-desc">Fund positioning in the grains</span></a><a class="tool-more-item" href="/whats-priced-in" data-t="sell"><span class="tm-name">What’s Priced In</span><span class="tm-desc">What the trade expects before each USDA report</span></a><a class="tool-more-item" href="/scorecard" data-t="sell"><span class="tm-name">Prediction Bot</span><span class="tm-desc">Grain calls, graded by code</span></a><a class="tool-more-item" href="/farm-bill" data-t="ins"><span class="tm-name">Farm Bill Tracker</span><span class="tm-desc">Where the bill stands</span></a><a class="tool-more-item" href="/milk-prices" data-t="stock"><span class="tm-name">Milk Prices</span><span class="tm-desc">Class III and IV, and how your check is built</span></a><a class="tool-more-item" href="/markets" data-t="sell stock"><span class="tm-name">Ag Markets</span><span class="tm-desc">Grain, livestock and energy futures</span></a><a class="tool-more-item" href="/status" data-t=""><span class="tm-name">System Status</span><span class="tm-desc">Live health of every data feed</span></a><a class="tool-more-item" href="/changelog" data-t=""><span class="tm-name">What’s New</span><span class="tm-desc">What changed on the site, and when</span></a></div>
+    </details>
 
     <h2 class="tool-more-hd" id="not-here">Not on this site yet</h2>
     <p class="tool-more-sub">No irrigation scheduling tools. For that, Nebraska Extension&rsquo;s <a href="https://cropwatch.unl.edu/home/apps-tools/">CropWatch apps and tools</a> list CornSoyWater, Irricost and an irrigation meter calculator. Missing something you use? <a href="/contact">Tell me</a>.</p>
 
-<script>/* Find box, task chips and Your state (tests: test/tools-hub.test.mjs). No storage the page needs; the picked state is a convenience. */
+<script>/* Find box, task chips, card dates, Your state (test/tools-hub.test.mjs) */
 (function(){
-var d=document,q=d.getElementById('tf-q'),none=d.getElementById('tf-none'),key='';
+var d=document,q=d.getElementById('tf-q'),none=d.getElementById('tf-none'),key='',foldDefault=d.getElementById('more-fold').open;
+d.getElementById('more-fold').addEventListener('toggle',function(){if(!key&&!q.value.trim())foldDefault=this.open;});
 var items=[].slice.call(d.querySelectorAll('.tool-card,.tool-more-item'));
 items.forEach(function(a){a._t=' '+(a.getAttribute('data-t')||'')+' ';a._x=(a.textContent+' '+a.getAttribute('href')).toLowerCase().replace(/\s+/g,' ');});
 function run(){
   var words=(q.value||'').toLowerCase().trim().split(/\s+/).filter(Boolean),shown=0;
   items.forEach(function(a){var ok=(!key||a._t.indexOf(' '+key+' ')>=0)&&words.every(function(w){return a._x.indexOf(w)>=0;});a.hidden=!ok;if(ok)shown++;});
   [].forEach.call(d.querySelectorAll('.tools-grid,.tool-more'),function(g){var any=[].some.call(g.children,function(c){return !c.hidden;});g.hidden=!any;var l=g.previousElementSibling;if(l&&l.classList.contains('cat-label'))l.hidden=!any;});
-  var more=d.querySelector('.tool-more');d.getElementById('more-hd').hidden=d.getElementById('more-sub').hidden=more.hidden;
+  var more=d.querySelector('.tool-more'),fold=d.getElementById('more-fold');fold.hidden=more.hidden;
+  if(key||words.length){if(!more.hidden)fold.open=true;}else fold.open=foldDefault;
   none.hidden=shown>0;
 }
 function pick(k){key=k;[].forEach.call(d.querySelectorAll('.tf-chips button'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-k')===k));});
@@ -513,6 +524,21 @@ d.querySelector('.tf-chips').addEventListener('click',function(e){var b=e.target
 q.addEventListener('input',run);
 d.getElementById('tf-clear').addEventListener('click',function(){q.value='';pick('');});
 var h=(location.hash.match(/^#t=(\w+)$/)||[])[1];if(h&&d.querySelector('.tf-chips button[data-k="'+h+'"]'))pick(h);
+
+/* card dates: data/tools-fresh.json; no date, no line; file over 36 h old, no lines */
+var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function when(s){var m=/^(\d{4})-(\d\d)-(\d\d)(?:T(\d\d):(\d\d))?/.exec(s||'');if(!m)return '';
+  if(!m[4])return MO[+m[2]-1]+' '+(+m[3]);
+  var t=new Date(s);if(isNaN(t))return '';var h=t.getHours(),mi=t.getMinutes();
+  return (h%12||12)+':'+(mi<10?'0':'')+mi+' '+(h<12?'am':'pm')+' '+MO[t.getMonth()]+' '+t.getDate();}
+function freshLines(j,now){
+  var g=Date.parse(j&&j.generated);if(!(g>0)||now-g>36*3600e3||now-g<-3600e3)return 0;var n=0;
+  items.forEach(function(a){var t=j.tools&&j.tools[a.getAttribute('href')];if(!t)return;var w=when(t.asof);if(!w)return;
+    var el=d.createElement('span');el.className='fresh';el.textContent=t.verb+' '+w+(t.src?' · '+t.src:'');
+    var tag=a.querySelector('.tag');tag?a.insertBefore(el,tag):a.appendChild(el);n++;});
+  return n;}
+window.agsistToolsFresh=freshLines;
+if(window.fetch)setTimeout(function(){fetch('/data/tools-fresh.json',{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j)freshLines(j,Date.now());}).catch(function(){});},0);
 
 /* Which states have a page in each section, from the folders on disk. */
 var N={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
