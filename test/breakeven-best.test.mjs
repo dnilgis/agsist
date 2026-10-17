@@ -90,6 +90,8 @@ function serve(settled = true) {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname); hits.push(p);
     if (p === "/breakeven") p = "/breakeven.html";
     if (p === "/data/prices.json") { res.writeHead(200, { "content-type": "application/json" }); res.end(prices(srv.settled, srv.kind)); return; }
+    /* the real state medians, dated now so the 14-day gate does not age the test out */
+    if (p === "/data/basis-states.json") { const b = JSON.parse(readFileSync(ROOT + "data/basis-states.json", "utf8")); b.generated = srv.basisAge != null ? new Date(Date.now() - srv.basisAge).toISOString() : new Date().toISOString(); res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(b)); return; }
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" }); res.end(readFileSync(f));
@@ -134,7 +136,7 @@ test("the saved location fills the county, rent, trend yield and an ARC/PLC esti
     /* hand math: 632 budget lines + fertilizer at 217 bu + 290 rent, less 6.44 */
     const total = 632 + fertAt("corn", yld) + 290, be = (total - 6.44) / yld;
     assert.equal(await txt(pg, "#ans-be"), "$" + be.toFixed(2));
-    assert.match(await txt(pg, "#ans-from"), /^Rent and trend yield from Story County, IA \(your saved location\); an ARC\/PLC estimate in other revenue; other costs from farmdoc.s 2027 northern Illinois budget; fertilizer at co-op prices posted through /);
+    assert.match(await txt(pg, "#ans-from"), /^Rent and trend yield from Story County, IA \(your saved location\); an ARC\/PLC estimate in other revenue; basis: Iowa median corn; other costs from farmdoc.s 2027 northern Illinois budget; fertilizer at co-op prices posted through /);
     assert.deepEqual(srv.hits.filter((h) => h.startsWith("/data/breakeven/")), ["/data/breakeven/IA.json"]);
 
     /* the 2027 crop: the trend moves one slope, the 2027 estimate replaces 2026 */
@@ -206,7 +208,7 @@ test("one sentence of sensitivity under the answer, computed live, and the grid 
     await type(pg, "#yield", "200");
     await type(pg, "#acres", "1000");
     assert.match(await txt(pg, "#ans-sens"), /^Each 50 cents on futures moves this field \$100 an acre \(\$100,000 on 1,000 acres\);/);
-    assert.match(await txt(pg, "#ans-fut"), /^Futures needed at your basis: \$\d+\.\d\d\. At \$4\.74¼ futures you lose \$\d+ an acre\.$/);
+    assert.match(await txt(pg, "#ans-fut"), /^Futures needed at your basis: \$\d+\.\d\d \(basis 0 assumed; enter yours\)\. At \$4\.74¼ futures you lose \$\d+ an acre\.$/);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
@@ -299,5 +301,80 @@ test("the ? tips and the county code load on demand, not with the page", { skip 
     await pg.click("h1");
     assert.equal(await pg.$$eval(".hint-popup.hint-open", (x) => x.length), 0, "a tap elsewhere closes it");
     assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* Basis, Oct 17 follow-up: a known state opens on that state's median basis
+ * (data/basis-states.json) for the crop and the contract picked, labeled and
+ * linked; a typed basis is never touched; no location says "basis 0 assumed". */
+const BS = JSON.parse(readFileSync(ROOT + "data/basis-states.json", "utf8"));
+test("a saved state opens on its median basis for the picked contract, labeled, and futures needed reads right", { skip }, async () => {
+  const e = BS.states.IA.crops.corn;
+  assert.ok(e.median != null && e.contract === "ZCZ26", "Iowa corn has a Dec '26 median in the file");
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    let { pg, errors, ctx } = await open(browser, port, { width: 390, ls: { "agsist-wx-loc": LOC } });
+    await pg.waitForFunction(() => document.getElementById("basis").value !== "0");
+    assert.equal(await pg.inputValue("#basis"), e.median.toFixed(2));
+    const tag = await txt(pg, "#src-basis");
+    assert.match(tag, new RegExp(`^Iowa median corn basis, ${e.n} elevators, Dec '26 delivery, as of [A-Z][a-z]{2} \\d+, \\d{4}\\. Basis by state$`), tag);
+    assert.equal(await pg.$eval("#src-basis a", (a) => a.getAttribute("href")), "/basis");
+    /* futures needed = cash break-even - basis */
+    const be = Number((await txt(pg, "#ans-be")).slice(1));
+    const want = (be - e.median).toFixed(2), sign = e.median > 0 ? "+" : "\u2212";
+    assert.match(await txt(pg, "#ans-fut"), new RegExp(`^Futures needed at your \\${sign}${Math.abs(e.median).toFixed(2).replace(".", "\\.")} basis: \\$${want.replace(".", "\\.")}\\.`));
+    assert.equal(await txt(pg, "#futNeeded"), "$" + want + "/bu");
+    assert.equal(await pg.isVisible("#fut-sub"), false, "no 'assumed' line with a real basis");
+    /* the 2027 contract has no matching basis: the state median comes back out, and the page says why */
+    await pg.selectOption("#be-year", "1");
+    await pg.waitForFunction(() => document.getElementById("basis").value === "0");
+    assert.match(await txt(pg, "#basis-why"), /No state basis filled: Iowa.s elevators price corn against Dec '26, not the contract picked/);
+    assert.match(await txt(pg, "#ans-fut"), /: \$\d+\.\d\d \(basis 0 assumed; enter yours\)\. /);
+    await pg.selectOption("#be-year", "0");
+    await pg.waitForFunction(() => document.getElementById("basis").value !== "0");
+    /* a positive basis he types: futures needed is LOWER than the cash break-even, and stays his */
+    await type(pg, "#basis", "0.15");
+    const be2 = Number((await txt(pg, "#ans-be")).slice(1));
+    assert.match(await txt(pg, "#ans-fut"), new RegExp(`^Futures needed at your \\+0\\.15 basis: \\$${(be2 - 0.15).toFixed(2).replace(".", "\\.")}\\.`));
+    assert.equal(await txt(pg, "#futLabel"), "Futures needed at your +0.15 basis");
+    assert.equal(await txt(pg, "#src-basis"), "Your number.");
+    await pg.selectOption("#crop", "soybeans");
+    await pg.selectOption("#crop", "corn");
+    await pg.reload();
+    await pg.waitForFunction(() => document.getElementById("co-co").value !== "");
+    await pg.waitForTimeout(300);
+    assert.equal(await pg.inputValue("#basis"), "0.15", "a typed basis is never overwritten by the state median");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+
+    /* 1280, and an old basis file fills nothing */
+    srv.basisAge = 20 * 864e5;
+    ({ pg, errors, ctx } = await open(browser, port, { width: 1280, theme: "light", ls: { "agsist-wx-loc": LOC } }));
+    await pg.waitForFunction(() => !document.getElementById("basis-why").hidden);
+    assert.equal(await pg.inputValue("#basis"), "0");
+    assert.match(await txt(pg, "#basis-why"), /the state basis file is out of date/);
+    assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth) <= 1280);
+    assert.deepEqual(errors, []);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("with no location, basis 0 is said out loud next to futures needed", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [390, 1280]) {
+      const { pg, errors, ctx } = await open(browser, port, { width });
+      assert.equal(await pg.inputValue("#basis"), "0");
+      assert.match(await txt(pg, "#ans-fut"), /^Futures needed at your basis: \$\d+\.\d\d \(basis 0 assumed; enter yours\)\./);
+      assert.equal(await txt(pg, "#fut-sub"), "Basis 0 assumed; enter yours.");
+      assert.match(await txt(pg, "#src-basis"), /^Basis 0 assumed; enter yours/);
+      assert.equal(srv.hits.some((h) => h.startsWith("/data/basis-states.json")), false, "no state, no basis file");
+      await type(pg, "#basis", "-0.30");
+      assert.equal(await pg.isVisible("#fut-sub"), false);
+      assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth) <= width);
+      assert.deepEqual(errors, []);
+      await ctx.close();
+    }
   } finally { await browser.close(); srv.close(); }
 });

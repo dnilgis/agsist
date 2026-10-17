@@ -25,14 +25,50 @@
   function coLoad(st, fips, fill, auto) {
     var cs = $('co-co'), note = $('co-note'); _coData = null; _coSt = st; cs.disabled = true;
     cs.innerHTML = '<option value="">' + (st ? 'Loading counties...' : 'Pick a state first') + '</option>';
-    if (!st) { note.hidden = true; coSave(); return; }
+    if (!st) { note.hidden = true; coSave(); basisFill(); return; }
     fetch('/data/breakeven/' + st + '.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
       if (_coSt !== st) return; _coData = d;
       cs.innerHTML = '<option value="">Pick a county</option>' + (d.c || []).map(function (c) { return '<option value="' + esc(c.f) + '">' + esc(c.n) + '</option>'; }).join('');
       cs.disabled = false;
       if (typeof fips === 'function') fips = fips(d);
       if (fips && (d.c || []).some(function (c) { return c.f === fips; })) { cs.value = fips; if (auto) { _coAuto = auto; coSave(); } coFill(fill); }
+      basisFill();
     }).catch(function () { if (_coSt !== st) return; cs.innerHTML = '<option value="">Could not load</option>'; note.hidden = false; note.textContent = 'The county file did not load. Type your own rent and yield.'; });
+  }
+  /* BASIS. With a state known (saved location or a pick), the basis that
+     opens is that state's median from data/basis-states.json: AGSIST network
+     elevators, cash minus futures, for the crop, only when the state's
+     contract is the one picked (Dec '26 corn, Nov '26 beans) and the file is
+     under 14 days old. A basis he typed is never touched. The nearest
+     elevator's own bid is on /cash-bids; it needs the full bid file, so it is
+     not loaded here. */
+  var _bsP = null, _bs = null, MAXAGE = 14 * 864e5;
+  function basisData() {
+    if (!_bsP) _bsP = fetch('/data/basis-states.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (d) { _bs = d; return d; });
+    return _bsP;
+  }
+  function basisPick() {
+    var st = _coSt, cr = crop();
+    if (!st || (cr !== 'corn' && cr !== 'soybeans')) return { why: '' };
+    if (!_bs || !_bs.states) return { why: '' };
+    var S = _bs.states[st], e = S && S.crops && S.crops[cr], name = S ? S.name : (CO_STATES[st] || st);
+    var gen = Date.parse(_bs.generated || ''), con = B.contract();
+    if (!e || e.median == null) return { why: 'too few ' + name + ' elevators post a ' + cr + ' bid to give a state median' };
+    if (!isFinite(gen) || Date.now() - gen > MAXAGE) return { why: 'the state basis file is out of date' };
+    if (!con) return { wait: true };
+    if (e.contract !== con) return { why: name + '&rsquo;s elevators price ' + cr + ' against ' + esc(e.label) + ', not the contract picked, so there is no matching basis' };
+    return { v: e.median, t: name + ' median ' + cr + ' basis, ' + e.n + ' elevators, ' + esc(e.label) + ' delivery, as of ' + day(new Date(gen).toISOString().slice(0, 10)) };
+  }
+  function basisFill() {
+    return basisData().then(function () {
+      var el = $('basis'); if (!el) return;
+      var k = B.src('basis').k; if (k === 'user') return;
+      var p = basisPick(); if (p.wait) return;
+      if (p.v != null) { el.value = p.v.toFixed(2); setSrc('basis', 'state', p.t.replace(/&rsquo;/g, '\u2019')); }
+      else { if (k === 'state') el.value = '0'; setSrc('basis', 'none', ''); }
+      var n = $('basis-why'); if (n) { n.innerHTML = p.why ? 'No state basis filled: ' + p.why + '.' : ''; n.hidden = !p.why; }
+      calcBreakeven();
+    });
   }
   function onCoState() { _coAuto = ''; coLoad($('co-st').value, '', false); }
   function onCoCounty() { _coAuto = ''; coFill(true, false, true); coSave(); }
@@ -155,7 +191,7 @@
     initCounty(B.hadSaved());
   }
   W.AgBECounty = {
-    fill: function (a, b, c) { coFill(a, b, c); },
+    fill: function (a, b, c) { coFill(a, b, c); basisFill(); }, basis: function () { basisFill(); },
     info: function () { var cs = $('co-co'), c = _coData && cs.value ? (_coData.c || []).filter(function (x) { return x.f === cs.value; })[0] : null; return c ? { name: c.n + (_coSt === 'LA' ? ' Parish' : ' County') + ', ' + _coSt, st: _coSt, auto: !!_coAuto } : null; },
     arcFor: arcFor, normCounty: normCounty, hint: hint
   };
