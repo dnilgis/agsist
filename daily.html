@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/components/styles.css?v=24">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/util.js?v=18"></script>
+<script src="/components/util.js?v=20"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=2">
 <script src="/components/sponsor-ad.js?v=2"></script>
@@ -48,7 +48,7 @@
 <meta name="twitter:description" content="Morning market briefing for working US ag producers. Published every morning before the market open, weekends included.">
 <meta name="twitter:image"       content="https://agsist.com/img/og/daily.jpg?v=03707f0f">
 
-<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+<script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
 <script type="application/ld+json">
@@ -337,6 +337,8 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 /* Loading */
 .dv3-loading{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);}
 /* skeleton while the briefing loads: tall enough that the archive below stays under the fold, so the briefing lands without pushing anything in view */
+/* chaos-4: a plain line shows if the skeleton is still up after 8 s, with or without script */
+.dv3-sk-slow{opacity:0;animation:dv3-slow 0s 8s forwards;margin:1rem 0 0;font-size:.95rem;color:var(--text-dim)}.dv3-sk-slow a{color:var(--gold)}@keyframes dv3-slow{to{opacity:1}}
 .dv3-sk{min-height:900px}.dv3-sk-hl{height:1.55rem;margin:.6rem 0}.dv3-sk-box{height:150px;margin-top:1.25rem;border-radius:10px}
 .dv3-hero-meta{min-height:1.65em}@media(max-width:520px){.dv3-hero-meta{min-height:3.3em}}
 .dv3-loading-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem;}
@@ -495,7 +497,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 
   <div class="dv3-today" id="dv3-today">
 <noscript><div style="padding:2rem"><p style="font-size:.9rem">This page loads the briefing with JavaScript, which is off in this browser. The <a href="/archive.html" style="color:var(--gold)">briefing archive</a> works without it. The newest issue is at the top.</p></div></noscript>
-    <div class="dv3-sk" aria-busy="true"><span class="sr-only">Loading today&rsquo;s briefing</span><span class="st-sk st-line st-w30" aria-hidden="true"></span><span class="st-sk st-line st-w50" aria-hidden="true"></span><span class="st-sk dv3-sk-hl" aria-hidden="true"></span><span class="st-sk dv3-sk-hl st-w75" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line st-w90" aria-hidden="true"></span><span class="st-sk st-line st-w75" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span></div>
+    <div class="dv3-sk" aria-busy="true"><span class="sr-only">Loading today&rsquo;s briefing</span><span class="st-sk st-line st-w30" aria-hidden="true"></span><span class="st-sk st-line st-w50" aria-hidden="true"></span><span class="st-sk dv3-sk-hl" aria-hidden="true"></span><span class="st-sk dv3-sk-hl st-w75" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line st-w90" aria-hidden="true"></span><span class="st-sk st-line st-w75" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span><p class="dv3-sk-slow">Still loading. On a slow signal the briefing can take a while; <a href="/archive">past briefings</a> are in the archive.</p></div>
   </div>
   <aside class="ya" data-your-area="daily" data-after="#dv3-today .dv3-quote-asof" hidden></aside><script src="/components/your-area.js?v=2" defer></script>
   <aside class="dl" data-daily-local data-before="#dv3-today .dv3-quotes" data-after="#dv3-today .dv3-quote-asof" hidden></aside><script src="/components/daily-local.js?v=2" defer></script>
@@ -878,7 +880,7 @@ function renderToday(data,why){
     var qSt=strip.asof&&window.AgAsOf?AgAsOf.html(strip.asof,'daily',{prefix:'Quotes as of'}):'';
     if(strip.asof&&!qSt){var t=ctStamp(strip.asof);if(t)asofBits.push('Quotes as of '+t+' CT');}
     if(strip.vs_session){var wd=ctWeekday(strip.vs_session);if(wd)asofBits.push('change vs '+wd+' close');}
-    asofBits.push('Yahoo Finance, delayed, not CME settlements');
+    asofBits.push('Yahoo Finance, delayed; a close can sit a tick off the CME settle');
     sparks+='<div class="dv3-quote-asof">'+(qSt?qSt+' \u00B7 ':'')+escHtml(asofBits.join(' \u00B7 '))+'</div>';
     }
   }
@@ -1255,7 +1257,8 @@ if(form){
 // ── load ──────────────────────────────────────────────────────────────
 function agsND(o){if(typeof o==='string')return /^\s*\u2014\s*$/.test(o)?'-':o.replace(/^\s*\u2014\s*/,'').replace(/\s*\u2014\s*/g,', ');if(Array.isArray(o))return o.map(agsND);if(o&&typeof o==='object'){for(var k in o)if(Object.prototype.hasOwnProperty.call(o,k))o[k]=agsND(o[k]);}return o;} /* the site prints no em dashes; older data files still carry some */
 function loadToday(){
-fetch('/data/daily.json',{cache:'no-store'})
+/* chaos-4: AG.fetch gives up after 15 s, so a request that never answers reaches the error box and its retry */
+(window.AG&&AG.fetch?AG.fetch('/data/daily.json',{cache:'no-store'}):fetch('/data/daily.json',{cache:'no-store'}))
   .then(function(r){if(r.status>=500)throw new Error(r.status);return r.ok?r.json():null;})
   .then(function(d){renderToday(agsND(d));})
   .catch(function(){renderToday(null,'error');});

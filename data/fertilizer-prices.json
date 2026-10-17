@@ -244,28 +244,28 @@
   "corn": {
    "yield": 180,
    "n_lb": 162,
-   "p_lb": 67,
-   "k_lb": 43,
-   "per_acre": 179,
+   "p_lb": 68,
+   "k_lb": 52,
+   "per_acre": 183,
    "as_of": "2026-10-12"
   },
   "soybeans": {
    "yield": 55,
    "n_lb": 0,
    "p_lb": 44,
-   "k_lb": 72,
-   "per_acre": 63,
+   "k_lb": 77,
+   "per_acre": 65,
    "as_of": "2026-10-12"
   },
   "wheat": {
    "yield": 70,
    "n_lb": 84,
    "p_lb": 35,
-   "k_lb": 21,
-   "per_acre": 92,
+   "k_lb": 24,
+   "per_acre": 94,
    "as_of": "2026-10-12"
   }
  },
  "notes": [],
- "generated": "2026-10-16T22:48:56Z"
+ "generated": "2026-10-17T15:03:23Z"
 }

@@ -222,8 +222,12 @@ test("storage moisture copy matches the documents", () => {
   assert.match(page, /Minnesota Extension says aerated soybeans keep until June at 13%, for a year at 12% and longer at 11%/);
   // Arkansas Table 1: soybean 11% long term (one year), 11% warm and 14% cool short term (30 to 60 days)
   assert.match(page, /Arkansas Extension says 11% for a year, 11% for 30 to 60 days in warm weather and 14% for 30 to 60 days in cool weather/);
-  // Nebraska CropWatch: "15% for corn and 13% for soybeans" safe for long-term storage
-  assert.match(page, /Nebraska Extension calls 13% safe for long-term storage/);
+  // Nebraska CropWatch, Sep 5 2018 (Hellevang, NDSU): 13% "fine for storing soybeans during cool
+  // conditions"; 11% for beans stored into spring and summer (2026-10-17 fact check F3: the old line
+  // quoted a 2009 item, undated)
+  assert.match(page, /Nebraska CropWatch \(Sep 2018, by NDSU grain specialist Ken Hellevang\) says 13% is fine in cool weather and advises 11% for beans kept into spring and summer/);
+  assert.match(page, /href="https:\/\/cropwatch\.unl\.edu\/2018\/enhancing-soybean-storage-starts-harvest-moisture\/"/);
+  assert.doesNotMatch(page, /Nebraska Extension calls 13% safe for long-term storage/);
   assert.match(ui, /Minnesota Extension stores aerated soybeans at 13% until June, 12% for a year and 11% for longer; Arkansas FSA1074 says 11% for a year\./);
   // NDSU Jan 2020: 1 cfm/bu up to 16%, ~50 days; 1.5 cfm/bu for 18%, which keeps about 40 days at 50 F
   assert.match(ui, /at least 1 cfm per bushel for beans up to 16% \(about 50 days of drying\) and at least 1\.5 cfm per bushel for 18% beans, which keep only about 40 days at 50 F/);

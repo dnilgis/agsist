@@ -1,12 +1,14 @@
 {
  "schema": "agsist-elevator-names/1",
- "note": "Display names for elevators whose board gives a page title or a code instead of a name. Read by scripts/elevator_names.py (town and state pages) and components/cb-rank.js (/cash-bids). Exact matches; the general rules (page-title prefixes, a repeated state, trailing commas) live in both files and are tested to agree. Operator names checked against each board's own site address in dnilgis/bids data/<id>.json, 2026-10-16.",
+ "note": "Display names for elevators whose board gives a page title or a code instead of a name. Read by scripts/elevator_names.py (town and state pages) and components/cb-rank.js (/cash-bids). Exact matches; the general rules (page-title prefixes, a repeated state, trailing commas) live in both files and are tested to agree. Operator names checked against each board's own site address in dnilgis/bids data/<id>.json, 2026-10-16. Garden City Co-op (gccoop.com, the board misspells it) and Scoular (scoularview.com is Scoular's grower site) added 2026-10-17 for the company pages.",
  "operators": {
   "Cash Bid JSI Site - Ag State": "Ag State",
   "JSI Site - Farmers Cooperative": "Farmers Cooperative",
   "American Plains Co-op - Cash Bid Include": "American Plains Co-op",
   "Current Grain Bids - Fremont Farms": "Fremont Farms",
-  "iframe - Pearl City Elevator, Inc.": "Pearl City Elevator, Inc."
+  "iframe - Pearl City Elevator, Inc.": "Pearl City Elevator, Inc.",
+  "Garden City Coo-op": "Garden City Co-op",
+  "ScoularView": "Scoular"
  },
  "places": {
   "SF Ia Fall": "Iowa Falls"

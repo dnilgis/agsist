@@ -252,6 +252,20 @@
   function lineFor(m, p, inp) {
     return SS.holdLine({ to: SS.longMon(p.key).slice(0, 3), carry: p.carry, months: p.months, spot: m.spot.cash, kind: 'posted', inputs: inp });
   }
+  /* THE BIG ANSWER IN PLAIN WORDS (2026-10-17, field audit). The shared line
+     ("+36 3/4c futures carry, net of storage and interest: -61c a bushel") put
+     a plus and a minus in one sentence. Here the result comes first, unsigned,
+     and the two parts follow as amounts: "Storing to July loses 61c a
+     bushel. The futures carry is 36 3/4c; storage and interest come to 97c." */
+  function plainLine(o) {
+    var n = SS.carryNet(o.spot, o.carry, o.months, o.inputs), c = Math.round(n.net * 100);
+    var head = 'Storing to ' + o.to + (c === 0 ? ' about breaks even.' : (c > 0 ? ' nets ' : ' loses ') + Math.abs(c) + '\u00a2 a bushel.');
+    var q = Math.round(o.carry * 400), amt = window.AG.px.move(Math.abs(o.carry * 100), { style: 'slash' });
+    var what = o.kind === 'futures' ? 'futures' : 'posted';
+    var carry = q === 0 ? 'The ' + what + ' price is the same then' : q > 0 ? 'The ' + what + ' carry is ' + amt : 'The later ' + what + ' price is ' + amt + ' lower';
+    var costs = (n.storage || 0) + (n.interest || 0) + (n.shrink || 0);
+    return head + ' ' + carry + '; storage and interest' + (o.inputs.shrink ? ' and shrink' : '') + ' come to ' + Math.round(costs * 100) + '\u00a2.';
+  }
   function tone(n) { var c = Math.round(n * 100); return c > 0 ? 'sos-up' : c < 0 ? 'sos-dn' : ''; }
 
   function render() {
@@ -262,12 +276,26 @@
     state.futures = fm;
     var top = list[0] || null;
     $('sos-costs-note').textContent = 'Using ' + SS.costNote(inp, null, null);
+    /* ONE VERDICT, FROM THE FINAL INPUTS (2026-10-17). The board's answer used
+       to paint first and be swapped for the elevator's 3 to 6 s later, often
+       with another month and the other sign. While the elevators near the ZIP
+       are still being read, the answer says so and nothing else. */
+    if (state.zip && state.models === null) {
+      ans.textContent = 'Working it out from the elevators near ' + state.zip + '\u2026';
+      ans.className = 'sos-line sos-wait';
+      where.textContent = 'Reading their own later bids. If none posts one, the answer uses the board\u2019s carry.';
+      note.textContent = '';
+      $('sos-table').innerHTML = '';
+      drawOthers([], inp);
+      drawMath(null);
+      return;
+    }
     if (top) {
       var m = top.model, p = null;
       if (state.pick) m.later.forEach(function (q) { if (q.key === state.pick) p = q; });
       if (!p) p = SS.pickPeriod(m, inp, null);
       var n = SS.carryNet(m.spot.cash, p.carry, p.months, inp).net;
-      ans.textContent = lineFor(m, p, inp);
+      ans.textContent = plainLine({ to: SS.longMon(p.key), carry: p.carry, months: p.months, spot: m.spot.cash, kind: 'posted', inputs: inp });
       ans.className = 'sos-line ' + tone(n);
       where.innerHTML = 'At <b>' + esc(nameOf(top.row)) + '</b>' + (top.row.distance != null ? (top.row.distance < 1 ? ', under a mile from ' : ', ' + Math.round(top.row.distance) + ' miles from ') + esc(state.zip) : '') +
         ': its ' + esc(SS.shortMon(m.spot.start)) + ' bid is ' + esc(SS.cashQ(m.spot.cash)) + ' and its ' + esc(SS.shortMon(p.key)) + ' bid is ' + esc(SS.cashQ(p.cash)) + '.' +
@@ -282,7 +310,7 @@
       drawOthers([], inp);
       if (fm) {
         var nf = SS.carryNet(fm.spot, fm.carry, fm.months, inp).net;
-        ans.textContent = SS.holdLine({ to: fm.to.label.slice(0, 3), carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp });
+        ans.textContent = plainLine({ to: fm.to.label, carry: fm.carry, months: fm.months, spot: fm.spot, kind: 'futures', inputs: inp });
         ans.className = 'sos-line ' + tone(nf);
         where.innerHTML = esc(state.zip ? (state.models === null ? 'Reading the elevators near ' + state.zip + '… ' : noLaterText()) : 'Enter your ZIP for your elevator’s own posted bids. Until then, this is the board. ') +
           esc('Carry from ' + fm.from.label + ' to ' + fm.to.label + ' ' + boardWord(fm) + ', ' + quoteWhen(fm.date, fm.fetched) + '.' + wheatNote(fm) + ' ') +
@@ -398,6 +426,10 @@
       if (seq !== state.seq || res === null) return;
       state.models = res.list || []; state.farther = res.farther || null; state.read = res.read || [];
       render();
+    }, function () {
+      // a read that failed outright is an empty answer, never a "Working it out" left on screen
+      if (seq !== state.seq) return;
+      state.models = []; render();
     });
   }
   function init() {

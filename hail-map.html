@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
 
-  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-09: Google Analytics loads only when the browser sends no Global Privacy Control signal and the off switch on /privacy is not set, and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
+  <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
   <title>Live Hail Map: US Swaths, Warnings &amp; History | AGSIST</title>
@@ -119,6 +119,8 @@
     .hm-linkbtn2{background:none;border:0;padding:0;font:inherit;font-size:.78rem;color:var(--brand,#d4a23f);
       text-decoration:underline;cursor:pointer;min-height:44px}
     .hm-verdict{margin:0 0 .7rem;padding:.6rem .75rem;border-radius:8px;font-size:.9rem;line-height:1.5;border:1px solid var(--border,rgba(132,160,168,.2))}
+    .hm-yearline{margin:0 0 .5rem;font-size:1rem;line-height:1.5;color:var(--text,#e6ebe9)}
+    .hm-vlab{display:block;font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f);margin-bottom:.15rem}
     .hm-verdict.hit{border-color:rgba(227,26,28,.45);background:rgba(227,26,28,.07)}
     .hm-verdict.quiet{color:var(--text-dim,#8a948f)}
     .hm-verdict a{color:var(--brand,#d4a23f)}
@@ -317,9 +319,12 @@
       .hm-title{font-size:1.35rem}
       .hm-sub{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:.85rem}
       #hm-map{height:calc(100dvh - 230px);min-height:420px}
-      /* controls pin to the bottom of the screen while the map is in view —
-         no more scrolling away from the map to change the year */
-      .hm-controls, .hm-meshnav{position:sticky;bottom:8px;z-index:650;background:rgba(11,15,14,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--card-r);padding:.5rem .6rem;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+      /* controls pin to the bottom of the screen while the map is in view,
+         no more scrolling away from the map to change the year. z-index under
+         the site header's 400 (2026-10-17): at 650 the bar slid over the logo
+         and the menu button as the page scrolled to a lookup's answer. It only
+         ever sticks to the bottom, so it needs no top offset. */
+      .hm-controls, .hm-meshnav{position:sticky;bottom:8px;z-index:390;background:rgba(11,15,14,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--card-r);padding:.5rem .6rem;box-shadow:0 4px 16px rgba(0,0,0,.5)}
       .hm-controls button, .hm-meshnav button{min-height:44px}
       .hm-mesh-note{display:none}
       /* One scrolling row of chips instead of four wrapped rows: the wrapped
@@ -467,6 +472,7 @@
             </span>
           </div>
         </div>
+        <p id="hm-yearline" class="hm-yearline" hidden></p>
         <p class="hm-point-asof" id="hm-point-asof" hidden></p>
         <div id="hm-verdict" class="hm-verdict" hidden role="status"></div>
           <div class="hm-point-stats" id="hm-point-stats"></div>
@@ -624,7 +630,7 @@
       gradient:{0.2:'#2c7fb8',0.4:'#41b6c4',0.55:'#7fcdbb',0.7:'#fed976',0.85:'#fd8d3c',1.0:'#e31a1c'} };
 
     var map, heat=null, markers=null, cache={}, recentCache=null,
-        manifest=null, current=null, anim=null,
+        manifest=null, manifestP=null, current=null, anim=null,
         countyData=null, countyState=null,
         meshIdx=null, meshLayer=null, meshCache={}, meshPos=-1;
     var MESH_COLORS={0.75:'#7cd2ff',1:'#fed976',1.5:'#fd8d3c',2:'#e31a1c'};
@@ -736,7 +742,7 @@
         })
         .catch(function(){});
 
-      fetch(DATA+'manifest.json', {cache:'no-cache'})
+      manifestP = fetch(DATA+'manifest.json', {cache:'no-cache'})
         .then(function(r){ return r.ok ? r.json() : null; })
         .then(function(m){
           if(!m || !m.years || !m.years.length){ mapFail('The hail reports are being rebuilt. Try again in a few minutes.'); return; }
@@ -884,6 +890,10 @@
       }).then(function(d){ evCache[y]=d; return d; });
     }
     function loadAllEvents(){
+      /* A shared link (?lat=&lon=) runs its lookup 400 ms after the map; on a slow phone the
+         manifest was not in yet, the lookup fell to the old worker and said the service had not
+         answered (2026-10-17). Wait for the manifest that is already on its way. */
+      if(!manifest && manifestP) return manifestP.then(function(){ return manifest ? loadAllEvents() : Promise.reject(new Error('no manifest')); });
       var yrs=(manifest&&manifest.years)||[];
       if(!yrs.length) return Promise.reject(new Error('no manifest'));
       return Promise.all(yrs.map(function(y){ return loadEvents(y).catch(function(){ return null; }); }))
@@ -951,6 +961,32 @@
       ev.sort(function(a,b){ return a.date<b.date?1:-1; });
       paintLookup(ev,lat,lon,label);
     }
+    function newestOf(list){
+      var n=null;
+      (list||[]).forEach(function(e){ if(!e||!e.date) return; if(!n || e.date>n.date || (e.date===n.date && e.mi<n.mi)) n=e; });
+      return n;
+    }
+    /* THE YEAR FIRST (2026-10-17, field audit). A reader asking "did it hail
+       near me this year" read the radar line, "No radar-estimated hail ... in
+       the last 30 days", and stopped, with five reports from March in the table.
+       This line answers for the calendar year from the NWS ground reports; the
+       30-day radar line follows it, labeled. */
+    function yearLine(evAll){
+      var y=String(new Date().toLocaleDateString('en-CA',{timeZone:'America/Chicago'})).slice(0,4);
+      var yr=(evAll||[]).filter(function(e){ return e.date && e.date.slice(0,4)===y; });
+      var src=' (NWS ground reports)';
+      if(!yr.length){
+        var last=newestOf(evAll);
+        return '<strong>'+y+': no hail reported within '+lookupMi+' mi so far.</strong>'+
+          (last?' Last report: '+esc(fmtDate(last.date))+(last.mag!=null?', '+last.mag.toFixed(2)+'\u2033':'')+', '+last.mi.toFixed(1)+' mi away.':' None in the last 5 years either.')+src;
+      }
+      var near=null, days={};
+      yr.forEach(function(e){ days[e.date]=1; if(!near || e.mi<near.mi) near=e; });
+      var last=newestOf(yr), nd=Object.keys(days).length;
+      return '<strong>'+y+': hail reported '+yr.length+' time'+(yr.length===1?'':'s')+' within '+lookupMi+' mi'+(nd>1?', on '+nd+' days':'')+'.</strong> '+
+        'Nearest: '+near.mi.toFixed(1)+' mi away on '+esc(fmtDate(near.date))+(near.mag!=null?' ('+near.mag.toFixed(2)+'\u2033)':'')+'.'+
+        (last!==near?' Latest: '+esc(fmtDate(last.date))+(last.mag!=null?' ('+last.mag.toFixed(2)+'\u2033, ':' (')+last.mi.toFixed(1)+' mi away).':'')+src;
+    }
     function paintLookup(evAll,lat,lon,label){
       var st=document.getElementById('hm-point-stats'), tb=document.getElementById('hm-point-table'),
           ttl=document.getElementById('hm-point-title');
@@ -968,13 +1004,18 @@
         if(!nearEv || e.mi<nearEv.mi) nearEv=e;
       });
       var maxMag=maxEv?maxEv.mag:0;
-      var newest=ev.length?ev[0]:null;
+      /* THE LATEST DATE, AND ON THAT DATE THE NEAREST REPORT (2026-10-17). ev[0]
+         was whichever row of the newest day came first, so 61701 read "8 mi away"
+         for a day with a report 1 mile off. */
+      var newest=newestOf(ev);
       /* With preliminary reports in, the record runs to the daily feed's date,
          so the per-year rate is over that longer span. */
       var nPre=evAll.filter(function(e){ return e.pre; }).length;
       var recGen=(lookupRecent&&lookupRecent.generated)?String(lookupRecent.generated).slice(0,10):'';
       var spanY=yrSpan(nPre&&recGen?recGen:null);
       var noteMi=document.getElementById('hm-note-mi'); if(noteMi) noteMi.textContent=lookupMi+' miles';
+      var yl=document.getElementById('hm-yearline');
+      if(yl){ yl.hidden=dayMode; if(!dayMode) yl.innerHTML=yearLine(evAll); }
       if(ttl) ttl.textContent=(dayMode?'Hail on '+fmtDate(lookupDay)+', ':'Hail history: ')+
         (label||('tapped spot \u00b7 '+lat.toFixed(4)+'\u00b0, '+lon.toFixed(4)+'\u00b0'));
       if(st && dayMode){
@@ -1214,15 +1255,17 @@
            site-specific claim the data cannot support, and an adjuster reads
            it as one. */
         var WHERE = 'in the ~1 km radar cell covering this point';
+        /* Labeled, so it reads as the radar's 30-day check under the year's reports, not as the answer for the year. */
+        var VLAB  = '<span class="hm-vlab">Radar'+(lookupDay?', '+esc(fmtDate(lookupDay)):', last 30 days')+'</span>';
         var BIAS  = ' Radar estimate, not a ground measurement: MRMS MESH typically runs <strong>larger</strong> than stones measured on the ground.';
         if(liveHit){
           v.className='hm-verdict hit';
-          v.innerHTML='<strong>Radar has estimated '+sizeWord(liveHit.band)+' hail '+WHERE+' in the LAST 24 HOURS.</strong>'+BIAS;
+          v.innerHTML='<span class="hm-vlab">Radar, last 24 hours</span>'+'<strong>Radar has estimated '+sizeWord(liveHit.band)+' hail '+WHERE+' in the LAST 24 HOURS.</strong>'+BIAS;
           v.hidden=false;
         } else if(hits.length){
           var h=hits[0];
           v.className='hm-verdict hit';
-          v.innerHTML='<strong>Yes. Radar estimated '+sizeWord(h.band)+' hail '+WHERE+' on '+esc(fmtDate(h.d))+'.</strong> <a href="/hail-map?swath='+h.d+'&lat='+myLat.toFixed(4)+'&lon='+myLon.toFixed(4)+'">See that day\u2019s swath \u2192</a>'+dayPageLink(h.d,arr.sd)+BIAS;
+          v.innerHTML=VLAB+'<strong>Yes. Radar estimated '+sizeWord(h.band)+' hail '+WHERE+' on '+esc(fmtDate(h.d))+'.</strong> <a href="/hail-map?swath='+h.d+'&lat='+myLat.toFixed(4)+'&lon='+myLon.toFixed(4)+'">See that day\u2019s swath \u2192</a>'+dayPageLink(h.d,arr.sd)+BIAS;
           v.hidden=false;
         } else if(lookupDay && !recent.length){
           /* The user named a date and the radar archive has no such day --
@@ -1249,7 +1292,7 @@
              about may be in the gap. Say where the record stops; do not
              answer for days that were never checked. */
           v.className='hm-verdict';
-          v.innerHTML='<strong>The radar record here stops at '+esc(fmtDate(lastDay))+'.</strong> '+
+          v.innerHTML=VLAB+'<strong>The radar record here stops at '+esc(fmtDate(lastDay))+'.</strong> '+
             'Anything since then has not been processed yet, so this is <strong>not an answer</strong> about it. '+
             'Finished days post the following morning. Nothing '+WHERE+' in the last 30 days ('+checked+' storm day'+(checked===1?'':'s')+
             ' checked, back to '+esc(fmtDate(recent[0]||lastDay))+').'+fullSeason()+
@@ -1257,7 +1300,7 @@
           v.hidden=false;
         } else if(lookupDay){
           v.className='hm-verdict quiet';
-          v.innerHTML='No radar-estimated hail \u22650.75\u2033 '+WHERE+' on <strong>'+esc(fmtDate(lookupDay))+'</strong>.'+
+          v.innerHTML=VLAB+'No radar-estimated hail \u22650.75\u2033 '+WHERE+' on <strong>'+esc(fmtDate(lookupDay))+'</strong>.'+
             (failed?' (That day\u2019s swath file would not load, so this is not a complete check.)':'')+
             ' Radar estimate: MRMS MESH typically runs larger than stones measured on the ground, so a miss here is not proof nothing fell. '+
             'NWS ground reports for the day, if any, are listed below.';
@@ -1266,7 +1309,7 @@
           v.className='hm-verdict quiet';
           /* Scoped to the days actually on file, and it says where today
              stands rather than letting "last 30 days" imply this morning. */
-          v.innerHTML='No radar-estimated hail \u22650.75\u2033 '+WHERE+' in the last 30 days ('+
+          v.innerHTML=VLAB+'No radar-estimated hail \u22650.75\u2033 '+WHERE+' in the last 30 days ('+
             checked+' storm day'+(checked===1?'':'s')+' checked, through '+esc(fmtDate(lastDay))+').'+fullSeason()+
             (failed?' <strong>'+failed+' day'+(failed===1?'':'s')+' could not be loaded</strong>, so this is not a complete check.':'')+
             ((!live24 || live24Stale) ? ' <strong>Today is not on file yet</strong>: it posts tomorrow morning.' : '')+

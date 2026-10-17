@@ -230,8 +230,8 @@ function renderInsight(key){
   /* The withdrawn analog hit rate (2026-08-21) stays withdrawn: it selected
      weeks with a percentile computed over the whole array, after the fact, and
      counted overlapping weeks of one episode as separate cases. */
-  html+='<details class="cot-math"><summary>Show the math</summary>A shorter yardstick, in contracts: the net sits at the '
-    +ordinal(k.pct)+' percentile of the last '+k.weeks+' weeks. Contracts are not adjusted for the size of the market, so the pill above, not this, is the ranking.</details>';
+  html+='<details class="cot-math"><summary>Show the math</summary>Where the net ranks among the last '+k.weeks+' weeks, in contracts: the '
+    +ordinal(k.pct)+' percentile (a rank, not the place in the high-low range the futures pages show). Contracts are not adjusted for the size of the market, so the pill above, not this, is the ranking.</details>';
   el.innerHTML=html;
   return k;
 }

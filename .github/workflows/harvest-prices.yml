@@ -1,5 +1,5 @@
 name: Harvest price tracker
-# Maintains RMA projected/harvest discovery prices. Weekday evenings after
+# Maintains RMA projected/harvest discovery prices. Mon-Sat evenings after
 # CBOT settlement: during February (projected) and October (harvest) it
 # rebuilds the month's settlement series, updates running averages, and
 # seeds the static hero numbers into harvest-price-tracker.html. Finalizes
@@ -9,7 +9,7 @@ name: Harvest price tracker
 on:
   workflow_dispatch:
   schedule:
-    - cron: '47 21 * * 1-5'   # 21:47 UTC weekdays — after CBOT settles
+    - cron: '47 21 * * 1-6'   # 21:47 UTC Mon-Sat — after CBOT settles; Saturday swaps in Friday's settle
   # Also after every "Fetch Grain Bids" (cron-job.org, every 15 minutes): GitHub
   # drops and delays the schedule above. The gate job below lets the first run
   # after each tick of the schedule do the work; see scripts/cron_gate.py.
@@ -43,7 +43,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python3 scripts/cron_gate.py tick --workflow harvest-prices.yml --max-lag 120
-          --cron "47 21 * * 1-5"
+          --cron "47 21 * * 1-6"
 
   track:
     needs: gate

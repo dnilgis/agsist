@@ -51,16 +51,21 @@ NAMES = {
     "urea": "Urea", "anhydrous": "Anhydrous ammonia", "uan28": "UAN 28%", "uan32": "UAN 32%",
     "dap": "DAP", "map": "MAP", "potash": "Potash", "ams": "AMS", "10-34-0": "10-34-0", "thiosul": "Thio-Sul",
 }
-# Removal-based rates per bushel used for the crop programs below, the same
-# ones as the fertility-bill calculator on fertilizer.html (CROPS there):
-# corn 0.90 lb N, 0.37 lb P2O5, 0.24 lb K2O a bushel; soybeans 0 N (they fix
-# their own), 0.80 P2O5, 1.30 K2O; wheat 1.20 N, 0.50 P2O5, 0.30 K2O. The
-# yields are breakeven.html's defaults. A stated assumption, not advice: soil
-# tests and your own rates beat it.
+# Rates per bushel used for the crop programs below: P2O5 and K2O are A2809
+# Table 4.2 grain removal and N is the program's own rate, all from the one
+# table in scripts/crop_removal.py (it reads components/nutrient-removal.js,
+# the numbers /fertilizer and /nutrient-removal print). 2026-10-17 audit N3:
+# this file had its own older copy (corn 0.37 / 0.24 ...). The yields are
+# breakeven.html's defaults. A stated assumption, not advice: soil tests and
+# your own rates beat it.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import crop_removal  # noqa: E402
+
+_PER_BU = crop_removal.per_bu()
 PROGRAMS = {
-    "corn": {"yield": 180, "per_bu": (0.90, 0.37, 0.24)},
-    "soybeans": {"yield": 55, "per_bu": (0.0, 0.80, 1.30)},
-    "wheat": {"yield": 70, "per_bu": (1.20, 0.50, 0.30)},
+    "corn": {"yield": 180, "per_bu": _PER_BU["corn"]},
+    "soybeans": {"yield": 55, "per_bu": _PER_BU["soybeans"]},
+    "wheat": {"yield": 70, "per_bu": _PER_BU["wheat"]},
 }
 MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", "MN": "Minnesota", "MO": "Missouri",
@@ -252,8 +257,11 @@ def selftest():
     ck("the arithmetic is written out with its label",
        pl["n"]["how"] == "urea $622.98 a ton / (2,000 lb x 46% N) = $0.68 a lb of N (Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026)")
     cp = d["programs"]["corn"]
-    want = round(162 * pl["n"]["usd"] + 67 * pl["p"]["usd"] + 43 * pl["k"]["usd"])
-    ck("corn program: 162 N, 67 P2O5, 43 K2O at 180 bu, priced", (cp["n_lb"], cp["p_lb"], cp["k_lb"]) == (162, 67, 43) and cp["per_acre"] == want)
+    # A2809 removal (scripts/crop_removal.py): 180 x 0.90 / 0.38 / 0.29
+    want = round(162 * pl["n"]["usd"] + 68 * pl["p"]["usd"] + 52 * pl["k"]["usd"])
+    ck("corn program: 162 N, 68 P2O5, 52 K2O at 180 bu, priced", (cp["n_lb"], cp["p_lb"], cp["k_lb"]) == (162, 68, 52) and cp["per_acre"] == want)
+    ck("program rates are the A2809 table", PROGRAMS["corn"]["per_bu"] == (0.9, 0.38, 0.29)
+       and PROGRAMS["soybeans"]["per_bu"] == (0.0, 0.8, 1.4) and PROGRAMS["wheat"]["per_bu"] == (1.2, 0.5, 0.35))
     ck("soybeans: no N bought", d["programs"]["soybeans"]["n_lb"] == 0)
     nop = build(dict(coops, summary=[x for x in coops["summary"] if x["key"] != "potash"]), today)
     ck("no potash price: no K $/lb and no crop program, never a guess", "k" not in nop["per_lb"] and nop["programs"]["corn"] is None)

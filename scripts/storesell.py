@@ -101,7 +101,7 @@ def hold_line(to, carry, months, spot, kind="posted", inputs=None):
     costs = "storage and interest" + (" and shrink" if inputs.get("shrink") else "")
     ct = carry_text(carry)
     return (f"Hold to {to}? {'0¢' if ct == 'even' else ct}{what}, net of {costs}: "
-            + ("about even" if c == 0 else net_text(n["net"])) + " a bushel.")
+            + ("about even." if c == 0 else net_text(n["net"]) + " a bushel."))
 
 
 def cost_note(inputs, months, spot=None):

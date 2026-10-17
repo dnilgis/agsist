@@ -329,6 +329,8 @@
     return r.json();
   })).then(function(data){
     if(!data||typeof data!=='object'||!data.quotes||typeof data.quotes!=='object')throw new Error('prices.json malformed');
+    /* chaos-1: expired contracts roll off (components/price-local.js roll) */
+    if(window.AgPxStamp&&AgPxStamp.roll)data.quotes=AgPxStamp.roll(data.quotes);
     return data;
   }).then(function(data){
     _pxDone=true;clearTimeout(_pxTimer);
@@ -409,8 +411,9 @@
             var qs=data.quotes||{},cq=qs['corn-nearby']||qs.corn||{};
             var hn=holName(dayT);
             if(cq.close_kind==='settle'&&cq.close_date){
-              var sd=Date.parse(cq.close_date+'T00:00:00Z');
-              return{t:'Settle '+lbl(sd),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Settles for '+lbl(sd)+', '+new Date(sd).getUTCFullYear()+' (the CME settle as Yahoo Finance posts it). '+read};
+              var sd=Date.parse(cq.close_date+'T00:00:00Z'),sy=new Date(sd).getUTCFullYear();
+              /* chaos-1: a settle from another year names it */
+              return{t:'Settle '+lbl(sd)+(sy!==+ct(new Date()).year?', '+sy:''),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Settles for '+lbl(sd)+', '+new Date(sd).getUTCFullYear()+' (the CME settle as Yahoo Finance posts it). '+read};
             }
             if(cq.close_kind==='last'||(tr&&m>=815&&m<1410)){
               var n2=ct(new Date()),same2=(+n2.year===+p.year&&+n2.month===+p.month&&+n2.day===+p.day);

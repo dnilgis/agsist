@@ -299,7 +299,7 @@
   FSLand.FILED_SINCE = { IL: 'Illinois MyDec declarations filed from 2014' };
   FSLand.coverageText = function (cov, st) {
     if (!cov || !cov.to) return '';
-    if (cov.filed_from) return 'Declarations filed ' + fd(cov.filed_from) + ' to ' + fd(cov.filed_to) +
+    if (cov.filed_from) return (String(st || '').toUpperCase() === 'IL' ? 'Declarations' : 'Returns') + ' filed ' + fd(cov.filed_from) + ' to ' + fd(cov.filed_to) +
       (cov.older_deeds ? '; ' + cov.older_deeds.toLocaleString() + (cov.older_deeds === 1 ? ' carries a deed date' : ' carry deed dates') + ' before ' + String(cov.filed_from).slice(0, 4) : '');
     var since = FSLand.FILED_SINCE[String(st || '').toUpperCase()];
     if (since) return since + ' to ' + fd(cov.to) + (cov.from && String(cov.from).slice(0, 4) < '2014' ? '; some filings carry older deed dates' : '');

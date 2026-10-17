@@ -82,6 +82,14 @@
 /* The signup bar and the install hint are fixed to the bottom above the
    drawer's layer; hide them while the drawer is open (loader.js sets this). */
 html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{display:none!important}
+/* High contrast (forced colors, 2026-10-17 field audit): the menu bars and the theme switch are drawn
+   with background colors, which forced colors removes, so the menu button showed as an empty box.
+   Here they take the system's text colors. */
+@media (forced-colors:active){
+  .hamburger .h-bar{forced-color-adjust:none;background:ButtonText;opacity:1}
+  .t-track{border:1px solid ButtonText}
+  .t-thumb{forced-color-adjust:none;background:ButtonText}
+}
 </style>
 <nav class="nav" id="topnav">
   <div class="nav-inner">
