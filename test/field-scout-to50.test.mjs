@@ -25,7 +25,10 @@ import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const HTML = readFileSync(ROOT + "field-scout.html", "utf8");
-const JS = readFileSync(ROOT + "field-scout.js", "utf8");
+// The page script is split (Oct 16, 2026): field-scout.js is the first screen, the read and the
+// extras load on demand. Text checks below run over all three, the way the browser ends up with them.
+const CORE = readFileSync(ROOT + "field-scout.js", "utf8");
+const JS = [CORE, readFileSync(ROOT + "field-scout-read.js", "utf8"), readFileSync(ROOT + "field-scout-extras.js", "utf8")].join("\n");
 const CSS = readFileSync(ROOT + "components/field-scout.css", "utf8");
 const json = (p) => JSON.parse(readFileSync(ROOT + p, "utf8"));
 
@@ -115,10 +118,10 @@ test("county slices hold exactly the national tenure and AFIDA records, by state
   assert.doesNotMatch(JS, /\/data\/tenure\/tenure\.json|\/data\/afida\/county\.json/, "a field read never pulls the national files");
 });
 
-test("hail cells: closed years only, each report in its own 2-degree cell, totals match the national files", () => {
+test("hail cells: every year incl. this one, each report in its own 2-degree cell, totals match the national files", () => {
   const ix = json("data/field-scout/hail/index.json");
   const years = readdirSync(ROOT + "data/hail").map((f) => /^events-(\d{4})\.json$/.exec(f)).filter(Boolean).map((m) => +m[1]).sort();
-  assert.deepEqual(ix.years, years.slice(0, -1), "the newest year (still changing) is left to the national file");
+  assert.deepEqual(ix.years, years, "every year, the current one too, is in the cells (hail-data.yml rebuilds them each run)");
   assert.equal(ix.cell, 2);
   const per = {};
   for (const k of ix.cells) {
