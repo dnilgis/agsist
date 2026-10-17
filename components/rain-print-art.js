@@ -46,8 +46,11 @@
   var C = {
     ink: '#1E2125', mute: '#5E6475', soft: '#8A8F98', guide: '#D6D9D2', grid: '#E4E6E1',
     rain: '#2B5C8A', bar: '#26313D', snowLine: '#8DB6D8', snowFill: '#AFCBE2', snowEdge: '#5F8DB3', snowInk: '#4F7FA6', snowGrid: '#DCE6EE',
-    accent: '#A8321E', dryBand: '#F3E2DF', wetBand: '#DDE5EC', rec: '#3F4651'
+    accent: '#A8321E', dryBand: '#ECE6DE', wetBand: '#EAEFF4', rec: '#3F4651'
   };
+  /* dryBand and wetBand are the Staircase's band colors (X.stone and X.ahead below),
+     the letter's key draws its swatch from them (2026-10-17, art panel: the key
+     said pink while the print had been tan since the band went warm stone). */
   var QR_INK = '#A4A89F', SERIAL_INK = '#8E9289';
   var SANS = "'IBM Plex Sans',system-ui,sans-serif", SERIF = "'Fraunces',Georgia,serif";
   var W0 = 1800, H0 = 1200;
@@ -775,7 +778,7 @@
   /* Crop stages (input.crop), frost marks and the temperature ribbon (input.temp), every year behind your year
      (input.hist, Staircase). The numbers are worked out before render (components/rain-print-extras.js); this
      file only places and draws them. */
-  var X = { ink: '#1F2328', date: '#8A8F98', fact: '#5B616B', grid: '#EEF0F2', usualM: '#A3A8B0', red: '#B23A2E', stone: '#ECE6DE', ahead: '#EAEFF4', thread: '#DDD8D0' };
+  var X = { ink: '#1F2328', date: '#8A8F98', fact: '#5B616B', grid: '#EEF0F2', usualM: '#A3A8B0', red: '#B23A2E', stone: C.dryBand, ahead: C.wetBand, thread: '#DDD8D0' };
   var CROP_INK = '#5B616B', GHOST_INK = '#CFCBC4', PLANT_H = 54;
   // the footnote voices: 12 u words, the date after them in gray (Sig's typographer list, 2026-10-17)
   var FACT = { size: 12, w: 400, fill: X.fact }, FACT_D = { size: 12, w: 400, fill: X.date };

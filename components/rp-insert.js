@@ -108,7 +108,7 @@
       key.push(['climb', 'The blue line climbs with every rain and ends at the year’s total.']);
       if (F.snowText) key.push(['snowStep', 'Light blue steps came as snow.']);
       if (F.wet) key.push(['wet', 'Red step: the ' + (F.wet.label === 'Wettest day' ? 'wettest day' : 'biggest rain') + '.']);
-      if (F.usual) key.push(['usual', 'Dashed line: a usual year. Pink where your year fell behind it, blue where it ran ahead.']);
+      if (F.usual) key.push(['usual', 'Dashed line: a usual year. Tan where your year fell behind it, pale blue where it ran ahead.']);
       key.push(['months', 'Months along the bottom' + (F.normals ? ', each with its total and a usual month under it.' : '.')]);
       if (F.dry) key.push(['dry', 'Bracket: the longest dry stretch.']);
     } else {
