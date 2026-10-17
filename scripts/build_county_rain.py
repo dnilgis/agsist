@@ -843,7 +843,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
     NB = NB if NB is not None else R.neighbors()
     files = load(data_dir)
     daily = load_daily(data_dir, files)
-    stories = CS.load_stories(data_dir)   # data/rain/stories/<st>.json, shown only on an exact facts match
+    stories = CS.load_stories(data_dir)   # data/rain/stories/<st>.json: dated stories, same station, at most 35 days old
     pages = {}   # fips -> (name, href, total text)
     for st, d in files.items():
         for fips, c in d["counties"].items():
@@ -866,7 +866,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
             body = county_page({"c": c, "st": st, "fips": fips, "year": d["year"], "d": d, "slug": C[fips]["slug"],
                                 "nbrs": nbrs, "n_ok": c.get("n_ok", 1), "alt": alt,
                                 "day": daily.get(st, {}).get(fips),
-                                "story": CS.story_for(stories.get(st, {}).get(fips), CS.facts(c, d, st)) if stories.get(st, {}).get(fips) else None})
+                                "story": CS.story_for(stories.get(st, {}).get(fips), CS.page_now(c, d))})
             body = nav.fill_fonts(body)
             rel = f"rain/{st_slug}/{C[fips]['slug']}.html"
             if len(body.encode()) > MAX_KB * 1024:

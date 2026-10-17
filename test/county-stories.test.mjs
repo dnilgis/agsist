@@ -6,7 +6,8 @@
  * amounts, dates, months, percents, directions, em dashes, banned and number
  * words; a story shows only when its facts hash matches the page's facts now.
  * Here we also hold the shipped stories (data/rain/stories, written only from a
- * real batch) to the same rules.
+ * real batch) to the same rules: each passes the validator against its own
+ * stored facts, and only fresh, same-station stories show.
  *
  *   node --test test/county-stories.test.mjs
  */
@@ -19,7 +20,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const py = (args) => execFileSync("python3", args, { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
 
-test("facts match the page, the validator catches planted errors, render only on a hash match", () => {
+test("facts match the page, the validator catches planted errors, dated stories show only fresh and on the same station", () => {
   assert.match(py(["scripts/county_stories.py", "selftest"]), /county stories selftest: ok/);
 });
 
@@ -54,15 +55,17 @@ data = os.path.join(CS.ROOT, "data", "rain")
 S = CS.load_stories(data)
 bad = []
 shown = 0
-for st, fips, f in CS.all_facts(data):
-    e = S.get(st, {}).get(fips)
-    if not e:
-        continue
-    for ch in ("\\u2014", "\\u2013", "!"):
-        if ch in e.get("story", ""):
-            bad.append((fips, ch))
-    s = CS.story_for(e, f)
-    shown += s is not None
+for st, d in CS._B().load(data).items():
+    for fips, c in d["counties"].items():
+        e = S.get(st, {}).get(fips)
+        if not e:
+            continue
+        for ch in ("\\u2014", "\\u2013", "!"):
+            if ch in e.get("story", ""):
+                bad.append((fips, ch))
+        if not isinstance(e.get("facts"), dict) or CS.validate(e.get("story", ""), e["facts"]):
+            bad.append((fips, "fails its own facts"))
+        shown += CS.story_for(e, CS.page_now(c, d)) is not None
 print(json.dumps({"bad": bad, "shown": shown}))
 `]);
   const r = JSON.parse(out);
@@ -79,5 +82,5 @@ print(json.dumps({"bad": bad, "shown": shown}))
       }
     }
   }
-  assert.equal(pages, r.shown, "pages with a story = stories that match their facts");
+  assert.equal(pages, r.shown, "pages with a story = stored stories that are fresh and on the same station");
 });

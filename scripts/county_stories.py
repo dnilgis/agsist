@@ -19,12 +19,15 @@ HOW IT STAYS TRUE
                  each number tied to the fact it belongs to. Em dashes, banned
                  words, number words, forecasts and wrong lengths are rejected.
                  A rejected county gets no story. There is never a fallback.
-  4. collect     Writes data/rain/stories/<st>.json: the story, the hash of the
-                 facts it was written from, and the through day.
-  5. The page    build_county_rain.py shows a story only when its hash matches the
-                 facts the page has now and it still passes validate(). When the
-                 data moves on (the weekly fetch), the story drops off until the
-                 next batch; it is never shown against numbers it was not written for.
+  4. collect     Writes data/rain/stories/<st>.json: the story, the facts it was
+                 checked against (and their hash), the station and the through day.
+  5. The page    Each story is a dated snapshot: its own text says "Through Oct 12".
+                 build_county_rain.py shows it as the lead paragraph, above the
+                 page's live numbers, when it passes validate() against its own
+                 stored facts, it is the page's current station, county and year,
+                 and its through day is at most MAX_AGE_DAYS (35) before the day the
+                 page's data was read. A changed station or a new year: no story.
+                 A monthly batch (about $15) keeps every county covered.
 
   python3 scripts/county_stories.py selftest
   python3 scripts/county_stories.py bundle OUT.json [--states IA,KS] [--only REJECTED.json]
@@ -189,6 +192,9 @@ def validate(story, f):
         bad.append("does not end with a period")
     if not (MIN_SENT <= n_sent <= MAX_SENT):
         bad.append(f"{n_sent} sentences, not {MIN_SENT}-{MAX_SENT}")
+    # a dated snapshot: the text itself names the day it runs through, so it stays true after the page moves on
+    if not re.search(r"\b[Tt]hrough " + re.escape(f["through"]) + r"\b", s):
+        bad.append(f"does not say 'through {f['through']}'")
     for ch, name in BAD_CHARS.items():
         if ch in s:
             bad.append(name)
@@ -368,11 +374,12 @@ You get the facts the page already shows, as JSON. Use only those facts. The pag
 Write:
 - 2 to 4 sentences, 120 to 600 characters, one paragraph, plain text.
 - In Sig's voice: plain farm words, short sentences, a little dry. The way a neighbor would say it at the elevator, not a news story.
-- The answer right above your paragraph already gives the total and how far it is from a usual year (amount and percent). Do not repeat those. Tell what that answer does not: pick the two or three facts that tell this county's year best (the wettest month, the biggest rain, the longest dry stretch, last year). Do not list them all.
+- The answer above your paragraph gives the latest total and how far it is from a usual year, and it updates every week. You may give the total or the comparison as of your through day, but lead with what that answer does not tell: pick the two or three facts that tell this county's year best (the wettest month, the biggest rain, the longest dry stretch, last year). Do not list them all.
 - Numbers exactly as the facts print them: inches with two decimals as given (or rounded to one decimal), percents as given, days as given, dates as "Aug 5" (three-letter month, no period). Write every number in digits.
 - Every amount sits next to what it measures: the wettest month's inches with that month, the biggest rain's inches with its date, the dry stretch's days with its dates.
 - The difference from a usual year only with its direction (more or less), and only if vs_usual is given. This year against last year only if last_year.compare is given; if it is not on every day, say it is on the days both years reported.
-- Call the place "the station" or "the gauge" as the facts name it, and the comparison "a usual year". If the year is not over, it is "so far" and "through" the through day.
+- Start with "Through {through}," naming the through day exactly as the facts give it (for example "Through Oct 12, the station at ..."). The paragraph stays on the page for a few weeks while the numbers above it update, so it must say which day it speaks for.
+- Call the place "the station" or "the gauge" as the facts name it, and the comparison "a usual year".
 
 Do not:
 - add anything the facts do not say: no causes, no weather words (storms, snow, drought, floods), no seasons, no crops or fieldwork, no rankings beyond "wettest month" and "biggest" rain, no records, no "ever", no forecast or what comes next, no advice.
@@ -412,9 +419,11 @@ def all_facts(data_dir, states=None):
 
 
 def bundle(data_dir, states=None):
+    B = _B()
+    sids = {(st, fips): c["station"]["sid"] for st, d in B.load(data_dir).items() for fips, c in d["counties"].items()}
     rows = []
     for st, fips, f in all_facts(data_dir, states):
-        rows.append({"st": st, "fips": fips, "hash": facts_hash(f), "facts": f})
+        rows.append({"st": st, "fips": fips, "hash": facts_hash(f), "facts": f, "sid": sids[(st, fips)]})
     return {"schema": SCHEMA, "story": rows}
 
 
@@ -437,7 +446,8 @@ def collect(bundle_d, results_d, out_dir, made=None):
         if why:
             rej[cid] = why
             continue
-        files.setdefault(r["st"], {})[r["fips"]] = {"story": story, "hash": r["hash"], "through": r["facts"]["through_iso"]}
+        files.setdefault(r["st"], {})[r["fips"]] = {"story": story, "hash": r["hash"], "through": r["facts"]["through_iso"],
+                                                     "sid": r.get("sid"), "facts": r["facts"]}
         kept += 1
     os.makedirs(out_dir, exist_ok=True)
     for st, cs in sorted(files.items()):
@@ -465,15 +475,37 @@ def load_stories(data_dir):
     return out
 
 
-def story_for(entry, f):
-    """The story to print for facts f, or None: only when it was written from these
-    exact facts (hash and through day) and still passes the validator."""
-    if not entry or not isinstance(entry, dict):
+MAX_AGE_DAYS = 35   # a monthly batch keeps every county covered
+
+
+def page_now(c, d):
+    """What a stored story is checked against on the page as built now."""
+    return {"sid": c["station"]["sid"], "county": c["name"], "year": d["year"], "as_of": c["as_of"], "read": d["fetched"][:10]}
+
+
+def story_for(entry, now):
+    """The dated story to print, or None. It shows only when it passes the validator
+    against its own stored facts (it names their through day), those facts are the
+    ones it was written from (hash), it is the same station, county and year as the
+    page now, and its through day is at most MAX_AGE_DAYS before the page's data was
+    read (the build's own date, so a rebuild of the same data gives the same page).
+    Anything off: no story, never a guess."""
+    import datetime as dt
+    if not entry or not isinstance(entry, dict) or not isinstance(entry.get("facts"), dict):
         return None
-    if entry.get("hash") != facts_hash(f) or entry.get("through") != f["through_iso"]:
+    f, s = entry["facts"], entry.get("story")
+    if not isinstance(s, str) or entry.get("hash") != facts_hash(f) or entry.get("through") != f.get("through_iso"):
         return None
-    s = entry.get("story")
-    return s.strip() if isinstance(s, str) and not validate(s, f) else None
+    if entry.get("sid") != now["sid"] or f.get("county") != now["county"] or f.get("year") != now["year"]:
+        return None
+    try:
+        through = dt.date.fromisoformat(f["through_iso"])
+        age = (dt.date.fromisoformat(now["read"]) - through).days
+    except (KeyError, TypeError, ValueError):
+        return None
+    if age > MAX_AGE_DAYS or through > dt.date.fromisoformat(now["as_of"]):
+        return None
+    return s.strip() if not validate(s, f) else None
 
 
 # ---------------------------------------------------------------- selftest
@@ -495,6 +527,12 @@ def selftest():
             r = subprocess.run([sys.executable, os.path.join(HERE, "fetch_county_rain.py"), "--fixtures", fx, "--out", data,
                                 "--states", st, "--edate", ed], capture_output=True, text=True)
             ok(r.returncode == 0, f"fixture fetch {st}: {r.stderr[-300:]}")
+        # the fetch stamps the clock time; pin the read day so the age rule tests the same on any date
+        for pth in (os.path.join(data, "ia.json"), os.path.join(data, "daily", "ia.json")):
+            if os.path.exists(pth):
+                jj = json.load(open(pth))
+                jj["fetched"] = "2026-10-14T03:00:00Z"
+                json.dump(jj, open(pth, "w"))
         want = B.build(data)
         rows = all_facts(data)
         ok(len(rows) == sum(1 for k in want if k.count("/") == 2), "one facts row per county page")
@@ -539,7 +577,7 @@ def selftest():
              "biggest_day": {"date": "Aug 5", "in": "4.56", "label": "biggest single day"},
              "longest_dry_stretch": {"days": 18, "from": "Jan 25", "to": "Feb 11", "still_going": False, "means": "x"},
              "last_year": None, "multi_day_reports": 0}
-        good = ("September did most of the work here, with 12.89 inches at the Corning station. "
+        good = ("Through Oct 13, September did most of the work here, with 12.89 inches at the Corning station. "
                 "The biggest single day was 4.56 inches on Aug 5. "
                 "That puts the year so far 14.97 inches more than a usual year to date, 151% of usual.")
         ok(validate(good, f) == [], f"a true story passes: {validate(good, f)}")
@@ -559,14 +597,16 @@ def selftest():
             "a forecast": good + " More rain will come.",
             "a number word": good.replace("The biggest", "Two days later the biggest"),
             "too long": good + " " + good + " " + good,
-            "one sentence": "September had 12.89 inches at the Corning station and the year so far is at 151% of usual on the page.",
+            "one sentence": "Through Oct 13, September had 12.89 inches at the Corning station and the year so far is at 151% of usual on the page.",
             "a year not in the facts": good.replace("151% of usual", "151% of usual, like 1993"),
             "last year when the facts have none": good + " Last year was drier.",
             "drier with no comparison": good.replace("did most of the work here", "was drier"),
             "whole inches": good.replace("4.56 inches", "5 inches"),
+            "no through day": good.replace("Through Oct 13, September", "September"),
+            "the wrong through day": good.replace("Through Oct 13,", "Through Oct 6,"),
             "a month's name on another fact's amount": good.replace("The biggest single day was 4.56 inches on Aug 5.", "August brought 4.56 inches."),
-            "the biggest day's amount on the wettest month": "September brought 4.56 inches, the wettest month. The year so far is 151% of usual at the Corning station.",
-            "wettest month with the wrong name": good.replace("September did most of the work here, with", "The wettest month was August, with"),
+            "the biggest day's amount on the wettest month": "Through Oct 13, September brought 4.56 inches, the wettest month. The year so far is 151% of usual at the Corning station.",
+            "wettest month with the wrong name": good.replace("September did most of the work here, with", "the wettest month was August, with"),
             "a dry stretch with an amount": good.replace("The biggest", "The longest dry stretch was 18 days from Jan 25 to Feb 11 with 0.10 inches. The biggest"),
             "wetter when it was more": good.replace("more than a usual year to date", "less than a usual year to date"),
         }
@@ -575,23 +615,34 @@ def selftest():
         # last year compare: direction and the both-days rule
         f2 = dict(f, last_year={"year": 2025, "through": "Oct 13", "total_in": "30.02", "days_missed": 0,
                                 "compare": {"days_both_reported": 250, "every_day": False, "dir": "more", "diff_in": "13.10", "means": "x"}})
-        ok(validate("The station had 30.02 inches by this date in 2025. On the days both years reported, 2026 had 13.10 inches more than 2025.", f2) == [], "last year, both days, passes")
-        ok(validate("The station had 30.02 inches by this date in 2025. On the days both years reported, 2026 had 13.10 inches less than 2025.", f2) != [], "last year the wrong way")
-        ok(validate("The station had 30.02 inches by this date in 2025. This year had 13.10 inches more than 2025 at this point.", f2) != [], "last year difference without the both-days words")
+        ok(validate("Through Oct 13, the station had 30.02 inches by this date in 2025. On the days both years reported, 2026 had 13.10 inches more than 2025.", f2) == [], "last year, both days, passes")
+        ok(validate("Through Oct 13, the station had 30.02 inches by this date in 2025. On the days both years reported, 2026 had 13.10 inches less than 2025.", f2) != [], "last year the wrong way")
+        ok(validate("Through Oct 13, the station had 30.02 inches by this date in 2025. This year had 13.10 inches more than 2025 at this point.", f2) != [], "last year difference without the both-days words")
         # render only on a hash match, and the story comes off when the data moves on
-        e = {"story": good, "hash": facts_hash(f), "through": "2026-10-13"}
-        ok(story_for(e, f) == good, "matching hash: the story shows")
-        ok(story_for(e, dict(f, total_in="44.70")) is None, "facts moved on: no story")
-        ok(story_for(dict(e, through="2026-10-06"), f) is None, "an old through day: no story")
-        ok(story_for(dict(e, story=good.replace("12.89", "12.98")), f) is None, "a stored story that fails the validator never shows")
+        e = {"story": good, "hash": facts_hash(f), "through": "2026-10-13", "sid": "131833 2", "facts": f}
+        now = {"sid": "131833 2", "county": "Adams County", "year": 2026, "as_of": "2026-10-13", "read": "2026-10-15"}
+        ok(story_for(e, now) == good, "same station, fresh: the story shows")
+        ok(story_for(e, dict(now, as_of="2026-11-09", read="2026-11-11")) == good, "the page moved on 4 weeks: the dated story still shows")
+        ok(story_for(e, dict(now, as_of="2026-11-15", read="2026-11-17")) == good, "35 days old: still shows")
+        ok(story_for(e, dict(now, as_of="2026-11-16", read="2026-11-18")) is None, "36 days old: stale by age, no story")
+        ok(story_for(e, dict(now, sid="130203 2")) is None, "the station changed: no story")
+        ok(story_for(e, dict(now, year=2027, as_of="2027-01-05", read="2027-01-06")) is None, "the year rolled over: no story")
+        ok(story_for(e, dict(now, county="Adair County")) is None, "another county: no story")
+        ok(story_for(e, dict(now, as_of="2026-10-06")) is None, "a story newer than the page's data: no story")
+        ok(story_for(dict(e, facts=dict(f, total_in="44.70")), now) is None, "stored facts edited after the fact (hash): no story")
+        ok(story_for(dict(e, through="2026-10-06"), now) is None, "through day not the facts' own: no story")
+        bad_s = good.replace("12.89", "12.98")
+        ok(story_for(dict(e, story=bad_s), now) is None, "a stored story that fails the validator never shows")
+        ok(story_for(dict(e, story=good.replace("Through Oct 13, September", "September")), now) is None, "an undated story never shows")
         # the page: the story under the answer only when its hash matches
         st_dir = os.path.join(data, "stories")
         os.makedirs(st_dir)
-        sgood = (f"The wettest month at the station was {sc['wettest_month']['month']}, with {sc['wettest_month']['in']} inches. "
+        sgood = (f"Through {sc['through']}, the wettest month at the station was {sc['wettest_month']['month']}, with {sc['wettest_month']['in']} inches. "
                  + (f"The biggest single day at the gauge was {sc['biggest_day']['in']} inches on {sc['biggest_day']['date']}." if sc["biggest_day"] else "That is what the gauge caught this year so far."))
         ok(validate(sgood, sc) == [], f"fixture story valid: {validate(sgood, sc)}")
-        json.dump({"schema": SCHEMA, "state": "IA", "counties": {"19169": {"story": sgood, "hash": facts_hash(sc), "through": sc["through_iso"]},
-                                                                   "19015": {"story": sgood, "hash": "0" * 16, "through": sc["through_iso"]}}},
+        sid = c["station"]["sid"]
+        ent = {"story": sgood, "hash": facts_hash(sc), "through": sc["through_iso"], "sid": sid, "facts": sc}
+        json.dump({"schema": SCHEMA, "state": "IA", "counties": {"19169": ent, "19015": dict(ent, sid="999999 2")}},
                   open(os.path.join(st_dir, "ia.json"), "w"))
         w2 = B.build(data)
         story = w2["rain/iowa/story-county.html"]
@@ -606,7 +657,7 @@ def selftest():
         bd_ = bundle(data, {"IA"})
         r0 = bd_["story"][0]
         cid0 = f"c_{r0['st']}_{r0['fips']}"
-        s0 = (f"The station in this county had {r0['facts']['total_in']} inches from Jan 1 through {r0['facts']['through']}. "
+        s0 = (f"Through {r0['facts']['through']}, the station in this county had {r0['facts']['total_in']} inches from Jan 1 through {r0['facts']['through']}. "
               "That is everything the gauge caught so far this year.")
         res = {"model": "m", "batch_id": "b", "items": {
             cid0: {"result": "succeeded", "stop_reason": "end_turn", "parsed": {"story": s0}},
@@ -618,6 +669,8 @@ def selftest():
         ok(kept == 1 and len(rej) == len(bd_["story"]) - 1, f"collect keeps the good one ({kept}, {len(rej)} rejected)")
         j = json.load(open(os.path.join(out, "ia.json")))
         ok(list(j["counties"]) == [r0["fips"]] and j["counties"][r0["fips"]]["hash"] == r0["hash"], "collect writes the story with its facts hash")
+        je = j["counties"][r0["fips"]]
+        ok(je["facts"] == r0["facts"] and je["sid"] == r0["sid"] and je["through"] == r0["facts"]["through_iso"], "collect stores the facts and station it was checked against")
         # the request: the API job builds one per county with the facts only
         import api_jobs as A
         reqs = A.requests_of({"story": bd_["story"][:2]})
@@ -663,12 +716,13 @@ def main(a):
         data = a[1] if len(a) > 1 else os.path.join(ROOT, "data", "rain")
         S = load_stories(data)
         n = m = 0
-        for st, fips, f in all_facts(data):
-            e = S.get(st, {}).get(fips)
-            if e:
-                n += 1
-                m += story_for(e, f) is not None
-        print(f"{n} stored stories, {m} still match the data and show")
+        for st, d in _B().load(data).items():
+            for fips, c in d["counties"].items():
+                e = S.get(st, {}).get(fips)
+                if e:
+                    n += 1
+                    m += story_for(e, page_now(c, d)) is not None
+        print(f"{n} stored stories, {m} still show (same station, under {MAX_AGE_DAYS} days old)")
         return 0
     sys.exit("modes: selftest | bundle OUT [--states IA,KS] | collect BUNDLE RESULTS OUTDIR [REJECTED] | stale [DATA_DIR]")
 
