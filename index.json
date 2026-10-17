@@ -1,6 +1,6 @@
 {
  "note": "Written by scripts/fetch_refs.py on agsist main. Read a source: git show origin/references:refs/<id>.txt",
- "run_utc": "2026-10-17T00:25:24Z",
+ "run_utc": "2026-10-17T00:26:52Z",
  "sources": [
   {
    "bytes": null,
@@ -523,29 +523,31 @@
    "text_chars": 5990
   },
   {
-   "bytes": 2395,
-   "sha256": "6cf3e90ba96c05977d2067438936f4846af28eced1a8eef696f162af54747276",
-   "fetched_utc": "2026-10-15T21:08:15Z",
+   "bytes": 81149,
+   "sha256": "59744e92b222d826997d7e1430be6977b905b799932d38ffe50f77c657a93c79",
+   "fetched_utc": "2026-10-17T00:26:05Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
    "saved_as": "refs/uw-rootworm-silk.html",
-   "final_url": null,
+   "final_url": "https://web.archive.org/web/20260509173309id_/https://ipcm.wisc.edu/blog/2020/07/corn-silk-clipping-insects-and-economic-thresholds/",
    "content_type": "text/html; charset=UTF-8",
-   "via": "direct",
-   "archive_timestamp": null,
+   "via": "wayback",
+   "archive_timestamp": "20260509173309",
    "id": "uw-rootworm-silk",
    "url": "https://ipcm.wisc.edu/blog/2020/07/corn-silk-clipping-insects-and-economic-thresholds/",
    "title": "UW IPM: corn silk clipping insects and economic thresholds (2020)",
    "why": "/field-scout: 5 to 6 beetles per plant, silks within 1/2 inch before 50% pollination",
    "kind": "html",
-   "checked_utc": "2026-10-15T21:08:15Z",
+   "checked_utc": "2026-10-17T00:26:01Z",
    "error": null,
    "attempts": [
-    "direct/python: ok 202"
+    "direct/python: bot challenge (AWS WAF), nothing saved",
+    "direct/curl: bot challenge (AWS WAF), nothing saved",
+    "wayback/python: ok 200"
    ],
-   "status": "new",
-   "text_chars": 1
+   "status": "updated",
+   "text_chars": 1760
   },
   {
    "bytes": 575092,
@@ -2598,29 +2600,33 @@
    "text_chars": 686
   },
   {
-   "bytes": 960,
-   "sha256": "0ee1dd9ecadaf68be82db1c04a55ab88359776994baf31dedccb951183cacb3b",
-   "fetched_utc": "2026-10-16T15:36:08Z",
+   "bytes": 62374,
+   "sha256": "8b96fd8f9bcee188173d0687b0cc2ad88de83abb492b6ffd5dc11d9f2005d4fd",
+   "fetched_utc": "2026-10-17T00:26:24Z",
    "pages": null,
    "etag": null,
    "last_modified": null,
    "saved_as": "refs/bench-fast-facts-2.html",
-   "final_url": null,
-   "content_type": "text/html",
-   "via": "direct",
-   "archive_timestamp": null,
+   "final_url": "https://web.archive.org/web/20251123144105id_/https://www.canr.msu.edu/news/too_little_or_too_much_nitrogen_on_corn_msus_new_guidelines",
+   "content_type": "text/html;charset=UTF-8",
+   "via": "wayback",
+   "archive_timestamp": "20251123144105",
    "id": "bench-fast-facts-2",
    "url": "https://www.canr.msu.edu/news/too_little_or_too_much_nitrogen_on_corn_msus_new_guidelines",
    "title": "Benchmark fast-facts: MSU corn N guidelines",
    "why": "/fast-facts competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-16T15:36:08Z",
+   "checked_utc": "2026-10-17T00:26:07Z",
    "error": null,
    "attempts": [
-    "direct/python: ok 200"
+    "direct/python: bot challenge (Incapsula), nothing saved",
+    "direct/curl: bot challenge (Incapsula), nothing saved",
+    "wayback/python: HTTP 429",
+    "wayback/python: HTTP 429",
+    "wayback/curl: ok 200"
    ],
-   "status": "new",
-   "text_chars": 1
+   "status": "updated",
+   "text_chars": 7787
   },
   {
    "bytes": 42871,
@@ -2723,29 +2729,25 @@
    "text_chars": 396890
   },
   {
-   "bytes": 1997,
-   "sha256": "54257dccb19ba431c56b233b95063e1746828579d06249f874d107403780f7ba",
-   "fetched_utc": "2026-10-16T15:37:03Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-cash-bids-1.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html; charset=UTF-8",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-cash-bids-1",
    "url": "https://www.barchart.com/cmdty/data/grain-prices",
    "title": "Benchmark cash-bids: Barchart cash grain prices",
    "why": "/cash-bids competitor benchmark Oct 16, 2026 (established)",
    "kind": "html",
-   "checked_utc": "2026-10-16T15:37:03Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 202"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:26:26Z",
+   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": null,
@@ -2963,29 +2965,25 @@
    "text_chars": 3120
   },
   {
-   "bytes": 188,
-   "sha256": "7dd587c2f3931f8522984cc24c035cb78c8a4228baefdc24547b306a82899bc8",
-   "fetched_utc": "2026-10-16T15:39:45Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-grain-emc-7.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-grain-emc-7",
    "url": "https://opisystems.com/opi-emc-calculator/",
    "title": "Benchmark grain-emc: OPI Systems EMC calculator",
    "why": "/grain-emc competitor benchmark Oct 16, 2026 (vendor)",
    "kind": "html",
-   "checked_utc": "2026-10-16T15:39:44Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 202"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:26:32Z",
+   "error": "direct/python: bot challenge (SiteGround), nothing saved; direct/curl: bot challenge (SiteGround), nothing saved; wayback: no archived copy; the old copy was a SiteGround bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": 206004,
@@ -4081,29 +4079,25 @@
    "text_chars": 8065
   },
   {
-   "bytes": 955,
-   "sha256": "42d9cf92c4361337e3bdcd6842ca3dd8ff8f3f733aa18e5640367009dc386440",
-   "fetched_utc": "2026-10-16T16:04:42Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-arc-plc-4.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-arc-plc-4",
    "url": "https://www.canr.msu.edu/resources/msu-farm-bill-analyzer",
    "title": "Benchmark arc-plc: Michigan State (MSU Farm Bill Analyzer 2026)",
    "why": "/arc-plc competitor benchmark Oct 16, 2026 (university)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:04:42Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 200"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:26:39Z",
+   "error": "direct/python: bot challenge (Incapsula), nothing saved; direct/curl: bot challenge (Incapsula), nothing saved; wayback: no archived copy; the old copy was a Incapsula bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": 106629,
@@ -4373,29 +4367,25 @@
    "status": "failed"
   },
   {
-   "bytes": 1997,
-   "sha256": "a8a4479b026ebd5bf574cb50aa1a53cdf1a2b9f43df81d3edba7d05308edcd1f",
-   "fetched_utc": "2026-10-16T16:06:31Z",
+   "bytes": null,
+   "sha256": null,
+   "fetched_utc": null,
    "pages": null,
    "etag": null,
    "last_modified": null,
-   "saved_as": "refs/bench-futures-1.html",
+   "saved_as": null,
    "final_url": null,
-   "content_type": "text/html; charset=UTF-8",
-   "via": "direct",
+   "content_type": null,
+   "via": null,
    "archive_timestamp": null,
    "id": "bench-futures-1",
    "url": "https://www.barchart.com/futures/quotes/ZCZ26",
    "title": "Benchmark futures: Barchart",
    "why": "/futures competitor benchmark Oct 16, 2026 (established)",
    "kind": "html",
-   "checked_utc": "2026-10-16T16:06:31Z",
-   "error": null,
-   "attempts": [
-    "direct/python: ok 202"
-   ],
-   "status": "new",
-   "text_chars": 1
+   "checked_utc": "2026-10-17T00:26:46Z",
+   "error": "direct/python: bot challenge (AWS WAF), nothing saved; direct/curl: bot challenge (AWS WAF), nothing saved; wayback: no archived copy; the old copy was a AWS WAF bot check, removed",
+   "status": "failed"
   },
   {
    "bytes": 987864,

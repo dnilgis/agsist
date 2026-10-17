@@ -1,5 +1,0 @@
-# Benchmark arc-plc: Michigan State (MSU Farm Bill Analyzer 2026)
-# https://www.canr.msu.edu/resources/msu-farm-bill-analyzer
-# fetched 2026-10-16T16:04:42Z, sha256 42d9cf92c4361337e3bdcd6842ca3dd8ff8f3f733aa18e5640367009dc386440
-
-
