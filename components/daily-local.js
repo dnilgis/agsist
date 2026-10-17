@@ -2,6 +2,9 @@
    A page opts in with one hidden element plus this script (defer):
      <aside class="dl" data-daily-local hidden></aside>
    data-after="<selector>": move the box after that element once it exists.
+   data-before="<selector>": for a reader with a saved location, move the box
+   before that element instead (the quote strip), so their own bid is the
+   first number they see. With no location the ZIP box stays at data-after.
 
    WHAT IT SHOWS, for the reader's saved location only (agsist-wx-loc from
    geo.js, else agsist_zip): the best posted corn and soybean bid within 50
@@ -194,7 +197,7 @@
       '<p class="dl-s">Saved in this browser only.</p>';
   }
 
-  var api = { readLoc: readLoc, pick: pick, change: change, rain: rain, build: build, empty: empty, fnv: fnv, cash: cash, qc: qc, periodKey: periodKey };
+  var api = { spot: spot, readLoc: readLoc, pick: pick, change: change, rain: rain, build: build, empty: empty, fnv: fnv, cash: cash, qc: qc, periodKey: periodKey };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AGSIST_DAILY_LOCAL = api;
 
@@ -254,13 +257,20 @@
       fill(el, { lat: null, lon: null, zip: z, label: '' });
     });
   }
-  function place(el) {
-    var sel = el.getAttribute('data-after'), n = 0;
-    if (!sel) return;
+  /* Where the box goes: before data-before when the reader has a location
+     and that element turns up, else after data-after. Pure; tested. */
+  function spot(el, hasLoc) {
+    var before = hasLoc ? el.getAttribute('data-before') : null;
+    return before ? { sel: before, before: true, fallback: el.getAttribute('data-after') } : { sel: el.getAttribute('data-after'), before: false, fallback: null };
+  }
+  function place(el, hasLoc) {
+    var w = spot(el, hasLoc), n = 0;
+    if (!w.sel) return;
     (function look() {
-      var t = doc.querySelector(sel);
-      if (t && t.parentNode) { t.parentNode.insertBefore(el, t.nextSibling); return; }
-      if (++n < 40) setTimeout(look, 250);
+      var t = doc.querySelector(w.sel);
+      if (t && t.parentNode) { t.parentNode.insertBefore(el, w.before ? t : t.nextSibling); return; }
+      if (++n < 40) { setTimeout(look, 250); return; }
+      if (w.fallback) { w = { sel: w.fallback, before: false, fallback: null }; n = 0; look(); }
     })();
   }
   function boot() {
@@ -270,7 +280,7 @@
     try { loc = readLoc(root.localStorage); } catch (e) { loc = null; }
     var st = doc.createElement('style'); st.textContent = CSS; doc.head.appendChild(st);
     Array.prototype.forEach.call(els, function (el) {
-      place(el);
+      place(el, !!loc);
       el.hidden = false;
       if (!loc) ask(el); else fill(el, loc);
     });
