@@ -212,7 +212,8 @@ test("the print names the gauge and distance, and counts gaps only past 3 missin
 test("R2: no unexplained dots at the ground line; R1 says what light blue is", () => {
   const days = year(2025, (i) => (i % 5 === 1 ? { p: "T" } : i < 60 && i % 9 === 0 ? { s: 4 } : {}));
   assert.ok(!/r="1\.3"/.test(ART.render(input(days, { style: "r2" }))), "trace dots are gone");
-  assert.ok(texts(ART.render(input(days, { style: "r1" }))).some((x) => /light blue: snow/.test(x.t)));
+  // (Staircase A2 clean, 2026-10-17: the foot line's snow total says it, "the light blue steps")
+  assert.ok(texts(ART.render(input(days, { style: "r1" }))).some((x) => /the light blue steps/.test(x.t)));
 });
 
 test("two records on one day print as one label", () => {
@@ -344,7 +345,8 @@ test("the proof view and the order summary are on the page", () => {
   assert.match(S, /workers\.dev\/where', \{ credentials: 'omit' \}/, "from the worker's /where, no cookies");
   assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
   // 2026-10-14 (Sig): example words are gray hints only, shown on a new visit's print at the top and never in the design
-  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days on (Sig, 2026-10-15)");
+  // and from 2026-10-17 (Sig) the frost marks and the hottest and coldest day are on for a new visit too
+  assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; ST\.frost = true; ST\.heat = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, remarkable days, frost and the hottest and coldest day on (Sig, 2026-10-15 and 10-17)");
   assert.ok(!/withExample|exampleLeft|clearExample|EX_OK/.test(S), "no example guard, no bounce, no Clear the example");
   assert.match(S, /name: ex \? EXAMPLE\.name : ST\.name/, "the example is drawn only where asked (the preview at the top)");
   assert.match(S, /PROOF_VIEW = PICK === 'framed12x18' \? 'framed' : 'print';/, "the sheet shows what step 3 picked");

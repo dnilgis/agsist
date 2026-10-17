@@ -664,7 +664,7 @@ test("Your print: labeled controls, the magnifier, Esc back to Fit then closed, 
     assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "fit", "it opens at Fit");
     assert.match(await page.getAttribute("#rp-proof-stage", "aria-label"), /^The print\. +Place and year: Chetek, WI, 2025\. .*Name: Olson\./, "the print has its words");
     // the details: label above value, in the order a buyer checks them
-    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Marked days", "Compared with", "Style", "When"]);
+    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Marked days", "Compared with", "Style", "Temperatures", "When"]);
     // one product state (2026-10-14): the sheet's picker is step 3's, no Style or Look of its own
     assert.deepEqual(await page.$$eval("#rp-proof [role=radiogroup]", (a) => a.map((g) => document.getElementById(g.getAttribute("aria-labelledby")).textContent)), ["You get"]);
     await page.click('#rp-proof label:has(input[name="rp-pproduct"][value="print12x18"])');

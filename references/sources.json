@@ -1844,6 +1844,14 @@
     {"id": "land-usgs-3dep", "kind": "html",
      "url": "https://www.usgs.gov/3d-elevation-program",
      "title": "USGS 3D Elevation Program",
-     "why": "Field Scout terrain layer and ground height points"}
+     "why": "Field Scout terrain layer and ground height points"},
+    {"id": "ndawn-sunflower-gdd", "kind": "html",
+     "url": "https://ndawn.ndsu.nodak.edu/help-sunflower-growing-degree-days.html",
+     "title": "NDAWN: Sunflower Development and Growing Degree Days",
+     "why": "Rain Print crop overlay: sunflower stage thresholds by GDD (base 44 F), needed before sunflowers can be offered"},
+    {"id": "ndsu-cpr-sunflower-gdd", "kind": "html",
+     "url": "https://www.ndsu.edu/agriculture/ag-hub/ag-topics/crop-production/crop-pest-report/plant-science/sunflower-development-and-growing",
+     "title": "NDSU Crop and Pest Report: Sunflower Development and Growing Degree Days (2021-07-21)",
+     "why": "Rain Print crop overlay: a second NDSU copy, to settle which edition's sunflower numbers to use"}
 ]
 }
