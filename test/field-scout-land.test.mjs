@@ -188,7 +188,7 @@ test("free means free: no email gate, sign-up or upgrade in the land pieces", ()
 
 test("no em dashes in the new copy", () => {
   for (const f of ["field-scout-land.js", "components/field-report.js", "field-report.html", "data/land/parcel-services.json",
-    "scripts/probe_land_services.py", "scripts/fetch_land_sales.py", "scripts/wi_retr_browser.py", ".github/workflows/land-data.yml"]) {
+    "scripts/probe_land_services.py", "scripts/fetch_land_sales.py", "scripts/wi_retr_browser.py", "scripts/land_keep_stamp_only.py", ".github/workflows/land-data.yml"]) {
     assert.ok(!read(f).includes("—"), f + " has an em dash");
   }
 });
@@ -297,4 +297,21 @@ test("Wisconsin transfer files on disk, when present, carry the checked acres ru
       if (r[ia] != null) assert.ok(r[ia] > 0 && r[ia] / (r[inp] || 1) <= 640, "acres in range: " + r[ia]);
     }
   }
+});
+
+// The land builders' own selftests (synthetic rows): Wisconsin XML, acres rule 2, the newest-only
+// merge (no row lost, none doubled), the month picker, and the timestamp-only restore.
+test("land data selftests pass (newest-only merge, month picker, timestamp-only restore)", async () => {
+  const { execFileSync } = await import("node:child_process");
+  for (const s of ["scripts/fetch_land_sales.py", "scripts/wi_retr_browser.py", "scripts/land_keep_stamp_only.py"]) {
+    const out = execFileSync("python3", [join(ROOT, s), "--selftest"], { cwd: ROOT, encoding: "utf8" });
+    assert.match(out, /^FAILS=0$/m, s + "\n" + out.split("\n").filter((l) => l.startsWith("FAIL")).join("\n"));
+  }
+});
+
+test("monthly land run: the 3rd, Sig's approval noted, one run at a time", () => {
+  const y = read(".github/workflows/land-data.yml");
+  assert.match(y, /# Sig approved Oct 17, 2026: monthly on the 3rd[\s\S]*?cron: '23 9 3 \* \*'/);
+  assert.match(y, /concurrency:\s*\n\s*group: land-data/);
+  assert.match(y, /--newest-only/); assert.match(y, /--merge/); assert.match(y, /land_keep_stamp_only\.py data\/land/);
 });

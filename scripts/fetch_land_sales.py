@@ -26,6 +26,9 @@ Sources (free and public only; a state is built only once its files read cleanly
   python3 scripts/fetch_land_sales.py [WI MN]           fetch every listed file and build
   python3 scripts/fetch_land_sales.py --from DIR WI     build from files already downloaded
         (for WI, the wi-retr.csv that scripts/wi_retr_browser.py --fetch writes)
+  python3 scripts/fetch_land_sales.py --from DIR WI --merge   add those rows to data/land/wi
+        (the monthly newest-only run): a return read again replaces its older copy, nothing
+        else on disk is dropped unless the size cap trims it
   python3 scripts/fetch_land_sales.py --selftest
 
 What it keeps: transfers whose property class is farm, forest, undeveloped or
@@ -390,7 +393,9 @@ class OverCap(Exception):
     """A state's county files together are over MAX_STATE_MB; nothing was written."""
 
 
-def build(st, recs, gaz, now):
+def build(st, recs, gaz, now, prior=None, months=None):
+    """prior: {fips: coverage} of files merged in (their rows may lack a filed date), so the
+    filed span stays the whole span. months: the monthly files the rows came from (index.json)."""
     cfg = STATES[st]
     cix = county_index(st)
     by = {}
@@ -403,7 +408,9 @@ def build(st, recs, gaz, now):
         by.setdefault(c["fips"], []).append(r)
     names = any(r.get("grantor") for r in recs)
     ac1 = any(r.get("ac1") for r in recs)
-    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else [])
+    # Wisconsin rows keep their filed date, so a later newest-only run can tell the latest filing of a return
+    rec = st == "WI" and any(r.get("rec") for r in recs)
+    cols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt"] + (["grantor", "grantee"] if names else []) + (["ac1"] if ac1 else []) + (["rec"] if rec else [])
     index, total, files = [], 0, []
     for fips, rs in sorted(by.items()):
         # several parcels on one return: the price is for all of them
@@ -434,9 +441,14 @@ def build(st, recs, gaz, now):
             a = r["acres"]
             rows.append([r["doc"], r["date"], r["price"], round(a, 2) if a else None, r.get("tac"), r.get("np") or 1, r["cls"], r["conv"],
                          r["pid"], mcode.get(r["muni"], ""), r["legal"], r["exempt"]] + ([r["grantor"], r["grantee"]] if names else [])
-                        + ([r.get("ac1")] if ac1 else []))
+                        + ([r.get("ac1")] if ac1 else []) + ([r.get("rec")] if rec else []))
         c = next(v for v in cix.values() if v["fips"] == fips)
         cov = coverage(rs)
+        p = (prior or {}).get(fips) or {}
+        if p.get("filed_from"):
+            cov["filed_from"] = min(p["filed_from"], cov.get("filed_from") or p["filed_from"])
+            cov["filed_to"] = max(p.get("filed_to") or "", cov.get("filed_to") or "")
+            cov["older_deeds"] = sum(1 for r in rs if r["date"] < cov["filed_from"][:4] + "-01-01")
         doc = {"state": st, "county": c["name"], "fips": fips, "source": cfg["source"], "source_short": cfg["short"],
                "links": cfg["links"], "since_note": cfg["since_note"], "fetched_utc": now, "names": names,
                "coverage": cov, "acres_rule": ACRES_RULE, "cols": cols, "munis": munis, "rows": rows}
@@ -451,8 +463,10 @@ def build(st, recs, gaz, now):
         with open(os.path.join(OUT, st.lower(), fips + ".json"), "w") as f:
             f.write(s)
     with open(os.path.join(OUT, st.lower(), "index.json"), "w") as f:
-        json.dump({"state": st, "source": cfg["source"], "fetched_utc": now, "names": names, "counties": index,
-                   "unplaced_rows": unplaced}, f, separators=(",", ":"))
+        ix = {"state": st, "source": cfg["source"], "fetched_utc": now, "names": names, "counties": index, "unplaced_rows": unplaced}
+        if months:
+            ix["months"] = sorted(months)
+        json.dump(ix, f, separators=(",", ":"))
     return {"counties": len(index), "rows": sum(i["n"] for i in index), "mb": round(total / 1048576, 2), "names": names, "unplaced": unplaced}
 
 
@@ -902,6 +916,43 @@ def wi_row(ret, munis):
             f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2))]
 
 
+def held(st, out=None):
+    """What a state's files on disk hold: (records, {fips: coverage}, months).
+    Records come back in parse_rows' shape so they can be merged and built again; the town is
+    the label the file shows (muni_key reads it the same way). Months are index.json's list, or,
+    for files written before it was kept, every month between the first and last filed dates
+    (the Oct 17, 2026 build read all 69 offered months, Jan 2021 to Sep 2026, none missed)."""
+    d = os.path.join(out or OUT, st.lower())
+    try:
+        ix = json.load(open(os.path.join(d, "index.json")))
+    except (OSError, ValueError):
+        return [], {}, set()
+    recs, covs, lo, hi = [], {}, None, None
+    for c in ix.get("counties", []):
+        f = json.load(open(os.path.join(d, c["fips"] + ".json")))
+        covs[c["fips"]] = f.get("coverage") or {}
+        cv = covs[c["fips"]]
+        if cv.get("filed_from"):
+            lo = min(lo or cv["filed_from"], cv["filed_from"])
+            hi = max(hi or cv["filed_to"], cv["filed_to"])
+        munis = f.get("munis") or {}
+        for row in f["rows"]:
+            o = dict(zip(f["cols"], row))
+            m = munis.get(str(o.get("muni")))
+            recs.append({"doc": o.get("doc") or "", "date": o["date"], "price": o.get("price"), "acres": o.get("acres"), "tac": o.get("tac"),
+                         "np": o.get("np"), "cls": o.get("cls") or "", "conv": o.get("conv") or "", "pid": o.get("pid") or "",
+                         "muni": m[0] if m else "", "county": f["county"], "legal": o.get("legal") or "",
+                         "grantor": o.get("grantor"), "grantee": o.get("grantee"), "exempt": o.get("exempt") or 0,
+                         "ac1": o.get("ac1"), "rec": o.get("rec"), "acany": None})
+    months = set(ix.get("months") or [])
+    if not months and lo:
+        y, m = int(lo[:4]), int(lo[5:7])
+        while "%04d%02d" % (y, m) <= hi[:4] + hi[5:7]:
+            months.add("%04d%02d" % (y, m))
+            y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    return recs, covs, months
+
+
 def wi_dedupe(recs):
     """A return can come back in a later month's file (an amended filing): keep the latest filing
     of each county and document number, so a sale is one row and its acres are counted once."""
@@ -938,7 +989,9 @@ def summary(st, recs, trims):
         st, ", ".join("%s %d" % kv for kv in sorted(by.items())), named, multi, known, "; ".join(trims) or "none")
 
 
-def run(states, from_dir=None):
+def run(states, from_dir=None, merge=False):
+    """merge (Wisconsin newest-only): add the rows read now to the ones on disk; a return read
+    again replaces its older copy (wi_dedupe), nothing else on disk is dropped unless the cap trims it."""
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     gzblob = fetch(GAZ)
     bad = 0
@@ -982,13 +1035,24 @@ def run(states, from_dir=None):
             print("::warning::%s transfers not written: %s" % (st, why))
             bad += 1
             continue
+        prior, months = None, None
+        if st == "WI" and from_dir:
+            try:
+                months = {m["month"] for m in json.load(open(os.path.join(from_dir, "wi-retr-report.json")))["months"]}
+            except (OSError, ValueError, KeyError):
+                months = None
+        if st == "WI" and merge:
+            old, prior, had = held(st)
+            print("%s: %d rows on disk from %d months; %d rows read now" % (st, len(old), len(had), len(recs)))
+            recs = old + recs
+            months = (months or set()) | had
         if st == "WI":
             recs = wi_dedupe(recs)
         gaz = gazetteer(STATES[st]["fips"], gzblob)
         trims = []
         while True:
             try:
-                res = build(st, recs, gaz, now)
+                res = build(st, recs, gaz, now, prior, months)
                 break
             except OverCap as e:
                 cut, why = trim(recs, trims) if st == "WI" else (None, None)
@@ -1143,6 +1207,46 @@ def selftest():
     ck("WI trim: 10+ acres first, any parcel's acres counted", w1 == "10+ acres" and {r["doc"] for r in t1} == set(by) - {"900010"})
     t2, w2 = trim([dict(r, rec="2021-01-05") for r in t1[:2]] + t1[2:], [w1])
     ck("WI trim: then the oldest filing year", w2 == "dropped filing year 2021" and len(t2) == len(t1) - 2 and trim(t2, [w1, w2])[0] is None)
+    # Newest-only merge: files on disk, then one month read again (a return filed again, a late
+    # return) and one new month; nothing on disk is lost, nothing is doubled.
+    import tempfile
+    global OUT
+    keep_out = OUT
+    OUT = tempfile.mkdtemp(prefix="wi-merge-")
+    try:
+        first = [dict(r) for r in wr if r["doc"] != "900006"]
+        for r in first:
+            r["rec"] = None if r["doc"] == "900001" else r["rec"]       # a file written before rows kept their filed date
+        build("WI", first, {}, "2026-10-17T00:00:00Z", None, {"202403", "202404"})
+        old, covs, had = held("WI")
+        ck("merge: the files on disk read back whole", len(old) == len(first) and had == {"202403", "202404"}
+           and {r["doc"] for r in old} == {r["doc"] for r in first})
+        b1 = [r for r in old if r["doc"] == "900002"][0]
+        ck("merge: a row read back keeps its acres, parcels, names and town", b1["acres"] == 80 and b1["np"] == 3
+           and b1["grantor"] == "SYNTHETIC, SELLER B; SYNTHETIC, SELLER C" and muni_key(b1["muni"]) == ("T", "CHETEK"))
+        again = dict(by["900002"], rec="2024-05-03", price=730000)      # the same return, read again in a later month
+        late = dict(by["900006"], rec="2024-05-10")                     # a return the first build did not have
+        merged = wi_dedupe(old + [again, late])
+        build("WI", merged, {}, "2026-11-03T00:00:00Z", covs, had | {"202405"})
+        back, covs2, had2 = held("WI")
+        docs = [r["doc"] for r in back]
+        ck("merge: no row lost, none doubled", sorted(docs) == sorted({r["doc"] for r in first} | {"900006"}) and len(docs) == len(set(docs)))
+        ck("merge: the later filing of a return replaces the older one", [r["price"] for r in back if r["doc"] == "900002"] == [730000])
+        ck("merge: a row with no filed date on disk is kept as it was", [r["acres"] for r in back if r["doc"] == "900001"] == [40])
+        ck("merge: months and the filed span grow, never shrink", had2 == {"202403", "202404", "202405"}
+           and min(c["filed_from"] for c in covs2.values()) <= "2024-03-18" and max(c["filed_to"] for c in covs2.values()) == "2024-05-10")
+        ix = json.load(open(os.path.join(OUT, "wi", "index.json")))
+        f = json.load(open(os.path.join(OUT, "wi", ix["counties"][0]["fips"] + ".json")))
+        ck("merge: acres_rule 2 kept and filed dates written", f["acres_rule"] == 2 and "rec" in f["cols"] and ix["months"] == ["202403", "202404", "202405"])
+        del ix["months"]
+        json.dump(ix, open(os.path.join(OUT, "wi", "index.json"), "w"))
+        ck("merge: files written before the month list hold every month of their filed span", held("WI")[2] == {"202403", "202404", "202405"})
+        _, _, derived = held("WI", tempfile.mkdtemp(prefix="wi-none-"))
+        ck("merge: no files on disk means nothing held", derived == set())
+    finally:
+        import shutil
+        shutil.rmtree(OUT, ignore_errors=True)
+        OUT = keep_out
     global MAX_STATE_MB
     keep = MAX_STATE_MB
     MAX_STATE_MB = 0
@@ -1170,4 +1274,4 @@ if __name__ == "__main__":
         sys.exit(probe([x for x in a if x in STATES or x in PROBE_DOCS] or sorted(set(STATES) | set(PROBE_DOCS))))
     sts = [x for x in a if x in STATES] or ["WI", "MN", "IL"]
     fd = a[a.index("--from") + 1] if "--from" in a else None
-    sys.exit(run(sts, fd))
+    sys.exit(run(sts, fd, "--merge" in a))
