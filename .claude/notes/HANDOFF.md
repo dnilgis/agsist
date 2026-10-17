@@ -49,7 +49,22 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
   /nutrient-removal (A2809 numbers; fertilizer page and Fast Facts now match), soybeans on /grain-emc, /hay-prices (NASS, monthly),
   /cattle-auction-prices (USDA AMS auction PDFs; parser fixed against real reports, fixtures in test/fixtures/cattle-auction/).
 
+## State on Oct 17 (overnight, cache v152)
+- Live: Daily "Only on AGSIST" facts + local line + Sig's note slot (data/cca-note.json); /cash-bid-index (cron on the 1st, approved);
+  true CBOT settles (fetch_prices v3.7 close_kind, settle vs last trade wording everywhere; hogs roll on the 10th business day);
+  Rain Print on 13 x 19 paper with box letter (rp-insert.js; note printed on the letter, no card) and What's in the box;
+  field scout land card: WI 72/72 + MN 36/87 parcel owners, Illinois MyDec transfers with names (acres_rule 2; robots disallows /data/land/);
+  break-even rebuilt on farmdoc 2027 budgets, county fill, state median basis, Dec '27 default; phone folds on futures pages;
+  state cash line under prices (price-local.js); tariffs China gauge (FAS ESR) and FBA trade-aid row (verified at FSA); Census county names.
+- Re-score 7 (scratchpad report/rescore-7.json): all 54 scored pages ahead of their best saved competitor, average 43.5.
+- FFAI fixes ready on farmers1st branch fx/ffai-audit (labels LOW..HIGH vs 1995-2019, year-ago headline, stress track record).
+  The deploy to farmers1st main was blocked by the permission check: waits on Sig.
+- WI sales (eRETR) sit behind DOR's My Tax Account app; MN eCRV extract is request-only (ecrv.support@state.mn.us); Iowa has no free file.
+  Raw-branch pushes from the land workflow are refused by a repo rule (needs Sig in settings).
+
 ## Open items
+- Sig to decide: Oct 16 Daily correction (expired hogs $75.55); WI headless fetch vs emailing DOR; emailing MN for eCRV; FFAI push;
+  textured paper pick (then change "matte paper" wording); real mat window measurement (components/rain-print.js SHEET).
 - Sig: STRIPE_READ_KEY secret (restricted, read Charges + Checkout Sessions); the $19 test order (costs ~85 cents after refund);
   submit sitemaps in Search Console; Rain Print gift-guide pitches by Oct 31.
 - Bunge Ladoga (Haw Creek) email bid reader in dnilgis/bids (waits on Sig's Gmail app password).
