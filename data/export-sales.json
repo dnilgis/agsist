@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16",
+  "updated": "2026-10-17",
   "marketing_year": "2026/27",
   "note": "USDA FAS ESR API \u2014 api.fas.usda.gov/api/esr",
   "corn": {
@@ -11,7 +11,8 @@
     "marketing_year": "2026/27",
     "prev_year_cumulative_mt": 30737741,
     "prev_year_week": "2025-10-09",
-    "vs_prev_year_pct": -32.8
+    "vs_prev_year_pct": -32.8,
+    "unknown_outstanding_mt": 2240879
   },
   "soybeans": {
     "weekly_net_mt": 574878,
@@ -22,7 +23,16 @@
     "marketing_year": "2026/27",
     "prev_year_cumulative_mt": 13449257,
     "prev_year_week": "2025-10-09",
-    "vs_prev_year_pct": 73.7
+    "vs_prev_year_pct": 73.7,
+    "china": {
+      "commitments_mt": 11268587,
+      "shipped_mt": 2987587,
+      "outstanding_mt": 8281000,
+      "weekly_net_mt": 126259,
+      "week_ending": "2026-10-08",
+      "marketing_year": "2026/27"
+    },
+    "unknown_outstanding_mt": 5637850
   },
   "wheat": {
     "weekly_net_mt": 319901,
@@ -34,6 +44,7 @@
     "prev_year_cumulative_mt": 15458027,
     "prev_year_week": "2025-10-09",
     "vs_prev_year_pct": -32.5,
+    "unknown_outstanding_mt": 287380,
     "classes": {
       "hrw": {
         "label": "HRW",
