@@ -11,6 +11,9 @@ name: Radar rain (MRMS)
 # kept as a run artifact; nothing is committed.
 
 on:
+  push:                        # TEMPORARY: one test run on the helper branch; removed before merge
+    branches: [fx/radarrain]
+    paths: ['.github/workflows/radar-rain.yml']
   workflow_dispatch:
     inputs:
       states:
