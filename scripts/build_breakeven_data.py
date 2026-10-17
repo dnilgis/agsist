@@ -23,6 +23,7 @@ cash-rent state file (about 200 KB) for two numbers a county.
 Run after either source changes (cash-rent.yml and arc-plc-refresh.yml do).
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -34,6 +35,38 @@ OUT_DIR = "data/breakeven"
 # cash-rent practice key -> the ARC/PLC build's practice row label
 PRACTICE = {"nonirr": "non", "irr": "irr", "all": "all"}
 YIELD_KEYS = (("corn", "corn"), ("beans", "soybeans"))
+# County names as the Census writes them, by FIPS (McLean, DeKalb, LaSalle, St. Clair,
+# O'Brien, Lac qui Parle). NASS's names come title-cased from capitals ("MCLEAN" ->
+# "Mclean"), which the page printed as "Mclean County" (Oct 17, 2026 re-score).
+GEO = "data/atlas/counties.geo.json"
+_NAMES = None
+
+
+def official_names(root=ROOT):
+    global _NAMES
+    if _NAMES is None:
+        try:
+            g = json.loads((Path(root) / GEO).read_text(encoding="utf-8"))
+            _NAMES = {str(f.get("id")): (f.get("properties") or {}).get("name") for f in g.get("features") or []}
+        except (OSError, ValueError):
+            _NAMES = {}
+    return _NAMES
+
+
+def fix_case(name):
+    """A NASS title-cased name when the Census list has no entry: Mc, and the small
+    words of a multi-word name, the way the Census writes them."""
+    n = re.sub(r"\bMc([a-z])", lambda m: "Mc" + m.group(1).upper(), str(name or ""))
+    n = re.sub(r"(?<=\s)(Of|The|Qui)\b", lambda m: m.group(1).lower(), n)
+    return n
+
+
+def county_name(c, names=None):
+    names = official_names() if names is None else names
+    off, nass = names.get(str(c.get("fips"))), str(c.get("name") or "")
+    if off and nass.endswith(" City") and not off.endswith(" City"):
+        off += " City"      # Virginia's independent cities: the Census name drops the word
+    return off or fix_case(nass)
 
 
 def latest(series):
@@ -83,7 +116,7 @@ def arc_for(rec, crop, rent_key):
 
 
 def county(c, arc_rec):
-    out = {"f": c["fips"], "n": c["name"]}
+    out = {"f": c["fips"], "n": county_name(c)}
     pair = c.get("pair") or {}
     rk = pair.get("rent")
     r = latest((c.get("rent") or {}).get(rk)) if rk else None
@@ -118,7 +151,7 @@ def build_state(st, rent, arc, top):
         "rent_gen": rent.get("generated"),
         "arc_updated": (arc or {}).get("updated"),
         "pay": pay,
-        "c": [county(c, recs.get(c["fips"])) for c in sorted(rent.get("counties") or [], key=lambda x: x["name"])],
+        "c": sorted((county(c, recs.get(c["fips"])) for c in rent.get("counties") or []), key=lambda x: x["n"]),
     }
 
 
@@ -177,6 +210,18 @@ def selftest():
     ck("pay dates from the program file", d["pay"] == {"2026": "2027-10-01", "2027": "2028-10-01"})
     ck("county page slug", story["s"] == "story-county")
     ck("counties sorted by name", [c["n"] for c in d["c"]] == ["Adams", "Story"])
+    names = official_names()
+    ck("Census names by FIPS: McLean, DeKalb, LaSalle, St. Clair, O'Brien, Lac qui Parle",
+       [county_name({"fips": f, "name": n}) for f, n in (("17113", "Mclean"), ("17037", "Dekalb"), ("17099", "Lasalle"),
+                                                         ("17163", "St Clair"), ("19141", "Obrien"), ("27073", "Lac Qui Parle"))]
+       == ["McLean", "DeKalb", "LaSalle", "St. Clair", "O'Brien", "Lac qui Parle"] if names else True)
+    ck("no Census entry: Mc and the small words fixed", county_name({"fips": "99999", "name": "Mcduffie"}, {}) == "McDuffie"
+       and fix_case("Lake Of The Woods") == "Lake of the Woods" and fix_case("Macon") == "Macon")
+    for st in ("IL", "KY", "GA", "MN"):
+        p = ROOT / OUT_DIR / (st + ".json")
+        if p.exists():
+            bad = [c["n"] for c in json.loads(p.read_text())["c"] if re.search(r"\bMc[a-z]", c["n"])]
+            ck(st + ": no 'Mc' county name in lower case on disk", not bad)
     if fails:
         print("selftest FAILED: %d" % len(fails))
         return 1
