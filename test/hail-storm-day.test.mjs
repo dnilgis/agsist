@@ -84,6 +84,12 @@ test("published day pages carry a day-rule line that matches the manifest", () =
   assert.ok(days.length > 0);
   for (const f of days.filter((f) => f < "2026-09-01")) {  // yearly-file days; newer ones may read recent.json
     const page = readFileSync(ROOT + "hail/" + f, "utf8");
+    if (/http-equiv="refresh"/.test(page)) {
+      // a day that no longer qualifies under 12Z days: a noindex stub to the storm day that holds its reports
+      assert.match(page, /<meta name="robots" content="noindex,follow">/, f);
+      assert.match(page, /content="0; url=\/hail\/(\d{4}-\d{2}-\d{2})?"/, f);
+      continue;
+    }
     const spc = (man.day_rules || {})[f.slice(0, 4)] === "spc-12z";
     assert.match(page, spc ? /A storm day runs 7 a\.m\. to 7 a\.m\. Central/ : /grouped by UTC calendar day/, f);
   }
