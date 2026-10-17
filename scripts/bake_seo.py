@@ -359,16 +359,24 @@ def seo_quick_stats(c):
     if len(title) > TITLE_MAX:
         title = f"Corn & Soybean Yield by State, {ia.get('year')}{SUFFIX}"
     corn = _qs_top(ss, ia, "corn", 3)
-    beans = _qs_top(ss, ia, "bean", 1)
+    # 2026-10-17: three soybean states, not one. Search Console, Jul 15 to Oct 14:
+    # "average soybean yield per acre by state" drew 406 impressions at position
+    # 8.7 and no clicks while the snippet named a single soybean state. The three
+    # largest growers go in when they fit; fewer when they do not.
+    beans3 = _qs_top(ss, ia, "bean", 3)
     lead = ", ".join(f"{nm} {v:g}" if i else f"{nm} corn {v:g} bu/ac"
                      for i, (nm, v) in enumerate(corn)) or f"Iowa corn {y:g} bu/ac"
-    if beans:
-        lead += f"; {beans[0][0]} soybeans {beans[0][1]:g}"
+    for nb in range(len(beans3), -1, -1):
+        beans = beans3[:nb]
+        bl = (f"; {beans[0][0]} soybeans {beans[0][1]:g}" + "".join(f", {nm} {v:g}" for nm, v in beans[1:])) if beans else ""
+        head = f"{kind}: {lead}{bl}."
+        for tail in (" Every state, yields since 2010, from NASS Quick Stats.",
+                     " Every state, from NASS Quick Stats."):
+            if len(head + tail) <= DESC_MAX:
+                return title, head + tail
     head = f"{kind}: {lead}."
-    for tail in (" Every state, yields since 2010, from NASS Quick Stats.",
-                 " Every state, from NASS Quick Stats.", ""):
-        if len(head + tail) <= DESC_MAX:
-            return title, head + tail
+    if len(head) <= DESC_MAX:
+        return title, head
     return title, f"{kind}: Iowa corn {y:g} bu/ac. Every state, from NASS Quick Stats."
 
 
@@ -1389,6 +1397,26 @@ def selftest():
     ck("the description leads with the largest states",
        "Iowa corn 219 bu/ac, Illinois 208, Minnesota 195; Illinois soybeans 68" in _qs[1], _qs[1])
     ck("a state on another month's forecast is left out", "Nebraska" not in _qs[1], _qs[1])
+    # three soybean states when the file has them, largest growers first, same vintage
+    _qs3 = seo_quick_stats(dict(ctx, state_stats={"stateStats": {
+        "IA": {"name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613,
+               "year": 2026, "forecast": True, "forecast_month": "October"},
+        "IL": {"name": "Illinois", "corn_yield": 208.0, "corn_prod": 2278, "bean_yield": 68.0, "bean_prod": 709,
+               "year": 2026, "forecast": True, "forecast_month": "October"},
+        "NE": {"name": "Nebraska", "corn_yield": 188.0, "corn_prod": 1807, "bean_yield": 59.0, "bean_prod": 300,
+               "year": 2026, "forecast": True, "forecast_month": "October"},
+        "MN": {"name": "Minnesota", "corn_yield": 195.0, "corn_prod": 1618, "bean_yield": 49.0, "bean_prod": 350,
+               "year": 2026, "forecast": True, "forecast_month": "October"},
+        "SD": {"name": "South Dakota", "bean_yield": 99.0, "bean_prod": 999,
+               "year": 2026, "forecast": True, "forecast_month": "September"}}}))
+    ck("three soybean states, by production, same vintage only",
+       "Illinois soybeans 68, Iowa 63, Minnesota 49." in _qs3[1] and "South Dakota" not in _qs3[1], _qs3[1])
+    ck("...and it fits the caps", check(_qs3[0], _qs3[1], "usda-quick-stats.html") and len(_qs3[1]) <= DESC_MAX, _qs3[1])
+    _qsl = seo_quick_stats(dict(ctx, state_stats={"stateStats": {k: dict(v, name=v["name"] * 3) for k, v in
+        {"IA": {"name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613, "year": 2026, "forecast": True, "forecast_month": "September"},
+         "IL": {"name": "Illinois", "corn_yield": 208.0, "corn_prod": 2278, "bean_yield": 68.0, "bean_prod": 709, "year": 2026, "forecast": True, "forecast_month": "September"},
+         "MN": {"name": "Minnesota", "corn_yield": 195.0, "corn_prod": 1618, "bean_yield": 49.0, "bean_prod": 350, "year": 2026, "forecast": True, "forecast_month": "September"}}.items()}}))
+    ck("long state names drop soybean states before breaking the cap", len(_qsl[1]) <= DESC_MAX, _qsl[1])
     ctx4 = dict(ctx, state_stats={"stateStats": {"IA": {"corn_yield": 211.0, "year": 2025,
                                                         "forecast": False}}})
     t4, d4 = seo_quick_stats(ctx4)

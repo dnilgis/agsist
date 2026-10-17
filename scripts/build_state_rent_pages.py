@@ -17,11 +17,12 @@ Honesty rules carried in:
     fetch_cash_rent.py so there is one list); other missing years "not
     published". No line
     is drawn across a gap.
-  - "Rent" means non-irrigated (dryland) cropland rent, the same definition
-    the Farmland Atlas and data/cash-rent/national.json use. Irrigated and
-    pasture are shown beside it, labeled, never in its place. Only a state
-    with fewer than MIN_DRY counties of dryland rent (AZ, NV) is headlined on
-    another type, and every table/stat SAYS which it is.
+  - On the /rent hub, "rent" means non-irrigated (dryland) cropland rent, the
+    same definition the Farmland Atlas and data/cash-rent/national.json use, so
+    states compare like with like. A state page leads with the cropland rent
+    NASS published for more of that state's counties (lead_kind: irrigated in
+    CA, OR, ID, UT, CO, NM, WY, AZ, NV in 2026; dryland everywhere else), and
+    prints the other kinds beside it, labeled. Every table/stat SAYS which it is.
   - County medians of published counties only, labeled as such.
 
 No naked squiggles: history is a labeled bar table (year + $ printed on
@@ -238,30 +239,56 @@ def load_states():
     return out
 
 
+def lead_kind(coverage):
+    """Which rent a state page leads with (title, description, hero, stats, history).
+
+    The rule, from the data alone: of the two cropland rents, the one NASS
+    published for more counties in the latest year leads; a tie goes to
+    non-irrigated. A county rate is published only where enough leases of that
+    kind came back in the survey, so more published counties means more of the
+    state's rented cropland is that kind. California 2026: irrigated 41 counties,
+    non-irrigated 20, so the page leads with irrigated ($437), not the $34.75
+    dryland figure a California searcher would read as wrong. A cropland kind
+    needs MIN_DRY counties to lead at all; with neither, the kind with the most
+    counties leads (Nevada: irrigated 5, nothing else). Pasture leads only when
+    no cropland kind has MIN_DRY counties. The other kinds are always printed
+    beside the lead, labeled."""
+    crop = [t for t in ("nonirr", "irr") if coverage.get(t, 0) >= MIN_DRY]
+    if crop:
+        return "irr" if "irr" in crop and coverage["irr"] > coverage.get("nonirr", 0) else crop[0]
+    return max(("irr", "pasture"), key=lambda t: coverage.get(t, 0))
+
+
 def state_stats(d):
     """Everything the page needs, computed once, honesty rules applied."""
     counties = d.get("counties", [])
     yr_latest = max(int(y) for y in d.get("years", [2025]))
-    # primary type = most counties published in the latest year
     coverage = {t: sum(1 for c in counties if str(yr_latest) in c["rent"].get(t, {}))
                 for t in ("nonirr", "irr", "pasture")}
-    primary = "nonirr" if coverage["nonirr"] >= MIN_DRY else max(("irr", "pasture"), key=lambda t: coverage[t])
+    primary = lead_kind(coverage)
     have_types = [t for t in ("nonirr", "irr", "pasture") if coverage[t]]
 
     cur = {c["name"]: c["rent"][primary][str(yr_latest)]
            for c in counties if str(yr_latest) in c["rent"].get(primary, {})}
 
-    def matched_delta(back_to):
-        pairs = [(c["rent"][primary][str(yr_latest)], c["rent"][primary][str(back_to)])
+    def matched_delta(back_to, t=primary):
+        pairs = [(c["rent"][t][str(yr_latest)], c["rent"][t][str(back_to)])
                  for c in counties
-                 if str(yr_latest) in c["rent"].get(primary, {})
-                 and str(back_to) in c["rent"].get(primary, {})]
+                 if str(yr_latest) in c["rent"].get(t, {})
+                 and str(back_to) in c["rent"].get(t, {})]
         if len(pairs) < 5:
             return None, 0
         now = med([p[0] for p in pairs]); then = med([p[1] for p in pairs])
         return round(100 * (now - then) / then, 1), len(pairs)
 
     yoy, yoy_n = matched_delta(yr_latest - 1)
+    # the dryland figures on their own, whatever leads: the /rent hub compares
+    # states on dryland only, so a state led by irrigated rent still has one
+    dry = None
+    if coverage["nonirr"] >= MIN_DRY:
+        dv = [c["rent"]["nonirr"][str(yr_latest)] for c in counties if str(yr_latest) in c["rent"].get("nonirr", {})]
+        dy, dyn = matched_delta(yr_latest - 1, "nonirr")
+        dry = {"median": med(dv), "n": len(dv), "yoy": dy, "yoy_n": dyn}
     dec, dec_n = matched_delta(yr_latest - 9)
 
     # median of published counties, per year, primary type — for the bar table
@@ -303,7 +330,7 @@ def state_stats(d):
         "state_avg": sa, "state_avg_prev": sa_prev,
         "state_avg_chg": round(sa - sa_prev, 2) if sa is not None and sa_prev is not None else None,
         "ground": ground,
-        "other": other,
+        "other": other, "dry": dry,
         "yr": yr_latest, "primary": primary, "have_types": have_types,
         "coverage": coverage, "n": len(cur), "median": med(list(cur.values())),
         "yoy": yoy, "yoy_n": yoy_n, "dec": dec, "dec_n": dec_n,
@@ -668,6 +695,49 @@ def ground_panel(st, d, s, aslug=None):
     return html_, GROUND_JS
 
 
+DESC_WORD = {"nonirr": "non-irrigated", "irr": "irrigated", "pasture": "pasture"}
+
+
+def lead_why(name, s):
+    """Why this rent leads the page, in the page's words, from the counts."""
+    cv, p = s["coverage"], s["primary"]
+    if p == "nonirr":
+        return (f"published for {cv['nonirr']} {name} counties against {cv['irr']} irrigated"
+                if cv["irr"] else f"the only cropland rent NASS publishes for {name}")
+    if p == "irr" and cv["nonirr"] >= MIN_DRY:
+        return f"published for more {name} counties ({cv['irr']}) than non-irrigated ({cv['nonirr']})"
+    return f"NASS published non-irrigated rent for fewer than {MIN_DRY} {name} counties"
+
+
+def other_crop_line(name, yr, s):
+    """One sentence under the lead: the other cropland rent, when NASS has it."""
+    alt = "irr" if s["primary"] == "nonirr" else "nonirr"
+    o = s["other"].get(alt)
+    if not o or s["primary"] == "pasture":
+        return ""
+    return f" For {TYPE_LABEL[alt]} the middle county paid {money(o['median'])} ({o['n']} counties)."
+
+
+def rent_desc(name, yr, s):
+    """The meta description: the lead rent first, then every other kind NASS
+    published for MIN_DRY+ counties (the other cropland kind before pasture), so
+    a searcher who wanted the other one sees it too. First form that fits 160."""
+    m, n, plabel = money(s["median"]), s["n"], TYPE_LABEL[s["primary"]]
+    others = [(t, s["other"][t]) for t in ("nonirr", "irr", "pasture") if t in s["other"]]
+    crop_only = [(t, o) for t, o in others if t != "pasture"]
+    leads = (f"{name} farmland cash rent {yr}: median {m}/acre ({plabel}) across {n} counties",
+             f"{name} cash rent {yr}: {plabel} {m}/acre, median of {n} counties")
+    tails = (f" Every county's USDA rate, history to {s['y0']}.", " Every county's USDA rate.", "")
+    for keep in ((others, crop_only) if crop_only and len(crop_only) < len(others) else (others,)):
+        for lead in leads:
+            for tail in tails:
+                for unit in ("/acre", ""):
+                    mid = ("; " + ", ".join(f"{DESC_WORD[t]} {money(o['median'])}{unit}" for t, o in keep)) if keep else ""
+                    if len(lead + mid + "." + tail) <= 160:
+                        return lead + mid + "." + tail
+    return (leads[1] + ".")[:160]
+
+
 def faq_html(faq):
     """The FAQ, visibly, with the exact text the FAQPage JSON-LD carries:
     structured data must match what a reader sees."""
@@ -681,21 +751,9 @@ def build_state_page(st, d, s, all_states, aslug=None):
     sl = slug(name)
     yr = s["yr"]
     plabel = TYPE_LABEL[s["primary"]]
-    title = f"{name} Cash Rent by County {yr} — ${{}}/acre Rates &amp; History".format("")
     title = f"{name} Cash Rent by County {yr}"
-    desc = (f"{name} farmland cash rent {yr}: median {money(s['median'])}/acre ({plabel}) across "
-            f"{s['n']} published counties. Every county's USDA rate, history to {s['y0']}, free.")[:160]
-    # pasture searches land here too: name the pasture median when it fits in 160
+    desc = rent_desc(name, yr, s)
     pas = s["other"].get("pasture")
-    if pas:
-        lead = f"{name} farmland cash rent {yr}: median {money(s['median'])}/acre ({plabel}) across {s['n']} "
-        tail = f" Every county's USDA rate, history to {s['y0']}."
-        for mid in (f"published counties; pasture {money(pas['median'])}/acre.",
-                    f"counties; pasture {money(pas['median'])}/acre.",
-                    f"counties; pasture {money(pas['median'])}."):
-            if len(lead + mid + tail) <= 160:
-                desc = lead + mid + tail
-                break
     hi_s = ", ".join(f"{n} ({money(v)})" for n, v in s["hi"][:3])
     lo_s = ", ".join(f"{n} ({money(v)})" for n, v in s["lo"][:3])
     faq = [
@@ -710,6 +768,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
                 f"average, a separate figure that is not shown here. Rents vary widely by county: ")
                + (f"highest {hi_s}; lowest {lo_s}." if lo_s
                   else f"highest {hi_s}. With under five published counties, a highest/lowest split would overstate the sample.")
+               + other_crop_line(name, yr, s)
                + " The county mean is a survey reference point, not a rate card.")},
         {"q": f"How much did {name} cash rent change from {yr-1} to {yr}?",
          "a": (f"Comparing the same {s['yoy_n']} counties published in both years, the median {plabel} rent moved "
@@ -766,8 +825,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     other_types = ""
     if len(s["have_types"]) > 1:
         other_types = (" Columns cover " + ", ".join(TYPE_LABEL[t] for t in s["have_types"])
-                       + (f"; state stats above use {plabel}, the rent this site means by \u201crent\u201d." if s["primary"] == "nonirr"
-                          else f"; state stats above use {plabel}: NASS published dryland rent for fewer than {MIN_DRY} {name} counties."))
+                       + f"; state stats above use {plabel}, " + lead_why(name, s) + ".")
     other_tiles = "".join(
         f'<div class="rs-stat"><div class="v">{money(o["median"])}</div><div class="l">{TYPE_SHORT[t_].lower()} median &middot; {yr}</div>'
         f'<div class="s">{TYPE_LABEL[t_]}, {o["n"]} counties, shown apart</div></div>'
@@ -792,7 +850,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:{vc}">{money(s['median'])}</div>
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:{vc}">{vw}</div>
-      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}. Every county is in the table below.</div>{sa_line}
+      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}{f", <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b> across the same {s['yoy_n']} counties" if s['yoy'] is not None else ""}. Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}.{other_crop_line(name, yr, s)} Every county is in the table below.</div>{sa_line}
       <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out{f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else ""}. NASS says county rents come out in late August every year, and they have every year since 2019; the {yr + 1} date is not on its calendar yet.</div>
     </div>
   </div>
@@ -939,15 +997,25 @@ HUB_EXPLAIN = """<h2>How to read rent</h2>
   on paper with the free <a href="/cash-lease" style="color:var(--gold)">AGSIST cash farm lease</a>.</p></details>"""
 
 
+def hub_view(s):
+    """What the hub shows for a state: its dryland figures whenever NASS has
+    them (the hub compares like with like), whatever the state page leads with;
+    the lead rent, labeled, only where there is no dryland rent (AZ, NV)."""
+    if s.get("dry"):
+        d = s["dry"]
+        return "nonirr", d["median"], d["yoy"], d["yoy_n"]
+    return s["primary"], s["median"], s["yoy"], s["yoy_n"]
+
+
 def build_hub(states, stats, generated):
     yr = max(s["yr"] for s in stats.values())
-    meds = sorted(s2["median"] for s2 in stats.values())
+    meds = sorted(hub_view(s2)[1] for s2 in stats.values())
     # AUDIT 2026-08-11: one quintile scale across mixed land types ranked
     # TX $10 PASTURE against IA $270 CROPLAND as if comparable. Color each
     # tile against ITS OWN land-type peer group.
     meds_by_type = {}
     for s2 in stats.values():
-        meds_by_type.setdefault(s2["primary"], []).append(s2["median"])
+        meds_by_type.setdefault(hub_view(s2)[0], []).append(hub_view(s2)[1])
     for t in meds_by_type: meds_by_type[t].sort()
     def quint_color(v, ptype="nonirr"):
         peers = meds_by_type.get(ptype, meds)
@@ -956,12 +1024,12 @@ def build_hub(states, stats, generated):
     tiles = []
     for ab, (c, r) in TILE.items():
         if ab in stats:
-            st2 = stats[ab]
-            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(st2["median"], st2["primary"])}"><span class="rh-tst">{ab}</span><span class="rh-tge">${round(st2["median"]):,}</span></a>')
+            hk, hm = hub_view(stats[ab])[:2]
+            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(hm, hk)}"><span class="rh-tst">{ab}</span><span class="rh-tge">${round(hm):,}</span></a>')
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
     tile_html = ('<div style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
-        f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + ('No dryland rent published for ' + ', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if stats[x]["primary"] != "nonirr") + ', so the tile shows ' + '; '.join(STATE_NAMES[x] + ' ' + TYPE_LABEL[stats[x]["primary"]] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if stats[x]["primary"] != "nonirr") + ', not colored against the rest' if any(s2["primary"] != "nonirr" for s2 in stats.values()) else '') + '</div>'
+        f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + ('No dryland rent published for ' + ', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', so the tile shows ' + '; '.join(STATE_NAMES[x] + ' ' + TYPE_LABEL[stats[x]["primary"]] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', not colored against the rest' if any(not s2["dry"] for s2 in stats.values()) else '') + '</div>'
         '<div class="rh-grid">' + "".join(tiles) + '</div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:var(--text-muted);flex-wrap:wrap">'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#af3a32"></b>priciest fifth</span>'
@@ -981,19 +1049,20 @@ def build_hub(states, stats, generated):
     rows = []
     for st in sorted(states, key=lambda s: STATE_NAMES[s]):
         s = stats[st]
-        yoy = (f'<td class="{"up" if s["yoy"] >= 0 else "dn"}" data-v="{s["yoy"]}">'
-               f'{"+" if s["yoy"] >= 0 else ""}{s["yoy"]}%</td>') if s["yoy"] is not None \
-            else '<td class="mut" data-v="-999">n/a</td>'
-        dry = (f'<td data-v="{s["median"]}">{money(s["median"])}</td>' if s["primary"] == "nonirr"
+        dy = s["dry"]
+        yoy = (f'<td class="{"up" if dy["yoy"] >= 0 else "dn"}" data-v="{dy["yoy"]}">'
+               f'{"+" if dy["yoy"] >= 0 else ""}{dy["yoy"]}%</td>') if dy and dy["yoy"] is not None \
+            else NA_YOY
+        dry = (f'<td data-v="{dy["median"]}">{money(dy["median"])}</td>' if dy
                else '<td class="mut" data-v="-1">n/a</td>')
         rows.append(
             f'<tr><td><a href="/rent/{slug(STATE_NAMES[st])}" >{STATE_NAMES[st]}</a></td>'
-            f'{dry}{yoy if s["primary"] == "nonirr" else NA_YOY}'
+            f'{dry}{yoy}'
             f'<td data-v="{type_med(s, "nonirr")[1]}">{type_med(s, "nonirr")[1]}</td>'
             f'{cell(type_med(s, "irr")[0])}{cell(type_med(s, "pasture")[0])}</tr>')
     # the headline compares like with like: dryland cropland medians only
-    medians = sorted(((s["median"], st) for st, s in stats.items() if s["primary"] == "nonirr"), reverse=True)
-    no_dry = sorted((st for st, s in stats.items() if s["primary"] != "nonirr"), key=lambda x: STATE_NAMES[x])
+    medians = sorted(((s["dry"]["median"], st) for st, s in stats.items() if s["dry"]), reverse=True)
+    no_dry = sorted((st for st, s in stats.items() if not s["dry"]), key=lambda x: STATE_NAMES[x])
     desc = (f"USDA county cash rent for cropland and pasture in all {len(states)} published states, {yr}: median $/acre, "
             f"change vs {yr-1}, every county's rate one click deep.")[:160]
     # pasture rental rates by county: state medians of the published county pasture rents
@@ -1119,10 +1188,20 @@ def selftest():
             assert 'href="/cash-rent' not in pg, f"{st_}: links the retired /cash-rent"
         # the hub headline compares like land types: dryland medians only
         seed_ = hub.split("<!--SEED:renthub-->")[1].split("<!--/SEED-->")[0]
-        dry_ = sorted((s_["median"], k) for k, s_ in stats.items() if s_["primary"] == "nonirr")
+        dry_ = sorted((s_["dry"]["median"], k) for k, s_ in stats.items() if s_["dry"])
         assert money(dry_[0][0]) in seed_ and money(dry_[-1][0]) in seed_, seed_
-        assert all(s_["primary"] == "nonirr" for k, s_ in stats.items() if k not in ("AZ", "NV")), \
-            {k: s_["primary"] for k, s_ in stats.items() if s_["primary"] != "nonirr"}
+        # the lead rent: the cropland kind NASS published for more counties (lead_kind)
+        for k, s_ in stats.items():
+            cv = s_["coverage"]
+            assert s_["primary"] == lead_kind(cv), (k, s_["primary"], cv)
+            if s_["primary"] == "irr" and cv["nonirr"] >= MIN_DRY:
+                assert cv["irr"] > cv["nonirr"], (k, cv)
+            if s_["primary"] == "nonirr":
+                assert cv["nonirr"] >= cv["irr"], (k, cv)
+            assert (s_["dry"] is not None) == (cv["nonirr"] >= MIN_DRY), k
+        for k, want in (("IA", "nonirr"), ("WA", "nonirr"), ("CA", "irr"), ("OR", "irr"), ("NV", "irr")):
+            if k in stats:
+                assert stats[k]["primary"] == want, (k, stats[k]["primary"])
         # the moved /cash-rent FAQ and Dataset are on the hub, visibly
         assert "#dataset" in hub and hub.count('class="rs-faq"') >= 11, "hub explainer or FAQ missing"
         # PRF: the hub links the PRF hub; a state page links its own PRF page only when it is on disk
@@ -1138,9 +1217,9 @@ def selftest():
         cards_p = os.path.join("farmland-atlas", "data", "cards.json")
         if os.path.exists(cards_p):
             cj = json.load(open(cards_p))
-            off = {k: (s_["median"], (cj["states"].get(k) or {}).get("r")) for k, s_ in stats.items()
-                   if s_["primary"] == "nonirr" and k != "CT" and (cj["states"].get(k) or {}).get("r") is not None
-                   and abs(s_["median"] - cj["states"][k]["r"]) > 0.001}
+            off = {k: (s_["dry"]["median"] if s_["dry"] else None, (cj["states"].get(k) or {}).get("r")) for k, s_ in stats.items()
+                   if s_["dry"] and k != "CT" and (cj["states"].get(k) or {}).get("r") is not None
+                   and abs(s_["dry"]["median"] - cj["states"][k]["r"]) > 0.001}
             assert not off, f"rent page and Atlas state medians disagree: {off}"
         assert hub.count("/rent/") >= 47 and "SEED:renthub" in hub
         assert 'Part of the <a href="/farmland-atlas">Farmland Atlas</a>' in hub, "hub Atlas line missing"

@@ -64,7 +64,16 @@ jobs:
               exit 0
             fi
             git diff --name-only --diff-filter=AM "$BEFORE" HEAD -- '*.html' > /tmp/changed.txt
-            echo "[info] $(wc -l < /tmp/changed.txt) changed page file(s)"
+            n=$(wc -l < /tmp/changed.txt)
+            echo "[info] $n changed page file(s)"
+            # A push that touches thousands of pages is a template or menu change
+            # (the same words on every page), not new content: Bing's IndexNow
+            # report showed 53,000 to 62,000 URLs a day on Oct 14 and 15, 2026,
+            # most of them unchanged for a reader. The weekly full run covers those.
+            if [ "$n" -gt 1500 ]; then
+              echo "[info] over 1,500 pages changed in one push: left to the weekly full submission"
+              exit 0
+            fi
             # shellcheck disable=SC2046
             python scripts/indexnow_submit.py --changed $(cat /tmp/changed.txt)
           else
