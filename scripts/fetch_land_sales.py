@@ -387,10 +387,10 @@ PROBE_DOCS = {
            "https://www.revenue.wi.gov/Pages/RETr/Home.aspx"],
     "MN": ["https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv",
            "https://www.revenue.state.mn.us/sales-ratio-reports"],
-    "IL": ["https://data.illinois.gov/api/3/action/package_search?q=mydec&rows=20",
-           "https://data.illinois.gov/api/catalog/v1?q=mydec&limit=50",
+    "IL": ["https://data.illinois.gov/api/catalog/v1?q=PTAX-203&limit=50",
+           "https://data.illinois.gov/api/catalog/v1?q=real%20estate%20transfer%20declaration&limit=50",
            "https://tax.illinois.gov/localgovernments/property/mydecdatafiles.html"],
-    "IA": ["https://api.github.com/repos/ui-libraries/Iowa-Parcels/readme"],
+    "IA": ["https://ui-libraries.github.io/Iowa-Parcels/"],
 }
 
 
@@ -421,6 +421,8 @@ def probe(states):
             open(os.path.join(d, "page%d-links.txt" % i), "w").write("\n".join(links) + "\n")
             every = sorted(set(urllib.parse.urljoin(pg, h.replace("&amp;", "&")) for h in re.findall(r'href="([^"#]+)"', html, re.I)))
             open(os.path.join(d, "page%d-alllinks.txt" % i), "w").write("\n".join(every) + "\n")
+            log.append("%s page %s: %d bytes, title %r; links: %s" % (st, pg, len(html), (re.findall(r"(?is)<title>(.*?)</title>", html) or [""])[0].strip()[:80],
+                                                                  " ".join(h for h in every if not re.search(r"\.(css|js|png|gif|ico)(\?|$)", h))[:3000]))
             log.append("%s page %s: %d file links" % (st, pg, len(links)))
             for j, u in enumerate(links[:3]):
                 try:
@@ -447,7 +449,7 @@ def probe(states):
                 blob = strip_scripts(blob)
                 page = blob.decode("utf-8", errors="replace")
                 hrefs = sorted(set(urllib.parse.urljoin(u, h.replace("&amp;", "&")) for h in re.findall(r'href="([^"#]+)"', page, re.I)))
-                keep = [h for h in hrefs if re.search(r"data\.illinois|dataset|resource|download|\.zip|\.csv|\.xlsx|ecrv|extract|layout|dictionar|HistSales|mydec|sales", h, re.I)]
+                keep = [h for h in hrefs if re.search(r"data\.illinois|dataset|resource|download|\.zip|\.csv|\.xlsx|ecrv|extract|layout|dictionar|HistSales|mydec|sales|tap\.|/mta|retr|histor", h, re.I)]
                 log.append("  links: " + " ".join(keep[:60]))
                 words = re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", page))
                 for kw in ("Weekly Sales Extract", "data files", "request", "download", "layout", "buyer", "grantee", "names"):

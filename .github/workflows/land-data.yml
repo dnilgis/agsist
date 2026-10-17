@@ -50,7 +50,9 @@ jobs:
           python scripts/fetch_land_sales.py --selftest
       - name: Probe transfer sources (raw capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
-        run: python scripts/fetch_land_sales.py --probe
+        run: |
+          sudo apt-get install -y -qq poppler-utils >/dev/null 2>&1 || echo "no pdftotext; layouts saved as PDF only"
+          python scripts/fetch_land_sales.py --probe
       - name: Check parcel services
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'services' || inputs.task == 'discover' || inputs.task == 'all') }}
         run: |
