@@ -1,0 +1,49 @@
+name: Tools hub dates
+
+# Writes data/tools-fresh.json for /tools: each data card's own as-of date and
+# source, copied from the file that tool reads (scripts/build_tools_fresh.py),
+# plus per-state counts. No network. A late run only makes the hub look older
+# than the tools, never newer; tools.html hides the dates when this file is
+# more than 36 hours old.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 * * * *'   # hourly; cash bids are read about every hour
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tools-fresh
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest
+        run: python scripts/build_tools_fresh.py --selftest
+      - name: Build on the newest main and commit if changed (race-tolerant)
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          FILES="data/tools-fresh.json"
+          BR="${GITHUB_REF_NAME:-main}"
+          for i in 1 2 3 4 5; do
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            python scripts/build_tools_fresh.py
+            for f in $FILES; do [ -e "$f" ] && git add "$f" || true; done
+            if git diff --staged --quiet; then echo "No change."; exit 0; fi
+            git commit -m "Update tools hub dates $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; re-syncing to origin/$BR..."
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
