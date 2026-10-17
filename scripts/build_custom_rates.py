@@ -382,6 +382,15 @@ def faq_for(d):
     return qs
 
 
+def og_image():
+    """The set's one share card (scripts/build_share_images.py draws img/og/custom-rates.jpg)."""
+    fp = os.path.join(ROOT, "img", "og", "custom-rates.jpg")
+    if not os.path.exists(fp):
+        return "https://agsist.com/img/og/custom-rates.jpg"
+    import hashlib
+    return "https://agsist.com/img/og/custom-rates.jpg?v=" + hashlib.sha1(open(fp, "rb").read()).hexdigest()[:8]
+
+
 def state_page(d, idx):
     name, yr, st = d["name"], d["survey_year"], d["state"]
     url = "https://agsist.com/custom-rates/" + d["slug"]
@@ -415,8 +424,9 @@ def state_page(d, idx):
         body.append('<tr class="sec"><th colspan="4" scope="colgroup">%s</th></tr>' % esc(sec))
         for r in rows:
             note = " <small>(printed in cents)</small>" if r.get("p") == "cents" else ""
-            body.append('<tr><th scope="row">%s%s</th><td>%s <small>%s</small></td><td>%s</td><td>%d</td></tr>' % (
-                esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), range_text(r, r["u"]), r["n"]))
+            rg = range_text(r, r["u"])
+            body.append('<tr><th scope="row">%s%s</th><td class="av">%s <small>%s</small><span class="rgm">%s</span></td><td class="rg">%s</td><td>%d</td></tr>' % (
+                esc(r["o"]), note, money(r["a"], r["u"]), esc(unit_label(r["u"])), ("range " + rg) if "lo" in r else "", rg, r["n"]))
     me = next(s for s in idx["states"] if s["st"] == st)
     nb = ", ".join('<a href="/custom-rates/%s">%s (%d)</a>' % (s["slug"], esc(s["name"]), s["year"]) for s in idx["states"] if s["st"] in me["neighbors"])
     others = " &middot; ".join('<a href="/custom-rates/%s">%s</a>' % (s["slug"], esc(s["name"])) for s in idx["states"] if s["st"] != st)
@@ -439,11 +449,12 @@ def state_page(d, idx):
   <meta property="og:title" content="{ogt}">
   <meta property="og:description" content="{desc}">
   <meta property="og:url" content="{url}">
-  <meta property="og:image" content="https://agsist.com/img/og/custom-rates.jpg">
+  <meta property="og:image" content="{og}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Custom farm rates by state, from the state surveys.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://agsist.com/img/og/custom-rates.jpg">
+  <meta name="twitter:image" content="{og}">
   <script>try{{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}}catch(e){{}}</script>
   <link rel="stylesheet" href="/components/styles.css?v=24">
   <link rel="stylesheet" href="/components/custom-rates.css?v=1">
@@ -460,9 +471,9 @@ def state_page(d, idx):
       <p class="by">Sigurd Lindquist, CCA &middot; numbers from {pub}</p>
       <p class="cr-lede">What farmers and custom operators in {name} said they charged or paid for custom work, as the {survey} printed it. Rates are survey averages; your local custom operator may charge more or less.</p>
       <p class="cr-actions"><a class="cr-btn go" href="/custom-rates?st={st}">Search jobs and compare neighbors</a></p>
-      <div class="cr-tw"><table class="cr-t">
+      <div class="cr-tw"><table class="cr-t cr-full">
         <caption>{name}, {yr}: average and {spread} for each job. Answers = how many reported that job.</caption>
-        <thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col">Range</th><th scope="col">Answers</th></tr></thead>
+        <thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col" class="rg">Range</th><th scope="col">Answers</th></tr></thead>
         <tbody>
 {body}
         </tbody>
@@ -480,12 +491,41 @@ def state_page(d, idx):
   <script src="/components/loader.js?v=19" defer></script>
 </body>
 </html>
-""".format(title=esc(title), desc=esc(desc), url=url, ogt=esc("%s custom rates, %d survey" % (name, yr)),
+""".format(og=og_image(), title=esc(title), desc=esc(desc), url=url, ogt=esc("%s custom rates, %d survey" % (name, yr)),
            ld=json.dumps(ld, separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/"), name=esc(name), yr=yr,
            pub=esc(d["publisher"]), survey=esc(d["survey"]), st=st, spread=esc(d["spread_label"]),
            body="\n".join(body), collected=esc(d["collected"].rstrip(".")), includes=esc(d["includes"]),
            range_note=esc(d["range_note"]), withheld=withheld, srcl=srcl, nb=nb or "none yet",
            faq=faq_html, others=others)
+
+
+LD_RE = re.compile(r"(<!-- cr:ld \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:ld -->)", re.S)
+FAQ_RE = re.compile(r"(<!-- cr:faq \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:faq -->)", re.S)
+
+
+def faq_main(docs, idx):
+    def line(k):
+        out = []
+        for s in idx["states"]:
+            r = next((x for x in docs[s["st"]]["rows"] if x.get("k") == k), None)
+            if r:
+                out.append("%s %s (%d survey, %d answers)" % (s["name"], money(r["a"], r["u"]), s["year"], r["n"]))
+        return out
+    names = ", ".join("%s (%d)" % (s["name"], s["year"]) for s in idx["states"])
+    qs = [("What does custom combining cost per acre?",
+           "Survey averages for combining corn, per acre: " + "; ".join(line("combine-corn")) + ". Soybeans: " + "; ".join(line("combine-soy")) +
+           ". Some surveys price combining alone and some include the grain cart and hauling, so check the wording in each state's table. Rates are survey averages; your local custom operator may charge more or less."),
+          ("What is the custom rate for planting corn?",
+           "Survey averages for planting row crops without fertilizer, per acre: " + "; ".join(line("plant-row")) + ". Planting with fertilizer and no-till planting run a little higher in most surveys; each state's table has its lines."),
+          ("What does custom spraying cost?",
+           "Ground rig spraying, per acre, chemical not included: " + "; ".join(line("spray-ground")) + "."),
+          ("Who sets these custom rates?",
+           "Nobody sets them. Each number is an average of what farmers and custom operators told a university or state survey they charged or paid. AGSIST copies the survey's own numbers and links the survey; it does not set, adjust or update them between surveys. Your local custom operator may charge more or less."),
+          ("Which states are covered?",
+           "States with a public survey read for this page: " + names + ". " + " ".join(NOT_COVERED[k] for k in sorted(NOT_COVERED))),
+          ("Why do the same jobs differ between states?",
+           "The surveys were taken in different years, ask about the job in different words (combine only, or combine, cart and haul), and hear from different people. Some print the lowest and highest answer, Iowa leaves out the single lowest and highest, Purdue prints a one standard deviation band and Oklahoma prints no range. Compare the wording before you compare the numbers.")]
+    return qs
 
 
 SUM_RE = re.compile(r"(<!-- cr:summary \(scripts/build_custom_rates.py\) -->)(.*?)(<!-- /cr:summary -->)", re.S)
@@ -504,7 +544,10 @@ def summary_block(docs, idx):
         rows.append('<tr><th scope="row"><a href="/custom-rates/%s">%s</a> <small>%d</small></th>%s</tr>' % (s["slug"], esc(s["name"]), s["year"], "".join(cells)))
     return ("\n      <div class=\"cr-tw\"><table class=\"cr-t cr-sum\">\n        <caption>State survey averages. Each state's own wording and full table are on its page.</caption>\n"
             "        <thead><tr><th scope=\"col\">State, survey year</th><th scope=\"col\">Combine corn</th><th scope=\"col\">Combine soybeans</th><th scope=\"col\">Plant, no fertilizer</th><th scope=\"col\">Spray, ground</th></tr></thead>\n"
-            "        <tbody>\n        " + "\n        ".join(rows) + "\n        </tbody>\n      </table></div>\n      ")
+            "        <tbody>\n        " + "\n        ".join(rows) + "\n        </tbody>\n      </table></div>\n"
+            "      <ul class=\"srcs\">\n" + "".join('        <li><a href="/custom-rates/%s">%s</a>: %s, %s. <a href="%s" rel="nofollow">The survey</a>.</li>\n' % (
+                s["slug"], esc(s["name"]), esc(s["survey"]), esc(s["publisher"]), esc(s["url"])) for s in idx["states"]) +
+            "      </ul>\n      <p class=\"fine\">Not here yet: " + " ".join(esc(NOT_COVERED[k]) for k in sorted(NOT_COVERED)) + "</p>\n      ")
 
 
 def build(src_dir=SRC):
@@ -521,13 +564,38 @@ def build(src_dir=SRC):
             errs.append("%s page: %d KB, over %d" % (st, len(page.encode()) // 1024, PAGE_KB))
         files[os.path.join(PAGES, d["slug"] + ".html")] = page
     if idx:
-        files[os.path.join(OUT, "index.json")] = json.dumps(idx, indent=1, ensure_ascii=False) + "\n"
+        files[os.path.join(OUT, "index.json")] = json.dumps(idx, separators=(",", ":"), ensure_ascii=False) + "\n"
         if os.path.exists(MAIN):
             main = open(MAIN, encoding="utf-8").read()
             if not SUM_RE.search(main):
                 errs.append("custom-rates.html: no cr:summary markers")
             else:
-                files[MAIN] = SUM_RE.sub(lambda m: m.group(1) + summary_block(docs, idx) + m.group(3), main, count=1)
+                main = SUM_RE.sub(lambda m: m.group(1) + summary_block(docs, idx) + m.group(3), main, count=1)
+                qs = faq_main(docs, idx)
+                fh = "".join('\n        <details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in qs) + "\n      "
+                ld = {"@context": "https://schema.org", "@graph": [
+                    {"@type": "WebApplication", "@id": "https://agsist.com/custom-rates#app", "name": "Custom farm work rates by state",
+                     "url": "https://agsist.com/custom-rates", "description": "Custom farming rates by state from the public university and state surveys: combining, planting, spraying, tillage, hauling and baling, with the average, range, unit, survey year and source.",
+                     "applicationCategory": "BusinessApplication", "operatingSystem": "Any (web browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                     "isAccessibleForFree": True, "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
+                     "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": STAMP, "dateModified": STAMP, "inLanguage": "en-US"},
+                    {"@type": "Dataset", "name": "Custom farm work rates by state", "description": "Average and range for custom farm operations as published by state surveys: " + ", ".join("%s %d" % (x["name"], x["year"]) for x in idx["states"]) + ".",
+                     "url": "https://agsist.com/custom-rates", "isAccessibleForFree": True, "license": "https://agsist.com/terms",
+                     "isBasedOn": [{"@type": "CreativeWork", "name": docs[x["st"]]["survey"], "url": x["url"]} for x in idx["states"]],
+                     "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/custom-rates/index.json"}},
+                    {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
+                     {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"},
+                     {"@type": "ListItem", "position": 3, "name": "Custom rates", "item": "https://agsist.com/custom-rates"}]},
+                    {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in qs]}]}
+                ldh = '\n  <script type="application/ld+json">' + json.dumps(ld, separators=(",", ":"), ensure_ascii=False).replace("</", "<\\/") + '</script>\n  '
+                if not (FAQ_RE.search(main) and LD_RE.search(main)):
+                    errs.append("custom-rates.html: no cr:faq or cr:ld markers")
+                else:
+                    main = FAQ_RE.sub(lambda m: m.group(1) + fh + m.group(3), main, count=1)
+                    main = LD_RE.sub(lambda m: m.group(1) + ldh + m.group(3), main, count=1)
+                if "\u2014" in main:
+                    errs.append("custom-rates.html: em dash")
+                files[MAIN] = main
     return files, errs, docs
 
 

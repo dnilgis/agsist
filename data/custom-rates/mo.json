@@ -1,0 +1,502 @@
+{
+ "state": "MO",
+ "name": "Missouri",
+ "slug": "missouri",
+ "survey": "Custom Rates for Farm Services in Missouri (MU Extension guide G302, revised April 2023)",
+ "publisher": "University of Missouri Extension",
+ "survey_year": 2023,
+ "collected": "Statewide survey online and through MU Extension specialists in spring 2023, of rates charged or paid in 2022",
+ "sources": [
+  {
+   "url": "https://extension.missouri.edu/media/wysiwyg/Extensiondata/Pub/pdf/agguides/agecon/g00302.pdf",
+   "ref": "cr-mo-g302-pdf"
+  }
+ ],
+ "spread": "minmax",
+ "spread_label": "lowest to highest answer",
+ "includes": "Custom rates cover the cost of machinery, fuel, labor and, occasionally, a product such as lime or bale wrap. Rates exclude the cost of materials being applied.",
+ "range_note": "The range is the lowest and highest answer. MU revised G302 in March 2026 from a fall 2025 to winter 2026 survey of 2025 rates; that PDF would not open from here, so this table is the April 2023 guide (2022 rates) until it can be read. The 2026 guide is linked from the MU Extension G302 page.",
+ "rows": [
+  {
+   "s": "Field work",
+   "o": "Chisel plow",
+   "u": "acre",
+   "a": 27.1,
+   "n": 5,
+   "lo": 18.0,
+   "hi": 35.0,
+   "k": "chisel"
+  },
+  {
+   "s": "Field work",
+   "o": "Heavy or offset disking",
+   "u": "acre",
+   "a": 21.36,
+   "n": 7,
+   "lo": 15.0,
+   "hi": 30.0
+  },
+  {
+   "s": "Field work",
+   "o": "Tandem disk",
+   "u": "acre",
+   "a": 23.81,
+   "n": 8,
+   "lo": 10.0,
+   "hi": 40.0,
+   "k": "disk-tandem"
+  },
+  {
+   "s": "Field work",
+   "o": "Vertical tillage tool",
+   "u": "acre",
+   "a": 19.75,
+   "n": 10,
+   "lo": 11.0,
+   "hi": 30.0,
+   "k": "vertical-till"
+  },
+  {
+   "s": "Field work",
+   "o": "Field cultivator",
+   "u": "acre",
+   "a": 19.05,
+   "n": 10,
+   "lo": 8.0,
+   "hi": 28.0,
+   "k": "field-cult"
+  },
+  {
+   "s": "Field work",
+   "o": "Cut brush (brush hog)",
+   "u": "hour",
+   "a": 97.86,
+   "n": 7,
+   "lo": 55.0,
+   "hi": 150.0
+  },
+  {
+   "s": "Field work",
+   "o": "Mow pasture or CRP land",
+   "u": "hour",
+   "a": 95.71,
+   "n": 7,
+   "lo": 75.0,
+   "hi": 150.0
+  },
+  {
+   "s": "Planting, conventional",
+   "o": "Corn or grain sorghum, plant in 30-inch rows",
+   "u": "acre",
+   "a": 24.17,
+   "n": 15,
+   "lo": 15.0,
+   "hi": 40.0,
+   "k": "plant-row"
+  },
+  {
+   "s": "Planting, conventional",
+   "o": "Corn or grain sorghum, plant in narrow rows",
+   "u": "acre",
+   "a": 28.5,
+   "n": 9,
+   "lo": 15.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Planting, conventional",
+   "o": "Soybean, plant in 30-inch rows",
+   "u": "acre",
+   "a": 25.31,
+   "n": 8,
+   "lo": 15.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Planting, conventional",
+   "o": "Soybean, plant in 15-inch rows",
+   "u": "acre",
+   "a": 26.04,
+   "n": 14,
+   "lo": 15.0,
+   "hi": 50.0
+  },
+  {
+   "s": "Planting, conventional",
+   "o": "Soybean, drill",
+   "u": "acre",
+   "a": 22.33,
+   "n": 9,
+   "lo": 15.0,
+   "hi": 35.0,
+   "k": "drill-soy"
+  },
+  {
+   "s": "Planting, conventional",
+   "o": "Small grains or forage crops, drill",
+   "u": "acre",
+   "a": 24.77,
+   "n": 13,
+   "lo": 15.0,
+   "hi": 35.0,
+   "k": "drill-smallgrain"
+  },
+  {
+   "s": "Planting, no-till",
+   "o": "Corn or grain sorghum, plant in 30-inch rows",
+   "u": "acre",
+   "a": 24.81,
+   "n": 16,
+   "lo": 14.0,
+   "hi": 45.0,
+   "k": "plant-notill"
+  },
+  {
+   "s": "Planting, no-till",
+   "o": "Corn or grain sorghum, plant in narrow rows",
+   "u": "acre",
+   "a": 29.07,
+   "n": 7,
+   "lo": 15.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Planting, no-till",
+   "o": "Soybean, plant in 30-inch rows",
+   "u": "acre",
+   "a": 27.89,
+   "n": 9,
+   "lo": 15.0,
+   "hi": 40.0
+  },
+  {
+   "s": "Planting, no-till",
+   "o": "Soybean, plant in 15-inch rows",
+   "u": "acre",
+   "a": 25.72,
+   "n": 16,
+   "lo": 14.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Planting, no-till",
+   "o": "Small grains or forage crops, drill",
+   "u": "acre",
+   "a": 21.0,
+   "n": 11,
+   "lo": 12.0,
+   "hi": 35.0
+  },
+  {
+   "s": "Planting, no-till",
+   "o": "Additional charge for variable rate",
+   "u": "acre",
+   "a": 3.0,
+   "n": 9,
+   "lo": 1.0,
+   "hi": 5.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Dry fertilizer on cropland, single spread",
+   "u": "acre",
+   "a": 7.02,
+   "n": 29,
+   "lo": 4.25,
+   "hi": 9.5,
+   "k": "fert-dry"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Dry fertilizer on cropland, double spread",
+   "u": "acre",
+   "a": 10.06,
+   "n": 18,
+   "lo": 5.5,
+   "hi": 14.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Dry fertilizer on cropland, variable rate",
+   "u": "acre",
+   "a": 9.93,
+   "n": 21,
+   "lo": 7.0,
+   "hi": 14.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Dry fertilizer on pasture (topdressing)",
+   "u": "acre",
+   "a": 7.25,
+   "n": 24,
+   "lo": 4.25,
+   "hi": 9.5
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Spray liquid fertilizer",
+   "u": "acre",
+   "a": 7.84,
+   "n": 11,
+   "lo": 6.5,
+   "hi": 10.0,
+   "k": "fert-liquid"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Inject anhydrous ammonia",
+   "u": "acre",
+   "a": 18.53,
+   "n": 16,
+   "lo": 12.0,
+   "hi": 30.0,
+   "k": "nh3"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Lime, deliver and spread, including lime",
+   "u": "ton",
+   "a": 27.5,
+   "n": 10,
+   "lo": 22.0,
+   "hi": 35.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Lime, spread only",
+   "u": "acre",
+   "a": 8.44,
+   "n": 12,
+   "lo": 5.0,
+   "hi": 11.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Spray with self-propelled crop sprayer",
+   "u": "acre",
+   "a": 7.71,
+   "n": 28,
+   "lo": 5.0,
+   "hi": 10.0,
+   "k": "spray-ground"
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Spray with floater",
+   "u": "acre",
+   "a": 7.84,
+   "n": 8,
+   "lo": 5.0,
+   "hi": 10.0
+  },
+  {
+   "s": "Fertilizer and chemical application",
+   "o": "Spray with pull-type sprayer",
+   "u": "acre",
+   "a": 6.75,
+   "n": 4,
+   "lo": 5.0,
+   "hi": 7.5,
+   "k": "spray-tractor"
+  },
+  {
+   "s": "Harvesting and hauling",
+   "o": "Combining corn",
+   "u": "acre",
+   "a": 43.29,
+   "n": 17,
+   "lo": 30.0,
+   "hi": 60.0,
+   "k": "combine-corn"
+  },
+  {
+   "s": "Harvesting and hauling",
+   "o": "Combining soybean",
+   "u": "acre",
+   "a": 39.42,
+   "n": 19,
+   "lo": 28.0,
+   "hi": 60.0,
+   "k": "combine-soy"
+  },
+  {
+   "s": "Harvesting and hauling",
+   "o": "Combining small grains",
+   "u": "acre",
+   "a": 41.13,
+   "n": 8,
+   "lo": 35.0,
+   "hi": 50.0,
+   "k": "combine-smallgrain"
+  },
+  {
+   "s": "Harvesting and hauling",
+   "o": "Grain cart, in field",
+   "u": "acre",
+   "a": 9.8,
+   "n": 5,
+   "lo": 5.0,
+   "hi": 15.0,
+   "k": "grain-cart"
+  },
+  {
+   "s": "Harvesting and hauling",
+   "o": "Hauling grain, field to farm storage with farm vehicle or wagon",
+   "u": "bushel",
+   "a": 0.16,
+   "n": 13,
+   "lo": 0.05,
+   "hi": 0.26
+  },
+  {
+   "s": "Harvesting and hauling",
+   "o": "Hauling grain, bin to market with large grain truck over 20 miles",
+   "u": "bushel",
+   "a": 0.29,
+   "n": 9,
+   "lo": 0.2,
+   "hi": 0.38,
+   "k": "haul-grain-bu"
+  },
+  {
+   "s": "Hay",
+   "o": "Cutting and conditioning",
+   "u": "acre",
+   "a": 19.0,
+   "n": 7,
+   "lo": 10.0,
+   "hi": 30.0,
+   "k": "mow-cond"
+  },
+  {
+   "s": "Hay",
+   "o": "Raking hay",
+   "u": "acre",
+   "a": 9.25,
+   "n": 8,
+   "lo": 5.0,
+   "hi": 20.0,
+   "k": "rake"
+  },
+  {
+   "s": "Hay",
+   "o": "Round bale only with net wrap",
+   "u": "bale",
+   "a": 17.44,
+   "n": 18,
+   "lo": 8.0,
+   "hi": 25.0,
+   "k": "bale-round-net"
+  },
+  {
+   "s": "Hay",
+   "o": "Cut, rake, and bale with net wrap",
+   "u": "bale",
+   "a": 29.86,
+   "n": 25,
+   "lo": 18.0,
+   "hi": 45.0
+  },
+  {
+   "s": "Hay",
+   "o": "Tube wrap round bales, with wrap",
+   "u": "bale",
+   "a": 10.0,
+   "n": 7,
+   "lo": 5.0,
+   "hi": 12.0
+  },
+  {
+   "s": "Hay",
+   "o": "Moving round bales on farm or locally",
+   "u": "bale",
+   "a": 6.5,
+   "n": 7,
+   "lo": 3.5,
+   "hi": 10.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Bulldozer, under 150 hp",
+   "u": "hour",
+   "a": 145.0,
+   "n": 8,
+   "lo": 120.0,
+   "hi": 165.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Bulldozer, over 150 hp",
+   "u": "hour",
+   "a": 196.0,
+   "n": 15,
+   "lo": 150.0,
+   "hi": 250.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Track hoe/excavator, medium and large",
+   "u": "hour",
+   "a": 173.67,
+   "n": 15,
+   "lo": 110.0,
+   "hi": 230.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Back hoe",
+   "u": "hour",
+   "a": 125.83,
+   "n": 6,
+   "lo": 80.0,
+   "hi": 175.0,
+   "k": "backhoe"
+  },
+  {
+   "s": "Earth moving",
+   "o": "Skid loader",
+   "u": "hour",
+   "a": 108.57,
+   "n": 21,
+   "lo": 65.0,
+   "hi": 150.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Pond and lake construction",
+   "u": "hour",
+   "a": 235.0,
+   "n": 10,
+   "lo": 150.0,
+   "hi": 400.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Land clearing, cut brush and trees, pile on site",
+   "u": "hour",
+   "a": 173.75,
+   "n": 16,
+   "lo": 55.0,
+   "hi": 400.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Building terraces, conventional gradient",
+   "u": "hour",
+   "a": 183.33,
+   "n": 15,
+   "lo": 130.0,
+   "hi": 235.0
+  },
+  {
+   "s": "Earth moving",
+   "o": "Grade and shape grass waterways",
+   "u": "hour",
+   "a": 191.67,
+   "n": 12,
+   "lo": 130.0,
+   "hi": 235.0
+  }
+ ]
+}
