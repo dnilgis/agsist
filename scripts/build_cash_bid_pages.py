@@ -2292,6 +2292,112 @@ def stamp_live_page(path, metas, counts=None):
     return text or LIVE_SHARE_GENERIC["og:description"]
 
 
+# ---------------------------------------------------------------- /cash-bids: who is covered
+# 2026-10-17 search-terms check: company-name searches ("new coop cash bids" 1,633, "agtegra cash
+# bids" 1,016, "new coop grain bids" 938, "ias cash grain bids" 468, "adm cash bids" 421, "alcivia
+# cash bids" 401; Search Console + Bing) landed on /cash-bids and saw no company named on the first
+# screen. These are the companies searched by name, in that order (IAS = Innovative Ag Services).
+# Only a company with a page this run is named; Cargill posts no board we read and is never named.
+SEARCHED_COMPANIES = ("new-cooperative", "agtegra", "adm", "alcivia", "innovative-ag-services",
+                      "farmward-cooperative", "cooperative-producers", "frontier-ag", "nexus-cooperative",
+                      "mercer-landmark")
+CO_NAMED = 5
+CO_LINE = re.compile(r"(<!--CO-LINE-->)(.*?)(<!--/CO-LINE-->)", re.S)
+CO_FAQ = re.compile(r"(<!--CO-FAQ-->)(.*?)(<!--/CO-FAQ-->)", re.S)
+CO_FAQ_Q = "Do you show my elevator’s bids?"
+
+
+def coverage_line(companies):
+    """The line under the /cash-bids heading: the companies searched by name that have a page,
+    topped up by the most current locations, then how many more. -> html ('' with none)."""
+    by = {m["slug"]: m for m in companies}
+    named = [by[s] for s in SEARCHED_COMPANIES if s in by][:CO_NAMED]
+    for m in sorted(companies, key=lambda m: (-m["live"], m["short"].lower())):
+        if len(named) >= CO_NAMED:
+            break
+        if m not in named:
+            named.append(m)
+    if not named:
+        return ""
+    more = len(companies) - len(named)
+    links = ", ".join(f'<a href="{esc(m["path"])}">{esc(m["short"])}</a>' for m in named)
+    tail = (f" and {more:,} more elevator compan{'ies' if more != 1 else 'y'}" if more else "")
+    return f'Bids from {links}{tail}. <a href="/cash-bids/company/">Bids by company &rarr;</a>'
+
+
+def coverage_faq(companies, counts):
+    """(html, text) answering "Do you show my elevator's bids?" from data/elevator-counts.json.
+    Each count is printed only when the file has it; None when it has neither block."""
+    b = (counts or {}).get("bids") or {}
+    c = (counts or {}).get("coverage") or {}
+    parts = []
+    if c.get("read") and c.get("elevators"):
+        parts.append(f"On its latest full pass the AGSIST network read {c['read']:,} bid boards, out of "
+                     f"{c['elevators']:,} elevators it keeps track of.")
+    if b.get("elevators") and b.get("towns"):
+        parts.append(f"{b['elevators']:,} elevators in {b['towns']:,} towns have a current bid on these pages.")
+    if not parts:
+        return None
+    from build_company_pages import COMPANY_MIN
+    n = len(companies)
+    co_t = (f" {n:,} companies with {COMPANY_MIN} or more locations have their own page, every location on one page."
+            if n else "")
+    lead = ("Maybe. AGSIST reads the bids elevators post online, so an elevator that does not post them is not here. ")
+    end_t = (" Type your ZIP at the top of this page to see which ones post near you. If you run an elevator, List your elevator puts "
+             "your bids on AGSIST free. If you farm and your elevator posts bids online but is missing, send its bid "
+             "page to sig@farmers1st.com.")
+    text = lead + " ".join(parts) + co_t + end_t
+    co_h = (f' {n:,} companies with {COMPANY_MIN} or more locations have <a href="/cash-bids/company/">their own page</a>, every '
+            f"location on one page." if n else "")
+    html = (esc(lead) + esc(" ".join(parts)) + co_h +
+            ' Type your ZIP at the top of this page to see which ones post near you. If you run an elevator, '
+            '<a href="/list-your-elevator">List your elevator</a> puts your bids on AGSIST free. If you farm and your '
+            'elevator posts bids online but is missing, send its bid page to '
+            '<a href="mailto:sig@farmers1st.com?subject=Missing%20elevator">sig@farmers1st.com</a>.')
+    return html, text
+
+
+def stamp_live_coverage(path, companies, counts):
+    """Bake the companies line and the "my elevator" FAQ (visible and JSON-LD) into /cash-bids.
+    Markers missing: warned, nothing written. No company and no counts: the text already there
+    stays (an old number is replaced only by a new one). -> True when the file changed."""
+    if not os.path.exists(path):
+        return False
+    with open(path, encoding="utf-8") as f:
+        html = f.read()
+    out = html
+    line = coverage_line(companies or [])
+    if line:
+        if CO_LINE.search(out):
+            out = CO_LINE.sub(lambda m: m.group(1) + line + m.group(3), out, count=1)
+        else:
+            print(f"[cash-bid-pages] {path} has no CO-LINE markers; companies line not written")
+    faq = coverage_faq(companies or [], counts)
+    if faq:
+        fh, ft = faq
+        if CO_FAQ.search(out):
+            out = CO_FAQ.sub(lambda m: m.group(1) + fh + m.group(3), out, count=1)
+            mm = re.search(r'(<script type="application/ld\+json">)(.*?)(</script>)', out, re.S)
+            try:
+                doc = json.loads(mm.group(2)) if mm else None
+            except ValueError:
+                doc = None
+            faqp = next((g for g in (doc or {}).get("@graph", []) if g.get("@type") == "FAQPage"), None)
+            if faqp is not None:
+                qs = [q for q in faqp["mainEntity"] if q.get("name") != CO_FAQ_Q]
+                at = next((i + 1 for i, q in enumerate(qs) if q.get("name") == "Which elevators are covered?"), len(qs))
+                qs.insert(at, {"@type": "Question", "name": CO_FAQ_Q, "acceptedAnswer": {"@type": "Answer", "text": ft}})
+                faqp["mainEntity"] = qs
+                out = out[:mm.start(2)] + json.dumps(doc, ensure_ascii=False) + out[mm.end(2):]
+        else:
+            print(f"[cash-bid-pages] {path} has no CO-FAQ markers; coverage answer not written")
+    if out != html:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(out)
+        return True
+    return False
+
+
 def write_sitemap(path, entries):
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
@@ -2315,7 +2421,8 @@ def _hist_lookup(hist_dir):
 
 
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
-              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None):
+              min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None,
+              companies_out=None):
     """data_dir: where data/state-basis/<ST>.json and data/basis-states.json
     go (None = not written). hub: /basis page to bake the state ranking into.
     directory: the bids network's data/directory.json, for the unread
@@ -2399,6 +2506,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             f.write(page)
         smetas.append(sm)
     cmetas, cindex = CO.write_all(companies, ctx, tmp)
+    if companies_out is not None:      # /cash-bids names them (stamp_live_coverage)
+        companies_out.extend(cmetas)
     assert not os.path.exists(os.path.join(tmp, "index.html")), "cash-bids/index.html would capture /cash-bids"
     # swap in: towns that no longer have any network board disappear with the old tree
     shutil.rmtree(out_dir, ignore_errors=True)
@@ -3028,16 +3137,19 @@ def main():
     except Exception as e:  # noqa: BLE001
         print(f"[cash-bid-pages] data/directory.json unreadable ({e}); town pages list no unread elevators")
         directory = None
+    cos = []
     metas, smetas, _, new = build_all(merged, index, zip_towns, out_dir=a.out, root=a.root, sitemap=a.sitemap,
                                       check_age=not a.ignore_age, zip_coord=zip_centroids(base), prev_doc=prev,
                                       data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE),
-                                      directory=directory, hist_dir=os.path.join(a.root, "data", "basis-sparklines"))
+                                      directory=directory, hist_dir=os.path.join(a.root, "data", "basis-sparklines"),
+                                      companies_out=cos)
     try:
         with open(os.path.join(a.root, "data", COUNTS_FILE), encoding="utf-8") as f:
             counts = json.load(f)
     except (OSError, ValueError):
         counts = None
     stamp_live_page(os.path.join(a.root, LIVE_PAGE), metas, counts)
+    stamp_live_coverage(os.path.join(a.root, LIVE_PAGE), cos, counts)
     if a.print_new:
         with open(a.print_new, "w") as f:
             f.write("".join(u + "\n" for u in new))
