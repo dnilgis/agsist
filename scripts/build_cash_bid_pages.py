@@ -2856,6 +2856,37 @@ def selftest():
         assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
         assert open(lp).read() == f"<head>{gen_tags}</head>"
         assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
+        # the companies line and the "my elevator" answer (stamp_live_coverage)
+        cos_t = [{"slug": "adm", "path": "/cash-bids/company/adm", "short": "ADM", "live": 9, "locations": 9},
+                 {"slug": "acme-co-op", "path": "/cash-bids/company/acme-co-op", "short": "Acme Co-op", "live": 40,
+                  "locations": 40},
+                 {"slug": "zed", "path": "/cash-bids/company/zed", "short": "Zed & Sons", "live": 1, "locations": 3}]
+        ln = coverage_line(cos_t)
+        assert ln.index(">ADM<") < ln.index(">Acme Co-op<") < ln.index(">Zed &amp; Sons<"), ln   # searched first, then size
+        assert "more elevator" not in ln and "cargill" not in ln.lower(), ln
+        six = cos_t + [{"slug": f"c{i}", "path": f"/cash-bids/company/c{i}", "short": f"C{i}", "live": i, "locations": 3}
+                       for i in range(4)]
+        assert "and 2 more elevator companies." in coverage_line(six), coverage_line(six)
+        assert coverage_line([]) == ""
+        cnt = {"bids": {"elevators": 1743, "towns": 1369}, "coverage": {"read": 1845, "elevators": 8403}}
+        fh, ft = coverage_faq(cos_t, cnt)
+        assert "read 1,845 bid boards, out of 8,403 elevators" in ft and "1,743 elevators in 1,369 towns" in ft, ft
+        assert "3 companies with 3 or more locations" in ft and 'href="/list-your-elevator"' in fh, fh
+        assert coverage_faq(cos_t, {}) is None and "\u2014" not in fh and "\u2014" not in ft
+        ld0 = {"@context": "https://schema.org", "@graph": [{"@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": "Which elevators are covered?", "acceptedAnswer": {"@type": "Answer", "text": "x"}},
+            {"@type": "Question", "name": "Last?", "acceptedAnswer": {"@type": "Answer", "text": "y"}}]}]}
+        cp = os.path.join(td, "cov.html")
+        with open(cp, "w") as f:
+            f.write(f'<script type="application/ld+json">{json.dumps(ld0)}</script><p><!--CO-LINE-->old<!--/CO-LINE--></p>'
+                    f'<div><!--CO-FAQ-->old<!--/CO-FAQ--></div>')
+        assert stamp_live_coverage(cp, cos_t, cnt) is True
+        ch = open(cp).read()
+        assert "old" not in ch and ch.count("1,845") == 2, ch
+        ldq = [q["name"] for q in json.loads(re.search(r'json">(.*?)</script>', ch).group(1))["@graph"][0]["mainEntity"]]
+        assert ldq == ["Which elevators are covered?", CO_FAQ_Q, "Last?"], ldq
+        assert stamp_live_coverage(cp, cos_t, cnt) is False          # same data: unchanged, no duplicate question
+        assert stamp_live_coverage(cp, [], None) is False and "1,845" in open(cp).read()   # no data: old text stays
         locs = re.findall(r"<loc>(.*?)</loc>", open(sm).read())
         assert "https://agsist.com/cash-bids/nebraska/fremont" in locs and "https://agsist.com/cash-bids/nebraska/" in locs
         for k in ("not_a_network_board", "not_us_or_not_usd", "price_older_than_cutoff", "stale_or_unconfirmed",
