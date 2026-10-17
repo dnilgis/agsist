@@ -63,6 +63,11 @@
     .sb-seg button{min-height:42px;padding:0 .8rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
     .sb-seg button+button{border-left:1px solid var(--border)}
     .sb-seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+    .sb-glance{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;background:var(--surface);padding:.6rem .85rem;margin:.6rem 0 .8rem;font-size:.9rem;line-height:1.5}
+    .sb-glance .sb-gh{margin:0 0 .3rem;color:var(--text-dim)}.sb-glance .sb-gh b{color:var(--text)}
+    .sb-glance ul{margin:0;padding:0;list-style:none}.sb-glance li{margin:.15rem 0;color:var(--text-dim)}.sb-glance li b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700}
+    .sb-glance li b:first-child{font-family:inherit}
+    @media(max-width:520px){.sb-glance{font-size:.85rem;padding:.5rem .7rem}.sb-glance li:nth-child(3){display:none}}
     .sb-status{font-size:.86rem;color:var(--text-muted);margin:.5rem 0 0}
     .sb-status.err{color:var(--red)}
     .sb-status:empty{display:none}
@@ -118,6 +123,7 @@
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/markets">Markets</a> &rarr; Sale barn prices</nav>
       <h1>Feeder cattle sale barn prices near you</h1>
       <p class="by">By Sigurd Lindquist, CCA. Prices reported by USDA AMS market reporters at the sale, not by the barns.</p>
+      <div id="sb-glance" class="sb-glance" aria-live="polite" hidden></div>
       <p class="sb-lede">The latest USDA-reported auction prices for feeder steers and heifers at the barns closest to you: each 100 lb class from 300 to 899 lb, with head count, the weighted average in dollars per hundredweight, the range, about what a calf brought per head, and the change from that barn's last sale once USDA has posted two.</p>
 
       <div class="sb-box">
@@ -207,6 +213,6 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/cattle-auction.js?v=2" defer></script>
+  <script src="/components/cattle-auction.js?v=3" defer></script>
 </body>
 </html>
