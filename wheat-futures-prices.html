@@ -327,6 +327,16 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .sc-edu strong{color:var(--text)}
 .sc-disc{font-size:0.745rem;color:var(--text-muted);margin-top:8px;line-height:1.5}
 </style>
+<style id="fold-css">/* 2026-10-17 phone fold: long secondary sections sit behind a labeled <details>; open on wide screens (data-wide-open). Content stays in the HTML. */
+details.fold{margin:0 0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+details.fold>summary.fold-sum{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:.7rem 2.4rem .7rem .95rem;min-height:48px;justify-content:center;position:relative}
+details.fold>summary.fold-sum::-webkit-details-marker{display:none}
+details.fold>summary.fold-sum::after{content:"";position:absolute;right:1rem;top:50%;width:9px;height:9px;margin-top:-6px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);transition:transform .15s}
+details.fold[open]>summary.fold-sum::after{transform:rotate(-135deg);margin-top:-1px}
+.fold-t{font-weight:700;color:var(--text);font-size:.95rem}.fold-d{font-size:.8rem;color:var(--text-dim);line-height:1.4}
+details.fold>.fold-body{padding:0 .6rem .6rem}details.fold>.fold-body>*:last-child{margin-bottom:0}
+details.fold[hidden]{display:none}
+</style>
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
@@ -429,6 +439,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −9½¢ (−1.42%)</span><!--/SEED--></div>
     </div>
   </div>
+  <p class="pl-line" data-state-bid="wheat" hidden></p>
 
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
   <!--SEED:bench--><div class="benchline" id="benchline">Mar '27 (deferred): <strong>$6.75</strong> (−1.35%), winter wheat new-crop is July</div><!--/SEED-->
@@ -446,6 +457,30 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     <details class="qa-more"><summary>Basis and what moves wheat</summary><p>The <b>front-month</b> contract tracks nearest delivery. Your local <b>cash price</b> equals futures plus or minus <b>basis</b>, which varies by class and protein. Wheat prices move mainly on the monthly <b>USDA WASDE</b> report, US winter-wheat condition and Plains drought, Black Sea and Russian supplies, and global export competition. See <a href="/whats-priced-in">what&rsquo;s priced in</a> ahead of each report. Live prices below are refreshed every 15 minutes during trading hours. Reload for the latest. Compare with live <a href="/corn-futures-prices">corn</a> and <a href="/soybean-futures-prices">soybean</a> futures.</p></details>
   </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the wheat futures price. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=wheat-futures-prices&amp;utm_source=wheat-futures-prices&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+
+  <div class="cg">
+    <div class="cc hi"><div class="cc-lbl" id="lbl-wheat">SRW Wheat (ZW)</div><div class="cc-p sk" id="p-wheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat"></div></div>
+    <div class="cc" id="cc-kcwheat" style="display:none"><div class="cc-lbl">KC HRW (KE)</div><div class="cc-p" id="p-kcwheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-kcwheat"></div></div>
+    <div class="cc" id="cc-mplswheat" style="display:none"><div class="cc-lbl">Minneapolis HRS (MWE)</div><div class="cc-p" id="p-mplswheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-mplswheat"></div></div>
+    <div class="cc" id="cc-wheat-def" style="display:none"><div class="cc-lbl" id="l-wheat-def">Deferred</div><div class="cc-p" id="p-wheat-def">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat-def"></div></div>
+    <div class="cc"><div class="cc-lbl">Corn (ZC)</div><div class="cc-p sk" id="p-corn">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
+    <div class="cc"><div class="cc-lbl">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
+    <div class="cc"><div class="cc-lbl">Oats (ZO)</div><div class="cc-p sk" id="p-oats">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-oats"></div></div>
+    <div class="cc"><div class="cc-lbl">Crude Oil (CL)</div><div class="cc-p sk" id="p-crude">-</div><div class="cc-u">$/bbl</div><div class="cc-c" id="c-crude"></div></div>
+    <div class="cc"><div class="cc-lbl">Dollar Index (DX)</div><div class="cc-p sk" id="p-dollar">-</div><div class="cc-u">DXY</div><div class="cc-c" id="c-dollar"></div></div>
+  </div>
+  <div class="cls-spread-card" id="cls-spread-card">
+    <h4><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Wheat class spreads</h4>
+    <div class="xr" id="cs-kezw-row" style="display:none"><span class="xl">KC HRW − Chicago SRW (KE−ZW)</span><span class="xv" id="cs-kezw">-</span></div>
+    <div class="xr" id="cs-mweke-row" style="display:none"><span class="xl">Mpls HRS − KC HRW (MWE−KE)</span><span class="xv" id="cs-mweke">-</span></div>
+    <div class="cls-spread-note" id="cs-interp"></div>
+    <div class="cls-spread-src">Same delivery month for both classes · cents/bu</div>
+  </div>
+  <div class="rng">
+    <div class="rng-lbl" id="rng-lbl">52-week range: wheat</div>
+    <div class="rng-bar"><div class="rng-fill" id="rng-fill"></div><div class="rng-dot" id="rng-dot"></div></div>
+    <div class="rng-labels"><span class="rng-lo" id="rng-lo">-</span><span class="rng-cur" id="rng-cur">-</span><span class="rng-hi" id="rng-hi">-</span></div>
+  </div>
 
   <div class="be-strip">
     <label for="be-input">My cost of production:</label>
@@ -483,79 +518,66 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     </div>
   </div>
 
-  <div class="scorecard" id="scorecard" style="display:none">
-    <div class="sc-hd"><span class="sc-lbl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Your pricing situation</span><span class="sc-sit" id="sc-situation"></span></div>
-    <div class="sc-factors" id="sc-factors"></div>
-    <div class="sc-cash" id="sc-cash" style="display:none"></div>
-    <div class="sc-rp" id="sc-rp" style="display:none"></div>
-    <div class="sc-priced">
-      <label for="priced-input">% of 2026 crop already priced:</label>
-      <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of 2026 crop already priced">
-      <span class="sc-priced-result" id="priced-result"></span>
-      <button type="button" class="be-clear" id="priced-clear">clear</button>
-    </div>
-    <div class="sc-edu" id="sc-edu"></div>
-    <div class="sc-disc">Educational context built from your own inputs, not financial advice. Verify with your broker or advisor before any pricing decision.</div>
-  </div>
-
-  <div class="cg">
-    <div class="cc hi"><div class="cc-lbl" id="lbl-wheat">SRW Wheat (ZW)</div><div class="cc-p sk" id="p-wheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat"></div></div>
-    <div class="cc" id="cc-kcwheat" style="display:none"><div class="cc-lbl">KC HRW (KE)</div><div class="cc-p" id="p-kcwheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-kcwheat"></div></div>
-    <div class="cc" id="cc-mplswheat" style="display:none"><div class="cc-lbl">Minneapolis HRS (MWE)</div><div class="cc-p" id="p-mplswheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-mplswheat"></div></div>
-    <div class="cc" id="cc-wheat-def" style="display:none"><div class="cc-lbl" id="l-wheat-def">Deferred</div><div class="cc-p" id="p-wheat-def">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat-def"></div></div>
-    <div class="cc"><div class="cc-lbl">Corn (ZC)</div><div class="cc-p sk" id="p-corn">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
-    <div class="cc"><div class="cc-lbl">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
-    <div class="cc"><div class="cc-lbl">Oats (ZO)</div><div class="cc-p sk" id="p-oats">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-oats"></div></div>
-    <div class="cc"><div class="cc-lbl">Crude Oil (CL)</div><div class="cc-p sk" id="p-crude">-</div><div class="cc-u">$/bbl</div><div class="cc-c" id="c-crude"></div></div>
-    <div class="cc"><div class="cc-lbl">Dollar Index (DX)</div><div class="cc-p sk" id="p-dollar">-</div><div class="cc-u">DXY</div><div class="cc-c" id="c-dollar"></div></div>
-  </div>
-
-  <div class="cls-spread-card" id="cls-spread-card">
-    <h4><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Wheat class spreads</h4>
-    <div class="xr" id="cs-kezw-row" style="display:none"><span class="xl">KC HRW − Chicago SRW (KE−ZW)</span><span class="xv" id="cs-kezw">-</span></div>
-    <div class="xr" id="cs-mweke-row" style="display:none"><span class="xl">Mpls HRS − KC HRW (MWE−KE)</span><span class="xv" id="cs-mweke">-</span></div>
-    <div class="cls-spread-note" id="cs-interp"></div>
-    <div class="cls-spread-src">Same delivery month for both classes · cents/bu</div>
-  </div>
-
-  <div class="rng">
-    <div class="rng-lbl" id="rng-lbl">52-week range: wheat</div>
-    <div class="rng-bar"><div class="rng-fill" id="rng-fill"></div><div class="rng-dot" id="rng-dot"></div></div>
-    <div class="rng-labels"><span class="rng-lo" id="rng-lo">-</span><span class="rng-cur" id="rng-cur">-</span><span class="rng-hi" id="rng-hi">-</span></div>
-  </div>
-  <div class="rng" id="rng5-wrap" style="display:none;margin-top:12px">
-    <div class="rng-lbl">5-Year Percentile: Wheat (weekly closes)</div>
-    <div class="rng-bar"><div class="rng-fill" id="rng5-fill"></div><div class="rng-dot" id="rng5-dot"></div></div>
-    <div class="rng-labels"><span class="rng-lo" id="rng5-lo">-</span><span class="rng-cur" id="rng5-cur">-</span><span class="rng-hi" id="rng5-hi">-</span></div>
-    <div id="rng5-read" style="font-size:0.795rem;color:var(--text-dim,#9bb0a3);margin-top:7px;line-height:1.5"></div>
-  </div>
-
-
-  <div class="rat-row">
-    <div class="rat-card" id="wc-card">
-      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Wheat·corn feed spread (<span id="wc-lbl-m">Dec</span>)</div>
-      <div class="rat-val sk" id="wc-spread">-</div>
-      <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="wc-dot"></div></div>
-      <div class="rat-gauge-labels">
-        <span>← Wheat in feed<br><em>parity</em></span>
-        <span style="text-align:center">Normal<br><em>$0.75–$1.50</em></span>
-        <span style="text-align:right">Corn in feed →<br><em>&gt;$1.50</em></span>
+  <details class="fold" id="fold-sc" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Your pricing situation</span><span class="fold-d">52-week position, how much you have priced, cash vs futures</span></summary>
+    <div class="fold-body">
+    <div class="scorecard" id="scorecard" style="display:none">
+      <div class="sc-hd"><span class="sc-lbl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Your pricing situation</span><span class="sc-sit" id="sc-situation"></span></div>
+      <div class="sc-factors" id="sc-factors"></div>
+      <div class="sc-cash" id="sc-cash" style="display:none"></div>
+      <div class="sc-rp" id="sc-rp" style="display:none"></div>
+      <div class="sc-priced">
+        <label for="priced-input">% of 2026 crop already priced:</label>
+        <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of 2026 crop already priced">
+        <span class="sc-priced-result" id="priced-result"></span>
+        <button type="button" class="be-clear" id="priced-clear">clear</button>
       </div>
-      <div class="rat-interp" id="wc-interp">Dec wheat minus Dec corn · $/bu · live from futures</div>
-      <div class="rat-note">Feed substitution signal · spread narrows = wheat demand floor activates · same-month contracts</div>
+      <div class="sc-edu" id="sc-edu"></div>
+      <div class="sc-disc">Educational context built from your own inputs, not financial advice. Verify with your broker or advisor before any pricing decision.</div>
     </div>
-    <div class="rat-card">
-      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Wheat price vs. typical breakeven</div>
-      <div class="rat-val sk" id="be-price">-</div>
-      <div class="be-zones">
-        <div class="be-zone z3" id="bz3">Above $7.00 · Strong margins · evaluate forward sales</div>
-        <div class="be-zone z2" id="bz2">$6.00–$7.00 · Profitable for most operations</div>
-        <div class="be-zone z1" id="bz1">$5.00–$6.00 · Marginal; variable costs covered, thin overhead</div>
-        <div class="be-zone z0" id="bz0">Below $5.00 · Below full cost for most producers</div>
+    </div>
+  </details>
+
+
+
+  <details class="fold" id="fold-ratio" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">5-year range, wheat/corn feed spread and cost bands</span><span class="fold-d">Where today sits in five years; when wheat goes into feed</span></summary>
+    <div class="fold-body">
+    <div class="rng" id="rng5-wrap" style="display:none;margin-top:12px">
+      <div class="rng-lbl">5-Year Percentile: Wheat (weekly closes)</div>
+      <div class="rng-bar"><div class="rng-fill" id="rng5-fill"></div><div class="rng-dot" id="rng5-dot"></div></div>
+      <div class="rng-labels"><span class="rng-lo" id="rng5-lo">-</span><span class="rng-cur" id="rng5-cur">-</span><span class="rng-hi" id="rng5-hi">-</span></div>
+      <div id="rng5-read" style="font-size:0.795rem;color:var(--text-dim,#9bb0a3);margin-top:7px;line-height:1.5"></div>
+    </div>
+    <div class="rat-row">
+      <div class="rat-card" id="wc-card">
+        <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Wheat·corn feed spread (<span id="wc-lbl-m">Dec</span>)</div>
+        <div class="rat-val sk" id="wc-spread">-</div>
+        <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="wc-dot"></div></div>
+        <div class="rat-gauge-labels">
+          <span>← Wheat in feed<br><em>parity</em></span>
+          <span style="text-align:center">Normal<br><em>$0.75–$1.50</em></span>
+          <span style="text-align:right">Corn in feed →<br><em>&gt;$1.50</em></span>
+        </div>
+        <div class="rat-interp" id="wc-interp">Dec wheat minus Dec corn · $/bu · live from futures</div>
+        <div class="rat-note">Feed substitution signal · spread narrows = wheat demand floor activates · same-month contracts</div>
       </div>
-      <div class="rat-note">Typical range only · <a href="/breakeven">Use your actual costs →</a></div>
+      <div class="rat-card">
+        <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Wheat price vs. typical breakeven</div>
+        <div class="rat-val sk" id="be-price">-</div>
+        <div class="be-zones">
+          <div class="be-zone z3" id="bz3">Above $7.00 · Strong margins · evaluate forward sales</div>
+          <div class="be-zone z2" id="bz2">$6.00–$7.00 · Profitable for most operations</div>
+          <div class="be-zone z1" id="bz1">$5.00–$6.00 · Marginal; variable costs covered, thin overhead</div>
+          <div class="be-zone z0" id="bz0">Below $5.00 · Below full cost for most producers</div>
+        </div>
+        <div class="rat-note">Typical range only · <a href="/breakeven">Use your actual costs →</a></div>
+      </div>
     </div>
-  </div>
+    </div>
+  </details>
+
+
 
   <div class="basis-card" id="basis-card">
     <div class="basis-head">
@@ -584,124 +606,159 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     </div>
     <div class="basis-src" id="basis-src">Cash bids from the AGSIST elevator network</div>
   </div>
-  <div class="cot-card" id="cot-card">
-    <div class="cot-head">
-      <span class="cot-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · wheat (3 classes)</span>
-      <span class="cot-asof" id="cot-asof"></span>
+  <details class="fold" id="fold-cot" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Fund positioning (CFTC)</span><span class="fold-d">What managed money holds and how crowded it is</span></summary>
+    <div class="fold-body">
+    <div class="cot-card" id="cot-card">
+      <div class="cot-head">
+        <span class="cot-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · wheat (3 classes)</span>
+        <span class="cot-asof" id="cot-asof"></span>
+      </div>
+      <div class="cot-classes" id="cot-classes"></div>
+      <div id="cot-gauge-wrap">
+        <div class="cot-gauge"><div class="cot-dot" id="cot-dot" style="left:50%"></div></div>
+        <div class="cot-labels"><span>← most short since 2010</span><span>middle</span><span>most long →</span></div>
+        <div class="cot-pct" id="cot-pct">-</div>
+      </div>
+      <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
+      <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a> · <a href="/cot">Full positioning history →</a></div>
     </div>
-    <div class="cot-classes" id="cot-classes"></div>
-    <div id="cot-gauge-wrap">
-      <div class="cot-gauge"><div class="cot-dot" id="cot-dot" style="left:50%"></div></div>
-      <div class="cot-labels"><span>← most short since 2010</span><span>middle</span><span>most long →</span></div>
-      <div class="cot-pct" id="cot-pct">-</div>
     </div>
-    <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
-    <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a> · <a href="/cot">Full positioning history →</a></div>
-  </div>
+  </details>
   <div data-signup-ask="Email me the grain markets and my top local bid, every weekday morning" data-source="page:wheat-futures-prices"></div>
-  <div class="crop-card" id="crop-card">
-    <div class="crop-head">
-      <h2 class="crop-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> USDA Crop Progress · wheat</h2>
-      <span class="crop-asof" id="crop-asof"></span>
+  <details class="fold" id="fold-crop" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">USDA crop progress and export pace</span><span class="fold-d">Planting, harvest and condition vs last year and the 5-year average; export sales pace</span></summary>
+    <div class="fold-body">
+    <div class="crop-card" id="crop-card">
+      <div class="crop-head">
+        <h2 class="crop-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> USDA Crop Progress · wheat</h2>
+        <span class="crop-asof" id="crop-asof"></span>
+      </div>
+      <div id="cp-rows"></div>
+      <div class="crop-src" id="cp-avg-note" style="display:none">5-year average: AGSIST's arithmetic on the NASS weekly series, so it can differ from the NASS printed average by a point.</div>
+      <div class="crop-src">Source: USDA NASS Crop Progress, released Mondays 4:00 PM ET · <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS ↗</a></div>
     </div>
-    <div id="cp-rows"></div>
-    <div class="crop-src" id="cp-avg-note" style="display:none">5-year average: AGSIST's arithmetic on the NASS weekly series, so it can differ from the NASS printed average by a point.</div>
-    <div class="crop-src">Source: USDA NASS Crop Progress, released Mondays 4:00 PM ET · <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS ↗</a></div>
-  </div>
-  <div class="export-card" id="export-card">
-    <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US wheat export pace</h4>
-    <div class="export-line" id="export-line">-</div>
-    <div class="export-src">Source: USDA FAS weekly export sales · <a href="https://apps.fas.usda.gov/export-sales/esrd1.html" target="_blank" rel="noopener">FAS ↗</a></div>
-  </div>
-  <div class="fwd-card">
-    <div class="fwd-head">
-      <span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Forward curve · wheat contracts</span>
-      <span class="fwd-shape" id="fwd-shape">-</span>
+    <div class="export-card" id="export-card">
+      <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US wheat export pace</h4>
+      <div class="export-line" id="export-line">-</div>
+      <div class="export-src">Source: USDA FAS weekly export sales · <a href="https://apps.fas.usda.gov/export-sales/esrd1.html" target="_blank" rel="noopener">FAS ↗</a></div>
     </div>
-    <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div class="fwd-empty" id="fwd-empty" style="display:none">Not enough deferred contracts available for curve analysis.</div>
-    <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
-  </div>
-  <div class="cp">
-    <div class="cp-head">
-      <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Wheat: interactive chart (most-active ZW)</h2>
-      <span class="cp-src">Wheat CFD tracking CBOT · <a href="https://www.tradingview.com/symbols/CBOT-ZW1!/" target="_blank" rel="noopener">View CBOT:ZW1! on TradingView ↗</a></span>
     </div>
-    <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive wheat chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
-    <div class="tv-fallback" id="tv-fallback">
-      <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
-      <span>Interactive chart unavailable in this environment.</span>
-      <a href="https://www.tradingview.com/symbols/CBOT-ZW1!/" target="_blank" rel="noopener">View the wheat chart on TradingView →</a>
+  </details>
+  <details class="fold" id="fold-fwd" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Forward curve, every contract</span><span class="fold-d">Carry or inverse from the nearby out</span></summary>
+    <div class="fold-body">
+    <div class="fwd-card">
+      <div class="fwd-head">
+        <span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Forward curve · wheat contracts</span>
+        <span class="fwd-shape" id="fwd-shape">-</span>
+      </div>
+      <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="fwd-empty" id="fwd-empty" style="display:none">Not enough deferred contracts available for curve analysis.</div>
+      <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
     </div>
-  </div>
+    </div>
+  </details>
+  <details class="fold" id="fold-chart" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Interactive chart</span><span class="fold-d">TradingView daily chart; loads when you open it</span></summary>
+    <div class="fold-body">
+    <div class="cp">
+      <div class="cp-head">
+        <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Wheat: interactive chart (most-active ZW)</h2>
+        <span class="cp-src">Wheat CFD tracking CBOT · <a href="https://www.tradingview.com/symbols/CBOT-ZW1!/" target="_blank" rel="noopener">View CBOT:ZW1! on TradingView ↗</a></span>
+      </div>
+      <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive wheat chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
+      <div class="tv-fallback" id="tv-fallback">
+        <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
+        <span>Interactive chart unavailable in this environment.</span>
+        <a href="https://www.tradingview.com/symbols/CBOT-ZW1!/" target="_blank" rel="noopener">View the wheat chart on TradingView →</a>
+      </div>
+    </div>
+    </div>
+  </details>
 
-  <div class="seas-wrap" id="seas-wrap" style="display:none">
-    <div class="seas-head">
-      <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Wheat seasonal price tendency</span>
-      <span class="seas-note">Weekly closes, indexed 0–100 · current month highlighted</span>
+  <details class="fold" id="fold-seas" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Seasonal price tendency</span><span class="fold-d">What weekly closes did by month over recent years</span></summary>
+    <div class="fold-body">
+    <div class="seas-wrap" id="seas-wrap" style="display:none">
+      <div class="seas-head">
+        <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Wheat seasonal price tendency</span>
+        <span class="seas-note">Weekly closes, indexed 0–100 · current month highlighted</span>
+      </div>
+      <div id="seas-chart" class="seas-chart"></div>
+      <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast. Black Sea supply and weather events can override any seasonal pattern.</div>
     </div>
-    <div id="seas-chart" class="seas-chart"></div>
-    <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast. Black Sea supply and weather events can override any seasonal pattern.</div>
-  </div>
+    </div>
+  </details>
 
-  <div class="xg">
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Contract Specs (SRW)</h4>
-      <div class="xr"><span class="xl">Exchange</span><span class="xv">CBOT / CME Group</span></div>
-      <div class="xr"><span class="xl">Contract Size</span><span class="xv">5,000 bushels</span></div>
-      <div class="xr"><span class="xl">Tick Size</span><span class="xv">¼¢/bu ($12.50/contract)</span></div>
-      <div class="xr"><span class="xl">Symbol</span><span class="xv">ZW (SRW)</span></div>
-      <div class="xr"><span class="xl">Active Months</span><span class="xv">Mar, May, Jul, Sep, Dec</span></div>
+  <details class="fold" id="fold-specs">
+    <summary class="fold-sum"><span class="fold-t">Contract specs and report times</span><span class="fold-d">Size, tick, months, the reports that move it</span></summary>
+    <div class="fold-body">
+    <div class="xg">
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Contract Specs (SRW)</h4>
+        <div class="xr"><span class="xl">Exchange</span><span class="xv">CBOT / CME Group</span></div>
+        <div class="xr"><span class="xl">Contract Size</span><span class="xv">5,000 bushels</span></div>
+        <div class="xr"><span class="xl">Tick Size</span><span class="xv">¼¢/bu ($12.50/contract)</span></div>
+        <div class="xr"><span class="xl">Symbol</span><span class="xv">ZW (SRW)</span></div>
+        <div class="xr"><span class="xl">Active Months</span><span class="xv">Mar, May, Jul, Sep, Dec</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Key Reports</h4>
+        <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) · highest impact</span></div>
+        <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm ET (Apr–Nov)</span></div>
+        <div class="xr"><span class="xl">Winter wheat seedings</span><span class="xv">January</span></div>
+        <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
+        <div class="xr"><span class="xl">Black Sea updates</span><span class="xv">Watch daily</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Price signals</h4>
+        <div class="xr"><span class="xl">Feed spread</span><span class="xv">Wheat minus corn $/bu</span></div>
+        <div class="xr"><span class="xl">Parity range</span><span class="xv">Wheat within $0.25–$0.50 of corn, a rule of thumb</span></div>
+        <div class="xr"><span class="xl">Three classes</span><span class="xv">SRW (ZW), HRW (KE), HRS (MWE)</span></div>
+        <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$5.00–$7.00/bu avg</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> Global wheat</h4>
+        <div class="xr"><span class="xl">#1 exporter</span><span class="xv">Russia</span></div>
+        <div class="xr"><span class="xl">Black Sea share</span><span class="xv">~30% of global exports</span></div>
+        <div class="xr"><span class="xl">Top importers</span><span class="xv">Egypt, Indonesia (about 13 MMT each, USDA 2025/26)</span></div>
+        <div class="xr"><span class="xl">US export rank</span><span class="xv">~4th globally</span></div>
+      </div>
     </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Key Reports</h4>
-      <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) · highest impact</span></div>
-      <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm ET (Apr–Nov)</span></div>
-      <div class="xr"><span class="xl">Winter wheat seedings</span><span class="xv">January</span></div>
-      <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
-      <div class="xr"><span class="xl">Black Sea updates</span><span class="xv">Watch daily</span></div>
     </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Price signals</h4>
-      <div class="xr"><span class="xl">Feed spread</span><span class="xv">Wheat minus corn $/bu</span></div>
-      <div class="xr"><span class="xl">Parity range</span><span class="xv">Wheat within $0.25–$0.50 of corn, a rule of thumb</span></div>
-      <div class="xr"><span class="xl">Three classes</span><span class="xv">SRW (ZW), HRW (KE), HRS (MWE)</span></div>
-      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$5.00–$7.00/bu avg</span></div>
-    </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> Global wheat</h4>
-      <div class="xr"><span class="xl">#1 exporter</span><span class="xv">Russia</span></div>
-      <div class="xr"><span class="xl">Black Sea share</span><span class="xv">~30% of global exports</span></div>
-      <div class="xr"><span class="xl">Top importers</span><span class="xv">Egypt, Indonesia (about 13 MMT each, USDA 2025/26)</span></div>
-      <div class="xr"><span class="xl">US export rank</span><span class="xv">~4th globally</span></div>
-    </div>
-  </div>
+  </details>
 
-  <div class="edu-wrap">
-    <h3><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg> Understanding wheat prices</h3>
-    <div class="edu-grid">
-      <div class="edu-block">
-        <h4>Futures vs cash</h4>
-        <p>The CBOT futures price (ZW) is what speculators and processors trade on the exchange, the global benchmark for soft red winter wheat. The cash bid is what your local elevator will actually pay you today for wheat delivered to their facility. The gap between the two is your <strong>basis</strong>, and it is part of what lands in your check. It varies by location, season and local supply and demand. AGSIST shows both side by side so you can see whether your local market is firm or soft relative to the exchange.</p>
-      </div>
-      <div class="edu-block">
-        <h4>Three wheats, three prices</h4>
-        <p>The US trades three major wheat classes. CBOT soft red winter (SRW, ZW) is the global price benchmark and primarily grown in the Eastern corn belt and Mid-South. KC HRW (KE on CME Globex, formerly KCBT) is the hard red winter used for most bread flour, grown in the Southern Plains. Minneapolis HRS (MWE, on MIAX Futures, the exchange formerly known as MGEX) is the high-protein spring wheat grown in the northern plains and Minnesota/Wisconsin border region. Know which class you grow: basis and price can run quite differently across the three. For HRW, the domestic weather story is southern-Plains drought during dormancy and spring green-up. Track it on the <a href="/drought-monitor" style="color:var(--gold);text-decoration:none">drought monitor</a>.</p>
-      </div>
-      <div class="edu-block">
-        <h4>Protein scales: why the board isn't your price</h4>
-        <p>On HRW and HRS wheat, the futures board is only the starting point. Every elevator runs a protein scale (premiums for loads that test above the base protein spec, discounts for loads that come in under it) and those scales are set locally, change through the year, and can swing your check meaningfully in either direction. Two loads of the same class, delivered the same day to the same town, can net very different money purely on protein. Before you price wheat off a futures quote, pull your elevator's bid sheet and read the scale, not just the base bid. <a href="/cash-bids" style="color:var(--gold);text-decoration:none">Check local cash bids →</a></p>
-      </div>
-      <div class="edu-block">
-        <h4>The corn/wheat feed spread</h4>
-        <p>When CBOT wheat trades within $0.25–$0.50/bu of CBOT corn, feedlots and poultry producers begin substituting wheat for corn in rations, creating a natural demand floor under wheat prices. This spread, shown live above, is a support signal wheat traders watch. A spread above $1.50 means corn is the feed of choice and wheat loses that demand support. Watch for the spread to narrow sharply during harvest pressure periods. It often signals the seasonal low.</p>
-      </div>
-      <div class="edu-block">
-        <h4>Black Sea supply and global competition</h4>
-        <p>Russia alone supplies roughly 20–25% of global wheat exports, and Russia plus Ukraine combined account for about 30%. US soft red winter wheat competes directly against Black Sea origins in export markets. Russian export restrictions, seasonal tariffs, or Black Sea weather disruptions can move world wheat prices sharply in a few days. That makes wheat more exposed to world events than corn or soybeans, so wheat growers watch it daily along with the weather.</p>
+  <details class="fold" id="fold-edu">
+    <summary class="fold-sum"><span class="fold-t">Understanding wheat prices</span><span class="fold-d">How the contract works and what moves it</span></summary>
+    <div class="fold-body">
+    <div class="edu-wrap">
+      <h3><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg> Understanding wheat prices</h3>
+      <div class="edu-grid">
+        <div class="edu-block">
+          <h4>Futures vs cash</h4>
+          <p>The CBOT futures price (ZW) is what speculators and processors trade on the exchange, the global benchmark for soft red winter wheat. The cash bid is what your local elevator will actually pay you today for wheat delivered to their facility. The gap between the two is your <strong>basis</strong>, and it is part of what lands in your check. It varies by location, season and local supply and demand. AGSIST shows both side by side so you can see whether your local market is firm or soft relative to the exchange.</p>
+        </div>
+        <div class="edu-block">
+          <h4>Three wheats, three prices</h4>
+          <p>The US trades three major wheat classes. CBOT soft red winter (SRW, ZW) is the global price benchmark and primarily grown in the Eastern corn belt and Mid-South. KC HRW (KE on CME Globex, formerly KCBT) is the hard red winter used for most bread flour, grown in the Southern Plains. Minneapolis HRS (MWE, on MIAX Futures, the exchange formerly known as MGEX) is the high-protein spring wheat grown in the northern plains and Minnesota/Wisconsin border region. Know which class you grow: basis and price can run quite differently across the three. For HRW, the domestic weather story is southern-Plains drought during dormancy and spring green-up. Track it on the <a href="/drought-monitor" style="color:var(--gold);text-decoration:none">drought monitor</a>.</p>
+        </div>
+        <div class="edu-block">
+          <h4>Protein scales: why the board isn't your price</h4>
+          <p>On HRW and HRS wheat, the futures board is only the starting point. Every elevator runs a protein scale (premiums for loads that test above the base protein spec, discounts for loads that come in under it) and those scales are set locally, change through the year, and can swing your check meaningfully in either direction. Two loads of the same class, delivered the same day to the same town, can net very different money purely on protein. Before you price wheat off a futures quote, pull your elevator's bid sheet and read the scale, not just the base bid. <a href="/cash-bids" style="color:var(--gold);text-decoration:none">Check local cash bids →</a></p>
+        </div>
+        <div class="edu-block">
+          <h4>The corn/wheat feed spread</h4>
+          <p>When CBOT wheat trades within $0.25–$0.50/bu of CBOT corn, feedlots and poultry producers begin substituting wheat for corn in rations, creating a natural demand floor under wheat prices. This spread, shown live above, is a support signal wheat traders watch. A spread above $1.50 means corn is the feed of choice and wheat loses that demand support. Watch for the spread to narrow sharply during harvest pressure periods. It often signals the seasonal low.</p>
+        </div>
+        <div class="edu-block">
+          <h4>Black Sea supply and global competition</h4>
+          <p>Russia alone supplies roughly 20–25% of global wheat exports, and Russia plus Ukraine combined account for about 30%. US soft red winter wheat competes directly against Black Sea origins in export markets. Russian export restrictions, seasonal tariffs, or Black Sea weather disruptions can move world wheat prices sharply in a few days. That makes wheat more exposed to world events than corn or soybeans, so wheat growers watch it daily along with the weather.</p>
+        </div>
       </div>
     </div>
-  </div>
+    </div>
+  </details>
 
   <div class="faq-wrap">
     <div class="faq-head"><svg class="ic" aria-hidden="true"><use href="#i-circle-question-mark"/></svg> Wheat prices: common questions</div>
@@ -789,6 +846,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     </div>
   </div>
   <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min). Chart shows Capital.com WHEAT CFD which tracks CBOT wheat futures; for exact ZW1! data use the TradingView link. Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
+<script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 
 <div id="site-footer">
@@ -804,7 +862,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=27" defer></script>
 <script>window.AGSIST_FUTURES='wheat'</script>
-<script src="/components/storesell.js?v=7"></script><script src="/components/futures.js?v=13"></script>
+<script src="/components/storesell.js?v=7"></script><script src="/components/price-local.js?v=1"></script><script src="/components/futures.js?v=14"></script>
 
 </body>
 </html>

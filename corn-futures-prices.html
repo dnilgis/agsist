@@ -319,6 +319,16 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .sc-edu strong{color:var(--text)}
 .sc-disc{font-size:0.745rem;color:var(--text-muted);margin-top:8px;line-height:1.5}
 </style>
+<style id="fold-css">/* 2026-10-17 phone fold: long secondary sections sit behind a labeled <details>; open on wide screens (data-wide-open). Content stays in the HTML. */
+details.fold{margin:0 0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+details.fold>summary.fold-sum{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:.7rem 2.4rem .7rem .95rem;min-height:48px;justify-content:center;position:relative}
+details.fold>summary.fold-sum::-webkit-details-marker{display:none}
+details.fold>summary.fold-sum::after{content:"";position:absolute;right:1rem;top:50%;width:9px;height:9px;margin-top:-6px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);transition:transform .15s}
+details.fold[open]>summary.fold-sum::after{transform:rotate(-135deg);margin-top:-1px}
+.fold-t{font-weight:700;color:var(--text);font-size:.95rem}.fold-d{font-size:.8rem;color:var(--text-dim);line-height:1.4}
+details.fold>.fold-body{padding:0 .6rem .6rem}details.fold>.fold-body>*:last-child{margin-bottom:0}
+details.fold[hidden]{display:none}
+</style>
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
@@ -418,6 +428,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −3¾¢ (−0.78%)</span><!--/SEED--></div>
     </div>
   </div>
+  <p class="pl-line" data-state-bid="corn" hidden></p>
 
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
   <!--SEED:nc--><div class="nc-glance" id="nc-glance" style="display:none"><span id="nc-lbl">Dec</span> new crop: <strong id="nc-price"></strong> <span id="nc-chg"></span></div><!--/SEED-->
@@ -435,6 +446,20 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     <details class="qa-more"><summary>New crop, basis and what moves corn</summary><p>The <b>front-month</b> contract tracks nearest delivery; <b>December corn (ZCZ)</b> is the new-crop harvest benchmark producers use to forward-price grain. Your local <b>cash price</b> equals futures plus or minus <b>basis</b>. Corn prices move mainly on the monthly <b>USDA WASDE</b> report, growing-season weather, ethanol demand, and exports. See <a href="/whats-priced-in">what&rsquo;s priced in</a> ahead of each report. Live CBOT prices below are refreshed every 15 minutes during trading hours. Reload for the latest. Compare with live <a href="/soybean-futures-prices">soybean</a> and <a href="/wheat-futures-prices">wheat</a> futures.</p></details>
   </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the corn futures price. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=corn-futures-prices&amp;utm_source=corn-futures-prices&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+
+  <div class="cg">
+    <div class="cc hi"><div class="cc-lbl" id="lbl-corn">Nearby Corn</div><div class="cc-p sk" id="p-corn">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
+    <div class="cc"><div class="cc-lbl" id="lbl-corndec">Dec new crop (ZCZ)</div><div class="cc-p sk" id="p-corndec">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corndec"></div></div>
+    <div class="cc"><div class="cc-lbl">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
+    <div class="cc"><div class="cc-lbl">Wheat (ZW)</div><div class="cc-p sk" id="p-wheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat"></div></div>
+    <div class="cc"><div class="cc-lbl">Crude Oil (CL)</div><div class="cc-p sk" id="p-crude">-</div><div class="cc-u">$/bbl</div><div class="cc-c" id="c-crude"></div></div>
+    <div class="cc"><div class="cc-lbl">Dollar Index (DX)</div><div class="cc-p sk" id="p-dollar">-</div><div class="cc-u">DXY</div><div class="cc-c" id="c-dollar"></div></div>
+  </div>
+  <div class="rng">
+    <div class="rng-lbl" id="rng-lbl">52-week range: corn (nearby contract)</div>
+    <div class="rng-bar"><div class="rng-fill" id="rng-fill"></div><div class="rng-dot" id="rng-dot"></div></div>
+    <div class="rng-labels"><span class="rng-lo" id="rng-lo">-</span><span class="rng-cur" id="rng-cur">-</span><span class="rng-hi" id="rng-hi">-</span></div>
+  </div>
 
   <div class="be-strip">
     <label for="be-input">My cost of production:</label>
@@ -472,71 +497,68 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     </div>
   </div>
 
-  <div class="scorecard" id="scorecard" style="display:none">
-    <div class="sc-hd"><span class="sc-lbl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Your pricing situation</span><span class="sc-sit" id="sc-situation"></span></div>
-    <div class="sc-factors" id="sc-factors"></div>
-    <div class="sc-cash" id="sc-cash" style="display:none"></div>
-    <div class="sc-rp" id="sc-rp" style="display:none"></div>
-    <div class="sc-priced">
-      <label for="priced-input">% of new crop already priced:</label>
-      <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of new crop already priced">
-      <span class="sc-priced-result" id="priced-result"></span>
-      <button type="button" class="be-clear" id="priced-clear">clear</button>
-    </div>
-    <div class="sc-edu" id="sc-edu"></div>
-    <div class="sc-disc">Educational context built from your own inputs, not financial advice. Verify with your broker or advisor before any pricing decision.</div>
-  </div>
-
-  <div class="cg">
-    <div class="cc hi"><div class="cc-lbl" id="lbl-corn">Nearby Corn</div><div class="cc-p sk" id="p-corn">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
-    <div class="cc"><div class="cc-lbl" id="lbl-corndec">Dec new crop (ZCZ)</div><div class="cc-p sk" id="p-corndec">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corndec"></div></div>
-    <div class="cc"><div class="cc-lbl">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
-    <div class="cc"><div class="cc-lbl">Wheat (ZW)</div><div class="cc-p sk" id="p-wheat">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-wheat"></div></div>
-    <div class="cc"><div class="cc-lbl">Crude Oil (CL)</div><div class="cc-p sk" id="p-crude">-</div><div class="cc-u">$/bbl</div><div class="cc-c" id="c-crude"></div></div>
-    <div class="cc"><div class="cc-lbl">Dollar Index (DX)</div><div class="cc-p sk" id="p-dollar">-</div><div class="cc-u">DXY</div><div class="cc-c" id="c-dollar"></div></div>
-  </div>
-
-  <div class="rng">
-    <div class="rng-lbl" id="rng-lbl">52-week range: corn (nearby contract)</div>
-    <div class="rng-bar"><div class="rng-fill" id="rng-fill"></div><div class="rng-dot" id="rng-dot"></div></div>
-    <div class="rng-labels"><span class="rng-lo" id="rng-lo">-</span><span class="rng-cur" id="rng-cur">-</span><span class="rng-hi" id="rng-hi">-</span></div>
-  </div>
-  <div class="rng" id="rng5-wrap" style="display:none;margin-top:12px">
-    <div class="rng-lbl">5-year percentile: corn (weekly closes)</div>
-    <div class="rng-bar"><div class="rng-fill" id="rng5-fill"></div><div class="rng-dot" id="rng5-dot"></div></div>
-    <div class="rng-labels"><span class="rng-lo" id="rng5-lo">-</span><span class="rng-cur" id="rng5-cur">-</span><span class="rng-hi" id="rng5-hi">-</span></div>
-    <div id="rng5-read" style="font-size:0.795rem;color:var(--text-dim,#9bb0a3);margin-top:7px;line-height:1.5"></div>
-  </div>
-
-
-  <div class="rat-row">
-    <div class="rat-card">
-      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Corn·bean planting ratio</div>
-      <div class="rat-pair" id="cb-pair" style="font-size:.8rem;color:var(--text-dim);margin-top:2px"></div>
-      <div class="rat-val sk" id="cb-ratio">-</div>
-      <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="cb-dot"></div></div>
-      <div class="rat-gauge-labels">
-        <span>← Corn<br><em>&lt;2.4:1</em></span>
-        <span style="text-align:center">Neutral<br><em>2.4–2.6</em></span>
-        <span style="text-align:right">Beans →<br><em>&gt;2.6:1</em></span>
+  <details class="fold" id="fold-sc" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Your pricing situation</span><span class="fold-d">52-week position, how much you have priced, cash vs futures</span></summary>
+    <div class="fold-body">
+    <div class="scorecard" id="scorecard" style="display:none">
+      <div class="sc-hd"><span class="sc-lbl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Your pricing situation</span><span class="sc-sit" id="sc-situation"></span></div>
+      <div class="sc-factors" id="sc-factors"></div>
+      <div class="sc-cash" id="sc-cash" style="display:none"></div>
+      <div class="sc-rp" id="sc-rp" style="display:none"></div>
+      <div class="sc-priced">
+        <label for="priced-input">% of new crop already priced:</label>
+        <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of new crop already priced">
+        <span class="sc-priced-result" id="priced-result"></span>
+        <button type="button" class="be-clear" id="priced-clear">clear</button>
       </div>
-      <div class="rat-interp" id="cb-interp">Nov Beans ÷ Dec Corn · live from futures</div>
-      <div class="rat-note">Planting mix signal · <a href="/breakeven">Build your full breakeven →</a></div>
-      <div class="method-note"><b>Method</b> · Nov soybeans divided by Dec corn, both live. The 2.4 and 2.6 lines are AGSIST rules of thumb for where acres usually tilt, not a USDA or university threshold; your rotation, costs and rent decide. · Reviewed by Sigurd Lindquist, CCA</div>
+      <div class="sc-edu" id="sc-edu"></div>
+      <div class="sc-disc">Educational context built from your own inputs, not financial advice. Verify with your broker or advisor before any pricing decision.</div>
     </div>
-    <div class="rat-card">
-      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Corn price vs. typical breakeven</div>
-      <div class="rat-val sk" id="pc-price">-</div>
-      <div class="be-zones">
-        <div class="be-zone z3" id="bz3">Above $5.50 · Strong margins for most</div>
-        <div class="be-zone z2" id="bz2">$4.75–$5.50 · Profitable for most operations</div>
-        <div class="be-zone z1" id="bz1">$4.00–$4.75 · Marginal; tight on land &amp; fixed costs</div>
-        <div class="be-zone z0" id="bz0">Below $4.00 · Below full cost for most</div>
+    </div>
+  </details>
+
+
+  <details class="fold" id="fold-ratio" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">5-year range, corn/bean ratio and cost bands</span><span class="fold-d">Where today sits in five years; which crop the ratio favors</span></summary>
+    <div class="fold-body">
+    <div class="rng" id="rng5-wrap" style="display:none;margin-top:12px">
+      <div class="rng-lbl">5-year percentile: corn (weekly closes)</div>
+      <div class="rng-bar"><div class="rng-fill" id="rng5-fill"></div><div class="rng-dot" id="rng5-dot"></div></div>
+      <div class="rng-labels"><span class="rng-lo" id="rng5-lo">-</span><span class="rng-cur" id="rng5-cur">-</span><span class="rng-hi" id="rng5-hi">-</span></div>
+      <div id="rng5-read" style="font-size:0.795rem;color:var(--text-dim,#9bb0a3);margin-top:7px;line-height:1.5"></div>
+    </div>
+    <div class="rat-row">
+      <div class="rat-card">
+        <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Corn·bean planting ratio</div>
+        <div class="rat-pair" id="cb-pair" style="font-size:.8rem;color:var(--text-dim);margin-top:2px"></div>
+        <div class="rat-val sk" id="cb-ratio">-</div>
+        <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="cb-dot"></div></div>
+        <div class="rat-gauge-labels">
+          <span>← Corn<br><em>&lt;2.4:1</em></span>
+          <span style="text-align:center">Neutral<br><em>2.4–2.6</em></span>
+          <span style="text-align:right">Beans →<br><em>&gt;2.6:1</em></span>
+        </div>
+        <div class="rat-interp" id="cb-interp">Nov Beans ÷ Dec Corn · live from futures</div>
+        <div class="rat-note">Planting mix signal · <a href="/breakeven">Build your full breakeven →</a></div>
+        <div class="method-note"><b>Method</b> · Nov soybeans divided by Dec corn, both live. The 2.4 and 2.6 lines are AGSIST rules of thumb for where acres usually tilt, not a USDA or university threshold; your rotation, costs and rent decide. · Reviewed by Sigurd Lindquist, CCA</div>
       </div>
-      <div class="rat-note">Typical range only · <a href="/breakeven">Use your actual costs →</a></div>
-      <div class="method-note"><b>Method</b> · The live nearby corn price against four bands. The $4.00, $4.75 and $5.50 lines are AGSIST rules of thumb for a Corn Belt full-cost breakeven (land, machinery and inputs), not a USDA or university figure; your own costs decide. · Reviewed by Sigurd Lindquist, CCA</div>
+      <div class="rat-card">
+        <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Corn price vs. typical breakeven</div>
+        <div class="rat-val sk" id="pc-price">-</div>
+        <div class="be-zones">
+          <div class="be-zone z3" id="bz3">Above $5.50 · Strong margins for most</div>
+          <div class="be-zone z2" id="bz2">$4.75–$5.50 · Profitable for most operations</div>
+          <div class="be-zone z1" id="bz1">$4.00–$4.75 · Marginal; tight on land &amp; fixed costs</div>
+          <div class="be-zone z0" id="bz0">Below $4.00 · Below full cost for most</div>
+        </div>
+        <div class="rat-note">Typical range only · <a href="/breakeven">Use your actual costs →</a></div>
+        <div class="method-note"><b>Method</b> · The live nearby corn price against four bands. The $4.00, $4.75 and $5.50 lines are AGSIST rules of thumb for a Corn Belt full-cost breakeven (land, machinery and inputs), not a USDA or university figure; your own costs decide. · Reviewed by Sigurd Lindquist, CCA</div>
+      </div>
     </div>
-  </div>
+    </div>
+  </details>
+
+
 
   <div class="basis-card" id="basis-card">
     <div class="basis-head">
@@ -566,122 +588,157 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     <div class="basis-src" id="basis-src">Cash bids from the AGSIST elevator network</div>
   </div>
   <div data-signup-ask="Email me corn futures and my top local bid, every weekday morning" data-source="page:corn-futures-prices"></div>
-  <div class="crop-card" id="crop-card">
-    <div class="crop-head">
-      <h2 class="crop-title"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> USDA Crop Progress · corn</h2>
-      <span class="crop-asof" id="crop-asof"></span>
-    </div>
-    <div class="crop-section" id="crop-plant-sec">
-      <div class="crop-sec-lbl">Planting Progress</div>
-      <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-plant-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-plant-bar-pct">-</div></div>
-      <div class="crop-row"><span id="crop-plant-prev">-</span></div>
-      <div class="crop-pace" id="crop-plant-pace" style="display:none">-</div>
-    </div>
-    <div class="crop-section" id="crop-ge-sec">
-      <div class="crop-sec-lbl">Crop condition (good + excellent)</div>
-      <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-ge-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-ge-bar-pct">-</div></div>
-      <div class="crop-pending" id="crop-ge-pending" style="display:none"></div>
-      <div class="crop-row"><span id="crop-ge-prev-week"></span></div>
-      <div class="crop-row"><span id="crop-ge-prev-yr"></span></div>
-    </div>
-    <div class="crop-src">Source: USDA NASS Weekly Crop Progress · national aggregate · reported Mondays after market close · <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS ↗</a></div>
-  </div>
-  <div class="cot-card" id="cot-card">
-    <div class="cot-head">
-      <span class="cot-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · corn</span>
-      <span class="cot-asof" id="cot-asof"></span>
-    </div>
-    <div class="cot-net" id="cot-net">-</div>
-    <div class="cot-sub" id="cot-sub">net contracts</div>
-    <div id="cot-gauge-wrap">
-      <div class="cot-gauge"><div class="cot-dot" id="cot-dot" style="left:50%"></div></div>
-      <div class="cot-labels"><span>← most short since 2010</span><span>middle</span><span>most long →</span></div>
-      <div class="cot-pct" id="cot-pct">-</div>
-    </div>
-    <div class="cot-chg" id="cot-chg">-</div>
-    <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
-    <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a> · <a href="/cot">Full positioning history →</a></div>
-  </div>
-  <div class="fwd-card">
-    <div class="fwd-head">
-      <span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Forward curve · all corn contracts</span>
-      <span class="fwd-shape" id="fwd-shape">-</span>
-    </div>
-    <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div class="fwd-empty" id="fwd-empty" style="display:none">Not enough deferred contracts available for curve analysis.</div>
-    <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
-  </div>
-  <div class="cp">
-    <div class="cp-head">
-      <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Corn front month: interactive chart</h2>
-      <span class="cp-src">Corn CFD tracking CBOT · <a href="https://www.tradingview.com/symbols/CBOT-ZC1!/" target="_blank" rel="noopener">View CBOT:ZC1! on TradingView ↗</a></span>
-    </div>
-    <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive corn chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
-    <div class="tv-fallback" id="tv-fallback">
-      <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
-      <span>Interactive chart unavailable in this environment.</span>
-      <a href="https://www.tradingview.com/symbols/CBOT-ZC1!/" target="_blank" rel="noopener">View the corn chart on TradingView →</a>
-    </div>
-  </div>
-
-  <div class="seas-wrap" id="seas-wrap" style="display:none">
-    <div class="seas-head">
-      <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Corn seasonal price tendency</span>
-      <span class="seas-note">Current month highlighted · hover for value</span>
-    </div>
-    <div id="seas-chart" class="seas-chart"></div>
-    <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast. Major USDA reports and weather events override any seasonal pattern.</div>
-  </div>
-
-  <div class="xg">
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Contract Specs</h4>
-      <div class="xr"><span class="xl">Exchange</span><span class="xv">CBOT / CME Group</span></div>
-      <div class="xr"><span class="xl">Contract Size</span><span class="xv">5,000 bushels</span></div>
-      <div class="xr"><span class="xl">Tick Size</span><span class="xv">¼¢/bu ($12.50/contract)</span></div>
-      <div class="xr"><span class="xl">Symbol</span><span class="xv">ZC</span></div>
-      <div class="xr"><span class="xl">Active Months</span><span class="xv">Mar, May, Jul, Sep, Dec</span></div>
-    </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Key Reports</h4>
-      <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) · highest impact</span></div>
-      <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm ET (Apr–Nov)</span></div>
-      <div class="xr"><span class="xl">Prospective Plantings</span><span class="xv">Late March</span></div>
-      <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
-    </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Using these prices</h4>
-      <div class="xr"><span class="xl">Cash price</span><span class="xv">Futures + local basis</span></div>
-      <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans ÷ Dec corn</span></div>
-      <div class="xr"><span class="xl">New crop</span><span class="xv">Dec = harvest benchmark</span></div>
-      <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu, an AGSIST rule of thumb: varies widely by farm</span></div>
-    </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US corn use</h4>
-      <div class="xr"><span class="xl">Feed &amp; residual</span><span class="xv">largest use (USDA WASDE)</span></div>
-      <div class="xr"><span class="xl">Ethanol</span><span class="xv">second-largest use</span></div>
-      <div class="xr"><span class="xl">Exports</span><span class="xv">third-largest use</span></div>
-      <div class="xr"><span class="xl">Top buyers</span><span class="xv">Mexico, Japan, Colombia, South Korea (2024/25, USDA)</span></div>
-    </div>
-  </div>
-
-  <div class="edu-wrap">
-    <h3><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg> Understanding corn futures</h3>
-    <div class="edu-grid">
-      <div class="edu-block">
-        <h4>How CBOT corn futures work</h4>
-        <p>CBOT corn futures (ZC) represent 5,000 bushels of No. 2 Yellow corn. Each one-cent price move equals $50 per contract. Farmers use futures to hedge production risk, locking in prices before the crop is in the bin. The December contract is the new-crop harvest benchmark and the primary tool for forward pricing during winter and spring planning. Nearby contracts reflect current old-crop market value.</p>
+  <details class="fold" id="fold-crop" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">USDA crop progress</span><span class="fold-d">Planting, harvest and condition vs last year and the 5-year average</span></summary>
+    <div class="fold-body">
+    <div class="crop-card" id="crop-card">
+      <div class="crop-head">
+        <h2 class="crop-title"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> USDA Crop Progress · corn</h2>
+        <span class="crop-asof" id="crop-asof"></span>
       </div>
-      <div class="edu-block">
-        <h4>Reading the corn/bean planting ratio</h4>
-        <p>The corn/soybean ratio, November bean futures divided by December corn futures, is a rough guide to which crop pays better. Below 2.4:1 signals corn pays better per acre; above 2.6:1 shifts the math toward soybeans. The March Prospective Plantings report is a USDA survey of what farmers say they will plant, so it shows where growers landed, not a forecast built from the ratio. Check it against your own breakeven and rotation before you change acres.</p>
+      <div class="crop-section" id="crop-plant-sec">
+        <div class="crop-sec-lbl">Planting Progress</div>
+        <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-plant-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-plant-bar-pct">-</div></div>
+        <div class="crop-row"><span id="crop-plant-prev">-</span></div>
+        <div class="crop-pace" id="crop-plant-pace" style="display:none">-</div>
       </div>
-      <div class="edu-block">
-        <h4>What moves corn prices</h4>
-        <p>Corn futures move on: (1) <strong>USDA WASDE reports</strong>: monthly supply/demand estimates; a surprise can move corn hard in minutes; (2) <strong>weather</strong>: drought or delayed planting builds substantial risk premium; (3) <strong>ethanol demand</strong>: a top-two domestic use of the crop, tied to energy and RFS policy; (4) <strong>export sales</strong>: weekly USDA data tracks sales to Mexico, Japan, Colombia, South Korea and the rest; and (5) <strong>US Dollar Index</strong>: a stronger dollar makes US corn more expensive on world markets and harder to sell abroad.</p>
+      <div class="crop-section" id="crop-ge-sec">
+        <div class="crop-sec-lbl">Crop condition (good + excellent)</div>
+        <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-ge-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-ge-bar-pct">-</div></div>
+        <div class="crop-pending" id="crop-ge-pending" style="display:none"></div>
+        <div class="crop-row"><span id="crop-ge-prev-week"></span></div>
+        <div class="crop-row"><span id="crop-ge-prev-yr"></span></div>
+      </div>
+      <div class="crop-src">Source: USDA NASS Weekly Crop Progress · national aggregate · reported Mondays after market close · <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS ↗</a></div>
+    </div>
+    </div>
+  </details>
+  <details class="fold" id="fold-cot" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Fund positioning (CFTC)</span><span class="fold-d">What managed money holds and how crowded it is</span></summary>
+    <div class="fold-body">
+    <div class="cot-card" id="cot-card">
+      <div class="cot-head">
+        <span class="cot-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · corn</span>
+        <span class="cot-asof" id="cot-asof"></span>
+      </div>
+      <div class="cot-net" id="cot-net">-</div>
+      <div class="cot-sub" id="cot-sub">net contracts</div>
+      <div id="cot-gauge-wrap">
+        <div class="cot-gauge"><div class="cot-dot" id="cot-dot" style="left:50%"></div></div>
+        <div class="cot-labels"><span>← most short since 2010</span><span>middle</span><span>most long →</span></div>
+        <div class="cot-pct" id="cot-pct">-</div>
+      </div>
+      <div class="cot-chg" id="cot-chg">-</div>
+      <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
+      <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC ↗</a> · <a href="/cot">Full positioning history →</a></div>
+    </div>
+    </div>
+  </details>
+  <details class="fold" id="fold-fwd" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Forward curve, every contract</span><span class="fold-d">Carry or inverse from the nearby out</span></summary>
+    <div class="fold-body">
+    <div class="fwd-card">
+      <div class="fwd-head">
+        <span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Forward curve · all corn contracts</span>
+        <span class="fwd-shape" id="fwd-shape">-</span>
+      </div>
+      <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="fwd-empty" id="fwd-empty" style="display:none">Not enough deferred contracts available for curve analysis.</div>
+      <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
+    </div>
+    </div>
+  </details>
+  <details class="fold" id="fold-chart" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Interactive chart</span><span class="fold-d">TradingView daily chart; loads when you open it</span></summary>
+    <div class="fold-body">
+    <div class="cp">
+      <div class="cp-head">
+        <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Corn front month: interactive chart</h2>
+        <span class="cp-src">Corn CFD tracking CBOT · <a href="https://www.tradingview.com/symbols/CBOT-ZC1!/" target="_blank" rel="noopener">View CBOT:ZC1! on TradingView ↗</a></span>
+      </div>
+      <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive corn chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
+      <div class="tv-fallback" id="tv-fallback">
+        <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
+        <span>Interactive chart unavailable in this environment.</span>
+        <a href="https://www.tradingview.com/symbols/CBOT-ZC1!/" target="_blank" rel="noopener">View the corn chart on TradingView →</a>
       </div>
     </div>
-  </div>
+    </div>
+  </details>
+
+  <details class="fold" id="fold-seas" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Seasonal price tendency</span><span class="fold-d">What weekly closes did by month over recent years</span></summary>
+    <div class="fold-body">
+    <div class="seas-wrap" id="seas-wrap" style="display:none">
+      <div class="seas-head">
+        <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Corn seasonal price tendency</span>
+        <span class="seas-note">Current month highlighted · hover for value</span>
+      </div>
+      <div id="seas-chart" class="seas-chart"></div>
+      <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast. Major USDA reports and weather events override any seasonal pattern.</div>
+    </div>
+    </div>
+  </details>
+
+  <details class="fold" id="fold-specs">
+    <summary class="fold-sum"><span class="fold-t">Contract specs and report times</span><span class="fold-d">Size, tick, months, the reports that move it</span></summary>
+    <div class="fold-body">
+    <div class="xg">
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Contract Specs</h4>
+        <div class="xr"><span class="xl">Exchange</span><span class="xv">CBOT / CME Group</span></div>
+        <div class="xr"><span class="xl">Contract Size</span><span class="xv">5,000 bushels</span></div>
+        <div class="xr"><span class="xl">Tick Size</span><span class="xv">¼¢/bu ($12.50/contract)</span></div>
+        <div class="xr"><span class="xl">Symbol</span><span class="xv">ZC</span></div>
+        <div class="xr"><span class="xl">Active Months</span><span class="xv">Mar, May, Jul, Sep, Dec</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Key Reports</h4>
+        <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) · highest impact</span></div>
+        <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm ET (Apr–Nov)</span></div>
+        <div class="xr"><span class="xl">Prospective Plantings</span><span class="xv">Late March</span></div>
+        <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Using these prices</h4>
+        <div class="xr"><span class="xl">Cash price</span><span class="xv">Futures + local basis</span></div>
+        <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans ÷ Dec corn</span></div>
+        <div class="xr"><span class="xl">New crop</span><span class="xv">Dec = harvest benchmark</span></div>
+        <div class="xr"><span class="xl">Typical breakeven</span><span class="xv">$4.00–$5.50/bu, an AGSIST rule of thumb: varies widely by farm</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US corn use</h4>
+        <div class="xr"><span class="xl">Feed &amp; residual</span><span class="xv">largest use (USDA WASDE)</span></div>
+        <div class="xr"><span class="xl">Ethanol</span><span class="xv">second-largest use</span></div>
+        <div class="xr"><span class="xl">Exports</span><span class="xv">third-largest use</span></div>
+        <div class="xr"><span class="xl">Top buyers</span><span class="xv">Mexico, Japan, Colombia, South Korea (2024/25, USDA)</span></div>
+      </div>
+    </div>
+    </div>
+  </details>
+
+  <details class="fold" id="fold-edu">
+    <summary class="fold-sum"><span class="fold-t">Understanding corn futures</span><span class="fold-d">How the contract works and what moves it</span></summary>
+    <div class="fold-body">
+    <div class="edu-wrap">
+      <h3><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg> Understanding corn futures</h3>
+      <div class="edu-grid">
+        <div class="edu-block">
+          <h4>How CBOT corn futures work</h4>
+          <p>CBOT corn futures (ZC) represent 5,000 bushels of No. 2 Yellow corn. Each one-cent price move equals $50 per contract. Farmers use futures to hedge production risk, locking in prices before the crop is in the bin. The December contract is the new-crop harvest benchmark and the primary tool for forward pricing during winter and spring planning. Nearby contracts reflect current old-crop market value.</p>
+        </div>
+        <div class="edu-block">
+          <h4>Reading the corn/bean planting ratio</h4>
+          <p>The corn/soybean ratio, November bean futures divided by December corn futures, is a rough guide to which crop pays better. Below 2.4:1 signals corn pays better per acre; above 2.6:1 shifts the math toward soybeans. The March Prospective Plantings report is a USDA survey of what farmers say they will plant, so it shows where growers landed, not a forecast built from the ratio. Check it against your own breakeven and rotation before you change acres.</p>
+        </div>
+        <div class="edu-block">
+          <h4>What moves corn prices</h4>
+          <p>Corn futures move on: (1) <strong>USDA WASDE reports</strong>: monthly supply/demand estimates; a surprise can move corn hard in minutes; (2) <strong>weather</strong>: drought or delayed planting builds substantial risk premium; (3) <strong>ethanol demand</strong>: a top-two domestic use of the crop, tied to energy and RFS policy; (4) <strong>export sales</strong>: weekly USDA data tracks sales to Mexico, Japan, Colombia, South Korea and the rest; and (5) <strong>US Dollar Index</strong>: a stronger dollar makes US corn more expensive on world markets and harder to sell abroad.</p>
+        </div>
+      </div>
+    </div>
+    </div>
+  </details>
 
   <div class="faq-wrap">
     <div class="faq-head"><svg class="ic" aria-hidden="true"><use href="#i-circle-question-mark"/></svg> Corn futures: common questions</div>
@@ -754,6 +811,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     </div>
   </div>
   <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min). Chart shows Capital.com CORN CFD which tracks CBOT corn futures; for exact ZC1! data use the TradingView link. Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
+<script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 
 <div id="site-footer">
@@ -769,7 +827,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=27" defer></script>
 <script>window.AGSIST_FUTURES='corn'</script>
-<script src="/components/storesell.js?v=7"></script><script src="/components/futures.js?v=13"></script>
+<script src="/components/storesell.js?v=7"></script><script src="/components/price-local.js?v=1"></script><script src="/components/futures.js?v=14"></script>
 
 </body>
 </html>

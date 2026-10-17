@@ -1381,6 +1381,13 @@ function fmtBidTime(ts){
 }
 
 
+function savedPlace(){
+  try{
+    if(localStorage.getItem('agsist_user_zip')||localStorage.getItem('agsist_zip'))return true;
+    var o=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');
+    return !!(o&&(o.zip||o.lat!=null));
+  }catch(e){return false;}
+}
 function fetchAndRenderBasis(){
   /* LIVE FIRST, COMMITTED FILE SECOND.
    *
@@ -1412,6 +1419,11 @@ function fetchAndRenderBasis(){
   }
   var loc=null;
   try{loc=getUserLoc();}catch(e){}
+  /* NO LOCATION, NO BIDS FILE (2026-10-17). With no saved place at all the
+     card can only ask for a ZIP, and it used to download the whole 231 KB
+     committed bids file first to say so. It now draws the ask straight away;
+     a ZIP typed into the card calls this function again and loads it then. */
+  if(!loc&&!savedPlace()){ renderBasisCard({bids:[],zip_grid:[]}); return; }
   if(!window.AGSIST_BIDS_NET||!loc){ committed().catch(function(){}); return; }
   window.AGSIST_BIDS_NET.snapshotForLoc(loc)
     .then(function(live){
@@ -1540,6 +1552,13 @@ function renderBasisCard(data){
     }
 
     if(bidEl)bidEl.textContent=bidPrice!=null?AG.px.cash(bidPrice):'-';
+    /* A LOCAL bid (not the "highest checked bid in the sample" fallback) also
+       goes to the line under the price (components/price-local.js). */
+    if(match.distance!==null&&bidPrice!=null&&locEl){
+      try{window.dispatchEvent(new CustomEvent('agsist:nearbid',{detail:{key:window.AGSIST_FUTURES==='soybean'?'soybeans':window.AGSIST_FUTURES,crop:CROP_LABEL.toLowerCase(),
+        price:Number(bidPrice),basis:basis!=null?Number(basis):null,contract:b.symbol||'',place:(b.facility||b.bidName||'')+(locEl.textContent?' ('+locEl.textContent+')':''),
+        when:(b.timestamp||b.cashPriceTimestamp)?'Posted '+fmtBidTime(b.timestamp||b.cashPriceTimestamp):''}}));}catch(e){}
+    }
     try{window.__agsistMR.basisCtx={basis:(basis!=null?Number(basis):null),bidPrice:(bidPrice!=null?Number(bidPrice):null),symbol:(b.symbol||b.futures_symbol||b.futuresSymbol||null),loc:(document.getElementById('basis-loc')?document.getElementById('basis-loc').textContent:null)};renderScorecard();}catch(e){}
     if(spreadEl){
       if(basis!=null){
@@ -1852,6 +1871,15 @@ function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.t
 // The hero and the lead tile use the nearest dated contract (<crop>-nearby)
 // when the pipeline publishes it with a price, else the continuous most-active
 // series, labeled "Most-active (ZC)" and never "Front Month".
+/* the price stamp: price-local.js when it is on the page, asof.js otherwise */
+function pxStampHtml(q,data){
+  if(window.AgPxStamp&&q){
+    var h=AgPxStamp.html(q,data.fetched);
+    if(h&&q.close_kind!=='settle'&&window.AgAsOf){var st=AgAsOf.staleness(data.fetched,'prices');if(st.stale)h+='<span class="asof-note"> &middot; '+st.note+'</span>';}
+    if(h)return h;
+  }
+  return window.AgAsOf?AgAsOf.html(data.fetched,'prices'):'';
+}
 function loadPrices(){
 /* AG.json (util.js): one request for prices.json, shared with geo.js and the
    range/seasonal block below. */
@@ -1898,9 +1926,13 @@ AG.json('/data/prices.json')
     if(window.AgAsOf&&data.fetched){
       /* The site's one "Updated" stamp (components/asof.js), greyed with an age once stale. */
       var __st=document.getElementById('status');
+      /* 2026-10-17: the stamp says what the price is: "Oct 16 settle" (close_kind
+         settle) or "Last trade as of 1:46 pm CT", from components/price-local.js.
+         A stale last trade keeps asof.js's age note. */
+      var __pxs=pxStampHtml(front,data);
       if(__st){var __sx=(typeof computeMarketSession==='function')?computeMarketSession():null;
-        __st.innerHTML=(__sx&&__sx.state==='closed'?'Market closed \u00b7 ':'')+AgAsOf.html(data.fetched,'prices');}
-      AgAsOf.set('snap-age',data.fetched,'prices');
+        __st.innerHTML=(__sx&&__sx.state==='closed'?'Market closed \u00b7 ':'')+__pxs;}
+      var __sa=document.getElementById('snap-age');if(__sa){__sa.innerHTML=__pxs;__sa.hidden=!__pxs;}
     }else if(window.agsistTimer&&data.fetched){
       var statusTmr=document.getElementById('status-timer');
       var statusOld=document.getElementById('status');
@@ -1934,6 +1966,8 @@ AG.json('/data/prices.json')
 
     // --- NEW: render forward curve ---
     renderForwardCurve(CROP_KEY,fwdContracts(q),q,true);
+    /* the curve sizes itself to its box, which has no width inside a closed fold: draw again on open */
+    window.addEventListener('agsist:fold-open',function(e){if(e&&e.detail==='fold-fwd'&&window.__agsistLastQ)renderForwardCurve(CROP_KEY,fwdContracts(window.__agsistLastQ),window.__agsistLastQ,true);});
     // --- v12: keep quotes accessible; reactive Market Read on breakeven change ---
     window.__agsistLastQ=q;
     window.addEventListener('be-updated',function(){

@@ -320,6 +320,16 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .sc-edu strong{color:var(--text)}
 .sc-disc{font-size:0.745rem;color:var(--text-muted);margin-top:8px;line-height:1.5}
 </style>
+<style id="fold-css">/* 2026-10-17 phone fold: long secondary sections sit behind a labeled <details>; open on wide screens (data-wide-open). Content stays in the HTML. */
+details.fold{margin:0 0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+details.fold>summary.fold-sum{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:.7rem 2.4rem .7rem .95rem;min-height:48px;justify-content:center;position:relative}
+details.fold>summary.fold-sum::-webkit-details-marker{display:none}
+details.fold>summary.fold-sum::after{content:"";position:absolute;right:1rem;top:50%;width:9px;height:9px;margin-top:-6px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);transition:transform .15s}
+details.fold[open]>summary.fold-sum::after{transform:rotate(-135deg);margin-top:-1px}
+.fold-t{font-weight:700;color:var(--text);font-size:.95rem}.fold-d{font-size:.8rem;color:var(--text-dim);line-height:1.4}
+details.fold>.fold-body{padding:0 .6rem .6rem}details.fold>.fold-body>*:last-child{margin-bottom:0}
+details.fold[hidden]{display:none}
+</style>
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
@@ -422,6 +432,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
       <div class="ph-chg sk" id="hero-chg"><!--SEED:chg--><span class="dn">▼ −1¾¢ (−0.14%)</span><!--/SEED--></div>
     </div>
   </div>
+  <p class="pl-line" data-state-bid="soybeans" hidden></p>
 
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
   <!--SEED:nc--><div class="nc-line" id="nc-line" style="display:none"></div><!--/SEED-->
@@ -439,6 +450,20 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     <details class="qa-more"><summary>New crop, basis and what moves soybeans</summary><p>The <b>front-month</b> contract tracks nearest delivery; <b>November soybeans (ZSX)</b> is the new-crop harvest benchmark producers use to forward-price. Your local <b>cash price</b> equals futures plus or minus <b>basis</b>. Soybean prices move mainly on the monthly <b>USDA WASDE</b> report, South American weather and harvest, the soybean crush (meal and oil), and Chinese export demand. See <a href="/whats-priced-in">what&rsquo;s priced in</a> ahead of each report. Live CBOT prices below are refreshed every 15 minutes during trading hours. Reload for the latest. Compare with live <a href="/corn-futures-prices">corn</a> and <a href="/wheat-futures-prices">wheat</a> futures.</p></details>
   </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor"><span class="ag-sponsor-tag">Sponsor this page</span> Your name beside the soybean futures price. One category-exclusive slot. <span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span> <a href="/sponsor-apply?slot=soybean-futures-prices&amp;utm_source=soybean-futures-prices&amp;utm_medium=slot">Put your name here &rarr;</a></aside>
+
+  <div class="cg">
+    <div class="cc hi"><div class="cc-lbl" id="lbl-beans">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
+    <div class="cc"><div class="cc-lbl" id="lbl-beansnov">Nov new crop (ZSX)</div><div class="cc-p sk" id="p-beansnov">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beansnov"></div></div>
+    <div class="cc"><div class="cc-lbl">Corn (ZC)</div><div class="cc-p sk" id="p-corn">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
+    <div class="cc"><div class="cc-lbl">Soy Meal (ZM)</div><div class="cc-p sk" id="p-meal">-</div><div class="cc-u">$/ton</div><div class="cc-c" id="c-meal"></div></div>
+    <div class="cc"><div class="cc-lbl">Soy Oil (ZL)</div><div class="cc-p sk" id="p-soyoil">-</div><div class="cc-u">&cent;/lb</div><div class="cc-c" id="c-soyoil"></div></div>
+    <div class="cc"><div class="cc-lbl">Dollar Index (DX)</div><div class="cc-p sk" id="p-dollar">-</div><div class="cc-u">DXY</div><div class="cc-c" id="c-dollar"></div></div>
+  </div>
+  <div class="rng">
+    <div class="rng-lbl">52-week range: soybeans (most-active ZS)</div>
+    <div class="rng-bar"><div class="rng-fill" id="rng-fill"></div><div class="rng-dot" id="rng-dot"></div></div>
+    <div class="rng-labels"><span class="rng-lo" id="rng-lo">-</span><span class="rng-cur" id="rng-cur">-</span><span class="rng-hi" id="rng-hi">-</span></div>
+  </div>
 
   <div class="be-strip">
     <label for="be-input">My cost of production:</label>
@@ -476,71 +501,68 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     </div>
   </div>
 
-  <div class="scorecard" id="scorecard" style="display:none">
-    <div class="sc-hd"><span class="sc-lbl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Your pricing situation</span><span class="sc-sit" id="sc-situation"></span></div>
-    <div class="sc-factors" id="sc-factors"></div>
-    <div class="sc-cash" id="sc-cash" style="display:none"></div>
-    <div class="sc-rp" id="sc-rp" style="display:none"></div>
-    <div class="sc-priced">
-      <label for="priced-input">% of new crop already priced:</label>
-      <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of new crop already priced">
-      <span class="sc-priced-result" id="priced-result"></span>
-      <button type="button" class="be-clear" id="priced-clear">clear</button>
-    </div>
-    <div class="sc-edu" id="sc-edu"></div>
-    <div class="sc-disc">Educational context built from your own inputs, not financial advice. Verify with your broker or advisor before any pricing decision.</div>
-  </div>
-
-  <div class="cg">
-    <div class="cc hi"><div class="cc-lbl" id="lbl-beans">Soybeans (ZS)</div><div class="cc-p sk" id="p-beans">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beans"></div></div>
-    <div class="cc"><div class="cc-lbl" id="lbl-beansnov">Nov new crop (ZSX)</div><div class="cc-p sk" id="p-beansnov">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-beansnov"></div></div>
-    <div class="cc"><div class="cc-lbl">Corn (ZC)</div><div class="cc-p sk" id="p-corn">-</div><div class="cc-u">$/bu</div><div class="cc-c" id="c-corn"></div></div>
-    <div class="cc"><div class="cc-lbl">Soy Meal (ZM)</div><div class="cc-p sk" id="p-meal">-</div><div class="cc-u">$/ton</div><div class="cc-c" id="c-meal"></div></div>
-    <div class="cc"><div class="cc-lbl">Soy Oil (ZL)</div><div class="cc-p sk" id="p-soyoil">-</div><div class="cc-u">&cent;/lb</div><div class="cc-c" id="c-soyoil"></div></div>
-    <div class="cc"><div class="cc-lbl">Dollar Index (DX)</div><div class="cc-p sk" id="p-dollar">-</div><div class="cc-u">DXY</div><div class="cc-c" id="c-dollar"></div></div>
-  </div>
-
-  <div class="rng">
-    <div class="rng-lbl">52-week range: soybeans (most-active ZS)</div>
-    <div class="rng-bar"><div class="rng-fill" id="rng-fill"></div><div class="rng-dot" id="rng-dot"></div></div>
-    <div class="rng-labels"><span class="rng-lo" id="rng-lo">-</span><span class="rng-cur" id="rng-cur">-</span><span class="rng-hi" id="rng-hi">-</span></div>
-  </div>
-  <div class="rng" id="rng5-wrap" style="display:none;margin-top:12px">
-    <div class="rng-lbl">5-Year Percentile: Soybeans (weekly closes)</div>
-    <div class="rng-bar"><div class="rng-fill" id="rng5-fill"></div><div class="rng-dot" id="rng5-dot"></div></div>
-    <div class="rng-labels"><span class="rng-lo" id="rng5-lo">-</span><span class="rng-cur" id="rng5-cur">-</span><span class="rng-hi" id="rng5-hi">-</span></div>
-    <div id="rng5-read" style="font-size:0.795rem;color:var(--text-dim,#9bb0a3);margin-top:7px;line-height:1.5"></div>
-  </div>
-
-
-  <div class="rat-row">
-    <div class="rat-card">
-      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Corn·bean planting ratio</div>
-      <div class="rat-pair" id="cb-pair" style="font-size:.8rem;color:var(--text-dim);margin-top:2px"></div>
-      <div class="rat-val sk" id="cb-ratio">-</div>
-      <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="cb-dot"></div></div>
-      <div class="rat-gauge-labels">
-        <span>&larr; Corn<br><em>&lt;2.4:1</em></span>
-        <span style="text-align:center">Neutral<br><em>2.4&ndash;2.6</em></span>
-        <span style="text-align:right">Beans &rarr;<br><em>&gt;2.6:1</em></span>
+  <details class="fold" id="fold-sc" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Your pricing situation</span><span class="fold-d">52-week position, how much you have priced, cash vs futures</span></summary>
+    <div class="fold-body">
+    <div class="scorecard" id="scorecard" style="display:none">
+      <div class="sc-hd"><span class="sc-lbl"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Your pricing situation</span><span class="sc-sit" id="sc-situation"></span></div>
+      <div class="sc-factors" id="sc-factors"></div>
+      <div class="sc-cash" id="sc-cash" style="display:none"></div>
+      <div class="sc-rp" id="sc-rp" style="display:none"></div>
+      <div class="sc-priced">
+        <label for="priced-input">% of new crop already priced:</label>
+        <input type="number" id="priced-input" min="0" max="100" step="5" inputmode="numeric" placeholder="0–100" aria-label="Percent of new crop already priced">
+        <span class="sc-priced-result" id="priced-result"></span>
+        <button type="button" class="be-clear" id="priced-clear">clear</button>
       </div>
-      <div class="rat-interp" id="cb-interp">Nov Beans &divide; Dec Corn &middot; live from futures</div>
-      <div class="rat-note">Planting mix signal &middot; <a href="/breakeven">Build your full breakeven &rarr;</a></div>
-      <div class="method-note"><b>Method</b> &middot; Nov soybeans divided by Dec corn, both live. The 2.4 and 2.6 lines are AGSIST rules of thumb for where acres usually tilt, not a USDA or university threshold; your rotation, costs and rent decide. &middot; Reviewed by Sigurd Lindquist, CCA</div>
+      <div class="sc-edu" id="sc-edu"></div>
+      <div class="sc-disc">Educational context built from your own inputs, not financial advice. Verify with your broker or advisor before any pricing decision.</div>
     </div>
-    <div class="rat-card" id="crush-card">
-      <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-factory"/></svg> Gross board crush (est.)</div>
-      <div class="rat-val sk" id="crush-val">-</div>
-      <div class="crush-zones">
-        <div class="crush-zone cz3" id="cz3">Above $2.50/bu &middot; wide</div>
-        <div class="crush-zone cz2" id="cz2">$1.50&ndash;$2.50/bu &middot; strong</div>
-        <div class="crush-zone cz1" id="cz1">$0.75&ndash;$1.50/bu &middot; typical</div>
-        <div class="crush-zone cz0" id="cz0">Below $0.75/bu &middot; narrow</div>
+    </div>
+  </details>
+
+
+  <details class="fold" id="fold-ratio" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">5-year range, corn/bean ratio and crush</span><span class="fold-d">Where today sits in five years; the planting ratio; board crush</span></summary>
+    <div class="fold-body">
+    <div class="rng" id="rng5-wrap" style="display:none;margin-top:12px">
+      <div class="rng-lbl">5-Year Percentile: Soybeans (weekly closes)</div>
+      <div class="rng-bar"><div class="rng-fill" id="rng5-fill"></div><div class="rng-dot" id="rng5-dot"></div></div>
+      <div class="rng-labels"><span class="rng-lo" id="rng5-lo">-</span><span class="rng-cur" id="rng5-cur">-</span><span class="rng-hi" id="rng5-hi">-</span></div>
+      <div id="rng5-read" style="font-size:0.795rem;color:var(--text-dim,#9bb0a3);margin-top:7px;line-height:1.5"></div>
+    </div>
+    <div class="rat-row">
+      <div class="rat-card">
+        <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>/<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Corn·bean planting ratio</div>
+        <div class="rat-pair" id="cb-pair" style="font-size:.8rem;color:var(--text-dim);margin-top:2px"></div>
+        <div class="rat-val sk" id="cb-ratio">-</div>
+        <div class="rat-gauge-bar"><div class="rat-gauge-dot" id="cb-dot"></div></div>
+        <div class="rat-gauge-labels">
+          <span>&larr; Corn<br><em>&lt;2.4:1</em></span>
+          <span style="text-align:center">Neutral<br><em>2.4&ndash;2.6</em></span>
+          <span style="text-align:right">Beans &rarr;<br><em>&gt;2.6:1</em></span>
+        </div>
+        <div class="rat-interp" id="cb-interp">Nov Beans &divide; Dec Corn &middot; live from futures</div>
+        <div class="rat-note">Planting mix signal &middot; <a href="/breakeven">Build your full breakeven &rarr;</a></div>
+        <div class="method-note"><b>Method</b> &middot; Nov soybeans divided by Dec corn, both live. The 2.4 and 2.6 lines are AGSIST rules of thumb for where acres usually tilt, not a USDA or university threshold; your rotation, costs and rent decide. &middot; Reviewed by Sigurd Lindquist, CCA</div>
       </div>
-      <div class="crush-sub" id="crush-sub">Meal and oil value minus bean cost, per bushel</div>
-      <div class="method-note"><b>Method</b> &middot; 44 lb of meal (priced per short ton) plus 11 lb of oil (priced in cents a pound) from one bushel, minus the bean price. Nov beans pair with Dec meal and oil; other bean months with the same month. Gross: no plant costs. The bands are AGSIST rules of thumb, not USDA or university figures. &middot; <b>Sources</b> &middot; CBOT soybean, meal and oil futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, CCA</div>
+      <div class="rat-card" id="crush-card">
+        <div class="rat-lbl"><svg class="ic" aria-hidden="true"><use href="#i-factory"/></svg> Gross board crush (est.)</div>
+        <div class="rat-val sk" id="crush-val">-</div>
+        <div class="crush-zones">
+          <div class="crush-zone cz3" id="cz3">Above $2.50/bu &middot; wide</div>
+          <div class="crush-zone cz2" id="cz2">$1.50&ndash;$2.50/bu &middot; strong</div>
+          <div class="crush-zone cz1" id="cz1">$0.75&ndash;$1.50/bu &middot; typical</div>
+          <div class="crush-zone cz0" id="cz0">Below $0.75/bu &middot; narrow</div>
+        </div>
+        <div class="crush-sub" id="crush-sub">Meal and oil value minus bean cost, per bushel</div>
+        <div class="method-note"><b>Method</b> &middot; 44 lb of meal (priced per short ton) plus 11 lb of oil (priced in cents a pound) from one bushel, minus the bean price. Nov beans pair with Dec meal and oil; other bean months with the same month. Gross: no plant costs. The bands are AGSIST rules of thumb, not USDA or university figures. &middot; <b>Sources</b> &middot; CBOT soybean, meal and oil futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, CCA</div>
+      </div>
     </div>
-  </div>
+    </div>
+  </details>
+
+
 
   <div class="basis-card" id="basis-card">
     <div class="basis-head">
@@ -570,127 +592,162 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     <div class="basis-src" id="basis-src">Cash bids from the AGSIST elevator network</div>
   </div>
   <div data-signup-ask="Email me soybean futures and my top local bid, every weekday morning" data-source="page:soybean-futures-prices"></div>
-  <div class="crop-card" id="crop-card">
-    <div class="crop-head">
-      <h2 class="crop-title"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> USDA Crop Progress · soybeans</h2>
-      <span class="crop-asof" id="crop-asof"></span>
+  <details class="fold" id="fold-crop" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">USDA crop progress</span><span class="fold-d">Planting, harvest and condition vs last year and the 5-year average</span></summary>
+    <div class="fold-body">
+    <div class="crop-card" id="crop-card">
+      <div class="crop-head">
+        <h2 class="crop-title"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> USDA Crop Progress · soybeans</h2>
+        <span class="crop-asof" id="crop-asof"></span>
+      </div>
+      <div class="crop-section" id="crop-plant-sec">
+        <div class="crop-sec-lbl">Planting Progress</div>
+        <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-plant-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-plant-bar-pct">-</div></div>
+        <div class="crop-row"><span id="crop-plant-prev">-</span></div>
+        <div class="crop-pace" id="crop-plant-pace" style="display:none">-</div>
+      </div>
+      <div class="crop-section" id="crop-ge-sec">
+        <div class="crop-sec-lbl">Crop condition (good + excellent)</div>
+        <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-ge-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-ge-bar-pct">-</div></div>
+        <div class="crop-pending" id="crop-ge-pending" style="display:none"></div>
+        <div class="crop-row"><span id="crop-ge-prev-week"></span></div>
+        <div class="crop-row"><span id="crop-ge-prev-yr"></span></div>
+      </div>
+      <div class="crop-src">Source: USDA NASS Weekly Crop Progress &middot; national aggregate &middot; reported Mondays after market close &middot; <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS &#8599;</a></div>
     </div>
-    <div class="crop-section" id="crop-plant-sec">
-      <div class="crop-sec-lbl">Planting Progress</div>
-      <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-plant-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-plant-bar-pct">-</div></div>
-      <div class="crop-row"><span id="crop-plant-prev">-</span></div>
-      <div class="crop-pace" id="crop-plant-pace" style="display:none">-</div>
     </div>
-    <div class="crop-section" id="crop-ge-sec">
-      <div class="crop-sec-lbl">Crop condition (good + excellent)</div>
-      <div class="crop-bar-wrap"><div class="crop-bar-fill" id="crop-ge-fill" style="width:0%"></div><div class="crop-bar-pct" id="crop-ge-bar-pct">-</div></div>
-      <div class="crop-pending" id="crop-ge-pending" style="display:none"></div>
-      <div class="crop-row"><span id="crop-ge-prev-week"></span></div>
-      <div class="crop-row"><span id="crop-ge-prev-yr"></span></div>
+  </details>
+  <details class="fold" id="fold-cot" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Fund positioning (CFTC)</span><span class="fold-d">What managed money holds and how crowded it is</span></summary>
+    <div class="fold-body">
+    <div class="cot-card" id="cot-card">
+      <div class="cot-head">
+        <span class="cot-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · soybeans</span>
+        <span class="cot-asof" id="cot-asof"></span>
+      </div>
+      <div class="cot-net" id="cot-net">-</div>
+      <div class="cot-sub" id="cot-sub">net contracts</div>
+      <div id="cot-gauge-wrap">
+        <div class="cot-gauge"><div class="cot-dot" id="cot-dot" style="left:50%"></div></div>
+        <div class="cot-labels"><span>&larr; most short since 2010</span><span>middle</span><span>most long &rarr;</span></div>
+        <div class="cot-pct" id="cot-pct">-</div>
+      </div>
+      <div class="cot-chg" id="cot-chg">-</div>
+      <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
+      <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET &middot; <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC &#8599;</a> &middot; <a href="/cot">Full positioning history &rarr;</a></div>
     </div>
-    <div class="crop-src">Source: USDA NASS Weekly Crop Progress &middot; national aggregate &middot; reported Mondays after market close &middot; <a href="https://www.nass.usda.gov/Publications/National_Crop_Progress/" target="_blank" rel="noopener">NASS &#8599;</a></div>
-  </div>
-  <div class="cot-card" id="cot-card">
-    <div class="cot-head">
-      <span class="cot-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · soybeans</span>
-      <span class="cot-asof" id="cot-asof"></span>
     </div>
-    <div class="cot-net" id="cot-net">-</div>
-    <div class="cot-sub" id="cot-sub">net contracts</div>
-    <div id="cot-gauge-wrap">
-      <div class="cot-gauge"><div class="cot-dot" id="cot-dot" style="left:50%"></div></div>
-      <div class="cot-labels"><span>&larr; most short since 2010</span><span>middle</span><span>most long &rarr;</span></div>
-      <div class="cot-pct" id="cot-pct">-</div>
+  </details>
+  <details class="fold" id="fold-fwd" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Forward curve, every contract</span><span class="fold-d">Carry or inverse from the nearby out</span></summary>
+    <div class="fold-body">
+    <div class="fwd-card">
+      <div class="fwd-head">
+        <span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Forward curve · all soybean contracts</span>
+        <span class="fwd-shape" id="fwd-shape">-</span>
+      </div>
+      <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="fwd-empty" id="fwd-empty" style="display:none">Not enough deferred contracts available for curve analysis.</div>
+      <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
     </div>
-    <div class="cot-chg" id="cot-chg">-</div>
-    <div class="cot-interp" id="cot-interp"><span class="sr-only">Loading positioning data</span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span></div>
-    <div class="cot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET &middot; <a href="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" target="_blank" rel="noopener">CFTC &#8599;</a> &middot; <a href="/cot">Full positioning history &rarr;</a></div>
-  </div>
-  <div class="fwd-card">
-    <div class="fwd-head">
-      <span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Forward curve · all soybean contracts</span>
-      <span class="fwd-shape" id="fwd-shape">-</span>
     </div>
-    <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div class="fwd-empty" id="fwd-empty" style="display:none">Not enough deferred contracts available for curve analysis.</div>
-    <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
-  </div>
-  <div class="cp">
-    <div class="cp-head">
-      <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Soybean front month: interactive chart</h2>
-      <span class="cp-src">Soybean CFD tracking CBOT &middot; <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View CBOT:ZS1! on TradingView &#8599;</a></span>
+  </details>
+  <details class="fold" id="fold-chart" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Interactive chart</span><span class="fold-d">TradingView daily chart; loads when you open it</span></summary>
+    <div class="fold-body">
+    <div class="cp">
+      <div class="cp-head">
+        <h2><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Soybean front month: interactive chart</h2>
+        <span class="cp-src">Soybean CFD tracking CBOT &middot; <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View CBOT:ZS1! on TradingView &#8599;</a></span>
+      </div>
+      <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive soybean chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
+      <div class="tv-fallback" id="tv-fallback">
+        <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
+        <span>Interactive chart unavailable in this environment.</span>
+        <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View the soybean chart on TradingView →</a>
+      </div>
     </div>
-    <div id="tv-chart" style="height:480px"><div class="tv-ph"><span>The interactive soybean chart from TradingView loads when you scroll to it.</span><button type="button" class="tv-load" id="tv-load">Load chart now</button></div></div>
-    <div class="tv-fallback" id="tv-fallback">
-      <span style="font-size:1.5rem"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span>
-      <span>Interactive chart unavailable in this environment.</span>
-      <a href="https://www.tradingview.com/symbols/CBOT-ZS1!/" target="_blank" rel="noopener">View the soybean chart on TradingView →</a>
     </div>
-  </div>
+  </details>
 
-  <div class="seas-wrap" id="seas-wrap" style="display:none">
-    <div class="seas-head">
-      <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Soybean seasonal price tendency</span>
-      <span class="seas-note">Historical pattern &middot; current month highlighted &middot; hover for context</span>
+  <details class="fold" id="fold-seas" data-wide-open>
+    <summary class="fold-sum"><span class="fold-t">Seasonal price tendency</span><span class="fold-d">What weekly closes did by month over recent years</span></summary>
+    <div class="fold-body">
+    <div class="seas-wrap" id="seas-wrap" style="display:none">
+      <div class="seas-head">
+        <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Soybean seasonal price tendency</span>
+        <span class="seas-note">Historical pattern &middot; current month highlighted &middot; hover for context</span>
+      </div>
+      <div id="seas-chart" class="seas-chart"></div>
+      <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast.</div>
     </div>
-    <div id="seas-chart" class="seas-chart"></div>
-    <div class="seas-caption" id="seas-caption">Weekly closes by calendar month, scaled 0&ndash;100 (0 = weakest month, 100 = strongest). Continuous front-month, not roll-adjusted, over a short window: a description of these years, not a forecast.</div>
-  </div>
+    </div>
+  </details>
 
-  <div class="xg">
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Contract Specs</h4>
-      <div class="xr"><span class="xl">Exchange</span><span class="xv">CBOT / CME Group</span></div>
-      <div class="xr"><span class="xl">Contract Size</span><span class="xv">5,000 bushels</span></div>
-      <div class="xr"><span class="xl">Tick Size</span><span class="xv">&frac14;&cent;/bu ($12.50/contract)</span></div>
-      <div class="xr"><span class="xl">Symbol</span><span class="xv">ZS</span></div>
-      <div class="xr"><span class="xl">Active Months</span><span class="xv">Jan, Mar, May, Jul, Aug, Sep, Nov</span></div>
+  <details class="fold" id="fold-specs">
+    <summary class="fold-sum"><span class="fold-t">Contract specs and report times</span><span class="fold-d">Size, tick, months, the reports that move it</span></summary>
+    <div class="fold-body">
+    <div class="xg">
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Contract Specs</h4>
+        <div class="xr"><span class="xl">Exchange</span><span class="xv">CBOT / CME Group</span></div>
+        <div class="xr"><span class="xl">Contract Size</span><span class="xv">5,000 bushels</span></div>
+        <div class="xr"><span class="xl">Tick Size</span><span class="xv">&frac14;&cent;/bu ($12.50/contract)</span></div>
+        <div class="xr"><span class="xl">Symbol</span><span class="xv">ZS</span></div>
+        <div class="xr"><span class="xl">Active Months</span><span class="xv">Jan, Mar, May, Jul, Aug, Sep, Nov</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Key Reports</h4>
+        <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) &middot; highest impact</span></div>
+        <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm ET (Apr&ndash;Nov)</span></div>
+        <div class="xr"><span class="xl">Acreage Report</span><span class="xv">Late June</span></div>
+        <div class="xr"><span class="xl">Brazil harvest</span><span class="xv">Jan&ndash;Mar annually</span></div>
+        <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Using these prices</h4>
+        <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans &divide; Dec corn</span></div>
+        <div class="xr"><span class="xl">Break-even</span><span class="xv">~$9.00&ndash;$11.00/bu, an AGSIST rule of thumb</span></div>
+        <div class="xr"><span class="xl">New crop</span><span class="xv">Nov = harvest benchmark</span></div>
+        <div class="xr"><span class="xl">China windows</span><span class="xv">Watch Sep&ndash;Jan buying pace</span></div>
+      </div>
+      <div class="xc">
+        <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US soybean use</h4>
+        <div class="xr"><span class="xl">Crush (domestic)</span><span class="xv">~60% of US crop</span></div>
+        <div class="xr"><span class="xl">Exports</span><span class="xv">~40% of US crop</span></div>
+        <div class="xr"><span class="xl">China demand</span><span class="xv">Largest soy importer</span></div>
+        <div class="xr"><span class="xl">Top export rival</span><span class="xv">Brazil (record crops)</span></div>
+      </div>
     </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Key Reports</h4>
-      <div class="xr"><span class="xl">WASDE</span><span class="xv">Monthly (~10th) &middot; highest impact</span></div>
-      <div class="xr"><span class="xl">Crop Progress</span><span class="xv">Weekly Mon 4pm ET (Apr&ndash;Nov)</span></div>
-      <div class="xr"><span class="xl">Acreage Report</span><span class="xv">Late June</span></div>
-      <div class="xr"><span class="xl">Brazil harvest</span><span class="xv">Jan&ndash;Mar annually</span></div>
-      <div class="xr"><span class="xl">Export Sales</span><span class="xv">Thu 7:30am CT</span></div>
     </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Using these prices</h4>
-      <div class="xr"><span class="xl">Corn/bean ratio</span><span class="xv">Nov beans &divide; Dec corn</span></div>
-      <div class="xr"><span class="xl">Break-even</span><span class="xv">~$9.00&ndash;$11.00/bu, an AGSIST rule of thumb</span></div>
-      <div class="xr"><span class="xl">New crop</span><span class="xv">Nov = harvest benchmark</span></div>
-      <div class="xr"><span class="xl">China windows</span><span class="xv">Watch Sep&ndash;Jan buying pace</span></div>
-    </div>
-    <div class="xc">
-      <h4><svg class="ic" aria-hidden="true"><use href="#i-globe"/></svg> US soybean use</h4>
-      <div class="xr"><span class="xl">Crush (domestic)</span><span class="xv">~60% of US crop</span></div>
-      <div class="xr"><span class="xl">Exports</span><span class="xv">~40% of US crop</span></div>
-      <div class="xr"><span class="xl">China demand</span><span class="xv">Largest soy importer</span></div>
-      <div class="xr"><span class="xl">Top export rival</span><span class="xv">Brazil (record crops)</span></div>
-    </div>
-  </div>
+  </details>
 
-  <div class="edu-wrap">
-    <h3><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg> Understanding soybean prices</h3>
-    <div class="edu-grid">
-      <div class="edu-block">
-        <h4>Futures vs cash</h4>
-        <p>The CBOT soybean futures price (ZS) is the global benchmark: a contract for delivery of 5,000 bushels at a future month, traded by speculators, processors, and elevators. The cash bid is what your local elevator pays today, in cash, for soybeans delivered there. The difference between cash and futures is the basis. Basis varies by location, season, and elevator competition. A strong positive basis means firm local demand; a wide negative basis means heavy supply or weak buyer interest. AGSIST shows both numbers on this page.</p>
-      </div>
-      <div class="edu-block">
-        <h4>The CBOT soybean complex</h4>
-        <p>CBOT soybean futures (ZS) are part of a three-market complex with soy meal (ZM, $/ton) and soy oil (ZL, &cent;/lb). All three prices are linked by the crush margin: processors buy beans and sell meal and oil. When crush margins are strong, processors bid up beans; when margins compress, crush slows and bean demand weakens. Watch all three together to see demand beyond the export headlines.</p>
-      </div>
-      <div class="edu-block">
-        <h4>China demand and the corn/bean ratio</h4>
-        <p>China imports roughly 60% of globally traded soybeans annually. Aggressive Chinese buying windows, particularly September through January, are closely watched. The corn/bean ratio (November beans &divide; December corn) shows whether soybeans or corn pay more per planted acre. Above 2.6:1, soybeans historically earn more per acre; below 2.4:1, corn wins. AGSIST calculates this live so you can track it through the winter planning season.</p>
-      </div>
-      <div class="edu-block">
-        <h4>South America and the two-crop year</h4>
-        <p>Brazil and Argentina together export roughly 60% of the world's soybeans, creating a two-season global market. Brazil plants October&ndash;December, harvests January&ndash;April; Argentina's critical pod-fill window is November&ndash;March. La Ni&ntilde;a years bring dry conditions to Argentina and can cut Argentina's crop hard, which supports US prices. Record Brazilian crops create export competition that pressures US basis from February through May.</p>
+  <details class="fold" id="fold-edu">
+    <summary class="fold-sum"><span class="fold-t">Understanding soybean prices</span><span class="fold-d">How the contract works and what moves it</span></summary>
+    <div class="fold-body">
+    <div class="edu-wrap">
+      <h3><svg class="ic" aria-hidden="true"><use href="#i-book-open"/></svg> Understanding soybean prices</h3>
+      <div class="edu-grid">
+        <div class="edu-block">
+          <h4>Futures vs cash</h4>
+          <p>The CBOT soybean futures price (ZS) is the global benchmark: a contract for delivery of 5,000 bushels at a future month, traded by speculators, processors, and elevators. The cash bid is what your local elevator pays today, in cash, for soybeans delivered there. The difference between cash and futures is the basis. Basis varies by location, season, and elevator competition. A strong positive basis means firm local demand; a wide negative basis means heavy supply or weak buyer interest. AGSIST shows both numbers on this page.</p>
+        </div>
+        <div class="edu-block">
+          <h4>The CBOT soybean complex</h4>
+          <p>CBOT soybean futures (ZS) are part of a three-market complex with soy meal (ZM, $/ton) and soy oil (ZL, &cent;/lb). All three prices are linked by the crush margin: processors buy beans and sell meal and oil. When crush margins are strong, processors bid up beans; when margins compress, crush slows and bean demand weakens. Watch all three together to see demand beyond the export headlines.</p>
+        </div>
+        <div class="edu-block">
+          <h4>China demand and the corn/bean ratio</h4>
+          <p>China imports roughly 60% of globally traded soybeans annually. Aggressive Chinese buying windows, particularly September through January, are closely watched. The corn/bean ratio (November beans &divide; December corn) shows whether soybeans or corn pay more per planted acre. Above 2.6:1, soybeans historically earn more per acre; below 2.4:1, corn wins. AGSIST calculates this live so you can track it through the winter planning season.</p>
+        </div>
+        <div class="edu-block">
+          <h4>South America and the two-crop year</h4>
+          <p>Brazil and Argentina together export roughly 60% of the world's soybeans, creating a two-season global market. Brazil plants October&ndash;December, harvests January&ndash;April; Argentina's critical pod-fill window is November&ndash;March. La Ni&ntilde;a years bring dry conditions to Argentina and can cut Argentina's crop hard, which supports US prices. Record Brazilian crops create export competition that pressures US basis from February through May.</p>
+        </div>
       </div>
     </div>
-  </div>
+    </div>
+  </details>
 
   <div class="faq-wrap">
     <div class="faq-head"><svg class="ic" aria-hidden="true"><use href="#i-circle-question-mark"/></svg> Soybean prices: common questions</div>
@@ -766,6 +823,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
     </div>
   </div>
   <div class="disc">Prices from Yahoo Finance via GitHub Actions (delayed ~15 min). Chart shows Capital.com SOYBEAN CFD which tracks CBOT soybean futures; for exact ZS1! data use the TradingView link. Not financial advice. Verify with your elevator or broker before making marketing decisions.</div>
+<script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 
 <div id="site-footer">
@@ -781,7 +839,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=27" defer></script>
 <script>window.AGSIST_FUTURES='soybean'</script>
-<script src="/components/storesell.js?v=7"></script><script src="/components/futures.js?v=13"></script>
+<script src="/components/storesell.js?v=7"></script><script src="/components/price-local.js?v=1"></script><script src="/components/futures.js?v=14"></script>
 
 </body>
 </html>
