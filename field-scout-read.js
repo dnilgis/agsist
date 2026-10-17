@@ -128,6 +128,7 @@ window.__fsRead = function (FSX) {
           section('risk',ICONS.risk,'Risk Profile','fs-risk') +
           section('bids',ICONS.bids,'Nearby Cash Bids','fs-bids') +
           section('rent',ICONS.rent,'What This Ground Rents For','fs-rent') +
+          section('land',ICONS.rent,'Parcel, Owner &amp; Sales','fs-land') +
           section('atlas',ICONS.risk,'The County’s Long Record','fs-atlas') +
           section('market',ICONS.market,'Selling It From Here','fs-market') +
           section('hood',ICONS.hood,'Who Farms Around Here','fs-hood') +
@@ -152,6 +153,23 @@ window.__fsRead = function (FSX) {
     loadBids(c);
     loadHailData(c);
     loadCounty(c);
+    loadLand(poly);
+  }
+
+  // ── Parcel, owner, transfers, sold land, flood and wetlands: field-scout-land.js,
+  // fetched only when a field is picked (it is not on the first screen).
+  var FS_LAND_SRC='/field-scout-land.js?v=1', _landP=null, LAND=null;
+  function loadLand(poly){
+    if(LAND) LAND.clear();
+    if(!_landP) _landP=new Promise(function(ok, no){
+      var s=document.createElement('script'); s.src=FS_LAND_SRC;
+      s.onload=function(){ typeof window.__fsLand==='function' ? ok(window.__fsLand(FSX)) : no(new Error('land')); };
+      s.onerror=function(){ if(s.parentNode) s.parentNode.removeChild(s); no(new Error('land')); };
+      document.head.appendChild(s);
+    }).then(function(M){ LAND=M; return M; }, function(e){ _landP=null; throw e; });
+    var gen=FSX.fieldGen;
+    _landP.then(function(M){ if(gen===FSX.fieldGen) M.run(poly); },
+      function(){ setErr('fs-land','The parcel and sales part did not load. Check the connection and tap the field again.'); });
   }
 
   function fieldHead(acres, c){

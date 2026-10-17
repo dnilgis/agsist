@@ -1,0 +1,73 @@
+{
+  "about": "Free public government parcel services Field Scout reads at the moment a reader picks a field. Nothing here is a copy of the parcels; each entry is where to ask. scripts/probe_land_services.py checks every entry (fields, a test query, and that the service lets a web page read it) and sets verified and checked_utc. A county or state entry is used only when verified is true; Wisconsin's statewide map is builtin, tried even before the first check, and the page says so when it does not answer.",
+  "checked_utc": null,
+  "statewide": {
+    "WI": [
+      {
+        "id": "wi-sco",
+        "builtin": true,
+        "verified": false,
+        "checked_utc": null,
+        "name": "Wisconsin Statewide Parcel Map",
+        "by": "Wisconsin Department of Administration and the State Cartographer's Office (V11, from the 72 county parcel files)",
+        "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels/FeatureServer/0",
+        "about": "https://www.sco.wisc.edu/parcels/data/",
+        "fields": {
+          "pid": ["PARCELID"], "pid2": ["TAXPARCELID", "STATEID"],
+          "owner": ["OWNERNME1", "OWNERNME2"], "mail": ["PSTLADRESS"], "site": ["SITEADRESS"],
+          "gis_acres": ["GISACRES"], "deed_acres": ["DEEDACRES"], "assd_acres": ["ASSDACRES"],
+          "land": ["LNDVALUE"], "imp": ["IMPVALUE"], "total": ["CNTASSDVALUE"], "fmv": ["ESTFMKVALUE"],
+          "cls": ["PROPCLASS", "AUXCLASS"], "county": ["CONAME"], "muni": ["PLACENAME"],
+          "year": ["TAXROLLYEAR"], "date": ["PARCELDATE"]
+        }
+      },
+      {
+        "id": "wi-ltsb",
+        "builtin": true,
+        "verified": false,
+        "checked_utc": null,
+        "name": "Wisconsin Statewide Parcel Map (Legislative Technology Services Bureau copy)",
+        "by": "Wisconsin Legislative Technology Services Bureau, same V11 parcels",
+        "url": "https://mapservices.legis.wisconsin.gov/arcgis/rest/services/WLIP/Parcels/FeatureServer/0",
+        "about": "https://www.sco.wisc.edu/parcels/data/",
+        "fields": {
+          "pid": ["PARCELID"], "pid2": ["TAXPARCELID", "STATEID"],
+          "owner": ["OWNERNME1", "OWNERNME2"], "mail": ["PSTLADRESS"], "site": ["SITEADRESS"],
+          "gis_acres": ["GISACRES"], "deed_acres": ["DEEDACRES"], "assd_acres": ["ASSDACRES"],
+          "land": ["LNDVALUE"], "imp": ["IMPVALUE"], "total": ["CNTASSDVALUE"], "fmv": ["ESTFMKVALUE"],
+          "cls": ["PROPCLASS", "AUXCLASS"], "county": ["CONAME"], "muni": ["PLACENAME"],
+          "year": ["TAXROLLYEAR"], "date": ["PARCELDATE"]
+        }
+      }
+    ],
+    "MN": []
+  },
+  "counties": {},
+  "discover": {
+    "states": ["MN", "IA", "IL"],
+    "note": "probe_land_services.py --discover searches ArcGIS Online for public parcel layers each county publishes, keeps only government publishers with a parcel number field and an owner field that answer a test query from a web page, and writes them under counties. Statewide candidates are checked first.",
+    "statewide_candidates": {
+      "MN": [
+        {"name": "Minnesota statewide parcels (MnGeo, counties that share)", "search": "Minnesota statewide parcels MnGeo", "about": "https://gisdata.mn.gov/dataset/plan-parcels-open"}
+      ],
+      "IA": [
+        {"name": "Iowa statewide parcels", "search": "Iowa statewide parcels", "about": "https://geodata.iowa.gov/"}
+      ],
+      "IL": [
+        {"name": "Illinois statewide parcels", "search": "Illinois statewide parcels", "about": "https://clearinghouse.isgs.illinois.edu/"}
+      ]
+    }
+  },
+  "links": {
+    "WI": [{"t": "Wisconsin statewide parcel data (State Cartographer's Office)", "url": "https://www.sco.wisc.edu/parcels/data/"}],
+    "MN": [{"t": "Minnesota statewide parcel data (MnGeo; counties choose what they share)", "url": "https://gisdata.mn.gov/dataset/plan-parcels-open"}],
+    "IA": [{"t": "Iowa geospatial data", "url": "https://geodata.iowa.gov/"}],
+    "IL": [{"t": "Illinois Geospatial Data Clearinghouse", "url": "https://clearinghouse.isgs.illinois.edu/"}]
+  },
+  "countyLinks": {},
+  "salesNote": {
+    "MN": "Minnesota sales are filed on the state's electronic Certificate of Real Estate Value (eCRV). We add them here once we have checked that the state's public copy is free and carries parcel numbers.",
+    "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We add a statewide copy only once we have checked one that is free.",
+    "IL": "Illinois sales are filed on the state transfer declaration (PTAX-203) with the county. We add a statewide copy only once we have checked one that is free."
+  }
+}
