@@ -224,9 +224,18 @@ test("futures label: 'settle' only for a recorded settle; a mid-session quote is
   const d = S.defaultBid(mid, basis, "IA", "corn");
   near(d.bid, 4.3425, 1e-9, "4.7425 - 0.40");
   assert.equal(d.settled, false); assert.equal(d.futuresRead, "2026-10-16T15:01:00Z");
-  // the evening file: the Oct 16 settle recorded at the same price
+  // the evening file from before fetch_prices v3.7: its "settle" record was the
+  // afternoon's last trade, so it is not called a settle (2026-10-17)
   const eve = { fetched: "2026-10-16T23:00:00Z", quotes: { "corn-dec26": { ticker: "ZCZ26.CBT", close: 473.25, close_date: "2026-10-16", settles: { "2026-10-15": 478.25, "2026-10-16": 473.25 } } } };
-  assert.equal(S.futuresWhen(S.quoteFor(eve, "ZCZ26")), "settle Oct 16");
+  assert.equal(S.futuresWhen(S.quoteFor(eve, "ZCZ26")), "delayed, Oct 16 6:00 pm CT");
+  // v3.7 after the bell: a last trade, current at the 1:20 pm CT bell
+  const bell = { fetched: "2026-10-16T18:46:22Z", quotes: { "corn-dec26": { ticker: "ZCZ26.CBT", close: 474.25, close_date: "2026-10-16",
+    close_kind: "last", close_time: "2026-10-16T18:20:00Z", settle: 478, settle_date: "2026-10-15" } } };
+  assert.equal(S.futuresWhen(S.quoteFor(bell, "ZCZ26")), "delayed, Oct 16 1:20 pm CT");
+  // v3.7 once the bar is the settle
+  const set = { fetched: "2026-10-17T05:00:00Z", quotes: { "corn-dec26": { ticker: "ZCZ26.CBT", close: 474.25, close_date: "2026-10-16",
+    close_kind: "settle", settle: 474.25, settle_date: "2026-10-16" } } };
+  assert.equal(S.futuresWhen(S.quoteFor(set, "ZCZ26")), "settle Oct 16");
   // no settles and no read time: "delayed", no time made up
   assert.equal(S.futuresWhen(S.quoteFor({ quotes: mid.quotes }, "ZCZ26")), "delayed");
   assert.doesNotMatch(ui, /'\(settle ' \+/, "the old unconditional settle label is gone");

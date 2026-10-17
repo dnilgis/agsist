@@ -194,12 +194,15 @@
       if (!Object.prototype.hasOwnProperty.call(q, k)) continue;
       var t = q[k] && q[k].ticker;
       if (t && t.split('.')[0] === contract && num(q[k].close)) {
-        var d = q[k].close_date || null, st = q[k].settles;
-        /* A settle only when the file records one for that day at that price.
-           A close_date of today with no recorded settle is a delayed quote
-           read mid-session (474.25 at 10:01 am CT on Oct 16, 2026). */
-        var settled = !!(d && st && num(st[d]) && st[d] === q[k].close);
-        return { key: k, close: q[k].close / 100, date: d, settled: settled, read: settled ? null : (prices.fetched || null) };
+        var d = q[k].close_date || null;
+        /* A settle only when the price file says the close IS the exchange
+           settle (fetch_prices v3.7 close_kind). Until 2026-10-17 a close that
+           matched the file's recorded "settle" counted, but that record was
+           the afternoon's last trade (Oct 16 soybeans 1260.50; CBOT settled
+           1261.25). A last trade is "delayed" with the time it was current. */
+        var settled = !!(d && q[k].close_kind === 'settle');
+        return { key: k, close: q[k].close / 100, date: d, settled: settled,
+                 read: settled ? null : (q[k].close_time || prices.fetched || null) };
       }
     }
     return null;
