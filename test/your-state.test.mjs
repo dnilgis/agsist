@@ -304,7 +304,9 @@ for (const [f, mode, after] of PAGES) {
   test(f + ": one box after the main answer, with its script", () => {
     const h = readFileSync(ROOT + f, "utf8");
     assert.equal((h.match(/data-your-state=/g) || []).length, 1);
-    const at = h.indexOf('<aside class="ya" data-your-state="' + mode + '" data-v="1" hidden></aside>');
+    // data-v is the ys-<mode>.js cache version; it moves when that file changes
+    const m = new RegExp('<aside class="ya" data-your-state="' + mode + '" data-v="\\d+" hidden></aside>').exec(h);
+    const at = m ? m.index : -1;
     assert.ok(at > 0, "box");
     assert.ok(at > h.indexOf(after), "after " + after);
     assert.match(h, /<script src="\/components\/your-state\.js\?v=\d+" defer><\/script>/);
