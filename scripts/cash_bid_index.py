@@ -650,6 +650,7 @@ def page_html(editions):
 </ul>
 <p>Computed by <code>scripts/cash_bid_index.py</code>, the same daily board prices the <a href="/daily">AGSIST Daily</a> counts in its Only on AGSIST block. Questions or corrections: <a href="mailto:sig@farmers1st.com">sig@farmers1st.com</a>.</p>"""
     title = "AGSIST Cash Bid Index: cash corn and soybean bids by state"
+    ld_json = json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -684,7 +685,7 @@ def page_html(editions):
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <style>{CSS}</style>
-  <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script>
+  <script type="application/ld+json">{ld_json}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>

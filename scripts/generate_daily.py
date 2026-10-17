@@ -4008,8 +4008,8 @@ html,body{{overflow-x:hidden;overflow-x:clip;width:100%;}}
     </header>
     {sparks_html}
     <aside class="ya" data-your-area="daily" hidden></aside>
-    <aside class="dl" data-daily-local hidden></aside>
     {topbar_html}
+    <aside class="dl" data-daily-local data-after="aside.ya[data-your-area]" hidden></aside>
     {yc_html}
     <div class="dv3-sections">{sections_html}</div>
     {sponsor_html}
