@@ -12,12 +12,8 @@ name: PRF interval so far
 #   mode=backtest  rebuild past intervals from CPC and compare with RMA's final
 #                  index; the result goes to the raw branch and the job log
 #
-# The push trigger exists only so GitHub registers this workflow from a branch
-# that is not main (dispatch needs that); a push runs the selftest only.
+# Run by hand for now; a daily schedule ("23 14 * * *") waits for Sig's OK.
 on:
-  push:
-    branches: [fx/prfseason]
-    paths: [.github/workflows/prf-season.yml]
   workflow_dispatch:
     inputs:
       mode:
