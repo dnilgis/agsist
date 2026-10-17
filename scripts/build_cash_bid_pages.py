@@ -435,10 +435,11 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             drops[k] += 1
             bd["why"][k] += 1
 
-        if b.get("stale") is not False or b.get("sourceStatus") != "ok":
+        held = SB.held_skip(b, src, gen)   # skipped this pass, read within HELD_SKIP_HOURS
+        if not held and (b.get("stale") is not False or b.get("sourceStatus") != "ok"):
             no("stale_or_unconfirmed")
             continue
-        if src.get("status") != "ok" or src.get("health") != "live":
+        if not held and (src.get("status") != "ok" or src.get("health") != "live"):
             no("board_not_live")
             continue
         if pt is None or (gen - pt).total_seconds() > FRESH_HOURS * 3600:

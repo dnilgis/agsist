@@ -136,6 +136,37 @@ def parse_ts(s):
         return None
 
 
+# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17)
+# dnilgis/bids flags a row stale whenever its board was not read on the latest
+# pass. Three reasons share that flag: "refused" (we read a page and it was not
+# the board), "broken" (the read threw) and "skipped" (we did not ask this
+# pass). Skipped boards are asked on a rota: Landus is paced at 5 of its 50
+# boards a pass, and NEW Cooperative answers most passes with a bot check the
+# reader does not try to get past, so it is read about once an hour. Taking
+# only rows read on the very latest pass left NEW at 0 of 66 locations and
+# Landus at 5 of 48 on almost every rebuild, while each of those boards had
+# been read successfully within the last two hours. A skipped board counts as
+# confirmed when its last successful read (checkedAt) is within HELD_SKIP_HOURS
+# of the snapshot. The bids repo holds a skipped price for 14 h
+# (lib/freshness.mjs WITHDRAW_H); this is stricter. Refused and broken boards
+# are never taken: their last read failed.
+HELD_SKIP_HOURS = 6
+
+
+def held_skip(b, src, gen):
+    """True when row b's board was skipped this pass (not asked, nothing known
+    wrong) and last read successfully within HELD_SKIP_HOURS of gen."""
+    if not isinstance(b, dict) or b.get("sourceStatus") != "skipped" or not src or gen is None:
+        return False
+    if src.get("status") != "skipped" or src.get("health") != "skipped":
+        return False
+    ck = parse_ts(b.get("checkedAt") or src.get("checkedAt"))
+    if ck is None:
+        return False
+    age = (gen - ck).total_seconds() / 3600
+    return -0.25 <= age <= HELD_SKIP_HOURS
+
+
 def fmt_ct(t, with_date=True):
     c = t.astimezone(CT)
     hm = c.strftime("%I:%M %p").lstrip("0")
@@ -453,10 +484,11 @@ def fresh_rows(merged, index, stats=None):
         if b.get("via") != "scrape":
             drop("not_scraped")
             continue
-        if b.get("stale") is not False or b.get("sourceStatus") != "ok":
+        held = held_skip(b, src, gen)
+        if not held and (b.get("stale") is not False or b.get("sourceStatus") != "ok"):
             drop("stale_or_unconfirmed")
             continue
-        if src.get("status") != "ok" or src.get("health") != "live":
+        if not held and (src.get("status") != "ok" or src.get("health") != "live"):
             drop("board_not_live")
             continue
         if (b.get("currency") or "") != "USD":
