@@ -1,10 +1,10 @@
 {
  "schema": "agsist-elevator-counts/1",
- "generated": "2026-10-17T08:37:08Z",
+ "generated": "2026-10-17T10:36:48Z",
  "note": "bids: AGSIST network elevators with a current bid on a /cash-bids page, and the towns they are in (scripts/build_cash_bid_pages.py state_counts). coverage: boards read on the latest full coverage pass out of every elevator tracked (copied from data/elevator-coverage-counts.json). Different questions: a board can be read and have no current bid.",
  "bids": {
-  "elevators": 1597,
-  "towns": 1260
+  "elevators": 1781,
+  "towns": 1395
  },
  "states": {
   "AL": {
@@ -28,24 +28,24 @@
    "towns": 8
   },
   "IA": {
-   "elevators": 337,
-   "towns": 240
+   "elevators": 351,
+   "towns": 250
   },
   "ID": {
    "elevators": 1,
    "towns": 1
   },
   "IL": {
-   "elevators": 204,
-   "towns": 146
+   "elevators": 210,
+   "towns": 151
   },
   "IN": {
-   "elevators": 61,
+   "elevators": 63,
    "towns": 48
   },
   "KS": {
-   "elevators": 197,
-   "towns": 139
+   "elevators": 255,
+   "towns": 181
   },
   "KY": {
    "elevators": 9,
@@ -60,8 +60,8 @@
    "towns": 17
   },
   "MN": {
-   "elevators": 153,
-   "towns": 129
+   "elevators": 156,
+   "towns": 131
   },
   "MO": {
    "elevators": 28,
@@ -72,24 +72,24 @@
    "towns": 8
   },
   "ND": {
-   "elevators": 47,
-   "towns": 43
+   "elevators": 48,
+   "towns": 44
   },
   "NE": {
-   "elevators": 184,
-   "towns": 140
+   "elevators": 199,
+   "towns": 149
   },
   "NY": {
    "elevators": 2,
    "towns": 2
   },
   "OH": {
-   "elevators": 75,
-   "towns": 68
+   "elevators": 79,
+   "towns": 70
   },
   "OK": {
-   "elevators": 11,
-   "towns": 10
+   "elevators": 77,
+   "towns": 65
   },
   "OR": {
    "elevators": 1,
@@ -104,7 +104,7 @@
    "towns": 3
   },
   "SD": {
-   "elevators": 104,
+   "elevators": 106,
    "towns": 91
   },
   "TN": {
@@ -112,8 +112,8 @@
    "towns": 4
   },
   "TX": {
-   "elevators": 5,
-   "towns": 3
+   "elevators": 18,
+   "towns": 12
   },
   "WA": {
    "elevators": 9,
