@@ -90,10 +90,12 @@ td .yr{color:#50595c;font-size:7pt;font-weight:400}
 </div>
 <main class="paper" id="paper"></main>
 <script src="/farmland-atlas/qr.js"></script>
+<script src="/components/atlas-sales.js?v=561e1b73"></script>
 <script>
 (function(){
 'use strict';
 var DATA='/data/atlas/', A=null, NB=null, TEN=null, D=null, F='', RENT_LATEST=null, CR=null, TR={};
+var SALES=null;   // data/land/<st>/summary.json for IL and WI (components/atlas-sales.js words it; no names)
 // THE county corn yield, same as the county page, the /rent table and the rent calculator: the 14-yr trend projected
 // to this year, fitted on the same practice as the rent (scripts/county_yield.py via fetch_cash_rent.py pair_county()).
 var PRAC={nonirr:'dryland',irr:'irrigated',all:'all practices'};
@@ -292,6 +294,7 @@ function render(){
     if(get(V,'rent_to_value','pct')!=null) L+=fct('Dry cropland rent ÷ census value, '+V.rent_to_value.year, fmt(V.rent_to_value.pct,2)+'%', money(V.rent_to_value.rent)+' ÷ '+money(V.rent_to_value.value)+(V.rent_to_value.cropland_share_pct!=null?'; cropland '+V.rent_to_value.cropland_share_pct+'% of land in farms':'')+'; value includes buildings, pasture, woods');
     else if(get(V,'rent_to_value','status')&&!fl) L+=fw('Dry rent ÷ census value', why(V.rent_to_value));
   } else L+=fw('Land value', why(V));
+  if(SALES&&window.AtlasSales) L+=window.AtlasSales.sheetHTML(SALES,F,fct,fw);
   L+='<h2>Next door</h2>'+nextDoor();
 
   // right column
@@ -369,6 +372,7 @@ function render(){
 
   h+='<div class="cols"><div>'+L+'</div><div class="rc">'+Rt+'<div class="notes"><div class="t">Notes</div></div></div></div>';
   h+='<footer class="ft"><b>Sources:</b> USDA NASS Cash Rents Survey and county yields; Census of Agriculture 2012, 2017, 2022; USDA RMA Summary of Business and Cause of Loss, 1989 on (the open crop year left out); U.S. Drought Monitor; NOAA nClimDiv; USGS water use 2015; EIA Form 860'
+    +(SALES&&SALES.counties&&SALES.counties[F]?'; '+SALES.record+' ('+SALES.who+')':'')
     +(ok(Wl)?'; '+(Wl.register||'Nebraska DNR and Kansas DWR registers'):'')+(ok(C)?'; USDA FSA CRP statistics':'')
     +(ok(d.frost)?'; NOAA nClimGrid daily county averages':'')+(ok(d.storms)?'; NOAA Storm Events':'')+'. '+(TEN?'Ranks count counties with 10,000 acres or more in farms, in the same survey year for rent; a state median is the median of its county figures. ':'No ranks: the census tenure file did not load. ')
     +pulled()
@@ -397,8 +401,10 @@ function load(f){
   if(!A.counties[f]){ $('paper').innerHTML='<p class="empty">Pick a county above, or open one on the <a href="/farmland-atlas">Farmland Atlas</a> and choose "Printable county sheet".</p>'; $('msg').style.display='none'; return; }
   $('msg').style.display=''; $('msg').textContent='Loading the county record…';
   var st0=A.counties[f].state;
-  Promise.all([j(DATA+'counties/'+f+'.json'), CR&&CR.state===st0?Promise.resolve(CR):j('/data/cash-rent/'+st0+'.json')]).then(function(r){
+  var AS=window.AtlasSales, wantS=AS&&AS.STATES[st0];
+  Promise.all([j(DATA+'counties/'+f+'.json'), CR&&CR.state===st0?Promise.resolve(CR):j('/data/cash-rent/'+st0+'.json'), wantS?AS.load(st0):Promise.resolve(null)]).then(function(r){
     var d=r[0]; if(F!==f) return;
+    SALES=r[2]&&r[2].state===st0?r[2]:null;
     CR=r[1]; TR={}; if(CR&&CR.counties) CR.counties.forEach(function(c){ var t=trendOf(c,CR); if(t) TR[c.fips]=t; });
     if(!d||d.generated!==A.generated){ $('paper').innerHTML='<p class="empty">The county file for '+esc(cname(A.counties[f]))+' is not ready. Reload the page in a minute.</p>'; $('msg').style.display='none'; return; }
     D=d; render(); gaEvent('atlas_sheet',{fips:f});
