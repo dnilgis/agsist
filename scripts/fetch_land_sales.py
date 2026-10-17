@@ -387,10 +387,10 @@ PROBE_DOCS = {
            "https://www.revenue.wi.gov/Pages/RETr/Home.aspx"],
     "MN": ["https://www.revenue.state.mn.us/electronic-certificate-real-estate-value-ecrv",
            "https://www.revenue.state.mn.us/sales-ratio-reports"],
-    "IL": ["https://api.us.socrata.com/api/catalog/v1?domains=data.illinois.gov&q=mydec&limit=50",
+    "IL": ["https://data.illinois.gov/api/3/action/package_search?q=mydec&rows=20",
+           "https://data.illinois.gov/api/catalog/v1?q=mydec&limit=50",
            "https://tax.illinois.gov/localgovernments/property/mydecdatafiles.html"],
-    "IA": ["https://raw.githubusercontent.com/ui-libraries/Iowa-Parcels/main/README.md",
-           "https://raw.githubusercontent.com/ui-libraries/Iowa-Parcels/master/README.md"],
+    "IA": ["https://api.github.com/repos/ui-libraries/Iowa-Parcels/readme"],
 }
 
 
@@ -445,6 +445,14 @@ def probe(states):
             ext = ".pdf" if blob[:4] == b"%PDF" else ".json" if blob[:1] in (b"{", b"[") else ".html"
             if ext == ".html":
                 blob = strip_scripts(blob)
+                page = blob.decode("utf-8", errors="replace")
+                hrefs = sorted(set(urllib.parse.urljoin(u, h.replace("&amp;", "&")) for h in re.findall(r'href="([^"#]+)"', page, re.I)))
+                keep = [h for h in hrefs if re.search(r"data\.illinois|dataset|resource|download|\.zip|\.csv|\.xlsx|ecrv|extract|layout|dictionar|HistSales|mydec|sales", h, re.I)]
+                log.append("  links: " + " ".join(keep[:60]))
+                words = re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", page))
+                for kw in ("Weekly Sales Extract", "data files", "request", "download", "layout", "buyer", "grantee", "names"):
+                    for m in list(re.finditer(re.escape(kw), words, re.I))[:2]:
+                        log.append("  [%s] ...%s..." % (kw, words[max(0, m.start() - 200):m.end() + 300]))
             fn = os.path.join(d, "doc%d%s" % (j, ext))
             open(fn, "wb").write(blob[:30_000_000])
             if ext == ".pdf":
@@ -456,6 +464,21 @@ def probe(states):
                     pass
             if ext == ".json":
                 try:
+                    J = json.loads(blob)
+                    if isinstance(J, dict) and J.get("encoding") == "base64":   # a GitHub readme
+                        import base64
+                        md = base64.b64decode(J.get("content", "")).decode("utf-8", errors="replace")
+                        open(fn[:-5] + ".md", "w").write(md)
+                        rows = [ln.strip() for ln in md.splitlines() if "rest/services" in ln]
+                        log.append("  readme: %d lines with a service URL" % len(rows))
+                        log.extend("  " + ln[:300] for ln in rows[:120])
+                    for r in ((J.get("result") or {}).get("results") or [])[:10] if isinstance(J, dict) else []:
+                        log.append("  ckan dataset %s: %s" % (r.get("name"), r.get("title")))
+                        for R in r.get("resources") or []:
+                            log.append("    resource %s | %s | %s | %s" % (R.get("name"), R.get("format"), R.get("url"), R.get("last_modified")))
+                except Exception:  # noqa: BLE001
+                    pass
+                try:
                     for r in (json.loads(blob).get("results") or [])[:40]:
                         R = r.get("resource") or {}
                         log.append("  dataset %s %r updated %s; columns %s" % (R.get("id"), R.get("name"), R.get("data_updated_at"), R.get("columns_field_name")))
@@ -466,11 +489,11 @@ def probe(states):
     print("\n".join(log))
     annotate("probe", "\n".join(log))
     for st, t in pdf_text[:1]:
-        annotate("layout " + st, t, most=5)
+        annotate("layout " + st, t, most=3)
     return 0
 
 
-def annotate(title, text, chunk=3000, most=4):
+def annotate(title, text, chunk=6000, most=6):
     """Print text as ::notice annotations, a few chunks at most (the check-run API returns them)."""
     for i in range(0, min(len(text), chunk * most), chunk):
         part = text[i:i + chunk].replace("%", "%25").replace("\r", "").replace("\n", "%0A")
