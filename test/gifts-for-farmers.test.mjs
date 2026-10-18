@@ -51,7 +51,8 @@ test("indexable, canonical, in the sitemap, with Article, FAQPage and Breadcrumb
 test("Christmas dates come from data/rain-print.json, never from the page", () => {
   const months = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec";
   assert.ok(!new RegExp("\\b(" + months + ")[a-z]* \\d{1,2}\\b").test(ARTICLE), "no month-day date written into the page");
-  assert.ok(!/\b20\d\d\b/.test(ARTICLE), "no year written into the article");
+  // photo file names (img/photos/...-2025-...) are not words a reader sees; alt text and captions are still checked
+  assert.ok(!/\b20\d\d\b/.test(ARTICLE.replace(/\/img\/photos\/[\w.-]+/g, "")), "no year written into the article");
   assert.match(HTML, /fetch\('\/data\/rain-print\.json'/);
   assert.match(HTML, /P\.xmasLine\(cfg, today\)/);
   assert.match(HTML, /rain-print-promo\.js\?v=5" defer/);
