@@ -1736,7 +1736,9 @@ def build_town_page(t, ctx):
         answer, adesc = answer_and_desc(picks, snap_ct, place)
         if adesc:
             desc = adesc
-        tops = top_nearby(shown)
+        # the share card and the email box carry the answer's own prices:
+        # top_nearby() over every shown row could name a bid the answer skips
+        tops = {c: (r["cash"], r["priced"]) for c, (r, _) in picks.items()}
         txt, when = share_prices(tops)
         # every row here unusual (one specialty board): no price on the card
         share = (f"{place} cash bids",
@@ -3190,6 +3192,7 @@ def selftest():
     _selftest_answer()
     _selftest_delivery_year()
     _selftest_place()
+    _selftest_share()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -3369,6 +3372,31 @@ def _selftest_place():
     assert head_name(fac) == "Linn Coop Oil Company (Ingredion, Cedar Rapids)", head_name(fac)
     assert branch_name({"city": "Creston 1"}, {}, "Creston", {"creston": "Creston"}) == "Creston 1"
     assert head_name({"operator": "", "city": "Ackney", "branch": "", "town": "Ackley"}) == "Ackney"
+
+
+def _selftest_share():
+    """The share card names the answer's prices, not a premium row the answer
+    skips (Oct 18, 2026: 84 town pages had a share price the answer did not)."""
+    import tempfile as _tf
+    gen = "2026-10-18T22:00:00Z"
+    srcs = [{"id": "t-a", "operator": "Alpha Grain", "status": "ok", "health": "live", "zip": "68025",
+             "checkedAt": "2026-10-18T21:00:00Z"}]
+    bids = [{"place": "t-a", "source": "t-a", "operator": "Alpha Grain", "city": "Fremont", "state": "NE",
+             "zip": "68025", "currency": "USD", "crop": "corn", "commodity": com, "delivery": "Oct 2026",
+             "period": "2026-10", "periodVia": "month-year", "periodPast": False, "cash": cash, "basis": basis,
+             "basisUnit": "per-bushel", "futuresMonth": "ZCZ26", "via": "scrape", "stale": False,
+             "sourceStatus": "ok", "pricedAt": "2026-10-18T13:00:00Z"}
+            for com, cash, basis in (("Corn", 4.10, -0.30), ("Corn", 4.05, -0.35), ("Non-GMO Corn", 4.90, 0.50))]
+    with _tf.TemporaryDirectory() as td:
+        out = os.path.join(td, "cb")
+        metas, _, _, _ = build_all({"schema": "agsist-merged-all/1", "generated": gen, "bids": bids},
+                                   {"generated": gen, "sources": srcs}, {"zips": {"68025": ["Fremont", "NE"]}},
+                                   out_dir=out, root=td, sitemap=os.path.join(td, "sm.xml"), min_towns=0,
+                                   now=parse_ts("2026-10-18T22:30:00Z"))
+        pg = open(os.path.join(out, "nebraska", "fremont.html")).read()
+    og = re.search(r'<meta property="og:description" content="([^"]*)"', pg)
+    assert og and "corn $4.10" in og.group(1) and "4.90" not in og.group(1), og and og.group(1)
+    assert 'data-top="corn:4.10"' in pg, "the email box's placeholder is the answer's price too"
 
 
 def _selftest_known():
