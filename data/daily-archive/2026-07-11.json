@@ -252,5 +252,11 @@
       }
     ],
     "dry_run": false
-  }
+  },
+  "corrections": [
+    {
+      "date": "2026-10-18",
+      "text": "December corn at $4.61 over nearby at $4.38 is a 23-cent carry, not an inverse, and weather worry in December would widen that spread, not shrink it. Hogs lost 11.8% Thursday and gained 10.8% Friday, so $94.78 was about 2% below where the week started, not almost the same. Live cattle's 1.6% and \"five cents above Thursday\" cannot both be right. The 13.6 million barrels a day was the April record for crude oil and fuel exports together; crude alone was far less. The July 8 and July 9 oat drops were in the same week as Friday's, not two weeks running."
+    }
+  ]
 }
