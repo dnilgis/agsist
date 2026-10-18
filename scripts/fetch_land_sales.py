@@ -75,6 +75,7 @@ GAZ = "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2024_Gazetteer/
 UA = "Mozilla/5.0 (AGSIST land data; agsist.com; sig@farmers1st.com)"
 MAX_STATE_MB = 25          # all county files of one state together (CLAUDE.md budget: data/ is 300 MB)
 LEGAL_MAX = 140
+CONV_MAX = 200     # deed type as written; Indiana's list of what the form says runs past 60 characters
 # 2: multi-parcel acres only when every added PIN reads once, in acres (il_acres); otherwise blank.
 # The page treats a multi-parcel row's acres as uncertain in any file without this mark.
 ACRES_RULE = 2
@@ -241,6 +242,11 @@ COLS = {
     "acany": ["ACRESANYPARCEL"],
     # Indiana: the parcel's postal ZIP, used only to place its town (in_places)
     "zip": ["ZIP"],
+    # plain words on what kind of sale it was, "; " between them (il_table, in_table, wi_row write them)
+    "flags": ["FLAGS"],
+    # Wisconsin's CSV: J Property Type (1 Land Only, 2 Land & Buildings), BJ Split Parcel (1 Yes),
+    # Q Owner Interest Transferred (1 Full, 2 Partial); read only beside Predominate Use (RETRmlist.pdf)
+    "ptype": ["PROPERTYTYPE"], "split": ["SPLITPARCEL"], "interest": ["OWNERINTERESTTRANSFERRED"],
     "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
 }
 WI_CONVEYANCE = {"1": "Warranty Deed", "2": "Land Contract", "3": "Quit Claim Deed", "4": "Other"}
@@ -405,9 +411,19 @@ def parse_rows(tables):
             elif "cls" in m and not farm_class(cls):
                 rep["not_farm"] += 1
                 continue
-            conv = g("conv", 60)
+            conv = g("conv", CONV_MAX)
             if "conv" in m and hk[m["conv"]] == "CONVEYANCECODE":
                 conv = WI_CONVEYANCE.get(conv.lstrip("0"), conv)
+            flags = [w for w in (x.strip() for x in g("flags").split(";")) if w]
+            if "use" in m:        # Wisconsin's own CSV layout
+                pt = g("ptype").lstrip("0")
+                if "ptype" in m and pt in ("1", "2"):
+                    flags.append("land only" if pt == "1" else "with buildings")
+                if "interest" in m and g("interest").lstrip("0") == "2":
+                    flags.append("less than full interest")
+                if "split" in m and g("split").lstrip("0") == "1":
+                    flags.append("split parcel")
+            flags = list(dict.fromkeys(flags))
             muni = g("muni", 60).upper()
             if muni and not re.match(r"^(TOWN|TOWNSHIP|VILLAGE|CITY)\b", muni):
                 kind = [w for w, c in (("CITY OF", "city_yn"), ("VILLAGE OF", "village_yn"), ("TOWN OF", "town_yn")) if g(c) == "1"]
@@ -420,9 +436,12 @@ def parse_rows(tables):
                 return g(side, 80) if side in m else None
             npv = parse_num(g("np")) if "np" in m else None
             ex = g("exempt")
+            conv = re.sub(r"[A-Za-z]+('[A-Za-z]+)?", lambda w: w.group(0).capitalize(), conv)
+            if flags:      # the flag words stay exactly as written (helper words, not deed names)
+                conv = "; ".join([conv] + flags) if conv else "; ".join(flags)
             recs.append({
-                "doc": g("doc"), "date": d, "price": round(p), "acres": parse_num(g("acres")),
-                "cls": norm_class(cls), "conv": re.sub(r"[A-Za-z]+('[A-Za-z]+)?", lambda w: w.group(0).capitalize(), conv), "pid": g("pid", 40), "muni": muni,
+                "doc": g("doc"), "date": d, "price": round(p), "acres": None if "split parcel" in flags else parse_num(g("acres")),
+                "cls": norm_class(cls), "conv": conv, "pid": g("pid", 40), "muni": muni,
                 "county": g("county", 40), "legal": g("legal", LEGAL_MAX),
                 "grantor": who("grantor"), "grantee": who("grantee"),
                 "np": int(npv) if npv and npv >= 1 else None,
@@ -619,7 +638,22 @@ IL_PINS = "https://data.illinois.gov/resource/ay2h-5hx3.json"
 IL_FIELDS = ["declaration_id", "document_number", "date_recorded", "line_4_instrument_date", "line_1_county", "line_1_township",
              "line_1_city", "line_1_primary_pin", "line_1_lot_size_or_acreage", "line_2_total_parcels", "line_3_additional_pins",
              "line_5_instrument_type", "line_11_full_consideration", "line_13_net_consideration", "line_16_state_exemption",
-             "line_10b_sale_between_related", "step_4_seller_name", "step_4_buyer_name"]
+             "line_10b_sale_between_related", "step_4_seller_name", "step_4_buyer_name",
+             # what kind of sale it was (PTAX-203 Lines 1, 6, 7, 10 and 12b; field names as the open data
+             # answer gives them, raw branch data/land-raw/sales/il/doc5.json, Oct 18 2026 probe)
+             "line_1_unit", "line_1_split_parcel", "line_6_principal_residence", "line_7_property_advertised",
+             "line_10a_fulfillment_of", "line_10c_transfer_of_100", "line_10d_court_ordered_sale", "line_10e_sale_in_lieu_of",
+             "line_10f_condemnation", "line_10g_short_sale", "line_10h_bank_reo", "line_10i_auction_sale",
+             "line_10n_buyer_is_an_adjacent", "line_10p_trade_of_property", "line_10q_sale_leaseback", "line_12b_mobile_home_included"]
+# Line 10 boxes, by letter, as Form PTAX-203 (tax.illinois.gov, saved on the raw branch as
+# data/land-raw/sales/il/doc4.pdf) names them. A ticked box here leaves the declaration out:
+# not a sale between a willing buyer and seller on the open market.
+IL_DROP = (("line_10d_court_ordered_sale", "court-ordered sale (10d)"), ("line_10e_sale_in_lieu_of", "sale in lieu of foreclosure (10e)"),
+           ("line_10f_condemnation", "condemnation (10f)"), ("line_10h_bank_reo", "bank REO (10h)"),
+           ("line_10p_trade_of_property", "trade of property (10p)"), ("line_10q_sale_leaseback", "sale-leaseback (10q)"))
+# A ticked box here keeps the row and says so in plain words after the deed type.
+IL_FLAG = (("line_10c_transfer_of_100", "less than full interest"), ("line_10i_auction_sale", "auction"),
+           ("line_10n_buyer_is_an_adjacent", "adjacent owner"))
 
 # Pages saved by --probe besides each state's data pages: layouts, data dictionaries and catalogs,
 # so the real columns can be read on the raw branch before any parser trusts them.
@@ -778,7 +812,7 @@ def il_acres(line1, n, adds, primary_pin=""):
     if line1 is None or not (0 < line1 < 20000):
         return None
     if n <= 1:
-        return round(line1, 2)
+        return round(line1, 2) if line1 <= 640 else None     # one parcel over a section is a slip (10,124 ac on a $190,000 sale)
     pk = key(primary_pin)
     seen = {}
     for x in adds:
@@ -805,35 +839,87 @@ def il_acres(line1, n, adds, primary_pin=""):
     return round(tot, 2)
 
 
-def il_table(decls, extra):
+def il_yes(v):
+    return v in (True, "true", "True", "1", 1)
+
+
+def il_unit_acres(v, unit):
+    """Line 3a's lot size in acres by its unit: acres as given, square feet / 43,560, anything else
+    (Dimensions, a typed unit we do not know) None. A blank unit is read as acres, as before the unit was fetched."""
+    v = parse_num(v)
+    u = str(unit or "").strip().upper()
+    if v is None:
+        return None
+    if u.startswith("SQ"):
+        return v / 43560.0
+    if u and not u.startswith("ACRE"):
+        return None
+    return v
+
+
+def il_flags(d, adds=()):
+    """Plain words for what kind of sale one declaration says it was (the words field-scout-land.js reads).
+    Split parcel: Line 1 split box, the "PT" the instructions say to put before a part parcel's PIN,
+    or an added PIN marked split."""
+    out = []
+    for k, w in IL_FLAG:
+        if il_yes(d.get(k)):
+            out.append(w)
+    yr = parse_num(d.get("line_10a_fulfillment_of"))
+    if yr:
+        out.append("installment contract")
+    adv = d.get("line_7_property_advertised")
+    if adv is not None and adv != "":
+        out.append("advertised" if il_yes(adv) else "not advertised")
+    if (il_yes(d.get("line_1_split_parcel")) or re.match(r"^\s*PT\b", str(d.get("line_1_primary_pin") or ""), re.I)
+            or any(il_yes(x.get("split_parcel")) for x in adds)):
+        out.append("split parcel")
+    # Line 8 is Farm on every row read (the query asks for current use J), which does not say whether
+    # there are buildings; a buyer's principal residence (Line 6) or a mobile home in the price (12b) does.
+    if il_yes(d.get("line_6_principal_residence")) or il_yes(d.get("line_12b_mobile_home_included")):
+        out.append("with buildings")
+    return out
+
+
+def il_table(decls, extra, rep=None):
     """Illinois MyDec rows (Socrata JSON, Line 8 current use 'j' Farm) as one table with our column names.
     One row per declaration: the price is for every parcel on it, so acres are the whole sale's
     (il_acres) or left blank when the return does not say for sure; ACRESLINE1 keeps what Line 3a
-    says so the page can show it as reported. extra: {declaration_id: [additional PIN rows]}."""
+    says so the page can show it as reported. extra: {declaration_id: [additional PIN rows]}.
+    Declarations with a Line 10 box in IL_DROP ticked are left out and counted in rep."""
+    rep = rep if rep is not None else {}
     head = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
-            "TOWNSHIP", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1"]
+            "TOWNSHIP", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1",
+            "FLAGS"]
     yield head
     for d in decls:
+        why = next((w for k, w in IL_DROP if il_yes(d.get(k))), None)
+        if why:
+            rep["dropped " + why] = rep.get("dropped " + why, 0) + 1
+            continue
         did = str(d.get("declaration_id") or "")
         n = parse_num(d.get("line_2_total_parcels"))
         n = int(n) if n and n >= 1 else 1
         adds = extra.get(did, [])
-        l1 = parse_num(d.get("line_1_lot_size_or_acreage"))
+        l1 = il_unit_acres(d.get("line_1_lot_size_or_acreage"), d.get("line_1_unit"))
         l1 = l1 if l1 and 0 < l1 < 20000 else None
         ac = il_acres(l1, n, adds, d.get("line_1_primary_pin") or "")
-        if n == 1 and d.get("line_3_additional_pins") in (True, "true"):
+        if n == 1 and il_yes(d.get("line_3_additional_pins")):
             ac = None       # one parcel counted, yet added PINs ticked: the return contradicts itself
+        flags = il_flags(d, adds)
+        if "split parcel" in flags:
+            ac = None       # part of a parcel: the lot size may be the whole parcel's
         price = d.get("line_13_net_consideration")
         if parse_num(price) is None:
             price = d.get("line_11_full_consideration")
         conv = str(d.get("line_5_instrument_type") or "")
-        if d.get("line_10b_sale_between_related") in (True, "true"):
+        if il_yes(d.get("line_10b_sale_between_related")):
             conv += ", related parties"
         yield [str(d.get("document_number") or did), str(d.get("line_4_instrument_date") or d.get("date_recorded") or "")[:10],
-               "" if price is None else str(price), "" if ac is None else str(ac), "4", conv, str(d.get("line_1_primary_pin") or ""),
+               "" if price is None else str(price), "" if ac is None else str(round(ac, 2)), "4", conv, str(d.get("line_1_primary_pin") or ""),
                str(d.get("line_1_township") or ""), str(d.get("line_1_county") or ""), str(d.get("step_3_legal_description") or ""),
                str(d.get("step_4_seller_name") or ""), str(d.get("step_4_buyer_name") or ""), str(d.get("line_16_state_exemption") or ""), str(n),
-               str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(l1)]
+               str(d.get("date_recorded") or "")[:10], "" if l1 is None or n == 1 else str(round(l1, 4)), "; ".join(flags)]
 
 
 def soda(url, params):
@@ -973,6 +1059,36 @@ def in_conv(d):
     return ", ".join(bits)
 
 
+def in_flags(d, parcels):
+    """Plain words on what kind of sale the form says it was (the words field-scout-land.js reads):
+    the assessor's P2_16 valid-for-trending call, B3 vacant land, A2 split on any parcel, B5 land
+    contract (the box, or a contract date other than the file's 1900-01-01 blank), B2 buyer owns
+    adjacent land, C4 auction, B8 court order."""
+    y = lambda k: (d.get(k) or "").strip().upper() == "Y"
+    n = lambda k: (d.get(k) or "").strip().upper() == "N"
+    out = []
+    if y("B8_Court_Order"):
+        out.append("court ordered")
+    if y("C4_Auction"):
+        out.append("auction")
+    if y("B2_Buyer_Adjacent"):
+        out.append("adjacent owner")
+    lcd = (d.get("B5_Land_Contract_Date") or "").strip()
+    if y("B5_Land_Contract") or (parse_date(lcd) and not lcd.startswith("1900-")):
+        out.append("installment contract")
+    if any((p.get("A2_Split") or "").strip().upper() == "Y" for p in parcels):
+        out.append("split parcel")
+    if y("B3_Vacant_Land"):
+        out.append("land only")
+    elif n("B3_Vacant_Land"):
+        out.append("with buildings")
+    if y("P2_16_Valid_Trending"):
+        out.append("valid for trending")
+    elif n("P2_16_Valid_Trending"):
+        out.append("not valid for trending")
+    return out
+
+
 def in_drop(d):
     """Forms that are not a sale of a whole property for money, left out of Indiana's files:
     no valuable consideration (B1), a trade (B4), a partial interest (B6), a transfer to a charity
@@ -996,7 +1112,7 @@ def in_table(files, rep=None):
     rep = rep if rep is not None else {}
     head = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
             "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED",
-            "ACRESLINE1", "ZIP"]
+            "ACRESLINE1", "ZIP", "FLAGS"]
     yield head
     seen = set()
     names = {v["fips"]: v["name"] for v in county_index("IN").values()}
@@ -1063,6 +1179,9 @@ def in_table(files, rep=None):
                     and all(a and 0 < a <= 640 for a in acs)
                     and not (len(acs) > 1 and len(set(acs)) == 1 and acs[0] > 40))   # one tract's figure on every parcel
             ac = round(sum(acs), 4) if sure else None
+            flags = in_flags(d, ps)
+            if "split parcel" in flags:
+                ac = None                # part of a parcel: the acreage may be the whole parcel's
             if several:
                 n = max(n, 2)            # the price may cover parcels on another form: no $/acre
             first = ps[0] if ps else {}
@@ -1071,7 +1190,7 @@ def in_table(files, rep=None):
                    in_conv(d), pins[0] if pins else "", clean(first.get("A5_City"), 40).upper(), county,
                    clean(first.get("A7_Legal_Description"), LEGAL_MAX), "; ".join(who.get((sid, "S"), [])), "; ".join(who.get((sid, "B"), [])),
                    "", str(n), d.get("P2_14_Date_Received") or "", "" if a1 is None or n == 1 else str(round(a1, 4)),
-                   (first.get("A5_ZipCode") or "")[:5]]
+                   (first.get("A5_ZipCode") or "")[:5], "; ".join(flags)]
 
 
 def in_places(recs, zcta_blob):
@@ -1151,7 +1270,7 @@ WI_CONV = {"SALE": "Sale", "SALEREPDEED": "Sale", "GIFT": "Gift", "PARENTGIFT": 
 WI_RELATED = ("FAMILY", "PARENTCHILD", "SPOUSES", "EXSPOUSES", "SHAREHOLDER", "EMPLOYER")
 WI_HEAD = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
            "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1",
-           "ACRESANYPARCEL"]
+           "ACRESANYPARCEL", "FLAGS"]
 
 
 def wi_date(s):
@@ -1197,8 +1316,10 @@ def wi_returns(fh):
             "cc": tx(el, "County/CountyCode"), "doc": tx(el, "County/DocumentNumber"), "rec": wi_date(tx(el, "County/RecordedDate")),
             "date": wi_date(tx(el, "Document/ConveyanceDate")), "doctype": tx(el, "Document/DocumentType"),
             "conv": tx(el, "Document/ConveyanceType"), "rel": tx(el, "Document/GrantorGranteeRelationship"),
+            "own": tx(el, "Document/Ownership"),
             "parcels": [{"muni": tx(p, "Municipality"), "pin": tx(p, "ParcelNumber"), "use": tx(p, "PropertyUseType"),
-                         "acres": parse_num(tx(p, "TotalAcres")), "part": tx(p, "PartOfParcelTransferred")} for p in kids(el, "Parcels", "Parcel")],
+                         "acres": parse_num(tx(p, "TotalAcres")), "part": tx(p, "PartOfParcelTransferred"),
+                         "ptype": tx(p, "PropertyType")} for p in kids(el, "Parcels", "Parcel")],
             "grantors": [wi_name(g, tx) for g in kids(el, "Grantors", "Grantor")],
             "grantees": [wi_name(g, tx) for g in kids(el, "Grantees", "Grantee")],
             "price": parse_num(tx(el, "Fee/SalePrice")), "exempt": tx(el, "Fee/Exemption"), "legal": tx(el, "LegalDescription")[:LEGAL_MAX + 20],
@@ -1268,6 +1389,26 @@ def wi_learn_munis(csv_blob, index):
     return out
 
 
+def wi_flags(ret):
+    """Plain words from the return: Property Type on every parcel (LAND is land only; a type naming
+    buildings on any parcel is with buildings; anything else says nothing), Part of Parcel Transferred
+    other than ALL on any parcel (split parcel), Ownership partial (less than full interest).
+    Only LAND, ALL and FULL are seen in our sample; a value naming PART or BUILD is read, any other
+    value says nothing rather than a guess."""
+    ps = ret.get("parcels") or []
+    out = []
+    if re.search(r"PART", ret.get("own") or "", re.I):
+        out.append("less than full interest")
+    if any(re.search(r"PART", p.get("part") or "", re.I) for p in ps):
+        out.append("split parcel")
+    types = [(p.get("ptype") or "").upper() for p in ps]
+    if any(re.search(r"BUILD|IMPROV", t) for t in types):
+        out.append("with buildings")
+    elif types and all(t == "LAND" for t in types):
+        out.append("land only")
+    return out
+
+
 def wi_row(ret, munis):
     """One farm or forest return as a row under WI_HEAD, or None for any other return."""
     ps = ret["parcels"]
@@ -1283,6 +1424,9 @@ def wi_row(ret, munis):
         if c and c not in codes:
             codes.append(c)
     ac, ac1 = wi_acres(ps)
+    flags = wi_flags(ret)
+    if "split parcel" in flags:
+        ac = None              # part of a parcel: its Total Acres may be the whole parcel's
     conv = WI_DOC.get(ret["doctype"], ret["doctype"].title())
     if ret["rel"] in WI_RELATED:
         conv += ", related parties"
@@ -1297,7 +1441,7 @@ def wi_row(ret, munis):
     return [ret["doc"], ret["date"] or "", f(ret["price"]), f(ac), " ".join(codes), conv, ps[0]["pin"],
             munis.get((ret["cc"], ps[0]["muni"]), ""), county, ret["legal"], names(ret["grantors"]), names(ret["grantees"]),
             ret["exempt"], str(len(ps)), ret["rec"] or "", f(ac1) if len(ps) > 1 else "",
-            f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2))]
+            f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2)), "; ".join(flags)]
 
 
 def held(st, out=None):
@@ -1361,6 +1505,26 @@ def wi_dedupe(recs):
     return list(best.values())
 
 
+def refiled_dedupe(recs):
+    """One sale filed twice under two documents (same county, sale date, price and parcel number,
+    a different document number): keep the newest document only, by filed date and then document
+    number, so the sale is one row. Rows with no parcel number are never merged. Returns (rows, how many dropped)."""
+    def newest(r):
+        doc = str(r.get("doc") or "")
+        return (r.get("rec") or "", [int(x) for x in re.findall(r"\d+", doc)], doc)
+    best, keep = {}, []
+    for r in recs:
+        pk = key(r.get("pid"))
+        if not pk:
+            keep.append(r)
+            continue
+        k = (key(r.get("county")), r.get("date"), r.get("price"), pk)
+        if k not in best or newest(r) >= newest(best[k]):
+            best[k] = r
+    out = keep + list(best.values())
+    return out, len(recs) - len(out)
+
+
 def trim(recs, done):
     """The next cut when a state's files are over the cap: first farm sales of 10 acres or more
     (any parcel's acres; a return with no acres at all is dropped), then the oldest filing year,
@@ -1420,7 +1584,9 @@ def run(states, from_dir=None, merge=False):
                 bad += 1
                 continue
             print("%s: %d farm declarations, %d with more than one parcel, %d added PINs read" % (st, len(decls), multi, sum(len(v) for v in extra.values())))
-            tables.append(il_table(decls, extra))
+            lrep = {}
+            tables.append(list(il_table(decls, extra, lrep)))
+            print("%s: left out: %s" % (st, ", ".join("%s %d" % kv for kv in sorted(lrep.items())) or "none"))
         elif from_dir:
             for n in sorted(os.listdir(from_dir)):
                 if re.search(r"\.(zip|csv|txt|xlsx)$", n, re.I):
@@ -1462,6 +1628,9 @@ def run(states, from_dir=None, merge=False):
             months = read_now | had
         if st == "WI":
             recs = wi_dedupe(recs)
+        recs, refiled = refiled_dedupe(recs)
+        if refiled:
+            print("%s: %d rows were a sale filed again under a newer document; the newest kept" % (st, refiled))
         gaz = in_places(recs, fetch(IN_ZCTA, timeout=300)) if st == "IN" else gazetteer(STATES[st]["fips"], gzblob)
         trims = []
         while True:
@@ -1513,7 +1682,9 @@ def selftest():
     ck("WI layout: MMDDYYYY dates", w[0]["date"] == "2024-03-15" and w[1]["date"] == "2025-01-10")
     ck("WI layout: a date with its leading zero dropped is not guessed", wr["bad_date"] == 1 and parse_date("1112024") is None)
     ck("WI layout: names from the first and last name columns", w[0]["grantor"] == "SYNTHETIC SELLER A" and w[0]["grantee"] == "SYNTHETIC BUYER A" and w[1]["grantor"] == "SYNTHETIC FARMS LLC")
-    ck("WI layout: conveyance codes read as deed types", [r["conv"] for r in w] == ["Warranty Deed", "Land Contract", "Quit Claim Deed"])
+    ck("WI layout: conveyance codes read as deed types, Property Type kept as words",
+       [r["conv"] for r in w] == ["Warranty Deed; land only", "Land Contract; land only", "Quit Claim Deed; with buildings; less than full interest; split parcel"])
+    ck("WI layout: a split parcel (column BJ) leaves acres blank", w[2]["acres"] is None and w[0]["acres"] == 160)
     ck("WI layout: town from the TVC name and Town YN", w[0]["muni"] == "TOWN OF CHETEK" and muni_key(w[0]["muni"]) == ("T", "CHETEK"))
     ck("WI layout: exemption number flags the return", w[2]["exempt"] == 1 and w[0]["exempt"] == 0)
     # Illinois, rows shaped like the MyDec open data answer (it54-y4c6, Line 8 current use J)
@@ -1578,6 +1749,38 @@ def selftest():
     ck("IL: names from Step 4", il[0]["grantor"] == "SYNTHETIC SELLER A" and il[0]["grantee"] == "SYNTHETIC BUYER A")
     ck("IL: related-party sales say so", il[1]["conv"].endswith("Related Parties"))
     ck("IL: township as the place", il[0]["muni"] == "ABINGTON" and muni_key(il[0]["muni"]) == ("T", "ABINGTON"))
+    # Illinois, every field the real answer gives (raw branch data/land-raw/sales/il/doc5.json), names synthetic
+    ild = json.load(open(os.path.join(ROOT, "test", "fixtures", "land-sales", "il-mydec-sample.json")))
+    irp = {}
+    il3, _ = parse_rows([il_table(ild, {}, irp)])
+    ib3 = {r["doc"]: r for r in il3}
+    ck("IL acres: one parcel over a section is uncertain (Kankakee 10,124 ac, Lake lot 3,008 ac, Boone 2,044 ac)",
+       all(ib3[d]["acres"] is None for d in ("S-000001", "S-000002", "S-000003")) and ib3["S-000002"]["legal"] == "LOT 1 IN WADSWORTH MANOR"
+       and ib3["S-000001"]["price"] == 190000 and ib3["S-000001"]["date"] == "2024-11-14")
+    ck("IL acres: Line 1 unit read, square feet converted, dimensions not guessed",
+       ib3["S-000004"]["acres"] == 40 and ib3["S-000005"]["acres"] is None and il_unit_acres("80", "") == 80)
+    ck("IL Line 10: court-ordered, in lieu of foreclosure, condemnation, bank REO, trade and sale-leaseback are left out and counted",
+       not any(("S-%06d" % i) in ib3 for i in range(10, 16)) and len(irp) == 6 and all(v == 1 for v in irp.values())
+       and "dropped court-ordered sale (10d)" in irp and "dropped sale-leaseback (10q)" in irp)
+    ck("IL Line 10: less than full interest, auction, adjacent owner, installment contract and Line 7 said in words",
+       ib3["S-000020"]["conv"] == "Warranty Deed; less than full interest; auction; adjacent owner; installment contract; advertised")
+    ck("IL Line 7: not advertised said, a missing answer says nothing",
+       ib3["S-000023"]["conv"].endswith("; not advertised; with buildings") and ib3["S-000024"]["conv"] == "Warranty Deed")
+    ck("IL split parcel (Line 1 box or a PT before the PIN): said, acres blank",
+       ib3["S-000021"]["acres"] is None and "split parcel" in ib3["S-000021"]["conv"]
+       and ib3["S-000022"]["acres"] is None and "split parcel" in ib3["S-000022"]["conv"]
+       and il_flags({"line_1_primary_pin": "1"}, [{"split_parcel": "1"}]) == ["split parcel"])
+    ck("IL buildings: a principal residence says with buildings; a plain farm row says nothing either way",
+       "with buildings" in ib3["S-000023"]["conv"] and "land only" not in " ".join(r["conv"] for r in il3)
+       and "with buildings" not in ib3["S-000004"]["conv"])
+    il4, n4 = refiled_dedupe(il3)
+    ck("IL: a sale filed twice (same county, date, price, PIN; another document) keeps the newest document only",
+       n4 == 1 and "S-000031" in {r["doc"] for r in il4} and "S-000030" not in {r["doc"] for r in il4} and len(il4) == len(il3) - 1)
+    base = {"county": "Barron", "date": "2024-03-01", "price": 300000, "pid": "022-1", "rec": "2024-03-05", "doc": "900100"}
+    rd, nd = refiled_dedupe([dict(base), dict(base, doc="900101"), dict(base, price=300001, doc="900102"), dict(base, pid="", doc="900103"),
+                             dict(base, pid="", doc="900104")])
+    ck("refiled: same filed date keeps the higher document; another price or no parcel number is never merged",
+       nd == 1 and sorted(r["doc"] for r in rd) == ["900101", "900102", "900103", "900104"])
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     ck("probe-only states (IA, SD, OH) are never built before their parser exists",
        all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
@@ -1604,8 +1807,18 @@ def selftest():
        and ib["07"]["county"] == "Whitley")
     ck("IN: classes as the land card reads them (farm 4, timber 6, improved farm 7, commercial 2)",
        ib["01"]["cls"] == "4" and ib["02"]["cls"] == "4 7" and ib["08"]["cls"] == "6" and ib["09"]["cls"] == "4 2")
-    ck("IN: quitclaim and a family discount read as non-market words", ib["05"]["conv"] == "Quitclaim Deed, Related Parties"
-       and ib["02"]["conv"] == "Sale, Land Contract" and ib["08"]["conv"] == "Sale, Auction, Buyer Owns Adjacent Land")
+    ck("IN: quitclaim and a family discount read as non-market words", ib["05"]["conv"].startswith("Quitclaim Deed, Related Parties; ")
+       and ib["02"]["conv"].startswith("Sale, Land Contract; ") and ib["08"]["conv"].startswith("Sale, Auction, Buyer Owns Adjacent Land; "))
+    ck("IN: the deed type is not cut at 60 characters", len(ib["08"]["conv"]) > 60 and ib["08"]["conv"].endswith("; valid for trending"))
+    ck("IN: P2_16 valid for trending read both ways", ib["01"]["conv"].endswith("; valid for trending") and ib["05"]["conv"].endswith("; not valid for trending"))
+    ck("IN: B3 vacant land read as land only or with buildings", "; land only;" in ib["01"]["conv"] and "; with buildings;" in ib["05"]["conv"])
+    ck("IN: A2 split on a parcel: said, acres blank", ib["11"]["acres"] is None and "; split parcel;" in ib["11"]["conv"] and "split parcel" not in ib["12"]["conv"])
+    ck("IN: B5 land contract, the box or a contract date, says installment contract; the 1900-01-01 blank does not",
+       "installment contract" in ib["02"]["conv"] and "installment contract" in ib["12"]["conv"] and "installment contract" not in ib["01"]["conv"])
+    ck("IN: B2 adjacent and C4 auction in the plain words too", "; auction; adjacent owner;" in ib["08"]["conv"])
+    ind, nin = refiled_dedupe(list(ins) + [dict(ib["01"], doc="C01-2026-0000099", rec="2026-05-01")])
+    ck("IN: a form filed again under a new form number keeps the newest only",
+       nin == 1 and len(ind) == len(ins) and [r["doc"] for r in ind if r["pid"] == ib["01"]["pid"]] == ["C01-2026-0000099"])
     ck("IN: a commercial-section price is read when the residential one is blank", ib["09"]["price"] == 300000)
     ck("IN: buyer and seller names only, never the preparer", ib["01"]["grantor"] == "SYNTHETIC SELLER" and ib["01"]["grantee"] == "SYNTHETIC BUYER")
     ck("IN: conveyance and received dates", ib["01"]["date"] == "2026-03-01" and ib["01"]["rec"] == "2026-04-01")
@@ -1659,13 +1872,21 @@ def selftest():
     ck("WI class: farm codes first, buildings classes kept", by["900002"]["cls"] == "4 1" and by["900008"]["cls"] == "6" and by["900010"]["cls"] == "5M 1")
     ck("WI names and county: St Croix code 55, entity names whole", by["900008"]["county"] == "St. Croix" and by["900008"]["grantor"] == "SYNTHETIC LAND LLC"
        and by["900002"]["grantor"] == "SYNTHETIC, SELLER B; SYNTHETIC, SELLER C")
-    ck("WI deed type: related parties and gift said, fee exemption flagged", by["900008"]["conv"] == "Quit Claim Deed, Related Parties, Parent/Child Gift"
-       and by["900008"]["exempt"] == 1 and by["900001"]["exempt"] == 0 and by["900001"]["conv"] == "Warranty Deed, Sale")
+    ck("WI deed type: related parties and gift said, fee exemption flagged", by["900008"]["conv"] == "Quit Claim Deed, Related Parties, Parent/Child Gift; land only"
+       and by["900008"]["exempt"] == 1 and by["900001"]["exempt"] == 0 and by["900001"]["conv"] == "Warranty Deed, Sale; land only")
+    ck("WI XML: Property Type kept (land only, with buildings), part of a parcel and a partial interest said, acres blank",
+       by["900010"]["conv"] == "Warranty Deed, Sale; less than full interest; split parcel; with buildings" and by["900010"]["acres"] is None
+       and wi_flags({"parcels": [{"ptype": "LAND"}, {"ptype": "CONDO"}]}) == [] and wi_flags({"parcels": [], "own": "FULL"}) == [])
+    ck("WI XML: a split parcel blanks acres a whole parcel would keep",
+       wi_row(dict(rets[0], parcels=[dict(rets[0]["parcels"][0], part="PART")]), mu)[3] == "" and rows[0][3] == "40")
     ck("WI town: from the learned name, the form muni_key reads", by["900001"]["muni"] == "TOWN OF CHETEK" and muni_key(by["900001"]["muni"]) == ("T", "CHETEK"))
     ck("WI town: an unknown code is left blank, not guessed", wi_row(dict(rets[0], cc="04"), mu)[7] == "")
     later = dict(by["900001"], rec="2024-05-02", price=1)
     dd = wi_dedupe(list(wr) + [later])
     ck("WI: a return filed again keeps the latest filing only", len(dd) == len(wr) and [r for r in dd if r["doc"] == "900001"][0]["price"] == 1)
+    wdd, nwd = refiled_dedupe(list(wr) + [dict(by["900002"], doc="900902", rec="2024-04-01")])
+    ck("WI: a return filed again under a new document number keeps the newest only",
+       nwd == 1 and len(wdd) == len(wr) and [r["doc"] for r in wdd if r["pid"] == by["900002"]["pid"]] == ["900902"])
     t1, w1 = trim(wr, [])
     ck("WI trim: 10+ acres first, any parcel's acres counted", w1 == "10+ acres" and {r["doc"] for r in t1} == set(by) - {"900010"})
     t2, w2 = trim([dict(r, rec="2021-01-05") for r in t1[:2]] + t1[2:], [w1])
