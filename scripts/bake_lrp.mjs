@@ -164,6 +164,12 @@ export function faqList() {
       `No. It pays on the index, not on what you sell for (${HB}, sections 22B and 22D). If your local cash price falls further than the index, LRP does not cover the gap, and if the index falls while your cash price holds, it still pays. Nothing on this page includes basis.`],
     ["How does LRP compare with a put option?",
       `Both set a price floor for a premium. With LRP there is no futures account, the premium carries a 35% to 55% subsidy (${a(RMA.pm2064, "RMA PM-20-064")}) and is billed after the end date (${HB}, section 21E), and it is sold by the head in any number up to the limit instead of by the futures contract. RMA sets the coverage prices and rates each day (section 22A), you must own the livestock and show records to be paid (section 21C), and the endorsement settles on the index on its end date, not on a futures price.`],
+    ["Can I buy LRP on calves that are not born yet?",
+      `Yes, from the 2026 crop year on. RMA added an Unborn Calves type under feeder cattle, for beef or beef and dairy cross calves sold within two weeks after birth (${a(RMA.pm25028, "RMA PM-25-028")}).`],
+    ["Does LRP cover dairy cull cows?",
+      `It does now. From the 2026 crop year on, RMA added a Cull Cows type under fed cattle for dairy cull cows, with coverage limited to 13 weeks (${a(RMA.pm25028, "RMA PM-25-028")}).`],
+    ["Can I use LRP if I am selling on a forward contract?",
+      `Yes. RMA now allows LRP coverage based on a forward contract or purchase agreement. Keep a copy of the agreement and proof of delivery, because RMA added those to the records you need (${a(RMA.pm25028, "RMA PM-25-028")}).`],
   ];
 }
 
