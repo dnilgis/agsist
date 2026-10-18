@@ -1527,9 +1527,11 @@ def state_compare(picks, summ, sname):
     return out, lines
 
 
-def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
+def faq_pairs(t, picks, cmp_lines, near, center, snap_ct, latest=None):
     """Three questions answered from this page's own numbers, as plain text: the
-    visible FAQ and the FAQPage JSON-LD are built from these same strings."""
+    visible FAQ and the FAQPage JSON-LD are built from these same strings.
+    latest: the newest posting on the page; when it is not from today (CT) the
+    first question asks for the latest bid, not today's."""
     town, place = t["name"], f"{t['name']}, {t['state']}"
     cs = [c for c in CROPS if c in picks]
     if not cs:
@@ -1540,7 +1542,9 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct):
     qs = []
     a1 = (f"The nearest-delivery {crop} bid we read in {place} is {cash_c(r['cash'])} a bushel at {name}"
           f"{_deliv_phrase(r, True)}, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
-    qs.append((f"What is {crop} paying in {town} today?", a1))
+    today = latest is None or latest.astimezone(CT).date() == snap_ct.date()
+    qs.append((f"What is {crop} paying in {town} today?" if today else f"What is the latest {crop} bid in {town}?",
+               a1))
     if r["basis"] is not None:
         a2 = f"{name} posts {crop} basis of {_basis_plain(r)}{_deliv_phrase(r, True)}."
         a2 += "".join(" " + x["faq"] for x in cmp_lines if x["crop"] == c)
@@ -1791,8 +1795,8 @@ def build_town_page(t, ctx):
     if cmp_text:
         cmp_html = ('<p class="cbt-cmp">' + " ".join(esc(x) for x in cmp_text)
                     + f' <a href="/cash-bids/{ssl}/#basis">{esc(sname)} basis today</a></p>')
-    qs = faq_pairs(t, picks, cmp_lines, nearby_pick(t, center, ctx.get("live_all"), True), center, snap_ct) \
-        if indexable else []
+    qs = faq_pairs(t, picks, cmp_lines, nearby_pick(t, center, ctx.get("live_all"), True), center, snap_ct,
+                   max(times)) if indexable else []
     hist_html = history_box(t, live_b, ctx["hist"](st)) if indexable and ctx.get("hist") else ""
     answer_html = f'<p class="cbt-answer">{esc(answer)}</p>' if answer else ""
     # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
@@ -3397,6 +3401,16 @@ def _selftest_share():
     og = re.search(r'<meta property="og:description" content="([^"]*)"', pg)
     assert og and "corn $4.10" in og.group(1) and "4.90" not in og.group(1), og and og.group(1)
     assert 'data-top="corn:4.10"' in pg, "the email box's placeholder is the answer's price too"
+    assert "What is corn paying in Fremont today?" in pg and "<title>Cash Grain Bids in Fremont, NE Today" in pg
+    # nothing posted today (CT): the FAQ asks for the latest bid; title and H1 keep "Today"
+    snap = parse_ts(gen).astimezone(CT)
+    r = {"crop": "corn", "commodity": "Corn", "dm": "2026-10", "cash": 4.1, "basis": None, "contract": None,
+         "label": "Oct 2026", "period": "2026-10", "priced": parse_ts("2026-10-17T22:00:00Z")}
+    tf = {"name": "Fremont", "state": "NE"}
+    q = faq_pairs(tf, {"corn": (r, "Alpha Grain")}, [], [], None, snap, r["priced"])
+    assert q[0][0] == "What is the latest corn bid in Fremont?", q[0]
+    q = faq_pairs(tf, {"corn": (r, "Alpha Grain")}, [], [], None, snap, parse_ts("2026-10-18T05:30:00Z"))
+    assert q[0][0] == "What is corn paying in Fremont today?", "12:30 am CT Oct 18 is today"
 
 
 def _selftest_known():
