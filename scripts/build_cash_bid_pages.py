@@ -534,6 +534,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             continue
         con = parse_contract(b.get("futuresMonth"), crop if crop in ("corn", "soybeans") else
                              ("corn" if crop == "sorghum" else crop), gen.year, b.get("commodity"))
+        raw_period = b.get("period")
         period = checked_period(b, con)
         if period is None:
             no("delivery_year_did_not_check_out")
@@ -549,6 +550,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         bd["rows"].append({
             "crop": crop, "commodity": (b.get("commodity") or "").strip(), "label": delivery_label(b),
             "dm": delivery_month(period, crop, snap_ct), "period": str(period or ""),
+            "period_feed": str(raw_period or ""),
             "cash": round(float(cash), 4), "basis": basis, "contract": con, "priced": pt,
             "source": sid, "via": b.get("via")})
     return towns, drops, unplaced
@@ -1935,13 +1937,23 @@ def dtext(r):
     return f"{MONTH_ABBR[int(m.group(1)) - 1]} {m.group(2)}" if m and 1 <= int(m.group(1)) <= 12 else d
 
 
-def best_bids(near):
+def odd_keys(towns):
+    """The rows flag_odd() marked on the town pages, keyed as best_bids() sees
+    a state row: (source, crop, period as the feed gave it, cash)."""
+    return {(bd["source"], r["crop"], r.get("period_feed", r["period"]), round(r["cash"], 4))
+            for t in towns.values() for bd in t["boards"].values() for r in bd["rows"] if r.get("odd")}
+
+
+def best_bids(near, odd=frozenset()):
     """{crop: row} the highest cash among each crop's nearest delivery start
     in the state, for corn and soybeans (and a wheat class with no corn or
-    soybeans at all). Suspect and outlier rows never qualify."""
+    soybeans at all). Suspect and outlier rows never qualify, nor a row its
+    town page flags as unusual (odd: odd_keys()); Oct 18, 2026 two state cards
+    headlined a bid the town page told farmers to call about first."""
     out = {}
     for g in BM.CROP_ORDER:
-        rs = [r for r in near if r["group"] == g and not r.get("suspect") and not r.get("outlier")]
+        rs = [r for r in near if r["group"] == g and not r.get("suspect") and not r.get("outlier")
+              and (r["source"], r["crop"], str(r.get("period") or ""), round(r["cash"], 4)) not in odd]
         if not rs:
             continue
         first = min(r["start"] for r in rs)
@@ -1949,10 +1961,35 @@ def best_bids(near):
     return out
 
 
-def best_card(g, r, town_paths):
+_DS_RE = re.compile(r"^\s*DS\s*-\s*(.*?)\s*$", re.I)
+_DS_KEEP = {"ADM", "AGP", "CHS", "POET"}
+
+
+def ds_name(city, feed_label=None):
+    """A direct-ship code as the card prints it, or None when city is not one:
+    "DS-Pine Lake" -> "direct ship, Pine Lake", "DS-ADM" -> "direct ship, ADM",
+    "DS-PEN" or "DS-CRG-CR" (a code the feed does not spell out) -> "direct ship"."""
+    m = _DS_RE.match(city or "")
+    if not m:
+        return None
+    if feed_label and not _DS_RE.match(feed_label):      # the board's own label for it
+        return f"direct ship, {SB.town_text(feed_label.strip())}"
+    rest = m.group(1)
+    if rest.upper() in _DS_KEEP:
+        return f"direct ship, {rest.upper()}"
+    if re.fullmatch(r"[A-Za-z]{4,}(?: [A-Za-z]+)*", rest):
+        return f"direct ship, {SB.town_text(rest) if rest.isupper() else rest}"
+    return "direct ship"
+
+
+def best_card(g, r, town_paths, labels=None):
     tp = town_paths.get(r["source"])
     town = SB.town_text(r["city"])
-    where = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
+    ds = ds_name(r["city"], (labels or {}).get(r["source"]))
+    if ds:
+        where = f'{esc(ds)}, <a href="{tp[1]}">{esc(tp[0])}</a>' if tp else esc(ds)
+    else:
+        where = f'<a href="{tp[1]}">{esc(town)}</a>' if tp else esc(town)
     bas = (f'basis {money_basis(r["basis"])} vs {contract_label(r["contract"])}' if r["contract"]
            else f'basis {money_basis(r["basis"])}, futures month not named')
     return (f'<div class="cbt-stat"><div class="v">{cash_c(r["cash"])}</div>'
@@ -2298,11 +2335,12 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
     lst = (f'<ul class="cbt-list">{"".join(items)}</ul>' if items else
            '<div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads in this state has a '
            'bid we could confirm right now.</div>')
-    bests = best_bids(near)
+    bests = best_bids(near, ctx.get("odd") or frozenset())
     best_html = ""
-    cards = [best_card(g, bests[g], town_paths) for g in ("corn", "soybeans") if g in bests]
+    lab = ctx.get("labels") or {}
+    cards = [best_card(g, bests[g], town_paths, lab) for g in ("corn", "soybeans") if g in bests]
     if not cards:
-        cards = [best_card(g, bests[g], town_paths) for g in BM.CROP_ORDER[2:] if g in bests][:1]
+        cards = [best_card(g, bests[g], town_paths, lab) for g in BM.CROP_ORDER[2:] if g in bests][:1]
     if cards:
         best_html = f'<h2 id="best">Best bid today</h2><div class="cbt-hero">{"".join(cards)}</div>'
     tops_html = "".join(top_bid_table(g, near, town_paths) for g in ("corn", "soybeans"))
@@ -2638,6 +2676,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     for st_ in sorted({r["state"] for r in near}):
         summaries[st_] = BM.state_basis([r for r in near if r["state"] == st_], prev_map)
     n_odd = flag_odd(towns, summaries)
+    town_odd = odd_keys(towns)
     town_paths = {}
     for t in towns.values():
         for bd in t["boards"].values():
@@ -2651,7 +2690,10 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
            "snap_iso": gen.strftime("%Y-%m-%dT%H:%M:%SZ"), "prev_generated": prev_gen,
            "counts": state_counts(towns, near), "zip_coord": zip_coord, "summaries": summaries,
            "hist": _hist_lookup(hist_dir) if hist_dir else None, "live_all": live_board_list(towns),
-           "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {}}
+           "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {},
+           "odd": town_odd,
+           "labels": {s_["id"]: s_["labelInFeed"] for s_ in index.get("sources") or []
+                      if s_.get("id") and s_.get("labelInFeed")}}
     # one page per company with COMPANY_MIN or more boards in towns; each board
     # learns its page first, so its town page can link it
     import build_company_pages as CO
@@ -3197,6 +3239,7 @@ def selftest():
     _selftest_delivery_year()
     _selftest_place()
     _selftest_share()
+    _selftest_best()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -3411,6 +3454,29 @@ def _selftest_share():
     assert q[0][0] == "What is the latest corn bid in Fremont?", q[0]
     q = faq_pairs(tf, {"corn": (r, "Alpha Grain")}, [], [], None, snap, parse_ts("2026-10-18T05:30:00Z"))
     assert q[0][0] == "What is corn paying in Fremont today?", "12:30 am CT Oct 18 is today"
+
+
+def _selftest_best():
+    """A state's best card skips a row its town page flags as unusual, and a
+    direct-ship code reads as words."""
+    pt = parse_ts("2026-10-18T13:00:00Z")
+
+    def nr(sid, cash, city="Town"):
+        return {"source": sid, "state": "IA", "group": "corn", "crop": "corn", "operator": sid, "city": city,
+                "period": "2026-10", "start": "2026-10", "contract": ("ZC", 11, 2026), "basis": cash - 4.5,
+                "cash": cash, "priced": pt, "delivery": "10/01/2026"}
+    near = [nr("a", 4.75, "DS-PEN"), nr("b", 4.40)]
+    assert best_bids(near)["corn"]["source"] == "a"
+    assert best_bids(near, {("a", "corn", "2026-10", 4.75)})["corn"]["source"] == "b"
+    card = best_card("corn", near[0], {"a": ("Cedar Rapids", "/cash-bids/iowa/cedar-rapids")})
+    assert "a, direct ship, <a href=\"/cash-bids/iowa/cedar-rapids\">Cedar Rapids</a>" in card and "Ds-" not in card, card
+    assert "direct ship, Pen Mill" in best_card("corn", near[0], {}, {"a": "PEN MILL"})
+    assert ds_name("DS-Pine Lake") == "direct ship, Pine Lake" and ds_name("DS-ADM") == "direct ship, ADM"
+    assert ds_name("DS-CRG-CR") == "direct ship" and ds_name("Desoto") is None
+    tw = {("IA", "t"): {"state": "IA", "boards": {"p": {"source": "a", "rows": [
+        {"crop": "corn", "period": "2026-10", "period_feed": "2027-10", "cash": 4.75, "odd": {"via": "nearby"}},
+        {"crop": "corn", "period": "2026-11", "cash": 4.70, "odd": None}]}}}}
+    assert odd_keys(tw) == {("a", "corn", "2027-10", 4.75)}, "keyed by the feed's own period"
 
 
 def _selftest_known():
