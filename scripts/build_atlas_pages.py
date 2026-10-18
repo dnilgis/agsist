@@ -1676,7 +1676,11 @@ def county_page(W, f, d, stamp):
         if S.get("loss_ratio_all") is not None:
             S4 += fact("Loss ratio, %s–%s" % (S["first_year"], S["last_year"]), rh(S["loss_ratio_all"], 2), "%s paid" % musd(S["total_indemnity"]))
         if S.get("years_over_one") is not None:
+            # "crop years 1995-2025" only when every year in that span carries a ratio; else the gate
+            # (Dinwiddie, VA: 16 gated years scattered over 1989-2025, sets pass 2026-10-18)
+            run_ = closed and len(closed) == S["years_with_ratio"] and max(closed) - min(closed) + 1 == len(closed)
             S4 += fact("Years claims exceeded premium", "%s of %s" % (S["years_over_one"], S["years_with_ratio"]),
+                       ("crop years %s–%s with a loss ratio" % (min(closed), max(closed))) if run_ else
                        "crop years with at least %s of premium" % SOB_GATE)
         # a worst year out of one or two gated years is not a worst year: the same gate as the count above
         if S.get("worst_year") and S.get("years_over_one") is not None:
