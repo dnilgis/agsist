@@ -28,13 +28,15 @@ function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
 // (Madison median last spring freeze is about May 5, UW-Madison SSEC 1940-2024) and the fall
 // ones were never checked against a station. Used only until a location and the NOAA station
 // file are in.
+/* Every row is percentiles of the date: 10% = the early year, 90% = the late year. The fall row
+   ran latest-first until 2026-10-18, the reverse of the spring row and of the header. */
 var FROST_DATA = {
-  sw_wi:  {zone:'Southern Wisconsin (Madison area)', spring10:'Apr 9',  spring50:'Apr 22', spring90:'May 5',  fall10:'Oct 7', fall50:'Sep 25', fall90:'Sep 13'},
-  cw_wi:  {zone:'Central Wisconsin (Wausau area)',   spring10:'Apr 21', spring50:'May 2',  spring90:'May 15', fall10:'Sep 28',fall50:'Sep 18', fall90:'Sep 8'},
-  nw_wi:  {zone:'Northern Wisconsin (Rhinelander)',  spring10:'May 3',  spring50:'May 15', spring90:'May 28', fall10:'Sep 18',fall50:'Sep 8',  fall90:'Aug 29'},
-  smn:    {zone:'Southern Minnesota (Rochester)',    spring10:'Apr 10', spring50:'Apr 23', spring90:'May 6',  fall10:'Oct 5', fall50:'Sep 24', fall90:'Sep 13'},
-  cmn:    {zone:'Central Minnesota (St. Cloud)',     spring10:'Apr 21', spring50:'May 4',  spring90:'May 17', fall10:'Sep 27',fall50:'Sep 17', fall90:'Sep 7'},
-  nmn:    {zone:'Northern Minnesota (Brainerd)',     spring10:'Apr 29', spring50:'May 13', spring90:'May 27', fall10:'Sep 20',fall50:'Sep 9',  fall90:'Aug 29'}
+  sw_wi:  {zone:'Southern Wisconsin (Madison area)', spring10:'Apr 9',  spring50:'Apr 22', spring90:'May 5',  fall10:'Sep 13', fall50:'Sep 25', fall90:'Oct 7'},
+  cw_wi:  {zone:'Central Wisconsin (Wausau area)',   spring10:'Apr 21', spring50:'May 2',  spring90:'May 15', fall10:'Sep 8', fall50:'Sep 18', fall90:'Sep 28'},
+  nw_wi:  {zone:'Northern Wisconsin (Rhinelander)',  spring10:'May 3',  spring50:'May 15', spring90:'May 28', fall10:'Aug 29', fall50:'Sep 8', fall90:'Sep 18'},
+  smn:    {zone:'Southern Minnesota (Rochester)',    spring10:'Apr 10', spring50:'Apr 23', spring90:'May 6',  fall10:'Sep 13', fall50:'Sep 24', fall90:'Oct 5'},
+  cmn:    {zone:'Central Minnesota (St. Cloud)',     spring10:'Apr 21', spring50:'May 4',  spring90:'May 17', fall10:'Sep 7', fall50:'Sep 17', fall90:'Sep 27'},
+  nmn:    {zone:'Northern Minnesota (Brainerd)',     spring10:'Apr 29', spring50:'May 13', spring90:'May 27', fall10:'Aug 29', fall50:'Sep 9', fall90:'Sep 20'}
 };
 
 // SHARED TABLE: average GDU per day by month, May-Sep, Wisconsin. /gdu-calculator carries the
@@ -180,9 +182,9 @@ function renderFrostTable(zone){
     +'<thead><tr><th>Event</th><th class="p10">10%</th><th class="p50">50%</th><th class="p90">90%</th></tr></thead>'
     +'<tbody>'
     +'<tr><td>Last spring frost</td><td class="p10">'+d.spring10+'</td><td class="p50">'+d.spring50+'</td><td class="p90">'+d.spring90+'</td></tr>'
-    +'<tr><td>First fall frost</td><td class="p10">'+d.fall10+'</td><td class="p50">'+d.fall50+'</td><td class="p90">'+d.fall90+'</td></tr>'
+    +'<tr><td>First fall frost</td><td class="p90">'+d.fall10+'</td><td class="p50">'+d.fall50+'</td><td class="p10">'+d.fall90+'</td></tr>'
     +'</tbody></table>'
-    +'<p class="f-hint">Percentiles of the freeze date, not planting advice. These zone dates are approximate and run early: UW-Madison SSEC puts the Madison median last spring freeze near May 5 (1940-2024), 13 days after this table’s 50% date for southern Wisconsin. The freeze temperature behind them is not stated. A Wisconsin or Minnesota ZIP gives your nearest NOAA station instead.</p>';
+    +'<p class="f-hint">Percentiles of the freeze date: in 1 year of 10 the frost comes before the 10% date, in 9 of 10 before the 90% date. Not planting advice. These zone dates are approximate and run early: UW-Madison SSEC puts the Madison median last spring freeze near May 5 (1940-2024), 13 days after this table’s 50% date for southern Wisconsin. The freeze temperature behind them is not stated. A Wisconsin or Minnesota ZIP gives your nearest NOAA station instead.</p>';
   var el = $('frost-table-wrap'); if(el) el.innerHTML = html;
 }
 
