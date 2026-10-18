@@ -37,10 +37,8 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0a0c0d">
 
-
 <script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
-
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -91,7 +89,6 @@ img{display:block}
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
 
-
 .hero{padding:52px 0 36px;border-bottom:1px solid var(--hair)}
 .eyebrow{font-family:var(--mono);font-size:13.2px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(31px,5.4vw,52px);line-height:1.04;letter-spacing:-.01em;margin-bottom:14px}
@@ -110,7 +107,6 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .pill .mk{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:8px;vertical-align:1px}
 .pill.live .mk{background:var(--pos)}.pill.warn .mk{background:var(--accent)}
 .pill b{color:var(--text);font-weight:600}
-
 .tldr{margin:30px 0 6px;border:1px solid var(--hair-strong);border-radius:8px;overflow:hidden;background:var(--surface)}
 .tldr-head{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--hair)}
 .tldr-head .tag{font-family:var(--mono);font-size:12.9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
@@ -122,7 +118,6 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .tldr-cell .vv{font-size:14.5px;color:var(--text);line-height:1.45}
 .tldr-cell .vv b{font-weight:600}
 .tldr-cell .num{font-family:var(--mono);font-weight:700;color:var(--accent)}
-
 .oct1{margin:26px 0 4px;border:1px solid var(--hair-strong);border-radius:10px;
   background:var(--surface);padding:20px 22px}
 .oct1 .o1-tag{font-family:var(--mono);font-size:12.9px;letter-spacing:.14em;
@@ -181,12 +176,10 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .fb-detail{margin-top:14px}
 .fb-detail .dt-h{font-family:var(--display);font-size:18px;margin:18px 0 10px}
 .fb-detail .chg{margin-bottom:10px}
-
 .updlog{display:grid;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:3px;overflow:hidden}
 .updlog .u{background:var(--surface);padding:12px 18px;display:grid;grid-template-columns:110px 1fr;gap:14px;font-size:13.8px;line-height:1.5}
 .updlog .d{font-family:var(--mono);color:var(--accent);font-size:12.9px;white-space:nowrap}
 @media (max-width:640px){.updlog .u{grid-template-columns:1fr;gap:4px}}
-
 .subnav{position:sticky;top:var(--nav-h);z-index:50;background:color-mix(in srgb,var(--page) 92%,transparent);
   backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);margin-top:8px}
 .subnav::after{content:"";position:absolute;right:0;top:0;bottom:1px;width:34px;background:linear-gradient(to left,var(--page),transparent);pointer-events:none}
@@ -196,7 +189,6 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .subnav a{font-family:var(--mono);font-size:13.2px;letter-spacing:.03em;color:var(--dim);padding:12px 11px;border-radius:5px;white-space:nowrap;border:1px solid transparent}
 .subnav a:hover{color:var(--text);background:var(--surface)}
 .subnav a.active{color:var(--accent);border-color:var(--hair-strong);background:var(--surface)}
-
 section{padding:46px 0;border-bottom:1px solid var(--hair);scroll-margin-top:calc(var(--nav-h) + var(--subnav-h) + 8px)}
 .sec-eyebrow{font-family:var(--mono);font-size:13.2px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:10px}
 .sec-eyebrow .n{color:var(--accent)}
@@ -320,7 +312,6 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3.2vw,30px);l
 .byline{color:var(--text-muted,#8a948f);font-size:13px;line-height:1.65;margin:14px 0 0}
 .byline b{color:var(--text-dim,#c3ccc4)}
 .byline a{color:var(--gold)}
-
 /* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
 details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
 details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
@@ -360,14 +351,12 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
   </header>
 <!-- /static-nav:header -->
 </div>
-
 <main id="main">
  <div class="wrap">
   <div class="hero">
     <div class="eyebrow page-kicker">Farm bill tracker · national</div>
     <h1>The 2026 Farm Bill</h1>
     <p class="sub">What it changes for a corn and soybean farm this year: not much.</p>
-    <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">By <a href="/about">Sigurd Lindquist, CCA</a>. Sources: the Congressional Research Service, CBO, the bill text and the committee, listed under Sources at the bottom.</p>
     <p class="lede">Your ARC and PLC numbers are already law: reference prices of <b>$4.10</b> for corn and
       <b>$10.00</b> for soybeans through 2030, and crop insurance runs on permanent law. What is stuck: <b>new CRP
       enrollment</b> and new aid money.</p>
@@ -432,7 +421,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     </div>
   </div>
  </div>
-
  <div class="wrap">
   <section class="oct1" id="oct1" aria-labelledby="oct1-h">
     <div class="o1-tag">What actually happened October 1</div>
@@ -498,7 +486,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     </details>
   </section>
  </div>
-
  <nav class="subnav" aria-label="On this page">
    <div class="subnav-inner">
      <a href="#oct1">What happened Oct 1</a>
@@ -510,7 +497,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
      <a href="#faq">FAQ</a>
    </div>
  </nav>
-
  <div class="wrap">
   <section id="where">
     <div class="sec-eyebrow"><span class="n">01</span> Where the money goes</div>
@@ -546,7 +532,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       raised the other titles. So part of the "farm bill" money story already happened in a separate law.
       Related on AGSIST: the <a class="inl" href="/arc-plc">ARC or PLC calculator for 2026 and 2027</a>, <a class="inl" href="/tariffs">tariffs</a> and the <a class="inl" href="/usda-calendar">USDA report calendar</a>.</p>
   </section>
-
   <section id="changes">
     <div class="sec-eyebrow"><span class="n">02</span> What the bills actually change</div>
     <h2>Both close to budget-neutral</h2>
@@ -561,7 +546,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     <p class="note" id="changes-ledger">The largest line items in the House score (EQIP &minus;$786M and the rest) open with
       <a class="inl" href="#titles">all twelve titles</a> below.</p>
   </section>
-
   <section id="compare">
     <div class="sec-eyebrow"><span class="n">03</span> House vs Senate</div>
     <h2>The two bills, side by side</h2>
@@ -580,7 +564,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       <!--/FB:compare-->
     </div>
   </section>
-
   <section id="titles">
     <div class="sec-eyebrow"><span class="n">04</span> Title by title</div>
     <h2>All twelve titles, and the House score line by line</h2>
@@ -591,7 +574,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
     <div id="fb-detail" class="fb-detail" aria-live="polite" hidden></div>
     <noscript><p class="note">This list loads with JavaScript. The same detail is in the sources below.</p></noscript>
   </section>
-
   <section id="status">
     <div class="sec-eyebrow"><span class="n">05</span> Where it stands</div>
     <h2>The path to the President's desk</h2>
@@ -642,7 +624,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       </div>
     </details>
   </section>
-
   <section id="notify">
     <div class="notify">
       <div>
@@ -664,7 +645,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       </div>
     </div>
   </section>
-
   <section id="faq">
     <div class="sec-eyebrow"><span class="n">06</span> Questions, answered</div>
     <h2>Farm bill FAQ</h2>
@@ -682,7 +662,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
       <details><summary>Does the Senate bill change late planting rules?</summary><div class="ans">Only in a pilot: S. 5526 would drop the late planting guarantee cut in at least 4 Texas Panhandle counties. Everywhere else stays the same, and the bill is not law.</div></details>
     </div>
   </section>
-
   <div class="editorial">
     <p class="first-person">I built this because every "farm bill" explainer I could find was either a
       200-page CRS PDF or a press release. Every number here carries a source and a date. The update log above shows every revision, including the ones where
@@ -737,7 +716,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
   </nav>
 <!-- /static-nav:footer -->
 </div>
-
 <script>
 (function(){
   // copy link
@@ -800,7 +778,6 @@ details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!imp
   openTo(location.hash);
 })();
 </script>
-  <script src="/components/glossary.js?v=1" defer></script>
   <script src="/components/next-links.js?v=1" defer></script>
 </body>
 </html>

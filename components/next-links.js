@@ -56,7 +56,14 @@
     if (ask && window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan();
   }
 
+  /* the glossary marks ride along, so a page needs only this one tag */
+  function glossary() {
+    if (window.AgsistGlossary || doc.querySelector('script[src*="/components/glossary.js"]')) return;
+    var g = doc.createElement('script'); g.src = '/components/glossary.js?v=1'; g.defer = true; doc.body.appendChild(g);
+  }
+
   function start() {
+    glossary();
     fetch('/data/next-links.json').then(function (r) { return r.ok ? r.json() : null; }).then(run).catch(function () {});
   }
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', start); else start();

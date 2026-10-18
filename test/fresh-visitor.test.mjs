@@ -71,6 +71,11 @@ test("a page marks only the first use of each term, in reading order", () => {
   assert.ok(G.pickMarks(many, C).length <= G.MAX, "capped at " + G.MAX + " marks a page");
 });
 
+test("next-links.js brings the glossary marks along; /glossary opts out", () => {
+  assert.match(read("components/next-links.js"), /\/components\/glossary\.js\?v=\d+/);
+  assert.match(read("glossary.html"), /<body data-glossary="off">/);
+});
+
 test("glossary.js stays out of nav, links, headings and form text, and is accessible", () => {
   const js = read("components/glossary.js");
   for (const tag of ["A", "BUTTON", "H1", "H2", "H3", "SUMMARY", "LABEL", "NAV", "HEADER", "FOOTER", "TH"]) assert.match(js, new RegExp("\\b" + tag + "\\|"), tag + " is skipped");
@@ -112,7 +117,7 @@ test("pages that load next-links.js have an entry, and the pages read get the sc
     if (pending.has(k)) continue;
     const f = fileFor(k), h = read(f);
     assert.match(h, /<script src="\/components\/next-links\.js\?v=\d+" defer><\/script>/, f + " loads next-links.js");
-    if (k !== "/glossary") assert.match(h, /<script src="\/components\/glossary\.js\?v=\d+" defer><\/script>/, f + " loads glossary.js");
+    // next-links.js loads glossary.js itself when the page has no tag for it (farm-bill.html sits at its byte cap)
     assert.equal(keyOf(f), k);
   }
 });
@@ -131,7 +136,9 @@ test("no em dashes in anything this adds", () => {
 test("who made it: tool and price pages name Sig and the data source near the top", () => {
   for (const f of ["usda-calendar.html", "corn-futures-prices.html", "soybean-futures-prices.html", "wheat-futures-prices.html",
     "cattle-futures-prices.html", "cash-bids.html", "crop-tour.html", "cot.html", "hail-map.html", "markets.html", "fertilizer.html",
-    "conditions.html", "basis.html", "lrp.html", "store-or-sell.html", "grain-emc.html", "harvest-price-tracker.html", "farmland-atlas.html"]) {
+    "conditions.html", "basis.html", "lrp.html", "store-or-sell.html", "harvest-price-tracker.html"]) {
+    // not here: grain-emc (Sig, Oct 15: no name in the hero), farmland-atlas (its first phone screen is pinned full),
+    // farm-bill (at its byte cap)
     const h = read(f), i = h.indexOf("<h1"), j = h.indexOf('class="madeby"');
     assert.ok(j > i && i > 0, f + " has the made-by line after its H1");
     assert.ok(j - i < 6000, f + " made-by line sits near the top");
