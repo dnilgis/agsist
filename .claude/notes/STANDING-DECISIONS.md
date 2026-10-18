@@ -144,3 +144,5 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
   line at the end (class by-end) or a source note lower down; structured data keeps the author (test/byline-bottom.test.mjs).
 - (Oct 18, Sig) Footer bottom line: "Updated as each source posts. For information, not financial advice. Where the numbers come from".
 - (Oct 18, Sig) Net elevator price tool: not yet.
+- (Oct 18, Sig) Sponsors on land pages: any sponsor is OK, realtors included ("Sponsor" label, unsold shows nothing).
+- (Oct 18, Sig) Paid tools: undecided; build free first. Owner contact exports and a hay listings board: open questions (see the opportunity map doc).
