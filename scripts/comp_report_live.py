@@ -62,7 +62,7 @@ def run():
                     pg.wait_for_timeout(1000)
                 ok, why = verdict(sec, text)
                 bad += 0 if ok else 1
-                print("::notice title=comp-live %s %s::%s: %s" % (name, sec, "filled" if ok else "EMPTY", why))
+                print("::notice::comp-live %s %s %s: %s" % (name, sec, "filled" if ok else "EMPTY", why))
         b.close()
     print(json.dumps({"empty_sections": bad}))
 

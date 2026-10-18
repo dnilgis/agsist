@@ -202,3 +202,15 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - Branches deliberately NOT on main: fx/models-samples, fx/rpv2, fx/wiretr-explore (scratch); fx/freshread and fx/faqgaps (one-time
   API jobs, both ran Oct 18, outputs on raw; their api_jobs.py changes clash with the newer job kinds on main, so merge by hand only if
   a rerun is wanted). Accuracy pass tools (fx/accpass, accpass3, accsets) are merged.
+
+## State on Oct 18 (late, cache v180)
+- Field Scout layers checked against the Oct 18 layers-discover answers (fixtures: test/fixtures/field-layers-live/, trimmed, no names):
+  MN feedlot size field is au_count (was missed); both feedlot layers carry inactive sites, now filtered (IA opStatus, MN status_fdlt);
+  NCED answers "Token Required": URLS.nced is null and the card says so (no open national copy found, only state copies);
+  Overpass was "at capacity" for the WI field: second server added (overpass.private.coffee, unverified until the next layers probe);
+  eersc wind fallback dropped (expired certificate).
+- Comp report checked live (land-data.yml task=comp-live, dispatch only, notices only, owner names never logged): WI Barron owner,
+  NCCPI 45, 10 crop years; IA Story and IL Champaign NCCPI 80 / 84 and 10 crop years, no owner (no free parcel map wired there,
+  the page says so).
+- Westfield / 44410: 44410 is Cortland, OH; its page leads with Westfield Specialty Grains (corn $4.14, -60 vs Dec, posted Oct 16).
+  Ask Sig Monday what the check was.
