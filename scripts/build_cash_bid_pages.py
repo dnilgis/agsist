@@ -416,6 +416,38 @@ def checked_period(b, con):
     return None
 
 
+# A board the network files in the wrong town, fixed by hand with the evidence.
+# keycoop-pinelake is posted as "Ackney" (Ackley's ZIP 50601 and its town pin),
+# but the board's own label is "Pine Lake": Key Cooperative's Pine Lake elevator
+# west of Steamboat Rock, the site Innovative Ag Services lists as Pine Lake at
+# 42.4178,-93.0629, 9 mi south of Ackley. It posts corn only.
+PLACE_OVERRIDE = {
+    "keycoop-pinelake": {"state": "IA", "town": "Steamboat Rock", "zip": "50672", "pin": (42.4178, -93.0629)},
+}
+
+
+def _misspelt(a, b):
+    """True when a is b with one letter changed ("ackney" for "ackley")."""
+    return a != b and len(a) == len(b) >= 4 and a.isalpha() and b.isalpha() \
+        and sum(x != y for x, y in zip(a, b)) == 1
+
+
+def branch_name(b, src, town, known):
+    """The delivery point as the answer names it: the board's own label in its
+    feed ("Pine Lake") when it has one, else the posted city, except a city that
+    is no known town and is one letter off the town the board is filed in
+    ("Ackney" on the Ackley page). Facility names ("Ingredion"), hamlets and
+    numbered points ("Creston 1") stay."""
+    lab = clean_place(town_name(src.get("labelInFeed") or ""))
+    if lab:
+        return lab
+    city = clean_place(town_name(b.get("city")))
+    k = town_key(city)
+    if k not in known and _misspelt(k, town_key(town)):
+        return ""
+    return city
+
+
 def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None):
     """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
     board that has posted rows in that town and, per board, the rows that may
@@ -443,7 +475,9 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         if st not in STATE_NAMES or (b.get("currency") or "") != "USD":
             drops["not_us_or_not_usd"] += 1
             continue
-        tname = town_of(b, src, towns_by_state)
+        ovr = PLACE_OVERRIDE.get(sid)
+        ovr = ovr if ovr and ovr["state"] == st else None
+        tname = ovr["town"] if ovr else town_of(b, src, towns_by_state)
         how = {"how": "name"}
         if not tname and fallback.get((st, b.get("place") or sid)):
             how = fallback[(st, b.get("place") or sid)]
@@ -460,10 +494,11 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         bd = t["boards"].setdefault(place, {
             "place": place, "source": sid,
             "operator": display_name(b.get("operator") or src.get("operator") or ""),
-            "city": clean_place(town_name(b.get("city"))), "zip": zip5(b.get("zip") or src.get("zip")),
+            "city": clean_place(town_name(b.get("city"))), "branch": branch_name(b, src, tname, towns_by_state.get(st, {})),
+            "zip": ovr["zip"] if ovr else zip5(b.get("zip") or src.get("zip")),
             "phone": src.get("phone") or "", "checked": parse_ts(src.get("checkedAt")),
             "last_priced": None, "rows": [], "why": Counter(), "how": how["how"], "near_mi": how.get("mi"),
-            "town": tname, "state": st, "pin": _pin(b),
+            "town": tname, "state": st, "pin": ovr["pin"] if ovr else _pin(b),
             # hours, contact, note and closed-until of an elevator that posts
             # its own bids through agsist.com/post; None for every other board
             "portal": portal_info(src.get("portal"))})
@@ -1342,10 +1377,11 @@ def head_name(bd, with_town=True):
     Ingredion bid on 2026-10-15; the bare company name sent a farmer to the
     wrong scale."""
     op = (bd.get("operator") or "").strip()
-    city = re.sub(r"(,\s*[A-Z]{2})+$", "", (bd.get("city") or "").strip().rstrip(", ")).strip()
+    city = bd["branch"] if "branch" in bd else bd.get("city")
+    city = re.sub(r"(,\s*[A-Z]{2})+$", "", (city or "").strip().rstrip(", ")).strip()
     town = (bd.get("town") or "").strip()
     if not op:
-        return city
+        return city or (bd.get("city") or "").strip()
     def n(x):          # "Le Roy" = "Leroy", "Co-op" = "Coop", "Mt Vernon" = "Mount Vernon"
         x = re.sub(r"\b(mt|st|ft)\b\.?", lambda m: {"mt": "mount", "st": "saint", "ft": "fort"}[m.group(1)], x.lower())
         return re.sub(r"[^a-z0-9]", "", x)
@@ -3153,6 +3189,7 @@ def selftest():
     _selftest_known()
     _selftest_answer()
     _selftest_delivery_year()
+    _selftest_place()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -3297,6 +3334,41 @@ def _selftest_delivery_year():
     assert bd["why"]["delivery_year_did_not_check_out"] == 1
     assert checked_period({"period": "2026-10", "periodVia": "month-inferred-year"}, None) == "2026-10", \
         "no futures month: nothing to check against"
+
+
+def _selftest_place():
+    """The branch a board names (labelInFeed), a misspelt city dropped, and the
+    hand placement of Key Cooperative's Pine Lake board."""
+    gen = "2026-10-18T22:00:00Z"
+    srcs = [{"id": "keycoop-pinelake", "operator": "Key Cooperative", "status": "ok", "health": "live",
+             "labelInFeed": "Pine Lake", "checkedAt": "2026-10-18T21:00:00Z"},
+            {"id": "t-typo", "operator": "Typo Grain", "status": "ok", "health": "live",
+             "checkedAt": "2026-10-18T21:00:00Z"},
+            {"id": "t-fac", "operator": "Linn Coop Oil Company", "status": "ok", "health": "live",
+             "checkedAt": "2026-10-18T21:00:00Z"}]
+
+    def bid(sid, city, zp, lat, lon, op):
+        return {"place": sid, "source": sid, "operator": op, "city": city, "state": "IA", "zip": zp, "lat": lat,
+                "lon": lon, "currency": "USD", "crop": "corn", "commodity": "Corn", "delivery": "10/01/2026",
+                "period": "2026-10", "periodVia": "us-date", "periodPast": False, "cash": 4.39, "basis": -0.35,
+                "basisUnit": "per-bushel", "futuresMonth": "ZCZ26", "via": "scrape", "stale": False,
+                "sourceStatus": "ok", "pricedAt": "2026-10-18T13:00:00Z"}
+    bids = [bid("keycoop-pinelake", "Ackney", "50601", 42.5527, -93.0608, "Key Cooperative"),
+            bid("t-typo", "Ackney", "50601", 42.5527, -93.0608, "Typo Grain"),
+            bid("t-fac", "Ingredion", "52404", None, None, "Linn Coop Oil Company")]
+    zt = {"zips": {"50601": ["Ackley", "IA"], "50672": ["Steamboat Rock", "IA"], "52404": ["Cedar Rapids", "IA"]}}
+    towns, _, _ = select({"generated": gen, "bids": bids}, {"sources": srcs}, known_towns(zt), zt,
+                         {"50601": (42.55, -93.05), "50672": (42.41, -93.07), "52404": (41.95, -91.68)}.get, {})
+    pl = towns[("IA", "steamboat-rock")]["boards"]["keycoop-pinelake"]
+    assert (pl["zip"], pl["pin"], pl["branch"]) == ("50672", (42.4178, -93.0629), "Pine Lake"), pl
+    assert head_name(pl) == "Key Cooperative (Pine Lake, Steamboat Rock)", head_name(pl)
+    ty = towns[("IA", "ackley")]["boards"]["t-typo"]
+    assert ty["branch"] == "" and head_name(ty) == "Typo Grain", head_name(ty)
+    assert "keycoop-pinelake" not in towns[("IA", "ackley")]["boards"]
+    fac = towns[("IA", "cedar-rapids")]["boards"]["t-fac"]
+    assert head_name(fac) == "Linn Coop Oil Company (Ingredion, Cedar Rapids)", head_name(fac)
+    assert branch_name({"city": "Creston 1"}, {}, "Creston", {"creston": "Creston"}) == "Creston 1"
+    assert head_name({"operator": "", "city": "Ackney", "branch": "", "town": "Ackley"}) == "Ackney"
 
 
 def _selftest_known():
