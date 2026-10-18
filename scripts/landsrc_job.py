@@ -41,6 +41,9 @@ STATE_STATUS = {"IA": "county by county", "OH": "county by county", "SD": "count
                 "IN": "statewide sales disclosure file (fx/landnation parser)", "MN": "statewide eCRV extract by request",
                 "NE": "statewide sales file by request, fee", "KS": "nondisclosure (price confidential)",
                 "ND": "nondisclosure (no price filing)", "MO": "nondisclosure in most counties"}
+# Not sent to the model: prices there are not public record (fx/landnation), and the full ten-state
+# batch was $22.13 at the worst case against a $20 cap (Oct 18). Their counties are listed as skipped.
+SKIP_STATES = {"KS", "ND"}
 TEXT_BUDGET = 22000
 MIN_PAGE_TEXT = 2000
 FORMATS = ["csv", "xls", "gis_service", "gis_download", "search_only", "pdf_list", "none", "unclear"]
@@ -114,9 +117,13 @@ def build_bundle(caps, atlas_path):
     counties = county_list(atlas_path)
     by = EJ.group_by_seed(caps, EJ.load_pages(caps))
     rows, nosite = [], []
+    skipped = []
     for key, ps in by.items():
         m = re.match(r"(\d{5})\b", key)
         if not m or m.group(1) not in counties:
+            continue
+        if counties[m.group(1)]["state"] in SKIP_STATES:
+            skipped.append(dict(counties[m.group(1)], why=STATE_STATUS[counties[m.group(1)]["state"]]))
             continue
         live = [p for p in ps if p.get("text")]
         per = max(MIN_PAGE_TEXT, TEXT_BUDGET // max(1, len(live)))
@@ -131,10 +138,11 @@ def build_bundle(caps, atlas_path):
             prev["pages"] += ps
             continue
         rows.append(dict(c, key=key, pages=ps))
-    have = {r["fips"] for r in rows}
+    have = {r["fips"] for r in rows} | {c["fips"] for c in skipped}
     nosite = [c for f, c in sorted(counties.items()) if f not in have]
     rows.sort(key=lambda r: r["fips"])
-    return {"job": "landsrc", "caps": os.path.basename(caps), "landsrc": rows, "noSite": nosite}
+    return {"job": "landsrc", "caps": os.path.basename(caps), "landsrc": rows, "noSite": nosite,
+            "skipped": sorted(skipped, key=lambda c: c["fips"])}
 
 
 # ── collect ───────────────────────────────────────────────────────────────
@@ -215,30 +223,32 @@ def collect(bundle, results):
     per = {}
     for st in STATES:
         rs = [r for r in rows if r["state"] == st]
-        per[st] = {"statewide": STATE_STATUS[st], "captured": len(rs), "noSite": sum(c["state"] == st for c in bundle.get("noSite", [])),
+        per[st] = {"statewide": STATE_STATUS[st], "skipped": sum(c["state"] == st for c in bundle.get("skipped", [])), "captured": len(rs), "noSite": sum(c["state"] == st for c in bundle.get("noSite", [])),
                    "free": sum(r["free_sale_data"] == "yes" for r in rs),
                    "download": sum(r["free_sale_data"] == "yes" and r["format"] in ("csv", "xls", "gis_download", "gis_service") for r in rs),
                    "withPrice": sum(r["free_sale_data"] == "yes" and r["includes_price"] == "yes" for r in rs),
                    "vendors": dict(sorted({v: sum(r["vendor"] == v for r in rs) for v in VENDORS if any(r["vendor"] == v for r in rs)}.items(), key=lambda x: -x[1]))}
     return {"job": "landsrc", "caps": bundle.get("caps"), "batch": results.get("batch_id"), "actual_cost_usd": results.get("actual_cost_usd"),
-            "counts": {"counties": len(rows) + len(bundle.get("noSite", [])), "captured": len(rows), "noSite": len(bundle.get("noSite", [])),
+            "counts": {"counties": len(rows) + len(bundle.get("noSite", [])) + len(bundle.get("skipped", [])), "captured": len(rows),
+                       "skipped": len(bundle.get("skipped", [])), "noSite": len(bundle.get("noSite", [])),
                        "free": sum(r["free_sale_data"] == "yes" for r in rows), "flagged": sum(bool(r["flags"]) for r in rows)},
-            "perState": per, "counties": rows, "noSite": bundle.get("noSite", [])}
+            "perState": per, "counties": rows, "noSite": bundle.get("noSite", []), "skipped": bundle.get("skipped", [])}
 
 
 def markdown(t, landnation_note=""):
     c = t["counts"]
     L = [f"# County land sale sources, ten corn-belt states ({t.get('caps')})", "",
-         f"{c['counties']} counties: {c['captured']} with a captured site, {c['noSite']} with no site on file. "
+         f"{c['counties']} counties: {c['captured']} read, {c.get('skipped', 0)} skipped (nondisclosure states: {', '.join(sorted(SKIP_STATES))}), "
+         f"{c['noSite']} with no site on file. "
          f"{c['free']} show free sale data. {c['flagged']} answers had something dropped. Batch {t.get('batch')}, cost ${t.get('actual_cost_usd')}.", "",
          "Every URL is one we saved or saw linked, every quote is in the saved text. Findings for a person; terms must be read in full "
          "before anything is fetched in bulk.", ""]
     if landnation_note:
         L += [landnation_note, ""]
-    L += ["| State | State level (fx/landnation) | Captured | No site | Free sales | Download or service | With price | Vendors |",
-          "|---|---|---|---|---|---|---|---|"]
+    L += ["| State | State level (fx/landnation) | Read | Skipped | No site | Free sales | Download or service | With price | Vendors |",
+          "|---|---|---|---|---|---|---|---|---|"]
     for st, p in t["perState"].items():
-        L.append(f"| {st} | {p.get('statewide', '')} | {p['captured']} | {p['noSite']} | {p['free']} | {p['download']} | {p['withPrice']} | "
+        L.append(f"| {st} | {p.get('statewide', '')} | {p['captured']} | {p.get('skipped', 0)} | {p['noSite']} | {p['free']} | {p['download']} | {p['withPrice']} | "
                  f"{', '.join(f'{k} {v}' for k, v in p['vendors'].items())} |")
     L += ["", "## Counties, most usable first", "",
           "| Score | County | Free | Format | Price | Acres | Class | Vendor | Terms | Data URL | Flags |", "|---|---|---|---|---|---|---|---|---|---|---|"]
@@ -270,9 +280,9 @@ def selftest():
     assert score(b) == 0 and check(e, None)["flags"] == ["no answer"]
     res = {"batch_id": "b", "actual_cost_usd": 1.0, "items": {cid_of(e["key"]): {"result": "succeeded", "parsed": good}}}
     t = collect({"landsrc": [e], "caps": "c", "noSite": [{"fips": "19001", "name": "Adair", "state": "IA"}]}, res)
-    assert t["perState"]["IA"] == {"statewide": "county by county", "captured": 1, "noSite": 1, "free": 1, "download": 1, "withPrice": 1, "vendors": {"county_own": 1}}, t["perState"]["IA"]
+    assert t["perState"]["IA"] == {"statewide": "county by county", "skipped": 0, "captured": 1, "noSite": 1, "free": 1, "download": 1, "withPrice": 1, "vendors": {"county_own": 1}}, t["perState"]["IA"]
     md = markdown(t, "Statewide sources: see fx/landnation.")
-    assert "| IA | county by county | 1 | 1 | 1 | 1 | 1 | county_own 1 |" in md and "Story, IA (19169)" in md and "fx/landnation" in md
+    assert "| IA | county by county | 1 | 0 | 1 | 1 | 1 | 1 | county_own 1 |" in md and "Story, IA (19169)" in md and "fx/landnation" in md
     print("landsrc selftest ok")
 
 
