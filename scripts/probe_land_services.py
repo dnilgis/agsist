@@ -671,7 +671,7 @@ def run(discover, only=None):
     if discover:
         seen = set(e["url"] for v in (reg.get("counties") or {}).values() for e in v)
         for st, cands in ((reg.get("discover") or {}).get("statewide_candidates") or {}).items():
-            if any(x.get("verified") for x in (reg.get("statewide") or {}).get(st, [])):
+            if (only and st not in only) or any(x.get("verified") for x in (reg.get("statewide") or {}).get(st, [])):
                 continue
             for cand in cands:
                 e = discover_statewide(st, cand, pts, seen)
