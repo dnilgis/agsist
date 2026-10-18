@@ -21,7 +21,7 @@
   "CO":{
    "rows":309,
    "facilities":26,
-   "kb":14.5
+   "kb":14.4
   },
   "DE":{
    "rows":5,
@@ -56,12 +56,12 @@
   "IN":{
    "rows":1971,
    "facilities":111,
-   "kb":85.0
+   "kb":84.9
   },
   "KS":{
-   "rows":7497,
+   "rows":7504,
    "facilities":433,
-   "kb":326.3
+   "kb":325.8
   },
   "KY":{
    "rows":100,
@@ -121,7 +121,7 @@
   "OK":{
    "rows":2434,
    "facilities":90,
-   "kb":106.2
+   "kb":105.7
   },
   "ON":{
    "rows":26,
@@ -156,7 +156,7 @@
   "TX":{
    "rows":333,
    "facilities":20,
-   "kb":15.0
+   "kb":14.9
   },
   "VA":{
    "rows":27,
