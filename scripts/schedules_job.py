@@ -249,7 +249,7 @@ def markdown(t):
     for r in t["companies"]:
         if not r["schedules"]:
             L.append(f"- {r['label']}: {r.get('no_schedule_reason') or r['result']}{' (' + '; '.join(r['flags'][:3]) + ')' if r['flags'] else ''}")
-    return "\n".join(L).replace("—", "-") + "\n"
+    return "\n".join(L).replace("\u2014", "-") + "\n"
 
 
 def selftest():

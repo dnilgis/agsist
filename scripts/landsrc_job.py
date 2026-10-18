@@ -238,7 +238,7 @@ def markdown(t, landnation_note=""):
     for r in t["counties"]:
         L.append(f"| {r['score']} | {r['county']}, {r['state']} ({r['fips']}) | {r['free_sale_data']} | {r['format']} | {r['includes_price']} | "
                  f"{r['includes_acres']} | {r['includes_class']} | {r['vendor']} | {r['terms']} | {r['data_url']} | {'; '.join(r['flags'])} |")
-    return "\n".join(L).replace("—", "-") + "\n"
+    return "\n".join(L).replace("\u2014", "-") + "\n"
 
 
 def selftest():
