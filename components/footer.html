@@ -34,6 +34,10 @@
   /* css/home.css (under 900px) makes .footer-col a flex column and its links
      inline-flex; a flex <details> does not stack them, so the column is a
      block and each link a full row, which is how they rendered before. */
+  /* 2026-10-18: the column name is a span, not an <h2>: a heading inside
+     <summary> is read out oddly, and on wide screens it looked like a button.
+     Same look as the old .footer-col h2 in styles.css. */
+  .footer-col .footer-h{display:block;line-height:1.65;font-family:var(--font-mono);font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:.45rem;}
   footer details.footer-col{display:block;}
   footer details.footer-col > a{display:flex!important;}
   .footer summary{display:block;list-style:none;}
@@ -48,7 +52,7 @@
     footer.footer .footer-cols{display:block!important;columns:auto;gap:0;padding-bottom:0;margin-bottom:0;}
     footer details.footer-col{display:block;margin:0;border-bottom:1px solid var(--border);}
     footer details.footer-col > summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;cursor:pointer;}
-    footer details.footer-col > summary h2{margin:0;color:var(--text-dim);}
+    footer details.footer-col > summary .footer-h{margin:0;color:var(--text-dim);}
     footer details.footer-col > summary::after{content:'';width:.5rem;height:.5rem;margin-right:.3rem;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:translateY(-25%) rotate(45deg);transition:transform .15s;}
     footer details.footer-col[open] > summary::after{transform:translateY(25%) rotate(-135deg);}
     footer details.footer-col > summary:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
@@ -79,7 +83,7 @@
     </div>
     <div class="footer-cols">
       <details class="footer-col" open>
-        <summary><h2>Markets</h2></summary>
+        <summary><span class="footer-h">Markets</span></summary>
         <a href="/cash-bids"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash bids near me</a>
         <a href="/cash-bid-index"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Cash Bid Index (monthly)</a>
         <a href="/corn-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-corn"/></svg>Corn</a>
@@ -100,13 +104,14 @@
         <a href="/elevators"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>For elevators</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>Crop &amp; Field</h2></summary>
+        <summary><span class="footer-h">Crop &amp; Field</span></summary>
         <a href="/crop-tour"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
         <a href="/conditions-yield"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>2026 crop size: every forecast</a>
         <a href="/conditions"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop ratings and harvest progress</a>
         <a href="/yield-estimator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield estimator</a>
         <a href="/hail-map"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-hail"/></svg>Hail map</a>
         <a href="/rain-print"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print: a year of rain, printed</a>
+        <a href="/rain-print-business"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print for business</a>
         <a href="/rain"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Rain by county</a>
         <a href="/rain-radar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain on your field (radar)</a>
         <a href="/rain-gauge"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge (in the works)</a>
@@ -125,7 +130,7 @@
         <a href="/fast-facts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Fast Facts reference tables</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>Money &amp; Land</h2></summary>
+        <summary><span class="footer-h">Money &amp; Land</span></summary>
         <a href="/store-or-sell"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Sell now or store?</a>
         <a href="/breakeven"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Break-even</a>
         <a href="/grain-bin-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain bin calculator</a>
@@ -145,14 +150,14 @@
         <a href="/foreign-land"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Foreign-owned land</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>Daily</h2></summary>
+        <summary><span class="footer-h">Daily</span></summary>
         <a href="/daily"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>AGSIST Daily</a>
         <a href="/news"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>The Wire</a>
         <a href="/archive"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>Briefing archive</a>
         <a href="/scorecard"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-clipboard-check"/></svg>Prediction bot</a>
       </details>
       <details class="footer-col" open>
-        <summary><h2>AGSIST</h2></summary>
+        <summary><span class="footer-h">AGSIST</span></summary>
         <a href="/about"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>About</a>
         <a href="/editorial-standards"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Editorial standards</a>
         <a href="/contact"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>Contact</a>

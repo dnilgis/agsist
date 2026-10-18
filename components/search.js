@@ -5,20 +5,23 @@
  * scripts/build_search_index.py from the repo's own pages:
  *   /data/search-index.json      pages, state pages, towns, counties, futures
  *   /data/search-elevators.json  elevator names + town (fetched right after)
+ *   /data/search-places.json     towns with no bid page, each linked to the
+ *                                nearest town page (fetched last)
  * Nothing is sent anywhere: matching runs in the browser as you type.
  *
  * Entry shape: [type, title, sub, url, keywords]
- *   type 0 page, 1 state page, 2 town, 3 county, 4 futures, 5 elevator
+ *   type 0 page, 1 state page, 2 town, 3 county, 4 futures, 5 elevator,
+ *   6 town with no page of its own
  */
 (function () {
   'use strict';
   if (window.AgsistSearch) return;
 
-  var GROUPS = ['Pages and tools', 'State pages', 'Cash bid towns', 'Farmland atlas counties', 'Futures contracts', 'Elevators'];
-  var BASE_W = [6, 3, 2, 1, 1, 0];
+  var GROUPS = ['Pages and tools', 'State pages', 'Cash bid towns', 'Farmland atlas counties', 'Futures contracts', 'Elevators', 'Nearby bid towns'];
+  var BASE_W = [6, 3, 2, 1, 1, 0, 0];
   // words a type answers to, weaker than its own title and keywords
-  var TYPE_WORDS = ['', 'state', 'town cash bids bid elevator', 'county atlas farmland land value rent', 'futures contract', 'elevator elevators coop'];
-  var SHOW = [6, 5, 5, 5, 4, 5];
+  var TYPE_WORDS = ['', 'state', 'town cash bids bid elevator', 'county atlas farmland land value rent', 'futures contract', 'elevator elevators coop', 'town cash bids bid'];
+  var SHOW = [6, 5, 5, 5, 4, 5, 4];
   var MAX_ED = function (n) { return n >= 8 ? 2 : n >= 4 ? 1 : 0; };
   var STATE_ABBR = { 'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA', 'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA', 'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD', 'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO', 'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new-hampshire': 'NH', 'new-jersey': 'NJ', 'new-mexico': 'NM', 'new-york': 'NY', 'north-carolina': 'NC', 'north-dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode-island': 'RI', 'south-carolina': 'SC', 'south-dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT', 'virginia': 'VA', 'washington': 'WA', 'west-virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY' };
 
@@ -55,7 +58,7 @@
   /* ── index ────────────────────────────────────────────────────── */
   function stateOf(e) {
     var m = /\b([A-Z]{2})$/.exec(e.type === 5 ? e.sub : e.title);
-    if ((e.type === 2 || e.type === 3 || e.type === 5) && m) return m[1];
+    if ((e.type === 2 || e.type === 3 || e.type === 5 || e.type === 6) && m) return m[1];
     if (e.type === 1) { var p = /^\/[a-z-]+\/([a-z-]+)/.exec(e.url); return p ? STATE_ABBR[p[1]] || '' : ''; }
     return '';
   }
@@ -137,15 +140,52 @@
     return s;
   }
 
+  // Words that say how, not what: "corn prices near me", "corn price today".
+  // Dropped before matching (unless nothing else is left), and they mean the
+  // reader wants a local bid, so cash bids ride second under a grain page.
+  var FILLER = { near: 1, me: 1, today: 1, todays: 1, price: 1, prices: 1, local: 1 };
+  var GRAIN = { '/corn-futures-prices': 1, '/soybean-futures-prices': 1, '/wheat-futures-prices': 1 };
+  // A word whose page must come first, ahead of names that share its spelling
+  // ("dairy" is one letter off "Daily", and a co-op called Burnett Dairy).
+  var PIN = { dairy: '/milk-prices' };
+  function zipHit(z) {
+    return { e: { type: 0, title: 'Cash bids near ' + z, sub: 'Elevator bids by ZIP', url: '/cash-bids?zip=' + z, i: -1, tt: [], kt: [], wt: [] }, s: 1e6 };
+  }
+  function pageHit(items, url) {
+    for (var i = 0; i < items.length; i++) if (items[i].type === 0 && items[i].url === url) return items[i];
+    return null;
+  }
+  function raise(hits, items, url, at) {
+    var j = -1;
+    for (var i = 0; i < hits.length; i++) if (hits[i].e.url === url && hits[i].e.type === 0) { j = i; break; }
+    var h = j >= 0 ? hits.splice(j, 1)[0] : (pageHit(items, url) ? { e: pageHit(items, url), s: 0 } : null);
+    if (h) hits.splice(Math.min(at, hits.length), 0, h);
+  }
+
   function search(items, query, local) {
     var qn = norm(query), qt = qn ? qn.split(' ') : [];
     if (!qt.length) return [];
+    // a 5-digit ZIP goes to the live bid search for that ZIP
+    var zip = null, rest = [];
+    for (var z = 0; z < qt.length; z++) {
+      if (!zip && /^\d{5}$/.test(qt[z])) zip = qt[z]; else rest.push(qt[z]);
+    }
+    if (zip) {
+      rest = rest.filter(function (w) { return !FILLER[w] && !/^(zip|code|cash|bids?|grain|elevators?)$/.test(w); });
+      var more = rest.length ? search(items, rest.join(' '), local) : [];
+      return [zipHit(zip)].concat(more);
+    }
+    var kept = qt.filter(function (w) { return !FILLER[w]; });
+    var filler = kept.length && kept.length < qt.length;
+    if (filler) { qt = kept; qn = kept.join(' '); }
     var hits = [], levs = qt.map(levels);
     for (var i = 0; i < items.length; i++) {
       var s = score(items[i], qt, levs, qn, local);
       if (s > 0) hits.push({ e: items[i], s: s });
     }
     hits.sort(function (a, b) { return b.s - a.s || a.e.type - b.e.type || a.e.i - b.e.i; });
+    for (var w = 0; w < qt.length; w++) if (PIN[qt[w]]) { raise(hits, items, PIN[qt[w]], 0); break; }
+    if (filler && hits.length && GRAIN[hits[0].e.url]) raise(hits, items, '/cash-bids', 1);
     return hits;
   }
 
@@ -177,7 +217,15 @@
             items = items.concat(el);
             elevLoaded = true;
             render(true);
-          }).catch(function () { /* towns and pages still work without elevator names */ });
+          }).catch(function () { /* towns and pages still work without elevator names */ })
+          .then(function () { return fetch('/data/search-places.json'); })
+          .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+          .then(function (d3) {
+            var pl = prep(d3.items || []);
+            for (var i = 0; i < pl.length; i++) pl[i].i += 200000;
+            items = items.concat(pl);
+            render(true);
+          }).catch(function () { /* a town with no page just finds no match */ });
       })
       .catch(function () { loadFailed = true; load.busy = false; render(true); });
   }
@@ -234,12 +282,12 @@
         '<label class="srch-lbl" for="srch-in">Search AGSIST</label>' +
         '<input id="srch-in" class="srch-in" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" ' +
           'aria-controls="srch-list" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" ' +
-          'placeholder="Town, county, state or tool">' +
+          'placeholder="Town, ZIP, county, state or tool">' +
         '<button type="button" class="srch-x">Close</button>' +
       '</div>' +
       '<p class="srch-st" role="status" aria-live="polite"></p>' +
       '<div id="srch-list" class="srch-list" role="listbox" aria-label="Search results"></div>' +
-      '<p class="srch-foot">Type a town, county, state, tool or contract. Use the arrow keys and Enter.</p>';
+      '<p class="srch-foot">Type a town, ZIP, county, state, tool or contract. Use the arrow keys and Enter.</p>';
     document.body.appendChild(ov);
     document.body.appendChild(root);
     input = root.querySelector('.srch-in');
@@ -314,9 +362,12 @@
         }
         html += '</div>';
       });
+      var partZip = /^\d{1,4}$/.test(qn);
       status.textContent = hits.length
         ? hits.length + (hits.length === 1 ? ' match' : ' matches')
-        : 'No match for “' + q.trim() + '”. Try a town, a county or a state name.';
+        : partZip ? 'Type all 5 digits of a ZIP to see bids near it.'
+        : 'No match for “' + q.trim() + '”. Try a town, a ZIP, a county or a state name.';
+      if (!hits.length && !partZip) countNoMatch(qn);
     }
     var keep = active >= 0 && opts[active] && opts[active].hasAttribute('data-more') ? opts[active].getAttribute('data-more') : null;
     list.innerHTML = html;
@@ -329,6 +380,24 @@
       if (first && first.length) start = opts.indexOf(first[SHOW[keep]] || first[0]);
     }
     setActive(qt.length && opts.length ? Math.max(start, 0) : -1, keep != null);
+  }
+
+  // Zero-result searches are counted so the index can be fixed, but the words
+  // are never sent or kept: the event carries only the query's length, word
+  // count and whether it was all digits. Counted once a typed query has sat
+  // unchanged for 1.5 s, and once per query per page view. gtag always exists
+  // (the agsist-ga-guard stub) and sends nothing when analytics are off.
+  var nmTimer = null, nmSeen = {};
+  function countNoMatch(qn) {
+    clearTimeout(nmTimer);
+    nmTimer = setTimeout(function () {
+      if (!isOpen || norm(input.value) !== qn || nmSeen[qn]) return;
+      nmSeen[qn] = 1;
+      try {
+        if (typeof window.gtag === 'function') window.gtag('event', 'search_no_match', {
+          query_length: qn.length, query_words: qn.split(' ').length, digits_only: /^[\d ]+$/.test(qn) ? 1 : 0 });
+      } catch (e) {}
+    }, 1500);
   }
 
   function setActive(i, scroll) {
