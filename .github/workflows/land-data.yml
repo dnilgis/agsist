@@ -117,6 +117,8 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           [ -d data/land-raw ] && bash scripts/push_raw.sh "land-data raw answers" data/land-raw || echo "nothing raw"
+          # the raw answers live on the raw branch now; out of the tree before the site budget counts it
+          rm -rf data/land-raw
       - name: Site budget
         run: python scripts/check_site_budget.py
       - name: Commit if changed (race-tolerant)

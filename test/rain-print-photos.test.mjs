@@ -40,7 +40,7 @@ test("each photo exists, is small, has no metadata, and its width/height match t
     assert.deepEqual([d.w, d.h], [Number(w), Number(h)], `${base} width/height match the 1600 file`);
     assert.ok(!buf.includes(Buffer.from("Exif")), `${base}: no EXIF (no GPS)`);
     assert.match(fig, /srcset="[^"]+800w, [^"]+\d+w"/, "srcset with both sizes");
-    assert.match(fig, /alt="Photo of a framed Rain Print of Chetek, Wisconsin, (2025|1984)/, "alt says it is a photo, and of what");
+    assert.match(fig, /alt="Framed Rain Print of Chetek, Wisconsin, (2025|1984), photographed on a wall/, "alt says it is a photo, and of what");
   }
 });
 
