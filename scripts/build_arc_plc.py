@@ -1692,6 +1692,12 @@ def faq_items(D):
          "No. ARC-IC covers the whole farm on your own yields, where ARC-CO and PLC go crop by crop. Checking it needs your own yields "
          "for each crop and every farm you would put in ARC-IC in the state, combined into one ARC-IC farm. Two free tools run it: "
          "Texas A&M AFPC's 2026 ARC-IC Decision Aid and farmdoc's Farm Bill What-If Tool."),
+        ("If I pick ARC-CO, do I have to turn in my yields to FSA?",
+         "No. ARC-CO pays on county yields and national prices, not your farm's numbers, so USDA's rule says you do not give FSA "
+         "any extra yield or price data to get paid. Your own yields come in only if you pick ARC-IC."),
+        ("Do I have to carry crop insurance to get ARC or PLC?",
+         "No. USDA's rule says crop insurance is not required for ARC or PLC, but your election can change what insurance you can buy. "
+         "One catch for cotton: enroll seed cotton base in ARC or PLC and that farm's planted cotton acres cannot get STAX."),
         ("Can I buy SCO if I pick ARC?",
          "Under the 2025 law, yes: SCO is no longer tied to your ARC or PLC election. For 2026 the coverage up to 90% is sold as ECO; "
          "SCO itself goes to 90% in 2027. Confirm the details for your crop with your crop insurance agent."),
@@ -1701,6 +1707,9 @@ def faq_items(D):
         ("When do the payments come?",
          "After the marketing year ends and USDA publishes the season-average price: after October 1, 2027 for 2026 crops and after "
          "October 1, 2028 for 2027 crops."),
+        ("Is there a deadline for the payment eligibility paperwork after I sign up?",
+         "Yes. FSA's rule says every payment eligibility document for a 2026 contract is due by March 1, 2028. Miss it and the "
+         "payment does not issue: FSA treats it as forfeited, not denied."),
         ("What is the ARC/PLC payment limit?",
          "$155,000 per person or legal entity in the 2025 law, adjusted for inflation; USDA put 2025 at $160,000. The 2026 and 2027 figures "
          "are not out. The limit is per person across all crops and farms."),

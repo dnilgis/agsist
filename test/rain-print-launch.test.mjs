@@ -297,7 +297,8 @@ test("Rain Print and the rain gauge list are in the menus and footer at launch (
     assert.ok(/href="\/rain-gauge"/.test(t), f + " links the rain gauge page");
   }
   const h = readFileSync(ROOT + "components/header.html", "utf8");
-  assert.equal((h.match(/href="\/rain-print"/g) || []).length, 2, "the desktop menu and the phone drawer, once each");
+  // 2026-10-18 menu: Field > Weather on desktop and in the phone panel, plus the phone panel's Rain Print card
+  assert.equal((h.match(/href="\/rain-print"/g) || []).length, 3, "desktop menu once; phone panel: Field and the Rain Print card");
   assert.ok(/<symbol id="i-cloud-rain"/.test(h) && /<symbol id="i-test-tube"/.test(h), "their icons are in the sprite");
 });
 

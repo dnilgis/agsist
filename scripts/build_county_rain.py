@@ -969,7 +969,9 @@ def selftest():
                 except ValueError as x:
                     fails.append(f"{rel}: JSON-LD does not parse ({x})")
             ok(body.count("<title>") == 1 and '<link rel="canonical"' in body, f"{rel}: title and canonical")
-            ok("today" not in S.text_of(re.sub(r"<script.*?</script>", "", body, flags=re.S)).lower(), f"{rel}: never says today")
+            # the site menu's "Today's briefing" link is not the page speaking; check the page's own text
+            own = re.sub(r"<!-- static-nav:(header|footer).*?<!-- /static-nav:\1 -->", "", body, flags=re.S)
+            ok("today" not in S.text_of(re.sub(r"<script.*?</script>", "", own, flags=re.S)).lower(), f"{rel}: never says today")
         d = json.load(open(os.path.join(data, "ia.json")))
         c = d["counties"]["19169"]
         ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames, Story County, through Oct 12." in story,

@@ -123,7 +123,9 @@ test("corn stalks: other guides beside A2809, hand-worked", () => {
 test("copy: grain hints read right, no 'today's' on dated prices", () => {
   for (const c of NR.CROPS) assert.ok(!/\/fertilizer prices a program at/.test(c.defWhy), c.id + " hint");
   assert.equal(NR.crop("corn_grain").defWhy, "the yield the corn program on /fertilizer is priced at");
-  assert.ok(!/today/i.test(html), "prices are dated, never 'today's'");
+  // the site menu's "Today's briefing" link is not a price; check the page's own copy
+  const own = html.replace(/<!-- static-nav:(header|footer)[\s\S]*?<!-- \/static-nav:\1 -->/g, "");
+  assert.ok(!/today/i.test(own), "prices are dated, never 'today's'");
   assert.match(html, /posted through <span data-nr="asof">/);
   assert.match(html, /Phosphate is MAP \(DAP if no co-op posts MAP\)/);
 });

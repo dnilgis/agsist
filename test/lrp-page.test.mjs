@@ -189,8 +189,9 @@ test("one hand-written page, small; the bulky detail loads on demand", () => {
 });
 
 test("LRP is in the menu, the phone drawer, the footer and the static fallbacks", () => {
-  assert.equal((read("components/header.html").match(/href="\/lrp"/g) || []).length, 2);
-  assert.equal((read("components/footer.html").match(/href="\/lrp"/g) || []).length, 1);
+  // 2026-10-18 menu: under Livestock and under Money & Land > Programs, in the desktop menu and the phone panel
+  assert.equal((read("components/header.html").match(/href="\/lrp"/g) || []).length, 4);
+  assert.equal((read("components/footer.html").match(/href="\/lrp"/g) || []).length, 2, "footer: Livestock and Money & Land columns, as the menu");
   assert.match(read("components/header-fallback.html"), /href="\/lrp"/);
   assert.match(read("components/footer-fallback.html"), /href="\/lrp"/);
   assert.match(read("sitemap.xml"), /<loc>https:\/\/agsist\.com\/lrp<\/loc>/);

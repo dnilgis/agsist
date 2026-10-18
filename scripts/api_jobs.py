@@ -13,6 +13,13 @@
           claim against the facts before anything reaches a page. The same for
           the PRF county, Farmland Atlas county, town cash bid and co-op
           company pages: rows that carry "set" (scripts/stories_core.py).
+  elevsite For each unread elevator company, the saved copies of its own
+          site (captured by the bids repo, scripts/elevsites_job.py bundle).
+          The model says whether it posts cash bids, where, and on what
+          platform; elevsites_job.py collect checks each answer against the
+          saved pages and writes a ranked to-do. Sonnet, not Opus: naming the
+          vendor from script and frame hosts and spotting a bid table is
+          plain reading, and every answer is checked against the copy anyway.
 
 Input: apijobs/<run>/input/bundle.json on the raw branch (never deployed),
 built outside Actions from a local render. Every output lands in
@@ -46,9 +53,11 @@ RUN = re.sub(r"[^a-zA-Z0-9_-]", "", os.environ.get("APIJOBS_RUN", "r1")) or "r1"
 OUT = f"apijobs/{RUN}"
 COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
 STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
-MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000}
+ELEVSITE_CAP = 35.0  # dollars, the unread elevators' sites (Sig, Oct 18: capped at $35)
+MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000, "elevsite": 2500}
 SET_STORY_MAX_TOKENS = 700   # the other story sets: a story is about 150 tokens; 700 keeps a 3,070-page batch under STORY_CAP
-EFFORT = {"search": "medium", "alt": "low", "story": "low"}
+EFFORT = {"search": "medium", "alt": "low", "story": "low", "elevsite": "low"}
+KINDS = ("search", "alt", "story", "elevsite")
 # Claude Sonnet 5.5 list prices per million tokens, halved for the Batches API.
 PRICE_IN = 2.00 / 2
 PRICE_OUT = 10.00 / 2
@@ -172,12 +181,13 @@ def set_story_params(e):
 
 
 def custom_id(kind, name):
-    return ({"search": "s_", "alt": "a_", "story": "c_"}[kind] + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
+    return ({"search": "s_", "alt": "a_", "story": "c_", "elevsite": "e_"}[kind] + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
 
 
 # c: county rain stories; p, f, t, o: the PRF, Atlas, town and company stories (stories_core.cid_of)
 def kind_of(cid):
-    return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story"}.get(cid[:1], "alt")
+    return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story",
+            "e": "elevsite"}.get(cid[:1], "alt")
 
 
 def requests_of(bundle):
@@ -193,6 +203,10 @@ def requests_of(bundle):
             out.append(("story", K.cid_of(K.set_of(e["set"]), e["id"]), f"{e['set']}:{e['id']}", set_story_params(e)))
             continue
         out.append(("story", custom_id("story", f"{e['st']}_{e['fips']}"), f"{e['st']}:{e['fips']}", story_params(e)))
+    for e in bundle.get("elevsite", []):
+        import elevsites_job as EJ
+        out.append(("elevsite", EJ.cid_of(e["company"]), e["company"],
+                    EJ.params(e, model_of("elevsite"), MAX_TOKENS["elevsite"], EFFORT["elevsite"])))
     return out
 
 
@@ -236,22 +250,24 @@ def worst_case(kind, n_in, max_out=None):
 
 
 def cap_of(bundle):
-    return (COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
+    return ((COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
+            + (ELEVSITE_CAP if bundle.get("elevsite") else 0.0))
 
 
 def estimate(bundle):
-    rows, total, per = [], 0.0, {"search": 0.0, "alt": 0.0, "story": 0.0}
-    ratio, counted = 0.0, 0     # story requests: tokens per character, the highest seen in the sample
+    rows, total, per = [], 0.0, {k: 0.0 for k in KINDS}
+    # story and elevsite requests: tokens per character, the highest seen in each kind's sample
+    ratio, counted = {"story": 0.0, "elevsite": 0.0}, {"story": 0, "elevsite": 0}
     for kind, cid, name, p in requests_of(bundle):
-        if kind == "story" and counted >= STORY_SAMPLE and ratio:
-            n = int(len(json.dumps(p)) * ratio * 1.1) + 1    # 10% over the worst sampled ratio
+        if kind in ratio and counted[kind] >= STORY_SAMPLE and ratio[kind]:
+            n = int(len(json.dumps(p)) * ratio[kind] * 1.1) + 1    # 10% over the worst sampled ratio
         else:
             try:
                 n = json.loads(http("POST", "/messages/count_tokens",
                                     {k: p[k] for k in ("model", "system", "messages", "thinking")}))["input_tokens"]
-                if kind == "story":
-                    counted += 1
-                    ratio = max(ratio, n / len(json.dumps(p)))
+                if kind in ratio:
+                    counted[kind] += 1
+                    ratio[kind] = max(ratio[kind], n / len(json.dumps(p)))
             except SystemExit as err:
                 print(f"::warning::count_tokens failed for {cid} ({err}); using characters / 3", flush=True)
                 n = len(json.dumps(p)) // 3
@@ -260,7 +276,7 @@ def estimate(bundle):
         total += c; per[kind] += c
         print(f"{cid}: {n} input tokens, worst case ${c:.3f}", flush=True)
     print(f"::notice title=API jobs estimate::worst case ${total:.2f} (search ${per['search']:.2f}, alt ${per['alt']:.2f}, "
-          f"story ${per['story']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
+          f"story ${per['story']:.2f}, elevsite ${per['elevsite']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
     os.makedirs(OUT, exist_ok=True)
     json.dump({"run": RUN, "worst_case_usd": round(total, 2), "per_job_usd": {k: round(v, 2) for k, v in per.items()},
                "rows": rows}, open(f"{OUT}/estimate.json", "w"), indent=1)
@@ -301,7 +317,7 @@ def cmd_submit(bundle_path):
 
 
 def collect_from(rec, raw):
-    items, per, tok = {}, {"search": 0.0, "alt": 0.0, "story": 0.0}, {"input": 0, "output": 0}
+    items, per, tok = {}, {k: 0.0 for k in KINDS}, {"input": 0, "output": 0}
     for line in raw.splitlines():
         if not line.strip():
             continue
@@ -405,6 +421,21 @@ def selftest():
     for n_pages, n_in in ((3070, 2600), (3148, 1300), (1500, 900), (120, 1500)):
         assert n_pages * worst_case("story", n_in, SET_STORY_MAX_TOKENS) < STORY_CAP, (n_pages, n_in)
     assert gr[0][3]["max_tokens"] == SET_STORY_MAX_TOKENS
+    # unread elevators' sites: one request per company, Sonnet, its own $35 cap
+    import elevsites_job as EJ
+    el = {"company": "MEYER BROTHERS GRAIN", "names": ["Meyer Brothers Grain"], "realRows": 3, "upperMidwest": 3,
+          "states": {"WI": 3}, "towns": ["Elk Mound, WI"], "pages": [{"url": "https://meyergrain.com/", "text": "Cash Bids"}]}
+    er = requests_of({"elevsite": [el]})
+    assert er[0][:3] == ("elevsite", "e_MEYER_BROTHERS_GRAIN", "MEYER BROTHERS GRAIN"), er[0][:3]
+    assert er[0][3]["model"] == MODEL and er[0][3]["system"] == EJ.SYSTEM and "meyergrain.com" in er[0][3]["messages"][0]["content"]
+    assert er[0][3]["thinking"] == {"type": "adaptive"} and "temperature" not in er[0][3] and kind_of("e_X") == "elevsite"
+    assert cap_of({"elevsite": [el]}) == ELEVSITE_CAP == 35.0
+    # the whole list (about 600 companies at up to 12,000 input tokens each) stays under the cap at the worst case
+    assert 600 * worst_case("elevsite", 12000) < ELEVSITE_CAP
+    o3 = collect_from({"run": "r", "batch_id": "b", "model": MODEL, "items": {"e_X": {"job": "elevsite", "name": "X"}}},
+                      json.dumps({"custom_id": "e_X", "result": {"type": "succeeded", "message": {"stop_reason": "end_turn",
+                                  "usage": {"input_tokens": 1000, "output_tokens": 100}, "content": [{"type": "text", "text": '```json\n{"platform": "dtn"}\n```'}]}}}))
+    assert o3["items"]["e_X"]["parsed"]["platform"] == "dtn" and abs(o3["per_job_usd"]["elevsite"] - 0.0015) < 1e-9
     print("selftest ok")
 
 

@@ -27,11 +27,12 @@ const header = read("components/header.html"), footer = read("components/footer.
 const NEW_MENU = ["/pod-counts", "/drought-monitor", "/planting-date", "/field-scout", "/urea"];
 
 test("footer-only tools are in the desktop menu, the phone drawer and the no-script header", () => {
-  const desk = header.slice(header.indexOf('id="dd-field"'), header.indexOf('id="dd-money"'));
+  // 2026-10-18 full menu: Drought monitor moved to Livestock, so look across the whole desktop menu
+  const desk = header.slice(header.indexOf('class="nav-menu"'), header.indexOf('class="nav-actions"'));
   const drawer = header.slice(header.indexOf('id="drawer"'));
   const fb = read("components/header-fallback.html");
   for (const u of NEW_MENU) {
-    assert.ok(desk.includes(`<a href="${u}">`), `${u} in Crop & Field`);
+    assert.ok(desk.includes(`<a href="${u}">`), `${u} in the desktop menu`);
     assert.ok(drawer.includes(`<a href="${u}" class="draw-item">`), `${u} in the drawer`);
     assert.ok(fb.includes(`<a href="${u}">`), `${u} in header-fallback.html`);
   }
@@ -46,13 +47,13 @@ test("Rain Print for business is linked in the footer (live and no-script)", () 
 test("markup: aria-modal drawer, aria-controls on every dropdown, no heading in a footer <summary>", () => {
   assert.match(header, /<div class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true"/);
   const btns = header.match(/<button class="nav-btn"[^>]*>/g);
-  assert.equal(btns.length, 4);
+  assert.equal(btns.length, 5, "Prices, Livestock, Field, Money & Land, Daily (2026-10-18)");
   for (const b of btns) {
     const id = /aria-controls="([^"]+)"/.exec(b)?.[1];
     assert.ok(id && header.includes(`id="${id}" class="nav-panel`), b);
   }
   assert.doesNotMatch(footer, /<summary>\s*<h\d/);
-  assert.equal((footer.match(/<summary><span class="footer-h">/g) || []).length, 5);
+  assert.equal((footer.match(/<summary><span class="footer-h">/g) || []).length, 6, "Prices, Livestock, Field, Money & Land, Work with us, About (2026-10-18)");
   assert.match(header, /@media \(max-width:960px\)\{#theme-btn\{display:none\}\}/);
   assert.ok(header.includes('id="theme-btn-d"'), "the drawer keeps its own switch");
   for (const f of ["components/header.html", "components/footer.html", "components/search.js"]) {

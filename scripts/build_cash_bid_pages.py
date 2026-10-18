@@ -2262,6 +2262,69 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
         "elevators": n_el, "latest": max((m["latest"] for m in live), default=None)}
 
 
+STATES_HUB = "states.html"   # /cash-bids/states: never index.html (that would capture /cash-bids)
+
+
+def build_states_hub(smetas, ctx):
+    """/cash-bids/states (2026-10-18 menu, "Bids by state"): every state with a
+    network board, with the towns and elevators that have a current bid, from
+    the same state_counts() numbers the state pages print. A state with no
+    current bid is listed apart, never with a zero passed off as a price."""
+    path = "/cash-bids/states"
+    live = sorted((m for m in smetas if m["indexable"]), key=lambda m: STATE_NAMES[m["state"]])
+    quiet = sorted((m for m in smetas if not m["indexable"]), key=lambda m: STATE_NAMES[m["state"]])
+    n_el = sum(m["elevators"] for m in live)
+    n_tw = sum(m["towns"] for m in live)
+    title = "Cash Grain Bids by State | AGSIST"
+    desc = (f"Cash grain bids by state: {n_el} elevators with a current bid in {n_tw} towns across "
+            f"{len(live)} states, read from each elevator's own bid board.")[:160]
+    latest = max((m["latest"] for m in live if m["latest"]), default=None)
+
+    def li(m):
+        sname = STATE_NAMES[m["state"]]
+        return (f'<li><a href="{m["path"]}">{esc(sname)}</a> <span class="cbt-mut">&middot; '
+                f'{m["elevators"]} elevator{"s" if m["elevators"] != 1 else ""} in {m["towns"]} '
+                f'town{"s" if m["towns"] != 1 else ""}</span></li>')
+    lst = (f'<ul class="cbt-list">{"".join(li(m) for m in live)}</ul>' if live else
+           '<div class="cbt-note"><b>No current bid.</b> No elevator the AGSIST network reads has a bid we '
+           'could confirm right now.</div>')
+    quiet_html = ""
+    if quiet:
+        quiet_html = ('<h2>States with no current bid</h2><p class="cbt-sub">The network reads a board here, but '
+                      'none has a bid it could confirm right now.</p><p class="cbt-cloud">'
+                      + " &middot; ".join(f'<a href="{m["path"]}">{esc(STATE_NAMES[m["state"]])}</a>' for m in quiet)
+                      + "</p>")
+    crumbs = breadcrumb([("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"), ("By state", f"{SITE}{path}")])
+    items = [{"@type": "ListItem", "position": i + 1, "name": f"{STATE_NAMES[m['state']]} cash grain bids",
+              "url": f"{SITE}{m['path']}"} for i, m in enumerate(live)]
+    graph = [crumbs, {"@type": "ItemList", "@id": f"{SITE}{path}#states", "name": "Cash grain bids by state",
+                      "numberOfItems": len(items), "itemListElement": items}]
+    jsonld = {"@context": "https://schema.org", "@graph": graph}
+    hdr, ftr = ctx["chrome"]
+    stamp = f'<p class="cbt-sub">{asof_time(latest)}</p>' if latest else ""
+    body = f"""
+<body>
+{hdr}
+<main class="cbt-wrap" id="main">
+  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <b style="color:var(--text)">By state</b></p>
+  <h1>Cash grain bids by state</h1>
+  <p class="cbt-sub">Every state where the AGSIST network reads an elevator&rsquo;s own bid board, with how many
+  elevators and towns have a current bid. This is the network&rsquo;s sample, not every elevator in a state; the
+  <a href="/cash-bids">cash bids page</a> finds the ones nearest your ZIP.</p>
+  {stamp}
+  <h2 id="states">{len(live)} state{'s' if len(live) != 1 else ''} with a current bid</h2>
+  {lst}
+  {quiet_html}
+  <div class="cbt-note"><b>How these counts are made.</b> An elevator counts when its board was read
+  successfully in the last {SB.HELD_SKIP_HOURS} hours and it posted a price within {FRESH_HOURS} hours; a town
+  counts when it has one. The same counts are on each state&rsquo;s page and in
+  <a href="/data/{COUNTS_FILE}">data/{COUNTS_FILE}</a>. Call the elevator before you haul.</div>
+  <p class="cbt-sub" style="margin-top:18px"><a href="/cash-bids">Cash bids by ZIP</a> &middot; <a href="/basis#by-state">Basis in every state, vs normal</a> &middot; <a href="/cash-bid-index">Cash Bid Index</a></p>
+"""
+    return head(title, desc, path, jsonld, bool(live)) + body + page_end(ftr), {
+        "path": path, "indexable": bool(live), "latest": latest or ctx["snap_ct"]}
+
+
 LIVE_PAGE = "cash-bids.html"
 LIVE_SHARE_GENERIC = {
     "og:description": "Find local cash grain bids by ZIP: corn, soybean and wheat elevator prices, basis, and the "
@@ -2521,7 +2584,10 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         with open(os.path.join(tmp, url_slug(STATE_NAMES[st]), "index.html"), "w", encoding="utf-8") as f:
             f.write(page)
         smetas.append(sm)
-    ctx["towns"] = towns              # a company with no current bid lists elevators near it
+    hub_page, hub_meta = build_states_hub(smetas, ctx)
+    with open(os.path.join(tmp, STATES_HUB), "w", encoding="utf-8") as f:
+        f.write(hub_page)
+    ctx["towns"] = towns             # a company with no current bid lists elevators near it
     cmetas, cindex = CO.write_all(companies, ctx, tmp)
     if companies_out is not None:      # /cash-bids names them (stamp_live_coverage)
         companies_out.extend(cmetas)
@@ -2565,7 +2631,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             json.dump(doc, f, separators=(",", ":"))
         if hub:
             stamp_basis_hub(hub, doc)
-    entries = [(SITE + m["path"], m["latest"]) for m in smetas if m["indexable"]]
+    entries = [(SITE + hub_meta["path"], hub_meta["latest"])] if hub_meta["indexable"] else []
+    entries += [(SITE + m["path"], m["latest"]) for m in smetas if m["indexable"]]
     entries += [(SITE + m["path"], m["latest"]) for m in metas if m["indexable"]]
     if cindex["indexable"]:
         entries.append((SITE + cindex["path"], cindex["latest"] or gen))
@@ -2826,6 +2893,12 @@ def selftest():
         # elevator list (the state page covers every network elevator) but links to no town page
         assert "Op fac (Lincolnway Energy)" in ia and "lincolnway-energy" not in ia
         assert not os.path.exists(os.path.join(out, "index.html"))
+        # /cash-bids/states: every state page linked, with its counts; the menu's "Bids by state"
+        sh = open(os.path.join(out, STATES_HUB)).read()
+        assert 'href="/cash-bids/iowa/"' in sh and 'href="/cash-bids/nebraska/"' in sh, "states hub links each state"
+        assert re.search(r'href="/cash-bids/iowa/">Iowa</a> <span class="cbt-mut">&middot; \d+ elevators? in \d+ towns?', sh)
+        assert '<link rel="canonical" href="https://agsist.com/cash-bids/states">' in sh and "static-nav:header" in sh
+        assert "—" not in sh, "no em dash on the states hub"
         ne = open(os.path.join(out, "nebraska", "index.html")).read()
         assert 'href="/cash-bids/nebraska/fremont"' in ne and 'href="/cash-bids/iowa/"' in ne
         assert '<meta property="og:title" content="Nebraska cash bids and basis">' in ne
@@ -2914,7 +2987,8 @@ def selftest():
         for k in ("not_a_network_board", "not_us_or_not_usd", "price_older_than_cutoff", "stale_or_unconfirmed",
                   "delivery_expired_or_undated", "implied_futures_disagrees", "other_crop"):
             assert drops.get(k), (k, drops)
-        assert len(new) == 6, new
+        assert len(new) == 7 and "https://agsist.com/cash-bids/states" in new, new   # 6 pages + the states hub
+        assert "https://agsist.com/cash-bids/states" in locs, "the states hub is in the sitemap"
         try:
             build_all(merged, index, {"zips": {}}, out_dir=out + "3", now=parse_ts("2026-10-07T19:00:00Z"))
             raise AssertionError("built without the town table")
