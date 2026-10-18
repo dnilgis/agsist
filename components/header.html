@@ -58,7 +58,7 @@
 .srch-btn:hover,.srch-btn:focus-visible{border-color:var(--brand);color:var(--brand)}
 .srch-btn svg{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .srch-btn kbd{font:inherit;font-size:.72rem;line-height:1;padding:.18rem .4rem;border:1px solid var(--border);border-radius:4px;color:var(--text-muted)}
-@media (max-width:1240px){.srch-btn .srch-btn-t,.srch-btn kbd{display:none}.srch-btn{justify-content:center;padding:0}}
+@media (max-width:1440px){.srch-btn .srch-btn-t,.srch-btn kbd{display:none}.srch-btn{justify-content:center;padding:0}}
 /* 2026-10-18 menu (Sig: "do all of it"): Prices | Livestock | Field | Money & Land | Daily.
    Short noun subheads; a panel with two or three subheads shows them side by side.
    loader.js keeps an open panel inside the window. */
@@ -70,6 +70,11 @@
 #dd-daily-panel{left:auto;right:0;min-width:300px}
 .nav-ask{padding:.2rem 1.1rem .5rem;max-width:300px}
 .nav-ask .sa-ask{margin:0}
+.nav-ask .sa-ask--page{padding:0;background:none;border:0}
+.nav-ask .sa-f{grid-template-columns:minmax(0,1fr) auto;gap:6px 8px}
+.nav-ask .sa-l{grid-column:1/-1;font-size:.82rem;font-weight:500;color:var(--text-dim)}
+.nav-ask .sa-in{grid-column:1}
+.nav-ask .sa-b{grid-column:2}
 .nav-ask[hidden],.nav-q-ask[hidden]{display:none}
 .nav-moved{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:.1rem .8rem .35rem;padding:.3rem .3rem .3rem .7rem;border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-sm);font-size:.8rem;color:var(--text-dim)}
 .nav-moved[hidden]{display:none}
@@ -99,8 +104,9 @@
 .nav-email{min-height:44px;padding:0 .9rem;font:inherit;font-size:.82rem;font-weight:700;color:var(--on-brand,#111);background:var(--brand);border:0;border-radius:var(--r-sm);white-space:nowrap;cursor:pointer}
 .nav-email:hover,.nav-email:focus-visible{filter:brightness(1.08)}
 .nav-email[hidden]{display:none}
-@media (max-width:1180px){.nav-btn .nav-ic{display:none}.nav-btn{padding:.45rem .55rem}}
+@media (max-width:1360px){.nav-btn .nav-ic{display:none}.nav-btn{padding:.45rem .6rem}}
 @media (max-width:1100px){.nav-email{display:none}.zip-chip{max-width:150px}}
+@media (max-width:1060px){.nav-btn{padding:.45rem .42rem;font-size:.8rem}.zip-chip{max-width:136px}.zip-chip svg{display:none}.nav-logo{margin-right:.75rem}}
 @media (max-width:960px){.zip-chip{max-width:44vw}}
 @media (max-width:420px){.nav-inner{padding-left:12px;padding-right:12px}.nav-logo{margin-right:8px}.nav-logo img{height:40px}.nav-actions{gap:.35rem}.zip-chip{max-width:40vw;padding:0 .55rem}
   .zip-pop{position:fixed;top:72px;left:12px;right:12px;width:auto}}
@@ -268,7 +274,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
           <div class="nav-col">
             <a href="/daily"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sunrise"/></svg>Today&rsquo;s briefing</a>
             <div class="nav-q nav-q-ask">Get it by email</div>
-            <div class="nav-ask" data-signup-hide><div data-signup-ask="Get it by email: free, every weekday morning" data-source="menu-desk" data-reports="0"></div></div>
+            <div class="nav-ask" data-signup-hide><div data-signup-ask="Free, every weekday morning: the markets and your top local bid" data-source="menu-desk" data-reports="0"></div></div>
             <a href="/news"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>The Wire</a>
             <a href="/archive"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>Archive</a>
           </div>
@@ -422,7 +428,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <a href="/archive" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>Archive</a>
     </div>
     <h3 class="draw-sub" data-signup-hide>Get it by email</h3>
-    <div class="nav-ask" data-signup-hide><div data-signup-ask="Get it by email: free, every weekday morning" data-source="menu-phone" data-reports="0"></div></div>
+    <div class="nav-ask" data-signup-hide><div data-signup-ask="Free, every weekday morning: the markets and your top local bid" data-source="menu-phone" data-reports="0"></div></div>
   </section>
   <a href="/rain-print" class="draw-rp"><span class="draw-rp-k">Rain Print</span><span class="draw-rp-t">Your farm&rsquo;s year of rain, framed</span><span class="draw-rp-go" aria-hidden="true">&rarr;</span></a>
   <div class="draw-sec draw-end">
