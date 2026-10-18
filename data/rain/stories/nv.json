@@ -829,65 +829,6 @@
    "sid": "23154 1",
    "story": "Through Oct 13, the station at Ely Airport has a lot of its year riding on the last few days. October is the wettest month so far at 1.76 inches, and 1.35 of that came on Oct 11, the biggest single day. The longest dry stretch ran 19 days, Mar 6 to Mar 24. That still puts the gauge 2.61 inches ahead of last year at this point.",
    "through": "2026-10-13"
-  },
-  "32510": {
-   "facts": {
-    "biggest_day": {
-     "date": "Feb 18",
-     "in": "0.94",
-     "label": "biggest single day"
-    },
-    "county": "Carson City",
-    "days_in_year_so_far": 286,
-    "days_missing": 4,
-    "days_reported": 282,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "4.4 miles north of Carson City",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 279,
-      "diff_in": "1.45",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 3,
-     "through": "Oct 13",
-     "total_in": "5.93",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 45,
-     "from": "May 30",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jul 13"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 42,
-    "state": "Nevada",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "4.38",
-    "usual_in": "10.35",
-    "vs_usual": {
-     "diff_in": "5.97",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "1.44",
-     "month": "February"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "3ef6c04e7f468199",
-   "sid": "US1NVCC0014 6",
-   "story": "Through Oct 13, the volunteer rain gauge 4.4 miles north of Carson City caught most of its year early. February was the wettest month at 1.44 inches, and the biggest single day was Feb 18 with 0.94 inches. Then the gauge went 45 days in a row with nothing in it, not even a trace, from May 30 to Jul 13. On the days both years reported, this year is 1.45 inches less than last year.",
-   "through": "2026-10-13"
   }
  },
  "made": "2026-10-17T23:43:38Z",

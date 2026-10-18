@@ -107,6 +107,10 @@ def county_facts(meta, cf, st, sd, code, c, fx, name):
                            "normal_in": ("%.2f" % r["normal_in"]) if r["normal_in"] is not None else None,
                            "premium_per_100_at_90": money2(r["rate"]["mid"]) if r["rate"] else None,
                            "years_under_90_pct_of_normal": r["below"]["mid"] if r["below"] else None})
+        # a pair priced on fewer grids than the county has (Madera: 4 pairs on 3 of 19), as the table row
+        # says; only then, so every other county's facts and stored stories are unchanged
+        if many and r.get("n") and r["n"] < ng:
+            f["pairs"][-1]["grids_priced"] = r["n"]
     mids = [(i, r["rate"]["mid"]) for i, r in enumerate(fx["intervals"]) if r["rate"]]
     cheap = min(mids, key=lambda t: t[1]) if mids else None
     dear = max(mids, key=lambda t: t[1]) if mids else None
@@ -359,6 +363,11 @@ def extra(s, m, f):
                 bad.append(f"'{w}' is not borne out by every figure in its sentence")
         if re.search(r"\bmiddle grid\b", se, re.I) and f["grids"] > 1:
             bad.append("'middle grid': the figures are the middle value of the county's grids, not one grid")
+        # "the middle of the 19 grids" said of a pair only 3 of them price
+        few = [p for p in f.get("pairs") or [] if p.get("grids_priced")]
+        if few and re.search(r"\bmiddle of the " + str(f["grids"]) + r"\b", s, re.I) and \
+                any(re.search(re.escape(p["months"]), s0_, re.I) for p in few for s0_ in [s]):
+            bad.append("the middle of every grid said of a pair fewer grids price")
     pre = f.get("preliminary")
     for st, se in K.sentences(m):
         if pre and any(re.search(r"\b" + re.escape(p["index_estimate"]) + r"\b", se) for p in pre["pairs"]):
@@ -514,6 +523,15 @@ def selftest():
     }
     for k, s in planted.items():
         ok(K.validate(S, s, f) != [], f"PRF validator catches {k}: {s}")
+    # the 2026-10-18 page-set pass: a pair only some grids price is not "the middle of the 8 grids"
+    f3 = json.loads(json.dumps(f))
+    f3["pairs"][3]["grids_priced"] = 3
+    ok(K.validate(S, good, f3) != [], "PRF validator catches the middle of every grid said of a pair 3 grids price")
+    ok(K.validate(S, good, f) == [], "the same story passes when every grid prices the pair")
+    ok("grids_priced" not in json.dumps(kent),
+       "a county whose grids all price every pair keeps its facts (and its stored story)")
+    mad = dict(rows).get("CA:06039")
+    ok(mad is not None and [p.get("grids_priced") for p in mad["pairs"]].count(3) == 4, f"Madera: 4 pairs priced on 3 grids {mad and [p.get('grids_priced') for p in mad['pairs']]}")
     # true stories said other ways must pass (the rain set's lesson: 49% rejected until these passed)
     pairs = [
         ("As of Oct 12, on the middle of the 8 grids in Kent County, Apr-May has come in under 90% of normal in 28 of 75 years. "

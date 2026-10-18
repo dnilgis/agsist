@@ -56,65 +56,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 3.5 miles south-southwest of Smyrna had 34.19 inches. August was the wettest month at 5.91 inches, and 2.97 of that came on Aug 21, the biggest single day. The longest dry stretch ran 11 days, Jan 27 to Feb 6. On the days both years reported, this year is 2.53 inches less than last year.",
    "through": "2026-10-13"
   },
-  "10003": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 9",
-     "in": "2.59",
-     "label": "biggest single day"
-    },
-    "county": "New Castle County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "7 miles from the middle of the county",
-    "gauge_where": "at Wilmington Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "5.15",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "33.47",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 10,
-     "from": "Jan 27",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Feb 5"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 106,
-    "state": "Delaware",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "38.62",
-    "usual_in": "36.36",
-    "vs_usual": {
-     "diff_in": "2.26",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "8.32",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "cfc72d7f8a5f2293",
-   "sid": "13781 1",
-   "story": "Through Oct 13, the weather station at Wilmington Airport had 38.62 inches, 2.26 more than a usual year. July did most of the work with 8.32 inches, and Jul 9 alone put 2.59 in the gauge. Last year at this point it had 33.47, so 2026 is 5.15 inches ahead. The longest dry stretch was 10 days, Jan 27 to Feb 5.",
-   "through": "2026-10-13"
-  },
   "10005": {
    "facts": {
     "biggest_day": {

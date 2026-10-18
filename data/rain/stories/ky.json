@@ -662,65 +662,6 @@
    "story": "Through Oct 12, the volunteer rain gauge 4.1 miles southwest of Woodbury caught 30.64 inches. July was the wettest month at 7.08 inches. The gauge then went 20 days in a row with nothing in it, from Sep 13 to Oct 2. On the days both years reported, this year has 24.53 inches less than 2025.",
    "through": "2026-10-12"
   },
-  "21035": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 10",
-     "in": "2.39",
-     "label": "biggest one-day reading"
-    },
-    "county": "Calloway County",
-    "days_in_year_so_far": 286,
-    "days_missing": 2,
-    "days_reported": 284,
-    "gauge": "weather station",
-    "gauge_from_middle": "2 miles from the middle of the county",
-    "gauge_where": "in Murray",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 272,
-      "diff_in": "15.96",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 12,
-     "through": "Oct 13",
-     "total_in": "53.30",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 14,
-     "from": "Mar 20",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 2"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 89,
-    "state": "Kentucky",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "39.97",
-    "usual_in": "45.13",
-    "vs_usual": {
-     "diff_in": "5.16",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "12.15",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "0ebe8b7382b7e8ac",
-   "sid": "155694 2",
-   "story": "Through Oct 13, the weather station in Murray had most of its year come in July, with 12.15 inches that month. The biggest one-day reading was 2.39 inches on Jul 10. The longest dry stretch ran 14 days, from Mar 20 to Apr 2, with nothing in the gauge. On the days both years reported, this year sits 15.96 inches less than last year.",
-   "through": "2026-10-13"
-  },
   "21037": {
    "facts": {
     "biggest_day": {
@@ -1053,65 +994,6 @@
    "hash": "1d2cf5ce1307aabc",
    "sid": "155150 2",
    "story": "Through Oct 13, the weather station 1 mile south-southwest of Marion has its wettest month in July at 9.76 inches, and the biggest one-day reading came Jul 27 at 3.03 inches. Then the gauge went 19 days in a row with nothing in it, from Sep 13 to Oct 1. On the days both years reported, this year is 7.01 inches less than last year.",
-   "through": "2026-10-13"
-  },
-  "21057": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 28",
-     "in": "6.50",
-     "label": "biggest single day"
-    },
-    "county": "Cumberland County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "10 miles from the middle of the county",
-    "gauge_where": "1 mile northeast of Dubre",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "7.18",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "52.19",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 16,
-     "from": "Mar 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 2"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 105,
-    "state": "Kentucky",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "45.01",
-    "usual_in": "42.73",
-    "vs_usual": {
-     "diff_in": "2.28",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "11.70",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "20a9e017f4770cad",
-   "sid": "US1KYCM0001 6",
-   "story": "Through Oct 13, the volunteer rain gauge 1 mile northeast of Dubre has caught most of its year in June, with 11.70 inches that month. The biggest single day was Jun 28 at 6.50 inches. The longest dry stretch ran 16 days, Mar 18 to Apr 2, with not even a trace. Against last year the gauge is 7.18 inches less than it had through Oct 13 in 2025.",
    "through": "2026-10-13"
   },
   "21059": {
@@ -1680,49 +1562,6 @@
    "story": "Through Oct 13, the weather station 2 miles north of Mayfield has run 5.33 inches more than a usual year. July was the wettest month at 9.34 inches, and the biggest one-day reading came Aug 20 with 4.38 inches. Then it went 13 days with nothing in the gauge, Aug 28 to Sep 9. Last year still had it beat, though, by 11.83 inches on the days both years reported.",
    "through": "2026-10-13"
   },
-  "21085": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 28",
-     "in": "9.09",
-     "label": "biggest single day"
-    },
-    "county": "Grayson County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "10 miles from the middle of the county",
-    "gauge_where": "5.4 miles south-southeast of Caneyville",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 20,
-     "from": "Aug 21",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 9"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": null,
-    "state": "Kentucky",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "41.75",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "15.11",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "f0253d6b1ae242f3",
-   "sid": "US1KYGY0009 6",
-   "story": "Through Oct 13, the volunteer rain gauge 5.4 miles south-southeast of Caneyville has caught 41.75 inches. June did most of the work with 15.11 inches, and 9.09 of that came on Jun 28 alone. Then it shut off. The gauge sat empty for 20 days in a row, from Aug 21 to Sep 9, not even a trace.",
-   "through": "2026-10-13"
-  },
   "21089": {
    "facts": {
     "biggest_day": {
@@ -1895,65 +1734,6 @@
    "hash": "6096e10a0d704416",
    "sid": "151998 2",
    "story": "Through Oct 13, the weather station in Cynthiana has caught 34.07 inches, 4.24 inches less than a usual year. May carried the load with 9.54 inches, and May 25 brought the biggest single day at 2.65 inches. Then the gauge sat empty for 19 days in a row, Sep 14 to Oct 2. Last year at this point it had 9.49 inches more.",
-   "through": "2026-10-13"
-  },
-  "21099": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 28",
-     "in": "3.13",
-     "label": "biggest single day"
-    },
-    "county": "Hart County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "11 miles from the middle of the county",
-    "gauge_where": "4 miles east of Millerstown",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 285,
-      "diff_in": "22.06",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "63.33",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 15,
-     "from": "Jan 27",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Feb 10"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 99,
-    "state": "Kentucky",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "41.27",
-    "usual_in": "41.60",
-    "vs_usual": {
-     "diff_in": "0.33",
-     "dir": "less",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "10.69",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "350cd4c70230b45c",
-   "sid": "155444 2",
-   "story": "Through Oct 13, the weather station 4 miles east of Millerstown sits about where a usual year would, 0.33 inches less. June did most of the work with 10.69 inches, and the biggest single day came Jun 28 at 3.13 inches. The gauge went 15 days in a row with nothing from Jan 27 to Feb 10. On the days both years reported, this year is 22.06 inches less than 2025.",
    "through": "2026-10-13"
   },
   "21101": {
@@ -2281,49 +2061,6 @@
    "hash": "2b04e20784a6ede5",
    "sid": "13810 1",
    "story": "Through Oct 13, the weather station at Louisville Bowman Field has 33.98 inches, 8.36 inches less than it had by this day last year. June was the wettest month with 7.96 inches. The biggest single day came Apr 27 with 2.09 inches. The longest dry stretch was 8 days in a row, Jan 1 to Jan 8, with nothing in the gauge.",
-   "through": "2026-10-13"
-  },
-  "21113": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 28",
-     "in": "3.96",
-     "label": "biggest single day"
-    },
-    "county": "Jessamine County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "less than a mile north-northeast of Wilmore",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 14,
-     "from": "Aug 24",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 6"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": null,
-    "state": "Kentucky",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "40.70",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "11.34",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "e6e21ea30e32d7b7",
-   "sid": "US1KYJS0017 6",
-   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northeast of Wilmore has caught 40.70 inches. June did most of the talking with 11.34 inches, and the biggest single day came Jun 28 at 3.96 inches. The gauge then sat empty for 14 days in a row from Aug 24 to Sep 6, not even a trace.",
    "through": "2026-10-13"
   },
   "21117": {
@@ -3415,65 +3152,6 @@
    "story": "Through Oct 11, the volunteer rain gauge near Greenville has caught 35.47 inches. On the days both years reported, that is 30.25 inches less than 2025 had by now. June was the wettest month at 6.88 inches. The gauge also sat empty 17 days in a row from Mar 17 to Apr 2, not even a trace.",
    "through": "2026-10-11"
   },
-  "21179": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 28",
-     "in": "3.61",
-     "label": "biggest single day"
-    },
-    "county": "Nelson County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "6 miles from the middle of the county",
-    "gauge_where": "6.4 miles northeast of New Haven",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "21.77",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "63.03",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 20,
-     "from": "Aug 21",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 9"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 99,
-    "state": "Kentucky",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "41.26",
-    "usual_in": "41.73",
-    "vs_usual": {
-     "diff_in": "0.47",
-     "dir": "less",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "11.79",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "60d50454f0d6a8f5",
-   "sid": "US1KYNL0004 6",
-   "story": "Through Oct 13, the volunteer rain gauge 6.4 miles northeast of New Haven sits right about at a usual year, but it got there lumpy. June did most of the work with 11.79 inches, including the biggest single day of 3.61 inches on Jun 28. Then the gauge sat empty for 20 days in a row from Aug 21 to Sep 9. It is still 21.77 inches less than last year at this point.",
-   "through": "2026-10-13"
-  },
   "21183": {
    "facts": {
     "biggest_day": {
@@ -3865,65 +3543,6 @@
    "hash": "ba17892ed7d0900e",
    "sid": "US1KYRS0006 6",
    "story": "Through Oct 13, the volunteer rain gauge 9.0 miles south-southwest of Jamestown has caught 40.20 inches. June was the wettest month at 8.25 inches, and most of that came on Jun 28, the biggest one-day reading at 5.24 inches. The longest dry stretch ran 10 days, Mar 18 to Mar 27, with nothing in the gauge, not even a trace.",
-   "through": "2026-10-13"
-  },
-  "21209": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 18",
-     "in": "2.56",
-     "label": "biggest single day"
-    },
-    "county": "Scott County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "5 miles from the middle of the county",
-    "gauge_where": "1.7 miles north of Georgetown",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 280,
-      "diff_in": "12.04",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 6,
-     "through": "Oct 13",
-     "total_in": "53.95",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 12,
-     "from": "Aug 24",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 4"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 109,
-    "state": "Kentucky",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "43.30",
-    "usual_in": "39.62",
-    "vs_usual": {
-     "diff_in": "3.68",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "8.75",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "f45913487775d57f",
-   "sid": "US1KYSC0001 6",
-   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles north of Georgetown has caught most of its rain in June, with 8.75 inches that month. The biggest single day came Jun 18 at 2.56 inches. The longest dry stretch ran 12 days, Aug 24 to Sep 4, with not even a trace in the gauge. On the days both years reported, this year is 12.04 inches less than 2025.",
    "through": "2026-10-13"
   },
   "21211": {

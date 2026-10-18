@@ -1,65 +1,6 @@
 {
  "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
  "counties": {
-  "16001": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 22",
-     "in": "0.87",
-     "label": "biggest single day"
-    },
-    "county": "Ada County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "8 miles from the middle of the county",
-    "gauge_where": "in Boise Air Terminal",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "1.13",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "9.01",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 23,
-     "from": "Jul 23",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 14"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 95,
-    "state": "Idaho",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "7.88",
-    "usual_in": "8.27",
-    "vs_usual": {
-     "diff_in": "0.39",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "3.87",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "da0c3946ef6f2bd2",
-   "sid": "24131 1",
-   "story": "Through Oct 13, the weather station in Boise Air Terminal had most of its year come in April, with 3.87 inches that month. The biggest single day was Apr 22 at 0.87 inches. The gauge then sat empty for 23 days in a row from Jul 23 to Aug 14. That leaves the station 1.13 inches behind last year and 0.39 inches less than a usual year.",
-   "through": "2026-10-13"
-  },
   "16003": {
    "facts": {
     "biggest_day": {
@@ -1204,65 +1145,6 @@
    "story": "Through Oct 10, the weather station in Island Park had its wettest month in April at 3.80 inches. Right before that it went 21 days in a row with nothing in the gauge, from Mar 11 to Mar 31. The biggest single day was 0.90 inches on Jun 29. On the days both years reported, this year has 0.60 inches more than last year.",
    "through": "2026-10-10"
   },
-  "16045": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 13",
-     "in": "1.16",
-     "label": "biggest single day"
-    },
-    "county": "Gem County",
-    "days_in_year_so_far": 283,
-    "days_missing": 0,
-    "days_reported": 283,
-    "gauge": "weather station",
-    "gauge_from_middle": "14 miles from the middle of the county",
-    "gauge_where": "2 miles east of Emmett",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 283,
-      "diff_in": "0.53",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 10",
-     "total_in": "10.06",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 33,
-     "from": "Apr 24",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "May 26"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 116,
-    "state": "Idaho",
-    "through": "Oct 10",
-    "through_iso": "2026-10-10",
-    "total_in": "10.59",
-    "usual_in": "9.15",
-    "vs_usual": {
-     "diff_in": "1.44",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "4.71",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "37d8ffab00a14898",
-   "sid": "102942 2",
-   "story": "Through Oct 10, the weather station 2 miles east of Emmett had most of its year come in April, with 4.71 inches that month. The biggest single day was Apr 13 at 1.16 inches. Then it shut off, and the gauge went 33 days in a row with nothing from Apr 24 to May 26. The year sits 0.53 inches more than last year at this point.",
-   "through": "2026-10-10"
-  },
   "16049": {
    "facts": {
     "biggest_day": {
@@ -1428,65 +1310,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 1.5 miles east-northeast of Athol has its wettest month in April at 3.07 inches. The biggest single day came Apr 2 with 0.89 inches. Then it went 32 days in a row with nothing in the gauge, Jul 19 to Aug 19. On the days both years reported, this year is 0.09 inches more than last year.",
    "through": "2026-10-13"
   },
-  "16057": {
-   "facts": {
-    "biggest_day": {
-     "date": "Mar 13",
-     "in": "1.48",
-     "label": "biggest single day"
-    },
-    "county": "Latah County",
-    "days_in_year_so_far": 284,
-    "days_missing": 0,
-    "days_reported": 284,
-    "gauge": "weather station",
-    "gauge_from_middle": "13 miles from the middle of the county",
-    "gauge_where": "in Moscow U of I",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 284,
-      "diff_in": "6.11",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 11",
-     "total_in": "12.94",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 22,
-     "from": "Jul 25",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 15"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 100,
-    "state": "Idaho",
-    "through": "Oct 11",
-    "through_iso": "2026-10-11",
-    "total_in": "19.05",
-    "usual_in": "19.01",
-    "vs_usual": {
-     "diff_in": null,
-     "dir": "about the same",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "5.70",
-     "month": "March"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "d7b7f357b75a0dc6",
-   "sid": "106152 2",
-   "story": "Through Oct 11, the weather station in Moscow U of I is running about usual for a usual year, but last year it had 6.11 inches less by this date. March did most of the work at 5.70 inches, and the biggest single day was 1.48 inches on Mar 13. Then the gauge went 22 days in a row with nothing in it, from Jul 25 to Aug 15.",
-   "through": "2026-10-11"
-  },
   "16059": {
    "facts": {
     "biggest_day": null,
@@ -1541,53 +1364,6 @@
    "sid": "94180 1",
    "story": "Through Oct 13, the weather station in Salmon-Ksra had its wettest month in June, with 2.08 inches. Early on it went 47 days in a row with nothing in the gauge, not even a trace, from Jan 9 to Feb 24. On the days both years reported, this year is 0.37 inches ahead of 2025.",
    "through": "2026-10-13"
-  },
-  "16061": {
-   "facts": {
-    "biggest_day": {
-     "date": "Mar 4",
-     "in": "1.39",
-     "label": "biggest single day"
-    },
-    "county": "Lewis County",
-    "days_in_year_so_far": 279,
-    "days_missing": 0,
-    "days_reported": 279,
-    "gauge": "weather station",
-    "gauge_from_middle": "19 miles from the middle of the county",
-    "gauge_where": "in Kamiah",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 20,
-     "from": "Jul 24",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 12"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 153,
-    "state": "Idaho",
-    "through": "Oct 6",
-    "through_iso": "2026-10-06",
-    "total_in": "26.96",
-    "usual_in": "17.59",
-    "vs_usual": {
-     "diff_in": "9.37",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "6.55",
-     "month": "March"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "949c4df9d90c43e2",
-   "sid": "104793 2",
-   "story": "Through Oct 6, the weather station in Kamiah had 26.96 inches, 9.37 more than a usual year. March did most of the work at 6.55 inches, and the biggest single day came Mar 4 with 1.39. Then it shut off. From Jul 24 to Aug 12 the gauge went 20 days in a row with nothing in it, not even a trace.",
-   "through": "2026-10-06"
   },
   "16063": {
    "facts": {
@@ -1938,53 +1714,6 @@
    "sid": "04127 1",
    "story": "Through Oct 10, the weather station 10 miles west of Murphy has 5.52 inches, 2.55 inches less than a usual year. April was the wettest month at 1.82 inches, and the biggest single day was 0.66 inches on Feb 24. The gauge went 42 days in a row with nothing in it, not even a trace, from Jul 23 to Sep 2. On the days both years reported, that is 2.73 inches less than 2025.",
    "through": "2026-10-10"
-  },
-  "16075": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 13",
-     "in": "0.87",
-     "label": "biggest single day"
-    },
-    "county": "Payette County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "10 miles from the middle of the county",
-    "gauge_where": "in Payette",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 35,
-     "from": "Apr 23",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "May 27"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 91,
-    "state": "Idaho",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "7.26",
-    "usual_in": "8.00",
-    "vs_usual": {
-     "diff_in": "0.74",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "3.04",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "36b40e615d149c2d",
-   "sid": "106891 2",
-   "story": "Through Oct 13, the weather station in Payette had 7.26 inches, 0.74 inches less than a usual year. April carried most of it with 3.04 inches, and the biggest single day came Apr 13 with 0.87 inches. Then the gauge went dry for 35 days in a row, Apr 23 to May 27, without even a trace.",
-   "through": "2026-10-13"
   },
   "16077": {
    "facts": {

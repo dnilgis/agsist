@@ -273,6 +273,10 @@ def spec(f):
             "classes": {"year": YEAR_RX}, "banned": BANNED, "unban": ["average", "about", "rank", "ranks", "ranked", "ten", "decade"], "supers": [], "dirs": dirs, "chars": (120, 650)}
 
 
+PACE_RX = (r"\b(?:faster|slower|outpac\w*|outstrip\w*|kept pace|keeps? pace|keeping pace|took off|takes off|runs? high|stays? low|"
+           r"slow|fast|held its own|holds? its own|holds? up better|better than (?:the )?rent|holds? steady|held steady|been steady|steady)\b")
+FLAT_RX = r"\b(?:barely|flat|budged|unchanged)\b"
+
 BANNED = ["buyer", "buyers", "seller", "sellers", "sold", "sale", "sales", "selling", "buy", "buying", "bought", "auction",
           "auctions", "investor", "investors", "investment", "appraisal", "appraised", "owner", "owners", "owned", "family",
           "families", "price", "prices", "priced", "market", "markets", "hot", "cheap", "expensive", "affordable",
@@ -296,6 +300,40 @@ def extra(s, m, f):
             bad.append("a rank the facts do not give")
     if not f.get("land_value") and re.search(r"land and buildings|census value|land value", s, re.I):
         bad.append("a land value the facts do not give")
+    # pace words (2026-10-18 page-set pass): the facts give each change with its own span (rent over ten
+    # survey years, the census value over five), and no corn change at all, so "faster", "kept pace",
+    # "runs high", "holds steady" compare or judge something no fact gives
+    if re.search(PACE_RX, s, re.I):
+        bad.append("a pace or comparison the facts do not give")
+    # "barely moved", "held flat": only for a change under 5%, the rent's or the census value's
+    subj = None
+    for st, se in K.sentences(s):
+        if re.search(r"\brent", se, re.I):
+            subj = "rent"
+        elif re.search(r"census|land and buildings|land value|\bvalue\b", se, re.I):
+            subj = "value"
+        if not re.search(FLAT_RX, se, re.I):
+            continue
+        ch = (f.get("rent_change") if subj == "rent" else (f.get("land_value") or {}).get("change")) or {}
+        try:
+            small = abs(float(K.canon(ch.get("pct")))) < 5 if ch.get("pct") else False
+        except ValueError:
+            small = False
+        ms = [float(v) for a, b, k, v in K.tokens(se) if k == "money"]
+        near = any(x and y and abs(x - y) / max(x, y) < 0.05 for i, x in enumerate(ms) for y in ms[i + 1:])
+        lv = f.get("land_value") or {}
+        if subj == "value" and lv and not near:
+            # "after barely moving from $1,419 in 2012": that census and the next one within 5%
+            cv = {int(y): float(K.canon(v)) for y, v in (lv.get("earlier_census") or {}).items()}
+            cv[int(lv["census_year"])] = float(K.canon(lv["per_acre"]))
+            ys = sorted(cv)
+            for y in re.findall(r"\b(?:19|20)\d\d\b", se):
+                y = int(y)
+                if y in cv and ys.index(y) + 1 < len(ys):
+                    a, b = cv[y], cv[ys[ys.index(y) + 1]]
+                    near = near or (a and b and abs(a - b) / max(a, b) < 0.05)
+        if not (small or near):
+            bad.append("'barely' or 'flat' for a change of 5% or more")
     # a rent with no year beside it in its sentence reads as this year's: it must be the rent's own year then
     return bad
 
@@ -488,6 +526,20 @@ def selftest():
          "As of Oct 16, cash rent in Story County runs $290 an acre in 2026. That is down 26.1% from $230 in 2016, and above the Iowa median of $266."),
     ]
     K.run_pairs(S, g, fp, ok)
+    # the 2026-10-18 page-set pass: pace words the facts do not give
+    pace = [
+        ("As of Oct 16, cash rent in Story County was $290 an acre in 2026, up 26.1% from $230 in 2016. The census value of land and buildings was $10,914 an acre in 2022, up 15.3% from $9,467 in 2017.",
+         "As of Oct 16, cash rent in Story County was $290 an acre in 2026, up 26.1% from $230 in 2016. The census value of land and buildings moved slower, $10,914 an acre in 2022, up 15.3% from $9,467 in 2017."),
+        ("As of Oct 16, cash rent in Story County was $290 an acre in 2026, up 26.1% from $230 in 2016. Corn trends at 217.2 bu for 2026.",
+         "As of Oct 16, cash rent in Story County was $290 an acre in 2026, up 26.1% from $230 in 2016. Corn holds steady too, with a trend of 217.2 bu for 2026."),
+        ("As of Oct 16, cash rent in Story County was $290 an acre in 2026, up 26.1% from $230 in 2016. The census value of land and buildings was $10,914 an acre in 2022.",
+         "As of Oct 16, cash rent in Story County was $290 an acre in 2026, up 26.1% from $230 in 2016, so rent has barely moved. The census value of land and buildings was $10,914 an acre in 2022."),
+    ]
+    K.run_pairs(S, g, pace, ok)
+    g2 = json.loads(json.dumps(g))
+    g2["rent_change"] = {"pct": "2.0%", "dir": "up", "from_year": 2016, "to_year": 2026, "from": "$284", "to": "$290"}
+    ok(K.validate(S, "As of Oct 16, cash rent in Story County was $290 an acre in 2026, up 2.0% from $284 in 2016, so rent has barely moved. "
+                     "The census value of land and buildings was $10,914 an acre in 2022.", g2) == [], "'barely moved' for a 2% rent change passes")
     # flagged land value: never spoken of
     g = json.loads(json.dumps(f))
     g["land_value"], g["land_value_note"] = None, "x"

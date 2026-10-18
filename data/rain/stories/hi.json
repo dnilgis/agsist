@@ -107,59 +107,6 @@
    "story": "Through Oct 13, the weather station at Honolulu International Airport had most of its year in March, with 13.61 inches that month. The biggest single day was Mar 13 at 5.51 inches. The longest dry stretch ran 6 days, Sep 9 to Sep 14. On the days both years reported, this year is 14.25 inches more than last year.",
    "through": "2026-10-13"
   },
-  "15007": {
-   "facts": {
-    "biggest_day": {
-     "date": "Mar 13",
-     "in": "5.24",
-     "label": "biggest single day"
-    },
-    "county": "Kauai County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "14 miles from the middle of the county",
-    "gauge_where": "1.9 miles west-southwest of Kapaa",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 261,
-      "diff_in": "31.51",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 25,
-     "through": "Oct 13",
-     "total_in": "53.51",
-     "year": 2025
-    },
-    "longest_dry_stretch": null,
-    "multi_day_reports": 0,
-    "pct_of_usual": 175,
-    "state": "Hawaii",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "94.85",
-    "usual_in": "54.29",
-    "vs_usual": {
-     "diff_in": "40.56",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "15.99",
-     "month": "March"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "901be339714960f6",
-   "sid": "US1HIKI0019 6",
-   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles west-southwest of Kapaa has caught 94.85 inches, 40.56 inches more than a usual year. March did most of the work at 15.99 inches, and the biggest single day came Mar 13 with 5.24 inches. On the days both years reported, 2026 is 31.51 inches ahead of 2025.",
-   "through": "2026-10-13"
-  },
   "15009": {
    "facts": {
     "biggest_day": {

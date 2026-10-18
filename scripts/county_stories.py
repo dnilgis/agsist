@@ -306,6 +306,7 @@ def validate(story, f):
     # last year, usual or a percent, the total); a clause with none takes its
     # sentence's. Every inch figure must belong to one of its clause's topics.
     big_re = r"\b(biggest|largest|most in (?:one|a single) day|one-day|single day|single-day)\b"
+    MOST_RE = r"(?<!the )(?<!its )\bmost\b(?! in (?:one|a single) day)|\bmostly\b|\bthe bulk\b|\blion'?s share\b|\bmajority\b"
     dry_re = r"\b(dry|without rain|no rain|nothing in the gauge)\b"
     last_re = (r"\b" + str(year - 1) + r"\b|\blast year\b|\ba year ago\b") if ly else r"\blast year\b|\ba year ago\b"
     last_ref = r"\b(?:" + str(year - 1) + r"|last year|a year ago|the year before)\b"
@@ -350,6 +351,23 @@ def validate(story, f):
             bad.append("last year claimed, none in the facts")
         if re.search(r"\b(wetter|drier)\b", slow) and not (st_tops & {"usual", "last"}):
             bad.append("wetter or drier than what")
+        # "September did most of the work" with 29% of the year (sets pass, 2026-10-18): "most" of the
+        # year for one month only when that month holds half the total or more
+        if re.search(MOST_RE, slow):
+            try:
+                share = float(wm["in"]) / float(f["total_in"]) if wm and float(f["total_in"]) else 0.0
+            except (TypeError, ValueError):
+                share = 0.0
+            # "Most of that came on Jun 8": the biggest day said as most of the wettest month, true when that
+            # day is in the month and holds half of it or more
+            of_month = False
+            if re.search(r"\bmost of (?:that|it|those)\b", slow) and wm and bd and bd["date"][:3] == wm["month"][:3]:
+                try:
+                    of_month = float(bd["in"]) >= 0.5 * float(wm["in"])
+                except (TypeError, ValueError):
+                    of_month = False
+            if share < 0.5 and not of_month:
+                bad.append("'most' of the year for a month with under half of it")
         for cl, T in zip(cls, tops):
             T = T or st_tops
             low = cl.lower()
@@ -494,6 +512,7 @@ Write:
 Do not:
 - add anything the facts do not say: no causes, no weather words (storms, snow, drought, floods), no seasons, no crops or fieldwork, no rankings beyond "wettest month" and "biggest" rain, no records, no "ever", no forecast or what comes next, no advice.
 - use adjectives the numbers do not back, number words (two, half, a week), em dashes, dashes, semicolons, exclamation marks, questions, quotes, or words like "normal" or "average" (the page says "usual").
+- say a month did "most" of the work or brought "most" of the year unless its inches are half the total or more: the wettest month is the wettest, not most.
 - sound like a machine: no "notably", "remarkable", "it is worth noting", no wrap-up line.
 
 Answer with one JSON object in a ```json fenced block and nothing after it:
@@ -687,7 +706,7 @@ def selftest():
              "biggest_day": {"date": "Aug 5", "in": "4.56", "label": "biggest single day"},
              "longest_dry_stretch": {"days": 18, "from": "Jan 25", "to": "Feb 11", "still_going": False, "means": "x"},
              "last_year": None, "multi_day_reports": 0}
-        good = ("Through Oct 13, September did most of the work here, with 12.89 inches at the Corning station. "
+        good = ("Through Oct 13, September was the wettest month here, with 12.89 inches at the Corning station. "
                 "The biggest single day was 4.56 inches on Aug 5. "
                 "That puts the year so far 14.97 inches more than a usual year to date, 151% of usual.")
         ok(validate(good, f) == [], f"a true story passes: {validate(good, f)}")
@@ -696,27 +715,28 @@ def selftest():
             "a wrong amount": good.replace("12.89", "12.98"),
             "an amount on the wrong fact": good.replace("4.56 inches on Aug 5", "12.89 inches on Aug 5"),
             "a wrong date": good.replace("Aug 5", "Aug 6"),
-            "a wrong month for the wettest": good.replace("September did most", "August did most").replace("with 12.89", "the wettest, with 12.89"),
+            "a wrong month for the wettest": good.replace("September was the wettest month here", "August was the wettest month here"),
             "a month not in the facts": good + " July was quiet.",
             "a wrong percent": good.replace("151%", "150%"),
             "the wrong way from usual": good.replace("more than a usual", "less than a usual"),
             "a wrong dry stretch": good.replace("The biggest", "The longest dry stretch ran 19 days from Jan 25. The biggest"),
             "an em dash": good.replace(". The biggest", " \u2014 the biggest"),
             "an exclamation": good[:-1] + "!",
-            "a banned word": good.replace("did most of the work", "was a record"),
+            "a banned word": good.replace("was the wettest month here", "was a record"),
+            "most of the year for a month with 29% of it": good.replace("was the wettest month here", "did most of the work here"),
             "a forecast": good + " More rain will come.",
             "a number word": good.replace("The biggest", "Two days later the biggest"),
             "too long": good + " " + good + " " + good,
             "one sentence": "Through Oct 13, September had 12.89 inches at the Corning station and the year so far is at 151% of usual on the page.",
             "a year not in the facts": good.replace("151% of usual", "151% of usual, like 1993"),
             "last year when the facts have none": good + " Last year was drier.",
-            "drier with no comparison": good.replace("did most of the work here", "was drier"),
+            "drier with no comparison": good.replace("was the wettest month here", "was drier"),
             "whole inches": good.replace("4.56 inches", "5 inches"),
             "no through day": good.replace("Through Oct 13, September", "September"),
             "the wrong through day": good.replace("Through Oct 13,", "Through Oct 6,"),
             "a month's name on another fact's amount": good.replace("The biggest single day was 4.56 inches on Aug 5.", "August brought 4.56 inches."),
             "the biggest day's amount on the wettest month": "Through Oct 13, September brought 4.56 inches, the wettest month. The year so far is 151% of usual at the Corning station.",
-            "wettest month with the wrong name": good.replace("September did most of the work here, with", "the wettest month was August, with"),
+            "wettest month with the wrong name": good.replace("September was the wettest month here, with", "the wettest month was August, with"),
             "a dry stretch with an amount": good.replace("The biggest", "The longest dry stretch was 18 days from Jan 25 to Feb 11 with 0.10 inches. The biggest"),
             "wetter when it was more": good.replace("more than a usual year to date", "less than a usual year to date"),
         }
@@ -763,8 +783,15 @@ def selftest():
                  "Through Oct 13, the gauge less than a mile northeast of Deerfield caught 12.89 inches in September, the wettest month. It sits 14.97 inches less than a usual year."),
             (f, "Through Oct 13, September did the heavy lifting with 12.89 inches. The gauge reported on 269 of 286 days.",
                 "Through Oct 13, September brought heavy rain with 12.89 inches. The gauge reported on 270 of 286 days."),
-            (f, "Through Oct 13, most of the year came in September, with 12.89 inches that month and 4.56 inches on Aug 5 alone. That is the page.".replace(" That is the page.", " The gauge sits 14.97 inches more than a usual year."),
-                "Through Oct 13, most of the year came in September, with 4.56 inches that month and 12.89 inches on Aug 5 alone. The gauge sits 14.97 inches more than a usual year."),
+            (f, "Through Oct 13, the wettest month was September, with 12.89 inches that month and 4.56 inches on Aug 5 alone. The gauge sits 14.97 inches more than a usual year.",
+                "Through Oct 13, the wettest month was September, with 4.56 inches that month and 12.89 inches on Aug 5 alone. The gauge sits 14.97 inches more than a usual year."),
+            (f, "Through Oct 13, the wettest month was September, with 12.89 inches that month. The gauge sits 14.97 inches more than a usual year.",
+                "Through Oct 13, most of the year came in September, with 12.89 inches that month. The gauge sits 14.97 inches more than a usual year."),
+            (dict(f, biggest_day={"date": "Sep 9", "in": "7.10", "label": "biggest single day"}, longest_dry_stretch=None),
+                "Through Oct 13, September was the wettest month at 12.89 inches, and most of that came on Sep 9 at 7.10 inches. The year so far is 151% of usual.",
+                "Through Oct 13, September was the wettest month at 12.89 inches, and most of the year came on Sep 9 at 7.10 inches. The year so far is 151% of usual."),
+            (dict(f, total_in="20.10", usual_in=None, pct_of_usual=None, vs_usual=None), "Through Oct 13, September did most of the work, with 12.89 inches of the 20.10 inches so far. The biggest single day was 4.56 inches on Aug 5.",
+                "Through Oct 13, September did most of the work, with 12.89 inches of the 21.10 inches so far. The biggest single day was 4.56 inches on Aug 5."),
             (f, "Through Oct 13, the station had more rain in September than any other month, 12.89 inches. The biggest single day was 4.56 inches on Aug 5.",
                 "Through Oct 13, the station had more of its rain come late than early. The biggest single day was 4.56 inches on Aug 5."),
             (f, "Through Oct 13, the gauge had caught 44.58 inches for the year. September was the wettest month at 12.89 inches.",
