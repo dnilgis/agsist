@@ -273,6 +273,14 @@ test("the record page says what the record can say, at today's subsidy, and poin
   assert.match(hero, /600 head of steers at 850 lb \(8\.5 cwt\)/, "600 head, not 600-lb steers (the rancher's misread)");
   assert.match(hero, /Since July 2020 it paid back/, "hogs never read as paying for themselves without the current regime beside it");
   assert.match(RECORD, /at the subsidy in force that year/);
+  /* the lot line also says what the same lot did at the subsidy each year really had, and since July 2020 */
+  const lot = /<p class="lot">(.*?)<\/p>/s.exec(hero);
+  assert.ok(lot, "lot line");
+  const cp = +/covered at \$([\d,.]+) a cwt/.exec(lot[1])[1].replace(/,/g, "");
+  const head = cp * 8.5, w = (x) => `${x >= 0 ? "ahead" : "behind"} ${L.money(Math.abs(x))}`;
+  const all = BT.record["all/feeder/95-100/13"], cur = BT.record["current/feeder/95-100/13"];
+  const want = `At the subsidy in force each year it came out ${w(all.net / 100 * head)} a head; since July 2020, ${w(cur.net / 100 * head)}.`;
+  assert.ok(lot[1].includes(want), `expected "${want}" in: ${lot[1]}`);
   assert.match(RECORD, /<link rel="canonical" href="https:\/\/agsist\.com\/lrp\/record">/);
 });
 

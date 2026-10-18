@@ -206,7 +206,14 @@ function lotLine(bt, today) {
   const r = bt.record[`all/feeder/${bt.method.base}/${LOT.len}`];
   if (!lo || !r || r.years < bt.method.min_years) return "";
   const coverHead = lo.cp * LOT.cwt, netHead = (r.net_now / 100) * coverHead;
-  return `<p class="lot"><b>For a lot:</b> ${LOT.head} head of steers at ${(LOT.cwt * 100).toLocaleString("en-US")} lb (${LOT.cwt} cwt), covered at ${money(lo.cp)} a cwt (that day&rsquo;s top ${LOT.len}-week price for weight 2 steers), is ${money(coverHead, 0)} of coverage a head. On the record&rsquo;s average day at today&rsquo;s subsidy, ${LOT.len} weeks came out ${netHead >= 0 ? "ahead" : "behind"} ${money(Math.abs(netHead))} a head, ${money(Math.abs(netHead * LOT.head), 0)} for the lot, before basis.</p>`;
+  /* the same lot at the subsidy each year really had, and in the regime bought today (since July 2020) */
+  const word = (x) => `${x >= 0 ? "ahead" : "behind"} ${money(Math.abs(x))}`;
+  const cur = bt.record[`current/feeder/${bt.method.base}/${LOT.len}`];
+  const inForce = r.net != null
+    ? ` At the subsidy in force each year it came out ${word((r.net / 100) * coverHead)} a head` +
+      (cur && cur.years >= bt.method.min_years && cur.net != null ? `; since July 2020, ${word((cur.net / 100) * coverHead)}.` : ".")
+    : "";
+  return `<p class="lot"><b>For a lot:</b> ${LOT.head} head of steers at ${(LOT.cwt * 100).toLocaleString("en-US")} lb (${LOT.cwt} cwt), covered at ${money(lo.cp)} a cwt (that day&rsquo;s top ${LOT.len}-week price for weight 2 steers), is ${money(coverHead, 0)} of coverage a head. On the record&rsquo;s average day at today&rsquo;s subsidy, ${LOT.len} weeks came out ${netHead >= 0 ? "ahead" : "behind"} ${money(Math.abs(netHead))} a head, ${money(Math.abs(netHead * LOT.head), 0)} for the lot, before basis.${inForce}</p>`;
 }
 
 function backLine(bt) {
