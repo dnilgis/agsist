@@ -929,7 +929,8 @@ def asof_time(t):
     ("Updated 7:10 pm", "Updated yesterday 4:10 pm") and greys it with a
     plain age once it is not from today."""
     iso = t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    return f'<time class="asof" data-asof="bids" datetime="{iso}">Updated {fmt_share_time(t)}</time>'
+    # the zone named in the file: Wray, CO and Delphos, OH read a Central clock with no label (sets pass, 2026-10-18)
+    return f'<time class="asof" data-asof="bids" datetime="{iso}">Updated {fmt_share_time(t)} CT</time>'
 
 
 def top_nearby(rows):
@@ -1660,7 +1661,7 @@ def build_town_page(t, ctx):
         share = (f"{place} cash bids",
                  (f"Top bids for nearest delivery: {txt} at {n} elevator{'s' if n != 1 else ''}. " if txt else
                   f"Bids from {n} elevator{'s' if n != 1 else ''}; call before you haul. ")
-                 + f"Updated {fmt_share_time(when or latest)}.")
+                 + f"Updated {fmt_share_time(when or latest)} CT.")
         n_in = n - n_near
         who = (f'<b>{n_in}</b> elevator{"s" if n_in != 1 else ""} in {esc(place)}' if n_in else "")
         if n_near:
@@ -1893,8 +1894,11 @@ def basis_section(st, summ, prev_gen):
         blocks.append(basis_stat(g, head0, prev_gen))
         for c in cons[1:]:
             if "median" in c:
-                notes.append(f"{SB.CROP_LABEL[g]} vs {contract_label(c['contract'])}: middle {money_basis(c['median'])}, "
-                             f"n = {c['n']}. Kept apart: a basis against one month does not compare with another.")
+                # the exchange named, as the headline names it: Montana's MW and MWO spring wheat are both "Dec '26"
+                # and read as the same month kept apart from itself (sets pass, 2026-10-18)
+                ex_ = SB.EXCHANGE.get(c["contract"][0], "")
+                notes.append(f"{SB.CROP_LABEL[g]} vs {contract_label(c['contract'])}{(' ' + ex_) if ex_ else ''}: middle {money_basis(c['median'])}, "
+                             f"n = {c['n']}. Kept apart: a basis against one futures contract does not compare with another.")
             else:
                 notes.append(f"{SB.CROP_LABEL[g]}: {c['n']} {_plural(c['n'], 'elevator')} "
                              f"{'prices' if c['n'] == 1 else 'price'} against "
@@ -2162,7 +2166,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
         share = (f"{sname} cash bids and basis",
                  f"Bids from {n_el} elevator{'s' if n_el != 1 else ''} across {len(live)} {sname} "
                  f"town{'s' if len(live) != 1 else ''}. " + (f"Top bid for nearest delivery: {top_txt}. " if top_txt else "")
-                 + f"Updated {fmt_share_time(when or max(m['latest'] for m in live))}.")
+                 + f"Updated {fmt_share_time(when or max(m['latest'] for m in live))} CT.")
     items = []
     for m in live:
         cl = ", ".join(CROP_LABEL[c].lower() for c in CROPS if c in m["crops"])
@@ -2811,10 +2815,10 @@ def selftest():
         share = re.search(r'<meta property="og:description" content="([^"]*)">', fr).group(1)
         assert share == re.search(r'<meta name="twitter:description" content="([^"]*)">', fr).group(1)
         assert share.startswith("Top bids for nearest delivery: corn $3.95, soybeans $9.85 at "), share
-        assert share.endswith("Updated Oct 7, 12:00 pm."), share
+        assert share.endswith("Updated Oct 7, 12:00 pm CT."), share
         assert "<title>Cash Grain Bids in Fremont, NE Today | AGSIST</title>" in fr, "search title unchanged"
         # each board's posted time is the site's "Updated" stamp, re-rendered and aged by asof.js
-        assert '<time class="asof" data-asof="bids" datetime="2026-10-07T17:00:00Z">Updated Oct 7, 12:00 pm</time>' in fr
+        assert '<time class="asof" data-asof="bids" datetime="2026-10-07T17:00:00Z">Updated Oct 7, 12:00 pm CT</time>' in fr
         assert '/components/asof.js?v=1' in fr and '/components/asof.css?v=1' in fr
         for v in re.findall(r"\$(\d+\.\d\d)", share):
             assert f"${v}</td>" in fr, f"share price {v} is not on the page"
@@ -2911,7 +2915,7 @@ def selftest():
         assert "read as a misread board and left out" in ne and 'data-state-table="NE"' in ne
         assert "/components/state-bids.js?v=2" in ne and "/basis/" not in ne
         assert re.search(r'<meta name="twitter:description" content="Bids from \d+ elevators across 2 Nebraska towns\. '
-                         r'Top bid for nearest delivery: corn \$3\.95, soybeans \$9\.85\. Updated Oct 7, 12:00 pm\.">',
+                         r'Top bid for nearest delivery: corn \$3\.95, soybeans \$9\.85\. Updated Oct 7, 12:00 pm CT\.">',
                          ne), ne[:3000]
         # the data the state table and /basis read: written only when asked, from the same method
         dd, hubp = os.path.join(td, "data"), os.path.join(td, "basis.html")
@@ -3067,6 +3071,13 @@ def selftest():
     assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
     import build_company_pages as CO      # the company pages, built inside build_all()
     CO.selftest()
+    # sets pass 2026-10-18: two spring wheat contracts that both read "Dec '26" are told apart by exchange
+    _sm = {"wheat_hrs": {"contracts": [{"contract": ("MWO", 11, 2026), "median": -0.725, "n": 4, "lo": -0.85, "hi": -0.6},
+                                       {"contract": ("MW", 11, 2026), "median": -0.8, "n": 3}],
+                         "rows": [], "no_contract": [], "suspect": []}}
+    _bs = basis_section("MT", _sm, None)
+    _bs = _bs if isinstance(_bs, str) else " ".join(x for x in _bs if isinstance(x, str)) if isinstance(_bs, (list, tuple)) else str(_bs)
+    assert "vs Dec '26 MIAX spring wheat: middle" in _bs and "one futures contract does not compare" in _bs, _bs[:600]
     print("selftest OK")
 
 
