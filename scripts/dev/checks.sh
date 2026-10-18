@@ -9,6 +9,7 @@ run(){ name="$1"; shift; out=$("$@" 2>&1); rc=$?; if [ $rc -ne 0 ]; then echo "F
 run node-test bash -c "node --test > '$OUT/nt.out' 2>&1; grep -E '^# fail 0$' '$OUT/nt.out' >/dev/null || { grep -E '^# (pass|fail)' '$OUT/nt.out'; grep -B2 -A15 -E '^\s*not ok' '$OUT/nt.out' | head -60; exit 1; }"
 run seo python3 scripts/check_seo.py
 run budget python3 scripts/check_site_budget.py
+run layers python3 scripts/check_layers.py
 run nav python3 scripts/inject_static_nav.py --check
 run feeds bash -c 'python3 scripts/build_feeds.py && python3 scripts/test_feeds.py'
 for f in network-checks delivery-checks market-clock-checks network-safety-checks homepage-bids-checks sponsor-checks; do run $f node scripts/$f.mjs; done
