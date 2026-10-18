@@ -120,6 +120,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
     <div class="section-inner">
       <div class="sec-head">
         <h1 class="sec-title">Commodity prices today</h1>
+        <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">By <a href="/about">Sigurd Lindquist, CCA</a>. These are futures prices: what traders on the exchange agree to pay for crops and livestock delivered later. Your elevator pays this price plus or minus its basis. Data: CME Group futures via Yahoo Finance, about 15 minutes delayed.</p>
 
         <!--SEED:mk:dup--><style id="mk-dup-css">#pc-card-corn-dec,#pc-card-bean-nov{display:none}</style><!--/SEED-->
         <span id="price-data-status" style="font-size:0.78rem;color:var(--text-muted)"><!--SEED:mk:status--><time class="asof" data-asof="prices" datetime="2026-10-17T05:46:11Z">Updated Oct 17, 12:46 am</time> &middot; each change line carries its own close date<!--/SEED--></span>
@@ -402,5 +403,7 @@ document.querySelectorAll('.mkt-faq-q').forEach(function(q){
   q.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();q.click();}});
 });
 </script>
+  <script src="/components/glossary.js?v=1" defer></script>
+  <script src="/components/next-links.js?v=1" defer></script>
 </body>
 </html>

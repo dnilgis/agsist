@@ -437,6 +437,8 @@ details.fold[hidden]{display:none}
     </div>
   </div>
   <p class="pl-line" data-state-bid="soybeans" hidden></p>
+  <p class="ph-plain" style="font-size:.95rem;color:var(--text-dim);margin:.45rem 0 .2rem;line-height:1.5">This is the price soybeans trade at on the Chicago Board of Trade for the nearest delivery month. It is the starting point for what elevators pay; your local price differs by the basis. <a href="/cash-bids">See what elevators near you pay</a>.</p>
+  <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .5rem">By <a href="/about">Sigurd Lindquist, CCA</a>. Data: CME Group futures via Yahoo Finance, about 15 minutes delayed. Sources at the bottom of the page.</p>
 
   <div class="ps"><span id="status-timer" data-agsist-timer data-mode="live" data-interval="30" data-label="Markets" style="display:none"></span><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span><span class="session-badge closed" id="session-badge"><span class="dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:9ch" aria-hidden="true"></span><span class="session-sub"><span class="st-sk st-num" style="width:20ch" aria-hidden="true"></span></span></span></div>
   <!--SEED:nc--><div class="nc-line" id="nc-line" style="display:none"></div><!--/SEED-->
@@ -475,7 +477,7 @@ details.fold[hidden]{display:none}
     <input type="number" id="be-input" placeholder="$/bu" step="0.01" inputmode="decimal" aria-label="Your cost of production in dollars per bushel" aria-describedby="be-hint">
     <span class="be-result" id="be-result"></span>
     <button type="button" class="be-clear" id="be-clear">clear</button>
-    <span class="be-hint" id="be-hint">Typical $9.00 to $11.00/bu. Varies by farm.</span>
+    <span class="be-hint" id="be-hint">Typical $9.00 to $11.00/bu. Varies by farm.</span> <a class="be-link" href="/breakeven" style="font-size:.85rem">Work out your cost</a>
   </div>
 
   <div class="snap-card">
@@ -853,5 +855,7 @@ details.fold[hidden]{display:none}
 <script>window.AGSIST_FUTURES='soybean'</script>
 <script src="/components/storesell.js?v=8"></script><script src="/components/price-local.js?v=3"></script><script src="/components/futures.js?v=19"></script>
 
+  <script src="/components/glossary.js?v=1" defer></script>
+  <script src="/components/next-links.js?v=1" defer></script>
 </body>
 </html>

@@ -1531,7 +1531,7 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
 </head>"""
 
 
-def tail(ftr, calc=False, math=False):
+def tail(ftr, calc=False, math=False, hub=False):
     s = f"""{ftr}
 <script src="/components/asof.js?v={ASOF_V}" defer></script>
 <script src="/components/loader.js?v={LOADER_V}" defer></script>
@@ -1542,6 +1542,8 @@ def tail(ftr, calc=False, math=False):
         s += f'\n<script src="/components/arc-plc.js?v={CALC_V}" defer></script>'
     if math:
         s += f'\n<script src="/components/arc-plc-math.js?v={CALC_V}" defer></script>'
+    if hub:  # glossary marks and the Next block (data/next-links.json), hub page only
+        s += '\n<script src="/components/glossary.js?v=1" defer></script>\n<script src="/components/next-links.js?v=1" defer></script>'
     return s + "\n</body>\n</html>\n"
 
 
@@ -2033,7 +2035,7 @@ def build_main(D, ch):
   <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price and pre-sell</a></p>
 </main>
 """
-    return head(title, desc, "/arc-plc", jsonld, True, fonts, og_title=og_title) + body + tail(ftr, calc=True), {
+    return head(title, desc, "/arc-plc", jsonld, True, fonts, og_title=og_title) + body + tail(ftr, calc=True, hub=True), {
         "title": title, "desc": desc, "og_title": og_title, "faq": [q for q, _ in faq]}
 
 

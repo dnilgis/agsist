@@ -287,10 +287,12 @@ UID:2026-11-02-arc-plc-2027-signup-opens@agsist.com
 DTSTAMP:20261016T120000Z
 DTSTART;VALUE=DATE:20261102
 SUMMARY:2027 ARC/PLC signup opens (FSA)
-DESCRIPTION:FSA signup for the 2027 crop year opens. It runs to Mar 15\, 20
- 27.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSour
- ce: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-20
- 26-2027-enrollment-key-price-revenue-safety-net
+DESCRIPTION:Signup opens at your county FSA (Farm Service Agency) office fo
+ r the 2027 crop year. This is where you choose ARC or PLC\, the two progra
+ ms that can pay when crop prices or revenue fall. It runs to Mar 15\, 2027
+ .\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource
+ : https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026
+ -2027-enrollment-key-price-revenue-safety-net
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT

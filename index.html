@@ -269,6 +269,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
          one plain line. It used to be visually hidden, so nothing on the first
          screen said what the site was. -->
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
+    <p class="hb-plain" style="margin:.35rem 0 0;color:var(--text-dim);font-size:.95rem">The prices at the top are Chicago futures. Your local elevator pays a different price, called a cash bid. Type your ZIP below to see it.</p>
     <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
     <div class="hb-top">
       <span class="hb-where"><span class="hb-place" id="hb-place">Your area</span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
@@ -1653,5 +1654,6 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/home.js?v=8"></script>
 <script src="/components/home-planting.js?v=1" defer></script>
 <script src="/components/home-season.js?v=7" defer></script>
+<script src="/components/next-links.js?v=1" defer></script>
 </body>
 </html>

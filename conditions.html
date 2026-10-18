@@ -228,6 +228,7 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
     <p class="cd-kicker page-kicker">USDA Crop Progress &middot; every Monday &middot; ranked against every year USDA rated it</p>
     <h1>Crop conditions ranked against every year on record</h1>
     <p class="cd-sub page-lede"><!--SEED:condlede-->Harvest pace first: how far each state&rsquo;s <strong>corn and soybean harvest</strong> is ahead of or behind its <strong>five-year average</strong>, from Monday&rsquo;s USDA Crop Progress. Below that, each state&rsquo;s Good+Excellent share, ranked against the same week of every year USDA rated it since 2001.<!--/SEED--></p>
+    <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">By <a href="/about">Sigurd Lindquist, CCA</a>. Data: USDA NASS Crop Progress, out Mondays at 4 p.m. Eastern.</p>
   </header>
 
   <p class="cd-week" id="cd-week"><!--SEED:condweek-->Week ending Oct 11, 2026 (USDA NASS): US corn <b>56%</b> good-to-excellent, soybeans <b>57%</b>. Harvested: corn 33% (avg 39%), soybeans 46% (avg 50%).<!--/SEED--></p>
@@ -526,5 +527,7 @@ html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
     }).catch(function(){ $('cd-table').innerHTML='<tr><td style="color:#8a948f">Data unavailable</td></tr>'; });
 })();
 </script>
+  <script src="/components/glossary.js?v=1" defer></script>
+  <script src="/components/next-links.js?v=1" defer></script>
 </body>
 </html>

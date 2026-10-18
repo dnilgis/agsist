@@ -407,6 +407,8 @@ FOOT = """  </main>
 # "Want a better rain gauge? Sig is designing one. Get updates."). County
 # pages keep their Rain Print block and nothing else.
 GAUGE_SLOT = '<p class="rp-promo" data-rain-print-promo="gauge" hidden></p>'
+# rain.html only: glossary marks and the Next block (data/next-links.json)
+FOOT_NAT = FOOT.replace("</body>", '  <script src="/components/glossary.js?v=1" defer></script>\n  <script src="/components/next-links.js?v=1" defer></script>\n</body>')
 FOOT_GAUGE = FOOT.replace('  <script src="/components/loader.js?v=19" defer></script>\n',
                           '  <script src="/components/loader.js?v=19" defer></script>\n  <script src="/components/rain-print-promo.js?v=4" defer></script>\n')
 
@@ -799,7 +801,7 @@ def hub_page(files, built):
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through <a href="https://www.rcc-acis.org/" rel="noopener">RCC-ACIS</a>.</p>
   </div>
-{FOOT}"""
+{FOOT_NAT}"""
     return nav.render(page, "rain.html", nav.block("header"), nav.block("footer"))
 
 

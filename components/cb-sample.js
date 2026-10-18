@@ -46,6 +46,7 @@
       rows += '<tr><th scope="row"><a href="' + esc(bs.states[st].path || '/cash-bids') + '">' + esc(bs.states[st].name) + '</a></th>' + tds + '</tr>';
     });
     return '<h3 class="cbs-h">Today&rsquo;s middle bid, before you type a ZIP</h3>' +
+      '<p class="cbs-f">The middle bid at elevators in each state. &ldquo;Under&rdquo; means that many cents a bushel below the futures month named; that gap is the basis. &ldquo;Elev.&rdquo; is how many elevators were counted.</p>' +
       '<table class="cbs-t"><thead><tr><th scope="col">State</th><th scope="col">Corn</th><th scope="col">Soybeans</th></tr></thead><tbody>' + rows + '</tbody></table>' +
       '<p class="cbs-f">About: ' + (on ? 'futures at ' + esc(on) + ' plus ' : '') + 'each state&rsquo;s median basis at AGSIST network elevators' +
       (asOf ? ', ' + esc(asOf) : '') + '. The five states with the most elevators. Your ZIP gives the real bids near you.</p>';

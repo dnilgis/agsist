@@ -157,6 +157,7 @@ LINES = {
     "planting-date": ("Planting", "Soil temperature, frost odds and the yield cost of each week's delay."),
     "pod-counts": ("Pod counts", "What the crop tour's soybean pod counts actually predict."),
     "prf-sponsor": ("PRF sponsor", "One business per state on the PRF state and county pages."),
+    "glossary": ("Glossary", "Basis, WASDE, settle, carry and other farm market words in plain terms."),
     "privacy": ("Privacy", "What the site collects, who handles it and how long it is kept."),
     "scorecard": ("Scorecard", "The prediction bot's calls, graded by code against the closes."),
     "sponsor": ("Sponsor", "A footer spot, your own page, or the daily briefing."),

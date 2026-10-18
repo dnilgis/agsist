@@ -389,6 +389,13 @@ h1 .ticon{width:22px;height:22px;vertical-align:-4px;margin-right:.3rem}
 <div class="desc">Count ears and kernels, enter 3 numbers, get estimated bu/acre. The yield component method, sized for a phone in the field.</div>
 <span class="tag">Corn · Soybeans</span>
       </a>
+      <a href="/glossary" class="tool-card" data-t="sell field">
+<div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-calculator"></use></svg></div>
+<div class="name">Farm Market Glossary</div>
+<div class="short">Basis, WASDE, settle in plain words</div>
+<div class="desc">Basis, WASDE, settle, carry and more, each explained in a line or two with where the number comes from.</div>
+<span class="tag">Glossary</span>
+      </a>
       <a href="/fast-facts" class="tool-card" data-t="inputs field">
 <div class="icon"><svg class="ticon" aria-hidden="true"><use href="#i-book-open"></use></svg></div>
 <div class="name">Fast Facts Reference Tables</div>
@@ -595,5 +602,6 @@ sel.addEventListener('change',function(){show(sel.value);try{localStorage.setIte
 document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.tool-card');if(c&&window.gaEvent){var n=c.querySelector('.name');gaEvent('tool_click',{tool:(n?n.textContent:'').trim(),href:c.getAttribute('href')||''});}},true);
 </script>
 
+<script src="/components/next-links.js?v=1" defer></script>
 </body>
 </html>
