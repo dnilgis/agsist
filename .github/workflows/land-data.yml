@@ -96,7 +96,8 @@ jobs:
           esac
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
-        run: python scripts/fetch_land_sales.py MN IL || echo "::warning::no state's transfers were written"
+        # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
+        run: python scripts/fetch_land_sales.py MN IL IN || echo "::warning::no state's transfers were written"
       - name: Wisconsin transfer returns (browser)
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'wi-newest' || inputs.task == 'wi-transfers' || startsWith(inputs.task, 'wi-transfers:')) }}
         run: |
