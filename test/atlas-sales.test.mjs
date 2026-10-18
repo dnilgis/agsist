@@ -105,8 +105,11 @@ test("sheet and state blocks", () => {
   const h = S.sheetHTML(fixtureSummary(), "17999", fct, fw);
   assert.match(h, /<h2>Recorded farm sales<\/h2>/);
   assert.match(h, /Median, 20\+ acre sales\|\$12,500\/ac\|6 sales; middle half \$11,250 to \$13,750/);
-  assert.match(h, /Largest sale, 24 months\|400 ac\|Oct 2024, \$3,200,000, \$8,000\/ac, Beta township/);
-  assert.match(h, /Well outside the middle range\|1 of 10/);
+  assert.match(h, /Largest sale by acres, 24 months\|400 ac\|Oct 2024, \$3,200,000, \$8,000\/ac, Beta township/);
+  assert.match(h, /Unusual \$\/acre, 24 months\|1 of 10/);
+  assert.match(h, /Farthest out\|\$[\d,]+\/ac\|[A-Z][a-z]{2} \d{4}, [\d.,]+ ac, \$[\d,]+, .*well (above|below) the middle range/);
+  assert.match(h, /related-party sales, quit claims, gifts, sheriff, judicial, court and partition deeds are left out/);
+  assert.match(h, /sales dated through Sep 30, 2026/);
   assert.match(h, /No names printed/);
   assert.equal(S.sheetHTML(fixtureSummary(), "00000", fct, fw), "");
   const st = S.stateHTML(fixtureSummary(), { 17999: "/farmland-atlas/illinois/fixture-county" });

@@ -129,16 +129,24 @@
     if (!c) return '';
     var W = sum.windows, N = sum.min_n || 5, A = sum.min_acres || 20;
     var h = '<h2>Recorded farm sales</h2>';
-    h += fct('Market sales, ' + S.span(W.cur), String(c.n12), c.n12p != null ? c.n12p + ' the 12 months before' : '');
+    h += fct('Market sales, ' + S.span(W.cur), String(c.n12), (c.n12p != null ? c.n12p + ' the 12 months before' : '') + (c.u12 ? (c.n12p != null ? '; ' : '') + 'acres unknown on ' + c.u12 : ''));
     if (c.med) h += fct('Median, ' + A + '+ acre sales', S.money(c.med.med) + '/ac', c.med.n + ' sales; middle half ' + S.money(c.med.q1) + ' to ' + S.money(c.med.q3));
     else h += fw('Median, ' + A + '+ acre sales', 'not shown: ' + (c.k12 || 0) + ' sales, needs ' + N);
     if (c.chg != null && c.medp) h += fct('Change from the year before', S.pct(c.chg), 'from ' + S.money(c.medp.med) + '/ac, ' + c.medp.n + ' sales');
     if (c.large && c.large.length) {
       var L = c.large[0];
-      h += fct('Largest sale, 24 months', S.acres(L[1]) + ' ac', S.month(L[0]) + ', ' + S.money(L[2]) + (L[3] != null ? ', ' + S.money(L[3]) + '/ac' : '') + (L[4] ? ', ' + L[4] : ''));
+      h += fct('Largest sale by acres, 24 months', S.acres(L[1]) + ' ac', S.month(L[0]) + ', ' + S.money(L[2]) + (L[3] != null ? ', ' + S.money(L[3]) + '/ac' : '') + (L[4] ? ', ' + L[4] : ''));
     }
-    if (c.r24) h += fct('Well outside the middle range', String(c.nout || 0) + ' of ' + c.r24.n, 'sales of ' + A + '+ ac, 24 months; middle half ' + S.money(c.r24.q1) + ' to ' + S.money(c.r24.q3));
-    h += '<p class="note">' + esc(sum.record) + ', filed ' + esc(S.month(c.from)) + ' to ' + esc(S.month(c.to)) + '. Prices buyers paid, not the census estimate above. No names printed.</p>';
+    if (c.r24) {
+      h += fct('Unusual $/acre, 24 months', String(c.nout || 0) + ' of ' + c.r24.n, 'sales of ' + A + '+ ac well outside the middle half, ' + S.money(c.r24.q1) + ' to ' + S.money(c.r24.q3));
+      if (c.out && c.out.length) {
+        var O = c.out[0];
+        h += fct('Farthest out', S.money(O[3]) + '/ac', S.month(O[0]) + ', ' + S.acres(O[1]) + ' ac, ' + S.money(O[2]) + (O[4] ? ', ' + O[4] : '') + ', ' + (O[5] > 0 ? 'well above' : 'well below') + ' the middle range');
+      }
+    }
+    h += '<p class="note">Market sales only: related-party sales, quit claims, gifts, sheriff, judicial, court and partition deeds are left out. '
+      + esc(sum.record) + ' (' + esc(sum.who) + '), filed ' + esc(S.month(c.from)) + ' to ' + esc(S.month(c.to)) + '; sales dated through ' + esc(S.day(sum.through)) + '. '
+      + 'Prices buyers paid, not the census estimate above. No names printed.</p>';
     return h;
   };
 
