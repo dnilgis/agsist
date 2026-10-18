@@ -1,0 +1,111 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": {
+  "displayFieldName": "DFIRM_ID",
+  "geometryType": "esriGeometryPolygon",
+  "spatialReference": {
+   "wkid": 4326
+  },
+  "features": [
+   {
+    "attributes": {
+     "FLD_ZONE": "AE",
+     "ZONE_SUBTY": null,
+     "SFHA_TF": "T"
+    },
+    "geometry": {
+     "rings": [
+      [
+       [
+        -93.501,
+        42.059
+       ],
+       [
+        -93.4976,
+        42.059
+       ],
+       [
+        -93.4976,
+        42.065
+       ],
+       [
+        -93.501,
+        42.065
+       ],
+       [
+        -93.501,
+        42.059
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "FLD_ZONE": "X",
+     "ZONE_SUBTY": "0.2 PCT ANNUAL CHANCE FLOOD HAZARD",
+     "SFHA_TF": "F"
+    },
+    "geometry": {
+     "rings": [
+      [
+       [
+        -93.4964,
+        42.059
+       ],
+       [
+        -93.494,
+        42.059
+       ],
+       [
+        -93.494,
+        42.065
+       ],
+       [
+        -93.4964,
+        42.065
+       ],
+       [
+        -93.4964,
+        42.059
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "FLD_ZONE": "X",
+     "ZONE_SUBTY": "AREA OF MINIMAL FLOOD HAZARD",
+     "SFHA_TF": "F"
+    },
+    "geometry": {
+     "rings": [
+      [
+       [
+        -93.4976,
+        42.059
+       ],
+       [
+        -93.4964,
+        42.059
+       ],
+       [
+        -93.4964,
+        42.065
+       ],
+       [
+        -93.4976,
+        42.065
+       ],
+       [
+        -93.4976,
+        42.059
+       ]
+      ]
+     ]
+    }
+   }
+  ]
+ }
+}

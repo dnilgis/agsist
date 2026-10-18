@@ -29,7 +29,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch)"
+        description: "services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -61,6 +61,7 @@ jobs:
           python scripts/fetch_land_sales.py --selftest
           python scripts/land_keep_stamp_only.py --selftest
           python scripts/wi_retr_browser.py --selftest
+          python scripts/probe_field_layers.py --selftest
       - name: Probe transfer sources (raw capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
@@ -94,6 +95,13 @@ jobs:
             discover|all) python scripts/probe_land_services.py --discover ;;
             *) python scripts/probe_land_services.py ;;
           esac
+      # Dispatch only (never on the schedule): the public services behind Field Scout's
+      # "on and around this field" card. Answers go to data/land-raw/layers (raw branch),
+      # the summary to data/land/field-layers-check.json.
+      - name: Check Field Scout layer services
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.task == 'layers' || inputs.task == 'layers-discover') }}
+        run: |
+          if [ "${{ inputs.task }}" = "layers-discover" ]; then python scripts/probe_field_layers.py --discover; else python scripts/probe_field_layers.py; fi
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         run: python scripts/fetch_land_sales.py MN IL || echo "::warning::no state's transfers were written"
