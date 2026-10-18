@@ -8,7 +8,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -57,5 +57,23 @@ for (const slug of ["farmer-retirement-gifts", "farm-anniversary-gifts"]) {
     assert.ok(!/\u2014|&mdash;/.test(HTML), "no em dashes");
     assert.ok(!/archival|founding|affiliate|utm_|sponsor/i.test(BODY));
     assert.deepEqual([...BODY.matchAll(/href="(https?:[^"]+)"/g)].map((m) => m[1]), []);
+  });
+}
+
+for (const slug of ["gifts-for-farmers", "farmer-retirement-gifts", "farm-anniversary-gifts"]) {
+  const HTML = readFileSync(ROOT + slug + ".html", "utf8");
+  test(slug + ": Rain Print leads with a real photo of a test print, captioned honestly (2026-10-18)", () => {
+    const sec = HTML.slice(HTML.indexOf('<section class="gf-rp"'), HTML.indexOf("</section>", HTML.indexOf('<section class="gf-rp"')));
+    assert.ok(HTML.indexOf('<section class="gf-rp"') < HTML.indexOf("<h2", HTML.indexOf("<main")) + 400, "the print section comes first");
+    assert.ok(!/rain-print-thumb|[Mm]ockup/.test(sec), "no mockup in the gift guide");
+    const fig = sec.match(/<figure class="gf-fig">(.*?)<\/figure>/s)[1];
+    const srcs = [...fig.matchAll(/\/img\/photos\/(rain-print-photo-[a-z0-9-]+\.(?:jpg|webp))/g)].map((m) => m[1]);
+    assert.ok(srcs.length >= 4, "webp and jpg at two widths");
+    for (const s of srcs) assert.ok(existsSync(ROOT + "img/photos/" + s), s);
+    const alt = fig.match(/ alt="([^"]*)"/)[1];
+    assert.ok(alt.length < 125, "alt under 125: " + alt.length);
+    assert.ok(!/^(photo|image|picture) of/i.test(alt));
+    assert.match(fig, /<img [^>]*width="\d+" height="\d+"/);
+    assert.match(fig, /<figcaption>My test print of [^<]* It is shown without the white mat that comes with a framed print\.<\/figcaption>/);
   });
 }
