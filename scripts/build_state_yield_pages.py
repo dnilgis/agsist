@@ -530,8 +530,9 @@ def build_state_page(name, inp, ctx):
          "name": f"{name} {crops_phrase(crops).lower()} yield by year, {yrs_plain(y0, y1)}",
          "description": (f"USDA NASS state yield estimates for {name} ("
                          + ", ".join(f"{CROP_LC[c]} {yrs_plain(stats[c]['first'], stats[c]['last'])}, n={stats[c]['n']}" for c in crops)
-                         + "), final estimates only, with planted acres where NASS publishes them, "
-                           "highest and lowest years, 5- and 10-year averages and a least-squares trend."),
+                         + "), final estimates only, "
+                         + ("with " + " and ".join(CROP_LC[c] for c in crops if c in ACRES and name in inp["acres"][c]["rows"]) + " planted acres, " if has_acres else "")
+                         + "highest and lowest years, 5- and 10-year averages and a least-squares trend."),
          "url": f"{SITE}{path}", "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
          "isBasedOn": "https://quickstats.nass.usda.gov/",
@@ -746,6 +747,9 @@ def selftest():
         ck("gap year is n/a + reason", re.search(r"<tr><td>2014</td><td class=\"n\"><span class=\"mut\" "
                                                      r"title=\"NASS published no figure\">n/a", ia) is not None)
         ck("acres missing -> n/a, present -> value", "<td class=\"n\">13.6</td>" in ia)
+        _ds = next(g for d in lds for g in d["@graph"] if g["@type"] == "Dataset")["description"]
+        ck("dataset names the planted acres the page has (corn), not 'where NASS publishes them'",
+           "with corn planted acres" in _ds and "where NASS publishes" not in _ds, _ds)
         ck("high/low years", "<b>211</b> in 2024" in ia and "<b>137</b> in 2012" in ia)
         ck("forecast kept out of table", "<tr><td>2026</td>" not in ia and "219" in ia
            and "in-season forecast" in ia)
