@@ -269,3 +269,55 @@ test("dealer rows and shrink range match the documents", () => {
   assert.doesNotMatch(PAGE, /1\.2 to 1\.4 per point/);
   assert.match(PAGE, /doi\.org\/10\.13031\/trans\.12645/);
 });
+
+/* Size chart (2026-10-18). Static table in the page, level full, flat floor,
+   no pack, grain to the eave, rounded to 10 bu. Worked by hand:
+   30 ft x 24 ft: pi x 15^2 x 24 = 16,964.6 ft3 x 0.8036 = 13,632.8 -> 13,630
+   15 ft x 16 ft: pi x 7.5^2 x 16 = 2,827.4 ft3 x 0.8036 = 2,272.1 -> 2,270
+   48 ft x 32 ft: pi x 24^2 x 32 = 57,906.0 ft3 x 0.8036 = 46,533.3 -> 46,530 */
+test("size chart: every cell is the calculator's own number", () => {
+  const block = PAGE.match(/<!--BINCHART:START-->([\s\S]*?)<!--BINCHART:END-->/);
+  assert.ok(block, "size chart markers");
+  const heads = [...block[1].matchAll(/<th>(\d+) ft eave<\/th>/g)].map((m) => +m[1]);
+  assert.ok(heads.length >= 4, "eave columns");
+  const rows = [...block[1].matchAll(/<tr><td>(\d+) ft<\/td>((?:<td>[\d,]+<\/td>)+)<\/tr>/g)];
+  assert.ok(rows.length >= 8 && rows.length <= 12, `8 to 12 diameters, got ${rows.length}`);
+  let n = 0;
+  for (const r of rows) {
+    const d = +r[1];
+    const cells = [...r[2].matchAll(/<td>([\d,]+)<\/td>/g)].map((m) => +m[1].replace(/,/g, ""));
+    assert.equal(cells.length, heads.length, `${d} ft row width`);
+    cells.forEach((v, i) => {
+      const want = Math.round(G.bushels(G.roundBin({ d, grainH: heads[i], surface: "level", peakDeg: 25 }).total, 0) / 10) * 10;
+      assert.equal(v, want, `${d} ft x ${heads[i]} ft`);
+      n++;
+    });
+  }
+  const cell = (d, h) => {
+    const r = rows.find((x) => +x[1] === d);
+    return +[...r[2].matchAll(/<td>([\d,]+)<\/td>/g)][heads.indexOf(h)][1].replace(/,/g, "");
+  };
+  assert.equal(cell(30, 24), 13630, "30 x 24 by hand");
+  assert.equal(cell(15, 16), 2270, "15 x 16 by hand");
+  assert.equal(cell(48, 32), 46530, "48 x 32 by hand");
+  assert.ok(n >= 40);
+  assert.ok(!block[1].includes("—") && !block[1].includes("&mdash;"), "no em dash");
+});
+
+test("title and description lead with the answer the FAQ gives", () => {
+  const title = PAGE.match(/<title>([^<]*)<\/title>/)[1].replace(/&amp;/g, "&");
+  assert.match(title, /Size Chart/);
+  assert.ok(title.length <= 68, `title ${title.length} chars`);
+  const desc = PAGE.match(/<meta name="description" content="([^"]*)"/)[1];
+  assert.ok(desc.length <= 160, `description ${desc.length} chars`);
+  assert.ok(desc.startsWith("A 30 x 24 ft bin holds about 13,600 bu level full."), desc);
+  // the same number the FAQ answer and the chart give
+  assert.match(text(PAGE), /A 30×24 ft round bin holds about 13,600 bu level-fill/);
+  const level = G.bushels(G.roundBin({ d: 30, grainH: 24, surface: "level", peakDeg: 25 }).total, 0);
+  assert.ok(Math.abs(level - 13600) / 13600 < 0.005, `13,600 is within half a percent of ${level}`);
+  for (const k of ["og:description", "twitter:description"]) {
+    const m = PAGE.match(new RegExp(`<meta (?:property|name)="${k}"\\s+content="([^"]*)"`));
+    assert.equal(m[1], desc, `${k} matches`);
+  }
+  assert.ok(!/live/i.test(desc));
+});
