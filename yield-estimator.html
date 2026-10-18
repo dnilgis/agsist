@@ -707,18 +707,20 @@ function calcBean(){
     if(!slbOk||!SITE_FIELDS.bean.every(function(id){return inRange(o,id);}))return null;
     return {pl:val(o,'b-plant-count'),pods:val(o,'b-pods-plant'),spod:val(o,'b-seeds-pod')};
   });
+  /* seeds per plant to a tenth when not whole: 62.5 shown as 63 read as 125,000 x 63 / 180,000 = 44 bu beside a 43 bu headline (2026-10-18) */
+  function spp1(x){var r=Math.round(x*10)/10;return r%1===0?r.toFixed(0):r.toFixed(1);}
   var good=recs.filter(Boolean), mean=function(a,f){var t=0;a.forEach(function(r){t+=f(r);});return t/a.length;};
   if(n>1){
     s('b-pop-lab','Avg plants / acre');s('b-pop-sub','mean of '+good.length+' site'+(good.length>1?'s':''));
     s('b-spp-lab','Avg seeds / plant');s('b-spp-sub','mean of '+good.length+' site'+(good.length>1?'s':''));
     s('b-pop-val',mean(good,function(r){return r.pl;}).toFixed(1)+'k');
-    s('b-spp-val',mean(good,function(r){return r.pods*r.spod;}).toFixed(0));
+    s('b-spp-val',spp1(mean(good,function(r){return r.pods*r.spod;})));
   }else{
     s('b-pop-lab','Plants / Acre');s('b-pop-sub','from plant count');
     s('b-spp-lab','Seeds / Plant');s('b-spp-sub','pods × seeds/pod');
     var plants=fld('b-plant-count'),ppp=fld('b-pods-plant'),spod=fld('b-seeds-pod');
     s('b-pop-val',why?'-':(plants).toFixed(0)+'k');
-    s('b-spp-val',why?'-':(ppp*spod).toFixed(0));
+    s('b-spp-val',why?'-':spp1(ppp*spod));
   }
   siteTable('bean',recs.map(function(r){return r?[r.pl.toFixed(0)+'k',String(r.pods),String(r.spod),Math.round(Y.beanYield(r.pl,r.pods,r.spod,slb))]:null;}),
     ['Plants','Pods/pl','Seeds/pod','bu/ac'],

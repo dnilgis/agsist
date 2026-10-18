@@ -675,7 +675,9 @@ def middle(cs):
     if not p:
         return None
     k = len(p) // 2
-    return p[k] if len(p) % 2 else round((p[k - 1] + p[k]) / 2)
+    # an even count's median is the midpoint, kept to the half: round() made 92.5 into 92, and then
+    # "half above 92%" was off by one county (Florida, 2026-10-18)
+    return p[k] if len(p) % 2 else (p[k - 1] + p[k]) / 2
 
 
 def state_page(st, d, pages, none_rows):
@@ -695,7 +697,9 @@ def state_page(st, d, pages, none_rows):
             + ("." if done else f", through {short_date(asofs[-1])}"
                + (f" ({early} {'station stops' if early == 1 else 'stations stop'} earlier; each {u1} page gives its own last day)." if early else ".")))
     if mid is not None:
-        lede += f" Half the {un} are above {mid}% of a usual year{'' if done else ' to date'} and half below."
+        n_pct = sum(1 for c in cs.values() if c["pct"] is not None)
+        who = f"the {un}" if n_pct == len(cs) else f"the {n_pct} {un} with a NOAA usual year"
+        lede += f" Half {who} are above {mid:g}% of a usual year{'' if done else ' to date'} and half below."
     wettest = max(cs.items(), key=lambda kv: kv[1]["total"])
     driest = min(cs.items(), key=lambda kv: kv[1]["total"])
     desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un}, from weather stations: inches, percent of usual and the station. "
@@ -765,7 +769,7 @@ def hub_page(files, built):
         last = max(c["as_of"] for c in d["counties"].values())
         u1, un = unit(st)
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} {un if len(d["counties"]) != 1 else u1}'
-                    + (f", typical {u1} {mid}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
+                    + (f", typical {u1} {mid:g}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
     title = f"How Much Rain Did Your County Get in {yw}? | AGSIST" if done else "How Much Rain Has Your County Had This Year? | AGSIST"
     sofar = "" if done else "so far "
     yin = "in " + yw if yw[0].isdigit() else yw
@@ -1048,7 +1052,7 @@ def selftest():
         wl = build(dl)
         la, lh = wl["rain/louisiana.html"], wl["rain.html"]
         ok(f"{len(lj['counties'])} Louisiana parishes have a weather station inside the parish" in la, "Louisiana: parishes in the lede")
-        ok('<th scope="col">Parish</th>' in la and "<h2>Parishes without a page</h2>" in la and "Half the parishes are above" in S.text_of(la), "Louisiana: parish in the table and lists")
+        ok('<th scope="col">Parish</th>' in la and "<h2>Parishes without a page</h2>" in la and re.search(r"Half the (\d+ )?parishes( with a NOAA usual year)? are above", S.text_of(la)), "Louisiana: parish in the table and lists")
         ok(not re.search(r"Louisiana counties|\d+ counties", S.text_of(la) + S.text_of(lh)), "Louisiana is never counted in counties")
         ok("parishes, typical parish" in lh, "hub row counts parishes")
         ok("caught under 40% of what the parishes around it typically caught" in la and "every county around it" not in la, "held footnote fits both holds")
