@@ -21,11 +21,11 @@ const CR = require(join(ROOT, "components/comp-report.js"));
 const TODAY = "2026-10-18";
 
 // ---------------------------------------------------------------- link settings
-test("defaults: 25 miles, last 3 years, 10 acres and up, market sales, 15 nearest", () => {
+test("defaults: 25 miles, last 3 years through today, 10 acres and up, market sales, 15 nearest", () => {
   const P = CR.parseParams("?lat=45.3&lon=-91.7", TODAY);
   assert.equal(P.ok, true);
   assert.equal(P.subject.kind, "point");
-  assert.deepEqual([P.r, P.from, P.to, P.amin, P.amax, P.cls, P.all, P.n, P.sort], [25, "2023-10-18", null, 10, null, null, false, 15, "mi"]);
+  assert.deepEqual([P.r, P.from, P.to, P.amin, P.amax, P.cls, P.all, P.n, P.sort], [25, "2023-10-18", TODAY, 10, null, null, false, 15, "mi"]);
 });
 
 test("every setting reads, clamps and swaps", () => {
@@ -88,7 +88,9 @@ test("Field Scout's report link carries its filters into the report", () => {
 
 // ---------------------------------------------------------------- filters and counts
 const town = { lat: 45.30, lng: -91.70 };
-const row = (o) => Object.assign({ doc: "D" + Math.random().toString(36).slice(2, 8), date: "2025-05-01", price: 400000, acres: 80, np: 1, cls: "4", conv: "Warranty Deed", pid: "1-2-3", muniName: "Town A", lat: town.lat, lng: town.lng, county: "Barron", st: "WI", exempt: 0, legal: "SW SW SEC 8 T34N R11W" }, o);
+// each made-up sale is its own parcel, so the one-sale-per-parcel rule (deeds of one parcel within 31 days) does not merge them
+let seq = 0;
+const row = (o) => Object.assign({ doc: "D" + Math.random().toString(36).slice(2, 8), date: "2025-05-01", price: 400000, acres: 80, np: 1, cls: "4", conv: "Warranty Deed", pid: "1-2-" + (++seq), muniName: "Town A", lat: town.lat, lng: town.lng, county: "Barron", st: "WI", exempt: 0, legal: "SW SW SEC 8 T34N R11W" }, o);
 
 test("each filter step drops what it says and the counts add up", () => {
   const rows = [
@@ -111,7 +113,9 @@ test("each filter step drops what it says and the counts add up", () => {
   assert.deepEqual(sel.list.map((r) => r.doc), ["ok1", "ok2"], "nearest first");
   assert.deepEqual(sel.list.map((r) => r.no), [1, 2]);
   const n = sel.funnel.map((x) => x.n);
-  assert.deepEqual(n, [13, 12, 9, 8, 7, 5, 4, 3, 2, 2]);
+  // 13 records; one row per sale (none merged); price and acres (-noprice); not dated after today; market (-quit, rel, exempt);
+  // whole interests (-share); dates (-old); acres (-small, unsure); class 4 (-forest); a location (none lost); 25 miles (-far); subject (-subject)
+  assert.deepEqual(n, [13, 13, 12, 12, 9, 8, 7, 5, 4, 4, 3, 2, 2]);
   assert.ok(sel.funnel.every((x, i) => i === 0 || x.n <= sel.funnel[i - 1].n));
   assert.match(sel.funnel[sel.funnel.length - 1].t, /nearest 2/);
   // every deed type: the screens step away, the rest stays
@@ -119,6 +123,58 @@ test("each filter step drops what it says and the counts add up", () => {
   assert.ok(all.list.some((r) => r.doc === "quit") && all.list.some((r) => r.doc === "share") && all.list.some((r) => r.doc === "unsure"));
   assert.match(CR.screenText(rows[5]), /^No: .*share/);
   assert.match(CR.screenText(rows[0]), /^Passes/);
+});
+
+test("the one-sale rule, the location line, future dates and the summary of every match", () => {
+  const P = CR.parseParams("?lat=45.3&lon=-91.7&from=any&amin=any", TODAY);
+  const rows = [
+    row({ doc: "a1", pid: "9-9-9", date: "2025-08-26", price: 300000, acres: 80, grantee: "SYNTHETIC ONE" }),
+    row({ doc: "a2", pid: "9-9-9", date: "2025-08-28", price: 200000, acres: 80, grantee: "SYNTHETIC ONE" }),
+    row({ doc: "noloc", lat: null, lng: null }),
+    row({ doc: "future", date: "2027-02-01" }),
+    row({ doc: "low", price: 20000, acres: 80 }),
+    row({ doc: "b1", price: 480000 }), row({ doc: "b2", price: 560000 }), row({ doc: "b3", price: 640000 }),
+    row({ doc: "house", price: 900000, cls: "4 1" }),
+  ];
+  const sel = CR.selectComps(rows, P, { lat: 45.3, lng: -91.7 }, [], TODAY);
+  const t = sel.funnel.map((x) => x.n + " " + x.t).join("\n");
+  assert.match(t, /^8 one row per sale.*\(1 sale was filed as several deeds\)$/m);
+  assert.match(t, /^6 with a location to measure from: 1 left out, no location in the record/m);
+  assert.match(t, /^7 not dated after today/m);
+  const g = sel.all.find((r) => r.grp);
+  assert.deepEqual([g.grp, g.price, g.ppa], [2, 500000, 6250]);
+  // the summary is every match: bare land 6250, 6000, 7000, 8000 (the $250 sale is listed, never figured), the house on its own line
+  const s = CR.summary(sel.all);
+  assert.deepEqual([s.n, s.med, s.lo, s.hi, s.low, s.nImp], [4, 6625, 6000, 8000, 1, 1]);
+  const h = CR.summaryHTML(s, { matched: sel.matched, listed: 3, newest: "2026-09-30" });
+  assert.match(h, /Typical bare-land price paid near you: <b>\$6,625\/ac<\/b>, 4 sales, dated May 1, 2025 to Aug 26, 2025, newest sale in our copy Sep 30, 2026\./);
+  assert.match(h, /6 sales matched; the 3 nearest are listed below\./);
+  assert.match(h, /Sales with buildings[^<]*: 1, too few/);
+  assert.match(h, /1 sale is under \$500 an acre/);
+  // Illinois: no bare-land claim
+  const il = CR.summary(sel.all.map((r) => Object.assign({}, r, { st: "IL", cls: "4" })));
+  assert.match(CR.summaryHTML(il, 6), /Typical price paid near you[\s\S]*Illinois records do not say whether buildings were included/);
+  assert.doesNotMatch(CR.summaryHTML(il, 6), /bare-land/);
+  // shared town centers: whole miles, marked approximate, and said
+  const tbl = CR.compsHTML(sel.list, false, TODAY);
+  assert.match(tbl, /data-l="Miles">(about \d+|under 1)</);
+  assert.match(tbl, /Miles run to the center of the town or township where each sale was filed/);
+  assert.match(tbl, /Unverified: taken from public transfer records, not confirmed with a party to the sale\./);
+  assert.match(tbl, /filed as 2 deeds from Aug 26, 2025 to Aug 28, 2025, \$500,000 in all/);
+  assert.match(tbl, /far below the range, likely not a whole open-market sale/);
+  assert.match(tbl, /<th scope="col"/);
+});
+
+test("labels per state: Indiana's sales disclosure ID and classes, no Wisconsin class off Wisconsin", () => {
+  const r = row({ st: "IN", doc: "C79-2026-1", cls: "4 7", no: 1, mi: 2 });
+  const h = CR.compsHTML([r], false, TODAY);
+  assert.match(h, /Indiana sales disclosure ID C79-2026-1/);
+  assert.match(h, /Farm land, Farm buildings/);
+  assert.doesNotMatch(F.saleDetailHTML(r, { state: "IN", cols: ["cls"] }, []), /Wisconsin class/);
+  assert.doesNotMatch(F.saleDetailHTML(Object.assign({}, r, { st: "IL", cls: "4" }), { state: "IL", cols: ["cls"] }, []), /Wisconsin class/);
+  for (const st of ["IL", "IN"]) assert.doesNotMatch(F.saleDetailHTML(Object.assign({}, r, { st }), { state: st, cols: [] }, []), /any personal property in the price/);
+  const js = read("components/comp-report.js");
+  assert.match(js, /Personal property was taken out of the price on the form/);
 });
 
 test("newest-first listing and the n cap", () => {
@@ -174,7 +230,7 @@ test("the map numbers are the table numbers, one marker per comp, shared towns r
 });
 
 test("the comps table carries every field the brief lists", () => {
-  const r = row({ doc: "923949", grantor: "SYNTHETIC SELLER", grantee: "SYNTHETIC BUYER", rec: "2026-09-30", legal: "The SW1/4-SW1/4, Section 8, Township 34 N, Range 11 W", conv: "Land Contract, Sale", cls: "4 1", np: 2, ppa: 6640, price: 464000, acres: 69.88, mi: 3.24, soil: { np: 0.61, cs: null }, no: 1 });
+  const r = row({ doc: "923949", pid: "1-2-3", grantor: "SYNTHETIC SELLER", grantee: "SYNTHETIC BUYER", rec: "2026-09-30", legal: "The SW1/4-SW1/4, Section 8, Township 34 N, Range 11 W", conv: "Land Contract, Sale", cls: "4 1", np: 2, ppa: 6640, price: 464000, acres: 69.88, mi: 3.24, soil: { np: 0.61, cs: null }, no: 1 });
   const h = CR.compsHTML([r], true);
   for (const want of ["Sep 30, 2026", "$464,000", "69.9", "$6,640", "1-2-3", "first of 2", "Section 8, T34N, R11W", "Land Contract, Sale", "Arm’s-length screen: Passes", "SYNTHETIC SELLER", "SYNTHETIC BUYER", "3.2", "Town A", "Agricultural, Residential", "61/100 NCCPI", "doc 923949", "buildings"]) assert.ok(h.includes(want), want);
   assert.match(CR.compsHTML([Object.assign({}, r, { soil: null, soilWhy: "no parcel map here" })], false), /no parcel map here[\s\S]*Seller and buyer not in our copy/);
@@ -183,7 +239,7 @@ test("the comps table carries every field the brief lists", () => {
 
 // ---------------------------------------------------------------- CSV
 test("CSV: one row per comp, quoted where needed, names cannot run as formulas", () => {
-  const r = row({ no: 1, grantor: '=HYPERLINK("x")', grantee: 'SMITH, JOHN "JACK"', ppa: 5000, mi: 2.04, price: 400000, acres: 80, src: "Wisconsin transfer return" });
+  const r = row({ no: 1, pid: "1-2-3", grantor: '=HYPERLINK("x")', grantee: 'SMITH, JOHN "JACK"', ppa: 5000, mi: 2.04, price: 400000, acres: 80, src: "Wisconsin transfer return" });
   const csv = CR.csv([r, Object.assign({}, r, { no: 2, grantor: "-cmd", grantee: "+1" })], true);
   const lines = csv.trim().split("\r\n");
   assert.equal(lines.length, 3);
@@ -219,7 +275,7 @@ test("one shared noindex page, not in a sitemap, no per-parcel files, no em dash
   assert.match(h, /Recorded sales from public records\. Not an appraisal; no adjustments made\./);
   assert.match(h, /Made with AGSIST \(free\)/);
   assert.match(h, /@page\{size:letter/);
-  assert.match(h, /components\/comp-report\.js\?v=1/);
+  assert.match(h, /components\/comp-report\.js\?v=2/);
   for (const sm of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) assert.doesNotMatch(read(sm), /comp-report/);
   assert.ok(!existsSync(join(ROOT, "comp-report")), "no folder of per-parcel report files");
   for (const f of ["comp-report.html", "components/comp-report.js"]) assert.ok(!read(f).includes("—"), f + " has an em dash");
@@ -302,5 +358,64 @@ test("a real Wisconsin and Illinois report: table and map agree, CSV downloads, 
     const n = await openPage(browser, port, "/comp-report.html");
     assert.equal(await n.pg.isVisible("#cr-none"), true);
     await n.ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+// ---------------------------------------------------------------- privacy and failure modes
+test("Analytics gets the bare path: no parcel number, county, outline or spot leaves in the page address", () => {
+  const h = read("comp-report.html");
+  assert.match(h, /gtag\('set',\{page_location:location\.origin\+location\.pathname\}\)/);
+  assert.match(h, /gtag\('config','G-6KXCTD5Z9H',\{page_location:location\.origin\+location\.pathname,page_referrer:document\.referrer\?document\.referrer\.split\('\?'\)\[0\]:''\}\)/);
+  assert.doesNotMatch(h, /gtag\('config','G-6KXCTD5Z9H'\)/, "no config call that would send the full address");
+});
+
+test("page rules in the source: late parcel answers ignored, rows patched in place, links only http(s), print says what did not finish", () => {
+  const js = read("components/comp-report.js"), h = read("comp-report.html");
+  assert.match(js, /setTimeout\(function \(\) \{ timedOut = true; ok\(\); \}, 15000\)/);
+  assert.match(js, /if \(timedOut\) return ok\(\);\n\s+S\.parcels = ps;/, "a parcel answer after the cap does not move the subject");
+  assert.match(js, /function patchComp\(r\)/);
+  assert.match(js, /sec\.setAttribute\('aria-busy', 'true'\)/);
+  assert.match(js, /role="status" aria-live="polite"/);
+  assert.match(js, /function safeURL\(u\) \{ return \/\^https\?:/);
+  assert.doesNotMatch(js, /href="' \+ esc\(l\.url\)/, "source links pass through safeURL");
+  assert.match(js, /addEventListener\('beforeprint'/);
+  assert.match(h, /\.fs-loading::after,\.cr-wait::after\{content:"not available at time of printing"/);
+  assert.match(js, /'<h4>Parcel '/, "per-parcel headings sit under the h3");
+  // the report's order: summary, the list, the map, then the subject, the search and the sources
+  const order = ["cr-sec-sum", "cr-sec-comps", "cr-sec-map", "cr-subject", "cr-soil", "cr-cdl", "cr-params", "cr-funnel", "cr-src"].map((id) => h.indexOf('id="' + id + '"'));
+  assert.ok(order.every((x, i) => x > 0 && (i === 0 || x > order[i - 1])), "section order " + order);
+});
+
+test("in Chromium: county files that do not load say so; a county map that does not load says so; nothing is left reading", { skip, timeout: 90000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  async function open(url, block) {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1280, height: 900 } });
+    const pg = await ctx.newPage();
+    const errs = []; pg.on("pageerror", (e) => errs.push(String(e)));
+    await pg.route("**/*", (r) => { const u = r.request().url(); return u.startsWith(`http://127.0.0.1:${port}`) && !block.test(u) ? r.continue() : r.abort(); });
+    await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
+    return { pg, ctx, errs };
+  }
+  try {
+    const a = await open("/comp-report.html?lat=40.12&lon=-88.2", /\/data\/land\/il\/\d{5}\.json/);
+    await a.pg.waitForFunction(() => /county sales files did not load/.test(document.body.textContent), null, { timeout: 30000 });
+    assert.doesNotMatch(await a.pg.textContent("body"), /We do not hold Illinois recorded sales/);
+    assert.equal(await a.pg.isHidden("#cr-csv"), true);
+    assert.deepEqual(a.errs, []);
+    await a.ctx.close();
+    const b = await open("/comp-report.html?lat=40.12&lon=-88.2", /counties\.geo\.json/);
+    await b.pg.waitForFunction(() => /county map did not load/.test(document.body.textContent), null, { timeout: 30000 });
+    assert.equal(await b.pg.$$eval("#cr-body .fs-loading", (x) => x.length), 0, "nothing left reading");
+    await b.ctx.close();
+    // a Field Scout link carries the county: the report runs without the county map
+    const f = "40.11750,-88.20250~40.11750,-88.19750~40.12250,-88.19750~40.12250,-88.20250";
+    const c = await open("/comp-report.html?f=" + encodeURIComponent(f) + "&fips=17019", /counties\.geo\.json/);
+    await c.pg.waitForSelector("tbody.cr-c", { timeout: 30000 });
+    assert.match(await c.pg.textContent("#cr-h"), /Champaign County, Illinois/);
+    assert.match(await c.pg.textContent("#cr-sum"), /Typical price paid near you[\s\S]*sales matched/);
+    await c.pg.waitForFunction(() => !document.querySelector("#cr-sec-comps[aria-busy]"), null, { timeout: 30000 });
+    assert.match(await c.pg.textContent("#cr-status"), /read for all \d+ listed sales/);
+    await c.ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

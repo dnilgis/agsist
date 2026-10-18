@@ -187,7 +187,7 @@
   // Document number in a state's own words.
   FSLand.docLabel = function (st) {
     st = String(st || '').toUpperCase();
-    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : st === 'WI' ? 'transfer return document' : 'doc';
+    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : 'doc';
   };
   FSLand.FARM_CLASSES = ['4', '5', '5M', '6', '7'];
   FSLand.hasBuildings = function (c) { return /(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(c || '')); };

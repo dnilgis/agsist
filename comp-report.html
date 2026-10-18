@@ -9,7 +9,7 @@
   <meta name="author" content="Sigurd Lindquist">
   <meta name="robots" content="noindex, follow">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-17: Google Analytics loads only when the browser sends no Global Privacy Control signal, the off switch on /privacy is not set and the browser is not automated (navigator.webdriver, or a headless, Lighthouse or bot UA string), and only once the page is shown (a page loaded ahead in the background is not a visit). dataLayer and gtag always exist, so page code that calls them never throws. */(function(w,d,n){var off=false,v,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){s=d.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';(d.head||d.documentElement).appendChild(s);};if(d.prerendering){d.addEventListener('prerenderingchange',i,{once:true});}else{i();}})(window,document,navigator);</script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());/* The report link carries a parcel number, a county and a field outline; Analytics gets the bare path only. */gtag('set',{page_location:location.origin+location.pathname});gtag('config','G-6KXCTD5Z9H',{page_location:location.origin+location.pathname,page_referrer:document.referrer?document.referrer.split('?')[0]:''});</script>
   <!-- static-nav:fonts (scripts/inject_static_nav.py) -->
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -54,13 +54,17 @@
     .cr-key{display:block}.cr-k{display:inline-block;width:16px;height:16px;border-radius:50%;border:1.5px solid #1f2a14;font-size:10px;line-height:13px;text-align:center;font-weight:700;vertical-align:-3px;background:#fff;color:#1f2a14}
     .cr-k-p{background:#1f2a14;color:#fff}.cr-k-s{border-radius:2px;transform:rotate(45deg) scale(.8);background:#c0392b;border-color:#c0392b}
     .frp-rot{display:flex;flex-wrap:wrap;gap:.3rem}.frp-rot span{font-size:.82rem;border:1px solid var(--border);border-radius:6px;padding:.15rem .45rem;color:var(--text)}
+    .cr-lead{font-size:1.02rem!important;color:var(--text)!important;margin:.3rem 0}.cr-lead b{font-family:var(--font-mono)}
+    .cr-cnt{margin:.2rem 0 .5rem}.cr-imp{border-left:3px solid var(--border);padding-left:.6rem}
+    .cr-flagl{margin:0 0 .2rem;display:flex;flex-wrap:wrap;gap:.25rem}.cr-flagl .cr-flag{white-space:normal}
     .cr-made{margin-top:2rem;font-size:.85rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:.6rem}
     @media(max-width:600px){
-      .cr-tbl thead{display:none}.cr-tbl,.cr-tbl tbody,.cr-tbl tr{display:block}
+      /* the column heads leave the screen but stay for screen readers; the role attributes keep the table a table */
+      .cr-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}.cr-tbl,.cr-tbl tbody,.cr-tbl tr{display:block}
       .cr-tbl tbody.cr-c{border:1px solid var(--border);border-radius:8px;margin:0 0 .5rem;padding:.35rem .5rem}
       .cr-tbl tbody.cr-c tr:first-child{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.15rem .5rem}
       .cr-tbl td,.cr-tbl td.n{display:block;padding:.05rem 0;text-align:left}
-      .cr-tbl td[data-l]::before{content:attr(data-l);display:block;font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted)}
+      .cr-tbl td[data-l]::before{content:attr(data-l);content:attr(data-l) / "";display:block;font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted)}
       .cr-tbl tr.cr-d td:first-child{display:none}.cr-tbl tr.cr-d td{padding-top:.3rem}
     }
     @page{size:letter;margin:.55in .5in .7in;
@@ -77,6 +81,9 @@
       .cr-tbl{font-size:8.5pt}.cr-tbl tr.cr-d td{font-size:7.5pt}.cr-leg{font-size:7pt}
       .cr-svg{max-height:7.4in;width:auto;max-width:100%;margin:0 auto}
       a{color:#000!important;text-decoration:none}.cr-made{color:#333!important}
+      /* anything still reading when the page is printed says so, instead of a spinner word */
+      .fs-loading,.cr-wait{font-size:0!important}.fs-loading *{display:none!important}
+      .fs-loading::after,.cr-wait::after{content:"not available at time of printing";font-size:8pt;color:#333}
     }
   </style>
 </head>
@@ -110,19 +117,18 @@
       <div id="cr-none" class="cr-held" hidden><b>No subject on this link.</b> <span id="cr-none-why"></span> This report is made from <a href="/field-scout">Field Scout</a>: pick or trace a field there, then tap "Comparable sales report" under Sold land nearby, or tap a sale and use the same button in its panel.</div>
       <div id="cr-body" hidden>
         <p class="cr-stmt"><b>Recorded sales from public records. Not an appraisal; no adjustments made.</b></p>
-        <div id="cr-nodata"></div>
-        <h2>1. Subject</h2>
+        <section id="cr-sec-sum"><h2>1. Summary</h2><div id="cr-sum"><div class="fs-loading">reading recorded sales</div></div></section>
+        <section id="cr-sec-comps" class="cr-pg" aria-live="off"><h2>2. Comparable sales</h2><div id="cr-comps"><div class="fs-loading">reading</div></div></section>
+        <section id="cr-sec-map" class="cr-pg"><h2>3. Map</h2><div id="cr-map" class="cr-mapw"><div class="fs-loading">drawing</div></div></section>
+        <section class="cr-pg"><h2>4. Subject</h2>
         <div id="cr-subject"><div class="fs-loading">reading the parcel map</div></div>
         <h3>Soil productivity</h3><div id="cr-soil"><div class="fs-loading">reading the soil survey</div></div>
         <h3>Crop history</h3><div id="cr-cdl"><div class="fs-loading">reading</div></div>
         <h3>County context</h3><div id="cr-atlas"><div class="fs-loading">reading</div></div>
-        <h3>Recorded transfers of the subject parcel</h3><div id="cr-own"><div class="fs-loading">reading</div></div>
-        <h2>2. Search</h2>
+        <h3>Recorded transfers of the subject parcel</h3><div id="cr-own"><div class="fs-loading">reading</div></div></section>
+        <section><h2>5. Search</h2>
         <div id="cr-params"></div>
-        <div id="cr-funnel"></div>
-        <section id="cr-sec-sum"><h2>3. Summary</h2><div id="cr-sum"><div class="fs-loading">reading recorded sales</div></div></section>
-        <section id="cr-sec-map" class="cr-pg"><h2>4. Map</h2><div id="cr-map" class="cr-mapw"><div class="fs-loading">drawing</div></div></section>
-        <section id="cr-sec-comps" class="cr-pg"><h2>5. Comparable sales</h2><div id="cr-comps"><div class="fs-loading">reading</div></div></section>
+        <h3>From every record to the comps</h3><div id="cr-funnel"><div class="fs-loading">reading</div></div></section>
         <section class="cr-pg"><h2>6. Sources, filters and exclusions</h2><div id="cr-src"><div class="fs-loading">reading</div></div></section>
         <p class="cr-made">Recorded sales from public records. Not an appraisal; no adjustments made. Made with <a href="/field-scout">AGSIST</a> (free) &middot; agsist.com</p>
       </div>
@@ -146,7 +152,7 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/field-scout-land.js?v=6" defer></script>
-  <script src="/components/comp-report.js?v=1" defer></script>
+  <script src="/field-scout-land.js?v=7" defer></script>
+  <script src="/components/comp-report.js?v=2" defer></script>
 </body>
 </html>
