@@ -727,7 +727,6 @@
   function tickCountdown(){if(!nextTarget)return;if(Date.now()>=nextTarget.getTime()){renderCalendar();return;}var c=fmtCountdown(nextTarget);var nn=document.getElementById('next-num'),nu=document.getElementById('next-unit');if(nn)nn.textContent=c.num;if(nu)nu.textContent=c.unit;}
   setInterval(tickCountdown,1000);
   </script>
-  <script src="/components/glossary.js?v=1" defer></script>
-  <script src="/components/next-links.js?v=1" defer></script>
+  <script src="/components/next-links.js?v=2" defer></script>
 </body>
 </html>

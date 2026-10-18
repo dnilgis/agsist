@@ -1543,7 +1543,7 @@ def tail(ftr, calc=False, math=False, hub=False):
     if math:
         s += f'\n<script src="/components/arc-plc-math.js?v={CALC_V}" defer></script>'
     if hub:  # glossary marks and the Next block (data/next-links.json), hub page only
-        s += '\n<script src="/components/glossary.js?v=1" defer></script>\n<script src="/components/next-links.js?v=1" defer></script>'
+        s += '\n<script src="/components/next-links.js?v=2" defer></script>'
     return s + "\n</body>\n</html>\n"
 
 

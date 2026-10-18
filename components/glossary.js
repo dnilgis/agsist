@@ -19,6 +19,9 @@
 (function (root) {
   'use strict';
   var MAX = 14;
+  /* punctuation that must stay on the mark's line */
+  var PUNCT_AFTER = /^[,.;:!?)\]}%\u2019\u201d'"\u2026]+/;
+  var PUNCT_BEFORE = /[(\[{\u2018\u201c'"$]+$/;
   var SKIP = /^(A|BUTTON|H1|H2|H3|H4|H5|H6|SUMMARY|LABEL|NAV|HEADER|FOOTER|SCRIPT|STYLE|NOSCRIPT|TEMPLATE|CODE|PRE|KBD|SAMP|SVG|INPUT|TEXTAREA|SELECT|OPTION|ABBR|DFN|TITLE|TH|CAPTION|LEGEND|TIME|DATA|OUTPUT|METER|PROGRESS|IFRAME|CANVAS|TEXT)$/i;
 
   function compile(terms) {
@@ -77,7 +80,7 @@
     return marks;
   }
 
-  var api = { pickMarks: pickMarks, compile: compile, mostlyNumber: mostlyNumber, MAX: MAX };
+  var api = { pickMarks: pickMarks, compile: compile, mostlyNumber: mostlyNumber, MAX: MAX, PUNCT_AFTER: PUNCT_AFTER, PUNCT_BEFORE: PUNCT_BEFORE };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
 
   /* ---------- browser ---------- */
@@ -96,7 +99,7 @@
       var r = e.getAttribute('role');
       if (r && /^(button|tab|link|heading|status|alert|timer|marquee|menu|menuitem|navigation)$/.test(r)) return true;
       var c = typeof e.className === 'string' ? e.className : '';
-      if (/(^|\s)(gl-term|gl-pop|next-links|breadcrumb|skip|ticker|snav)(\s|$)/.test(c)) return true;
+      if (/(^|\s)(gl-term|gl-w|gl-pop|next-links|breadcrumb|skip|ticker|snav)(\s|$)/.test(c)) return true;
     }
     return false;
   }
@@ -115,7 +118,7 @@
   }
 
   /* !important: page CSS styles bare buttons (borders, min-height, padding); a mark must read as text */
-  var CSS = 'button.gl-term{font:inherit!important;color:inherit!important;background:none!important;border:0!important;border-radius:2px!important;padding:0!important;margin:0!important;min-height:0!important;min-width:0!important;height:auto!important;width:auto!important;box-shadow:none!important;cursor:help;display:inline!important;vertical-align:baseline!important;line-height:inherit!important;letter-spacing:inherit!important;text-transform:inherit!important;text-align:inherit;white-space:inherit;text-decoration:underline dotted!important;text-decoration-thickness:1px!important;text-underline-offset:.2em;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent}' +
+  var CSS = '.gl-w{white-space:nowrap}button.gl-term{font:inherit!important;color:inherit!important;background:none!important;border:0!important;border-radius:2px!important;padding:0!important;margin:0!important;min-height:0!important;min-width:0!important;height:auto!important;width:auto!important;box-shadow:none!important;cursor:help;display:inline!important;vertical-align:baseline!important;line-height:inherit!important;letter-spacing:inherit!important;text-transform:inherit!important;text-align:inherit;white-space:inherit;text-decoration:underline dotted!important;text-decoration-thickness:1px!important;text-underline-offset:.2em;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent}' +
     'button.gl-term:hover,button.gl-term[aria-expanded="true"]{text-decoration-style:solid!important;background:rgba(var(--gold-rgb,212,162,63),.14)!important}' +
     '.gl-term:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:2px}' +
     '.gl-pop{position:absolute;z-index:9000;box-sizing:border-box;width:min(330px,calc(100vw - 32px));background:var(--surface,#101415);color:var(--text,#e8ece9);border:1px solid var(--border-2,rgba(132,160,168,.3));border-radius:8px;padding:.7rem .85rem .6rem;font:400 .875rem/1.45 var(--font-body,system-ui,sans-serif);text-align:left;text-transform:none;letter-spacing:0;box-shadow:0 8px 28px rgba(0,0,0,.35)}' +
@@ -177,6 +180,19 @@
     b.setAttribute('aria-label', mid.nodeValue + ': what this means');
     b.textContent = mid.nodeValue;
     mid.parentNode.replaceChild(b, mid);
+    /* A button is an atomic inline box, so the line may break right after it
+       and push a comma onto its own line (/tariffs at 390, Oct 18). Punctuation
+       touching the mark goes inside one no-wrap span with it. */
+    var after = b.nextSibling, before = b.previousSibling;
+    var tail = after && after.nodeType === 3 ? (after.nodeValue.match(PUNCT_AFTER) || [''])[0] : '';
+    var head = before && before.nodeType === 3 ? (before.nodeValue.match(PUNCT_BEFORE) || [''])[0] : '';
+    if (!tail && !head) return;
+    var w = doc.createElement('span');
+    w.className = 'gl-w';
+    b.parentNode.insertBefore(w, b);
+    if (head) { before.nodeValue = before.nodeValue.slice(0, -head.length); w.appendChild(doc.createTextNode(head)); }
+    w.appendChild(b);
+    if (tail) { after.nodeValue = after.nodeValue.slice(tail.length); w.appendChild(doc.createTextNode(tail)); }
   }
 
   function run(data) {
