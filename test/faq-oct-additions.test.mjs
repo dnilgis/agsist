@@ -1,4 +1,6 @@
-// October 2026 FAQ additions on 21 tool pages. Each answer was checked against
+// October 2026 FAQ additions on 21 tool pages (farm-bill and grain-emc took
+// fewer than were proposed: their byte caps in farm-bill.test.mjs and
+// grain-emc-soybeans.test.mjs leave room for one each). Each answer was checked against
 // its source on the references branch before it went on. This holds the count
 // per page, the FAQPage JSON-LD equal to the visible questions, the new
 // questions present in both, and no em dashes in what was added.
@@ -34,7 +36,7 @@ function faqPage(src) {
 
 // page -> [expected FAQ count, the questions added in October 2026]
 const PAGES = {
-  "farm-bill": [11, ["Does the Senate farm bill change the late planting penalty on crop insurance?", "Is there grant money for small farms in the Senate farm bill?"]],
+  "farm-bill": [10, ["Does the Senate bill change late planting rules?"]],
   "grain-bin-calculator": [8, ["How does USDA measure the grain in my bin, and how close is it?", "How much does a cubic foot of corn weigh in a bin?"]],
   "arc-plc": [14, ["If I pick ARC-CO, do I have to turn in my yields to FSA?", "Do I have to carry crop insurance to get ARC or PLC?", "Is there a deadline for the payment eligibility paperwork after I sign up?"]],
   "cash-lease": [8, ["Can I mail the notice to end an Iowa farm lease, and when does it have to go out?", "In Kansas, what happens to the wheat if I give notice after my tenant already planted it?", "How much notice does Wisconsin want to end a year-to-year farm lease?"]],
@@ -42,7 +44,7 @@ const PAGES = {
   "combine-loss": [9, ["Can I just go by the loss monitor in the cab?", "How do I cut shatter loss in soybeans?", "What gap should I run on the deck plates of the corn head?"]],
   "drought-monitor": [9, ["How many weeks does my county have to be in D2 before LFP kicks in?", "What's the most LFP will pay me in a year?", "Does grazing corn stalks count for LFP if we're in drought?"]],
   "fast-facts": [6, ["When is it worth spraying Japanese beetles on corn silks?", "When do I start and stop scouting beans for aphids?"]],
-  "grain-emc": [13, ["How long will 15% corn keep in the bin?", "Should I keep running the drying fan on corn all winter?", "Will running fans below freezing freeze my corn?"]],
+  "grain-emc": [11, ["How long will 15% corn keep in the bin?"]],
   "harvest-or-wait": [9, ["Can I just leave my corn standing over winter?", "My corn froze before it was mature. Does it still dry down like the table says?", "How far can I trust my moisture tester on wet corn this time of year?"]],
   "lrp": [12, ["Can I buy LRP on calves that are not born yet?", "Does LRP cover dairy cull cows?", "Can I use LRP if I am selling on a forward contract?"]],
   "planting-date": [8, ["Does planting corn too early mess up my crop insurance?", "Should I switch to an earlier corn hybrid if I'm planting late?", "If my soybeans go in mid-May, do I change maturity group or seeding rate?"]],
