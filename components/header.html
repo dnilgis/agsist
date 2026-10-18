@@ -92,7 +92,7 @@
 .zip-row{display:flex;gap:.4rem}
 .zip-row input{flex:1;min-width:0;min-height:44px;padding:0 .6rem;font:inherit;font-size:16px;color:var(--text);background:var(--bg,transparent);border:1px solid var(--border);border-radius:var(--r-sm)}
 .zip-row input:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
-.zip-save{min-height:44px;padding:0 .9rem;font:inherit;font-size:.85rem;font-weight:700;color:var(--on-brand,#111);background:var(--brand);border:0;border-radius:var(--r-sm);cursor:pointer}
+.zip-save{min-height:44px;padding:0 .9rem;font:inherit;font-size:.85rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:var(--r-sm);cursor:pointer}
 .zip-m{min-height:1em;margin:.4rem 0 0;font-size:.78rem;color:var(--text-dim)}
 .zip-m:empty{display:none}
 .zip-links{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin:.45rem 0 0;font-size:.82rem}
@@ -100,8 +100,9 @@
 .zip-links a{color:var(--brand);font-weight:700;text-decoration:none}
 .zip-clear{min-height:36px;background:none;border:0;color:var(--text-muted);font:inherit;font-size:.78rem;text-decoration:underline;cursor:pointer}
 .zip-note{margin:.45rem 0 0;font-size:.72rem;color:var(--text-muted)}
-/* Free daily email: opens the Daily panel at its signup box. Hidden for subscribers. */
-.nav-email{min-height:44px;padding:0 .9rem;font:inherit;font-size:.82rem;font-weight:700;color:var(--on-brand,#111);background:var(--brand);border:0;border-radius:var(--r-sm);white-space:nowrap;cursor:pointer}
+/* Free daily email: opens the Daily panel at its signup box. Hidden for subscribers.
+   Same gold and dark text as the signup button (signup-ask.js .sa-b), in both themes. */
+.nav-email{min-height:44px;padding:0 .9rem;font:inherit;font-size:.82rem;font-weight:700;color:#0a0c0d;background:#d4a23f;border:0;border-radius:var(--r-sm);white-space:nowrap;cursor:pointer}
 .nav-email:hover,.nav-email:focus-visible{filter:brightness(1.08)}
 .nav-email[hidden]{display:none}
 @media (max-width:1360px){.nav-btn .nav-ic{display:none}.nav-btn{padding:.45rem .6rem}}
