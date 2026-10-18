@@ -12,6 +12,8 @@ Disallow: /dev/
 # Property transfer files (buyer and seller names from state records) are read
 # by the field scout land card for one picked parcel; not for search indexes.
 Disallow: /data/land/
+# The Atlas county sales summary holds no names and the indexed county pages draw from it
+Allow: /data/land/*/summary.json
 
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml
