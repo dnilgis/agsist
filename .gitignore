@@ -27,6 +27,8 @@ build/shots/
 # Kept on main on purpose: data/atlas/raw/drought.json (a test reads it) and
 # each probe's listing.json (the normal run reads it).
 /data/atlas/raw/*
+# daily.yml saves each run's fact check to raw (daily-fact-check/), never main
+/daily-fact-check/
 !/data/atlas/raw/drought.json
 /data/cattle-auction-raw/*
 !/data/cattle-auction-raw/listing.json
