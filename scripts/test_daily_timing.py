@@ -168,5 +168,83 @@ print("\nCalendar")
 chk("CME livestock: 1:05 PM CT" in g.CALENDAR_FACTS_2026 and "livestock: 1:00 PM" not in g.CALENDAR_FACTS_2026,
     "CME livestock closes 1:05 PM CT")
 
+print("\nExport Sales in a Monday-to-Wednesday federal holiday week")
+from datetime import date, datetime as _real_dt  # noqa: E402
+
+
+class _Clock:
+    """Set generate_daily's clock (it reads datetime.now()) for a block."""
+    def __init__(self, y, m, d, hh=5, mm=46):
+        fixed = _real_dt(y, m, d, hh, mm)
+
+        class FakeDT(_real_dt):
+            @classmethod
+            def now(cls, tz=None):
+                return fixed if tz is None else fixed.replace(tzinfo=tz)
+        self.fake = FakeDT
+
+    def __enter__(self):
+        self.saved = g.datetime
+        g.datetime = self.fake
+
+    def __exit__(self, *a):
+        g.datetime = self.saved
+
+
+def es_line(day, report_date):
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "export-sales.json"
+        p.write_text(json.dumps({"report_date": report_date}))
+        old = g.EXPORT_SALES_PATH
+        g.EXPORT_SALES_PATH = p
+        try:
+            line = g.weekly_release_line(day)
+            with _Clock(day.year, day.month, day.day):
+                today = g.get_usda_release_today()
+        finally:
+            g.EXPORT_SALES_PATH = old
+    es = [x.strip() for x in line.splitlines() if "Export Sales" in x]
+    return (es[0] if es else ""), today
+
+
+# Columbus Day, Mon Oct 12 2026. Before the release the file holds the week
+# ending Oct 1; the Oct 15/16 release is the week ending Oct 8.
+for d in (13, 14, 15):
+    ln, _ = es_line(date(2026, 10, d), "2026-10-01")
+    chk(ln.startswith("- Weekly Export Sales: Thursday, Oct 15 or Friday, Oct 16, 7:30 AM CT (federal holiday Mon Oct 12, Columbus Day")
+        and "write 'Thursday or Friday'" in ln, "Oct %d: the line says Thursday or Friday" % d, ln)
+ln, today = es_line(date(2026, 10, 15), "2026-10-01")
+chk("USDA Weekly Export Sales, 7:30 AM CT (or Friday: FAS often releases a day late" in today and "say Thursday or Friday" in today,
+    "Thu Oct 15: the release-day block hedges Friday too", today)
+ln, today = es_line(date(2026, 10, 16), "2026-10-01")
+chk(ln.startswith("- Weekly Export Sales: Friday, Oct 16, 7:30 AM CT (a day late after the federal holiday Mon Oct 12"),
+    "Fri Oct 16 before it lands: today, not next week", ln)
+chk("Oct 22" not in ln, "and no jump to Oct 22 before this week's report is on file", ln)
+chk("USDA Weekly Export Sales, 7:30 AM CT (a day late" in today, "Fri Oct 16: the release-day block names it", today)
+ln, today = es_line(date(2026, 10, 16), "2026-10-08")
+chk(ln == "- Weekly Export Sales: Thursday, Oct 22, 7:30 AM CT", "Fri Oct 16 once the Oct 8 week is on file: next week's", ln)
+chk("Export Sales" not in today, "and no release-day line", today)
+ln, _ = es_line(date(2026, 10, 15), "2026-10-08")
+chk("Oct 22" in ln, "a release already on file Thursday moves the line to next week", ln)
+ln, _ = es_line(date(2026, 10, 12), "")
+chk("Thursday, Oct 15 or Friday, Oct 16" in ln, "a missing report_date hedges")
+ln, _ = es_line(date(2026, 10, 11), "2026-10-01")
+chk("Thursday, Oct 15 or Friday, Oct 16" in ln, "Sunday Oct 11 looks ahead to the holiday week and hedges", ln)
+# Veterans Day, Wed Nov 11 2026.
+ln, _ = es_line(date(2026, 11, 9), "2026-10-29")
+chk("Thursday, Nov 12 or Friday, Nov 13, 7:30 AM CT (federal holiday Wed Nov 11, Veterans Day" in ln,
+    "Veterans Day week hedges the same way", ln)
+ln, _ = es_line(date(2026, 11, 13), "2026-11-05")
+chk("Thursday, Nov 19" in ln, "Fri Nov 13 with the Nov 5 week on file: next week's", ln)
+# Thanksgiving, Thu Nov 26: the holiday is the release day itself, and
+# usda_dates already moves it to Friday.
+ln, _ = es_line(date(2026, 11, 23), "2026-11-12")
+chk(ln == "- Weekly Export Sales: Friday, Nov 27 (moved from Thursday, Nov 26, Thanksgiving), 7:30 AM CT",
+    "Thanksgiving week keeps usda_dates' Friday", ln)
+# An ordinary week is untouched.
+ln, _ = es_line(date(2026, 10, 20), "2026-10-08")
+chk(ln == "- Weekly Export Sales: Thursday, Oct 22, 7:30 AM CT", "an ordinary week says Thursday", ln)
+chk("FAS often releases it Friday" in g.CALENDAR_FACTS_2026, "the calendar block no longer says every Thursday without exception")
+
 print("PASS" if ok else "FAIL")
 sys.exit(0 if ok else 1)

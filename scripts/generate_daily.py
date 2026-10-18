@@ -172,6 +172,7 @@ except ImportError:
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PRICES_PATH = REPO_ROOT / "data" / "prices.json"
+EXPORT_SALES_PATH = REPO_ROOT / "data" / "export-sales.json"
 OUTPUT_PATH = REPO_ROOT / "data" / "daily.json"
 QUOTE_POOL_PATH = REPO_ROOT / "data" / "quote-pool.json"
 DAILY_QUOTE_ENABLED = False   # 2026-10-09: off; the pool's attributions are unsourced (see main)
@@ -418,7 +419,10 @@ USDA recurring report release times (use these exact day/time pairings):
                           though markets trade), releases Tuesday 3:00 PM CT.
                           The NEXT WEEKLY RELEASES line below gives the exact day.
   - WASDE:                Monthly, around the 9th-12th, 11:00 AM CT.
-  - Weekly Export Sales:  Every Thursday, 7:30 AM CT.
+  - Weekly Export Sales:  Thursday, 7:30 AM CT. In a week with a federal
+                          holiday Monday to Wednesday (Columbus Day, Veterans
+                          Day) FAS often releases it Friday instead.
+                          The NEXT WEEKLY RELEASES line below gives the day.
   - Cattle on Feed:       Monthly, third or fourth Friday, 2:00 PM CT.
   - Quarterly Stocks:     Jan/Mar/Jun/Sep, 11:00 AM CT.
   - Prospective Plantings: Late March (around Mar 31), 11:00 AM CT.
@@ -433,6 +437,41 @@ CME settlement times (relevant for "Friday's close" framing):
 If a watch_list item references one of these releases, the day-of-week and
 time MUST match this table. Never invent alternate release times.
 """
+
+
+def export_sales_holiday_week(day):
+    """(thursday, holiday) when a federal holiday falls Monday to Wednesday of
+    the week containing `day` and Thursday itself is not one, else None.
+    2026-10-12 was Columbus Day; that week's Export Sales came Friday Oct 16.
+    usda_dates.export_sales_date() still names Thursday (its selftest pins it;
+    changing the rule is Sig's call), so the prompt hedges instead."""
+    import usda_dates
+    mon = day - timedelta(days=day.weekday())
+    thu = mon + timedelta(days=3)
+    if usda_dates.federal_holiday_name(thu) or usda_dates.federal_holiday_name(thu + timedelta(days=1)):
+        return None
+    for i in range(3):
+        d = mon + timedelta(days=i)
+        if usda_dates.federal_holiday_name(d):
+            return thu, d
+    return None
+
+
+def export_sales_landed(thursday, path=None):
+    """Has the release due the week of `thursday` landed in data/export-sales.json?
+    That release covers the week ending the Thursday before, which is what the
+    file's report_date holds. False when the file or the date is missing: the
+    hedged line is the safe one."""
+    try:
+        with open(path or EXPORT_SALES_PATH) as f:
+            rd = str(json.load(f).get("report_date") or "")[:10]
+    except Exception:
+        return False
+    return bool(rd) and rd >= (thursday - timedelta(days=7)).isoformat()
+
+
+def _md_words(d):
+    return "%s, %s %d" % (d.strftime("%A"), d.strftime("%b"), d.day)
 
 
 def weekly_release_line(today=None):
@@ -453,11 +492,34 @@ def weekly_release_line(today=None):
         parts.append("Crop Progress: %s, %s" % (usda_dates.describe_release(cp, normal),
                                                 usda_dates.CROP_PROGRESS_TIME_CT))
     es = usda_dates.export_sales_date(ref)
-    if es < today:
+    hw = export_sales_holiday_week(ref)
+    if hw:
+        # 2026-10-18: Columbus Day week's report came Friday Oct 16, and the
+        # prompt had said Thursday. Hedge until the file shows it landed; do not
+        # move on to next week before then.
+        thu, hol = hw
+        fri = thu + timedelta(days=1)
+        why = "federal holiday %s %s %d, %s" % (hol.strftime("%a"), hol.strftime("%b"), hol.day,
+                                                usda_dates.federal_holiday_name(hol))
+        if export_sales_landed(thu):
+            if today >= thu:
+                es = usda_dates.export_sales_date(ref + timedelta(days=7))
+        elif today <= thu:
+            parts.append("Weekly Export Sales: %s or %s, %s (%s; FAS often releases a day late in a "
+                         "holiday week); write 'Thursday or Friday' with both dates, never Thursday alone"
+                         % (_md_words(thu), _md_words(fri), usda_dates.EXPORT_SALES_TIME_CT, why))
+            es = None
+        elif today == fri:
+            parts.append("Weekly Export Sales: %s, %s (a day late after the %s; this week's report was "
+                         "not on file as of this run)" % (_md_words(fri), usda_dates.EXPORT_SALES_TIME_CT, why))
+            es = None
+    if es is None:
+        pass
+    elif es < today:
         # 2026-10-17: a Friday issue got no line, and its watch list said "Thursday"
         # for a release six days out. Name next week's, with its date.
         es = usda_dates.export_sales_date(ref + timedelta(days=7))
-    if es >= today:
+    if es is not None and es >= today:
         normal = es - timedelta(days=es.weekday()) + timedelta(days=3)
         parts.append("Weekly Export Sales: %s, %s" % (usda_dates.describe_release(es, normal),
                                                       usda_dates.EXPORT_SALES_TIME_CT))
@@ -1817,9 +1879,21 @@ def get_usda_release_today():
         # including Columbus Day, when CME trades and the market-status check
         # above says "open" (2026-10-11: this used to announce Crop Progress
         # on Monday Oct 12 and nothing on Tuesday Oct 13).
+        _hw = export_sales_holiday_week(today.date())
+        _late = _hw and not export_sales_landed(_hw[0])
         for name, at, moved in usda_dates.weekly_releases(today.date()):
-            releases.append("%s, %s%s" % (name, at, " (moved from %s, %s)" % (
-                moved.strftime("%A"), usda_dates.federal_holiday_name(moved)) if moved else ""))
+            note = (" (moved from %s, %s)" % (moved.strftime("%A"), usda_dates.federal_holiday_name(moved))
+                    if moved else "")
+            if _late and "Export Sales" in name:
+                # a Monday-to-Wednesday federal holiday: FAS often releases Friday
+                note += (" (or Friday: FAS often releases a day late after the %s %s federal holiday; "
+                         "say Thursday or Friday)"
+                         % (_hw[1].strftime("%A"), usda_dates.federal_holiday_name(_hw[1])))
+            releases.append("%s, %s%s" % (name, at, note))
+        if _late and today.date() == _hw[0] + timedelta(days=1):
+            releases.append("USDA Weekly Export Sales, %s (a day late after the %s %s federal holiday; "
+                            "not on file as of this run)" % (usda_dates.EXPORT_SALES_TIME_CT,
+                            _hw[1].strftime("%A"), usda_dates.federal_holiday_name(_hw[1])))
 
     # Monthly: Cattle on Feed (3rd or 4th Friday). Hardcoded 2026 dates:
     cof_2026 = {"01-23", "02-20", "03-20", "04-24", "05-22",
