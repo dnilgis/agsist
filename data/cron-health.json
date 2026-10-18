@@ -1,15 +1,12 @@
 {
- "generated_at": "2026-10-18T12:38:51Z",
+ "generated_at": "2026-10-18T15:38:45Z",
  "note": "Written by scripts/cron_health.py. A workflow is late when the latest tick of its clock was not served by a successful run within max_delay_minutes. Committed when a status changes or every 6 hours, so last_success can trail the live run list.",
  "late": [
   "prf.yml",
   "prf-outlook.yml",
-  "county-rain.yml",
-  "daily.yml"
+  "county-rain.yml"
  ],
- "late_critical": [
-  "daily.yml"
- ],
+ "late_critical": [],
  "workflows": [
   {
    "workflow": "fetch_bids.yml",
@@ -20,14 +17,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-18T12:37:01Z",
+   "last_success": "2026-10-18T15:37:01Z",
    "status": "ok",
-   "last_tick": "2026-10-18T11:52Z",
+   "last_tick": "2026-10-18T14:52Z",
    "why": "served",
    "served_by": {
-    "id": 39124958691,
+    "id": 39137909115,
     "event": "workflow_dispatch",
-    "created_at": "2026-10-18T11:52:02Z",
+    "created_at": "2026-10-18T14:52:01Z",
     "conclusion": "success"
    }
   },
@@ -40,14 +37,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-18T12:30:08Z",
+   "last_success": "2026-10-18T15:30:08Z",
    "status": "ok",
-   "last_tick": "2026-10-18T11:45Z",
+   "last_tick": "2026-10-18T14:45Z",
    "why": "served",
    "served_by": {
-    "id": 39124493686,
+    "id": 39137391457,
     "event": "workflow_dispatch",
-    "created_at": "2026-10-18T11:45:05Z",
+    "created_at": "2026-10-18T14:45:05Z",
     "conclusion": "success"
    }
   },
@@ -60,14 +57,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-18T12:30:17Z",
+   "last_success": "2026-10-18T15:30:17Z",
    "status": "ok",
-   "last_tick": "2026-10-18T11:45Z",
+   "last_tick": "2026-10-18T14:45Z",
    "why": "served",
    "served_by": {
-    "id": 39124506142,
+    "id": 39137405023,
     "event": "workflow_run",
-    "created_at": "2026-10-18T11:45:15Z",
+    "created_at": "2026-10-18T14:45:14Z",
     "conclusion": "success"
    }
   },
@@ -80,14 +77,14 @@
    ],
    "max_delay_minutes": 45,
    "expected_max_gap_minutes": 60,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
-   "last_tick": "2026-10-18T11:52Z",
+   "last_tick": "2026-10-18T14:52Z",
    "why": "served",
    "served_by": {
-    "id": 39125026524,
+    "id": 39137983924,
     "event": "workflow_run",
-    "created_at": "2026-10-18T11:53:05Z",
+    "created_at": "2026-10-18T14:53:02Z",
     "conclusion": "success"
    }
   },
@@ -100,7 +97,7 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 4065,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-16T23:52Z",
    "why": "served",
@@ -120,7 +117,7 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 1365,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-12T17:52Z",
    "why": "served",
@@ -141,7 +138,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4294,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:06Z",
    "status": "ok",
    "last_tick": "2026-10-16T18:13Z",
    "why": "served",
@@ -177,7 +174,7 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 690,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-18T11:12Z",
    "why": "served",
@@ -200,7 +197,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 7724,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-14T12:33Z",
    "why": "served",
@@ -223,7 +220,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 8667,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-16T13:20Z",
    "why": "served",
@@ -243,7 +240,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 4380,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-16T21:40Z",
    "why": "served",
@@ -263,7 +260,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 2940,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-17T21:47Z",
    "why": "served",
@@ -285,7 +282,7 @@
    ],
    "max_delay_minutes": 60,
    "expected_max_gap_minutes": 3780,
-   "last_success": "2026-10-18T12:38:09Z",
+   "last_success": "2026-10-18T15:38:05Z",
    "status": "ok",
    "last_tick": "2026-10-16T23:35Z",
    "why": "served",
@@ -305,7 +302,7 @@
    ],
    "max_delay_minutes": 30,
    "expected_max_gap_minutes": 4065,
-   "last_success": "2026-10-17T23:53:50Z",
+   "last_success": "2026-10-18T15:07:59Z",
    "status": "ok",
    "last_tick": "2026-10-16T23:52Z",
    "why": "served",
@@ -382,8 +379,8 @@
    "critical": true,
    "clock": "published by 07:30 Central",
    "check": "data/daily-archive/2026-10-18.json",
-   "status": "late",
-   "why": "today's briefing is not published and it is past 07:30 Central"
+   "status": "ok",
+   "why": "published"
   },
   {
    "workflow": "cot.html",
@@ -397,19 +394,19 @@
    "critical": true,
    "clock": "GitHub Pages stops deploying over 1024 MB",
    "status": "ok",
-   "why": "774.0 MB published (warn at 850, red at 900, Pages limit 1024); biggest: data 264.3 MB, farmland-atlas 156.8 MB, arc-plc 125.0 MB, prf 71.5 MB",
-   "total_mb": 774.0,
+   "why": "774.2 MB published (warn at 850, red at 900, Pages limit 1024); biggest: data 264.4 MB, farmland-atlas 156.8 MB, arc-plc 125.0 MB, prf 71.5 MB",
+   "total_mb": 774.2,
    "warn_mb": 850,
    "fail_mb": 900,
    "folders": {
-    "data": 264.3,
+    "data": 264.4,
     "farmland-atlas": 156.8,
     "arc-plc": 125.0,
     "prf": 71.5,
     "rain": 52.5,
     "cash-bids": 46.8,
     "img": 14.7,
-    "daily": 8.6
+    "daily": 8.7
    }
   }
  ]
