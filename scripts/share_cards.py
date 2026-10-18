@@ -548,10 +548,12 @@ def _paste_shadowed(c, im, x, y, blur=14, dy=10, alpha=95):
     c.im.paste(im, (px, py))
 
 
-def card_print(art_path, head, sub, note, path, layout="side"):
+def card_print(art_path, head, sub, note, path, layout="side", photo=False):
     """A framed product picture on a warm wall, with a short selling band.
 
-    art_path  the flat print (scripts/cardart/*.jpg), drawn by the product's own engine
+    art_path  the flat print (scripts/cardart/*.jpg), drawn by the product's own engine,
+              or with photo=True a photo of a real framed print (img/photos/*.jpg),
+              placed as it is with no frame drawn around it ('side' layout only)
     head      the selling line; sub, the price line; note, the small example label.
     layout    'side' (print left, words right), 'band' (print above a green
               band) or 'big' (print as large as it goes, words in a strip).
@@ -560,7 +562,11 @@ def card_print(art_path, head, sub, note, path, layout="side"):
     c = Canvas(PAPER)
     if layout == "side":
         _wall(c)
-        fr = _framed(art, 728, frame=14, mat=0)
+        if photo:
+            fw = 728 * S
+            fr = art.resize((fw, round(fw * art.height / art.width)), Image.LANCZOS)
+        else:
+            fr = _framed(art, 728, frame=14, mat=0)
         y = (H - 40 - fr.height / S) / 2
         _paste_shadowed(c, fr, 36, y)
         c.text(40, y + fr.height / S + 34, note, font("inter", 22, 500), MUTED)

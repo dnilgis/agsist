@@ -615,20 +615,20 @@ def state_names():
 
 # ------------------------------------------------------------------ product cards
 
-RP_ART = "scripts/cardart/rain-print-2012-ames-ia.jpg"   # scripts/render_rain_print_card_art.mjs
+RP_PHOTO = "img/photos/rain-print-photo-chetek-2025-1600.jpg"   # Sig's photo of a framed test print (scripts/process_photo.py)
 
 
 def card_rain_print():
-    """A real Rain Print, drawn by components/rain-print-art.js from the saved
-    NOAA answers for Ames, Iowa, 2012 (data/rain-print-examples), framed on a
-    wall. The price is the unframed print's, from data/rain-print.json."""
+    """Sig's photo of a real framed test print, Chetek, Wisconsin, 2025 (the
+    close-up /rain-print leads with). The price is the unframed print's, from
+    data/rain-print.json. The engine-drawn Ames card art stays in scripts/cardart."""
     price = js("data/rain-print.json")["print12x18"]
     sub = "Prints from $" + f"{float(price):,.2f}".replace(".00", "")
     return {"kind": "PRINT", "args": dict(
-        art_path=os.path.join(ROOT, RP_ART), head="A year of rain on your farm, framed.", sub=sub,
-        note="Example: Ames, Iowa, 2012", path="/rain-print", layout="side"),
-        "alt": f"An example Rain Print in a black frame: every rain and snow of 2012 at Ames, Iowa, from NOAA "
-               f"records, stepping up across the months below a usual year. A year of rain on your farm, framed. {sub}."}
+        art_path=os.path.join(ROOT, RP_PHOTO), photo=True, head="A year of rain on your farm, framed.", sub=sub,
+        note="A real test print: Chetek, Wisconsin, 2025", path="/rain-print", layout="side"),
+        "alt": f"A framed test Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: each day's rain hangs below "
+               f"the line, snow above, from NOAA records. A year of rain on your farm, framed. {sub}."}
 
 
 def card_rain_gauge():
