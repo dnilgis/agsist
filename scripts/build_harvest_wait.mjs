@@ -42,7 +42,13 @@ export const FAQ = [
   ["Does the weather forecast change the estimate?",
    "Not yet. The page shows the forecast heat for each of the next 14 days, but the moisture estimate uses the published monthly rates or your own rate. Some guides predict drydown from growing degree days; the page will use that once we have read the rule in the original publication."],
   ["Where does the bid come from?",
-   "Type your own, or enter your ZIP and the page uses the nearest elevator's posted corn bid from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest corn futures settle less that state's median basis, labeled as such."]
+   "Type your own, or enter your ZIP and the page uses the nearest elevator's posted corn bid from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest corn futures settle less that state's median basis, labeled as such."],
+  ["Can I just leave my corn standing over winter?",
+   "Some do. NDSU found losses over winter were generally small where the stalks were still strong in November. Push on the stalks before you decide, because weak stalks are the ones that go down. Field drying is extremely slow in winter, and NDSU puts the floor at about 20% moisture."],
+  ["My corn froze before it was mature. Does it still dry down like the table says?",
+   "Probably slower. NDSU says immature corn dries more slowly in the field than mature corn, and frosted high moisture corn can mold on the stalk. If yours froze before black layer, expect it to dry slower than the table and put in a slower rate of your own."],
+  ["How far can I trust my moisture tester on wet corn this time of year?",
+   "Not far on wet or cold corn. NDSU says readings above 25% should only be taken as estimates, and meters normally are not accurate on grain below about 40 F. Put the sample in a sealed bag, let it warm to room temperature, then test it."]
 ];
 
 function cal() {

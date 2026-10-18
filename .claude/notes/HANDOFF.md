@@ -130,3 +130,22 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
   gift name+note), sig@farmers1st.com vs an agsist address, business sample, digital $25 / add-on / family set, footer Sponsor link on RP.
 - Menu redesign: 3 nav panels done (old scratchpad nav-panel/); recommended outline given to Sig. Waiting on: go for search ZIP fix +
   phone-menu accessibility + footer-only tools; Livestock group; phone bottom bar trial; footer state links (+21 MB); Rain Print placement.
+
+## State on Oct 18 (night, cache v173)
+- Live: the NEW MENU (Prices | Livestock | Field | Money & Land | Daily, ZIP chip, signup footer, /cash-bids/states; generators in
+  scripts/dev/nav/: gen_nav.py builds the 4 header/footer files, refresh_baked.py re-stamps generated pages); real Rain Print photos
+  (scripts/process_photo.py PHOTO NAME [--rectify]) on Rain Print, business and gift guide pages + real-photo share image; Rain Print
+  Oct 18 decisions; menu round 1 (ZIP search, a11y); search gap fixes; land sources for 11 states (land-data.yml probe works;
+  raw push was never blocked); speed fixes (cash-bids no-jump, homepage hero prices).
+- Stories live (dated "As of"/"Through", own facts re-validated at build, 35-day life): county rain 2,632, PRF counties 2,876
+  (data/prf-stories), Atlas counties 2,902 (data/atlas-stories); co-op 112 (data/cash-bids-stories/companies, next cash-bid-pages run).
+  Town stories batch queued. Each batch's first validator over-rejected; fix the validator (never loosen a real check), re-validate
+  existing results free. Monthly refresh: api-jobs.yml estimate+submit per set (run=<set>-YYYY-MM, build=<set>-stories).
+- API spend Oct 17-18 about $85 so far (credits: $99 expiring Oct 28, $172 Nov 19). Running/queued: town stories, accuracy sets
+  (fx/accsets, accuracy-pass.yml build=sets), fresh read (fx/freshread, bundle on raw apijobs/fresh-2026-10), elevator sites
+  (bids capture.yml list=probe-lists/elevsites.txt save=elevsites, then agsist api-jobs build=elevsites).
+- Helpers out: fx/accfix3 (verifying 107 accuracy leads from raw accuracy-pass/run4-pass3), fx/faqapply (25 tool FAQ proposals).
+- Strategy reports (old scratchpad strategy/landscape.md, correlations.md): top ideas = net elevator price after shrink/drying/freight;
+  basis history B2B (check DTN/Barchart redistribution terms first); county risk sheet (drought ~doubles crop insurance loss ratio,
+  60,859 county-years). Elevators need FIPS + permanent IDs for data joins. Sig asked to start: awaiting his go.
+- Bids repo: coverage1 (+26 boards, 16 WI) and elevsites merged; capture/dtn-probe/discover dispatched Oct 18.
