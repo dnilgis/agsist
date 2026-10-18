@@ -196,3 +196,9 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
   - Rain Print: matted test prints Monday Oct 19; Stripe promotion code for the letter line; gauge "hose clamps vs clips" wording.
   - Westfield / ZIP 44410 check Mon Oct 19. Barchart device token (~120 elevators). MN eCRV email. Nebraska fee file. California rent.
   - Gift guide press packet (offered). Comp report pitch email + contact list (offered).
+- Atlas land sales live (fx/atlassales2): IL and WI county pages and the printed county sheet show counts, median (5+ sales of 20+ acres),
+  middle half, largest and unusual sales, deeds left out, source and through date. No names, parcel ids or document numbers
+  (test/atlas-sales-names.test.mjs). Indiana gets no Atlas summary until its deed types and acres are checked against the market-sale rule.
+- Branches deliberately NOT on main: fx/models-samples, fx/rpv2, fx/wiretr-explore (scratch); fx/freshread and fx/faqgaps (one-time
+  API jobs, both ran Oct 18, outputs on raw; their api_jobs.py changes clash with the newer job kinds on main, so merge by hand only if
+  a rerun is wanted). Accuracy pass tools (fx/accpass, accpass3, accsets) are merged.
