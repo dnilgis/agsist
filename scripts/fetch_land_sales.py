@@ -156,10 +156,60 @@ STATES.update({
         "links": [],
         "terms": "county public pages; terms not read yet",
     },
+    # Phase 1 of nationwide coverage (Oct 18): statewide free files named by state agencies, saved by
+    # the probe so each layout and its terms are read before a parser exists. Farm acres order.
+    "FL": {
+        "name": "Florida", "fips": "12",
+        "probe_only": "Florida DOR's Sale Data File (SDF) and NAL roll, one file per county; saved to read the layout (land use codes 50 to 69 are agricultural) first",
+        "source": "Florida Department of Revenue, Property Tax Oversight, Sale Data File", "short": "Florida sale data file",
+        "pages": ["https://floridarevenue.com/property/Pages/DataPortal_RequestAssessmentRollGISData.aspx"],
+        "links": [], "terms": "public data portal; confidential owners removed by the state; terms not read yet",
+    },
+    "NY": {
+        "name": "New York", "fips": "36",
+        "probe_only": "ORPTS SalesWeb (RP-5217 transfer reports, outside New York City), ten years, downloadable per search; saved to read whether a bulk file exists and its terms",
+        "source": "New York State Office of Real Property Tax Services, SalesWeb (Form RP-5217)", "short": "New York RP-5217 sale",
+        "pages": ["https://www.tax.ny.gov/research/property/assess/sales/salesweb.htm"],
+        "links": [], "terms": "state public search; bulk download not confirmed; terms not read yet",
+    },
+    "MD": {
+        "name": "Maryland", "fips": "24",
+        "probe_only": "SDAT sales as published by the Maryland Department of Planning (parcel data and sales, GIS format); saved to read the layout first",
+        "source": "Maryland Department of Planning, parcel and sales data from SDAT", "short": "Maryland SDAT sale",
+        "pages": ["https://planning.maryland.gov/MSDC/Pages/91_property_mapping/parcel-data.aspx"],
+        "links": [], "terms": "state public data; terms not read yet",
+    },
+    "VT": {
+        "name": "Vermont", "fips": "50",
+        "probe_only": "Vermont Department of Taxes weekly property transfer tax return data (last five years, new layout since 2020); saved to read the layout first",
+        "source": "Vermont Department of Taxes, property transfer tax returns", "short": "Vermont transfer tax return",
+        "pages": ["https://tax.vermont.gov/data-and-statistics/ptt"],
+        "links": [], "terms": "state public data; the weekly file is linked from the state's page; terms not read yet",
+    },
+    "NJ": {
+        "name": "New Jersey", "fips": "34",
+        "probe_only": "Division of Taxation SR-1A sales file (fixed width, layout published); saved to find the file and read the layout first",
+        "source": "New Jersey Division of Taxation, SR-1A sales data", "short": "New Jersey SR-1A sale",
+        "pages": [],
+        "links": [], "terms": "layout public; where the data file is posted not confirmed; terms not read yet",
+    },
+    "CT": {
+        "name": "Connecticut", "fips": "09",
+        "probe_only": "OPM Real Estate Sales listing on data.ct.gov (sales of $2,000 or more since 2001, by grand list year); no farm class or acres, so likely vacant land only; saved to read the columns first",
+        "source": "Connecticut Office of Policy and Management, Real Estate Sales", "short": "Connecticut real estate sale",
+        "pages": [], "links": [], "terms": "state open data portal; license not given on the catalog listing",
+    },
 })
 PROBE_ONLY_DOCS = {
     "IN": ["https://www.in.gov/dlgf/assessments/sales-disclosure-form-information/"],
     "NE": ["https://revenue.nebraska.gov/sites/default/files/doc/legal/regs/pad/Chapter12_Sales_File.pdf"],
+    "IN": ["https://www.stats.indiana.edu/about/sdf.asp"],
+    "FL": ["https://floridarevenue.com/property/dataportal/Documents/PTO%20Data%20Portal/User%20Guides/2026%20Users%20guide%20and%20quick%20reference/2026_NAL_SDF_NAP_Users_Guide.pdf"],
+    "NY": ["https://www.tax.ny.gov/pdf/ORPTS/SalesDataFlowchartHandout.pdf",
+           "https://data.ny.gov/api/catalog/v1?q=real%20property%20sales&limit=20"],
+    "MD": ["https://opendata.maryland.gov/api/catalog/v1?q=sales&limit=20"],
+    "NJ": ["https://nj.gov/treasury/taxation/pdf/lpt/SR1Afilelayout.pdf"],
+    "CT": ["https://data.ct.gov/api/catalog/v1?q=real%20estate%20sales&limit=20"],
 }
 
 # Column names seen on state transfer files, compared with letters and digits only. The first
@@ -684,7 +734,7 @@ def probe(states):
                     J = json.loads(blob)
                     for r in (J.get("results") or [])[:40] if isinstance(J, dict) else []:
                         R = r.get("resource") or {}
-                        if re.search(r"PTAX|MyDec|Transfer Declaration", R.get("name") or "", re.I):
+                        if re.search(r"PTAX|MyDec|Transfer Declaration|Real Estate Sales|Property Sales|Sales|Transfer", R.get("name") or "", re.I):
                             log.append("  dataset %s %r updated %s; %d columns" % (R.get("id"), R.get("name"), R.get("data_updated_at"), len(R.get("columns_field_name") or [])))
                     if isinstance(J, dict) and J.get("columns"):            # a Socrata view: every column
                         log.append("  columns: " + " ".join("%s(%s)" % (c.get("fieldName"), c.get("dataTypeName")) for c in J["columns"]))
@@ -1519,6 +1569,8 @@ def selftest():
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     ck("probe-only states (IA, SD, OH) are never built before their parser exists",
        all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
+    ck("phase 1 statewide sources (FL, NY, MD, VT, NJ, CT) are saved by the probe and never built",
+       all(STATES[x].get("probe_only") and (STATES[x]["pages"] or PROBE_ONLY_DOCS.get(x)) for x in ("FL", "NY", "MD", "VT", "NJ", "CT")))
     # Indiana sales disclosure forms: a synthetic file in the real SDF_<year>.zip shape
     # (test/fixtures/land-sales/make_in_sdf_sample.py writes it with the real column titles)
     sys.path.insert(0, os.path.join(ROOT, "test", "fixtures", "land-sales"))
