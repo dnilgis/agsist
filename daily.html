@@ -498,7 +498,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
   </div>
 
   <div class="dv3-today" id="dv3-today">
-<noscript><div style="padding:2rem"><p style="font-size:.9rem">This page loads the briefing with JavaScript, which is off in this browser. The <a href="/archive.html" style="color:var(--gold)">briefing archive</a> works without it. The newest issue is at the top.</p></div></noscript>
+<noscript><div style="padding:2rem"><p style="font-size:.9rem">This page loads the briefing with JavaScript, which is off in this browser. The <a href="/archive" style="color:var(--gold)">briefing archive</a> works without it. The newest issue is at the top.</p></div></noscript>
     <div class="dv3-sk" aria-busy="true"><span class="sr-only">Loading today&rsquo;s briefing</span><span class="st-sk st-line st-w30" aria-hidden="true"></span><span class="st-sk st-line st-w50" aria-hidden="true"></span><span class="st-sk dv3-sk-hl" aria-hidden="true"></span><span class="st-sk dv3-sk-hl st-w75" aria-hidden="true"></span><span class="st-sk st-line" aria-hidden="true"></span><span class="st-sk st-line st-w90" aria-hidden="true"></span><span class="st-sk st-line st-w75" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span><span class="st-sk dv3-sk-box" aria-hidden="true"></span><p class="dv3-sk-slow">Still loading. On a slow signal the briefing can take a while; <a href="/archive">past briefings</a> are in the archive.</p></div>
   </div>
   <aside class="ya" data-your-area="daily" data-after="#dv3-today .dv3-quote-asof" hidden></aside><script src="/components/your-area.js?v=2" defer></script>
@@ -648,14 +648,14 @@ function renderToday(data,why){
     if(why==='error'){
       var kit=function(){
         AgStates.error(el,{msg:'Today\u2019s briefing didn\u2019t load. The connection failed.',retry:loadToday});
-        el.querySelector('.st-msg').insertAdjacentHTML('beforeend','<a href="/archive.html" style="color:var(--gold)">Briefing archive \u2192</a>');
+        el.querySelector('.st-msg').insertAdjacentHTML('beforeend','<a href="/archive" style="color:var(--gold)">Briefing archive \u2192</a>');
       };
       if(window.AgStates){kit();return;}
       /* failed before the states kit loaded: plain text now, the kit's box when it lands */
       (window.AgStatesQ=window.AgStatesQ||[]).push(function(){if(document.getElementById('dv3-retry'))kit();});
       el.innerHTML='<div class="dv3-loading" style="padding:2rem"><p style="color:var(--text-dim);font-size:.88rem">The briefing could not be loaded: the connection failed. '+
         '<button id="dv3-retry" style="color:var(--gold);background:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .8rem;cursor:pointer;font:inherit">Try again</button>'+
-        '<br><br><a href="/archive.html" style="color:var(--gold)">Briefing archive \u2192</a></p></div>';
+        '<br><br><a href="/archive" style="color:var(--gold)">Briefing archive \u2192</a></p></div>';
       var rb=document.getElementById('dv3-retry');
       if(rb)rb.addEventListener('click',function(){rb.disabled=true;rb.textContent='Trying\u2026';loadToday();});
       return;

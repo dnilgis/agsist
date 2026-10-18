@@ -52,7 +52,7 @@ print(json.dumps({k: (lambda s: {'p': s['primary'], 'cv': s['coverage'], 'm': s[
     if (s.p === "irr" && s.cv.nonirr >= 3) assert.ok(s.cv.irr > s.cv.nonirr, st);
     if (s.p === "nonirr") assert.ok(s.cv.nonirr >= s.cv.irr, st);
     // description: the lead figure with its label, first
-    assert.ok(d.startsWith(`${names[st]} farmland cash rent ${s.yr}: median ${money(s.m)}/acre (${label[s.p]}) across ${s.n} counties`)
+    assert.ok(d.startsWith(`${names[st]} cash rent by county ${s.yr}: median ${money(s.m)}/acre (${label[s.p]}) across ${s.n} counties`)
       || d.startsWith(`${names[st]} cash rent ${s.yr}: ${label[s.p]} ${money(s.m)}/acre`), `${st}: ${d}`);
     assert.ok(d.length <= 160, `${st} description ${d.length} chars`);
     // both cropland rents in the description whenever NASS has both
@@ -73,11 +73,11 @@ print(json.dumps({k: (lambda s: {'p': s['primary'], 'cv': s['coverage'], 'm': s[
 
 test("the western states named in the GSC report: CA and OR lead with irrigated; WA stays dryland", () => {
   const ca = unq(meta(read("rent/california.html")));
-  assert.equal(ca, "California farmland cash rent 2026: median $437/acre (irrigated cropland) across 41 counties; non-irrigated $34.75, pasture $17.50. Every county's USDA rate.");
+  assert.equal(ca, "California cash rent by county 2026: median $437/acre (irrigated cropland) across 41 counties; non-irrigated $34.75, pasture $17.50. Every county's USDA rate.");
   const or = unq(meta(read("rent/oregon.html")));
-  assert.match(or, /^Oregon farmland cash rent 2026: median \$210\/acre \(irrigated cropland\) across 23 counties; non-irrigated \$99\.50/);
+  assert.match(or, /^Oregon cash rent by county 2026: median \$210\/acre \(irrigated cropland\) across 23 counties; non-irrigated \$99\.50/);
   // Washington: dryland published for 25 counties against 14 irrigated, so dryland leads
-  assert.match(unq(meta(read("rent/washington.html"))), /^Washington farmland cash rent 2026: median \$70\.50\/acre \(non-irrigated cropland\)/);
+  assert.match(unq(meta(read("rent/washington.html"))), /^Washington cash rent by county 2026: median \$70\.50\/acre \(non-irrigated cropland\)/);
   assert.match(read("rent/california.html"), /state stats above use irrigated cropland, published for more California counties \(41\) than non-irrigated \(20\)\./);
 });
 
