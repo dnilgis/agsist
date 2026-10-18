@@ -1507,7 +1507,7 @@ def wi_dedupe(recs):
 
 def refiled_dedupe(recs):
     """One sale filed twice under two documents (same county, sale date, price and parcel number,
-    a different document number): keep the newest document only, by filed date and then document
+    a different document number, same seller and buyer): keep the newest document only, by filed date and then document
     number, so the sale is one row. Rows with no parcel number are never merged. Returns (rows, how many dropped)."""
     def newest(r):
         doc = str(r.get("doc") or "")
@@ -1518,7 +1518,9 @@ def refiled_dedupe(recs):
         if not pk:
             keep.append(r)
             continue
-        k = (key(r.get("county")), r.get("date"), r.get("price"), pk)
+        # the parties too (land audit Oct 18): two heirs each selling a share for the same price on
+        # the same day are two deeds of one sale, not one deed filed twice
+        k = (key(r.get("county")), r.get("date"), r.get("price"), pk, key(r.get("grantor")), key(r.get("grantee")))
         if k not in best or newest(r) >= newest(best[k]):
             best[k] = r
     out = keep + list(best.values())
@@ -1779,6 +1781,8 @@ def selftest():
     base = {"county": "Barron", "date": "2024-03-01", "price": 300000, "pid": "022-1", "rec": "2024-03-05", "doc": "900100"}
     rd, nd = refiled_dedupe([dict(base), dict(base, doc="900101"), dict(base, price=300001, doc="900102"), dict(base, pid="", doc="900103"),
                              dict(base, pid="", doc="900104")])
+    rs, ns = refiled_dedupe([dict(base, grantor="HEIR A"), dict(base, grantor="HEIR B", doc="900201")])
+    ck("refiled: another seller at the same price and day is a second deed, never merged", ns == 0 and len(rs) == 2)
     ck("refiled: same filed date keeps the higher document; another price or no parcel number is never merged",
        nd == 1 and sorted(r["doc"] for r in rd) == ["900101", "900102", "900103", "900104"])
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
