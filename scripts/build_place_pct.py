@@ -300,7 +300,7 @@ def build(root=REPO):
         """(value, year, reason): the value only when it can be ranked in its state."""
         v, y, why_ = pick[f][i]
         if v is None:
-            return None, None, why_
+            return None, None, why_ or "no figure in the source for this county"
         m = modal.get((i, recs[f]["state"]))
         if y is not None and m is not None and y != m:
             return None, y, "%s figure; most %s counties have %s, so it is not ranked" % (y, STATE_NAMES[recs[f]["state"]], m)
