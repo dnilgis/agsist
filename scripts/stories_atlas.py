@@ -257,7 +257,7 @@ def spec(f):
         years |= {md["from"], md["to"]}
     if f.get("rented_share_2022"):
         claims.append(K.claim("pct", f["rented_share_2022"], kw=r"rented|rent", opt=Y(2022)))
-    return {"lead": f["as_of"], "masks": masks, "claims": claims, "years": years, "dates": {f["as_of"]}, "names": names,
+    return {"lead": f["as_of"], "literal": [f["county"], f["state"]], "masks": masks, "claims": claims, "years": years, "dates": {f["as_of"]}, "names": names,
             "classes": {"year": YEAR_RX}, "banned": BANNED, "unban": ["average"], "supers": [], "dirs": dirs, "chars": (120, 650)}
 
 

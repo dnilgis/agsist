@@ -249,6 +249,8 @@ def check(story, spec, extra=None, facts=None):
     m_ = s
     # the lead names the day; any other date must be in the facts
     m_ = re.sub(r"^As of " + re.escape(lead) + ",", "LEADDAY,", m_)
+    for rx, tok in spec.get("premasks", []):
+        m_ = re.sub(rx, tok, m_)
     for m in DATE_RE.finditer(m_):
         mo, d = (m.group(1), m.group(2)) if m.group(1) else (m.group(3), m.group(4))
         k = f"{mo[:3]} {int(d)}"
@@ -273,15 +275,19 @@ def check(story, spec, extra=None, facts=None):
     names = set(spec.get("names", set())) | COMMON_CAPS | {"LEADDAY", "ALLOWED", "LITERALNAME"}
     for st, se in sentences(w_):
         for i, m in enumerate(re.finditer(r"\b[A-Z][A-Za-z'’]*\b", se)):
-            word = m.group(0)
+            word = re.sub(r"['\u2019]s$", "", m.group(0))
             if word in names or re.fullmatch(r"[A-Z]{2,}\d*|DATE[A-Z][a-z]{2}\d+", word) or word.isupper():
                 continue
             if i == 0 and re.match(r"\s*" + re.escape(word), se):
                 continue   # a sentence may start with any word
             bad.append(f"name {word!r} is not in the facts")
     for rx, need in spec.get("supers", []):
+        prev_se = ""
         for st, se in sentences(m_):
-            if re.search(rx, se, re.I) and not any(all(re.search(r, se) for r in alt) for alt in need):
+            # "It is also the driest pair": the pair named in the sentence before
+            ctx = se + (" " + prev_se if re.search(r"\b(?:It|it|That pair|that pair|the same pair|That same pair)\b", se) else "")
+            prev_se = se
+            if re.search(rx, se, re.I) and not any(all(re.search(r, ctx) for r in alt) for alt in need):
                 bad.append(f"{re.search(rx, se, re.I).group(0)!r} without the fact it belongs to")
     sup = r"\b(highest|lowest|biggest|largest|smallest|cheapest|priciest|costliest|wettest|driest|strongest|weakest|least|fewest)\b"
     known = [rx for rx, _ in spec.get("supers", [])]
@@ -304,7 +310,8 @@ def check(story, spec, extra=None, facts=None):
                 if int(v) not in years:
                     bad.append(f"year {v} is not in the facts")
                 continue
-            cands = [c for c in claims_ if c["kind"] == kind and v in c["forms"]]
+            cands = [c for c in claims_ if (c["kind"] == kind or (kind == "int" and "." in v and c["kind"] in ("inch", "bu")))
+                     and v in c["forms"]]
             label = {"money": "$" + v, "pct": v + "%", "inch": v + " inches", "bu": v + " bu"}.get(kind, v)
             if not cands:
                 bad.append(f"{label} is not in the facts")
@@ -317,7 +324,7 @@ def check(story, spec, extra=None, facts=None):
                     if k in c["opt"] and not re.search(classes[k], se):
                         continue    # an optional tie is checked only when its sentence names one
                     got = bound(classes[k], cl, se, a, prev if k not in c["opt"] else "", b)
-                    if got != want:
+                    if got != want and not (isinstance(want, (list, tuple, set)) and got in want):
                         fine = False
                         break
                 if fine and c.get("kw") and not (re.search(c["kw"], se, re.I) or re.search(c["kw"], prev, re.I)):

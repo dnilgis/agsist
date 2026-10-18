@@ -123,6 +123,16 @@ def county_facts(meta, cf, st, sd, code, c, fx, name):
             f["open_year"] = {"year": x["year"], "published_so_far": cells}
         elif x["year"] == y1:
             f["last_full_year"] = {"year": x["year"], "pct_of_normal": cells}
+    # "every grid had its driest year in 1954": the grid table states it when every row the page prints
+    # carries that year and the table lists every grid (build_prf_counties MAX_GRID_ROWS = 30)
+    dys = {g["dry_year"] for g in fx["grid_rows"]}
+    f["driest_year_every_grid"] = next(iter(dys)) if (len(dys) == 1 and None not in dys and 0 < ng <= 30
+                                                      and len(fx["grid_rows"]) == ng) else None
+    f["every_grid_driest_pct"] = None
+    if f["driest_year_every_grid"] and all(g["dry_pct"] is not None for g in fx["grid_rows"]):
+        ps = [g["dry_pct"] for g in fx["grid_rows"]]
+        lows = [g["g"] for g in fx["grid_rows"] if g["dry_pct"] == min(ps)]
+        f["every_grid_driest_pct"] = {"low": min(ps), "high": max(ps), "low_grid": lows[0] if len(lows) == 1 else None}
     for g in fx["grid_rows"][:8]:
         f["grid_rows"].append({"grid": g["g"], "normal_in_year": ("%.1f" % g["normal_in"]) if g["normal_in"] is not None else None,
                                "driest_year": g["dry_year"], "driest_year_pct": g["dry_pct"],
@@ -181,15 +191,26 @@ YEAR_RX = r"\b(?:19|20)\d\d\b"
 
 
 def spec(f):
-    masks, claims = [], []
+    masks, claims, premasks = [], [], []
     for i in range(11):
         tok = f"PAIR{i:02d}"
         mo = LONG_IV[i].split(" to ")
-        masks += [(r"\b" + re.escape(LONG_IV[i]) + r"\b", tok),
+        premasks += [(r"\b" + re.escape(LONG_IV[i]) + r"\b", tok),
                   (r"\b" + mo[0][:3] + r"(?:" + mo[0][3:] + r")?\s*(?:-|to|and)\s*" + mo[1][:3] + r"(?:" + mo[1][3:] + r")?\b", tok)]
     grids = [g["grid"] for g in f["grid_rows"]] + f["grid_numbers"] + ([f["preliminary"]["grid"]] if f.get("preliminary") else [])
+    eg = f.get("every_grid_driest_pct")
+    if eg and eg.get("low_grid"):
+        grids.append(eg["low_grid"])
     for g in sorted(set(grids)):
         masks.append((r"\b" + str(g) + r"\b", f"GRIDg{g}"))
+    # "more than any other pair", "the most of any pair", "tied with May to June for the most": checked in extra()
+    # against every pair's count; "fell to 39%", "bottomed out at 45%": checked against the number after them
+    premasks += [(r"\b(?:more|higher) than any other pair\b|\b(?:the )?most of any pair\b|\bthe most\b(?= in the county| on the record| among)",
+                  "PAIRMAX"),
+                 (r"\b(?:fewer|lower|less) than any other pair\b|\b(?:the )?(?:fewest|least) of any pair\b", "PAIRMIN"),
+                 (r"\btied with (PAIR\d\d) for (?:the )?most\b", r"TIEMAX\1"), (r"\btied with (PAIR\d\d) for (?:the )?fewest\b", r"TIEMIN\1"),
+                 (r"\b(?:fell|dropped|slipped|sank|down|bottomed out|fell off)\s+(?:to|at)\b", "LOWTO"),
+                 (r"\b(?:rose|climbed|jumped|went up|up|shot up)\s+(?:to|at)\b", "HIGHTO")]
     masks += [(r"\bper \$100\b", "PER100"), (r"\b(?:under|below) 90%(?: of normal)?", "UNDER90"), (r"\b90%(?= coverage| policy| level)", "COV90"),
               (r"\bat 90%", "at COV90")]
     P = lambda i: f"PAIR{i:02d}"  # noqa: E731
@@ -199,7 +220,7 @@ def spec(f):
     claims.append(K.claim("money", f["hay_value_per_acre"], kw=r"\bhay\b"))
     claims.append(K.claim("money", f["irrigated_hay_value_per_acre"], kw=r"irrigated"))
     for i, p in enumerate(f["pairs"]):
-        claims.append(K.claim("inch", p["normal_in"], near={"pair": P(i)}, kw=r"normal|rain|precipitation|wet|dry"))
+        claims.append(K.claim("inch", p["normal_in"], near={"pair": P(i)}, kw=r"normal|rain|precipitation|wet|dry|driest|wettest"))
         claims.append(K.claim("money", p["premium_per_100_at_90"], near={"pair": P(i)}, kw=r"premium|per \$100|cost|rate"))
         if p["years_under_90_pct_of_normal"] is not None:
             claims.append(K.claim("int", p["years_under_90_pct_of_normal"], near={"pair": P(i)}, kw=r"UNDER90|\bpaid\b|\bpays?\b"))
@@ -218,6 +239,12 @@ def spec(f):
             claims.append(K.claim("pct", g["last_year_pct"], near={"grid": gt, "year": str(f["record"]["to"])}))
         if g["years_under_90"] is not None:
             claims.append(K.claim("int", g["years_under_90"], near={"grid": gt}, kw=r"\byears\b"))
+    if eg:
+        Y = str(f["driest_year_every_grid"])
+        for v in {eg["low"], eg["high"]}:
+            claims.append(K.claim("pct", v, opt={"year": Y}, kw=r"driest|lowest|bottom"))
+        if eg.get("low_grid"):
+            claims.append(K.claim("pct", eg["low"], near={"grid": f"GRIDg{eg['low_grid']}"}, kw=r"driest|lowest|bottom"))
     pre = f.get("preliminary")
     if pre:
         for p in pre["pairs"]:
@@ -241,11 +268,16 @@ def spec(f):
                        [[str(y), r"GRIDg"] for y in years]))
     else:
         supers.append((r"\bdriest\b", [[f"GRIDg{g['grid']}", str(g["driest_year"])] for g in f["grid_rows"] if g["driest_year"]]))
+    if eg and eg.get("low_grid"):
+        supers.append((r"\blowest\b", [[f"GRIDg{eg['low_grid']}", r"(?i)\b(?:every|all|each)\b"]]))
+    if f.get("driest_year_every_grid"):
+        supers = [(rx, alts + [[r"(?i)\b(?:every|all|each)\b", str(f["driest_year_every_grid"])]]) if rx == r"\bdriest\b" else (rx, alts)
+                  for rx, alts in supers]
     if f["costs_least"]:
         supers.append((r"\bleast\b", [[P(LONG_IV.index(f["costs_least"])), r"\bcosts?\b"]]))
         supers.append((r"\bmost\b", [[P(LONG_IV.index(f["costs_most"])), r"\bcosts?\b"]]))
     dates = {f["as_of"]} | ({pre["noaa_through"]} if pre else set())
-    return {"lead": f["as_of"], "masks": masks, "claims": claims, "years": years, "dates": dates, "names": names,
+    return {"lead": f["as_of"], "literal": [f["county"], f["state"]], "premasks": premasks, "masks": masks, "claims": claims, "years": years, "dates": dates, "names": names,
             "classes": {"pair": r"PAIR\d\d", "year": YEAR_RX, "grid": r"GRIDg\d+"},
             "banned": BANNED, "unban": ["most", "least", "record"], "supers": supers, "dirs": [], "chars": (120, 650)}
 
@@ -267,9 +299,14 @@ def extra(s, m, f):
         for cs, cl in K.clauses(se):
             pcts = [(a, float(v)) for a, b, k, v in K.tokens(cl) if k == "pct"]
             for mm in re.finditer(r"UNDER90|\b(above|over|below|under) normal\b", cl, re.I):
-                if mm.group(0) == "UNDER90" and re.search(r"\byears?\b|\bpaid\b|\bpays?\b|\bwhen\b", se):
+                if mm.group(0) == "UNDER90" and re.search(r"\byears?\b|\btimes\b|\bpaid\b|\bpays?\b|\bwhen\b", se):
                     if not pcts:
                         continue
+                if mm.group(0) == "UNDER90" and not pcts and re.search(r"(?i)\b(?:every|all|each)\b", se) and re.search(r"(?i)published|so far", se):
+                    oy = (f.get("open_year") or {}).get("published_so_far") or {}
+                    if not (oy and all(v < 90 for v in oy.values())):
+                        bad.append("says every published pair came in under 90% when one did not")
+                    continue
                 if not pcts:
                     bad.append(f"'{mm.group(0)}' with no index beside it")
                     continue
@@ -277,6 +314,51 @@ def extra(s, m, f):
                 w = mm.group(0).lower()
                 if (w == "under90" and v >= 90) or (w.startswith(("below", "under")) and v >= 100) or (w.startswith(("above", "over")) and v <= 100):
                     bad.append(f"'{mm.group(0)}' the wrong way for {v:g}%")
+    # the most or fewest of any pair: the pair it is said of has that count, and no other pair has it (or the tie is named)
+    cnt = {f"PAIR{i:02d}": p["years_under_90_pct_of_normal"] for i, p in enumerate(f["pairs"]) if p["years_under_90_pct_of_normal"] is not None}
+    hi, lo = (max(cnt.values()), min(cnt.values())) if cnt else (None, None)
+    for st, se in K.sentences(m):
+        for mm in re.finditer(r"PAIRMAX|PAIRMIN|TIEMAX(PAIR\d\d)|TIEMIN(PAIR\d\d)", se):
+            w = mm.group(0)
+            want = hi if "MAX" in w else lo
+            pairs_ = re.findall(r"PAIR\d\d", se[:mm.start()])
+            if not pairs_:
+                pairs_ = re.findall(r"PAIR\d\d", se)
+            subj = [p_ for p_ in re.findall(r"PAIR\d\d", se[:mm.start()]) if p_ in cnt]
+            if not subj or want is None:
+                bad.append(f"'{w}' with no pair of months")
+                continue
+            two = re.search(r"(PAIR\d\d)\s+and\s+(PAIR\d\d)\b", se[:mm.start()])
+            if not w.startswith("TIE") and two:
+                if not (cnt.get(two.group(1)) == want == cnt.get(two.group(2)) and sum(1 for v in cnt.values() if v == want) == 2):
+                    bad.append("a shared most or fewest that the counts do not show")
+                continue
+            if w.startswith("TIE"):
+                other = mm.group(1) or mm.group(2)
+                if not (cnt.get(subj[-1]) == want == cnt.get(other)):
+                    bad.append("a tie for the most or fewest that the counts do not show")
+            elif cnt[subj[-1]] != want or sum(1 for v in cnt.values() if v == want) > 1:
+                bad.append(f"the {'most' if 'MAX' in w else 'fewest'} of any pair is not {subj[-1]} alone")
+        for mm in re.finditer(r"LOWTO|HIGHTO", se):
+            nxt = [t for t in K.tokens(se[mm.end():]) if t[2] == "pct"]
+            prv = [t for t in K.tokens(se[:mm.start()]) if t[2] == "pct"]
+            if not nxt:
+                bad.append(f"'{mm.group(0)}' with no index after it")
+                continue
+            v = float(nxt[0][3])
+            ref = float(prv[-1][3]) if prv else 100.0
+            if (mm.group(0) == "LOWTO" and not v < ref) or (mm.group(0) == "HIGHTO" and not v > ref):
+                bad.append(f"'{mm.group(0)}' the wrong way for {v:g}%")
+    # a word for how a year went needs every percent in its sentence to agree ('ran dry ... at 37% and 52%'),
+    # and 'middle grid' reads as one grid when it is the middle value of several
+    for st, se in K.sentences(m):
+        ps = [float(t[3]) for t in K.tokens(se) if t[2] == "pct"]
+        for mm in re.finditer(r"\b(short|low|dry|wet|rough|tough|poor|strong)\b", se, re.I):
+            w = mm.group(1).lower()
+            if not ps or (w == "wet" and not all(v > 100 for v in ps)) or (w != "wet" and not all(v < 100 for v in ps)) or w in ("rough", "tough", "poor", "strong"):
+                bad.append(f"'{w}' is not borne out by every figure in its sentence")
+        if re.search(r"\bmiddle grid\b", se, re.I) and f["grids"] > 1:
+            bad.append("'middle grid': the figures are the middle value of the county's grids, not one grid")
     pre = f.get("preliminary")
     for st, se in K.sentences(m):
         if pre and any(re.search(r"\b" + re.escape(p["index_estimate"]) + r"\b", se) for p in pre["pairs"]):
@@ -460,6 +542,80 @@ def selftest():
          "In 2025, Jun-Jul came in under 90% at 104% of normal."),
     ]
     K.run_pairs(S, f, pairs, ok)
+    # false positives from the first PRF batch (Oct 2026, 1,185 of 3,070 rejected): each true story
+    # must pass next to the wrong version the rule still catches. A fixed copy of the facts:
+    g = json.loads(json.dumps(f))
+    counts = [27, 29, 26, 28, 32, 33, 33, 36, 39, 30, 32]
+    for i, n in enumerate(counts):
+        g["pairs"][i]["years_under_90_pct_of_normal"] = n
+    gr = [r["grid"] for r in g["grid_rows"]]
+    for k, r in enumerate(g["grid_rows"]):
+        r["driest_year"], r["driest_year_pct"] = 1965, 54 + k
+    g["driest_year_every_grid"] = 1965
+    g["every_grid_driest_pct"] = {"low": 54, "high": 61, "low_grid": gr[0]}
+    g["county"] = "St. Clair County"
+    g["wettest_pair"] = {"months": "July to August", "normal_in": "8.59"}
+    g["driest_pair"] = {"months": "January to February", "normal_in": "5.97"}
+    g["open_year"] = {"year": 2026, "published_so_far": {"January to February": 60, "February to March": 49, "March to April": 52}}
+    fp = [
+        ("As of Oct 12, a preliminary estimate puts August to September 2026 at 83.4 on grid 23318, and RMA's final index can differ. "
+         "In 2025 Apr-May was at 73% of normal on the middle of the 8 grids.",
+         "As of Oct 12, a preliminary estimate puts August to September 2026 at 83.4 on grid 23318, and Smith's final index can differ. "
+         "In 2025 Apr-May was at 73% of normal on the middle of the 8 grids."),
+        ("As of Oct 12, on the middle of the 8 grids, September to October came in under 90% of normal in 39 of 75 years, more than any other pair. "
+         "In 2025 Apr-May was at 73% of normal.",
+         "As of Oct 12, on the middle of the 8 grids, August to September came in under 90% of normal in 36 of 75 years, more than any other pair. "
+         "In 2025 Apr-May was at 73% of normal."),
+        ("As of Oct 12, the middle of the 8 grids came in under 90% of normal in September to October 39 times in 75 years, the most of any pair. "
+         "In 2025 Apr-May was at 73% of normal.",
+         "As of Oct 12, the middle of the 8 grids came in under 90% of normal in September to October 38 times in 75 years, the most of any pair. "
+         "In 2025 Apr-May was at 73% of normal."),
+        ("As of Oct 12, June to July and July to August each came in under 90% of normal in 33 of 75 years on the middle of the 8 grids. "
+         "Every grid had its driest year in 1965, with grid " + str(gr[0]) + " at 54%.",
+         "As of Oct 12, June to July and July to August each came in under 90% of normal in 33 of 75 years on the middle of the 8 grids. "
+         "Every grid had its driest year in 1966, with grid " + str(gr[0]) + " at 54%."),
+        ("As of Oct 12, St. Clair County's record on the middle of the 8 grids runs 75 years. "
+         "All 8 grids had their driest year in 1965, at 54% to 61% of normal.",
+         "As of Oct 12, St. Clair County's record on the middle of the 8 grids runs 75 years. "
+         "All 8 grids had their driest year in 1965, at 54% to 62% of normal."),
+        ("As of Oct 12, on the middle of the 8 grids, January to February came in under 90% of normal in 27 of 75 years. "
+         "It is also the driest pair, at 5.97 inches.",
+         "As of Oct 12, on the middle of the 8 grids, February to March came in under 90% of normal in 29 of 75 years. "
+         "It is also the driest pair, at 5.97 inches."),
+        ("As of Oct 12, on the middle of the 8 grids, January to February came in under 90% in 27 of 75 years, the driest pair at 5.97 inches. "
+         "July to August is the wettest at 8.59.",
+         "As of Oct 12, on the middle of the 8 grids, January to February came in under 90% in 27 of 75 years, the driest pair at 5.97 inches. "
+         "July to August is the wettest at 8.95."),
+        ("As of Oct 12, every grid had its driest year in 1965, and grid " + str(gr[0]) + " fell to 54% that year. "
+         "On the middle of the 8 grids, Apr-May came in at 73% of normal in 2025.",
+         "As of Oct 12, every grid had its driest year in 1965, and grid " + str(gr[0]) + " rose to 54% that year. "
+         "On the middle of the 8 grids, Apr-May came in at 73% of normal in 2025."),
+        ("As of Oct 12, every grid had its driest year in 1965, with grid " + str(gr[0]) + " lowest at 54%. "
+         "On the middle of the 8 grids, Apr-May came in at 73% of normal in 2025.",
+         "As of Oct 12, every grid had its driest year in 1965, with grid " + str(gr[1]) + " lowest at 55%. "
+         "On the middle of the 8 grids, Apr-May came in at 73% of normal in 2025."),
+        ("As of Oct 12, every pair published so far for 2026 came in under 90% of normal on the middle of the 8 grids, with Feb-Mar 2026 at 49%. "
+         "In 2025 Apr-May was at 73% of normal.",
+         "As of Oct 12, every pair published so far for 2026 came in under 90% of normal on the middle of the 8 grids, with Feb-Mar 2026 at 94%. "
+         "In 2025 Apr-May was at 73% of normal."),
+        ("As of Oct 12, on the middle of the 8 grids, Oct-Nov came in under 90% in 30 of 75 years. In 2025 that same middle went to 104% "
+         "in June to July and fell to 62% in October to November.",
+         "As of Oct 12, on the middle of the 8 grids, Oct-Nov came in under 90% in 30 of 75 years. In 2025 that same middle went to 62% "
+         "in October to November and fell to 104% in June to July."),
+    ]
+    fp.append(("As of Oct 12, the 2026 pairs published so far ran low on the middle of the 8 grids, with Jan-Feb 2026 at 60% and Feb-Mar 2026 at 49%. "
+               "In 2025 Apr-May was at 73% of normal.",
+               "As of Oct 12, the 2026 pairs published so far ran low on the middle of the 8 grids, with Jan-Feb 2026 at 60% and Feb-Mar 2026 at 104%. "
+               "In 2025 Apr-May was at 73% of normal.".replace("104%", "104%").replace("Feb-Mar 2026 at 104%", "Mar-Apr 2026 at 52%, and Jun-Jul 2025 at 104%")))
+    K.run_pairs(S, g, fp, ok)
+    ok(K.validate(S, "As of Oct 12, in 2025 that middle grid ran 73% of normal in April to May. That is on the 8 grids in the county.", g) != [],
+       "'middle grid' on a county with several grids is caught")
+    g2 = json.loads(json.dumps(g))
+    g2["pairs"][9]["years_under_90_pct_of_normal"] = 39
+    ok(K.validate(S, "As of Oct 12, September to October and October to November came in under 90% of normal in 39 of 75 years, more than any other pair. "
+                     "That is on the middle of the 8 grids.", g2) == [], "a two-pair tie for the most passes")
+    ok(K.validate(S, "As of Oct 12, September to October came in under 90% of normal in 39 of 75 years, the most of any pair. "
+                     "That is on the middle of the 8 grids.", g2) != [], "the most of any pair when another pair ties is caught")
     # the page: a story prints only on a facts match, and drops off when a figure moves
     with tempfile.TemporaryDirectory() as t:
         bd = {"story": [{"set": NAME, "id": "DE:10001", "hash": K.facts_hash(f), "facts": f}]}
