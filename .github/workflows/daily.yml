@@ -463,12 +463,16 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
+          # The selftest checks the defaults, so it runs with both overrides cleared (a set model broke it on Oct 18).
           # Pinned to report (Sig, Oct 17: log only for a calibration week, review Oct 24). A repo variable
           # can no longer switch it to block by accident; change this line when Sig says block.
           FACT_CHECK_MODE: report
         run: |
           echo "fact check: model=$FACT_CHECK_MODEL mode=$FACT_CHECK_MODE"
-          FACT_CHECK_MODE= python scripts/test_fact_check.py
+          if ! FACT_CHECK_MODE= FACT_CHECK_MODEL= python scripts/test_fact_check.py > /tmp/fc-selftest.txt 2>&1; then
+            grep -v '^::' /tmp/fc-selftest.txt | tail -25 | while IFS= read -r l; do echo "::error title=fact check selftest::$l"; done
+            exit 1
+          fi
           python scripts/fact_check_briefing.py
 
       # v4.2 (Phase 2 C7): post-critic ops alert. Reads daily.json's
