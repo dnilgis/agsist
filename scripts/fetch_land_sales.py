@@ -1505,6 +1505,26 @@ def wi_dedupe(recs):
     return list(best.values())
 
 
+def refiled_dedupe(recs):
+    """One sale filed twice under two documents (same county, sale date, price and parcel number,
+    a different document number): keep the newest document only, by filed date and then document
+    number, so the sale is one row. Rows with no parcel number are never merged. Returns (rows, how many dropped)."""
+    def newest(r):
+        doc = str(r.get("doc") or "")
+        return (r.get("rec") or "", [int(x) for x in re.findall(r"\d+", doc)], doc)
+    best, keep = {}, []
+    for r in recs:
+        pk = key(r.get("pid"))
+        if not pk:
+            keep.append(r)
+            continue
+        k = (key(r.get("county")), r.get("date"), r.get("price"), pk)
+        if k not in best or newest(r) >= newest(best[k]):
+            best[k] = r
+    out = keep + list(best.values())
+    return out, len(recs) - len(out)
+
+
 def trim(recs, done):
     """The next cut when a state's files are over the cap: first farm sales of 10 acres or more
     (any parcel's acres; a return with no acres at all is dropped), then the oldest filing year,
@@ -1608,6 +1628,9 @@ def run(states, from_dir=None, merge=False):
             months = read_now | had
         if st == "WI":
             recs = wi_dedupe(recs)
+        recs, refiled = refiled_dedupe(recs)
+        if refiled:
+            print("%s: %d rows were a sale filed again under a newer document; the newest kept" % (st, refiled))
         gaz = in_places(recs, fetch(IN_ZCTA, timeout=300)) if st == "IN" else gazetteer(STATES[st]["fips"], gzblob)
         trims = []
         while True:
@@ -1750,6 +1773,14 @@ def selftest():
     ck("IL buildings: a principal residence says with buildings; a plain farm row says nothing either way",
        "with buildings" in ib3["S-000023"]["conv"] and "land only" not in " ".join(r["conv"] for r in il3)
        and "with buildings" not in ib3["S-000004"]["conv"])
+    il4, n4 = refiled_dedupe(il3)
+    ck("IL: a sale filed twice (same county, date, price, PIN; another document) keeps the newest document only",
+       n4 == 1 and "S-000031" in {r["doc"] for r in il4} and "S-000030" not in {r["doc"] for r in il4} and len(il4) == len(il3) - 1)
+    base = {"county": "Barron", "date": "2024-03-01", "price": 300000, "pid": "022-1", "rec": "2024-03-05", "doc": "900100"}
+    rd, nd = refiled_dedupe([dict(base), dict(base, doc="900101"), dict(base, price=300001, doc="900102"), dict(base, pid="", doc="900103"),
+                             dict(base, pid="", doc="900104")])
+    ck("refiled: same filed date keeps the higher document; another price or no parcel number is never merged",
+       nd == 1 and sorted(r["doc"] for r in rd) == ["900101", "900102", "900103", "900104"])
     ck("MN is not built from a guess", bool(STATES["MN"].get("request_only")))
     ck("probe-only states (IA, SD, OH) are never built before their parser exists",
        all(STATES[x].get("probe_only") and STATES[x].get("pages") for x in ("IA", "SD", "OH")))
@@ -1785,6 +1816,9 @@ def selftest():
     ck("IN: B5 land contract, the box or a contract date, says installment contract; the 1900-01-01 blank does not",
        "installment contract" in ib["02"]["conv"] and "installment contract" in ib["12"]["conv"] and "installment contract" not in ib["01"]["conv"])
     ck("IN: B2 adjacent and C4 auction in the plain words too", "; auction; adjacent owner;" in ib["08"]["conv"])
+    ind, nin = refiled_dedupe(list(ins) + [dict(ib["01"], doc="C01-2026-0000099", rec="2026-05-01")])
+    ck("IN: a form filed again under a new form number keeps the newest only",
+       nin == 1 and len(ind) == len(ins) and [r["doc"] for r in ind if r["pid"] == ib["01"]["pid"]] == ["C01-2026-0000099"])
     ck("IN: a commercial-section price is read when the residential one is blank", ib["09"]["price"] == 300000)
     ck("IN: buyer and seller names only, never the preparer", ib["01"]["grantor"] == "SYNTHETIC SELLER" and ib["01"]["grantee"] == "SYNTHETIC BUYER")
     ck("IN: conveyance and received dates", ib["01"]["date"] == "2026-03-01" and ib["01"]["rec"] == "2026-04-01")
@@ -1850,6 +1884,9 @@ def selftest():
     later = dict(by["900001"], rec="2024-05-02", price=1)
     dd = wi_dedupe(list(wr) + [later])
     ck("WI: a return filed again keeps the latest filing only", len(dd) == len(wr) and [r for r in dd if r["doc"] == "900001"][0]["price"] == 1)
+    wdd, nwd = refiled_dedupe(list(wr) + [dict(by["900002"], doc="900902", rec="2024-04-01")])
+    ck("WI: a return filed again under a new document number keeps the newest only",
+       nwd == 1 and len(wdd) == len(wr) and [r["doc"] for r in wdd if r["pid"] == by["900002"]["pid"]] == ["900902"])
     t1, w1 = trim(wr, [])
     ck("WI trim: 10+ acres first, any parcel's acres counted", w1 == "10+ acres" and {r["doc"] for r in t1} == set(by) - {"900010"})
     t2, w2 = trim([dict(r, rec="2021-01-05") for r in t1[:2]] + t1[2:], [w1])
