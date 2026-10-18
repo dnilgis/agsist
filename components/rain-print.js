@@ -3587,7 +3587,7 @@
   var MINI_T = 0;
   function miniSoon() {
     if (MINI_T) return;
-    var go = function () { MINI_T = 0; if (!MINI_DIRTY || $('rp-strip').hidden || !DATA) return; $('rp-mini').innerHTML = buildSvg({ idPrefix: 'mn', example: SHOW_EX }); MINI_DIRTY = false; };
+    var go = function () { MINI_T = 0; if (!MINI_DIRTY || $('rp-strip').hidden || !DATA) return; $('rp-mini').innerHTML = '<span class="rp-mini-in">' + buildSvg({ idPrefix: 'mn', example: SHOW_EX }) + '</span>'; MINI_DIRTY = false; };
     MINI_T = root.requestIdleCallback ? root.requestIdleCallback(go, { timeout: 600 }) : setTimeout(go, 200);
   }
   function syncStrip() {
