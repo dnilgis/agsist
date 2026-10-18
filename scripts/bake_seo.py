@@ -120,7 +120,22 @@ def build_ctx(today):
         "fertilizer": _load("fertilizer-prices.json"),
         "dairy": _load("dairy-data.json"),
         "cal_reports": cal_reports(),
+        "nass_years": nass_years(),
     }
+
+
+def nass_years():
+    """(first, last) year that BOTH the corn and soybean state yield series
+    on /usda-quick-stats hold (the CSV download's range), or None. These are
+    NASS finals only; the in-season forecast is not in them."""
+    spans = []
+    for f in ("corn-yield", "soy-yield"):
+        ys = [y for y in ((_load(f"nass/{f}.json") or {}).get("years") or []) if isinstance(y, int)]
+        if not ys:
+            return None
+        spans.append((min(ys), max(ys)))
+    a, b = max(x[0] for x in spans), min(x[1] for x in spans)
+    return (a, b) if a < b else None
 
 
 # The REPORTS list in usda-calendar.html is the page's own schedule. The
@@ -516,8 +531,16 @@ def seo_quick_stats(c):
         beans = beans3[:nb]
         bl = (f"; {beans[0][0]} soybeans {beans[0][1]:g}" + "".join(f", {nm} {v:g}" for nm, v in beans[1:])) if beans else ""
         head = f"{kind}: {lead}{bl}."
-        for tail in (" Every state, yields since 2010, from NASS Quick Stats.",
-                     " Every state, from NASS Quick Stats."):
+        # 2026-10-18: name the years the page holds and the CSV (Search
+        # Console: "quick stats corn by state 2019 2020 2021", 1,343
+        # impressions at 6.9, no clicks, while the snippet showed one year).
+        # The range is the finals series the CSV downloads, read from the
+        # data files, never typed.
+        yr = c.get("nass_years")
+        csv = ((f" Every state, {yr[0]} to {yr[1]} finals as CSV.", f" {yr[0]} to {yr[1]} finals, CSV download.")
+               if yr else ())
+        for tail in csv + (" Every state, yields since 2010, from NASS Quick Stats.",
+                           " Every state, from NASS Quick Stats."):
             if len(head + tail) <= DESC_MAX:
                 return title, head + tail
     head = f"{kind}: {lead}."
@@ -1652,7 +1675,7 @@ def selftest():
        "Iowa corn 219 bu/ac, Illinois 208, Minnesota 195; Illinois soybeans 68" in _qs[1], _qs[1])
     ck("a state on another month's forecast is left out", "Nebraska" not in _qs[1], _qs[1])
     # three soybean states when the file has them, largest growers first, same vintage
-    _qs3 = seo_quick_stats(dict(ctx, state_stats={"stateStats": {
+    _qs3_ss = {"stateStats": {
         "IA": {"name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613,
                "year": 2026, "forecast": True, "forecast_month": "October"},
         "IL": {"name": "Illinois", "corn_yield": 208.0, "corn_prod": 2278, "bean_yield": 68.0, "bean_prod": 709,
@@ -1662,10 +1685,18 @@ def selftest():
         "MN": {"name": "Minnesota", "corn_yield": 195.0, "corn_prod": 1618, "bean_yield": 49.0, "bean_prod": 350,
                "year": 2026, "forecast": True, "forecast_month": "October"},
         "SD": {"name": "South Dakota", "bean_yield": 99.0, "bean_prod": 999,
-               "year": 2026, "forecast": True, "forecast_month": "September"}}}))
+               "year": 2026, "forecast": True, "forecast_month": "September"}}}
+    _qs3 = seo_quick_stats(dict(ctx, state_stats=_qs3_ss))
     ck("three soybean states, by production, same vintage only",
        "Illinois soybeans 68, Iowa 63, Minnesota 49." in _qs3[1] and "South Dakota" not in _qs3[1], _qs3[1])
     ck("...and it fits the caps", check(_qs3[0], _qs3[1], "usda-quick-stats.html") and len(_qs3[1]) <= DESC_MAX, _qs3[1])
+    _qsc = seo_quick_stats(dict(ctx, nass_years=(2010, 2025), state_stats=_qs3_ss))
+    ck("quick stats names the CSV years and keeps three soybean states",
+       "2010 to 2025 finals" in _qsc[1] and "CSV" in _qsc[1] and "Minnesota 49." in _qsc[1]
+       and len(_qsc[1]) <= DESC_MAX, _qsc[1])
+    ck("the CSV years come from the data files", nass_years() is None or
+       nass_years()[0] == 2010 and nass_years()[1] < date.today().year + 1, nass_years())
+    ck("no years claimed without the data", "finals" not in seo_quick_stats(dict(ctx, nass_years=None, state_stats=_qs3_ss))[1])
     _qsl = seo_quick_stats(dict(ctx, state_stats={"stateStats": {k: dict(v, name=v["name"] * 3) for k, v in
         {"IA": {"name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0, "bean_prod": 613, "year": 2026, "forecast": True, "forecast_month": "September"},
          "IL": {"name": "Illinois", "corn_yield": 208.0, "corn_prod": 2278, "bean_yield": 68.0, "bean_prod": 709, "year": 2026, "forecast": True, "forecast_month": "September"},
