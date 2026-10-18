@@ -471,14 +471,19 @@
   }
 
   // Rain Print pages hide the footer's /sponsor link in their own styles (no
-  // sponsor on those pages, Sig 2026-10-15). The footer's other sponsor
-  // link (PRF sponsor, data-sponsor-link) goes with it.
-  function footerSponsorHide() {
+  // sponsor on those pages, Sig 2026-10-15). That rule is written against
+  // #site-footer, which holds the no-script footer until the live one replaces
+  // it, so it is read there first (pageHidesSponsor, before the swap); the
+  // live footer's sponsor links (Advertise, PRF sponsor: data-sponsor-link)
+  // and the supporter strip then go too.
+  function pageHidesSponsor() {
+    var a = document.querySelector('#site-footer a[href^="/sponsor"]');
+    try { return !!a && window.getComputedStyle(a).display === 'none'; } catch (e) { return false; }
+  }
+  function footerSponsorHide(hide) {
     var foot = document.querySelector('footer.footer');
-    if (!foot) return;
-    var adv = foot.querySelector('a[href^="/sponsor"]');
-    if (!adv || window.getComputedStyle(adv).display !== 'none') return;
-    foot.querySelectorAll('[data-sponsor-link]').forEach(function (a) { a.style.display = 'none'; });
+    if (!foot || !hide) return;
+    foot.querySelectorAll('[data-sponsor-link], #footer-adspace').forEach(function (a) { a.style.setProperty('display', 'none', 'important'); });
   }
 
   // Footer Ad Space showcase. Live lifetime view counter (Cloudflare Worker + KV)
@@ -682,8 +687,9 @@
   document.addEventListener('DOMContentLoaded', function () {
     injectAnalytics();
     loadComponent('site-header', '/components/header.html', initNav);
+    var noSponsor = pageHidesSponsor();
     loadComponent('site-footer', '/components/footer.html', function () {
-      foldFooter(); renderSupporters(); footerSponsorHide();
+      foldFooter(); renderSupporters(); footerSponsorHide(noSponsor);
       try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}
     });
     fillPageRibbons();
