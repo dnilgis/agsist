@@ -39,8 +39,11 @@ test("2. the phone line sits by Made by on both pages, with a tel link and the e
 
 test("3. no promise of photos; the Mockup tag stays on the mockup", () => {
   for (const [n, h] of PAGES) assert.ok(!/Photos of real prints coming soon/.test(h), n);
-  assert.match(RP, /<span class="rp-ex-tag" aria-hidden="true">Mockup<\/span><\/div><figcaption>Mockup of a framed print\.<\/figcaption>/);
-  assert.match(BIZ, /<figcaption>Mockup of a framed print\.<\/figcaption>/);
+  // the matted view stays a mockup until mat photos come (Sig, 2026-10-18: mats arrive Monday)
+  assert.match(RP, /<span class="rp-ex-tag" aria-hidden="true">Mockup<\/span><\/div><figcaption>Mockup of a framed print\. Photos with the white mat coming soon\.<\/figcaption>/);
+  // the business page now shows a real photo, captioned truthfully (test/rain-print-photos.test.mjs)
+  assert.match(BIZ, /<figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek\. This test print is shown without its white mat\.<\/figcaption>/);
+  assert.ok(!/wall-shop/.test(BIZ), "no mockup left on the business page");
 });
 
 test("4. no Sponsor or Advertise link on Rain Print pages, done in the page", () => {
