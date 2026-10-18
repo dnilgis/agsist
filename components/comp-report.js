@@ -125,6 +125,7 @@
     function stage(t, fn) { cur = cur.filter(fn); fun.push({ t: t, n: cur.length }); }
     stage('with a price and acres on the record', function (r) { return num(r.price) > 0 && (num(r.acres) > 0 || r.acUnsure); });
     if (!P.all) stage('market sales: quit claims, gifts, related parties, court, partition and fee-exempt transfers left out', F.marketSale);
+    if (!P.all) stage('whole interests: sales of an undivided or fractional share left out', function (r) { return !CR.partial(r); });
     if (P.from || P.to) stage('deed dated ' + (P.from ? fd(P.from) : 'any time') + ' to ' + (P.to ? fd(P.to) : 'the newest record'), function (r) {
       var d = String(r.date || '').slice(0, 10); return !!d && (!P.from || d >= P.from) && (!P.to || d <= P.to);
     });
@@ -173,12 +174,16 @@
     known.forEach(function (r) { var k = CR.quarterOf(r.date); if (k) (q[k] = q[k] || []).push(r.ppa); });
     var qs = Object.keys(q).sort().map(function (k) { var a = q[k].sort(function (x, y) { return x - y; }); return { q: k, n: a.length, med: a.length >= 3 ? median(a) : null }; });
     var ac = known.map(function (r) { return +r.acres; }).sort(function (a, b) { return a - b; });
-    return { n: v.length, unsure: unsure, med: median(v), lo: v[0], hi: v[v.length - 1], q: qs, acMed: Math.round(median(ac.map(function (x) { return Math.round(x * 10); })) / 10) };
+    return { withheld: false, n: v.length, unsure: unsure, med: median(v), lo: v[0], hi: v[v.length - 1], q: qs, acMed: Math.round(median(ac.map(function (x) { return Math.round(x * 10); })) / 10) };
   };
 
   // The arm's-length screen in words (the forms do not state arm's length; this is our rule).
+  // A sale of a share of the land ("his undivided one-third interest") is not a price for the whole.
+  CR.PARTIAL = /\bUNDIVIDED\b|\b(?:ONE|TWO|THREE)[- ](?:HALF|THIRD|THIRDS|FOURTH|FOURTHS|QUARTER|FIFTH|SIXTH)\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}\s*\/\s*\d{1,2}(?:TH|RD|ND)?\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}(?:\.\d+)?\s*%\s+(?:UNDIVIDED\s+)?INTEREST\b/;
+  CR.partial = function (r) { return CR.PARTIAL.test(String(r && r.legal || '').toUpperCase()); };
   CR.screenText = function (r) {
     var why = F.notMarketWhy(r);
+    if (CR.partial(r)) why = why.concat(['the legal description reads as a share (undivided or fractional interest)']);
     return why.length ? 'No: ' + why.join('; ') : 'Passes (market sale by our rule)';
   };
 
@@ -240,9 +245,9 @@
     });
     Object.keys(groups).forEach(function (k) {
       var g = groups[k], n = g.m.length;
-      if (n === 1) { g.m[0]._xy = { x: g.x, y: g.y, ax: g.x, ay: g.y }; return; }
+      if (n === 1) { g.m[0]._xy = { x: g.x, y: g.y, ax: g.x, ay: g.y, rad: 0 }; return; }
       var rad = Math.max(16, n * 23 / (2 * Math.PI));
-      g.m.forEach(function (r, i) { var a = -Math.PI / 2 + 2 * Math.PI * i / n; r._xy = { x: g.x + rad * Math.cos(a), y: g.y + rad * Math.sin(a), ax: g.x, ay: g.y }; });
+      g.m.forEach(function (r, i) { var a = -Math.PI / 2 + 2 * Math.PI * i / n; r._xy = { x: g.x + rad * Math.cos(a), y: g.y + rad * Math.sin(a), ax: g.x, ay: g.y, rad: rad }; });
     });
     return list;
   };
@@ -251,9 +256,10 @@
   CR.mapSVG = function (o) {
     var w = o.w || 720, h = o.h || 560, c = o.c;
     var dLat = o.r / 69.05, dLng = o.r / (69.17 * Math.cos(c.lat * Math.PI / 180));
-    var box = [{ lat: c.lat - dLat, lng: c.lng - dLng }, { lat: c.lat + dLat, lng: c.lng + dLng }];
+    var mLat = 4 / 69.05, mLng = 4 / (69.17 * Math.cos(c.lat * Math.PI / 180));
+    var box = o.fit === 'radius' ? [{ lat: c.lat - dLat, lng: c.lng - dLng }, { lat: c.lat + dLat, lng: c.lng + dLng }] : [{ lat: c.lat - mLat, lng: c.lng - mLng }, { lat: c.lat + mLat, lng: c.lng + mLng }];
     (o.list || []).forEach(function (r) { var at = r.ploc || (r.lat != null ? r : null); if (at) box.push({ lat: at.lat, lng: at.lng }); });
-    var fr = CR.frame(box, w, h, 34);
+    var fr = CR.frame(box, w, h, 48);
     var out = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" class="cr-svg" role="img" aria-labelledby="cr-map-t">',
       '<title id="cr-map-t">Map of the subject and ' + (o.list || []).length + ' numbered comparable sales</title>',
       '<defs><clipPath id="cr-clip"><rect x="0" y="0" width="' + w + '" height="' + h + '"/></clipPath></defs>',
@@ -268,13 +274,8 @@
     });
     var cx = fr.x(c.lng), cy = fr.y(c.lat), rr = o.r * fr.pxPerMile;
     out.push('<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="' + rr.toFixed(1) + '" ry="' + rr.toFixed(1) + '" fill="none" stroke="#6b6458" stroke-width="1.2" stroke-dasharray="6 5"/>');
-    (o.towns || []).forEach(function (t) {
-      var x = fr.x(t.lng), y = fr.y(t.lat);
-      out.push('<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="2.5" fill="#6b6458"/><text x="' + (x + 5).toFixed(1) + '" y="' + (y + 13).toFixed(1) + '" font-size="10.5" fill="#57514a">' + esc(t.name) + '</text>');
-    });
+    (o.towns || []).forEach(function (t) { out.push('<circle cx="' + fr.x(t.lng).toFixed(1) + '" cy="' + fr.y(t.lat).toFixed(1) + '" r="2.5" fill="#6b6458"/>'); });
     if (o.rings && o.rings.length) o.rings.forEach(function (ring) { out.push('<path d="' + ringPath(ring.map(function (p) { return [p.lng, p.lat]; }), fr) + '" fill="#c0392b" fill-opacity=".25" stroke="#c0392b" stroke-width="1.5"/>'); });
-    var s = 9;
-    out.push('<path d="M' + cx + ' ' + (cy - s) + 'L' + (cx + s) + ' ' + cy + 'L' + cx + ' ' + (cy + s) + 'L' + (cx - s) + ' ' + cy + 'Z" fill="#c0392b" stroke="#fff" stroke-width="1.5" data-subject="1"/>');
     CR.place(o.list || [], fr);
     (o.list || []).forEach(function (r) {
       var p = r._xy; if (!p) return;
@@ -283,10 +284,17 @@
       out.push('<g data-no="' + r.no + '"><circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="10" fill="' + (solid ? '#1f2a14' : '#ffffff') + '" stroke="#1f2a14" stroke-width="1.6"/>' +
         '<text x="' + p.x.toFixed(1) + '" y="' + (p.y + 4).toFixed(1) + '" font-size="11" font-weight="700" text-anchor="middle" fill="' + (solid ? '#ffffff' : '#1f2a14') + '">' + r.no + '</text></g>');
     });
+    (o.towns || []).forEach(function (t) {
+      var x = fr.x(t.lng), y = fr.y(t.lat), rad = 0;
+      (o.list || []).forEach(function (r) { if (r._xy && Math.abs(r._xy.ax - x) < 4 && Math.abs(r._xy.ay - y) < 4) rad = Math.max(rad, r._xy.rad || 0); });
+      out.push('<text x="' + x.toFixed(1) + '" y="' + (y + rad + 24).toFixed(1) + '" font-size="11" fill="#3a352d" text-anchor="middle" stroke="#fbfaf6" stroke-width="3" paint-order="stroke">' + esc(String(t.name || '').replace(/ (town|township)$/i, ' ($1)')) + '</text>');
+    });
+    var s = 10;
+    out.push('<path d="M' + cx + ' ' + (cy - s) + 'L' + (cx + s) + ' ' + cy + 'L' + cx + ' ' + (cy + s) + 'L' + (cx - s) + ' ' + cy + 'Z" fill="#c0392b" stroke="#fff" stroke-width="2" data-subject="1"/>');
     out.push('</g>');
     // scale bar and north
     var miles = [1, 2, 5, 10, 20].filter(function (m) { return m * fr.pxPerMile <= w * 0.25; }).pop() || 1, bw = miles * fr.pxPerMile;
-    out.push('<g font-size="11" fill="#3a352d"><rect x="12" y="' + (h - 30) + '" width="' + (bw + 16) + '" height="22" fill="#fbfaf6" fill-opacity=".85"/><line x1="20" y1="' + (h - 14) + '" x2="' + (20 + bw).toFixed(1) + '" y2="' + (h - 14) + '" stroke="#3a352d" stroke-width="2"/><text x="20" y="' + (h - 18) + '">' + miles + ' mi</text>' +
+    out.push('<g font-size="11" fill="#3a352d"><rect x="12" y="' + (h - 30) + '" width="' + (bw + 16).toFixed(1) + '" height="22" fill="#fbfaf6" fill-opacity=".85"/><line x1="20" y1="' + (h - 14) + '" x2="' + (20 + bw).toFixed(1) + '" y2="' + (h - 14) + '" stroke="#3a352d" stroke-width="2"/><text x="20" y="' + (h - 18) + '">' + miles + ' mi</text>' +
       '<text x="' + (w - 18) + '" y="22" text-anchor="middle" font-weight="700">N</text><path d="M' + (w - 18) + ' 26l-5 12h10z" fill="#3a352d"/></g>');
     out.push('<rect x=".5" y=".5" width="' + (w - 1) + '" height="' + (h - 1) + '" fill="none" stroke="#8c8576"/></svg>');
     return out.join('');
@@ -319,7 +327,7 @@
       return '<tr><td>' + esc(x.q) + '</td><td class="n">' + x.n + '</td><td class="n">' + (x.med != null ? fm(x.med) : '<span class="cr-dim">under 3 sales</span>') + '</td></tr>';
     }).join('') + '</tbody></table>';
     return '<div class="cr-tiles">' + tiles.map(function (t) { return '<div><span>' + esc(t[0]) + '</span><b>' + esc(t[1]) + '</b></div>'; }).join('') + '</div>' +
-      '<p class="fl-note">Of the ' + total + ' sales listed' + (s.unsure ? '; ' + s.unsure + ' on several parcels with uncertain acres ' + (s.unsure === 1 ? 'is' : 'are') + ' left out of these figures' : '') + '. Prices are as recorded for the whole sale, buildings included; nothing is adjusted for time, size, soil or improvements.</p>' +
+      '<p class="fl-note">Figures use the ' + s.n + ' of ' + total + ' listed sales with known acres' + (s.unsure ? '; ' + s.unsure + ' on several parcels with uncertain acres ' + (s.unsure === 1 ? 'is' : 'are') + ' left out' : '') + '. Prices are as recorded for the whole sale, buildings included; nothing is adjusted for time, size, soil or improvements.</p>' +
       '<h3>By quarter</h3>' + q + '<p class="fl-note">A middle is shown only for a quarter with 3 or more sales. No trend line is fitted: ' + s.n + ' sales spread over these quarters cannot carry one.</p>';
   };
 
@@ -523,8 +531,9 @@
         cs.forEach(function (f) { if (!f._ctr) { var b = f._bb; f._ctr = [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2]; } });
       }
       var off = S.list.filter(function (r) { return r.lat == null && !r.ploc; }).length;
-      set('cr-map', CR.mapSVG({ c: S.subj.c, rings: S.subj.pts ? [S.subj.pts] : S.subj.rings, list: S.list, r: P.r, counties: cs, towns: Object.keys(towns).map(function (k) { return towns[k]; }) }) +
-        '<p class="fl-note cr-key"><span class="cr-k cr-k-s"></span> subject &nbsp; <span class="cr-k cr-k-o">1</span> comp at the center of the town it was filed in &nbsp; <span class="cr-k cr-k-p">1</span> comp placed on its parcel (parcel map) &nbsp; dashed ring: the ' + P.r + '-mile search radius. Comps that share a town sit in a ring around its center; the line points to the town.' + (off ? ' ' + off + ' listed ' + (off === 1 ? 'sale has' : 'sales have') + ' no town point and ' + (off === 1 ? 'is' : 'are') + ' not drawn.' : '') + ' County lines: US Census.</p>');
+      var narrow = (G.innerWidth || 1000) < 600;
+      set('cr-map', CR.mapSVG({ w: narrow ? 440 : 720, h: narrow ? 520 : 560, c: S.subj.c, rings: S.subj.pts ? [S.subj.pts] : S.subj.rings, list: S.list, r: P.r, counties: cs, towns: Object.keys(towns).map(function (k) { return towns[k]; }) }) +
+        '<p class="fl-note cr-key"><span class="cr-k cr-k-s"></span> subject &nbsp; <span class="cr-k cr-k-o">1</span> comp at the center of the town it was filed in &nbsp; <span class="cr-k cr-k-p">1</span> comp placed on its parcel (parcel map) &nbsp; dashed ring: the ' + P.r + '-mile search radius (the map is zoomed to the comps, so part of it may run off the edge). Comps that share a town sit in a ring around its center; the line points to the town.' + (off ? ' ' + off + ' listed ' + (off === 1 ? 'sale has' : 'sales have') + ' no town point and ' + (off === 1 ? 'is' : 'are') + ' not drawn.' : '') + ' County lines: US Census.</p>');
     }
     // Wisconsin and other states with a parcel map: find each comp's parcel, place it and read its soil.
     function lookupComps() {
@@ -563,6 +572,7 @@
         '<h3>What counts and what is left out</h3><ul class="cr-srcl">' +
         '<li>A sale needs a price and acres on the record. Price is the consideration on the state form' + (IL ? ' (Illinois: net consideration, Line 13 of PTAX-203, or full consideration, Line 11, when Line 13 is blank)' : '') + ' and covers everything that sold.</li>' +
         (P.all ? '<li>Every deed type is included on this run; the arm’s-length screen column says which would fail it.</li>' : '<li>Market sales only: quit claims, gifts, corrections, terminations and transfer-on-death deeds, sheriff, foreclosure, court officer and judicial deeds, partition, easements, leases, mineral and beneficial-interest transfers, sales between related parties' + (IL ? ' (Illinois Line 10b)' : '') + ', and fee-exempt transfers are left out. The forms do not state arm’s length; this is our screen.</li>') +
+        (P.all ? '' : '<li>Sales of an undivided or fractional share (the legal description says so) are left out; the price is not for the whole.</li>') +
         '<li>A sale on several parcels whose acres do not add up for sure is listed with acres uncertain and no $/acre, and drops out when an acre range is set.</li>' +
         '<li>Distance runs to the center of the town (' + (IL ? 'township' : 'town, village or city') + ') where the sale was filed; our copy has no point for the parcel itself. Where a free parcel map finds the parcel by its number, the map places it there and the row says so.</li>' +
         (WI ? '<li>Wisconsin: the Department of Revenue’s public download holds about the last five years of returns.</li>' : '') +
@@ -573,10 +583,11 @@
     function noData() {
       hideAll();
       var noteSt = (S.reg.salesNote || {})[S.st];
-      set('cr-own', '');
+      set('cr-own', note('No ' + esc(S.stName) + ' transfer records here to search.'));
+      var srcSec = $('cr-src'); if (srcSec && srcSec.parentNode) srcSec.parentNode.hidden = true;
       Promise.all(MAYBE.map(function (st) { return getJSON('/data/land/' + st.toLowerCase() + '/index.json', 10000).then(function (ix) { return ix && ix.counties && ix.counties.length ? st : null; }, function () { return null; }); })).then(function (have) {
         have = have.filter(Boolean).map(function (st) { return CR.ST[st] || st; });
-        set('cr-src', '<div class="cr-held"><b>We do not hold ' + esc(S.stName) + ' recorded sales yet, so this report has no comps.</b>' +
+        set('cr-nodata', '<div class="cr-held"><b>We do not hold ' + esc(S.stName) + ' recorded sales yet, so this report has no comps.</b>' +
           note(esc(noteSt || 'Sales are public at the county recorder. We add a state only when its own sale records are free to read in bulk and we have checked them.')) +
           note('What this page can still give for ' + esc(S.county ? S.county + ' County' : S.stName) + ': the subject and its owner of record where a free parcel map covers it, soils, crop history, and the county’s census land value and cash rent above.') +
           (have.length ? note('Recorded sales on AGSIST now: ' + esc(have.join(', ')) + '.') : '') + '</div>');

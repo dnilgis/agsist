@@ -67,12 +67,12 @@
       @bottom-left{content:"Recorded sales from public records. Not an appraisal; no adjustments made.";font:8pt sans-serif;color:#444}
       @bottom-right{content:"Made with AGSIST (free) \00B7  page " counter(page) " of " counter(pages);font:8pt sans-serif;color:#444}}
     @media print{
-      #site-header,#site-footer,.skip,.crp-act,.no-print,.breadcrumb{display:none!important}
+      body>*:not(main),#site-header,#site-footer,.skip,.crp-act,.no-print,.breadcrumb{display:none!important}
       html,body{background:#fff!important;color:#000!important}
       .crp{max-width:none;padding:0}.crp h1,.crp h2,.crp h3,.crp b,.fl-kv td,.cr-tbl td,.cr-q td,.cr-big,.cr-tiles b{color:#000!important}
       .crp p,.crp li,.fl-note,.fl-kv th,.cr-tbl th,.cr-q th,.cr-dim,.cr-tbl tr.cr-d td,.cr-leg,.cr-tiles span{color:#333!important}
       .fl-p,.cr-tiles div,.cr-held,.cr-stmt{background:#fff!important;border-color:#999!important}
-      .crp h2{break-after:avoid;margin-top:1rem}.fl-p,.cr-tbl tbody.cr-c,.cr-q tr,.cr-tiles{break-inside:avoid}
+      .crp h2,.crp h3{break-after:avoid}.crp h2{margin-top:1rem}.fl-p,.cr-tbl tbody.cr-c,.cr-q tr,.cr-tiles{break-inside:avoid}
       .cr-pg{break-before:page}
       .cr-tbl{font-size:8.5pt}.cr-tbl tr.cr-d td{font-size:7.5pt}.cr-leg{font-size:7pt}
       .cr-svg{max-height:7.4in;width:auto;max-width:100%;margin:0 auto}
@@ -110,6 +110,7 @@
       <div id="cr-none" class="cr-held" hidden><b>No subject on this link.</b> <span id="cr-none-why"></span> This report is made from <a href="/field-scout">Field Scout</a>: pick or trace a field there, then tap "Comparable sales report" under Sold land nearby, or tap a sale and use the same button in its panel.</div>
       <div id="cr-body" hidden>
         <p class="cr-stmt"><b>Recorded sales from public records. Not an appraisal; no adjustments made.</b></p>
+        <div id="cr-nodata"></div>
         <h2>1. Subject</h2>
         <div id="cr-subject"><div class="fs-loading">reading the parcel map</div></div>
         <h3>Soil productivity</h3><div id="cr-soil"><div class="fs-loading">reading the soil survey</div></div>
