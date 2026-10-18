@@ -1468,13 +1468,13 @@
   "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We have not found a free statewide copy.",
   "IL": "Illinois sales come from the state's MyDec transfer declarations (PTAX-203) on the Illinois open data portal.",
   "IN": "Indiana sales are filed on the state sales disclosure form. The state publishes them free by year (STATS Indiana, from the Department of Local Government Finance); we add them once the file's columns are read and checked.",
-  "NE": "Nebraska sales go on the Real Estate Transfer Statement (Form 521) and into the state sales file, which the public gets by request for a fee. We do not hold it.",
-  "KS": "Kansas sale prices on the Certificate of Value are confidential by state law; county appraisers do not publish them.",
+  "NE": "Nebraska sales go on the Real Estate Transfer Statement (Form 521) and into the state sales file, which the state queries for the public on request. We do not hold it.",
+  "KS": "Kansas sales are reported to the state on a Certificate of Value. We have not found a free public file of Kansas sale prices.",
   "SD": "South Dakota sales are kept by each county's Director of Equalization; a few counties post yearly sales lists.",
   "ND": "North Dakota sales are kept by each county's tax director; we have not found a free statewide file.",
   "OH": "Ohio sales are kept by each county auditor; many post transfer lists, one county at a time.",
   "MI": "Michigan sales are kept by each local assessor and county equalization office; we have not found a free statewide file.",
-  "MO": "Missouri does not require sale prices to be disclosed, so most counties have none to publish."
+  "MO": "Missouri sales are recorded at each county recorder of deeds. We have not found a free public file of Missouri sale prices."
  },
  "coverage": {
   "WI": {
