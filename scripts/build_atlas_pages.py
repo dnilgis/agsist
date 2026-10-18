@@ -661,7 +661,7 @@ def flat_record(W, f, d=None):
         rec["years_loss_over_1"] = S.get("years_over_one")
     Dr = d.get("drought") or {}
     if ok(Dr):
-        rec["d2_week_share_pct"] = d2_share(Dr)
+        rec["d2_week_share_pct"] = None if d2_share(Dr) is None else round(d2_share(Dr), 2)
     H = d.get("heat") or {}
     jul = get(H, "months", "jul") if ok(H) else None
     if jul:
@@ -1225,7 +1225,7 @@ def d2_share(Dr):
     already rounded to 0.1, and rounding it again printed 10.46% as 11%)."""
     wk = (Dr or {}).get("weeks") or {}
     if wk.get("d2") is not None and wk.get("counted"):
-        return round(100.0 * wk["d2"] / wk["counted"], 2)
+        return 100.0 * wk["d2"] / wk["counted"]
     return wk.get("share_d2_pct")
 
 CHANGE_RE = r"\b(?:climb\w*|ris(?:e|en|es|ing)|rose|gr[eo]w\w*|gain\w*|increas\w*|improv\w*|trend\w* (?:up|upward|down|downward|higher|lower)|fall\w*|fell|declin\w*|drop\w*|slipp\w*|sliding|decreas\w*|moved? (?:up|down)|warm\w*|cool\w*|down|up)\b"
@@ -2358,7 +2358,8 @@ def selftest():
     class _R:
         root = "."
     check("state hub rent history starts at the file's first year", rent_first_year(_R, "NV") == 2009 and rent_first_year(_R, "IA") == 2008)
-    check("drought share rounds once", d2_share({"weeks": {"d2": 142, "counted": 1357, "share_d2_pct": 10.5}}) == 10.46 and fmt(d2_share({"weeks": {"d2": 142, "counted": 1357}}), 0) == "10")
+    check("drought share rounds once", fmt(d2_share({"weeks": {"d2": 142, "counted": 1357, "share_d2_pct": 10.5}}), 0) == "10"
+          and fmt(d2_share({"weeks": {"d2": 156, "counted": 1357, "share_d2_pct": 11.5}}), 0) == "11")     # 11.496%
     check("slugify", slugify("St. Louis City") == "st-louis-city" and slugify("Lower Ct River Valley") == "lower-ct-river-valley")
     check("recent yield", recent_yield({"last_year": 2025, "hist": {"2021": 200, "2022": 100, "2023": 210, "2024": 220, "2025": 230}}, 2026)["avg"] == 210.0)
     # state survey beside the census: newer only, named as the state's, change hand worked

@@ -319,53 +319,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 8.5 miles east-southeast of Arkadelphia had caught 27.70 inches this year. May was the wettest month at 7.16 inches. The longest dry stretch ran 12 days, Feb 16 to Feb 27, with nothing in the gauge, not even a trace. The gauge reported on 265 of 286 days, so the total misses 21 days.",
    "through": "2026-10-13"
   },
-  "05021": {
-   "facts": {
-    "biggest_day": {
-     "date": "Sep 11",
-     "in": "4.16",
-     "label": "biggest one-day reading"
-    },
-    "county": "Clay County",
-    "days_in_year_so_far": 283,
-    "days_missing": 13,
-    "days_reported": 270,
-    "gauge": "weather station",
-    "gauge_from_middle": "10 miles from the middle of the county",
-    "gauge_where": "in Corning",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 19,
-     "from": "Aug 23",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 10"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 69,
-    "state": "Arkansas",
-    "through": "Oct 10",
-    "through_iso": "2026-10-10",
-    "total_in": "25.11",
-    "usual_in": "36.44",
-    "vs_usual": {
-     "diff_in": "11.33",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "4.73",
-     "month": "September"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "77f2aa134f822124",
-   "sid": "031632 2",
-   "story": "Through Oct 10, the weather station in Corning had one long wait and one big day. It went 19 days in a row with nothing in the gauge, from Aug 23 to Sep 10. Then Sep 11 brought 4.16 inches, the biggest one-day reading so far, and that one day made up most of September, the wettest month at 4.73 inches. Even so, the station sat 11.33 inches less than a usual year.",
-   "through": "2026-10-10"
-  },
   "05023": {
    "facts": {
     "biggest_day": {
@@ -825,65 +778,6 @@
    "hash": "34d1a343b5d6b6ff",
    "sid": "53919 1",
    "story": "Through Oct 13, the weather station at Monticello Municipal Airport has caught 15.56 inches less than last year on the days both years reported. May was the wettest month at 6.18 inches. The biggest single day came Mar 11 with 2.01 inches. From Apr 6 to Apr 19 the gauge went 14 days in a row with nothing in it, not even a trace.",
-   "through": "2026-10-13"
-  },
-  "05045": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 11",
-     "in": "2.48",
-     "label": "biggest single day"
-    },
-    "county": "Faulkner County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "8 miles from the middle of the county",
-    "gauge_where": "2.4 miles north-northwest of Greenbrier",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "22.20",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "54.76",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 14,
-     "from": "Sep 14",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 27"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 81,
-    "state": "Arkansas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "32.56",
-    "usual_in": "40.32",
-    "vs_usual": {
-     "diff_in": "7.76",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "10.56",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "9c4e4008c4e833a4",
-   "sid": "US1ARFK0017 6",
-   "story": "Through Oct 13, the volunteer rain gauge 2.4 miles north-northwest of Greenbrier had most of its year come in May, with 10.56 inches that month. The biggest single day was May 11 at 2.48 inches. The longest dry stretch ran 14 days, Sep 14 to Sep 27, with not even a trace. Last year at this point the gauge had 54.76 inches, so this year is 22.20 inches less.",
    "through": "2026-10-13"
   },
   "05047": {
@@ -2792,65 +2686,6 @@
    "hash": "8a5cb4747306ea2f",
    "sid": "032794 2",
    "story": "Through Oct 13, the weather station in Gilbert has the wettest month as June at 6.54 inches. The biggest single day came Jun 14 with 3.70 inches. The longest dry stretch ran 18 days, Jan 27 to Feb 13, with nothing in the gauge. On the days both years reported, this year is 11.42 inches less than last year.",
-   "through": "2026-10-13"
-  },
-  "05131": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 6",
-     "in": "3.95",
-     "label": "biggest single day"
-    },
-    "county": "Sebastian County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "11 miles from the middle of the county",
-    "gauge_where": "at Fort Smith Regional Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "15.90",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "44.32",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 18,
-     "from": "Jul 30",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 16"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 76,
-    "state": "Arkansas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "28.42",
-    "usual_in": "37.26",
-    "vs_usual": {
-     "diff_in": "8.84",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "7.78",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "589be11cc4125b17",
-   "sid": "13964 1",
-   "story": "Through Oct 13, the weather station at Fort Smith Regional Airport had 28.42 inches, 8.84 inches less than a usual year. June did most of the work with 7.78 inches, and 3.95 of that came on Jun 6. From Jul 30 to Aug 16 the gauge went 18 days in a row with nothing in it. Last year at this point it had 15.90 inches more.",
    "through": "2026-10-13"
   },
   "05133": {

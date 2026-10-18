@@ -178,65 +178,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 1.2 miles east of Kingsville has caught 39.08 inches, 0.87 inches less than a usual year. August was the wettest month at 8.72 inches, and the biggest single day came late, 2.62 inches on Oct 12. The longest dry stretch ran 10 days, Jan 28 to Feb 6. On the days both years reported, this year is 0.74 inches more than 2025.",
    "through": "2026-10-13"
   },
-  "24009": {
-   "facts": {
-    "biggest_day": {
-     "date": "Aug 23",
-     "in": "4.17",
-     "label": "biggest one-day reading"
-    },
-    "county": "Calvert County",
-    "days_in_year_so_far": 285,
-    "days_missing": 18,
-    "days_reported": 267,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "9 miles from the middle of the county",
-    "gauge_where": "2.9 miles north-northwest of Huntingtown",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 254,
-      "diff_in": "4.13",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 13,
-     "through": "Oct 12",
-     "total_in": "38.80",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 13,
-     "from": "May 29",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jun 10"
-    },
-    "multi_day_reports": 2,
-    "pct_of_usual": 94,
-    "state": "Maryland",
-    "through": "Oct 12",
-    "through_iso": "2026-10-12",
-    "total_in": "34.04",
-    "usual_in": "36.31",
-    "vs_usual": {
-     "diff_in": "2.27",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "8.23",
-     "month": "August"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "9a64ebbf8fc7ec63",
-   "sid": "US1MDCV0017 6",
-   "story": "Through Oct 12, the volunteer rain gauge 2.9 miles north-northwest of Huntingtown has caught 34.04 inches, 2.27 inches less than a usual year. August did most of the work with 8.23 inches, and 4.17 of that came on Aug 23 alone. The gauge sat empty for 13 days in a row from May 29 to Jun 10. On the days both years reported, this year is 4.13 inches behind last year.",
-   "through": "2026-10-12"
-  },
   "24011": {
    "facts": {
     "biggest_day": {
@@ -585,65 +526,6 @@
    "hash": "d98e101805f70579",
    "sid": "182906 2",
    "story": "Through Oct 13, the weather station 2 miles southeast of Emmitsburg has 33.35 inches, 4.15 inches less than a usual year. August was the wettest month at 5.76 inches, and the biggest single day came late, 2.20 inches on Oct 11. On the days both years reported, this year has 3.06 inches more than last year.",
-   "through": "2026-10-13"
-  },
-  "24023": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 25",
-     "in": "2.63",
-     "label": "biggest single day"
-    },
-    "county": "Garrett County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "4.8 miles south-southeast of Mc Henry",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 283,
-      "diff_in": "3.47",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 3,
-     "through": "Oct 13",
-     "total_in": "42.38",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 9,
-     "from": "May 29",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jun 6"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 108,
-    "state": "Maryland",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "46.01",
-    "usual_in": "42.68",
-    "vs_usual": {
-     "diff_in": "3.33",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "8.63",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "5e60ffef7b0700c4",
-   "sid": "US1MDGR0004 6",
-   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles south-southeast of Mc Henry had most of its year show up in May. That month brought 8.63 inches, and the biggest single day was May 25 with 2.63 inches. Then the gauge went 9 days in a row with nothing, from May 29 to Jun 6. On the days both years reported, this year is 3.47 inches more than 2025.",
    "through": "2026-10-13"
   },
   "24025": {
@@ -1106,65 +988,6 @@
    "story": "Through Oct 13, the volunteer rain gauge less than a mile east-northeast of Crisfield has caught 24.84 inches. July was the wettest month at 5.40 inches, and the biggest one-day reading came Jul 22 with 2.68. The gauge went 15 days in a row with nothing in it, not even a trace, from May 29 to Jun 12. On the days both years reported, that is 6.36 inches less than 2025.",
    "through": "2026-10-13"
   },
-  "24041": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 22",
-     "in": "1.98",
-     "label": "biggest one-day reading"
-    },
-    "county": "Talbot County",
-    "days_in_year_so_far": 277,
-    "days_missing": 1,
-    "days_reported": 276,
-    "gauge": "weather station",
-    "gauge_from_middle": "6 miles from the middle of the county",
-    "gauge_where": "2 miles south-southwest of Royal Oak",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 276,
-      "diff_in": "1.58",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 4",
-     "total_in": "36.38",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 9,
-     "from": "May 29",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jun 6"
-    },
-    "multi_day_reports": 3,
-    "pct_of_usual": 91,
-    "state": "Maryland",
-    "through": "Oct 4",
-    "through_iso": "2026-10-04",
-    "total_in": "33.03",
-    "usual_in": "36.36",
-    "vs_usual": {
-     "diff_in": "3.33",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "9.35",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "ef6dca63dd450074",
-   "sid": "187806 2",
-   "story": "Through Oct 4, the weather station 2 miles south-southwest of Royal Oak had most of its year come in July, at 9.35 inches. The biggest one-day reading was 1.98 inches on Jul 22. The gauge went 9 days in a row with nothing in it, from May 29 to Jun 6. On the days both years reported, this year is 1.58 inches less than 2025.",
-   "through": "2026-10-04"
-  },
   "24043": {
    "facts": {
     "biggest_day": {
@@ -1340,65 +1163,6 @@
    "hash": "d7226f06c0694489",
    "sid": "US1MDWR0014 6",
    "story": "Through Oct 13, the volunteer rain gauge less than a mile south of Snow Hill caught 4.26 inches on Jul 22, its biggest single day, and July came in as the wettest month at 6.75 inches. The longest dry stretch ran 11 days, Apr 7 to Apr 17, with not even a trace in the gauge. On the days both years reported, this year is 3.34 inches less than last year.",
-   "through": "2026-10-13"
-  },
-  "24510": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 28",
-     "in": "2.28",
-     "label": "biggest single day"
-    },
-    "county": "Baltimore City",
-    "days_in_year_so_far": 286,
-    "days_missing": 5,
-    "days_reported": 281,
-    "gauge": "weather station",
-    "gauge_from_middle": "1 mile from the middle of the county",
-    "gauge_where": "in Maryland Science Center",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 278,
-      "diff_in": "4.86",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 3,
-     "through": "Oct 13",
-     "total_in": "29.47",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 11,
-     "from": "Jan 26",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Feb 5"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 102,
-    "state": "Maryland",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "35.02",
-    "usual_in": "34.42",
-    "vs_usual": {
-     "diff_in": "0.60",
-     "dir": "more",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "8.90",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "69b2b659edd65334",
-   "sid": "93784 1",
-   "story": "Through Oct 13, the weather station in Maryland Science Center has 35.02 inches, 0.60 more than a usual year. July did most of the work at 8.90 inches, and the biggest single day was Jul 28 with 2.28. The longest dry stretch ran 11 days, Jan 26 to Feb 5. On the days both years reported, this year is 4.86 inches more than 2025.",
    "through": "2026-10-13"
   }
  },

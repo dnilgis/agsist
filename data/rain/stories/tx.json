@@ -60,65 +60,6 @@
    "story": "Through Oct 13, the weather station at Lufkin Angelina County Airport has caught 15.35 inches less than it had by this day last year. May was the wettest month at 4.64 inches. The biggest single day came Sep 2 with 2.81 inches, and then the gauge sat empty for 22 days in a row, Sep 9 to Sep 30.",
    "through": "2026-10-13"
   },
-  "48007": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 16",
-     "in": "5.24",
-     "label": "biggest single day"
-    },
-    "county": "Aransas County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "at Rockport Aransas County Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 276,
-      "diff_in": "12.12",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 9,
-     "through": "Oct 13",
-     "total_in": "14.28",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 21,
-     "from": "Feb 15",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Mar 7"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 115,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "25.97",
-    "usual_in": "22.56",
-    "vs_usual": {
-     "diff_in": "3.41",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "9.78",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "e6ea2e86dd2abb41",
-   "sid": "12972 1",
-   "story": "Through Oct 13, the weather station at Rockport Aransas County Airport has caught 25.97 inches, 3.41 more than a usual year. May did most of the work with 9.78 inches, and the biggest single day was Jun 16 at 5.24. It also went 21 days with nothing in the gauge, Feb 15 to Mar 7. On the days both years reported, that is 12.12 inches more than 2025.",
-   "through": "2026-10-13"
-  },
   "48009": {
    "facts": {
     "biggest_day": {
@@ -355,53 +296,6 @@
    "story": "Through Oct 13, the weather station in Muleshoe went 55 days in a row without a drop, from Feb 15 to Apr 10. September was the wettest month at 3.77 inches, and the biggest single day was 1.82 inches on Sep 30. That still leaves the gauge 1.16 inches behind where it sat by Oct 13 last year.",
    "through": "2026-10-13"
   },
-  "48019": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 15",
-     "in": "3.02",
-     "label": "biggest single day"
-    },
-    "county": "Bandera County",
-    "days_in_year_so_far": 283,
-    "days_missing": 8,
-    "days_reported": 275,
-    "gauge": "weather station",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "1 mile northeast of Medina",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 22,
-     "from": "Aug 30",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 20"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 103,
-    "state": "Texas",
-    "through": "Oct 10",
-    "through_iso": "2026-10-10",
-    "total_in": "29.23",
-    "usual_in": "28.41",
-    "vs_usual": {
-     "diff_in": "0.82",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "7.49",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c43dbfed9a802512",
-   "sid": "415742 2",
-   "story": "Through Oct 10, the weather station 1 mile northeast of Medina had 29.23 inches, 0.82 more than a usual year. July did most of the work at 7.49 inches. The biggest single day was Jun 15 with 3.02. Then the gauge sat empty for 22 days in a row, Aug 30 to Sep 20, not even a trace.",
-   "through": "2026-10-10"
-  },
   "48021": {
    "facts": {
     "biggest_day": {
@@ -636,65 +530,6 @@
    "hash": "bea07acad101da0d",
    "sid": "US1TXBEL008 6",
    "story": "Through Oct 13, the volunteer rain gauge 3.9 miles north of Belton has caught 32.86 inches, 2.68 inches more than last year by this day. May was the wettest month at 9.52 inches. The biggest single day came Jul 15 with 3.35 inches, and then the gauge sat empty for 48 days in a row, from Jul 18 to Sep 3, not even a trace.",
-   "through": "2026-10-13"
-  },
-  "48029": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 20",
-     "in": "4.42",
-     "label": "biggest single day"
-    },
-    "county": "Bexar County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "7 miles from the middle of the county",
-    "gauge_where": "at San Antonio International Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "4.54",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "25.09",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 21,
-     "from": "Mar 12",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 1"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 114,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "29.63",
-    "usual_in": "26.09",
-    "vs_usual": {
-     "diff_in": "3.54",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "7.46",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "11bd219ee40327b0",
-   "sid": "12921 1",
-   "story": "Through Oct 13, the weather station at San Antonio International Airport had 29.63 inches, 3.54 more than a usual year. Most of the story is April. The gauge went 21 days with nothing from Mar 12 to Apr 1, then April came in at 7.46 inches, with 4.42 of that on Apr 20 alone. That puts this year 4.54 inches ahead of last year to the same day.",
    "through": "2026-10-13"
   },
   "48031": {
@@ -1327,65 +1162,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 8.4 miles east-southeast of Lockhart has caught 21.84 inches, 5.99 inches less than a usual year. May was the wettest month at 5.14 inches, and the biggest single day was Jun 15 with 2.25 inches. The gauge went 21 days in a row with nothing in it, from Mar 13 to Apr 2. On the days both years reported, 2026 is 2.21 inches less than 2025.",
    "through": "2026-10-13"
   },
-  "48057": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 21",
-     "in": "4.16",
-     "label": "biggest one-day reading"
-    },
-    "county": "Calhoun County",
-    "days_in_year_so_far": 281,
-    "days_missing": 2,
-    "days_reported": 279,
-    "gauge": "weather station",
-    "gauge_from_middle": "12 miles from the middle of the county",
-    "gauge_where": "in Point Comfort",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 279,
-      "diff_in": "2.21",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 8",
-     "total_in": "36.20",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 23,
-     "from": "Mar 12",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 3"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 107,
-    "state": "Texas",
-    "through": "Oct 8",
-    "through_iso": "2026-10-08",
-    "total_in": "33.97",
-    "usual_in": "31.87",
-    "vs_usual": {
-     "diff_in": "2.10",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "11.16",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "a37901170a4b2791",
-   "sid": "417140 2",
-   "story": "Through Oct 8, the weather station in Point Comfort had 33.97 inches, 2.10 more than a usual year. May did most of the work at 11.16 inches, and the biggest one-day reading was 4.16 on Jun 21. The gauge also went 23 days in a row with nothing in it, from Mar 12 to Apr 3. On the days both years reported, that is 2.21 inches less than 2025.",
-   "through": "2026-10-08"
-  },
   "48059": {
    "facts": {
     "biggest_day": {
@@ -1948,65 +1724,6 @@
    "story": "Through Oct 12, the weather station in Morton had most of its year come in September, with 7.69 inches that month. The biggest single day was Sep 30 at 1.88 inches. Before that, the gauge went 29 days in a row with nothing in it, from Mar 12 to Apr 9. It sits 2.07 inches behind last year at this point.",
    "through": "2026-10-12"
   },
-  "48081": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 11",
-     "in": "3.17",
-     "label": "biggest single day"
-    },
-    "county": "Coke County",
-    "days_in_year_so_far": 283,
-    "days_missing": 14,
-    "days_reported": 269,
-    "gauge": "weather station",
-    "gauge_from_middle": "20 miles from the middle of the county",
-    "gauge_where": "11 miles north-northeast of Bronte",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 269,
-      "diff_in": "0.51",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 10",
-     "total_in": "15.79",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 42,
-     "from": "Aug 9",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 19"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 83,
-    "state": "Texas",
-    "through": "Oct 10",
-    "through_iso": "2026-10-10",
-    "total_in": "15.11",
-    "usual_in": "18.21",
-    "vs_usual": {
-     "diff_in": "3.10",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "5.43",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "55cb0a1b08b36b12",
-   "sid": "03072 1",
-   "story": "Through Oct 10, the weather station 11 miles north-northeast of Bronte got most of its year in April. That month brought 5.43 inches, and 3.17 inches of it came on Apr 11 alone. Then the gauge sat empty for 42 days in a row, from Aug 9 to Sep 19. On the days both years reported, that is 0.51 inches less than 2025 had.",
-   "through": "2026-10-10"
-  },
   "48083": {
    "facts": {
     "biggest_day": {
@@ -2302,61 +2019,6 @@
    "story": "Through Oct 13, the volunteer rain gauge 4.5 miles west of De Leon had its wettest month in May at 5.46 inches. The biggest one-day reading was 1.72 inches on Jun 15. Then it went 35 days in a row with nothing in the gauge, not even a trace, from Jul 19 to Aug 22. On the days both years reported, this year is 2.75 inches less than 2025.",
    "through": "2026-10-13"
   },
-  "48097": {
-   "facts": {
-    "biggest_day": null,
-    "county": "Cooke County",
-    "days_in_year_so_far": 286,
-    "days_missing": 8,
-    "days_reported": 278,
-    "gauge": "weather station",
-    "gauge_from_middle": "9 miles from the middle of the county",
-    "gauge_where": "5 miles east-northeast of Gainesville",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 265,
-      "diff_in": "1.63",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 13,
-     "through": "Oct 13",
-     "total_in": "33.75",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 36,
-     "from": "Jul 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 22"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 101,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "33.26",
-    "usual_in": "33.04",
-    "vs_usual": {
-     "diff_in": "0.22",
-     "dir": "more",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "9.75",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c0bd003d0ae899e8",
-   "sid": "413420 2",
-   "story": "Through Oct 13, the weather station 5 miles east-northeast of Gainesville has 33.26 inches, about usual and 0.22 more than a usual year. June did most of the work at 9.75 inches. Then the gauge sat empty 36 days in a row, from Jul 18 to Aug 22, not even a trace. On the days both years reported, this year is 1.63 inches less than last year.",
-   "through": "2026-10-13"
-  },
   "48099": {
    "facts": {
     "biggest_day": {
@@ -2532,61 +2194,6 @@
    "hash": "b8c95a48e755c3be",
    "sid": "412121 2",
    "story": "Through Oct 13, the weather station in Crosbyton has 13.38 inches, 5.75 inches less than it had by this day last year. September was the wettest month at 3.38 inches. The biggest single day came May 27 with 1.47 inches. Before that the gauge went 44 days in a row with nothing in it, not even a trace, from Feb 15 to Mar 30.",
-   "through": "2026-10-13"
-  },
-  "48109": {
-   "facts": {
-    "biggest_day": {
-     "date": "Sep 24",
-     "in": "2.20",
-     "label": "biggest one-day reading"
-    },
-    "county": "Culberson County",
-    "days_in_year_so_far": 286,
-    "days_missing": 5,
-    "days_reported": 281,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "30 miles from the middle of the county",
-    "gauge_where": "6.0 miles east-northeast of Van Horn",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 278,
-      "diff_in": "0.15",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 3,
-     "through": "Oct 13",
-     "total_in": "9.92",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 25,
-     "from": "Mar 12",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 5"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": null,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "9.93",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "4.25",
-     "month": "September"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "afd41e72c5c983fe",
-   "sid": "US1TXCLB003 6",
-   "story": "Through Oct 13, the gauge 6.0 miles east-northeast of Van Horn caught most of its year in September, with 4.25 inches that month. The biggest one-day reading was 2.20 inches on Sep 24. Earlier it went 25 days in a row with nothing in the gauge, from Mar 12 to Apr 5. On the days both years reported, this year has 0.15 inches more than last year.",
    "through": "2026-10-13"
   },
   "48111": {
@@ -3118,65 +2725,6 @@
    "hash": "e70d40be0b2e0a3d",
    "sid": "US1TXES0002 6",
    "story": "Through Oct 13, the volunteer rain gauge 4.1 miles north of Cisco had its longest dry stretch at 55 days in a row with nothing in it, from Jul 18 to Sep 10. The biggest one-day reading came after that, 1.90 inches on Oct 1. April was the wettest month at 4.29 inches. On the days both years reported, this year is 2.25 inches more than last year.",
-   "through": "2026-10-13"
-  },
-  "48135": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 17",
-     "in": "2.12",
-     "label": "biggest one-day reading"
-    },
-    "county": "Ector County",
-    "days_in_year_so_far": 286,
-    "days_missing": 3,
-    "days_reported": 283,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "4 miles from the middle of the county",
-    "gauge_where": "8.3 miles west-southwest of Odessa",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 281,
-      "diff_in": "2.61",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 2,
-     "through": "Oct 13",
-     "total_in": "8.32",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 24,
-     "from": "Aug 28",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 20"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 82,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "10.93",
-    "usual_in": "13.33",
-    "vs_usual": {
-     "diff_in": "2.40",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "3.44",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "3d374813f5b19c75",
-   "sid": "US1TXEC0002 6",
-   "story": "Through Oct 13, the volunteer rain gauge 8.3 miles west-southwest of Odessa got most of its help in July, with 3.44 inches for the month. The biggest one-day reading was 2.12 inches on Jul 17. After that it went 24 days in a row with nothing in the gauge, from Aug 28 to Sep 20. On the days both years reported, that is 2.61 inches more than 2025.",
    "through": "2026-10-13"
   },
   "48137": {
@@ -4783,65 +4331,6 @@
    "story": "Through Oct 13, the weather station in Lumberton had its wettest month in July at 12.56 inches. The biggest single day came Jul 14 with 4.80 inches. Then it went 19 days in a row with nothing in the gauge, Sep 13 to Oct 1. On the days both years reported, that is 8.17 inches less than last year.",
    "through": "2026-10-13"
   },
-  "48201": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 16",
-     "in": "3.87",
-     "label": "biggest single day"
-    },
-    "county": "Harris County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "5 miles from the middle of the county",
-    "gauge_where": "4.7 miles west-northwest of Houston",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "2.68",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "41.95",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 20,
-     "from": "Feb 16",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Mar 7"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 105,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "44.63",
-    "usual_in": "42.46",
-    "vs_usual": {
-     "diff_in": "2.17",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "10.25",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "6984af27a163ec86",
-   "sid": "US1TXHRR176 6",
-   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles west-northwest of Houston has caught most of its year in June, with 10.25 inches that month. The biggest single day was Jun 16 at 3.87 inches. The longest dry stretch ran 20 days, Feb 16 to Mar 7, with nothing in the gauge, not even a trace. That puts this year 2.68 inches more than last year by this date.",
-   "through": "2026-10-13"
-  },
   "48203": {
    "facts": {
     "biggest_day": {
@@ -5060,65 +4549,6 @@
    "hash": "d7111718e272527d",
    "sid": "412585 2",
    "story": "Through Oct 13, the weather station 6 miles east of Dripping Springs had May as its wettest month at 5.77 inches. The biggest single day came Jun 15 with 2.01 inches. From Aug 3 to Aug 27 the gauge went 25 days in a row with nothing in it, not even a trace. That still leaves the year 0.92 inches more than last year, and 3.84 inches less than a usual year.",
-   "through": "2026-10-13"
-  },
-  "48211": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 14",
-     "in": "4.36",
-     "label": "biggest single day"
-    },
-    "county": "Hemphill County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "12 miles from the middle of the county",
-    "gauge_where": "in Glazier",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "0.88",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "20.90",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 38,
-     "from": "Mar 5",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 11"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 105,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "20.02",
-    "usual_in": "19.05",
-    "vs_usual": {
-     "diff_in": "0.97",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "9.46",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "da395b4e6440bc44",
-   "sid": "413568 2",
-   "story": "Through Oct 13, the weather station in Glazier had most of its year come in June, with 9.46 inches that month. The biggest single day was Jun 14 at 4.36 inches. Before that, the gauge went 38 days in a row with nothing in it, from Mar 5 to Apr 11. The total sits 0.88 inches less than last year at this point.",
    "through": "2026-10-13"
   },
   "48213": {
@@ -5826,65 +5256,6 @@
    "hash": "8bce84682bce6739",
    "sid": "US1TXJK0005 6",
    "story": "Through Oct 13, the volunteer rain gauge 1.5 miles west of Ganado has caught 32.06 inches, 8.08 inches less than a usual year. May was the wettest month at 8.55 inches, and the biggest single day was Jul 15 with 3.47 inches. Then the gauge went 29 days in a row with nothing in it, from Aug 12 to Sep 9. That puts this year 3.90 inches behind last year to the same day.",
-   "through": "2026-10-13"
-  },
-  "48241": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 14",
-     "in": "3.70",
-     "label": "biggest single day"
-    },
-    "county": "Jasper County",
-    "days_in_year_so_far": 286,
-    "days_missing": 3,
-    "days_reported": 283,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "11 miles from the middle of the county",
-    "gauge_where": "1.5 miles southeast of Kirbyville",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 282,
-      "diff_in": "7.31",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 1,
-     "through": "Oct 13",
-     "total_in": "48.01",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 19,
-     "from": "Sep 13",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Oct 1"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 84,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "40.53",
-    "usual_in": "48.05",
-    "vs_usual": {
-     "diff_in": "7.52",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "12.13",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c61dd9e2aee1d8b0",
-   "sid": "US1TXJS0003 6",
-   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles southeast of Kirbyville has caught 40.53 inches, 7.52 inches less than a usual year. June did most of the work with 12.13 inches, and the biggest single day was 3.70 inches on Jul 14. Then the gauge sat empty 19 days in a row, Sep 13 to Oct 1. On the days both years reported, that is 7.31 inches less than 2025.",
    "through": "2026-10-13"
   },
   "48243": {
@@ -7201,65 +6572,6 @@
    "story": "Through Oct 4, the volunteer rain gauge 9.4 miles south-southeast of Mexia had 23.15 inches, 5.93 inches less than a usual year. June was the wettest month at 7.38 inches, and most of that came Jun 20, when the gauge caught 5.96 inches. Then it went 40 days with nothing in it, from Jul 18 to Aug 26. On the days both years reported, this year is 7.80 inches behind last year.",
    "through": "2026-10-04"
   },
-  "48295": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 23",
-     "in": "3.62",
-     "label": "biggest single day"
-    },
-    "county": "Lipscomb County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "13 miles from the middle of the county",
-    "gauge_where": "in Follett",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 277,
-      "diff_in": "6.56",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 8,
-     "through": "Oct 13",
-     "total_in": "23.29",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 21,
-     "from": "Jul 25",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 14"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 83,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "16.73",
-    "usual_in": "20.23",
-    "vs_usual": {
-     "diff_in": "3.50",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "6.49",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "4a9c1c7857e305f5",
-   "sid": "413225 2",
-   "story": "Through Oct 13, the weather station in Follett had most of its year come in June, with 6.49 inches that month. The biggest single day was Jun 23 at 3.62 inches. Then the gauge sat empty for 21 days in a row, Jul 25 to Aug 14. On the days both years reported, that is 6.56 inches less than 2025.",
-   "through": "2026-10-13"
-  },
   "48297": {
    "facts": {
     "biggest_day": {
@@ -7661,53 +6973,6 @@
    "story": "Through Oct 13, the weather station in Jefferson had its wettest month in July at 5.92 inches, and the biggest single day came Jul 14 with 2.57 inches. The longest dry stretch ran 19 days, Feb 16 to Mar 6, with nothing in the gauge, not even a trace. On the days both years reported, this year is 11.87 inches less than last year.",
    "through": "2026-10-13"
   },
-  "48319": {
-   "facts": {
-    "biggest_day": {
-     "date": "Oct 1",
-     "in": "3.64",
-     "label": "biggest single day"
-    },
-    "county": "Mason County",
-    "days_in_year_so_far": 286,
-    "days_missing": 27,
-    "days_reported": 259,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "2 miles from the middle of the county",
-    "gauge_where": "less than a mile west of Mason",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 25,
-     "from": "Aug 3",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 27"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 130,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "25.63",
-    "usual_in": "19.74",
-    "vs_usual": {
-     "diff_in": "5.89",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "10.91",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "c69181bb90e59167",
-   "sid": "US1TXMSN008 6",
-   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Mason had 25.63 inches, 5.89 more than a usual year. July did most of the work with 10.91 inches. Then the gauge sat empty for 25 days in a row, Aug 3 to Aug 27. The biggest single day came late, 3.64 inches on Oct 1.",
-   "through": "2026-10-13"
-  },
   "48321": {
    "facts": {
     "biggest_day": {
@@ -7885,65 +7150,6 @@
    "story": "Through Oct 13, the weather station in Ft Mckavett has caught 25.57 inches, 5.46 more than a usual year. July was the wettest month at 6.96 inches, and the biggest one-day reading came Apr 2 at 3.36. Then the gauge sat empty for 25 days in a row, Aug 3 to Aug 27. On the days both years reported, that is 2.17 inches more than 2025.",
    "through": "2026-10-13"
   },
-  "48329": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 27",
-     "in": "1.19",
-     "label": "biggest single day"
-    },
-    "county": "Midland County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "12 miles from the middle of the county",
-    "gauge_where": "3.0 miles west-southwest of Midland",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "0.18",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "9.29",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 23,
-     "from": "Mar 12",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 3"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 63,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "9.11",
-    "usual_in": "14.36",
-    "vs_usual": {
-     "diff_in": "5.25",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "2.42",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "68f9c2c3369cd1b5",
-   "sid": "US1TXMDL006 6",
-   "story": "Through Oct 13, the volunteer rain gauge west-southwest of Midland had most of its year come in May, with 2.42 inches that month and 1.19 inches of it on May 27. The gauge went 23 days in a row with nothing in it, from Mar 12 to Apr 3. That leaves the year 0.18 inches less than last year at this point, and 5.25 inches less than a usual year.",
-   "through": "2026-10-13"
-  },
   "48331": {
    "facts": {
     "biggest_day": {
@@ -8060,61 +7266,6 @@
    "hash": "65b50ffe06d78c87",
    "sid": "413614 2",
    "story": "Through Oct 13, the weather station 1 mile west-southwest of Goldthwaite had its wettest month in July with 8.34 inches. The biggest single day was Jul 7 with 4.00 inches. Then the gauge sat empty for 41 days in a row, Jul 18 to Aug 27. On the days both years reported, this year has 1.30 inches more than last year.",
-   "through": "2026-10-13"
-  },
-  "48337": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 4",
-     "in": "1.45",
-     "label": "biggest single day"
-    },
-    "county": "Montague County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "6 miles from the middle of the county",
-    "gauge_where": "at Bowie Municipal Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 277,
-      "diff_in": "10.28",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 9,
-     "through": "Oct 13",
-     "total_in": "23.43",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 61,
-     "from": "Jul 21",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 19"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": null,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "13.22",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "4.94",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "cdd7357a1dda24eb",
-   "sid": "00209 1",
-   "story": "Through Oct 13, the weather station at Bowie Municipal Airport has caught 13.22 inches, and April did most of the work with 4.94 inches. The biggest single day came Apr 4 at 1.45 inches. Then the gauge sat empty for 61 days in a row, Jul 21 to Sep 19, not even a trace. On the days both years reported, that is 10.28 inches less than last year.",
    "through": "2026-10-13"
   },
   "48339": {
@@ -8817,65 +7968,6 @@
    "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Willow Park had 28.38 inches. April was the wettest month at 6.41 inches, and the biggest single day was 2.93 inches on Jun 7. The gauge then went 31 days with nothing in it, not even a trace, from Jul 26 to Aug 25. On the days both years reported, this year is about the same as 2025.",
    "through": "2026-10-13"
   },
-  "48369": {
-   "facts": {
-    "biggest_day": {
-     "date": "Sep 25",
-     "in": "3.06",
-     "label": "biggest single day"
-    },
-    "county": "Parmer County",
-    "days_in_year_so_far": 286,
-    "days_missing": 1,
-    "days_reported": 285,
-    "gauge": "weather station",
-    "gauge_from_middle": "8 miles from the middle of the county",
-    "gauge_where": "in Friona",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 285,
-      "diff_in": "2.67",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "21.72",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 30,
-     "from": "Mar 12",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 10"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 114,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "18.94",
-    "usual_in": "16.62",
-    "vs_usual": {
-     "diff_in": "2.32",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "8.54",
-     "month": "September"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "f861c01bf7bf37d3",
-   "sid": "413368 2",
-   "story": "Through Oct 13, the weather station in Friona has run 2.32 inches more than a usual year, and September did most of the work with 8.54 inches. The biggest single day was Sep 25 at 3.06 inches. Before that, the gauge sat empty 30 days in a row from Mar 12 to Apr 10. On the days both years reported, this year is still 2.67 inches less than 2025.",
-   "through": "2026-10-13"
-  },
   "48371": {
    "facts": {
     "biggest_day": {
@@ -9281,65 +8373,6 @@
    "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Leakey caught 18.53 inches in July alone, its wettest month. The biggest rain came Jul 15 at 6.14 inches. Then the gauge went 25 days in a row with nothing in it, Aug 3 to Aug 27. On the days both years reported, this year is running 5.41 inches more than 2025.",
    "through": "2026-10-13"
   },
-  "48387": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jun 20",
-     "in": "4.91",
-     "label": "biggest one-day reading"
-    },
-    "county": "Red River County",
-    "days_in_year_so_far": 283,
-    "days_missing": 2,
-    "days_reported": 281,
-    "gauge": "weather station",
-    "gauge_from_middle": "14 miles from the middle of the county",
-    "gauge_where": "5 miles north-northwest of Avery",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 275,
-      "diff_in": "2.91",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 6,
-     "through": "Oct 10",
-     "total_in": "38.41",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 24,
-     "from": "Aug 19",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 11"
-    },
-    "multi_day_reports": 2,
-    "pct_of_usual": 95,
-    "state": "Texas",
-    "through": "Oct 10",
-    "through_iso": "2026-10-10",
-    "total_in": "36.21",
-    "usual_in": "38.21",
-    "vs_usual": {
-     "diff_in": "2.00",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "14.84",
-     "month": "June"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "e258468218acc127",
-   "sid": "410443 2",
-   "story": "Through Oct 10, the weather station 5 miles north-northwest of Avery caught most of its year in June, with 14.84 inches that month. The biggest one-day reading was 4.91 inches on Jun 20. Then it went 24 days in a row with nothing in the gauge, from Aug 19 to Sep 11. On the days both years reported, 2026 sits 2.91 inches less than 2025.",
-   "through": "2026-10-10"
-  },
   "48389": {
    "facts": {
     "biggest_day": {
@@ -9393,49 +8426,6 @@
    "hash": "5b3b81f65943a5f9",
    "sid": "US1TXRV0002 6",
    "story": "Through Oct 13, the volunteer rain gauge 2.1 miles southwest of Balmorhea has caught 13.51 inches. July was the wettest month at 3.99 inches, and the biggest reading came Jul 1 with 1.60 inches. On the days both years reported, this year has 1.68 inches more than last year.",
-   "through": "2026-10-13"
-  },
-  "48391": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 20",
-     "in": "5.03",
-     "label": "biggest one-day reading"
-    },
-    "county": "Refugio County",
-    "days_in_year_so_far": 286,
-    "days_missing": 23,
-    "days_reported": 263,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "13 miles from the middle of the county",
-    "gauge_where": "7.6 miles south-southeast of Woodsboro",
-    "last_year": null,
-    "longest_dry_stretch": {
-     "days": 26,
-     "from": "Mar 10",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 4"
-    },
-    "multi_day_reports": 2,
-    "pct_of_usual": null,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "39.17",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "16.96",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "8de1bb11712aaa76",
-   "sid": "US1TXRF0010 6",
-   "story": "Through Oct 13, the volunteer rain gauge 7.6 miles south-southeast of Woodsboro had caught 39.17 inches. May did most of the work at 16.96 inches, and the biggest one-day reading was 5.03 inches on May 20. Before that, the gauge sat empty 26 days in a row from Mar 10 to Apr 4, not even a trace.",
    "through": "2026-10-13"
   },
   "48395": {
@@ -9665,124 +8655,6 @@
    "sid": "US1TXRS0008 6",
    "story": "Through Oct 12, the volunteer rain gauge 7.0 miles south-southwest of Henderson has caught 26.18 inches, 10.26 inches less than a usual year. April was the wettest month at 4.86 inches, and the biggest single day came Apr 3 with 2.16 inches. On the days both years reported, this year is 14.42 inches behind 2025.",
    "through": "2026-10-12"
-  },
-  "48409": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 27",
-     "in": "6.00",
-     "label": "biggest one-day reading"
-    },
-    "county": "San Patricio County",
-    "days_in_year_so_far": 285,
-    "days_missing": 27,
-    "days_reported": 258,
-    "gauge": "weather station",
-    "gauge_from_middle": "10 miles from the middle of the county",
-    "gauge_where": "in Welder W'life Foundation",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 244,
-      "diff_in": "13.90",
-      "dir": "more",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 18,
-     "through": "Oct 12",
-     "total_in": "26.86",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 45,
-     "from": "Aug 4",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 17"
-    },
-    "multi_day_reports": 9,
-    "pct_of_usual": 144,
-    "state": "Texas",
-    "through": "Oct 12",
-    "through_iso": "2026-10-12",
-    "total_in": "38.92",
-    "usual_in": "27.02",
-    "vs_usual": {
-     "diff_in": "11.90",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "16.59",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "63c3b0e64a7eebc9",
-   "sid": "419559 2",
-   "story": "Through Oct 12, the weather station in Welder W'life Foundation had most of its year come in May, with 16.59 inches that month. The biggest one-day reading was 6.00 inches on May 27. Then it went 45 days in a row with nothing in the gauge, from Aug 4 to Sep 17. On the days both years reported, this year is 13.90 inches more than 2025.",
-   "through": "2026-10-12"
-  },
-  "48411": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 13",
-     "in": "3.56",
-     "label": "biggest one-day reading"
-    },
-    "county": "San Saba County",
-    "days_in_year_so_far": 276,
-    "days_missing": 0,
-    "days_reported": 276,
-    "gauge": "weather station",
-    "gauge_from_middle": "15 miles from the middle of the county",
-    "gauge_where": "in Taylor Ranch",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 276,
-      "diff_in": "5.01",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 3",
-     "total_in": "37.51",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 41,
-     "from": "Jul 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 27"
-    },
-    "multi_day_reports": 1,
-    "pct_of_usual": 139,
-    "state": "Texas",
-    "through": "Oct 3",
-    "through_iso": "2026-10-03",
-    "total_in": "32.50",
-    "usual_in": "23.31",
-    "vs_usual": {
-     "diff_in": "9.19",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "9.40",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "2feb058fa668364e",
-   "sid": "418863 2",
-   "story": "Through Oct 3, the weather station in Taylor Ranch has 32.50 inches, 9.19 more than a usual year. May did most of the work at 9.40 inches, and the biggest one-day reading was 3.56 inches on Apr 13. Then the gauge sat empty for 41 days in a row, Jul 18 to Aug 27. Still, that is 5.01 inches less than last year by this date.",
-   "through": "2026-10-03"
   },
   "48413": {
    "facts": {
@@ -10256,65 +9128,6 @@
    "story": "Through Oct 13, the weather station in Breckenridge went 72 days in a row with nothing in the gauge, from Jul 21 to Sep 30. The next day, Oct 1, it caught 2.08 inches, its biggest one-day reading of the year. April was the wettest month at 5.44 inches. On the days both years reported, the station has 3.15 inches less than 2025 had.",
    "through": "2026-10-13"
   },
-  "48433": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 17",
-     "in": "2.92",
-     "label": "biggest single day"
-    },
-    "county": "Stonewall County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "2 miles from the middle of the county",
-    "gauge_where": "in Aspermont",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "5.73",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "17.32",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 46,
-     "from": "Jul 21",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 4"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 58,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "11.59",
-    "usual_in": "20.03",
-    "vs_usual": {
-     "diff_in": "8.44",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "3.56",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "75f192b66d87457c",
-   "sid": "410394 2",
-   "story": "Through Oct 13, the weather station in Aspermont caught most of its year in July. That month brought 3.56 inches, and 2.92 of it fell on Jul 17 alone. Then the gauge sat empty for 46 days in a row, from Jul 21 to Sep 4. This year is 5.73 inches behind last year at this point, and 8.44 inches less than a usual year.",
-   "through": "2026-10-13"
-  },
   "48437": {
    "facts": {
     "biggest_day": {
@@ -10372,65 +9185,6 @@
    "hash": "9f0ea9d154c799fc",
    "sid": "419380 2",
    "story": "Through Oct 13, the weather station in Vigo Park had 10.59 inches, 7.38 inches less than a usual year. It went 46 days in a row with nothing in the gauge, from Feb 15 to Apr 1. September was the wettest month at 3.25 inches, and the biggest single day was 1.50 inches on May 27. On the days both years reported, that is 8.44 inches less than last year.",
-   "through": "2026-10-13"
-  },
-  "48439": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 26",
-     "in": "2.68",
-     "label": "biggest single day"
-    },
-    "county": "Tarrant County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "7 miles from the middle of the county",
-    "gauge_where": "1 mile south-southwest of Saginaw",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "1.36",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "26.82",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 40,
-     "from": "Jul 18",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 26"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 94,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "28.18",
-    "usual_in": "29.92",
-    "vs_usual": {
-     "diff_in": "1.74",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "9.12",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "ac7233d4f1efedd4",
-   "sid": "US1TXTN0124 6",
-   "story": "Through Oct 13, the volunteer rain gauge 1 mile south-southwest of Saginaw got most of its help in April, with 9.12 inches that month. The biggest single day was Apr 26 at 2.68 inches. Then it went 40 days in a row with nothing in the gauge, from Jul 18 to Aug 26. The year still sits 1.36 inches more than last year at this point.",
    "through": "2026-10-13"
   },
   "48441": {
@@ -10657,65 +9411,6 @@
    "story": "Through Oct 13, the weather station in Mount Pleasant had 22.25 inches, 14.70 less than a usual year. April was the wettest month at 4.54 inches, and the biggest single day was 2.12 inches on Apr 5. Then it went 30 days with nothing in the gauge, from Jul 18 to Aug 16. On the days both years reported, that is 18.05 inches less than last year.",
    "through": "2026-10-13"
   },
-  "48451": {
-   "facts": {
-    "biggest_day": {
-     "date": "Apr 12",
-     "in": "2.18",
-     "label": "biggest single day"
-    },
-    "county": "Tom Green County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "3 miles from the middle of the county",
-    "gauge_where": "in San Angelo",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "3.90",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "19.59",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 20,
-     "from": "Jun 16",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Jul 5"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 89,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "15.69",
-    "usual_in": "17.71",
-    "vs_usual": {
-     "diff_in": "2.02",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "4.70",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "824a14ab4aaa7a13",
-   "sid": "417944 2",
-   "story": "Through Oct 13, the weather station in San Angelo had most of its year come in April. That month brought 4.70 inches, and 2.18 of it fell on Apr 12 alone. Then the gauge sat empty for 20 days in a row, Jun 16 to Jul 5, without even a trace. The station is at 15.69 inches, 3.90 inches less than it had by Oct 13 last year.",
-   "through": "2026-10-13"
-  },
   "48453": {
    "facts": {
     "biggest_day": {
@@ -10881,61 +9576,6 @@
    "story": "Through Oct 13, the gauge 3.9 miles east of Big Sandy has caught 28.47 inches, 8.82 inches less than a usual year. April was the wettest month at 6.15 inches, and the biggest single day came Apr 13 with 1.96 inches. It went 19 days in a row with nothing in the gauge, from Feb 16 to Mar 6. On the days both years reported, that is 17.89 inches less than 2025.",
    "through": "2026-10-13"
   },
-  "48463": {
-   "facts": {
-    "biggest_day": {
-     "date": "Jul 17",
-     "in": "6.50",
-     "label": "biggest single day"
-    },
-    "county": "Uvalde County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "20 miles from the middle of the county",
-    "gauge_where": "16.9 miles west of Uvalde",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "8.83",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "27.41",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 25,
-     "from": "Aug 3",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Aug 27"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": null,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "36.24",
-    "usual_in": null,
-    "vs_usual": null,
-    "wettest_month": {
-     "in": "17.39",
-     "month": "July"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "b3b009ed0606229f",
-   "sid": "US1TXUV0032 6",
-   "story": "Through Oct 13, the volunteer rain gauge 16.9 miles west of Uvalde had 36.24 inches for the year. July did most of the work with 17.39 inches, and Jul 17 alone put 6.50 inches in the gauge. Then it shut off for 25 days in a row, Aug 3 to Aug 27, without even a trace. That is 8.83 inches more than this gauge had by the same day last year.",
-   "through": "2026-10-13"
-  },
   "48465": {
    "facts": {
     "biggest_day": {
@@ -11054,65 +9694,6 @@
    "story": "Through Oct 12, the volunteer rain gauge 4.6 miles south-southwest of Canton had 17.44 inches less than last year by the same day. June was the wettest month at 5.62 inches, and the biggest single day was Jul 13 with 3.57 inches. Then the gauge sat empty 36 days in a row, from Jul 18 to Aug 22, not even a trace.",
    "through": "2026-10-12"
   },
-  "48469": {
-   "facts": {
-    "biggest_day": {
-     "date": "Oct 1",
-     "in": "2.90",
-     "label": "biggest single day"
-    },
-    "county": "Victoria County",
-    "days_in_year_so_far": 286,
-    "days_missing": 0,
-    "days_reported": 286,
-    "gauge": "weather station",
-    "gauge_from_middle": "5 miles from the middle of the county",
-    "gauge_where": "at Victoria Regional Airport",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 286,
-      "diff_in": "4.75",
-      "dir": "less",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 13",
-     "total_in": "35.46",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 21,
-     "from": "Mar 12",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 1"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 93,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "30.71",
-    "usual_in": "32.86",
-    "vs_usual": {
-     "diff_in": "2.15",
-     "dir": "less",
-     "word": "drier than usual"
-    },
-    "wettest_month": {
-     "in": "9.33",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "cfc8ed6da09a9717",
-   "sid": "12912 1",
-   "story": "Through Oct 13, the weather station at Victoria Regional Airport has caught most of its rain in May, with 9.33 inches that month. The biggest single day came late, 2.90 inches on Oct 1. Back in the spring it went 21 days in a row without even a trace, from Mar 12 to Apr 1. The station sits 4.75 inches behind last year at this point.",
-   "through": "2026-10-13"
-  },
   "48471": {
    "facts": {
     "biggest_day": {
@@ -11171,65 +9752,6 @@
    "sid": "414382 2",
    "story": "Through Oct 13, the weather station in Huntsville has 28.36 inches, 10.55 inches less than a usual year. July was the wettest month at 6.73 inches, and Jul 15 alone brought 3.35 inches. Then the gauge went 21 days in a row with nothing, Sep 11 to Oct 1. Last year at this point it had 11.50 inches more.",
    "through": "2026-10-13"
-  },
-  "48475": {
-   "facts": {
-    "biggest_day": {
-     "date": "May 26",
-     "in": "3.22",
-     "label": "biggest single day"
-    },
-    "county": "Ward County",
-    "days_in_year_so_far": 283,
-    "days_missing": 0,
-    "days_reported": 283,
-    "gauge": "weather station",
-    "gauge_from_middle": "19 miles from the middle of the county",
-    "gauge_where": "6 miles east-northeast of Monahans",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 283,
-      "diff_in": "2.34",
-      "dir": "more",
-      "every_day": true,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 0,
-     "through": "Oct 10",
-     "total_in": "9.74",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 51,
-     "from": "Feb 15",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Apr 6"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 105,
-    "state": "Texas",
-    "through": "Oct 10",
-    "through_iso": "2026-10-10",
-    "total_in": "12.08",
-    "usual_in": "11.53",
-    "vs_usual": {
-     "diff_in": "0.55",
-     "dir": "more",
-     "word": "wetter than usual"
-    },
-    "wettest_month": {
-     "in": "4.22",
-     "month": "May"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "3f9754a456ff272d",
-   "sid": "03047 1",
-   "story": "Through Oct 10, the weather station 6 miles east-northeast of Monahans had 12.08 inches, 0.55 more than a usual year. May did most of the work with 4.22 inches, and 3.22 of that came on May 26 alone. Before that the gauge went 51 days with nothing in it, from Feb 15 to Apr 6. That still puts this year 2.34 inches ahead of last year.",
-   "through": "2026-10-10"
   },
   "48477": {
    "facts": {
@@ -11642,65 +10164,6 @@
    "hash": "6b64cf5d8d7944f8",
    "sid": "US1TXWO0005 6",
    "story": "Through Oct 13, the volunteer rain gauge 8.1 miles north-northwest of Floresville had its wettest month in May with 7.59 inches, and its biggest single day came Apr 21 with 2.43 inches. Then it went 22 days in a row with nothing in the gauge, from Aug 6 to Aug 27. Still, on the days both years reported, this year is running 8.58 inches more than last year.",
-   "through": "2026-10-13"
-  },
-  "48497": {
-   "facts": {
-    "biggest_day": {
-     "date": "Oct 1",
-     "in": "3.45",
-     "label": "biggest single day"
-    },
-    "county": "Wise County",
-    "days_in_year_so_far": 286,
-    "days_missing": 3,
-    "days_reported": 283,
-    "gauge": "volunteer rain gauge",
-    "gauge_from_middle": "13 miles from the middle of the county",
-    "gauge_where": "less than a mile south-southwest of Runaway Bay",
-    "last_year": {
-     "compare": {
-      "days_both_reported": 282,
-      "diff_in": "6.22",
-      "dir": "less",
-      "every_day": false,
-      "means": "2026 against 2025, on the days both years reported"
-     },
-     "days_missed": 1,
-     "through": "Oct 13",
-     "total_in": "35.08",
-     "year": 2025
-    },
-    "longest_dry_stretch": {
-     "days": 52,
-     "from": "Jul 21",
-     "means": "days in a row with nothing in the gauge, not even a trace",
-     "still_going": false,
-     "to": "Sep 10"
-    },
-    "multi_day_reports": 0,
-    "pct_of_usual": 101,
-    "state": "Texas",
-    "through": "Oct 13",
-    "through_iso": "2026-10-13",
-    "total_in": "28.86",
-    "usual_in": "28.47",
-    "vs_usual": {
-     "diff_in": "0.39",
-     "dir": "more",
-     "word": "about usual"
-    },
-    "wettest_month": {
-     "in": "10.29",
-     "month": "April"
-    },
-    "whole_year": false,
-    "year": 2026,
-    "year_over": false
-   },
-   "hash": "7877af5ada86e35d",
-   "sid": "US1TXWS0015 6",
-   "story": "Through Oct 13, the volunteer rain gauge near Runaway Bay sits right about a usual year, but it got there the long way. April did most of the work with 10.29 inches, then the gauge went 52 days in a row with nothing from Jul 21 to Sep 10. The biggest single day came late, 3.45 inches on Oct 1. On the days both years reported, that is 6.22 inches less than last year.",
    "through": "2026-10-13"
   },
   "48499": {
