@@ -1,6 +1,6 @@
 // 2026-10-15: Rain Print, made findable. The search words are in the head, the Product
 // schema says only what Sig has decided (made to order, free US shipping to the 50 states,
-// no returns once printed, $15 reprint if lost or damaged), and every FAQ is in the
+// no returns once printed, free reprint if lost or damaged), and every FAQ is in the
 // structured data word for word.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -55,11 +55,11 @@ test("Product: brand, seller, a sku per offer, made to order, free shipping to a
     assert.equal(p.returnPolicyCategory, "https://schema.org/MerchantReturnNotPermitted", "made with their name: no returns once printed");
     assert.equal(p.applicableCountry, "US");
     assert.match(p.description, /Full refund if you change your mind before I print/);
-    assert.match(p.description, new RegExp("Lost or damaged in shipping: reprinted or reframed for \\$" + J.reprint_fee + "\\."));
+    assert.match(p.description, /Lost or damaged in shipping: reprinted or reframed free, with the same serial number\./);
     // the policy says what the visible FAQ says
     const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
     assert.match(faq, /If you change your mind before I print, I&rsquo;ll refund you in full/);
-    assert.match(faq, new RegExp("reprint or reframe it for \\$" + J.reprint_fee));
+    assert.match(faq, /reprint or reframe it free, with the same serial number/);
   }
 });
 

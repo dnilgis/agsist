@@ -546,12 +546,13 @@ test("T2: the privacy page is true today: Rain Print links, logos, orders, gift 
   assert.ok(!/gauge-lab/.test(P));
 });
 
-test("Sig, 2026-10-14: the page shows $15 to reprint after the prices load (not a backreference's '5')", { skip }, async () => {
+test("Sig, 2026-10-18: a lost or damaged print is replaced free, and an old fee in the prices file changes nothing", { skip }, async () => {
   for (const prices of [null, { reprint_fee: 20 }]) await withPage(async (page, base) => {
     await page.goto(base + "/rain-print.html?" + q(MINE));
     await drawn(page);
     await settle(page);
     const faq = await page.evaluate(() => [...document.querySelectorAll("details")].find((d) => /What if something/.test(d.textContent)).textContent);
-    assert.match(faq, prices ? /reframe it for \$20, with the same serial number/ : /reframe it for \$15, with the same serial number/);
+    assert.match(faq, /reprint or reframe it free, with the same serial number/);
+    assert.ok(!/\$\d/.test(faq), "no dollar amount");
   }, { prices });
 });

@@ -2582,7 +2582,7 @@
        With a checkout link they come onto the review sheet's gift box
        (#rp-pgift) and go to Sig as a rain-print-order post before checkout. */
     $('rp-gift-fields').hidden = false;
-    $('rp-gift-cardnote').textContent = 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.';
+    $('rp-gift-cardnote').textContent = 'Want a gift card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.';
     // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
     $('rp-dig-when').textContent = on ? 'The finished file by email in January, once the full year is in'
       : SETTLE && canOrder() ? 'The finished file by email once the full year is in' : 'The finished file by email within 1 business day of paying';
