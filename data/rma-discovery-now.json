@@ -1,6 +1,6 @@
 {
  "_note": "Derived from data/rma-prices.json. 'open' = a discovery window containing today; 'next' = one opening within 75 days. Price range is Conventional practice.",
- "updated": "2026-10-17T00:39:02Z",
+ "updated": "2026-10-18T00:16:28Z",
  "as_of": "2026-10-17",
  "crop_year": 2026,
  "open": [
@@ -47,8 +47,8 @@
     "Wyoming"
    ],
    "n_states": 34,
-   "lo": 4.92,
-   "hi": 4.92,
+   "lo": 4.91,
+   "hi": 4.91,
    "exch": [
     "CBOT"
    ],
@@ -75,8 +75,8 @@
     "South Dakota"
    ],
    "n_states": 7,
-   "lo": 6.89,
-   "hi": 6.89,
+   "lo": 6.87,
+   "hi": 6.87,
    "exch": [
     "CBOT"
    ],
@@ -156,8 +156,8 @@
     "Wisconsin"
    ],
    "n_states": 25,
-   "lo": 4.91,
-   "hi": 4.91,
+   "lo": 4.9,
+   "hi": 4.9,
    "exch": [
     "CBOT"
    ],
@@ -294,8 +294,8 @@
     "Wisconsin"
    ],
    "n_states": 12,
-   "lo": 0.2116,
-   "hi": 0.2116,
+   "lo": 0.2111,
+   "hi": 0.2111,
    "exch": [
     "CBOT"
    ],
@@ -395,8 +395,8 @@
     "Wisconsin"
    ],
    "n_states": 28,
-   "lo": 12.85,
-   "hi": 12.85,
+   "lo": 12.83,
+   "hi": 12.83,
    "exch": [
     "CBOT"
    ],
@@ -426,8 +426,8 @@
     "Wyoming"
    ],
    "n_states": 10,
-   "lo": 0.449,
-   "hi": 0.449,
+   "lo": 0.448,
+   "hi": 0.448,
    "exch": [
     "CBOT"
    ],
@@ -457,8 +457,8 @@
     "Wyoming"
    ],
    "n_states": 10,
-   "lo": 0.351,
-   "hi": 0.351,
+   "lo": 0.35,
+   "hi": 0.35,
    "exch": [
     "CBOT"
    ],
