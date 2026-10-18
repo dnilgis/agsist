@@ -211,6 +211,18 @@ def ordinal(n):
     return f"{n}{ {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th') }"
 
 
+def shown_pct(p, crowded):
+    """The whole percentile printed beside 'crowded' or 'not crowded'. Rounding
+    must not carry a not-crowded 89.8 up to the 90th, the crowded line itself
+    (corn, 2026-10-18 accuracy pass); the same for 10.2 down to the 10th."""
+    n = min(99, max(1, round(p)))
+    if not crowded and n >= CROWDED_HI and p < CROWDED_HI:
+        n = int(CROWDED_HI) - 1
+    if not crowded and n <= CROWDED_LO and p > CROWDED_LO:
+        n = int(CROWDED_LO) + 1
+    return n
+
+
 def crowded_side(net, p):
     """'long', 'short' or None. The sign has to agree with the percentile: a
     net-long market at the 6th percentile of its record is a small long, not a
@@ -920,7 +932,7 @@ def build_grain_lines(out):
         else:
             cr = c.get("crowded")
             rank = (f" Against every week since {since}, as a share of open interest, that is the "
-                    f"{ordinal(min(99, max(1, round(p))))} percentile ({crowd_word(p)}, "
+                    f"{ordinal(shown_pct(p, cr))} percentile ({crowd_word(p)}, "
                     f"{'crowded ' + cr if cr else 'not crowded'}).")
         lines.append({"key": key, "label": c["label"], "text": pos + move + "." + rank})
     return lines
@@ -1619,6 +1631,8 @@ def selftest():
     ckt("crowded needs the sign to agree: net long at the 6th pct is not crowded short",
         crowded_side(8166, 6.0) is None)
     ckt("crowded long at the 90th with a net long", crowded_side(100, 90.0) == "long")
+    ckt("not crowded at 89.8 prints the 89th, not the 90th", shown_pct(89.8, None) == 89 and shown_pct(90.0, "long") == 90)
+    ckt("not crowded at 10.2 prints the 11th", shown_pct(10.2, None) == 11 and shown_pct(10.0, "short") == 10)
     ckt("crowded short at the 10th with a net short", crowded_side(-100, 10.0) == "short")
     ckt("flat is a share of open interest: 5,000 of 1.8m is flat",
         side_of(5000, 1800000) == "flat" and side_of(-5000, 36000) == "short")

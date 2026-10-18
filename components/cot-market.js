@@ -74,6 +74,8 @@ window.cotMarket = function (api) {
        group, because "unpriced bushels" was about to render under Feeder
        Cattle and Class III Milk. */
     var p = c.pctl.net_oi_all;
+    /* scripts/cot_analysis.py shown_pct(): a not-crowded 89.8 prints the 89th, not the 90th (2026-10-18) */
+    function pShown(x, cr) { var n = Math.round(x); if (!cr && n >= 90 && x < 90) return 89; if (!cr && n <= 10 && x > 10) return 11; return x; }
     var noun = c.exposure_noun || 'unpriced production';
     var side = c.net > 0 ? 'long' : 'short';
     var room = c.net > 0 ? c.capacity.room_down : c.capacity.room_up;
@@ -85,7 +87,7 @@ window.cotMarket = function (api) {
          from crowdWord() and the pipeline's crowded flag, the same as The Read. */
       var where = crowdWord(p) + ', ' + (c.crowded ? 'crowded ' + c.crowded : 'not crowded');
       return '<p class="cx-verdict warn"><b>No timing signal, but a real exposure.</b> Funds hold '
-        + 'a net ' + side + ' in ' + esc(c.label) + ' at the ' + ord(p) + ' percentile of their own record since '
+        + 'a net ' + side + ' in ' + esc(c.label) + ' at the ' + ord(pShown(p, c.crowded)) + ' percentile of their own record since '
         + c.first_week.slice(0,4) + ' (' + where + '). Nothing we tested says which way price goes next. What it does '
         + 'say is that ' + num(c.capacity.to_flat) + ' contracts of ' + dir + ' sit between here and '
         + 'flat, and ' + num(room) + ' between here and the far end of that record (as a share of open interest, at today\'s open interest). That is a reason '
