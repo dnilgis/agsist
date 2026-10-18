@@ -2,8 +2,8 @@
  "schema": "agsist-feeds/1",
  "generated_by": "scripts/build_feeds.py",
  "note": "Derived from the repository, never typed. Pages come from a grep of every .html; the writer and its cadence come from the workflow that names the file or runs the script that names it.",
- "count": 95,
- "with_known_cadence": 95,
+ "count": 96,
+ "with_known_cadence": 96,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -2531,6 +2531,25 @@
     "24 4 * * *"
    ],
    "max_gap_hours": 19.1,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/whats-new.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
    "quiet": null,
    "why_quiet": null
   },
