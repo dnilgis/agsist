@@ -1,0 +1,3020 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "06001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 4",
+     "in": "0.95",
+     "label": "biggest single day"
+    },
+    "county": "Alameda County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Livermore Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.11",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "6.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Sep 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.57",
+    "usual_in": "10.15",
+    "vs_usual": {
+     "diff_in": "3.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.76",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0089dae6acdc8dd2",
+   "sid": "23285 1",
+   "story": "Through Oct 13, the weather station at Livermore Municipal Airport has had 39 days in a row with nothing in the gauge, not even a trace, from Sep 5 to Oct 13, and it is still going. February was the wettest month at 2.76 inches, and the biggest single day was 0.95 inches on Jan 4. On the days both years reported, this year has 0.11 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "06003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 17",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Alpine County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Spratt Creek",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "California",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "14.10",
+    "usual_in": "21.25",
+    "vs_usual": {
+     "diff_in": "7.15",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.40",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b575af21f2b27660",
+   "sid": "USS0019L39S 6",
+   "story": "Through Oct 10, the weather station in Spratt Creek has caught 7.15 inches less than a usual year. February was the wettest month at 4.40 inches, and the biggest single day was Feb 17 with 2.00 inches. From May 29 to Jul 12 the gauge went 45 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-10"
+  },
+  "06005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "2.62",
+     "label": "biggest single day"
+    },
+    "county": "Amador County",
+    "days_in_year_so_far": 279,
+    "days_missing": 9,
+    "days_reported": 270,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3.2 miles north of Volcano",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "0.70",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 6",
+     "total_in": "24.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Jul 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "California",
+    "through": "Oct 6",
+    "through_iso": "2026-10-06",
+    "total_in": "24.69",
+    "usual_in": "29.50",
+    "vs_usual": {
+     "diff_in": "4.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.38",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f073acfd60406cd7",
+   "sid": "US1CAAM0009 6",
+   "story": "Through Oct 6, the volunteer rain gauge 3.2 miles north of Volcano had its wettest month in February with 8.38 inches, and the biggest single day came Feb 18 at 2.62 inches. Then it went 39 days in a row with nothing in the gauge, from Jul 20 to Aug 27. On the days both years reported, this year is 0.70 inches more than last year.",
+   "through": "2026-10-06"
+  },
+  "06007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 21",
+     "in": "2.11",
+     "label": "biggest single day"
+    },
+    "county": "Butte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Oroville Municipal Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 68,
+     "from": "Jun 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.99",
+    "usual_in": "17.08",
+    "vs_usual": {
+     "diff_in": "1.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.10",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "677e893297b2556d",
+   "sid": "93210 1",
+   "story": "Through Oct 13, the weather station at Oroville Municipal Airport had its wettest month in April, with 6.10 inches. The biggest single day came Apr 21 at 2.11 inches. Then the gauge went 68 days in a row with nothing, not even a trace, from Jun 27 to Sep 2. That leaves the year 1.09 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "06009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 17",
+     "in": "1.59",
+     "label": "biggest single day"
+    },
+    "county": "Calaveras County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in San Andreas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.77",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 136,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.28",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.00",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a6251e37cc3f1ab6",
+   "sid": "047702 2",
+   "story": "Through Oct 13, the weather station in San Andreas has caught 13.28 inches this year. February did most of the work with 5.00 inches, and the biggest single day was 1.59 inches on Feb 17. The gauge has not caught a drop since May 31, so that dry stretch is at 136 days and still going. That still puts this year 0.77 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "06013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "1.22",
+     "label": "biggest single day"
+    },
+    "county": "Contra Costa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Martinez",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.59",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.02",
+    "usual_in": "15.51",
+    "vs_usual": {
+     "diff_in": "4.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.47",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6203f8da6b0d8b4e",
+   "sid": "US1CACC0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southeast of Martinez has caught 11.02 inches, 4.49 inches less than a usual year. April was the wettest month at 3.47 inches, and the biggest single day was Feb 18 with 1.22 inches. From May 30 to Jul 13 the gauge went 45 days in a row with nothing in it, not even a trace. That still puts it 2.59 inches ahead of 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "06015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 2",
+     "in": "2.04",
+     "label": "biggest single day"
+    },
+    "county": "Del Norte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "at Crescent City Mcnamara Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Jun 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.31",
+    "usual_in": "36.18",
+    "vs_usual": {
+     "diff_in": "11.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.29",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b18c0e00d37ec3f6",
+   "sid": "24286 1",
+   "story": "Through Oct 13, the weather station at Crescent City Mcnamara Airport had 24.31 inches, 11.87 inches less than a usual year. February was the wettest month at 9.29 inches. The gauge went 46 days in a row with nothing in it, from Jun 27 to Aug 11. Then the biggest single day came Sep 2 with 2.04 inches.",
+   "through": "2026-10-13"
+  },
+  "06017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.54",
+     "label": "biggest single day"
+    },
+    "county": "El Dorado County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "3.7 miles southwest of Placerville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.09",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Jul 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.17",
+    "usual_in": "23.54",
+    "vs_usual": {
+     "diff_in": "0.37",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.61",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "712d4ac971ca4a28",
+   "sid": "US1CAED0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles southwest of Placerville had most of its year in April, with 8.61 inches that month. The biggest single day was Apr 1 at 2.54 inches. Then it went 46 days in a row with nothing in the gauge, from Jul 14 to Aug 28. The station is 1.09 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "06019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "0.88",
+     "label": "biggest single day"
+    },
+    "county": "Fresno County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Fresno Yosemite Int'l",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Aug 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.54",
+    "usual_in": "7.90",
+    "vs_usual": {
+     "diff_in": "3.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.22",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0b61374da6729b1f",
+   "sid": "93193 1",
+   "story": "Through Oct 13, the weather station in Fresno Yosemite Int'l has caught 4.54 inches, 3.36 inches less than a usual year. February did most of the work with 2.22 inches, and the biggest single day was Feb 16 at 0.88 inches. The gauge has not seen a drop, not even a trace, in 46 days running from Aug 29 to Oct 13, and that stretch is still going. Last year at this point it had 2.02 inches more.",
+   "through": "2026-10-13"
+  },
+  "06023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "2.08",
+     "label": "biggest single day"
+    },
+    "county": "Humboldt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Arcata",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.44",
+    "usual_in": "28.44",
+    "vs_usual": {
+     "diff_in": "11.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.56",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fbf4fd7f34db28b2",
+   "sid": "US1CAHM0063 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Arcata had 17.44 inches, 11.00 inches less than a usual year. February was the wettest month at 7.56 inches. The biggest single day came Feb 24 with 2.08 inches. The gauge went 21 days in a row with nothing in it, not even a trace, from Jul 8 to Jul 28.",
+   "through": "2026-10-13"
+  },
+  "06027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "0.58",
+     "label": "biggest single day"
+    },
+    "county": "Inyo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "82 miles from the middle of the county",
+    "gauge_where": "1.4 miles west-northwest of Bishop",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.59",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jan 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 53,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "2.75",
+    "usual_in": "5.16",
+    "vs_usual": {
+     "diff_in": "2.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.95",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "88efff66198377d7",
+   "sid": "US1CAIN0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles west-northwest of Bishop had its wettest month in January at 0.95 inches. Then it went 36 days in a row with nothing in it, from Jan 6 to Feb 10. The biggest single day came after that, 0.58 inches on Feb 18. The year sits 0.59 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "06029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 4",
+     "in": "0.89",
+     "label": "biggest single day"
+    },
+    "county": "Kern County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "5 miles northwest of Bakersfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.80",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 137,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 52,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "2.57",
+    "usual_in": "4.92",
+    "vs_usual": {
+     "diff_in": "2.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.15",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5c4cb3182aa8806a",
+   "sid": "040444 2",
+   "story": "Through Oct 13, the weather station 5 miles northwest of Bakersfield has gone 137 days in a row with nothing in the gauge, not even a trace, starting May 30 and still going. Most of what fell came early. January was the wettest month at 1.15 inches, and the biggest single day was Jan 4 with 0.89 inches. The year sits 0.80 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "06031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 2",
+     "in": "0.70",
+     "label": "biggest single day"
+    },
+    "county": "Kings County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "1 mile south of Hanford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.56",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 137,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.47",
+    "usual_in": "6.10",
+    "vs_usual": {
+     "diff_in": "1.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.79",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f69371cfb758d695",
+   "sid": "043747 2",
+   "story": "Through Oct 13, the weather station 1 mile south of Hanford has not had a drop in the gauge since May 30. That is 137 days in a row with nothing, not even a trace, and it is still going. January was the wettest month at 1.79 inches, and the biggest single day was Jan 2 with 0.70. The station is 0.56 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "06033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "1.80",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "in Middletown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "6.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "28.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 76,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.45",
+    "usual_in": "28.21",
+    "vs_usual": {
+     "diff_in": "6.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.71",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e3565b94aeb5eee1",
+   "sid": "045598 2",
+   "story": "Through Oct 13, the weather station in Middletown had its wettest month in February at 7.71 inches, and the biggest one-day reading came Feb 16 at 1.80 inches. Then it went 45 days in a row with nothing in the gauge, from May 30 to Jul 13. On the days both years reported, this year is 6.71 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "06035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 4",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Lassen County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "3.2 miles south-southwest of Susanville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.97",
+    "usual_in": "15.69",
+    "vs_usual": {
+     "diff_in": "6.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.70",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "945f60c45870777d",
+   "sid": "US1CALS0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles south-southwest of Susanville has caught 8.97 inches, 6.72 inches less than a usual year. February was the wettest month at 3.70 inches. The biggest single day came Jan 4 with 1.49 inches. From Mar 6 to Mar 30 the gauge went 25 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "06037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Los Angeles County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Burbank Glendale Pasadena Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.30",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 74,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.94",
+    "usual_in": "10.79",
+    "vs_usual": {
+     "diff_in": "2.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.30",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "96c3ea09020a7b07",
+   "sid": "23152 1",
+   "story": "Through Oct 13, the weather station at Burbank Glendale Pasadena Airport has put most of its year in February. That month brought 3.30 inches, and Feb 16 alone gave 1.60 inches, the biggest single day. Then the gauge went 74 days in a row with nothing in it, not even a trace, from May 29 to Aug 10. Still, it is 1.30 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "06039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 21",
+     "in": "1.42",
+     "label": "biggest single day"
+    },
+    "county": "Madera County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "at Madera Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.09",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 113,
+     "from": "May 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.52",
+    "usual_in": "7.72",
+    "vs_usual": {
+     "diff_in": "2.20",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.27",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a5e7da2ed7660751",
+   "sid": "93242 1",
+   "story": "Through Oct 13, the weather station at Madera Municipal Airport had 5.52 inches, 2.20 inches less than a usual year. April was the wettest month at 2.27 inches, and Apr 21 brought the biggest single day at 1.42 inches. Then the gauge went 113 days in a row with nothing in it, from May 6 to Aug 26. That still leaves this year 0.09 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "06041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "3.24",
+     "label": "biggest single day"
+    },
+    "county": "Marin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.0 miles north-northwest of San Anselmo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.93",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 84,
+     "from": "Jun 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.19",
+    "usual_in": "23.71",
+    "vs_usual": {
+     "diff_in": "1.52",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.75",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6041d28fc43bf564",
+   "sid": "US1CAMR0025 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northwest of San Anselmo has caught most of its year early. January brought 8.75 inches, and the biggest single day was 3.24 inches on Feb 16. Then the gauge sat empty for 84 days in a row, from Jun 10 to Sep 1. That still adds up to 2.93 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "06043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 17",
+     "in": "2.92",
+     "label": "biggest single day"
+    },
+    "county": "Mariposa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "12.5 miles east of Mariposa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.88",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 44,
+     "from": "Aug 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.72",
+    "usual_in": "24.22",
+    "vs_usual": {
+     "diff_in": "3.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.58",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a962ca966e1fc76",
+   "sid": "US1CAMP0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 12.5 miles east of Mariposa had most of its year come early. February brought 7.58 inches, and the biggest single day was Feb 17 with 2.92 inches. Then the gauge sat empty for 44 days in a row, Aug 30 to Oct 12. That leaves the year 1.88 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "06045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "3.95",
+     "label": "biggest one-day reading"
+    },
+    "county": "Mendocino County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "5 miles north of Fort Bragg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "2.36",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "24.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 4"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 79,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.24",
+    "usual_in": "28.21",
+    "vs_usual": {
+     "diff_in": "5.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.74",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "479720655b6eb12c",
+   "sid": "043161 2",
+   "story": "Through Oct 13, the weather station 5 miles north of Fort Bragg had most of its year early. February was the wettest month at 9.74 inches, and the biggest one-day reading came Feb 24 with 3.95 inches. From Jul 8 to Aug 4 the gauge went 28 days in a row with nothing in it, not even a trace. On the days both years reported, this year sits 2.36 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "06047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 19",
+     "in": "0.63",
+     "label": "biggest one-day reading"
+    },
+    "county": "Merced County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Los Banos",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.82",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 90,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 76,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.05",
+    "usual_in": "6.61",
+    "vs_usual": {
+     "diff_in": "1.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.06",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "32ec022bde65c112",
+   "sid": "045118 2",
+   "story": "Through Oct 13, the weather station in Los Banos had its wettest month in February at 2.06 inches, and its biggest one-day reading came Feb 19 at 0.63. Then it went 90 days in a row from May 30 to Aug 27 with nothing in the gauge, not even a trace. It is still 1.56 inches less than a usual year. That is 1.82 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "06049": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "1.05",
+     "label": "biggest single day"
+    },
+    "county": "Modoc County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "in Adin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.75",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "12.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "California",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "7.75",
+    "usual_in": "10.35",
+    "vs_usual": {
+     "diff_in": "2.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.67",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aab858671a48e64e",
+   "sid": "040029 2",
+   "story": "Through Oct 11, the weather station in Adin has caught 4.75 inches less than it had by this day last year. February was the wettest month at 2.67 inches, and the biggest single day came May 29 with 1.05 inches. From Jul 22 to Aug 21 the gauge went 31 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-11"
+  },
+  "06051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "1.20",
+     "label": "biggest one-day reading"
+    },
+    "county": "Mono County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Lee Vining",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "0.23",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "9.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 35,
+     "from": "Feb 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 92,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.65",
+    "usual_in": "10.51",
+    "vs_usual": {
+     "diff_in": "0.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.19",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1312b703fe594dc5",
+   "sid": "044881 2",
+   "story": "Through Oct 13, the weather station in Lee Vining had its wettest month in February at 3.19 inches. Then it went 35 days in a row with nothing in the gauge, Feb 25 to Mar 31. The biggest one-day reading came late, 1.20 inches on Aug 11. On the days both years reported, this year sits 0.23 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "06053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "1.47",
+     "label": "biggest single day"
+    },
+    "county": "Monterey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in King City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.02",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Aug 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.62",
+    "usual_in": "8.39",
+    "vs_usual": {
+     "diff_in": "1.77",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.65",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "145da46dc62dbcfc",
+   "sid": "044555 2",
+   "story": "Through Oct 13, the weather station in King City had most of its year in February, with 3.65 inches that month and 1.47 inches on Feb 16 alone. The gauge has not caught a drop in 46 days, running from Aug 29 to Oct 13 and still going. Even so, it sits 1.02 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "06055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 4",
+     "in": "1.56",
+     "label": "biggest single day"
+    },
+    "county": "Napa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Markley Cove",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 98,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.97",
+    "usual_in": "19.02",
+    "vs_usual": {
+     "diff_in": "6.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.07",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a62931d918d8fa2b",
+   "sid": "045360 2",
+   "story": "Through Oct 13, the weather station in Markley Cove had 12.97 inches, 6.05 inches less than a usual year. January was the wettest month with 5.07 inches, and the biggest single day was Jan 4 at 1.56 inches. Then the gauge went 98 days in a row with nothing in it, not even a trace, from May 29 to Sep 3.",
+   "through": "2026-10-13"
+  },
+  "06057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Nevada County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "3.4 miles north-northwest of Nevada City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.04",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 44,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.80",
+    "usual_in": "35.10",
+    "vs_usual": {
+     "diff_in": "8.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.26",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "45c4288d87fa5f09",
+   "sid": "US1CANV0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northwest of Nevada City had most of its year come in April, with 10.26 inches that month. The biggest single day was Apr 12 at 2.24 inches. Then the gauge sat empty for 44 days in a row, from Jul 22 to Sep 3. It is 2.04 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "06059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 17",
+     "in": "2.23",
+     "label": "biggest one-day reading"
+    },
+    "county": "Orange County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1 mile east-southeast of Silverado",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.35",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 41,
+     "from": "Jul 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 95,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.46",
+    "usual_in": "12.06",
+    "vs_usual": {
+     "diff_in": "0.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.11",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e1e5c1b7b20a715c",
+   "sid": "US1CAOR0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile east-southeast of Silverado had most of its year come early. February brought 5.11 inches, and the biggest one-day reading was 2.23 inches on Feb 17. From Jul 28 to Sep 6 the gauge went 41 days in a row with nothing in it, not even a trace. That still leaves 0.35 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "06061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Placer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "1.6 miles south-southeast of Newcastle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.94",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 51,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.48",
+    "usual_in": "20.86",
+    "vs_usual": {
+     "diff_in": "1.62",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.36",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a283c334aa29d8a",
+   "sid": "US1CAPC0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles south-southeast of Newcastle caught most of its year in April, with 9.36 inches that month. The biggest single day was Apr 12 at 2.46 inches. Then it went 51 days in a row with nothing in the gauge, from Jul 15 to Sep 3. That still leaves it 5.94 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "06063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "1.67",
+     "label": "biggest single day"
+    },
+    "county": "Plumas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Quincy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 37,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.61",
+    "usual_in": "28.50",
+    "vs_usual": {
+     "diff_in": "9.89",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.61",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "147bfaec08b59e9b",
+   "sid": "047195 2",
+   "story": "Through Oct 13, the weather station in Quincy shows April as the wettest month at 6.61 inches, and the biggest single day came Apr 12 with 1.67 inches. Then the gauge sat empty for 37 days in a row, Jul 15 to Aug 20. On the days both years reported, this year is 9.53 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "06065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "0.96",
+     "label": "biggest single day"
+    },
+    "county": "Riverside County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Desert Resorts Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "1.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "0.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 124,
+     "from": "Feb 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "2.39",
+    "usual_in": "2.34",
+    "vs_usual": {
+     "diff_in": "0.05",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "1.71",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f75c78b7970ef27",
+   "sid": "03104 1",
+   "story": "Through Oct 13, the weather station at Desert Resorts Regional Airport had 1.71 inches in October alone, most of the year's 2.39. The biggest single day was Oct 11 at 0.96 inches. Before that came 124 days in a row with nothing in the gauge, from Feb 19 to Jun 22. On the days both years reported, that is 1.72 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "06067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 21",
+     "in": "1.37",
+     "label": "biggest single day"
+    },
+    "county": "Sacramento County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Carmichael",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "5.34",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "9.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 52,
+     "from": "Jul 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.41",
+    "usual_in": "14.29",
+    "vs_usual": {
+     "diff_in": "0.12",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.51",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "225a0a1564aec337",
+   "sid": "US1CASA0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Carmichael sits at about a usual year, just 0.12 inches more. April did most of the work with 5.51 inches, and the biggest single day was 1.37 inches on Apr 21. Then the gauge went 52 days in a row with nothing in it, from Jul 14 to Sep 3. On the days both years reported, this year is 5.34 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "06069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "1.11",
+     "label": "biggest single day"
+    },
+    "county": "San Benito County",
+    "days_in_year_so_far": 277,
+    "days_missing": 0,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "2.1 miles east-southeast of Hollister",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "0.08",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 4",
+     "total_in": "7.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 90,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "California",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "7.98",
+    "usual_in": "9.87",
+    "vs_usual": {
+     "diff_in": "1.89",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.30",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c24c574accac4f0",
+   "sid": "US1CAST0005 6",
+   "story": "Through Oct 4, the volunteer rain gauge 2.1 miles east-southeast of Hollister had most of its year in February, with 3.30 inches that month and the biggest single day at 1.11 inches on Feb 18. Then it went 90 days in a row with nothing in the gauge, not even a trace, from May 30 to Aug 27. That leaves it 1.89 inches less than a usual year. On the days both years reported, it is 0.08 inches more than last year.",
+   "through": "2026-10-04"
+  },
+  "06071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 20",
+     "in": "0.50",
+     "label": "biggest single day"
+    },
+    "county": "San Bernardino County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "48 miles from the middle of the county",
+    "gauge_where": "in Barstow",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.22",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "3.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 79,
+     "from": "Apr 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "2.27",
+    "usual_in": "3.52",
+    "vs_usual": {
+     "diff_in": "1.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.01",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "055d262b74f8bb8d",
+   "sid": "040521 2",
+   "story": "Through Oct 13, the weather station in Barstow had most of its year come early. February was the wettest month at 1.01 inches, and the biggest single day was 0.50 inches on Feb 20. Then the gauge went 79 days in a row with nothing in it, not even a trace, from Apr 26 to Jul 13. That leaves the station 1.22 inches less than it had by this day last year.",
+   "through": "2026-10-13"
+  },
+  "06073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 1",
+     "in": "1.96",
+     "label": "biggest single day"
+    },
+    "county": "San Diego County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "at Ramona Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.64",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.38",
+    "usual_in": "11.03",
+    "vs_usual": {
+     "diff_in": "0.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.31",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "834ca1c32a8c123b",
+   "sid": "53120 1",
+   "story": "Through Oct 13, the weather station at Ramona Airport had its biggest single day on Jan 1 with 1.96 inches. February was the wettest month at 3.31 inches. Then the gauge sat empty for 39 days in a row, from Feb 21 to Mar 31. The year is 1.64 inches ahead of 2025 at this point, but still 0.65 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "06075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 5",
+     "in": "1.07",
+     "label": "biggest single day"
+    },
+    "county": "San Francisco County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in San Francisco Downtown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "1.17",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "10.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Jun 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.83",
+    "usual_in": "14.81",
+    "vs_usual": {
+     "diff_in": "2.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.37",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fca7ed7be7a1f31e",
+   "sid": "23272 1",
+   "story": "Through Oct 13, the weather station in San Francisco Downtown had its wettest month in February at 4.37 inches. The biggest single day was Jan 5 with 1.07 inches. Then it went 47 days in a row with nothing in the gauge, from Jun 28 to Aug 13. On the days both years reported, that is 1.17 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "06077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 17",
+     "in": "1.66",
+     "label": "biggest single day"
+    },
+    "county": "San Joaquin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "5.8 miles east-northeast of Linden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.53",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 44,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.23",
+    "usual_in": "13.69",
+    "vs_usual": {
+     "diff_in": "1.46",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.94",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6aba820b7e5942a3",
+   "sid": "US1CASJ0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.8 miles east-northeast of Linden had 12.23 inches, 1.46 inches less than a usual year. April was the wettest month at 4.94 inches, and the biggest single day was 1.66 inches on Feb 17. The gauge then went 44 days in a row with nothing in it, from Jul 15 to Aug 27. Still, that is 3.53 inches more than last year had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "06079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "1.76",
+     "label": "biggest single day"
+    },
+    "county": "San Luis Obispo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at San Luis Obispo Mcchesney Field",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.79",
+    "usual_in": "12.59",
+    "vs_usual": {
+     "diff_in": "3.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.37",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "58e7520a32666748",
+   "sid": "93206 1",
+   "story": "Through Oct 13, the weather station at San Luis Obispo Mcchesney Field has 8.79 inches, 3.80 inches less than a usual year. February did most of the work with 4.37 inches, and Feb 16 alone brought 1.76 inches, the biggest single day. The gauge has gone 47 days in a row with nothing in it, not even a trace, from Aug 28 to Oct 13, and that stretch is still going.",
+   "through": "2026-10-13"
+  },
+  "06081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 17",
+     "in": "1.34",
+     "label": "biggest single day"
+    },
+    "county": "San Mateo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Redwood City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.97",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "9.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 97,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.12",
+    "usual_in": "12.60",
+    "vs_usual": {
+     "diff_in": "2.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.82",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9b8f6da1d4a7449c",
+   "sid": "047339 2",
+   "story": "Through Oct 13, the weather station in Redwood City had its wettest month in February at 3.82 inches, and the biggest single day came Feb 17 with 1.34 inches. Then it went 97 days in a row with nothing in the gauge, from May 29 to Sep 2. On the days both years reported, this year is 0.97 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "06083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 4",
+     "in": "1.97",
+     "label": "biggest single day"
+    },
+    "county": "Santa Barbara County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Cachuma Lake",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 90,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.23",
+    "usual_in": "15.97",
+    "vs_usual": {
+     "diff_in": "4.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.34",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bc3ec82f1a6feb9e",
+   "sid": "041253 2",
+   "story": "Through Oct 13, the weather station in Cachuma Lake had 11.23 inches, 4.74 inches less than a usual year. February was the wettest month at 5.34 inches. The biggest single day was Jan 4 with 1.97 inches. Then the gauge went 90 days in a row with nothing in it, not even a trace, from May 30 to Aug 27.",
+   "through": "2026-10-13"
+  },
+  "06085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 4",
+     "in": "1.12",
+     "label": "biggest single day"
+    },
+    "county": "Santa Clara County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in San Jose",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.65",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "Jul 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.43",
+    "usual_in": "9.48",
+    "vs_usual": {
+     "diff_in": "2.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.08",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ca47a0f7e68263c3",
+   "sid": "23293 1",
+   "story": "Through Oct 13, the weather station in San Jose had its wettest month in February at 3.08 inches. The biggest single day was Jan 4 with 1.12 inches. Then it went 45 days in a row with nothing in the gauge, not even a trace, from Jul 14 to Aug 27. That leaves the year 0.65 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "06087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "2.66",
+     "label": "biggest single day"
+    },
+    "county": "Santa Cruz County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3.0 miles northwest of Boulder Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "2.51",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "24.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Sep 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.23",
+    "usual_in": "28.71",
+    "vs_usual": {
+     "diff_in": "1.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.05",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "25874cd062edd4d5",
+   "sid": "US1CASZ0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles northwest of Boulder Creek had most of its year in February, with 11.05 inches that month. The biggest single day was Feb 16 at 2.66 inches. The gauge has had nothing at all for 39 days in a row, from Sep 5 to Oct 13, and that stretch is still going. On the days both years reported, this year is 2.51 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "06089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 25",
+     "in": "2.67",
+     "label": "biggest single day"
+    },
+    "county": "Shasta County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "7.9 miles north-northeast of Redding",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "6.19",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "28.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 42,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.68",
+    "usual_in": "32.22",
+    "vs_usual": {
+     "diff_in": "8.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.96",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f59244fad55be89a",
+   "sid": "US1CASH0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.9 miles north-northeast of Redding had its wettest month in February at 7.96 inches. The biggest single day came Feb 25 with 2.67 inches. Then the gauge sat empty for 42 days in a row, Jul 22 to Sep 1. On the days both years reported, this year is 6.19 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "06091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Sierra County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Independence Camp",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "California",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "14.10",
+    "usual_in": "21.81",
+    "vs_usual": {
+     "diff_in": "7.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.10",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ef7eac8255934c75",
+   "sid": "USS0020K04S 6",
+   "story": "Through Oct 10, the weather station in Independence Camp had 14.10 inches, 7.71 inches less than a usual year. February did most of the work with 6.10 inches, and the biggest single day was Feb 24 at 2.10 inches. Then the gauge sat empty for 46 days in a row, from May 28 to Jul 12, not even a trace.",
+   "through": "2026-10-10"
+  },
+  "06093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 8",
+     "in": "0.79",
+     "label": "biggest single day"
+    },
+    "county": "Siskiyou County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Montague Siskiyou Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "6.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 42,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.58",
+    "usual_in": "7.81",
+    "vs_usual": {
+     "diff_in": "2.23",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.94",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f936c084cf05fdf",
+   "sid": "24259 1",
+   "story": "Through Oct 13, the weather station at Montague Siskiyou Airport has 5.58 inches, 2.23 inches less than a usual year. February was the wettest month at 1.94 inches, and Feb 8 brought the biggest single day at 0.79 inches. The gauge then went 42 days in a row with nothing in it, from Jul 22 to Sep 1. On the days both years reported, this year is 0.95 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "06095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 5",
+     "in": "0.94",
+     "label": "biggest single day"
+    },
+    "county": "Solano County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Vacaville/Nut Tree Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.45",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 110,
+     "from": "Jun 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.10",
+    "usual_in": "16.61",
+    "vs_usual": {
+     "diff_in": "6.51",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.57",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d40d7355d737d6a6",
+   "sid": "93241 1",
+   "story": "Through Oct 13, the weather station at Vacaville/Nut Tree Airport had 10.10 inches, 6.51 inches less than a usual year. January was the wettest month at 3.57 inches, and the biggest single day was 0.94 inches on Jan 5. From Jun 9 to Sep 26 the gauge went 110 days in a row with nothing in it, not even a trace. Last year at this point it had 12.55 inches, so this year is 2.45 inches behind.",
+   "through": "2026-10-13"
+  },
+  "06097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 5",
+     "in": "1.85",
+     "label": "biggest single day"
+    },
+    "county": "Sonoma County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Santa Rosa Sonoma County Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.06",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "17.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "Mar 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.65",
+    "usual_in": "22.19",
+    "vs_usual": {
+     "diff_in": "8.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.52",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9add998388f963d2",
+   "sid": "23213 1",
+   "story": "Through Oct 13, the weather station at Santa Rosa Sonoma County Airport had its wettest month in January at 4.52 inches, and the biggest single day came Jan 5 with 1.85 inches. From Mar 3 to Mar 29 it went 27 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 4.06 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "06099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "1.65",
+     "label": "biggest single day"
+    },
+    "county": "Stanislaus County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Modesto Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.31",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 75,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.72",
+    "usual_in": "8.57",
+    "vs_usual": {
+     "diff_in": "1.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.00",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "42c4f1eb5f3fad40",
+   "sid": "23258 1",
+   "story": "Through Oct 13, the weather station at Modesto Airport got most of its year early. February was the wettest month at 3.00 inches, and the biggest single day was Feb 16 with 1.65 inches. Then the gauge went 75 days in a row with nothing in it, not even a trace, from May 30 to Aug 12. It still sits 0.31 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "06103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 11",
+     "in": "1.17",
+     "label": "biggest single day"
+    },
+    "county": "Tehama County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Red Bluff Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "2.97",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "9.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 48,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.59",
+    "usual_in": "15.55",
+    "vs_usual": {
+     "diff_in": "2.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.13",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "538c5c60aad3e8d0",
+   "sid": "24216 1",
+   "story": "Through Oct 13, the weather station at Red Bluff Municipal Airport had its wettest month in February at 5.13 inches, and its biggest single day came Feb 11 with 1.17 inches. Then it went 48 days in a row with nothing in the gauge, from Jul 15 to Aug 31. On the days both years reported, this year is 2.97 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "06105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "2.77",
+     "label": "biggest one-day reading"
+    },
+    "county": "Trinity County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "1.7 miles southwest of Mad River",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.21",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 41,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.00",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.92",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c4ee9cf78c4ed247",
+   "sid": "US1CATY0028 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles southwest of Mad River caught 23.00 inches, 18.21 inches less than last year by the same day. February did most of the work with 9.92 inches, and the biggest one-day reading was 2.77 inches on Feb 24. Then it went 41 days in a row with nothing in the gauge, from Jul 23 to Sep 1.",
+   "through": "2026-10-13"
+  },
+  "06107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "1.00",
+     "label": "biggest single day"
+    },
+    "county": "Tulare County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Lindsay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.01",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 90,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.67",
+    "usual_in": "8.60",
+    "vs_usual": {
+     "diff_in": "2.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.17",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4fe48dc4b3d6fc48",
+   "sid": "044957 2",
+   "story": "Through Oct 13, the weather station in Lindsay had most of its year early. January was the wettest month at 2.17 inches, and the biggest single day was 1.00 inch on Feb 18. Then the gauge went 90 days in a row with nothing in it, not even a trace, from May 30 to Aug 27. That leaves the year 1.01 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "06109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 17",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Tuolumne County",
+    "days_in_year_so_far": 285,
+    "days_missing": 5,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "29 miles from the middle of the county",
+    "gauge_where": "in New Melones",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "1.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "14.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 85,
+     "from": "Jun 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "California",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "15.23",
+    "usual_in": "20.21",
+    "vs_usual": {
+     "diff_in": "4.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.39",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9f9304eac3178cb",
+   "sid": "046174 2",
+   "story": "Through Oct 12, the station in New Melones had its wettest month in February with 5.39 inches. The biggest single day came Feb 17 at 2.05 inches. Then the gauge sat empty for 85 days in a row, Jun 5 to Aug 28, not even a trace. On the days both years reported, this year has 1.15 inches more than 2025.",
+   "through": "2026-10-12"
+  },
+  "06113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 21",
+     "in": "1.00",
+     "label": "biggest single day"
+    },
+    "county": "Yolo County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "6.3 miles west of Davis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.61",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 75,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 67,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.45",
+    "usual_in": "14.21",
+    "vs_usual": {
+     "diff_in": "4.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.17",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9be34a6b32483a78",
+   "sid": "US1CAYL0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.3 miles west of Davis had its wettest month in January at 3.17 inches. The biggest single day came Apr 21 with 1.00 inch. Then it went 75 days in a row with nothing in the gauge, from Jul 15 to Sep 27. Still, that is 1.61 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "06115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Yuba County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1.3 miles west-southwest of Challenge-Brownsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "2.42",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "32.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 85,
+     "from": "Jun 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "California",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.75",
+    "usual_in": "38.17",
+    "vs_usual": {
+     "diff_in": "8.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.19",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f150187c4ba812dd",
+   "sid": "US1CAYB0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-southwest of Challenge-Brownsville caught most of its year early. February was the wettest month at 10.19 inches, and the biggest single day was 2.87 inches on Apr 12. Then the gauge went 85 days in a row with nothing in it, from Jun 11 to Sep 3. On the days both years reported, that is 2.42 inches less than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "CA"
+}

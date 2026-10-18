@@ -1,0 +1,5226 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "29001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "4.12",
+     "label": "biggest single day"
+    },
+    "county": "Adair County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Kirksville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "10.76",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "32.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.17",
+    "usual_in": "36.10",
+    "vs_usual": {
+     "diff_in": "7.07",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.68",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6a691f825d6cd4cf",
+   "sid": "234544 2",
+   "story": "Through Oct 13, the weather station in Kirksville had June as its wettest month at 10.68 inches, and the biggest single day came Jun 11 with 4.12 inches. Later it went 15 days in a row with nothing at the station, not even a trace, from Aug 26 to Sep 9. On the days both years reported, this year sits 10.76 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "29003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "5.53",
+     "label": "biggest one-day reading"
+    },
+    "county": "Andrew County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile north-northeast of Savannah",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": 123,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.71",
+    "usual_in": "30.60",
+    "vs_usual": {
+     "diff_in": "7.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.02",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "23e202e16182dc8b",
+   "sid": "US1MOFSA003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north-northeast of Savannah had 37.71 inches, 7.11 more than a usual year. June did most of the work with 10.02 inches, and 5.53 of that came on Jun 5 alone. The gauge went 18 days with nothing in it, from Jan 27 to Feb 13.",
+   "through": "2026-10-13"
+  },
+  "29007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.83",
+     "label": "biggest single day"
+    },
+    "county": "Audrain County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "in Vandalia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "3.48",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "32.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.63",
+    "usual_in": "34.12",
+    "vs_usual": {
+     "diff_in": "6.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.81",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "53455915f7ac3862",
+   "sid": "238577 2",
+   "story": "Through Oct 13, the weather station in Vandalia has caught 6.49 inches less than a usual year. April did most of the work at 6.81 inches, and Apr 28 alone brought 2.83 inches. On the days both years reported, 2026 sits 3.48 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "29009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "4.65",
+     "label": "biggest single day"
+    },
+    "county": "Barry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "4.8 miles south-southeast of Cassville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.59",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.23",
+    "usual_in": "39.96",
+    "vs_usual": {
+     "diff_in": "3.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.26",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9d6f376fc19413c1",
+   "sid": "US1MOBY0025 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles south-southeast of Cassville had June as its wettest month at 11.26 inches. The biggest single day came Jun 22 with 4.65 inches. Then it went 16 days in a row with nothing in the gauge, from Aug 26 to Sep 10. That leaves it 3.59 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "29011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 14",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Barton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "7 miles north of Lamar",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.79",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.88",
+    "usual_in": "40.86",
+    "vs_usual": {
+     "diff_in": "3.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.89",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7bc1e2c3db09e55f",
+   "sid": "234705 2",
+   "story": "Through Oct 13, the weather station 7 miles north of Lamar had its biggest single day back on Feb 14, with 2.73 inches. June was the wettest month at 7.89 inches. From Aug 9 to Aug 23 it went 15 days in a row with nothing in the gauge, not even a trace. That leaves the year 2.79 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "29013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "4.45",
+     "label": "biggest single day"
+    },
+    "county": "Bates County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "1.9 miles northwest of Appleton City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.77",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "36.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.92",
+    "usual_in": "36.27",
+    "vs_usual": {
+     "diff_in": "5.65",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.62",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bd3b4ac78926bf15",
+   "sid": "US1MOBS0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles northwest of Appleton City had a lot of its year come in April, with 12.62 inches that month. The biggest single day was Apr 2 at 4.45 inches. The gauge also went 19 days in a row with nothing in it, from Jan 26 to Feb 13. On the days both years reported, that is 5.77 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29015": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "4.04",
+     "label": "biggest one-day reading"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 281,
+    "days_missing": 0,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Truman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "7.31",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 8",
+     "total_in": "28.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Aug 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 101,
+    "state": "Missouri",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "36.27",
+    "usual_in": "36.03",
+    "vs_usual": {
+     "diff_in": "0.24",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.35",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "67127f865ec9ec38",
+   "sid": "238466 2",
+   "story": "Through Oct 8, the weather station in Truman sits right about where a usual year would, just 0.24 inches more. April did most of the work at 9.35 inches, and the biggest one-day reading was 4.04 inches on May 19. Then the gauge went 21 days in a row with nothing in it, from Aug 20 to Sep 9. Still, that is 7.31 inches more than last year by this day.",
+   "through": "2026-10-08"
+  },
+  "29019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "3.45",
+     "label": "biggest single day"
+    },
+    "county": "Boone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.3 miles northwest of Columbia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "20.68",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Aug 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.28",
+    "usual_in": "35.89",
+    "vs_usual": {
+     "diff_in": "9.39",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "027ebc50a63b8948",
+   "sid": "US1MOFSA019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles northwest of Columbia had 20.68 inches more than last year by the same day. June was the wettest month at 10.12 inches, and the biggest single day was Jun 8 with 3.45 inches. Then it shut off. The gauge caught nothing, not even a trace, for 21 days in a row from Aug 20 to Sep 9.",
+   "through": "2026-10-13"
+  },
+  "29021": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "2.19",
+     "label": "biggest single day"
+    },
+    "county": "Buchanan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at St Joseph Rosecrans Memorial Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "5.81",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.25",
+    "usual_in": "29.58",
+    "vs_usual": {
+     "diff_in": "2.67",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.23",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db2c4adf983a23fd",
+   "sid": "13993 1",
+   "story": "Through Oct 13, the weather station at St Joseph Rosecrans Memorial Airport had September as its wettest month at 7.23 inches. The biggest single day came May 18 with 2.19 inches. The gauge went 14 days in a row with nothing in it, not even a trace, from Jan 31 to Feb 13. On the days both years reported, that is 5.81 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "29023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Butler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Poplar Bluff Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "14.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "41.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.66",
+    "usual_in": "39.14",
+    "vs_usual": {
+     "diff_in": "12.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.29",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "baf3446808da112b",
+   "sid": "03975 1",
+   "story": "Through Oct 13, the weather station at Poplar Bluff Municipal Airport has caught 12.48 inches less than a usual year. July was the wettest month at 5.29 inches, and Jul 31 brought the biggest single day at 2.46 inches. The gauge went 19 days in a row with nothing in it, from Jan 26 to Feb 13. On the days both years reported, this year is 14.70 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "29025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Caldwell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Kingston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "3.76",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "28.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.54",
+    "usual_in": "34.33",
+    "vs_usual": {
+     "diff_in": "0.79",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.12",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "91f8262861cc0cf9",
+   "sid": "US1MOFSA025 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Kingston sits at 33.54 inches, 0.79 inches less than a usual year. September was the wettest month at 6.12 inches, and the biggest single day was Aug 6 with 2.73 inches. The gauge went 19 days in a row with nothing, Jan 26 to Feb 13. On the days both years reported, this year is 3.76 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "29027": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.37",
+     "label": "biggest single day"
+    },
+    "county": "Callaway County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2.5 miles north-northeast of Holts Summit",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.61",
+    "usual_in": "36.74",
+    "vs_usual": {
+     "diff_in": "1.87",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.19",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a51136ccddc33783",
+   "sid": "US1MOCW0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles north-northeast of Holts Summit has caught 38.61 inches, 1.87 more than a usual year. April did most of the work at 9.19 inches, and the biggest single day was 2.37 on May 19. Then it went 20 days with nothing in the gauge, Aug 21 to Sep 9. Still 6.69 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "29029": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.51",
+     "label": "biggest single day"
+    },
+    "county": "Camden County",
+    "days_in_year_so_far": 286,
+    "days_missing": 27,
+    "days_reported": 259,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "5.6 miles southwest of Brumley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 257,
+      "diff_in": "2.18",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "35.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.74",
+    "usual_in": "36.69",
+    "vs_usual": {
+     "diff_in": "0.05",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.34",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d80a7df7cf95f7b7",
+   "sid": "US1MOCM0002 6",
+   "story": "Through Oct 13, the gauge 5.6 miles southwest of Brumley had its wettest month in April, with 9.34 inches. The biggest single day came May 19 at 3.51 inches. Later it went 20 days in a row with nothing in it, not even a trace, from Aug 21 to Sep 9. On the days both years reported, this year is 2.18 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "4.43",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cape Girardeau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 28,
+    "days_reported": 258,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile southwest of Jackson",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 13,
+    "pct_of_usual": 97,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.93",
+    "usual_in": "35.10",
+    "vs_usual": {
+     "diff_in": "1.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.75",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d618b3793a0f282b",
+   "sid": "US1MOFSA031 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile southwest of Jackson had 33.93 inches, 1.17 inches less than a usual year. June was the wettest month at 7.75 inches. The biggest one-day reading came Jul 10 with 4.43 inches. From Sep 12 to Oct 1 the gauge went 20 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "29033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "3.11",
+     "label": "biggest one-day reading"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Carrollton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.31",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "28.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 95,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.84",
+    "usual_in": "34.60",
+    "vs_usual": {
+     "diff_in": "1.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.79",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ddd7e204e68820e9",
+   "sid": "231340 2",
+   "story": "Through Oct 13, the weather station in Carrollton has caught 32.84 inches, 1.76 less than a usual year. April did most of the work with 8.79 inches, and the biggest one-day reading was 3.11 inches on Apr 27. On the days both years reported, that is 4.31 inches more than 2025. The longest dry stretch ran 20 days, Jan 26 to Feb 14, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "29035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 7",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Carter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.8 miles west-northwest of Ellsinore",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "11.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "39.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.43",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.51",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "230dbbe0771a4eb0",
+   "sid": "US1MOCT0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles west-northwest of Ellsinore caught 27.43 inches. On the days both years reported, that is 11.29 inches less than 2025. The biggest single day was Mar 7 at 1.60 inches, and then the gauge sat empty for 17 days in a row from Mar 17 to Apr 2. April still came in as the wettest month at 5.51 inches.",
+   "through": "2026-10-13"
+  },
+  "29037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "2.52",
+     "label": "biggest single day"
+    },
+    "county": "Cass County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Pleasant Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.61",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "34.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.95",
+    "usual_in": "36.61",
+    "vs_usual": {
+     "diff_in": "5.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.19",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3787a10518745a8d",
+   "sid": "03983 1",
+   "story": "Through Oct 13, the weather station in Pleasant Hill sits 5.34 inches more than a usual year. April did most of the work at 9.19 inches, the wettest month. The biggest single day was Aug 5 with 2.52 inches, and then the gauge went 14 days with nothing in it from Aug 23 to Sep 5. On the days both years reported, that is 7.61 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "29039": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.06",
+     "label": "biggest single day"
+    },
+    "county": "Cedar County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.5 miles north-northeast of Stockton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "5.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "39.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.70",
+    "usual_in": "37.95",
+    "vs_usual": {
+     "diff_in": "3.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.92",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a4eb310fa0d039e6",
+   "sid": "US1MOCD0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles north-northeast of Stockton has caught 34.70 inches, 3.25 inches less than a usual year. June was the wettest month at 7.92 inches, and the biggest single day came May 19 with 3.06 inches. On the days both years reported, this year sits 5.71 inches behind last year. The gauge went 13 days in a row with nothing in it, from Feb 1 to Feb 13.",
+   "through": "2026-10-13"
+  },
+  "29043": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "2.88",
+     "label": "biggest single day"
+    },
+    "county": "Christian County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "1 mile southwest of Billings",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "38.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.58",
+    "usual_in": "37.22",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.98",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa2ee42504802a1b",
+   "sid": "230657 2",
+   "story": "Through Oct 13, the weather station 1 mile southwest of Billings had 33.58 inches, 3.64 inches less than a usual year. April was the wettest month at 6.98 inches, and the biggest single day was 2.88 inches on May 29. The gauge stayed bone dry for 19 days in a row from Jan 26 to Feb 13. On the days both years reported, this year is 4.85 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "29047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "3.45",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Pleasant Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.70",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.11",
+    "usual_in": "35.66",
+    "vs_usual": {
+     "diff_in": "4.45",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.43",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3d2dbf8c8e30b716",
+   "sid": "US1MOCY0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Pleasant Valley has caught 14.70 inches more than it had by this day last year. April did most of the work with 8.43 inches, and Apr 27 alone brought 3.45 inches, the biggest single day. The longest dry stretch ran 13 days, from Aug 25 to Sep 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "29049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Clinton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2.7 miles south of Gower",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "10.00",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "24.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.73",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.48",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "804fc4c08221dcc8",
+   "sid": "US1MOCN0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles south of Gower had 34.73 inches. September was the wettest month at 7.48 inches, and the biggest single day was Sep 7 with 3.30 inches. On the days both years reported, that is 10.00 inches more than last year. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "29051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "3.35",
+     "label": "biggest single day"
+    },
+    "county": "Cole County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "5.9 miles west of Jefferson City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "4.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "30.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.73",
+    "usual_in": "35.42",
+    "vs_usual": {
+     "diff_in": "1.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.16",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3fdc771ef1b26813",
+   "sid": "US1MOCE0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.9 miles west of Jefferson City had its wettest month in April with 8.16 inches. The biggest single day was Jun 8 at 3.35 inches. Then it went 17 days in a row with nothing in the gauge, from Aug 24 to Sep 9. On the days both years reported, that is 4.37 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "3.33",
+     "label": "biggest single day"
+    },
+    "county": "Cooper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "less than a mile east-southeast of Boonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.72",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.89",
+    "usual_in": "36.90",
+    "vs_usual": {
+     "diff_in": "8.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.66",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a97a64b0f6f549ae",
+   "sid": "US1MOCP0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-southeast of Boonville had its wettest month in April at 10.66 inches. The biggest single day came Apr 2 with 3.33 inches. Then it went 20 days in a row with nothing in the gauge, from Aug 21 to Sep 9. This year is 15.72 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "29055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "7.28",
+     "label": "biggest single day"
+    },
+    "county": "Crawford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "5.6 miles southwest of Steelville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "4.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "43.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 127,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.88",
+    "usual_in": "37.74",
+    "vs_usual": {
+     "diff_in": "10.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.28",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9fc0f79ae3f4891c",
+   "sid": "US1MOCF0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles southwest of Steelville had its biggest single day on Jul 10, at 7.28 inches. That put July at 10.28 inches, the wettest month by a good stretch. On the days both years reported, this year has 4.23 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "29057": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "3.43",
+     "label": "biggest single day"
+    },
+    "county": "Dade County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Greenfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "2.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "39.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.91",
+    "usual_in": "36.68",
+    "vs_usual": {
+     "diff_in": "2.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.40",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "83e585771ecc7622",
+   "sid": "US1MOFSA057 6",
+   "story": "Through Oct 13, the volunteer rain gauge just south-southwest of Greenfield had caught 38.91 inches, 2.23 inches more than a usual year. April did most of the work with 9.40 inches, and the biggest single day was 3.43 inches on May 31. The longest dry stretch ran 19 days, Jan 26 to Feb 13. On the days both years reported, this year sits 2.32 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "2.76",
+     "label": "biggest one-day reading"
+    },
+    "county": "Daviess County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.1 miles west-northwest of Gallatin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "3.46",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "27.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 107,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.87",
+    "usual_in": "29.73",
+    "vs_usual": {
+     "diff_in": "2.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d6b40ead2fbf5182",
+   "sid": "US1MOFSA061 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles west-northwest of Gallatin had its biggest one-day reading on Sep 16, at 2.76 inches. The longest dry stretch ran 19 days, from Jan 26 to Feb 13, with not even a trace in the gauge. On the days both years reported, this year is 3.46 inches more than last year. That puts it 2.14 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "29063": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "2.04",
+     "label": "biggest single day"
+    },
+    "county": "DeKalb County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Cameron",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "5.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.10",
+    "usual_in": "32.72",
+    "vs_usual": {
+     "diff_in": "3.38",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c0fec197a06e1e1f",
+   "sid": "231216 2",
+   "story": "Through Oct 13, the weather station in Cameron had June as the wettest month at 7.30 inches. The biggest single day came May 30 with 2.04 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with nothing in the gauge. On the days both years reported, this year is 5.44 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "29065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "4.31",
+     "label": "biggest single day"
+    },
+    "county": "Dent County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.8 miles northwest of Salem",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.95",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.40",
+    "usual_in": "37.59",
+    "vs_usual": {
+     "diff_in": "3.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.91",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f1dace4594776763",
+   "sid": "US1MOFSA065 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles northwest of Salem had 34.40 inches, 3.19 inches less than a usual year. March did most of the work with 8.91 inches, and 4.31 of that came on Mar 5 alone. The gauge sat empty 13 days in a row from Feb 1 to Feb 13. Last year by this day it had 38.35 inches, so 2026 is 3.95 inches behind.",
+   "through": "2026-10-13"
+  },
+  "29067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "2.94",
+     "label": "biggest one-day reading"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5 miles north of Wasola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "14.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 85,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.89",
+    "usual_in": "36.49",
+    "vs_usual": {
+     "diff_in": "5.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.88",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cbd1ef2bd0221dd1",
+   "sid": "238754 2",
+   "story": "Through Oct 13, the station 5 miles north of Wasola had the most rain in June, 6.88 inches. The biggest one-day reading came Aug 7 at 2.94 inches. The gauge went 18 days in a row with nothing in it, from Jan 27 to Feb 13. On the days both years reported, this year ran 14.73 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29071": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.38",
+     "label": "biggest one-day reading"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Washington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "3.90",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "32.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 103,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.58",
+    "usual_in": "35.42",
+    "vs_usual": {
+     "diff_in": "1.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.58",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "78bcf586b1da9d48",
+   "sid": "238746 2",
+   "story": "Through Oct 13, the station in Washington has caught 36.58 inches, 1.16 inches more than a usual year. April was the wettest month at 7.58 inches, and the biggest one-day reading came May 19 with 3.38 inches. Then the gauge sat empty for 20 days in a row, Aug 21 to Sep 9. On the days both years reported, this year is 3.90 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "29073": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.02",
+     "label": "biggest one-day reading"
+    },
+    "county": "Gasconade County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Rosebud",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 98,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.24",
+    "usual_in": "36.83",
+    "vs_usual": {
+     "diff_in": "0.59",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.02",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3156fc4a6fe60388",
+   "sid": "237300 2",
+   "story": "Through Oct 13, the weather station in Rosebud had its wettest month in April, with 8.02 inches. The biggest one-day reading was 3.02 inches on May 19. Then the gauge went 19 days in a row with nothing in it, from Aug 22 to Sep 9. On the days both years reported, this year is 4.32 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 13",
+     "in": "2.37",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Springfield Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.43",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.01",
+    "usual_in": "36.36",
+    "vs_usual": {
+     "diff_in": "5.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.04",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4513820601cf410e",
+   "sid": "13995 1",
+   "story": "Through Oct 13, the weather station at Springfield Airport had most of its year come in June, with 9.04 inches that month. The biggest single day was Jun 13 at 2.37 inches. From Aug 25 to Sep 5 the gauge went 12 days in a row with nothing in it, not even a trace. That leaves the year 5.43 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "29079": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 17",
+     "in": "5.24",
+     "label": "biggest single day"
+    },
+    "county": "Grundy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "7.8 miles east of Trenton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.49",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 122,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.48",
+    "usual_in": "34.69",
+    "vs_usual": {
+     "diff_in": "7.79",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.97",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bd163f2e12235c9f",
+   "sid": "US1MOGY0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.8 miles east of Trenton has caught 42.48 inches, 7.79 more than a usual year. June was the wettest month at 8.97 inches. The biggest single day came May 17 with 5.24 inches. On the days both years reported, that is 10.49 inches more than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "29081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "3.45",
+     "label": "biggest one-day reading"
+    },
+    "county": "Harrison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 25,
+    "days_reported": 261,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.3 miles northeast of Bethany",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 242,
+      "diff_in": "10.52",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 24,
+     "through": "Oct 13",
+     "total_in": "31.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 33,
+     "from": "Jan 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 14,
+    "pct_of_usual": 149,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.45",
+    "usual_in": "29.83",
+    "vs_usual": {
+     "diff_in": "14.62",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "55583ba85a5efdaf",
+   "sid": "US1MOFSA081 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles northeast of Bethany had its biggest one-day reading on Jun 5 at 3.45 inches. Earlier on, it went 33 days in a row with nothing in it, not even a trace, from Jan 30 to Mar 3. On the days both years reported, this year has run 10.52 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "3.77",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "4.2 miles south-southeast of Windsor",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.87",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.25",
+    "usual_in": "38.11",
+    "vs_usual": {
+     "diff_in": "1.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.37",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4aded2e03bbbc96e",
+   "sid": "US1MOHN0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.2 miles south-southeast of Windsor had 39.25 inches, 1.14 more than a usual year. April did most of the work with 14.37 inches, and Apr 2 alone brought 3.77. The gauge went 19 days with nothing from Jan 26 to Feb 13. This year is running 7.87 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "29085": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "4.80",
+     "label": "biggest single day"
+    },
+    "county": "Hickory County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Pomme De Terre",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.18",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.21",
+    "usual_in": "36.95",
+    "vs_usual": {
+     "diff_in": "1.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.53",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "46f3a9d928a83cc2",
+   "sid": "236777 2",
+   "story": "Through Oct 13, the weather station in Pomme De Terre had a lot of its year come in May. That month gave it 9.53 inches, and 4.80 of those came on May 19 alone. Then it went 20 days in a row with nothing in the gauge, Aug 21 to Sep 9. It sits 6.18 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "29089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "3.50",
+     "label": "biggest single day"
+    },
+    "county": "Howard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.3 miles south of Fayette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.49",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.11",
+    "usual_in": "35.20",
+    "vs_usual": {
+     "diff_in": "8.91",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.35",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "19f382650a87cae1",
+   "sid": "US1MOFSA089 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles south of Fayette has caught 14.49 inches more than it had by this day last year. June did most of the work with 9.35 inches, and Jun 1 alone put 3.50 inches in the gauge. It wasn't always like that. From Jan 26 to Feb 14 it went 20 days in a row without even a trace.",
+   "through": "2026-10-13"
+  },
+  "29091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "3.39",
+     "label": "biggest single day"
+    },
+    "county": "Howell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "2.2 miles north-northwest of West Plains",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.24",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.95",
+    "usual_in": "38.07",
+    "vs_usual": {
+     "diff_in": "5.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.44",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "57f3a59f3851d6d6",
+   "sid": "US1MOFSA091 6",
+   "story": "Through Oct 13, the volunteer rain gauge by West Plains had caught 11.24 inches less than last year had by the same day, and both years reported every day. June was the wettest month at 8.44 inches. Jun 14 alone put 3.39 inches in the gauge, the biggest single day. The year started with nothing at all for 20 days in a row, from Jan 1 to Jan 20.",
+   "through": "2026-10-13"
+  },
+  "29093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "4.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Iron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "in Viburnum",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 107,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.29",
+    "usual_in": "36.74",
+    "vs_usual": {
+     "diff_in": "2.55",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.54",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5aed36619c449b02",
+   "sid": "238609 2",
+   "story": "Through Oct 13, the weather station in Viburnum had caught 39.29 inches, 2.55 more than a usual year. March did most of the work with 9.54 inches, and the biggest one-day reading came Mar 5 at 4.10. Then it shut off for a while. The gauge went 20 days in a row with nothing in it, not even a trace, from Aug 21 to Sep 9.",
+   "through": "2026-10-13"
+  },
+  "29095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "2.06",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Blue Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.94",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "27.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.05",
+    "usual_in": "37.44",
+    "vs_usual": {
+     "diff_in": "1.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.27",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "841dd22af2f246b5",
+   "sid": "US1MOFSA095 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Blue Springs has caught 39.05 inches, 1.61 inches more than a usual year. April did most of the work with 9.27 inches, and the biggest single day was Apr 27 at 2.06 inches. On the days both years reported, that is 10.94 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 26",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Jasper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Joplin Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "1.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "33.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.16",
+    "usual_in": "36.61",
+    "vs_usual": {
+     "diff_in": "4.45",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.29",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c1e302ec92061f59",
+   "sid": "13987 1",
+   "story": "Through Oct 13, the weather station at Joplin Regional Airport had April as its wettest month, with 10.29 inches. The biggest single day was Apr 26, at 2.03 inches. Later it went 16 days in a row with nothing in the gauge, from Aug 25 to Sep 9. On the days both years reported, this year sits 1.38 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "29099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "2.48",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "2.3 miles south of Arnold",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "3.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "35.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.12",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.29",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a1accbb676d8a6e9",
+   "sid": "US1MOJF0032 6",
+   "story": "Through Oct 13, the gauge 2.3 miles south of Arnold had its wettest month in April, at 6.29 inches. The longest dry stretch ran 15 days, from Aug 26 to Sep 9, with not even a trace in the gauge. On the days both years reported, this year sits 3.31 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "29101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "3.40",
+     "label": "biggest single day"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "6.2 miles south of Holden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.06",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.28",
+    "usual_in": "34.29",
+    "vs_usual": {
+     "diff_in": "5.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.97",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9332cfcb70adee74",
+   "sid": "US1MOJH0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.2 miles south of Holden had its wettest month in April, with 9.97 inches. The biggest single day came Apr 2 at 3.40 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with nothing in the gauge. On the days both years reported, this year is 7.06 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "4.12",
+     "label": "biggest one-day reading"
+    },
+    "county": "Knox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2.3 miles east of Edina",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 13,
+    "pct_of_usual": 109,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.73",
+    "usual_in": "31.73",
+    "vs_usual": {
+     "diff_in": "3.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.90",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ae02c5696ea28471",
+   "sid": "US1MOFSA103 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles east of Edina had 34.73 inches, 3.00 inches more than a usual year. June did most of the lifting at 9.90 inches, and 4.12 of that came on Jun 11, the biggest one-day reading. The gauge also went 24 days in a row with nothing in it, not even a trace, from Jan 27 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "29105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 16",
+     "in": "2.64",
+     "label": "biggest one-day reading"
+    },
+    "county": "Laclede County",
+    "days_in_year_so_far": 286,
+    "days_missing": 20,
+    "days_reported": 266,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2 miles west of Lebanon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "5.08",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "39.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 95,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.39",
+    "usual_in": "35.28",
+    "vs_usual": {
+     "diff_in": "1.89",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.55",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b4a6d97ab2ff4fcd",
+   "sid": "234825 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Lebanon has its wettest month in April at 11.55 inches. The biggest one-day reading came Apr 16 at 2.64 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with nothing in the gauge. On the days both years reported, this year is 5.08 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "Lafayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Concordia",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.67",
+    "usual_in": "36.59",
+    "vs_usual": {
+     "diff_in": "0.08",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.66",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4027c20ecf5831d6",
+   "sid": "231837 2",
+   "story": "Through Oct 13, the weather station in Concordia had 36.67 inches, 0.08 more than a usual year. April did most of the talking at 8.66 inches, and the biggest single day came Apr 2 with 2.68. The longest dry stretch ran 13 days, Feb 1 to Feb 13, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "29109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 18",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Miller",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.37",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.66",
+    "usual_in": "37.27",
+    "vs_usual": {
+     "diff_in": "4.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.12",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d54b64993082acac",
+   "sid": "235594 2",
+   "story": "Through Oct 13, the weather station in Miller had its wettest month in April at 9.12 inches, and the biggest single day came Apr 18 with 2.45 inches. The longest dry stretch ran 13 days, Feb 1 to Feb 13, with nothing in the gauge, not even a trace. On the days both years reported, this year is 1.37 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "4.60",
+     "label": "biggest single day"
+    },
+    "county": "Lewis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Steffenville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.79",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.38",
+    "usual_in": "33.12",
+    "vs_usual": {
+     "diff_in": "4.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.96",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9adc40a0604a7259",
+   "sid": "238051 2",
+   "story": "Through Oct 13, the station in Steffenville had a wet June, with 9.96 inches for the month. Jun 11 alone brought 4.60 inches, the biggest single day of the year. The longest dry stretch was 20 days, Jan 26 to Feb 14, with nothing in the gauge. That puts this year 11.79 inches ahead of last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "29113": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.49",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 278,
+    "days_missing": 22,
+    "days_reported": 256,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.2 miles north-northeast of Troy",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 13,
+    "pct_of_usual": 103,
+    "state": "Missouri",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "32.07",
+    "usual_in": "31.05",
+    "vs_usual": {
+     "diff_in": "1.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.61",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4bb4fc1ed1bf8efb",
+   "sid": "US1MOFSA113 6",
+   "story": "Through Oct 5, the volunteer rain gauge 1.2 miles north-northeast of Troy has 32.07 inches, 1.02 more than a usual year. April was the wettest month at 6.61 inches. The biggest one-day reading was 2.49 inches on May 19. The longest dry stretch ran 19 days, Jan 27 to Feb 14, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-05"
+  },
+  "29117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "Livingston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2 miles south of Chillicothe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.96",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "26.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.00",
+    "usual_in": "35.49",
+    "vs_usual": {
+     "diff_in": "3.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.35",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "147df236100b5a90",
+   "sid": "231580 2",
+   "story": "Through Oct 13, the weather station 2 miles south of Chillicothe has caught 32.00 inches, 3.49 inches less than a usual year. April was the wettest month at 6.35 inches, and the biggest single day came Sep 10 with 2.25 inches. The gauge stayed bone dry for 20 days in a row from Jan 26 to Feb 14. Still, it is 5.96 inches more than last year on the days both years reported.",
+   "through": "2026-10-13"
+  },
+  "29119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 7",
+     "in": "2.35",
+     "label": "biggest one-day reading"
+    },
+    "county": "McDonald County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3 miles west of Anderson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "10.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "42.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 81,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.25",
+    "usual_in": "39.86",
+    "vs_usual": {
+     "diff_in": "7.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.68",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "07edb04ce8da9692",
+   "sid": "230163 2",
+   "story": "Through Oct 13, the weather station 3 miles west of Anderson has 32.25 inches, 7.61 inches less than a usual year. June was the wettest month at 9.68 inches, and the biggest one-day reading was 2.35 inches on Mar 7. The gauge stayed empty 17 days in a row, Aug 6 to Aug 22. On the days both years reported, this year has 10.98 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "29121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "4.48",
+     "label": "biggest single day"
+    },
+    "county": "Macon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.6 miles northeast of Macon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "8.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "29.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.50",
+    "usual_in": "34.82",
+    "vs_usual": {
+     "diff_in": "2.68",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.84",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "be12fa72934cc74e",
+   "sid": "US1MOMC0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles northeast of Macon had June as its wettest month at 8.84 inches, and 4.48 inches of that came on Jun 11, the biggest single day. The longest dry stretch ran 12 days, Feb 3 to Feb 14, with not even a trace. On the days both years reported, this year is 8.30 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29125": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Maries County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Vichy Rolla Natl Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "13.64",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "26.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.60",
+    "usual_in": "34.98",
+    "vs_usual": {
+     "diff_in": "4.62",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.73",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9f999a01733a1efa",
+   "sid": "13997 1",
+   "story": "Through Oct 13, the weather station at Vichy Rolla Natl Airport has caught 39.60 inches, 4.62 more than a usual year. July was the wettest month at 7.73 inches, and the biggest single day was May 18 with 2.78. The gauge then sat empty 17 days in a row, Aug 23 to Sep 8. On the days both years reported, this year is 13.64 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "2.97",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Hannibal Water Works",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "14.42",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "27.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 121,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.42",
+    "usual_in": "34.37",
+    "vs_usual": {
+     "diff_in": "7.05",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.43",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a7c395a1548896a",
+   "sid": "233601 2",
+   "story": "Through Oct 13, the weather station in Hannibal Water Works has had a wet run, and most of it came in June. June put 11.43 inches in the gauge, and Jun 11 alone brought 2.97 inches, the biggest single day. On the days both years reported, this year is 14.42 inches ahead of last year. The longest dry stretch was 19 days, Jan 27 to Feb 14, and that was a while back.",
+   "through": "2026-10-13"
+  },
+  "29129": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 17",
+     "in": "5.54",
+     "label": "biggest one-day reading"
+    },
+    "county": "Mercer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "5.7 miles south-southeast of Cainsville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 18,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.71",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.10",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4c931c3efdc32793",
+   "sid": "US1MOMR0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Cainsville had caught 43.71 inches. May was the wettest month at 8.10 inches, and 5.54 inches of that came in the biggest reading, on May 17. The longest dry stretch ran 12 days, Feb 3 to Feb 14, without even a trace. The gauge reported on 268 of 286 days.",
+   "through": "2026-10-13"
+  },
+  "29131": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.71",
+     "label": "biggest single day"
+    },
+    "county": "Miller County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Iberia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.31",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.26",
+    "usual_in": "34.67",
+    "vs_usual": {
+     "diff_in": "4.59",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.51",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f4b85505893b4610",
+   "sid": "234136 2",
+   "story": "Through Oct 13, the weather station in Iberia had April as its wettest month at 11.51 inches. The biggest single day came May 19 with 3.71 inches. Then it went 16 days in a row with nothing in the gauge, from Aug 25 to Sep 9. The station is 2.31 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "29135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "5.15",
+     "label": "biggest one-day reading"
+    },
+    "county": "Moniteau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "less than a mile southwest of California",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "14.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "33.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 141,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.00",
+    "usual_in": "34.12",
+    "vs_usual": {
+     "diff_in": "13.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.65",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "940ea78cbe0531c8",
+   "sid": "US1MOFSA135 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of California has caught 48.00 inches, 13.88 more than a usual year. April was the wettest month at 10.65 inches, and the biggest one-day reading was 5.15 inches on Jun 8. On the days both years reported, that is 14.13 inches more than 2025. The gauge also went 19 days in a row with nothing in it, from Jan 26 to Feb 13.",
+   "through": "2026-10-13"
+  },
+  "29139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.03",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Middletown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.70",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.12",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.57",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34e1619150e41c6e",
+   "sid": "235562 2",
+   "story": "Through Oct 13, the weather station 3 miles southwest of Middletown has caught 30.12 inches, 1.70 more than last year by this day. April was the wettest month at 6.57 inches. The biggest single day came Aug 6 with 2.03 inches. Then the gauge sat empty 15 days in a row, Aug 26 to Sep 9.",
+   "through": "2026-10-13"
+  },
+  "29141": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.94",
+     "label": "biggest single day"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Versailles",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.94",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.67",
+    "usual_in": "36.58",
+    "vs_usual": {
+     "diff_in": "6.09",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.20",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f6fd4f0ccebed12",
+   "sid": "238603 2",
+   "story": "Through Oct 13, the weather station in Versailles had its wettest month in April with 10.20 inches. The biggest single day was May 19 at 2.94 inches. From Aug 22 to Sep 4 the gauge went 14 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 9.94 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "5.16",
+     "label": "biggest single day"
+    },
+    "county": "Newton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Shoal Creek Estates",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.67",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "39.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.22",
+    "usual_in": "39.07",
+    "vs_usual": {
+     "diff_in": "0.15",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "12.31",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "270ad7423e6fa8cd",
+   "sid": "US1MONW0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Shoal Creek Estates had 39.22 inches, 0.15 more than a usual year. June did most of the work with 12.31 inches, and Jun 8 alone put 5.16 in the gauge. Then it went 16 days without a trace from Aug 26 to Sep 10. On the days both years reported, that is 0.67 less than last year.",
+   "through": "2026-10-13"
+  },
+  "29147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "4.61",
+     "label": "biggest single day"
+    },
+    "county": "Nodaway County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Conception",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "6.06",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "33.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.74",
+    "usual_in": "32.54",
+    "vs_usual": {
+     "diff_in": "9.20",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.98",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4977848bcb6629b1",
+   "sid": "231822 2",
+   "story": "Through Oct 13, the weather station in Conception had 41.74 inches, 9.20 inches more than a usual year. June was the wettest month at 9.98 inches, and Jun 5 brought the biggest single day at 4.61 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with nothing in the gauge. On the days both years reported, this year is 6.06 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "29151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Osage County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Freedom",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.06",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "31.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Missouri",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "37.49",
+    "usual_in": "36.21",
+    "vs_usual": {
+     "diff_in": "1.28",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.50",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "59393b8212246879",
+   "sid": "233043 2",
+   "story": "Through Oct 12, the weather station in Freedom has caught 6.06 inches more than it had by this day last year. June was the wettest month at 7.50 inches, and the biggest single day was Jun 8 with 2.95 inches. Then the gauge sat empty for 20 days in a row, from Aug 21 to Sep 9.",
+   "through": "2026-10-12"
+  },
+  "29157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "4.00",
+     "label": "biggest one-day reading"
+    },
+    "county": "Perry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Perryville Water Plt",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "2.49",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "33.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 89,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.43",
+    "usual_in": "35.12",
+    "vs_usual": {
+     "diff_in": "3.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.66",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e79c0e434f1198de",
+   "sid": "236641 2",
+   "story": "Through Oct 13, the weather station in Perryville Water Plt has caught 31.43 inches, 3.69 inches less than a usual year. March was the wettest month at 6.66 inches, and 4.00 inches of that came on Mar 5. Before that, the gauge went 18 days in a row with nothing in it, Jan 27 to Feb 13. On the days both years reported, this year is 2.49 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "3.02",
+     "label": "biggest single day"
+    },
+    "county": "Pettis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Sedalia Water",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "10.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "32.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.58",
+    "usual_in": "36.40",
+    "vs_usual": {
+     "diff_in": "9.18",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.38",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6909957094d28eaf",
+   "sid": "237632 2",
+   "story": "Through Oct 13, the weather station in Sedalia Water had a wet April to thank for most of the talk. April brought 13.38 inches, and the biggest single day was Apr 2 at 3.02 inches. On the days both years reported, this year is 10.53 inches more than last year. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "29163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 11",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Pike County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "1 mile east of Bowling Green",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.16",
+    "usual_in": "32.95",
+    "vs_usual": {
+     "diff_in": "4.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.21",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a30b8333fbec46e",
+   "sid": "230856 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Bowling Green had 28.16 inches, 4.79 inches less than a usual year. April was the wettest month at 6.21 inches. The biggest single day came Sep 11 with 1.60 inches. The longest dry stretch ran 20 days, Jan 26 to Feb 14, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "29165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "3.21",
+     "label": "biggest single day"
+    },
+    "county": "Platte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Kansas City International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "18.08",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 141,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.87",
+    "usual_in": "33.98",
+    "vs_usual": {
+     "diff_in": "13.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1c8dfdb346629650",
+   "sid": "03947 1",
+   "story": "Through Oct 13, the weather station at Kansas City International Airport has had a wet go of it. June was the wettest month with 8.63 inches, and the biggest single day came on Apr 27 with 3.21 inches. On the days both years reported, this year is 18.08 inches ahead of last year. The longest dry stretch ran 14 days, from Jan 31 to Feb 13.",
+   "through": "2026-10-13"
+  },
+  "29167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "3.69",
+     "label": "biggest one-day reading"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 285,
+    "days_missing": 8,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "1 mile northeast of Bolivar",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "13.95",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "30.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 115,
+    "state": "Missouri",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "42.32",
+    "usual_in": "36.85",
+    "vs_usual": {
+     "diff_in": "5.47",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.44",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7c34f48267a9a1df",
+   "sid": "230789 2",
+   "story": "Through Oct 12, the weather station 1 mile northeast of Bolivar had most of its year come in June, with 12.44 inches that month. The biggest one-day reading was 3.69 inches on Jun 8. It went 19 days in a row with nothing in the gauge, from Jan 26 to Feb 13. On the days both years reported, that is 13.95 inches more than last year.",
+   "through": "2026-10-12"
+  },
+  "29169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 18",
+     "in": "2.08",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pulaski County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Fort Leonard Wood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.04",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 79,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.60",
+    "usual_in": "37.55",
+    "vs_usual": {
+     "diff_in": "7.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.87",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b5dda04ae3cc0d8",
+   "sid": "232981 2",
+   "story": "Through Oct 13, the weather station in Fort Leonard Wood had most of its year in April, with 8.87 inches that month and the biggest one-day reading of 2.08 inches on Apr 18. Then it went 20 days in a row with nothing in the gauge, from Aug 21 to Sep 9. On the days both years reported, that's 7.04 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29171": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 17",
+     "in": "4.10",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "less than a mile west of Unionville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.88",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.98",
+    "usual_in": "35.45",
+    "vs_usual": {
+     "diff_in": "2.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.26",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0bc0931f923e3116",
+   "sid": "US1MOFSA171 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Unionville had its wettest month in June at 8.26 inches. The biggest single day came May 17 with 4.10 inches. The longest dry stretch ran 17 days, Feb 3 to Feb 19, with not even a trace. On the days both years reported, that is 5.88 inches more than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "29173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "2.71",
+     "label": "biggest single day"
+    },
+    "county": "Ralls County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Saverton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "5.49",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "24.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.63",
+    "usual_in": "31.55",
+    "vs_usual": {
+     "diff_in": "0.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.32",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0830b4b2c148f040",
+   "sid": "237578 2",
+   "story": "Through Oct 13, the weather station in Saverton has had most of its rain in June, the wettest month at 8.32 inches. The biggest single day came Jun 11 with 2.71 inches. On the days both years reported, this year is 5.49 inches more than last year. The longest dry stretch ran 20 days, Jan 26 to Feb 14.",
+   "through": "2026-10-13"
+  },
+  "29175": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "2.49",
+     "label": "biggest one-day reading"
+    },
+    "county": "Randolph County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Moberly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.18",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "34.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 97,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.16",
+    "usual_in": "36.22",
+    "vs_usual": {
+     "diff_in": "1.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.02",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "96a1ad9f4e49e21a",
+   "sid": "US1MORN0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge just west-southwest of Moberly had its wettest month in June at 7.02 inches. The biggest one-day reading came Apr 2 with 2.49 inches. Then it went 20 days in a row with nothing in the gauge, Aug 21 to Sep 9. On the days both years reported, this year has 0.18 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Ray County",
+    "days_in_year_so_far": 286,
+    "days_missing": 24,
+    "days_reported": 262,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "1.3 miles east of Excelsior Springs",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.08",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4f428fda713dd23d",
+   "sid": "US1MORY0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles east of Excelsior Springs caught 29.08 inches. The biggest single day came Aug 6 with 2.78 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with nothing in the gauge, not even a trace. The gauge reported on 262 of 286 days, so 24 days are missing from that total.",
+   "through": "2026-10-13"
+  },
+  "29183": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "1.93",
+     "label": "biggest one-day reading"
+    },
+    "county": "St. Charles County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of St Peters",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.50",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "35.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 103,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.33",
+    "usual_in": "34.42",
+    "vs_usual": {
+     "diff_in": "0.91",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.80",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "24dca9c05133fae2",
+   "sid": "237475 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of St Peters had June as its wettest month at 6.80 inches. The biggest one-day reading came May 19 with 1.93 inches. From Aug 26 to Sep 9 the gauge went 15 days in a row with nothing in it, not even a trace. On the days both years reported, this year sits 0.50 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29185": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "3.77",
+     "label": "biggest single day"
+    },
+    "county": "St. Clair County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Osceola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.45",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.39",
+    "usual_in": "35.90",
+    "vs_usual": {
+     "diff_in": "4.49",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.66",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ef0b1c096a743b35",
+   "sid": "236402 2",
+   "story": "Through Oct 13, the weather station in Osceola has caught 9.45 inches more than it had by this day last year. April was the wettest month at 9.66 inches, and the biggest single day came May 19 with 3.77 inches. The gauge also sat empty 19 days in a row, from Jan 26 to Feb 13, without so much as a trace.",
+   "through": "2026-10-13"
+  },
+  "29187": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "3.15",
+     "label": "biggest one-day reading"
+    },
+    "county": "St. Francois County",
+    "days_in_year_so_far": 285,
+    "days_missing": 25,
+    "days_reported": 260,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "4.9 miles north of Farmington",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "29.60",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.89",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "995037047e3fc287",
+   "sid": "US1MOSF0015 6",
+   "story": "Through Oct 12, the volunteer rain gauge 4.9 miles north of Farmington has had its year front loaded. March was the wettest month at 7.89 inches, and the biggest one-day reading came Mar 5 with 3.15 inches. Before that, the gauge went 13 days in a row with nothing in it, not even a trace, from Feb 1 to Feb 13.",
+   "through": "2026-10-12"
+  },
+  "29189": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "2.51",
+     "label": "biggest single day"
+    },
+    "county": "St. Louis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at St Louis Lambert International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.00",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.84",
+    "usual_in": "33.84",
+    "vs_usual": {
+     "diff_in": "4.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.47",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ca5ed66da967432e",
+   "sid": "13994 1",
+   "story": "Through Oct 13, the weather station at St Louis Lambert International Airport had its wettest month in July with 7.47 inches. The biggest single day was May 18 at 2.51 inches. Then it went 15 days in a row with nothing in the gauge, from Aug 25 to Sep 8. That still leaves the year 5.00 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "29195": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Saline County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "3.0 miles north-northeast of Blackburn",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "5.91",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "31.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.15",
+    "usual_in": "36.10",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.43",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "35d4307c5fa4df8a",
+   "sid": "US1MOSN0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles north-northeast of Blackburn sits about the same as a usual year. April was the wettest month at 8.43 inches. The biggest single day was 2.55 inches on Aug 6. On the days both years reported, this year has 5.91 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "29199": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "2.88",
+     "label": "biggest single day"
+    },
+    "county": "Scotland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Memphis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "6.20",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "27.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.45",
+    "usual_in": "31.70",
+    "vs_usual": {
+     "diff_in": "2.75",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.76",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0965d7bf2dbf168b",
+   "sid": "235492 2",
+   "story": "Through Oct 13, the weather station in Memphis had its wettest month in June with 6.76 inches. The biggest single day came Sep 16 at 2.88 inches. On the days both years reported, this year is 6.20 inches more than 2025 at this point. It also went 17 days in a row with nothing in the gauge, from Feb 3 to Feb 19.",
+   "through": "2026-10-13"
+  },
+  "29201": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "5.30",
+     "label": "biggest single day"
+    },
+    "county": "Scott County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Scott City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.85",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.15",
+    "usual_in": "39.41",
+    "vs_usual": {
+     "diff_in": "4.74",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.37",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3bdd419ce1a64837",
+   "sid": "US1MOSC0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Scott City has caught 44.15 inches, 4.74 more than a usual year. June did most of the work at 13.37 inches, and the biggest single day came Jul 10 with 5.30. Still, that is 4.85 inches less than 2025 had by this same day.",
+   "through": "2026-10-13"
+  },
+  "29203": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "Shannon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Winona",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "19.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.51",
+    "usual_in": "40.14",
+    "vs_usual": {
+     "diff_in": "12.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.01",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "291f684580a27657",
+   "sid": "239056 2",
+   "story": "Through Oct 13, the weather station 3 miles southwest of Winona has caught 27.51 inches, 12.63 less than a usual year. March was the wettest month at 6.01 inches, and the biggest single day came Mar 5 with 2.81. That followed 14 days in a row with nothing in the gauge, Feb 16 to Mar 1. On the days both years reported, this year is 19.71 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "29205": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "3.00",
+     "label": "biggest single day"
+    },
+    "county": "Shelby County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Shelbina",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.12",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "29.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.53",
+    "usual_in": "35.54",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.28",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1cf1008a400799b9",
+   "sid": "237720 2",
+   "story": "Through Oct 13, the weather station in Shelbina has caught about as much as a usual year. June did most of the work with 8.28 inches, and the biggest single day was Jun 11 at 3.00 inches. The longest dry stretch ran 20 days, from Jan 26 to Feb 14. On the days both years reported, that's 6.12 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29207": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Stoddard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 20,
+    "days_reported": 266,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Advance",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.82",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8148e7a12b5c0793",
+   "sid": "US1MOST0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile from Advance has caught 40.82 inches, on the 266 days it reported out of 286. The longest dry stretch ran 15 days, Mar 19 to Apr 2, with nothing in the gauge, not even a trace. Keep in mind the gauge sits 17 miles from the middle of the county and missed 20 days.",
+   "through": "2026-10-13"
+  },
+  "29209": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "2.42",
+     "label": "biggest one-day reading"
+    },
+    "county": "Stone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "5.5 miles east of Emerald Beach",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "9.86",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "37.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 81,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.66",
+    "usual_in": "36.52",
+    "vs_usual": {
+     "diff_in": "6.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a596ff40af573c33",
+   "sid": "US1MOSE0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.5 miles east of Emerald Beach has 29.66 inches, 6.86 less than a usual year. June was the wettest month at 7.12 inches, and the biggest one-day reading came Jun 14 with 2.42. The gauge went 13 days in a row with nothing in it, from Aug 25 to Sep 6. On the days both years reported, this year is 9.86 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29211": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "5.92",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sullivan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.2 miles southwest of Milan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "15.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 13",
+     "total_in": "26.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 2"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 135,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.71",
+    "usual_in": "33.96",
+    "vs_usual": {
+     "diff_in": "11.75",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.24",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f2da8ee5ad3907cd",
+   "sid": "US1MOFSA211 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.2 miles southwest of Milan had most of its year come in June, with 13.24 inches that month. The biggest one-day reading was 5.92 inches on Jun 11. Before any of that, the gauge sat empty for 36 days in a row from Jan 26 to Mar 2. On the days both years reported, this year is 15.68 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "29213": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Taney County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3.8 miles east of Branson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "12.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "39.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.56",
+    "usual_in": "37.61",
+    "vs_usual": {
+     "diff_in": "11.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.95",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "468d5b1a88871afe",
+   "sid": "US1MOTY0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.8 miles east of Branson has caught 26.56 inches, 11.05 inches less than a usual year. June was the wettest month at 6.95 inches, and the biggest single day was 2.12 inches on Mar 5. The gauge sat empty for 18 days in a row from Jan 27 to Feb 13. On the days both years reported, that is 12.66 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "29215": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 16",
+     "in": "3.75",
+     "label": "biggest single day"
+    },
+    "county": "Texas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "3.6 miles south of Summersville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.12",
+    "usual_in": "40.19",
+    "vs_usual": {
+     "diff_in": "5.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.00",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b844866eafa04d19",
+   "sid": "US1MOTX0044 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles south of Summersville has caught 18.19 inches less than it had by this day last year. April was the wettest month at 7.00 inches. The biggest single day came Jul 16 with 3.75 inches. The longest dry stretch ran 13 days, Feb 1 to Feb 13, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "29217": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 19",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Vernon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Nevada Water",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.82",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.92",
+    "usual_in": "39.18",
+    "vs_usual": {
+     "diff_in": "8.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.83",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "41972f698b387287",
+   "sid": "235987 2",
+   "story": "Through Oct 13, the weather station in Nevada Water has 11.82 inches less than it had by this day in 2025. April was the wettest month at 7.83 inches, and the biggest single day was May 19 with 2.70 inches. The gauge went 19 days in a row with nothing in it, not even a trace, from Jan 26 to Feb 13.",
+   "through": "2026-10-13"
+  },
+  "29219": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.29",
+     "label": "biggest one-day reading"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 26,
+    "days_reported": 260,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "4.0 miles southwest of Jonesburg",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Oct 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 14,
+    "pct_of_usual": null,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.57",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.00",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db9ee004bf4443ff",
+   "sid": "US1MOWR0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.0 miles southwest of Jonesburg had caught 31.57 inches this year. April was the wettest month at 7.00 inches. The biggest one-day reading came Aug 6 with 2.29 inches. Lately the gauge has sat empty for 10 days in a row, from Oct 4 to Oct 13, and that stretch is still going.",
+   "through": "2026-10-13"
+  },
+  "29221": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 5",
+     "in": "4.22",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Potosi",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "0.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "37.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 103,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.30",
+    "usual_in": "36.39",
+    "vs_usual": {
+     "diff_in": "0.91",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.66",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2c93f9c8fe94a87e",
+   "sid": "236826 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Potosi had most of its year show up in March, the wettest month at 8.66 inches. The biggest one-day reading came Mar 5 with 4.22 inches. Then it quit for 15 days in a row, Aug 27 to Sep 10, with nothing in the gauge. On the days both years reported, 2026 is 0.56 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "29223": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.05",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 24,
+    "days_reported": 262,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Wappapello",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 83,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.27",
+    "usual_in": "36.54",
+    "vs_usual": {
+     "diff_in": "6.27",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c1c2d45739c5cf56",
+   "sid": "238700 2",
+   "story": "Through Oct 13, the weather station in Wappapello had caught 30.27 inches, which is 6.27 inches less than a usual year. The biggest one-day reading came Aug 1 at 2.05 inches. The longest dry stretch ran 18 days, from Jan 27 to Feb 13, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "29225": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "2.67",
+     "label": "biggest one-day reading"
+    },
+    "county": "Webster County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Marshfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.37",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 96,
+    "state": "Missouri",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.68",
+    "usual_in": "37.21",
+    "vs_usual": {
+     "diff_in": "1.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.92",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9e916d90c255dffb",
+   "sid": "US1MOWB0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southeast of Marshfield caught 9.92 inches in June, its wettest month, and 2.67 inches of that came on Jun 14, the biggest reading of the year. Then it went 12 days in a row with nothing in it, not even a trace, from Aug 25 to Sep 5. On the days both years reported, this year sits 2.37 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "29229": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "3.94",
+     "label": "biggest single day"
+    },
+    "county": "Wright County",
+    "days_in_year_so_far": 278,
+    "days_missing": 0,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2 miles north of Mountain Grove",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.63",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 5",
+     "total_in": "34.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Missouri",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "34.77",
+    "usual_in": "36.50",
+    "vs_usual": {
+     "diff_in": "1.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.33",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ed202d49e2ccdc1c",
+   "sid": "235834 2",
+   "story": "Through Oct 5, the weather station 2 miles north of Mountain Grove had a lopsided year. June brought 11.33 inches, and 3.94 of that came on Jun 14 alone. The gauge went 19 days in a row without even a trace from Jan 26 to Feb 13. All told it sits 0.63 inches more than 2025 had by the same day.",
+   "through": "2026-10-05"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "MO"
+}

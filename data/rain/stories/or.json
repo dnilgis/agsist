@@ -1,0 +1,1988 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "41001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 12",
+     "in": "0.97",
+     "label": "biggest single day"
+    },
+    "county": "Baker County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Baker City Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.58",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.10",
+    "usual_in": "7.08",
+    "vs_usual": {
+     "diff_in": "0.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.55",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b13aa770385235e1",
+   "sid": "24130 1",
+   "story": "Through Oct 13, the weather station at Baker City Airport says April did most of the work, with 2.55 inches. The biggest single day was Apr 12 at 0.97 inches. The longest dry stretch ran 20 days, Jan 8 to Jan 27, with nothing in the gauge, not even a trace. Still, the station has 0.58 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "41003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.28",
+     "label": "biggest single day"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.7 miles south-southeast of Corvallis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.21",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 58,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.44",
+    "usual_in": "26.42",
+    "vs_usual": {
+     "diff_in": "10.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.77",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "39f7ef9fb3e572e7",
+   "sid": "US1ORBN0085 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles south-southeast of Corvallis has 15.44 inches, 10.98 less than a usual year. February was the wettest month at 4.77 inches, and the biggest single day was 1.28 inches on Feb 24. From Jul 24 to Aug 28 the gauge went 36 days in a row with nothing in it, not even a trace. Last year by this date it had 3.21 inches more.",
+   "through": "2026-10-13"
+  },
+  "41005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "1.85",
+     "label": "biggest one-day reading"
+    },
+    "county": "Clackamas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "5.2 miles west-northwest of Estacada",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jun 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 76,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.40",
+    "usual_in": "33.33",
+    "vs_usual": {
+     "diff_in": "7.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.59",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a1cca5b2eae36791",
+   "sid": "US1ORCC0076 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.2 miles west-northwest of Estacada had its wettest month in February at 6.59 inches. The biggest one-day reading came Mar 12 with 1.85 inches. The longest dry stretch ran 15 days, Jun 11 to Jun 25, with nothing in the gauge, not even a trace. That leaves the year 1.28 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "41007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "1.97",
+     "label": "biggest one-day reading"
+    },
+    "county": "Clatsop County",
+    "days_in_year_so_far": 284,
+    "days_missing": 26,
+    "days_reported": 258,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile southeast of Cannon Beach",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 236,
+      "diff_in": "0.89",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 23,
+     "through": "Oct 11",
+     "total_in": "44.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 12"
+    },
+    "multi_day_reports": 12,
+    "pct_of_usual": null,
+    "state": "Oregon",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "41.29",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d90ae70a6d4fde13",
+   "sid": "US1ORCT0031 6",
+   "story": "Through Oct 11, the volunteer rain gauge less than a mile southeast of Cannon Beach had caught 41.29 inches. The biggest rain came Sep 3, with 1.97 inches. The gauge sat empty for 14 days in a row, from Apr 29 to May 12, not even a trace. On the days both years reported, this year is 0.89 inches more than 2025.",
+   "through": "2026-10-11"
+  },
+  "41009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 11",
+     "in": "1.35",
+     "label": "biggest single day"
+    },
+    "county": "Columbia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "at Scappoose Industrial Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.65",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.41",
+    "usual_in": "26.45",
+    "vs_usual": {
+     "diff_in": "10.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.32",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d87d7b659aadf3a6",
+   "sid": "04201 1",
+   "story": "Through Oct 13, the weather station at Scappoose Industrial Airport had its wettest month in February at 4.32 inches, and its biggest single day was Mar 11 at 1.35 inches. From Aug 2 to Aug 28 it went 27 days in a row without even a trace. Still, it is 1.65 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "41011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Coos County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "1.7 miles west-northwest of Coos Bay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "7.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 25,
+     "through": "Oct 13",
+     "total_in": "29.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "Jul 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.52",
+    "usual_in": "41.01",
+    "vs_usual": {
+     "diff_in": "17.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.67",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2e25a97c5dee158b",
+   "sid": "US1ORCS0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles west-northwest of Coos Bay has caught 23.52 inches, 17.49 inches less than a usual year. February did most of the work with 8.67 inches, and the biggest single day was 1.70 inches on Feb 24. From Jul 12 to Aug 11 the gauge went 31 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 7.56 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "41013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.61",
+     "label": "biggest one-day reading"
+    },
+    "county": "Crook County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "6.0 miles east-southeast of Paulina",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.30",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "8.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 81,
+    "state": "Oregon",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "7.95",
+    "usual_in": "9.86",
+    "vs_usual": {
+     "diff_in": "1.91",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.79",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad43b11af367c6d1",
+   "sid": "US1ORCK0001 6",
+   "story": "Through Oct 11, the volunteer rain gauge 6.0 miles east-southeast of Paulina had 7.95 inches, 1.91 inches less than a usual year. February was the wettest month at 1.79 inches, and the biggest one-day reading came Feb 24 with 0.61 inches. The gauge then went 21 days in a row with nothing in it, from Jul 24 to Aug 13. That puts this year 0.30 inches behind last year to the same day.",
+   "through": "2026-10-11"
+  },
+  "41015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "4.56",
+     "label": "biggest one-day reading"
+    },
+    "county": "Curry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "25 miles from the middle of the county",
+    "gauge_where": "3.4 miles north of Brookings",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 71,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.70",
+    "usual_in": "65.64",
+    "vs_usual": {
+     "diff_in": "18.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.39",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "be1a939abe4cbe13",
+   "sid": "US1ORCY0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles north of Brookings had 46.70 inches, 18.94 inches less than a usual year. February was the wettest month at 13.39 inches. The biggest one-day reading came Sep 3 with 4.56 inches, not long after 21 days in a row with nothing in the gauge, from Jul 24 to Aug 13.",
+   "through": "2026-10-13"
+  },
+  "41017": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "0.66",
+     "label": "biggest single day"
+    },
+    "county": "Deschutes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "24 miles from the middle of the county",
+    "gauge_where": "at Redmond Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 58,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "3.64",
+    "usual_in": "6.23",
+    "vs_usual": {
+     "diff_in": "2.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "0.84",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "93d2d67a523f8904",
+   "sid": "24230 1",
+   "story": "Through Oct 13, the weather station at Redmond Airport had 3.64 inches, 2.59 inches less than a usual year. May was the wettest month at 0.84 inches, and 0.66 of that came on May 28, the biggest single day. The gauge then went 21 days in a row with nothing, not even a trace, from Jul 23 to Aug 12. On the days both years reported, this year is 2.00 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "41019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.28",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.1 miles southeast of Glide",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 65,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.97",
+    "usual_in": "26.51",
+    "vs_usual": {
+     "diff_in": "6.54",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.55",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b0eb834073290e58",
+   "sid": "US1ORDG0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles southeast of Glide caught 19.97 inches, 6.54 inches less than a usual year. February was the wettest month at 5.55 inches, and the biggest single day came Feb 24 with 1.28 inches. Then the gauge went 65 days in a row with nothing in it, not even a trace, from Jun 30 to Sep 2.",
+   "through": "2026-10-13"
+  },
+  "41021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.57",
+     "label": "biggest single day"
+    },
+    "county": "Gilliam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "in Arlington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 40,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.71",
+    "usual_in": "5.97",
+    "vs_usual": {
+     "diff_in": "0.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.71",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9c04a0554394eb41",
+   "sid": "94203 1",
+   "story": "Through Oct 13, the weather station in Arlington had its wettest month in February, with 1.71 inches. The biggest single day came Feb 24 at 0.57 inches. From Jul 24 to Sep 1 it went 40 days in a row with nothing in the gauge, not even a trace. That leaves the station 0.15 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "41023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "0.46",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "32 miles from the middle of the county",
+    "gauge_where": "35 miles west-northwest of John Day",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.93",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "6.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Oregon",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "5.31",
+    "usual_in": "7.24",
+    "vs_usual": {
+     "diff_in": "1.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.56",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "18bc393a86092b0d",
+   "sid": "04125 1",
+   "story": "Through Oct 10, the weather station 35 miles west-northwest of John Day has gone 47 days in a row with nothing in the gauge, from Jul 17 to Sep 1. September came right after and was the wettest month at 1.56 inches. The biggest single day was 0.46 inches on Jun 26. That leaves the year 0.93 inches less than last year at this point, and 1.93 inches less than a usual year.",
+   "through": "2026-10-10"
+  },
+  "41025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "0.72",
+     "label": "biggest single day"
+    },
+    "county": "Harney County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "37 miles from the middle of the county",
+    "gauge_where": "at Burns Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.52",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Jan 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "6.03",
+    "usual_in": "7.37",
+    "vs_usual": {
+     "diff_in": "1.34",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.34",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0ffe54b1919dc878",
+   "sid": "94185 1",
+   "story": "Through Oct 13, the weather station at Burns Municipal Airport had 6.03 inches, 1.34 less than a usual year. February was the wettest month at 1.34 inches, right after the gauge went 32 days in a row with nothing from Jan 7 to Feb 7. The biggest single day was 0.72 inches on Sep 3. That is 1.52 inches less than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "41027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Hood River County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Hood River",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 67,
+     "from": "Jun 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.22",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.69",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a41dd8d405a15cde",
+   "sid": "US1ORHR0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southwest of Hood River has caught 18.22 inches. March was the wettest month at 5.69 inches, and Mar 12 brought the biggest single day at 2.10 inches. Then it shut off. The gauge went 67 days in a row with not even a trace, from Jun 28 to Sep 2.",
+   "through": "2026-10-13"
+  },
+  "41029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 8",
+     "in": "1.05",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Medford International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "12.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Jun 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.04",
+    "usual_in": "11.44",
+    "vs_usual": {
+     "diff_in": "3.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.02",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c7815402fd5cc305",
+   "sid": "24225 1",
+   "story": "Through Oct 13, the weather station at Medford International Airport had most of its year early. February was the wettest month at 3.02 inches, and Feb 8 brought the biggest single day at 1.05 inches. The longest dry stretch ran 23 days, Jun 27 to Jul 19, without even a trace. On the days both years reported, this year is 4.56 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "41031": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "0.73",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.6 miles north-northwest of Madras",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.14",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "5.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.43",
+    "usual_in": "7.84",
+    "vs_usual": {
+     "diff_in": "3.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.16",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8257bb3c91561125",
+   "sid": "US1ORJF0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.6 miles north-northwest of Madras had its wettest month in February at 1.16 inches. The biggest single day was May 29 with 0.73 inches. From Jul 24 to Aug 14 it went 22 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 2.14 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "41033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.58",
+     "label": "biggest single day"
+    },
+    "county": "Josephine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "6.1 miles south-southeast of Grants Pass",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.04",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 41,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.28",
+    "usual_in": "20.65",
+    "vs_usual": {
+     "diff_in": "6.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.46",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f1497962e360af0e",
+   "sid": "US1ORJS0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge south-southeast of Grants Pass had most of its year early. February was the wettest month at 5.46 inches, and the biggest single day came Feb 24 with 1.58 inches. Then it went 41 days in a row with nothing in the gauge, from Jul 23 to Sep 1. The year sits 8.04 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "41035": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "1.66",
+     "label": "biggest single day"
+    },
+    "county": "Klamath County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "34 miles from the middle of the county",
+    "gauge_where": "1 mile northwest of Klamath Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.04",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 41,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.02",
+    "usual_in": "11.49",
+    "vs_usual": {
+     "diff_in": "2.47",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.59",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "24cbedc7e1f88998",
+   "sid": "354501 2",
+   "story": "Through Oct 13, the weather station 1 mile northwest of Klamath Falls has 4.04 inches less than it had by this day in 2025. May was the wettest month at 2.59 inches, and 1.66 of that came on May 29, the biggest single day. Then the gauge went 41 days in a row with nothing in it, from Jul 23 to Sep 1.",
+   "through": "2026-10-13"
+  },
+  "41037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "0.95",
+     "label": "biggest single day"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 285,
+    "days_missing": 11,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "43 miles from the middle of the county",
+    "gauge_where": "at Lakeview Lake County Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Oregon",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "6.62",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "1.90",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a63cd9a6d857a971",
+   "sid": "94285 1",
+   "story": "Through Oct 12, the weather station at Lakeview Lake County Airport has 6.62 inches for the year. April was the wettest month at 1.90 inches. The biggest single day came Feb 24 with 0.95 inches. From Jul 22 to Aug 21 the gauge went 31 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "41039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.72",
+     "label": "biggest single day"
+    },
+    "county": "Lane County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3 miles southeast of Pleasant Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.48",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 65,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.93",
+    "usual_in": "27.87",
+    "vs_usual": {
+     "diff_in": "6.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.48",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dae993dfefa8a7f7",
+   "sid": "US1ORLA0024 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3 miles southeast of Pleasant Hill caught most of its year early. February was the wettest month at 7.48 inches, and the biggest single day was 1.72 inches on Feb 24. Then the gauge sat empty for 65 days in a row, from Jun 30 to Sep 2. That leaves it 7.48 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "41041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 8",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5.1 miles north of Newport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.54",
+    "usual_in": "41.82",
+    "vs_usual": {
+     "diff_in": "12.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cfd07adc31f2bd74",
+   "sid": "US1ORLC0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.1 miles north of Newport had caught 29.54 inches, 12.28 inches less than a usual year. The biggest single day was Feb 8 with 1.70 inches. Before that, the gauge went 18 days in a row with nothing in it, not even a trace, from Jan 10 to Jan 27.",
+   "through": "2026-10-13"
+  },
+  "41043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 23",
+     "in": "1.63",
+     "label": "biggest single day"
+    },
+    "county": "Linn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Foster",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "3.68",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "26.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 65,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.23",
+    "usual_in": "35.31",
+    "vs_usual": {
+     "diff_in": "12.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.54",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8733669408320c90",
+   "sid": "353047 2",
+   "story": "Through Oct 13, the weather station in Foster had its wettest month in February with 6.54 inches, and its biggest single day was Feb 23 at 1.63 inches. Then the gauge went 65 days in a row with nothing in it, not even a trace, from Jun 30 to Sep 2. On the days both years reported, that comes to 3.68 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "41045": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "0.59",
+     "label": "biggest single day"
+    },
+    "county": "Malheur County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "44 miles from the middle of the county",
+    "gauge_where": "at Rome State Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.10",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jan 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.64",
+    "usual_in": "6.42",
+    "vs_usual": {
+     "diff_in": "1.78",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fe6c5f82954080b6",
+   "sid": "94107 1",
+   "story": "Through Oct 13, the weather station at Rome State Airport shows May as the wettest month at 1.05 inches, and the biggest single day came May 26 with 0.59 inches. The gauge went 36 days in a row with nothing in it, from Jan 4 to Feb 8. Against last year by this date, 2026 is 3.10 inches behind.",
+   "through": "2026-10-13"
+  },
+  "41047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.40",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "6 miles east-northeast of Stayton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.07",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jun 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.78",
+    "usual_in": "43.18",
+    "vs_usual": {
+     "diff_in": "12.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.74",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ea1b941201c35d08",
+   "sid": "US1ORMN0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6 miles east-northeast of Stayton has caught most of its year in February, with 7.74 inches that month. The biggest single day came Feb 24 at 1.40 inches. From Jun 30 to Jul 15 it went 16 days in a row with nothing in the gauge, not even a trace. It is 5.07 inches behind last year to the day.",
+   "through": "2026-10-13"
+  },
+  "41049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 22",
+     "in": "0.67",
+     "label": "biggest single day"
+    },
+    "county": "Morrow County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Heppner",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.34",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "7.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.60",
+    "usual_in": "9.49",
+    "vs_usual": {
+     "diff_in": "1.89",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.79",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fb7d8e317112c9ab",
+   "sid": "353827 2",
+   "story": "Through Oct 13, the weather station in Heppner had its wettest month in April at 1.79 inches, and the biggest single day came Apr 22 with 0.67 inches. Then it went 29 days in a row with nothing in the gauge, from Jul 17 to Aug 14. On the days both years reported, this year has 0.34 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "41051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Multnomah County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "at Portland Troutdale Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "0.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "21.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.46",
+    "usual_in": "26.05",
+    "vs_usual": {
+     "diff_in": "5.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.11",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fbd5cb4b2c5cff48",
+   "sid": "24242 1",
+   "story": "Through Oct 13, the weather station at Portland Troutdale Airport had 5.59 inches less than a usual year. March was the wettest month at 5.11 inches, and the biggest single day came Mar 12 with 1.82 inches. The gauge then went 20 days in a row with nothing in it, Jul 23 to Aug 11. On the days both years reported, that is 0.70 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "41053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 24",
+     "in": "1.50",
+     "label": "biggest one-day reading"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 282,
+    "days_missing": 2,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "6.3 miles south of Monmouth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "2.11",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "20.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 67,
+    "state": "Oregon",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "18.33",
+    "usual_in": "27.17",
+    "vs_usual": {
+     "diff_in": "8.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.96",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f9b55a3997bcf9b0",
+   "sid": "US1ORPK0031 6",
+   "story": "Through Oct 9, the volunteer rain gauge 6.3 miles south of Monmouth has 18.33 inches, 8.84 inches less than a usual year. February was the wettest month at 4.96 inches, and the biggest one-day reading came Feb 24 with 1.50 inches. From Jul 24 to Aug 28 the gauge went 36 days in a row with nothing in it, not even a trace. On the days both years reported, this year has 2.11 inches less than 2025.",
+   "through": "2026-10-09"
+  },
+  "41057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 14",
+     "in": "3.18",
+     "label": "biggest one-day reading"
+    },
+    "county": "Tillamook County",
+    "days_in_year_so_far": 277,
+    "days_missing": 9,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "2.7 miles north-northeast of Nehalem",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "1.92",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 4",
+     "total_in": "53.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Oregon",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "57.04",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "18.19",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3f4812e5a9800ca4",
+   "sid": "US1ORTL0011 6",
+   "story": "Through Oct 4, the volunteer rain gauge 2.7 miles north-northeast of Nehalem has caught 57.04 inches. March was the wettest month at 18.19 inches, and the biggest one-day reading was 3.18 inches on Mar 14. The gauge then went 19 days in a row with nothing from Aug 4 to Aug 22. On the days both years reported, this year is 1.92 inches more than last year.",
+   "through": "2026-10-04"
+  },
+  "41059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 8",
+     "in": "0.72",
+     "label": "biggest single day"
+    },
+    "county": "Umatilla County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "at Hermiston Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "6.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jul 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.17",
+    "usual_in": "5.93",
+    "vs_usual": {
+     "diff_in": "0.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.83",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "948d39636590e936",
+   "sid": "04113 1",
+   "story": "Through Oct 13, the weather station at Hermiston Municipal Airport had 5.17 inches, 0.76 inches less than a usual year. February was the wettest month at 1.83 inches, and the biggest single day was 0.72 inches on Feb 8. The gauge went 25 days in a row with nothing, not even a trace, from Jul 21 to Aug 14. On the days both years reported, this year ran 1.77 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "41061": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "9.8 miles north of Elgin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "3.91",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "18.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 15"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 68,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.67",
+    "usual_in": "21.61",
+    "vs_usual": {
+     "diff_in": "6.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.70",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "893009b3d0559af0",
+   "sid": "US1ORUN0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.8 miles north of Elgin had 14.67 inches, 6.94 inches less than a usual year. March was the wettest month at 3.70 inches. The gauge went 25 days in a row with nothing in it, from Jul 22 to Aug 15. On the days both years reported, this year ran 3.91 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "41063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 13",
+     "in": "1.11",
+     "label": "biggest single day"
+    },
+    "county": "Wallowa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Joseph",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": null,
+      "dir": "about the same",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Jan 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.20",
+    "usual_in": "13.44",
+    "vs_usual": {
+     "diff_in": "3.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.67",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b4ee9a4009fedf2f",
+   "sid": "354329 2",
+   "story": "Through Oct 13, the weather station in Joseph had 10.20 inches, 3.24 inches less than a usual year. April was the wettest month at 2.67 inches, and the biggest single day was Apr 13 with 1.11 inches. From Jan 9 to Feb 7 the gauge went 30 days in a row with nothing in it, not even a trace. Last year through Oct 13 came out about the same, 10.18 inches.",
+   "through": "2026-10-13"
+  },
+  "41065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 23",
+     "in": "1.30",
+     "label": "biggest single day"
+    },
+    "county": "Wasco County",
+    "days_in_year_so_far": 281,
+    "days_missing": 0,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "in Clear Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "0.20",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 8",
+     "total_in": "17.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 65,
+     "from": "Jun 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Oregon",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "17.80",
+    "usual_in": "26.15",
+    "vs_usual": {
+     "diff_in": "8.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.20",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6cbb8b3a1bde5bc4",
+   "sid": "USS0021D12S 6",
+   "story": "Through Oct 8, the weather station in Clear Lake caught the most in February, 4.20 inches, and the biggest single day came Feb 23 with 1.30 inches. Then it went 65 days in a row with nothing in the gauge, from Jun 29 to Sep 1. On the days both years reported, this year has 0.20 inches more than 2025, which still puts it 8.35 inches less than a usual year.",
+   "through": "2026-10-08"
+  },
+  "41067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "1.34",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "1.9 miles north-northeast of Beaverton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.17",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 28"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 73,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.03",
+    "usual_in": "25.92",
+    "vs_usual": {
+     "diff_in": "6.89",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.06",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b521dc88458a7d43",
+   "sid": "US1ORWS0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.9 miles north-northeast of Beaverton had its wettest month in February at 5.06 inches, and its biggest one-day reading was 1.34 inches on Mar 12. Then it went 36 days in a row with nothing in the gauge, not even a trace, from Jul 24 to Aug 28. On the days both years reported, this year is 1.17 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "41069": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "0.70",
+     "label": "biggest single day"
+    },
+    "county": "Wheeler County",
+    "days_in_year_so_far": 282,
+    "days_missing": 0,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "in Derr",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.20",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "16.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 41,
+     "from": "Jul 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 56,
+    "state": "Oregon",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "11.00",
+    "usual_in": "19.63",
+    "vs_usual": {
+     "diff_in": "8.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.20",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3f1f54b2ce42b01f",
+   "sid": "USS0019E03S 6",
+   "story": "Through Oct 9, the weather station in Derr has caught 11.00 inches, 5.20 inches less than last year by this date. February was the wettest month at 2.20 inches. The biggest single day was May 28 with 0.70 inches. Then the gauge sat empty for 41 days in a row, from Jul 23 to Sep 1, not even a trace.",
+   "through": "2026-10-09"
+  },
+  "41071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "3.37",
+     "label": "biggest single day"
+    },
+    "county": "Yamhill County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Haskins",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.64",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "33.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 41,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Oregon",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.31",
+    "usual_in": "45.07",
+    "vs_usual": {
+     "diff_in": "9.76",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.47",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b3850a850bce8778",
+   "sid": "353705 2",
+   "story": "Through Oct 13, the weather station in Haskins had its wettest month in February at 9.47 inches. The biggest single day came Mar 12 with 3.37 inches. Then the gauge sat empty 41 days in a row, Jul 24 to Sep 2, not even a trace. On the days both years reported, that is 1.64 inches more than 2025.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "OR"
+}

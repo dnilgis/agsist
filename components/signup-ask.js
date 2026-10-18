@@ -28,6 +28,8 @@
    Daily unless "Also send the morning briefing" is ticked.
    data-daily="on" starts that box ticked, with its ZIP box open (the
    reader can untick it); without it the box starts empty. (2026-10-17)
+   data-after="YYYY-II" goes with a recurring notice (prf:<grid>): the
+   newest interval already out, so the first email is the next one.
 
    This file also owns:
      - the second-visit bar (sitewide; components/loader.js loads this file),
@@ -143,6 +145,8 @@
   function notice(o) {
     var body = { email: String(o.email || '').trim(), source: String(o.source || '').slice(0, 60), topic: o.topic, daily: !!o.daily };
     if (o.daily) { body.reports = true; if (/^\d{5}$/.test(String(o.zip || ''))) body.zip = String(o.zip); }
+    /* a recurring notice (prf:<grid>, worker v5.29): the newest one already out, so the first email is the next */
+    if (/^\d{4}-\d{2}$/.test(String(o.after || ''))) body.after = String(o.after);
     return post(EP_NOTICE, body).then(function (res) {
       if (res.ok) {
         setNoticeDone(o.topic);
@@ -361,7 +365,7 @@
       el.setAttribute('data-sa-busy', '1');
       var daily = !!(dbox && dbox.checked);
       var req;
-      if (topic) req = notice({ email: email, source: source, topic: topic, daily: daily, zip: zv });
+      if (topic) req = notice({ email: email, source: source, topic: topic, daily: daily, zip: zv, after: el.getAttribute('data-after') || '' });
       else if (zipShown) req = subscribe({ email: email, source: source, reports: reports, zip: zv, zipField: true });
       else req = subscribe({ email: email, source: source, reports: reports, zip: zipStart(el) });
       req.then(function (res) {

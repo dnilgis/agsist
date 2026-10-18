@@ -1,0 +1,1196 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "02013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 6",
+     "in": "1.35",
+     "label": "biggest single day"
+    },
+    "county": "Aleutians East Borough",
+    "days_in_year_so_far": 283,
+    "days_missing": 1,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "60 miles from the middle of the county",
+    "gauge_where": "1 mile east-northeast of Sand Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "19.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 10",
+     "total_in": "48.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Alaska",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "30.13",
+    "usual_in": "33.74",
+    "vs_usual": {
+     "diff_in": "3.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.77",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "294485e22bc9d861",
+   "sid": "25630 1",
+   "story": "Through Oct 10, the weather station 1 mile east-northeast of Sand Point had 30.13 inches, 3.61 inches less than a usual year. April was the wettest month at 5.77 inches, and the biggest single day came Apr 6 with 1.35 inches. Last year is the bigger gap. On the days both years reported, this year is 19.20 inches less than 2025.",
+   "through": "2026-10-10"
+  },
+  "02016": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 31",
+     "in": "1.46",
+     "label": "biggest single day"
+    },
+    "county": "Aleutians West Census Area",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "328 miles from the middle of the county",
+    "gauge_where": "at Saint Paul Island Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "0.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 13",
+     "total_in": "19.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 133,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.82",
+    "usual_in": "17.13",
+    "vs_usual": {
+     "diff_in": "5.69",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.34",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c5a23b6e759be2df",
+   "sid": "25713 1",
+   "story": "Through Oct 13, the weather station at Saint Paul Island Airport, 328 miles from the middle of the county, caught 6.34 inches in August, the wettest month. The biggest single day was Aug 31 at 1.46 inches. The longest dry stretch ran 18 days, from May 30 to Jun 16, with not even a trace in the gauge. On the days both years reported, 2026 is 0.92 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "02020": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "0.95",
+     "label": "biggest single day"
+    },
+    "county": "Anchorage Municipality",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "27 miles from the middle of the county",
+    "gauge_where": "4.7 miles south-southwest of Anchorage",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "0.06",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 13",
+     "total_in": "16.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.74",
+    "usual_in": "13.76",
+    "vs_usual": {
+     "diff_in": "4.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.08",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3cba7225a360b57c",
+   "sid": "US1AKAB0052 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles south-southwest of Anchorage had 4.98 inches more than a usual year. July did most of the work with 5.08 inches. The biggest single day was 0.95 inches on Sep 16. Before all that, the gauge sat at nothing for 17 days in a row, Mar 21 to Apr 6.",
+   "through": "2026-10-13"
+  },
+  "02050": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 27",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Bethel Census Area",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "68 miles from the middle of the county",
+    "gauge_where": "at Bethel Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "0.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "19.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.55",
+    "usual_in": "15.85",
+    "vs_usual": {
+     "diff_in": "4.70",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.36",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "74ec333620f942a7",
+   "sid": "26615 1",
+   "story": "Through Oct 13, the weather station at Bethel Airport shows August as the wettest month at 5.36 inches, and the biggest single day came Aug 27 with 1.49 inches. The longest dry stretch ran 10 days, from Feb 24 to Mar 5. On the days both years reported, this year sits 0.45 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "02060": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "0.69",
+     "label": "biggest single day"
+    },
+    "county": "Bristol Bay Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at King Salmon Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "8.24",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "23.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.76",
+    "usual_in": "16.73",
+    "vs_usual": {
+     "diff_in": "1.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.65",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "93602d9af623b3cf",
+   "sid": "25503 1",
+   "story": "Through Oct 13, the weather station at King Salmon Airport had its wettest month in August with 3.65 inches. The biggest single day came Aug 3 at 0.69 inches. On the days both years reported, 2026 is 8.24 inches behind 2025. The longest stretch with nothing in the gauge ran 10 days, Mar 19 to Mar 28.",
+   "through": "2026-10-13"
+  },
+  "02068": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 24",
+     "in": "0.77",
+     "label": "biggest single day"
+    },
+    "county": "Denali Borough",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "32 miles from the middle of the county",
+    "gauge_where": "in Mckinley Park",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Alaska",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "13.80",
+    "usual_in": "13.73",
+    "vs_usual": {
+     "diff_in": "0.07",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "3.04",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3c8dd6db76219df0",
+   "sid": "26429 1",
+   "story": "Through Oct 10, the weather station in Mckinley Park had 13.80 inches, 0.07 more than a usual year. February was the wettest month at 3.04 inches. The biggest single day was Jul 24 with 0.77 inches. The longest dry stretch ran 19 days, Mar 21 to Apr 8, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-10"
+  },
+  "02070": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "1.87",
+     "label": "biggest single day"
+    },
+    "county": "Dillingham Census Area",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "39 miles from the middle of the county",
+    "gauge_where": "1 mile north-northeast of Aleknagik",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "11.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "52.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alaska",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "41.50",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.13",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "de90aa971cb4b47f",
+   "sid": "23583 1",
+   "story": "Through Oct 10, the weather station 1 mile north-northeast of Aleknagik had 41.50 inches, 11.42 inches less than last year by the same day. April was the wettest month at 7.13 inches. The biggest single day was Aug 3 with 1.87 inches. From Mar 8 to Mar 28 the gauge went 21 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-10"
+  },
+  "02090": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 23",
+     "in": "0.61",
+     "label": "biggest one-day reading"
+    },
+    "county": "Fairbanks North Star Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "in North Pole",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.74",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 103,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.58",
+    "usual_in": "11.26",
+    "vs_usual": {
+     "diff_in": "0.32",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.71",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b86d43f4d415d69d",
+   "sid": "506581 2",
+   "story": "Through Oct 13, the weather station in North Pole had its wettest month in September at 3.71 inches. The biggest one-day reading was 0.61 inches on Feb 23. From Mar 15 to Apr 9 it went 26 days in a row with nothing in the gauge, not even a trace. That still left it 0.74 inches more than last year by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "02110": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 31",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Juneau City and Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Juneau Forecast Office",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jan 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "60.96",
+    "usual_in": "59.72",
+    "vs_usual": {
+     "diff_in": "1.24",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.41",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4a539e8b0f0deaa3",
+   "sid": "504103 2",
+   "story": "Through Oct 13, the weather station in Juneau Forecast Office had 60.96 inches, 1.24 inches more than a usual year. September was the wettest month at 8.41 inches. The biggest single day came Aug 31 with 2.24 inches. The longest dry stretch ran 8 days, Jan 17 to Jan 24, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "02122": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 20",
+     "in": "1.02",
+     "label": "biggest single day"
+    },
+    "county": "Kenai Peninsula Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "27 miles from the middle of the county",
+    "gauge_where": "6 miles southwest of Sterling",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.09",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.75",
+    "usual_in": "18.12",
+    "vs_usual": {
+     "diff_in": "1.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.23",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e31fee27d289e2fb",
+   "sid": "508731 2",
+   "story": "Through Oct 13, the weather station 6 miles southwest of Sterling had its wettest month in July with 4.23 inches. The biggest single day was Jul 20 at 1.02 inches. The gauge also went 17 days in a row with nothing in it, from Mar 21 to Apr 6. The station sits at 1.09 inches less than last year at this point, and 1.37 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "02130": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 11",
+     "in": "2.53",
+     "label": "biggest single day"
+    },
+    "county": "Ketchikan Gateway Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "36 miles from the middle of the county",
+    "gauge_where": "10 miles north of Ketchikan",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Aug 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "64.65",
+    "usual_in": "73.25",
+    "vs_usual": {
+     "diff_in": "8.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "16.00",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "00db621c86aea377",
+   "sid": "504594 2",
+   "story": "Through Oct 13, the weather station 10 miles north of Ketchikan had 64.65 inches, 8.60 inches less than a usual year. January did most of the heavy lifting with 16.00 inches, and the biggest single day came Jan 11 at 2.53 inches. The gauge went 14 days in a row with nothing in it, not even a trace, from Aug 3 to Aug 16.",
+   "through": "2026-10-13"
+  },
+  "02150": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 3",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Kodiak Island Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "48 miles from the middle of the county",
+    "gauge_where": "at Kodiak Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.08",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "61.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Aug 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "53.30",
+    "usual_in": "57.27",
+    "vs_usual": {
+     "diff_in": "3.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.98",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ec64bb047f2f4e78",
+   "sid": "25501 1",
+   "story": "Through Oct 13, the weather station at Kodiak Airport had 9.98 inches in June, the wettest month of the year. The biggest single day came early, 2.45 inches on Feb 3. The longest run with nothing in the gauge was only 6 days, Aug 29 to Sep 3. The station sits 8.08 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "02164": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "1.15",
+     "label": "biggest single day"
+    },
+    "county": "Lake and Peninsula Borough",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "126 miles from the middle of the county",
+    "gauge_where": "1 mile southwest of Port Alsworth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "6.83",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 10",
+     "total_in": "14.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jun 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Alaska",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "21.27",
+    "usual_in": "16.93",
+    "vs_usual": {
+     "diff_in": "4.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.98",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4a6fa2062b9ca920",
+   "sid": "26562 1",
+   "story": "Through Oct 10, the weather station 1 mile southwest of Port Alsworth has 21.27 inches, 4.34 more than a usual year. August did most of the work with 6.98 inches, and the biggest single day was Aug 3 at 1.15. The gauge sat empty 12 days in a row from Jun 10 to Jun 21. On the days both years reported, this year is 6.83 inches ahead of last year.",
+   "through": "2026-10-10"
+  },
+  "02170": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "1.01",
+     "label": "biggest one-day reading"
+    },
+    "county": "Matanuska-Susitna Borough",
+    "days_in_year_so_far": 284,
+    "days_missing": 2,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "50 miles from the middle of the county",
+    "gauge_where": "in Lazy Mountain",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "4.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 11",
+     "total_in": "17.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": 154,
+    "state": "Alaska",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "21.64",
+    "usual_in": "14.08",
+    "vs_usual": {
+     "diff_in": "7.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.50",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1103a918a0652797",
+   "sid": "505464 2",
+   "story": "Through Oct 11, the weather station in Lazy Mountain has 21.64 inches, 7.56 more than a usual year. July was the wettest month at 4.50 inches, and the biggest one-day reading came Sep 16 with 1.01. The gauge went 16 days with nothing from Mar 20 to Apr 4. On the days both years reported, this year is 4.62 inches more than 2025.",
+   "through": "2026-10-11"
+  },
+  "02180": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "1.01",
+     "label": "biggest single day"
+    },
+    "county": "Nome Census Area",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "50 miles from the middle of the county",
+    "gauge_where": "at Nome Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "0.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "18.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 133,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.27",
+    "usual_in": "13.75",
+    "vs_usual": {
+     "diff_in": "4.52",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.31",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3ae6260c1d41519b",
+   "sid": "26617 1",
+   "story": "Through Oct 13, the weather station at Nome Airport has caught 18.27 inches, 4.52 more than a usual year. August did most of the work with 6.31 inches, and the biggest single day was 1.01 on Aug 3. The longest dry stretch ran 10 days, Jan 19 to Jan 28. On the days both years reported, this year sits 0.53 less than 2025.",
+   "through": "2026-10-13"
+  },
+  "02185": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "0.70",
+     "label": "biggest single day"
+    },
+    "county": "North Slope Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "93 miles from the middle of the county",
+    "gauge_where": "in Alpine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.13",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "5.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Apr 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "4.67",
+    "usual_in": "6.50",
+    "vs_usual": {
+     "diff_in": "1.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.11",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d7007ecfba2af69",
+   "sid": "500235 2",
+   "story": "Through Oct 13, the weather station in Alpine had its biggest single day on the last day, with 0.70 inches on Oct 13. September was the wettest month at 1.11 inches. The longest dry stretch ran 15 days, Apr 3 to Apr 17, with nothing in the gauge. On the days both years reported, this year is 0.13 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "02188": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "0.53",
+     "label": "biggest single day"
+    },
+    "county": "Northwest Arctic Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "79 miles from the middle of the county",
+    "gauge_where": "at Kotzebue Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "2.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "12.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jun 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.42",
+    "usual_in": "9.27",
+    "vs_usual": {
+     "diff_in": "1.15",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.22",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a594d3c1c93533cf",
+   "sid": "26616 1",
+   "story": "Through Oct 13, the weather station at Kotzebue Airport had its wettest month in August with 3.22 inches. The biggest single day came Aug 3 with 0.53 inches. Earlier the gauge went 20 days in a row with nothing in it, not even a trace, from Jun 8 to Jun 27. On the days both years reported, this year is 2.32 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "02220": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "2.27",
+     "label": "biggest single day"
+    },
+    "county": "Sitka City and Borough",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Sitka Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "0.17",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 15,
+     "through": "Oct 13",
+     "total_in": "57.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jan 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "62.02",
+    "usual_in": "59.46",
+    "vs_usual": {
+     "diff_in": "2.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.93",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "121606fb9fbd4d46",
+   "sid": "25333 1",
+   "story": "Through Oct 13, the weather station at Sitka Airport had September as its wettest month at 10.93 inches. The biggest single day was Sep 8 with 2.27 inches. The longest dry stretch ran 8 days, Jan 17 to Jan 24, with nothing in the gauge, not even a trace. On the days both years reported, this year has 0.17 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "02240": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "Southeast Fairbanks Census Area",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "87 miles from the middle of the county",
+    "gauge_where": "in Eagle",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.84",
+    "usual_in": "10.96",
+    "vs_usual": {
+     "diff_in": "1.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.31",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d4f36d023ade4743",
+   "sid": "26422 1",
+   "story": "Through Oct 13, the weather station in Eagle had September as its wettest month at 3.31 inches. The biggest single day came Jun 28 with 1.18 inches. The longest dry stretch ran 15 days, Mar 22 to Apr 5, with nothing in the gauge, not even a trace. All told that is 1.88 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "02261": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 4",
+     "in": "0.81",
+     "label": "biggest single day"
+    },
+    "county": "Valdez-Cordova Census Area",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "51 miles from the middle of the county",
+    "gauge_where": "in Glennallen Kcam",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.05",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "9.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.25",
+    "usual_in": "9.61",
+    "vs_usual": {
+     "diff_in": "0.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.66",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d430a2538afacc54",
+   "sid": "503304 2",
+   "story": "Through Oct 13, the weather station in Glennallen Kcam had its wettest month in May at 1.66 inches, and its biggest single day came late, 0.81 inches on Oct 4. The gauge went 24 days in a row with nothing, not even a trace, from Mar 20 to Apr 12. On the days both years reported, this year is 0.05 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "02290": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 29",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "Yukon-Koyukuk Census Area",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "136 miles from the middle of the county",
+    "gauge_where": "in Wiseman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.36",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 127,
+    "state": "Alaska",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.32",
+    "usual_in": "13.59",
+    "vs_usual": {
+     "diff_in": "3.73",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.14",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c943140cae546951",
+   "sid": "26511 1",
+   "story": "Through Oct 13, the weather station in Wiseman had its wettest month in August with 5.14 inches, and its biggest single day came Aug 29 with 1.18 inches. The gauge also went 24 days in a row with nothing, from Mar 15 to Apr 7. That still leaves it 7.36 inches less than last year at this point.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "AK"
+}

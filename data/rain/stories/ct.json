@@ -1,0 +1,481 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "09001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "4.64",
+     "label": "biggest single day"
+    },
+    "county": "Fairfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1.9 miles east-northeast of New Canaan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "14.52",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.29",
+    "usual_in": "40.42",
+    "vs_usual": {
+     "diff_in": "5.87",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.06",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61578d7547153ace",
+   "sid": "US1CTFR0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge near New Canaan had its wettest month in July, at 11.06 inches. That came after 11 days in a row with nothing in the gauge, Jul 8 to Jul 18. Then the biggest single day hit Jul 22 with 4.64 inches. On the days both years reported, this year sits 14.52 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "09003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "3.59",
+     "label": "biggest single day"
+    },
+    "county": "Hartford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Hartford-Bradley International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.21",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.31",
+    "usual_in": "36.95",
+    "vs_usual": {
+     "diff_in": "1.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.66",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "020a11ec13eef7dd",
+   "sid": "14740 1",
+   "story": "Through Oct 13, the weather station at Hartford-Bradley International Airport had its wettest month in July with 8.66 inches. That same July also held the longest dry stretch, 10 days in a row with nothing in the gauge from Jul 8 to Jul 17. The biggest single day came Aug 3 with 3.59 inches. The year sits 0.21 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "09005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Litchfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "2 miles southwest of Norfolk",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.59",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.52",
+    "usual_in": "41.13",
+    "vs_usual": {
+     "diff_in": "5.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.77",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9abc77009ede44a6",
+   "sid": "065445 2",
+   "story": "Through Oct 13, the weather station 2 miles southwest of Norfolk had July as its wettest month at 7.77 inches. That same month it also went 10 days in a row with nothing in the gauge, Jul 9 to Jul 18, then caught its biggest single day at 2.05 inches on Jul 30. The year sits 0.59 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "09007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Middlesex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Higganum",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.40",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.28",
+    "usual_in": "38.02",
+    "vs_usual": {
+     "diff_in": "7.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.13",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad7645634b0f8ec0",
+   "sid": "US1CTMD0023 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of Higganum had caught 13.40 inches more than it had by the same day last year. July was the wettest month at 10.13 inches. That same July also held the longest dry stretch, 10 days in a row with nothing in the gauge from Jul 9 to Jul 18. The biggest single day came Sep 14 with 2.70 inches.",
+   "through": "2026-10-13"
+  },
+  "09009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "New Haven County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Prospect",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "11.80",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "35.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.89",
+    "usual_in": "40.26",
+    "vs_usual": {
+     "diff_in": "6.63",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.94",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6854b0645bf063e4",
+   "sid": "US1CTNH0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Prospect had its wettest month in July with 9.94 inches. The biggest single day came Jul 7 at 2.34 inches. Then the gauge sat empty 10 days in a row, Jul 9 to Jul 18. On the days both years reported, this year has 11.80 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "09011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "4.25",
+     "label": "biggest one-day reading"
+    },
+    "county": "New London County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "less than a mile north of Griswold",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.31",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "33.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 106,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.13",
+    "usual_in": "38.03",
+    "vs_usual": {
+     "diff_in": "2.10",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.75",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1a7071d8214c13bb",
+   "sid": "US1CTNL0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile north of Griswold had a wet September, with 8.75 inches for the month. A good share of that came on Sep 14, when the gauge took 4.25 inches, its biggest one-day reading of the year. The longest dry stretch ran 10 days, Jan 28 to Feb 6. On the days both years reported, this year is 6.31 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "09013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "2.07",
+     "label": "biggest single day"
+    },
+    "county": "Tolland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.7 miles southeast of Willington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.19",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.96",
+    "usual_in": "40.71",
+    "vs_usual": {
+     "diff_in": "1.25",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.68",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d0a0c7e449314e35",
+   "sid": "US1CTTL0027 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles southeast of Willington had 41.96 inches, 1.25 inches more than a usual year. July was the wettest month at 7.68 inches, even with 10 days in a row of nothing in the gauge from Jul 9 to Jul 18. The biggest single day came Sep 27 with 2.07 inches. That puts this year 3.19 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "09015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Windham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.3 miles southwest of East Killingly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.76",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Connecticut",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.38",
+    "usual_in": "40.18",
+    "vs_usual": {
+     "diff_in": "0.20",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.27",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "33193f63dcc6c0e4",
+   "sid": "US1CTWN0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles southwest of East Killingly sits about where a usual year would be. September did most of the lifting at 7.27 inches, and Sep 27 alone put 2.96 inches in the gauge. The longest dry stretch ran 9 days, Jan 29 to Feb 6. On the days both years reported, this year is 2.76 inches more than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "CT"
+}

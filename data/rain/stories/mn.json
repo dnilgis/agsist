@@ -1,0 +1,4461 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "27001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 30",
+     "in": "1.84",
+     "label": "biggest single day"
+    },
+    "county": "Aitkin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7.3 miles north of Mcgregor",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.08",
+    "usual_in": "26.92",
+    "vs_usual": {
+     "diff_in": "5.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.85",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f93131bc723cbd6c",
+   "sid": "US1MNAT0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.3 miles north of Mcgregor has caught 21.08 inches, 5.84 inches less than a usual year. April was the wettest month at 4.85 inches. The biggest single day came Jun 30 with 1.84 inches. That is 3.06 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "27003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.35",
+     "label": "biggest single day"
+    },
+    "county": "Anoka County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.2 miles east of East Bethel",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "25.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.33",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.98",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f332e960e3bfd246",
+   "sid": "US1MNAA0175 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.2 miles east of East Bethel has caught 19.33 inches. June was the wettest month at 4.98 inches, and the biggest single day came Sep 8 with 1.35 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17, with not even a trace. On the days both years reported, that is 5.74 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 29",
+     "in": "3.03",
+     "label": "biggest one-day reading"
+    },
+    "county": "Becker County",
+    "days_in_year_so_far": 286,
+    "days_missing": 26,
+    "days_reported": 260,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "6.0 miles south of Lake Park",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 93,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.38",
+    "usual_in": "21.85",
+    "vs_usual": {
+     "diff_in": "1.47",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.39",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2cfc9b3b2d6eabe6",
+   "sid": "US1MNBK0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.0 miles south of Lake Park had 20.38 inches, 1.47 inches less than a usual year. June was the wettest month at 5.39 inches. The biggest one-day reading came Aug 29 with 3.03 inches. The longest dry stretch ran 10 days, Feb 8 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "27007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Beltrami County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "33 miles from the middle of the county",
+    "gauge_where": "7.8 miles east-northeast of Bemidji",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.69",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.38",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.66",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "23928a825b134cbe",
+   "sid": "US1MNBM0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.8 miles east-northeast of Bemidji had September as its wettest month at 7.66 inches. The biggest single day came Sep 4 with 2.20 inches. The longest dry stretch ran 9 days, May 26 to Jun 3, with not even a trace in the gauge. That puts the gauge 1.69 inches ahead of last year at 23.38 inches.",
+   "through": "2026-10-13"
+  },
+  "27009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.40",
+     "label": "biggest single day"
+    },
+    "county": "Benton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Rice",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "24.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.60",
+    "usual_in": "26.15",
+    "vs_usual": {
+     "diff_in": "5.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.09",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "38989b1c162c0c2b",
+   "sid": "216920 2",
+   "story": "Through Oct 13, the weather station in Rice had its wettest month in June at 5.09 inches, and the biggest single day came Jun 24 with 1.40 inches. The gauge then went 14 days in a row with nothing in it, from Jul 10 to Jul 23. On the days both years reported, this year sits 3.98 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27011": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Big Stone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "1 mile east of Artichoke Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "10.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "31.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 85,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.17",
+    "usual_in": "22.46",
+    "vs_usual": {
+     "diff_in": "3.29",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.01",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cea6bf1c64dd4747",
+   "sid": "210287 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Artichoke Lake got its most rain in September, 5.01 inches, which makes that the wettest month so far. The longest dry stretch ran 16 days in a row, Feb 2 to Feb 17, with not even a trace in the gauge. On the days both years reported, this year is 10.95 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "1.87",
+     "label": "biggest single day"
+    },
+    "county": "Blue Earth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1.5 miles southeast of Mankato",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.14",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.38",
+    "usual_in": "31.72",
+    "vs_usual": {
+     "diff_in": "4.34",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.96",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "360e1b201d0915da",
+   "sid": "US1MNBU0023 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles southeast of Mankato has caught 27.38 inches, 4.34 inches less than a usual year. July was the wettest month at 5.96 inches, and the biggest single day came Jul 3 with 1.87 inches. On the days both years reported, this year is 8.14 inches behind 2025. The longest dry stretch ran 12 days, Feb 6 to Feb 17, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 3",
+     "in": "1.45",
+     "label": "biggest one-day reading"
+    },
+    "county": "Brown County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "6.5 miles east-northeast of Comfrey",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 73,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.48",
+    "usual_in": "28.11",
+    "vs_usual": {
+     "diff_in": "7.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.10",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "90bdb156b722d1a9",
+   "sid": "US1MNBW0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.5 miles east-northeast of Comfrey has caught 20.48 inches, 7.63 inches less than a usual year. September was the wettest month at 4.10 inches. The biggest one-day reading was 1.45 inches on Jul 3. The longest dry stretch ran 14 days, Mar 19 to Apr 1, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "27017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "1.15",
+     "label": "biggest one-day reading"
+    },
+    "county": "Carlton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Cloquet",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.18",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "20.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 11"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 76,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.05",
+    "usual_in": "27.55",
+    "vs_usual": {
+     "diff_in": "6.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.70",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3e0dcd57e3fee8fa",
+   "sid": "211630 2",
+   "story": "Through Oct 13, the weather station in Cloquet had its wettest month in June at 4.70 inches, and the biggest one-day reading came Jun 11 at 1.15 inches. The longest dry stretch ran 13 days, Apr 29 to May 11, with nothing in the gauge. On the days both years reported, 2026 is 0.18 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "27019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Carver County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Chanhassen Wsfo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.27",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.79",
+    "usual_in": "28.54",
+    "vs_usual": {
+     "diff_in": "3.75",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.48",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "87b2a95a7860389a",
+   "sid": "211448 2",
+   "story": "Through Oct 13, the weather station in Chanhassen Wsfo had June as its wettest month at 5.48 inches. The biggest single day was Jul 31 with 2.09 inches. The longest dry stretch ran 12 days, Feb 5 to Feb 16, with nothing in the gauge. On the days both years reported, that is 6.27 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "1.74",
+     "label": "biggest single day"
+    },
+    "county": "Cass County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "33 miles from the middle of the county",
+    "gauge_where": "in Cass Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.44",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.26",
+    "usual_in": "22.70",
+    "vs_usual": {
+     "diff_in": "0.44",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.11",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0f15e586a0ca5ec5",
+   "sid": "211374 2",
+   "story": "Through Oct 13, the weather station in Cass Lake has caught 22.26 inches, 0.44 inches less than a usual year. September was the wettest month at 6.11 inches, and the biggest single day came Sep 4 with 1.74 inches. The gauge went 16 days without a trace from Feb 25 to Mar 12. That is 3.44 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "27023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "4.05",
+     "label": "biggest single day"
+    },
+    "county": "Chippewa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "12.6 miles north-northeast of Montevideo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "8.55",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "29.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.95",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.63",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2441b7613c7c1a72",
+   "sid": "US1MNCP0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 12.6 miles north-northeast of Montevideo had July as its wettest month at 6.63 inches. Most of that came on Jul 31, the biggest single day, with 4.05 inches. On the days both years reported, this year is 8.55 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Chisago County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Wild River State Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "22.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.68",
+    "usual_in": "27.87",
+    "vs_usual": {
+     "diff_in": "6.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.96",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c8e29686367398e",
+   "sid": "218986 2",
+   "story": "Through Oct 13, the weather station in Wild River State Park has 21.68 inches, 6.19 inches less than a usual year. June was the wettest month at 5.96 inches, and the biggest single day came Sep 8 with 1.49 inches. On the days both years reported, this year sits 0.89 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.40",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "1 mile east of Georgetown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.67",
+    "usual_in": "21.81",
+    "vs_usual": {
+     "diff_in": "6.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.53",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d2de6e96c268cc83",
+   "sid": "213104 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Georgetown sat 6.14 inches less than a usual year. September did a lot of the work, with 5.53 inches for the wettest month and the biggest single day at 1.40 inches on Sep 29. Before that, the gauge went 19 days in a row with nothing in it, from Apr 28 to May 16. It is also 2.02 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "27029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Clearwater County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "less than a mile east-northeast of Gonvick",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.56",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.74",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.28",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd9149102bd97709",
+   "sid": "US1MNCL0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-northeast of Gonvick has caught 25.74 inches, and September was the wettest month at 9.28 inches. The biggest single day was Apr 4 with 2.73 inches. On the days both years reported, that is 7.56 inches more than 2025 had by this point. The longest dry stretch ran 15 days, Feb 3 to Feb 17, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "1.61",
+     "label": "biggest single day"
+    },
+    "county": "Cook County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Grand Marais",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.55",
+    "usual_in": "20.84",
+    "vs_usual": {
+     "diff_in": "1.29",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.78",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "618fa21e27a69911",
+   "sid": "94954 1",
+   "story": "Through Oct 13, the weather station in Grand Marais had its wettest month in April, with 4.78 inches. The biggest single day came on Apr 28 at 1.61 inches. The longest dry stretch ran 9 days, May 27 to Jun 4, with nothing in the gauge, not even a trace. That leaves the station 2.97 inches behind last year at this point, and 1.29 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "27033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "1.57",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cottonwood County",
+    "days_in_year_so_far": 280,
+    "days_missing": 27,
+    "days_reported": 253,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Windom",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 85,
+    "state": "Minnesota",
+    "through": "Oct 7",
+    "through_iso": "2026-10-07",
+    "total_in": "22.15",
+    "usual_in": "25.98",
+    "vs_usual": {
+     "diff_in": "3.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.38",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b03fa909794ba251",
+   "sid": "219033 2",
+   "story": "Through Oct 7, the weather station in Windom had 22.15 inches, 3.83 inches less than a usual year. September was the wettest month at 4.38 inches. The biggest one-day reading came Apr 27 with 1.57 inches. The longest dry stretch ran 14 days, Feb 4 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-07"
+  },
+  "27035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.58",
+     "label": "biggest single day"
+    },
+    "county": "Crow Wing County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Brainerd",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.54",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.81",
+    "usual_in": "26.52",
+    "vs_usual": {
+     "diff_in": "6.71",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.14",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ba210fd44c3583f1",
+   "sid": "210939 2",
+   "story": "Through Oct 13, the weather station in Brainerd has had its wettest month in September, with 5.14 inches. The biggest single day came Sep 8, at 1.58 inches. Before that, the gauge went 14 days in a row with nothing in it, not even a trace, from Jul 10 to Jul 23. It sits 3.54 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "27037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "1.74",
+     "label": "biggest single day"
+    },
+    "county": "Dakota County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3.3 miles west-northwest of Rosemount",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "10.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.30",
+    "usual_in": "29.80",
+    "vs_usual": {
+     "diff_in": "7.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.46",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1a3abc3715f80b91",
+   "sid": "US1MNDK0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles west-northwest of Rosemount has caught 22.30 inches, 7.50 inches less than a usual year. June was the wettest month at 4.46 inches, and the biggest single day was 1.74 inches on Aug 1. On the days both years reported, this year sits 10.98 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 1",
+     "in": "1.88",
+     "label": "biggest one-day reading"
+    },
+    "county": "Dodge County",
+    "days_in_year_so_far": 285,
+    "days_missing": 6,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.9 miles east-southeast of Mantorville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "1.40",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 17,
+     "through": "Oct 12",
+     "total_in": "24.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 75,
+    "state": "Minnesota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "23.42",
+    "usual_in": "31.03",
+    "vs_usual": {
+     "diff_in": "7.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.60",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b41657ae374c36c7",
+   "sid": "US1MNDD0003 6",
+   "story": "Through Oct 12, the volunteer rain gauge 1.9 miles east-southeast of Mantorville had September as its wettest month, with 4.60 inches. The biggest one-day reading came Jul 1 at 1.88 inches. The gauge went 15 days in a row with nothing in it, from Feb 3 to Feb 17. On the days both years reported, this year ran 1.40 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "27041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "1.38",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "at Alexandria Chandler Field",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.23",
+    "usual_in": "21.62",
+    "vs_usual": {
+     "diff_in": "6.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.53",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4c3346b7553f844e",
+   "sid": "14910 1",
+   "story": "Through Oct 13, the weather station at Alexandria Chandler Field has caught 15.23 inches, 6.39 inches less than a usual year. June was the wettest month at 4.53 inches, and the biggest single day came Jun 5 with 1.38 inches. The longest dry stretch ran 12 days, Feb 5 to Feb 16, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27043": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Faribault County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Winnebago",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.64",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.28",
+    "usual_in": "29.67",
+    "vs_usual": {
+     "diff_in": "5.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.71",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ead8abaecb0b8bbb",
+   "sid": "219046 2",
+   "story": "Through Oct 13, the weather station in Winnebago has caught 35.28 inches, 5.61 more than a usual year. August did most of the work with 8.71 inches, and the biggest single day was May 18 at 2.80. On the days both years reported, that is 4.64 inches more than last year. The longest dry stretch ran 17 days, Feb 2 to Feb 18.",
+   "through": "2026-10-13"
+  },
+  "27045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "4.51",
+     "label": "biggest single day"
+    },
+    "county": "Fillmore County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Mabel",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "1.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "32.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.14",
+    "usual_in": "33.01",
+    "vs_usual": {
+     "diff_in": "1.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.24",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0085e3674a9124be",
+   "sid": "214990 2",
+   "story": "Through Oct 13, the weather station in Mabel had July as its wettest month at 9.24 inches, and 4.51 inches of that came on Jul 2, the biggest single day. Before that it went 16 days in a row with nothing in the gauge, from Apr 29 to May 14. On the days both years reported, that is 1.30 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "27047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Freeborn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3 miles southeast of Albert Lea",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.80",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.60",
+    "usual_in": "31.60",
+    "vs_usual": {
+     "diff_in": "1.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.44",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "471ffcc618b27d09",
+   "sid": "210075 2",
+   "story": "Through Oct 13, the weather station 3 miles southeast of Albert Lea had July as its wettest month at 8.44 inches. The biggest single day was Aug 1 with 2.18 inches. On the days both years reported, this year is 0.80 inches less than 2025. The longest dry stretch ran 16 days, Feb 3 to Feb 18, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Goodhue County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "1.8 miles east-northeast of Welch",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.73",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 65,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.36",
+    "usual_in": "29.87",
+    "vs_usual": {
+     "diff_in": "10.51",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.25",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4239b0dc84f533c8",
+   "sid": "US1MNGH0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles east-northeast of Welch shows 8.73 inches less than it had by this day last year. September carried a good share of the load with 5.25 inches, and the biggest single day came Sep 19 at 2.09 inches. The longest run with nothing in the gauge, not even a trace, was 15 days from Feb 3 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "27051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "1.32",
+     "label": "biggest one-day reading"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "10.1 miles east-southeast of Elbow Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "5.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "22.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.82",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.27",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "40e3919bcb68d716",
+   "sid": "US1MNGR0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Elbow Lake had caught 16.82 inches. June was the wettest month at 5.27 inches, and the biggest one-day reading was 1.32 inches on Jun 8. On the days both years reported, this year ran 5.30 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.33",
+     "label": "biggest single day"
+    },
+    "county": "Hennepin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Robbinsdale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.67",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.59",
+    "usual_in": "29.25",
+    "vs_usual": {
+     "diff_in": "7.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.95",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c94ac44a1c4be658",
+   "sid": "US1MNHN0128 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southeast of Robbinsdale had 11.67 inches less than it did by this day last year. June was the wettest month at 4.95 inches, and the biggest single day was Jun 24 with 1.33 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "3.52",
+     "label": "biggest single day"
+    },
+    "county": "Houston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4 miles northwest of Hokah",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.33",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.22",
+    "usual_in": "32.49",
+    "vs_usual": {
+     "diff_in": "0.73",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.63",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "135b047f41c491df",
+   "sid": "213812 2",
+   "story": "Through Oct 13, the weather station 4 miles northwest of Hokah had its wettest month in September at 7.63 inches. The biggest single day came Sep 19 with 3.52 inches. The longest dry stretch ran 14 days, Feb 4 to Feb 17, with nothing in the gauge, not even a trace. That leaves the year 1.33 inches less than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "27057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "1.01",
+     "label": "biggest single day"
+    },
+    "county": "Hubbard County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "at Park Rapids Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "0.05",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "16.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.18",
+    "usual_in": "21.04",
+    "vs_usual": {
+     "diff_in": "4.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.27",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "927ee9075fe2d1fb",
+   "sid": "94967 1",
+   "story": "Through Oct 13, the weather station at Park Rapids Municipal Airport had June as its wettest month, with 4.27 inches. The biggest single day came late, 1.01 inches on Sep 24. On the days both years reported, this year sits 0.05 inches less than 2025, so call it a wash with last year.",
+   "through": "2026-10-13"
+  },
+  "27059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.98",
+     "label": "biggest one-day reading"
+    },
+    "county": "Isanti County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "6.6 miles east of Princeton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "1.78",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "23.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 8"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.66",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.39",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2411bf0e1b77eff2",
+   "sid": "US1MNIS0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.6 miles east of Princeton had 21.66 inches. April was the wettest month at 4.39 inches, and then the gauge sat empty for 10 days in a row from Apr 29 to May 8. The biggest one-day reading was 1.98 inches on Sep 8. On the days both years reported, this year ran 1.78 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 25",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Itasca County",
+    "days_in_year_so_far": 285,
+    "days_missing": 4,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "37 miles from the middle of the county",
+    "gauge_where": "3 miles south of Northome",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "1.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 12",
+     "total_in": "20.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Minnesota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "22.23",
+    "usual_in": "22.61",
+    "vs_usual": {
+     "diff_in": "0.38",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.72",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "097885ec55a98807",
+   "sid": "215989 2",
+   "story": "Through Oct 12, the station 3 miles south of Northome had September as its wettest month at 5.72 inches. The biggest single day was Jul 25 with 2.85 inches. The longest dry stretch ran 14 days, Feb 21 to Mar 6, with nothing in the gauge. On the days both years reported, this year is 1.35 inches more than last year.",
+   "through": "2026-10-12"
+  },
+  "27063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 282,
+    "days_missing": 0,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2 miles northeast of Lakefield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.30",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "23.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Minnesota",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "24.38",
+    "usual_in": "27.06",
+    "vs_usual": {
+     "diff_in": "2.68",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.71",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b293134cf2ec918",
+   "sid": "214453 2",
+   "story": "Through Oct 9, the weather station 2 miles northeast of Lakefield had its wettest month in September at 5.71 inches. The biggest single day came Sep 20 with 2.85 inches. That still leaves the year 2.68 inches less than a usual year, but 1.30 inches more than last year at this point. The longest dry stretch ran 16 days, Feb 4 to Feb 19, with not even a trace in the gauge.",
+   "through": "2026-10-09"
+  },
+  "27065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Kanabec County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Mora",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "4.52",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "24.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.44",
+    "usual_in": "26.37",
+    "vs_usual": {
+     "diff_in": "6.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.62",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "49fd8dde5549cb13",
+   "sid": "215615 2",
+   "story": "Through Oct 13, the weather station in Mora had June as its wettest month at 4.62 inches. The biggest single day was Jul 8, with 2.12 inches. On the days both years reported, this year is running 4.52 inches less than 2025, and the gauge sits 6.93 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "27067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "1.67",
+     "label": "biggest single day"
+    },
+    "county": "Kandiyohi County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "8.0 miles east-southeast of Belgrade",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "8.03",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "32.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.97",
+    "usual_in": "26.13",
+    "vs_usual": {
+     "diff_in": "3.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.84",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "951d48b7f3fdf8a3",
+   "sid": "US1MNKD0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.0 miles east-southeast of Belgrade had June as its wettest month at 5.84 inches. The biggest single day was Jul 5 with 1.67 inches. On the days both years reported, this year ran 8.03 inches less than last year. The longest dry stretch was 15 days in a row with nothing in the gauge, from Feb 3 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "27069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "4.11",
+     "label": "biggest one-day reading"
+    },
+    "county": "Kittson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Lake Bronson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.57",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 2"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.89",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "141189f7eef1da5d",
+   "sid": "214433 2",
+   "story": "Through Oct 13, the weather station in Lake Bronson had 18.89 inches for the year, 1.57 inches less than last year by the same day. June was the wettest month at 6.38 inches. The biggest one-day reading came Sep 7 with 4.11 inches. The longest dry stretch ran 9 days, May 25 to Jun 2, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 25",
+     "in": "1.21",
+     "label": "biggest single day"
+    },
+    "county": "Koochiching County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "at International Falls International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "18.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.11",
+    "usual_in": "21.77",
+    "vs_usual": {
+     "diff_in": "4.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.90",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "219da7671e018a01",
+   "sid": "14918 1",
+   "story": "Through Oct 13, the weather station at International Falls International Airport had August as its wettest month at 3.90 inches, and the biggest single day came Aug 25 with 1.21 inches. The longest dry stretch ran 7 days, May 27 to Jun 2, with nothing in the gauge, not even a trace. On the days both years reported, 2026 is 0.98 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Lac qui Parle County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Madison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "15.87",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "29.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.21",
+    "usual_in": "22.26",
+    "vs_usual": {
+     "diff_in": "8.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.80",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "420ebc2e6e638c62",
+   "sid": "214994 2",
+   "story": "Through Oct 13, the weather station in Madison went 21 days in a row with nothing in the gauge, from Jul 10 to Jul 30. Then it caught 2.46 inches on Jul 31, the biggest single day this year. September was the wettest month at 3.80 inches. On the days both years reported, this year sits 15.87 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 18",
+     "in": "2.77",
+     "label": "biggest single day"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "38 miles from the middle of the county",
+    "gauge_where": "7 miles northwest of Two Harbors",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.20",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.49",
+    "usual_in": "27.57",
+    "vs_usual": {
+     "diff_in": "1.08",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.04",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8b40065d68cecf5a",
+   "sid": "218421 2",
+   "story": "Through Oct 13, the weather station 7 miles northwest of Two Harbors had 26.49 inches, 1.08 inches less than a usual year. April was the wettest month at 7.04 inches. The gauge went 10 days in a row with nothing, Feb 8 to Feb 17, then caught 2.77 inches on Feb 18, the biggest single day so far. That is still 3.20 inches more than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "27077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "1.65",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lake of the Woods County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "in Baudette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "1.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "19.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jan 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 98,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.64",
+    "usual_in": "21.99",
+    "vs_usual": {
+     "diff_in": "0.35",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.25",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "31b1ccf9f3e4da99",
+   "sid": "210515 2",
+   "story": "Through Oct 13, the weather station in Baudette sits about where a usual year would, 0.35 inches less. July was the wettest month at 5.25 inches, and the biggest one-day reading came Jul 6 with 1.65 inches. The gauge went 24 days in a row with nothing in it, from Jan 13 to Feb 5. On the days both years reported, it's caught 1.68 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "27079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "1.53",
+     "label": "biggest single day"
+    },
+    "county": "Le Sueur County",
+    "days_in_year_so_far": 285,
+    "days_missing": 5,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1.8 miles northeast of Montgomery",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "4.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 12",
+     "total_in": "27.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "23.08",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.73",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3559e91b4b5a673a",
+   "sid": "US1MNLS0051 6",
+   "story": "Through Oct 12, the volunteer rain gauge 1.8 miles northeast of Montgomery had 23.08 inches. September was the wettest month at 4.73 inches, and the biggest single day was 1.53 inches on Sep 19. The gauge went 15 days in a row with nothing in it, not even a trace, from Feb 3 to Feb 17. On the days both years reported, this year ran 4.38 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "27083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Lyon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Marshall",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.53",
+    "usual_in": "25.49",
+    "vs_usual": {
+     "diff_in": "6.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b1bb4ab25733fabb",
+   "sid": "215204 2",
+   "story": "Through Oct 13, the weather station in Marshall had June as the wettest month at 5.30 inches, and 2.57 of that came on Jun 28. Then it went 21 days in a row with nothing in the gauge, from Jul 10 to Jul 30. The year sits 11.97 inches less than last year at this point, on every day both years reported.",
+   "through": "2026-10-13"
+  },
+  "27085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.52",
+     "label": "biggest single day"
+    },
+    "county": "McLeod County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Glencoe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.70",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.14",
+    "usual_in": "28.30",
+    "vs_usual": {
+     "diff_in": "1.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.03",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "db9cf13ba006d71a",
+   "sid": "US1MNMC0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-southwest of Glencoe has 27.14 inches, 1.16 inches less than a usual year. July did most of the work at 7.03 inches, and 3.52 of that came on Jul 31 alone. The longest run with nothing in the gauge was 13 days, Feb 5 to Feb 17. It's still 1.70 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "27089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 24",
+     "in": "2.77",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 283,
+    "days_missing": 8,
+    "days_reported": 275,
+    "gauge": "weather station",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "12 miles north-northwest of Goodridge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "5.85",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "17.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Minnesota",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "23.45",
+    "usual_in": "20.31",
+    "vs_usual": {
+     "diff_in": "3.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.15",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eb1841b6760ffd0d",
+   "sid": "04994 1",
+   "story": "Through Oct 10, the weather station 12 miles north-northwest of Goodridge had September as its wettest month at 6.15 inches. The biggest single day came Jul 24 with 2.77 inches. On the days both years reported, this year is 5.85 inches more than last year. The gauge also went 12 days in a row with nothing in it, from Feb 21 to Mar 4.",
+   "through": "2026-10-10"
+  },
+  "27091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "2.93",
+     "label": "biggest single day"
+    },
+    "county": "Martin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Fairmont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.56",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.75",
+    "usual_in": "29.53",
+    "vs_usual": {
+     "diff_in": "1.78",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.37",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0bf68c110347d14c",
+   "sid": "US1MNMT0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Fairmont had its wettest month in August with 6.37 inches. The biggest single day came Aug 1 with 2.93 inches. The longest dry stretch ran 16 days, Feb 4 to Feb 19, without even a trace. That puts the gauge 1.56 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "27093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "1.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Meeker County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Litchfield",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 99,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.48",
+    "usual_in": "25.72",
+    "vs_usual": {
+     "diff_in": "0.24",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.89",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b52803f36af400a",
+   "sid": "214778 2",
+   "story": "Through Oct 13, the weather station in Litchfield had 25.48 inches, 0.24 less than a usual year. June was the wettest month at 5.89 inches. The biggest one-day reading came Jul 31 with 1.70 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.65",
+     "label": "biggest single day"
+    },
+    "county": "Mille Lacs County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Milaca",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.55",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "24.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.68",
+    "usual_in": "26.69",
+    "vs_usual": {
+     "diff_in": "3.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.57",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bed4a417e2e36ab9",
+   "sid": "215392 2",
+   "story": "Through Oct 13, the weather station in Milaca had its wettest month in June at 5.57 inches. The biggest single day came Sep 8 with 1.65 inches. The longest dry stretch ran 13 days, Feb 5 to Feb 17, with nothing in the gauge, not even a trace. On the days both years reported, this year is 0.55 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "27097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Morrison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "8.0 miles northeast of Little Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "26.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.92",
+    "usual_in": "27.13",
+    "vs_usual": {
+     "diff_in": "3.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.01",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6b22781d64263afd",
+   "sid": "US1MNMR0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.0 miles northeast of Little Falls had 23.92 inches, 3.21 inches less than a usual year. The biggest single day came Jul 8 with 2.05 inches. Then the gauge sat empty 14 days in a row, Jul 10 to Jul 23. September was the wettest month at 5.01 inches, and the year still runs 2.15 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "27099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "7.30",
+     "label": "biggest single day"
+    },
+    "county": "Mower County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Grand Meadow",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.02",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.58",
+    "usual_in": "32.56",
+    "vs_usual": {
+     "diff_in": "8.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.20",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3dac6cd9b7244fde",
+   "sid": "213290 2",
+   "story": "Through Oct 13, the weather station in Grand Meadow has caught 40.58 inches, 8.02 more than a usual year. July did most of the work with 13.20 inches, and 7.30 of that came on Jul 2 alone. The longest dry stretch ran 15 days, Feb 3 to Feb 17. On the days both years reported, that is 4.02 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "27101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 29",
+     "in": "1.54",
+     "label": "biggest single day"
+    },
+    "county": "Murray County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "2.7 miles south-southeast of Chandler",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "2.54",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "22.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.05",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.76",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e0bdcb3406a22bab",
+   "sid": "US1MNMY0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles south-southeast of Chandler had 20.05 inches. September was the wettest month at 6.76 inches, and the biggest single day was Aug 29 with 1.54 inches. The gauge went 16 days in a row with nothing, from May 2 to May 17. On the days both years reported, this year ran 2.54 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "Nicollet County",
+    "days_in_year_so_far": 285,
+    "days_missing": 9,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "6.2 miles west-southwest of Saint Peter",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "4.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 12",
+     "total_in": "29.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Minnesota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "24.74",
+    "usual_in": "28.80",
+    "vs_usual": {
+     "diff_in": "4.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6371cf3740e37801",
+   "sid": "US1MNNC0003 6",
+   "story": "Through Oct 12, the volunteer rain gauge 6.2 miles west-southwest of Saint Peter has 24.74 inches, 4.06 inches less than a usual year. June was the wettest month at 4.66 inches, and the biggest single day was 2.81 inches on Jul 31. The gauge went 14 days in a row with nothing from Mar 19 to Apr 1. On the days both years reported, that is 4.32 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "27105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Nobles County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2 miles north-northeast of Worthington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.34",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Oct 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.48",
+    "usual_in": "27.28",
+    "vs_usual": {
+     "diff_in": "1.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.56",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "54c4f35a2f57238c",
+   "sid": "219170 2",
+   "story": "Through Oct 13, the weather station 2 miles north-northeast of Worthington has 25.48 inches, 1.80 inches less than a usual year. September did most of the work with 8.56 inches, and the biggest single day was 2.29 inches on Sep 7. Since then the gauge has sat empty 13 days in a row, Oct 1 to Oct 13, and counting. Still, that is 1.34 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "27107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "2.49",
+     "label": "biggest single day"
+    },
+    "county": "Norman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Twin Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.24",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.72",
+    "usual_in": "23.00",
+    "vs_usual": {
+     "diff_in": "5.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.25",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61adbf8f6e38671b",
+   "sid": "US1MNNR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Twin Valley had 17.72 inches, 5.28 inches less than a usual year. September did most of the work with 6.25 inches, and Sep 29 alone brought 2.49 inches. Before that, the gauge sat empty for 22 days from Jul 9 to Jul 30. That leaves the year 1.24 inches behind 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "27109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Olmsted County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Rochester International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.69",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.14",
+    "usual_in": "30.35",
+    "vs_usual": {
+     "diff_in": "1.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.84",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cec1eb4770d1f962",
+   "sid": "14925 1",
+   "story": "Through Oct 13, the weather station at Rochester International Airport had its wettest month in July with 8.84 inches. The biggest single day came Jul 31 with 2.35 inches. The longest dry stretch ran 14 days, Feb 3 to Feb 16, with nothing in the gauge, not even a trace. The year sits 1.69 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "27111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "4.00",
+     "label": "biggest single day"
+    },
+    "county": "Otter Tail County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in New York Mills",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.53",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.01",
+    "usual_in": "23.95",
+    "vs_usual": {
+     "diff_in": "3.06",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.21",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "808854eaf71e7823",
+   "sid": "215902 2",
+   "story": "Through Oct 13, the weather station in New York Mills has caught 27.01 inches, 3.06 inches more than a usual year. July was the wettest month at 6.21 inches, and 4.00 of that came on Jul 5 alone. That is 5.53 inches more than 2025 had by this day. The longest dry run was 13 days, from Feb 5 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "27113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 25",
+     "in": "2.21",
+     "label": "biggest single day"
+    },
+    "county": "Pennington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "7.4 miles southwest of Goodridge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.98",
+    "usual_in": "21.77",
+    "vs_usual": {
+     "diff_in": "1.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.84",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "65b30bbde42fc7f1",
+   "sid": "US1MNPG0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.4 miles southwest of Goodridge has caught 22.98 inches, 1.21 inches more than a usual year. September did most of the work at 7.84 inches. The biggest single day was Jul 25 with 2.21 inches. That puts this year 6.67 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "27115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Pine County",
+    "days_in_year_so_far": 285,
+    "days_missing": 1,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "6 miles west of Sandstone",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.19",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "19.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Apr 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Minnesota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "20.47",
+    "usual_in": "28.31",
+    "vs_usual": {
+     "diff_in": "7.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.22",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "98e496096e5f8406",
+   "sid": "54932 1",
+   "story": "Through Oct 12, the weather station 6 miles west of Sandstone had April as its wettest month at 4.22 inches. The biggest single day came Apr 27 with 1.88 inches. Then the gauge sat empty for 11 days in a row, Apr 28 to May 8, not even a trace. On the days both years reported, this year is 1.19 inches more than 2025, though still 7.84 inches less than a usual year.",
+   "through": "2026-10-12"
+  },
+  "27119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 5",
+     "in": "1.09",
+     "label": "biggest one-day reading"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 282,
+    "days_missing": 23,
+    "days_reported": 259,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Crookston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 255,
+      "diff_in": "2.65",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 9",
+     "total_in": "14.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 66,
+    "state": "Minnesota",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "11.33",
+    "usual_in": "17.27",
+    "vs_usual": {
+     "diff_in": "5.94",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa62b80399842ac1",
+   "sid": "211891 2",
+   "story": "Through Oct 9, the weather station in Crookston had its biggest one-day reading on Sep 5, at 1.09 inches. The longest dry stretch ran 14 days, from Mar 19 to Apr 1, with nothing in the gauge, not even a trace. On the days both years reported, this year is 2.65 inches less than last year. The station sits 10 miles from the middle of the county and missed 23 days so far.",
+   "through": "2026-10-09"
+  },
+  "27127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "1.72",
+     "label": "biggest single day"
+    },
+    "county": "Redwood County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Lamberton Southwest",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.84",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "26.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.32",
+    "usual_in": "26.10",
+    "vs_usual": {
+     "diff_in": "6.78",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.53",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2774e4be1de488e7",
+   "sid": "214546 2",
+   "story": "Through Oct 13, the weather station in Lamberton Southwest has 6.78 inches less than a usual year. July was the wettest month at 4.53 inches, and the biggest single day came Jul 7 with 1.72 inches. The longest dry stretch ran 13 days, Feb 5 to Feb 17, with nothing in the gauge. On the days both years reported, this year is 6.84 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "27129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.13",
+     "label": "biggest single day"
+    },
+    "county": "Renville County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.7 miles east-northeast of Renville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.24",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.42",
+    "usual_in": "27.21",
+    "vs_usual": {
+     "diff_in": "2.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.97",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d2cddf9405530c1f",
+   "sid": "US1MNRV0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles east-northeast of Renville has caught 24.42 inches, 2.79 inches less than a usual year. July was the wettest month at 6.97 inches, and the biggest single day came Jul 31 with 2.13 inches. This year sits 8.24 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "27131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "1.69",
+     "label": "biggest single day"
+    },
+    "county": "Rice County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "3.2 miles east-northeast of Montgomery",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.03",
+    "usual_in": "30.01",
+    "vs_usual": {
+     "diff_in": "4.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.05",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1d228a26d91b3c51",
+   "sid": "US1MNRC0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles east-northeast of Montgomery has caught 7.15 inches less than it had by this day last year. September was the wettest month at 5.05 inches, and the biggest single day was Sep 19 with 1.69 inches. The longest dry stretch ran 14 days, Mar 19 to Apr 1, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "27133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Rock County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Hills",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.13",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "23.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jul 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "23.66",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.93",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2dc50d6df5134ff6",
+   "sid": "US1MNRK0005 6",
+   "story": "Through Oct 12, the volunteer rain gauge less than a mile northwest of Hills had its wettest month in September at 7.93 inches. The biggest single day came Sep 7 with 2.12 inches. Before that the gauge went 20 days in a row with nothing in it, from Jul 6 to Jul 25. On the days both years reported, this year is 0.13 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "27135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "1.91",
+     "label": "biggest single day"
+    },
+    "county": "Roseau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "4 miles west of Warroad",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.64",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.88",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b74aebc6aee0fff8",
+   "sid": "218681 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Warroad had 18.64 inches for the year. September was the wettest month at 4.88 inches, and the biggest single day came Sep 7 with 1.91 inches. The longest dry stretch ran 10 days, May 25 to Jun 3, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "27137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "1.32",
+     "label": "biggest single day"
+    },
+    "county": "St. Louis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Embarrass",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.76",
+    "usual_in": "24.40",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.84",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5735a79bb420acb9",
+   "sid": "212576 2",
+   "story": "Through Oct 13, the weather station in Embarrass had its wettest month back in April, with 4.84 inches. The biggest single day came late, 1.32 inches on Sep 12. The longest dry stretch ran 8 days, May 27 to Jun 3, without even a trace in the gauge. That leaves the station 4.15 inches behind where it stood on the same day last year.",
+   "through": "2026-10-13"
+  },
+  "27139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "1.31",
+     "label": "biggest single day"
+    },
+    "county": "Scott County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.0 miles west of Prior Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.64",
+    "usual_in": "29.33",
+    "vs_usual": {
+     "diff_in": "6.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.58",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8723174948b5483f",
+   "sid": "US1MNSC0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles west of Prior Lake has caught 7.58 inches less than it had by this day last year. June was the wettest month at 4.58 inches. The biggest single day came late, 1.31 inches on Sep 19. The longest dry stretch ran 12 days, Feb 6 to Feb 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "27145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.10",
+     "label": "biggest single day"
+    },
+    "county": "Stearns County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "1.4 miles south-southeast of Sartell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.93",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.11",
+    "usual_in": "26.52",
+    "vs_usual": {
+     "diff_in": "8.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.15",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "321d767422b75619",
+   "sid": "US1MNSR0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles south-southeast of Sartell has caught 18.11 inches, 8.41 inches less than a usual year. June was the wettest month at 4.15 inches, and the biggest single day was 1.10 inches on Sep 8. The gauge went 15 days in a row with nothing from Jul 9 to Jul 23. That is 6.93 inches less than last year had by this date.",
+   "through": "2026-10-13"
+  },
+  "27147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "7.29",
+     "label": "biggest single day"
+    },
+    "county": "Steele County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Ellendale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "1.15",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "38.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.67",
+    "usual_in": "32.32",
+    "vs_usual": {
+     "diff_in": "7.35",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.58",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b67bc511878ce560",
+   "sid": "US1MNSE0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Ellendale shows September as the wettest month at 12.58 inches, and 7.29 inches of that came on Sep 19, the biggest single day. The gauge went 14 days in a row with nothing in it from Mar 19 to Apr 1. On the days both years reported, this year is 1.15 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "27149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "1.67",
+     "label": "biggest one-day reading"
+    },
+    "county": "Stevens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.9 miles northwest of Donnelly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "9.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "27.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 6"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.51",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.88",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5766102285aeafd1",
+   "sid": "US1MNSV0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles northwest of Donnelly had 17.51 inches. June was the wettest month at 5.88 inches, and the biggest one-day reading came Jul 31 with 1.67 inches. On the days both years reported, that is 9.71 inches less than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "27151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "3.27",
+     "label": "biggest single day"
+    },
+    "county": "Swift County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Benson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.01",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "31.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.32",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.44",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad8a0ff5f2ae202d",
+   "sid": "US1MNSW0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southwest of Benson has caught 22.32 inches. July was the wettest month at 5.44 inches, and 3.27 of that came on Jul 31, the biggest single day. On the days both years reported, that is 9.01 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "27153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Todd County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Long Prairie",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.68",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.71",
+    "usual_in": "26.63",
+    "vs_usual": {
+     "diff_in": "3.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.96",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e9741e940de15c08",
+   "sid": "214861 2",
+   "story": "Through Oct 13, the weather station in Long Prairie had its wettest month in June at 4.96 inches. The biggest single day came Jul 8 with 2.29 inches, and then the gauge sat empty for 15 days in a row, Jul 9 to Jul 23. On the days both years reported, that is 6.68 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "27155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.16",
+     "label": "biggest single day"
+    },
+    "county": "Traverse County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Wheaton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "10.64",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "May 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.69",
+    "usual_in": "22.05",
+    "vs_usual": {
+     "diff_in": "6.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.75",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "059a51adddc4e15d",
+   "sid": "218907 2",
+   "story": "Through Oct 13, the weather station in Wheaton has 15.69 inches, 6.36 inches less than a usual year. July was the wettest month at 4.75 inches, and Jul 31 brought the biggest single day at 2.16 inches. The gauge went 16 days in a row with nothing in it, from May 2 to May 17. On the days both years reported, this year is 10.64 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "1.73",
+     "label": "biggest single day"
+    },
+    "county": "Wabasha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile south-southwest of Theilman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.46",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "25.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 71,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.92",
+    "usual_in": "30.92",
+    "vs_usual": {
+     "diff_in": "9.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.49",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f41e0d545b38fa95",
+   "sid": "218227 2",
+   "story": "Through Oct 13, the weather station 1 mile south-southwest of Theilman sits 9.00 inches less than a usual year. April was the wettest month at 5.49 inches, and the biggest single day came Sep 19 with 1.73 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17. On the days both years reported, this year is 3.46 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "27159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Wadena County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "less than a mile east-northeast of Wadena",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "2.75",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "22.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.01",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.66",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ae090fe3aadbcebe",
+   "sid": "US1MNWD0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-northeast of Wadena had 25.01 inches. September was the wettest month at 6.66 inches, and the biggest single day was Sep 12 with 2.56 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17, with not even a trace. On the days both years reported, this year is 2.75 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "27161": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 20",
+     "in": "2.54",
+     "label": "biggest single day"
+    },
+    "county": "Waseca County",
+    "days_in_year_so_far": 280,
+    "days_missing": 1,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Waseca Southern",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "11.99",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 7",
+     "total_in": "40.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Minnesota",
+    "through": "Oct 7",
+    "through_iso": "2026-10-07",
+    "total_in": "28.45",
+    "usual_in": "32.45",
+    "vs_usual": {
+     "diff_in": "4.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.80",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "011243cb940c9e93",
+   "sid": "218692 2",
+   "story": "Through Oct 7, the weather station in Waseca Southern had its wettest month in July at 6.80 inches. The biggest single day came Jul 20 with 2.54 inches. The longest dry stretch ran 16 days, Mar 17 to Apr 1, with nothing in the gauge, not even a trace. On the days both years reported, this year is 11.99 inches less than last year.",
+   "through": "2026-10-07"
+  },
+  "27163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 1",
+     "in": "1.04",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 277,
+    "days_missing": 2,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.4 miles west of Oak Park Heights",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "10.51",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 4",
+     "total_in": "31.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Minnesota",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "20.64",
+    "usual_in": "28.14",
+    "vs_usual": {
+     "diff_in": "7.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.88",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eb8ca6f77ef7ec9d",
+   "sid": "US1MNWG0035 6",
+   "story": "Through Oct 4, the volunteer rain gauge 2.4 miles west of Oak Park Heights has caught 20.64 inches, 7.50 inches less than a usual year. April was the wettest month at 3.88 inches, and the biggest single day was 1.04 inches on Aug 1. On the days both years reported, that is 10.51 inches less than last year.",
+   "through": "2026-10-04"
+  },
+  "27167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "2.58",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wilkin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "9.1 miles west-northwest of Rothsay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.56",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Jan 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.42",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.55",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c13d684371494066",
+   "sid": "US1MNWK0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.1 miles west-northwest of Rothsay has caught 11.56 inches less than it had by this day in 2025. September was the wettest month at 4.55 inches, and 2.58 inches of that came on Sep 7, the biggest one-day reading. From Jan 20 to Feb 17 the gauge went 29 days in a row with nothing in it, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "27169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "3.31",
+     "label": "biggest single day"
+    },
+    "county": "Winona County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Minnesota City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.87",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.86",
+    "usual_in": "30.37",
+    "vs_usual": {
+     "diff_in": "2.49",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.21",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "77afaecae5a8a5a4",
+   "sid": "215488 2",
+   "story": "Through Oct 13, the weather station in Minnesota City had its wettest month in July with 8.21 inches. The biggest single day came Jul 2 with 3.31 inches. The longest dry stretch ran 15 days, Feb 3 to Feb 17, without even a trace in the gauge. On the days both years reported, this year has 0.87 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "27171": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "1.17",
+     "label": "biggest single day"
+    },
+    "county": "Wright County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "1.3 miles east of Saint Michael",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "10.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "32.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.79",
+    "usual_in": "27.20",
+    "vs_usual": {
+     "diff_in": "7.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.87",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "64974a17c476d21e",
+   "sid": "US1MNWR0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles east of Saint Michael has caught 19.79 inches, 7.41 inches less than a usual year. On the days both years reported, that is 10.59 inches less than last year. September was the wettest month at 3.87 inches, and the biggest single day was 1.17 inches on Jun 24. The longest dry stretch ran 13 days, Feb 5 to Feb 17.",
+   "through": "2026-10-13"
+  },
+  "27173": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Yellow Medicine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 23,
+    "days_reported": 263,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Wood Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 251,
+      "diff_in": "3.63",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "28.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 11"
+    },
+    "multi_day_reports": 31,
+    "pct_of_usual": null,
+    "state": "Minnesota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.47",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9bca80c7b320d02",
+   "sid": "US1MNYM0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile from Wood Lake has caught 21.47 inches. That is 3.63 inches less than 2025 on the days both years reported. The longest run with nothing in the gauge, not even a trace, was 7 days, Feb 5 to Feb 11. The gauge has 23 days missing this year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "MN"
+}

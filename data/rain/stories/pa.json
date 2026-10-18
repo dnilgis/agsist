@@ -1,0 +1,3376 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "42001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.49",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1 mile south of Cashtown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.49",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.30",
+    "usual_in": "37.10",
+    "vs_usual": {
+     "diff_in": "4.80",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.95",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2f4a74978fda96c4",
+   "sid": "363226 2",
+   "story": "Through Oct 13, the weather station 1 mile south of Cashtown had its biggest single day just the day before, 2.49 inches on Oct 12. May was the wettest month at 4.95 inches, and right after it came 9 days in a row with nothing in the gauge, May 29 to Jun 6. The year sits at 32.30 inches, 4.80 inches less than a usual year but 0.49 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "42003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.19",
+     "label": "biggest single day"
+    },
+    "county": "Allegheny County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Pittsburgh International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.76",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.78",
+    "usual_in": "32.28",
+    "vs_usual": {
+     "diff_in": "8.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.62",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b2a243e791e18b91",
+   "sid": "94823 1",
+   "story": "Through Oct 13, the weather station at Pittsburgh International Airport had 40.78 inches, 8.50 more than a usual year. August did most of the work at 7.62 inches, and the biggest single day came Sep 3 with 2.19. Last year to this date the gauge had 29.02, so this year is 11.76 inches more. The longest dry stretch was 8 days, May 29 to Jun 5.",
+   "through": "2026-10-13"
+  },
+  "42005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.23",
+     "label": "biggest single day"
+    },
+    "county": "Armstrong County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.1 miles north-northwest of Shelocta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.92",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 136,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.17",
+    "usual_in": "36.19",
+    "vs_usual": {
+     "diff_in": "12.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.54",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "14db3213154f4e6d",
+   "sid": "US1PAAR0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.1 miles north-northwest of Shelocta had 12.98 inches more than a usual year. August did the most of it with 8.54 inches, and Aug 3 alone put 2.23 inches in the gauge. The longest dry stretch ran 9 days, May 29 to Jun 6. Last year at this point the gauge sat 12.92 inches behind this year.",
+   "through": "2026-10-13"
+  },
+  "42007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.31",
+     "label": "biggest one-day reading"
+    },
+    "county": "Beaver County",
+    "days_in_year_so_far": 285,
+    "days_missing": 10,
+    "days_reported": 275,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile northeast of Beaver Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "10.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 12",
+     "total_in": "30.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 7"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 129,
+    "state": "Pennsylvania",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "40.29",
+    "usual_in": "31.32",
+    "vs_usual": {
+     "diff_in": "8.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.55",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2a740bbe8ca1f18a",
+   "sid": "360475 2",
+   "story": "Through Oct 12, the weather station 1 mile northeast of Beaver Falls has 40.29 inches, 8.97 more than a usual year. September did most of the work at 6.55 inches, and the biggest one-day reading came Sep 3 with 2.31. The gauge went 11 days in a row with nothing from May 28 to Jun 7. On the days both years reported, this year is 10.68 inches ahead of last year.",
+   "through": "2026-10-12"
+  },
+  "42009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 23",
+     "in": "2.48",
+     "label": "biggest one-day reading"
+    },
+    "county": "Bedford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.0 miles north-northwest of Rainsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 255,
+      "diff_in": "5.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 21,
+     "through": "Oct 13",
+     "total_in": "31.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 6,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 2"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 108,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.90",
+    "usual_in": "33.25",
+    "vs_usual": {
+     "diff_in": "2.65",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.19",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "90cded5d438f4a1b",
+   "sid": "US1PABD0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.0 miles north-northwest of Rainsburg had its wettest month in August with 6.19 inches. The biggest one-day reading came on Aug 23 at 2.48 inches. On the days both years reported, this year is 5.37 inches ahead of 2025. The longest run with nothing in the gauge was 6 days, Jan 28 to Feb 2.",
+   "through": "2026-10-13"
+  },
+  "42011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.64",
+     "label": "biggest single day"
+    },
+    "county": "Berks County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Reading Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.67",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.46",
+    "usual_in": "36.62",
+    "vs_usual": {
+     "diff_in": "7.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.31",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8d097f31e6109452",
+   "sid": "14712 1",
+   "story": "Through Oct 13, the weather station at Reading Regional Airport has caught 29.46 inches, 8.67 inches less than it had by this day last year. September was the wettest month at 5.31 inches. The biggest single day came late, with 1.64 inches on Oct 11. The longest dry stretch ran 9 days, Jan 28 to Feb 5, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "42013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 23",
+     "in": "2.63",
+     "label": "biggest single day"
+    },
+    "county": "Blair County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "7 miles southwest of Altoona",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.88",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.67",
+    "usual_in": "33.44",
+    "vs_usual": {
+     "diff_in": "9.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.95",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34ec990b1f1132d3",
+   "sid": "360132 2",
+   "story": "Through Oct 13, the weather station 7 miles southwest of Altoona has 42.67 inches, 9.23 more than a usual year. August did most of the work with 7.95 inches, and Aug 23 alone put 2.63 in the gauge. The longest dry run was 9 days, May 29 to Jun 6. That is 9.88 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "42015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "1.52",
+     "label": "biggest single day"
+    },
+    "county": "Bradford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "less than a mile south of Sayre",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "1.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "29.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.58",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.53",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3a254f711ae057ac",
+   "sid": "US1PABF0020 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south of Sayre has caught 28.58 inches. April was the wettest month at 4.53 inches, and the biggest single day was Aug 3 with 1.52 inches. The gauge went 12 days in a row with nothing in it, from May 26 to Jun 6. On the days both years reported, this year is 1.73 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "42017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.07",
+     "label": "biggest single day"
+    },
+    "county": "Bucks County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Sellersville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "35.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.93",
+    "usual_in": "41.13",
+    "vs_usual": {
+     "diff_in": "5.20",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.57",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "45705a8697b29461",
+   "sid": "367938 2",
+   "story": "Through Oct 13, the weather station in Sellersville had July as its wettest month at 6.57 inches, and the biggest single day came Jul 29 with 2.07 inches. The longest dry stretch ran 20 days, Jan 27 to Feb 15, with nothing in the gauge, not even a trace. On the days both years reported, this year sits 0.93 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "42019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "3.77",
+     "label": "biggest single day"
+    },
+    "county": "Butler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "1.6 miles north-northeast of Fox Run",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.90",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.69",
+    "usual_in": "33.94",
+    "vs_usual": {
+     "diff_in": "6.75",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.28",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c5f8fbff981f2659",
+   "sid": "US1PABT0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles north-northeast of Fox Run has caught 6.90 inches more than it had by this day in 2025. August did most of the work with 8.28 inches, and 3.77 inches of that came on Aug 3. The longest stretch with nothing in the gauge ran 9 days, May 29 to Jun 6.",
+   "through": "2026-10-13"
+  },
+  "42021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "1.98",
+     "label": "biggest single day"
+    },
+    "county": "Cambria County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Ebensburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.44",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.69",
+    "usual_in": "39.01",
+    "vs_usual": {
+     "diff_in": "6.68",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.82",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "06232befdc41e38d",
+   "sid": "362470 2",
+   "story": "Through Oct 13, the weather station in Ebensburg had its wettest month in August with 8.82 inches. The biggest single day was Jul 19 at 1.98 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge. That puts the station 7.44 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "42023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "2.07",
+     "label": "biggest single day"
+    },
+    "county": "Cameron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Stevenson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.66",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.74",
+    "usual_in": "34.43",
+    "vs_usual": {
+     "diff_in": "3.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.10",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ef592db1075f9ec5",
+   "sid": "368469 2",
+   "story": "Through Oct 13, the weather station in Stevenson has 8.66 inches more than it had by this day last year. April was the wettest month at 6.10 inches. The biggest single day came Jul 19 with 2.07 inches. The longest dry stretch ran 12 days, from May 26 to Jun 6, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "42025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.50",
+     "label": "biggest one-day reading"
+    },
+    "county": "Carbon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile south-southwest of Lehighton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "4.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "32.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 91,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.31",
+    "usual_in": "40.84",
+    "vs_usual": {
+     "diff_in": "3.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.82",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a82b44861e2aacb",
+   "sid": "364934 2",
+   "story": "Through Oct 13, the weather station 1 mile south-southwest of Lehighton had its biggest one-day reading the day before, 2.50 inches on Oct 12. March was the wettest month at 6.82 inches. The longest dry stretch ran 20 days, Jan 27 to Feb 15, with nothing in the gauge. On the days both years reported, this year is 4.32 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Centre County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.4 miles east-northeast of State College",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.01",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.91",
+    "usual_in": "33.47",
+    "vs_usual": {
+     "diff_in": "4.44",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.62",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4c8395d909fe7345",
+   "sid": "US1PACN0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge east-northeast of State College had its wettest month in September at 7.62 inches. The biggest single day came Aug 21 with 2.50 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with nothing in the gauge, not even a trace. On the days both years reported, this year is 6.01 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "3.51",
+     "label": "biggest one-day reading"
+    },
+    "county": "Chester County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.1 miles southwest of Chadds Ford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "6.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "36.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 114,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.16",
+    "usual_in": "37.79",
+    "vs_usual": {
+     "diff_in": "5.37",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.24",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c941dbf0ff491b61",
+   "sid": "US1PACH0027 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.1 miles southwest of Chadds Ford had its biggest one-day reading just the day before, 3.51 inches on Oct 12. August was the wettest month at 7.24 inches. The longest dry stretch ran 10 days, Jan 28 to Feb 6, with not even a trace in the gauge. On the days both years reported, that is 6.32 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 19",
+     "in": "3.35",
+     "label": "biggest single day"
+    },
+    "county": "Clearfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile east of Grampian",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "17.08",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 152,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "57.23",
+    "usual_in": "37.69",
+    "vs_usual": {
+     "diff_in": "19.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.44",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "05d1f980ad2aefae",
+   "sid": "363417 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Grampian has caught 19.54 inches more than a usual year. September was the wettest month at 8.44 inches, and the biggest single day was Jul 19 with 3.35 inches. The gauge did go 12 days in a row with nothing, from May 26 to Jun 6. On the days both years reported, that is 17.08 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "3.40",
+     "label": "biggest single day"
+    },
+    "county": "Clinton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Renovo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.19",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.86",
+    "usual_in": "33.00",
+    "vs_usual": {
+     "diff_in": "3.86",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.43",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6d0f2860aa93e641",
+   "sid": "367409 2",
+   "story": "Through Oct 13, the weather station in Renovo has caught 8.19 inches more than it had by this day last year. September was the wettest month at 6.43 inches, and 3.40 of that came on Sep 3, the biggest single day. The longest dry stretch ran 12 days, May 26 to Jun 6, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "42039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Crawford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "3 miles west-northwest of Springboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.21",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.78",
+    "usual_in": "37.53",
+    "vs_usual": {
+     "diff_in": "1.25",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.45",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "085f844e2a1cea38",
+   "sid": "368361 2",
+   "story": "Through Oct 13, the weather station 3 miles west-northwest of Springboro had its wettest month in August, with 7.45 inches. The biggest single day came Aug 3 at 2.05 inches. The longest dry stretch ran 11 days, May 26 to Jun 5, with nothing in the gauge. That puts this year 5.21 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "42041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "3.13",
+     "label": "biggest single day"
+    },
+    "county": "Cumberland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Carlisle Water",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.83",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.63",
+    "usual_in": "38.93",
+    "vs_usual": {
+     "diff_in": "2.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.58",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dbd9e7aadcc76076",
+   "sid": "361920 2",
+   "story": "Through Oct 13, the weather station in Carlisle Water has a year that leans on one day. The biggest single day came Oct 12 with 3.13 inches, and August was the wettest month at 5.58. The longest dry stretch ran 11 days, Jan 27 to Feb 6, with nothing in the gauge. Against 2025 at this point, the station is 5.83 inches more.",
+   "through": "2026-10-13"
+  },
+  "42043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "2.66",
+     "label": "biggest single day"
+    },
+    "county": "Dauphin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "at Middletown Harrisburg Int'l Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.41",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.32",
+    "usual_in": "35.73",
+    "vs_usual": {
+     "diff_in": "5.41",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.72",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7f2e517e3cbd7852",
+   "sid": "14711 1",
+   "story": "Through Oct 13, the weather station at Middletown Harrisburg Int'l Airport has 30.32 inches, 5.41 inches less than a usual year. September was the wettest month at 4.72 inches. The biggest single day came late, 2.66 inches on Oct 11. That is 3.41 inches less than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "42045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Delaware County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Philadelphia International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.41",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.73",
+    "usual_in": "35.27",
+    "vs_usual": {
+     "diff_in": "3.46",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.44",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9196a051125a01eb",
+   "sid": "13739 1",
+   "story": "Through Oct 13, the weather station at Philadelphia International Airport had 38.73 inches, 3.46 more than a usual year. August was the wettest month at 7.44 inches, and the biggest single day was Jul 9 with 2.70. Last year by this date the gauge had 28.32, so this year is 10.41 inches more.",
+   "through": "2026-10-13"
+  },
+  "42047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "3.65",
+     "label": "biggest single day"
+    },
+    "county": "Elk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Ridgway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.32",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.78",
+    "usual_in": "36.24",
+    "vs_usual": {
+     "diff_in": "8.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.78",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2b0e509c377ad025",
+   "sid": "367477 2",
+   "story": "Through Oct 13, the weather station in Ridgway had a wet September, with 7.78 inches for the month. The biggest single day was Sep 13 at 3.65 inches. The longest dry stretch ran 11 days, May 27 to Jun 6. On the days both years reported, this year is 11.32 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.51",
+     "label": "biggest single day"
+    },
+    "county": "Erie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "1.2 miles west-northwest of North East",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "12.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "29.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 133,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.06",
+    "usual_in": "33.20",
+    "vs_usual": {
+     "diff_in": "10.86",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.89",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8546cd63eb87463c",
+   "sid": "US1PAER0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.2 miles west-northwest of North East had caught 44.06 inches, 10.86 inches more than a usual year. August was the wettest month at 8.89 inches, and the biggest single day came Sep 3 with 2.51 inches. On the days both years reported, that is 12.44 inches more than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "42051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 4",
+     "in": "1.89",
+     "label": "biggest one-day reading"
+    },
+    "county": "Fayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.7 miles north-northeast of Uniontown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "6.75",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "36.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 118,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.13",
+    "usual_in": "35.56",
+    "vs_usual": {
+     "diff_in": "6.57",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c5a74a47e83bfcee",
+   "sid": "US1PAFY0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles north-northeast of Uniontown had its biggest one-day reading on Sep 4 at 1.89 inches. It also went 10 days in a row with nothing in the gauge, not even a trace, from May 28 to Jun 6. On the days both years reported, 2026 has 6.75 inches more than 2025 did.",
+   "through": "2026-10-13"
+  },
+  "42053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 22",
+     "in": "1.85",
+     "label": "biggest single day"
+    },
+    "county": "Forest County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Tionesta SE Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "4.36",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "32.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.82",
+    "usual_in": "37.35",
+    "vs_usual": {
+     "diff_in": "0.47",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.21",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fcbd9482a63fc5ab",
+   "sid": "368873 2",
+   "story": "Through Oct 13, the weather station in Tionesta SE Lake had April as its wettest month at 6.21 inches. The biggest single day was Jul 22 with 1.85 inches. From May 26 to Jun 6 it went 12 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 4.36 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "3.18",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "1.8 miles east-southeast of Waynesboro",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.59",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.84",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e99367c0c03d020b",
+   "sid": "US1PAFN0021 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.8 miles east-southeast of Waynesboro has caught 30.59 inches. July was the wettest month at 6.84 inches, and 3.18 of that came on Jul 29 alone, the biggest single day of the year. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "42059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile east of Waynesburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "11.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "27.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.27",
+    "usual_in": "34.98",
+    "vs_usual": {
+     "diff_in": "4.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.21",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d6e6a0c3dc19d175",
+   "sid": "369367 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Waynesburg has 39.27 inches, 4.29 more than a usual year. August was the wettest month at 6.21 inches, and the biggest single day came late, 1.82 inches on Oct 11. The longest dry stretch ran 9 days, May 29 to Jun 6. On the days both years reported, this year is 11.13 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "42061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.15",
+     "label": "biggest single day"
+    },
+    "county": "Huntingdon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Raystown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.10",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.23",
+    "usual_in": "33.37",
+    "vs_usual": {
+     "diff_in": "0.86",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.27",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "902bd75bd3821f87",
+   "sid": "367313 2",
+   "story": "Through Oct 13, the weather station in Raystown has caught 3.10 inches more than it had by this day last year. August was the wettest month at 5.27 inches, and the biggest single day came on Aug 3 with 2.15 inches. The longest dry stretch ran 8 days, May 29 to Jun 5, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "42063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "2.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Indiana County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3 miles southeast of Indiana",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "14.41",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "32.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 127,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.00",
+    "usual_in": "38.60",
+    "vs_usual": {
+     "diff_in": "10.40",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.40",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9493390b6bfb9d7c",
+   "sid": "364214 2",
+   "story": "Through Oct 13, the weather station 3 miles southeast of Indiana has caught 49.00 inches, 10.40 more than a usual year. July was the wettest month at 8.40 inches, and the biggest one-day reading came Sep 13 with 2.10. On the days both years reported, this year is 14.41 inches ahead of last year. The longest dry stretch ran 9 days, May 29 to Jun 6.",
+   "through": "2026-10-13"
+  },
+  "42065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "2.54",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Dubois Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "13.30",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.18",
+    "usual_in": "33.34",
+    "vs_usual": {
+     "diff_in": "7.84",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.36",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5911f875c03d71f6",
+   "sid": "04787 1",
+   "story": "Through Oct 13, the weather station at Dubois Regional Airport had 7.84 inches more than a usual year. September was the wettest month at 7.36 inches, and the biggest single day was 2.54 inches on Jul 18. On the days both years reported, this year is 13.30 inches ahead of 2025. The gauge also went 11 days in a row with nothing in it, from May 26 to Jun 5.",
+   "through": "2026-10-13"
+  },
+  "42069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Lackawanna County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Richmondale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "Oct 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.97",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.79",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3f958064560821d8",
+   "sid": "US1PALC0027 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Richmondale had its wettest month in July, with 5.79 inches. The biggest single day came Jul 6 at 2.00 inches. The longest dry stretch ran 7 days, Oct 4 to Oct 10, without even a trace in the gauge. On the days both years reported, this year is 3.31 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "42071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "3.00",
+     "label": "biggest single day"
+    },
+    "county": "Lancaster County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2 miles southeast of New Holland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.59",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.47",
+    "usual_in": "37.48",
+    "vs_usual": {
+     "diff_in": "2.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.13",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "085f3b2503740c95",
+   "sid": "366238 2",
+   "story": "Through Oct 13, the weather station 2 miles southeast of New Holland had more rain in August than anywhere else in the year, 10.13 inches. The biggest single day came Jul 5 with 3.00 inches. The longest dry stretch ran 11 days, Jan 26 to Feb 5, with nothing in the gauge. That puts the year 4.59 inches more than 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "42075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.89",
+     "label": "biggest single day"
+    },
+    "county": "Lebanon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.3 miles southwest of Lebanon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.77",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.84",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0fc216898f5047b9",
+   "sid": "US1PALB0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles southwest of Lebanon had 34.77 inches for the year, 0.26 inches more than last year by the same day. September was the wettest month at 6.84 inches, and the biggest single day was Sep 3 with 2.89 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "42077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Lehigh County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Allentown Lehigh Valley International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": null,
+      "dir": "about the same",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.66",
+    "usual_in": "38.05",
+    "vs_usual": {
+     "diff_in": "6.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.73",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "31c4dd1d211b7b59",
+   "sid": "14737 1",
+   "story": "Through Oct 13, the weather station at Allentown Lehigh Valley International Airport sits 6.39 inches less than a usual year. March was the wettest month at 5.73 inches. The biggest single day came late, 1.70 inches on Oct 11. Next to last year it is about the same, 31.66 inches against 31.63 by this day.",
+   "through": "2026-10-13"
+  },
+  "42079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 5",
+     "in": "1.67",
+     "label": "biggest single day"
+    },
+    "county": "Luzerne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at Wilkes-Barre/Scranton International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.91",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 5,
+     "from": "Jun 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.48",
+    "usual_in": "30.98",
+    "vs_usual": {
+     "diff_in": "2.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.22",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e9b192dcd9839e65",
+   "sid": "14777 1",
+   "story": "Through Oct 13, the weather station at Wilkes-Barre/Scranton International Airport had 33.48 inches, 2.50 more than a usual year. July was the wettest month at 5.22 inches, and the biggest single day came Jul 5 with 1.67. That puts this year 2.91 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "42081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "4.49",
+     "label": "biggest single day"
+    },
+    "county": "Lycoming County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "2.0 miles northeast of Williamsport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.57",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "32.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.10",
+    "usual_in": "35.12",
+    "vs_usual": {
+     "diff_in": "1.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.23",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e24ea862a5ff437c",
+   "sid": "US1PALY0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles northeast of Williamsport had August as its wettest month at 9.23 inches. The biggest single day came on Aug 3 with 4.49 inches. The longest dry stretch ran 11 days, May 27 to Jun 6, with nothing in the gauge, not even a trace. On the days both years reported, that is 4.57 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 28",
+     "in": "3.89",
+     "label": "biggest single day"
+    },
+    "county": "McKean County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Bradford Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.12",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.51",
+    "usual_in": "33.18",
+    "vs_usual": {
+     "diff_in": "3.33",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.78",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e3ee61c37c57b859",
+   "sid": "04751 1",
+   "story": "Through Oct 13, the weather station at Bradford Regional Airport has 8.12 inches more than it had by this day last year. July carried a lot of it with 7.78 inches, and 3.89 of those came on Jul 28 alone. The gauge also sat empty for 11 days in a row, May 26 to Jun 5.",
+   "through": "2026-10-13"
+  },
+  "42085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "1.68",
+     "label": "biggest one-day reading"
+    },
+    "county": "Mercer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2.2 miles south-southwest of Hermitage",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 254,
+      "diff_in": "5.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "36.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 19,
+    "pct_of_usual": null,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.24",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.36",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aaea4ba38591cfaa",
+   "sid": "US1PAMR0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Hermitage had its wettest month in April, with 7.36 inches. The biggest day was Sep 3, at 1.68 inches. On the days both years reported, this year sits 5.20 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "42087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Mifflin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Lewistown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.96",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.28",
+    "usual_in": "33.72",
+    "vs_usual": {
+     "diff_in": "8.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.56",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34045c442c38c8c1",
+   "sid": "364992 2",
+   "story": "Through Oct 13, the weather station in Lewistown has caught 7.96 inches more than it had by the same day last year. August did the most of it, with 8.56 inches, the wettest month so far. The biggest single day was Oct 12, with 2.57 inches in the gauge.",
+   "through": "2026-10-13"
+  },
+  "42089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "2.47",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Pocono Mountains Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.49",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.84",
+    "usual_in": "39.43",
+    "vs_usual": {
+     "diff_in": "0.41",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.20",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b853dd34afcc8c67",
+   "sid": "54789 1",
+   "story": "Through Oct 13, the weather station at Pocono Mountains Municipal Airport sits about where a usual year would, 0.41 inches more. March was the wettest month with 7.20 inches. The biggest single day came late, 2.47 inches on Oct 11. That is 3.49 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "42091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Fort Washington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.90",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.37",
+    "usual_in": "38.20",
+    "vs_usual": {
+     "diff_in": "0.17",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "10.35",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fccf6cf96138dd4a",
+   "sid": "US1PAMT0067 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Fort Washington sits right about at a usual year, just 0.17 inches more. Most of that came late. August brought 10.35 inches, and the biggest single day was Aug 6 at 2.17 inches. This year is 6.90 inches more than 2025 at the same point.",
+   "through": "2026-10-13"
+  },
+  "42095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Northampton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.1 miles west of Nazareth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "7.70",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "29.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.57",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.84",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2994b2282cd23fc8",
+   "sid": "US1PANH0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles west of Nazareth caught 7.84 inches in August, its wettest month. The biggest single day came Jul 29 with 2.56 inches. On the days both years reported, this year is 7.70 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Northumberland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Sunbury",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.11",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.49",
+    "usual_in": "34.78",
+    "vs_usual": {
+     "diff_in": "2.71",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.19",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cfc11e8438182c46",
+   "sid": "368668 2",
+   "story": "Through Oct 13, the weather station in Sunbury had its wettest month in September at 7.19 inches. The biggest single day came Sep 3 with 2.57 inches. The longest dry stretch ran 10 days, May 28 to Jun 6, with nothing in the gauge. On the days both years reported, this year has 7.11 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "42101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.41",
+     "label": "biggest single day"
+    },
+    "county": "Philadelphia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.0 miles south-southwest of Wyndmoor",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "13.54",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "33.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 130,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.26",
+    "usual_in": "38.56",
+    "vs_usual": {
+     "diff_in": "11.70",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.11",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e98f62104c20946b",
+   "sid": "US1PAPH0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles south-southwest of Wyndmoor has caught 50.26 inches, 11.70 more than a usual year. September did most of the work with 12.11 inches. The biggest single day came Jun 23 at 2.41 inches. On the days both years reported, that is 13.54 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "5.96",
+     "label": "biggest single day"
+    },
+    "county": "Pike County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "8.7 miles northwest of Milford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.28",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.45",
+    "usual_in": "39.31",
+    "vs_usual": {
+     "diff_in": "0.86",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "11.02",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b52a93a47d1eed59",
+   "sid": "US1PAPK0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.7 miles northwest of Milford has caught 38.45 inches, 0.86 inches less than a usual year. July did most of the talking with 11.02 inches, and 5.96 of that came on Jul 6 alone. That one day beat some whole months. The gauge is 5.28 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "42105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 11",
+     "in": "2.66",
+     "label": "biggest single day"
+    },
+    "county": "Potter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Galeton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "12.40",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.66",
+    "usual_in": "33.37",
+    "vs_usual": {
+     "diff_in": "8.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.20",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1d2df47dfd040004",
+   "sid": "363130 2",
+   "story": "Through Oct 13, the weather station in Galeton has caught 41.66 inches. July did most of the work at 8.20 inches, and Jul 11 alone brought 2.66 inches, the biggest single day. The gauge also sat empty 12 days in a row from May 26 to Jun 6. On the days both years reported, that is 12.40 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "42107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Schuylkill County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2 miles north of Mahanoy City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "3.58",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.97",
+    "usual_in": "41.74",
+    "vs_usual": {
+     "diff_in": "3.77",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.07",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bc622b5be82e826b",
+   "sid": "365344 2",
+   "story": "Through Oct 13, the weather station 2 miles north of Mahanoy City had its wettest month in March at 8.07 inches. The biggest single day came late, 1.60 inches on Oct 12. The longest dry stretch ran 11 days, Jan 27 to Feb 6. On the days both years reported, that's 3.58 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "42109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "3.12",
+     "label": "biggest single day"
+    },
+    "county": "Snyder County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2 miles south of Selinsgrove",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.33",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "33.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Pennsylvania",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.36",
+    "usual_in": "34.56",
+    "vs_usual": {
+     "diff_in": "0.80",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.15",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b04d46cf1a8ac007",
+   "sid": "367931 2",
+   "story": "Through Oct 12, the weather station 2 miles south of Selinsgrove had its wettest month in September at 7.15 inches. The biggest single day came Sep 3 with 3.12 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with nothing in the gauge. That puts the year 2.33 inches more than last year at this point.",
+   "through": "2026-10-12"
+  },
+  "42111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "1.93",
+     "label": "biggest single day"
+    },
+    "county": "Somerset County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Somerset",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.22",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.29",
+    "usual_in": "37.79",
+    "vs_usual": {
+     "diff_in": "4.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.50",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e9613738f097f637",
+   "sid": "368244 2",
+   "story": "Through Oct 13, the weather station in Somerset had August as its wettest month at 6.50 inches, and the biggest single day came Aug 11 with 1.93 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge. This year is 6.22 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "42113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "Sullivan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Laporte",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.48",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.97",
+    "usual_in": "42.49",
+    "vs_usual": {
+     "diff_in": "5.52",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.67",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "526928befd3d47df",
+   "sid": "364815 2",
+   "story": "Through Oct 13, the weather station in Laporte had its wettest month in April at 6.67 inches. The biggest single day came Aug 3 with 2.25 inches. From May 26 to Jun 6 the gauge went 12 days in a row with nothing in it, not even a trace. That leaves the year 0.48 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "42117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "2.09",
+     "label": "biggest single day"
+    },
+    "county": "Tioga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4 miles southwest of Wellsboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.02",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "May 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.81",
+    "usual_in": "33.63",
+    "vs_usual": {
+     "diff_in": "0.82",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.76",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "18bde82e3dd6900d",
+   "sid": "369408 2",
+   "story": "Through Oct 13, the weather station 4 miles southwest of Wellsboro shows 32.81 inches, 0.82 inches less than a usual year. April was the wettest month at 5.76 inches, and the biggest single day was Jul 6 with 2.09 inches. The longest dry stretch ran 8 days, May 30 to Jun 6. On the days both years reported, this year has 7.02 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "42119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Lewisburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.56",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.93",
+    "usual_in": "35.34",
+    "vs_usual": {
+     "diff_in": "0.41",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.58",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9bf4c5269266ff0f",
+   "sid": "364976 2",
+   "story": "Through Oct 13, the weather station in Lewisburg sits 0.41 inches less than a usual year, close enough to call it even. March was the wettest month at 6.58 inches. The biggest single day came Sep 3 with 1.80 inches. That is 4.56 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "42121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 23",
+     "in": "1.95",
+     "label": "biggest one-day reading"
+    },
+    "county": "Venango County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "6.3 miles southwest of Titusville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "2.10",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "33.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 95,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.32",
+    "usual_in": "37.04",
+    "vs_usual": {
+     "diff_in": "1.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.26",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "36e4a9ebad0529e9",
+   "sid": "US1PAVN0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.3 miles southwest of Titusville has caught 35.32 inches, 1.72 inches less than a usual year. April was the wettest month at 7.26 inches. The biggest one-day reading came Aug 23 at 1.95 inches, and the gauge sat empty for 11 days in a row from May 26 to Jun 5. On the days both years reported, this year is 2.10 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "42123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "1.94",
+     "label": "biggest single day"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Warren",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "3.59",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "May 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.79",
+    "usual_in": "36.28",
+    "vs_usual": {
+     "diff_in": "1.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.00",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0f29f8215beb24b9",
+   "sid": "369298 2",
+   "story": "Through Oct 13, the weather station in Warren has caught 34.79 inches. April was the wettest month at 7.00 inches, and the biggest single day came Sep 3 with 1.94 inches. The gauge went 10 days in a row with nothing from May 27 to Jun 5. On the days both years reported, that is 3.59 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 27",
+     "in": "1.81",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.6 miles north-northwest of Claysville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.04",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.47",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1cdfa0e7474de06e",
+   "sid": "US1PAWS0045 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles north-northwest of Claysville has caught 46.04 inches. August was the wettest month at 9.47 inches. The biggest one-day reading came Mar 27 with 1.81 inches. The longest dry stretch ran 9 days, from May 29 to Jun 6, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "42127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.45",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2.1 miles west of Dyberry",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 7,
+     "from": "May 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.51",
+    "usual_in": "38.14",
+    "vs_usual": {
+     "diff_in": "1.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.44",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7dd1d7bce98a7eeb",
+   "sid": "US1PAWN0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.1 miles west of Dyberry has caught 1.26 inches more than it had by this day last year. September was the wettest month at 6.44 inches. The biggest single day came late, with 1.45 inches on Oct 12. The longest run with nothing in the gauge was 7 days, May 31 to Jun 6.",
+   "through": "2026-10-13"
+  },
+  "42129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 3",
+     "in": "4.41",
+     "label": "biggest one-day reading"
+    },
+    "county": "Westmoreland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "2 miles southwest of Murrysville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.79",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "38.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 133,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.23",
+    "usual_in": "35.43",
+    "vs_usual": {
+     "diff_in": "11.80",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.57",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7fc22722d4922f5e",
+   "sid": "366111 2",
+   "story": "Through Oct 13, the station 2 miles southwest of Murrysville had its wettest month in September at 8.57 inches. The biggest rain came Sep 3, with 4.41 inches in the gauge. The longest dry stretch ran 9 days, May 29 to Jun 6. On the days both years reported, this year has 8.79 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "42133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 6",
+     "in": "3.46",
+     "label": "biggest single day"
+    },
+    "county": "York County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1 mile southeast of Mount Wolf",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "35.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "May 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Pennsylvania",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.92",
+    "usual_in": "37.45",
+    "vs_usual": {
+     "diff_in": "2.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.22",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ef5a2a32c46ef055",
+   "sid": "US1PAYR0020 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile southeast of Mount Wolf had its biggest single day on Jul 6 with 3.46 inches. August was the wettest month at 5.22 inches. The longest dry stretch ran 9 days, May 29 to Jun 6, with not even a trace in the gauge. On the days both years reported, this year is 1.12 inches less than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "PA"
+}

@@ -7,6 +7,10 @@
           what is missing.
   alt     For each image on the hand-made pages, the image plus its
           surrounding text. The model proposes plain alt text.
+  story   For each county rain page, the facts the page states (built by
+          scripts/county_stories.py, in Actions, from data/rain). The model
+          writes 2 to 4 plain sentences; county_stories.py collect checks every
+          claim against the facts before anything reaches a page.
 
 Input: apijobs/<run>/input/bundle.json on the raw branch (never deployed),
 built outside Actions from a local render. Every output lands in
@@ -34,17 +38,23 @@ import urllib.error
 import urllib.request
 
 API = "https://api.anthropic.com/v1"
-MODEL = "claude-sonnet-5-5"
+MODEL = "claude-sonnet-5-5"            # search and alt
+STORY_MODEL = "claude-opus-5-5"        # county stories (Sig, Oct 17)
 RUN = re.sub(r"[^a-zA-Z0-9_-]", "", os.environ.get("APIJOBS_RUN", "r1")) or "r1"
 OUT = f"apijobs/{RUN}"
-COST_CAP = 20.0      # dollars, both jobs together; submit refuses above the worst case
-MAX_TOKENS = {"search": 12000, "alt": 3000}
-EFFORT = {"search": "medium", "alt": "low"}
+COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
+STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
+MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000}
+EFFORT = {"search": "medium", "alt": "low", "story": "low"}
 # Claude Sonnet 5.5 list prices per million tokens, halved for the Batches API.
 PRICE_IN = 2.00 / 2
 PRICE_OUT = 10.00 / 2
 PRICE_CACHE_WRITE = 2.00 * 1.25 / 2
 PRICE_CACHE_READ = 0.20 / 2
+# Claude Opus 5.5 ($4 in, $20 out, cache read $0.20 per million), halved for the Batches API.
+PRICES = {MODEL: (PRICE_IN, PRICE_OUT, PRICE_CACHE_WRITE, PRICE_CACHE_READ),
+          STORY_MODEL: (4.00 / 2, 20.00 / 2, 4.00 * 1.25 / 2, 0.20 / 2)}
+STORY_SAMPLE = 30    # count_tokens on this many story requests, scale the rest by characters
 
 SEARCH_SYSTEM = """You review one page of agsist.com, a free farm website, against the real search terms people typed before they landed on it (or that an AI search engine used when it cited the page). Today is {today}.
 
@@ -136,8 +146,22 @@ def alt_params(e):
     }
 
 
+def story_params(e):
+    import county_stories as CS
+    return {
+        "model": STORY_MODEL, "max_tokens": MAX_TOKENS["story"],
+        "thinking": {"type": "adaptive"}, "output_config": {"effort": EFFORT["story"]},
+        "system": CS.SYSTEM,
+        "messages": [{"role": "user", "content": CS.prompt(e["facts"])}],
+    }
+
+
 def custom_id(kind, name):
-    return (("s_" if kind == "search" else "a_") + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
+    return ({"search": "s_", "alt": "a_", "story": "c_"}[kind] + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
+
+
+def kind_of(cid):
+    return {"s": "search", "a": "alt", "c": "story"}.get(cid[:1], "alt")
 
 
 def requests_of(bundle):
@@ -147,6 +171,8 @@ def requests_of(bundle):
         out.append(("search", custom_id("search", e["page"]), e["page"], search_params(e, today)))
     for e in bundle.get("alt", []):
         out.append(("alt", custom_id("alt", e["id"]), e["id"], alt_params(e)))
+    for e in bundle.get("story", []):
+        out.append(("story", custom_id("story", f"{e['st']}_{e['fips']}"), f"{e['st']}:{e['fips']}", story_params(e)))
     return out
 
 
@@ -173,31 +199,48 @@ def http(method, path, body=None, timeout=120):
             sys.exit(f"::error::{method} {path}: {e}")
 
 
-def cost_of(u):
-    return (u.get("input_tokens", 0) * PRICE_IN + u.get("cache_creation_input_tokens", 0) * PRICE_CACHE_WRITE
-            + u.get("cache_read_input_tokens", 0) * PRICE_CACHE_READ + u.get("output_tokens", 0) * PRICE_OUT) / 1e6
+def cost_of(u, model=MODEL):
+    pi, po, pw, pr = PRICES[model]
+    return (u.get("input_tokens", 0) * pi + u.get("cache_creation_input_tokens", 0) * pw
+            + u.get("cache_read_input_tokens", 0) * pr + u.get("output_tokens", 0) * po) / 1e6
+
+
+def model_of(kind):
+    return STORY_MODEL if kind == "story" else MODEL
 
 
 def worst_case(kind, n_in):
     """Upper bound for one request: the prompt once, full max_tokens of output."""
-    return (n_in * PRICE_IN + MAX_TOKENS[kind] * PRICE_OUT) / 1e6
+    pi, po = PRICES[model_of(kind)][:2]
+    return (n_in * pi + MAX_TOKENS[kind] * po) / 1e6
+
+
+def cap_of(bundle):
+    return (COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
 
 
 def estimate(bundle):
-    rows, total, per = [], 0.0, {"search": 0.0, "alt": 0.0}
+    rows, total, per = [], 0.0, {"search": 0.0, "alt": 0.0, "story": 0.0}
+    ratio, counted = 0.0, 0     # story requests: tokens per character, the highest seen in the sample
     for kind, cid, name, p in requests_of(bundle):
-        try:
-            n = json.loads(http("POST", "/messages/count_tokens",
-                                {k: p[k] for k in ("model", "system", "messages", "thinking")}))["input_tokens"]
-        except SystemExit as err:
-            print(f"::warning::count_tokens failed for {cid} ({err}); using characters / 3", flush=True)
-            n = len(json.dumps(p)) // 3
+        if kind == "story" and counted >= STORY_SAMPLE and ratio:
+            n = int(len(json.dumps(p)) * ratio * 1.1) + 1    # 10% over the worst sampled ratio
+        else:
+            try:
+                n = json.loads(http("POST", "/messages/count_tokens",
+                                    {k: p[k] for k in ("model", "system", "messages", "thinking")}))["input_tokens"]
+                if kind == "story":
+                    counted += 1
+                    ratio = max(ratio, n / len(json.dumps(p)))
+            except SystemExit as err:
+                print(f"::warning::count_tokens failed for {cid} ({err}); using characters / 3", flush=True)
+                n = len(json.dumps(p)) // 3
         c = worst_case(kind, n)
         rows.append({"custom_id": cid, "job": kind, "input_tokens": n, "worst_case_usd": round(c, 4)})
         total += c; per[kind] += c
         print(f"{cid}: {n} input tokens, worst case ${c:.3f}", flush=True)
-    print(f"::notice title=API jobs estimate::worst case ${total:.2f} (search ${per['search']:.2f}, alt ${per['alt']:.2f}) "
-          f"for {len(rows)} requests (cap ${COST_CAP:.0f})", flush=True)
+    print(f"::notice title=API jobs estimate::worst case ${total:.2f} (search ${per['search']:.2f}, alt ${per['alt']:.2f}, "
+          f"story ${per['story']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
     os.makedirs(OUT, exist_ok=True)
     json.dump({"run": RUN, "worst_case_usd": round(total, 2), "per_job_usd": {k: round(v, 2) for k, v in per.items()},
                "rows": rows}, open(f"{OUT}/estimate.json", "w"), indent=1)
@@ -224,31 +267,33 @@ def cmd_submit(bundle_path):
         sys.exit(f"::error::{OUT}/batch.json already exists (this run was submitted); not submitting a second batch")
     bundle = json.load(open(bundle_path))
     total = estimate(bundle)
-    if total > COST_CAP:
-        sys.exit(f"::error::worst-case estimate ${total:.2f} is over the ${COST_CAP:.0f} cap; not submitting")
+    if total > cap_of(bundle):
+        sys.exit(f"::error::worst-case estimate ${total:.2f} is over the ${cap_of(bundle):.0f} cap; not submitting")
     reqs = requests_of(bundle)
     assert len({r[1] for r in reqs}) == len(reqs), "custom_id collision"
     b = json.loads(http("POST", "/messages/batches", {"requests": [{"custom_id": c, "params": p} for _, c, _, p in reqs]}, timeout=300))
     rec = {"run": RUN, "batch_id": b["id"], "submitted_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-           "model": MODEL, "requests": len(reqs), "items": {c: {"job": k, "name": n} for k, c, n, _ in reqs},
+           "model": STORY_MODEL if all(r[0] == "story" for r in reqs) else MODEL,
+           "models": {k: model_of(k) for k in sorted({r[0] for r in reqs})}, "requests": len(reqs), "items": {c: {"job": k, "name": n} for k, c, n, _ in reqs},
            "worst_case_usd": round(total, 2)}
     json.dump(rec, open(f"{OUT}/batch.json", "w"), indent=1)
     print(f"::notice title=API jobs submitted::batch {b['id']} with {len(reqs)} requests", flush=True)
 
 
 def collect_from(rec, raw):
-    items, per, tok = {}, {"search": 0.0, "alt": 0.0}, {"input": 0, "output": 0}
+    items, per, tok = {}, {"search": 0.0, "alt": 0.0, "story": 0.0}, {"input": 0, "output": 0}
     for line in raw.splitlines():
         if not line.strip():
             continue
         r = json.loads(line)
         cid, res = r["custom_id"], r["result"]
-        meta = rec["items"].get(cid, {"job": "search" if cid.startswith("s_") else "alt", "name": cid})
+        meta = rec["items"].get(cid, {"job": kind_of(cid), "name": cid})
         entry = {"job": meta["job"], "name": meta["name"], "result": res["type"]}
         if res["type"] == "succeeded":
             m = res["message"]; u = m.get("usage", {})
-            entry.update(usage=u, cost_usd=round(cost_of(u), 5), stop_reason=m.get("stop_reason"))
-            per[meta["job"]] += cost_of(u)
+            cu = cost_of(u, model_of(meta["job"]))
+            entry.update(usage=u, cost_usd=round(cu, 5), stop_reason=m.get("stop_reason"))
+            per[meta["job"]] += cu
             tok["input"] += u.get("input_tokens", 0); tok["output"] += u.get("output_tokens", 0)
             text = "".join(b.get("text", "") for b in m.get("content", []) if b.get("type") == "text")
             entry["parsed"] = parse_json_block(text)
@@ -258,6 +303,7 @@ def collect_from(rec, raw):
             entry["error"] = res.get("error")
         items[cid] = entry
     return {"run": rec["run"], "batch_id": rec["batch_id"], "model": rec["model"],
+            "collected_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "actual_cost_usd": round(sum(per.values()), 4), "per_job_usd": {k: round(v, 4) for k, v in per.items()},
             "tokens": tok, "results": {k: v["result"] for k, v in items.items()}, "items": items}
 
@@ -312,6 +358,21 @@ def selftest():
     assert out["items"]["s_x"]["parsed"]["page"] == "a" and out["results"]["a_y"] == "errored"
     assert abs(out["per_job_usd"]["search"] - 0.006) < 1e-9
     assert worst_case("search", 5000) < 0.1
+    st = {"st": "IA", "fips": "19169", "hash": "h", "facts": {"county": "Story County", "state": "Iowa", "year": 2026,
+          "through": "Oct 12", "whole_year": False, "total_in": "27.61"}}
+    sr = requests_of({"story": [st]})
+    assert sr[0][:3] == ("story", "c_IA_19169", "IA:19169") and sr[0][3]["model"] == STORY_MODEL
+    assert sr[0][3]["thinking"] == {"type": "adaptive"} and "temperature" not in sr[0][3] and "budget_tokens" not in json.dumps(sr[0][3])
+    assert "27.61" in sr[0][3]["messages"][0]["content"] and kind_of("c_IA_19169") == "story"
+    assert abs(cost_of({"input_tokens": 1_000_000, "output_tokens": 100_000}, STORY_MODEL) - 3.0) < 1e-9
+    assert cap_of({"story": [st]}) == STORY_CAP and cap_of({"search": [s]}) == COST_CAP
+    # a full run of every county page stays under its cap: about 1,700 input tokens and the full 1,000 out each
+    assert 2700 * worst_case("story", 1700) < STORY_CAP
+    rec2 = {"run": "r", "batch_id": "b", "model": STORY_MODEL, "items": {"c_IA_19169": {"job": "story", "name": "IA:19169"}}}
+    o2 = collect_from(rec2, json.dumps({"custom_id": "c_IA_19169", "result": {"type": "succeeded", "message": {
+        "stop_reason": "end_turn", "usage": {"input_tokens": 1000, "output_tokens": 100},
+        "content": [{"type": "text", "text": '```json\n{"story": "x"}\n```'}]}}}))
+    assert o2["items"]["c_IA_19169"]["parsed"]["story"] == "x" and abs(o2["per_job_usd"]["story"] - 0.003) < 1e-9
     print("selftest ok")
 
 

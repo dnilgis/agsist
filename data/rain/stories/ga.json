@@ -1,0 +1,5268 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "13007": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "Baker County",
+    "days_in_year_so_far": 283,
+    "days_missing": 5,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "8 miles west of Newton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "11.23",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "29.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Georgia",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "40.84",
+    "usual_in": "41.98",
+    "vs_usual": {
+     "diff_in": "1.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.97",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "55dbcb6c64543802",
+   "sid": "63828 1",
+   "story": "Through Oct 10, the weather station 8 miles west of Newton had most of its year come in May, with 10.97 inches that month. The biggest single day was May 22 at 2.42 inches. Earlier on, the gauge went 12 days in a row with nothing from Mar 21 to Apr 1. On the days both years reported, this year is 11.23 inches more than 2025.",
+   "through": "2026-10-10"
+  },
+  "13009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.84",
+     "label": "biggest single day"
+    },
+    "county": "Baldwin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.5 miles south-southeast of Milledgeville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "17.26",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "51.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.09",
+    "usual_in": "39.53",
+    "vs_usual": {
+     "diff_in": "5.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.83",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "be534d0ef35278d6",
+   "sid": "US1GABD0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge south-southeast of Milledgeville had gone 22 days in a row with nothing in it, from Apr 6 to Apr 27. May came back as the wettest month with 8.83 inches. Next to last year it is well behind, 17.26 inches less than 2025 on the days both years reported.",
+   "through": "2026-10-13"
+  },
+  "13011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.58",
+     "label": "biggest one-day reading"
+    },
+    "county": "Banks County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1.4 miles east-southeast of Baldwin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "1.39",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 78,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.85",
+    "usual_in": "47.05",
+    "vs_usual": {
+     "diff_in": "10.20",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.27",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eb578c52663ff7a1",
+   "sid": "US1GABN0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles east-southeast of Baldwin had its wettest month in May at 7.27 inches. The biggest one-day reading was 2.58 inches on Jun 19. From Mar 18 to Mar 31 it went 14 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year ran 1.39 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.63",
+     "label": "biggest one-day reading"
+    },
+    "county": "Barrow County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.6 miles east of Auburn",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "11.89",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 22,
+     "through": "Oct 13",
+     "total_in": "48.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.71",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f90db4459be5a451",
+   "sid": "US1GABW0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.6 miles east of Auburn had caught 38.71 inches. The biggest rain came Feb 27 at 2.63 inches. The gauge went 19 days in a row with not even a trace, Apr 7 to Apr 25. On the days both years reported, this year is 11.89 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.16",
+     "label": "biggest single day"
+    },
+    "county": "Bartow County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5 miles southeast of Adairsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.78",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.67",
+    "usual_in": "40.22",
+    "vs_usual": {
+     "diff_in": "4.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.46",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d4751b970614189d",
+   "sid": "090044 2",
+   "story": "Through Oct 13, the weather station 5 miles southeast of Adairsville has 35.67 inches, 4.55 inches less than a usual year. May was the wettest month at 6.46 inches, and the biggest single day came early, 2.16 inches on Jan 10. The gauge went 18 days in a row with nothing from Mar 18 to Apr 4. That leaves this year 2.78 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "13021": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Bibb County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Macon Middle Ga Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "8.19",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "40.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.13",
+    "usual_in": "37.03",
+    "vs_usual": {
+     "diff_in": "4.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.01",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "42572e58722038c0",
+   "sid": "03813 1",
+   "story": "Through Oct 13, the weather station at Macon Middle Ga Regional Airport went 22 days in a row with nothing in the gauge, from Apr 6 to Apr 27. Then May came in as the wettest month at 6.01 inches, and May 7 was the biggest single day with 2.34 inches. On the days both years reported, this year is 8.19 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Brantley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6 miles south of Nahunta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "10.74",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "32.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 6"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 96,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.80",
+    "usual_in": "44.50",
+    "vs_usual": {
+     "diff_in": "1.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.25",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e3b40c306c356da4",
+   "sid": "US1GABY0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6 miles south of Nahunta has caught 42.80 inches, 1.70 inches less than a usual year. June carried the year with 11.25 inches, and the biggest one-day reading came Jun 20 at 3.17 inches. The gauge stayed empty for 20 days in a row from Mar 18 to Apr 6. On the days both years reported, this year is 10.74 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "13029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 5",
+     "in": "2.65",
+     "label": "biggest single day"
+    },
+    "county": "Bryan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Richmond Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.41",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.62",
+    "usual_in": "44.74",
+    "vs_usual": {
+     "diff_in": "5.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "11.01",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ec0a0597c520ef86",
+   "sid": "US1GABR0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Richmond Hill has caught 39.62 inches, 12.41 inches less than it had by this day last year. August was the wettest month at 11.01 inches, and the biggest single day came Aug 5 with 2.65 inches. The longest dry stretch ran 19 days, Apr 7 to Apr 25, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "13031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 22",
+     "in": "1.56",
+     "label": "biggest single day"
+    },
+    "county": "Bulloch County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1 mile west of Brooklet",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.82",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.93",
+    "usual_in": "39.51",
+    "vs_usual": {
+     "diff_in": "10.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.13",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f0ac00b6d08af9ed",
+   "sid": "091266 2",
+   "story": "Through Oct 13, the weather station 1 mile west of Brooklet has caught 28.93 inches, 15.82 inches less than last year by this date. August was the wettest month at 6.13 inches, and the biggest single day came Aug 22 with 1.56 inches. The gauge also went 21 days in a row without even a trace, from Apr 5 to Apr 25.",
+   "through": "2026-10-13"
+  },
+  "13033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.73",
+     "label": "biggest one-day reading"
+    },
+    "county": "Burke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2 miles south of Waynesboro",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 5"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 102,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.32",
+    "usual_in": "39.34",
+    "vs_usual": {
+     "diff_in": "0.98",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.65",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c065dc293894ed4",
+   "sid": "099194 2",
+   "story": "Through Oct 13, the weather station 2 miles south of Waynesboro had 40.32 inches, 0.98 more than a usual year. May was the wettest month at 9.65 inches. The biggest one-day reading came Feb 27 with 2.73 inches. The gauge then went 19 days in a row with nothing in it, not even a trace, from Mar 18 to Apr 5.",
+   "through": "2026-10-13"
+  },
+  "13035": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 8",
+     "in": "2.36",
+     "label": "biggest single day"
+    },
+    "county": "Butts County",
+    "days_in_year_so_far": 286,
+    "days_missing": 14,
+    "days_reported": 272,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Jackson",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.19",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "419d0743bffc5649",
+   "sid": "094623 2",
+   "story": "Through Oct 13, the weather station in Jackson had 29.19 inches for the year. The biggest single day came May 8 with 2.36 inches. Before that, the gauge went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25. The station reported on 272 of 286 days, so the total is a little shy of the full count.",
+   "through": "2026-10-13"
+  },
+  "13039": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 13",
+     "in": "3.01",
+     "label": "biggest single day"
+    },
+    "county": "Camden County",
+    "days_in_year_so_far": 283,
+    "days_missing": 2,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "23 miles south of Brunswick",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Georgia",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "49.94",
+    "usual_in": "39.78",
+    "vs_usual": {
+     "diff_in": "10.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.82",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7774e47324e62ed0",
+   "sid": "63856 1",
+   "story": "Through Oct 10, the weather station 23 miles south of Brunswick had May as its wettest month, with 8.82 inches. The biggest single day came in that month too, 3.01 inches on May 13. The longest run with nothing in the gauge was 8 days, Mar 17 to Mar 24. All told the station sits 10.16 inches more than a usual year.",
+   "through": "2026-10-10"
+  },
+  "13045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Carrollton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.44",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.58",
+    "usual_in": "41.89",
+    "vs_usual": {
+     "diff_in": "1.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.85",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa5b9853e2885e69",
+   "sid": "091640 2",
+   "story": "Through Oct 13, the weather station in Carrollton had its wettest month in September with 5.85 inches. The biggest single day came Sep 13 at 2.80 inches. The longest dry stretch ran 18 days from Mar 18 to Apr 4 with nothing in the gauge, not even a trace. Against last year it sits 0.44 inches less than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "13047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 5",
+     "in": "2.39",
+     "label": "biggest one-day reading"
+    },
+    "county": "Catoosa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.7 miles north-northwest of Ringgold",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "2.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.81",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.46",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8be4f5494a22cbfe",
+   "sid": "US1GACS0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Ringgold had its wettest month in August at 9.46 inches. Then it caught nothing, not even a trace, for 22 days in a row from Aug 22 to Sep 12. The biggest single reading came Oct 5 with 2.39 inches. On the days both years reported, this year ran 2.62 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 26",
+     "in": "2.54",
+     "label": "biggest single day"
+    },
+    "county": "Chatham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2.3 miles south-southwest of Savannah",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.54",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "56.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.66",
+    "usual_in": "43.85",
+    "vs_usual": {
+     "diff_in": "1.19",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "13.65",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "311b5246cf47ec40",
+   "sid": "US1GACT0060 6",
+   "story": "Through Oct 13, the volunteer rain gauge south-southwest of Savannah sits 1.19 inches behind a usual year. August carried the load with 13.65 inches, and the biggest single day came Aug 26 at 2.54 inches. The gauge also went 20 days in a row with nothing in it, from Apr 7 to Apr 26. That is 13.54 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "13055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.35",
+     "label": "biggest single day"
+    },
+    "county": "Chattooga County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "9.4 miles east-northeast of Summerville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "47.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Georgia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "40.67",
+    "usual_in": "44.36",
+    "vs_usual": {
+     "diff_in": "3.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.36",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "46488059e7f885f3",
+   "sid": "US1GACG0011 6",
+   "story": "Through Oct 12, the volunteer rain gauge 9.4 miles east-northeast of Summerville had 40.67 inches, 3.69 inches less than a usual year. May was the wettest month at 6.36 inches, and the biggest single day came early, 2.35 inches on Jan 10. The gauge went 15 days in a row with nothing from Mar 18 to Apr 1. On the days both years reported, this year ran 6.62 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "13057": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.44",
+     "label": "biggest single day"
+    },
+    "county": "Cherokee County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7.3 miles east-northeast of Woodstock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "3.98",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 10",
+     "total_in": "44.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "49.97",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.83",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6b4165dc8bd141c6",
+   "sid": "US1GACE0052 6",
+   "story": "Through Oct 10, the volunteer rain gauge 7.3 miles east-northeast of Woodstock has caught 49.97 inches. May was the wettest month at 8.83 inches, and the biggest single day came May 7 with 3.44 inches. Before that, the gauge went 19 days in a row with nothing, Apr 7 to Apr 25. On the days both years reported, this year is 3.98 inches more than last year.",
+   "through": "2026-10-10"
+  },
+  "13059": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "Clarke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Athens Ben Epps Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.63",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.31",
+    "usual_in": "38.92",
+    "vs_usual": {
+     "diff_in": "7.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.21",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f1af3cccda8594d6",
+   "sid": "13873 1",
+   "story": "Through Oct 13, the weather station at Athens Ben Epps Airport has caught 31.31 inches, 7.61 inches less than a usual year. May carried the load at 9.21 inches, and the biggest single day came May 30 with 2.96 inches. Before that, the gauge sat empty for 19 days in a row, Apr 6 to Apr 24. Last year at this point it had 14.63 inches more.",
+   "through": "2026-10-13"
+  },
+  "13063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Clayton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Jonesboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.42",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "41.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.37",
+    "usual_in": "41.68",
+    "vs_usual": {
+     "diff_in": "4.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.10",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5255b3c2e398f736",
+   "sid": "094700 2",
+   "story": "Through Oct 13, the weather station in Jonesboro had 37.37 inches, 4.31 inches less than a usual year. July was the wettest month at 7.10 inches, and the biggest single day came late, 2.90 inches on Oct 10. Back in spring the gauge went 22 days in a row with nothing, from Apr 7 to Apr 28. On the days both years reported, this year is 4.42 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13065": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "3.15",
+     "label": "biggest single day"
+    },
+    "county": "Clinch County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "5 miles north of Homerville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.73",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.96",
+    "usual_in": "41.67",
+    "vs_usual": {
+     "diff_in": "1.29",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.59",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "98d30b9fd13b0f33",
+   "sid": "094429 2",
+   "story": "Through Oct 13, the weather station 5 miles north of Homerville had its wettest month in May with 10.59 inches. The biggest single day came May 18 at 3.15 inches. That followed 18 days in a row with nothing in the gauge, from Apr 8 to Apr 25. On the days both years reported, this year is 3.73 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "13067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "3.42",
+     "label": "biggest single day"
+    },
+    "county": "Cobb County",
+    "days_in_year_so_far": 278,
+    "days_missing": 1,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.3 miles northeast of Smyrna",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "1.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 5",
+     "total_in": "36.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Georgia",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "35.00",
+    "usual_in": "39.45",
+    "vs_usual": {
+     "diff_in": "4.45",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.09",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6e0085fdc78d11a0",
+   "sid": "US1GACB0002 6",
+   "story": "Through Oct 5, the volunteer rain gauge 2.3 miles northeast of Smyrna had its wettest month in February at 5.09 inches, and 3.42 inches of that came on Feb 27, the biggest single day. Then it went 19 days in a row with nothing in the gauge, not even a trace, from Mar 17 to Apr 4. On the days both years reported, 2026 is 1.71 inches less than 2025.",
+   "through": "2026-10-05"
+  },
+  "13069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 6",
+     "in": "2.02",
+     "label": "biggest one-day reading"
+    },
+    "county": "Coffee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.5 miles west-southwest of Douglas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "3.07",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "37.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": 104,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.86",
+    "usual_in": "41.04",
+    "vs_usual": {
+     "diff_in": "1.82",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "544732439e7d353c",
+   "sid": "US1GACF0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles west-southwest of Douglas shows 42.86 inches, 1.82 more than a usual year. The biggest one-day reading was 2.02 inches on Oct 6. The gauge went 17 days in a row with nothing in it, from Mar 18 to Apr 3. On the days both years reported, this year is 3.07 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "13071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 6",
+     "in": "4.08",
+     "label": "biggest one-day reading"
+    },
+    "county": "Colquitt County",
+    "days_in_year_so_far": 284,
+    "days_missing": 5,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1.4 miles north-northeast of Moultrie",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "10.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "32.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 7,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "42.60",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.82",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "74d4aaed5947b666",
+   "sid": "US1GACQ0013 6",
+   "story": "Through Oct 11, the volunteer rain gauge 1.4 miles north-northeast of Moultrie had caught 42.60 inches. May was the wettest month at 9.82 inches, and the biggest one-day reading came late, 4.08 inches on Oct 6. The gauge went 21 days in a row with nothing from Apr 5 to Apr 25. On the days both years reported, that's 10.72 inches more than 2025 had by this point.",
+   "through": "2026-10-11"
+  },
+  "13073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 14",
+     "in": "2.74",
+     "label": "biggest one-day reading"
+    },
+    "county": "Columbia County",
+    "days_in_year_so_far": 284,
+    "days_missing": 10,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.0 miles southeast of Appling",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "2.85",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 11",
+     "total_in": "35.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 101,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "36.81",
+    "usual_in": "36.56",
+    "vs_usual": {
+     "diff_in": "0.25",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.57",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d07481a627fa2bb5",
+   "sid": "US1GACU0009 6",
+   "story": "Through Oct 11, the volunteer rain gauge 2.0 miles southeast of Appling sits at 36.81 inches, about usual. August was the wettest month at 7.57 inches, and the biggest one-day reading was 2.74 inches on Jul 14. The gauge went 19 days in a row with nothing in it, from Apr 7 to Apr 25. On the days both years reported, this year has 2.85 inches more than last year.",
+   "through": "2026-10-11"
+  },
+  "13077": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Coweta County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.6 miles west of Newnan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.58",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.12",
+    "usual_in": "43.59",
+    "vs_usual": {
+     "diff_in": "1.47",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.99",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aea86fb364c9f993",
+   "sid": "US1GACW0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.6 miles west of Newnan had its wettest month in May with 7.99 inches, and its biggest single day came May 30 with 2.00 inches. Before that, the gauge went 19 days in a row with nothing in it, from Apr 7 to Apr 25. The year sits 5.58 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "13081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 5",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Crisp County",
+    "days_in_year_so_far": 281,
+    "days_missing": 0,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Cordele",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "4.60",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 8",
+     "total_in": "37.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Georgia",
+    "through": "Oct 8",
+    "through_iso": "2026-10-08",
+    "total_in": "32.62",
+    "usual_in": "40.04",
+    "vs_usual": {
+     "diff_in": "7.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.29",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6e239d6748ca3a16",
+   "sid": "092266 2",
+   "story": "Through Oct 8, the weather station in Cordele had 32.62 inches, 7.42 inches less than a usual year. May was the wettest month at 7.29 inches, and the biggest single day came late, 2.70 inches on Oct 5. The gauge went 18 days in a row with nothing from Apr 7 to Apr 24. On the days both years reported, that is 4.60 inches less than 2025.",
+   "through": "2026-10-08"
+  },
+  "13085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.79",
+     "label": "biggest one-day reading"
+    },
+    "county": "Dawson County",
+    "days_in_year_so_far": 276,
+    "days_missing": 21,
+    "days_reported": 255,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.9 miles east-northeast of Big Canoe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 248,
+      "diff_in": "1.22",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 3",
+     "total_in": "46.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "43.32",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.03",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8552c35bb3a1d901",
+   "sid": "US1GADW0015 6",
+   "story": "Through Oct 3, the volunteer rain gauge 1.9 miles east-northeast of Big Canoe had 43.32 inches. January was the wettest month at 7.03 inches, and the biggest one-day reading came Jan 10 with 2.79 inches. The gauge went 17 days in a row with nothing from Mar 18 to Apr 3. On the days both years reported, that is 1.22 inches less than 2025.",
+   "through": "2026-10-03"
+  },
+  "13089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 26",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "DeKalb County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Atlanta Dekalb Peachtree Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "1.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "38.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.01",
+    "usual_in": "40.97",
+    "vs_usual": {
+     "diff_in": "3.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.14",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cfee1c51dd5e0fed",
+   "sid": "53863 1",
+   "story": "Through Oct 13, the weather station at Atlanta Dekalb Peachtree Airport had its wettest month in July at 8.14 inches. The biggest single day came early, 2.95 inches on Feb 26. Then the gauge went 18 days in a row with nothing, not even a trace, from Mar 17 to Apr 3. On the days both years reported, this year is 1.00 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "4.97",
+     "label": "biggest one-day reading"
+    },
+    "county": "Dodge County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.6 miles southwest of Chauncey",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "0.45",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "38.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 101,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.35",
+    "usual_in": "38.07",
+    "vs_usual": {
+     "diff_in": "0.28",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.32",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "25330969c3ec445e",
+   "sid": "US1GADG0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.6 miles southwest of Chauncey sits about where a usual year would, 0.28 inches more. The gauge went 21 days in a row with nothing in it, from Apr 5 to Apr 25. Then May came in as the wettest month at 8.32 inches, and the biggest one-day reading was 4.97 inches on Jun 19. On the days both years reported, this year is 0.45 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13095": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "2.75",
+     "label": "biggest single day"
+    },
+    "county": "Dougherty County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "at Albany SW Georgia Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "3.10",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "33.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.04",
+    "usual_in": "37.42",
+    "vs_usual": {
+     "diff_in": "1.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.67",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9090c62edcdbf13",
+   "sid": "13869 1",
+   "story": "Through Oct 13, the weather station at Albany SW Georgia Regional Airport had its wettest month in May, with 10.67 inches, and its biggest single day on May 22 at 2.75 inches. Then it went 19 days in a row with nothing in the gauge, from Sep 13 to Oct 1. On the days both years reported, that is 3.10 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "13097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 12",
+     "in": "2.64",
+     "label": "biggest one-day reading"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.5 miles south-southwest of Winston",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 16,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.07",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.55",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1aeb6ddec4508316",
+   "sid": "US1GADS0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Winston has caught 41.07 inches. July was the wettest month at 8.55 inches. The biggest one-day reading came Sep 12 with 2.64 inches. The longest dry stretch ran 13 days, from Mar 23 to Apr 4, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "13103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 4",
+     "in": "2.53",
+     "label": "biggest single day"
+    },
+    "county": "Effingham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "less than a mile south of Marlow",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.53",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 62,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.91",
+    "usual_in": "42.08",
+    "vs_usual": {
+     "diff_in": "16.17",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.28",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "67ff2a4fb3cd9130",
+   "sid": "US1GAEF0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south of Marlow had its biggest single day on Oct 4, with 2.53 inches. August was the wettest month at 5.28 inches. The gauge went 19 days in a row with nothing in it, from Apr 7 to Apr 25. This year is running 16.53 inches less than last year at the same day.",
+   "through": "2026-10-13"
+  },
+  "13105": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 26",
+     "in": "2.41",
+     "label": "biggest single day"
+    },
+    "county": "Elbert County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2 miles north of Elberton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.78",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.07",
+    "usual_in": "39.12",
+    "vs_usual": {
+     "diff_in": "6.05",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.18",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5a0be0e85f04faa1",
+   "sid": "093060 2",
+   "story": "Through Oct 13, the weather station 2 miles north of Elberton has caught 33.07 inches. May carried the year with 10.18 inches, and the biggest single day came May 26 with 2.41 inches. From Aug 17 to Sep 5 the gauge went 20 days in a row with nothing in it, not even a trace. That leaves the station 10.78 inches less than it had by this day last year.",
+   "through": "2026-10-13"
+  },
+  "13107": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "3.07",
+     "label": "biggest one-day reading"
+    },
+    "county": "Emanuel County",
+    "days_in_year_so_far": 284,
+    "days_missing": 3,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Swainsboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.96",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "39.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 97,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "38.35",
+    "usual_in": "39.57",
+    "vs_usual": {
+     "diff_in": "1.22",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.97",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4653bf88f3e2944b",
+   "sid": "US1GAEM0004 6",
+   "story": "Through Oct 11, the volunteer rain gauge less than a mile west of Swainsboro went 19 days in a row with nothing in it, from Apr 7 to Apr 25. Then May came in at 10.97 inches, the wettest month, with the biggest one-day reading of 3.07 inches on May 30. On the days both years reported, that is 0.96 inches less than 2025 had.",
+   "through": "2026-10-11"
+  },
+  "13109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 15",
+     "in": "3.05",
+     "label": "biggest single day"
+    },
+    "county": "Evans County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.8 miles north of Bellville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "1.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "38.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.68",
+    "usual_in": "40.28",
+    "vs_usual": {
+     "diff_in": "2.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.20",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "97a64c435b11ca97",
+   "sid": "US1GAEV0001 6",
+   "story": "Through Oct 13, the gauge 2.8 miles north of Bellville went 22 days in a row with nothing in it, from Apr 7 to Apr 28. Then May turned out to be the wettest month at 9.20 inches. On the days both years reported, this year sits 1.32 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "3.17",
+     "label": "biggest single day"
+    },
+    "county": "Fannin County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "3.1 miles south-southeast of Morganton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "16.23",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 12",
+     "total_in": "57.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Georgia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "44.03",
+    "usual_in": "48.67",
+    "vs_usual": {
+     "diff_in": "4.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.38",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "829039c02f169a80",
+   "sid": "US1GAFN0007 6",
+   "story": "Through Oct 12, the volunteer rain gauge 3.1 miles south-southeast of Morganton had its wettest month in August at 9.38 inches, and its biggest single day came Aug 2 with 3.17 inches. The gauge went 18 days in a row with nothing in it, not even a trace, from Mar 18 to Apr 4. On the days both years reported, this year is 16.23 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "13113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "Fayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Peachtree City Falcon Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "35.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "May 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 21"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.96",
+    "usual_in": "38.97",
+    "vs_usual": {
+     "diff_in": "5.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.13",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "40c3da8949f7bb30",
+   "sid": "53819 1",
+   "story": "Through Oct 13, the weather station at Peachtree City Falcon Field had May as its wettest month at 8.13 inches. That same May also held the longest dry stretch, 14 days in a row with nothing in the gauge, from May 8 to May 21. The biggest single day was 2.42 inches on Oct 10. On the days both years reported, this year is 1.93 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Floyd County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Rome",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.70",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.19",
+    "usual_in": "43.30",
+    "vs_usual": {
+     "diff_in": "4.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.31",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5b1563b69a84d9d4",
+   "sid": "097600 2",
+   "story": "Through Oct 13, the weather station in Rome sits 4.11 inches less than a usual year. May was the wettest month at 6.31 inches, and the biggest single day came Jan 10 with 3.30 inches. The gauge went 18 days in a row with nothing from Mar 18 to Apr 4. That still leaves this year 0.70 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "13117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 24",
+     "in": "2.82",
+     "label": "biggest one-day reading"
+    },
+    "county": "Forsyth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "2 miles north of Cumming",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "13.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "54.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 89,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.46",
+    "usual_in": "42.20",
+    "vs_usual": {
+     "diff_in": "4.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.88",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fa7d0b36f4b7fc8f",
+   "sid": "092408 2",
+   "story": "Through Oct 13, the weather station 2 miles north of Cumming had its wettest month in July at 7.88 inches, and its biggest one-day reading came Jul 24 at 2.82 inches. Earlier it went 19 days in a row with nothing in the gauge, from Apr 7 to Apr 25. On the days both years reported, this year is 13.77 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "3.46",
+     "label": "biggest one-day reading"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 276,
+    "days_missing": 5,
+    "days_reported": 271,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "in Carnesville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 82,
+    "state": "Georgia",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "32.15",
+    "usual_in": "39.40",
+    "vs_usual": {
+     "diff_in": "7.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.52",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c3d43f7c63e561ed",
+   "sid": "091619 2",
+   "story": "Through Oct 3, the weather station in Carnesville had 32.15 inches, 7.25 inches less than a usual year. May was the wettest month at 8.52 inches. The biggest one-day reading came Jun 9 with 3.46 inches. The longest dry stretch ran 18 days, Mar 18 to Apr 4, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-03"
+  },
+  "13123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.67",
+     "label": "biggest one-day reading"
+    },
+    "county": "Gilmer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "7.2 miles south-southeast of Ellijay",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "5.55",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "44.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.74",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.49",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "24250cdfbffef402",
+   "sid": "US1GAGM0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.2 miles south-southeast of Ellijay had its wettest month in July at 9.49 inches, and its biggest one-day reading of 2.67 inches came Jul 29. The longest dry stretch ran 13 days, from Mar 18 to Mar 30, with nothing in the gauge, not even a trace. On the days both years reported, this year is 5.55 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "13127": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 13",
+     "in": "3.73",
+     "label": "biggest one-day reading"
+    },
+    "county": "Glynn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Jekyll Island",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "1.48",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "46.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.00",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.65",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7ae647d7cff3e629",
+   "sid": "US1GAGN0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Jekyll Island had its wettest month in August, with 10.65 inches. Before that it went 18 days in a row with nothing in it, from Apr 9 to Apr 26. On the days both years reported, this year sits 1.48 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "2.73",
+     "label": "biggest single day"
+    },
+    "county": "Grady County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "9.2 miles north-northwest of Cairo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.80",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.70",
+    "usual_in": "43.48",
+    "vs_usual": {
+     "diff_in": "0.22",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.78",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c2bfaa3d19f57612",
+   "sid": "US1GAGY0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.2 miles north-northwest of Cairo had 11.80 inches more than it had by this day last year. May was the wettest month at 9.78 inches. The gauge then sat empty for 18 days in a row from Apr 8 to Apr 25, and its biggest single day came late, 2.73 inches on Oct 10.",
+   "through": "2026-10-13"
+  },
+  "13133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.68",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "6.4 miles southeast of Buckhead",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "46.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.58",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.59",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1fccf97052b276b3",
+   "sid": "US1GAGE0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.4 miles southeast of Buckhead had 38.58 inches. August was the wettest month at 6.59 inches, but the biggest single day came back on Feb 27 with 2.68 inches. The gauge went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25. On the days both years reported, that is 7.85 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 14",
+     "in": "2.97",
+     "label": "biggest single day"
+    },
+    "county": "Gwinnett County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "2.1 miles north-northwest of Dacula",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.46",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.06",
+    "usual_in": "42.46",
+    "vs_usual": {
+     "diff_in": "0.40",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.91",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "82170a262bbb390a",
+   "sid": "US1GAGW0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.1 miles north-northwest of Dacula has caught 42.06 inches, 0.40 less than a usual year. July was the wettest month at 7.91 inches, and the biggest single day came Jul 14 with 2.97. The gauge went 15 days in a row with nothing from Mar 18 to Apr 1. Against 2025 it sits 0.46 inches less.",
+   "through": "2026-10-13"
+  },
+  "13137": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Habersham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "9.5 miles east-northeast of Helen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "58.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "58.08",
+    "usual_in": "56.31",
+    "vs_usual": {
+     "diff_in": "1.77",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.56",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "56c01be5dfa1f9ac",
+   "sid": "US1GAHB0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.5 miles east-northeast of Helen had 58.08 inches, 1.77 more than a usual year. May was the wettest month at 10.56 inches, and the biggest single day was May 7 with 3.30. The longest dry stretch ran 15 days, Mar 18 to Apr 1, without even a trace. On the days both years reported, this year is 0.66 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 25",
+     "in": "5.40",
+     "label": "biggest single day"
+    },
+    "county": "Hall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3.9 miles northeast of Flowery Branch",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "41.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.76",
+    "usual_in": "46.06",
+    "vs_usual": {
+     "diff_in": "9.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.69",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3381946ff7dcd801",
+   "sid": "US1GAHL0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.9 miles northeast of Flowery Branch had its wettest month in July with 8.69 inches. The biggest single day was Jul 25 at 5.40 inches. The longest dry stretch ran 15 days in a row from Mar 18 to Apr 1 with nothing in the gauge. On the days both years reported, this year is 4.59 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13143": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.73",
+     "label": "biggest one-day reading"
+    },
+    "county": "Haralson County",
+    "days_in_year_so_far": 284,
+    "days_missing": 17,
+    "days_reported": 267,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.4 miles east of Bremen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "9.95",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 11",
+     "total_in": "44.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "33.03",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.10",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "70800f0c7148cca4",
+   "sid": "US1GAHN0005 6",
+   "story": "Through Oct 11, the volunteer rain gauge 1.4 miles east of Bremen has caught 33.03 inches. January was the wettest month at 6.10 inches, and the biggest one-day reading came Jan 10 with 2.73 inches. The gauge went 18 days in a row with nothing in it, from Mar 18 to Apr 4. On the days both years reported, this year is 9.95 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "13145": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.98",
+     "label": "biggest one-day reading"
+    },
+    "county": "Harris County",
+    "days_in_year_so_far": 283,
+    "days_missing": 13,
+    "days_reported": 270,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "6.9 miles south of Waverly Hall",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "2.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 10",
+     "total_in": "38.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 101,
+    "state": "Georgia",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "40.02",
+    "usual_in": "39.67",
+    "vs_usual": {
+     "diff_in": "0.35",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.61",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4e71973d43064013",
+   "sid": "US1GAHR0007 6",
+   "story": "Through Oct 10, the gauge south of Waverly Hall sits about where a usual year would, 0.35 inches more. June was the wettest month at 7.61 inches, and the biggest rain came May 7 with 3.98 inches. Before that, the gauge went 19 days in a row with nothing in it, Apr 7 to Apr 25. On the days both years reported, this year is 2.35 inches more than 2025.",
+   "through": "2026-10-10"
+  },
+  "13147": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Hart County",
+    "days_in_year_so_far": 282,
+    "days_missing": 0,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Hartwell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "15.07",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 9",
+     "total_in": "43.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Georgia",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "28.89",
+    "usual_in": "40.34",
+    "vs_usual": {
+     "diff_in": "11.45",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "763235f8e99d3f86",
+   "sid": "094133 2",
+   "story": "Through Oct 9, the weather station in Hartwell had nothing in the gauge for 19 days in a row, from Apr 7 to Apr 25. Then May came in as the wettest month at 10.05 inches, with the biggest single day on May 7 at 3.25 inches. On the days both years reported, this year sits 15.07 inches less than last year.",
+   "through": "2026-10-09"
+  },
+  "13151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 14",
+     "in": "2.87",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "5 miles east-northeast of Mcdonough",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.33",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.55",
+    "usual_in": "40.94",
+    "vs_usual": {
+     "diff_in": "6.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.64",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f650390d119c489e",
+   "sid": "095666 2",
+   "story": "Through Oct 13, the weather station 5 miles east-northeast of Mcdonough has caught 34.55 inches, 6.39 less than a usual year. July was the wettest month at 4.64 inches, and 2.87 of that came on Jul 14 alone. The gauge went 21 days with nothing in it, from Apr 8 to Apr 28. Last year at this point it had 11.33 inches more.",
+   "through": "2026-10-13"
+  },
+  "13153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.41",
+     "label": "biggest single day"
+    },
+    "county": "Houston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "2.5 miles northwest of Kathleen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "2.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "39.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.28",
+    "usual_in": "39.26",
+    "vs_usual": {
+     "diff_in": "2.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.86",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "50cf86fb2d91375b",
+   "sid": "US1GAHS0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.5 miles northwest of Kathleen has caught 36.28 inches, 2.98 inches less than a usual year. June was the wettest month at 5.86 inches, and the biggest single day came Jun 19 with 2.41 inches. The gauge went 21 days in a row with nothing in it, from Apr 8 to Apr 28. On the days both years reported, this year is 2.93 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "13155": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Irwin County",
+    "days_in_year_so_far": 285,
+    "days_missing": 20,
+    "days_reported": 265,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.9 miles south of Ocilla",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 6,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "47.39",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.29",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a4d4622cac824163",
+   "sid": "US1GAIR0001 6",
+   "story": "Through Oct 12, the volunteer rain gauge 1.9 miles south of Ocilla had caught 47.39 inches for the year. October was the wettest month at 9.29 inches. The longest dry stretch ran 21 days, Apr 5 to Apr 25, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "13157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.21",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2.3 miles north of Bogart",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.67",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.81",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d31954a72c6a91b6",
+   "sid": "US1GAJC0032 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles north of Bogart had 33.67 inches. July was the wettest month at 5.81 inches. The biggest one-day reading came Feb 27 with 2.21 inches. The gauge went 21 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 27.",
+   "through": "2026-10-13"
+  },
+  "13165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 5",
+     "in": "3.65",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jenkins County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.4 miles east-southeast of Oliver",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "2.94",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "42.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 8,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.84",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.57",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "553b7d9b42464707",
+   "sid": "US1GAJK0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles east-southeast of Oliver has caught 38.84 inches. May was the wettest month at 8.57 inches, and the biggest one-day reading came Oct 5 with 3.65 inches. Back in spring the gauge went 22 days without even a trace, Apr 6 to Apr 27. On the days both years reported, that is 2.94 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13169": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "2.80",
+     "label": "biggest one-day reading"
+    },
+    "county": "Jones County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "6.8 miles east-northeast of Macon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "7.15",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "42.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 89,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.52",
+    "usual_in": "39.87",
+    "vs_usual": {
+     "diff_in": "4.35",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.76",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "49b75bd15234efc1",
+   "sid": "US1GAJN0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.8 miles east-northeast of Macon has caught 35.52 inches, 4.35 inches less than a usual year. July was the wettest month at 5.76 inches, and the biggest one-day reading was 2.80 inches on Aug 7. The gauge went 22 days in a row with nothing in it, from Apr 7 to Apr 28. On the days both years reported, that is 7.15 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "1.74",
+     "label": "biggest single day"
+    },
+    "county": "Lanier County",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4.8 miles west of Lakeland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 260,
+      "diff_in": "3.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "38.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Mar 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.96",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.24",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7847f8c67dfffd85",
+   "sid": "US1GALN0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles west of Lakeland had 35.96 inches. May did most of the work at 10.24 inches, the wettest month. The biggest single day was Jun 1 with 1.74 inches. On the days both years reported, this year is 3.20 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13175": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 3",
+     "in": "3.50",
+     "label": "biggest single day"
+    },
+    "county": "Laurens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Dublin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "7.04",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "39.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.30",
+    "usual_in": "39.04",
+    "vs_usual": {
+     "diff_in": "3.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.78",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "698fe71ed997e69b",
+   "sid": "092844 2",
+   "story": "Through Oct 13, the weather station in Dublin went 18 days in a row with nothing in the gauge, from Apr 8 to Apr 25, not even a trace. May made up for it as the wettest month at 7.78 inches, and the biggest single day came Aug 3 with 3.50 inches. On the days both years reported, this year sits 7.04 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 13",
+     "in": "3.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Liberty County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3.8 miles northeast of Midway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "10.86",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "59.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 108,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.67",
+    "usual_in": "43.22",
+    "vs_usual": {
+     "diff_in": "3.45",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.03",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "574c6354dcff1bc8",
+   "sid": "US1GALB0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.8 miles northeast of Midway had its wettest month in August at 10.03 inches. Its biggest one-day reading came Jul 13 with 3.17 inches. It went 19 days in a row with nothing in it, not even a trace, from Apr 8 to Apr 26. On the days both years reported, this year has 10.86 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13183": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 22",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Long County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Ludowici",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.39",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.33",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.15",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4155aa2275c74fcb",
+   "sid": "095331 2",
+   "story": "Through Oct 13, the weather station in Ludowici has 38.33 inches for the year, 6.39 inches less than last year by the same day. June was the wettest month at 9.15 inches. The biggest single day was Feb 22 with 2.10 inches. The gauge went 19 days in a row with nothing, from Apr 7 to Apr 25.",
+   "through": "2026-10-13"
+  },
+  "13185": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 28",
+     "in": "2.07",
+     "label": "biggest single day"
+    },
+    "county": "Lowndes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2.8 miles west of Lake Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.28",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "46.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.10",
+    "usual_in": "46.53",
+    "vs_usual": {
+     "diff_in": "5.43",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.28",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cb47a4f299b293ea",
+   "sid": "US1GALW0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.8 miles west of Lake Park caught 9.28 inches in August, its wettest month, and the biggest single day came Aug 28 with 2.07 inches. Back in spring it went 22 days in a row with nothing in it, from Apr 8 to Apr 29. On the days both years reported, this year is 5.28 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13187": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 11",
+     "in": "3.83",
+     "label": "biggest single day"
+    },
+    "county": "Lumpkin County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4 miles west-southwest of Dahlonega",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "2.22",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 11",
+     "total_in": "46.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "45.84",
+    "usual_in": "48.97",
+    "vs_usual": {
+     "diff_in": "3.13",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.93",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9cd7775084690dd5",
+   "sid": "092475 2",
+   "story": "Through Oct 11, the weather station 4 miles west-southwest of Dahlonega had its wettest month in January at 7.93 inches. The biggest single day came Jan 11 with 3.83 inches. From Mar 18 to Apr 4 it went 18 days in a row with nothing in the gauge, not even a trace. On the days both years reported, that is 2.22 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "13189": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 23",
+     "in": "2.35",
+     "label": "biggest one-day reading"
+    },
+    "county": "McDuffie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.6 miles south of Thomson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "14.82",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.95",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.91",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60f144d559bddb6d",
+   "sid": "US1GAMD0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.6 miles south of Thomson had its wettest month in May at 7.91 inches. The biggest one-day reading came May 23 with 2.35 inches. Before that, the gauge went 22 days in a row with nothing in it, Apr 7 to Apr 28. On the days both years reported, this year is 14.82 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13191": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 11",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "McIntosh County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.5 miles southeast of Townsend",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "10.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "48.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.15",
+    "usual_in": "41.07",
+    "vs_usual": {
+     "diff_in": "2.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.78",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ded613b354f0520f",
+   "sid": "US1GAMI0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.5 miles southeast of Townsend had its wettest month in August at 7.78 inches, and its biggest single day came Aug 11 with 2.24 inches. The longest dry stretch ran 19 days, Mar 18 to Apr 5, with not even a trace. On the days both years reported, this year is 10.77 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13195": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "4.9 miles southeast of Nicholson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "40.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.98",
+    "usual_in": "40.70",
+    "vs_usual": {
+     "diff_in": "2.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.81",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ae59e827178538f8",
+   "sid": "US1GAMA0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.9 miles southeast of Nicholson had its wettest month in May at 7.81 inches. The biggest single day came Jun 19 with 2.02 inches. The longest dry stretch ran 18 days, Mar 18 to Apr 4, with not even a trace in the gauge. On the days both years reported, that is 2.74 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13207": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.74",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 284,
+    "days_missing": 3,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "8.3 miles south of Forsyth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "4.17",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "40.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "36.27",
+    "usual_in": "39.87",
+    "vs_usual": {
+     "diff_in": "3.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.00",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "96d7d122c999f254",
+   "sid": "US1GAMN0010 6",
+   "story": "Through Oct 11, the volunteer rain gauge 8.3 miles south of Forsyth had June as its wettest month at 6.00 inches, and the biggest single day came Jun 19 with 2.74 inches. From Apr 7 to Apr 25 it went 19 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year sits 4.17 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "13215": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "3.96",
+     "label": "biggest single day"
+    },
+    "county": "Muscogee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Columbus Metropolitan Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.27",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.60",
+    "usual_in": "38.53",
+    "vs_usual": {
+     "diff_in": "5.07",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.98",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f5d1848b05ef5558",
+   "sid": "93842 1",
+   "story": "Through Oct 13, the weather station at Columbus Metropolitan Airport had 43.60 inches, 8.27 inches more than by this day last year. May was the wettest month at 9.98 inches. The biggest single day came Jun 18 with 3.96 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "13219": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Oconee County",
+    "days_in_year_so_far": 285,
+    "days_missing": 7,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.6 miles east-northeast of Watkinsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "21.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 12",
+     "total_in": "46.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 70,
+    "state": "Georgia",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "26.64",
+    "usual_in": "38.12",
+    "vs_usual": {
+     "diff_in": "11.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.04",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c2fc8becb0694e7a",
+   "sid": "US1GAOC0009 6",
+   "story": "Through Oct 12, the volunteer rain gauge east-northeast of Watkinsville had 11.48 inches less than a usual year. The biggest single day was Feb 27 with 2.60 inches, and May was the wettest month at 5.04 inches. From Apr 7 to Apr 27 the gauge went 21 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 21.62 inches behind last year.",
+   "through": "2026-10-12"
+  },
+  "13221": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.22",
+     "label": "biggest single day"
+    },
+    "county": "Oglethorpe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.7 miles south-southwest of Arnoldsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "20.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.54",
+    "usual_in": "38.98",
+    "vs_usual": {
+     "diff_in": "8.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.89",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0d1a97feb1dc1223",
+   "sid": "US1GAOG0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles south-southwest of Arnoldsville is 8.44 inches less than a usual year. May was the wettest month at 6.89 inches, and the biggest single day was 2.22 inches on Feb 27. The gauge sat empty 18 days in a row from Mar 18 to Apr 4. Last year it had 20.02 inches more by this date.",
+   "through": "2026-10-13"
+  },
+  "13223": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.00",
+     "label": "biggest one-day reading"
+    },
+    "county": "Paulding County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "7 miles northeast of Dallas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "8.71",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "34.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 9,
+    "pct_of_usual": 101,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.25",
+    "usual_in": "41.04",
+    "vs_usual": {
+     "diff_in": "0.21",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.00",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "973ce9536e0db346",
+   "sid": "092485 2",
+   "story": "Through Oct 13, the weather station 7 miles northeast of Dallas had May as its wettest month at 9.00 inches. The biggest reading came May 7 with 3.00 inches. On the days both years reported, this year has 8.71 inches more than 2025. The total sits close to a usual year, 0.21 inches more.",
+   "through": "2026-10-13"
+  },
+  "13225": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "3.33",
+     "label": "biggest one-day reading"
+    },
+    "county": "Peach County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile east-southeast of Fort Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "7.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "47.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 102,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.93",
+    "usual_in": "39.24",
+    "vs_usual": {
+     "diff_in": "0.69",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.63",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d8d9f784eefca64b",
+   "sid": "US1GAPE0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-southeast of Fort Valley sits at 39.93 inches, about 0.69 more than a usual year. May was the wettest month at 7.63 inches, and the biggest one-day reading was 3.33 inches on Jun 19. The gauge went 18 days in a row with nothing from Apr 7 to Apr 24. On the days both years reported, that is 7.98 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13227": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "3.18",
+     "label": "biggest single day"
+    },
+    "county": "Pickens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1 mile north-northwest of Jasper",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.84",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.82",
+    "usual_in": "46.43",
+    "vs_usual": {
+     "diff_in": "3.39",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.58",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "986bc65d0a6d7aab",
+   "sid": "094648 2",
+   "story": "Through Oct 13, the weather station 1 mile north-northwest of Jasper had July as the wettest month at 11.58 inches, and the biggest single day came Jul 29 with 3.18 inches. The gauge also sat empty for 17 days in a row, from Mar 18 to Apr 3. That leaves this year 2.84 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "13233": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "1.98",
+     "label": "biggest single day"
+    },
+    "county": "Polk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Cedartown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "2.18",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "35.77",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.60",
+    "usual_in": "41.29",
+    "vs_usual": {
+     "diff_in": "6.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.43",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "09d1dc3c6e47e768",
+   "sid": "091732 2",
+   "story": "Through Oct 13, the weather station in Cedartown had its biggest single day on Oct 10 with 1.98 inches. June was the wettest month at 5.43 inches. From Aug 23 to Sep 11 it went 20 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 2.18 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13235": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 26",
+     "in": "2.10",
+     "label": "biggest single day"
+    },
+    "county": "Pulaski County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Hawkinsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.08",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "35.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.02",
+    "usual_in": "39.20",
+    "vs_usual": {
+     "diff_in": "3.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.40",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f7c4ce350d0de19",
+   "sid": "094170 2",
+   "story": "Through Oct 13, the weather station in Hawkinsville has gone back and forth. It went 22 days in a row with nothing in the gauge, from Apr 7 to Apr 28, then turned around and caught 7.40 inches in May, the wettest month. The biggest single day came early, 2.10 inches on Jan 26. On the days both years reported, this year has 0.08 inches more than last year, so it is about a wash.",
+   "through": "2026-10-13"
+  },
+  "13237": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "2.50",
+     "label": "biggest single day"
+    },
+    "county": "Putnam County",
+    "days_in_year_so_far": 286,
+    "days_missing": 24,
+    "days_reported": 262,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.8 miles northeast of Eatonton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 242,
+      "diff_in": "5.25",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "43.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.90",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.80",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5f1200831cea1e35",
+   "sid": "US1GAPT0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.8 miles northeast of Eatonton went 22 days in a row with nothing in it, from Apr 6 to Apr 27. The biggest single day came soon after, 2.50 inches on May 7. August was the wettest month at 8.80 inches. On the days both years reported, this year is 5.25 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13241": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 11",
+     "in": "3.40",
+     "label": "biggest single day"
+    },
+    "county": "Rabun County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Germany Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.20",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "59.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.44",
+    "usual_in": "57.88",
+    "vs_usual": {
+     "diff_in": "8.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.56",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8eef6768d7aad656",
+   "sid": "093675 2",
+   "story": "Through Oct 13, the weather station in Germany Valley has 49.44 inches, 8.44 inches less than a usual year. May was the wettest month at 10.56 inches. The gauge went 19 days in a row with nothing from Apr 7 to Apr 25, then caught 3.40 inches on Oct 11, the biggest single day so far. That is still 10.20 inches less than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "13245": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "2.13",
+     "label": "biggest single day"
+    },
+    "county": "Richmond County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Augusta Bush Field Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "0.82",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "28.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.17",
+    "usual_in": "36.10",
+    "vs_usual": {
+     "diff_in": "5.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.28",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7f236215cb9bfbe9",
+   "sid": "03820 1",
+   "story": "Through Oct 13, the weather station at Augusta Bush Field Airport had its wettest month in May at 7.28 inches. The biggest single day came late, 2.13 inches on Oct 10. The longest dry stretch ran 19 days, Mar 17 to Apr 4, with nothing in the gauge, not even a trace. On the days both years reported, this year has 0.82 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "13251": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "1.72",
+     "label": "biggest single day"
+    },
+    "county": "Screven County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Newington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "13.62",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 11",
+     "total_in": "37.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "23.85",
+    "usual_in": "41.63",
+    "vs_usual": {
+     "diff_in": "17.78",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.96",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "727a63f112a86f20",
+   "sid": "US1GASV0005 6",
+   "story": "Through Oct 11, the volunteer rain gauge less than a mile south-southeast of Newington has caught 23.85 inches, 17.78 inches less than a usual year. June was the wettest month at 4.96 inches, and the biggest single day was 1.72 inches on Aug 2. The gauge went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25. On the days both years reported, that is 13.62 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "13253": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 6",
+     "in": "6.80",
+     "label": "biggest single day"
+    },
+    "county": "Seminole County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "17.7 miles south of Donalsonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "20.74",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "35.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "56.06",
+    "usual_in": "47.18",
+    "vs_usual": {
+     "diff_in": "8.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.84",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c050121910d1af72",
+   "sid": "US1GASM0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 17.7 miles south of Donalsonville has caught 56.06 inches, 8.88 more than a usual year. May did most of the work at 13.84 inches, and the biggest single day came late, 6.80 inches on Oct 6. On the days both years reported, that is 20.74 inches more than last year. The longest dry stretch ran 18 days, Apr 8 to Apr 25.",
+   "through": "2026-10-13"
+  },
+  "13255": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "3.62",
+     "label": "biggest one-day reading"
+    },
+    "county": "Spalding County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "less than a mile east-southeast of Griffin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "1.26",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "44.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.74",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "42bad2506e82f07f",
+   "sid": "US1GASP0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-southeast of Griffin has caught 38.74 inches. The biggest one-day reading came late, 3.62 inches on Oct 10. The longest dry stretch ran 19 days, Apr 7 to Apr 25, with not even a trace in the gauge. On the days both years reported, this year is 1.26 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13257": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.05",
+     "label": "biggest one-day reading"
+    },
+    "county": "Stephens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Toccoa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.17",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 74,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.32",
+    "usual_in": "46.33",
+    "vs_usual": {
+     "diff_in": "12.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.78",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "49aed201f1b2843f",
+   "sid": "098740 2",
+   "story": "Through Oct 13, the weather station in Toccoa had May as its wettest month at 6.78 inches. The biggest one-day reading was 2.05 inches on Jun 19. The gauge went 19 days in a row with nothing in it, from Apr 7 to Apr 25. That puts the year 9.17 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "13261": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "2.88",
+     "label": "biggest single day"
+    },
+    "county": "Sumter County",
+    "days_in_year_so_far": 278,
+    "days_missing": 0,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Plains SW Ga",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Georgia",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "40.80",
+    "usual_in": "39.78",
+    "vs_usual": {
+     "diff_in": "1.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.03",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c6c719cafb2d2084",
+   "sid": "097087 2",
+   "story": "Through Oct 5, the weather station in Plains SW Ga, 10 miles from the middle of the county, had 40.80 inches, 1.02 more than a usual year. May was the wettest month at 8.03 inches. The biggest single day came Aug 21 with 2.88 inches. The longest dry stretch ran 18 days, Apr 7 to Apr 24, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-05"
+  },
+  "13267": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 13",
+     "in": "2.58",
+     "label": "biggest one-day reading"
+    },
+    "county": "Tattnall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "7.3 miles north-northeast of Collins",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 266,
+      "diff_in": "6.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "43.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 27"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.24",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.61",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "90e40881b8bd8d57",
+   "sid": "US1GATN0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.3 miles north-northeast of Collins caught 9.61 inches in August, its wettest month. The biggest one-day reading was 2.58 inches on Jul 13. The gauge went 22 days in a row with nothing in it, not even a trace, from Apr 6 to Apr 27. On the days both years reported, this year is 6.85 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "13269": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "3.12",
+     "label": "biggest one-day reading"
+    },
+    "county": "Taylor County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "8.3 miles north-northwest of Butler",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 14,
+    "pct_of_usual": 113,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.10",
+    "usual_in": "39.74",
+    "vs_usual": {
+     "diff_in": "5.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.11",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1dfd77eb11a4ab95",
+   "sid": "US1GATY0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.3 miles north-northwest of Butler has caught 45.10 inches, 5.36 more than a usual year. May was the wettest month at 8.11 inches. The biggest one-day reading came Jun 19 with 3.12 inches. Before that, the gauge sat empty 19 days in a row from Apr 7 to Apr 25, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "13271": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Telfair County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "6.6 miles southeast of Mcrae",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "36.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Georgia",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "38.41",
+    "usual_in": "37.34",
+    "vs_usual": {
+     "diff_in": "1.07",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.30",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "784a049bd9902ca6",
+   "sid": "US1GATE0004 6",
+   "story": "Through Oct 11, the volunteer rain gauge 6.6 miles southeast of Mcrae had May as its wettest month at 10.30 inches. The biggest single day came Jun 20 with 2.57 inches. The longest dry stretch ran 15 days, Mar 18 to Apr 1, with nothing in the gauge. That puts the year 1.95 inches more than last year at this point.",
+   "through": "2026-10-11"
+  },
+  "13275": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 13",
+     "in": "3.96",
+     "label": "biggest single day"
+    },
+    "county": "Thomas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "5.1 miles east-southeast of Thomasville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.05",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.64",
+    "usual_in": "44.03",
+    "vs_usual": {
+     "diff_in": "1.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.65",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "20509c1986d557dc",
+   "sid": "US1GATH0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.1 miles east-southeast of Thomasville had caught 13.05 inches more than it had by the same day in 2025. May did most of the work, the wettest month at 10.65 inches, and May 13 alone brought 3.96 inches, the biggest single day. The longest dry stretch ran 11 days, Mar 18 to Mar 28, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "13277": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 2",
+     "in": "4.70",
+     "label": "biggest single day"
+    },
+    "county": "Tift County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4.7 miles south of Tifton",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.73",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.16",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dca83d2c8a0a57a6",
+   "sid": "US1GATF0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.7 miles south of Tifton has caught 48.73 inches this year. August was the wettest month at 10.16 inches, and 4.70 of that came on Aug 2 alone, the biggest single day. The longest dry stretch ran 21 days, Apr 5 to Apr 25, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "13281": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.09",
+     "label": "biggest one-day reading"
+    },
+    "county": "Towns County",
+    "days_in_year_so_far": 286,
+    "days_missing": 9,
+    "days_reported": 277,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "4.8 miles south-southeast of Hiawassee",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 274,
+      "diff_in": "5.41",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "51.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "May 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 20"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.66",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.79",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "01ff5e19eab85b4c",
+   "sid": "US1GATW0001 6",
+   "story": "Through Oct 13, the gauge 4.8 miles south-southeast of Hiawassee had caught 44.66 inches. May was the wettest month at 6.79 inches, and 3.09 inches of that came on May 7, the biggest one-day reading. Then it went 11 days in a row with nothing in the gauge, May 10 to May 20. On the days both years reported, that is 5.41 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13291": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "2.36",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2.6 miles west of Blairsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "9.41",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "48.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.24",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.66",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "41ec67d823888ae7",
+   "sid": "US1GAUN0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.6 miles west of Blairsville had its wettest month in May at 7.66 inches, and May 7 brought the biggest single day at 2.36 inches. Before that, the gauge went 18 days in a row with not even a trace, Mar 18 to Apr 4. On the days both years reported, 2026 is 9.41 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "13297": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "3.06",
+     "label": "biggest one-day reading"
+    },
+    "county": "Walton County",
+    "days_in_year_so_far": 282,
+    "days_missing": 17,
+    "days_reported": 265,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "4.5 miles southwest of Loganville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 245,
+      "diff_in": "13.16",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 21,
+     "through": "Oct 9",
+     "total_in": "43.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 9,
+    "pct_of_usual": 92,
+    "state": "Georgia",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "34.22",
+    "usual_in": "37.32",
+    "vs_usual": {
+     "diff_in": "3.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.69",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "16a4476da5d9766b",
+   "sid": "US1GAWL0001 6",
+   "story": "Through Oct 9, the volunteer rain gauge 4.5 miles southwest of Loganville had its wettest month in July with 6.69 inches. The biggest one-day reading came Feb 27 at 3.06 inches. The gauge went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25. On the days both years reported, 2026 is running 13.16 inches less than 2025.",
+   "through": "2026-10-09"
+  },
+  "13305": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "4.53",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "2.3 miles east-northeast of Screven",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.46",
+    "usual_in": "42.28",
+    "vs_usual": {
+     "diff_in": "0.18",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.97",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "58a7d0dced4e768f",
+   "sid": "US1GAWY0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles east-northeast of Screven had June as its wettest month at 8.97 inches. Its biggest single day was Jun 19 with 4.53 inches. The longest dry stretch ran 21 days, Apr 5 to Apr 25, with not even a trace in the gauge. This year is 0.15 inches less than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "13311": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 11",
+     "in": "2.96",
+     "label": "biggest single day"
+    },
+    "county": "White County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Cleveland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.60",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "51.22",
+    "usual_in": "50.38",
+    "vs_usual": {
+     "diff_in": "0.84",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "10.65",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a938e7e17b6c9ccc",
+   "sid": "092006 2",
+   "story": "Through Oct 13, the weather station in Cleveland had 51.22 inches, 0.84 more than a usual year. May was the wettest month at 10.65 inches, and the biggest single day was 2.96 inches on Jan 11. The gauge went 19 days in a row with nothing from Apr 7 to Apr 25. On the days both years reported, this year ran 0.60 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "13321": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Worth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "in Crisp County Power",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "1.09",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "35.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Georgia",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.75",
+    "usual_in": "39.25",
+    "vs_usual": {
+     "diff_in": "2.50",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.05",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2505c56446c721a8",
+   "sid": "092361 2",
+   "story": "Through Oct 13, the weather station in Crisp County Power had its wettest month in May, with 8.05 inches. Before that it went 19 days in a row from Apr 7 to Apr 25 with nothing in the gauge, not even a trace. On the days both years reported, this year sits 1.09 inches more than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "GA"
+}

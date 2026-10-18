@@ -1,0 +1,823 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "25001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "3.05",
+     "label": "biggest one-day reading"
+    },
+    "county": "Barnstable County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.6 miles west of Barnstable",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.59",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Aug 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 118,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.38",
+    "usual_in": "38.55",
+    "vs_usual": {
+     "diff_in": "6.83",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.48",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "642071fabb7f4da9",
+   "sid": "US1MABA0059 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles west of Barnstable caught 9.48 inches in September, the wettest month of the year. The biggest one-day reading came Sep 14 with 3.05 inches. The longest dry stretch ran 8 days, Aug 5 to Aug 12, with nothing in the gauge. That puts the year 7.59 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "25003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "2.31",
+     "label": "biggest single day"
+    },
+    "county": "Berkshire County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Pittsfield Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "3.72",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "29.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 8,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.06",
+    "usual_in": "34.50",
+    "vs_usual": {
+     "diff_in": "1.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.02",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ecd39d8e6fbdc6fb",
+   "sid": "14763 1",
+   "story": "Through Oct 13, the weather station at Pittsfield Municipal Airport has caught 33.06 inches, 1.44 inches less than a usual year. July did most of the work with 9.02 inches, and the biggest single day came Jul 29 with 2.31 inches. That same month also held the longest dry stretch, 8 days with nothing in the gauge from Jul 10 to Jul 17. On the days both years reported, this year is 3.72 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "25005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "4.39",
+     "label": "biggest single day"
+    },
+    "county": "Bristol County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "1.1 miles west-southwest of Dighton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.61",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.57",
+    "usual_in": "39.70",
+    "vs_usual": {
+     "diff_in": "5.87",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.14",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd1ba32882faf617",
+   "sid": "US1MABR0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-southwest of Dighton has caught 45.57 inches, 5.87 more than a usual year. September did most of the work with 11.14 inches, and 4.39 of that came on Sep 14 alone. The longest dry spell ran 10 days, Jul 9 to Jul 18. That puts this year 9.61 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "25007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "4.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Dukes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile west-southwest of Vineyard Haven",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.07",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Jun 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 10"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 109,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.01",
+    "usual_in": "38.43",
+    "vs_usual": {
+     "diff_in": "3.58",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.50",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ea61bcedb4a01c36",
+   "sid": "US1MADK0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-southwest of Vineyard Haven has caught 42.01 inches, 3.58 more than a usual year. July did most of the work with 11.50 inches. The biggest one-day reading was 4.17 inches on Sep 27. That is 7.07 inches more than 2025 had by this same day.",
+   "through": "2026-10-13"
+  },
+  "25009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "1.39",
+     "label": "biggest single day"
+    },
+    "county": "Essex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Middleton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.48",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "31.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.56",
+    "usual_in": "36.51",
+    "vs_usual": {
+     "diff_in": "6.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.96",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6e2e3228902d7598",
+   "sid": "194744 2",
+   "story": "Through Oct 13, the weather station in Middleton had its wettest month in September at 4.96 inches. The biggest single day came late, 1.39 inches on Oct 12. The longest dry stretch ran 10 days, Jan 28 to Feb 6. On the days both years reported, this year has 1.48 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "25011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "3.53",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Conway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.76",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "40.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Sep 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.72",
+    "usual_in": "39.37",
+    "vs_usual": {
+     "diff_in": "4.65",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.54",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "47e9a7a550103f9d",
+   "sid": "US1MAFR0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Conway has caught 34.72 inches, 4.65 inches less than a usual year. July was the wettest month at 7.54 inches, and Jul 30 alone brought 3.53 inches. Then the gauge sat empty for 12 days in a row, Sep 30 to Oct 11. On the days both years reported, that is 5.76 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "25013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "2.44",
+     "label": "biggest single day"
+    },
+    "county": "Hampden County",
+    "days_in_year_so_far": 284,
+    "days_missing": 1,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3 miles southwest of Westfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "4.55",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "37.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Oct 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": true,
+     "to": "Oct 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Massachusetts",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "32.83",
+    "usual_in": "39.70",
+    "vs_usual": {
+     "diff_in": "6.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.46",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1e38cbdccee36533",
+   "sid": "199193 2",
+   "story": "Through Oct 11, the weather station 3 miles southwest of Westfield has 32.83 inches, 6.87 inches less than a usual year. July was the wettest month at 7.46 inches, and the biggest single day came Jul 30 with 2.44 inches. The gauge has caught nothing for 11 days in a row, Oct 1 to Oct 11, and that stretch is still going. On the days both years reported, this year is 4.55 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "25015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "1.79",
+     "label": "biggest single day"
+    },
+    "county": "Hampshire County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Amherst",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.57",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jun 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.30",
+    "usual_in": "36.68",
+    "vs_usual": {
+     "diff_in": "6.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.16",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4d0ed5a3a7f349d5",
+   "sid": "190120 2",
+   "story": "Through Oct 13, the weather station in Amherst had July as its wettest month at 6.16 inches, and the biggest single day came Jul 30 with 1.79 inches. Before that it went 13 days in a row with nothing in the gauge, from Jun 2 to Jun 14. The year sits 5.57 inches behind last year at this point, and 6.38 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "25017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "1.89",
+     "label": "biggest single day"
+    },
+    "county": "Middlesex County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.3 miles southwest of Acton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.87",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.54",
+    "usual_in": "37.15",
+    "vs_usual": {
+     "diff_in": "7.61",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.75",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c6dce094ac7ce025",
+   "sid": "US1MAMD0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles southwest of Acton has 29.54 inches, 7.61 inches less than a usual year. July was the wettest month at 5.75 inches, and Jul 30 brought the biggest single day at 1.89 inches. The longest dry run was 10 days, Jan 28 to Feb 6, with not even a trace. That is 1.87 inches less than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "25019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 13",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Nantucket County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Nantucket Memorial Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 59,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.73",
+    "usual_in": "30.07",
+    "vs_usual": {
+     "diff_in": "12.34",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.00",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "44233abf7662bb7b",
+   "sid": "14756 1",
+   "story": "Through Oct 13, the weather station at Nantucket Memorial Airport had 17.73 inches, 12.34 inches less than a usual year. September was the wettest month with 6.00 inches, and the biggest single day was Sep 13 at 1.90 inches. The gauge went 21 days in a row with nothing in it, not even a trace, from Apr 18 to May 8.",
+   "through": "2026-10-13"
+  },
+  "25021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "3.31",
+     "label": "biggest single day"
+    },
+    "county": "Norfolk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Walpole",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.21",
+    "usual_in": "37.57",
+    "vs_usual": {
+     "diff_in": "2.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.59",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f5cca23ec211ec7c",
+   "sid": "198757 2",
+   "story": "Through Oct 13, the weather station in Walpole had its wettest month in September at 8.59 inches. The biggest single day came Sep 27 with 3.31 inches. The longest dry stretch ran 10 days, Jul 9 to Jul 18, with nothing in the gauge. That leaves the year 2.02 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "25023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "4.86",
+     "label": "biggest single day"
+    },
+    "county": "Plymouth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Brockton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.92",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jan 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.47",
+    "usual_in": "37.82",
+    "vs_usual": {
+     "diff_in": "4.65",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.05",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "de7bb1c8b498af53",
+   "sid": "190860 2",
+   "story": "Through Oct 13, the weather station in Brockton had its wettest month in September at 10.05 inches. The biggest single day came Sep 27 with 4.86 inches. The longest dry stretch ran 11 days, Jan 27 to Feb 6, with nothing in the gauge. That puts the station 6.92 inches more than last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "25025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 7",
+     "in": "1.57",
+     "label": "biggest single day"
+    },
+    "county": "Suffolk County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Boston Logan International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.48",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.53",
+    "usual_in": "33.26",
+    "vs_usual": {
+     "diff_in": "8.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.35",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b7a06580a1573b6a",
+   "sid": "14739 1",
+   "story": "Through Oct 13, the weather station at Boston Logan International Airport has caught 24.53 inches, 8.73 inches less than a usual year. September was the wettest month at 5.35 inches. The biggest single day came Jul 7 with 1.57 inches, and then the gauge sat empty 10 days in a row from Jul 8 to Jul 17. Last year at this point it had 31.01 inches, so this year is 6.48 inches behind.",
+   "through": "2026-10-13"
+  },
+  "25027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 29",
+     "in": "4.56",
+     "label": "biggest single day"
+    },
+    "county": "Worcester County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Worcester Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.21",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Oct 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Massachusetts",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.75",
+    "usual_in": "37.14",
+    "vs_usual": {
+     "diff_in": "1.61",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.04",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6b652e5f4be1034c",
+   "sid": "94746 1",
+   "story": "Through Oct 13, the weather station at Worcester Regional Airport had 38.75 inches, 1.61 more than a usual year. July did most of the work with 10.04 inches, and 4.56 of that came on Jul 29 alone. The gauge then went 9 days without a drop from Oct 2 to Oct 10. That still leaves the year 3.21 inches ahead of last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "MA"
+}

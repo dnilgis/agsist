@@ -1,0 +1,3014 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "30001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "1.17",
+     "label": "biggest single day"
+    },
+    "county": "Beaverhead County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "at Dillon Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "0.99",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "3.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jan 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "5.36",
+    "usual_in": "8.84",
+    "vs_usual": {
+     "diff_in": "3.48",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.73",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "04b6f71af3ee393d",
+   "sid": "24138 1",
+   "story": "Through Oct 13, the weather station at Dillon Airport has 5.36 inches, 3.48 less than a usual year. June was the wettest month at 1.73 inches, and 1.17 of that came on Jun 27, the biggest single day. The longest dry stretch ran 16 days, Jan 24 to Feb 8. On the days both years reported, this year has 0.99 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "30003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 3",
+     "in": "1.97",
+     "label": "biggest single day"
+    },
+    "county": "Big Horn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "27 miles from the middle of the county",
+    "gauge_where": "in Busby",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Jun 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.81",
+    "usual_in": "13.48",
+    "vs_usual": {
+     "diff_in": "1.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.84",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "add37585cdaa1384",
+   "sid": "241297 2",
+   "story": "Through Oct 13, the station in Busby had most of its year come early. April was the wettest month at 2.84 inches, and 1.97 of that fell on Apr 3, the biggest single day. Then the gauge went 47 days in a row with nothing in it, from Jun 28 to Aug 13. On the days both years reported, that is 4.66 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "30005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "1.25",
+     "label": "biggest single day"
+    },
+    "county": "Blaine County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "11 miles south of Chinook",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.09",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.76",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Jul 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.67",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "3.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "66c7dbf1f6477dec",
+   "sid": "241726 2",
+   "story": "Through Oct 13, the weather station 11 miles south of Chinook has 10.67 inches for the year. June was the wettest month at 3.30 inches, and the biggest single day was Jun 1 with 1.25 inches. Then it went 28 days in a row with nothing in the gauge, from Jul 16 to Aug 12. On the days both years reported, that is 3.09 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "30009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "0.75",
+     "label": "biggest single day"
+    },
+    "county": "Carbon County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2 miles north of Bridger",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "11.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Montana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "7.16",
+    "usual_in": "9.83",
+    "vs_usual": {
+     "diff_in": "2.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.83",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "87a7e8bab1dce0bd",
+   "sid": "241102 2",
+   "story": "Through Oct 12, the weather station 2 miles north of Bridger had its wettest month in May, with 1.83 inches. The biggest single day came Jul 18 at 0.75 inches. On the days both years reported, this year is 4.59 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "30011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 28",
+     "in": "1.25",
+     "label": "biggest single day"
+    },
+    "county": "Carter County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile south of Ridgeway",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "8.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "19.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jul 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.02",
+    "usual_in": "13.92",
+    "vs_usual": {
+     "diff_in": "2.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.07",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0f90dc73ce6df414",
+   "sid": "247034 2",
+   "story": "Through Oct 13, the weather station 1 mile south of Ridgeway had its wettest month in June at 3.07 inches. The biggest single day came Jul 28 with 1.25 inches, and then the gauge sat empty for 12 days in a row from Jul 31 to Aug 11. On the days both years reported, this year is 8.38 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "30013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Cascade County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "at Great Falls Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.91",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 132,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.11",
+    "usual_in": "12.98",
+    "vs_usual": {
+     "diff_in": "4.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.94",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a883a9a6e752fa6e",
+   "sid": "24143 1",
+   "story": "Through Oct 13, the weather station at Great Falls Airport had a wet June, with 4.94 inches for the month. The biggest single day came Jun 28 at 1.62 inches. The longest dry stretch ran 14 days, Jan 26 to Feb 8. Against last year, the gauge is 5.91 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "30015": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "1.28",
+     "label": "biggest single day"
+    },
+    "county": "Chouteau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Fort Benton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.83",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jul 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.61",
+    "usual_in": "11.67",
+    "vs_usual": {
+     "diff_in": "0.94",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.50",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aa84638690ea942b",
+   "sid": "243113 2",
+   "story": "Through Oct 13, the weather station in Fort Benton has 12.61 inches, 0.94 more than a usual year. June was the wettest month at 3.50 inches, and the biggest single day was 1.28 inches on May 31. Then the gauge sat empty for 19 days in a row, Jul 16 to Aug 3. That still puts this year 0.83 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "30017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "1.57",
+     "label": "biggest single day"
+    },
+    "county": "Custer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "at Miles City Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.65",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.37",
+    "usual_in": "11.83",
+    "vs_usual": {
+     "diff_in": "0.46",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.30",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ac8d9c00bd061f62",
+   "sid": "24037 1",
+   "story": "Through Oct 13, the weather station at Miles City Airport has caught 11.37 inches, 0.46 less than a usual year. September was the wettest month at 2.30 inches, and 1.57 of that came on Sep 19, the biggest single day. The longest run with nothing in the gauge was 11 days, Feb 22 to Mar 4. That still puts this year 0.65 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "30019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Daniels County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4 miles northwest of Scobey",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.00",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "11.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Jul 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Montana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "13.40",
+    "usual_in": "12.48",
+    "vs_usual": {
+     "diff_in": "0.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.55",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "34b9bf527267b2f3",
+   "sid": "247425 2",
+   "story": "Through Oct 12, the weather station 4 miles northwest of Scobey had June as its wettest month at 4.55 inches. The gauge then sat empty for 29 days in a row, from Jul 15 to Aug 12. The biggest single day came later, 3.30 inches on Sep 7. That leaves 2026 at 2.00 inches more than 2025 by the same day.",
+   "through": "2026-10-12"
+  },
+  "30023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 18",
+     "in": "1.41",
+     "label": "biggest single day"
+    },
+    "county": "Deer Lodge County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "7.4 miles northwest of Anaconda",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.12",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Sep 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.68",
+    "usual_in": "17.17",
+    "vs_usual": {
+     "diff_in": "1.51",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.97",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d29943f98384fa96",
+   "sid": "US1MTDL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.4 miles northwest of Anaconda has caught 5.12 inches more than it had by this time last year. September was the wettest month at 2.97 inches. Then it shut off, with 14 days in a row of nothing in the gauge from Sep 27 to Oct 10. The biggest single day came back on Jul 18 with 1.41 inches.",
+   "through": "2026-10-13"
+  },
+  "30025": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 21",
+     "in": "0.54",
+     "label": "biggest single day"
+    },
+    "county": "Fallon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Baker Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.54",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 57,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.65",
+    "usual_in": "13.49",
+    "vs_usual": {
+     "diff_in": "5.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.54",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d3cd475013fcb85b",
+   "sid": "94055 1",
+   "story": "Through Oct 13, the weather station at Baker Municipal Airport has caught 7.65 inches, 5.84 inches less than a usual year. That is also 6.54 inches less than last year had by the same day. June was the wettest month at 1.54 inches, and the biggest single day was 0.54 inches on May 21. Nothing came big here, just a little at a time.",
+   "through": "2026-10-13"
+  },
+  "30027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 15",
+     "in": "3.25",
+     "label": "biggest single day"
+    },
+    "county": "Fergus County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "in Grass Range",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.81",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.84",
+    "usual_in": "15.99",
+    "vs_usual": {
+     "diff_in": "1.85",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.88",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5cb065469fdac2de",
+   "sid": "24095 1",
+   "story": "Through Oct 13, the weather station in Grass Range had its wettest month in July, with 3.88 inches. Most of that came at once, with 3.25 inches on Jul 15. Then the gauge went 19 days in a row with nothing in it, from Sep 21 to Oct 9. The year stands 0.81 inches more than 2025 through the same day.",
+   "through": "2026-10-13"
+  },
+  "30029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "1.81",
+     "label": "biggest single day"
+    },
+    "county": "Flathead County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Hungry Horse",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.55",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.71",
+    "usual_in": "24.83",
+    "vs_usual": {
+     "diff_in": "2.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.84",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6911cf1412401526",
+   "sid": "244328 2",
+   "story": "Through Oct 13, the weather station in Hungry Horse had 5.55 inches more than it did by this day last year. March was the wettest month at 5.84 inches. The biggest single day came Jun 29 with 1.81 inches. Then the gauge sat empty for 16 days in a row, Jul 18 to Aug 2, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "30031": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Gallatin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Bozeman Montana State",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jan 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.29",
+    "usual_in": "16.67",
+    "vs_usual": {
+     "diff_in": "0.38",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "3.76",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "fef1b68796222f75",
+   "sid": "241044 2",
+   "story": "Through Oct 13, the weather station in Bozeman Montana State had 16.29 inches, 0.38 less than a usual year. May was the wettest month at 3.76 inches, and the biggest single day came May 31 with 1.49. The longest dry stretch ran 12 days, Jan 8 to Jan 19. On the days both years reported, this year sits 2.12 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "30033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 14",
+     "in": "1.29",
+     "label": "biggest single day"
+    },
+    "county": "Garfield County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Jordan Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.55",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.88",
+    "usual_in": "11.54",
+    "vs_usual": {
+     "diff_in": "3.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.05",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3ced4c580667fb05",
+   "sid": "94051 1",
+   "story": "Through Oct 13, the weather station at Jordan Airport has caught 14.88 inches, 3.34 more than a usual year. June was the wettest month at 4.05 inches, and the biggest single day was 1.29 on Jul 14. The gauge went 19 days in a row with nothing from Apr 27 to May 15. Even so, this year sits 0.55 less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "30037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "1.10",
+     "label": "biggest single day"
+    },
+    "county": "Golden Valley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "18 miles north-northwest of Ryegate",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "15.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.45",
+    "usual_in": "12.56",
+    "vs_usual": {
+     "diff_in": "2.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "1.93",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a36a15064d50fa5",
+   "sid": "247263 2",
+   "story": "Through Oct 13, the weather station 18 miles north-northwest of Ryegate has caught 10.45 inches, 2.11 inches less than a usual year. June was the wettest month at 1.93 inches, and 1.10 of that came on Jun 1, the biggest single day. On the days both years reported, this year is 4.56 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "30039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 14",
+     "in": "0.96",
+     "label": "biggest single day"
+    },
+    "county": "Granite County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "weather station",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southwest of Dummond",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "5.04",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "10.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jan 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 155,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.68",
+    "usual_in": "9.45",
+    "vs_usual": {
+     "diff_in": "5.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.05",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "957d9d888595e385",
+   "sid": "24139 1",
+   "story": "Through Oct 13, the weather station less than a mile south-southwest of Dummond has caught 14.68 inches, 5.23 more than a usual year. September was the wettest month at 3.05 inches, and the biggest single day was Mar 14 with 0.96. It went 21 days in a row with nothing in the gauge, from Jan 8 to Jan 28. On the days both years reported, this year is 5.04 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "30041": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.00",
+     "label": "biggest single day"
+    },
+    "county": "Hill County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "at Havre Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "2.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 13,
+     "through": "Oct 13",
+     "total_in": "11.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.16",
+    "usual_in": "10.49",
+    "vs_usual": {
+     "diff_in": "1.33",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.16",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "af47450da162edd8",
+   "sid": "94012 1",
+   "story": "Through Oct 13, the weather station at Havre Airport had 9.16 inches, 1.33 inches less than a usual year. June was the wettest month at 3.16 inches, and the biggest single day came May 30 with 1.00 inch. The longest dry stretch ran 19 days, Jan 29 to Feb 16, with nothing in the gauge. On the days both years reported, this year is 2.44 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "30043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 282,
+    "days_missing": 2,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Tizer Basin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "3.80",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 9",
+     "total_in": "20.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Montana",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "24.00",
+    "usual_in": "21.04",
+    "vs_usual": {
+     "diff_in": "2.96",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.40",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "622888f83f6b3179",
+   "sid": "USS0011C04S 6",
+   "story": "Through Oct 9, the weather station in Tizer Basin, 18 miles from the middle of the county, had its wettest month in June at 4.40 inches. The biggest single day came Jun 29 with 1.60 inches. The longest dry stretch ran 15 days, Mar 15 to Mar 29, with nothing in the gauge. On the days both years reported, that is 3.80 inches more than 2025.",
+   "through": "2026-10-09"
+  },
+  "30045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "0.95",
+     "label": "biggest single day"
+    },
+    "county": "Judith Basin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Stanford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "0.43",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "14.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.85",
+    "usual_in": "15.34",
+    "vs_usual": {
+     "diff_in": "1.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.53",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9512ed1e9b9dbae",
+   "sid": "247864 2",
+   "story": "Through Oct 13, the weather station in Stanford had its wettest month in June with 2.53 inches. The biggest single day was Sep 7 at 0.95 inches. The longest dry stretch ran 14 days, Jan 26 to Feb 8, with nothing in the gauge, not even a trace. On the days both years reported, this year is 0.43 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "30047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.84",
+     "label": "biggest single day"
+    },
+    "county": "Lake County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "28 miles from the middle of the county",
+    "gauge_where": "3.5 miles east-southeast of Bigfork",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.33",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jul 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.30",
+    "usual_in": "21.12",
+    "vs_usual": {
+     "diff_in": "0.18",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "4.33",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "62dfa9318976f9c8",
+   "sid": "US1MTLK0015 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.5 miles east-southeast of Bigfork sits about usual, 0.18 inches more than a usual year. June was the wettest month at 4.33 inches, and the biggest single day came Sep 8 with 1.84 inches. The gauge went 15 days in a row with nothing from Jul 19 to Aug 2. That puts this year 1.33 inches ahead of last year on the same days.",
+   "through": "2026-10-13"
+  },
+  "30049": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "0.97",
+     "label": "biggest single day"
+    },
+    "county": "Lewis and Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "41 miles from the middle of the county",
+    "gauge_where": "at Helena Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.21",
+    "usual_in": "9.91",
+    "vs_usual": {
+     "diff_in": "2.30",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.30",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "85c23b9816216d09",
+   "sid": "24144 1",
+   "story": "Through Oct 13, the weather station at Helena Airport had its wettest month in June with 2.30 inches. The biggest single day was May 30 at 0.97 inches. The longest dry stretch ran 13 days, Jan 26 to Feb 7, with nothing in the gauge, not even a trace. That still leaves the station 0.28 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "30051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "1.21",
+     "label": "biggest single day"
+    },
+    "county": "Liberty County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Chester",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "3.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jul 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 160,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.89",
+    "usual_in": "10.56",
+    "vs_usual": {
+     "diff_in": "6.33",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.39",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "76557cf159f3e16d",
+   "sid": "241692 2",
+   "story": "Through Oct 13, the weather station in Chester had its wettest month in June with 6.39 inches, and its biggest single day was Jun 29 at 1.21 inches. Then it went 25 days in a row with nothing in the gauge, from Jul 20 to Aug 13. On the days both years reported, this year is 3.53 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "30053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 23",
+     "in": "0.77",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Libby",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.62",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.78",
+    "usual_in": "12.44",
+    "vs_usual": {
+     "diff_in": "0.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.62",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4479fca7f7ba00b9",
+   "sid": "245011 2",
+   "story": "Through Oct 13, the weather station in Libby has 12.78 inches, 0.34 more than a usual year. September was the wettest month at 2.62 inches, and the biggest single day was 0.77 on Apr 23. From Jul 18 to Aug 13 the gauge went 27 days in a row without even a trace. That puts this year 0.62 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "30055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "1.07",
+     "label": "biggest single day"
+    },
+    "county": "McCone County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Circle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "6.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "15.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Montana",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "9.67",
+    "usual_in": "13.11",
+    "vs_usual": {
+     "diff_in": "3.44",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "53deafdf8283c660",
+   "sid": "241758 2",
+   "story": "Through Oct 11, the weather station in Circle had 6.15 inches less than it had by this day last year. June was the wettest month at 2.71 inches, and the biggest single day was Jun 22 with 1.07 inches. Then the gauge sat empty for 26 days in a row, from Jul 8 to Aug 2, not even a trace.",
+   "through": "2026-10-11"
+  },
+  "30057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.20",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "in Twin Bridges",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.87",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.01",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Apr 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 141,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.88",
+    "usual_in": "8.41",
+    "vs_usual": {
+     "diff_in": "3.47",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.36",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c2f34980a777a6c0",
+   "sid": "248430 2",
+   "story": "Through Oct 13, the weather station in Twin Bridges put June down as the wettest month at 3.36 inches, and 2.20 of that came on Jun 28 alone. Before that, the gauge went 20 days in a row with not even a trace, Apr 26 to May 15. The year sits 2.87 inches more than 2025 had by the same day.",
+   "through": "2026-10-13"
+  },
+  "30059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Meagher County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "in Boulder Mountain",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.80",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "27.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jun 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Montana",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "28.10",
+    "usual_in": "30.43",
+    "vs_usual": {
+     "diff_in": "2.33",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.70",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eebacdf5675d3a3d",
+   "sid": "USS0011C01S 6",
+   "story": "Through Oct 10, the weather station in Boulder Mountain had its wettest month in June at 5.70 inches. That same June held the longest dry stretch, 13 days in a row with nothing in the gauge from Jun 14 to Jun 26. Then Jun 28 brought 2.00 inches, the biggest single day so far. The year stands 0.80 inches more than last year to the same day.",
+   "through": "2026-10-10"
+  },
+  "30061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 23",
+     "in": "1.52",
+     "label": "biggest single day"
+    },
+    "county": "Mineral County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "26 miles from the middle of the county",
+    "gauge_where": "in Alberton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.58",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.22",
+    "usual_in": "14.00",
+    "vs_usual": {
+     "diff_in": "2.22",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.46",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8eafafd3dca1548d",
+   "sid": "240075 2",
+   "story": "Through Oct 13, the weather station in Alberton has caught 4.58 inches more than it did by this day last year. March was the wettest month at 3.46 inches, and the biggest single day came Apr 23 with 1.52 inches. Before that, the gauge went 30 days in a row with nothing in it, not even a trace, from Jan 10 to Feb 8.",
+   "through": "2026-10-13"
+  },
+  "30063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "1.04",
+     "label": "biggest single day"
+    },
+    "county": "Missoula County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "6 miles northwest of Missoula",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.75",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jul 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.81",
+    "usual_in": "11.31",
+    "vs_usual": {
+     "diff_in": "1.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.23",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "543469c9be289e03",
+   "sid": "245740 2",
+   "story": "Through Oct 13, the weather station 6 miles northwest of Missoula has caught 2.75 inches more than it had by this day last year. May was the wettest month at 2.23 inches, and the biggest single day was Jun 29 with 1.04 inches. Then it went 20 days in a row with nothing in the gauge, from Jul 24 to Aug 12.",
+   "through": "2026-10-13"
+  },
+  "30065": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "1.14",
+     "label": "biggest single day"
+    },
+    "county": "Musselshell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "6.2 miles east-northeast of Roundup",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.27",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.13",
+    "usual_in": "13.24",
+    "vs_usual": {
+     "diff_in": "2.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.12",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7ad404da6e018cc0",
+   "sid": "US1MTMH0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.2 miles east-northeast of Roundup has caught 4.27 inches less than it had by this day last year. July was the wettest month at 2.12 inches. The biggest single day came May 31 with 1.14 inches. The longest dry stretch ran 12 days, Feb 22 to Mar 5, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "30067": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "2.08",
+     "label": "biggest single day"
+    },
+    "county": "Park County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "6.6 miles east-southeast of Livingston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.60",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Sep 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.48",
+    "usual_in": "21.62",
+    "vs_usual": {
+     "diff_in": "1.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.27",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61f9d4585168423d",
+   "sid": "US1MTPK0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.6 miles east-southeast of Livingston caught 4.27 inches in May, its wettest month, and 2.08 inches of that came on May 31, the biggest single day. The gauge went 11 days in a row with nothing in it, not even a trace, from Sep 29 to Oct 9. That leaves the year 8.60 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "30069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "1.43",
+     "label": "biggest single day"
+    },
+    "county": "Petroleum County",
+    "days_in_year_so_far": 280,
+    "days_missing": 0,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "6 miles north-northeast of Winnett",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "0.07",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 7",
+     "total_in": "11.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Montana",
+    "through": "Oct 7",
+    "through_iso": "2026-10-07",
+    "total_in": "11.57",
+    "usual_in": "13.55",
+    "vs_usual": {
+     "diff_in": "1.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.41",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "72ac7c8a18b87a64",
+   "sid": "249048 2",
+   "story": "Through Oct 7, the weather station 6 miles north-northeast of Winnett had its wettest month in September with 2.41 inches. The biggest single day came Sep 7 with 1.43 inches. The gauge also sat empty 24 days in a row from Jan 1 to Jan 24. That still leaves the year 1.98 inches less than a usual year, and only 0.07 inches more than last year.",
+   "through": "2026-10-07"
+  },
+  "30071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "1.36",
+     "label": "biggest one-day reading"
+    },
+    "county": "Phillips County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Malta",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "2.02",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "10.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 112,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.08",
+    "usual_in": "11.68",
+    "vs_usual": {
+     "diff_in": "1.40",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.41",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "93340b7225910621",
+   "sid": "245334 2",
+   "story": "Through Oct 13, the weather station in Malta had June as its wettest month at 4.41 inches, and the biggest one-day reading came Jun 1 at 1.36 inches. The longest dry stretch ran 17 days, Feb 1 to Feb 17, with nothing in the gauge, not even a trace. On the days both years reported, this year is 2.02 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "30073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Pondera County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "51 miles from the middle of the county",
+    "gauge_where": "in Pike Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.90",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "25.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Jul 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Montana",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "35.20",
+    "usual_in": "33.14",
+    "vs_usual": {
+     "diff_in": "2.06",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.10",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9c71c207013cbadd",
+   "sid": "USS0013A26S 6",
+   "story": "Through Oct 10, the station in Pike Creek has 35.20 inches, 9.90 inches more than it had by this day in 2025. March was the wettest month at 8.10 inches. Then the gauge stayed bone empty for 23 days in a row, Jul 20 to Aug 11. The biggest single day came after that, 1.60 inches on Sep 7.",
+   "through": "2026-10-10"
+  },
+  "30075": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "1.86",
+     "label": "biggest single day"
+    },
+    "county": "Powder River County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "9 miles northeast of Moorhead",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.61",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.23",
+    "usual_in": "11.86",
+    "vs_usual": {
+     "diff_in": "1.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8b960fcee187a998",
+   "sid": "245870 2",
+   "story": "Through Oct 13, the weather station 9 miles northeast of Moorhead had its wettest month in June at 2.71 inches. The biggest single day came May 30 with 1.86 inches. Then it went 19 days in a row with nothing in the gauge, Sep 22 to Oct 10. That leaves the station 4.61 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "30077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 13",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Powell County",
+    "days_in_year_so_far": 283,
+    "days_missing": 1,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in North Fork Elk Creek",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "8.60",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 10",
+     "total_in": "15.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Apr 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Montana",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "24.50",
+    "usual_in": "19.38",
+    "vs_usual": {
+     "diff_in": "5.12",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.20",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "32464e83e9763ea5",
+   "sid": "USS0013C31S 6",
+   "story": "Through Oct 10, the weather station in North Fork Elk Creek had its wettest month in March at 4.20 inches, and its biggest single day came Mar 13 with 1.60 inches. Then it went 17 days in a row with nothing in the gauge, from Apr 27 to May 13. On the days both years reported, it has caught 8.60 inches more than last year.",
+   "through": "2026-10-10"
+  },
+  "30079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "1.60",
+     "label": "biggest single day"
+    },
+    "county": "Prairie County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "7 miles north-northwest of Mildred",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.67",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "10.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "Montana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "9.71",
+    "usual_in": "13.02",
+    "vs_usual": {
+     "diff_in": "3.31",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a7132cccfcffc528",
+   "sid": "245668 2",
+   "story": "Through Oct 12, the weather station 7 miles north-northwest of Mildred has 9.71 inches, 3.31 inches less than a usual year. June was the wettest month at 3.14 inches, and the biggest single day came Jun 1 with 1.60 inches. The longest dry stretch ran 14 days from Feb 20 to Mar 5. That is 0.67 inches less than 2025 had by this date.",
+   "through": "2026-10-12"
+  },
+  "30081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 14",
+     "in": "1.13",
+     "label": "biggest one-day reading"
+    },
+    "county": "Ravalli County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "37 miles from the middle of the county",
+    "gauge_where": "3.7 miles southeast of Florence",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "1.92",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "9.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jul 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 103,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.76",
+    "usual_in": "11.39",
+    "vs_usual": {
+     "diff_in": "0.37",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "2.41",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a12f88ff93c494f8",
+   "sid": "US1MTRV0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles southeast of Florence had its wettest month in September at 2.41 inches. The biggest one-day reading came Mar 14 with 1.13 inches. From Jul 22 to Aug 12 it went 22 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 1.92 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "30083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "2.31",
+     "label": "biggest single day"
+    },
+    "county": "Richland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "20 miles south of Brockton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.64",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.68",
+    "usual_in": "15.13",
+    "vs_usual": {
+     "diff_in": "3.45",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.86",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5b3f0d57cc61e6e2",
+   "sid": "241164 2",
+   "story": "Through Oct 13, the weather station 20 miles south of Brockton had its wettest month in June, with 4.86 inches. The biggest single day came Jun 28 at 2.31 inches. Then it went 25 days in a row with nothing in the gauge, not even a trace, from Jul 10 to Aug 3. Even so, the station has 0.64 inches more than it had in 2025 by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "30085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 27",
+     "in": "2.14",
+     "label": "biggest single day"
+    },
+    "county": "Roosevelt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "29 miles east-northeast of Wolf Point",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.60",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 93,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.07",
+    "usual_in": "12.93",
+    "vs_usual": {
+     "diff_in": "0.86",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.11",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c8c32585628035f2",
+   "sid": "94060 1",
+   "story": "Through Oct 13, the weather station 29 miles east-northeast of Wolf Point had its wettest month in June at 5.11 inches. The biggest single day came Jun 27 with 2.14 inches. Then the gauge went 20 days in a row with nothing, not even a trace, from Sep 21 to Oct 10. That still puts this year 0.60 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "30087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "1.68",
+     "label": "biggest single day"
+    },
+    "county": "Rosebud County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Forsyth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "14.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Jan 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.29",
+    "usual_in": "14.04",
+    "vs_usual": {
+     "diff_in": "0.25",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "2.38",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b5fa633aed334235",
+   "sid": "243098 2",
+   "story": "Through Oct 13, the weather station in Forsyth has a year that looks about usual on paper. September did most of the talking with 2.38 inches, and 1.68 inches of that came on Sep 19, the biggest single day so far. On the days both years reported, 2026 is 0.71 inches behind last year at the same gauge.",
+   "through": "2026-10-13"
+  },
+  "30089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 7",
+     "in": "0.77",
+     "label": "biggest single day"
+    },
+    "county": "Sanders County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Thompson Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.06",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "11.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 27,
+     "from": "Jul 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.78",
+    "usual_in": "15.70",
+    "vs_usual": {
+     "diff_in": "0.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.73",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "20198022cbd3782a",
+   "sid": "94132 1",
+   "story": "Through Oct 13, the weather station in Thompson Falls has a wettest month of March at 3.73 inches. The biggest single day came Sep 7 with 0.77 inches. From Jul 18 to Aug 13 the gauge went 27 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 3.06 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "30091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.98",
+     "label": "biggest single day"
+    },
+    "county": "Sheridan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 11,
+    "days_reported": 275,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Plentywood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "0.12",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "15.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 119,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.24",
+    "usual_in": "12.76",
+    "vs_usual": {
+     "diff_in": "2.48",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.01",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c258e914249c2c16",
+   "sid": "US1MTSH0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Plentywood had 15.24 inches, 2.48 more than a usual year. June was the wettest month at 5.01 inches. The gauge then sat empty for 17 days in a row, Jul 17 to Aug 2, and on Aug 14 it caught 2.98 inches, the biggest single day. On the days both years reported, that is just 0.12 more than last year.",
+   "through": "2026-10-13"
+  },
+  "30093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.14",
+     "label": "biggest single day"
+    },
+    "county": "Silver Bow County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Butte Bert Mooney Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.09",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "9.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jun 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jun 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.66",
+    "usual_in": "11.21",
+    "vs_usual": {
+     "diff_in": "0.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.14",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "942674cdf6b4f7c6",
+   "sid": "24135 1",
+   "story": "Through Oct 13, the weather station at Butte Bert Mooney Airport had its wettest month in April at 2.14 inches. The biggest single day was 1.14 inches on Jun 28, and that came right after the longest dry stretch, 14 days in a row with nothing in the gauge from Jun 11 to Jun 24. That leaves it 1.09 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "30095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "1.61",
+     "label": "biggest single day"
+    },
+    "county": "Stillwater County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "6.0 miles west-southwest of Park City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.93",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jul 31",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 84,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.17",
+    "usual_in": "14.42",
+    "vs_usual": {
+     "diff_in": "2.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.63",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ddf98d3b04e1df94",
+   "sid": "US1MTSW0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.0 miles west-southwest of Park City has 12.17 inches, 2.25 inches less than a usual year. September was the wettest month at 2.63 inches, and the biggest single day was 1.61 inches on Jun 28. The gauge went 13 days in a row with nothing in it, from Jul 31 to Aug 12. Last year at this point it had 5.93 inches more.",
+   "through": "2026-10-13"
+  },
+  "30097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 19",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Sweet Grass County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "4 miles west of Melville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.01",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Sep 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.01",
+    "usual_in": "17.56",
+    "vs_usual": {
+     "diff_in": "4.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.44",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3204fef057e39d19",
+   "sid": "245603 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Melville had 13.01 inches, 4.55 inches less than a usual year. September was the wettest month at 2.44 inches, and most of that came on Sep 19, the biggest single day at 2.24 inches. Then the gauge sat empty 16 days in a row, Sep 24 to Oct 9. Last year at this point it had 8.01 inches more.",
+   "through": "2026-10-13"
+  },
+  "30099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "0.99",
+     "label": "biggest single day"
+    },
+    "county": "Teton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Choteau",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.57",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.79",
+    "usual_in": "10.81",
+    "vs_usual": {
+     "diff_in": "1.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.38",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "46e76693b14a4c1b",
+   "sid": "241737 2",
+   "story": "Through Oct 13, the weather station in Choteau shows June as the wettest month at 3.38 inches, and the biggest single day came Jun 1 with 0.99 inches. The gauge went 22 days in a row with nothing in it, from Jan 26 to Feb 16. That leaves this year 2.57 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "30101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 30",
+     "in": "1.70",
+     "label": "biggest single day"
+    },
+    "county": "Toole County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Shelby",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.98",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "10.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jul 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 12"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 135,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.50",
+    "usual_in": "10.77",
+    "vs_usual": {
+     "diff_in": "3.73",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3cc755ab9e7fb786",
+   "sid": "247500 2",
+   "story": "Through Oct 13, the weather station in Shelby has had its wettest month in June, with 5.87 inches. The biggest single day came Jun 30 at 1.70 inches. Then it went 24 days in a row with nothing in the gauge, from Jul 20 to Aug 12. All told it sits 3.98 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "30103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 20",
+     "in": "1.94",
+     "label": "biggest single day"
+    },
+    "county": "Treasure County",
+    "days_in_year_so_far": 285,
+    "days_missing": 1,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "25 miles south-southeast of Hysham",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "2.77",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 12",
+     "total_in": "16.03",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Montana",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "13.15",
+    "usual_in": "12.99",
+    "vs_usual": {
+     "diff_in": "0.16",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "2.81",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3d5d1a7b2aec5f93",
+   "sid": "244364 2",
+   "story": "Through Oct 12, the weather station 25 miles south-southeast of Hysham had 13.15 inches, 0.16 more than a usual year. September was the wettest month at 2.81 inches, and 1.94 of that came on Sep 20 alone. On the days both years reported, this year is running 2.77 inches less than 2025.",
+   "through": "2026-10-12"
+  },
+  "30107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 9",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Wheatland County",
+    "days_in_year_so_far": 280,
+    "days_missing": 0,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "11 miles northwest of Harlowton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "0.34",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 7",
+     "total_in": "12.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Montana",
+    "through": "Oct 7",
+    "through_iso": "2026-10-07",
+    "total_in": "12.17",
+    "usual_in": "13.96",
+    "vs_usual": {
+     "diff_in": "1.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.70",
+     "month": "February"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "26bc8ef6b96b14bf",
+   "sid": "243947 2",
+   "story": "Through Oct 7, the weather station 11 miles northwest of Harlowton went 15 days in a row with nothing in the gauge, not even a trace, from Jan 25 to Feb 8. Then it caught 2.40 inches on Feb 9, the biggest single day of the year so far. That made February the wettest month at 2.70 inches. On the days both years reported, this year sits 0.34 inches less than last year.",
+   "through": "2026-10-07"
+  },
+  "30111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 18",
+     "in": "1.65",
+     "label": "biggest single day"
+    },
+    "county": "Yellowstone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "at Billings International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.89",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.06",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Aug 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Montana",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.17",
+    "usual_in": "12.44",
+    "vs_usual": {
+     "diff_in": "0.73",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.63",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e7a556ab524910f7",
+   "sid": "24033 1",
+   "story": "Through Oct 13, the weather station at Billings International Airport has 13.17 inches, 0.73 inches more than a usual year. September did most of the work with 4.63 inches, and the biggest single day was 1.65 inches on Sep 18. That still leaves this year 2.89 inches less than 2025 at the same point.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "MT"
+}

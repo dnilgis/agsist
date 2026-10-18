@@ -1789,7 +1789,8 @@
    "path": "data/prf/meta.json",
    "pages": [
     "index.html",
-    "prf-sponsor.html"
+    "prf-sponsor.html",
+    "prf.html"
    ],
    "written_by": [
     "prf"

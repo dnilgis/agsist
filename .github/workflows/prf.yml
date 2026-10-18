@@ -72,6 +72,7 @@ jobs:
       - name: The arithmetic and the fetcher, offline, before anything is asked
         run: |
           python scripts/fetch_prf.py --selftest
+          python scripts/send_prf_notice.py --selftest
           python scripts/stamp_prf.py --selftest
           node scripts/prf_facts.mjs --selftest
           node --test test/prf-math.test.mjs test/prf-check.test.mjs test/prf-page.test.mjs test/prf-county-pages.test.mjs
@@ -209,6 +210,25 @@ jobs:
           print("\n".join(re.findall(r'<loc>(https://agsist\.com/prf/[a-z-]+/[a-z0-9-]+)</loc>', open('sitemap-prf.xml').read())))
           PY
           python scripts/indexnow_submit.py --urls $(cat urls.txt) || echo "IndexNow ping failed - harmless"
+
+      # The PRF grid index email (subs worker v5.29, topic prf:<grid>, asked on
+      # /prf and the PRF county pages). After the fetch passed RMA's own check and
+      # was committed, so the email and the pages carry the same index. Each
+      # interval goes to an address once (marked with the interval after the
+      # send). No new schedule: it rides this one.
+      - name: PRF grid index emails
+        if: github.event.inputs.limit == ''
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+        run: python3 scripts/send_prf_notice.py --send
 
       - name: Publish the run log to the prf-log branch
         if: always()

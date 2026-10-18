@@ -1,0 +1,241 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "44001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "5.11",
+     "label": "biggest one-day reading"
+    },
+    "county": "Bristol County",
+    "days_in_year_so_far": 286,
+    "days_missing": 24,
+    "days_reported": 262,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "2.0 miles north-northwest of Bristol",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 258,
+      "diff_in": "5.69",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "36.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Rhode Island",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.80",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "13.43",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2ee6da32c9c5b057",
+   "sid": "US1RIBR0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.0 miles north-northwest of Bristol had 45.80 inches. September was the wettest month at 13.43 inches, and the biggest one-day reading came Sep 14 with 5.11 inches. On the days both years reported, that is 5.69 inches more than 2025. The longest dry stretch ran 10 days, Jan 28 to Feb 6.",
+   "through": "2026-10-13"
+  },
+  "44005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "3.13",
+     "label": "biggest single day"
+    },
+    "county": "Newport County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.1 miles southwest of Middletown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.34",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Rhode Island",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.54",
+    "usual_in": "33.55",
+    "vs_usual": {
+     "diff_in": "5.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.73",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2490a3cc29a1d86b",
+   "sid": "US1RINW0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles southwest of Middletown had 5.99 inches more than a usual year. July did most of the work at 8.73 inches, the wettest month. The biggest single day came Jun 23 with 3.13 inches. That puts this year 9.34 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "44007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 27",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Providence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Woonsocket",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "3.84",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "38.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jan 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Rhode Island",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.64",
+    "usual_in": "39.24",
+    "vs_usual": {
+     "diff_in": "4.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.17",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bfd9ba39cc09846a",
+   "sid": "379423 2",
+   "story": "Through Oct 13, the weather station in Woonsocket had its wettest month in July at 7.17 inches. The biggest single day came Sep 27 with 2.18 inches. Against last year, the gauge sits 3.84 inches less on the days both years reported.",
+   "through": "2026-10-13"
+  },
+  "44009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.48",
+     "label": "biggest single day"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3.0 miles west-southwest of Charlestown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "5.80",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "34.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "Rhode Island",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.52",
+    "usual_in": "37.98",
+    "vs_usual": {
+     "diff_in": "4.54",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.85",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9698bd85638fa87",
+   "sid": "US1RIWS0036 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles west-southwest of Charlestown had July as its wettest month at 10.85 inches. That month held both ends of it. The gauge sat empty for 10 days in a row from Jul 9 to Jul 18, then caught 2.48 inches on Jul 31, the biggest single day. On the days both years reported, this year is 5.80 inches more than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "RI"
+}

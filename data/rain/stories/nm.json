@@ -1,0 +1,1889 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "35003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "0.97",
+     "label": "biggest one-day reading"
+    },
+    "county": "Catron County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "36 miles from the middle of the county",
+    "gauge_where": "8.0 miles northeast of Quemado",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "4.05",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "5.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 86,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.01",
+    "usual_in": "11.68",
+    "vs_usual": {
+     "diff_in": "1.67",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.81",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aa2a4fd769073a9c",
+   "sid": "US1NMCT0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.0 miles northeast of Quemado has caught 10.01 inches, 1.67 inches less than a usual year. September did most of the work with 3.81 inches, and the biggest one-day reading was 0.97 inches on Sep 30. On the days both years reported, that is 4.05 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "35005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Chaves County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Roswell Industrial Air Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.64",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "11.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Feb 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.71",
+    "usual_in": "9.92",
+    "vs_usual": {
+     "diff_in": "0.79",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.94",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5f4456e83216d473",
+   "sid": "23009 1",
+   "story": "Through Oct 13, the weather station at Roswell Industrial Air Park has 10.71 inches, 0.79 more than a usual year. September did most of the work with 4.94 inches, and the biggest single day was 1.49 on Sep 25. Earlier the gauge went 24 days in a row with nothing, from Feb 14 to Mar 9. Last year was a little wetter, 0.64 more by this day.",
+   "through": "2026-10-13"
+  },
+  "35006": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "0.95",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cibola County",
+    "days_in_year_so_far": 280,
+    "days_missing": 1,
+    "days_reported": 279,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "3.1 miles east-northeast of Ramah",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "1.97",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 7",
+     "total_in": "6.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "New Mexico",
+    "through": "Oct 7",
+    "through_iso": "2026-10-07",
+    "total_in": "11.30",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.71",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aceff2a48895ced0",
+   "sid": "US1NMCB0032 6",
+   "story": "Through Oct 7, the gauge 3.1 miles east-northeast of Ramah had its wettest month in September at 4.71 inches, with the biggest day at 0.95 inches on Sep 30. Earlier on, it went 24 days in a row with nothing in it, from Mar 7 to Mar 30. On the days both years reported, this year is 1.97 inches more than 2025.",
+   "through": "2026-10-07"
+  },
+  "35007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.21",
+     "label": "biggest single day"
+    },
+    "county": "Colfax County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Raton Municipal Crews Field Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.85",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "17.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.40",
+    "usual_in": "12.43",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.46",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "19dd00317733eb22",
+   "sid": "23052 1",
+   "story": "Through Oct 13, the weather station at Raton Municipal Crews Field Airport has caught 12.40 inches, about usual for this point in a usual year. September did most of the work with 5.46 inches, and the biggest single day was 1.21 inches on Sep 30. Before that there were 39 days in a row with nothing in the gauge, from Feb 21 to Mar 31. On the days both years reported, that is 4.85 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "35009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "8.60",
+     "label": "biggest single day"
+    },
+    "county": "Curry County",
+    "days_in_year_so_far": 285,
+    "days_missing": 12,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "2.3 miles north-northeast of Clovis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "0.08",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "21.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 42,
+     "from": "Feb 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "New Mexico",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "21.24",
+    "usual_in": "16.56",
+    "vs_usual": {
+     "diff_in": "4.68",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "14.10",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a9e5d5195cd9e0c0",
+   "sid": "US1NMCR0021 6",
+   "story": "Through Oct 12, the volunteer rain gauge north-northeast of Clovis has caught most of its year in September, with 14.10 inches that month. The biggest single day was Sep 25 at 8.60 inches. Before that, the gauge went 42 days in a row with nothing in it, from Feb 24 to Apr 6. On the days both years reported, 2026 is 0.08 inches less than last year.",
+   "through": "2026-10-12"
+  },
+  "35011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "De Baca County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5 miles south of Fort Sumner",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.50",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "12.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 31,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.49",
+    "usual_in": "12.50",
+    "vs_usual": {
+     "diff_in": "1.01",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.73",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5ce748ae8cae1fbd",
+   "sid": "293296 2",
+   "story": "Through Oct 13, the weather station 5 miles south of Fort Sumner had its wettest month in September with 5.73 inches. The biggest single day came Sep 23 at 2.25 inches. Before that, the gauge sat empty for 31 days in a row from Mar 11 to Apr 10, not even a trace. On the days both years reported, that is 1.50 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "35013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "2.56",
+     "label": "biggest single day"
+    },
+    "county": "Doña Ana County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1.7 miles west-northwest of Las Cruces",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.63",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 6"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 143,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.10",
+    "usual_in": "8.45",
+    "vs_usual": {
+     "diff_in": "3.65",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.08",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a202dfbba8c7fec",
+   "sid": "US1NMDA0222 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-northwest of Las Cruces had 6.08 inches in September alone, and that made it the wettest month by a long way. The biggest single day was Sep 23 at 2.56 inches. Earlier the gauge sat empty for 26 days in a row, from Mar 12 to Apr 6. This year is 5.63 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "35015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "1.95",
+     "label": "biggest single day"
+    },
+    "county": "Eddy County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.1 miles north-northwest of Carlsbad",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.10",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "8.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 50,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.64",
+    "usual_in": "11.87",
+    "vs_usual": {
+     "diff_in": "1.77",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.36",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "24058f5a85e150b0",
+   "sid": "US1NMED0023 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.1 miles north-northwest of Carlsbad shows September as the wettest month at 5.36 inches. The biggest single day came Sep 24 with 1.95 inches. Earlier the gauge went 50 days in a row with nothing in it, from Feb 15 to Apr 5. This year is 5.10 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "35017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.4 miles southwest of Silver City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "3.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "11.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.98",
+    "usual_in": "14.43",
+    "vs_usual": {
+     "diff_in": "0.55",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.54",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "16682414627ac594",
+   "sid": "US1NMGR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles southwest of Silver City had most of its year come late. September brought 4.54 inches, and Sep 30 was the biggest single day at 1.50. Earlier the gauge went 21 days in a row with nothing in it, Mar 12 to Apr 1. On the days both years reported, this year is 3.13 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "35019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Guadalupe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "16.6 miles southeast of Santa Rosa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.38",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 75,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.05",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.13",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff28de4bbb979c49",
+   "sid": "US1NMGD0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge 16.6 miles southeast of Santa Rosa had 10.05 inches for the year, and 6.13 of that came in September. The biggest single day was Sep 24 with 2.00 inches. Before any of that, the gauge went 75 days in a row with nothing in it, from Jan 26 to Apr 10. That puts this year 6.38 inches less than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "35021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Harding County",
+    "days_in_year_so_far": 276,
+    "days_missing": 1,
+    "days_reported": 275,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "7 miles northwest of Rosebud",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "4.07",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 3",
+     "total_in": "11.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 66,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "New Mexico",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "15.58",
+    "usual_in": "13.42",
+    "vs_usual": {
+     "diff_in": "2.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.60",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ae5fe8fac8056b1f",
+   "sid": "297585 2",
+   "story": "Through Oct 3, the weather station 7 miles northwest of Rosebud went 66 days in a row with nothing in the gauge, from Feb 1 to Apr 7. September made up for it at 5.60 inches, the wettest month, and the biggest single day was 2.34 inches on Sep 24. On the days both years reported, that is 4.07 inches more than 2025 had.",
+   "through": "2026-10-03"
+  },
+  "35023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.65",
+     "label": "biggest single day"
+    },
+    "county": "Hidalgo County",
+    "days_in_year_so_far": 277,
+    "days_missing": 0,
+    "days_reported": 277,
+    "gauge": "weather station",
+    "gauge_from_middle": "42 miles from the middle of the county",
+    "gauge_where": "in Antelope Wells",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "3.09",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 4",
+     "total_in": "7.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 51,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "New Mexico",
+    "through": "Oct 4",
+    "through_iso": "2026-10-04",
+    "total_in": "10.99",
+    "usual_in": "9.93",
+    "vs_usual": {
+     "diff_in": "1.06",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.84",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0c6be6e4d2eaaa54",
+   "sid": "290426 2",
+   "story": "Through Oct 4, the weather station in Antelope Wells has caught a good share of its rain late. September brought 4.84 inches, the wettest month, and the biggest single day was 1.65 inches on Sep 30. Earlier it went 51 days in a row with nothing in the gauge, from Mar 11 to Apr 30. On the days both years reported, that is 3.09 inches more than 2025.",
+   "through": "2026-10-04"
+  },
+  "35025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "1.49",
+     "label": "biggest single day"
+    },
+    "county": "Lea County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "1.2 miles west of Monument",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "2.23",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "14.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "New Mexico",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "12.18",
+    "usual_in": "13.69",
+    "vs_usual": {
+     "diff_in": "1.51",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.12",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "17ecf9be3a950848",
+   "sid": "US1NMLE0026 6",
+   "story": "Through Oct 12, the volunteer rain gauge 1.2 miles west of Monument had 12.18 inches, 1.51 inches less than a usual year. September was the wettest month at 4.12 inches, and the biggest single day was 1.49 inches on Sep 16. The gauge went 46 days in a row with nothing in it, not even a trace, from Feb 15 to Apr 1. That is 2.23 inches less than last year had by the same day.",
+   "through": "2026-10-12"
+  },
+  "35027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 23",
+     "in": "1.62",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "4.6 miles south-southeast of Nogal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.12",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 134,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.17",
+    "usual_in": "16.51",
+    "vs_usual": {
+     "diff_in": "5.66",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.31",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a8a0cbb132e5f16",
+   "sid": "US1NMLN0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles south-southeast of Nogal had 22.17 inches, 5.66 more than a usual year. September did most of the work with 9.31 inches, and the biggest single day was 1.62 on Sep 23. It went 21 days with nothing in the gauge, Mar 12 to Apr 1. That is 6.12 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "35028": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.76",
+     "label": "biggest single day"
+    },
+    "county": "Los Alamos County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1.5 miles north-northeast of White Rock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "1.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "9.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.24",
+    "usual_in": "11.66",
+    "vs_usual": {
+     "diff_in": "0.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.00",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "84579cc76fbe999f",
+   "sid": "US1NMLA0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge near White Rock got its year mostly in September, the wettest month at 6.00 inches. The biggest single day came Sep 29 with 1.76 inches. On the days both years reported, 2026 is 1.62 inches more than 2025. It still sits 0.42 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "35029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "2.15",
+     "label": "biggest single day"
+    },
+    "county": "Luna County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Deming Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.64",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Feb 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.11",
+    "usual_in": "7.72",
+    "vs_usual": {
+     "diff_in": "0.39",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.14",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b552e4cc2c4e46b0",
+   "sid": "23078 1",
+   "story": "Through Oct 13, September was the wettest month at the weather station at Deming Municipal Airport, with 4.14 inches. The biggest single day came on Sep 29, at 2.15 inches. The station sits 1.64 inches ahead of where 2025 was on the same day.",
+   "through": "2026-10-13"
+  },
+  "35031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 14",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "McKinley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "30 miles from the middle of the county",
+    "gauge_where": "at Gallup Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.75",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.82",
+    "usual_in": "8.76",
+    "vs_usual": {
+     "diff_in": "0.06",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "3.08",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f833c3dcad5b9359",
+   "sid": "23081 1",
+   "story": "Through Oct 13, the weather station at Gallup Municipal Airport had its wettest month in September at 3.08 inches. The biggest single day came Sep 14 with 1.18 inches. Back on Mar 7 to Mar 29 it went 23 days in a row with nothing in the gauge, not even a trace. That puts this year 1.75 inches more than 2025 at the same point.",
+   "through": "2026-10-13"
+  },
+  "35033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 16",
+     "in": "1.52",
+     "label": "biggest single day"
+    },
+    "county": "Mora County",
+    "days_in_year_so_far": 284,
+    "days_missing": 24,
+    "days_reported": 260,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "2 miles northwest of Ocate",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 237,
+      "diff_in": "9.54",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 23,
+     "through": "Oct 11",
+     "total_in": "22.66",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 38,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "New Mexico",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "15.59",
+    "usual_in": "15.85",
+    "vs_usual": {
+     "diff_in": "0.26",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.57",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7a217ad21bdd85e2",
+   "sid": "296275 2",
+   "story": "Through Oct 11, the weather station 2 miles northwest of Ocate has caught 15.59 inches, about usual. September did most of the work at 5.57 inches, and the biggest single day was 1.52 inches on Aug 16. Earlier the gauge went 38 days in a row with nothing in it, from Feb 21 to Mar 30. On the days both years reported, this year is 9.54 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "35035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "1.31",
+     "label": "biggest single day"
+    },
+    "county": "Otero County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "23 miles from the middle of the county",
+    "gauge_where": "2.4 miles northeast of Alamogordo",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "2.57",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "8.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 112,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.13",
+    "usual_in": "9.92",
+    "vs_usual": {
+     "diff_in": "1.21",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.49",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "951b81d2a97c290d",
+   "sid": "US1NMOT0042 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.4 miles northeast of Alamogordo had its wettest month in September with 4.49 inches. The biggest single day came early, 1.31 inches on Jan 25. Then the gauge sat empty for 23 days in a row from Feb 16 to Mar 10. On the days both years reported, this year is 2.57 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "35037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Quay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "1.5 miles west of Logan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.13",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.89",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.76",
+    "usual_in": "14.39",
+    "vs_usual": {
+     "diff_in": "0.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.79",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "569e7dc79403a4e2",
+   "sid": "US1NMQY0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles west of Logan had most of its year come late. September was the wettest month at 5.79 inches, and Sep 24 was the biggest single day with 2.55 inches. Earlier the gauge went 46 days in a row with nothing in it, from Feb 15 to Apr 1. The year sits 3.13 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "35039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.23",
+     "label": "biggest single day"
+    },
+    "county": "Rio Arriba County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in El Vado",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.84",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "10.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.88",
+    "usual_in": "11.60",
+    "vs_usual": {
+     "diff_in": "1.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.91",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0a8879731f9e5427",
+   "sid": "292837 2",
+   "story": "Through Oct 13, the weather station in El Vado had caught most of its rain late. September was the wettest month with 4.91 inches, and the biggest single day came Sep 29 with 1.23 inches. Earlier the gauge went 39 days with nothing in it, not even a trace, from Feb 21 to Mar 31. On the days both years reported, that is 0.84 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "35041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Roosevelt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Portales",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.66",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "12.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 53,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.82",
+    "usual_in": "13.93",
+    "vs_usual": {
+     "diff_in": "0.89",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.48",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9c124d890989f25a",
+   "sid": "297008 2",
+   "story": "Through Oct 13, the weather station in Portales had a dry start and a wet finish. It went 53 days in a row with nothing in the gauge, from Feb 15 to Apr 8. September brought 6.48 inches, the wettest month, and the biggest single day was 1.92 inches on Sep 25. That puts the year 2.66 inches ahead of 2025 on the same days.",
+   "through": "2026-10-13"
+  },
+  "35043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.96",
+     "label": "biggest single day"
+    },
+    "county": "Sandoval County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "31 miles from the middle of the county",
+    "gauge_where": "3.0 miles west-southwest of Rio Rancho",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "8.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.96",
+    "usual_in": "8.85",
+    "vs_usual": {
+     "diff_in": "1.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.01",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2c2e5463168bfc17",
+   "sid": "US1NMSN0062 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.0 miles west-southwest of Rio Rancho had 9.96 inches, and 7.01 of that came in September. The biggest single day was Sep 29 with 1.96 inches. Before that it went 45 days in a row with nothing in the gauge, from Feb 15 to Mar 31. On the days both years reported, that is 1.15 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "35045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 17",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "San Juan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "3.4 miles west-southwest of Farmington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.44",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "7.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 38,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.03",
+    "usual_in": "6.77",
+    "vs_usual": {
+     "diff_in": "0.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "3.72",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6a6028a81a68417b",
+   "sid": "US1NMSJ0019 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles west-southwest of Farmington caught 3.72 inches in September, out of 7.03 for the year. The biggest single day was Sep 17 with 1.18 inches. Earlier it went 38 days in a row with nothing in the gauge, from Feb 22 to Mar 31. That puts it 0.26 inches more than a usual year but 0.44 inches less than 2025 to this date.",
+   "through": "2026-10-13"
+  },
+  "35047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 19",
+     "in": "3.11",
+     "label": "biggest single day"
+    },
+    "county": "San Miguel County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "at Las Vegas Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.38",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "12.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.86",
+    "usual_in": "13.98",
+    "vs_usual": {
+     "diff_in": "2.12",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.21",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "219f4d31d4e6a78b",
+   "sid": "23054 1",
+   "story": "Through Oct 13, the weather station at Las Vegas Municipal Airport had 11.86 inches, 2.12 inches less than a usual year. September was the wettest month at 5.21 inches, and the biggest single day was Aug 19 with 3.11 inches. Back in the spring the gauge went 24 days in a row with nothing in it, from Mar 7 to Mar 30. On the days both years reported, this year is 0.38 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "35049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.14",
+     "label": "biggest single day"
+    },
+    "county": "Santa Fe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "15.7 miles south-southwest of Santa Fe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.31",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 40,
+     "from": "Feb 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.77",
+    "usual_in": "11.36",
+    "vs_usual": {
+     "diff_in": "0.41",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.61",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c819c919e4a727a8",
+   "sid": "US1NMSF0102 6",
+   "story": "Through Oct 13, the volunteer rain gauge south-southwest of Santa Fe had caught 11.77 inches, and 6.61 of that came in September. The biggest single day was 1.14 inches on Sep 29. Earlier on, the gauge went 40 days in a row with nothing in it, from Feb 20 to Mar 31. Even so, the year sits 2.31 inches less than 2025 to the same day.",
+   "through": "2026-10-13"
+  },
+  "35051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Sierra County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.4 miles northeast of Elephant Butte",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.27",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "5.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.01",
+    "usual_in": "9.02",
+    "vs_usual": {
+     "diff_in": "0.99",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.42",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "642d3d29d14033e7",
+   "sid": "US1NMSR0034 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles northeast of Elephant Butte had 6.42 inches in September alone, the wettest month by a long way. The biggest single day was Sep 30 at 1.88 inches. Earlier the gauge sat empty for 45 days in a row, Feb 15 to Mar 31. That puts the year 4.27 inches ahead of last year at 10.01.",
+   "through": "2026-10-13"
+  },
+  "35053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.86",
+     "label": "biggest single day"
+    },
+    "county": "Socorro County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "36 miles from the middle of the county",
+    "gauge_where": "16.7 miles southwest of Mountainair",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.54",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "9.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 40,
+     "from": "Feb 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.63",
+    "usual_in": "10.45",
+    "vs_usual": {
+     "diff_in": "4.18",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.69",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9dcf4f19a2135d1c",
+   "sid": "US1NMSC0031 6",
+   "story": "Through Oct 13, the volunteer rain gauge 16.7 miles southwest of Mountainair has caught 7.69 inches in September alone, its wettest month. The biggest single day was Sep 30 at 1.86 inches. It went 40 days in a row with nothing in the gauge, from Feb 20 to Mar 31. On the days both years reported, this year is 5.54 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "35055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.13",
+     "label": "biggest single day"
+    },
+    "county": "Taos County",
+    "days_in_year_so_far": 285,
+    "days_missing": 2,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.3 miles north-northwest of Taos",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.55",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "11.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "New Mexico",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "12.33",
+    "usual_in": "13.18",
+    "vs_usual": {
+     "diff_in": "0.85",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.88",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "278511c72db75541",
+   "sid": "US1NMTS0024 6",
+   "story": "Through Oct 12, the volunteer rain gauge 4.3 miles north-northwest of Taos got 4.88 inches in September, its wettest month. The biggest single day was 1.13 inches on Sep 30. The gauge went 24 days in a row with nothing in it, not even a trace, from Mar 7 to Mar 30. On the days both years reported, this year is 0.55 inches more than last year.",
+   "through": "2026-10-12"
+  },
+  "35057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.21",
+     "label": "biggest single day"
+    },
+    "county": "Torrance County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "22 miles from the middle of the county",
+    "gauge_where": "9 miles east of Pedernal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.25",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.23",
+    "usual_in": "11.87",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.07",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8b5bf4b19f3dd5c5",
+   "sid": "296687 2",
+   "story": "Through Oct 13, the weather station 9 miles east of Pedernal had 8.23 inches, 3.64 inches less than a usual year. September did most of the work with 4.07 inches, and the biggest single day was 1.21 inches on Sep 30. Earlier the gauge went 45 days in a row with nothing in it, from Feb 15 to Mar 31. Last year at this point it had 5.25 inches more.",
+   "through": "2026-10-13"
+  },
+  "35059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Union County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "at Clayton Municipal Air Park",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.09",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.01",
+    "usual_in": "14.64",
+    "vs_usual": {
+     "diff_in": "0.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.53",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4792c58f9cb4c5d6",
+   "sid": "23051 1",
+   "story": "Through Oct 13, the weather station at Clayton Municipal Air Park had 14.01 inches, 0.63 inches less than a usual year. September did most of the work with 5.53 inches, and the biggest single day was 1.92 inches on Sep 30. The longest dry stretch ran 19 days, Mar 11 to Mar 29. Last year at this point the gauge had 18.10 inches, so this year is 4.09 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "35061": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "0.90",
+     "label": "biggest single day"
+    },
+    "county": "Valencia County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3 miles south-southwest of Los Lunas",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.87",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "6.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 41,
+     "from": "Feb 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "New Mexico",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "7.94",
+    "usual_in": "7.60",
+    "vs_usual": {
+     "diff_in": "0.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.92",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "180ff18fef42a20f",
+   "sid": "295150 2",
+   "story": "Through Oct 13, the weather station 3 miles south-southwest of Los Lunas had 7.94 inches, 0.34 more than a usual year. September did most of the work with 4.92 inches, and the biggest single day was 0.90 on Sep 30. The gauge went 41 days with nothing in it, Feb 19 to Mar 31. On the days both years reported, that is 1.87 inches more than 2025.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "NM"
+}

@@ -1,0 +1,5839 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "20001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "4.10",
+     "label": "biggest single day"
+    },
+    "county": "Allen County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "1 mile west of Iola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.65",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.81",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.16",
+    "usual_in": "35.80",
+    "vs_usual": {
+     "diff_in": "3.64",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.52",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7ee69d833abf151d",
+   "sid": "143984 2",
+   "story": "Through Oct 13, the weather station 1 mile west of Iola has caught 32.16 inches, 3.64 inches less than a usual year. April was the wettest month at 7.52 inches. The biggest single day came Sep 10 with 4.10 inches. That is 3.65 inches less than 2025 had by Oct 13.",
+   "through": "2026-10-13"
+  },
+  "20003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "3.85",
+     "label": "biggest single day"
+    },
+    "county": "Anderson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile east of Garnett",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.30",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.77",
+    "usual_in": "34.83",
+    "vs_usual": {
+     "diff_in": "8.94",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.84",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c24f3535995c7514",
+   "sid": "143008 2",
+   "story": "Through Oct 13, the weather station 1 mile east of Garnett had its wettest month in April at 8.84 inches. The biggest single day came Sep 10 with 3.85 inches. It also went 19 days in a row with nothing in the gauge, from Jan 26 to Feb 13. That puts the year 8.30 inches ahead of last year at this point.",
+   "through": "2026-10-13"
+  },
+  "20005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 1",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Atchison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Atchison",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.68",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.25",
+    "usual_in": "31.51",
+    "vs_usual": {
+     "diff_in": "1.74",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.39",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "51001fc4ec16ca04",
+   "sid": "140405 2",
+   "story": "Through Oct 13, the weather station in Atchison had its wettest month in April with 7.39 inches. The biggest single day came Apr 1 with 2.70 inches. The longest dry stretch ran 13 days from Feb 1 to Feb 13 with nothing in the gauge, not even a trace. That puts this year 5.68 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "20007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 13",
+     "in": "1.83",
+     "label": "biggest single day"
+    },
+    "county": "Barber County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1 mile east of Medicine Lodge",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.69",
+    "usual_in": "24.27",
+    "vs_usual": {
+     "diff_in": "4.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.42",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cbe11d1d9f0a6ee3",
+   "sid": "03957 1",
+   "story": "Through Oct 13, the weather station 1 mile east of Medicine Lodge has caught 6.28 inches less than 2025 did by the same day. The gauge sat empty 30 days in a row from Mar 11 to Apr 9. June was the wettest month with 7.42 inches. The biggest single day came last, 1.83 inches on Oct 13.",
+   "through": "2026-10-13"
+  },
+  "20009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Barton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3 miles west-northwest of Great Bend",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.45",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 68,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.48",
+    "usual_in": "24.22",
+    "vs_usual": {
+     "diff_in": "7.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.00",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dcb406563581a0c0",
+   "sid": "143218 2",
+   "story": "Through Oct 13, the weather station 3 miles west-northwest of Great Bend has caught 16.48 inches, 7.74 inches less than a usual year. June was the wettest month at 5.00 inches, and Jun 21 brought the biggest single day at 2.60 inches. From Feb 22 to Apr 9 the gauge went 47 days in a row with nothing in it, not even a trace. Last year at this point the station had 32.93 inches, so 2026 sits 16.45 inches behind.",
+   "through": "2026-10-13"
+  },
+  "20011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "3.45",
+     "label": "biggest single day"
+    },
+    "county": "Bourbon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "9.3 miles north-northeast of Fort Scott",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "7.46",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "36.67",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.13",
+    "usual_in": "37.94",
+    "vs_usual": {
+     "diff_in": "6.19",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "13.03",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "19816f07132c35d3",
+   "sid": "US1KSBB0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 9.3 miles north-northeast of Fort Scott had a lot of its year come in April, with 13.03 inches that month. The biggest single day came later, 3.45 inches on Sep 10. On the days both years reported, this year is 7.46 inches more than last year. The longest dry stretch was 15 days, Jan 30 to Feb 13, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "20013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "2.60",
+     "label": "biggest single day"
+    },
+    "county": "Brown County",
+    "days_in_year_so_far": 286,
+    "days_missing": 17,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Horton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "6.19",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "26.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.45",
+    "usual_in": "31.22",
+    "vs_usual": {
+     "diff_in": "1.23",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.58",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4cbab497f0a454c5",
+   "sid": "143810 2",
+   "story": "Through Oct 13, the weather station in Horton had a dry spell of 15 days in a row with nothing in the gauge, from Aug 25 to Sep 8. Then September turned into the wettest month at 7.58 inches. The biggest single day was 2.60 inches on Jun 5. On the days both years reported, this year is 6.19 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 6",
+     "in": "2.24",
+     "label": "biggest single day"
+    },
+    "county": "Butler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1 mile northwest of Rosalia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.16",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Aug 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.74",
+    "usual_in": "33.85",
+    "vs_usual": {
+     "diff_in": "2.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.46",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "986b18e5d88507f5",
+   "sid": "146979 2",
+   "story": "Through Oct 13, the weather station 1 mile northwest of Rosalia had its wettest month in June at 9.46 inches. Then it went 32 days in a row with nothing in the gauge, from Aug 9 to Sep 9. The biggest single day came early, 2.24 inches on Mar 6. All told it sits 0.16 inches less than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "20017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 7",
+     "in": "3.48",
+     "label": "biggest one-day reading"
+    },
+    "county": "Chase County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Cottonwood Falls",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 10,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.17",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.01",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ff6e402ae4fc7999",
+   "sid": "US1KSCS0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Cottonwood Falls had caught 44.17 inches. September was the wettest month at 10.01 inches. The biggest one-day reading was 3.48 inches on Aug 7. Then came 16 days in a row with nothing in the gauge, not even a trace, from Aug 24 to Sep 8.",
+   "through": "2026-10-13"
+  },
+  "20019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "3.45",
+     "label": "biggest single day"
+    },
+    "county": "Chautauqua County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "2.8 miles south of Peru",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "14.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "43.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.33",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.50",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "954a99043cd355b1",
+   "sid": "US1KSCQ0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.8 miles south of Peru had June as its wettest month at 7.50 inches. The biggest single day was Apr 2 with 3.45 inches. From Aug 24 to Sep 9 it went 17 days in a row with nothing in the gauge, not even a trace. On the days both years reported, that is 14.93 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "4.59",
+     "label": "biggest single day"
+    },
+    "county": "Cherokee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Columbus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "8.81",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "36.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.86",
+    "usual_in": "37.98",
+    "vs_usual": {
+     "diff_in": "6.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "17.00",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5b2467fd0cb34400",
+   "sid": "141740 2",
+   "story": "Through Oct 13, the weather station in Columbus had most of its year come in June, with 17.00 inches that month. The biggest single day was Jun 8 at 4.59 inches. Earlier on, the gauge went 19 days in a row with nothing from Jan 26 to Feb 13. On the days both years reported, this year is 8.81 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "1.42",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cheyenne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile west of Bird City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "1.47",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "18.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Apr 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 26"
+    },
+    "multi_day_reports": 8,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.70",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4fbd72afb3c1ca15",
+   "sid": "US1KSCN0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west of Bird City caught 16.70 inches. June was the wettest month at 4.63 inches, and the biggest one-day reading came Jun 25 with 1.42 inches. The gauge sat empty for 24 days in a row from Apr 3 to Apr 26. On the days both years reported, this year is 1.47 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "20025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "1.90",
+     "label": "biggest single day"
+    },
+    "county": "Clark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Ashland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.46",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 77,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.39",
+    "usual_in": "20.01",
+    "vs_usual": {
+     "diff_in": "4.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.73",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b431d846e5041a6c",
+   "sid": "140365 2",
+   "story": "Through Oct 13, the weather station in Ashland had 10.46 inches less than it had by this day last year. June carried the year with 5.73 inches, and the biggest single day was Jun 22 at 1.90 inches. The longest dry stretch ran 23 days in a row, Feb 16 to Mar 10, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "20027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "2.94",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Longford",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.12",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.64",
+    "usual_in": "28.48",
+    "vs_usual": {
+     "diff_in": "1.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.87",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ad18e7d82ab2e35c",
+   "sid": "144802 2",
+   "story": "Through Oct 13, the weather station in Longford has had 29.64 inches, 2.12 inches more than it had by this day in 2025. June was the wettest month at 6.87 inches. The biggest single day came Apr 27 with 2.94 inches, not long after 25 days in a row with nothing in the gauge from Mar 8 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "20029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.15",
+     "label": "biggest single day"
+    },
+    "county": "Cloud County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "2.4 miles northwest of Jamestown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.42",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 105,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.36",
+    "usual_in": "27.02",
+    "vs_usual": {
+     "diff_in": "1.34",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.00",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2039aba2519ce623",
+   "sid": "US1KSCD0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.4 miles northwest of Jamestown had 6.42 inches more than it had by this day last year. June was the wettest month at 7.00 inches. The biggest single day came late, 4.15 inches on Oct 1. Before that, the gauge sat dry for 13 days in a row, Aug 27 to Sep 8.",
+   "through": "2026-10-13"
+  },
+  "20031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 15",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "Coffey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "5.1 miles west-southwest of Waverly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "1.06",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "36.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.77",
+    "usual_in": "33.21",
+    "vs_usual": {
+     "diff_in": "5.56",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.24",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "699c5d75111a1b15",
+   "sid": "US1KSCF0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.1 miles west-southwest of Waverly had 38.77 inches, 5.56 more than a usual year. May was the wettest month at 6.24 inches, but the biggest single day came early, 2.42 inches on Feb 15. The gauge then sat empty for 16 days in a row from Aug 25 to Sep 9. On the days both years reported, this year is 1.06 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.49",
+     "label": "biggest single day"
+    },
+    "county": "Comanche County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Coldwater",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "14.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.21",
+    "usual_in": "21.83",
+    "vs_usual": {
+     "diff_in": "4.62",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.13",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "95b06af94ce6139c",
+   "sid": "141704 2",
+   "story": "Through Oct 13, the weather station in Coldwater shows June did most of the work, with 7.13 inches for the wettest month and 2.49 inches on Jun 22 for the biggest single day. Before that, the gauge went 34 days in a row with nothing in it, from Mar 7 to Apr 9. On the days both years reported, that is 14.12 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "20035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "4.80",
+     "label": "biggest one-day reading"
+    },
+    "county": "Cowley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Arkansas City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.51",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 98,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.29",
+    "usual_in": "32.98",
+    "vs_usual": {
+     "diff_in": "0.69",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "9.72",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f3d47e934e0d3407",
+   "sid": "US1KSCL0028 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Arkansas City sits right about a usual year, 0.69 inches less. June did most of the work with 9.72 inches, and 4.80 of that came on Jun 21 alone. Last year at this point the gauge had 14.51 inches more than it has now.",
+   "through": "2026-10-13"
+  },
+  "20037": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "3.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Crawford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Girard",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.16",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 102,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.07",
+    "usual_in": "38.26",
+    "vs_usual": {
+     "diff_in": "0.81",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "10.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "85b0099678381719",
+   "sid": "143074 2",
+   "story": "Through Oct 13, the weather station in Girard had most of its year come in June, with 10.14 inches that month. The biggest one-day reading was 3.10 inches on Jun 14. The longest dry stretch ran 19 days, from Jan 26 to Feb 13, with nothing in the gauge. That leaves the station 4.16 inches less than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "20039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "1.85",
+     "label": "biggest single day"
+    },
+    "county": "Decatur County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "4.4 miles south of Norcatur",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "1.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Mar 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.64",
+    "usual_in": "18.03",
+    "vs_usual": {
+     "diff_in": "2.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.98",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ec76a3e16944c434",
+   "sid": "US1KSDC0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.4 miles south of Norcatur has had a slow year and a wet September. It went 30 days in a row with nothing in it, not even a trace, from Mar 3 to Apr 1. September was the wettest month at 3.98 inches, and the biggest single day came Sep 24 with 1.85 inches. On the days both years reported, that is 1.93 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "20041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 11",
+     "in": "3.10",
+     "label": "biggest single day"
+    },
+    "county": "Dickinson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Chapman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.29",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.51",
+    "usual_in": "29.49",
+    "vs_usual": {
+     "diff_in": "11.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.48",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5c21bb250ac57077",
+   "sid": "141435 2",
+   "story": "Through Oct 13, the weather station in Chapman had its wettest month in June, at 9.48 inches. The biggest single day came on Jun 11 with 3.10 inches. The station has 11.29 inches more than it had by this day in 2025, and both years reported every day.",
+   "through": "2026-10-13"
+  },
+  "20043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "2.27",
+     "label": "biggest single day"
+    },
+    "county": "Doniphan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1 mile north-northwest of Bendena",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.03",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 45,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.25",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.27",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "73958c816ede1951",
+   "sid": "US1KSDP0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1 mile north-northwest of Bendena had 32.25 inches. June was the wettest month at 7.27 inches, and the biggest single day was Jun 5 with 2.27 inches. The gauge went 45 days in a row with nothing in it, Jan 1 to Feb 14. On the days both years reported, that is 9.03 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "2.46",
+     "label": "biggest single day"
+    },
+    "county": "Douglas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Lawrence",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "7.88",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "28.94",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.82",
+    "usual_in": "34.13",
+    "vs_usual": {
+     "diff_in": "2.69",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.30",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "11346e5015df2635",
+   "sid": "144559 2",
+   "story": "Through Oct 13, the weather station in Lawrence had its wettest month in July with 6.30 inches, and the biggest single day came Jul 30 with 2.46 inches. Back in March the gauge went 20 days in a row with nothing in it, from Mar 11 to Mar 30. On the days both years reported, this year is 7.88 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Edwards County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "5 miles south of Offerle",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.57",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 54,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.75",
+    "usual_in": "21.85",
+    "vs_usual": {
+     "diff_in": "3.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.05",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "62666361346d9da7",
+   "sid": "145920 2",
+   "story": "Through Oct 13, the weather station 5 miles south of Offerle had 54 days in a row with nothing in the gauge, from Feb 15 to Apr 9. June was the wettest month at 7.05 inches, and the biggest single day was 2.34 inches on Jun 26. The station is 11.57 inches behind where it was at this point last year.",
+   "through": "2026-10-13"
+  },
+  "20049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "3.52",
+     "label": "biggest one-day reading"
+    },
+    "county": "Elk County",
+    "days_in_year_so_far": 276,
+    "days_missing": 2,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1 mile north of Grenola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "2.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 3",
+     "total_in": "31.05",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 10"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 86,
+    "state": "Kansas",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "28.02",
+    "usual_in": "32.74",
+    "vs_usual": {
+     "diff_in": "4.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.69",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "996a5d303512b5f5",
+   "sid": "143248 2",
+   "story": "Through Oct 3, the weather station 1 mile north of Grenola had its wettest month in June with 8.69 inches, and its biggest one-day reading was 3.52 inches on Jun 26. After that it went 20 days in a row with nothing in the gauge, from Aug 22 to Sep 10. On the days both years reported, this year is 2.98 inches less than 2025.",
+   "through": "2026-10-03"
+  },
+  "20051": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.32",
+     "label": "biggest single day"
+    },
+    "county": "Ellis County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "2.7 miles east-northeast of Hays",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "4.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "20.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.48",
+    "usual_in": "22.39",
+    "vs_usual": {
+     "diff_in": "3.09",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.72",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6a00db13c0cee847",
+   "sid": "US1KSEL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles east-northeast of Hays had 3.09 inches more than a usual year. June was the wettest month at 5.72 inches, and the biggest single day was Jun 21 with 2.32 inches. Before that it went 39 days in a row with nothing in the gauge, from Feb 22 to Apr 1. On the days both years reported, this year is 4.44 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "2.45",
+     "label": "biggest single day"
+    },
+    "county": "Ellsworth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "less than a mile east of Ellsworth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.83",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.02",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.19",
+    "usual_in": "25.26",
+    "vs_usual": {
+     "diff_in": "1.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bb8902f854049dfd",
+   "sid": "US1KSEW0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east of Ellsworth had its wettest month in June at 6.14 inches, and the biggest single day came Jun 9 with 2.45 inches. Before that, it went 32 days in a row with nothing in it, from Mar 8 to Apr 8. The year sits 2.83 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "20055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.22",
+     "label": "biggest single day"
+    },
+    "county": "Finney County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Garden City Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.13",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 60,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.37",
+    "usual_in": "17.20",
+    "vs_usual": {
+     "diff_in": "6.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.33",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f141bcd6b2fd6c9a",
+   "sid": "23064 1",
+   "story": "Through Oct 13, the weather station at Garden City Regional Airport has 10.37 inches, 6.83 inches less than a usual year. September was the wettest month at 3.33 inches, and the biggest single day came Sep 30 with 1.22 inches. The longest dry stretch ran 16 days, Mar 16 to Mar 31, with not even a trace in the gauge. Last year at this point the station had 15.50 inches, so 2026 is 5.13 inches behind.",
+   "through": "2026-10-13"
+  },
+  "20057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "2.12",
+     "label": "biggest single day"
+    },
+    "county": "Ford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Dodge City Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.49",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.74",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.25",
+    "usual_in": "19.06",
+    "vs_usual": {
+     "diff_in": "0.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.46",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6030ca2f87be05a7",
+   "sid": "13985 1",
+   "story": "Through Oct 13, the weather station at Dodge City Regional Airport had most of its year come in June, with 7.46 inches that month. The biggest single day was Jun 24 at 2.12 inches. Earlier on, the gauge went 17 days in a row with nothing in it, from Feb 26 to Mar 14. Last year was wetter, and this year sits 6.49 inches less than 2025 to the same day.",
+   "through": "2026-10-13"
+  },
+  "20059": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Ottawa",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "13.44",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "30.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 131,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.29",
+    "usual_in": "33.93",
+    "vs_usual": {
+     "diff_in": "10.36",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.54",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ca002ca7baa97f62",
+   "sid": "146128 2",
+   "story": "Through Oct 13, the station in Ottawa had its wettest month in May at 7.54 inches. The biggest single day came May 29 with 2.57 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with nothing in the gauge. On the days both years reported, this year is 13.44 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20061": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "2.19",
+     "label": "biggest single day"
+    },
+    "county": "Geary County",
+    "days_in_year_so_far": 286,
+    "days_missing": 26,
+    "days_reported": 260,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Milford Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 249,
+      "diff_in": "2.00",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "30.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 32,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 125,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.78",
+    "usual_in": "27.83",
+    "vs_usual": {
+     "diff_in": "6.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.00",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "67b9589500df6d53",
+   "sid": "145306 2",
+   "story": "Through Oct 13, the weather station in Milford Lake has 34.78 inches, 6.95 more than a usual year. June did most of the work at 9.00 inches, and the biggest single day was 2.19 inches on May 18. Earlier on, the gauge went 32 days in a row with nothing in it, from Jan 25 to Feb 25. On the days both years reported, this year is 2.00 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "5.59",
+     "label": "biggest single day"
+    },
+    "county": "Gove County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Grainfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.08",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Mar 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 133,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.57",
+    "usual_in": "19.93",
+    "vs_usual": {
+     "diff_in": "6.64",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.15",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b1eb0a9ae139df9e",
+   "sid": "143185 2",
+   "story": "Through Oct 13, the weather station in Grainfield has caught 26.57 inches, 6.64 more than a usual year. June did most of the work with 11.15 inches, and 5.59 of that came on Jun 21 alone. It went 29 days with nothing in the gauge from Mar 4 to Apr 1. That's 8.08 inches more than this point last year.",
+   "through": "2026-10-13"
+  },
+  "20065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "1.17",
+     "label": "biggest single day"
+    },
+    "county": "Graham County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "at Hill City Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "0.46",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "14.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 30,
+     "from": "Mar 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.63",
+    "usual_in": "18.73",
+    "vs_usual": {
+     "diff_in": "5.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b3c99f00582eee2c",
+   "sid": "93990 1",
+   "story": "Through Oct 13, the weather station at Hill City Municipal Airport had 13.63 inches, 5.10 inches less than a usual year. The gauge went 30 days in a row with nothing in it, not even a trace, from Mar 2 to Mar 31. The biggest single day was Jul 9 at 1.17 inches. On the days both years reported, this year is 0.46 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 30",
+     "in": "1.92",
+     "label": "biggest single day"
+    },
+    "county": "Grant County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "3 miles northeast of Ulysses",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Feb 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "16.16",
+    "usual_in": "15.63",
+    "vs_usual": {
+     "diff_in": "0.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.56",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d0ee0fe48267891b",
+   "sid": "148287 2",
+   "story": "Through Oct 13, the weather station 3 miles northeast of Ulysses has 16.16 inches, 0.53 more than a usual year. September was the wettest month at 4.56 inches, and the biggest rain was 1.92 on Sep 30. The gauge went 34 days in a row with nothing from Feb 27 to Apr 1. On the days both years reported, that is 4.71 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 2",
+     "in": "2.33",
+     "label": "biggest single day"
+    },
+    "county": "Gray County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "6.2 miles west-northwest of Ingalls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.25",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.00",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Feb 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.22",
+    "usual_in": "21.80",
+    "vs_usual": {
+     "diff_in": "2.58",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.11",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a7e29d65b69fb533",
+   "sid": "US1KSGY0016 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.2 miles west-northwest of Ingalls has run 2.58 inches less than a usual year. June was the wettest month at 5.11 inches, and the biggest single day was 2.33 inches on Jun 2. Earlier on, the gauge sat empty 34 days in a row, Feb 27 to Apr 1. On the days both years reported, this year is 0.25 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.42",
+     "label": "biggest single day"
+    },
+    "county": "Greeley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1 mile west of Tribune",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.37",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 141,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.78",
+    "usual_in": "16.16",
+    "vs_usual": {
+     "diff_in": "6.62",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.54",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e3d247b1c3ab1bc0",
+   "sid": "148235 2",
+   "story": "Through Oct 13, the weather station 1 mile west of Tribune had its wettest month in September with 6.54 inches. The biggest single day came Oct 1 with 4.42 inches. Earlier on, the gauge went 47 days in a row with nothing in it, from Feb 22 to Apr 9. On the days both years reported, this year is 2.68 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "2.83",
+     "label": "biggest one-day reading"
+    },
+    "county": "Greenwood County",
+    "days_in_year_so_far": 286,
+    "days_missing": 27,
+    "days_reported": 259,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile northwest of Eureka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 240,
+      "diff_in": "7.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 22,
+     "through": "Oct 13",
+     "total_in": "40.38",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 98,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.79",
+    "usual_in": "29.24",
+    "vs_usual": {
+     "diff_in": "0.45",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.21",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b173c3718fa7d3d7",
+   "sid": "US1KSGW0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northwest of Eureka had its wettest month in June at 7.21 inches, and the biggest one-day reading came Jun 26 at 2.83 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with not even a trace. On the days both years reported, this year ran 7.73 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "5.95",
+     "label": "biggest single day"
+    },
+    "county": "Hamilton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1 mile northeast of Syracuse",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.90",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.92",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 196,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.82",
+    "usual_in": "15.18",
+    "vs_usual": {
+     "diff_in": "14.64",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.24",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ed82076b4e768840",
+   "sid": "148038 2",
+   "story": "Through Oct 13, the weather station 1 mile northeast of Syracuse has 29.82 inches, 14.64 more than a usual year. Most of the talk is October. The month has 7.24 inches so far, and 5.95 of that came on Oct 2 alone. Last year at this point the gauge had 13.92, so this year is 15.90 inches ahead.",
+   "through": "2026-10-13"
+  },
+  "20077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "2.11",
+     "label": "biggest single day"
+    },
+    "county": "Harper County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Anthony",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.78",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 87,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.66",
+    "usual_in": "28.49",
+    "vs_usual": {
+     "diff_in": "3.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.39",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9244ab1c11dc36ba",
+   "sid": "140264 2",
+   "story": "Through Oct 13, the weather station in Anthony had June doing most of the work, with 10.39 inches that month. The biggest single day was Jun 22 at 2.11 inches. The longest dry stretch ran 16 days, Feb 16 to Mar 3, with not even a trace in the gauge. This year sits 5.78 inches behind last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "20079": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "2.92",
+     "label": "biggest one-day reading"
+    },
+    "county": "Harvey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Newton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "10.86",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 22"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 77,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.97",
+    "usual_in": "28.52",
+    "vs_usual": {
+     "diff_in": "6.55",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.00",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9b768f90ee6ff4dc",
+   "sid": "145744 2",
+   "story": "Through Oct 13, the weather station in Newton had 21.97 inches, 6.55 less than a usual year. May was the wettest month at 8.00 inches, and the biggest rain came May 29 with 2.92. From Jul 6 to Jul 22 the gauge went 17 days with nothing in it. On the days both years reported, this year sits 10.86 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "20083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 24",
+     "in": "2.40",
+     "label": "biggest single day"
+    },
+    "county": "Hodgeman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "14.9 miles west-southwest of Jetmore",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 256,
+      "diff_in": "0.88",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 13",
+     "total_in": "19.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.56",
+    "usual_in": "19.28",
+    "vs_usual": {
+     "diff_in": "0.28",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.29",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d939df92a790d49a",
+   "sid": "US1KSHG0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 14.9 miles west-southwest of Jetmore sits about where a usual year would, 0.28 inches more. Most of that came in June, the wettest month at 8.29 inches, with the biggest single day at 2.40 inches on Jun 24. Before that the gauge went 47 days in a row with nothing in it, from Feb 22 to Apr 9. On the days both years reported, this year is 0.88 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "20085": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 16",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Holton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "5.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "28.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 106,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.63",
+    "usual_in": "31.60",
+    "vs_usual": {
+     "diff_in": "2.03",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.36",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a053b35c555274ef",
+   "sid": "143759 2",
+   "story": "Through Oct 13, the weather station in Holton has run 2.03 inches more than a usual year. April was the wettest month at 6.36 inches, and the biggest single day came Sep 16 with 2.70 inches. The longest dry stretch was 20 days, Jan 26 to Feb 14, with not even a trace in the gauge. On the days both years reported, this year is 5.35 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 9",
+     "in": "3.70",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Valley Falls",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.23",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 124,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.47",
+    "usual_in": "32.52",
+    "vs_usual": {
+     "diff_in": "7.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.76",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "93ec87e53ba7eb2f",
+   "sid": "148341 2",
+   "story": "Through Oct 13, the weather station in Valley Falls had its wettest month in July with 7.76 inches. The biggest single day was Jul 9 at 3.70 inches. That is 13.23 inches more than last year by the same day. The longest dry stretch ran 19 days, Jan 26 to Feb 13, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "20089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 26",
+     "in": "3.51",
+     "label": "biggest single day"
+    },
+    "county": "Jewell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4 miles south of Burr Oak",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.24",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 118,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "28.39",
+    "usual_in": "24.08",
+    "vs_usual": {
+     "diff_in": "4.31",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.34",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ccfa1e80c17f2979",
+   "sid": "141179 2",
+   "story": "Through Oct 13, the weather station 4 miles south of Burr Oak has 28.39 inches, 4.31 more than a usual year. September did most of the work with 11.34 inches, and Sep 26 alone brought 3.51. Back in spring the gauge sat empty 20 days in a row, Mar 12 to Mar 31. That puts this year 7.24 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "20091": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "1.99",
+     "label": "biggest one-day reading"
+    },
+    "county": "Johnson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "3.3 miles east-northeast of Olathe",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.29",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 110,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.40",
+    "usual_in": "34.14",
+    "vs_usual": {
+     "diff_in": "3.26",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.10",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "598185ee9874dee7",
+   "sid": "US1KSJO0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles east-northeast of Olathe had its wettest month in April, with 7.10 inches. The biggest one-day reading came Jul 31 at 1.99 inches. The longest dry stretch ran 13 days, Feb 1 to Feb 13, with not even a trace in the gauge. That puts the gauge 4.29 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "20093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "2.05",
+     "label": "biggest single day"
+    },
+    "county": "Kearny County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "less than a mile northeast of Deerfield",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.59",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 42,
+     "from": "Feb 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 123,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.23",
+    "usual_in": "17.22",
+    "vs_usual": {
+     "diff_in": "4.01",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.13",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "80c539c196660dc8",
+   "sid": "US1KSKE0017 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile northeast of Deerfield has caught 4.59 inches more than it had at this point last year. June was the wettest month with 4.13 inches, and the biggest single day was Jun 23 at 2.05 inches. Before that it went 42 days in a row with nothing in the gauge, not even a trace, from Feb 27 to Apr 9.",
+   "through": "2026-10-13"
+  },
+  "20095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "4.76",
+     "label": "biggest single day"
+    },
+    "county": "Kingman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Kingman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.41",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.48",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.07",
+    "usual_in": "28.91",
+    "vs_usual": {
+     "diff_in": "0.16",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "13.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6872f74be0f5f47b",
+   "sid": "144313 2",
+   "story": "Through Oct 13, the weather station in Kingman has a year that leaned hard on June. June brought 13.14 inches, and Jun 21 alone put 4.76 inches in the gauge. The longest dry stretch ran 19 days, Jan 26 to Feb 13. Last year at this point the station had 44.48 inches, so 2026 sits 15.41 inches less.",
+   "through": "2026-10-13"
+  },
+  "20097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 2",
+     "in": "2.49",
+     "label": "biggest single day"
+    },
+    "county": "Kiowa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "12.5 miles south of Mullinville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.83",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.76",
+    "usual_in": "22.73",
+    "vs_usual": {
+     "diff_in": "3.97",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.04",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "508c0418f448f1d4",
+   "sid": "US1KSKW0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 12.5 miles south of Mullinville had 18.76 inches. June was the wettest month at 8.04 inches, and the biggest single day was Jun 2 at 2.49 inches. The gauge went 21 days in a row with nothing in it, from Mar 12 to Apr 1. Last year by this day it had 15.83 inches more.",
+   "through": "2026-10-13"
+  },
+  "20099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "2.58",
+     "label": "biggest single day"
+    },
+    "county": "Labette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "3 miles west-southwest of Mound Valley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "13.96",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "29.35",
+    "usual_in": "39.44",
+    "vs_usual": {
+     "diff_in": "10.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.48",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "acff6627dd71a709",
+   "sid": "145536 2",
+   "story": "Through Oct 13, the weather station 3 miles west-southwest of Mound Valley had 29.35 inches, 10.09 inches less than a usual year. June was the wettest month at 8.48 inches, and the biggest single day was Apr 2 with 2.58 inches. The gauge stayed empty 16 days in a row from Aug 25 to Sep 9. Last year at this point it had 13.96 inches more.",
+   "through": "2026-10-13"
+  },
+  "20101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "1.96",
+     "label": "biggest single day"
+    },
+    "county": "Lane County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Healy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.99",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 53,
+     "from": "Mar 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.48",
+    "usual_in": "19.95",
+    "vs_usual": {
+     "diff_in": "0.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.68",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "30f52bcc615af2ba",
+   "sid": "143554 2",
+   "story": "Through Oct 13, the weather station in Healy had its wettest month in June at 6.68 inches, and its biggest single day came Jun 21 with 1.96 inches. Before that, the gauge went 53 days in a row from Mar 4 to Apr 25 without even a trace. The year sits 1.99 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "20103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Leavenworth County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3.8 miles south-southwest of Leavenworth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "6.09",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "35.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.04",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.88",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "67984356fb882f86",
+   "sid": "US1KSLV0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.8 miles south-southwest of Leavenworth has caught 42.04 inches. April was the wettest month with 7.88 inches, and the biggest single day was Apr 27 at 3.30 inches. The longest dry stretch ran 14 days, Jan 10 to Jan 23. On the days both years reported, that is 6.09 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20105": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "4.32",
+     "label": "biggest single day"
+    },
+    "county": "Lincoln County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "4.6 miles south of Beverly",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.17",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.26",
+    "usual_in": "26.34",
+    "vs_usual": {
+     "diff_in": "3.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.52",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9487264a048f86cf",
+   "sid": "US1KSLC0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.6 miles south of Beverly had May as its wettest month at 8.52 inches. Its biggest single day came May 29 with 4.32 inches. Before that it went 25 days in a row with nothing in the gauge, from Mar 8 to Apr 1. The year is running 0.17 inches more than last year by this date, so about even.",
+   "through": "2026-10-13"
+  },
+  "20107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "4.35",
+     "label": "biggest single day"
+    },
+    "county": "Linn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile south-southwest of Mound City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "6.79",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "34.30",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.64",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.45",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5cbe2a8ea2413cf9",
+   "sid": "145530 2",
+   "story": "Through Oct 13, the weather station 1 mile south-southwest of Mound City caught 39.64 inches. April was the wettest month at 11.45 inches, and the biggest single day came Apr 2 with 4.35 inches. The longest dry stretch ran 15 days, Jan 10 to Jan 24. On the days both years reported, this year is 6.79 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 10",
+     "in": "1.82",
+     "label": "biggest single day"
+    },
+    "county": "Lyon County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.6 miles east-southeast of Emporia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.95",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 117,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.74",
+    "usual_in": "32.30",
+    "vs_usual": {
+     "diff_in": "5.44",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.45",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f2148e470db780f4",
+   "sid": "US1KSLY0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles east-southeast of Emporia had 37.74 inches, 1.95 more than the same stretch last year. June was the wettest month at 7.45 inches. The biggest single day came Sep 10 with 1.82 inches. The longest dry stretch was 13 days, Feb 1 to Feb 13, with nothing in the gauge.",
+   "through": "2026-10-13"
+  },
+  "20113": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 29",
+     "in": "2.02",
+     "label": "biggest single day"
+    },
+    "county": "McPherson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Mcpherson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.97",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Aug 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.74",
+    "usual_in": "29.44",
+    "vs_usual": {
+     "diff_in": "5.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.99",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "32ad2d810eebb866",
+   "sid": "145152 2",
+   "story": "Through Oct 13, the weather station in Mcpherson had 14.97 inches less than it did by this day last year. June was the wettest month at 5.99 inches, and the biggest single day was 2.02 inches on May 29. Then the gauge went 20 days in a row with nothing in it, from Aug 21 to Sep 9.",
+   "through": "2026-10-13"
+  },
+  "20115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Marion Reservoir",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "8.79",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "36.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.70",
+    "usual_in": "29.92",
+    "vs_usual": {
+     "diff_in": "3.22",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.31",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "400289dc730ea751",
+   "sid": "145039 2",
+   "story": "Through Oct 13, the weather station in Marion Reservoir caught 7.31 inches in June, its wettest month, and 2.29 inches of that came on Jun 9, the biggest single day. The gauge also went 21 days in a row with nothing at all, from Mar 12 to Apr 1. On the days both years reported, this year is 8.79 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 14",
+     "in": "2.57",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Herkimer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.05",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.51",
+    "usual_in": "28.04",
+    "vs_usual": {
+     "diff_in": "4.47",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.77",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a87516b049690c68",
+   "sid": "141003 2",
+   "story": "Through Oct 13, the weather station in Herkimer had its wettest month in June, with 5.77 inches. The biggest single day came Jun 14 at 2.57 inches. Before that, the gauge went 25 days in a row with nothing in it, from Mar 8 to Apr 1. This year is running 9.05 inches more than last year by the same day.",
+   "through": "2026-10-13"
+  },
+  "20119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 22",
+     "in": "1.08",
+     "label": "biggest single day"
+    },
+    "county": "Meade County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Meade",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.16",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "23.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 64,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.74",
+    "usual_in": "19.88",
+    "vs_usual": {
+     "diff_in": "7.14",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.85",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "40b93f03a5773326",
+   "sid": "US1KSME0010 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Meade had 12.74 inches, 7.14 inches less than a usual year. June was the wettest month at 4.85 inches, and the biggest single day was 1.08 inches on Jun 22. The gauge went 26 days in a row with nothing, not even a trace, from Mar 7 to Apr 1. Last year by Oct 13 it had 23.90 inches, so this year is 11.16 inches less.",
+   "through": "2026-10-13"
+  },
+  "20123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.29",
+     "label": "biggest single day"
+    },
+    "county": "Mitchell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Beloit",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.35",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Mar 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 116,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.02",
+    "usual_in": "25.83",
+    "vs_usual": {
+     "diff_in": "4.19",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "11.17",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6ad49331b00a0ba2",
+   "sid": "140693 2",
+   "story": "Through Oct 13, the weather station in Beloit has 30.02 inches, 4.67 more than last year by the same day. June did most of the work with 11.17 inches. The gauge went 29 days in a row with nothing in it, from Mar 4 to Apr 1. Oct 1 brought 4.29 inches, the biggest single day so far.",
+   "through": "2026-10-13"
+  },
+  "20125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 2",
+     "in": "2.13",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Coffeyville Wtr Wrks",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "12.61",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.57",
+    "usual_in": "38.52",
+    "vs_usual": {
+     "diff_in": "2.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "12.92",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bbba4eef6da73465",
+   "sid": "141673 2",
+   "story": "Through Oct 13, the station in Coffeyville Wtr Wrks got its most in June, with 12.92 inches that month. It also went 19 days in a row with nothing in the gauge, from Jan 26 to Feb 13. On the days both years reported, this year has 12.61 inches less than 2025 did.",
+   "through": "2026-10-13"
+  },
+  "20127": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 2",
+     "in": "4.04",
+     "label": "biggest single day"
+    },
+    "county": "Morris County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in White City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.12",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.41",
+    "usual_in": "30.41",
+    "vs_usual": {
+     "diff_in": "8.00",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.71",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "158938f11493f32f",
+   "sid": "148802 2",
+   "story": "Through Oct 13, the weather station in White City had a lot of its year come late. The biggest single day was Oct 2 at 4.04 inches. June was the wettest month with 6.71 inches, and the longest dry stretch ran 19 days, Jan 26 to Feb 13. On the days both years reported, that is 7.12 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 17",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Morton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Elkhart",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.07",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 46,
+     "from": "Feb 15",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.24",
+    "usual_in": "16.16",
+    "vs_usual": {
+     "diff_in": "0.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.66",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6b82ca5cb0113a76",
+   "sid": "142432 2",
+   "story": "Through Oct 13, the weather station in Elkhart had September as its wettest month at 4.66 inches. The biggest single day came Aug 17 with 1.88 inches. Earlier the gauge went 46 days in a row with nothing in it, not even a trace, from Feb 15 to Apr 1. That puts the year 1.07 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "20131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 5",
+     "in": "3.77",
+     "label": "biggest single day"
+    },
+    "county": "Nemaha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "3.9 miles south-southwest of Goff",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "5.98",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "31.50",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.17",
+    "usual_in": "30.31",
+    "vs_usual": {
+     "diff_in": "8.86",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.35",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bf8abe6ed981b2fd",
+   "sid": "US1KSNM0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.9 miles south-southwest of Goff has run wetter than usual. June was the wettest month at 7.35 inches, and the biggest single day came Jun 5 with 3.77 inches. The gauge went 20 days in a row with nothing in it, from Jan 26 to Feb 14. On the days both years reported, this year is 5.98 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "4.58",
+     "label": "biggest single day"
+    },
+    "county": "Neosho County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1 mile north-northeast of Galesburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.19",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "34.87",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.06",
+    "usual_in": "38.09",
+    "vs_usual": {
+     "diff_in": "2.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "16.14",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7d20cb5c146f1492",
+   "sid": "142945 2",
+   "story": "Through Oct 13, the weather station 1 mile north-northeast of Galesburg had most of its year land in June, with 16.14 inches that month. The biggest single day was Jun 26 at 4.58 inches. The longest dry stretch ran 19 days, Jan 26 to Feb 13. That puts the gauge 6.19 inches more than last year through the same day.",
+   "through": "2026-10-13"
+  },
+  "20135": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.63",
+     "label": "biggest single day"
+    },
+    "county": "Ness County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "4.8 miles north-northwest of Arnold",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "1.75",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.36",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 34,
+     "from": "Mar 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 111,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.11",
+    "usual_in": "20.79",
+    "vs_usual": {
+     "diff_in": "2.32",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.55",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f40d9855b190dcb4",
+   "sid": "US1KSNS0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles north-northwest of Arnold had its wettest month in June at 6.55 inches, and the biggest single day came Jun 21 with 2.63 inches. Before that it went 34 days in a row with nothing in the gauge, from Mar 23 to Apr 25. On the days both years reported, this year is 1.75 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "3.09",
+     "label": "biggest single day"
+    },
+    "county": "Norton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.3 miles south-southwest of Norton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.09",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 29,
+     "from": "Mar 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.27",
+    "usual_in": "21.67",
+    "vs_usual": {
+     "diff_in": "1.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.67",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "092269495a277c82",
+   "sid": "US1KSNT0014 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles south-southwest of Norton had September as its wettest month at 5.67 inches. Of that, 3.09 inches came on Sep 25, the biggest single day of the year. Earlier the gauge sat empty for 29 days in a row, from Mar 4 to Apr 1. The year is still 1.40 inches less than a usual year, but 2.09 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "20139": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 16",
+     "in": "3.80",
+     "label": "biggest one-day reading"
+    },
+    "county": "Osage County",
+    "days_in_year_so_far": 284,
+    "days_missing": 10,
+    "days_reported": 274,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Melvern Lake",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 268,
+      "diff_in": "6.29",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 11",
+     "total_in": "32.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jan 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 14"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 123,
+    "state": "Kansas",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "38.70",
+    "usual_in": "31.57",
+    "vs_usual": {
+     "diff_in": "7.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.23",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "89137dde9530235e",
+   "sid": "145210 2",
+   "story": "Through Oct 11, the weather station in Melvern Lake went 21 days in a row with nothing in the gauge, from Jan 25 to Feb 14. Then it caught 3.80 inches on Feb 16, its biggest one-day reading of the year. May was the wettest month at 7.23 inches. On the days both years reported, that is 6.29 inches more than 2025 had.",
+   "through": "2026-10-11"
+  },
+  "20141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "2.68",
+     "label": "biggest one-day reading"
+    },
+    "county": "Osborne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "6.7 miles north-northeast of Natoma",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "28.24",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 97,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.22",
+    "usual_in": "24.95",
+    "vs_usual": {
+     "diff_in": "0.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.70",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "88457d742d55a8d8",
+   "sid": "US1KSOB0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.7 miles north-northeast of Natoma had its wettest month in June at 7.70 inches. The biggest one-day reading came Jun 4 at 2.68 inches. The gauge went 26 days in a row with nothing in it, not even a trace, from Mar 7 to Apr 1. This year sits 4.02 inches less than 2025 through the same day.",
+   "through": "2026-10-13"
+  },
+  "20143": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 18",
+     "in": "3.67",
+     "label": "biggest single day"
+    },
+    "county": "Ottawa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Minneapolis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.63",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 115,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.10",
+    "usual_in": "27.97",
+    "vs_usual": {
+     "diff_in": "4.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.78",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a25650a717b391a5",
+   "sid": "145363 2",
+   "story": "Through Oct 13, the weather station in Minneapolis has caught 32.10 inches, 4.13 inches more than a usual year. June was the wettest month at 7.78 inches, and the biggest single day came May 18 with 3.67 inches. That puts this year 7.63 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "20145": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "2.92",
+     "label": "biggest single day"
+    },
+    "county": "Pawnee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Larned",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "9.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "30.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.62",
+    "usual_in": "23.05",
+    "vs_usual": {
+     "diff_in": "3.43",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.07",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a8a09d4175b1fa9e",
+   "sid": "144531 2",
+   "story": "Through Oct 13, the weather station in Larned had a lot of its year come in June, with 9.07 inches that month. The biggest single day was Jun 26 at 2.92 inches. The longest dry stretch ran 12 days, Mar 16 to Mar 27, with nothing in the gauge. On the days both years reported, this year is 9.92 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20147": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "2.76",
+     "label": "biggest single day"
+    },
+    "county": "Phillips County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "5.7 miles east of Phillipsburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.02",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.69",
+    "usual_in": "22.91",
+    "vs_usual": {
+     "diff_in": "1.22",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.58",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5077e6aa2038560a",
+   "sid": "US1KSPL0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.7 miles east of Phillipsburg had its wettest month in June, with 6.58 inches. The biggest single day came late, 2.76 inches on Oct 1. The gauge also went 15 days in a row with nothing in it, from Mar 12 to Mar 26. That leaves the year 3.02 inches behind last year at this point.",
+   "through": "2026-10-13"
+  },
+  "20149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "2.64",
+     "label": "biggest single day"
+    },
+    "county": "Pottawatomie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "4 miles west of Wamego",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.83",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "30.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 139,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.46",
+    "usual_in": "30.49",
+    "vs_usual": {
+     "diff_in": "11.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.76",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "98ffcb6b048600d0",
+   "sid": "148563 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Wamego has caught 42.46 inches, 11.97 more than a usual year. June was the wettest month at 7.76 inches, and the biggest single day came Jun 9 with 2.64. It went 15 days with nothing in the gauge from Mar 17 to Mar 31. That is 11.83 inches more than 2025 had by this day.",
+   "through": "2026-10-13"
+  },
+  "20151": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "4.30",
+     "label": "biggest single day"
+    },
+    "county": "Pratt County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.2 miles west-northwest of Preston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.70",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "32.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Mar 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "27.10",
+    "usual_in": "24.63",
+    "vs_usual": {
+     "diff_in": "2.47",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.73",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b6a46441e95013a2",
+   "sid": "US1KSPR0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles west-northwest of Preston had a lot of its year come in June, with 12.73 inches that month. The biggest single day was Jun 26 at 4.30 inches. Before that, the gauge went 22 days in a row with nothing in it, from Mar 5 to Mar 26. On the days both years reported, this year is 5.70 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20155": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Reno County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Arlington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "15.72",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.13",
+    "usual_in": "25.29",
+    "vs_usual": {
+     "diff_in": "2.16",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.36",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a2db90bc9e0ddd09",
+   "sid": "140326 2",
+   "story": "Through Oct 13, the weather station in Arlington had its wettest month in June at 7.36 inches, and the biggest single day came Jun 21 with 2.85 inches. Then it went 18 days in a row with nothing in the gauge, from Aug 23 to Sep 9. On the days both years reported, this year is 15.72 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20157": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 24",
+     "in": "3.02",
+     "label": "biggest single day"
+    },
+    "county": "Republic County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "4.2 miles north of Belleville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.68",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "27.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 135,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.40",
+    "usual_in": "26.30",
+    "vs_usual": {
+     "diff_in": "9.10",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.83",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "eacf0b70e1daadaf",
+   "sid": "US1KSRP0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.2 miles north of Belleville had July as its wettest month at 6.83 inches. The biggest single day came Jul 24 with 3.02 inches. On the days both years reported, this year is running 7.68 inches more than last year. The longest dry stretch was 12 days, from Feb 2 to Feb 13, without even a trace.",
+   "through": "2026-10-13"
+  },
+  "20159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.31",
+     "label": "biggest single day"
+    },
+    "county": "Rice County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Sterling",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "16.19",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.01",
+    "usual_in": "25.61",
+    "vs_usual": {
+     "diff_in": "8.60",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.94",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1bd766007b9418ba",
+   "sid": "147796 2",
+   "story": "Through Oct 13, the weather station in Sterling has 17.01 inches, 8.60 less than a usual year. June was the wettest month at 4.94 inches, and 2.31 of that came on Jun 21 alone. The gauge went 20 days in a row with nothing from Mar 7 to Mar 26. Last year by this day it had 33.20 inches, so this year is 16.19 behind.",
+   "through": "2026-10-13"
+  },
+  "20161": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 9",
+     "in": "3.00",
+     "label": "biggest single day"
+    },
+    "county": "Riley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Manhattan",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "18.09",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "25.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 137,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.34",
+    "usual_in": "31.68",
+    "vs_usual": {
+     "diff_in": "11.66",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.69",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "81cab63792ed9942",
+   "sid": "144972 2",
+   "story": "Through Oct 13, the weather station in Manhattan had June as its wettest month at 8.69 inches, and the biggest single day came Jun 9 with 3.00 inches. Then it went 16 days in a row with nothing in the gauge, Aug 24 to Sep 8. Against last year at this point, the station has 18.09 inches more than 2025 had.",
+   "through": "2026-10-13"
+  },
+  "20163": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 10",
+     "in": "2.65",
+     "label": "biggest single day"
+    },
+    "county": "Rooks County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4 miles west-northwest of Plainville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.85",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "21.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 102,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.53",
+    "usual_in": "23.03",
+    "vs_usual": {
+     "diff_in": "0.50",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.05",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f065a81aee4954c7",
+   "sid": "146435 2",
+   "story": "Through Oct 13, the weather station 4 miles west-northwest of Plainville has 23.53 inches, 0.50 more than a usual year. June did most of the work at 7.05 inches, and the biggest single day was 2.65 inches on Jul 10. Before that, the gauge sat empty for 26 days straight, Mar 7 to Apr 1. That is 1.85 inches more than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "20165": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "2.06",
+     "label": "biggest single day"
+    },
+    "county": "Rush County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "2.7 miles east-southeast of Mccracken",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "0.36",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "22.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.26",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.46",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c96a255bb5bacfe2",
+   "sid": "US1KSRH0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Mccracken had its wettest month in June at 5.46 inches, and its biggest single day was 2.06 inches on Jun 21. Earlier the gauge went 39 days in a row with nothing in it, not even a trace, from Feb 22 to Apr 1. On the days both years reported, this year has 0.36 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "20167": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.45",
+     "label": "biggest single day"
+    },
+    "county": "Russell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Russell Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.25",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "21.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Mar 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.70",
+    "usual_in": "22.18",
+    "vs_usual": {
+     "diff_in": "0.48",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.59",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f94de9cb5aedd8b2",
+   "sid": "93997 1",
+   "story": "Through Oct 13, the weather station at Russell Municipal Airport had a fair share of its year come in June, with 5.59 inches that month. Jun 20 alone brought 3.45 inches, the biggest single day so far. The longest dry stretch ran 23 days, Mar 9 to Mar 31, with not even a trace in the gauge. On the days both years reported, this year has 0.25 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20169": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "3.32",
+     "label": "biggest single day"
+    },
+    "county": "Saline County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "at Salina Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.10",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.25",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "25.35",
+    "usual_in": "26.25",
+    "vs_usual": {
+     "diff_in": "0.90",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.43",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "03265bf4a4aa4450",
+   "sid": "03919 1",
+   "story": "Through Oct 13, the station at Salina Municipal Airport had May as the wettest month with 6.43 inches, and 3.32 of that came on May 28, the biggest single day. The gauge then went 17 days in a row with nothing in it, from Aug 23 to Sep 8. The year is 1.10 inches more than last year on the same days, but still 0.90 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "20171": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "2.90",
+     "label": "biggest single day"
+    },
+    "county": "Scott County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "4.9 miles north-northwest of Scott City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "2.04",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "22.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 36,
+     "from": "Mar 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "24.96",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.52",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "04a478fa70c99405",
+   "sid": "US1KSSC0018 6",
+   "story": "Through Oct 13, the volunteer rain gauge north-northwest of Scott City had a lot of its year come in June, with 9.52 inches that month. The biggest single day was Jun 25 at 2.90 inches. Earlier the gauge went 36 days in a row with nothing in it, from Mar 4 to Apr 8. On the days both years reported, this year is 2.04 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20173": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "5.20",
+     "label": "biggest single day"
+    },
+    "county": "Sedgwick County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "5.7 miles south of Maize",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "40.79",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "26.64",
+    "usual_in": "31.37",
+    "vs_usual": {
+     "diff_in": "4.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.95",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61d0eaa0123bd38a",
+   "sid": "US1KSSG0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.7 miles south of Maize has caught 26.64 inches, 4.73 inches less than a usual year. June did most of the work with 10.95 inches, and 5.20 of that came on Jun 26 alone. The gauge then sat empty for 18 days, Aug 23 to Sep 9. Last year by this day it had 14.15 inches more.",
+   "through": "2026-10-13"
+  },
+  "20175": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 4",
+     "in": "1.35",
+     "label": "biggest one-day reading"
+    },
+    "county": "Seward County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Liberal",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "8.31",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "22.20",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Feb 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 15"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 80,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.52",
+    "usual_in": "18.26",
+    "vs_usual": {
+     "diff_in": "3.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.15",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "73ab97d7c44f8421",
+   "sid": "144695 2",
+   "story": "Through Oct 13, the weather station in Liberal had its wettest month in June with 4.15 inches, and the biggest one-day reading came Jun 4 at 1.35 inches. The gauge went 17 days in a row with nothing in it, not even a trace, from Feb 27 to Mar 15. On the days both years reported, that's 8.31 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "20177": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Shawnee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Topeka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.29",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "27.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 121,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.51",
+    "usual_in": "31.73",
+    "vs_usual": {
+     "diff_in": "6.78",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.52",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f8fcf3d9b755f1b0",
+   "sid": "13996 1",
+   "story": "Through Oct 13, the weather station in Topeka has 11.29 inches more than last year at this point. June was the wettest month at 6.52 inches, and the biggest single day was Apr 27 with 2.78 inches. The gauge went 16 days in a row with nothing from Mar 16 to Mar 31.",
+   "through": "2026-10-13"
+  },
+  "20179": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "1.87",
+     "label": "biggest single day"
+    },
+    "county": "Sheridan County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.3 miles south of Hoxie",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "2.86",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "16.17",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.03",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.55",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4ed6097f0db0f21c",
+   "sid": "US1KSSD0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles south of Hoxie has caught 19.03 inches. June was the wettest month at 4.55 inches, and Jun 21 brought the biggest single day at 1.87. Before that, the gauge sat dry 39 days in a row, Feb 22 to Apr 1. On the days both years reported, that is 2.86 inches more than 2025 had by this point.",
+   "through": "2026-10-13"
+  },
+  "20181": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 25",
+     "in": "1.57",
+     "label": "biggest single day"
+    },
+    "county": "Sherman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "at Goodland Renner Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "0.80",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.73",
+    "usual_in": "17.30",
+    "vs_usual": {
+     "diff_in": "2.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.72",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "61650d388390f6b8",
+   "sid": "23065 1",
+   "story": "Through Oct 13, the weather station at Goodland Renner Field has caught 14.73 inches, 2.57 inches less than a usual year. June was the wettest month at 3.72 inches, and the biggest single day came Jun 25 with 1.57 inches. The longest dry stretch ran 16 days, Mar 16 to Mar 31, with not even a trace. That is 0.80 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "20183": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 25",
+     "in": "2.07",
+     "label": "biggest single day"
+    },
+    "county": "Smith County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Smith Center",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "1.26",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "22.01",
+    "usual_in": "23.11",
+    "vs_usual": {
+     "diff_in": "1.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.19",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9bb7a0f6c0fa9404",
+   "sid": "147542 2",
+   "story": "Through Oct 13, the weather station in Smith Center has had 1.26 inches more than last year by this date. July was the wettest month at 4.19 inches. The biggest single day came Sep 25 with 2.07 inches. Before that, the gauge went 26 days in a row with nothing in it, not even a trace, from Mar 7 to Apr 1.",
+   "through": "2026-10-13"
+  },
+  "20185": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 2",
+     "in": "5.48",
+     "label": "biggest single day"
+    },
+    "county": "Stafford County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Macksville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.95",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.83",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 26"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.88",
+    "usual_in": "24.04",
+    "vs_usual": {
+     "diff_in": "0.16",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "11.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a30f893125b08a4c",
+   "sid": "US1KSSF0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge west-northwest of Macksville sat close to a usual year, just 0.16 inches less. June did most of the work with 11.63 inches, and Jun 2 alone brought 5.48. Before that the gauge went 39 days with nothing from Feb 16 to Mar 26. It is also 11.95 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "20187": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "1.85",
+     "label": "biggest single day"
+    },
+    "county": "Stanton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Johnson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.13",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "24.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 47,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 126,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.42",
+    "usual_in": "15.37",
+    "vs_usual": {
+     "diff_in": "4.05",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.03",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b698c1ecc4e67802",
+   "sid": "144114 2",
+   "story": "Through Oct 13, the weather station in Johnson had its wettest month in September with 5.03 inches, and the biggest single day came Sep 24 with 1.85 inches. Earlier it went 47 days in a row with nothing in the gauge, from Feb 22 to Apr 9. Even at 4.05 inches more than a usual year, it sits 5.13 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "20191": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "5.86",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sumner County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "4 miles west of Belle Plaine",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "9.90",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "43.65",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 111,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.41",
+    "usual_in": "30.21",
+    "vs_usual": {
+     "diff_in": "3.20",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "15.21",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "396876e0210f3002",
+   "sid": "140679 2",
+   "story": "Through Oct 13, the weather station 4 miles west of Belle Plaine had most of its year come in June, with 15.21 inches that month. The biggest one-day reading was 5.86 inches on Jun 21. Earlier on, the gauge went 21 days in a row with nothing in it, from Mar 12 to Apr 1. On the days both years reported, this year is 9.90 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20193": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "3.47",
+     "label": "biggest single day"
+    },
+    "county": "Thomas County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "1 mile southwest of Colby",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.79",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 39,
+     "from": "Feb 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "23.51",
+    "usual_in": "18.38",
+    "vs_usual": {
+     "diff_in": "5.13",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.20",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cf9d10f2b715622d",
+   "sid": "141699 2",
+   "story": "Through Oct 13, the weather station 1 mile southwest of Colby has caught 23.51 inches, 5.13 more than a usual year. June was the wettest month at 6.20 inches, and the biggest single day came late, 3.47 inches on Oct 1. Before all that, the gauge went 39 days in a row with nothing in it, from Feb 22 to Apr 1. That puts this year 4.79 inches ahead of last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "20195": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "1.95",
+     "label": "biggest one-day reading"
+    },
+    "county": "Trego County",
+    "days_in_year_so_far": 285,
+    "days_missing": 4,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Wakeeney",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "1.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 20,
+     "through": "Oct 12",
+     "total_in": "20.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 26,
+     "from": "Mar 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 104,
+    "state": "Kansas",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "21.91",
+    "usual_in": "21.08",
+    "vs_usual": {
+     "diff_in": "0.83",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "5.50",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "230c333c837207da",
+   "sid": "148495 2",
+   "story": "Through Oct 12, the weather station in Wakeeney had its wettest month in June with 5.50 inches, and the biggest one-day reading came Jun 21 at 1.95 inches. Before that it went 26 days in a row with nothing in the gauge, from Mar 7 to Apr 1. On the days both years reported, this year ran 1.62 inches more than last year.",
+   "through": "2026-10-12"
+  },
+  "20197": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "4.10",
+     "label": "biggest single day"
+    },
+    "county": "Wabaunsee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Mc Farland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "14.38",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "29.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 140,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.07",
+    "usual_in": "31.54",
+    "vs_usual": {
+     "diff_in": "12.53",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.93",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8d02bed4ef47b2c3",
+   "sid": "145132 2",
+   "story": "Through Oct 13, the weather station in Mc Farland had its biggest single day on Apr 27 with 4.10 inches. July was the wettest month at 8.93 inches. The longest dry stretch ran 19 days, from Jan 26 to Feb 13, with not even a trace in the gauge. That puts this year 14.38 inches ahead of last year to the same day.",
+   "through": "2026-10-13"
+  },
+  "20199": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 1",
+     "in": "4.60",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wallace County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "10.0 miles southwest of Sharon Springs",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "3.05",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "23.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Mar 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.38",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.60",
+     "month": "October"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "238245cdf0f5e2f9",
+   "sid": "US1KSWA0004 6",
+   "story": "Through Oct 13, October is the wettest month at the volunteer rain gauge southwest of Sharon Springs, with 4.60 inches. All of it came on Oct 1, the biggest single reading of the year at 4.60 inches. The longest dry stretch ran 25 days, Mar 8 to Apr 1, without even a trace. On the days both years reported, this year sits 3.05 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20201": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 11",
+     "in": "4.10",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Washington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "10.05",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "27.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Mar 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 132,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.38",
+    "usual_in": "28.40",
+    "vs_usual": {
+     "diff_in": "8.98",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.78",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ba140f3565f86729",
+   "sid": "148578 2",
+   "story": "Through Oct 13, the weather station in Washington has caught 37.38 inches, 8.98 more than a usual year. July was the wettest month at 8.78 inches. The biggest one-day reading was 4.10 inches on Apr 11, right after the gauge sat empty for 21 days from Mar 12 to Apr 1. On the days both years reported, that is 10.05 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20203": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 24",
+     "in": "3.17",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wichita County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "less than a mile southwest of Leoti",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "0.99",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "20.45",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 9"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "20.46",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.79",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5ea6edabed350dc6",
+   "sid": "US1KSWH0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Leoti had its wettest month in September, with 6.79 inches. The biggest day was 3.17 inches on Sep 24. Back in spring it went 17 days in a row with nothing in the gauge, not even a trace, from Mar 24 to Apr 9. On the days both years reported, 2026 is 0.99 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20205": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 18",
+     "in": "3.94",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wilson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7.2 miles north-northeast of Altoona",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 261,
+      "diff_in": "1.16",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "39.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Aug 25",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 9"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.47",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c0c6633fbfffd56a",
+   "sid": "US1KSWL0017 6",
+   "story": "Through Oct 13, the biggest rain at the volunteer rain gauge near Altoona was 3.94 inches on Apr 18. The gauge went 16 days in a row with nothing in it, from Aug 25 to Sep 9. On the days both years reported, this year is 1.16 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "20207": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 26",
+     "in": "5.06",
+     "label": "biggest one-day reading"
+    },
+    "county": "Woodson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "1 mile from the middle of the county",
+    "gauge_where": "in Yates Center",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "8.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "33.40",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 117,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.69",
+    "usual_in": "35.53",
+    "vs_usual": {
+     "diff_in": "6.16",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "16.70",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c4e641263f47a4e8",
+   "sid": "149080 2",
+   "story": "Through Oct 13, the weather station in Yates Center got most of its year in June, with 16.70 inches that month. The biggest one-day reading was 5.06 inches on Jun 26. The longest dry stretch ran 19 days, from Jan 26 to Feb 13. On the days both years reported, that's 8.37 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "20209": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 27",
+     "in": "4.45",
+     "label": "biggest single day"
+    },
+    "county": "Wyandotte County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Kansas City West",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.67",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "37.56",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Jan 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 13"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Kansas",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.23",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "11.40",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5e49c541af3b0815",
+   "sid": "US1KSWY0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge in Kansas City West has caught 47.23 inches, 9.67 inches more than last year by this day. April did most of the work with 11.40 inches, and Apr 27 alone brought 4.45 inches, the biggest single day. The gauge went 19 days in a row with nothing at all, from Jan 26 to Feb 13.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "KS"
+}

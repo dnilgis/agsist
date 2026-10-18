@@ -1,0 +1,1908 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "38001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 29",
+     "in": "2.27",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 19,
+    "days_reported": 267,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Hettinger Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 255,
+      "diff_in": "11.67",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "24.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 103,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.05",
+    "usual_in": "12.66",
+    "vs_usual": {
+     "diff_in": "0.39",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.13",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "068e14896e12ad07",
+   "sid": "94038 1",
+   "story": "Through Oct 13, the weather station at Hettinger Municipal Airport has caught 13.05 inches, 0.39 more than a usual year. August did most of the work with 6.13 inches, and the biggest single day was 2.27 inches on Aug 29. Last year was a different story. On the days both years reported, this year sits 11.67 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "38007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 23",
+     "in": "0.91",
+     "label": "biggest single day"
+    },
+    "county": "Billings County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "7 miles east of Medora",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "8.12",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "17.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 58,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.04",
+    "usual_in": "15.60",
+    "vs_usual": {
+     "diff_in": "6.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.22",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "01160d59f42ff7b1",
+   "sid": "94080 1",
+   "story": "Through Oct 13, the weather station 7 miles east of Medora has gone 21 days in a row with nothing in the gauge, from Jul 8 to Jul 28. August was the wettest month at 2.22 inches, and the biggest single day was 0.91 inches on Aug 23. On the days both years reported, this year sits 8.12 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "38009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "3.13",
+     "label": "biggest single day"
+    },
+    "county": "Bottineau County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "27 miles from the middle of the county",
+    "gauge_where": "in Lansford",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Jul 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.01",
+    "usual_in": "15.97",
+    "vs_usual": {
+     "diff_in": "1.04",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.29",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "790646a169e81119",
+   "sid": "325002 2",
+   "story": "Through Oct 13, the weather station in Lansford had 17.01 inches, 1.04 more than a usual year. June did most of the work at 6.29 inches, and 3.13 of that came on Jun 23 alone. The longest dry stretch ran 11 days, Jul 17 to Jul 27, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "38011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 13",
+     "in": "0.89",
+     "label": "biggest single day"
+    },
+    "county": "Bowman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Bowman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.87",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "15.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Feb 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.95",
+    "usual_in": "15.23",
+    "vs_usual": {
+     "diff_in": "3.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.91",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d21caf296c7457f8",
+   "sid": "320995 2",
+   "story": "Through Oct 13, the weather station in Bowman had its wettest month in August with 2.91 inches. The biggest single day was Aug 13 at 0.89 inches. The longest dry stretch ran 16 days, Feb 21 to Mar 8, with nothing in the gauge, not even a trace. On the days both years reported, this year is 3.87 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "38013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "1.63",
+     "label": "biggest single day"
+    },
+    "county": "Burke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "5 miles east-southeast of Northgate",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.32",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "20.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Feb 19",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 5"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 128,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.14",
+    "usual_in": "14.22",
+    "vs_usual": {
+     "diff_in": "3.92",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "4.23",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6b84ab5c15b6b1ed",
+   "sid": "94084 1",
+   "story": "Through Oct 13, the weather station 5 miles east-southeast of Northgate has 18.14 inches, 3.92 more than a usual year. June was the wettest month at 4.23 inches, and the biggest single day was 1.63 inches on Aug 14. It is still 2.32 inches less than last year had by this day. The longest dry stretch ran 15 days, Feb 19 to Mar 5.",
+   "through": "2026-10-13"
+  },
+  "38015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.07",
+     "label": "biggest single day"
+    },
+    "county": "Burleigh County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "19 miles from the middle of the county",
+    "gauge_where": "at Bismarck Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.36",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Jul 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 69,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.72",
+    "usual_in": "16.97",
+    "vs_usual": {
+     "diff_in": "5.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.49",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9af40e76b961d490",
+   "sid": "24011 1",
+   "story": "Through Oct 13, the weather station at Bismarck Municipal Airport has 11.72 inches, 10.36 less than last year by this day. September was the wettest month at 2.49 inches, and the biggest single day was 1.07 on Sep 29. The longest dry stretch ran 10 days, Jul 8 to Jul 17, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "38017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 28",
+     "in": "1.18",
+     "label": "biggest single day"
+    },
+    "county": "Cass County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "21 miles from the middle of the county",
+    "gauge_where": "at Fargo Hector International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.83",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "18.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 61,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.87",
+    "usual_in": "20.94",
+    "vs_usual": {
+     "diff_in": "8.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.68",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "70826d24aa6e9d25",
+   "sid": "14914 1",
+   "story": "Through Oct 13, the weather station at Fargo Hector International Airport had most of its year come late. September was the wettest month at 3.68 inches, and the biggest single day was 1.18 inches on Sep 28. That still leaves the gauge 5.83 inches less than last year at this point, with 12.87 inches against 18.70 in 2025.",
+   "through": "2026-10-13"
+  },
+  "38021": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 31",
+     "in": "1.29",
+     "label": "biggest single day"
+    },
+    "county": "Dickey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "7.3 miles northwest of Ellendale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.71",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.31",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "17.60",
+    "usual_in": "19.97",
+    "vs_usual": {
+     "diff_in": "2.37",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.79",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b143a0695388481e",
+   "sid": "US1NDDC0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.3 miles northwest of Ellendale had 17.60 inches, 2.37 inches less than a usual year. July was the wettest month at 3.79 inches. The biggest single day came May 31 with 1.29 inches. Last year by Oct 13 the gauge had 22.31 inches, so this year is 4.71 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "38025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.39",
+     "label": "biggest single day"
+    },
+    "county": "Dunn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "in Killdeer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.42",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Feb 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "10.76",
+    "usual_in": "16.39",
+    "vs_usual": {
+     "diff_in": "5.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.63",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7e027865ff70aa0d",
+   "sid": "324722 2",
+   "story": "Through Oct 13, the weather station in Killdeer has 10.76 inches, 5.63 less than a usual year. June was the wettest month at 2.63 inches. The biggest single day came late, 1.39 inches on Sep 29. That puts this year 5.42 inches behind last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "38029": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 4",
+     "in": "1.02",
+     "label": "biggest single day"
+    },
+    "county": "Emmons County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "4 miles northwest of Hazelton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "10.35",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "22.64",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Jul 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 74,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.57",
+    "usual_in": "16.89",
+    "vs_usual": {
+     "diff_in": "4.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.68",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "0d0272be003ca3c4",
+   "sid": "24098 1",
+   "story": "Through Oct 13, the weather station 4 miles northwest of Hazelton has 12.57 inches, 4.32 inches less than a usual year. June was the wettest month at 2.68 inches, and the biggest single day was 1.02 inches on Apr 4. The gauge went 13 days in a row with nothing from Jul 21 to Aug 2. On the days both years reported, that is 10.35 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "38031": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.10",
+     "label": "biggest single day"
+    },
+    "county": "Foster County",
+    "days_in_year_so_far": 284,
+    "days_missing": 8,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "3 miles west of Mc Henry",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 276,
+      "diff_in": "0.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "18.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Feb 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "North Dakota",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "15.80",
+    "usual_in": "17.82",
+    "vs_usual": {
+     "diff_in": "2.02",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.21",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "31d6687ff33ea5c9",
+   "sid": "325730 2",
+   "story": "Through Oct 11, the weather station 3 miles west of Mc Henry had 15.80 inches, 2.02 inches less than a usual year. September was the wettest month at 4.21 inches, and the biggest single day came Sep 29 with 1.10 inches. The gauge went 19 days in a row with nothing from Feb 20 to Mar 10. On the days both years reported, this year ran 0.29 inches less than 2025.",
+   "through": "2026-10-11"
+  },
+  "38033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 12",
+     "in": "0.69",
+     "label": "biggest single day"
+    },
+    "county": "Golden Valley County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "less than a mile south-southeast of Beach",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.06",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "16.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Apr 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 66,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "9.65",
+    "usual_in": "14.72",
+    "vs_usual": {
+     "diff_in": "5.07",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.37",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7bfa65d03f167531",
+   "sid": "US1NDGV0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile south-southeast of Beach has caught 9.65 inches, 5.07 inches less than a usual year. June was the wettest month at 2.37 inches. The biggest single day came late, 0.69 inches on Oct 12. Last year by this date the gauge had 16.71 inches, so 2026 sits 7.06 inches behind it.",
+   "through": "2026-10-13"
+  },
+  "38035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 3",
+     "in": "1.88",
+     "label": "biggest single day"
+    },
+    "county": "Grand Forks County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Grand Forks International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.58",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "13.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Feb 5",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.42",
+    "usual_in": "19.14",
+    "vs_usual": {
+     "diff_in": "0.72",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.29",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8f76e8f4a94435e3",
+   "sid": "14916 1",
+   "story": "Through Oct 13, the weather station at Grand Forks International Airport had 18.42 inches, 0.72 inches less than a usual year. September did the heavy lifting with 5.29 inches, and the biggest single day was 1.88 inches on Jun 3. That is still 4.58 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "38039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "2.73",
+     "label": "biggest one-day reading"
+    },
+    "county": "Griggs County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "less than a mile west-northwest of Cooperstown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "6.04",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "20.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Jul 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "14.93",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.06",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f381f27f9e638ad0",
+   "sid": "US1NDGG0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile west-northwest of Cooperstown caught 5.06 inches in September, its wettest month, and 2.73 inches of that came on Sep 29 alone. Before that it sat empty 20 days in a row, Jul 11 to Jul 30. On the days both years reported, this year is 6.04 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "38043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 2",
+     "in": "1.14",
+     "label": "biggest single day"
+    },
+    "county": "Kidder County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "38 miles west-southwest of Jamestown",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "3.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "18.49",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 10,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.49",
+    "usual_in": "18.85",
+    "vs_usual": {
+     "diff_in": "3.36",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "3.01",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3bc35c56f9cbedba",
+   "sid": "54937 1",
+   "story": "Through Oct 13, the weather station 38 miles west-southwest of Jamestown has run 3.36 inches less than a usual year. June was the wettest month at 3.01 inches, and the biggest single day was 1.14 inches on Jul 2. On the days both years reported, this year sits 3.00 inches behind last year.",
+   "through": "2026-10-13"
+  },
+  "38045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 8",
+     "in": "1.27",
+     "label": "biggest one-day reading"
+    },
+    "county": "LaMoure County",
+    "days_in_year_so_far": 285,
+    "days_missing": 6,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in La Moure",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Aug 26",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 7"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 52,
+    "state": "North Dakota",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "10.90",
+    "usual_in": "21.08",
+    "vs_usual": {
+     "diff_in": "10.18",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.69",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d61eb9668aef81a6",
+   "sid": "324937 2",
+   "story": "Through Oct 12, the weather station in La Moure has caught 10.90 inches, 10.18 inches less than a usual year. July was the wettest month at 2.69 inches, and the biggest one-day reading came Jul 8 with 1.27 inches. The longest dry stretch ran 13 days, Aug 26 to Sep 7, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "38049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "1.61",
+     "label": "biggest one-day reading"
+    },
+    "county": "McHenry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "in Velva",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 267,
+      "diff_in": "2.98",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "19.85",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 9,
+     "from": "Feb 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 12,
+    "pct_of_usual": 102,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.91",
+    "usual_in": "15.55",
+    "vs_usual": {
+     "diff_in": "0.36",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.62",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "000145a059c32067",
+   "sid": "328990 2",
+   "story": "Through Oct 13, the weather station in Velva had most of its rain come in June, at 5.62 inches. The biggest one-day reading was 1.61 inches on Jun 23. On the days both years reported, this year is 2.98 inches less than 2025. The longest run with nothing in the gauge was 9 days, Feb 7 to Feb 15.",
+   "through": "2026-10-13"
+  },
+  "38053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "1.54",
+     "label": "biggest single day"
+    },
+    "county": "McKenzie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "1.3 miles north-northwest of Watford City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.59",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "16.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Jul 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.97",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.21",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6bb225d117c24e96",
+   "sid": "US1NDMK0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Watford City got its most in June, 5.21 inches for the wettest month. The biggest single day was Jun 8 at 1.54 inches. From Jul 11 to Aug 3 the gauge went 24 days in a row with nothing in it, not even a trace. On the days both years reported, 2026 has 4.59 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "38055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 30",
+     "in": "1.01",
+     "label": "biggest single day"
+    },
+    "county": "McLean County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Underwood",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.15",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.44",
+    "usual_in": "15.86",
+    "vs_usual": {
+     "diff_in": "4.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.62",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bb2809cd4b9c3fc6",
+   "sid": "328872 2",
+   "story": "Through Oct 13, the weather station in Underwood went 21 days in a row with nothing in the gauge, from Jul 9 to Jul 29. Then Jul 30 put 1.01 inches in it, the biggest single day so far. June was the wettest month at 2.62 inches. The station has 3.15 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "38057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 1",
+     "in": "1.80",
+     "label": "biggest single day"
+    },
+    "county": "Mercer County",
+    "days_in_year_so_far": 286,
+    "days_missing": 16,
+    "days_reported": 270,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Hazen",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 263,
+      "diff_in": "4.33",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "16.33",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Apr 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 75,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "11.99",
+    "usual_in": "16.09",
+    "vs_usual": {
+     "diff_in": "4.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.39",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "23ea34c814bb9628",
+   "sid": "US1NDMR0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Hazen caught 5.39 inches in June, its wettest month, and 1.80 of that came on Jun 1, the biggest single day. Before that it went 20 days in a row with nothing in the gauge, from Apr 27 to May 16. On the days both years reported, this year is 4.33 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "38059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 28",
+     "in": "0.78",
+     "label": "biggest single day"
+    },
+    "county": "Morton County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "5 miles northwest of New Salem",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "10.40",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "19.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 53,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "8.79",
+    "usual_in": "16.48",
+    "vs_usual": {
+     "diff_in": "7.69",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.66",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7f80f8282f610722",
+   "sid": "326365 2",
+   "story": "Through Oct 13, the weather station 5 miles northwest of New Salem has caught 8.79 inches, which is 10.40 inches less than it had by this day last year. June was the wettest month at 2.66 inches, and the biggest single day was 0.78 inches on Jun 28. Then the gauge went 21 days in a row with nothing in it, not even a trace, from Jul 9 to Jul 29.",
+   "through": "2026-10-13"
+  },
+  "38067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 3",
+     "in": "3.38",
+     "label": "biggest single day"
+    },
+    "county": "Pembina County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "in Pembina",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.13",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "16.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Feb 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.24",
+    "usual_in": "19.49",
+    "vs_usual": {
+     "diff_in": "1.25",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.67",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c2c39beb92aa3e91",
+   "sid": "14924 1",
+   "story": "Through Oct 13, the station in Pembina had June as the wettest month by a long way, with 7.67 inches. The biggest single day came Jun 3 at 3.38 inches. The longest dry stretch ran 12 days, Feb 6 to Feb 17, with nothing in the gauge. On the days both years reported, that is 2.13 inches more than last year, even with the total 1.25 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "38069": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 8",
+     "in": "1.47",
+     "label": "biggest single day"
+    },
+    "county": "Pierce County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "11.9 miles southeast of Towner",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.44",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "15.82",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Jul 11",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.38",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.42",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "47fb84a327584e53",
+   "sid": "US1NDPR0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 11.9 miles southeast of Towner had 13.38 inches for the year. June was the wettest month at 5.42 inches. The gauge then went 23 days in a row with nothing in it, from Jul 11 to Aug 2. That leaves this year 2.44 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "38071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 29",
+     "in": "2.00",
+     "label": "biggest single day"
+    },
+    "county": "Ramsey County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "at Devils Lake Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "1.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "10.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Sep 30",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.51",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.57",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8787a514eb704f03",
+   "sid": "94928 1",
+   "story": "Through Oct 13, the weather station at Devils Lake Municipal Airport has caught 12.51 inches. September did most of the work with 4.57 inches, and the biggest single day was Jun 29 at 2.00 inches. Then it shut off for 11 days in a row, Sep 30 to Oct 10, with not even a trace. On the days both years reported, that is 1.35 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "38073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 15",
+     "in": "1.06",
+     "label": "biggest one-day reading"
+    },
+    "county": "Ransom County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Lisbon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "9.96",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "22.70",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 17"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 65,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "12.74",
+    "usual_in": "19.58",
+    "vs_usual": {
+     "diff_in": "6.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.77",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8c36b2eceed4c263",
+   "sid": "325220 2",
+   "story": "Through Oct 13, the weather station in Lisbon had 12.74 inches, 6.84 inches less than a usual year. September was the wettest month at 2.77 inches, and the biggest one-day reading came Sep 15 with 1.06 inches. The gauge went 12 days in a row with nothing from May 6 to May 17. Last year by this day it had 22.70 inches, so this year is 9.96 inches less.",
+   "through": "2026-10-13"
+  },
+  "38077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "1.93",
+     "label": "biggest one-day reading"
+    },
+    "county": "Richland County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "3 miles east of Mc Leod",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "9.02",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "22.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 15"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 65,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.69",
+    "usual_in": "20.99",
+    "vs_usual": {
+     "diff_in": "7.30",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "2.82",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3eeaea28950552b7",
+   "sid": "325754 2",
+   "story": "Through Oct 13, the weather station 3 miles east of Mc Leod has caught 13.69 inches, 7.30 inches less than a usual year. April was the wettest month at 2.82 inches, and the biggest one-day reading came Jul 31 with 1.93 inches. On the days both years reported, this year is 9.02 inches behind 2025.",
+   "through": "2026-10-13"
+  },
+  "38079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 30",
+     "in": "1.61",
+     "label": "biggest single day"
+    },
+    "county": "Rolette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "7.4 miles north of Dunseith",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.21",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "14.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Apr 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 8"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.29",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.60",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dcb6bae4588cc3d6",
+   "sid": "US1NDRL0007 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.4 miles north of Dunseith has caught 21.29 inches, which is 7.21 inches more than last year by this date. June was the wettest month at 6.60 inches, and the biggest single day came Jun 30 with 1.61 inches. Before that, the gauge sat empty for 21 days in a row, from Apr 18 to May 8.",
+   "through": "2026-10-13"
+  },
+  "38083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "1.50",
+     "label": "biggest single day"
+    },
+    "county": "Sheridan County",
+    "days_in_year_so_far": 279,
+    "days_missing": 1,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Mc Clusky",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "4.99",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 6",
+     "total_in": "18.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jul 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 23"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "North Dakota",
+    "through": "Oct 6",
+    "through_iso": "2026-10-06",
+    "total_in": "13.23",
+    "usual_in": "15.63",
+    "vs_usual": {
+     "diff_in": "2.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.08",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "14eef60c0766fa86",
+   "sid": "325710 2",
+   "story": "Through Oct 6, the weather station in Mc Clusky had its wettest month in June at 4.08 inches. The biggest single day was 1.50 inches on Sep 29. The gauge went 15 days in a row with nothing in it, Jul 9 to Jul 23. On the days both years reported, that is 4.99 inches less than 2025 had by Oct 6.",
+   "through": "2026-10-06"
+  },
+  "38089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 15",
+     "in": "2.96",
+     "label": "biggest one-day reading"
+    },
+    "county": "Stark County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "1.3 miles west-northwest of Dickinson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 271,
+      "diff_in": "6.57",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "21.18",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Apr 29",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 16"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 89,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.88",
+    "usual_in": "15.62",
+    "vs_usual": {
+     "diff_in": "1.74",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.01",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f4a72bdac8bbdda5",
+   "sid": "US1NDSK0012 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles west-northwest of Dickinson has caught most of its year in August, with 4.01 inches that month. The biggest one-day reading came Aug 15 at 2.96 inches. Before that the gauge sat empty for 18 days in a row, from Apr 29 to May 16. On the days both years reported, this year is 6.57 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "38093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "3.65",
+     "label": "biggest single day"
+    },
+    "county": "Stutsman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "in Jamestown State Hosp",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.66",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "20.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Jan 1",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jan 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "19.14",
+    "usual_in": "18.96",
+    "vs_usual": {
+     "diff_in": "0.18",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "5.76",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "23560d87653d5ba9",
+   "sid": "324418 2",
+   "story": "Through Oct 13, the weather station in Jamestown State Hosp has a year that runs close to a usual year, 0.18 inches more. September was the wettest month at 5.76 inches, and most of that came on Sep 29, the biggest single day with 3.65 inches. On the days both years reported, this year is 1.66 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "38097": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 29",
+     "in": "2.18",
+     "label": "biggest single day"
+    },
+    "county": "Traill County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Mayville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "2.19",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 13",
+     "total_in": "20.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Jul 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Jul 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "18.03",
+    "usual_in": "20.60",
+    "vs_usual": {
+     "diff_in": "2.57",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.52",
+     "month": "September"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "cabed1c2bb3e7201",
+   "sid": "325660 2",
+   "story": "Through Oct 13, the weather station in Mayville had September as its wettest month at 6.52 inches. The biggest single day came Sep 29 with 2.18 inches. Before that, the gauge went 17 days in a row with nothing from Jul 14 to Jul 30. On the days both years reported, that is 2.19 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "38101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 23",
+     "in": "1.37",
+     "label": "biggest single day"
+    },
+    "county": "Ward County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Minot",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "17.51",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Jul 10",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 91,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "15.23",
+    "usual_in": "16.75",
+    "vs_usual": {
+     "diff_in": "1.52",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.97",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b07d8d644feb2fb",
+   "sid": "325993 2",
+   "story": "Through Oct 13, the weather station in Minot had its wettest month in June with 4.97 inches. The biggest single day came Jun 23 at 1.37 inches. After that it quit, with 25 days in a row of nothing in the gauge from Jul 10 to Aug 3. That leaves the year 2.28 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "38105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 14",
+     "in": "2.25",
+     "label": "biggest single day"
+    },
+    "county": "Williams County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "at Williston Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "0.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "13.19",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Feb 3",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Feb 15"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "North Dakota",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "13.56",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "4.06",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7fac59773d86a58a",
+   "sid": "94099 1",
+   "story": "Through Oct 13, the weather station at Williston Airport, 14 miles from the middle of the county, has 13.56 inches for the year. June was the wettest month at 4.06 inches, and the biggest single day was Aug 14 with 2.25 inches. The longest dry stretch ran 13 days, Feb 3 to Feb 15, with not even a trace in the gauge. On the days both years reported, this year is 0.37 inches more than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "ND"
+}

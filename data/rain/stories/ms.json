@@ -1,0 +1,2563 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "28001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 27",
+     "in": "2.70",
+     "label": "biggest single day"
+    },
+    "county": "Adams County",
+    "days_in_year_so_far": 285,
+    "days_missing": 12,
+    "days_reported": 273,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "at Natchez Adam County Airport",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 17"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Mississippi",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "34.69",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.65",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "497264fb59af738e",
+   "sid": "03961 1",
+   "story": "Through Oct 12, the weather station at Natchez Adam County Airport had 34.69 inches for the year. June was the wettest month at 7.65 inches. The biggest single day came Aug 27 with 2.70 inches. The longest dry stretch ran 12 days, Apr 6 to Apr 17, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-12"
+  },
+  "28003": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Alcorn County",
+    "days_in_year_so_far": 286,
+    "days_missing": 8,
+    "days_reported": 278,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "5 miles west-southwest of Corinth",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "8.46",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "43.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "May 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 19"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 79,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.86",
+    "usual_in": "44.35",
+    "vs_usual": {
+     "diff_in": "9.49",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "03b4e379f119c988",
+   "sid": "221962 2",
+   "story": "Through Oct 13, the weather station 5 miles west-southwest of Corinth had 34.86 inches, 9.49 inches less than a usual year. The longest dry stretch ran 12 days, May 8 to May 19, with nothing in the gauge, not even a trace. On the days both years reported, this year is 8.46 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "28005": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 30",
+     "in": "4.14",
+     "label": "biggest single day"
+    },
+    "county": "Amite County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "6.4 miles east-northeast of Liberty",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.86",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "52.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 88,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.36",
+    "usual_in": "52.57",
+    "vs_usual": {
+     "diff_in": "6.21",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.40",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c1749ea5e49f028f",
+   "sid": "US1MSAM0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 6.4 miles east-northeast of Liberty has caught 46.36 inches, 6.21 inches less than a usual year. May was the wettest month at 10.40 inches, and the biggest single day was 4.14 inches on Apr 30. The longest dry stretch ran 14 days, Mar 17 to Mar 30, with nothing in the gauge. On the days both years reported, that is 5.86 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28007": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 25",
+     "in": "2.30",
+     "label": "biggest single day"
+    },
+    "county": "Attala County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Kosciusko",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "7.53",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.11",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.58",
+    "usual_in": "49.37",
+    "vs_usual": {
+     "diff_in": "10.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.95",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4789e0c5701e0dc4",
+   "sid": "224776 2",
+   "story": "Through Oct 13, the weather station in Kosciusko has caught 38.58 inches, 7.53 inches less than it had by this day last year. January was the wettest month at 6.95 inches, and the biggest single day came Apr 25 with 2.30 inches. The longest dry stretch ran 15 days, Mar 17 to Mar 31, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "28011": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "2.38",
+     "label": "biggest single day"
+    },
+    "county": "Bolivar County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Cleveland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "16.73",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "37.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 22"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 46,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "21.17",
+    "usual_in": "46.09",
+    "vs_usual": {
+     "diff_in": "24.92",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.39",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b9b6c8661be83b00",
+   "sid": "221738 2",
+   "story": "Through Oct 13, the weather station in Cleveland has 21.17 inches, 24.92 inches less than a usual year. May was the wettest month at 4.39 inches, and the biggest single day was 2.38 inches on Mar 12. The gauge went 21 days in a row with nothing from Aug 2 to Aug 22. On the days both years reported, that is 16.73 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "28013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 27",
+     "in": "2.51",
+     "label": "biggest one-day reading"
+    },
+    "county": "Calhoun County",
+    "days_in_year_so_far": 286,
+    "days_missing": 22,
+    "days_reported": 264,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Calhoun City",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Sep 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 17,
+    "pct_of_usual": 74,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.48",
+    "usual_in": "42.61",
+    "vs_usual": {
+     "diff_in": "11.13",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e39c1c6b7cc46c13",
+   "sid": "221314 2",
+   "story": "Through Oct 13, the weather station in Calhoun City has 31.48 inches for the year, 11.13 inches less than a usual year. The biggest one-day reading came Jan 27 at 2.51 inches. The longest dry stretch ran 17 days, from Sep 23 to Oct 9, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "28015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 5",
+     "in": "2.26",
+     "label": "biggest single day"
+    },
+    "county": "Carroll County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "4.8 miles west-northwest of Vaiden",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "17.20",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "48.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.96",
+    "usual_in": "45.71",
+    "vs_usual": {
+     "diff_in": "12.75",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.58",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "4dad4797e05b09c6",
+   "sid": "US1MSCR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.8 miles west-northwest of Vaiden had its wettest month in January with 6.58 inches. The biggest single day came Apr 5 at 2.26 inches, right after the gauge went 15 days in a row with nothing in it, Mar 17 to Mar 31. On the days both years reported, this year sits 17.20 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Mar 12",
+     "in": "5.37",
+     "label": "biggest single day"
+    },
+    "county": "Claiborne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1 mile northeast of Port Gibson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "21.94",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "71.91",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 23,
+     "from": "Sep 9",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.97",
+    "usual_in": "44.02",
+    "vs_usual": {
+     "diff_in": "5.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.36",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d8ba4831453dfb3a",
+   "sid": "227132 2",
+   "story": "Through Oct 13, the weather station 1 mile northeast of Port Gibson has 49.97 inches, 5.95 inches more than a usual year. That is still 21.94 inches less than last year had by this day. June was the wettest month at 9.36 inches, and the biggest single day was Mar 12 with 5.37 inches. Then the gauge went 23 days in a row with nothing, Sep 9 to Oct 1.",
+   "through": "2026-10-13"
+  },
+  "28027": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 21",
+     "in": "3.01",
+     "label": "biggest single day"
+    },
+    "county": "Coahoma County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.9 miles southwest of Clarksdale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.68",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "38.28",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Aug 4",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 20"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 80,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "33.60",
+    "usual_in": "41.99",
+    "vs_usual": {
+     "diff_in": "8.39",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.64",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "645d0bd605a1c471",
+   "sid": "US1MSCH0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.9 miles southwest of Clarksdale has caught 33.60 inches, 8.39 less than a usual year. June was the wettest month at 5.64 inches, and 3.01 of that came on Jun 21 alone. The gauge then went 17 days with nothing in it, from Aug 4 to Aug 20. That puts this year 4.68 inches behind last year at the same point.",
+   "through": "2026-10-13"
+  },
+  "28033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.34",
+     "label": "biggest one-day reading"
+    },
+    "county": "DeSoto County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Pleasant Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "16.79",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 13",
+     "total_in": "49.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Aug 24",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 73,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.94",
+    "usual_in": "45.32",
+    "vs_usual": {
+     "diff_in": "12.38",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.81",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8a8993223919dce9",
+   "sid": "227066 2",
+   "story": "Through Oct 13, the weather station in Pleasant Hill has caught 32.94 inches, 12.38 inches less than a usual year. May was the wettest month at 6.81 inches, and the biggest one-day reading was 2.34 inches on Jun 8. From Aug 24 to Sep 11 the gauge went 19 days in a row with nothing in it, not even a trace. On the days both years reported, that is 16.79 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 16",
+     "in": "4.20",
+     "label": "biggest single day"
+    },
+    "county": "Forrest County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Hattiesburg Chain Municipal Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.99",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "47.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 120,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "57.06",
+    "usual_in": "47.62",
+    "vs_usual": {
+     "diff_in": "9.44",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "18.57",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "49052a3475c26214",
+   "sid": "13833 1",
+   "story": "Through Oct 13, the weather station at Hattiesburg Chain Municipal Airport had 57.06 inches, 9.44 inches more than a usual year. May did most of the work with 18.57 inches, and the biggest single day was Jun 16 at 4.20 inches. The longest dry stretch ran 13 days, Mar 17 to Mar 29. On the days both years reported, this year is 9.99 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "28039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "9.16",
+     "label": "biggest one-day reading"
+    },
+    "county": "George County",
+    "days_in_year_so_far": 284,
+    "days_missing": 16,
+    "days_reported": 268,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "13.1 miles southeast of Lucedale",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 254,
+      "diff_in": "3.52",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 11",
+     "total_in": "60.62",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": null,
+    "state": "Mississippi",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "59.54",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "17.83",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a3b8280af6a61a7b",
+   "sid": "US1MSGG0002 6",
+   "story": "Through Oct 11, the volunteer rain gauge 13.1 miles southeast of Lucedale had its wettest month in May at 17.83 inches. The biggest one-day reading came Jun 19 at 9.16 inches. The gauge went 15 days in a row with nothing in it, Mar 17 to Mar 31. On the days both years reported, this year ran 3.52 inches less than last year.",
+   "through": "2026-10-11"
+  },
+  "28041": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "3.72",
+     "label": "biggest one-day reading"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 18,
+    "days_reported": 268,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "6 miles west-southwest of Leakesville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 106,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "51.05",
+    "usual_in": "48.08",
+    "vs_usual": {
+     "diff_in": "2.97",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "04817d486f8e0143",
+   "sid": "224966 2",
+   "story": "Through Oct 13, the weather station 6 miles west-southwest of Leakesville had 51.05 inches, 2.97 more than a usual year. The biggest one-day reading came Jun 19 at 3.72 inches. The longest dry stretch ran 13 days, Mar 17 to Mar 29, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "28045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "7.65",
+     "label": "biggest single day"
+    },
+    "county": "Hancock County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.3 miles north of Kiln",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "74.09",
+    "usual_in": "57.59",
+    "vs_usual": {
+     "diff_in": "16.50",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "26.14",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "c9d31fc644b42d03",
+   "sid": "US1MSHC0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.3 miles north of Kiln had 74.09 inches, 16.50 inches more than a usual year. May did most of the work with 26.14 inches. The biggest single day was Jun 19 at 7.65 inches. The longest dry stretch ran 11 days, Mar 18 to Mar 28, with nothing in the gauge, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "28049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 2",
+     "in": "2.95",
+     "label": "biggest single day"
+    },
+    "county": "Hinds County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2.7 miles east of Raymond",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "16.18",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "54.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Sep 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 81,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.21",
+    "usual_in": "48.63",
+    "vs_usual": {
+     "diff_in": "9.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.24",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b37a1b636d714c01",
+   "sid": "US1MSHD0025 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles east of Raymond had June as its wettest month at 10.24 inches, and the biggest single day came Jun 2 with 2.95 inches. Then it went 16 days in a row with nothing in the gauge, not even a trace, from Sep 16 to Oct 1. On the days both years reported, 2026 ran 16.18 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "28057": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Itawamba County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "3.4 miles north of Mantachie",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.52",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.05",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9df4d9196dc731bc",
+   "sid": "US1MSIT0003 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.4 miles north of Mantachie has caught 39.52 inches. July was the wettest month at 7.05 inches. The longest dry stretch ran 19 days, from Mar 17 to Apr 4, with nothing in the gauge, not even a trace. The gauge has reported 271 of 286 days so far.",
+   "through": "2026-10-13"
+  },
+  "28059": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 28",
+     "in": "3.93",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Pascagoula Lott International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "11.29",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "51.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 11,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 27"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.90",
+    "usual_in": "50.30",
+    "vs_usual": {
+     "diff_in": "10.40",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "12.81",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a4e18609e33ca781",
+   "sid": "53858 1",
+   "story": "Through Oct 13, the weather station at Pascagoula Lott International Airport had a lot of its year come in May, with 12.81 inches that month. The biggest single day was May 28 at 3.93 inches. Against last year, the gauge is 11.29 inches less on the days both years reported.",
+   "through": "2026-10-13"
+  },
+  "28067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "6.50",
+     "label": "biggest single day"
+    },
+    "county": "Jones County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Laurel",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Sep 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.51",
+    "usual_in": "45.39",
+    "vs_usual": {
+     "diff_in": "0.88",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "11.97",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3401debed0c143f3",
+   "sid": "224939 2",
+   "story": "Through Oct 13, the weather station in Laurel had 44.51 inches, 0.88 inches less than a usual year. May was the wettest month at 11.97 inches. The biggest single day came early, 6.50 inches on Jan 10. Then the gauge went 17 days in a row with nothing in it, not even a trace, from Sep 23 to Oct 9.",
+   "through": "2026-10-13"
+  },
+  "28071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "2.97",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lafayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in University",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "10.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "45.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Sep 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 76,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.26",
+    "usual_in": "46.52",
+    "vs_usual": {
+     "diff_in": "11.26",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.79",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f8b4e769ce169627",
+   "sid": "229079 2",
+   "story": "Through Oct 13, the weather station in University has its wettest month in May at 7.79 inches. The biggest one-day reading came Jan 25 with 2.97 inches. The gauge then went 17 days in a row with nothing in it, not even a trace, from Sep 16 to Oct 2. On the days both years reported, this year is 10.44 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "28073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "6.34",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lamar County",
+    "days_in_year_so_far": 285,
+    "days_missing": 4,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "8.0 miles west-southwest of Hattiesburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "10.21",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 8,
+     "through": "Oct 12",
+     "total_in": "49.75",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": null,
+    "state": "Mississippi",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "60.10",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "18.40",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "01572ceda6c28aa4",
+   "sid": "US1MSLM0002 6",
+   "story": "Through Oct 12, the gauge 8.0 miles west-southwest of Hattiesburg had caught 60.10 inches. May was the wettest month at 18.40 inches, and the biggest one-day reading came Jan 10 with 6.34 inches. On the days both years reported, that is 10.21 inches more than 2025 had.",
+   "through": "2026-10-12"
+  },
+  "28075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 4",
+     "in": "3.10",
+     "label": "biggest single day"
+    },
+    "county": "Lauderdale County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Meridian Key Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "5.10",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 13",
+     "total_in": "40.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.35",
+    "usual_in": "45.15",
+    "vs_usual": {
+     "diff_in": "4.20",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.72",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1bb932c981ae0011",
+   "sid": "13865 1",
+   "story": "Through Oct 13, the weather station at Meridian Key Field had its wettest month in May at 9.72 inches. The biggest single day came late, 3.10 inches on Oct 4. Before all that it went 14 days in a row with nothing in the gauge, Mar 17 to Mar 30. On the days both years reported, that is 5.10 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "28079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 25",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Leake County",
+    "days_in_year_so_far": 283,
+    "days_missing": 0,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Walnut Grove",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "11.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 10",
+     "total_in": "51.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Aug 2",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Aug 19"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Mississippi",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "40.84",
+    "usual_in": "49.37",
+    "vs_usual": {
+     "diff_in": "8.53",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.85",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "97a7816a01d7dc89",
+   "sid": "229326 2",
+   "story": "Through Oct 10, the weather station in Walnut Grove had April as its wettest month at 8.85 inches, and its biggest single day came Apr 25 with 2.55 inches. Then it went 18 days in a row with nothing in the gauge, from Aug 2 to Aug 19. On the days both years reported, that is 11.53 inches less than last year.",
+   "through": "2026-10-10"
+  },
+  "28081": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "3.32",
+     "label": "biggest single day"
+    },
+    "county": "Lee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "at Tupelo Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.05",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.09",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 76,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.04",
+    "usual_in": "45.00",
+    "vs_usual": {
+     "diff_in": "10.96",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.43",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a11cdc03a8d0eb54",
+   "sid": "93862 1",
+   "story": "Through Oct 13, the weather station at Tupelo Regional Airport has 34.04 inches, 10.96 inches less than a usual year. May was the wettest month at 6.43 inches, and the biggest single day was Apr 28 with 3.32 inches. The gauge then went 20 days in a row with nothing, from Sep 12 to Oct 1. Last year at this point it had 49.09 inches, so this year is 15.05 inches less.",
+   "through": "2026-10-13"
+  },
+  "28087": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 31",
+     "in": "2.77",
+     "label": "biggest single day"
+    },
+    "county": "Lowndes County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "5.3 miles east-southeast of Columbus",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "16.74",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "55.16",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.73",
+    "usual_in": "44.97",
+    "vs_usual": {
+     "diff_in": "6.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.36",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a51ae4ba0d7a35bf",
+   "sid": "US1MSLW0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles east-southeast of Columbus had its wettest month in July at 7.36 inches, and its biggest single day came Jul 31 with 2.77 inches. Then it went 28 days in a row with nothing in the gauge, not even a trace, from Sep 12 to Oct 9. On the days both years reported, this year is 16.74 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jul 13",
+     "in": "2.97",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "4 miles north of Canton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "0.76",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 9,
+     "through": "Oct 13",
+     "total_in": "41.22",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.14",
+    "usual_in": "44.73",
+    "vs_usual": {
+     "diff_in": "2.59",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.59",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "31f1e87ada5d4769",
+   "sid": "221389 2",
+   "story": "Through Oct 13, the weather station 4 miles north of Canton had its wettest month back in January, with 7.59 inches. The biggest single day was Jul 13, at 2.97 inches. The gauge went 17 days in a row with nothing at all, from Mar 17 to Apr 2. On the days both years reported, this year is 0.76 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "28095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "6.08",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Thad Cochran",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "9.36",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "46.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 89,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.66",
+    "usual_in": "44.61",
+    "vs_usual": {
+     "diff_in": "4.95",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.29",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8b044e4881b576c2",
+   "sid": "220173 2",
+   "story": "Through Oct 13, the weather station in Thad Cochran had 19 days in a row with nothing in the gauge, from Mar 17 to Apr 4. Then April turned into the wettest month at 8.29 inches, and 6.08 inches of that came on Apr 29 alone. On the days both years reported, this year is 9.36 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28099": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 25",
+     "in": "2.85",
+     "label": "biggest single day"
+    },
+    "county": "Neshoba County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "1.4 miles southeast of Philadelphia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "6.75",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "43.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.27",
+    "usual_in": "46.42",
+    "vs_usual": {
+     "diff_in": "3.85",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.70",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2b04a7cb0cfbc35e",
+   "sid": "US1MSNS0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles southeast of Philadelphia had June as its wettest month at 12.70 inches. The biggest single day came Apr 25 with 2.85 inches. The gauge also went 15 days in a row with nothing in it, from Mar 17 to Mar 31. On the days both years reported, that is 6.75 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "28101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "3.93",
+     "label": "biggest single day"
+    },
+    "county": "Newton County",
+    "days_in_year_so_far": 283,
+    "days_missing": 2,
+    "days_reported": 281,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5 miles east-northeast of Newton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "3.07",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "46.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 96,
+    "state": "Mississippi",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "43.25",
+    "usual_in": "45.25",
+    "vs_usual": {
+     "diff_in": "2.00",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "12.53",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3d713bd5b1f1f802",
+   "sid": "63831 1",
+   "story": "Through Oct 10, the weather station 5 miles east-northeast of Newton had 43.25 inches, 2.00 less than a usual year. June did most of the work with 12.53 inches, and the biggest single day was 3.93 on Jun 18. Then the gauge sat empty 21 days in a row, Sep 13 to Oct 3. On the days both years reported, this year is 3.07 inches less than 2025.",
+   "through": "2026-10-10"
+  },
+  "28105": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.21",
+     "label": "biggest single day"
+    },
+    "county": "Oktibbeha County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5.3 miles south of Starkville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "8.22",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "48.52",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 83,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.64",
+    "usual_in": "49.20",
+    "vs_usual": {
+     "diff_in": "8.56",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.57",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9936f06cdfe41a85",
+   "sid": "US1MSOK0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles south of Starkville had its wettest month in May with 8.57 inches. The biggest single day was Apr 29 at 3.21 inches. From Mar 18 to Mar 31 it went 14 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year sits 8.22 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28107": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Panola County",
+    "days_in_year_so_far": 278,
+    "days_missing": 10,
+    "days_reported": 268,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "in Sardis",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 257,
+      "diff_in": "2.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 5",
+     "total_in": "40.23",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 86,
+    "state": "Mississippi",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "36.42",
+    "usual_in": "42.51",
+    "vs_usual": {
+     "diff_in": "6.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.73",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "47925d9ee400a076",
+   "sid": "227815 2",
+   "story": "Through Oct 5, the weather station in Sardis had May as its wettest month at 6.73 inches. The longest dry stretch ran 20 days, Sep 13 to Oct 2, with nothing in the gauge, not even a trace. On the days both years reported, this year is 2.30 inches less than 2025.",
+   "through": "2026-10-05"
+  },
+  "28109": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "5.02",
+     "label": "biggest single day"
+    },
+    "county": "Pearl River County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "3.2 miles south-southwest of Carriere",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "33.31",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "39.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 29"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 138,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "72.60",
+    "usual_in": "52.79",
+    "vs_usual": {
+     "diff_in": "19.81",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "26.80",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1f775837b6922232",
+   "sid": "US1MSPR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.2 miles south-southwest of Carriere has caught 72.60 inches, 19.81 inches more than a usual year. May did most of the work with 26.80 inches, and May 22 alone put 5.02 inches in the gauge. That is 33.31 inches more than the 39.29 it had by this day last year. The longest dry stretch ran 13 days, Mar 17 to Mar 29.",
+   "through": "2026-10-13"
+  },
+  "28111": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.70",
+     "label": "biggest one-day reading"
+    },
+    "county": "Perry County",
+    "days_in_year_so_far": 278,
+    "days_missing": 6,
+    "days_reported": 272,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Beaumont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "3.62",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 5",
+     "total_in": "45.43",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 98,
+    "state": "Mississippi",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "47.73",
+    "usual_in": "48.95",
+    "vs_usual": {
+     "diff_in": "1.22",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60fa879ebbb57a66",
+   "sid": "220585 2",
+   "story": "Through Oct 5, the weather station in Beaumont had its biggest one-day reading on May 7, at 3.70 inches. The gauge went 15 days in a row with nothing in it, not even a trace, from Mar 18 to Apr 1. On the days both years reported, this year is 3.62 inches more than last year. Against a usual year it sits 1.22 inches less, which is about usual.",
+   "through": "2026-10-05"
+  },
+  "28113": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Pike County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "5.6 miles southwest of Jayess",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 278,
+      "diff_in": "2.61",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "47.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Sep 16",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 101,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.04",
+    "usual_in": "49.79",
+    "vs_usual": {
+     "diff_in": "0.25",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "11.04",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ba5b8af22984d9f6",
+   "sid": "US1MSPK0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.6 miles southwest of Jayess had its wettest month in May, with 11.04 inches. It also went 16 days in a row with nothing in it, not even a trace, from Sep 16 to Oct 1. On the days both years reported, this year is running 2.61 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "28115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.30",
+     "label": "biggest one-day reading"
+    },
+    "county": "Pontotoc County",
+    "days_in_year_so_far": 285,
+    "days_missing": 18,
+    "days_reported": 267,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Pontotoc",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 28,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 10"
+    },
+    "multi_day_reports": 4,
+    "pct_of_usual": 82,
+    "state": "Mississippi",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "35.12",
+    "usual_in": "42.90",
+    "vs_usual": {
+     "diff_in": "7.78",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.15",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aacf5e208165f5c0",
+   "sid": "227106 2",
+   "story": "Through Oct 12, the weather station in Pontotoc had its wettest month in April at 6.15 inches. The biggest one-day reading came Apr 29 at 3.30 inches. Then it went 28 days in a row with nothing in the gauge, not even a trace, from Sep 13 to Oct 10. That leaves the station 7.78 inches less than a usual year.",
+   "through": "2026-10-12"
+  },
+  "28117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 13",
+     "in": "2.22",
+     "label": "biggest single day"
+    },
+    "county": "Prentiss County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "less than a mile east-southeast of Booneville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "21.71",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.34",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.61",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "5.90",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f25b77248c4189a1",
+   "sid": "US1MSPS0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile east-southeast of Booneville has caught 31.61 inches. June was the wettest month at 5.90 inches, and the biggest single day was Jun 13 with 2.22 inches. The gauge then went 20 days in a row with nothing in it, from Sep 13 to Oct 2. On the days both years reported, that is 21.71 inches less than 2025 had by now.",
+   "through": "2026-10-13"
+  },
+  "28121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.78",
+     "label": "biggest single day"
+    },
+    "county": "Rankin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "at Jackson International Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "12.28",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "47.69",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.41",
+    "usual_in": "45.51",
+    "vs_usual": {
+     "diff_in": "10.10",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.52",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "76ba12876019dbda",
+   "sid": "03940 1",
+   "story": "Through Oct 13, the weather station at Jackson International Airport had 10.10 inches less than a usual year. June carried the year with 9.52 inches, and the biggest single day was 2.78 inches on Aug 6. The gauge went 14 days in a row with nothing, Mar 17 to Mar 30. Last year at this point it had 12.28 inches more.",
+   "through": "2026-10-13"
+  },
+  "28129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "5.93",
+     "label": "biggest single day"
+    },
+    "county": "Smith County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "15 miles from the middle of the county",
+    "gauge_where": "3.9 miles south-southwest of Mize",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.13",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "12.02",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b64ad7a6fc19736c",
+   "sid": "US1MSSM0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.9 miles south-southwest of Mize has caught 52.13 inches, with 285 of 286 days reported. May was the wettest month at 12.02 inches. The biggest single day came early, 5.93 inches on Jan 10. The longest dry stretch ran 14 days, Mar 17 to Mar 30, without even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "28131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "14.28",
+     "label": "biggest single day"
+    },
+    "county": "Stone County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Wiggins",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "25.09",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 13",
+     "total_in": "45.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 129,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "70.74",
+    "usual_in": "54.86",
+    "vs_usual": {
+     "diff_in": "15.88",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "26.37",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "13a46415314826a8",
+   "sid": "229639 2",
+   "story": "Through Oct 13, the weather station in Wiggins had a lot of its year come in June, with 26.37 inches that month. The biggest single day was Jun 19 at 14.28 inches. The longest dry stretch ran 14 days, Mar 17 to Mar 30. On the days both years reported, this year is 25.09 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "28133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 25",
+     "in": "2.03",
+     "label": "biggest one-day reading"
+    },
+    "county": "Sunflower County",
+    "days_in_year_so_far": 276,
+    "days_missing": 3,
+    "days_reported": 273,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "1.1 miles north of Indianola",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 262,
+      "diff_in": "21.92",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 11,
+     "through": "Oct 3",
+     "total_in": "43.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 3,
+    "pct_of_usual": 56,
+    "state": "Mississippi",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "23.66",
+    "usual_in": "42.29",
+    "vs_usual": {
+     "diff_in": "18.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.92",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a01c337b65c2eaa2",
+   "sid": "US1MSSF0001 6",
+   "story": "Through Oct 3, the volunteer rain gauge 1.1 miles north of Indianola had its wettest month in January at 4.92 inches, and the biggest one-day reading came Jan 25 at 2.03 inches. From Mar 17 to Apr 4 it went 19 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 21.92 inches less than last year.",
+   "through": "2026-10-03"
+  },
+  "28135": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Tallahatchie County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "3.5 miles southwest of Charleston",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "4.64",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "36.84",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 70,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "30.91",
+    "usual_in": "44.18",
+    "vs_usual": {
+     "diff_in": "13.27",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.59",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ea93db3deff78bcd",
+   "sid": "US1MSTL0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.5 miles southwest of Charleston had 30.91 inches, 13.27 inches less than a usual year. January was the wettest month at 5.59 inches. The longest dry stretch ran 18 days, Sep 14 to Oct 1, with not even a trace in the gauge. On the days both years reported, this year is 4.64 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28137": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.34",
+     "label": "biggest single day"
+    },
+    "county": "Tate County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.5 miles south of Senatobia",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "15.22",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "46.27",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Sep 14",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "31.02",
+    "usual_in": "43.11",
+    "vs_usual": {
+     "diff_in": "12.09",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.91",
+     "month": "March"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a916cab745633666",
+   "sid": "US1MSTT0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles south of Senatobia had March as its wettest month at 4.91 inches. The biggest single day was Apr 29 with 2.34 inches. From Sep 14 to Oct 2 it went 19 days in a row with nothing in the gauge, not even a trace. On the days both years reported, this year is 15.22 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "28141": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Tishomingo County",
+    "days_in_year_so_far": 276,
+    "days_missing": 7,
+    "days_reported": 269,
+    "gauge": "weather station",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "2 miles south-southeast of Belmont",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 264,
+      "diff_in": "19.03",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 5,
+     "through": "Oct 3",
+     "total_in": "51.04",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 72,
+    "state": "Mississippi",
+    "through": "Oct 3",
+    "through_iso": "2026-10-03",
+    "total_in": "31.13",
+    "usual_in": "43.00",
+    "vs_usual": {
+     "diff_in": "11.87",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.92",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a8a12c00f2c4371",
+   "sid": "220656 2",
+   "story": "Through Oct 3, the weather station 2 miles south-southeast of Belmont has caught 31.13 inches, 11.87 inches less than a usual year. On the days both years reported, that is 19.03 inches less than 2025. July was the wettest month at 5.92 inches, and the biggest single day was 2.80 inches on Apr 29. The gauge went 15 days in a row with nothing from Mar 17 to Mar 31.",
+   "through": "2026-10-03"
+  },
+  "28149": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 30",
+     "in": "2.45",
+     "label": "biggest one-day reading"
+    },
+    "county": "Warren County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "1.7 miles south-southwest of Vicksburg",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "12.13",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "48.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 24,
+     "from": "Sep 8",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 80,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.50",
+    "usual_in": "45.48",
+    "vs_usual": {
+     "diff_in": "8.98",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "8.72",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a956cd1ae022eb45",
+   "sid": "US1MSWR0002 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.7 miles south-southwest of Vicksburg has caught 36.50 inches, 8.98 inches less than a usual year. May was the wettest month at 8.72 inches, and the biggest one-day reading was 2.45 inches on Apr 30. From Sep 8 to Oct 1 the gauge went 24 days in a row with nothing in it, not even a trace. On the days both years reported, that is 12.13 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "28151": {
+   "facts": {
+    "biggest_day": null,
+    "county": "Washington County",
+    "days_in_year_so_far": 278,
+    "days_missing": 6,
+    "days_reported": 272,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "3.3 miles east-northeast of Leland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 272,
+      "diff_in": "19.60",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 5",
+     "total_in": "40.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 47,
+    "state": "Mississippi",
+    "through": "Oct 5",
+    "through_iso": "2026-10-05",
+    "total_in": "19.51",
+    "usual_in": "41.75",
+    "vs_usual": {
+     "diff_in": "22.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "4.37",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1fb26b8d02fea9ad",
+   "sid": "US1MSWS0001 6",
+   "story": "Through Oct 5, the volunteer rain gauge 3.3 miles east-northeast of Leland has caught 19.51 inches, 47 percent of a usual year. May was the wettest month at 4.37 inches. The longest dry stretch ran 19 days, Mar 17 to Apr 4, with not even a trace in the gauge. On the days both years reported, that is 19.60 inches less than last year.",
+   "through": "2026-10-05"
+  },
+  "28153": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "7.85",
+     "label": "biggest single day"
+    },
+    "county": "Wayne County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2 miles west of Waynesboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.37",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.76",
+    "usual_in": "47.62",
+    "vs_usual": {
+     "diff_in": "2.14",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.83",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60896cb1ee30f234",
+   "sid": "229439 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Waynesboro has 49.76 inches, 2.14 more than a usual year. January did most of the work with 10.83 inches, and 7.85 of that came on Jan 10 alone. The gauge then went 15 days with nothing from Mar 18 to Apr 1. This year is 5.37 inches ahead of 2025 at this point.",
+   "through": "2026-10-13"
+  },
+  "28159": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "Winston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "8.6 miles south-southeast of Louisville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "12.34",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "50.08",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Mississippi",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.02",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.12",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "64f341464c8792ef",
+   "sid": "US1MSWN0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 8.6 miles south-southeast of Louisville has 35.02 inches. June was the wettest month at 7.12 inches, and the biggest single day came early, 2.17 inches on Jan 10. On the days both years reported, that is 12.34 inches less than 2025.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "MS"
+}

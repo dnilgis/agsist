@@ -1,0 +1,3081 @@
+{
+ "batch_id": "msgbatch_01PQnsjFXpghbz4yh7wsMTk9",
+ "counties": {
+  "01001": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "5.15",
+     "label": "biggest single day"
+    },
+    "county": "Autauga County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Billingsley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "7.41",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.68",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 16,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 85,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "38.77",
+    "usual_in": "45.45",
+    "vs_usual": {
+     "diff_in": "6.68",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.11",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "83c99a9723db7ae4",
+   "sid": "010823 2",
+   "story": "Through Oct 13, the weather station in Billingsley got most of its help early. January was the wettest month at 9.11 inches, and 5.15 inches of that came on Jan 10, the biggest single day. The gauge then went 16 days in a row with nothing from Mar 17 to Apr 1. On the days both years reported, this year sits 7.41 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01003": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "6.58",
+     "label": "biggest single day"
+    },
+    "county": "Baldwin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "18 miles from the middle of the county",
+    "gauge_where": "7.0 miles north of Bay Minette",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "7.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "51.61",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "60.98",
+    "usual_in": "56.52",
+    "vs_usual": {
+     "diff_in": "4.46",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "17.29",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "10990b7ac9c7c684",
+   "sid": "US1ALBW0071 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.0 miles north of Bay Minette has caught 60.98 inches, 4.46 inches more than a usual year. May did most of the work with 17.29 inches, and Jun 19 brought the biggest single day at 6.58 inches. On the days both years reported, that is 7.35 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "01009": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "3.21",
+     "label": "biggest one-day reading"
+    },
+    "county": "Blount County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "5.3 miles west-northwest of Springville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "3.05",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "44.10",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 101,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.15",
+    "usual_in": "46.70",
+    "vs_usual": {
+     "diff_in": "0.45",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "8.05",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ab2cb37403b9033d",
+   "sid": "US1ALBL0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.3 miles west-northwest of Springville had most of its year front-loaded. January was the wettest month at 8.05 inches, and the biggest one-day reading came Jan 10 with 3.21 inches. Then it went 17 days in a row with nothing in the gauge, from Mar 18 to Apr 3. The year sits 3.05 inches more than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "01013": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "3.14",
+     "label": "biggest one-day reading"
+    },
+    "county": "Butler County",
+    "days_in_year_so_far": 286,
+    "days_missing": 19,
+    "days_reported": 267,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "10.2 miles west-northwest of Greenville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 253,
+      "diff_in": "0.80",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 16,
+     "through": "Oct 13",
+     "total_in": "38.54",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Mar 21",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.86",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "7.65",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3ce975f3eaab2661",
+   "sid": "US1ALBT0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 10.2 miles west-northwest of Greenville has caught 36.86 inches. June was the wettest month at 7.65 inches, and the biggest one-day reading came late, 3.14 inches on Oct 10. On the days both years reported, this year is 0.80 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "01015": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.81",
+     "label": "biggest single day"
+    },
+    "county": "Calhoun County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Jacksonville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.51",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "50.07",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.53",
+    "usual_in": "42.46",
+    "vs_usual": {
+     "diff_in": "0.93",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "6.92",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "23eb6d4ecafa53d2",
+   "sid": "014209 2",
+   "story": "Through Oct 13, the station in Jacksonville has caught 41.53 inches, 0.93 inches less than a usual year. August was the wettest month at 6.92 inches, and the biggest single day was Jan 10 with 2.81 inches. The station went 19 days in a row with nothing from Mar 17 to Apr 4. On the days both years reported, this year is 8.51 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "01017": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "2.30",
+     "label": "biggest one-day reading"
+    },
+    "county": "Chambers County",
+    "days_in_year_so_far": 286,
+    "days_missing": 4,
+    "days_reported": 282,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "2 miles west of Lafayette",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 25"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 98,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.18",
+    "usual_in": "43.84",
+    "vs_usual": {
+     "diff_in": "0.66",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.09",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "826cc85771f59a16",
+   "sid": "014502 2",
+   "story": "Through Oct 13, the weather station 2 miles west of Lafayette had 43.18 inches, 0.66 less than a usual year. June was the wettest month at 7.09 inches. The biggest one-day reading came late, 2.30 inches on Oct 10. The gauge also went 19 days in a row with nothing in it, not even a trace, from Apr 7 to Apr 25.",
+   "through": "2026-10-13"
+  },
+  "01019": {
+   "facts": {
+    "biggest_day": {
+     "date": "Feb 27",
+     "in": "2.51",
+     "label": "biggest single day"
+    },
+    "county": "Cherokee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "4.2 miles east-southeast of Collinsville",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.27",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.21",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60b8d1e8eb8bee81",
+   "sid": "US1ALCE0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.2 miles east-southeast of Collinsville has caught 39.27 inches. January was the wettest month at 6.21 inches. The biggest single day came Feb 27 with 2.51 inches. The longest dry stretch ran 18 days, Mar 18 to Apr 4, without so much as a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "01021": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "5.80",
+     "label": "biggest single day"
+    },
+    "county": "Chilton County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Thorsby",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Alabama",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "43.40",
+    "usual_in": "44.82",
+    "vs_usual": {
+     "diff_in": "1.42",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.10",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bb79c60894c1400e",
+   "sid": "018209 2",
+   "story": "Through Oct 11, the weather station in Thorsby had most of its year front loaded. January was the wettest month at 10.10 inches, and 5.80 inches of that came on Jan 10 alone. The longest dry stretch ran 15 days, Mar 17 to Mar 31, with nothing in the gauge, not even a trace. All told it sits 1.42 inches less than a usual year.",
+   "through": "2026-10-11"
+  },
+  "01023": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "4.64",
+     "label": "biggest single day"
+    },
+    "county": "Choctaw County",
+    "days_in_year_so_far": 285,
+    "days_missing": 2,
+    "days_reported": 283,
+    "gauge": "weather station",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "in Coffeeville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "2.36",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 12",
+     "total_in": "41.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 13",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 2"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Alabama",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "44.39",
+    "usual_in": "41.11",
+    "vs_usual": {
+     "diff_in": "3.28",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "9.07",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "71d8655c39057297",
+   "sid": "011810 2",
+   "story": "Through Oct 12, the weather station in Coffeeville has 44.39 inches, 3.28 more than a usual year. June was the wettest month at 9.07 inches, and the biggest single day came Jan 10 with 4.64. Then the gauge went 20 days in a row with nothing in it, from Sep 13 to Oct 2. On the days both years reported, this year is 2.36 inches more than 2025.",
+   "through": "2026-10-12"
+  },
+  "01025": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "3.16",
+     "label": "biggest single day"
+    },
+    "county": "Clarke County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Jackson",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "5.58",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "42.60",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.81",
+    "usual_in": "48.20",
+    "vs_usual": {
+     "diff_in": "0.61",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "12.97",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1d03b21218412d82",
+   "sid": "014193 2",
+   "story": "Through Oct 13, the weather station in Jackson has caught 48.81 inches, 0.61 inches more than a usual year. May did most of the talking at 12.97 inches, the wettest month. Before that the gauge sat empty for 19 days in a row, Apr 6 to Apr 24. On the days both years reported, that is 5.58 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "01027": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 30",
+     "in": "4.00",
+     "label": "biggest single day"
+    },
+    "county": "Clay County",
+    "days_in_year_so_far": 286,
+    "days_missing": 6,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "5 miles south-southwest of Ashland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "6.53",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 10,
+     "through": "Oct 13",
+     "total_in": "46.88",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "53.17",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "9.74",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f6b1469f12fd92b8",
+   "sid": "010370 2",
+   "story": "Through Oct 13, the weather station 5 miles south-southwest of Ashland has 53.17 inches. July was the wettest month at 9.74 inches, and the biggest single day was May 30 with 4.00 inches. The longest dry stretch ran 12 days, Apr 7 to Apr 18. On the days both years reported, this year is 6.53 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "01033": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 28",
+     "in": "2.66",
+     "label": "biggest single day"
+    },
+    "county": "Colbert County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "at Muscle Shoals Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "21.57",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "56.21",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Aug 27",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 7"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 82,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.61",
+    "usual_in": "42.42",
+    "vs_usual": {
+     "diff_in": "7.81",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.67",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a85a9ef5e0c54322",
+   "sid": "13896 1",
+   "story": "Through Oct 13, the weather station at Muscle Shoals Airport has its biggest single day on Apr 28 at 2.66 inches. May was the wettest month with 6.67 inches. The longest dry stretch ran 12 days, Aug 27 to Sep 7, with nothing in the gauge. On the days both years reported, that is 21.57 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01035": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "3.29",
+     "label": "biggest single day"
+    },
+    "county": "Conecuh County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "at Evergreen Middleton Field",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.15",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "31.96",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 94,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.11",
+    "usual_in": "43.62",
+    "vs_usual": {
+     "diff_in": "2.51",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "10.18",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "819d2bf5861f4724",
+   "sid": "53820 1",
+   "story": "Through Oct 13, the weather station at Evergreen Middleton Field had June as its wettest month at 10.18 inches, and its biggest single day came on Jun 18 with 3.29 inches. The longest dry stretch ran 13 days, from Apr 6 to Apr 18, with not even a trace in the gauge. On the days both years reported, this year has 9.15 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "01039": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "6.66",
+     "label": "biggest single day"
+    },
+    "county": "Covington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "less than a mile southwest of Red Level",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "11.03",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.55",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.58",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "14.03",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "41e4f7bd214d0b6c",
+   "sid": "US1ALCV0013 6",
+   "story": "Through Oct 13, the volunteer rain gauge less than a mile southwest of Red Level has caught 52.58 inches this year. June was the wettest month at 14.03 inches, and the biggest single day came Jun 19 with 6.66 inches. The gauge went 15 days in a row with nothing from Mar 17 to Mar 31. That is 11.03 inches more than it had by this day last year.",
+   "through": "2026-10-13"
+  },
+  "01043": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Cullman County",
+    "days_in_year_so_far": 286,
+    "days_missing": 12,
+    "days_reported": 274,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "7.5 miles southwest of Cullman",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 258,
+      "diff_in": "4.53",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 19,
+     "through": "Oct 13",
+     "total_in": "47.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Mar 20",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.30",
+    "usual_in": "44.51",
+    "vs_usual": {
+     "diff_in": "1.79",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f6ee0ed1c59fa2a1",
+   "sid": "US1ALCM0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 7.5 miles southwest of Cullman had 46.30 inches, 1.79 more than a usual year. The biggest single day was Apr 29 with 3.30 inches. That came after the longest dry stretch, 13 days with nothing in the gauge from Mar 20 to Apr 1. On the 258 days both years reported, this year ran 4.53 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "01045": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 5",
+     "in": "2.29",
+     "label": "biggest single day"
+    },
+    "county": "Dale County",
+    "days_in_year_so_far": 286,
+    "days_missing": 10,
+    "days_reported": 276,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "at Dothan Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 275,
+      "diff_in": "1.77",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "36.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 90,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.97",
+    "usual_in": "42.24",
+    "vs_usual": {
+     "diff_in": "4.27",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.67",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "7b6ac59877e402d8",
+   "sid": "13839 1",
+   "story": "Through Oct 13, the weather station at Dothan Regional Airport has the year 4.27 inches less than a usual year. May was the wettest month at 7.67 inches, and the biggest single day came Oct 5 with 2.29 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, with not even a trace in the gauge. On the days both years reported, this year has 1.77 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "01047": {
+   "facts": {
+    "biggest_day": {
+     "date": "Sep 5",
+     "in": "4.23",
+     "label": "biggest single day"
+    },
+    "county": "Dallas County",
+    "days_in_year_so_far": 283,
+    "days_missing": 3,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "6 miles south-southeast of Selma",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "0.35",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 10",
+     "total_in": "39.99",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 20,
+     "from": "Sep 12",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 97,
+    "state": "Alabama",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "40.09",
+    "usual_in": "41.13",
+    "vs_usual": {
+     "diff_in": "1.04",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.91",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a989f214b405005e",
+   "sid": "63897 1",
+   "story": "Through Oct 10, the weather station 6 miles south-southeast of Selma had its wettest month in May at 7.91 inches. The biggest single day came Sep 5 with 4.23 inches. Then the gauge sat empty for 20 days in a row, Sep 12 to Oct 1, not even a trace. On the days both years reported, this year has 0.35 inches more than last year.",
+   "through": "2026-10-10"
+  },
+  "01049": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 10",
+     "in": "2.17",
+     "label": "biggest single day"
+    },
+    "county": "DeKalb County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "1.4 miles west-southwest of Fort Payne",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "15.95",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "49.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Aug 28",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 73,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "34.03",
+    "usual_in": "46.73",
+    "vs_usual": {
+     "diff_in": "12.70",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.91",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f4f3200992f425d8",
+   "sid": "US1ALDK0009 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.4 miles west-southwest of Fort Payne has 15.95 inches less than it had by this day last year. August was the wettest month at 5.91 inches, and the biggest single day was Aug 10 with 2.17 inches. Then the gauge sat empty for 15 days in a row, from Aug 28 to Sep 11, not even a trace.",
+   "through": "2026-10-13"
+  },
+  "01051": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "4.44",
+     "label": "biggest single day"
+    },
+    "county": "Elmore County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "5.4 miles west-northwest of Wetumpka",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "5.92",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "41.39",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "35.47",
+    "usual_in": "45.20",
+    "vs_usual": {
+     "diff_in": "9.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.54",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "6f87de10bf534401",
+   "sid": "US1ALEL0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.4 miles west-northwest of Wetumpka is 9.73 inches less than a usual year. May was the wettest month at 7.54 inches, and 4.44 inches of that came on May 7. Last year by this day the gauge had 41.39 inches, so 2026 sits 5.92 inches less. The longest dry stretch ran 14 days, Mar 17 to Mar 30, with not even a trace.",
+   "through": "2026-10-13"
+  },
+  "01053": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "6.76",
+     "label": "biggest single day"
+    },
+    "county": "Escambia County",
+    "days_in_year_so_far": 283,
+    "days_missing": 3,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "3 miles north-northeast of Brewton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 280,
+      "diff_in": "6.56",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 10",
+     "total_in": "40.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 99,
+    "state": "Alabama",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "47.49",
+    "usual_in": "48.14",
+    "vs_usual": {
+     "diff_in": "0.65",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "13.61",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a3119afdfce7d4fb",
+   "sid": "63899 1",
+   "story": "Through Oct 10, the weather station 3 miles north-northeast of Brewton is sitting at about a usual year, 0.65 inches less. May did most of the work with 13.61 inches, and the biggest single day came Jun 18 with 6.76 inches. On the days both years reported, this year is 6.56 inches more than 2025.",
+   "through": "2026-10-10"
+  },
+  "01055": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "4.59",
+     "label": "biggest one-day reading"
+    },
+    "county": "Etowah County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Walnut Grove",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.19",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "43.97",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 112,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.16",
+    "usual_in": "46.59",
+    "vs_usual": {
+     "diff_in": "5.57",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.10",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "518360c1bf74064c",
+   "sid": "018648 2",
+   "story": "Through Oct 13, the weather station in Walnut Grove had June as its wettest month at 10.10 inches, and the biggest one-day reading was 4.59 inches on Jun 8. The gauge also went 18 days in a row with nothing in it, from Mar 18 to Apr 4. On the days both years reported, this year is 8.19 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "01057": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "4.51",
+     "label": "biggest single day"
+    },
+    "county": "Fayette County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Fayette",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.19",
+    "usual_in": "44.50",
+    "vs_usual": {
+     "diff_in": "1.69",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.76",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "df0842a06d15119d",
+   "sid": "012883 2",
+   "story": "Through Oct 13, the weather station in Fayette has 46.19 inches, 1.69 more than a usual year. July was the wettest month at 8.76 inches. The biggest single day came Apr 29 with 4.51 inches, not long after 19 days in a row with nothing in the gauge, from Mar 17 to Apr 4.",
+   "through": "2026-10-13"
+  },
+  "01059": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 9",
+     "in": "2.55",
+     "label": "biggest single day"
+    },
+    "county": "Franklin County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Russellville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "10.97",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "56.59",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 101,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "44.66",
+    "usual_in": "44.10",
+    "vs_usual": {
+     "diff_in": "0.56",
+     "dir": "more",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.28",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "1fcb0532a310f069",
+   "sid": "017131 2",
+   "story": "Through Oct 13, the weather station in Russellville has caught rain about like a usual year, 0.56 inches more. July was the wettest month at 7.28 inches, and the biggest single day was Aug 9 with 2.55 inches. The gauge went 15 days in a row with nothing from Mar 18 to Apr 1. On the days both years reported, this year is 10.97 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "01061": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 12",
+     "in": "3.15",
+     "label": "biggest single day"
+    },
+    "county": "Geneva County",
+    "days_in_year_so_far": 282,
+    "days_missing": 9,
+    "days_reported": 273,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "in Geneva",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "9.37",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 9",
+     "total_in": "46.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 25,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "May 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 113,
+    "state": "Alabama",
+    "through": "Oct 9",
+    "through_iso": "2026-10-09",
+    "total_in": "54.17",
+    "usual_in": "47.89",
+    "vs_usual": {
+     "diff_in": "6.28",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "15.53",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "69ae3de2cb239d22",
+   "sid": "013251 2",
+   "story": "Through Oct 9, the weather station in Geneva had 25 days in a row with nothing in the gauge, from Apr 7 to May 1. Then May came in at 15.53 inches, the wettest month, with the biggest single day of 3.15 inches on May 12. On the days both years reported, this year has 9.37 inches more than last year.",
+   "through": "2026-10-09"
+  },
+  "01063": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "3.56",
+     "label": "biggest single day"
+    },
+    "county": "Greene County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "in Gainesville Lock",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "13.07",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "56.32",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 100,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.25",
+    "usual_in": "43.24",
+    "vs_usual": {
+     "diff_in": null,
+     "dir": "about the same",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "7.31",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2de68fae7867613a",
+   "sid": "013160 2",
+   "story": "Through Oct 13, the weather station in Gainesville Lock sits about usual for a usual year. January was the wettest month at 7.31 inches, and the biggest single day was Jun 19 with 3.56 inches. The gauge went 14 days in a row with nothing from Mar 18 to Mar 31. On the days both years reported, that is 13.07 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01065": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.95",
+     "label": "biggest one-day reading"
+    },
+    "county": "Hale County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Greensboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 270,
+      "diff_in": "14.23",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 14,
+     "through": "Oct 13",
+     "total_in": "50.71",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 93,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.62",
+    "usual_in": "42.41",
+    "vs_usual": {
+     "diff_in": "2.79",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.96",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9578c437fe4fb4e4",
+   "sid": "013511 2",
+   "story": "Through Oct 13, the weather station in Greensboro had its wettest month in May with 7.96 inches. The biggest one-day reading came Jan 10 at 2.95 inches. From Mar 18 to Mar 31 the gauge went 14 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 14.23 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01067": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "2.98",
+     "label": "biggest single day"
+    },
+    "county": "Henry County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Headland",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.31",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.58",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 22,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 28"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.89",
+    "usual_in": "46.00",
+    "vs_usual": {
+     "diff_in": "2.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.21",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e65a6c07ef0b21f4",
+   "sid": "013761 2",
+   "story": "Through Oct 13, the weather station in Headland has caught 2.11 inches less than a usual year. May was the wettest month at 7.21 inches. The biggest single day came late, 2.98 inches on Oct 10. Before that there were 22 days in a row with nothing in the gauge, from Apr 7 to Apr 28, and still the year is 8.31 inches ahead of 2025.",
+   "through": "2026-10-13"
+  },
+  "01071": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "3.96",
+     "label": "biggest single day"
+    },
+    "county": "Jackson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 7,
+    "days_reported": 279,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "in Scottsboro",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "4.69",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "46.53",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 110,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.53",
+    "usual_in": "45.79",
+    "vs_usual": {
+     "diff_in": "4.74",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "10.87",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "89bf26d3cd424e6d",
+   "sid": "017304 2",
+   "story": "Through Oct 13, the weather station in Scottsboro has 50.53 inches, 4.74 inches more than a usual year. May was the wettest month at 10.87 inches, and the biggest single day was 3.96 inches on Jun 8. The gauge also went 18 days in a row with nothing in it, from Mar 18 to Apr 4. On the days both years reported, that is 4.69 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "01073": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.04",
+     "label": "biggest single day"
+    },
+    "county": "Jefferson County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "8 miles from the middle of the county",
+    "gauge_where": "at Birmingham Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "6.20",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.78",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 108,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "48.98",
+    "usual_in": "45.55",
+    "vs_usual": {
+     "diff_in": "3.43",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.22",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "49aca08d50972c76",
+   "sid": "13876 1",
+   "story": "Through Oct 13, the weather station at Birmingham Airport has 48.98 inches, 3.43 more than a usual year. June did most of the work with 8.22 inches, and Jun 20 alone put 3.04 in the gauge. The longest dry stretch ran 15 days, Mar 17 to Mar 31, with not even a trace. That's 6.20 inches more than last year by this day.",
+   "through": "2026-10-13"
+  },
+  "01075": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "5.00",
+     "label": "biggest single day"
+    },
+    "county": "Lamar County",
+    "days_in_year_so_far": 286,
+    "days_missing": 15,
+    "days_reported": 271,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "less than a mile from the middle of the county",
+    "gauge_where": "1.1 miles north-northeast of Vernon",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 249,
+      "diff_in": "9.32",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 26,
+     "through": "Oct 13",
+     "total_in": "49.41",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "39.41",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "6.73",
+     "month": "April"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "d1f104844198d61f",
+   "sid": "US1ALLM0004 6",
+   "story": "Through Oct 13, the volunteer rain gauge near Vernon caught 5.00 inches on Apr 29 alone, most of the 6.73 inches that made April the wettest month. Just before that it sat 15 days in a row with nothing in it, Mar 18 to Apr 1. On the days both years reported, this year is running 9.32 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "01077": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "4.77",
+     "label": "biggest one-day reading"
+    },
+    "county": "Lauderdale County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "in Lexington",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "12.07",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "55.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 94,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.35",
+    "usual_in": "46.28",
+    "vs_usual": {
+     "diff_in": "2.93",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.83",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "8c0071870ddc9839",
+   "sid": "010260 2",
+   "story": "Through Oct 13, the weather station in Lexington had its wettest month in June at 7.83 inches. Most of that came on Jun 8, when the gauge took 4.77 inches in 1 day. The longest dry stretch ran 15 days, from Mar 18 to Apr 1. On the days both years reported, this year is 12.07 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "01079": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.26",
+     "label": "biggest single day"
+    },
+    "county": "Lawrence County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "in Moulton",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "16.00",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "52.72",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "36.96",
+    "usual_in": "46.80",
+    "vs_usual": {
+     "diff_in": "9.84",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "5.55",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "60b7e26f30fff975",
+   "sid": "015635 2",
+   "story": "Through Oct 13, the weather station in Moulton has had its wettest month back in January, at 5.55 inches. The biggest single day was Apr 29, with 2.26 inches. Before that the gauge went 15 days in a row with nothing in it, not even a trace, from Mar 18 to Apr 1. On the days both years reported, this year is 16.00 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01081": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 6",
+     "in": "3.35",
+     "label": "biggest single day"
+    },
+    "county": "Lee County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "in Auburn",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "4.50",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "42.14",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 24"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 104,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "46.64",
+    "usual_in": "44.69",
+    "vs_usual": {
+     "diff_in": "1.95",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.92",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2070277a398c7e72",
+   "sid": "010425 2",
+   "story": "Through Oct 13, the weather station in Auburn had a dry run of 19 days in a row from Apr 6 to Apr 24 with nothing in the gauge. May made up for it at 8.92 inches, the wettest month, and the biggest single day was May 6 with 3.35 inches. On the days both years reported, that is 4.50 inches more than 2025 had by this date.",
+   "through": "2026-10-13"
+  },
+  "01083": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.75",
+     "label": "biggest single day"
+    },
+    "county": "Limestone County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "2 miles north of Belle Mina",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "4.47",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "41.73",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Alabama",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "46.20",
+    "usual_in": "42.30",
+    "vs_usual": {
+     "diff_in": "3.90",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "6.63",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "5a05444d1e99e79d",
+   "sid": "010655 2",
+   "story": "Through Oct 12, the weather station 2 miles north of Belle Mina has caught 46.20 inches, 3.90 more than a usual year. July was the wettest month at 6.63 inches, and the biggest single day came Jun 8 with 2.75. The gauge also went 18 days in a row with nothing in it, from Mar 18 to Apr 4. That puts this year 4.47 inches ahead of 2025 on the same days.",
+   "through": "2026-10-12"
+  },
+  "01089": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "2.97",
+     "label": "biggest single day"
+    },
+    "county": "Madison County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "2 miles from the middle of the county",
+    "gauge_where": "3.7 miles east-northeast of Huntsville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "8.17",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.98",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 107,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "45.81",
+    "usual_in": "42.69",
+    "vs_usual": {
+     "diff_in": "3.12",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "7.36",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9c2996ad476bad71",
+   "sid": "US1ALMD0090 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.7 miles east-northeast of Huntsville has caught most of its rain late. August was the wettest month at 7.36 inches, and Aug 21 brought the biggest single day at 2.97 inches. Back in the spring the gauge went 12 days in a row with nothing, Apr 7 to Apr 18. Even at 3.12 inches more than a usual year, it sits 8.17 inches less than last year by this date.",
+   "through": "2026-10-13"
+  },
+  "01093": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "5.44",
+     "label": "biggest one-day reading"
+    },
+    "county": "Marion County",
+    "days_in_year_so_far": 286,
+    "days_missing": 3,
+    "days_reported": 283,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "11 miles from the middle of the county",
+    "gauge_where": "1.1 miles northwest of Guin",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "10.56",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "54.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": 92,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.62",
+    "usual_in": "47.25",
+    "vs_usual": {
+     "diff_in": "3.63",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.64",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b8556ef6b3c2555d",
+   "sid": "US1ALMR0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.1 miles northwest of Guin had its biggest one-day reading on Apr 29 with 5.44 inches. That came right after the longest dry stretch, 13 days with nothing in the gauge from Apr 6 to Apr 18. July was the wettest month at 9.64 inches. On the days both years reported, this year ran 10.56 inches less than 2025.",
+   "through": "2026-10-13"
+  },
+  "01095": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 6",
+     "in": "2.54",
+     "label": "biggest single day"
+    },
+    "county": "Marshall County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "5.5 miles north of Albertville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "5.44",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 1,
+     "through": "Oct 13",
+     "total_in": "53.47",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 109,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.23",
+    "usual_in": "46.21",
+    "vs_usual": {
+     "diff_in": "4.02",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.56",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "aaaf26055bf7e29a",
+   "sid": "US1ALMS0022 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.5 miles north of Albertville had its wettest month in August at 8.56 inches. The biggest single day was Aug 6, with 2.54 inches. On the days both years reported, this year sits 5.44 inches less than 2025. It is still 4.02 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "01097": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 22",
+     "in": "5.78",
+     "label": "biggest single day"
+    },
+    "county": "Mobile County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "7 miles from the middle of the county",
+    "gauge_where": "at Mobile Regional Airport",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "2.71",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "53.26",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.55",
+    "usual_in": "54.83",
+    "vs_usual": {
+     "diff_in": "4.28",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "17.99",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "9a71b2eb3089338b",
+   "sid": "13894 1",
+   "story": "Through Oct 13, the weather station at Mobile Regional Airport has caught most of its year in May. That month alone brought 17.99 inches, and May 22 put 5.78 inches in the gauge on its own. The longest dry run was 14 days, from Mar 17 to Mar 30. The year sits 2.71 inches less than last year at this point.",
+   "through": "2026-10-13"
+  },
+  "01099": {
+   "facts": {
+    "biggest_day": {
+     "date": "May 7",
+     "in": "3.60",
+     "label": "biggest single day"
+    },
+    "county": "Monroe County",
+    "days_in_year_so_far": 286,
+    "days_missing": 5,
+    "days_reported": 281,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.3 miles southeast of Monroeville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 269,
+      "diff_in": "0.16",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 12,
+     "through": "Oct 13",
+     "total_in": "44.44",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "47.78",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": null,
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "bbb7012dc6b63435",
+   "sid": "US1ALMN0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.3 miles southeast of Monroeville had caught 47.78 inches. The biggest single day was May 7 at 3.60 inches. The longest dry stretch ran 14 days, Mar 18 to Mar 31, without even a trace in the gauge. On the days both years reported, this year sits 0.16 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01101": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "6.57",
+     "label": "biggest single day"
+    },
+    "county": "Montgomery County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "1.5 miles southeast of Ramer",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.05",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "43.57",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 12,
+     "from": "Apr 7",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "42.52",
+    "usual_in": "43.54",
+    "vs_usual": {
+     "diff_in": "1.02",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "14.51",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "3b1e359f66011474",
+   "sid": "US1ALMY0006 6",
+   "story": "Through Oct 13, the volunteer rain gauge 1.5 miles southeast of Ramer has run about 1.02 inches less than a usual year. June did most of the work at 14.51 inches, and Jun 19 alone brought 6.57 inches. The longest dry stretch was 12 days, Apr 7 to Apr 18. On the days both years reported, this year is 1.05 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01103": {
+   "facts": {
+    "biggest_day": {
+     "date": "Aug 21",
+     "in": "2.25",
+     "label": "biggest one-day reading"
+    },
+    "county": "Morgan County",
+    "days_in_year_so_far": 285,
+    "days_missing": 0,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "1.8 miles west-southwest of Priceville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 285,
+      "diff_in": "9.94",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 12",
+     "total_in": "51.13",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 13,
+     "from": "Apr 6",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 18"
+    },
+    "multi_day_reports": 2,
+    "pct_of_usual": 90,
+    "state": "Alabama",
+    "through": "Oct 12",
+    "through_iso": "2026-10-12",
+    "total_in": "41.19",
+    "usual_in": "46.02",
+    "vs_usual": {
+     "diff_in": "4.83",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.07",
+     "month": "August"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "f8c8611629fd3c72",
+   "sid": "US1ALMG0017 6",
+   "story": "Through Oct 12, the volunteer rain gauge 1.8 miles west-southwest of Priceville has caught 41.19 inches, 4.83 inches less than a usual year. August was the wettest month at 6.07 inches, and the biggest one-day reading came Aug 21 with 2.25 inches. The longest dry stretch ran 13 days, Apr 6 to Apr 18, with not even a trace. Last year by this date the gauge had 9.94 inches more.",
+   "through": "2026-10-12"
+  },
+  "01107": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.42",
+     "label": "biggest single day"
+    },
+    "county": "Pickens County",
+    "days_in_year_so_far": 286,
+    "days_missing": 13,
+    "days_reported": 273,
+    "gauge": "weather station",
+    "gauge_from_middle": "12 miles from the middle of the county",
+    "gauge_where": "in Bevill",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 17,
+     "from": "Sep 23",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Oct 9"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 79,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "32.85",
+    "usual_in": "41.51",
+    "vs_usual": {
+     "diff_in": "8.66",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.04",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee4030ea67819997",
+   "sid": "010184 2",
+   "story": "Through Oct 13, the weather station in Bevill had May as its wettest month at 7.04 inches. The biggest single day came early, 2.42 inches on Jan 10. Then it went 17 days in a row with nothing in the gauge, not even a trace, from Sep 23 to Oct 9. All told that leaves it 8.66 inches less than a usual year.",
+   "through": "2026-10-13"
+  },
+  "01109": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "5.06",
+     "label": "biggest single day"
+    },
+    "county": "Pike County",
+    "days_in_year_so_far": 283,
+    "days_missing": 3,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "4 miles from the middle of the county",
+    "gauge_where": "2 miles west of Troy",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 273,
+      "diff_in": "0.91",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 7,
+     "through": "Oct 10",
+     "total_in": "43.12",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 98,
+    "state": "Alabama",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "41.45",
+    "usual_in": "42.42",
+    "vs_usual": {
+     "diff_in": "0.97",
+     "dir": "less",
+     "word": "about usual"
+    },
+    "wettest_month": {
+     "in": "10.25",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "64c133c85468c2f7",
+   "sid": "23801 1",
+   "story": "Through Oct 10, the weather station 2 miles west of Troy had 41.45 inches, 0.97 inches less than a usual year. June was the wettest month at 10.25 inches, and Jun 18 alone put 5.06 inches in the gauge. The longest dry stretch ran 18 days, Mar 17 to Apr 3. On the days both years reported, this year is 0.91 inches less than 2025.",
+   "through": "2026-10-10"
+  },
+  "01111": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "2.83",
+     "label": "biggest single day"
+    },
+    "county": "Randolph County",
+    "days_in_year_so_far": 284,
+    "days_missing": 0,
+    "days_reported": 284,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "4.2 miles north-northeast of Roanoke",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "8.82",
+      "dir": "less",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 11",
+     "total_in": "46.90",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 21,
+     "from": "Aug 22",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Sep 11"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 86,
+    "state": "Alabama",
+    "through": "Oct 11",
+    "through_iso": "2026-10-11",
+    "total_in": "38.08",
+    "usual_in": "44.14",
+    "vs_usual": {
+     "diff_in": "6.06",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.91",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "01c843157c1bfe04",
+   "sid": "US1ALRN0002 6",
+   "story": "Through Oct 11, the volunteer rain gauge north-northeast of Roanoke had its wettest month in June with 6.91 inches, and the biggest single day came Jun 8 with 2.83 inches. Then it went 21 days in a row with nothing in the gauge, from Aug 22 to Sep 11. Last year at this point it had 8.82 inches more than this year.",
+   "through": "2026-10-11"
+  },
+  "01113": {
+   "facts": {
+    "biggest_day": {
+     "date": "Oct 10",
+     "in": "3.64",
+     "label": "biggest single day"
+    },
+    "county": "Russell County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "9 miles from the middle of the county",
+    "gauge_where": "2.3 miles south-southwest of Fort Mitchell",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 286,
+      "diff_in": "4.21",
+      "dir": "more",
+      "every_day": true,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "35.86",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 31"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "40.07",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.16",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b560441ce2f4737a",
+   "sid": "US1ALRS0008 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.3 miles south-southwest of Fort Mitchell has caught 40.07 inches, 4.21 inches more than last year by this day. May was the wettest month at 8.16 inches. The biggest single day came late, 3.64 inches on Oct 10. The longest dry stretch ran 15 days, Mar 17 to Mar 31, with not even a trace in the gauge.",
+   "through": "2026-10-13"
+  },
+  "01115": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 8",
+     "in": "5.44",
+     "label": "biggest single day"
+    },
+    "county": "St. Clair County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "6 miles from the middle of the county",
+    "gauge_where": "2.7 miles southwest of Ashville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 283,
+      "diff_in": "2.30",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "48.95",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.96",
+    "usual_in": "43.85",
+    "vs_usual": {
+     "diff_in": "6.11",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.83",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a571ffa772ff6bca",
+   "sid": "US1ALSC0011 6",
+   "story": "Through Oct 13, the volunteer rain gauge 2.7 miles southwest of Ashville had its wettest month in June, with 8.83 inches. The biggest single day came Jun 8, at 5.44 inches. The longest dry stretch ran 18 days, Mar 18 to Apr 4, with not even a trace in the gauge. On the days both years reported, this year is 2.30 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01117": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 20",
+     "in": "3.12",
+     "label": "biggest single day"
+    },
+    "county": "Shelby County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "13 miles from the middle of the county",
+    "gauge_where": "in Calera",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "1.55",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 2,
+     "through": "Oct 13",
+     "total_in": "43.29",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "41.74",
+    "usual_in": "45.47",
+    "vs_usual": {
+     "diff_in": "3.73",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "7.77",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "b00ffa1272a8e83e",
+   "sid": "011288 2",
+   "story": "Through Oct 13, the weather station in Calera has had a fair share of its rain in June, which brought 7.77 inches. The biggest single day was Jun 20 at 3.12 inches. From Mar 18 to Apr 4 the gauge went 18 days in a row with nothing in it, not even a trace. On the days both years reported, this year is 1.55 inches less than last year.",
+   "through": "2026-10-13"
+  },
+  "01119": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 18",
+     "in": "3.53",
+     "label": "biggest single day"
+    },
+    "county": "Sumter County",
+    "days_in_year_so_far": 283,
+    "days_missing": 3,
+    "days_reported": 280,
+    "gauge": "weather station",
+    "gauge_from_middle": "17 miles from the middle of the county",
+    "gauge_where": "2 miles northeast of Gainesville",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 277,
+      "diff_in": "10.93",
+      "dir": "less",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 10",
+     "total_in": "48.63",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 18,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 3"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 78,
+    "state": "Alabama",
+    "through": "Oct 10",
+    "through_iso": "2026-10-10",
+    "total_in": "37.00",
+    "usual_in": "47.32",
+    "vs_usual": {
+     "diff_in": "10.32",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.77",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "294605e54810f6f0",
+   "sid": "63892 1",
+   "story": "Through Oct 10, the weather station 2 miles northeast of Gainesville had its wettest month back in January, at 6.77 inches. The biggest single day came Jun 18 with 3.53 inches. From Mar 17 to Apr 3 the gauge went 18 days in a row with nothing in it, not even a trace. On the days both years reported, that is 10.93 inches less than 2025 had by Oct 10.",
+   "through": "2026-10-10"
+  },
+  "01121": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "3.30",
+     "label": "biggest single day"
+    },
+    "county": "Talladega County",
+    "days_in_year_so_far": 286,
+    "days_missing": 0,
+    "days_reported": 286,
+    "gauge": "weather station",
+    "gauge_from_middle": "3 miles from the middle of the county",
+    "gauge_where": "in Talladega",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "0.49",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "49.93",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 114,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "50.62",
+    "usual_in": "44.58",
+    "vs_usual": {
+     "diff_in": "6.04",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "8.59",
+     "month": "July"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "e057c6949927a422",
+   "sid": "018024 2",
+   "story": "Through Oct 13, the weather station in Talladega has caught 50.62 inches, 6.04 more than a usual year. July was the wettest month at 8.59 inches, and the biggest single day was 3.30 inches on Jan 10. The gauge went 19 days in a row with nothing from Mar 17 to Apr 4. On the days both years reported, that is 0.49 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "01123": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "2.65",
+     "label": "biggest single day"
+    },
+    "county": "Tallapoosa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 2,
+    "days_reported": 284,
+    "gauge": "weather station",
+    "gauge_from_middle": "10 miles from the middle of the county",
+    "gauge_where": "in Alexander City",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 284,
+      "diff_in": "0.67",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 0,
+     "through": "Oct 13",
+     "total_in": "42.42",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 95,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "43.09",
+    "usual_in": "45.20",
+    "vs_usual": {
+     "diff_in": "2.11",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "6.11",
+     "month": "January"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "dd4f6ef8d921fca6",
+   "sid": "010160 2",
+   "story": "Through Oct 13, the weather station in Alexander City had its wettest month in January at 6.11 inches, and the biggest single day came Jan 10 with 2.65 inches. The gauge then went 15 days in a row with nothing in it, from Mar 18 to Apr 1. On the days both years reported, this year has 0.67 inches more than last year.",
+   "through": "2026-10-13"
+  },
+  "01125": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "2.80",
+     "label": "biggest single day"
+    },
+    "county": "Tuscaloosa County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "weather station",
+    "gauge_from_middle": "5 miles from the middle of the county",
+    "gauge_where": "in Holt",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 282,
+      "diff_in": "4.90",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 3,
+     "through": "Oct 13",
+     "total_in": "32.46",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": 92,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "37.36",
+    "usual_in": "40.60",
+    "vs_usual": {
+     "diff_in": "3.24",
+     "dir": "less",
+     "word": "drier than usual"
+    },
+    "wettest_month": {
+     "in": "9.13",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "ee271230c34063cd",
+   "sid": "013930 2",
+   "story": "Through Oct 13, the weather station in Holt has caught 37.36 inches, 3.24 inches less than a usual year. June was the wettest month at 9.13 inches, and the biggest single day was 2.80 inches on Apr 29. That came not long after the longest dry stretch, 19 days in a row with nothing in the gauge from Mar 17 to Apr 4. On the days both years reported, this year is 4.90 inches ahead of last year.",
+   "through": "2026-10-13"
+  },
+  "01129": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jun 19",
+     "in": "4.75",
+     "label": "biggest one-day reading"
+    },
+    "county": "Washington County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "16 miles from the middle of the county",
+    "gauge_where": "4.3 miles west-southwest of Jackson",
+    "last_year": null,
+    "longest_dry_stretch": {
+     "days": 19,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 4"
+    },
+    "multi_day_reports": 5,
+    "pct_of_usual": 110,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "52.61",
+    "usual_in": "47.90",
+    "vs_usual": {
+     "diff_in": "4.71",
+     "dir": "more",
+     "word": "wetter than usual"
+    },
+    "wettest_month": {
+     "in": "12.82",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "a327622a13518011",
+   "sid": "US1ALWS0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 4.3 miles west-southwest of Jackson had May as its wettest month at 12.82 inches. The biggest one-day reading came Jun 19 with 4.75 inches. Earlier on, the gauge went 19 days in a row with nothing in it, not even a trace, from Mar 17 to Apr 4. It all adds up to 4.71 inches more than a usual year.",
+   "through": "2026-10-13"
+  },
+  "01131": {
+   "facts": {
+    "biggest_day": {
+     "date": "Jan 10",
+     "in": "5.53",
+     "label": "biggest one-day reading"
+    },
+    "county": "Wilcox County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "20 miles from the middle of the county",
+    "gauge_where": "3.6 miles west-southwest of Pine Hill",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 281,
+      "diff_in": "0.56",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 4,
+     "through": "Oct 13",
+     "total_in": "48.80",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 14,
+     "from": "Mar 17",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Mar 30"
+    },
+    "multi_day_reports": 1,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.34",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "10.54",
+     "month": "May"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "983be6fade37f57e",
+   "sid": "US1ALWX0001 6",
+   "story": "Through Oct 13, the volunteer rain gauge 3.6 miles west-southwest of Pine Hill had its wettest month in May at 10.54 inches. The biggest one-day reading came early, 5.53 inches on Jan 10. The longest dry stretch ran 14 days, Mar 17 to Mar 30, with not even a trace. On the days both years reported, this year is 0.56 inches more than 2025.",
+   "through": "2026-10-13"
+  },
+  "01133": {
+   "facts": {
+    "biggest_day": {
+     "date": "Apr 29",
+     "in": "3.73",
+     "label": "biggest single day"
+    },
+    "county": "Winston County",
+    "days_in_year_so_far": 286,
+    "days_missing": 1,
+    "days_reported": 285,
+    "gauge": "volunteer rain gauge",
+    "gauge_from_middle": "14 miles from the middle of the county",
+    "gauge_where": "5.9 miles south of Arley",
+    "last_year": {
+     "compare": {
+      "days_both_reported": 279,
+      "diff_in": "2.34",
+      "dir": "more",
+      "every_day": false,
+      "means": "2026 against 2025, on the days both years reported"
+     },
+     "days_missed": 6,
+     "through": "Oct 13",
+     "total_in": "42.15",
+     "year": 2025
+    },
+    "longest_dry_stretch": {
+     "days": 15,
+     "from": "Mar 18",
+     "means": "days in a row with nothing in the gauge, not even a trace",
+     "still_going": false,
+     "to": "Apr 1"
+    },
+    "multi_day_reports": 0,
+    "pct_of_usual": null,
+    "state": "Alabama",
+    "through": "Oct 13",
+    "through_iso": "2026-10-13",
+    "total_in": "49.16",
+    "usual_in": null,
+    "vs_usual": null,
+    "wettest_month": {
+     "in": "8.05",
+     "month": "June"
+    },
+    "whole_year": false,
+    "year": 2026,
+    "year_over": false
+   },
+   "hash": "2cb795302d307946",
+   "sid": "US1ALWN0005 6",
+   "story": "Through Oct 13, the volunteer rain gauge 5.9 miles south of Arley had its wettest month in June at 8.05 inches. The biggest single day came Apr 29 with 3.73 inches. Before that the gauge went 15 days in a row with nothing, from Mar 18 to Apr 1. On the days both years reported, this year is 2.34 inches more than last year.",
+   "through": "2026-10-13"
+  }
+ },
+ "made": "2026-10-17T23:43:38Z",
+ "model": "claude-opus-5-5",
+ "schema": "agsist-county-stories/1",
+ "state": "AL"
+}
