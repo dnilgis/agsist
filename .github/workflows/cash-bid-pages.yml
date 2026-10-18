@@ -128,7 +128,7 @@ jobs:
           git config user.email "bot@agsist.com"
           # cash-bids.html: only its og:/twitter: description (network counts and time) is rewritten
           # basis.html: only its SEED:statepick and SEED:staterank blocks (the state basis) are rewritten
-          git add -A cash-bids sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg
+          git add -A cash-bids data/pointers sitemap-cash-bids.xml cash-bids.html basis.html data/state-basis data/basis-states.json data/elevator-counts.json data/search-index.json data/search-elevators.json data/search-places.json img/og/cash-bids.jpg
           if git diff --staged --quiet; then echo "no change"; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0; fi
           git diff --staged --shortstat
           git commit -q -m "pages: rebuild /cash-bids town pages from the elevator network"

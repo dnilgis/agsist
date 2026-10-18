@@ -108,7 +108,7 @@ jobs:
             python scripts/build_share_images.py --only arc-plc || true
             # the break-even calculator's per-state county files carry the expected payments
             python scripts/build_breakeven_data.py
-            git add -A -- arc-plc.html arc-plc data/arc-plc.json data/arc-plc data/arc-plc-prices.json data/breakeven \
+            git add -A -- arc-plc.html arc-plc data/pointers data/arc-plc.json data/arc-plc data/arc-plc-prices.json data/breakeven \
                           embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -q -m "arc-plc: rebuilt $(date -u +%Y-%m-%d)"
