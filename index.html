@@ -757,7 +757,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       p.then(paintFut).catch(function(){});
     }
     window.addEventListener('agsist:prices',function(e){paintFut(e&&e.detail);});
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',getPrices);else getPrices();
+    getPrices();
     /* Only when the file never parsed; a parsed file keeps its own reason. */
     setTimeout(function(){if(futParsed)return;['hb-fc','hb-fs'].forEach(function(id){set(id+'-v',DASH);set(id+'-s','<span class="hb-l">Prices didn’t load</span>');});},10000);
 
