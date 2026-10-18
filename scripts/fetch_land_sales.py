@@ -917,7 +917,9 @@ def in_scale(T):
             fees[d.get("P3_1_Disclosure_Fee")] = fees.get(d.get("P3_1_Disclosure_Fee"), 0) + 1
     top = max(fees, key=fees.get) if fees else None
     if top != "2000" or fees[top] < 0.8 * sum(fees.values()):
-        return "the disclosure fee does not read as $20 in cents (most common %r of %d forms)" % (top, sum(fees.values()))
+        n = sum(fees.values())
+        return "the disclosure fee does not read as $20 in cents (of %d forms: %s)" % (
+            n, ", ".join("%r %.0f%%" % (k, 100.0 * v / n) for k, v in sorted(fees.items(), key=lambda kv: -kv[1])[:4]))
     ac = sorted(v for v in (parse_num(p.get("P2_9_Acreage")) for p in T["SALEPARCEL"] if re.match(r"^1\d\d$", p.get("P2_6_Prop_Class_Code") or "")) if v)
     if len(ac) < 5 or not (10000 <= ac[len(ac) // 2] <= 3000000):
         return "farm parcel acres do not read as four implied decimals (%d parcels, median %s)" % (len(ac), ac[len(ac) // 2] if ac else None)
@@ -998,11 +1000,21 @@ def in_table(files, rep=None):
     yield head
     seen = set()
     names = {v["fips"]: v["name"] for v in county_index("IN").values()}
+    # A yearly file that fails a check is left out and named in rep; the other years still build.
+    # Only when every file is refused is there nothing to build, and that raises.
+    refused = []
     for name, blob in files:
-        T = in_tables(blob)
-        why = in_scale(T) or in_county_check(T, names)
+        try:
+            T = in_tables(blob)
+            why = in_scale(T) or in_county_check(T, names)
+        except (ValueError, zipfile.BadZipFile) as e:
+            why = str(e)
         if why:
-            raise ValueError("%s refused: %s" % (name, why))
+            refused.append("%s refused: %s" % (name, why))
+            rep["file refused: %s (%s)" % (name, why)] = 1
+            if len(refused) == len(files):
+                raise ValueError("; ".join(refused))
+            continue
         par, who = {}, {}
         for p in T["SALEPARCEL"]:
             par.setdefault(p["SDF_ID"], []).append(p)
@@ -1603,6 +1615,10 @@ def selftest():
             ck("IN: a file whose %s is refused" % what, False)
         except ValueError:
             ck("IN: a file whose %s is refused" % what, True)
+    mrep = {}
+    mixed = list(in_table([("SDF_2021.zip", MK.make(1, 10000)), ("SDF_2026.zip", MK.make())], mrep))
+    ck("IN: a refused year is left out and named; the good year still builds",
+       len(mixed) == len(list(in_table([("b.zip", MK.make())]))) and any(k.startswith("file refused: SDF_2021.zip") for k in mrep))
     zb = io.BytesIO()
     with zipfile.ZipFile(zb, "w") as zz:
         zz.writestr("z.txt", "GEOID\tALAND\tINTPTLAT\tINTPTLONG\n46711\t1\t41.10\t-85.45\n46999\t1\t39.00\t-87.00\n")
