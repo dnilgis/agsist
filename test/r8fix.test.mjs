@@ -91,7 +91,7 @@ test("each page reads only its own Next file, and the files match the map", () =
     assert.ok(Buffer.byteLength(read(f)) < 1500, f + " stays small");
   }
   const tags = htmlFiles().filter((f) => /next-links\.js\?v=/.test(read(f)));
-  for (const f of tags) assert.match(read(f), /next-links\.js\?v=2"/, f + " loads the new next-links.js");
+  for (const f of tags) assert.match(read(f), /next-links\.js\?v=3"/, f + " loads the new next-links.js");
 });
 
 /* ---------- 3. punctuation ---------- */
@@ -223,7 +223,7 @@ test("in a browser: one ask at the end, small Next fetch, comma stays with its m
     await p.goto(base + "/data/whats-new.json");
     got.length = 0;
     await p.setContent("<html><body><main><p>The weather was dry and the roads were open all week long.</p></main></body></html>");
-    await p.addScriptTag({ url: base + "/components/next-links.js?v=2" }).catch(() => {});
+    await p.addScriptTag({ url: base + "/components/next-links.js?v=3" }).catch(() => {});
     await p.waitForTimeout(2500);
     assert.equal(await p.evaluate(() => window.AgsistNext && window.AgsistNext._v), 2, "next-links.js ran on the plain page");
     assert.ok(!got.some((u) => /glossary/.test(u)), "no glossary fetch without a term: " + got.join(","));

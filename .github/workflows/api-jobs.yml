@@ -31,6 +31,15 @@ name: API jobs (one-time)
 # saved pages and the ranked to-do lands on raw as apijobs/<run>/elevsites/
 # todo.json and todo.md. Nothing reaches a page or a bids manifest.
 #
+# Research round two (Oct 18, 2026), each with its own capture on a bids side branch:
+#   build=elevsites2 run=elevsites-2026-10-r2 cap=12   the first round's 189 "unclear" companies, captured
+#       deeper (bids elevsites branch, newest caps/); after collect, todo-v2.json/md merges them into the
+#       first round's to-do (apijobs/elevsites-2026-10) with the same ranking
+#   build=schedules run=schedules-2026-10   discount, shrink, drying and storage schedules (scripts/schedules_job.py,
+#       bids `schedules` branch); Opus, $20 cap; schedule_model=claude-sonnet-5-5 if Opus would go over it
+#   build=landsrc run=landsrc-2026-10       county land sale sources in ten states (scripts/landsrc_job.py, bids
+#       `countysites` branch); Sonnet, $20 cap
+#
 #   mode=estimate  count tokens and print the worst-case cost, spend nothing
 #   mode=submit    estimate, refuse over $20, refuse if apijobs/<run>/batch.json
 #                  is already on raw, submit one batch, then wait and collect
@@ -56,7 +65,13 @@ on:
         description: "How long collect waits for the batch to end"
         default: "120"
       build:
-        description: "county-stories | prf-stories | atlas-stories | town-stories | company-stories | elevsites to build the input here (estimate and submit); empty to read it from raw"
+        description: "county-stories | prf-stories | atlas-stories | town-stories | company-stories | elevsites | elevsites2 | schedules | landsrc to build the input here (estimate and submit); empty to read it from raw"
+        default: ""
+      cap:
+        description: "Lower this run's cost cap in dollars (never raises a job's own cap); empty for the job cap"
+        default: ""
+      schedule_model:
+        description: "Model for build=schedules (default Opus); claude-sonnet-5-5 to fit the cap"
         default: ""
 
 permissions:
@@ -72,13 +87,17 @@ jobs:
     timeout-minutes: 150
     env:
       APIJOBS_RUN: ${{ inputs.run || 'r1' }}
+      APIJOBS_CAP: ${{ inputs.cap }}
+      APIJOBS_SCHEDULE_MODEL: ${{ inputs.schedule_model }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Selftest
-        run: python scripts/api_jobs.py selftest && python scripts/elevsites_job.py selftest
+        run: |
+          python scripts/api_jobs.py selftest && python scripts/elevsites_job.py selftest
+          cd scripts && python schedules_job.py selftest && python landsrc_job.py selftest
       - name: Get the input and any earlier batch record from raw
         if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
@@ -99,6 +118,15 @@ jobs:
               elevsites)
                 git clone -q --depth 1 --branch elevsites https://github.com/dnilgis/bids.git /tmp/bids-elevsites
                 python scripts/elevsites_job.py bundle /tmp/bids-elevsites "$D/input/bundle.json" ;;
+              elevsites2)
+                git clone -q --depth 1 --branch elevsites https://github.com/dnilgis/bids.git /tmp/bids-elevsites
+                ELEVSITES_MERGE_WITH=elevsites-2026-10 python scripts/elevsites_job.py bundle /tmp/bids-elevsites "$D/input/bundle.json" ;;
+              schedules)
+                git clone -q --depth 1 --branch schedules https://github.com/dnilgis/bids.git /tmp/bids-schedules
+                (cd scripts && python schedules_job.py bundle /tmp/bids-schedules "../$D/input/bundle.json") ;;
+              landsrc)
+                git clone -q --depth 1 --branch countysites https://github.com/dnilgis/bids.git /tmp/bids-countysites
+                (cd scripts && LANDSRC_ATLAS=../data/atlas/atlas.json python landsrc_job.py bundle /tmp/bids-countysites "../$D/input/bundle.json") ;;
               *) echo "::error::unknown build $B"; exit 1 ;;
             esac
             cp "$D/input/bundle.json" /tmp/bundle.json
@@ -154,7 +182,27 @@ jobs:
           R="apijobs/$APIJOBS_RUN/results.json"
           if [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('elevsite') else 1)"; then
             python scripts/elevsites_job.py collect /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/elevsites"
+            M=$(python -c "import json; print(json.load(open('/tmp/bundle.json')).get('mergeWith') or '')")
+            if [ -n "$M" ]; then
+              git fetch -q --depth 1 origin raw
+              git show "FETCH_HEAD:apijobs/$M/elevsites/todo.json" > /tmp/v1-todo.json
+              python scripts/elevsites_job.py merge /tmp/v1-todo.json "apijobs/$APIJOBS_RUN/elevsites/todo.json" "apijobs/$APIJOBS_RUN/elevsites"
+            fi
             bash scripts/push_raw.sh "apijobs $APIJOBS_RUN elevsites to-do" "apijobs/$APIJOBS_RUN/elevsites"
           else
             echo "no elevator site answers in this run"
+          fi
+      - name: Check the schedules and county sources, write the findings
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        run: |
+          R="$PWD/apijobs/$APIJOBS_RUN/results.json"; O="$PWD/apijobs/$APIJOBS_RUN"
+          J=$(python -c "import json; b=json.load(open('/tmp/bundle.json')); print('schedule' if b.get('schedule') else 'landsrc' if b.get('landsrc') else '')")
+          if [ -f "$R" ] && [ "$J" = schedule ]; then
+            (cd scripts && python schedules_job.py collect /tmp/bundle.json "$R" "$O/schedules")
+            bash scripts/push_raw.sh "apijobs $APIJOBS_RUN schedules" "apijobs/$APIJOBS_RUN/schedules"
+          elif [ -f "$R" ] && [ "$J" = landsrc ]; then
+            (cd scripts && python landsrc_job.py collect /tmp/bundle.json "$R" "$O/landsrc")
+            bash scripts/push_raw.sh "apijobs $APIJOBS_RUN county land sources" "apijobs/$APIJOBS_RUN/landsrc"
+          else
+            echo "no schedules or county sources in this run"
           fi

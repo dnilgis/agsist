@@ -28,9 +28,12 @@ const meta = (h, n) => (h.match(new RegExp(`<meta (?:name|property)="${n}"\\s+co
 
 test("yield estimator: title, H1 and the open tab all say soybean", () => {
   const h = read("yield-estimator.html");
-  assert.match(h, /<title>Soybean &amp; Corn Yield Calculator: Pod and Ear Count \| AGSIST<\/title>/);
+  assert.match(h, /<title>Soybean Yield Calculator: Pod Count to Bu\/Acre, Free \| AGSIST<\/title>/);
   assert.match(h, /<h1>Soybean and corn<br>yield calculator<\/h1>/);
-  assert.match(meta(h, "description"), /^Free soybean yield calculator \(pod count\)/);
+  assert.match(meta(h, "description"), /^Free soybean yield calculator:/);
+  // the worked example in the snippet is the page's own formula: plants x pods x seeds / (seeds/lb x 60)
+  assert.equal(132000 * 30 * 2.5 / (3000 * 60), 55);
+  for (const n of ["description", "og:description", "twitter:description"]) assert.match(meta(h, n), /132,000 plants, 30 pods, 2\.5 seeds per pod and 3,000 seeds\/lb is 55 bu\/acre/, n);
   for (const n of ["og:description", "twitter:description"]) assert.match(meta(h, n), /^Soybean yield from pod counts/, n);
   // Soybeans is the first tab and the open one; corn waits behind it
   const tabs = h.slice(h.indexOf('class="ye-tabs"'), h.indexOf("</nav>", h.indexOf('class="ye-tabs"')));
@@ -40,7 +43,7 @@ test("yield estimator: title, H1 and the open tab all say soybean", () => {
   assert.match(h, /<div class="ye-panel active" id="ye-bean" role="tabpanel" aria-labelledby="ye-tab-bean" tabindex="0">/);
   assert.match(h, /<div class="ye-panel" id="ye-corn" role="tabpanel" aria-labelledby="ye-tab-corn" tabindex="0" aria-hidden="true">/);
   assert.match(h, /var activeCrop='bean';/);
-  assert.match(h, /<p class="page-lede">Soybean and corn bushels per acre from your own field counts: pod counts for soybeans, ear counts for corn\.<\/p>/);
+  assert.match(h, /<p class="page-lede">Free soybean yield calculator: type plants per acre, pods per plant and seeds per pod for bushels per acre before harvest\. Corn works from ear counts\.<\/p>/);
   assert.ok(!h.slice(h.indexOf("2026-10-17: Soybeans opens first"), h.indexOf("2026-10-17: Soybeans opens first") + 400).includes("—"));
 });
 

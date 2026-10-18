@@ -361,10 +361,13 @@ check("the footer strip ships hidden and empty; loader.js shows it only for an a
   assert.ok(ret > 0 && show > ret, "the strip is shown before the active-supporter check");
   assert.match(fn, /s\.active === true/);
 });
-check("the footer's bottom row keeps exactly one quiet Advertise link", () => {
-  const bottom = FOOTER.slice(FOOTER.indexOf('<div class="footer-bottom">'));
-  const links = bottom.match(/<a [^>]*href="\/sponsor[^"]*"[^>]*>[^<]*<\/a>/g) || [];
-  assert.equal(links.length, 1, links.length + " sponsor links in the bottom row");
+// Oct 18 menu (Sig approved): the one Advertise link moved from the bottom row to the "Work with us" column.
+check("the footer keeps exactly one quiet Advertise link, in the Work with us column", () => {
+  const i = FOOTER.indexOf('<span class="footer-h">Work with us</span>');
+  assert.ok(i > 0, "no Work with us column");
+  const col = FOOTER.slice(i, FOOTER.indexOf("</details>", i));
+  const links = col.match(/<a [^>]*href="\/sponsor[^"]*"[^>]*>(?:<svg[\s\S]*?<\/svg>)?[^<]*<\/a>/g) || [];
+  assert.equal(links.length, 1, links.length + " sponsor links in the Work with us column");
   assert.match(links[0], />Advertise<\/a>$/);
   assert.equal((FOOTER.match(/href="\/sponsor/g) || []).length, 1, "a second sponsor link elsewhere in the footer");
 });
