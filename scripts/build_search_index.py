@@ -109,6 +109,7 @@ PAGES = [
     ("/harvest-or-wait", "Harvest now or wait", "Drying bill now vs after 7 to 14 days of field drydown, with", "harvest now or wait corn field drydown drying cost LP propane field loss break-even moisture"),
     ("/fall-nitrogen", "Fall nitrogen: cold enough?", "Measured 4 in soil temperature near your county, last 7 days", "fall anhydrous nitrogen soil temperature 50 degrees NH3 fall application cold enough county"),
     ("/commodity-loan", "Commodity Loan (CCC)", "Marketing loan cash now and interest per bushel per month, a", "ccc loan marketing assistance loan commodity loan fsa loan rate interest stored grain"),
+    ("/here", "One place, all its numbers", "Everything about a ZIP, town or county", "place county zip town everything about profile rank fingerprint unusual neighbors my county this week rain drought hail bids"),
     ("/combine-loss", "Combine Loss Check", "Count beans or kernels behind the combine: bushels and dolla", "combine loss harvest loss beans per square foot kernels header loss soybean shatter ear drop"),
     ("/nutrient-removal", "Nutrient removal value", "P and K in stalks, silage, straw and hay", "nutrient removal value phosphorus potassium p2o5 k2o corn stalks stover bales baling silage straw hay alfalfa sell selling fertilizer replace"),
     ("/hay-prices", "Hay prices by state", "Alfalfa and other hay, $/ton", "hay prices alfalfa grass hay bale ton price per ton state usda nass forage"),

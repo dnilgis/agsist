@@ -175,6 +175,7 @@ LINES = {
     "fertilizer": ("Fertilizer", "Co-op posted prices and the cost per pound of N, P and K."),
     "markets": ("Markets", "Grain, livestock and energy futures, free."),
     "cot": ("Commitments of Traders", "What the funds hold in corn, soybeans, wheat and cattle."),
+    "here": ("One place", "Type a ZIP, town or county: where it ranks in its state, what is unusual, and this week."),
     "combine-loss": ("Combine loss", "Count beans or kernels behind the combine: bushels and dollars an acre left in the field."),
     "commodity-loan": ("Commodity loan", "CCC marketing loan: cash now, interest per bushel per month, against your carry."),
     "cattle-auction-prices": ("Sale barn prices", "Feeder steer and heifer prices by weight at the barns near you, from USDA."),
