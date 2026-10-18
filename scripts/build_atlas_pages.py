@@ -1206,6 +1206,16 @@ def read_year_cause_wrong(t, d):
     return False
 
 
+def rent_first_year(W, st):
+    """The first survey year in the state's rent file (data/cash-rent/<ST>.json): 2008 for
+    most states, 2009 for Nevada and West Virginia, 2010 for New Hampshire."""
+    try:
+        ys = json.load(open(os.path.join(W.root, "data", "cash-rent", st + ".json"), encoding="utf-8")).get("years") or []
+        return min(int(y) for y in ys) if ys else None
+    except (OSError, ValueError):
+        return None
+
+
 SOB_GATE = "$1,000,000"   # scripts/atlas_layers_p1.py MIN_RATIO_PREMIUM: a crop year under it carries no ratio
 YLD_MIN_N = 15            # published years before a county's corn median goes in a comparison table or the map
 
@@ -1991,7 +2001,7 @@ def state_page(W, st):
 <div class="kick">Farmland Atlas · state</div>
 <h1>{esc(stn)} farmland values by county</h1>
 <p class="sub">{esc(desc)} Click a heading to sort.</p>
-{('<p class="read"><b>Cash rent:</b> every published ' + esc(stn) + ' county rate side by side, with history to 2008, irrigated and pasture shown apart: ' + rent_link + '.</p>') if rent_link else ''}
+{('<p class="read"><b>Cash rent:</b> every published ' + esc(stn) + ' county rate side by side, with history back to ' + str(rent_first_year(W, st)) + ', irrigated and pasture shown apart: ' + rent_link + '.</p>') if rent_link and rent_first_year(W, st) else ''}
 <div class="act">{rent_link}{('<a href="/arc-plc/' + slugify(stn) + '">' + esc(stn) + ' ARC or PLC by county</a>') if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else ''}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
 <h2>{esc(stn)} at a glance</h2>
 {facts}
@@ -2345,6 +2355,9 @@ def selftest():
                "The county is mostly dryland, with 30 percent of harvested cropland irrigated.",
                "Heat and drought made up 68 percent of the $4.0 million paid since 1989."):
         check("read gate (sets pass) passes a true read: " + t_, read_wrong(t_, dr, 2026) == [])
+    class _R:
+        root = "."
+    check("state hub rent history starts at the file's first year", rent_first_year(_R, "NV") == 2009 and rent_first_year(_R, "IA") == 2008)
     check("drought share rounds once", d2_share({"weeks": {"d2": 142, "counted": 1357, "share_d2_pct": 10.5}}) == 10.46 and fmt(d2_share({"weeks": {"d2": 142, "counted": 1357}}), 0) == "10")
     check("slugify", slugify("St. Louis City") == "st-louis-city" and slugify("Lower Ct River Valley") == "lower-ct-river-valley")
     check("recent yield", recent_yield({"last_year": 2025, "hist": {"2021": 200, "2022": 100, "2023": 210, "2024": 220, "2025": 230}}, 2026)["avg"] == 210.0)
