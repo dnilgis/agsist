@@ -332,16 +332,16 @@
     var w = R.wet;
     if (w) o.wet = w.acres == null ? null : (w.acres > 0 || w.touching ? { v: w.acres > 0 ? 'About ' + f1(w.acres) + ' ac mapped (' + w.types.slice(0, 3).map(function (t) { return t.type.replace(/^Freshwater /, '').toLowerCase(); }).join(', ') + ')' : 'Touches the edge, none inside', m: 'Mapped from aerial photos by USFWS. Not a wetland determination; for farm programs NRCS makes that call.' } : { v: 'None mapped', m: 'No wetland in the National Wetlands Inventory inside the field.' });
     var sl = R.slope;
-    if (sl) o.slope = { v: f1(sl.mean) + '% average, ' + sl.over6Pct + '% of the field over 6%, ' + (sl.hiFt - sl.loFt) + ' ft of fall (' + sl.loFt.toLocaleString() + ' to ' + sl.hiFt.toLocaleString() + ' ft)',
+    if (sl) o.slope = { v: f1(sl.mean) + '% average, ' + (sl.over6Pct ? sl.over6Pct + '% of the field' : 'none of the field') + ' over 6%, ' + (sl.hiFt - sl.loFt) + ' ft of fall (' + sl.loFt.toLocaleString() + ' to ' + sl.hiFt.toLocaleString() + ' ft)',
       m: 'Ground over 6% usually needs residue or contour work to hold soil. Read from USGS elevation every ' + sl.spacingFt + ' ft across the field.' };
     var e = [];
-    if (R.wind) e.push(R.wind.n ? R.wind.n + ' wind turbine' + (R.wind.n === 1 ? '' : 's') + ' within ' + R.wind.within + ' mi, nearest ' + mi(R.wind.nearestMi) : 'No wind turbines within ' + R.wind.within + ' mi');
-    if (R.solar) e.push(R.solar.n ? R.solar.n + ' large solar site' + (R.solar.n === 1 ? '' : 's') + ' within ' + R.solar.within + ' mi, nearest ' + mi(R.solar.nearestMi) + (R.solar.nearestMw ? ' (' + f1(R.solar.nearestMw) + ' MW)' : '') : 'No large solar within ' + R.solar.within + ' mi');
+    if (R.wind) e.push(R.wind.n ? R.wind.n + ' wind turbine' + (R.wind.n === 1 ? '' : 's') + ' within ' + R.wind.within + ' mi, nearest ' + mi(R.wind.nearestMi) : 'no wind turbines within ' + R.wind.within + ' mi');
+    if (R.solar) e.push(R.solar.n ? R.solar.n + ' large solar site' + (R.solar.n === 1 ? '' : 's') + ' within ' + R.solar.within + ' mi, nearest ' + mi(R.solar.nearestMi) + (R.solar.nearestMw ? ' (' + f1(R.solar.nearestMw) + ' MW)' : '') : 'no large solar within ' + R.solar.within + ' mi');
     if (R.grid) {
       e.push(R.grid.line ? 'power line ' + mi(R.grid.line.mi) + (R.grid.line.kv ? ' (' + R.grid.line.kv + ' kV)' : '') : 'no mapped power line within ' + R.grid.within + ' mi');
       if (R.grid.sub) e.push('substation ' + mi(R.grid.sub.mi));
     }
-    if (e.length) o.energy = { v: e.join(' · '), m: 'Turbines and big solar nearby mean developers have been leasing here. A line and substation close by is what a solar or battery buyer looks for first.' };
+    if (e.length) o.energy = { v: e.join(' · ').replace(/^./, function (ch) { return ch.toUpperCase(); }), m: 'Turbines and big solar nearby mean developers have been leasing here. A line and substation close by is what a solar or battery buyer looks for first.' };
     var fd = R.feed;
     if (fd) {
       var cl = [];
@@ -382,7 +382,7 @@
     ['flood', 'Flood', 'FEMA National Flood Hazard Layer'],
     ['wet', 'Wetlands', 'USFWS National Wetlands Inventory'],
     ['slope', 'Slope', 'USGS 3DEP elevation'],
-    ['energy', 'Energy nearby', 'USGS wind and solar databases; power lines from OpenStreetMap'],
+    ['energy', 'Energy nearby', 'USGS wind and solar databases; power lines \u00a9 OpenStreetMap contributors'],
     ['feed', 'Livestock sites', ''],
     ['ease', 'Conservation easements', 'National Conservation Easement Database']
   ];
@@ -421,7 +421,7 @@
     function mount() {
       var old = document.getElementById('fs-layers-wrap'); if (old) old.parentNode.removeChild(old);
       var html = '<div class="fs-section" id="fs-layers-wrap"><div class="fs-section-h" role="heading" aria-level="3"><span class="ico" aria-hidden="true">' + ((FSX.ICONS && FSX.ICONS.risk) || '') + '</span>On and Around This Field</div>' +
-        '<div class="fs-section-body"><details class="fsl" id="fsl"><summary><span><span class="fsl-h">What&rsquo;s on and around this field</span><span class="fsl-sum" id="fsl-sum">Reading public maps&hellip;</span></span></summary><ul class="fsl-list">' +
+        '<div class="fs-section-body"><details class="fsl" id="fsl"><summary><span><span class="fsl-h">Flood, wetlands, slope, energy, livestock, easements</span><span class="fsl-sum" id="fsl-sum">Reading public maps&hellip;</span></span></summary><ul class="fsl-list">' +
         ITEMS.map(function (it) { return '<li class="fsl-i" id="fsl-' + it[0] + '"><div class="fsl-k">' + it[1] + '</div><div class="fsl-v fsl-off">reading&hellip;</div></li>'; }).join('') + '</ul></details></div></div>';
       var land = document.getElementById('fs-land'), sec = land && land.closest ? land.closest('.fs-section') : null;
       if (sec) sec.insertAdjacentHTML('afterend', html);
