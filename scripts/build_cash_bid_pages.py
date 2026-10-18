@@ -1711,6 +1711,14 @@ def build_town_page(t, ctx):
         if indexable else []
     hist_html = history_box(t, live_b, ctx["hist"](st)) if indexable and ctx.get("hist") else ""
     answer_html = f'<p class="cbt-answer">{esc(answer)}</p>' if answer else ""
+    # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
+    story_facts, story_html = None, ""
+    if indexable:
+        import stories_bids as SBX
+        hm = re.search(r"Basis since ([A-Z][a-z]{2} \d{1,2})<", hist_html or "")
+        story_facts = SBX.town_facts(t, live_b, crops, picks, cmp_lines, hm and hm.group(1), sname, NEAR_MI, CROPS, CROP_LABEL,
+                                     snap_ct, near_text, head_name)
+        story_html = SBX.TOWN.story_html((ctx.get("stories") or {}).get("town"), f"{st.lower()}/{t['slug']}", story_facts)
     if any_hold:
         hold_note = (" A &ldquo;Hold to&rdquo; line is the elevator&rsquo;s best later posted bid minus its nearest one, "
                      "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
@@ -1740,7 +1748,7 @@ def build_town_page(t, ctx):
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
   <h1>Cash grain bids in {esc(place)} today</h1>
   {answer_html}
-  {intro}
+  {story_html}{intro}
   {'' if indexable else near_html}
   {jump}
   {''.join(secs[:1])}
@@ -1766,7 +1774,7 @@ def build_town_page(t, ctx):
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
-            "share": share}
+            "share": share, "story_facts": story_facts}
     h = head(title, desc, path, jsonld, indexable, share)
     if box:
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
@@ -2478,6 +2486,10 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     # one page per company with COMPANY_MIN or more boards in towns; each board
     # learns its page first, so its town page can link it
     import build_company_pages as CO
+    import stories_core as SKX
+    import stories_bids as SBX
+    ctx["stories"] = {"town": SKX.load(SBX.TOWN, os.path.join(root, SBX.TOWN.STORE)),
+                      "company": SKX.load(SBX.COMPANY, os.path.join(root, SBX.COMPANY.STORE))}
     companies = CO.group(towns, {s_["id"]: s_ for s_ in index.get("sources") or [] if s_.get("id")})
     for co in companies.values():
         for _, bd in co["locs"]:
@@ -2513,6 +2525,11 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     if companies_out is not None:      # /cash-bids names them (stamp_live_coverage)
         companies_out.extend(cmetas)
     assert not os.path.exists(os.path.join(tmp, "index.html")), "cash-bids/index.html would capture /cash-bids"
+    if os.environ.get("STORY_FACTS_OUT"):     # the facts each page states, for a stories batch (scripts/stories_bids.py)
+        with open(os.environ["STORY_FACTS_OUT"], "w", encoding="utf-8") as f:
+            json.dump({"town": {f"{m['state'].lower()}/{m['slug']}": m["story_facts"] for m in metas if m.get("story_facts")},
+                       "company": {m["slug"]: m["story_facts"] for m in cmetas if m.get("story_facts")}},
+                      f, ensure_ascii=False, separators=(",", ":"))
     # swap in: towns that no longer have any network board disappear with the old tree
     shutil.rmtree(out_dir, ignore_errors=True)
     os.replace(tmp, out_dir)

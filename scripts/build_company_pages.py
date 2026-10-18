@@ -405,6 +405,12 @@ def build_page(co, ctx):
     if qs:
         jsonld["@graph"].append(CB.faq_jsonld(qs))
     hdr, ftr = ctx["chrome"]
+    # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
+    story_facts, story_html = None, ""
+    if indexable:
+        import stories_bids as SBX
+        story_facts = SBX.company_facts(co, states, by_st, crops, STATE_NAMES, snap_ct)
+        story_html = SBX.COMPANY.story_html((ctx.get("stories") or {}).get("company"), co["slug"], story_facts)
     # The bid email box (components/cb-signup.js, the same one the town pages
     # carry): AGSIST Daily with the reader's ZIP, and the 25-mile ZIP price
     # alert (send_zip_alert.py). A company page has no one ZIP, so the box
@@ -429,7 +435,7 @@ def build_page(co, ctx):
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{SUBDIR}/" style="color:var(--text-muted)">By company</a> &rsaquo; <b style="color:var(--text)">{esc(short)}</b></p>
   <h1>{esc(short)} cash grain bids today</h1>
   {f'<p class="cbt-answer">{esc(ans)}</p>' if ans else ''}
-  {intro}
+  {story_html}{intro}
   {jump}
   {near_html}
   {''.join(secs)}
@@ -452,7 +458,7 @@ def build_page(co, ctx):
     page = h + body + CB.page_end(ftr, signup=bool(box))
     meta = {"slug": co["slug"], "name": co["name"], "short": short, "path": path, "indexable": indexable,
             "locations": n_loc, "live": n_live, "states": states, "title": title,
-            "latest": max((r["priced"] for g in cells for r in g.values()), default=None)}
+            "latest": max((r["priced"] for g in cells for r in g.values()), default=None), "story_facts": story_facts}
     return page, meta
 
 

@@ -133,7 +133,7 @@ def claim(kind, printed, near=None, kw=None, opt=None):
 
 # ---------------------------------------------------------------- the checks
 TOKEN_RE = re.compile(r"(?<![\w.$-])(\$)?(\d{1,3}(?:,\d{3})+|\d+)(\.\d+)?(?![\d,]*\.\d)"
-                      r"(\s*(?:%|percent\b)|\s+(?:inches|inch|in)\b|\s*(?:bu|bushels?)\b|\s*(?:cents?)\b)?")
+                      r"(\s*(?:%|percent\b)|\s+(?:inches|inch)\b|\s+in\b(?=\s*[.,]|\s*$)|\s*(?:bu|bushels?)\b|\s*(?:cents?)\b)?")
 
 
 def tokens(text):
@@ -222,11 +222,17 @@ def check(story, spec, extra=None, facts=None):
     bad = []
     if not isinstance(story, str):
         return ["not text"]
-    s = story.strip()
+    s0 = story.strip()
     lo, hi = spec.get("chars", (120, 650))
-    if not (lo <= len(s) <= hi):
-        bad.append(f"length {len(s)} outside {lo}-{hi}")
-    if not s.endswith("."):
+    if not (lo <= len(s0) <= hi):
+        bad.append(f"length {len(s0)} outside {lo}-{hi}")
+    # names the facts give exactly ("Atkinson Grain & Fertilizer, Inc.") are read as one word
+    s = s0
+    for lit in sorted(set(spec.get("literal", [])), key=len, reverse=True):
+        if lit and len(lit) > 2:
+            s = re.sub(r"(?<![\w])" + re.escape(lit.rstrip(".")) + r"\.?(?=\.|\s|,|$)" if lit.endswith(".") else
+                       r"(?<![\w])" + re.escape(lit) + r"(?![\w])", "LITERALNAME", s)
+    if not s0.endswith("."):
         bad.append("does not end with a period")
     smin, smax = spec.get("sents", (2, 4))
     n = len(re.findall(r"(?<=[a-zA-Z0-9%)])\.(?:\s|$)", s))
@@ -264,7 +270,7 @@ def check(story, spec, extra=None, facts=None):
     for m in re.finditer(r"\b" + MONTH_RE + r"\b", w_):
         bad.append(f"month {m.group(0)!r} is not in the facts")
     # a capitalised word the facts do not give is a name the page does not print
-    names = set(spec.get("names", set())) | COMMON_CAPS | {"LEADDAY", "ALLOWED"}
+    names = set(spec.get("names", set())) | COMMON_CAPS | {"LEADDAY", "ALLOWED", "LITERALNAME"}
     for st, se in sentences(w_):
         for i, m in enumerate(re.finditer(r"\b[A-Z][A-Za-z'’]*\b", se)):
             word = m.group(0)
@@ -352,7 +358,7 @@ def check(story, spec, extra=None, facts=None):
             elif not any(d["dir"] == want for d in ds):
                 bad.append(f"'{m.group(1)}' is the wrong way (facts: {sorted({d['dir'] for d in ds})})")
     if extra:
-        bad += extra(s, m_, facts)
+        bad += extra(s0, m_, facts)
     return sorted(set(bad))
 
 
