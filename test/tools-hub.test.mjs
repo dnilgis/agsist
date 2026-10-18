@@ -31,7 +31,7 @@ test("tool groups and the cards in each run by 90-day views, new pages last", ()
     ["/cash-bids", "/breakeven", "/arc-plc", "/prf", "/store-or-sell", "/lrp", "/commodity-loan"],
     ["/hail-map", "/gdu-calculator", "/field-scout", "/planting-date"],
     ["/usda-calendar", "/tariffs", "/", "/hay-prices", "/cattle-auction-prices"],
-    ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/data-sources"],
+    ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/data-sources", "/glossary"],
     ["/spray", "/fertilizer", "/urea", "/manure-value", "/nutrient-removal", "/fall-nitrogen"],
     ["/grain-bin-calculator", "/grain-emc", "/grain-shrink", "/combine-loss", "/harvest-or-wait"],
   ]);
