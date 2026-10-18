@@ -197,20 +197,30 @@ class Company(_Set):
     def spec(self, f):
         claims = [K.claim("int", f["locations"], kw=r"locations?|elevators?|sites?|towns?")]
         claims.append(K.claim("int", len(f["states"]), kw=r"states?"))
-        for s in f["states"]:
-            claims.append(K.claim("int", s["locations"], near={"state": s["state"]}, kw=r"locations?|in"))
+        # a town the facts list stands for its state ("1 in Dawson, Minnesota", "1 more at Rushville")
+        tmasks = []
+        for i, st_ in enumerate(f["states"]):
+            for t in st_["some_towns"]:
+                tmasks.append((t, f"TOWNs{i:02d}"))
+        for i, s in enumerate(f["states"]):
+            claims.append(K.claim("int", s["locations"], near={"state": [s["state"], f"TOWNs{i:02d}"]}, kw=r"locations?|in|at|has|have|with|carries|adds"))
         names = _names(f["company"], f["short"], *(s["state"] for s in f["states"]), *(t for s in f["states"] for t in s["some_towns"]))
         masks = [(re.escape(f["company"]), "COMPANY"), (re.escape(f["short"]), "COMPANY")]
-        st_rx = "|".join(re.escape(s["state"]) for s in sorted(f["states"], key=lambda s: -len(s["state"])))
+        masks += [(r"\b" + re.escape(t) + r"\b", tok) for t, tok in sorted(tmasks, key=lambda x: -len(x[0]))]
+        st_rx = "|".join(re.escape(s["state"]) for s in sorted(f["states"], key=lambda s: -len(s["state"]))) + r"|TOWNs\d\d"
         return {"lead": f["as_of"], "masks": masks, "claims": claims, "years": set(), "dates": {f["as_of"]}, "names": names,
-                "literal": [f["company"], f["short"]], "classes": {"state": st_rx or "NOSTATE"}, "banned": BANNED, "supers": [], "dirs": [], "chars": (100, 550), "sents": (2, 3)}
+                "literal": [f["company"], f["short"]], "classes": {"state": st_rx}, "banned": BANNED, "unban": ["around"], "supers": [], "dirs": [], "chars": (100, 550), "sents": (2, 3)}
 
     def extra(self, s, m, f):
         bad = []
         for c, rx in CROP_WORDS.items():
             if re.search(rx, s, re.I) and c not in f["crops_in_table"]:
                 bad.append(f"{c} is not a crop the page's table carries")
-        for st_name in re.findall(r"\b(" + "|".join(re.escape(x) for x in STATE_LIST) + r")\b", s):
+        s_ = s
+        for st_ in f["states"]:
+            for t in st_["some_towns"]:
+                s_ = re.sub(r"\b" + re.escape(t) + r"\b", "TOWN", s_)
+        for st_name in re.findall(r"\b(" + "|".join(re.escape(x) for x in STATE_LIST) + r")\b", s_):
             if st_name not in {x["state"] for x in f["states"]} and st_name not in f["company"]:
                 bad.append(f"{st_name} is not a state the page lists")
         if re.search(r"\$|\d+\s*(?:c|cents|¢)\b|\bbasis\b", s):
@@ -373,6 +383,20 @@ def selftest():
     K.run_pairs(C, c, [
         ("As of Oct 17, ADM has 107 locations on the page, 32 of them in Illinois, from Altamont to East Saint Louis. North Dakota has 3, at Center and Hebron.",
          "As of Oct 17, ADM has 107 locations on the page, 32 of them in Indiana, from Altamont to East Saint Louis. North Dakota has 3, at Center and Hebron."),
+    ], ok)
+    # false positives from the first company batch (Oct 2026): true stories that must pass, each beside the error still caught
+    c2 = {"company": "Agtegra", "short": "Agtegra", "locations": 35,
+          "states": [{"state": "South Dakota", "locations": 33, "some_towns": ["Aberdeen", "Bowdle"]},
+                     {"state": "Minnesota", "locations": 1, "some_towns": ["Dawson"]},
+                     {"state": "Kansas", "locations": 1, "some_towns": ["Arkansas City", "Spring Grove", "Booker"]}],
+          "crops_in_table": ["corn", "soybeans", "wheat"], "site": None, "as_of": "Oct 17", "as_of_iso": "2026-10-17"}
+    K.run_pairs(C, c2, [
+        ("As of Oct 17, this page lists 35 Agtegra locations across 3 states. South Dakota carries 33 of them, in towns like Aberdeen and Bowdle, "
+         "with 1 in Dawson, Minnesota and 1 at Spring Grove.",
+         "As of Oct 17, this page lists 35 Agtegra locations across 3 states. South Dakota carries 33 of them, in towns like Aberdeen and Bowdle, "
+         "with 2 in Dawson, Minnesota and 1 at Spring Grove."),
+        ("As of Oct 17, this page lists 35 Agtegra locations, with Kansas adding 1 around Booker and Arkansas City. The table carries corn, soybeans and wheat.",
+         "As of Oct 17, this page lists 35 Agtegra locations, with Arkansas adding 1 around Booker. The table carries corn, soybeans and wheat."),
     ], ok)
     # the page: only on a facts match, dropped after 35 days or when an elevator leaves
     with tempfile.TemporaryDirectory() as t:
