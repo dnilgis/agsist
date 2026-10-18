@@ -451,7 +451,7 @@ test("rp-gift.html: the card's words (station, marked days, full year, card numb
   assert.equal((h.match(/once the full year is in\./g) || []).length, 6, "both January lines on the small cards, and the 8 x 10's what's-coming lines");
   assert.match(h, /Your ' \+ s\.year \+ ' print comes in January, once the full year is in\./);
   assert.match(h, /framed12x18: \['A print of the whole year in a 13 x 19 black frame with a white mat and glass, ready to hang\.', 'It ships in January, once the full year is in\.'\]/);
-  assert.match(h, /print12x18: \['A print of the whole year on 13 x 19 matte paper\.', 'It ships in January, once the full year is in\.'\]/);
+  assert.match(h, /print12x18: \['A print of the whole year on 13 x 19 heavy, textured cotton fine-art paper\.', 'It ships in January, once the full year is in\.'\]/);
   assert.match(h, /digital: \['The 12 x 18 digital file of the whole year, to print anywhere\.', 'It comes by email in January, once the full year is in\.'\]/);
   assert.equal((h.match(/class="foot">Card ' \+ String\(C\.no/g) || []).length, 3, "every foot says Card 0017 (the small cards' two and the 8 x 10's)");
   assert.doesNotMatch(h, /class="foot">No\. /);
