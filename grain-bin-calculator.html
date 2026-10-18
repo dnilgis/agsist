@@ -16,8 +16,8 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
   <link rel="manifest"                            href="/manifest.json">
-  <title>Grain Bin Calculator: Bushels, Capacity &amp; Shrink | AGSIST</title>
-  <meta name="description" content="Free grain bin calculator: diameter and height to instant bushel capacity, moisture shrink, and net value. Peaked, level, draw-cone, and hopper bins.">
+  <title>Grain Bin Calculator &amp; Size Chart: Bushels by Diameter | AGSIST</title>
+  <meta name="description" content="A 30 x 24 ft bin holds about 13,600 bu level full. Type your diameter and eave height for bushels, peaked capacity, shrink and value. Flat or hopper bins.">
   <meta name="keywords"    content="grain bin calculator, bushel capacity calculator, moisture shrink, grain storage calculator, bin volume, cone grain bin, hopper bottom bin">
   <meta name="author"      content="Sigurd Lindquist">
   <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -25,8 +25,8 @@
   <meta property="og:type"         content="website">
   <meta property="og:site_name"    content="AGSIST">
   <meta property="og:locale"       content="en_US">
-  <meta property="og:title"        content="Grain Bin Calculator: Bushels, Capacity &amp; Shrink | AGSIST">
-  <meta property="og:description"  content="Free grain bin calculator. Bushel capacity with peaked, level, draw cone, or hopper-bottom surfaces. Moisture shrink, drying cost, and net market value.">
+  <meta property="og:title"        content="Grain Bin Calculator &amp; Size Chart: Bushels by Diameter | AGSIST">
+  <meta property="og:description"  content="A 30 x 24 ft bin holds about 13,600 bu level full. Type your diameter and eave height for bushels, peaked capacity, shrink and value. Flat or hopper bins.">
   <meta property="og:url"          content="https://agsist.com/grain-bin-calculator">
   <meta property="og:image"        content="https://agsist.com/img/og/grain-bin-calculator.jpg?v=5daef0b6">
   <meta property="og:image:width"  content="1200">
@@ -35,8 +35,8 @@
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@agsist">
   <meta name="twitter:creator"     content="@agsist">
-  <meta name="twitter:title"       content="Grain Bin Calculator: Bushels, Capacity &amp; Shrink | AGSIST">
-  <meta name="twitter:description" content="Free grain bin calculator. Bushel capacity and moisture shrink for any bin.">
+  <meta name="twitter:title"       content="Grain Bin Calculator &amp; Size Chart: Bushels by Diameter | AGSIST">
+  <meta name="twitter:description" content="A 30 x 24 ft bin holds about 13,600 bu level full. Type your diameter and eave height for bushels, peaked capacity, shrink and value. Flat or hopper bins.">
   <meta name="twitter:image"       content="https://agsist.com/img/og/grain-bin-calculator.jpg?v=5daef0b6">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
@@ -501,6 +501,29 @@
     <div class="content-section">
       <h2>How to use this grain bin calculator</h2>
       <p>Enter your bin diameter and eave height (or length, width, and depth for rectangular storage), choose your crop, and the calculator shows total bushel capacity, weight, and, if you enter a market price, estimated net value after moisture shrink and drying costs. The depth slider lets you model a partially filled bin. Use the Hopper option for bins with an inverted-cone floor; the calculator automatically adds the hopper cone volume to your total.</p>
+
+<!--BINCHART:START-->
+      <h2 id="size-chart">Grain bin size chart: bushels by diameter and eave height</h2>
+      <p>Level full, flat floor, no pack, grain all the way to the eave, rounded to 10 bu. These are this page&rsquo;s own formula (&pi; &times; r&sup2; &times; height &times; 0.8036 bu per ft&sup3;). A peak adds more, and a dealer chart reads higher still (see below). If your bin has a raised aeration floor, use the eave height minus the floor (12 in on the GSI bins below).</p>
+      <div style="overflow-x:auto">
+        <table class="ref-table">
+          <caption class="gb-small" style="caption-side:bottom;text-align:left">Bushels (volume bushels of 1.2445 ft&sup3;). Type your own bin into the calculator above for peaked, hopper and partial fills.</caption>
+          <thead><tr><th>Diameter</th><th>16 ft eave</th><th>20 ft eave</th><th>24 ft eave</th><th>28 ft eave</th><th>32 ft eave</th></tr></thead>
+          <tbody>
+<tr><td>15 ft</td><td>2,270</td><td>2,840</td><td>3,410</td><td>3,980</td><td>4,540</td></tr>
+<tr><td>18 ft</td><td>3,270</td><td>4,090</td><td>4,910</td><td>5,730</td><td>6,540</td></tr>
+<tr><td>21 ft</td><td>4,450</td><td>5,570</td><td>6,680</td><td>7,790</td><td>8,910</td></tr>
+<tr><td>24 ft</td><td>5,820</td><td>7,270</td><td>8,720</td><td>10,180</td><td>11,630</td></tr>
+<tr><td>27 ft</td><td>7,360</td><td>9,200</td><td>11,040</td><td>12,880</td><td>14,720</td></tr>
+<tr><td>30 ft</td><td>9,090</td><td>11,360</td><td>13,630</td><td>15,900</td><td>18,180</td></tr>
+<tr><td>33 ft</td><td>11,000</td><td>13,750</td><td>16,500</td><td>19,240</td><td>21,990</td></tr>
+<tr><td>36 ft</td><td>13,090</td><td>16,360</td><td>19,630</td><td>22,900</td><td>26,170</td></tr>
+<tr><td>42 ft</td><td>17,810</td><td>22,270</td><td>26,720</td><td>31,170</td><td>35,630</td></tr>
+<tr><td>48 ft</td><td>23,270</td><td>29,080</td><td>34,900</td><td>40,720</td><td>46,530</td></tr>
+          </tbody>
+        </table>
+      </div>
+<!--BINCHART:END-->
 
       <h2>Why a dealer chart reads higher</h2>
       <p>Dealer charts like GSI&rsquo;s count a 28&deg; peak and 6% pack, and GSI counts grain from the top of a 12 in aeration floor. This page&rsquo;s plain setting counts a 25&deg; peak and no pack, so a chart reads about 5 to 6.5% higher for the same bin. Pick &ldquo;Match my dealer&rsquo;s chart&rdquo; and put in the floor height to count it their way. Here are three real bins.</p>
