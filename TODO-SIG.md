@@ -9,7 +9,6 @@ names and anything private out of it.
 - [ ] Stripe read-only key: Developers -> API keys -> Create restricted key ("agsist morning report"), Read on Charges and Checkout Sessions only; add it as the STRIPE_READ_KEY Actions secret in dnilgis/agsist so the morning email counts paid orders
 - [ ] Take a photo of a framed print on a wall, plus a close-up of the paper
 - [ ] Tap the two Rain Print example years on the live site
-- [ ] Submit sitemap-rain.xml (and the other sitemaps) in Google Search Console
 - [ ] Send the Rain Print gift-guide pitches by Oct 31 (the list is in your email)
 - [ ] Ship one framed test print a few states away and write down the real cost (target under $45)
 - [ ] Forward the first morning bid email from the new elevator

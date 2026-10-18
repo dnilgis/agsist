@@ -234,7 +234,9 @@ test("the page: one copy of the math, the dealer setting, test weight, labels", 
 });
 
 test("byline, date and sources are on the page", () => {
-  assert.match(PAGE, /By <a href="\/about">Sigurd Lindquist<\/a>, CCA &middot; Updated <time datetime="2026-10-16">Oct 16, 2026<\/time>/);
+  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  assert.match(PAGE, /<p class="gb-byline">Updated <time datetime="2026-10-16">Oct 16, 2026<\/time>/);
+  assert.match(PAGE, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   assert.match(PAGE, /"dateModified":"2026-10-16"/);
   for (const s of ["NCH-61", "doi.org/10.13031/trans.58.11033", "EP413.2", "grain-drying-considerations-fall", "gs401_40SeriesBins-Producer.pdf"])
     assert.ok(PAGE.includes(s), `source ${s}`);

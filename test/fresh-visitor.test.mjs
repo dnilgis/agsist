@@ -92,7 +92,7 @@ test("/glossary is built from the same file, indexable, and listed", () => {
   assert.doesNotMatch(h, /noindex/);
   assert.match(h, /"@type":"FAQPage"/); assert.match(h, /"@type":"DefinedTermSet"/);
   assert.match(h, /"jobTitle":"Certified Crop Adviser \(CCA\)"/);
-  assert.match(h, /Sigurd Lindquist, CCA/);
+  assert.match(h, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   assert.match(read("sitemap.xml"), /<loc>https:\/\/agsist\.com\/glossary<\/loc>/);
   assert.match(read("llms.txt"), /https:\/\/agsist\.com\/glossary\)/);
 });
@@ -133,7 +133,7 @@ test("no em dashes in anything this adds", () => {
   }
 });
 
-test("who made it: tool and price pages name Sig and the data source near the top", () => {
+test("who made it: tool and price pages name the data source near the top and Sig at the end", () => {
   for (const f of ["usda-calendar.html", "corn-futures-prices.html", "soybean-futures-prices.html", "wheat-futures-prices.html",
     "cattle-futures-prices.html", "cash-bids.html", "crop-tour.html", "cot.html", "hail-map.html", "markets.html", "fertilizer.html",
     "conditions.html", "basis.html", "lrp.html", "store-or-sell.html", "harvest-price-tracker.html"]) {
@@ -142,7 +142,11 @@ test("who made it: tool and price pages name Sig and the data source near the to
     const h = read(f), i = h.indexOf("<h1"), j = h.indexOf('class="madeby"');
     assert.ok(j > i && i > 0, f + " has the made-by line after its H1");
     assert.ok(j - i < 6000, f + " made-by line sits near the top");
-    assert.match(h.slice(j, h.indexOf("</p>", j)), /Sigurd Lindquist, CCA<\/a>[.,] .*(Data|Weather|Dates|Sources|Bids|Tour|radar)/i, f);
+    // Sig, Oct 18: the name left the top line; the line keeps the data source, the name sits at the end
+    const mb = h.slice(j, h.indexOf("</p>", j));
+    assert.match(mb, /(Data|Weather|Dates|Sources|Bids|Tour|radar)/i, f);
+    assert.doesNotMatch(mb, /Sigurd Lindquist/, f);
+    assert.ok(h.indexOf("Sigurd Lindquist", j) > j, f + " names Sig further down");
     assert.equal(h.split('class="madeby"').length, 2, f + " has one made-by line");
   }
 });

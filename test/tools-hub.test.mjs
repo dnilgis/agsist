@@ -153,7 +153,8 @@ test("find box and chips filter the cards, hide empty groups, and say when nothi
 });
 
 test("byline, not-covered note and structured data", () => {
-  assert.match(html, /By <a href="\/about">Sigurd Lindquist, CCA<\/a>/);
+  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  assert.match(html, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   assert.match(html, /id="not-here">Not on this site yet</);
   assert.match(html, /No irrigation scheduling tools\./);
   const ld = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);

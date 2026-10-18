@@ -48,7 +48,10 @@ test("every issue: one NewsArticle, one headline, dates with an offset, a byline
     assert.equal(a.publisher.logo.url, "https://agsist.com/img/logo-agsist.png");
     assert.ok(a.image[0].width >= 1200, f + ": image 1200 wide");
     assert.ok(h.includes(`Published <time datetime="${a.datePublished}">`), f + ": visible published time = datePublished");
-    assert.ok(h.includes('By <a href="/about" rel="author">Sigurd Lindquist</a>, CCA'), f + ": byline");
+    // Sig, Oct 18: no name under the headline; the byline block at the end carries it
+    assert.ok(/<p class="dv3-dateline">Published <time/.test(h), f + ": published time under the headline");
+    assert.ok(!/dv3-dateline">[^<]*<a[^>]*>Sigurd/.test(h), f + ": no name under the headline");
+    assert.ok(h.indexOf("Sigurd Lindquist", h.indexOf("dv3-headline")) > h.indexOf("dv3-dateline"), f + ": byline below the article top");
     assert.ok(h.includes("max-image-preview:large"), f + ": large image preview");
     assert.ok(h.includes(`<meta property="article:published_time" content="${a.datePublished}">`), f);
     for (const href of ["/editorial-standards#how-the-daily-is-made", "/editorial-standards#corrections", "/about", "/contact"])

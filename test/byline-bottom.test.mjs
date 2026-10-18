@@ -16,9 +16,7 @@ const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const list = (d) => existsSync(join(ROOT, d)) ? readdirSync(join(ROOT, d)).filter((f) => f.endsWith(".html")).map((f) => d + "/" + f) : [];
 // pages whose whole subject is who runs the site
 const ABOUT_SIG = new Set(["about.html", "contact.html", "terms.html", "privacy.html", "developer.html", "accessibility.html",
-  "editorial-standards.html", "data-sources.html", "list-your-elevator.html", "prf-sponsor.html", "prf-sponsor-kit.html", "sponsor-kit.html", "sponsor-report.html",
-  // the printed adjuster sheet ends "Prepared by Sigurd Lindquist"; it is built in a script string, not shown on the page
-  "hail-map.html"]);
+  "editorial-standards.html", "data-sources.html", "list-your-elevator.html", "prf-sponsor.html", "prf-sponsor-kit.html", "sponsor-kit.html", "sponsor-report.html"]);
 
 function topText(html) {
   const body = html.replace(/<p class="by-end"[\s\S]*?<\/p>/g, "").replace(/<head[\s\S]*?<\/head>/, "").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<!--[\s\S]*?-->/g, "");

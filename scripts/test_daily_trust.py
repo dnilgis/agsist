@@ -158,9 +158,12 @@ for f, needle in (("index.html", "data.otp_week_ahead?'WEEK AHEAD IN AG'"),
 print("\n3. The byline\n")
 BY = "Sigurd Lindquist</strong>, CCA"
 check(BY in g.render_byline_block_html(), "archive byline", g.render_byline_block_html())
-for f in ("daily.html", "index.html"):
+for f in ("daily.html",):
     src = open(os.path.join(HERE, "..", f), encoding="utf-8").read()
     check(BY in src and "Lindquist</strong>, founder" not in src, f"{f} byline")
+# Sig, Oct 18: no name at the top of a page; the homepage names him in one line at the end
+src = open(os.path.join(HERE, "..", "index.html"), encoding="utf-8").read()
+check('Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.' in src and "Lindquist</strong>, founder" not in src, "index.html byline at the end")
 src = open(os.path.join(HERE, "send_morning_brief.py"), encoding="utf-8").read()
 check("Written by Sigurd Lindquist, CCA." in src and "Lindquist, founder" not in src,
       "send_morning_brief.py byline (source text only; not run)")

@@ -41,7 +41,8 @@ test("page: structure, Dataset JSON-LD, cite line, CSV, chart, method", () => {
   }
   assert.match(h, /<svg class="cbi-chart"[^>]*role="img"/);
   assert.match(h, /<h2 id="method">Method<\/h2>/);
-  assert.match(h, /By <a href="\/about" rel="author">Sigurd Lindquist<\/a>, CCA/);
+  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  assert.match(h, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   assert.ok(!h.includes("—") && !read("scripts/cash_bid_index.py").includes("—"), "no em dashes");
   assert.ok(statSync(join(ROOT, "cash-bid-index.html")).size < 150 * 1024, "under the 150 KB page cap");
   // the latest edition's numbers in the CSV agree with the page

@@ -30,7 +30,8 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const read = (f) => readFileSync(ROOT + f, "utf8");
-const BYLINE = /By <a href="\/about">Sigurd Lindquist<\/a>, CCA/;
+// Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+const BYLINE = /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/;
 
 function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };

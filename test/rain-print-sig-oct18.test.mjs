@@ -33,8 +33,9 @@ test("2. the phone line sits by Made by on both pages, with a tel link and the e
   assert.match(RP, line); assert.match(BIZ, line);
   const i = RP.indexOf('id="rp-madeby"'), k = RP.indexOf('id="rp-call"');
   assert.ok(i > 0 && k > i && k - i < 1200, "right under Made by Sig Lindquist in Chetek");
-  const b = BIZ.indexOf("Sigurd Lindquist, CCA, Chetek, Wisconsin"), c = BIZ.indexOf('id="rbz-call"');
-  assert.ok(b > 0 && c > b && c - b < 200, "right under the Chetek byline");
+  // Sig, Oct 18: no name at the top; the business page keeps the call line right under its H1
+  const b = BIZ.indexOf("<h1"), c = BIZ.indexOf('id="rbz-call"');
+  assert.ok(b > 0 && c > b && c - b < 300, "right under the H1");
 });
 
 test("3. no promise of photos; the Mockup tag stays on the mockup", () => {

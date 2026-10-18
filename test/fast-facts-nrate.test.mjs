@@ -106,7 +106,9 @@ test("no em dashes, no 'today's prices', byline and sources on the page", () => 
   assert.ok(!body.includes("—") && !body.includes("&mdash;"), "em dash in fast-facts.html");
   assert.ok(!js.includes("—"), "em dash in fast-facts.js");
   assert.ok(!/today(?:'|&rsquo;|’)s prices/i.test(body));
-  assert.ok(html.includes("By <strong>Sigurd Lindquist, CCA</strong>"));
+  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  assert.ok(html.includes("Written and checked by Sigurd Lindquist, CCA, Chetek, Wisconsin."));
+  assert.ok(!html.includes("By <strong>Sigurd Lindquist, CCA</strong>"));
   assert.ok(html.includes('id="ff-sources"'));
   assert.ok(html.includes("https://www.cornnratecalc.org/"));
 });

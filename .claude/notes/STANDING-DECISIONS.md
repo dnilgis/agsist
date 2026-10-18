@@ -140,3 +140,7 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 18, Sig) Spend the expiring API credits: stories for PRF/Atlas/town/co-op pages, accuracy passes (top pages and every set),
   elevator website classifier for bids coverage, tool FAQ gaps, first-time visitor read. Monthly story refreshes are OK.
 - (Oct 18, Sig) Indiana land sales (STATS Indiana sales disclosure) go live with names in Field Scout and the comp report, like IL and WI: public record. Never on indexed pages.
+- (Oct 18, Sig) No name at the top of any page. The name goes in one quiet "Made by Sigurd Lindquist, CCA, Chetek, Wisconsin."
+  line at the end (class by-end) or a source note lower down; structured data keeps the author (test/byline-bottom.test.mjs).
+- (Oct 18, Sig) Footer bottom line: "Updated as each source posts. For information, not financial advice. Where the numbers come from".
+- (Oct 18, Sig) Net elevator price tool: not yet.

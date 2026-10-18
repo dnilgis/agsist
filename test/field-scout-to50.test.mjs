@@ -171,7 +171,9 @@ test("honest wording: failed bid read, five-year average, no em dashes", () => {
 });
 
 test("byline, date and credential", () => {
-  assert.match(HTML, /<p class="fs-by">Sigurd Lindquist, CCA, Chetek, Wisconsin &middot; Updated [A-Z][a-z]{2} \d{1,2}, 20\d\d &middot; <a href="#fs-math">How the field math works<\/a><\/p>/);
+  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  assert.match(HTML, /<p class="fs-by">Updated [A-Z][a-z]{2} \d{1,2}, 20\d\d &middot; <a href="#fs-math">How the field math works<\/a><\/p>/);
+  assert.match(HTML, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(HTML)[1]);
   const app = ld["@graph"].find((g) => g["@type"] === "WebApplication");
   assert.equal(app.author.name, "Sigurd Lindquist");
