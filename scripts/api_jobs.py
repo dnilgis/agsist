@@ -7,6 +7,8 @@
           what is missing.
   alt     For each image on the hand-made pages, the image plus its
           surrounding text. The model proposes plain alt text.
+  fresh   For each hand-made page, its rendered text: a first-time visitor read
+          (scripts/fresh_read.py builds the input and the ranked report).
   story   For each county rain page, the facts the page states (built by
           scripts/county_stories.py, in Actions, from data/rain). The model
           writes 2 to 4 plain sentences; county_stories.py collect checks every
@@ -46,7 +48,9 @@ RUN = re.sub(r"[^a-zA-Z0-9_-]", "", os.environ.get("APIJOBS_RUN", "r1")) or "r1"
 OUT = f"apijobs/{RUN}"
 COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
 STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
-MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000}
+import fresh_read as FR   # first-time visitor read (scripts/ is on the path when run as a script)
+FRESH_CAP = FR.CAP     # dollars, the first-time visitor read (Sig, Oct 18)
+MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000, "fresh": FR.MAX_TOKENS}
 SET_STORY_MAX_TOKENS = 700   # the other story sets: a story is about 150 tokens; 700 keeps a 3,070-page batch under STORY_CAP
 EFFORT = {"search": "medium", "alt": "low", "story": "low"}
 # Claude Sonnet 5.5 list prices per million tokens, halved for the Batches API.
@@ -172,12 +176,12 @@ def set_story_params(e):
 
 
 def custom_id(kind, name):
-    return ({"search": "s_", "alt": "a_", "story": "c_"}[kind] + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
+    return ({"search": "s_", "alt": "a_", "story": "c_", "fresh": "v_"}[kind] + re.sub(r"[^a-zA-Z0-9_-]", "_", name))[:64]
 
 
 # c: county rain stories; p, f, t, o: the PRF, Atlas, town and company stories (stories_core.cid_of)
 def kind_of(cid):
-    return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story"}.get(cid[:1], "alt")
+    return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story", "v": "fresh"}.get(cid[:1], "alt")
 
 
 def requests_of(bundle):
@@ -187,6 +191,7 @@ def requests_of(bundle):
         out.append(("search", custom_id("search", e["page"]), e["page"], search_params(e, today)))
     for e in bundle.get("alt", []):
         out.append(("alt", custom_id("alt", e["id"]), e["id"], alt_params(e)))
+    out += FR.requests(bundle)
     for e in bundle.get("story", []):
         if e.get("set"):
             import stories_core as K
@@ -226,7 +231,7 @@ def cost_of(u, model=MODEL):
 
 
 def model_of(kind):
-    return STORY_MODEL if kind == "story" else MODEL
+    return FR.MODEL if kind == "fresh" else STORY_MODEL if kind == "story" else MODEL
 
 
 def worst_case(kind, n_in, max_out=None):
@@ -236,11 +241,12 @@ def worst_case(kind, n_in, max_out=None):
 
 
 def cap_of(bundle):
-    return (COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
+    return ((COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
+            + (FRESH_CAP if bundle.get("fresh") else 0.0))
 
 
 def estimate(bundle):
-    rows, total, per = [], 0.0, {"search": 0.0, "alt": 0.0, "story": 0.0}
+    rows, total, per = [], 0.0, {"search": 0.0, "alt": 0.0, "story": 0.0, "fresh": 0.0}
     ratio, counted = 0.0, 0     # story requests: tokens per character, the highest seen in the sample
     for kind, cid, name, p in requests_of(bundle):
         if kind == "story" and counted >= STORY_SAMPLE and ratio:
@@ -260,7 +266,7 @@ def estimate(bundle):
         total += c; per[kind] += c
         print(f"{cid}: {n} input tokens, worst case ${c:.3f}", flush=True)
     print(f"::notice title=API jobs estimate::worst case ${total:.2f} (search ${per['search']:.2f}, alt ${per['alt']:.2f}, "
-          f"story ${per['story']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
+          f"story ${per['story']:.2f}, fresh ${per['fresh']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
     os.makedirs(OUT, exist_ok=True)
     json.dump({"run": RUN, "worst_case_usd": round(total, 2), "per_job_usd": {k: round(v, 2) for k, v in per.items()},
                "rows": rows}, open(f"{OUT}/estimate.json", "w"), indent=1)
@@ -301,7 +307,7 @@ def cmd_submit(bundle_path):
 
 
 def collect_from(rec, raw):
-    items, per, tok = {}, {"search": 0.0, "alt": 0.0, "story": 0.0}, {"input": 0, "output": 0}
+    items, per, tok = {}, {"search": 0.0, "alt": 0.0, "story": 0.0, "fresh": 0.0}, {"input": 0, "output": 0}
     for line in raw.splitlines():
         if not line.strip():
             continue
@@ -405,6 +411,12 @@ def selftest():
     for n_pages, n_in in ((3070, 2600), (3148, 1300), (1500, 900), (120, 1500)):
         assert n_pages * worst_case("story", n_in, SET_STORY_MAX_TOKENS) < STORY_CAP, (n_pages, n_in)
     assert gr[0][3]["max_tokens"] == SET_STORY_MAX_TOKENS
+    # the first-time visitor read: its own prefix, model and cap; a full run stays under the cap at the worst case
+    fe = {"page": "tools.html", "url": "https://agsist.com/tools", "text": "t", "traffic": {}}
+    fr = requests_of({"fresh": [fe], "site": {"menu": "m", "footer": "f"}})
+    assert fr[0][:3] == ("fresh", "v_tools_html", "tools.html") and fr[0][3]["model"] == FR.MODEL == model_of("fresh")
+    assert kind_of("v_tools_html") == "fresh" and cap_of({"fresh": [fe]}) == FRESH_CAP
+    assert 150 * worst_case("fresh", 12000) < FRESH_CAP, 150 * worst_case("fresh", 12000)
     print("selftest ok")
 
 

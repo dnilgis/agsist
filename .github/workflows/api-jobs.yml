@@ -24,6 +24,11 @@ name: API jobs (one-time)
 # (data/prf-stories, data/atlas-stories, data/cash-bids-stories/towns or
 # /companies) and rebuilds the pages.
 #
+# First-time visitor read (scripts/fresh_read.py, run=fresh-2026-10): the input
+# is built outside Actions from a local render of every hand-made page and put on
+# raw as apijobs/<run>/input/bundle.json. After collect, the ranked report lands
+# on raw as apijobs/<run>/fresh-read.json and fresh-read.md. Cap $20.
+#
 #   mode=estimate  count tokens and print the worst-case cost, spend nothing
 #   mode=submit    estimate, refuse over $20, refuse if apijobs/<run>/batch.json
 #                  is already on raw, submit one batch, then wait and collect
@@ -71,7 +76,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Selftest
-        run: python scripts/api_jobs.py selftest
+        run: python scripts/api_jobs.py selftest && python scripts/fresh_read.py selftest
       - name: Get the input and any earlier batch record from raw
         if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
@@ -137,4 +142,14 @@ jobs:
             bash scripts/push_raw.sh "apijobs $APIJOBS_RUN stories" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
           else
             echo "no county stories in this run"
+          fi
+      - name: Rank the first-time visitor read
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        run: |
+          R="apijobs/$APIJOBS_RUN/results.json"
+          if [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('fresh') else 1)"; then
+            python scripts/fresh_read.py report /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN"
+            bash scripts/push_raw.sh "apijobs $APIJOBS_RUN fresh read" "apijobs/$APIJOBS_RUN/fresh-read.json" "apijobs/$APIJOBS_RUN/fresh-read.md"
+          else
+            echo "no first-time visitor read in this run"
           fi
