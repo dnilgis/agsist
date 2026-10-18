@@ -421,7 +421,7 @@ def selftest():
         "a year not in the facts": good.replace("In 2025", "In 2019"),
         "no lead day": good.replace("As of Oct 12, ", ""),
         "the wrong lead day": good.replace("As of Oct 12,", "As of Oct 6,"),
-        "an em dash": good.replace(". In 2025", " — in 2025"),
+        "an em dash": good.replace(". In 2025", " \u2014 in 2025"),
         "a number word": good.replace("in 28 of 75 years", "in 28 of 75 years, more than a third"),
         "a forecast": good + " It will likely pay again.",
         "a season": good.replace("The wettest pair", "In summer the wettest pair"),
@@ -482,7 +482,7 @@ def selftest():
         ok(story_html(bad_store, "DE", "10001", now, "2026-10-14") == "", "a stored story that fails the validator never prints")
     # the real build: no store, no change (build --check covers the bytes); with a store, only that page changes
     ok(not os.path.isdir(os.path.join(K.ROOT, STORE)) or K.load(S) is not None, "store readable")
-    ok("—" not in SYSTEM and "–" not in SYSTEM, "no em dash in the prompt")
+    ok("\u2014" not in SYSTEM and "\u2013" not in SYSTEM, "no em dash in the prompt")
     p = prompt(f)
     ok("as_of_iso" not in p and "83.4" in p and "payback" not in p and '"example"' not in p, "prompt: facts only, no payback, no example")
     print("prf stories selftest:", "ok" if not fails else f"{len(fails)} failure(s)")

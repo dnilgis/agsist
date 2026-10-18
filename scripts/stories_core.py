@@ -72,7 +72,7 @@ NUMBER_WORDS = ["two", "three", "four", "five", "six", "seven", "eight", "nine",
                 "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "dozen", "half",
                 "twice", "double", "doubled", "triple", "tripled", "third", "quarter", "decade", "decades",
                 "fortnight", "several", "dozens", "handful", "couple", "majority", "most", "few", "many"]
-BAD_CHARS = {"—": "em dash", "–": "en dash", "!": "exclamation mark", "?": "question mark",
+BAD_CHARS = {"\u2014": "em dash", "\u2013": "en dash", "!": "exclamation mark", "?": "question mark",
              ";": "semicolon", "&": "ampersand", "<": "angle bracket", ">": "angle bracket", "*": "asterisk",
              "#": "hash", '"': "double quote", "“": "curly quote", "”": "curly quote", "\n": "line break",
              "(": "parenthesis", ")": "parenthesis", "/": "slash", "~": "tilde"}

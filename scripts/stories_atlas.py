@@ -364,7 +364,7 @@ def selftest():
         if co.get("trend"):
             want.append(f"{co['trend']['bu_ac']}<small> bu/ac</small>")
         if co.get("median"):
-            want.append(f"Median, {co['median']['from']}–{co['median']['to']}</span><span class=\"r\">{co['median']['bu_ac']} bu/ac")
+            want.append(f"Median, {co['median']['from']}\u2013{co['median']['to']}</span><span class=\"r\">{co['median']['bu_ac']} bu/ac")
         if co.get("recent_average"):
             want.append(f"{co['recent_average']['label'].capitalize()}</span><span class=\"r\">{co['recent_average']['bu_ac']} bu/ac")
         if f["rented_share_2022"]:
@@ -397,7 +397,7 @@ def selftest():
         "a rank not given": good.replace("in 2016.", "in 2016, the highest in Iowa."),
         "a year not in the facts": good.replace("in 2017", "in 2012").replace("$9,467", "$9,999"),
         "advice": good + " You should rent now.",
-        "an em dash": good.replace(". The census", " — the census"),
+        "an em dash": good.replace(". The census", " \u2014 the census"),
         "no lead day": good.replace("As of Oct 16, n", "N"),
     }
     for k, s in planted.items():
@@ -448,7 +448,7 @@ def selftest():
         ok("ap-story" not in A.county_page(W, "19169", d2, "2026-10-16"), "a figure moved: no story")
         W.stories = {}
     p = prompt(f)
-    ok("as_of_iso" not in p and "$290" in p and "—" not in SYSTEM, "prompt: the facts, no em dash")
+    ok("as_of_iso" not in p and "$290" in p and "\u2014" not in SYSTEM, "prompt: the facts, no em dash")
     print("atlas stories selftest:", "ok" if not fails else f"{len(fails)} failure(s)")
     return 1 if fails else 0
 

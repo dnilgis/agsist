@@ -392,7 +392,7 @@ def selftest():
         g["basis_vs_state"][1]["vs_state_middle"] = "even with"
         ok(T.story_html(store, "ia/hubbard", g) == "", "the basis crossed the state middle: no story")
     for S in (T, C):
-        ok("—" not in S.SYSTEM and "price" in S.SYSTEM, f"{S.NAME} prompt: no em dash, says no price")
+        ok("\u2014" not in S.SYSTEM and "price" in S.SYSTEM, f"{S.NAME} prompt: no em dash, says no price")
     print("town and company stories selftest:", "ok" if not fails else f"{len(fails)} failure(s)")
     return 1 if fails else 0
 
