@@ -647,5 +647,7 @@ fetch('/data/daily-archive/index.json', {cache:'no-store'})
   document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.arc-card');if(c&&window.gaEvent){var dt=c.querySelector('.arc-card-date');gaEvent('briefing_open',{date:dt?dt.textContent:''});}},true);
 })();
 </script>
+  <script src="/components/glossary.js?v=1" defer></script>
+  <script src="/components/next-links.js?v=1" defer></script>
 </body>
 </html>

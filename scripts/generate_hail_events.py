@@ -713,7 +713,7 @@ def hub_html(dates_meta, today):
         + season_recap_html(dates_meta) + jump +
         "<table><thead><tr><th>Storm day</th><th class=\"num\">Reports</th><th class=\"num\">Largest</th><th>Record</th></tr></thead><tbody>"
         + rows + "</tbody></table>\n"
-        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")
+        "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n<script src=\"/components/glossary.js?v=1\" defer></script>\n<script src=\"/components/next-links.js?v=1\" defer></script>\n</body>\n</html>\n")
 
 
 def main():
