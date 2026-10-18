@@ -42,7 +42,7 @@ SET_MIN = 3           # never fewer than this many pages from a set (or all of a
 TEXT_CHARS = 20000    # page text sent per page
 DATA_CHARS = 22000    # data slice sent per page, all files together
 REF_CHARS = 4500      # per reference excerpt
-REFS_CHARS = 12000    # all reference excerpts for a set
+REFS_CHARS = 10000    # all reference excerpts for a set
 MAX_TOKENS = 6000     # model output per page (thinking included); the errors list is short
 EFFORT = "medium"
 SEED = "accsets-1"
@@ -88,7 +88,7 @@ SET_DEFS = [
     ("hail-map-state", "hail-map/*.html", "state", ["data/hail/state-counties.json", "data/hail/storm-days.json"],
      ["bench-hail-map-1", "bench-hail-map-2"]),
     ("hail-day", "hail/*.html", "date",
-     ["data/hail/storm-days.json", "data/hail/events-{year}.json", "data/hail/{year}.json"],
+     ["data/hail/storm-days.json", "data/hail/events-{year}.json"],
      ["bench-hail-map-1", "bench-hail-map-2"]),
     ("yield-state", "yield/*.html", "state", ["data/state-stats.json", "data/nass/*.json"],
      ["bench-conditions-yield-1", "bench-usda-quick-stats-3"]),
@@ -320,7 +320,7 @@ def needles(ids):
             if k != "county":
                 strong.add(nm)
     if ids.get("date"):
-        strong.add(f'"{ids["date"]}"')
+        strong |= {ids["date"], f'"{ids["date"][5:]}"'}      # events rows carry "MM-DD"
         keys.add(ids["date"])
     if ids.get("ST"):
         st = ids["ST"]
@@ -330,38 +330,63 @@ def needles(ids):
     return strong, keys
 
 
+_MEMO = {}     # id of a loaded data object -> (object, its JSON); loaded files stay in Data.cache, so ids stay valid
+
+
 def dumps(o):
+    if isinstance(o, (dict, list)):
+        hit = _MEMO.get(id(o))
+        if hit is not None and hit[0] is o:
+            return hit[1]
+        t = json.dumps(o, separators=(",", ":"), ensure_ascii=False)
+        if len(t) > 2000:
+            _MEMO[id(o)] = (o, t)
+        return t
     return json.dumps(o, separators=(",", ":"), ensure_ascii=False)
 
 
 def slice_json(o, strong, keys, budget):
+    """Cut a JSON value down to what concerns this page. A dict keeps the children that
+    are this page's (key or contents) with most of the budget, and the rest (notes,
+    parameters, units) with what is left; a dict with no such child keeps a little of
+    everything. A list keeps its matching rows, as many as fit, and says how many it
+    left out."""
     s = dumps(o)
     if len(s) <= budget:
         return o
     if isinstance(o, dict):
-        out, dropped = {}, 0
         hits = [k for k in o if str(k) in keys or any(n in dumps(o[k]) for n in strong)]
-        share = max(400, budget // max(1, len(hits)))
+        rest = [k for k in o if k not in hits]
+        hit_budget = int(budget * 0.7) if hits else 0
+        rest_share = (budget - hit_budget) // max(1, len(rest))
+        out, dropped = {}, 0
         for k, v in o.items():
             if k in hits:
-                out[k] = slice_json(v, strong, keys, share)
-            elif not isinstance(v, (dict, list)) or len(dumps(v)) <= 120:
+                out[k] = slice_json(v, strong, keys, max(400, hit_budget // len(hits)))
+            elif not isinstance(v, (dict, list)) or len(dumps(v)) <= max(120, rest_share):
                 out[k] = v
+            elif rest_share >= 150:
+                out[k] = slice_json(v, set(), set(), rest_share)
             else:
                 dropped += 1
         if dropped:
             out["_omitted"] = f"{dropped} other entries not for this page"
         return out
     if isinstance(o, list):
-        hits = [x for x in o if any(n in dumps(x) for n in strong)]
-        if hits:
-            share = max(400, budget // min(len(hits), 20))
-            out = [slice_json(x, strong, keys, share) for x in hits[:20]]
-            if len(o) > len(out):
-                out.append({"_omitted": f"{len(o) - len(out)} other rows of {len(o)}"})
-            return out
-        out = [slice_json(x, strong, keys, max(300, budget // 4)) for x in o[:3]]
-        return out + [{"_omitted": f"{len(o) - 3} more rows of {len(o)}, none for this page"}] if len(o) > 3 else out
+        hits = [x for x in o if any(n in dumps(x) for n in strong)] if strong else []
+        rows = hits or o
+        out, used = [], 2
+        per = max(300, budget // max(1, min(len(rows), 20)))
+        for x in rows:
+            y = slice_json(x, strong, keys, per)
+            n = len(dumps(y)) + 1
+            if out and used + n > budget:
+                break
+            out.append(y)
+            used += n
+        if len(o) > len(out):
+            out.append({"_omitted": f"{len(o) - len(out)} other rows of {len(o)}" + ("" if hits else ", none for this page")})
+        return out
     return o
 
 
@@ -399,12 +424,12 @@ class Data:
         files = []
         for t in templates:
             if t == "@prf-county-facts":
-                files.append(("scripts/prf_county_facts.mjs output (the county facts the page prints)", self.prf_county_facts()))
+                files.append(("scripts/prf_county_facts.mjs output (the county facts the page prints)", self.prf_county_facts(), False))
                 continue
             if t.startswith("@net:"):
                 if self.net is not None:
                     files.append((f"bids network data/{'merged-all' if t == '@net:merged' else 'index'}.json (read right after the build)",
-                                  self.net.get(t[5:])))
+                                  self.net.get(t[5:]), False))
                 continue
             try:
                 rel = t.format(st=ids.get("ST", "").lower(), ST=ids.get("ST", ""), fips=ids.get("fips", ""),
@@ -414,11 +439,18 @@ class Data:
             if "{" in rel or rel.endswith("/.json") or "/.json" in rel:
                 continue
             for p in sorted(glob.glob(os.path.join(self.root, rel))) if "*" in rel else [os.path.join(self.root, rel)]:
-                files.append((os.path.relpath(p, self.root), self.load(os.path.relpath(p, self.root))))
-        files = [(p, o) for p, o in files if o is not None]
+                files.append((os.path.relpath(p, self.root), self.load(os.path.relpath(p, self.root)), "{fips}" in t or "{date}" in t))
+        files = [(p, o, own) for p, o, own in files if o is not None]
         out, left = [], DATA_CHARS
-        for i, (p, o) in enumerate(files):
-            per = max(1500, left // (len(files) - i))
+        # a file that is this page's alone ({fips} or {date} in its name) goes whole, first
+        for p, o, own in files:
+            if own:
+                body = cut(dumps(o), int(DATA_CHARS * 0.6))
+                out.append({"path": p, "body": body})
+                left -= len(body)
+        shared = [(p, o) for p, o, own in files if not own]
+        for i, (p, o) in enumerate(shared):
+            per = max(1500, left // (len(shared) - i))
             body = cut(dumps(slice_json(o, strong, keys, per)), per)
             out.append({"path": p, "body": body})
             left -= len(body)

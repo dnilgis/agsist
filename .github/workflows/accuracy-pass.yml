@@ -13,14 +13,22 @@ name: Accuracy pass
 #   mode=collect   wait for the batch and write <record>/results.json
 #   (submit and collect then rank the leads: <record>/findings.json and
 #   findings.md, severity first, for a person to check before any fix)
+#
+# build=sets (estimate or submit): the input is built here instead of read from
+# raw: about 3% (input share) of every generated page set, stratified by state,
+# each page with the data slice it was built from and the set's excerpts from
+# the references branch (scripts/accuracy_sets.py). The cash bid town, state and
+# company pages are a fresh build from the bids network, read right after, so
+# page and data match. The built input is saved to raw as <record>/input/bundle.json;
+# collect then reads it from there. Use cap 40 and a run name such as sets-2026-10.
 
 # The push trigger exists only so GitHub registers this workflow from a branch
 # that is not main (dispatch needs that); a push runs the selftest and nothing
 # else, no API call and no spend.
 on:
   push:
-    branches: [fx/accpass, fx/accpass3]
-    paths: [.github/workflows/accuracy-pass.yml, scripts/accuracy_pass.py]
+    branches: [fx/accpass, fx/accpass3, fx/accsets]
+    paths: [.github/workflows/accuracy-pass.yml, scripts/accuracy_pass.py, scripts/accuracy_sets.py]
   workflow_dispatch:
     inputs:
       mode:
@@ -42,6 +50,12 @@ on:
       wait_minutes:
         description: "How long collect waits for the batch to end"
         default: "330"
+      build:
+        description: "sets to build the input here (estimate and submit); empty to read it from raw"
+        default: ""
+      share:
+        description: "build=sets: share of each page set to sample"
+        default: "0.03"
 
 permissions:
   contents: write
@@ -72,8 +86,18 @@ jobs:
         run: |
           git fetch -q --depth 1 origin raw
           mkdir -p "$REC"
-          git show "FETCH_HEAD:$REC/input/bundle.json" > /tmp/bundle.json
           git show "FETCH_HEAD:$REC/batch.json" > "$REC/batch.json" 2>/dev/null || rm -f "$REC/batch.json"
+          if [ "${{ inputs.build }}" = "sets" ] && [ "${{ inputs.mode }}" != "collect" ]; then
+            if [ -f "$REC/batch.json" ]; then echo "::error::$REC/batch.json is on raw (this run was submitted); use a new run name"; exit 1; fi
+            git fetch -q --depth 1 origin references:refs/remotes/origin/references
+            python scripts/build_cash_bid_pages.py --out /tmp/cb-pages --sitemap /tmp/cb-sitemap.xml
+            git checkout -- . 2>/dev/null || true     # the cash bid build also stamps pages in the checkout; keep main's
+            mkdir -p "$REC/input"
+            python scripts/accuracy_pass.py sets "$REC/input/bundle.json" --cb-pages /tmp/cb-pages --net --share "${{ inputs.share }}"
+            cp "$REC/input/bundle.json" /tmp/bundle.json
+          else
+            git show "FETCH_HEAD:$REC/input/bundle.json" > /tmp/bundle.json
+          fi
           # records of the runs that share the cap or calibrate this one
           for r in $(echo "${{ inputs.budget_with }},${{ inputs.calibrate_from }}" | tr ',' ' '); do
             mkdir -p "accuracy-pass/$r"
@@ -82,6 +106,9 @@ jobs:
             done
           done
           ls -laR accuracy-pass /tmp/bundle.json
+      - name: Save the built input to raw
+        if: ${{ inputs.build == 'sets' && inputs.mode != 'collect' }}
+        run: bash scripts/push_raw.sh "accuracy-pass input ${{ inputs.run }}" "$REC/input/bundle.json"
       - name: Estimate
         if: ${{ inputs.mode == 'estimate' }}
         env:
