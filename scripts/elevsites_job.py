@@ -307,7 +307,11 @@ if __name__ == "__main__":
     elif a[0] == "bundle":
         b = build_bundle(newest_caps(a[1]))
         os.makedirs(os.path.dirname(a[2]) or ".", exist_ok=True)
-        json.dump(b, open(a[2], "w"))
+        # the site owners' own keys out before the bundle goes to the API or to raw (push protection)
+        from redact_secrets import redact
+        text, n = redact(json.dumps(b))
+        open(a[2], "w").write(text)
+        print(f"redacted {n} secret-looking string(s) from the captures")
         print(f"::notice title=elevsites bundle::{len(b['elevsite'])} companies from {b['caps']}")
     elif a[0] == "collect":
         todo = collect(json.load(open(a[1])), json.load(open(a[2])))

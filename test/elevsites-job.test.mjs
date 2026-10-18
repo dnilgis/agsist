@@ -33,3 +33,24 @@ test("the job has its own cap, a model, and reads the bids captures in Actions o
   const job = readFileSync(ROOT + "scripts/elevsites_job.py", "utf8");
   assert.doesNotMatch(job, /—/, "no em dashes in the prompt");
 });
+
+test("the bundle built from the captures carries no secret-looking string (push protection)", async () => {
+  const fs = await import("node:fs"), os = await import("node:os"), path = await import("node:path");
+  const t = fs.mkdtempSync(path.join(os.tmpdir(), "elevb-"));
+  try {
+    const key = ["AI", "za", "Sy", "Q1w2E3r4T5y6U7i8O9p0A1s2D3f4G5h6J7k"].join("");
+    const mb = ["pk", ".eyJ", "1IjoiY29vcCIsImEiOiJjbGZ4In0", ".", "aBcD3fGh1jKlMn0pQrStUv"].join("");
+    const caps = path.join(t, "caps", "2026-10-18-1"), sh = path.join(caps, "captures-0"), pg = path.join(sh, "coop-com");
+    fs.mkdirSync(pg, { recursive: true });
+    fs.writeFileSync(path.join(caps, "list.txt"), "https://coop.com/  # TEST COOP\n");
+    fs.writeFileSync(path.join(caps, "worklist.json"), JSON.stringify({ companies: [{ company: "TEST COOP", realRows: 1, states: { IA: 1 } }] }));
+    fs.writeFileSync(path.join(sh, "index.json"), JSON.stringify([{ slug: "coop-com", pageUrl: "https://coop.com/", parent: null }]));
+    fs.writeFileSync(path.join(pg, "digest.json"), JSON.stringify({ title: "Coop", text: `Cash Bids Corn 3.85 ${mb}`,
+      scripts: [`https://maps.googleapis.com/maps/api/js?key=${key}`], links: [] }));
+    const out = path.join(t, "bundle.json");
+    assert.match(py(["scripts/elevsites_job.py", "bundle", t, out]), /redacted 2 secret-looking/);
+    const b = fs.readFileSync(out, "utf8");
+    assert.ok(!b.includes(key) && !b.includes(mb) && b.includes("Corn 3.85"), b);
+    assert.equal(JSON.parse(b).elevsite[0].company, "TEST COOP");
+  } finally { fs.rmSync(t, { recursive: true, force: true }); }
+});

@@ -105,7 +105,7 @@ function sandbox() {
   const w = path.join(t, 'work');
   g(['init', '-q', 'work'], t);
   fs.mkdirSync(path.join(w, 'scripts'));
-  for (const s of ['push_raw.sh', 'pull_raw.sh']) fs.copyFileSync(path.join(root, 'scripts', s), path.join(w, 'scripts', s));
+  for (const s of ['push_raw.sh', 'pull_raw.sh', 'redact_secrets.py']) fs.copyFileSync(path.join(root, 'scripts', s), path.join(w, 'scripts', s));
   fs.writeFileSync(path.join(w, '.gitignore'), '/data/x-raw/\n');
   g(['add', '-A'], w); g(['commit', '-qm', 'main'], w);
   g(['remote', 'add', 'origin', path.join(t, 'origin.git')], w);
@@ -174,4 +174,31 @@ test('pull_raw.sh unpacks into the working tree only, and stops the run when a p
     assert.notEqual(miss.status, 0);
     assert.match(miss.stdout, /::error::data\/not-there is not on the raw branch/);
   } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }
+});
+
+test('push_raw.sh takes secret-looking strings out of the raw copy, not the original (push protection)', () => {
+  const sb = sandbox();
+  try {
+    seedRaw(sb, {});
+    // assembled from parts so this file itself carries no key
+    const key = ['AI', 'za', 'Sy', 'Q1w2E3r4T5y6U7i8O9p0A1s2D3f4G5h6J7k'].join('');
+    const stripe = ['pk', '_live_', '51HcAb12Cd34Ef56Gh78'].join('');
+    fs.mkdirSync(path.join(sb.w, 'data/x-raw'), { recursive: true });
+    const page = `<script src="https://maps.googleapis.com/maps/api/js?key=${key}"></script> Corn 3.85 ${stripe}`;
+    fs.writeFileSync(path.join(sb.w, 'data/x-raw/page.html'), page);
+    fs.writeFileSync(path.join(sb.w, 'data/x-raw/b.json'), JSON.stringify({ html: page }));
+    const r = run(sb, 'push_raw.sh', ['x probe', 'data/x-raw']);
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.match(r.stdout, /redact: 4 secret-looking string\(s\) replaced in 2 file\(s\)/);
+    const saved = rawFile(sb, 'data/x-raw/page.html');
+    assert.ok(!saved.includes(key) && !saved.includes(stripe) && saved.includes('Corn 3.85') && saved.includes('key=[redacted]'), saved);
+    assert.equal(JSON.parse(rawFile(sb, 'data/x-raw/b.json')).html.includes('[redacted]'), true, 'JSON stays valid');
+    assert.equal(fs.readFileSync(path.join(sb.w, 'data/x-raw/page.html'), 'utf8'), page, 'the original is left alone');
+  } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }
+});
+
+test('the redactor selftest passes (planted keys of every kind, readable text and JSON kept)', () => {
+  const r = spawnSync('python3', [path.join(root, 'scripts/redact_secrets.py'), 'selftest'], { encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(r.stdout, /redact selftest ok/);
 });

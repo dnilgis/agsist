@@ -55,6 +55,12 @@ for p in "$@"; do
 done
 if [ "${#HAVE[@]}" -eq 0 ]; then echo "::warning::push_raw.sh: none of the paths exist; nothing saved to $BR"; exit 0; fi
 
+# SECRETS OUT FIRST. Saved third-party pages carry their owners' keys (Maps,
+# Stripe, Mapbox...), and GitHub push protection then refuses the whole push
+# (elevsites, land-data, Oct 2026). The staged copy is redacted, never the
+# originals; if the redactor cannot run, nothing is pushed.
+python3 "$ROOT/scripts/redact_secrets.py" "$STAGE" || { echo "::error::push_raw.sh: redact_secrets.py failed; not pushing"; exit 1; }
+
 # THE MAIN CHECKOUT MAY BE SPARSE, AND A NEW WORKTREE COPIES ITS SPARSE
 # PATTERNS (git 2.38+). refs.yml's first run (2026-10-15) got a worktree with
 # nothing checked out and `git add` refused every path. So: add it without a
