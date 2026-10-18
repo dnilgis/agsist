@@ -292,7 +292,7 @@ test("(l): past the framed date the page starts on the print; past both, on the 
   }, { time: "2026-11-02T18:00:00Z" });
 });
 
-test("10: 24 px checkboxes and remove buttons, 13 px badges, Up close named; the sticky preview steps aside while typing on a phone", { skip }, async () => {
+test("10: 24 px checkboxes and remove buttons, 13 px badges, Up close named; the sticky preview folds to its words while typing on a phone", { skip }, async () => {
   await withPage(async (page, base, errors) => {
     await drawAmes(page, base);
     const tag = await page.$eval(".rp-ex-tag", (el) => parseFloat(getComputedStyle(el).fontSize));
@@ -313,11 +313,12 @@ test("10: 24 px checkboxes and remove buttons, 13 px badges, Up close named; the
     if (shown) {
       await page.focus("#rp-name");
       await page.waitForTimeout(200);
-      assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById("rp-strip")).display), "none", "aside while typing");
+      assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById("rp-mini")).display), "none", "the picture folds away while typing");
+      assert.ok(await page.evaluate(() => document.getElementById("rp-strip").offsetHeight) < 60, "down to its line of words");
       await page.evaluate(() => document.activeElement.blur());
       await page.waitForTimeout(200);
-      assert.notEqual(await page.evaluate(() => getComputedStyle(document.getElementById("rp-strip")).display), "none", "back after");
-    } else assert.match(HTML, /body:has\(:is\(input:not\(\[type=checkbox\]\):not\(\[type=radio\]\),textarea,select\):focus\) \.rp-strip\{display:none\}/);
+      assert.notEqual(await page.evaluate(() => getComputedStyle(document.getElementById("rp-mini")).display), "none", "back after");
+    } else assert.match(HTML, /body:has\(:is\(input:not\(\[type=checkbox\]\):not\(\[type=radio\]\),textarea,select\):focus\) \.rp-strip :is\(\.rp-mini,\.chip\)\{display:none\}/);
     assert.deepEqual(errors, []);
   }, { width: 390, height: 844, phone: true });
 });
