@@ -355,7 +355,7 @@
         /* data-l: the column name a phone shows over each value when the rows stack into cards (2026-10-17) */
         return '<tr' + (opts.detail ? ' data-row="' + i + '"' : '') + '><td data-l="Date">' + date + '</td><td class="n" data-l="$/ac">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n" data-l="Acres">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td class="n" data-l="Price">' + fm(r.price) + '</td><td class="n" data-l="Miles">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td class="t" data-l="Town, class">' + town + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + '</td>' +
           (opts.src ? '<td class="t" data-l="Source">' + esc(r.src || '') + (r.doc ? ' ' + esc(r.doc) : '') + '</td>' : '') + '</tr>';
-      }).join('') + '</tbody></table></div>' + (list.length > max ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + (opts.detail ? '. Narrow the filters to see the rest.' : '.') + '</p>' : '');
+      }).join('') + '</tbody></table></div>' + (list.length > max && opts.detail ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + '. Narrow the filters to see the rest.</p>' : '');
   };
 
   // ── one sale in full: the detail panel (Oct 18, 2026) ───────────────

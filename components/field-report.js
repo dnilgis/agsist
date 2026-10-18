@@ -78,7 +78,7 @@
           return;
         }
         (function tryNext(i) {
-          if (i >= svcs.length) { set('frp-parcel', miss(esc(svcs[0].name) + ' did not answer. Reload in a minute.')); set('frp-hist', ''); return; }
+          if (i >= svcs.length) { set('frp-parcel', miss(esc(svcs[0].name) + ' did not answer. Reload in a minute.')); set('frp-hist', miss('Without the parcel number from the parcel map we cannot pick this field\u2019s transfers out of the county record. Reload in a minute.')); return; }
           F.queryParcels(svcs[i], pts).then(function (ps) {
             ps = F.shareInParcels(pts, ps).slice(0, 12);
             if (!ps.length) { set('frp-parcel', miss('No parcel came back for this outline from ' + esc(svcs[i].name) + '.')); set('frp-hist', ''); return; }
