@@ -662,9 +662,9 @@ def render_nights(data, ph, sst, today):
         # sentence; by now the national number is on the page.
         lead = render_progress(prog, data, ph, today).replace(
             "These are state samples, not a national yield: Pro Farmer's national "
-            "number is acreage-weighted and posts at the end of the week.",
+            "number blends the tour with weather, maturity and history and posts at the end of the week.",
             "These are state samples, not a national yield; Pro Farmer's national "
-            "number is acreage-weighted.")
+            "number blends the tour with weather, maturity and history.")
         return lead + render_nights_table(data, sst, prog)
     nxt = next_night(data, today)
     for nt in data["nights"]:
@@ -915,7 +915,7 @@ def render_progress(prog, data, ph, today):
         body = (f'<b>{prog["posted"]} of {prog["expected"]}</b> state corn figures are in'
                 + tail
                 + ' These are state samples, not a national yield: Pro Farmer\'s national '
-                  'number is acreage-weighted and posts at the end of the week.')
+                  'number blends the tour with weather, maturity and history and posts at the end of the week.')
     return f'<p class="ct-lead ct-progress">{body}</p>'
 
 
