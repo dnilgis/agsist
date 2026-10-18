@@ -1193,6 +1193,10 @@ PAGES[CATTLE_PAGE] = (seo_cattle, frozenset({"title", "desc"}))
 H1_CORN = "CBOT corn futures prices today, per bushel"
 H1_BEANS = "CBOT soybean futures prices today, per bushel"
 H1_CATTLE = "Feeder and live cattle futures prices today"
+# 2026-10-18: about 350 KC / Kansas City impressions went to a page whose H1
+# said only "Wheat futures". The page shows KC HRW (prices.json kcwheat), so
+# the H1 names both. The title stays as it is until the Nov 15 re-measure.
+H1_WHEAT = "Chicago and KC wheat futures prices today"
 
 
 def body_h1(text):
@@ -1202,6 +1206,7 @@ def body_h1(text):
 BODY = {
     "corn-futures-prices.html": ("futures-h1", body_h1(H1_CORN)),
     "soybean-futures-prices.html": ("futures-h1", body_h1(H1_BEANS)),
+    "wheat-futures-prices.html": ("futures-h1", body_h1(H1_WHEAT)),
     CATTLE_PAGE: ("cattle-h1", body_h1(H1_CATTLE)),
     "usda-calendar.html": ("next-wasde", body_usda_calendar),
     "usda-quick-stats.html": ("state-yields", body_quick_stats),
@@ -1540,6 +1545,7 @@ def selftest():
     print("\nfutures H1s: the words people search, baked between markers")
     for _pg, _nm, _want in (("corn-futures-prices.html", "futures-h1", H1_CORN),
                             ("soybean-futures-prices.html", "futures-h1", H1_BEANS),
+                            ("wheat-futures-prices.html", "futures-h1", H1_WHEAT),
                             (CATTLE_PAGE, "cattle-h1", H1_CATTLE)):
         _src = (REPO / _pg).read_text(encoding="utf-8")
         ck(f"{_pg} has one <h1> holding the {_nm} markers",
@@ -1551,6 +1557,10 @@ def selftest():
     ck("corn and soybean H1s name CBOT and per bushel",
        all("CBOT" in x and "per bushel" in x for x in (H1_CORN, H1_BEANS)))
     ck("cattle H1 leads with feeders", H1_CATTLE.startswith("Feeder"))
+    _px = json.loads((DATA / "prices.json").read_text(encoding="utf-8"))
+    ck("wheat H1 names KC only while the price file carries KC wheat",
+       "KC" not in H1_WHEAT or any(k.startswith("kcwheat") for k in (_px.get("quotes") or {})))
+    ck("wheat page shows a KC HRW card", 'id="p-kcwheat"' in (REPO / "wheat-futures-prices.html").read_text(encoding="utf-8"))
 
     t, d = seo_cot(ctx)
     ck("COT title states the position", "Net Long Corn 126k" in t, t)
