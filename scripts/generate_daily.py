@@ -3008,12 +3008,12 @@ def render_byline_block_html():
 
 
 def render_dateline_html(briefing, date_iso):
-    """Byline and published time under the headline, the way news readers
-    and Google expect to find them. 'Updated' only when the issue was
+    """Published time under the headline. 'Updated' only when the issue was
     rewritten 10 minutes or more after it first went up."""
     pub_iso = published_at(briefing)
     pub_dt, mod_dt = _ct_dt(pub_iso), _ct_dt(briefing.get("generated_at"))
-    parts = ['By <a href="/about" rel="author">Sigurd Lindquist</a>, CCA']
+    # Sig, Oct 18: no name under the headline; the byline block at the end carries it
+    parts = []
     if pub_dt:
         parts.append(f'Published <time datetime="{iso_ct(pub_iso)}">{html_esc(human_ct(pub_iso))}</time>')
     else:

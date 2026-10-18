@@ -2269,6 +2269,7 @@ def state_page(st, S, D, ch, nav_states):
   <p class="ap-small">Related: {' &middot; '.join(rel)}</p>
   <h2>Other states</h2>
   <p class="ap-states">{others}</p>
+{BY_END}
 </main>
 """
     page = head(title, desc, path, jsonld, indexable, fonts) + body + tail(ftr)
@@ -2505,8 +2506,13 @@ def bc_html(items):
 
 
 def byline_html(D):
-    return (f'<p class="ap-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. '
-            f'{asof(D["updated"])}</p>')
+    # Sig, Oct 18: no name at the top of a page; the name goes in one quiet line
+    # at the end (BY_END) or in the "Reviewed by" source note
+    return f'<p class="ap-byline">{asof(D["updated"])}</p>'
+
+
+BY_END = ('<p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">'
+          'Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>')
 
 
 def deadlines_box():

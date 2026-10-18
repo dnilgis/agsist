@@ -737,12 +737,14 @@ def page_html(editions):
     <article class="cbi">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/cash-bids">Cash bids</a> &rarr; Cash Bid Index</nav>
       <h1>AGSIST Cash Bid Index</h1>
-      <p class="by">By <a href="/about" rel="author">Sigurd Lindquist</a>, CCA. Updated {esc(_short(modified))}, {esc(modified[:4])}.</p>
+      <p class="by">Updated {esc(_short(modified))}, {esc(modified[:4])}.</p>
       <p class="cbi-lede">Each month: what elevators actually bid for corn and soybeans, state by state, from the boards AGSIST reads every trading day. These numbers come from our own reads; no one else has this set.</p>
       {body}
       {past}
       {method}
     </article>
+    <div data-signup-ask="Email me my top local bid and the markets, every weekday morning" data-source="page:cash-bid-index"></div>
+    <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
   </main>
   <div id="site-footer">
 {foot_nav}

@@ -671,6 +671,7 @@ def hub_page(B, D, k, ch):
   <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}</ul></details>
   <h2>Other crops</h2>
   <p class="ap-states"><a href="/arc-plc">Corn, soybeans and wheat</a> &middot; {others}</p>
+{B.BY_END}
 </main>
 """
     page = B.head(title, desc, path, jsonld, True, fonts) + body + B.tail(ftr)

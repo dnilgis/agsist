@@ -457,7 +457,7 @@ ADSPACE = """    <div class="footer-adspace" id="footer-adspace" hidden>
 # Bottom row: one small line (data note + where the numbers come from), then the legal links.
 # The legal links stay last: test/nav-full-oct18.test.mjs reads every link after footer-legal.
 BOTTOM = """    <div class="footer-bottom">
-      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Data refreshed through the trading session. For information, not financial advice. <a href="/data-sources">Where the numbers come from</a></p>
+      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice. <a href="/data-sources">Where the numbers come from</a></p>
       <div class="footer-legal">
         <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>

@@ -468,7 +468,7 @@ def state_page(d, idx):
     <article class="cr">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/custom-rates">Custom rates</a> &rarr; {name}</nav>
       <h1>{name} custom rates, {yr} survey</h1>
-      <p class="by">Sigurd Lindquist, CCA &middot; numbers from {pub}</p>
+      <p class="by">Numbers from {pub}</p>
       <p class="cr-lede">What farmers and custom operators in {name} said they charged or paid for custom work, as the {survey} printed it. Rates are survey averages; your local custom operator may charge more or less.</p>
       <p class="cr-actions"><a class="cr-btn go" href="/custom-rates?st={st}">Search jobs and compare neighbors</a></p>
       <div class="cr-tw"><table class="cr-t cr-full">
@@ -486,7 +486,8 @@ def state_page(d, idx):
       <h2>Other states</h2>
       <p class="cr-other">{others}</p>
     </article>
-  </main>
+  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
+</main>
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=19" defer></script>
 </body>
