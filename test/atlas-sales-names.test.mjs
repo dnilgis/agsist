@@ -14,7 +14,11 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const require = createRequire(import.meta.url);
 const S = require(join(ROOT, "components/atlas-sales.js"));
-const STATES = [["il", "illinois"], ["wi", "wisconsin"]].filter(([s]) => existsSync(join(ROOT, `data/land/${s}/summary.json`)));
+const STATE_DIRS = { il: "illinois", wi: "wisconsin", in: "indiana", mn: "minnesota", ia: "iowa" };
+// every state with county transfer files on disk (land audit Oct 18: Indiana was missed when this listed IL and WI by hand)
+const NAMED = readdirSync(join(ROOT, "data/land"), { withFileTypes: true })
+  .filter((d) => d.isDirectory() && readdirSync(join(ROOT, "data/land", d.name)).some((n) => /^\d{5}\.json$/.test(n))).map((d) => d.name);
+const STATES = NAMED.map((s) => [s, STATE_DIRS[s]]).filter(([s]) => existsSync(join(ROOT, `data/land/${s}/summary.json`)));
 const PRIVATE = ["grantor", "grantee", "legal", "pid", "doc"];
 const COUNTY_KEYS = new Set(["a24", "chg", "from", "k12", "k12p", "k24", "large", "med", "medp", "n12", "n12p", "name", "nout", "out", "r24", "to", "u12", "u12p", "why_chg", "why_p"]);
 const TOP_KEYS = new Set(["counties", "fetched", "kinds", "min_acres", "min_n", "record", "since_note", "state", "state_med", "through", "url", "who", "windows"]);
@@ -29,10 +33,10 @@ function countyFiles(s) {
 // every private value in a county file, at least 6 characters (shorter ones are words like "TRUST").
 // A party that is itself a public place the page names anyway ("CONDIT TOWNSHIP", "BUREAU COUNTY,
 // ILLINOIS") is not a private name: skipped when its words are only place words of this county or a county name.
-const PLACE_WORDS = new Set(["TOWNSHIP", "TOWN", "COUNTY", "VILLAGE", "CITY", "OF", "THE", "STATE", "ILLINOIS", "WISCONSIN"]);
+const PLACE_WORDS = new Set(["TOWNSHIP", "TOWN", "COUNTY", "VILLAGE", "CITY", "OF", "THE", "STATE", "ILLINOIS", "WISCONSIN", "INDIANA"]);
 // every county name in IL and WI is a place word too (a neighbor county can be a party)
 const COUNTY_NAMES = [];
-for (const s of ["il", "wi"]) try { COUNTY_NAMES.push(...Object.values(JSON.parse(read(`data/land/${s}/summary.json`)).counties).map((c) => c.name)); } catch (e) { /* no summary */ }
+for (const s of NAMED) try { COUNTY_NAMES.push(...Object.values(JSON.parse(read(`data/land/${s}/summary.json`)).counties).map((c) => c.name)); } catch (e) { /* no summary */ }
 function privateValues(f) {
   const ix = PRIVATE.map((c) => f.cols.indexOf(c)).filter((i) => i >= 0);
   const place = words([f.county, ...COUNTY_NAMES, ...Object.values(f.munis || {}).map((m) => m[0])].join(" "));
@@ -118,5 +122,37 @@ test("the Atlas builder never opens a county transfer file, and /data/land/ stay
   const py = read("scripts/build_atlas_pages.py");
   assert.doesNotMatch(py, /data\/land\/[^"']*\d{5}|"\d{5}\.json"|grantor|grantee/);
   assert.match(read("robots.txt"), /^Disallow: \/data\/land\/$/m);
+  // the name-free summary is crawlable so the indexed county pages render; nothing else under /data/land/ is
+  const allows = read("robots.txt").split("\n").filter((l) => /^Allow:.*\/data\/land/.test(l));
+  assert.deepEqual(allows, ["Allow: /data/land/*/summary.json"]);
   for (const [s] of STATES) assert.doesNotMatch(read(`data/land/${s}/summary.json`), /"(grantor|grantee|legal|pid|doc)"/);
+});
+
+// Every other public, indexable file: no private value from ANY state's county files
+// (land audit Oct 18: state index pages, search data, llms.txt and sitemaps were never scanned).
+test("state Atlas pages, search data, llms.txt and sitemaps carry no private value from any state", () => {
+  const targets = [];
+  const add = (p) => { if (existsSync(join(ROOT, p))) targets.push(p); };
+  for (const d of readdirSync(join(ROOT, "farmland-atlas"), { withFileTypes: true })) {
+    if (d.isDirectory()) add(`farmland-atlas/${d.name}/index.html`);
+    else if (/\.(html|json)$/.test(d.name)) add(`farmland-atlas/${d.name}`);
+  }
+  for (const n of readdirSync(ROOT)) if (/^(llms.*\.txt|sitemap.*\.xml)$/.test(n)) add(n);
+  // data/search-elevators.json is left out: it is the elevator directory, built from the bid boards, and a co-op
+  // that bought or sold land is the same public business name there (checked Oct 18: every match was one)
+  for (const n of readdirSync(join(ROOT, "data"))) if (/^search.*\.json$/.test(n) && n !== "search-elevators.json") add(`data/${n}`);
+  add("data/atlas/reads.json");
+  assert.ok(targets.length > 20, String(targets.length));
+  const text = targets.map(read).join("\n");
+  for (const s of NAMED) {
+    const vals = new Set();
+    for (const f of countyFiles(s)) for (const v of privateValues(f)) vals.add(v);
+    // whole-value matches only: a document number that is the tail of "2025" in a sentence is not a leak
+    const T = norm(text);
+    // a town that is itself a party (a village buying land) is a place the site names anyway: "<TOWN>, IL" in the search data
+    const towns = new Set([...T.matchAll(/"([A-Z][A-Z .'-]{2,40}),? (?:IL|WI|IN)"/g)].map((m) => m[1].trim()));
+    const hit = leaks(text, vals).filter((v) => !towns.has(v)).filter((v) => new RegExp("(^|[^A-Z0-9])" + v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "($|[^A-Z0-9])").test(T));
+    assert.deepEqual(hit.slice(0, 10), [], `${s}: private values in public files`);
+  }
+  assert.ok(NAMED.includes("in"), "Indiana transfer files are scanned");
 });
