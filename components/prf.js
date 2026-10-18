@@ -817,7 +817,7 @@
   function drawPrintYears(R) {
     var box = $('prf-yrs-p');
     if (!R.ok) { box.innerHTML = ''; return; }
-    var hs = R.hist, B = 7, per = Math.ceil(hs.length / B), h = '<table class="prf-t prf-t-yp"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + ': w' : 'W') + 'hat it would have paid each year, ' + hs[0].year + ' to ' + hs[hs.length - 1].year + '</caption><thead><tr>';
+    var hs = R.hist, B = 8, per = Math.ceil(hs.length / B), h = '<table class="prf-t prf-t-yp"><caption class="prf-cap">' + (S.B ? 'Setup ' + S.on + ': w' : 'W') + 'hat it would have paid each year, ' + hs[0].year + ' to ' + hs[hs.length - 1].year + ' <span class="prf-cap-x">(shaded years paid something)</span></caption><thead><tr>';
     for (var c = 0; c < B; c++) h += '<th scope="col">Year</th><th scope="col">Paid</th>';
     h += '</tr></thead><tbody>';
     for (var r = 0; r < per; r++) {
@@ -826,6 +826,38 @@
       h += '</tr>';
     }
     box.innerHTML = h + '</tbody></table>';
+  }
+  /* The rest of the print sheet (one Letter page; hidden on screen): the AGSIST header with the grid,
+     county and state, the policy as chosen, one plain line under the answer, the chart and the year list,
+     the sources with their dates, and a QR code back to this page with the same settings. */
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function longDay(d) { return MON[d.getUTCMonth()] + ' ' + d.getUTCDate() + ', ' + d.getUTCFullYear(); }
+  function isoDay(iso) { var d = new Date(iso); return isNaN(d) ? '' : longDay(d); }
+  function liveUrl() { return 'https://agsist.com' + shareUrl().replace(location.origin, ''); }
+  function meansLine(R) {
+    if (!R.ok) return '';
+    var t = R.pol.total, avg = Math.round(R.sum.avgIndemnity), prem = Math.round(t.premium), you = Math.round(t.producer);
+    if (avg >= prem) return 'What this means: the average payout covered the whole ' + usd(prem) + ' premium on this record, not only your share. That is the past, not a forecast.';
+    if (avg > you) return 'What this means: the average payout is under the full ' + usd(prem) + ' premium; it comes out above your ' + usd(you) + ' share only because USDA pays the rest.';
+    return 'What this means: the average payout is under the full ' + usd(prem) + ' premium, and under your ' + usd(you) + ' share too, even with USDA paying the rest.';
+  }
+  function drawPrintSheet(R) {
+    var c = county(), st = states[S.st], setup = R.setup || cur(), now = new Date();
+    $('prf-ph-g').textContent = 'Grid ' + S.grid + ' \u00b7 ' + c.n + ' County, ' + (st ? st.name : S.st);
+    $('prf-ph-d').innerHTML = 'Crop year ' + meta.crop_year + ' rates \u00b7 printed ' + MON[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+    var pp = [['Use of the land', esc(useName())], ['Acres', (S.acres || 0).toLocaleString('en-US') + (S.share === 100 ? '' : ', your share ' + S.share + '%')],
+      ['Coverage level', setup.cov + '%'], ['Productivity factor', String(setup.pf)], ['Months insured' + (S.B ? ', setup ' + S.on : ''), esc(splitWords(setup))]];
+    /* a long sheet (many months, a share, a long county name) gets the tighter print sizes (prf.css .prf-ptight) */
+    root.classList.toggle('prf-ptight', setup.split.filter(function (p) { return p > 0; }).length > 3 || S.share !== 100 || (c.n + (st ? st.name : '')).length > 24);
+    $('prf-pp').innerHTML = pp.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + x[1] + '</dd></div>'; }).join('');
+    $('prf-pm').textContent = meansLine(R);
+    $('prf-chart-pm').textContent = R.ok ? 'Each bar is one year at ' + meta.crop_year + ' rates, not what PRF paid then. Above the dashed line, it paid more than you pay.' : '';
+    var adm = meta.sources && meta.sources.adm_last_modified ? isoDay(meta.sources.adm_last_modified) : '';
+    $('prf-psrc').innerHTML = '<b>Sources:</b> USDA RMA ' + meta.crop_year + ' rates, county base values and subsidy (actuarial data' + (adm ? ' posted ' + adm : '') + '); the rainfall index, '
+      + meta.years.first + ' to ' + meta.years.last_complete + ', from RMA\u2019s PRF index service (NOAA NCEI data), read ' + isoDay(meta.built) + '.';
+    var url = liveUrl(), q = '';
+    try { if (window.AgQR) q = window.AgQR.svg(url, 'QR code for this policy on agsist.com'); } catch (e) { q = ''; }
+    $('prf-pq').innerHTML = q + '<p class="prf-pq-t"><b>Scan to open this policy live.</b> Or go to agsist.com/prf and look up grid ' + S.grid + '.</p>';
   }
   function download(name, text) {
     var blob = new Blob([text], { type: 'text/csv' });
@@ -1082,7 +1114,7 @@
     sayResult(R);
     drawAnswer(R);
     drawChart(RA, RB);
-    drawYears(R); drawPrintYears(R); drawPolicy(R); drawRecord(); drawIndex(); drawLadder(); drawCompare(RA, RB); drawNeighbors();
+    drawYears(R); drawPrintYears(R); drawPrintSheet(R); drawPolicy(R); drawRecord(); drawIndex(); drawLadder(); drawCompare(RA, RB); drawNeighbors();
     $('prf-acts').hidden = !R.ok;
     drawBar(R);
     $('prf-answer-h').textContent = 'What it costs and what it would have paid' + (S.B ? ', setup ' + S.on : '');
@@ -1217,8 +1249,9 @@
     ch.addEventListener('pointermove', chartMove); ch.addEventListener('pointerdown', chartMove);
     window.addEventListener('resize', chartResize);
     $('prf-csv').addEventListener('click', function () { if (lastR && lastR.ok) csv(lastR); });
-    /* Print is one Letter page: the grid, the policy, the answer, the chart, every year's payout, the policy lines (the button opens them) and the conditions. */
-    $('prf-print').addEventListener('click', function () { $('prf-pol-d').open = true; render(); track('prf_print', { grid: S.grid }); window.print(); });
+    /* Print is one Letter page (Sig, Oct 18): the AGSIST header with the grid, county, state and a QR code back here, the policy as chosen,
+       the answer, the chart, every year's payout, the conditions and sources, a sold state's sponsor box (prf-sponsor.js), the byline. */
+    $('prf-print').addEventListener('click', function () { render(); track('prf_print', { grid: S.grid }); window.print(); });
     $('prf-share-b').addEventListener('click', function () {
       var u = shareUrl(), b = this, done = function () { b.textContent = 'Link copied'; setTimeout(function () { b.textContent = 'Copy a link to this'; }, 2200); };
       track('prf_share', { grid: S.grid });

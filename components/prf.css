@@ -365,75 +365,109 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
   .prf-acts .btn { flex: 1 1 auto; }
 }
 @media (prefers-reduced-motion: reduce) { .prf * { transition: none !important; scroll-behavior: auto !important; } }
-.prf-printonly, .prf-printfoot { display: none; }
-/* Print: one Letter page. The grid, the policy in one line, the answer, the
-   chart, every counted year's payout, the policy lines when open (the Print
-   button opens them) and the conditions footer. Type no smaller than 9pt.
-   The controls, the step-2 form, the outlook panel, the drawers and the prose
-   stay on screen. Dark tokens are swapped for ink. */
+.prf-printonly, .prf-printfoot, .prf-ph, .prf-pp, .prf-pm, .prf-pcap, .prf-pbot, .prf-pq, .prf-spon-p { display: none; }
+/* Print: one Letter page, readable at arm's length (Sig, Oct 18). The AGSIST
+   header with the grid, county and state; the policy as chosen; the answer
+   with one plain "what this means" line; the chart; every counted year's
+   payout; the conditions and
+   sources with their dates; a QR code back to the page with the same
+   settings; a sold state's sponsor box, labelled (prf-sponsor.js; unsold
+   prints nothing); the byline last. Type no smaller than 9pt. The controls,
+   the step-2 form, the outlook, "What the numbers would pick", the drawers
+   and the prose stay on screen. Dark tokens are swapped for ink. */
 @page { size: letter; margin: .4in .45in; }
 @media print {
   :root, [data-theme] { --bg: #fff; --surface: #fff; --surface2: #fff; --text: #000; --text-dim: #111; --text-muted: #333; --border: #bbb; --border-2: #888; --gold: #000; --brand: #000; --gold-rgb: 0,0,0; --green: #000; }
-  html { font-size: 12px; }
+  html { font-size: 12.5px; }
   body { background: #fff !important; }
-  #site-header, #site-footer, #topnav, #drawer, #draw-ov, body > footer, .skip, .sa-bar, .agsb, .breadcrumb,
-  .prf-live, .prf-step-find, .prf-find, .prf-o3, .prf-acts, .prf-co-wrap, .prf-readrow, .prf-prose, .prf-lede, .prf-win, .prf-notes, .prf-outlook,
-  .prf-about, .prf-n, .prf-o6 > .prf-step-h, .prf-o6 > details:not(#prf-pol-d), #prf-pol-d:not([open]), .prf-d > summary, .prf-noprint, #prf-pol .prf-fine, .prf-map { display: none !important; }
+  #site-header, #site-footer, #topnav, #drawer, #draw-ov, body > footer, .skip, .sa-bar, .agsb, .breadcrumb, .next-links,
+  .prf-live, .prf-step-find, .prf-find, .prf-o1, .prf-o3, .prf-acts, .prf-co-wrap, .prf-readrow, .prf-prose, .prf-lede, .prf-win, .prf-notes, .prf-outlook,
+  .prf-about, .prf-n, .prf-o6, .prf-noprint, #prf-pol .prf-fine, .prf-map,
+  #prf-optimize, .prf-o2 > .prf-step-h, #prf-printsum, #main .prf[data-prf] h1, .prf[data-prf] .page-kicker, .prf-o5, .prf[data-prf] ~ .prf-byline, .prf[data-prf] .prf-byline { display: none !important; }
   .prf-printonly { display: inline !important; }
   .prf { max-width: none; padding: 0; --prf-bar: #444; --prf-dot: #000; --fs-2xs: 9pt; --fs-xs: 9pt; --fs-sm: 9.5pt; }
   .prf-card { border: 0; padding: 0; background: none; border-radius: 0; }
-  .prf-o2 { border-top: 0; }
-  .prf-tool { display: block !important; }
-  .prf-pane { display: block !important; }
-  .prf-block, .prf-o6 { margin: 0 0 .4rem; }
-  #main .prf h1, .prf h1 { font-size: 13pt !important; line-height: 1.2 !important; margin: 0 0 .1rem !important; max-width: none; }
-  .page-kicker { margin: 0; font-size: 9pt; }
-  .prf .prf-grid-h, .prf .prf-step-h { font-size: 11pt; margin: .35rem 0 .15rem; }
-  .prf-where { display: block; }
-  .prf-where { display: none !important; }
-  .prf-policy { font-size: 9.5pt; margin: 0 0 .25rem; }
-  .prf-verdict { font-size: 10.5pt; margin: 0 0 .3rem; max-width: none; }
+  .prf-tool, .prf-pane { display: block !important; }
+  .prf-block, .prf-o6 { margin: 0 0 .3rem; }
+  /* the header: logo, what the sheet is, the grid, county and state; the crop year and the day printed */
+  .prf-ph { display: flex !important; align-items: center; gap: .18in; padding: 0 0 .08in; border-bottom: 2.5px solid #000; margin: 0 0 .08in; }
+  .prf-ph-logo { width: .95in; height: auto; flex: none; }
+  .prf-ph-t { flex: 1 1 auto; min-width: 0; }
+  .prf-ph-k { margin: 0; font-size: 10pt; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+  .prf-ph-g { margin: .02in 0 0; font-size: 16pt; font-weight: 700; line-height: 1.15; }
+  .prf-ph-d { margin: .02in 0 0; font-size: 9.5pt; line-height: 1.3; }
+  /* the policy as chosen, one band of five */
+  .prf-pp { display: flex !important; gap: 0; margin: 0 0 .08in; border: 1px solid #000; }
+  .prf-pp div { flex: 0 0 auto; max-width: 1.35in; padding: .03in .1in; border-left: 1px solid #888; }
+  .prf-pp div:last-child { flex: 1 1 0; max-width: none; min-width: 0; }
+  .prf-pp div:not(:last-child) dt { white-space: nowrap; }
+  .prf-pp div:first-child { border-left: 0; }
+  .prf-pp dt { font-size: 9pt; color: #333; }
+  .prf-pp dd { margin: 0; font-size: 11pt; font-weight: 700; line-height: 1.2; }
   /* the answer in two columns: the figures left, the chart right; the year list across */
-  .prf-o2 { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: .3in; }
+  .prf-o2 { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: .3in; border-top: 0; }
   .prf-o2 > * { grid-column: 1 / -1; }
   #prf-answer { display: contents; }
-  .prf-o2 > .prf-step-h { grid-row: 1; } .prf-policy { display: block !important; grid-row: 2; } .prf-verdict { grid-column: 1 / -1; grid-row: 3; }
-  .prf-figs { grid-column: 1; grid-row: 4; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .2rem .7rem; }
-  .prf-figs dt { font-size: 9pt; }
-  .prf-figs dd { font-size: 11pt; }
+  .prf-ph { grid-row: 1; } .prf-pp { grid-row: 2; } .prf-verdict { grid-column: 1 / -1; grid-row: 3; }
+  .prf-verdict { font-size: 12.5pt; font-weight: 600; line-height: 1.3; margin: 0 0 .06in; max-width: none; }
+  .prf-figs { grid-column: 1; grid-row: 4; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .04in .14in; margin: 0; }
+  .prf-figs dt { font-size: 9.5pt; }
+  .prf-figs dd { font-size: 15pt; line-height: 1.15; }
   .prf-figs dd .prf-sub { font-size: 9pt; margin: 0; line-height: 1.25; }
-  .prf-figs-more { display: block; grid-column: 1; grid-row: 5; margin: .3rem 0 0; border-top: 1px solid #888; }
-  .prf-figs-more div { padding: .05rem 0; grid-template-columns: auto minmax(0, 1fr); }
-  .prf-figs-more dd .prf-sub { display: inline; margin-left: .3rem; }
-  .prf-figs-more dt { font-size: 9pt; }
-  .prf-figs-more dd { font-size: 10pt; }
+  .prf-figs-more { display: block; grid-column: 1; grid-row: 5 / span 2; align-self: start; margin: .05in 0 0; border-top: 1px solid #888; }
+  .prf-figs-more div { display: flex !important; align-items: baseline; gap: .08in; padding: .015in 0; }
+  .prf-figs-more dt { flex: 0 0 1.5in; }
+  .prf-figs-more dd { flex: 1 1 auto; min-width: 0; text-align: left; }
+  .prf-figs-more dd .prf-sub { display: inline; margin-left: .2rem; }
+  .prf-figs-more dt { font-size: 9.5pt; }
+  .prf-figs-more dd { font-size: 11pt; }
+  .prf-pm { display: block !important; grid-column: 2; grid-row: 6; margin: .05in 0 0; padding: .03in .08in; border-left: 3px solid #000; font-size: 10pt; line-height: 1.35; }
   .prf-fig { grid-column: 2; grid-row: 4 / span 2; margin: 0; break-inside: avoid; }
-  .prf-yrs-p { grid-row: 6; }
-  .prf-fig figcaption { font-size: 9.5pt; margin: 0 0 .1rem; }
-  .prf-chart svg { max-height: 1.5in; }
-  .prf-ax { font-size: 13px; }
-  .prf-legend { font-size: 9pt; margin: .1rem 0 0; }
-  .prf-yrs-p { display: block; margin: .35rem 0 0; break-inside: avoid; }
+  .prf-fig figcaption { font-size: 10pt; font-weight: 600; margin: 0 0 .02in; }
+  .prf-chart svg { max-height: 1.25in; }
+  .prf-ax { font-size: 17px; }
+  .prf-legend { display: flex !important; flex-wrap: wrap; gap: 0 .15in; font-size: 9pt; margin: .02in 0 0; }
+  .prf-legend > * { display: inline-flex !important; margin: 0 !important; }
+  .prf-cap-x { font-weight: 400; }
+  .prf-pcap { display: block !important; margin: .02in 0 0; font-size: 9pt; line-height: 1.3; color: #000; }
+  .prf-yrs-p { display: block; grid-row: 7; margin: .08in 0 0; break-inside: avoid; }
   .prf-t-yp { table-layout: fixed; }
-  .prf-t-yp th, .prf-t-yp td { padding: 0 3px !important; font-size: 9pt; line-height: 1.15; }
+  .prf-t-yp thead th:nth-child(2n+1) { width: 4.9%; } .prf-t-yp thead th:nth-child(2n) { width: 7.6%; }
+  .prf-t-yp th, .prf-t-yp td { padding: 0 2px !important; font-size: 9pt; line-height: 1.2; }
   .prf-t-yp thead th { white-space: nowrap; text-transform: none; letter-spacing: 0; }
-  .prf-t-yp th:nth-child(2n+1) { border-left: 1px solid #888; padding-left: 6px !important; }
+  .prf-t-yp th:nth-child(2n+1) { border-left: 1px solid #888; padding-left: 4px !important; }
   .prf-t-yp th:first-child { border-left: 0; padding-left: 0 !important; }
-  .prf-t td.is-pay { background: #e6e6e6; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .prf-t td.is-pay { background: #e3e3e3; font-weight: 600; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .prf-t th, .prf-t td { padding: 1px 6px; font-size: 9pt; line-height: 1.2; }
   .prf-t thead th { text-transform: none !important; letter-spacing: 0 !important; }
-  .prf-cap { font-size: 9pt; padding: 0 0 .1rem; color: #000; }
+  .prf-cap { font-size: 10pt; font-weight: 600; padding: 0 0 .02in; color: #000; }
   .prf-scroll { overflow: visible; }
   .prf-scroll .prf-t tbody th:first-child, .prf-scroll .prf-t tfoot th:first-child { position: static; }
   .prf details.prf-d { border: 0; }
   .prf details.prf-d > div { padding: 0; }
-  .prf-o5 { break-inside: avoid; }
   table { break-inside: avoid; }
   thead { display: table-header-group; }
-  .prf-printfoot { display: block !important; columns: 2; column-gap: .3in; font-size: 9pt; line-height: 1.35; color: #000; border-top: 1px solid #888; padding-top: .3rem; margin-top: .4rem; break-inside: avoid; }
-  .prf-byline { break-inside: avoid; color: #000; font-size: 9pt; margin: .3rem 0 0; padding-top: .2rem; line-height: 1.35; }
+  /* the bottom: conditions and sources left, the way back to the live page right */
+  .prf-pbot { display: block !important; border-top: 1px solid #000; padding-top: .06in; margin-top: .06in; break-inside: avoid; }
+  .prf-printfoot { display: block !important; columns: 3; column-gap: .18in; font-size: 9pt; line-height: 1.32; color: #000; margin: 0; }
+  .prf-pq { display: flex !important; align-items: center; gap: .1in; flex: 0 0 2.2in; }
+  .prf-pq svg { display: block; width: .85in; height: .85in; flex: none; }
+  .prf-pq-t { margin: 0; font-size: 9pt; line-height: 1.3; }
+  .prf-spon-p:not([hidden]) { display: flex !important; gap: .14in; align-items: baseline; margin: .07in 0 0; padding: .05in .1in; border: 1.5px solid #000; font-size: 9.5pt; line-height: 1.35; break-inside: avoid; }
+  .prf-spon-p .psp-tag { flex: none; font-size: 9pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border: 1px solid #000; padding: 0 .05in; }
+  .prf-spon-p .psp-name { font-size: 11pt; font-weight: 700; }
+  .prf-spon-p .psp-no { display: block; font-size: 9pt; color: #333; }
+  .prf-made { display: inline; }
+  .prf-byline { break-inside: avoid; color: #000; font-size: 9pt; margin: .04in 0 0; padding-top: .03in; line-height: 1.28; }
   .prf a { color: #000; }
   .prf-answer, .prf-o2 { min-height: 0 !important; }
+  /* a long sheet, or a sold sponsor box to fit: the same sheet a little tighter, still no type under 9pt */
+  .prf-ptight .prf-ph-g, .prf:has(#prf-spon-p:not([hidden])) .prf-ph-g { font-size: 14pt; }
+  .prf-ptight .prf-verdict, .prf:has(#prf-spon-p:not([hidden])) .prf-verdict { font-size: 11.5pt; }
+  .prf-ptight .prf-figs dd, .prf:has(#prf-spon-p:not([hidden])) .prf-figs dd { font-size: 13pt; }
+  .prf-ptight .prf-chart svg, .prf:has(#prf-spon-p:not([hidden])) .prf-chart svg { max-height: 1.05in; }
+  .prf-ptight .prf-pm, .prf:has(#prf-spon-p:not([hidden])) .prf-pm { font-size: 9.5pt; }
+  .prf-ptight .prf-pp dd, .prf:has(#prf-spon-p:not([hidden])) .prf-pp dd { font-size: 10pt; }
 }
 /* ---- the state pages, prf/<state>.html (scripts/build_prf_states.py) */
 .prf-st .prf-cta { display: inline-flex; align-items: center; text-decoration: none; margin: .2rem 0 1rem; }
@@ -457,8 +491,8 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
    ad-orange edge, a small "For businesses" label and a text link, no button.
    It shows unsold, like the state ribbons (Sig's exception). A sold state's
    sponsor takes the band's place on its state and county pages, and sits
-   beside the result on /prf, always labelled Sponsor in ad orange. Never
-   printed. On a phone the middle sentence (.prf-spon-x) drops so the band
+   beside the result on /prf, always labelled Sponsor in ad orange. The band
+   never prints; a sold state's sponsor prints on the /prf sheet (.prf-spon-p). On a phone the middle sentence (.prf-spon-x) drops so the band
    stays two short lines. */
 .prf-spon-band { display: block; margin: .2rem 0 1.1rem; padding: .45rem .8rem; font-size: .8rem; line-height: 1.55; color: var(--text-dim); background: var(--surface, transparent); border: 1px solid var(--border); border-left: 3px solid var(--ad-orange, #e8743a); border-radius: 8px; }
 .prf-spon-band .prf-spon-tag { font-family: var(--font-mono); font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ad-orange-ink, #a8380a); white-space: nowrap; margin-right: .4rem; }

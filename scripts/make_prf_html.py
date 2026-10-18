@@ -24,7 +24,7 @@ HTML = f"""<!DOCTYPE html>
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=24" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=24">
-  <link rel="stylesheet" href="/components/prf.css?v=7">
+  <link rel="stylesheet" href="/components/prf.css?v=8">
   <link rel="icon" type="image/x-icon"            href="/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
@@ -168,13 +168,17 @@ HTML = f"""<!DOCTYPE html>
         <div class="prf-pane prf-pane-r">
           <section class="prf-card prf-block prf-o2" aria-labelledby="prf-answer-h">
             <h2 class="prf-step-h"><span class="prf-n" aria-hidden="true">3</span><span id="prf-answer-h">What it costs and what it would have paid</span></h2>
+            <div class="prf-ph" id="prf-ph"><img class="prf-ph-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="80" height="37"><div class="prf-ph-t"><p class="prf-ph-k">PRF: what this policy would have paid</p><p class="prf-ph-g" id="prf-ph-g"></p><p class="prf-ph-d" id="prf-ph-d"></p></div><div class="prf-pq" id="prf-pq"></div></div>
+            <dl class="prf-pp" id="prf-pp"></dl>
             <p class="prf-policy" id="prf-printsum"></p>
             <div class="prf-answer" id="prf-answer"></div>
+            <p class="prf-pm" id="prf-pm"></p>
             <fieldset class="prf-win"><legend class="prf-lab">Years counted</legend><div class="prf-win-b">{WIN}</div></fieldset>
             <figure class="prf-fig" id="prf-chart-fig" hidden>
               <figcaption id="prf-chart-cap">What it would have paid, year by year</figcaption>
               <div class="prf-chart" id="prf-chart"></div>
               <div class="prf-legend" id="prf-legend"></div>
+              <p class="prf-pcap" id="prf-chart-pm"></p>
               <div class="prf-readrow"><button type="button" class="prf-step" data-yr="-1" aria-label="Year before">&lsaquo;</button><p class="prf-read" id="prf-read" aria-live="polite"></p><button type="button" class="prf-step" data-yr="1" aria-label="Year after">&rsaquo;</button></div>
             </figure>
             <div class="prf-acts" id="prf-acts" hidden>
@@ -200,7 +204,10 @@ HTML = f"""<!DOCTYPE html>
           <details class="prf-d" id="prf-idx-d"><summary><span class="prf-d-t">The grid&rsquo;s index, all eleven intervals, every year<span class="prf-d-x">Precipitation as a percent of normal, with a CSV</span></span></summary><div id="prf-idx"></div></details>
           <details class="prf-d" id="prf-nb-d"><summary><span class="prf-d-t">The grids next door, same policy<span class="prf-d-x">The eight grids around this one, north up</span></span></summary><div id="prf-nb"></div></details>
           </section>
-    <p class="prf-printfoot">Crop year {mk("crop_year")}. Sales closing date {mk("sales_long")}; acreage report due {mk("acreage_long")}; premium billed no earlier than {mk("billing_long")}. USDA&rsquo;s share of the premium needs form AD-1026 on file with the Farm Service Agency by the billing date. Grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate (2027 Crop Provisions, section 4(j)). The native sod rule and the administrative fee are not included. PRF pays on a precipitation index for the grid, not on your production (Basic Provisions, section 13). Every year is priced at {mk("crop_year")} rates on USDA&rsquo;s {mk("crop_year")} record: it is not what PRF paid then, and not a forecast. Your insurer&rsquo;s quote is what counts. agsist.com/prf</p>
+    <div class="prf-pbot">
+    <p class="prf-printfoot"><b>Dates, crop year {mk("crop_year")}:</b> sales closing {mk("sales_long")}, the last day to sign up or change; acreage report due {mk("acreage_long")}; premium billed no earlier than {mk("billing_long")}. <b>Conditions:</b> USDA&rsquo;s share needs form AD-1026 on file with the Farm Service Agency by the billing date. Grazing acres need livestock you have an interest in, at least 25% of the stocking rate (2027 Crop Provisions, section 4(j)). PRF pays on a precipitation index for the grid, not on your production (Basic Provisions, section 13). Not included here: the native sod rule and the administrative fee. Your insurer&rsquo;s quote is what counts. <span id="prf-psrc"></span> <span class="prf-made"><b>Made by AGSIST</b> (agsist.com): Sigurd Lindquist, CCA, who owns a licensed crop insurance agency. This sheet sells nothing and refers no one; a sponsor has no say over any figure. {mk("check")}</span></p>
+    </div>
+    <div class="prf-spon-p" id="prf-spon-p" hidden></div>
         </div>
       </div>
 
@@ -320,7 +327,8 @@ payment              = interval protection
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/prf-sponsor.js?v=3" defer></script>
   <script src="/components/prf-math.js?v=2" defer></script>
-  <script src="/components/prf.js?v=6" defer></script>
+  <script src="/components/qr.js?v=10" defer></script>
+  <script src="/components/prf.js?v=7" defer></script>
   <script src="/components/prf-outlook.js?v=2" defer></script>
   <script src="/components/prf-now.js?v=2" defer></script>
   <script src="/components/prf-notice.js?v=1" defer></script>
