@@ -97,6 +97,16 @@ test("the accuracy line prints the pinned backtest and says the current month ru
   assert.match(N.accLine(null), /Not yet checked/);
 });
 
+test("a 2026 card says a 2026 policy is paid on RMA's CPC index, with the backtest's own gap", () => {
+  const html = N.render(N.model(doc([[1000, 1200], [1500, 1000], [762, 1270], [100, 900]]), 14538, "2026-10-17"));
+  const want = "This is RMA&rsquo;s 2027 rainfall record (NOAA NCEI). A 2026 policy is paid on RMA&rsquo;s 2026 index, built from NOAA CPC data, which ran a median " +
+    card.cpc_median_abs.toFixed(1) + " points from it on the grids checked.";
+  assert.ok(html.includes(want), html.slice(-900));
+  assert.ok(html.indexOf(want) > html.indexOf("An estimate, not RMA&rsquo;s index"), "appended after the estimate line");
+  assert.equal(N.cpcLine(null, [{ y: 2026 }]), "", "no backtest, no number");
+  assert.equal(N.cpcLine(card, [{ y: 2027 }]), "", "a 2027 interval is paid on the NCEI record itself");
+});
+
 test("backtest numbers recompute from the pinned rows", () => {
   const rows = JSON.parse(gunzipSync(readFileSync(FX + "backtest-rows.json.gz")).toString());
   const R = rows.rows.map((r) => Object.fromEntries(rows.cols.map((c, k) => [c, r[k]])));

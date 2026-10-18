@@ -100,6 +100,16 @@
       'So rain so far in the current month is likely a low reading, and the index so far likely low with it.';
   }
 
+  /* RMA's record now follows NOAA NCEI (its 2027 record); a 2026 policy is still paid on
+     RMA's 2026 index, built from NOAA CPC. The gap is the backtest's own median (card.cpc_median_abs),
+     printed only while an interval on the card is from 2026 or before. */
+  function cpcLine(acc, ivs) {
+    if (!acc || acc.cpc_median_abs == null) return '';
+    if (!(ivs || []).some(function (iv) { return iv.y <= 2026; })) return '';
+    return ' This is RMA&rsquo;s 2027 rainfall record (NOAA NCEI). A 2026 policy is paid on RMA&rsquo;s 2026 index, built from NOAA CPC data, which ran a median ' +
+      Number(acc.cpc_median_abs).toFixed(1) + ' points from it on the grids checked.';
+  }
+
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   function ivHtml(iv, through) {
@@ -131,11 +141,11 @@
     m.ivs.forEach(function (iv) { h += ivHtml(iv, m.through); });
     h += '<p class="pn-fine pn-src"><b>An estimate, not RMA&rsquo;s index.</b> Rain from NOAA NCEI&rsquo;s nClimGrid on RMA&rsquo;s grid, the data RMA builds the index from, with daily grids through ' + fmtDateY(m.through) +
       ' (NCEI runs 3 days behind). Until both months are final, the index RMA publishes can differ. The index so far counts only rain that has fallen against the whole interval&rsquo;s average, so it climbs as the interval goes on. It is not a forecast. ' +
-      accLine(m.acc) + ' <a href="https://www.ncei.noaa.gov/pub/data/cirs/usda/" rel="noopener">NCEI data</a></p>';
+      accLine(m.acc) + cpcLine(m.acc, m.ivs) + ' <a href="https://www.ncei.noaa.gov/pub/data/cirs/usda/" rel="noopener">NCEI data</a></p>';
     return h;
   }
 
-  var api = { model: model, render: render, indexSoFar: indexSoFar, rainToReach: rainToReach, accLine: accLine, howLine: howLine, MAX_AGE: MAX_AGE, MIN_AVG_MM: MIN_AVG_MM };
+  var api = { model: model, render: render, indexSoFar: indexSoFar, rainToReach: rainToReach, accLine: accLine, cpcLine: cpcLine, howLine: howLine, MAX_AGE: MAX_AGE, MIN_AVG_MM: MIN_AVG_MM };
   root.AgPrfNow = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;

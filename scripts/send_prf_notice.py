@@ -180,6 +180,23 @@ def plan(data, row):
 
 
 # ---------------------------------------------------------------- the email
+def cpc_line(year, repo):
+    """RMA's record now follows NOAA NCEI (its 2027 record); a 2026 policy is still paid on RMA's
+    2026 index, built from NOAA CPC. The gap is the backtest's own median (card.cpc_median_abs in
+    test/fixtures/prf-season/backtest.json, the file components/prf-now.js prints from), never typed.
+    Empty for a 2027 or later interval, or when the backtest is not there."""
+    if year > 2026:
+        return ""
+    try:
+        med = json.load(open(Path(repo) / "test" / "fixtures" / "prf-season" / "backtest.json"))["card"]["cpc_median_abs"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return ""
+    if med is None:
+        return ""
+    return (" This is RMA's 2027 rainfall record (NOAA NCEI). A 2026 policy is paid on RMA's 2026 index, "
+            "built from NOAA CPC data, which ran a median %.1f points from it on the grids checked." % float(med))
+
+
 def make_parts(data, ctx, repo):
     def parts(topic, src, today, _repo=None):
         grid, items = ctx["grid"], ctx["items"]
@@ -198,7 +215,8 @@ def make_parts(data, ctx, repo):
         page = page_url(src, grid, repo)
         paras.append([("The grid's record and this year so far: ", None), (page, page)])
         paras.append([("You asked for these on agsist.com: one email each time RMA posts a final index "
-                       "for grid %d, about once a month. The figures are RMA's own, read from its PRF index service." % grid, None)])
+                       "for grid %d, about once a month. The figures are RMA's own, read from its PRF index service." % grid
+                       + cpc_line(int(iv[:4]), repo), None)])
         return subject, paras
     return parts
 
@@ -421,6 +439,17 @@ def selftest():
     m2 = SN.render(T, "page:prf/../etc", "a@example.com", "https://w.dev", "sec", C("2026-10-21 05:00").date(),
                    "news@agsist.com", None, tmp)
     t2 = m2.get_body(("plain",)).get_content()
+    ck("no backtest file, no CPC sentence", "NOAA CPC" not in txt and cpc_line(2026, tmp) == "", txt[-400:])
+    real = json.load(open(REPO / "test" / "fixtures" / "prf-season" / "backtest.json"))["card"]["cpc_median_abs"]
+    os.makedirs(os.path.join(tmp, "test", "fixtures", "prf-season"))
+    json.dump({"card": {"cpc_median_abs": real}}, open(os.path.join(tmp, "test", "fixtures", "prf-season", "backtest.json"), "w"))
+    m3 = SN.render(T, "page:prf/wisconsin/barron-county", "a@example.com", "https://w.dev", "sec", C("2026-10-21 05:00").date(),
+                   "news@agsist.com", None, tmp)
+    t3 = m3.get_body(("plain",)).get_content()
+    want = ("read from its PRF index service. This is RMA's 2027 rainfall record (NOAA NCEI). A 2026 policy is paid on RMA's "
+            "2026 index, built from NOAA CPC data, which ran a median %.1f points from it on the grids checked." % real)
+    ck("a 2026 interval: appended, the gap read from the backtest card", want in " ".join(t3.split()), t3[-600:])
+    ck("a 2027 interval: no CPC sentence", cpc_line(2027, REPO) == "")
     ck("two new: both named", "Also posted since the last email: May to June 2026, 80.7." in t2, t2[:600])
     ck("a source that is not a real page links /prf?g=", SITE + "/prf?g=30452&" + UTM in t2)
 
