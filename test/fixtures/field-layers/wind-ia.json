@@ -1,0 +1,26 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": [
+  {
+   "case_id": 1,
+   "p_name": "Synthetic Wind A",
+   "t_cap": 2300,
+   "xlong": -93.4976,
+   "ylat": 42.076292753623186
+  },
+  {
+   "case_id": 2,
+   "p_name": "Synthetic Wind A",
+   "t_cap": 2300,
+   "xlong": -93.40218270829654,
+   "ylat": 42.0618
+  },
+  {
+   "case_id": 3,
+   "p_name": "Synthetic Wind B",
+   "t_cap": 2300,
+   "xlong": -93.4976,
+   "ylat": 41.974843478260865
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": {
+  "features": [
+   {
+    "attributes": {
+     "FIRM_PAN": "19169C0215F",
+     "EFF_DATE": 1210636800000
+    }
+   }
+  ]
+ }
+}

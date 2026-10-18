@@ -1,0 +1,47 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": {
+  "features": [
+   {
+    "attributes": {
+     "OBJECTID": 1,
+     "TOTAL_AU": 1200
+    },
+    "geometry": {
+     "x": -93.4976,
+     "y": 42.076292753623186
+    }
+   },
+   {
+    "attributes": {
+     "OBJECTID": 2,
+     "TOTAL_AU": 500
+    },
+    "geometry": {
+     "x": -93.4976,
+     "y": 42.09078550724637
+    }
+   },
+   {
+    "attributes": {
+     "OBJECTID": 3,
+     "TOTAL_AU": 120
+    },
+    "geometry": {
+     "x": -93.4976,
+     "y": 42.02556811594203
+    }
+   },
+   {
+    "attributes": {
+     "OBJECTID": 4,
+     "TOTAL_AU": null
+    },
+    "geometry": {
+     "x": -93.4976,
+     "y": 42.019771014492754
+    }
+   }
+  ]
+ }
+}
