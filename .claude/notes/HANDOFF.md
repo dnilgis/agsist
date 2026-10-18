@@ -171,7 +171,7 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
     31,528 farm sales 10+ acres, 92 counties, filed 2022-2026 (data/land/in). A refused yearly file is now skipped, not fatal.
     Illinois 65,727. MN still request-only (eCRV email).
   - About page rewritten in Sig's voice: who pays for it ("The monthly bill has a comma in it"), the old Amish schoolhouse, ways to help.
-    Sig removed the truck-payment line. Keep the comma line only while it is true.
+    Sig removed the truck-payment line. Oct 18: the comma line now reads "Some months the bill has come close to needing a comma." (Sig: more honest).
   - Titles/descriptions rewritten for low-click searches (fx/ctr1: cash bids, bin calculator, yield calculator, rent hub + 47 state rent
     titles with the median, hail map). Re-measure clicks in Search Console around Nov 15.
   - Pointer pages: a generated page that drops out of its set leaves a ~650-byte noindex page that forwards to its state page
