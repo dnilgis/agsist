@@ -49,7 +49,9 @@ NWI = "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/W
 DEP = "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples"
 WIND = ["https://energy.usgs.gov/api/uswtdb/v1/turbines", "https://eersc.usgs.gov/api/uswtdb/v1/turbines"]
 SOLAR = ["https://energy.usgs.gov/api/uspvdb/v1/projects"]
+# the page tries these in order (field-scout-layers.js URLS.osm)
 OSM = "https://overpass-api.de/api/interpreter"
+OSM2 = "https://overpass.private.coffee/api/interpreter"
 NCED = "https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/NCED/FeatureServer/0"
 FEED = {
     "IA": "https://programs.iowadnr.gov/geospatial/rest/services/OneStop/QueryEnvFacs/MapServer/2",
@@ -191,6 +193,9 @@ def run(discover=False):
         a = f"(around:8047,{lat:.5f},{lng:.5f})"
         check(res, f"osm-{k}", "OpenStreetMap power lines and substations within 5 mi", OSM,
               {"data": f'[out:json][timeout:25];way["power"="line"]{a};out tags geom;(node["power"="substation"]{a};way["power"="substation"]{a};);out tags center;'})
+        check(res, f"osm2-{k}", "OpenStreetMap power lines, second server", OSM2,
+              {"data": f'[out:json][timeout:25];way["power"="line"]{a};out tags geom;(node["power"="substation"]{a};way["power"="substation"]{a};);out tags center;'})
+        # NCED answered "Token Required" on Oct 18; still checked so a reopened service shows up
         check(res, f"nced-{k}", "NCED easements in the field", NCED + "/query", poly_form(ring, "*"))
     check(res, "nced-meta", "NCED layer fields", NCED + "?f=json")
     check(res, "nfhl-28-meta", "FEMA flood zone layer fields", NFHL + "/28?f=json")

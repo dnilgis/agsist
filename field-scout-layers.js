@@ -13,7 +13,10 @@
      the old national power line map, closed in 2025.
    - Livestock: state feedlot permit points (Iowa DNR, Minnesota PCA). Counts
      and size class only, never a name.
-   - Easements: National Conservation Easement Database.
+   - Easements: National Conservation Easement Database. Its public map
+     service started asking for a sign-in (land-data.yml layers-discover,
+     Oct 18, 2026: "Token Required"), so URLS.nced is empty and the card says
+     so instead of reading it. Put a public URL back here when one answers.
 
    Shares of the field (flood, wetland, easement) come from a point grid laid
    over the field and tested against the agency's own shapes, so they read
@@ -29,16 +32,20 @@
     nfhl: 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer',
     nwi: 'https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0',
     dep: 'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples',
-    wind: ['https://energy.usgs.gov/api/uswtdb/v1/turbines', 'https://eersc.usgs.gov/api/uswtdb/v1/turbines'],
+    // eersc.usgs.gov dropped (its certificate had expired on the Oct 18 probe)
+    wind: ['https://energy.usgs.gov/api/uswtdb/v1/turbines'],
     solar: ['https://energy.usgs.gov/api/uspvdb/v1/projects'],
-    osm: 'https://overpass-api.de/api/interpreter',
-    nced: 'https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/NCED/FeatureServer/0'
+    // second Overpass server for when the main one is full (it answered 502 "at capacity" on the Oct 18 probe)
+    osm: ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter'],
+    nced: null
   };
-  // State livestock permit layers (public). WI DNR's CAFO map service is not wired yet:
+  // State livestock permit layers (public). active: the where clause that keeps
+  // only sites the state lists as active (both layers carry inactive sites; field
+  // names from the Oct 18 probe answers, test/fixtures/field-layers-live/). WI DNR's CAFO map service is not wired yet:
   // the probe looks for it (scripts/probe_field_layers.py, discover).
   var FEEDLOTS = {
-    IA: { url: 'https://programs.iowadnr.gov/geospatial/rest/services/OneStop/QueryEnvFacs/MapServer/2', by: 'Iowa DNR animal feeding operations', about: 'https://programs.iowadnr.gov/maps/afo/' },
-    MN: { url: 'https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_pca/env_feedlots/FeatureServer/0', by: 'Minnesota PCA registered feedlots', about: 'https://gisdata.mn.gov/dataset/env-feedlots' }
+    IA: { url: 'https://programs.iowadnr.gov/geospatial/rest/services/OneStop/QueryEnvFacs/MapServer/2', active: "opStatus = 'Active'", by: 'Iowa DNR animal feeding operations', about: 'https://programs.iowadnr.gov/maps/afo/' },
+    MN: { url: 'https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_pca/env_feedlots/FeatureServer/0', active: "status_fdlt = 'active'", by: 'Minnesota PCA registered feedlots', about: 'https://gisdata.mn.gov/dataset/env-feedlots' }
   };
   L.URLS = URLS; L.FEEDLOTS = FEEDLOTS;
   var ABOUT = {
@@ -279,7 +286,7 @@
     (fields || []).forEach(function (f) {
       var n = String(f.name || ''), a = String(f.alias || '');
       if (!/Integer|Double|Single|SmallInteger/i.test(f.type || 'esriFieldTypeInteger')) return;
-      if (/^(TOTAL_?)?(ANIMAL_?UNITS?|AUS?|TOT_?AU|AU_?TOTAL|AU_?CAP(ACITY)?)$/i.test(n) || /animal unit/i.test(a)) best = best || { name: n, au: true };
+      if (/^(TOTAL_?)?(ANIMAL_?UNITS?|AUS?|TOT_?AU|AU_?TOTAL|AU_?COUNT|AU_?CAP(ACITY)?)$/i.test(n) || /animal unit/i.test(a)) best = best || { name: n, au: true };
     });
     return best;
   };
@@ -347,7 +354,7 @@
       var cl = [];
       if (fd.sized) { if (fd.cls.large) cl.push(fd.cls.large + ' large'); if (fd.cls.medium) cl.push(fd.cls.medium + ' medium'); if (fd.cls.small) cl.push(fd.cls.small + ' small'); if (fd.cls.unknown) cl.push(fd.cls.unknown + ' size not listed'); }
       o.feed = { v: fd.n ? fd.n + ' within ' + fd.within + ' mi, nearest ' + mi(fd.nearestMi) + (cl.length ? ' (' + cl.join(', ') + ')' : '') : 'None within ' + fd.within + ' mi',
-        m: 'Permitted or registered livestock sites on the state list. Manure for sale nearby, and the neighbors a new barn would have.' + (fd.sized ? ' Large is 1,000 animal units and up, medium 300 to 999.' : '') };
+        m: 'Active permitted or registered livestock sites on the state list. Manure for sale nearby, and the neighbors a new barn would have.' + (fd.sized ? ' Large is 1,000 animal units and up, medium 300 to 999.' : '') };
     }
     var es = R.ease;
     if (es) o.ease = es.n ? { v: (es.acres ? 'About ' + f1(es.acres) + ' ac under a recorded easement' : 'An easement touches the field edge') + (es.holders.length ? ' (' + es.holders.join(', ').toLowerCase() + ')' : ''), m: 'A conservation easement limits what the ground can be used for, and it stays with the land when it sells. Read the deed.' } :
@@ -498,7 +505,7 @@
         .then(function (v) { if (!live()) return; R.wind = v; eDone(!!v); }, function () { if (live()) eDone(false); });
       cached('solar:' + ck, function () { var b = L.boxAround(c, 10); return firstOk(URLS.solar, function (u) { return fetchJSON(rest(u, b, 'case_id,p_year,p_cap_ac,xlong,ylat')); }).then(function (rows) { return L.solarSummary(rows, c, 10); }); })
         .then(function (v) { if (!live()) return; R.solar = v; eDone(!!v); }, function () { if (live()) eDone(false); });
-      cached('grid:' + ck, function () { return post(URLS.osm, { data: L.overpassQuery(c, 5 * 1609.344) }, 30000).then(function (d) { return L.gridSummary(d, c, 5); }); })
+      cached('grid:' + ck, function () { return firstOk(URLS.osm, function (u) { return post(u, { data: L.overpassQuery(c, 5 * 1609.344) }, 30000); }).then(function (d) { return L.gridSummary(d, c, 5); }); })
         .then(function (v) { if (!live()) return; R.grid = v; eDone(!!v); }, function () { if (live()) eDone(false); });
 
       // 6. livestock: the state's own permit layer, once we know the state
@@ -512,7 +519,7 @@
         job('feed', cached('feed:' + st + ':' + ck, function () {
           return fetchJSON(F.url + '?f=json').then(function (meta) {
             var cap = L.capField(meta && meta.fields), oid = (meta && meta.objectIdField) || 'OBJECTID';
-            return post(F.url + '/query', { f: 'json', where: '1=1', outFields: oid + (cap ? ',' + cap.name : ''), returnGeometry: 'true', outSR: '4326', inSR: '4326',
+            return post(F.url + '/query', { f: 'json', where: F.active || '1=1', outFields: oid + (cap ? ',' + cap.name : ''), returnGeometry: 'true', outSR: '4326', inSR: '4326',
               geometryType: 'esriGeometryPoint', spatialRel: 'esriSpatialRelIntersects', geometry: c.lng.toFixed(6) + ',' + c.lat.toFixed(6), distance: '3', units: 'esriSRUnit_StatuteMile' })
               .then(function (d) { if (!d || !Array.isArray(d.features)) throw new Error('no features'); return L.feedSummary(d.features, cap, c, 3); });
           });
@@ -520,7 +527,8 @@
       });
 
       // 7. easements
-      job('ease', cached('ease:' + key, function () { return arcPoly(URLS.nced, ring, '*').then(function (f) { return L.easeSummary(f, pts, acres); }); }), function (v) { R.ease = v; });
+      if (!URLS.nced) { state.ease = 'na'; src.ease = { t: 'National Conservation Easement Database', u: ABOUT.ease, na: 'The national easement map now needs a sign-in, so it is not read here. Any easement is on the deed at the county recorder.' }; }
+      else job('ease', cached('ease:' + key, function () { return arcPoly(URLS.nced, ring, '*').then(function (f) { return L.easeSummary(f, pts, acres); }); }), function (v) { R.ease = v; });
       paint();
     }
     function clear() { S.gen = null; }

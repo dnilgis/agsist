@@ -208,3 +208,69 @@ test("probe: dispatch only, in land-data.yml", () => {
   assert.match(wf, /python scripts\/probe_field_layers\.py --selftest/);
   assert.match(wf, /github\.event_name == 'workflow_dispatch' && \(inputs\.task == 'layers' \|\| inputs\.task == 'layers-discover'\)/);
 });
+
+// ── the live answers (land-data.yml layers-discover, Oct 18, 2026) ──
+// The hand-built fixtures above test the arithmetic; these hold the page to the
+// field names and shapes the services really sent back.
+const live = (n) => JSON.parse(read("test/fixtures/field-layers-live/" + n + ".json")).body;
+const names = (n) => live(n).fields.map((f) => f.name);
+
+test("live: every field the page asks for exists on the service", () => {
+  const src = read("field-scout-layers.js");
+  for (const f of ["FLD_ZONE", "ZONE_SUBTY", "SFHA_TF"]) assert.ok(names("nfhl-28-meta").includes(f), f);
+  for (const f of ["FIRM_PAN", "EFF_DATE"]) assert.ok(names("nfhl-3-meta").includes(f), f);
+  for (const f of ["WETLAND_TYPE", "ATTRIBUTE"]) assert.ok(names("nwi-meta").includes(f), f);
+  assert.match(src, /'FLD_ZONE,ZONE_SUBTY,SFHA_TF'/);
+  assert.match(src, /'WETLAND_TYPE,ATTRIBUTE'/);
+  // the active filters name real fields with values the services really use
+  assert.ok(names("feed-meta-ia").includes("opStatus"));
+  assert.ok(names("feed-meta-mn").includes("status_fdlt"));
+  assert.ok(live("feed-ia").features.some((f) => f.attributes.opStatus === "Active"));
+  assert.ok(live("feed-mn").features.some((f) => f.attributes.status_fdlt === "active"));
+  assert.equal(F.FEEDLOTS.IA.active, "opStatus = 'Active'");
+  assert.equal(F.FEEDLOTS.MN.active, "status_fdlt = 'active'");
+  assert.match(src, /where: F\.active \|\| '1=1'/);
+});
+
+test("live: feedlot size field found in both states", () => {
+  assert.deepEqual(F.capField(live("feed-meta-ia").fields), { name: "AnimalUnit", au: true });
+  assert.deepEqual(F.capField(live("feed-meta-mn").fields), { name: "au_count", au: true });
+  // Minnesota, active only (what the page's where clause asks for): 15 of 18 at the test point
+  const pt = { lat: 45.1, lng: -94.9 };
+  const act = live("feed-mn").features.filter((f) => f.attributes.status_fdlt === "active");
+  assert.equal(act.length, 15);
+  const s = F.feedSummary(act, { name: "au_count", au: true }, pt, 3);
+  assert.equal(s.n, act.length);
+  assert.equal(s.cls.small + s.cls.medium + s.cls.large + s.cls.unknown, s.n);
+  assert.ok(s.cls.unknown >= 1);   // blank au_count reads "size not listed", never small
+});
+
+test("live: flood zones, panel date, wetlands, slope samples", () => {
+  const z = live("nfhl-zones-ia").features.map((f) => f.attributes);
+  assert.ok(z.some((a) => a.SFHA_TF === "T" && a.FLD_ZONE === "A"));
+  assert.ok(z.some((a) => a.FLD_ZONE === "X" && /0\.2 PCT/i.test(a.ZONE_SUBTY)));
+  const p = F.panelOf(live("nfhl-panel-ia"));
+  assert.equal(p.id, "19169C0186F");
+  assert.ok(p.date && /2021/.test(p.date), String(p.date));   // 1610668800000 = Jan 15, 2021
+  assert.deepEqual(live("nwi-ia").features, []);
+  for (const s of live("dep-ia").samples) { assert.equal(typeof s.locationId, "number"); assert.ok(isFinite(parseFloat(s.value))); }
+});
+
+test("live: wind, solar and power lines read as the page expects", () => {
+  const c = { lat: 42.0618, lng: -93.4976 };
+  const w = F.windSummary(live("wind-ia"), c, 5);
+  assert.ok(w.n >= 1 && w.projects >= 1);
+  const s = F.solarSummary(live("solar-ia"), c, 10);
+  assert.ok(s.n >= 1 && s.nearestMw > 0);
+  const g = F.gridSummary(live("osm-ia"), c, 5);
+  assert.ok(g.line && g.line.kv >= 69, JSON.stringify(g));
+  assert.ok(g.sub && g.sub.mi <= 5);
+  assert.equal(F.URLS.osm.length, 2);   // a second server: the first was full for the WI field
+  assert.match(live("osm-wi"), /at capacity/);
+});
+
+test("live: easement service wants a token, so the card says so", () => {
+  assert.equal(live("nced-ia").error.message, "Token Required");
+  assert.equal(F.URLS.nced, null);
+  assert.match(read("field-scout-layers.js"), /The national easement map now needs a sign-in/);
+});

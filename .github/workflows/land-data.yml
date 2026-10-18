@@ -29,7 +29,7 @@ on:
         type: boolean
         default: false
       task:
-        description: "services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch)"
+        description: "services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back)"
         type: string
         default: "services"
   # Sig approved Oct 17, 2026: monthly on the 3rd
@@ -60,6 +60,7 @@ jobs:
           python scripts/probe_land_services.py --selftest
           python scripts/fetch_land_sales.py --selftest
           python scripts/land_keep_stamp_only.py --selftest
+          python scripts/comp_report_live.py --selftest
           python scripts/wi_retr_browser.py --selftest
           python scripts/probe_field_layers.py --selftest
           python scripts/build_land_summary.py --selftest
@@ -103,6 +104,15 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && (inputs.task == 'layers' || inputs.task == 'layers-discover') }}
         run: |
           if [ "${{ inputs.task }}" = "layers-discover" ]; then python scripts/probe_field_layers.py --discover; else python scripts/probe_field_layers.py; fi
+      # Dispatch only: the live comp report's owner, soil and crop history (the sandbox cannot reach them).
+      # Notices only; nothing is written.
+      - name: Check the live comp report
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.task == 'comp-live' }}
+        run: |
+          python3 -m venv "$RUNNER_TEMP/pwc"
+          "$RUNNER_TEMP/pwc/bin/pip" install -q playwright==1.56.0
+          "$RUNNER_TEMP/pwc/bin/python" -m playwright install --with-deps chromium >/dev/null
+          "$RUNNER_TEMP/pwc/bin/python" scripts/comp_report_live.py
       - name: Build transfers
         if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all') }}
         # IN: Indiana sales disclosure forms, the newest six yearly files from STATS Indiana (about 45 MB each)
