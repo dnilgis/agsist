@@ -303,7 +303,7 @@ def page(ctx):
     <p class="page-kicker">Crop year {cy} &middot; sign-up deadline {sales}</p>
     <h1>PRF insurance in {e(full)}: {cy} grids, values and record</h1>
     <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {e(name)} on {ng} {'grid' if ng == 1 else 'grids'}: {g_list}. It pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
-    <p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
+    {ctx.get("story", "")}<p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
     <p class="prf-spon-band prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}"><span class="prf-spon-tag">For businesses</span> <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)} &rarr;</a></p>
     <dl class="prf-figs prf-st-figs">
       <div><dt>Grids</dt><dd>{ng}</dd></div>
@@ -379,6 +379,10 @@ def main():
     if os.path.exists(p):
         NB = json.load(open(p))["counties"]
     states = sorted(meta["states"], key=lambda s: s["name"])
+    # the dated lead paragraph (scripts/stories_prf.py): only where a kept story's facts are this page's now
+    import stories_core as SK
+    import stories_prf as SP
+    STORIES = SK.load(SP)
     # every county's name and URL first, for the next-door links
     where, loaded = county_urls(meta, ATL)
     want = {}
@@ -400,8 +404,11 @@ def main():
                 if os.path.exists(os.path.join(ROOT, top, st_slug, sl + ".html")):
                     links.append((f"{e(n)} in the {label}" if label == "Farmland Atlas" else f"{label} in {e(n)}", f"/{top}/{st_slug}/{sl}"))
             links.append(("PRF calculator", "/prf"))
+            story = ""
+            if STORIES:
+                story = SP.story_html(STORIES, st["st"], fips, SP.county_facts(meta, cf, st, sd, code, c, cf["counties"][fips], n), meta["built"][:10])
             body = page({"meta": meta, "cf": cf, "st": st, "sd": sd, "code": code, "c": c, "fx": cf["counties"][fips], "name": n,
-                         "slug": sl, "st_slug": st_slug, "nbrs": nbrs, "links": links, "BOOT": BOOT})
+                         "slug": sl, "st_slug": st_slug, "nbrs": nbrs, "links": links, "BOOT": BOOT, "story": story})
             body = nav.fill_fonts(body)
             size = len(body.encode())
             if size > MAX_KB * 1024:
