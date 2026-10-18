@@ -179,7 +179,7 @@ test("wide tables carry their column names for the phone cards", () => {
   const L = require(join(ROOT, "field-scout-land.js"));
   const t = L.compsTable([{ date: "2026-09-04", ppa: 10000, acres: 40, price: 400000, mi: 0.3, muniName: "Gridley township", cls: "" }]);
   for (const l of ["Date", "$/ac", "Acres", "Price", "Miles", "Town, class"]) assert.ok(t.includes(`data-l="${l}"`), l);
-  assert.match(read("field-scout-read.js"), /field-scout-land\.js\?v=4/);
+  assert.match(read("field-scout-read.js"), /field-scout-land\.js\?v=5/);
 });
 
 /* ---- in a browser: 390 and 1280, light and dark ---- */

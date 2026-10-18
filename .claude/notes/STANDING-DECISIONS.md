@@ -139,3 +139,4 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
   page). Phone bottom bar and footer state links deferred.
 - (Oct 18, Sig) Spend the expiring API credits: stories for PRF/Atlas/town/co-op pages, accuracy passes (top pages and every set),
   elevator website classifier for bids coverage, tool FAQ gaps, first-time visitor read. Monthly story refreshes are OK.
+- (Oct 18, Sig) Indiana land sales (STATS Indiana sales disclosure) go live with names in Field Scout and the comp report, like IL and WI: public record. Never on indexed pages.

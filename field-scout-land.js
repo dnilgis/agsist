@@ -154,7 +154,7 @@
       else o.muniName = o.muni;
       if ((+o.np || 1) > 1 && (!checked || !(num(o.acres) > 0))) { o.acres = null; o.acUnsure = true; }
       o.ppa = FSLand.perAcre(o.price, o.acres);
-      o.county = file.county;
+      o.county = file.county; o.st = file.state; o.fips = file.fips; o.src = file.source_short;
       return o;
     });
   };
@@ -342,15 +342,187 @@
       (anyUnsure ? ' Rows marked uncertain may belong to a neighboring piece of the same parcel.' : '') +
       ' A sale price covers everything that sold, buildings included, unless the class says bare land.</p>' + (links ? '<p class="fl-note fl-links">' + links + '</p>' : '');
   };
-  FSLand.compsTable = function (list, max) {
-    max = max || 40;
+  // opts.detail: each sale's date is a button that opens the detail panel (data-sale = index in list).
+  // opts.src: a source column (the printable report).
+  FSLand.compsTable = function (list, max, opts) {
+    max = max || 40; opts = opts || {};
     if (!list.length) return '<p class="fl-note">No sales match these filters.</p>';
-    function th(k, t, n) { return '<th class="' + (n ? 'n' : '') + '"><button type="button" data-sort="' + k + '">' + t + '</button></th>'; }
-    return '<div class="fl-tblw"><table class="fl-tbl"><thead><tr>' + th('date', 'Date') + th('ppa', '$/ac', 1) + th('acres', 'Acres', 1) + th('price', 'Price', 1) + th('mi', 'Miles', 1) + '<th>Town, class</th></tr></thead><tbody>' +
-      list.slice(0, max).map(function (r) {
+    function th(k, t, n) { return '<th class="' + (n ? 'n' : '') + '">' + (opts.detail ? '<button type="button" data-sort="' + k + '">' + t + '</button>' : t) + '</th>'; }
+    return '<div class="fl-tblw"><table class="fl-tbl' + (opts.detail ? ' fl-tap' : '') + '"><thead><tr>' + th('date', 'Date') + th('ppa', '$/ac', 1) + th('acres', 'Acres', 1) + th('price', 'Price', 1) + th('mi', 'Miles', 1) + '<th>Town, class</th>' + (opts.src ? '<th>Source</th>' : '') + '</tr></thead><tbody>' +
+      list.slice(0, max).map(function (r, i) {
+        var town = esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls)) : '');
+        var date = opts.detail ? '<button type="button" class="fl-sale" data-sale="' + i + '" aria-haspopup="dialog" aria-label="' + esc('Everything on the sale of ' + fd(r.date) + (r.price > 0 ? ', ' + fm(r.price) : '') + (r.acres > 0 ? ', ' + (+r.acres).toFixed(1) + ' acres' : '') + (r.muniName ? ', ' + r.muniName : '')) + '">' + fd(r.date) + '</button>' : fd(r.date);
         /* data-l: the column name a phone shows over each value when the rows stack into cards (2026-10-17) */
-        return '<tr><td data-l="Date">' + fd(r.date) + '</td><td class="n" data-l="$/ac">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n" data-l="Acres">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td class="n" data-l="Price">' + fm(r.price) + '</td><td class="n" data-l="Miles">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td class="t" data-l="Town, class">' + esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls)) : '') + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + '</td></tr>';
-      }).join('') + '</tbody></table></div>' + (list.length > max ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + '. Narrow the filters to see the rest.</p>' : '');
+        return '<tr' + (opts.detail ? ' data-row="' + i + '"' : '') + '><td data-l="Date">' + date + '</td><td class="n" data-l="$/ac">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n" data-l="Acres">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td class="n" data-l="Price">' + fm(r.price) + '</td><td class="n" data-l="Miles">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td class="t" data-l="Town, class">' + town + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + '</td>' +
+          (opts.src ? '<td class="t" data-l="Source">' + esc(r.src || '') + (r.doc ? ' ' + esc(r.doc) : '') + '</td>' : '') + '</tr>';
+      }).join('') + '</tbody></table></div>' + (list.length > max && opts.detail ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + '. Narrow the filters to see the rest.</p>' : '');
+  };
+
+  // ── one sale in full: the detail panel (Oct 18, 2026) ───────────────
+  // Every column a transfer file carries reaches the panel; a blank one says "not in the record".
+  // Fields the state's form has but our file does not keep say "not in our copy".
+  FSLand.LEGAL_MAX = 140;   // scripts/fetch_land_sales.py LEGAL_MAX: our copy keeps this much of the legal description
+  var NOTIN = '<span class="fl-miss">not in the record</span>';
+  var NOTKEPT = '<span class="fl-miss">not in our copy of the record</span>';
+  FSLand.NOT_IN_RECORD = 'not in the record';
+  FSLand.NAME_MAX = 80;     // fetch_land_sales.py keeps the first 80 characters of a name
+  // Section, township and range for display, read from numerals or from words with numerals beside
+  // them ("Section Twenty-nine (29), Township fifteen (15) North, Range Six (6) E").
+  FSLand.strOf = function (legal) {
+    var s = clean(legal).toUpperCase();
+    if (!s) return null;
+    s = s.replace(/\b(?:[A-Z]+-)?[A-Z]+\s*\((\d{1,3})\)/g, '$1');
+    var sec = /\bSEC(?:TION|S)?\.?\s*(\d{1,2})\b/.exec(s);
+    var t = /\bT(?:OWNSHIP|WP)?\.?\s*(\d{1,3})\s*(N|S)(?:ORTH|OUTH)?\b/.exec(s);
+    var r = /\bR(?:ANGE|GE)?\.?\s*(\d{1,3})\s*(E|W)(?:AST|EST)?\b/.exec(s);
+    if (!sec || !t || !r) return null;
+    var pm = /\b(SECOND|THIRD|FOURTH|FIFTH|2ND|3RD|4TH|5TH)\s+(?:PRINCIPAL\s+MERIDIAN|P\.?\s?M\b)/.exec(s);
+    return 'Section ' + (+sec[1]) + ', T' + (+t[1]) + t[2] + ', R' + (+r[1]) + r[2] + (pm ? ', ' + pm[1].charAt(0) + pm[1].slice(1).toLowerCase() + ' Principal Meridian' : '');
+  };
+  FSLand.relatedParty = function (r) { return /RELATED PART/i.test(String(r && r.conv || '')); };
+  // Why a sale is left out of the market-sales list (empty when it is in).
+  FSLand.notMarketWhy = function (r) {
+    var why = [];
+    if (!(num(r.price) > 0)) why.push('no price on the return');
+    if (!(num(r.acres) > 0) && !r.acUnsure) why.push('no acres on the return');
+    if (r.exempt) why.push('exempt from the transfer fee');
+    var c = String(r.conv || '').toUpperCase();
+    if (/RELATED PART/.test(c)) why.push('buyer and seller related');
+    else if (FSLand.NON_MARKET.test(c)) why.push('the deed type does not usually carry a market price');
+    return why;
+  };
+  // ArcGIS where clause that finds one parcel number in a parcel service, as written and with
+  // punctuation set aside. Quotes are doubled; nothing but the parcel number goes in.
+  FSLand.parcelWhere = function (svc, pid) {
+    var F = (svc && svc.fields) || {}, names = [].concat(F.pid || [], F.pid2 || []);
+    var v = clean(pid); if (!names.length || !FSLand.parcelKeys(v)) return null;
+    var vals = [v, FSLand.parcelKeys(v).strip].filter(function (x, i, a) { return a.indexOf(x) === i; })
+      .map(function (x) { return "'" + x.replace(/'/g, "''") + "'"; }).join(',');
+    return names.map(function (n) { return n + ' IN (' + vals + ')'; }).join(' OR ');
+  };
+  // Of the features a parcel service sent back, the one that is this parcel: same parcel number
+  // (exact, or with county formatting set aside) and, when the service names counties, the same county.
+  FSLand.pickParcel = function (ps, pid, county) {
+    var k = FSLand.parcelKeys(pid); if (!k) return null;
+    var want = clean(county).toUpperCase().replace(/[^A-Z]/g, '');
+    var hit = (ps || []).filter(function (p) {
+      var same = (p.ids || []).some(function (id) { var x = FSLand.parcelKeys(id); return x && (x.strip === k.strip || x.seg === k.seg); });
+      var co = clean(p.county).toUpperCase().replace(/[^A-Z]/g, '').replace(/COUNTY$/, '');
+      return same && (!want || !co || co === want);
+    });
+    return hit.length === 1 ? hit[0] : null;   // two parcels with one number: we will not pick
+  };
+
+  // The panel's body. r: a row from rowObjs (with mi when the list figured it); file: its county
+  // file; others: matchTransfers of the same parcel, this sale left out. Plain strings for node.
+  FSLand.saleDetailHTML = function (r, file, others) {
+    file = file || {}; others = others || [];
+    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', WI = st === 'WI';
+    var cols = file.cols || [];
+    var has = function (c) { return cols.indexOf(c) >= 0; };
+    var v = function (x) { return x == null || x === '' ? null : x; };
+    var rows = [];
+    function row(k, html, note) { rows.push('<tr><th scope="row">' + esc(k) + '</th><td>' + html + (note ? '<div class="fl-note">' + note + '</div>' : '') + '</td></tr>'); }
+    function group(t) { rows.push('<tr class="fl-sd-g"><th colspan="2" scope="colgroup">' + esc(t) + '</th></tr>'); }
+    var price = num(r.price), ac = num(r.acres), np = +r.np || 1;
+
+    group('The sale');
+    row(IL ? 'Deed date (instrument date)' : 'Deed date (date of conveyance)', v(r.date) ? fd(r.date) : NOTIN);
+    row('Recorded (filed)', has('rec') ? (v(r.rec) ? fd(r.rec) : NOTIN) : NOTKEPT, has('rec') ? null : 'The state file has the recording date; our copy keeps only the deed date for ' + esc(st || 'this state') + '.');
+    row('Price', price > 0 ? fm(price) : price === 0 ? '$0 on the ' + (IL ? 'declaration' : 'return') : NOTIN,
+      IL ? 'Net consideration (Line 13 of Form PTAX-203), or full consideration (Line 11) when Line 13 is blank. Covers everything that sold.' : 'Sale price on the transfer return. Covers everything that sold, buildings included.');
+    row('Acres', ac > 0 ? (+ac).toFixed(2).replace(/\.?0+$/, '') : r.acUnsure ? '<span class="fl-warn">uncertain</span>' : NOTIN,
+      r.acUnsure ? np + ' parcels on one ' + (IL ? 'declaration' : 'return') + ' and the acres do not add up for sure, so we print no total.' : (np > 1 ? 'All ' + np + ' parcels together.' : null));
+    if (has('ac1') && (np > 1 || v(r.ac1) != null)) row(IL ? 'Lot size or acreage as written (Line 1)' : 'Acres on the first parcel line', v(r.ac1) != null ? esc(r.ac1) : NOTIN, np > 1 ? 'As the filer wrote it. Often the whole sale, sometimes one parcel.' : null);
+    if (has('tac') && v(r.tac) != null) row('Acres added over repeated rows', v(r.tac) != null ? esc(r.tac) : NOTIN);
+    row('$/acre', r.ppa != null ? fm(r.ppa) : '<span class="fl-miss">not figured</span>', r.ppa != null ? 'Price over acres.' : (price > 0 ? 'Acres are not known for sure.' : 'There is no price to divide.'));
+    row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
+    row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls)) + ' <span class="fl-note">(' + (IL ? 'the declaration marks the current use as farm, Line 8' : 'Wisconsin class ' + esc(r.cls)) + ')</span>' : NOTIN);
+    row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
+    row(IL ? 'State transfer tax' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
+    var why = FSLand.notMarketWhy(r);
+    row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court and partition deeds and fee-exempt transfers.');
+
+    group('Who');
+    if (file.names && has('grantor')) {
+      var cut = function (x) { return String(x || '').length >= FSLand.NAME_MAX ? 'May be cut short: our copy keeps the first ' + FSLand.NAME_MAX + ' characters.' : null; };
+      row('Seller (grantor)', v(r.grantor) ? esc(r.grantor) : NOTIN, cut(r.grantor));
+      row('Buyer (grantee)', v(r.grantee) ? esc(r.grantee) : NOTIN, cut(r.grantee));
+    } else {
+      row('Seller and buyer', NOTKEPT, 'The free state data does not carry names here; the deed at the county has them.');
+    }
+
+    group('Where');
+    row(IL ? 'Township' : 'Town, village or city', v(r.muniName) ? esc(r.muniName) : NOTIN);
+    row('County', v(r.county || file.county) ? esc((r.county || file.county) + ' County, ' + st) : NOTIN);
+    row(np > 1 ? 'Parcel number (first on the ' + (IL ? 'declaration' : 'return') + ')' : 'Parcel number', v(r.pid) ? esc(r.pid) : NOTIN,
+      np > 1 ? 'This sale covers ' + np + ' parcels. Our copy keeps the first parcel number only; the other ' + (np - 1) + ' are on the ' + (IL ? 'declaration' : 'return') + ' and the deed.' : null);
+    row('Parcels in this sale', String(np));
+    var leg = clean(r.legal);
+    row('Legal description', leg ? esc(leg) : NOTIN, leg.length >= FSLand.LEGAL_MAX - 2 ? 'May be cut short: our copy keeps the first ' + FSLand.LEGAL_MAX + ' characters.' : null);
+    var str = FSLand.strOf(leg);
+    row('Section, township, range', str ? esc(str) : (leg ? '<span class="fl-miss">not readable from the legal description</span>' : NOTIN));
+    row('Street address', NOTKEPT);
+    row('Distance from your field', r.mi != null ? 'About ' + (r.mi < 0.5 ? 'less than 1 mile' : Math.round(r.mi) + (Math.round(r.mi) === 1 ? ' mile' : ' miles')) + ' to the center of ' + esc(r.muniName || 'the town') : '<span class="fl-miss">not figured</span>',
+      'Measured to the center of the town where the sale was filed. The parcel’s own spot is not in our copy.');
+
+    var other = others.length ? '<ul class="fl-hist">' + others.map(function (m, i) {
+      var o = m.r || m;
+      return '<li><button type="button" class="fl-sale" data-other="' + i + '"><span class="d">' + fd(o.date) + '</span></button> &middot; ' + (o.price > 0 ? fm(o.price) : 'no price') +
+        (o.acres > 0 ? ' &middot; ' + (+o.acres).toFixed(1) + ' ac' : '') + (o.ppa != null ? ' &middot; ' + fm(o.ppa) + '/ac' : '') +
+        '<div class="m">' + [o.conv ? esc(o.conv) : null, file.names && (o.grantor || o.grantee) ? esc(o.grantor || 'seller not given') + ' &rarr; ' + esc(o.grantee || 'buyer not given') : null,
+          m.how === 'format' ? 'parcel number matched with county formatting set aside' : null].filter(Boolean).join(' &middot; ') + '</div></li>';
+    }).join('') + '</ul>' : '<p class="fl-note">No other transfer of parcel ' + esc(r.pid || '(no number)') + ' is in our copy. ' + esc(FSLand.coverageText(file.coverage, st)) + '.</p>';
+
+    var links = (file.links || []).map(function (l) { return '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>'; }).join(' &middot; ');
+    var office = IL ? 'Clerk and Recorder' : 'Register of Deeds';
+    var src = '<p class="fl-note">' + esc(file.source || 'State transfer data') + (v(r.doc) ? ', document ' + esc(r.doc) : '') + '. ' +
+      (file.fetched_utc ? 'Our copy was read ' + fd(String(file.fetched_utc).slice(0, 10)) + '. ' : '') +
+      'The deed itself is at the ' + esc((r.county || file.county || 'county') + ' County ' + office) + '.</p>' + (links ? '<p class="fl-note fl-links">' + links + '</p>' : '');
+    var notIn = '<p class="fl-note"><b>Not in our copy:</b> the street address, ' + (np > 1 ? 'the other parcel numbers, ' : '') +
+      'the parcel outline, financing, any personal property in the price (machinery, grain, buildings’ contents), and why the land sold. The full ' +
+      (IL ? 'declaration' : 'transfer return') + ' or the deed has more. This is a public record of one sale, not an appraisal.</p>';
+
+    return '<table class="fl-kv fl-sd-kv">' + rows.join('') + '</table>' +
+      '<h3>On the map</h3><div class="fl-sd-map"><button type="button" class="fl-btn" data-sd="map">Show on map</button><div id="fl-sd-where" class="fl-note">Looking for this parcel on the parcel map.</div></div>' +
+      '<h3>Current owner (parcel map today)</h3><div id="fl-sd-owner"><div class="fs-loading"><span class="fs-spin"></span>reading</div></div>' +
+      '<h3>Other recorded transfers of this parcel</h3>' + other +
+      '<h3>Source</h3>' + src + notIn;
+  };
+  // Field Scout's comps filters, carried to the printable report: "mi:25,ac:10,s:2023-10-18,c:5M.6,a:1".
+  var FKEYS = { maxMi: 'mi', minAc: 'ac', maxAc: 'ax', minPpa: 'p1', maxPpa: 'p2' };
+  FSLand.encodeFilter = function (f) {
+    f = f || {}; var out = [];
+    Object.keys(FKEYS).forEach(function (k) { if (f[k] != null && isFinite(f[k])) out.push(FKEYS[k] + ':' + (+f[k])); });
+    if (f.since) out.push('s:' + f.since);
+    if (f.cls && f.cls.length) out.push('c:' + f.cls.join('.'));
+    if (f.all) out.push('a:1');
+    return out.join(',');
+  };
+  FSLand.decodeFilter = function (s) {
+    var f = {}, back = {}; Object.keys(FKEYS).forEach(function (k) { back[FKEYS[k]] = k; });
+    var ok = false;
+    String(s || '').split(',').forEach(function (p) {
+      var i = p.indexOf(':'); if (i < 1) return;
+      var k = p.slice(0, i), val = p.slice(i + 1);
+      if (back[k] && /^\d+(\.\d+)?$/.test(val)) { f[back[k]] = +val; ok = true; }
+      else if (k === 's' && /^\d{4}-\d{2}-\d{2}$/.test(val)) { f.since = val; ok = true; }
+      else if (k === 'c' && /^[0-9A-Z.]{1,20}$/i.test(val)) { f.cls = val.split('.').filter(Boolean); ok = true; }
+      else if (k === 'a' && val === '1') { f.all = true; ok = true; }
+    });
+    return ok ? f : null;
+  };
+  // The filters in words, for the report's comps line.
+  FSLand.filterText = function (f) {
+    f = f || {}; var b = [];
+    b.push(f.all ? 'every deed type' : 'market sales');
+    if (f.minAc != null || f.maxAc != null) b.push(f.minAc != null && f.maxAc != null ? f.minAc + ' to ' + f.maxAc + ' acres' : f.minAc != null ? f.minAc + ' acres or more' : 'up to ' + f.maxAc + ' acres');
+    if (f.minPpa != null) b.push('at least ' + fm(f.minPpa) + '/ac');
+    if (f.maxPpa != null) b.push('at most ' + fm(f.maxPpa) + '/ac');
+    if (f.maxMi != null) b.push('within ' + f.maxMi + ' miles');
+    if (f.since) b.push('since ' + fd(f.since));
+    if (f.cls && f.cls.length) b.push('class ' + FSLand.classLabel(f.cls.join(' ')).toLowerCase());
+    return b.join(', ');
   };
 
   if (typeof module === 'object' && module.exports) { module.exports = FSLand; return; }
@@ -480,7 +652,22 @@
     '.fl-tbl td[data-l]:not(.t)::before{content:attr(data-l);display:block;font-family:var(--font-mono);font-size:.64rem;color:var(--text-muted)}}' +
     '.fl-big{font-family:var(--font-mono);font-size:1.3rem;font-weight:700;color:var(--text)}' +
     '.fl-links a{color:var(--gold)}.fl-empty{border:1px dashed var(--border);border-radius:8px;padding:.7rem .8rem;margin:.5rem 0}.fl-empty b{color:var(--text)}' +
-    '.fl-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0}.fl-chip{font-size:.8rem;border:1px solid var(--border);border-radius:999px;padding:.15rem .55rem;color:var(--text)}';
+    '.fl-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0}.fl-chip{font-size:.8rem;border:1px solid var(--border);border-radius:999px;padding:.15rem .55rem;color:var(--text)}' +
+    /* a sale row opens its detail panel: the date is the button, the whole row is the tap target (Oct 18) */
+    '.fl-sale{font:inherit;color:var(--gold);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;min-height:28px;text-align:left}' +
+    '.fl-sale:focus-visible,.fl-sd-x:focus-visible,.fl-sd .fl-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}' +
+    '.fl-tap tbody tr{cursor:pointer}.fl-tap tbody tr:hover td{background:var(--surface)}' +
+    '.fl-miss{color:var(--text-muted);font-style:italic}' +
+    '.fl-sd-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000}' +
+    '.fl-sd{position:fixed;z-index:10001;left:0;right:0;bottom:0;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:var(--surface2,var(--surface));color:var(--text);border-top:2px solid var(--gold);border-radius:14px 14px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.45);padding:0 1rem calc(1.2rem + env(safe-area-inset-bottom))}' +
+    '@media(min-width:900px){.fl-sd{top:0;left:auto;width:min(460px,94vw);max-height:none;border-top:0;border-left:2px solid var(--gold);border-radius:0;box-shadow:-8px 0 30px rgba(0,0,0,.45)}}' +
+    '.fl-sd-h{position:sticky;top:0;background:inherit;display:flex;align-items:flex-start;gap:.6rem;padding:.8rem 0 .55rem;border-bottom:1px solid var(--border);margin-bottom:.4rem;z-index:1}' +
+    '.fl-sd-h h2{flex:1;margin:0;font-size:1.05rem;line-height:1.3;color:var(--text)}.fl-sd-h .fl-note{margin:.15rem 0 0}' +
+    '.fl-sd-x{font:inherit;font-size:1.3rem;line-height:1;min-width:44px;min-height:44px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);cursor:pointer}' +
+    '.fl-sd h3{font-size:.9rem;margin:1rem 0 .3rem;color:var(--text)}.fl-sd-kv th{width:42%}.fl-sd-kv .fl-note{margin:.1rem 0 0;font-size:.74rem}' +
+    '.fl-sd-g th{padding-top:.7rem!important;color:var(--gold)!important;font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}' +
+    '.fl-sd-map{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .7rem}.fl-sd-map .fl-note{flex:1 1 220px;margin:0}' +
+    '.fl-sd-grab{width:44px;height:4px;border-radius:2px;background:var(--border);margin:.45rem auto 0}@media(min-width:900px){.fl-sd-grab{display:none}}';
   function addCSS() {
     if (document.getElementById('fl-css')) return;
     var s = document.createElement('style'); s.id = 'fl-css'; s.textContent = CSS; document.head.appendChild(s);
@@ -632,14 +819,146 @@
       FSX.FIELD.land.history = m;
       set('fl-hist', FSLand.historyHTML(m, FSLand.covOf(home)));
     }
+    // ── one sale in full: tap a row, read everything on its record (Oct 18, 2026) ──
+    // A sheet from the bottom on phones, a side panel on wider screens. Names come only from
+    // /data/land (kept out of search by robots.txt) and show only once a reader taps a sale.
+    var SD = null;
+    function fileOf(r) { return ((S.sales && S.sales.files) || []).filter(function (f) { return f.fips === r.fips; })[0] || null; }
+    function withMi(r) {
+      if (r.mi != null || r.lat == null || !S.c) return r;
+      var o = {}; for (var k in r) o[k] = r[k];
+      o.mi = FSLand.milesBetween(S.c.lat, S.c.lng, r.lat, r.lng); return o;
+    }
+    function othersOf(r) {
+      if (!S.sales || !r.pid) return [];
+      var rows = S.sales.rows.filter(function (x) { return x.fips === r.fips && x.doc !== r.doc; });
+      return FSLand.matchTransfers({ ids: [r.pid] }, rows);
+    }
+    function clearSaleMark() { if (S.saleMark && FSX.map) { FSX.map.removeLayer(S.saleMark); } S.saleMark = null; }
+    function closeSale() {
+      if (!SD) return;
+      var d = SD; SD = null;
+      document.removeEventListener('keydown', d.key, true);
+      [d.bg, d.el].forEach(function (n) { if (n && n.parentNode) n.parentNode.removeChild(n); });
+      document.body.style.overflow = d.ov || '';
+      var back = d.opener && document.body.contains(d.opener) ? d.opener : document.querySelector('#fl-clist .fl-sale');
+      if (back && !d.noFocus) { try { back.focus(); } catch (e) {} }
+    }
+    function sdSet(d, id, html) { if (SD === d) { var e = d.el.querySelector('#' + id); if (e) e.innerHTML = html; } }
+    function lookupParcel(d) {
+      var r = d.r, town = esc(r.muniName || 'the town');
+      var pinText = r.lat != null ? 'Show on map puts a pin at the center of ' + town + ', where the sale was filed. The parcel’s own spot is not in our copy.' : 'Our copy does not place this sale on the map.';
+      function none(ownerMsg) {
+        d.parcel = null;
+        sdSet(d, 'fl-sd-where', pinText);
+        sdSet(d, 'fl-sd-owner', '<p class="fl-note">' + ownerMsg + '</p>');
+        var b = SD === d && d.el.querySelector('[data-sd="map"]');
+        if (b) { b.textContent = 'Show town on map'; b.disabled = r.lat == null; }
+      }
+      if (!r.pid) { none('There is no parcel number on this record, so we cannot look up who owns it today.'); return; }
+      FSLand.registry().then(function (reg) {
+        if (SD !== d) return;
+        var svcs = FSLand.servicesFor(reg || {}, r.st, r.fips).filter(function (s) { return FSLand.parcelWhere(s, r.pid); });
+        if (!svcs.length) { none('No free public parcel map that we have checked covers ' + esc(r.county) + ' County yet, so we do not name a current owner. The county assessor or treasurer has it.'); return; }
+        var answered = 0;
+        (function tryNext(i) {
+          if (SD !== d) return;
+          if (i >= svcs.length && !answered) { none(esc(svcs[0].name) + ' did not answer just now, so we cannot name the current owner. Tap the sale again in a minute.'); return; }
+          if (i >= svcs.length) { none('Parcel ' + esc(r.pid) + ' did not come up on ' + esc(svcs[0].name) + ' (the county may write the number another way, or the parcel was split or renumbered since the sale). We do not guess an owner.'); return; }
+          var svc = svcs[i];
+          var url = svc.url.replace(/\/$/, '') + '/query?f=json&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=10&where=' + encodeURIComponent(FSLand.parcelWhere(svc, r.pid));
+          getJSON(url, 20000).then(function (j) {
+            if (SD !== d) return;
+            if (!j || j.error || !j.features) throw new Error('no answer');
+            answered++;
+            var ps = j.features.map(function (f) { var p = FSLand.parseParcel(f.attributes, svc); p.rings = FSLand.ringsToLatLngs(f.geometry); p.svc = svc; return p; });
+            var p = FSLand.pickParcel(ps, r.pid, r.county);
+            if (!p) return tryNext(i + 1);
+            d.parcel = p;
+            sdSet(d, 'fl-sd-owner', '<div class="fl-p">' + FSLand.parcelHTML(p, null) + '</div><p class="fl-note">From the parcel map as it stands today, not from the sale record. The owner can have changed since this sale.</p>');
+            var b = d.el.querySelector('[data-sd="map"]');
+            if (p.rings && p.rings.length) { sdSet(d, 'fl-sd-where', 'Parcel ' + esc(p.id || r.pid) + ' is on ' + esc(svc.name) + '. Show on map outlines it.'); if (b) b.textContent = 'Show parcel on map'; }
+            else { sdSet(d, 'fl-sd-where', 'The parcel map found the parcel but sent no outline. ' + pinText); if (b) { b.textContent = 'Show town on map'; b.disabled = r.lat == null; } }
+          }).catch(function () { tryNext(i + 1); });
+        })(0);
+      });
+    }
+    function showOnMap(d) {
+      var map = FSX.map, L = G.L, r = d.r; if (!map || !L) return;
+      clearSaleMark();
+      var label = 'Sale of ' + fd(r.date) + (r.price > 0 ? ', ' + fm(r.price) : '');
+      var p = d.parcel;
+      if (p && p.rings && p.rings.length) {
+        S.saleMark = L.polygon(p.rings.map(function (ring) { return ring.map(function (q) { return [q.lat, q.lng]; }); }), { color: '#5fd3ff', weight: 3, fillOpacity: 0.15 }).addTo(map);
+        S.saleMark.bindTooltip(label + ', parcel ' + (p.id || r.pid), { permanent: true, direction: 'center' });
+        map.fitBounds(S.saleMark.getBounds(), { maxZoom: 16, padding: [30, 30] });
+      } else if (r.lat != null) {
+        S.saleMark = L.circleMarker([r.lat, r.lng], { radius: 10, color: '#5fd3ff', weight: 3, fillOpacity: 0.3 }).addTo(map);
+        S.saleMark.bindTooltip(label + ': center of ' + (r.muniName || 'the town') + ', not the parcel', { permanent: true, direction: 'top' });
+        map.fitBounds(L.latLngBounds([[S.c.lat, S.c.lng], [r.lat, r.lng]]), { maxZoom: 12, padding: [50, 50] });
+      } else return;
+      FSX.ga('fs_land_sale_map', { parcel: !!(p && p.rings && p.rings.length) });
+      d.noFocus = true; closeSale();
+      var m = document.getElementById('fs-map');
+      if (m) { try { m.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { m.scrollIntoView(); } }
+    }
+    function openSale(r0, opener) {
+      var keepOpener = SD ? SD.opener : opener;
+      if (SD) { SD.noFocus = true; closeSale(); }
+      var r = withMi(r0), file = fileOf(r) || {}, others = othersOf(r);
+      var bg = document.createElement('div'); bg.className = 'fl-sd-bg';
+      var el = document.createElement('div'); el.className = 'fl-sd';
+      el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'fl-sd-t');
+      var head = [r.price > 0 ? fm(r.price) : 'No price', r.acres > 0 ? (+r.acres).toFixed(1) + ' ac' : null, r.ppa != null ? fm(r.ppa) + '/ac' : null].filter(Boolean).join(' &middot; ');
+      el.innerHTML = '<div class="fl-sd-h"><div style="flex:1;min-width:0"><div class="fl-sd-grab" aria-hidden="true"></div><h2 id="fl-sd-t">Sale of ' + fd(r.date) + '<br><span class="fl-big" style="font-size:1rem">' + head + '</span></h2>' +
+        '<p class="fl-note">' + esc([r.muniName, r.county ? r.county + ' County, ' + r.st : null].filter(Boolean).join(', ')) + '</p></div>' +
+        '<button type="button" class="fl-sd-x" aria-label="Close sale details">&times;</button></div>' + FSLand.saleDetailHTML(r, file, others);
+      document.body.appendChild(bg); document.body.appendChild(el);
+      var d = { r: r, el: el, bg: bg, opener: keepOpener, ov: document.body.style.overflow, parcel: null };
+      document.body.style.overflow = 'hidden';
+      d.key = function (e) {
+        if (SD !== d) return;
+        if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); closeSale(); return; }
+        if (e.key === 'Tab') {
+          var f = Array.prototype.filter.call(el.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])'), function (x) { return x.offsetParent !== null || x === document.activeElement; });
+          if (!f.length) return;
+          var a = f[0], z = f[f.length - 1];
+          if (e.shiftKey && (document.activeElement === a || !el.contains(document.activeElement))) { e.preventDefault(); z.focus(); }
+          else if (!e.shiftKey && (document.activeElement === z || !el.contains(document.activeElement))) { e.preventDefault(); a.focus(); }
+        }
+      };
+      document.addEventListener('keydown', d.key, true);
+      bg.addEventListener('click', closeSale);
+      el.querySelector('.fl-sd-x').addEventListener('click', closeSale);
+      el.addEventListener('click', function (e) {
+        var t = e.target.closest ? e.target.closest('[data-sd],[data-other]') : null; if (!t) return;
+        if (t.getAttribute('data-sd') === 'map') showOnMap(d);
+        else { var m = others[+t.getAttribute('data-other')]; if (m) openSale(m.r || m); }
+      });
+      SD = d;
+      el.querySelector('.fl-sd-x').focus();
+      lookupParcel(d);
+      FSX.ga('fs_land_sale_open', { st: r.st });
+    }
+    FSLand.openSale = openSale; FSLand.closeSale = closeSale;
     function renderComps() {
       if (!S.sales || !S.sales.rows.length) return;
       var f = S.f, list = FSLand.filterComps(S.sales.rows, f, S.c), med = FSLand.medianPpa(list);
       FSX.FIELD.land = FSX.FIELD.land || {}; FSX.FIELD.land.comps = { list: list.slice(0, 25), med: med, f: JSON.parse(JSON.stringify(f)) };
       var unsure = list.filter(function (r) { return r.acUnsure; }).length;
       var left = unsure ? ' ' + unsure + (unsure === 1 ? ' sale' : ' sales') + ' on several parcels with uncertain acres ' + (unsure === 1 ? 'is' : 'are') + ' listed without $/acre and left out of the middle.' : '';
-      set('fl-clist', (med ? '<p><span class="fl-big">' + fm(med.ppa) + '/ac</span> <span class="fl-note">middle of ' + med.n + ' sales below with known acres.' + left + '</span></p>' : '<p class="fl-note">Fewer than 3 sales with known acres match; no middle price shown.' + left + '</p>') + FSLand.compsTable(list));
+      S.list = list;
+      set('fl-clist', (med ? '<p><span class="fl-big">' + fm(med.ppa) + '/ac</span> <span class="fl-note">middle of ' + med.n + ' sales below with known acres.' + left + '</span></p>' : '<p class="fl-note">Fewer than 3 sales with known acres match; no middle price shown.' + left + '</p>') +
+        (list.length ? '<p class="fl-note">Tap a sale for everything on its record.</p>' : '') + FSLand.compsTable(list, 40, { detail: true }));
+      var rep = document.getElementById('fl-report');
+      if (rep) { var base = rep.getAttribute('data-base') || rep.getAttribute('href'); rep.setAttribute('data-base', base); var cf = FSLand.encodeFilter(S.f); rep.setAttribute('href', base + (cf ? '&cf=' + encodeURIComponent(cf) : '')); }
       var b = document.getElementById('fl-clist');
+      if (b) Array.prototype.forEach.call(b.querySelectorAll('[data-sale]'), function (el) {
+        el.addEventListener('click', function () { var r = S.list[+el.getAttribute('data-sale')]; if (r) openSale(r, el); });
+      });
+      if (b) Array.prototype.forEach.call(b.querySelectorAll('tr[data-row]'), function (tr) {
+        tr.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('button,a')) return; var x = tr.querySelector('[data-sale]'); if (x) x.click(); });
+      });
       if (b) Array.prototype.forEach.call(b.querySelectorAll('[data-sort]'), function (el) {
         el.addEventListener('click', function () { var k = el.getAttribute('data-sort'); if (S.f.sort === k) S.f.dir = S.f.dir === 'asc' ? 'desc' : 'asc'; else { S.f.sort = k; S.f.dir = k === 'mi' ? 'asc' : 'desc'; } renderComps(); });
       });
@@ -686,7 +1005,8 @@
     }
 
     function run(poly) {
-      S.gen = FSX.fieldGen; S.sel = 0; S.parcels = []; S.sales = null;
+      S.gen = FSX.fieldGen; S.sel = 0; S.parcels = []; S.sales = null; S.list = [];
+      closeSale(); clearSaleMark();
       var pts = FSX.latlngs(poly).map(function (q) { return { lat: q.lat, lng: q.lng }; });
       S.pts = pts; S.c = FSLand.centroid(pts);
       FSX.FIELD.land = { pts: pts };
@@ -741,7 +1061,7 @@
         });
       });
     }
-    function clear() { if (S.lines && FSX.map) { FSX.map.removeLayer(S.lines); S.lines = null; } S.gen = null; }
+    function clear() { if (S.lines && FSX.map) { FSX.map.removeLayer(S.lines); S.lines = null; } closeSale(); clearSaleMark(); S.gen = null; }
     return { run: run, clear: clear, toggleLayer: toggleLayer };
   };
 })(typeof window !== 'undefined' ? window : globalThis);
