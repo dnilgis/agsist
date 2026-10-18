@@ -118,7 +118,8 @@ def storm_days_html(name, sdays):
         for d, n, _mx, _sw in sdays[:DAYS_MAX])
     more = (" Showing the newest " + str(DAYS_MAX) + " of " + str(len(sdays)) + "." if len(sdays) > DAYS_MAX else "")
     return ("<section class=\"hs-days\" id=\"storm-days\"><h2>Storm days in " + esc(name) + "</h2>"
-            "<p>Days in the storm log with at least one NWS hail report from " + esc(name) + ", newest first. Each page maps that day across the country." + more + "</p>"
+            "<p>Days in the storm log with at least one NWS hail report from " + esc(name) + ", newest first. Each page maps that day across the country. "
+            "The storm log keeps only the big hail days nationwide, so this is not every day it hailed here." + more + "</p>"
             "<ul>" + lis + "</ul><p><a href=\"/hail/\">Every storm day in the storm log &rarr;</a></p></section>\n")
 
 
@@ -201,6 +202,11 @@ def season_line(name, months):
 def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_tot=None):
     n_yrs = len(years)
     span = span or n_yrs
+    # The averages divide by the elapsed span (Jan 1 of the first year to the pull), so the
+    # words say that span too: "the last 5 years" beside a 4.8-year divisor read as 357/5 = 74.5
+    # (Pennington Co., SD, 2026-10-18 accuracy pass).
+    per = (f"the {span:.1f} years since January {years[0]}" if years and abs(span - n_yrs) >= 0.05
+           else f"the last {n_yrs} years")
     rows = merge_counties(rows, span)
     for r in rows:
         r["avg"] = round(r.get("total", 0) / span, 1)
@@ -241,9 +247,9 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
 
     faq = [
         ("Where does it hail the most in " + name + "?",
-         ("By reported hail over the last " + str(n_yrs) + " years, the most active counties in " + name +
+         ("By reported hail over " + per + ", the most active counties in " + name +
           " are " + ", ".join(r["county"] for r in rows[:3]) + "." if rows else
-          name + " has recorded relatively few hail reports in the last " + str(n_yrs) + " years.") +
+          name + " has recorded relatively few hail reports in " + per + ".") +
          " Reports track population and spotter coverage as well as storms, so rural corridors can be under-counted; the persistent leaders on this table are real hail geography."),
         ("When is hail season in " + name + "?",
          ("Reported hail in " + name + " peaks around " + peak_full + ". " if peak_full else
@@ -254,7 +260,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
          ("The per-county severe share is in the table" if float(dmg_in) == 1.0 else
           "The table\u2019s share column counts stones " + size_line(dmg_in)) +
          "; " + (where.strip() + ", " if where else "") + "hail of any size totaled " +
-         f"{total:,}" + " reports over " + str(n_yrs) + " years."),
+         f"{total:,}" + " reports over " + per + "."),
     ]
     faq_ld = ",".join(
         '{"@type":"Question","name":' + json.dumps(q) + ',"acceptedAnswer":{"@type":"Answer","text":' + json.dumps(a) + '}}'
@@ -266,18 +272,18 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
     intro = (
         "<p class=\"hs-sub\">" +
         ((name + " logged " + f"{total:,}" +
-          " National Weather Service hail reports" + where + " in the last " + str(n_yrs) + " years. " +
+          " National Weather Service hail reports" + where + " in " + per + ". " +
           esc(top["county"]) + " County had the most" + (", and reports peak around " + peak_full if peak_full else "") + ".")
          if heavy and top else
-         (name + " logged " + f"{total:,}" + " National Weather Service hail reports" + where + " over the last " +
-          str(n_yrs) + " years, " + ("meaningful but not hail-alley volume." if total >= 60 else
+         (name + " logged " + f"{total:,}" + " National Weather Service hail reports" + where + " over " +
+          per + ", " + ("meaningful but not hail-alley volume." if total >= 60 else
           "a comparatively quiet record by national standards."))) +
         " The table ranks the counties. To check one address, use the map\u2019s search: it lists every dated report within 10 miles (5 or 25 if you pick).</p>")
 
     # Key Figures — complete standalone sentences, because that is what
     # writers and AI engines lift verbatim (see: insurance lead-gen pages
     # already quoting this site). Each fact is quotable without editing.
-    figs = [name + " logged " + f"{total:,}" + " National Weather Service hail reports" + where + " over the last " + str(n_yrs) + " years (" + str(years[0]) + "\u2013" + str(years[-1]) + ")."]
+    figs = [name + " logged " + f"{total:,}" + " National Weather Service hail reports" + where + " over " + per + " (" + str(years[0]) + "\u2013" + str(years[-1]) + ")."]
     if top:
         figs.append(esc(top["county"]) + " County leads " + name + " with " + f"{top.get('total',0):,}" + " hail reports over that span, about " + str(top.get("avg", "")) + " per year.")
     if peak_full:
