@@ -13,6 +13,11 @@
           claim against the facts before anything reaches a page. The same for
           the PRF county, Farmland Atlas county, town cash bid and co-op
           company pages: rows that carry "set" (scripts/stories_core.py).
+  faq     For each tool page, its text, its FAQ, the search terms that land on
+          it and the primary sources it cites (built by scripts/faq_gaps.py, in
+          Actions). The model proposes up to 3 missing questions answered only
+          from a quoted source; faq_gaps.py collect rejects any answer whose
+          numbers are not in its quote.
 
 Input: apijobs/<run>/input/bundle.json on the raw branch (never deployed),
 built outside Actions from a local render. Every output lands in
@@ -44,9 +49,10 @@ MODEL = "claude-sonnet-5-5"            # search and alt
 STORY_MODEL = "claude-opus-5-5"        # county stories (Sig, Oct 17)
 RUN = re.sub(r"[^a-zA-Z0-9_-]", "", os.environ.get("APIJOBS_RUN", "r1")) or "r1"
 OUT = f"apijobs/{RUN}"
+FAQ_CAP = 25.0       # dollars, FAQ gaps on the tool pages (scripts/faq_gaps.py; Sig, Oct 18)
 COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
 STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
-MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000}
+MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000, "faq": 8000}
 SET_STORY_MAX_TOKENS = 700   # the other story sets: a story is about 150 tokens; 700 keeps a 3,070-page batch under STORY_CAP
 EFFORT = {"search": "medium", "alt": "low", "story": "low"}
 # Claude Sonnet 5.5 list prices per million tokens, halved for the Batches API.
@@ -176,8 +182,10 @@ def custom_id(kind, name):
 
 
 # c: county rain stories; p, f, t, o: the PRF, Atlas, town and company stories (stories_core.cid_of)
+# q: FAQ gaps on the tool pages (scripts/faq_gaps.py)
 def kind_of(cid):
-    return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story"}.get(cid[:1], "alt")
+    return {"s": "search", "a": "alt", "c": "story", "p": "story", "f": "story", "t": "story", "o": "story",
+            "q": "faq"}.get(cid[:1], "alt")
 
 
 def requests_of(bundle):
@@ -193,6 +201,9 @@ def requests_of(bundle):
             out.append(("story", K.cid_of(K.set_of(e["set"]), e["id"]), f"{e['set']}:{e['id']}", set_story_params(e)))
             continue
         out.append(("story", custom_id("story", f"{e['st']}_{e['fips']}"), f"{e['st']}:{e['fips']}", story_params(e)))
+    for e in bundle.get("faq", []):
+        import faq_gaps as FG
+        out.append(("faq", FG.cid_of(e["page"]), e["page"], FG.params(e, today)))
     return out
 
 
@@ -226,7 +237,7 @@ def cost_of(u, model=MODEL):
 
 
 def model_of(kind):
-    return STORY_MODEL if kind == "story" else MODEL
+    return STORY_MODEL if kind in ("story", "faq") else MODEL
 
 
 def worst_case(kind, n_in, max_out=None):
@@ -236,11 +247,12 @@ def worst_case(kind, n_in, max_out=None):
 
 
 def cap_of(bundle):
-    return (COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
+    return ((COST_CAP if bundle.get("search") or bundle.get("alt") else 0.0) + (STORY_CAP if bundle.get("story") else 0.0)
+            + (FAQ_CAP if bundle.get("faq") else 0.0))
 
 
 def estimate(bundle):
-    rows, total, per = [], 0.0, {"search": 0.0, "alt": 0.0, "story": 0.0}
+    rows, total, per = [], 0.0, {"search": 0.0, "alt": 0.0, "story": 0.0, "faq": 0.0}
     ratio, counted = 0.0, 0     # story requests: tokens per character, the highest seen in the sample
     for kind, cid, name, p in requests_of(bundle):
         if kind == "story" and counted >= STORY_SAMPLE and ratio:
@@ -260,7 +272,7 @@ def estimate(bundle):
         total += c; per[kind] += c
         print(f"{cid}: {n} input tokens, worst case ${c:.3f}", flush=True)
     print(f"::notice title=API jobs estimate::worst case ${total:.2f} (search ${per['search']:.2f}, alt ${per['alt']:.2f}, "
-          f"story ${per['story']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
+          f"story ${per['story']:.2f}, faq ${per['faq']:.2f}) for {len(rows)} requests (cap ${cap_of(bundle):.0f})", flush=True)
     os.makedirs(OUT, exist_ok=True)
     json.dump({"run": RUN, "worst_case_usd": round(total, 2), "per_job_usd": {k: round(v, 2) for k, v in per.items()},
                "rows": rows}, open(f"{OUT}/estimate.json", "w"), indent=1)
@@ -293,7 +305,7 @@ def cmd_submit(bundle_path):
     assert len({r[1] for r in reqs}) == len(reqs), "custom_id collision"
     b = json.loads(http("POST", "/messages/batches", {"requests": [{"custom_id": c, "params": p} for _, c, _, p in reqs]}, timeout=300))
     rec = {"run": RUN, "batch_id": b["id"], "submitted_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-           "model": STORY_MODEL if all(r[0] == "story" for r in reqs) else MODEL,
+           "model": STORY_MODEL if all(r[0] in ("story", "faq") for r in reqs) else MODEL,
            "models": {k: model_of(k) for k in sorted({r[0] for r in reqs})}, "requests": len(reqs), "items": {c: {"job": k, "name": n} for k, c, n, _ in reqs},
            "worst_case_usd": round(total, 2)}
     json.dump(rec, open(f"{OUT}/batch.json", "w"), indent=1)
@@ -301,7 +313,7 @@ def cmd_submit(bundle_path):
 
 
 def collect_from(rec, raw):
-    items, per, tok = {}, {"search": 0.0, "alt": 0.0, "story": 0.0}, {"input": 0, "output": 0}
+    items, per, tok = {}, {"search": 0.0, "alt": 0.0, "story": 0.0, "faq": 0.0}, {"input": 0, "output": 0}
     for line in raw.splitlines():
         if not line.strip():
             continue
@@ -405,6 +417,16 @@ def selftest():
     for n_pages, n_in in ((3070, 2600), (3148, 1300), (1500, 900), (120, 1500)):
         assert n_pages * worst_case("story", n_in, SET_STORY_MAX_TOKENS) < STORY_CAP, (n_pages, n_in)
     assert gr[0][3]["max_tokens"] == SET_STORY_MAX_TOKENS
+    # FAQ gaps: one request per tool page on Opus, its own cap; 49 pages at the worst case stay far under it
+    fq = {"page": "grain-emc", "url": "u", "title": "t", "faq": ["Q?"], "terms": [], "text": "x",
+          "sources": [{"id": "uky-emc-table", "title": "t", "url": "u", "fetched_utc": "x", "text": "EMC table"}]}
+    fr = requests_of({"faq": [fq]})
+    assert fr[0][:3] == ("faq", "q_grain-emc", "grain-emc") and fr[0][3]["model"] == STORY_MODEL == model_of("faq")
+    assert kind_of("q_grain-emc") == "faq" and cap_of({"faq": [fq]}) == FAQ_CAP
+    assert 49 * worst_case("faq", 40000, fr[0][3]["max_tokens"]) < FAQ_CAP
+    o3 = collect_from({"run": "r", "batch_id": "b", "model": STORY_MODEL, "items": {}}, json.dumps({"custom_id": "q_grain-emc", "result": {
+        "type": "succeeded", "message": {"usage": {"input_tokens": 1000, "output_tokens": 100}, "content": []}}}))
+    assert o3["items"]["q_grain-emc"]["job"] == "faq" and abs(o3["per_job_usd"]["faq"] - 0.003) < 1e-9
     print("selftest ok")
 
 

@@ -24,8 +24,16 @@ name: API jobs (one-time)
 # (data/prf-stories, data/atlas-stories, data/cash-bids-stories/towns or
 # /companies) and rebuilds the pages.
 #
+# FAQ gaps (scripts/faq_gaps.py): build=faq-gaps, run=faq-2026-10. The input is
+# built here: every tool page tools.html lists, its FAQ, the search terms from
+# raw apijobs/r1/input/bundle.json and the references-branch sources it cites.
+# After collect, proposals that pass the quote and number checks land on raw as
+# apijobs/<run>/faq/proposals.json and proposals.md (rejects in rejected.json).
+# Nothing reaches a page: the lead adds the accepted ones to the page FAQ and
+# runs render_faq_html.py / bake_faq.py. Cap $25 (FAQ_CAP in api_jobs.py).
+#
 #   mode=estimate  count tokens and print the worst-case cost, spend nothing
-#   mode=submit    estimate, refuse over $20, refuse if apijobs/<run>/batch.json
+#   mode=submit    estimate, refuse over the job's cap ($20 search and alt, $25 faq), refuse if apijobs/<run>/batch.json
 #                  is already on raw, submit one batch, then wait and collect
 #   mode=collect   wait for the batch and write apijobs/<run>/results.json
 
@@ -49,7 +57,7 @@ on:
         description: "How long collect waits for the batch to end"
         default: "120"
       build:
-        description: "county-stories | prf-stories | atlas-stories | town-stories | company-stories to build the input here (estimate and submit); empty to read it from raw"
+        description: "county-stories | prf-stories | atlas-stories | town-stories | company-stories | faq-gaps to build the input here (estimate and submit); empty to read it from raw"
         default: ""
 
 permissions:
@@ -89,6 +97,10 @@ jobs:
               town-stories|company-stories)
                 STORY_FACTS_OUT=/tmp/cb-facts.json python scripts/build_cash_bid_pages.py --out /tmp/cb-pages --sitemap /tmp/cb-sitemap.xml
                 STORY_FACTS=/tmp/cb-facts.json python scripts/stories_core.py bundle "${B%-stories}" "$D/input/bundle.json" ;;
+              faq-gaps)
+                git show FETCH_HEAD:apijobs/r1/input/bundle.json > /tmp/search-terms.json || rm -f /tmp/search-terms.json
+                git fetch -q --depth 1 --no-write-fetch-head origin +references:refs/remotes/origin/references
+                python scripts/faq_gaps.py bundle "$D/input/bundle.json" --terms /tmp/search-terms.json --refs origin/references ;;
               *) echo "::error::unknown build $B"; exit 1 ;;
             esac
             cp "$D/input/bundle.json" /tmp/bundle.json
@@ -135,6 +147,9 @@ jobs:
           elif [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('story') else 1)"; then
             python scripts/county_stories.py collect /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
             bash scripts/push_raw.sh "apijobs $APIJOBS_RUN stories" "apijobs/$APIJOBS_RUN/stories" "apijobs/$APIJOBS_RUN/rejected.json"
+          elif [ -f "$R" ] && python -c "import json,sys; sys.exit(0 if json.load(open('/tmp/bundle.json')).get('faq') else 1)"; then
+            python scripts/faq_gaps.py collect /tmp/bundle.json "$R" "apijobs/$APIJOBS_RUN/faq"
+            bash scripts/push_raw.sh "apijobs $APIJOBS_RUN faq proposals" "apijobs/$APIJOBS_RUN/faq"
           else
             echo "no county stories in this run"
           fi
