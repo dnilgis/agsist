@@ -72,7 +72,7 @@ test("/prf: one ask holder in the grid card, the component loaded, the byline sa
   assert.ok(card.includes('<div class="prf-notice" data-prf-notice hidden></div>'), "inside the Your grid card");
   assert.match(h, /<script src="\/components\/prf-notice\.js\?v=\d+" defer><\/script>/);
   assert.ok(!h.includes("asks for no contact details"), "the old byline claim is gone now that there is a box");
-  assert.ok(h.includes("sends no one to any agent; its one email box sends your grid&rsquo;s final index when USDA posts it."));
+  assert.ok(h.includes("This page sells nothing and refers no one; a labeled sponsor box may be an insurance agency, which has no say over any figure. Its one email box sends your grid&rsquo;s final index when USDA posts it."));
   assert.ok(read("scripts/make_prf_html.py").includes("data-prf-notice"), "from the generator, not a hand edit");
 });
 
