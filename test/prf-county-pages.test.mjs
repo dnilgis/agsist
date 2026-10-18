@@ -135,6 +135,13 @@ test("each county page prints the 100-acre example on its middle grid by premium
     assert.ok(t.includes(`paid in ${x.paid} of ${x.years} years, an average of ${usd(x.avg)} a year, or $${(Math.round(x.avg) / 100).toFixed(2)} an acre`) ||
               t.includes(`paid in ${x.paid} of ${x.years} years, an average of ${usd(x.avg)} a year, or $${(x.avg / 100).toFixed(2)} an acre`), `${p.rel}: ${t}`);
     assert.ok(/not a forecast/.test(t), p.rel);
+    /* the average is set against the full premium, not only the farmer's share */
+    const A = Math.round(x.avg), P = Math.round(x.premium), Y = Math.round(x.you);
+    const want = A < P
+      ? (A > Y ? `That average is under the full premium of ${usd(P)}; it comes out above your share only because USDA pays the rest.`
+               : `That average is under the full premium of ${usd(P)}, and under your share too, even with USDA paying the rest.`)
+      : `That average is at or above the full premium of ${usd(P)}, so it covered the whole premium;`;
+    assert.ok(t.includes(want), `${p.rel}: expected "${want}": ${t}`);
   }
   assert.ok(priced >= 40, "too few priced examples in the sample: " + priced);
 });

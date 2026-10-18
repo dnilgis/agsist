@@ -130,7 +130,21 @@ def example_html(ex, cy, y0, y1, many, ng):
             f'half in April to May and half in June to July, on {where}. The full premium is {dollars(ex["premium"])}: USDA pays {dollars(ex["usda"])} '
             f'and you pay {dollars(ex["you"])}, or ${ex["you_acre"]:.2f} an acre. Run over {y0} to {y1} at {cy} rates, it would have paid in '
             f'{ex["paid_years"]} of {ex["years"]} years, an average of {dollars(ex["avg"])} a year, or ${ex["avg_acre"]:.2f} an acre. '
-            f'That is the past record, not a forecast, and it leaves out the administrative fee.</p>')
+            f'{example_vs_premium(ex)}That is the past record, not a forecast, and it leaves out the administrative fee.</p>')
+
+
+def example_vs_premium(ex):
+    """Set the average against the full premium, not only the farmer's share: an average above
+    the share and under the premium is the subsidy showing, not the policy beating its price."""
+    avg, prem, you = round(ex["avg"]), round(ex["premium"]), round(ex["you"])
+    if avg < prem:
+        if avg > you:
+            return (f'That average is under the full premium of {dollars(prem)}; it comes out above your share '
+                    f'only because USDA pays the rest. ')
+        return (f'That average is under the full premium of {dollars(prem)}, and under your share too, '
+                f'even with USDA paying the rest. ')
+    return (f'That average is at or above the full premium of {dollars(prem)}, so it covered the whole premium; '
+            f'on your share it looks better still only because USDA pays the rest. ')
 
 
 def page(ctx):
