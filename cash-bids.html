@@ -68,6 +68,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
    notices. Browsers that do not know the property ignore it. */
 .cb-hero-sub{font-size:.92rem;color:var(--text-dim);line-height:1.65;max-width:40rem;margin:0 auto .85rem;text-wrap:balance}
 .cb-sample{margin:1.1rem auto 0;max-width:34rem;text-align:left}
+.cb-sample-wait{min-height:390px}@media(max-width:480px){.cb-sample-wait{min-height:480px}}@media(max-width:360px){.cb-sample-wait{min-height:600px}}
 .cbs-h{font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 .4rem;text-align:center}
 .cbs-t{width:100%;border-collapse:collapse;font-size:.9rem}
 .cbs-t th,.cbs-t td{padding:.4rem .45rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
@@ -672,7 +673,6 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
          half the first phone screen. Until the best prices show, it waits
          below the results area folded to one line (a button that opens it);
          once they show it moves back here, right under them, open. -->
-    <script>(function(){var box=document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]'),best=document.getElementById('best-bids-section');if(!box||!best||!window.MutationObserver)return;var slot=document.createComment('bid-alerts slot');box.parentNode.insertBefore(slot,box);var btn=document.createElement('button');btn.type='button';btn.className='cb-pre-open';btn.textContent='Get the bids near you by email';var opened=false;btn.addEventListener('click',function(){opened=true;box.classList.remove('cb-pre');btn.hidden=true;var e=box.querySelector('.cbs-em');if(e)e.focus();});function place(){var res=document.getElementById('cb-results');if(!res)return;if(best.style.display!=='none'){box.classList.remove('cb-pre');btn.hidden=true;if(slot.nextSibling!==box)slot.parentNode.insertBefore(box,slot.nextSibling);}else{if(res.nextSibling!==btn)res.parentNode.insertBefore(btn,res.nextSibling);if(btn.nextSibling!==box)res.parentNode.insertBefore(box,btn.nextSibling);if(!opened){box.classList.add('cb-pre');btn.hidden=false;}}}function go(){place();new MutationObserver(place).observe(best,{attributes:true,attributeFilter:['style']});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();</script>
     <div id="cb-toolbar" class="cb-toolbar" style="display:none" role="toolbar" aria-label="Delivery and sort">
       <div class="cb-sort">
         <!-- ASKED FOR BY A GROWER, 2026-08-26. Kolton Jackson, by email: "I wish
@@ -715,8 +715,16 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
       <div class="cb-empty">
         <h2>Find elevators near you</h2>
         <p>Enter your ZIP code above, or use your location, to see today&#8217;s cash bids from grain elevators near your farm.</p>
+        <!-- Holds the place of the no-ZIP middle-bid table (components/cb-sample.js
+             fills it, or removes it when there is a ZIP or no table). -->
+        <div class="cb-sample cb-sample-wait" id="cb-sample" aria-hidden="true"></div><noscript><style>.cb-sample-wait{display:none}</style></noscript>
       </div>
     </div>
+    <!-- SPEED (2026-10-18): this runs here, right after the results area it needs,
+         so the box is placed while the page is still being read. Run at
+         DOMContentLoaded it was drawn above the results first and then moved,
+         and the jump was about half the page's layout shift on a phone. -->
+    <script>(function(){var box=document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]'),best=document.getElementById('best-bids-section');if(!box||!best||!window.MutationObserver)return;var slot=document.createComment('bid-alerts slot');box.parentNode.insertBefore(slot,box);var btn=document.createElement('button');btn.type='button';btn.className='cb-pre-open';btn.textContent='Get the bids near you by email';var opened=false;btn.addEventListener('click',function(){opened=true;box.classList.remove('cb-pre');btn.hidden=true;var e=box.querySelector('.cbs-em');if(e)e.focus();});function place(){var res=document.getElementById('cb-results');if(!res)return;if(best.style.display!=='none'){box.classList.remove('cb-pre');btn.hidden=true;if(slot.nextSibling!==box)slot.parentNode.insertBefore(box,slot.nextSibling);}else{if(res.nextSibling!==btn)res.parentNode.insertBefore(btn,res.nextSibling);if(btn.nextSibling!==box)res.parentNode.insertBefore(box,btn.nextSibling);if(!opened){box.classList.add('cb-pre');btn.hidden=false;}}}function go(){place();new MutationObserver(place).observe(best,{attributes:true,attributeFilter:['style']});}go();})();</script>
     <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=2" defer></script>
     <div class="wtd-panel" id="wtd-panel" hidden>
       <button class="wtd-toggle" id="wtd-toggle-btn" aria-expanded="false" aria-controls="wtd-body">
@@ -857,7 +865,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <script src="/components/cb-myelev.js?v=3" defer></script>
 <script src="/components/cb-rank.js?v=5"></script>
 <script src="/components/cb-vs-state.js?v=1"></script>
-<script src="/components/cb-sample.js?v=1" defer></script>
+<script src="/components/cb-sample.js?v=2" defer></script>
 <script src="/components/cash-bids.js?v=8"></script>
 </body>
 </html>

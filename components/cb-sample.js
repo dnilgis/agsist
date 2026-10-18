@@ -15,7 +15,8 @@
    nothing at all.
 
    Light on first load: nothing is fetched until the page has decided there is no
-   ZIP to search, and then price-local.js, basis-states.json (12 KB) and prices.json.
+   ZIP to search, and then price-local.js, basis-states.json (12 KB) and prices.json
+   (the two data files through AG.json, so a copy the page already asked for is reused).
    A search replaces the box, as it replaces the rest of the empty state.
    Tests: test/search-answers.test.mjs */
 (function (root) {
@@ -56,7 +57,12 @@
   var doc = root.document;
   if (!doc) return;
 
-  function get(u) { return fetch(u, { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  /* AG.json (util.js) when the page has it: cash-bids.js and cb-vs-state.js have
+     usually asked for these two files already, so this reuses that one request. */
+  function get(u) {
+    if (root.AG && typeof root.AG.json === 'function') return root.AG.json(u).catch(function () { return null; });
+    return fetch(u, { cache: 'default' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  }
   function stamp() {
     if (root.AgPxStamp && root.AgPxStamp.cell) return Promise.resolve(root.AgPxStamp);
     return new Promise(function (ok) {
@@ -72,22 +78,33 @@
     var st = root.AGSIST_STATE;
     return z && !z.value.trim() && !(st && st.zip) && /[?&]zip=\d{5}/.test(root.location.search) === false;
   }
+  /* SPEED (2026-10-18, phone pass): the files are asked for as soon as the page
+     is parsed and there is no ZIP, not 400 ms later, and an empty box of about
+     the table's height (in cash-bids.html, so it is there at first paint) holds
+     the place, so the table does not push the page down when it lands (it was
+     most of the page's layout shift). The table
+     still waits the 400 ms for cash-bids.js to run a saved ZIP, and checks
+     again before it draws. No table: the empty box goes. */
   function go() {
     var box = doc.querySelector('#cb-results .cb-empty');
-    if (!box || !noZip()) return;
-    Promise.all([stamp(), get('/data/basis-states.json'), get('/data/prices.json')]).then(function (r) {
-      var px = r[0], live = doc.querySelector('#cb-results .cb-empty');
-      if (!px || !live || !live.isConnected || !noZip()) return;
-      var h = render(r[1], r[2], px.cell);
-      if (!h) return;
-      var el = doc.createElement('div');
-      el.className = 'cb-sample';
+    var el = doc.getElementById('cb-sample');   // the page's empty place holder, if it has one
+    if (!box || !noZip()) { if (el && el.parentNode && !el.firstChild) el.parentNode.removeChild(el); return; }
+    if (!el) {
+      el = doc.createElement('div');
+      el.className = 'cb-sample cb-sample-wait';
       el.id = 'cb-sample';
+      el.setAttribute('aria-hidden', 'true');
+      box.appendChild(el);
+    }
+    var wait = new Promise(function (ok) { setTimeout(ok, 400); });
+    Promise.all([Promise.all([stamp(), get('/data/basis-states.json'), get('/data/prices.json')]), wait]).then(function (a) {
+      var r = a[0], px = r[0], live = doc.querySelector('#cb-results .cb-empty');
+      var h = px && live && el.isConnected && noZip() ? render(r[1], r[2], px.cell) : '';
+      if (!h) { if (el.parentNode) el.parentNode.removeChild(el); return; }
       el.innerHTML = h;
-      live.appendChild(el);
+      el.className = 'cb-sample';
+      el.removeAttribute('aria-hidden');
     });
   }
-  /* after cash-bids.js has had its chance to run a saved ZIP (it waits 300 ms) */
-  function later() { setTimeout(go, 400); }
-  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', later); else later();
+  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', go); else go();
 })(typeof window !== 'undefined' ? window : this);
