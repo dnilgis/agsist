@@ -62,6 +62,7 @@ jobs:
           python scripts/land_keep_stamp_only.py --selftest
           python scripts/wi_retr_browser.py --selftest
           python scripts/probe_field_layers.py --selftest
+          python scripts/build_land_summary.py --selftest
       - name: Probe transfer sources (raw capture)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.probe }}
         run: |
@@ -122,6 +123,12 @@ jobs:
           if [ -f "$RUNNER_TEMP/wi/build/wi-retr.csv" ]; then
             python scripts/fetch_land_sales.py --from "$RUNNER_TEMP/wi/build" WI $MERGE || echo "::warning::Wisconsin transfers were not written"
           fi
+      # The Farmland Atlas sale summaries (data/land/<st>/summary.json) from the county files just
+      # written, or the committed ones when this run fetched nothing. Offline; refuses a summary
+      # that carries a source name. Same command builds them locally.
+      - name: Build Atlas sale summaries
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) }}
+        run: python scripts/build_land_summary.py
       - name: Save raw answers to the raw branch
         if: ${{ !cancelled() }}
         run: |

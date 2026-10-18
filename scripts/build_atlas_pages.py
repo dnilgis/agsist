@@ -1000,6 +1000,48 @@ else{m.textContent='That did not go through. Check the address and try again.'}}
 WATCH_V = hashlib.sha1(WATCH_JS.encode()).hexdigest()[:8]
 
 
+# Recorded farm sales (Oct 17, 2026): Illinois and Wisconsin county pages and state pages get
+# a block that components/atlas-sales.js fills from data/land/<st>/summary.json
+# (scripts/build_land_summary.py, rebuilt by the land-data workflow). Loaded on demand, so
+# a month of new deeds changes one small file, not 174 pages, and no figure the "Figures as
+# of" stamp hashes. Other states: nothing (many have public sale records we have not built).
+from build_land_summary import SOURCES as SALES_SOURCES  # noqa: E402
+SALES_JS = "components/atlas-sales.js"
+
+
+def sales_v(root):
+    try:
+        return hashlib.sha1(open(os.path.join(root, SALES_JS), "rb").read()).hexdigest()[:8]
+    except OSError:
+        return None
+
+
+def has_sales(W, st):
+    return st in SALES_SOURCES and os.path.exists(os.path.join(W.root, "data", "land", st.lower(), "summary.json")) and sales_v(W.root)
+
+
+def sales_block(W, f, lab, st):
+    if not has_sales(W, st):
+        return ""
+    src = SALES_SOURCES[st]
+    return ('<section class="as" data-atlas-sales="county" data-st="%s" data-fips="%s" aria-label="Recorded farm sales"><h2>Recorded farm sales</h2>'
+            '<div class="as-body"><p class="note">Sale counts and the median price buyers paid per acre in %s, from %s (%s), load here.</p>'
+            '<noscript><p class="note">This part needs JavaScript. The figures are in <a href="/data/land/%s/summary.json">the county summary file</a>.</p></noscript></div></section>'
+            '<script defer src="/%s?v=%s"></script>' % (st, esc(f), esc(lab), esc(src["record"]), esc(src["who"]), st.lower(), SALES_JS, sales_v(W.root)))
+
+
+def sales_state(W, st):
+    if not has_sales(W, st):
+        return ""
+    src = SALES_SOURCES[st]
+    urls = json.dumps({f: "/%s/%s" % (OUT, W.slug[f]) for f in W.by_state[st]}, separators=(",", ":"))
+    return ('<h2>Sale prices by county</h2><div class="as" data-atlas-sales="state" data-st="%s">'
+            '<p class="note">The median price per acre buyers paid on recorded market farm sales of 20 acres or more, county by county, over the last 12 months, from %s. A different measure from the census and survey values above.</p>'
+            '<button type="button" class="as-go">Show sale prices by county</button><div class="as-body"></div>'
+            '<script type="application/json" class="as-urls">%s</script></div>'
+            '<script defer src="/%s?v=%s"></script>' % (st, esc(src["record"]), urls, SALES_JS, sales_v(W.root)))
+
+
 def watch_form(f, lab, stn):
     """Watch-a-county signup. The worker stores it as pending; a confirmation email comes first."""
     return (f'<form class="watch" data-fips="{esc(f)}" aria-label="Watch {esc(lab)}">'
@@ -1871,7 +1913,7 @@ def county_page(W, f, d, stamp):
 </div>
 {read_html}
 {watch_form(f, lab, stn)}
-{S1}{S2}{S3}{S4}{S5}{S6}{ND}
+{S1}{S2}{sales_block(W, f, lab, st)}{S3}{S4}{S5}{S6}{ND}
 <h2>Cite this page</h2>
 <div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
 <details><summary>Sources, dates and arithmetic</summary>
@@ -2009,7 +2051,7 @@ def state_page(W, st):
 {('<p class="read"><b>Cash rent:</b> every published ' + esc(stn) + ' county rate side by side, with history back to ' + str(rent_first_year(W, st)) + ', irrigated and pasture shown apart: ' + rent_link + '.</p>') if rent_link and rent_first_year(W, st) else ''}
 <div class="act">{rent_link}{('<a href="/arc-plc/' + slugify(stn) + '">' + esc(stn) + ' ARC or PLC by county</a>') if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else ''}<a href="/farmland-atlas#s={esc(st)}">Open {esc(stn)} on the map</a><a href="/{OUT}/data/{st.lower()}.csv" download>Download {esc(st)} CSV</a></div>
 <h2>{esc(stn)} at a glance</h2>
-{facts}
+{facts}{sales_state(W, st)}
 <h2>Map: every county is a link</h2>
 <div class="mp"><label for="mm">Color by</label><select id="mm"><option value="r">Dry cash rent</option><option value="v">Land and buildings</option><option value="y">Corn yield</option><option value="c">Claims per $100 of coverage</option><option value="d">Drought weeks</option></select></div>
 {smap}
