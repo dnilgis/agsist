@@ -400,9 +400,10 @@
 
   /* Best and nearest bid per crop from a bids snapshot ({ bids: [...] } rows with cashPrice, distance, lat/lon).
      Rows marked verified:false, or with no price, never count. Distances from (lat, lng) when given. */
+  var OUTLIER_BASIS = 0.75;   // a bid whose basis sits this far from the crop's median nearby never counts as best
   function bestBids(snap, lat, lng, radius) {
     radius = radius || BID_MILES;
-    var out = {};
+    var by = {}, out = {};
     if (!snap || !snap.bids) return out;
     snap.bids.forEach(function (b) {
       var crop = String(b.crop || b.category || b.commodity || '').toLowerCase();
@@ -410,12 +411,19 @@
       if (b.verified === false || typeof b.cashPrice !== 'number' || !isFinite(b.cashPrice) || b.cashPrice <= 0) return;
       var d = lat != null && lng != null && b.lat != null && b.lon != null ? miles(lat, lng, b.lat, b.lon) : b.distance;
       if (d == null || d > radius) return;
-      var row = { crop: crop, price: b.cashPrice, basis: b.basis, facility: b.facility || '', town: b.town || b.city || '', st: b.state || '',
-        mi: Math.round(d), delivery: b.delivery || b.period || '', pricedAt: b.pricedAt || null };
-      var o = out[crop] || (out[crop] = { n: 0, best: null, nearest: null });
-      o.n++;
-      if (!o.best || row.price > o.best.price || (row.price === o.best.price && row.mi < o.best.mi)) o.best = row;
-      if (!o.nearest || row.mi < o.nearest.mi) o.nearest = row;
+      (by[crop] = by[crop] || []).push({ crop: crop, price: b.cashPrice, basis: typeof b.basis === 'number' ? b.basis : null,
+        facility: b.facility || '', town: b.town || b.city || '', st: b.state || '', mi: Math.round(d),
+        delivery: b.delivery || b.period || '', pricedAt: b.pricedAt || null });
+    });
+    Object.keys(by).forEach(function (crop) {
+      var rows = by[crop], bs = rows.map(function (r) { return r.basis; }).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; });
+      var med = bs.length ? (bs.length % 2 ? bs[(bs.length - 1) / 2] : (bs[bs.length / 2 - 1] + bs[bs.length / 2]) / 2) : null;
+      var o = out[crop] = { n: rows.length, left_out: 0, best: null, nearest: null, medianBasis: med };
+      rows.forEach(function (r) {
+        if (bs.length >= 5 && r.basis != null && Math.abs(r.basis - med) > OUTLIER_BASIS) { o.left_out++; return; }
+        if (!o.best || r.price > o.best.price || (r.price === o.best.price && r.mi < o.best.mi)) o.best = r;
+        if (!o.nearest || r.mi < o.nearest.mi) o.nearest = r;
+      });
     });
     return out;
   }
@@ -452,6 +460,7 @@
     if (y && y.status === 'ok') series('yield', 'Corn yield', 'bu/ac', y.hist, function (v) { return v; }, 'USDA NASS');
     if (r && r.status === 'ok') series('rent', 'Cash rent, nonirrigated', '$/ac', r.series_nonirr, function (v) { return v; }, 'USDA NASS Cash Rents Survey');
     if (d && d.status === 'ok') series('drought', 'Weeks in D2+ drought', 'weeks', d.series, function (v) { return v && v.d2 != null ? v.d2 : null; }, 'U.S. Drought Monitor');
+    if (d && d.status === 'ok' && d.partial_year && rows.length && rows[rows.length - 1].id === 'drought') rows[rows.length - 1].partial = d.partial_year.year;
     if (s && s.status === 'ok') series('loss', 'Crop insurance loss ratio', 'paid / premium', s.per_year, function (v) { return v && v.ratio != null && !v.partial ? v.ratio : null; }, 'USDA RMA Summary of Business');
     return rows;
   }
