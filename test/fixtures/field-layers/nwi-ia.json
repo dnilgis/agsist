@@ -1,0 +1,71 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": {
+  "features": [
+   {
+    "attributes": {
+     "WETLAND_TYPE": "Freshwater Emergent Wetland",
+     "ATTRIBUTE": "PEMC"
+    },
+    "geometry": {
+     "rings": [
+      [
+       [
+        -93.5005,
+        42.0595
+       ],
+       [
+        -93.4945,
+        42.0595
+       ],
+       [
+        -93.4945,
+        42.06036
+       ],
+       [
+        -93.5005,
+        42.06036
+       ],
+       [
+        -93.5005,
+        42.0595
+       ]
+      ]
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "WETLAND_TYPE": "Riverine",
+     "ATTRIBUTE": "R4SBC"
+    },
+    "geometry": {
+     "rings": [
+      [
+       [
+        -93.4952,
+        42.061
+       ],
+       [
+        -93.494,
+        42.061
+       ],
+       [
+        -93.494,
+        42.062
+       ],
+       [
+        -93.4952,
+        42.062
+       ],
+       [
+        -93.4952,
+        42.061
+       ]
+      ]
+     ]
+    }
+   }
+  ]
+ }
+}

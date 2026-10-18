@@ -1,0 +1,19 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": [
+  {
+   "case_id": 9,
+   "p_year": 2023,
+   "p_cap_ac": 5,
+   "xlong": -93.4976,
+   "ylat": 42.10527826086956
+  },
+  {
+   "case_id": 10,
+   "p_year": 2021,
+   "p_cap_ac": 1.5,
+   "xlong": -93.4976,
+   "ylat": 41.88788695652174
+  }
+ ]
+}

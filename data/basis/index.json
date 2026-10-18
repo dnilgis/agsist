@@ -54,14 +54,14 @@
    "kb":443.9
   },
   "IN":{
-   "rows":2028,
-   "facilities":117,
-   "kb":87.8
+   "rows":2048,
+   "facilities":120,
+   "kb":88.8
   },
   "KS":{
-   "rows":7507,
+   "rows":7504,
    "facilities":438,
-   "kb":326.0
+   "kb":325.9
   },
   "KY":{
    "rows":100,

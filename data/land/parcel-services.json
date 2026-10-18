@@ -1467,7 +1467,7 @@
   "MN": "Minnesota sales are filed on the state's electronic Certificate of Real Estate Value (eCRV). The state sends its bulk copy only on request, so we do not hold it; the state's free eCRV search shows one sale at a time.",
   "IA": "Iowa sales are filed as a declaration of value with the county recorder and assessor. We have not found a free statewide copy.",
   "IL": "Illinois sales come from the state's MyDec transfer declarations (PTAX-203) on the Illinois open data portal.",
-  "IN": "Indiana sales are filed on the state sales disclosure form. The state publishes them free by year (STATS Indiana, from the Department of Local Government Finance); we add them once the file's columns are read and checked.",
+  "IN": "Indiana sales are filed on the state sales disclosure form. The state publishes them free by year (STATS Indiana, from the Department of Local Government Finance); our copy holds farm sales from 2021 on, in the counties that have sent their forms.",
   "NE": "Nebraska sales go on the Real Estate Transfer Statement (Form 521) and into the state sales file, which the state queries for the public on request. We do not hold it.",
   "KS": "Kansas sales are reported to the state on a Certificate of Value. We have not found a free public file of Kansas sale prices.",
   "SD": "South Dakota sales are kept by each county's Director of Equalization; a few counties post yearly sales lists.",

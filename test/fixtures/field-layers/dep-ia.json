@@ -1,0 +1,16 @@
+{
+ "_note": "Built by hand in the shape of the documented answer (the sandbox cannot reach the service). Replace with the copy scripts/probe_field_layers.py saves (raw branch, data/land-raw/layers/) once land-data.yml task=layers runs.",
+ "body": {
+  "samples": [
+   {
+    "location": {
+     "x": -93.5,
+     "y": 42.06
+    },
+    "locationId": 0,
+    "value": "NoData",
+    "rasterId": 1
+   }
+  ]
+ }
+}

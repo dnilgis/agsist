@@ -146,6 +146,9 @@ CURATED = {
     # PRF state sponsors (components/prf-sponsor.js): Sig edits it when a state
     # sells or renews; each entry lapses on its own "through" date.
     "data/prf-sponsors.json",
+    # What's new list (Oct 18): Sig or a session adds a line when something
+    # ships; scripts/build_whats_new.py bakes it into index.html and /changelog.
+    "data/whats-new.json",
     # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
     "data/quote-pool.json",
     # Rain Print prices, payment links and the seasonal promo switch. Edited by

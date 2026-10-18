@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """One-off generator for the Oct 18 menu (fx/navfull). Writes components/header.html
-(after the icon sprite), header-fallback.html, footer.html (link columns + band) and
+(after the icon sprite), header-fallback.html, footer.html (band, link columns, bottom row) and
 footer-fallback.html from one menu table, so the four never disagree.
 Usage: python3 gen_nav.py <worktree>"""
 import re
@@ -435,11 +435,46 @@ def flink(it):
     return f'        <a href="{it[0]}"{extra}>{ic(it[2])}{it[1]}</a>\n'
 
 
-def footer_cols():
-    out = ['    <div class="footer-band">\n'
-           '      <div class="footer-band-ask"><div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every weekday morning" data-source="footer"></div></div>\n'
+BRAND = """      <div class="footer-brand">
+        <style>/* self-contained theme swap: footer can render without header.html (fallback path) */
+        .ftlg-l{display:none}
+        [data-theme="light"] .ftlg-l{display:inline-block}
+        [data-theme="light"] .ftlg-d{display:none}</style>
+        <span class="footer-logo"><img class="ftlg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148"><img class="ftlg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148"></span>
+        <p class="footer-tagline">Free agricultural prices, tools &amp; news. Built in Chetek, Wisconsin.</p>
+      </div>
+"""
+
+ADSPACE = """    <div class="footer-adspace" id="footer-adspace" hidden>
+      <div class="adspace-head">
+        <span class="adspace-lbl">Advertise on AGSIST</span>
+      </div>
+      <!-- loader.js fills this with active supporters and unhides the strip -->
+      <div class="adspace-row" id="adspace-row"></div>
+    </div>
+"""
+
+# Bottom row: one small line (data note + where the numbers come from), then the legal links.
+# The legal links stay last: test/nav-full-oct18.test.mjs reads every link after footer-legal.
+BOTTOM = """    <div class="footer-bottom">
+      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Data refreshed through the trading session. For information, not financial advice. <a href="/data-sources">Where the numbers come from</a></p>
+      <div class="footer-legal">
+        <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
+        <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>
+        <a href="/accessibility">Accessibility</a><span class="footer-sep">&middot;</span>
+        <a href="/terms">Terms</a>
+      </div>
+    </div>
+"""
+
+
+def footer_body():
+    daily = '<span class="footer-sep">&middot;</span>'.join(f'<a href="{h}">{t}</a>' for h, t in F_DAILY)
+    out = ['<footer class="footer">\n  <div class="footer-inner">\n',
+           '    <div class="footer-band">\n', BRAND,
            '      <div class="footer-band-side">\n'
-           '        <p class="footer-band-daily"><a href="/daily">Today&rsquo;s briefing</a><span class="footer-sep">&middot;</span><a href="/news">The Wire</a><span class="footer-sep">&middot;</span><a href="/archive">Archive</a></p>\n'
+           '        <div class="footer-band-ask"><div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every weekday morning" data-source="footer"></div></div>\n'
+           f'        <p class="footer-band-daily">{daily}</p>\n'
            '        <p class="footer-band-rp"><a href="/rain-print"><b>Rain Print:</b> your farm&rsquo;s year of rain, framed &rarr;</a></p>\n'
            '      </div>\n'
            '    </div>\n'
@@ -449,34 +484,75 @@ def footer_cols():
         out.extend(flink(it) for it in items)
         out.append('      </details>\n')
     out.append('    </div>\n')
+    out.append(ADSPACE)
+    out.append(BOTTOM)
+    out.append('  </div>\n</footer>\n')
     return "".join(out)
 
 
-FOOT_CSS = """  /* 2026-10-18 footer: a top band (the daily email, email + optional ZIP, and one Rain Print line),
-     then Prices | Livestock | Field | Money & Land | Work with us | About. */
-  .footer-band{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:.6rem 2rem;align-items:start;padding:1rem 0 1.2rem;margin-bottom:1.1rem;border-bottom:1px solid var(--border)}
+FOOT_CSS = """  /* 2026-10-18 footer v2 (Sig: "footer seems strained"): one grid, the header's max width and left edge.
+     Band: logo + one-line tagline in columns 1-3; columns 4-6 hold the daily email box, then the daily
+     links and the Rain Print line (alone and level with the logo when the box is hidden for a subscriber).
+     Then Prices | Livestock | Field | Money & Land | Work with us | About on the same six columns.
+     Last, one small line and the legal links. Spacing steps: .5 / 1 / 1.5 / 2 rem. */
+  footer.footer{padding:2rem 0 0}
+  footer.footer .footer-band,footer.footer .footer-cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));column-gap:1.5rem}
+  footer.footer .footer-band{align-items:start;row-gap:1rem;padding:0 0 1.5rem;margin:0;border-bottom:1px solid var(--border)}
+  footer.footer .footer-band:has([data-signup-ask][hidden]){align-items:center}
+  .footer-brand{grid-column:1 / span 3;display:flex;align-items:center;gap:1rem;min-width:0}
+  .footer-logo{display:inline-flex;flex:none;line-height:0}
+  .footer-logo img{height:36px;width:auto;max-width:210px;object-fit:contain}
+  footer.footer .footer-tagline{margin:0;font-size:.86rem;line-height:1.5;color:var(--text-dim)}
+  .footer-band-side{grid-column:4 / span 3;min-width:0;display:flex;flex-direction:column;gap:.5rem}
+  .footer-band-ask:has(> [data-signup-ask][hidden]){display:none}
   .footer-band-ask .sa-ask{margin:0}
-  .footer-band-side p{margin:.2rem 0 .5rem;font-size:.86rem;line-height:1.5}
+  /* the box sits in half the grid: question on its own line, then email + button */
+  .footer-band-ask .sa-f{grid-template-columns:minmax(0,1fr) auto}
+  .footer-band-ask .sa-l{grid-column:1 / -1}
+  .footer-band-ask .sa-in{grid-column:1}
+  .footer-band-ask .sa-b{grid-column:2}
+  .footer-band-side p{margin:0;font-size:.86rem;line-height:1.5}
   .footer-band-side a{color:var(--text-dim);text-decoration:none}
   .footer-band-side a:hover{color:var(--brand)}
   .footer-band-rp a{color:var(--text)}
   .footer-band-rp b{color:var(--brand)}
-  .footer-band-daily .footer-sep{margin:0 .45rem;color:var(--text-muted)}
-  footer.footer .footer-cols{grid-template-columns:repeat(6,minmax(0,1fr))}
-  @media (max-width:1100px){footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  @media (max-width:700px){.footer-band{grid-template-columns:1fr;padding:.6rem 0 .8rem;margin-bottom:.4rem}}
+  .footer-band-daily .footer-sep{margin:0 .5rem;color:var(--text-muted)}
+  footer.footer .footer-cols{row-gap:1.5rem;padding:1.5rem 0;margin:0;border-bottom:1px solid var(--border)}
+  footer.footer .footer-adspace{margin-top:0;padding:1.5rem 0;border-top:0;border-bottom:1px solid var(--border)}
+  footer.footer .footer-bottom{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem 1.5rem;padding:1rem 0 1.5rem}
+  .footer-small{margin:0;font-size:.78rem;line-height:1.6;color:var(--text-muted)}
+  .footer-small .status-dot{display:inline-block;vertical-align:middle;margin:0 .5rem .15em 0}
+  .footer-small a{margin-left:.25rem}
+  .footer-small a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
+  .footer-small a:hover{color:var(--brand)}
+  footer.footer .footer-legal{gap:.5rem}
+  @media (max-width:1100px){
+    footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
+    footer.footer .footer-band{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .footer-brand{grid-column:1}.footer-band-side{grid-column:2}
+    .footer-brand{flex-direction:column;align-items:flex-start;gap:.5rem}
+  }
+  @media (max-width:700px){
+    footer.footer{padding-top:1.5rem}
+    footer.footer .footer-band{grid-template-columns:1fr;padding-bottom:1rem}
+    .footer-brand,.footer-band-side{grid-column:1}
+    .footer-brand{flex-direction:row;align-items:center;gap:.75rem}
+    .footer-logo img{height:30px}
+    footer.footer .footer-cols{display:block!important;padding:0}
+    footer.footer .footer-adspace{padding:1rem 0}
+    footer.footer .footer-bottom{flex-direction:column;align-items:center;text-align:center;gap:.5rem;padding:1rem 0 1.25rem}
+  }
 """
 
 
 def build_footer():
     old = (C / "footer.html").read_text(encoding="utf-8")
-    a = old.index('    <div class="footer-band">') if '<div class="footer-band">' in old else old.index('    <div class="footer-cols">')
-    b = old.index('    <div class="footer-adspace"')
-    new = old[:a] + footer_cols() + "\n\n" + old[b:]
-    # bottom row: Privacy, Accessibility, Terms (Advertise moved to Work with us)
-    new = re.sub(r'\s*<a href="/sponsor" onclick="[^"]*">Advertise</a><span class="footer-sep">·</span>', "", new)
-    if "footer-band{" not in new:
-        new = new.replace("</style>\n<footer", FOOT_CSS + "</style>\n<footer", 1)
+    # markup: everything from <footer> on comes from the tables above
+    new = old[:old.index('<footer class="footer">')] + footer_body()
+    # styles: the footer block replaces whatever 2026-10-18 footer block is there
+    a = new.index("  /* 2026-10-18 footer")
+    b = new.index("</style>\n<footer")
+    new = new[:a] + FOOT_CSS + new[b:]
     (C / "footer.html").write_text(new, encoding="utf-8")
 
 
