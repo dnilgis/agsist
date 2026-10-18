@@ -422,20 +422,21 @@ test("prints ship flat between chipboard, never rolled; the framed one has a whi
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape
   assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos with the white mat coming soon\.<\/figcaption>/);
+  assert.ok(!/Photos of real prints coming soon/.test(HTML), "the promise of photos is gone (Sig, 2026-10-18)");
   assert.match(HTML, /\.rp-onwall img\{display:block;width:100%;height:auto\}/);
 });
 
-test("refund and reprint wording: Sig's terms, $15 to reprint a lost or damaged print", () => {
+test("refund and reprint wording: Sig's terms, a lost or damaged print replaced free (Sig, 2026-10-18; was $15)", () => {
   const faq = HTML.match(/<details><summary>What if something[\s\S]*?<\/details>/)[0];
   assert.match(faq, /refund you in full/);
   assert.match(faq, /reprint it free/, "a print that differs from the OK'd proof is Sig's error: free");
   // 2026-10-14 (panel 3, T3): a photo for damage only; a lost parcel is a tracking matter
-  assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\. Either way I&rsquo;ll reprint or reframe it for \$15, with the same serial number/);
-  assert.ok(!/damaged[^.]*reprint it free/.test(faq), "damage is no longer reprinted free");
-  assert.equal(J.reprint_fee, 15, "Sig set $15 (2026-10-14)");
+  assert.match(faq, /If it arrives damaged, glass included, send a photo\. If tracking shows it lost, write to me\. Either way I&rsquo;ll reprint or reframe it free, with the same serial number/);
+  assert.ok(!/\$15|reframe it for \$/.test(HTML), "no fee for a lost or damaged print anywhere on the page");
+  assert.equal(J.reprint_fee, undefined, "no fee in the data file (Sig, 2026-10-18)");
   assert.ok(!/small fee/.test(HTML), "the amount, not 'a small fee'");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  assert.match(S, /typeof j\.reprint_fee === 'number' && j\.reprint_fee > 0\) \{[\s\S]{0,600}function \(\) \{ return 'reframe it for ' \+ money\(j\.reprint_fee\) \+ ', with'; \}/);
+  assert.ok(!/reprint_fee/.test(S), "the script no longer rewrites a fee into the FAQ");
   assert.match(J.gift_delivery, /^A \{year\} print ships in January \{next\}/);
 });
 
@@ -556,13 +557,13 @@ test("type, keyboard and screen reader fixes", () => {
 
 test("copy batch: size, proof, business words", () => {
   // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
-  assert.match(HTML, /It&rsquo;s printed on 13 x 19 inch matte paper, hung sideways,/);
+  assert.match(HTML, /It&rsquo;s printed on 13 x 19 inch heavy, textured cotton fine-art paper, hung sideways,/);
   assert.match(HTML, /On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\./);
   // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>|crop adviser in Chetek/.test(HTML), "no big quote");
   assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
-  assert.match(HTML, /<p>Yes\. At checkout, give their name, your note and their address\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
+  assert.match(HTML, /<p>Yes\. Before you pay, tick This is a gift and give their name, your note and their address\. I ship the print with your note printed at the top of the letter in the box, at no charge\./, "the gift FAQ says what the page does now (no separate card, Sig 2026-10-17)");
   assert.ok(!/above the prices|price card/.test(HTML), "no FAQ points at the old price cards");
   assert.match(HTML, /Once you OK the proof sheet, I print them/);
   assert.match(S2, /'Rain Print order'/);

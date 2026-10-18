@@ -82,6 +82,9 @@
 /* The signup bar and the install hint are fixed to the bottom above the
    drawer's layer; hide them while the drawer is open (loader.js sets this). */
 html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{display:none!important}
+/* 2026-10-18 menu fixes: on phones the theme switch took 73 of 390 px of the
+   header. It lives in the menu panel there ("Display mode"); wide screens keep it. */
+@media (max-width:960px){#theme-btn{display:none}}
 /* High contrast (forced colors, 2026-10-17 field audit): the menu bars and the theme switch are drawn
    with background colors, which forced colors removes, so the menu button showed as an empty box.
    Here they take the system's text colors. */
@@ -100,8 +103,8 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
 
     <div class="nav-menu">
       <div class="nav-dd" id="dd-markets">
-        <button class="nav-btn" aria-haspopup="true"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>Markets<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="nav-panel nav-cols">
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-markets-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>Markets<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div id="dd-markets-panel" class="nav-panel nav-cols">
           <div class="nav-col">
             <div class="nav-q">What&rsquo;s my grain worth today?</div>
             <a href="/cash-bids"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash bids near me</a>
@@ -129,14 +132,15 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
         </div>
       </div>
       <div class="nav-dd" id="dd-field">
-        <button class="nav-btn" aria-haspopup="true"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Crop &amp; Field<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="nav-panel nav-cols">
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-field-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Crop &amp; Field<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div id="dd-field-panel" class="nav-panel nav-cols">
           <div class="nav-col">
             <div class="nav-q">How big is this crop?</div>
             <a href="/crop-tour"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
             <a href="/conditions-yield"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>2026 crop size: every forecast</a>
             <a href="/conditions"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop ratings and harvest progress</a>
             <a href="/yield-estimator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield estimator</a>
+            <a href="/pod-counts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Pod counts vs yield</a>
           </div>
           <div class="nav-col">
             <div class="nav-q">What&rsquo;s happening in my fields?</div>
@@ -144,11 +148,15 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
             <a href="/rain-print"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print: a year of rain, printed</a>
             <a href="/rain"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Rain by county</a>
             <a href="/rain-radar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain on your field (radar)</a>
+            <a href="/drought-monitor"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Drought monitor</a>
             <a href="/rain-gauge"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge (in the works)</a>
             <a href="/spray"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray advisory</a>
+            <a href="/planting-date"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar-days"/></svg>Planting date</a>
+            <a href="/field-scout"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
             <a href="/gdu-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>GDU calculator</a>
             <a href="/fertilizer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fertilizer prices</a>
             <a href="/fall-nitrogen"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fall anhydrous soil temp</a>
+            <a href="/urea"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask-conical"/></svg>Urea loss risk</a>
             <a href="/manure-value"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Manure value</a>
             <a href="/nutrient-removal"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Nutrient removal value</a>
             <a href="/fast-facts"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Fast Facts reference tables</a>
@@ -157,8 +165,8 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
         </div>
       </div>
       <div class="nav-dd" id="dd-money">
-        <button class="nav-btn" aria-haspopup="true"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>Money &amp; Land<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="nav-panel nav-cols">
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-money-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>Money &amp; Land<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div id="dd-money-panel" class="nav-panel nav-cols">
           <div class="nav-col">
             <div class="nav-q">Sell, store or price ahead?</div>
             <a href="/store-or-sell"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Sell now or store?</a>
@@ -185,8 +193,8 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
         </div>
       </div>
       <div class="nav-dd" id="dd-daily">
-        <button class="nav-btn" aria-haspopup="true"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sunrise"/></svg>Daily<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <div class="nav-panel">
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-daily-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sunrise"/></svg>Daily<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div id="dd-daily-panel" class="nav-panel">
           <div class="nav-col">
             <div class="nav-q">Every morning</div>
             <a href="/daily"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-newspaper"/></svg>AGSIST Daily</a>
@@ -210,7 +218,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
 </nav>
 
 <!-- ══ MOBILE DRAWER ══════════════════════════════════════════════ -->
-<div class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-label="Site navigation">
+<div class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site navigation">
   <div class="draw-head">
     <img class="lg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148" style="height:30px;width:auto;object-fit:contain">
     <img class="lg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148" style="height:30px;width:auto;object-fit:contain">
@@ -251,6 +259,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <a href="/conditions-yield" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>2026 crop size: every forecast</a>
       <a href="/conditions" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop ratings and harvest progress</a>
       <a href="/yield-estimator" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield estimator</a>
+      <a href="/pod-counts" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target"/></svg>Pod counts vs yield</a>
     </details>
     <details class="draw-q">
       <summary>What&rsquo;s happening in my fields?</summary>
@@ -258,11 +267,15 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
       <a href="/rain-print" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print: a year of rain, printed</a>
       <a href="/rain" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Rain by county</a>
       <a href="/rain-radar" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain on your field (radar)</a>
+      <a href="/drought-monitor" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Drought monitor</a>
       <a href="/rain-gauge" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge (in the works)</a>
       <a href="/spray" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray advisory</a>
+      <a href="/planting-date" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar-days"/></svg>Planting date</a>
+      <a href="/field-scout" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
       <a href="/gdu-calculator" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>GDU calculator</a>
       <a href="/fertilizer" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fertilizer prices</a>
       <a href="/fall-nitrogen" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fall anhydrous soil temp</a>
+      <a href="/urea" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-flask-conical"/></svg>Urea loss risk</a>
       <a href="/manure-value" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Manure value</a>
       <a href="/nutrient-removal" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Nutrient removal value</a>
       <a href="/fast-facts" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>Fast Facts reference tables</a>
@@ -305,7 +318,7 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
   </div>
   <div class="draw-sec" style="border-bottom:none">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.1rem">
-      <span style="font-size:.82rem;color:var(--text-dim)">Display mode</span>
+      <span id="theme-lbl-d" style="font-size:.82rem;color:var(--text-dim)">Display mode</span>
       <button class="theme-btn" id="theme-btn-d" aria-label="Toggle theme">
         <span id="theme-icon-d" aria-hidden="true"><svg class="theme-ic moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></svg><svg class="theme-ic sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></svg></span>
         <div class="t-track"><div class="t-thumb"></div></div>

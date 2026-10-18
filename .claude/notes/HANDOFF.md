@@ -115,3 +115,18 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
 - No Gifts menu; Elevator widgets on hold; Bing report automation skipped (bing-reports.yml is Sig-run only).
 - Sig: API credits (expiring Oct 28 and Nov 19), MN eCRV email, Westfield / ZIP 44410 check (Mon Oct 19 reminder), "hose clamps vs clips".
 
+
+## State on Oct 18 (early, cache v167)
+- Live: PRF grid index email (/notice prf:<grid>, worker v5.29, send_prf_notice.py in prf.yml Wednesdays); sale barns 88 AMS + 20 own-report
+  barns, 6 with checked prices (Premier Withee, Equity Altoona/Stratford/Lomira/Sparta, Lanesboro); Rock Creek waits on a two-column PDF
+  reader (runner has no pdftotext); 5 Equity barns, Bloomington, Kalona, Central Livestock Albany/Zumbrota wait on the next probe copy.
+- County rain stories live on 2,632 counties (data/rain/stories, dated "Through <date>", 35-day life). Batch stories-2026-10 cost $12.60.
+  Refresh monthly: api-jobs.yml mode=estimate then submit (run=stories-YYYY-MM, build=county-stories), copy kept stories after the
+  validator, rebuild county pages. Sig OK'd spending the credits; no cron.
+- Rain Print panel fixes live (5 panels, ~25 personas, reports in the old session scratchpad rp-panel2/): January line for current-year
+  prints, one station distance, letter key tan/pale blue, mat drawn, post-cutoff default, one gift instruction, maker mode gated by a key
+  (hash in rain-print.js; Sig holds the key; ?maker=<key> once per device, then ?maker=1 works there).
+- Waiting on Sig (Rain Print): real photos (5-shot list), $15 damage fee vs free, phone number on page, Stripe fields (shipping address /
+  gift name+note), sig@farmers1st.com vs an agsist address, business sample, digital $25 / add-on / family set, footer Sponsor link on RP.
+- Menu redesign: 3 nav panels done (old scratchpad nav-panel/); recommended outline given to Sig. Waiting on: go for search ZIP fix +
+  phone-menu accessibility + footer-only tools; Livestock group; phone bottom bar trial; footer state links (+21 MB); Rain Print placement.

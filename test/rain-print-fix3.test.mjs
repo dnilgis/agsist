@@ -326,7 +326,7 @@ test("10: 24 px checkboxes and remove buttons, 13 px badges, Up close named; the
 // ---------- static checks ----------
 test("3: the size words say what each file is; product ids stay what Stripe and the worker know", () => {
   assert.match(HTML, /<li>A PNG and a PDF of the picture alone, 12 x 18 in at 300 dpi, no watermark; it fits a 12 x 18 frame<\/li>/);
-  assert.match(HTML, /<li>Printed on 13 x 19 in matte paper; fits a standard 13 x 19 frame with an 11 x 17 mat<\/li>/);
+  assert.match(HTML, /<li>Printed on 13 x 19 in heavy, textured cotton fine-art paper; fits a standard 13 x 19 frame with an 11 x 17 mat<\/li>/);
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const prod = ld["@graph"].find((g) => g["@type"] === "Product");
   assert.deepEqual(prod.offers.map((o) => o.sku), ["rp-digital", "rp-print-13x19", "rp-framed-13x19"]);
