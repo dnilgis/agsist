@@ -77,6 +77,9 @@
       .rbz-tiers td::before{content:attr(data-label);font-family:Inter,system-ui,sans-serif;color:var(--text-muted);font-size:.85rem;text-align:left;padding-right:.8rem}
     }
     .rbz-fine{font-size:.86rem!important;color:var(--text-muted)!important}
+    .rbz .rbz-call{font-size:.92rem;margin:-1rem 0 1.4rem}
+    .rbz-call a{white-space:nowrap}
+    .rbz .rbz-sample{font-size:.95rem;margin-top:.4rem}
     .rbz-priv{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem}
     .rbz-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.1rem 1.2rem;margin:2rem 0 0;scroll-margin-top:80px}
     .rbz-box h2{margin-top:0}
@@ -109,6 +112,9 @@
     .rbz-faq details:last-child{border-bottom:1px solid var(--border)}
     .rbz-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:.98rem;min-height:28px}
     .rbz-faq details p{margin:.6rem 0 .2rem}
+  /* No sponsors on Rain Print (Sig's rule, 2026-10-18): the shared footer's Advertise link, its supporter strip and the
+     static footer's Sponsor link stay hidden on this page. Done here, not in loader.js or footer.html. */
+  #site-footer a[href^="/sponsor"],#site-footer a[href^="/sponsor"]+.footer-sep,#site-footer #footer-adspace{display:none!important}
   </style>
   <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "name": "A Christmas gift your farm customers will hang up", "description": "Christmas gifts for farm customers from elevators, co-ops and ag lenders: each customer's own year of rain, printed and framed. From 5 prints, net 30.", "url": "https://agsist.com/rain-print-business", "inLanguage": "en-US", "image": "https://agsist.com/img/og/rain-print-business.jpg?v=0cf98c3e", "datePublished": "2026-10-16", "dateModified": "2026-10-16", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/", "logo": {"@type": "ImageObject", "url": "https://agsist.com/img/favicon-32.png"}}, "about": {"@type": "Product", "name": "Rain Print", "url": "https://agsist.com/rain-print"}}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why doesn't our business name go on the print?", "acceptedAnswer": {"@type": "Answer", "text": "So it hangs in the house, where the family sees it every day, instead of in the shop with the seed corn signs. Your name goes on the letter in the box, and a logo can go on the print, small, next to the customer's name."}}, {"@type": "Question", "name": "What year should we pick?", "acceptedAnswer": {"@type": "Answer", "text": "Last year works for everyone and ships before Christmas. So does a year your area still talks about, like a drought or a flood. You can also give each customer a different year, like the year they started farming, if you know it."}}, {"@type": "Question", "name": "What is the smallest order?", "acceptedAnswer": {"@type": "Answer", "text": "5 prints. 5 to 9 cost the regular price, on one invoice. From 10 the price per print drops, and it drops again at 25 and 50. For fewer than 5, order the regular way on the Rain Print page."}}, {"@type": "Question", "name": "Can you ship to each customer?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Send a mailing address for each one and I ship them one by one, with your note printed on the letter in each box. Shipping is in the price either way. All to one address takes a little off each print from 10 up."}}, {"@type": "Question", "name": "How do we pay?", "acceptedAnswer": {"@type": "Answer", "text": "By invoice, net 30. A W-9 on request. Nothing is charged before you OK the quote and the proof sheet."}}, {"@type": "Question", "name": "What if a customer's town has no good weather record?", "acceptedAnswer": {"@type": "Answer", "text": "Each print uses the nearest weather station with a good record for that year, and names it in a small line at the bottom. The proof sheet shows every print before anything is printed, so you see which station each one uses."}}]}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Rain Print", "item": "https://agsist.com/rain-print"}, {"@type": "ListItem", "position": 3, "name": "For businesses", "item": "https://agsist.com/rain-print-business"}]}]}</script>
 </head>
@@ -136,6 +142,7 @@
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/rain-print">Rain Print</a> &rarr; For businesses</nav>
       <h1>A Christmas gift your farm customers will hang up</h1>
       <p class="by">Sigurd Lindquist, CCA, Chetek, Wisconsin</p>
+      <p class="rbz-call" id="rbz-call">Questions? Call or text Sig at <a href="tel:+17157972428" data-rbz-cta="phone">715-797-2428</a>, or write to <a href="mailto:sig@farmers1st.com" data-rbz-cta="email-top">sig@farmers1st.com</a>.</p>
 
       <p class="lead">Elevators, co-ops, seed dealers, ag lenders, crop insurance agencies and equipment dealers give customers something every December. Most of it is a cap, a calendar or a box of sausage. A Rain Print is a year of rain at the customer&rsquo;s own place, drawn day by day and printed on 13 x 19 paper for the wall.</p>
       <p>Each print can be a different customer&rsquo;s town and year, or one town for the whole list. I print, frame and ship every one myself, from 5 prints up, on one invoice.</p>
@@ -157,7 +164,7 @@
       </ul>
       <figure class="rbz-fig rbz-fig-sm">
         <picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop" loading="lazy" decoding="async"></picture>
-        <figcaption>Mockup of a framed print. Photos of real prints coming soon.</figcaption>
+        <figcaption>Mockup of a framed print.</figcaption>
       </figure>
 
       <h2 id="prices">Prices, delivered</h2>
@@ -173,6 +180,7 @@
         </tbody>
       </table></div>
       <p class="rbz-fine">5 to 9 prints cost the regular price, on one invoice. A digital file is $19 each, emailed. Over 100 prints, ask me for a quote.</p>
+      <p class="rbz-sample" id="rbz-sample">Want to see one first? Order one at the regular price and I take it off your invoice when you order 10 or more.</p>
 
       <h2 id="christmas">Christmas dates</h2>
       <p id="rbz-xmas">Any past year ships before Christmas if the list comes in time: <span id="rbz-cutoff2">send it by Nov 20</span>. Last year, or a year your customers still talk about, works well. This year&rsquo;s print ships in January, once the full year&rsquo;s numbers are in.</p>
@@ -270,7 +278,7 @@
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/form-post.js?v=4" defer></script>
   <script src="/components/rp-logo.js?v=2" defer></script>
-  <script src="/components/rain-print.js?v=50" defer></script>
+  <script src="/components/rain-print.js?v=51" defer></script>
   <script src="/components/rp-business.js?v=3" defer></script>
 </body>
 </html>

@@ -2577,15 +2577,12 @@
   function syncGift() {
     var on = giftMode() && canOrder();
     $('rp-gift').hidden = !on;
-    /* The two boxes here go only with the order form. Every product with a
-       checkout link asks who it is for and the note at checkout (2026-10-13:
-       words typed here never reached Sig), so they show only while some
-       product still orders through the form. */
-    var formOnly = PRODUCTS.some(function (id) { return !payLink(id); });
-    $('rp-gift-fields').hidden = !formOnly;
-    $('rp-gift-cardnote').textContent = formOnly
-      ? 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.'
-      : 'At checkout you can say who it\u2019s for and write a note for the card. Within 1 business day of paying, I email you a gift card to print for under the tree, with a code they use to see their print.';
+    /* Who it's for and the card note are asked here, on the page, always
+       (2026-10-18, Sig: the page must not rely on Stripe for gift details).
+       With a checkout link they come onto the review sheet's gift box
+       (#rp-pgift) and go to Sig as a rain-print-order post before checkout. */
+    $('rp-gift-fields').hidden = false;
+    $('rp-gift-cardnote').textContent = 'Want a card for under the tree? Fill in the boxes above, then order. Within 1 business day of paying, I email you a card to print, with a code they use to see their print.';
     // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
     $('rp-dig-when').textContent = on ? 'The finished file by email in January, once the full year is in'
       : SETTLE && canOrder() ? 'The finished file by email once the full year is in' : 'The finished file by email within 1 business day of paying';
@@ -3249,14 +3246,8 @@
       });
       if (j.ships_within) $('rp-ships').textContent = j.ships_within;
       if (j.gift_delivery) $('rp-gift-delivery').textContent = fill(j.gift_delivery);
-      /* reprint_fee (dollars; $15 since 2026-10-14, Sig): the lost-or-damaged reprint in the
-         refund FAQ. The page says the amount; a different number here replaces it there. */
-      if (typeof j.reprint_fee === 'number' && j.reprint_fee > 0) {
-        Array.prototype.forEach.call(doc.querySelectorAll('details p'), function (p) {
-          if (/reframe it for \$\d+(\.\d\d)?, with the same serial/.test(p.innerHTML)) // a function, not a string: '$15' in a replacement string reads as a backreference
-            p.innerHTML = p.innerHTML.replace(/reframe it for \$\d+(\.\d\d)?, with/, function () { return 'reframe it for ' + money(j.reprint_fee) + ', with'; });
-        });
-      }
+      /* Lost or damaged in shipping: replaced free, same serial number (Sig, 2026-10-18; was $15).
+         The FAQ says so in the page itself; no fee comes from data/rain-print.json. */
       syncCutoffs();
       var xp = !PICK_CHOSEN && !januaryGift() ? xmasPick(TODAY, OJ().j) : '';
       if (xp && xp !== PICK) setPick(xp);
@@ -3756,23 +3747,27 @@
      a payment link, Pay first posts the gift as a rain-print-order (gift: yes,
      the same fields an order request sends) for scripts/form_digest.py to mail
      Sig, whose note goes on the letter (rp-insert), then opens checkout. Not
-     offered for this year's January gift (#rp-gift has its own boxes) or an
-     order a gift card pays for. */
+     offered for an order a gift card pays for. This year's January gift
+     (2026-10-18, Sig) uses the same box: its note is for the gift card, it
+     posts gift_january instead of gift, and the step 3 boxes (#rp-gift-to,
+     #rp-gift-msg) come onto it and stay in step with it. */
   var PG_MIRROR = { 'rp-pg-to': 'ro-gift-to', 'rp-pg-msg': 'ro-gift-msg', 'rp-pg-deliver': 'ro-deliver', 'rp-pg-email': 'ro-gift-email',
     'rp-pg-addr': 'ro-address', 'rp-pg-name': 'ro-name', 'rp-pg-me': 'ro-email' };
-  function pgOffered() { return canOrder() && !januaryGift() && !(GIFT && GIFT.usable); }
+  function pgOffered() { return canOrder() && !(GIFT && GIFT.usable); }
+  var PG_JAN = { 'rp-pg-to': 'rp-gift-to', 'rp-pg-msg': 'rp-gift-msg' };
   function pgOn() { return pgOffered() && $('rp-pg-on').checked; }
   function pgTheirs() { return $('rp-pg-deliver').value === 'recipient'; }
   function pgPull() {
     // what the order form already holds comes onto the sheet
-    Object.keys(PG_MIRROR).forEach(function (k) { var v = $(PG_MIRROR[k]).value; if (v && !$(k).value) $(k).value = v; });
-    if ($('ro-isgift').checked) $('rp-pg-on').checked = true;
+    var jan = januaryGift();
+    Object.keys(PG_MIRROR).forEach(function (k) { var v = $(jan && PG_JAN[k] || PG_MIRROR[k]).value; if (v && !$(k).value) $(k).value = v; });
+    if (jan ? !!($('rp-gift-to').value.trim() || $('rp-gift-msg').value.trim()) : $('ro-isgift').checked) $('rp-pg-on').checked = true;
   }
   function pgSync() {
     var offered = pgOffered(), on = offered && $('rp-pg-on').checked, file = PICK === 'digital', theirs = pgTheirs();
     $('rp-pgift').hidden = !offered;
     $('rp-pg-box').hidden = !on;
-    $('rp-pg-msg-l').textContent = file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
+    $('rp-pg-msg-l').textContent = januaryGift() ? 'A message for the gift card (optional)' : file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
     $('rp-pg-addr-wrap').hidden = file;
     $('rp-pg-addr-l').textContent = (theirs ? 'Their address' : 'Your address') + ' (name, street, town, ' + (caOrder() ? 'province, postal code' : 'state, ZIP') + ')';
     $('rp-pg-email-wrap').hidden = !(file && theirs);
@@ -3786,7 +3781,7 @@
     if (on) {
       var to = cleanText($('rp-pg-to').value, GIFT_TO_MAX), msg = $('rp-pg-msg').value.trim();
       sum.innerHTML = [['Gift for', to || '(say who it\u2019s for)'], [file ? 'Note with the file' : 'Note on the letter', msg || '(none)'],
-        ['Goes to', theirs ? (to || 'them') : 'you']].map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
+        ['Goes to', theirs ? (to || 'them') : 'you']].map(function (r, i) { return i === 1 && januaryGift() ? ['Note on the gift card', r[1]] : r; }).map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('');
     }
   }
   // the gift as an order post, or {bad: [field id, words]}
@@ -3796,13 +3791,15 @@
       name: cleanText($('rp-pg-name').value, 80), email: $('rp-pg-me').value.trim(), choice: PICK,
       address: file ? '' : $('rp-pg-addr').value.trim().slice(0, 600),
       design_url: designUrl(ST), design_code: orderCode(), page: '/rain-print',
-      gift: true, gift_to: cleanText($('rp-pg-to').value, GIFT_TO_MAX), gift_deliver: theirs ? 'recipient' : 'buyer',
+      gift_to: cleanText($('rp-pg-to').value, GIFT_TO_MAX), gift_deliver: theirs ? 'recipient' : 'buyer',
       gift_email: file && theirs ? $('rp-pg-email').value.trim() : '',
       gift_message: $('rp-pg-msg').value.replace(/\r\n?/g, '\n').trim().slice(0, GIFT_MSG_MAX)
     };
+    if (januaryGift()) x.gift_january = true; else x.gift = true;
     if (ST.logo) x.logo = ST.logo;
     // the worker keeps known fields only, so the checkout and the proof tick ride in the notes
     x.notes = ('Paying now at Stripe checkout' + (ref ? ', reference ' + ref : '') + '. Gift details from the review sheet; no payment link needed.' +
+      (x.gift_january ? ' Make it after January 1, once the full year is in.' : '') +
       (PROOF_OK === encodeCode(ST) ? ' Proof checked on the page: yes.' : ' Proof checked on the page: no.')).slice(0, 2000);
     var bad = !x.gift_to ? ['rp-pg-to', 'Say who the gift is for, or untick \u201cThis is a gift\u201d.']
       : !file && x.address.length < 10 ? ['rp-pg-addr', theirs ? 'Add their address for the print.' : 'Add your address for the print.']
@@ -3880,9 +3877,9 @@
   /* "It's a gift" on an ordinary order (2026-10-12), a tick box over the price
      cards. Any finished year and any product; this year's January gift has its
      own box (#rp-gift), so the tick box is not offered then.
-     A product WITH a Stripe Payment Link still goes straight to checkout; its
-     Payment Link asks who it's for and the note, and Stripe takes the shipping
-     address, so the page only says so (#rp-gift-checkout).
+     A product WITH a Stripe Payment Link goes to the review sheet, whose gift
+     box (#rp-pgift) takes who it's for, the note and the address before
+     checkout (2026-10-18: nothing about the gift relies on Stripe).
      A product WITHOUT a link opens the order request form, which then shows
      who it's for, a note printed at the top of the letter in the box (no prices go in), and
      where it goes. Same gift_ fields, plus gift:true (worker v5.12). */
@@ -3893,7 +3890,7 @@
     var el = $('rp-gift-checkout'), linked = PRODUCTS.filter(function (id) { return payLink(id); });
     var t = '';
     if (giftTicked() && linked.length) {
-      t = 'You\u2019ll add their name and your note at checkout. Use their address for shipping if it goes straight to them.';
+      t = 'Before you pay, the next screen asks their name, your note and their address.';
       if (linked.length < PRODUCTS.length) {
         var names = linked.map(function (id) { return CHOICE[id].replace(/^Digital/, 'digital'); });
         t = 'For the ' + names.join(' and the ') + ', y' + t.slice(1) + ' The others take your note on the order form.';
@@ -4700,6 +4697,7 @@
   Object.keys(PG_MIRROR).forEach(function (k) {
     $(k).addEventListener(k === 'rp-pg-deliver' ? 'change' : 'input', function () {
       $(PG_MIRROR[k]).value = $(k).value;
+      if (PG_JAN[k] && januaryGift()) $(PG_JAN[k]).value = $(k).value;
       if (k === 'rp-pg-deliver') syncAddress();
       pgSync();
     });
