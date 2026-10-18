@@ -607,6 +607,12 @@ def selftest():
                "In 2025 Apr-May was at 73% of normal.",
                "As of Oct 12, the 2026 pairs published so far ran low on the middle of the 8 grids, with Jan-Feb 2026 at 60% and Feb-Mar 2026 at 104%. "
                "In 2025 Apr-May was at 73% of normal.".replace("104%", "104%").replace("Feb-Mar 2026 at 104%", "Mar-Apr 2026 at 52%, and Jun-Jul 2025 at 104%")))
+    fp += [
+        ("As of Oct 12, over the 75 years from 1951 to 2025, Oct-Nov came in under 90% of normal in 30 years on the middle of the 8 grids. "
+         "In 2025 June to July was at 104% of normal, and Oct-Nov 2025 was lower at 62%.",
+         "As of Oct 12, over the 75 years from 1951 to 2025, Oct-Nov came in under 90% of normal in 30 years on the middle of the 8 grids. "
+         "In 2025 Oct-Nov was at 62% of normal, and June to July 2025 was lower at 104%."),
+    ]
     K.run_pairs(S, g, fp, ok)
     ok(K.validate(S, "As of Oct 12, in 2025 that middle grid ran 73% of normal in April to May. That is on the 8 grids in the county.", g) != [],
        "'middle grid' on a county with several grids is caught")
