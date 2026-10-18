@@ -269,11 +269,12 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   const types = ld["@graph"].map((g) => g["@type"]);
   for (const t of ["Product", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);
   const prod = ld["@graph"].find((g) => g["@type"] === "Product");
-  // the share card first (with the ?v=<hash> scripts/build_share_images.py gives it, the same URL as og:image),
+  // Sig's photo of a real framed print first (2026-10-18, test/rain-print-photos.test.mjs), then the share card
+  // (with the ?v=<hash> scripts/build_share_images.py gives it, the same URL as og:image),
   // then the two example prints drawn from real NOAA years (test/rain-print-examples.test.mjs)
   const og = HTML.match(/property="og:image"\s+content="([^"]+)"/)[1];
   assert.match(og, /^https:\/\/agsist\.com\/img\/og\/rain-print\.jpg\?v=[0-9a-f]{8}$/);
-  assert.deepEqual(prod.image, [og, "https://agsist.com/img/rain-print-example-2012-ames-ia.jpg", "https://agsist.com/img/rain-print-example-1993-des-moines-ia.jpg"]);
+  assert.deepEqual(prod.image, ["https://agsist.com/img/photos/rain-print-photo-chetek-2025-1600.jpg", og, "https://agsist.com/img/rain-print-example-2012-ames-ia.jpg", "https://agsist.com/img/rain-print-example-1993-des-moines-ia.jpg"]);
   assert.deepEqual(prod.offers.map((o) => o.price), [String(J.digital), String(J.print12x18), String(J.framed12x18)]);
   assert.ok(!prod.aggregateRating && !prod.review, "no made-up ratings");
   for (const k of ['property="og:image"', 'name="twitter:image"']) assert.match(HTML, new RegExp(k + "\\s+content=\"https://agsist.com/img/og/rain-print.jpg\\?v=[0-9a-f]{8}\""));
