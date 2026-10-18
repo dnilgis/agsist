@@ -163,7 +163,7 @@ test("rows are buttons a keyboard and a screen reader can use; the panel is a di
   const t = F.compsTable(F.rowObjs(f), 40, { detail: true });
   assert.match(t, /<button type="button" class="fl-sale" data-sale="0" aria-haspopup="dialog" aria-label="Everything on the sale of Mar 3, 2025, \$500,000, 100\.0 acres, Chetek town">Mar 3, 2025<\/button>/);
   assert.doesNotMatch(F.compsTable(F.rowObjs(f), 40, {}), /fl-sale|data-sort/);   // the printed report has no buttons
-  assert.match(F.compsTable(F.rowObjs(f), 10, { src: true }), /<th>Source<\/th>[\s\S]*Wisconsin transfer return 900020/);
+  assert.match(F.compsTable(F.rowObjs(f), 10, { src: true }), /<th scope="col"[^>]*>Source<\/th>[\s\S]*Wisconsin transfer return 900020/);
   const js = read("field-scout-land.js");
   assert.match(js, /setAttribute\('role', 'dialog'\)/);
   assert.match(js, /setAttribute\('aria-modal', 'true'\)/);

@@ -315,3 +315,23 @@ test("monthly land run: the 3rd, Sig's approval noted, one run at a time", () =>
   assert.match(y, /concurrency:\s*\n\s*group: land-data/);
   assert.match(y, /--newest-only/); assert.match(y, /--merge/); assert.match(y, /land_keep_stamp_only\.py data\/land/);
 });
+
+test("Sold land nearby: the report's defaults (3 years), the counties searched and the state line said plainly", () => {
+  const js = read("field-scout-land.js");
+  assert.match(js, /since: FSLand\.yearsBefore\(FSLand\.today\(\), 3\), minAc: 10/);
+  assert.match(js, /compReportURL\(\{ pts: S\.pts, fips: S\.fips \}, S\.f\)/, "the report link carries the county, so the report need not load the county map");
+  assert.doesNotMatch(js, /\.slice\(0, 7\)/, "no hard cap of 7 counties");
+  assert.equal(F.yearsBefore("2026-10-18", 3), "2023-10-18");
+  // 20 counties on a line, one every 10 miles east of the field: the home county, then those within 25 + 15 miles
+  const c = { lat: 40, lng: -89 };
+  const ix = { counties: Array.from({ length: 20 }, (_, i) => ({ fips: String(17001 + 2 * i), name: "C" + i, lat: 40, lng: -89 + (i * 10) / 53 })) };
+  const pick = F.countiesFor(ix, c, "17039", 25 + F.REACH_PAD);
+  assert.equal(pick[0].fips, "17039", "home county first");
+  assert.deepEqual(pick.slice(1).map((k) => k.name), ["C0", "C1", "C2", "C3", "C4"], "the rest nearest first, centers within 40 miles");
+  const many = F.countiesFor(ix, c, null, 500);
+  assert.equal(many.length, 15, "up to 15 counties");
+  const t = F.searchedText({ searched: pick.map((k, i) => Object.assign({ ok: i !== 2 }, k)), reach: 40 }, "Illinois");
+  assert.match(t, /^Counties searched \(5, centers within 40 miles, nearest first, up to 15\): C19, C0, C2, C3, C4\. Did not load just now: C1\. Only Illinois.s records are searched; sales across a state line are not\.$/);
+  // a comps list always says the sales are unverified
+  assert.match(F.compsTable([{ date: "2025-01-01", price: 400000, acres: 80, ppa: 5000 }]), /Unverified: taken from public transfer records, not confirmed with a party to the sale\./);
+});
