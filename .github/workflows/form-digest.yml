@@ -8,7 +8,7 @@ name: Site forms digest
 # log prints counts only. Until v5.8 is deployed the worker has no
 # /form-list and the job says so and exits cleanly (the pages send to
 # Formspree meanwhile).
-# Hay board posts (hay-board.html, worker v5.30) go in one more email from the
+# Hay board posts (haymow.html, worker v5.30) go in one more email from the
 # same run: public text only, then /hay/admin/mark.
 # Each digest opens with one counts line: what came in over the last 24 hours
 # by kind, mailed or not (2026-10-14). It reads /form-list and the rain gauge

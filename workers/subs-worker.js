@@ -5,7 +5,7 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
- * v5.30 (2026-10-18): THE HAY BOARD (agsist.com/hay-board). New routes only;
+ * v5.30 (2026-10-18): THE HAY BOARD (agsist.com/haymow). New routes only;
  *   every existing route answers exactly as before. No new binding and no new
  *   secret. Readers post hay or forage for sale or wanted; buyers and sellers
  *   call each other. AGSIST takes no cut and ranks nothing by payment.
@@ -1572,7 +1572,7 @@ export default {
   },
 };
 
-// ---------- v5.30: THE HAY BOARD (agsist.com/hay-board) ----------
+// ---------- v5.30: THE HAY BOARD (agsist.com/haymow) ----------
 // Readers post hay and forage for sale or wanted; buyers and sellers call each
 // other. AGSIST takes no cut, routes nothing and ranks nothing by payment.
 // hay:<id> = the post (contact inside), stored with a KV expiration at exp.

@@ -38,7 +38,7 @@ waiting list (GET /notice-list?topic=rain-gauge) and counts rows by their ts.
 If either read fails the line says the counts could not be read and the
 digest still goes. scripts/morning_report.py uses the same counter.
 
-The hay board (worker v5.30, agsist.com/hay-board) rides the same run: new
+The hay board (worker v5.30, agsist.com/haymow) rides the same run: new
 posts, and posts held by the screen or hidden by three reports, go to Sig in
 one more email (public text only, never the poster's phone or email), then
 POST /hay/admin/mark. The hay admin routes take the token as a Bearer header.
@@ -533,13 +533,13 @@ def hay_build(posts, to, fn="AGSIST", fa=""):
     if flagged:
         parts.append("%d not shown" % len(flagged))
     m = EmailMessage()
-    m["Subject"] = "Hay board: " + ", ".join(parts)
+    m["Subject"] = "The Haymow: " + ", ".join(parts)
     m["From"] = formataddr((fn, fa))
     m["To"] = to
     m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
     text, hb, e = [], [], H.escape
     for p in sorted(posts, key=lambda x: x.get("ts") or 0):
-        head = "%s, %s" % ("New hay post" if not p.get("n") else "Hay post not shown", when(p.get("ts") or 0))
+        head = "%s, %s" % ("New Haymow post" if not p.get("n") else "Haymow post not shown", when(p.get("ts") or 0))
         rows = hay_rows(p)
         text.append(head)
         text.extend("%s: %s" % r for r in rows)
@@ -547,7 +547,7 @@ def hay_build(posts, to, fn="AGSIST", fa=""):
         hb.append('<h3 style="font-size:15px;margin:18px 0 6px">%s</h3><table style="font-size:14px;line-height:1.5;border-collapse:collapse">' % e(head))
         hb.extend('<tr><td style="color:#6b6b6b;padding:2px 12px 2px 0;vertical-align:top">%s</td><td>%s</td></tr>' % (e(a), e(b)) for a, b in rows)
         hb.append("</table>")
-    foot = ("Live posts are on agsist.com/hay-board already. Phones and emails are not in this email; "
+    foot = ("Live posts are on agsist.com/haymow already. Phones and emails are not in this email; "
             "GET /hay/admin/list with the list token shows them.")
     text.append(foot)
     m.set_content("\n".join(text) + "\n\n-- \n" + ADDRESS + "\n")
@@ -953,7 +953,7 @@ def selftest():
     m = hay_build([hp, hh], "sig@x.com")
     t = m.get_body(("plain",)).get_content()
     h = m.get_body(("html",)).get_content()
-    ck("hay: subject counts", m["Subject"] == "Hay board: 1 new post, 1 not shown", m["Subject"])
+    ck("hay: subject counts", m["Subject"] == "The Haymow: 1 new post, 1 not shown", m["Subject"])
     ck("hay: no phone or email in the mail", "715-555-0100" not in t + h and "seller@example.com" not in t + h and m["Reply-To"] is None, t)
     ck("hay: public text, status and reports", all(x in t for x in ("Where: Chetek, WI (54728)", "Test: RFV 165, CP 19.5",
        "Delivery: Up to 50 miles", "Note: Barn <kept>.", "Status: Not shown: hidden by reports", "Reports: 3 (spam, scam, spam)",
