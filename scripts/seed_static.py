@@ -1368,7 +1368,7 @@ def seed_scorecard(today):
     seeds["pb:pb-bt-line"] = (f"{_pb_date(ba.get('first'))} to {_pb_date(ba.get('last'))}. {line}" if ba else "Backtest not computed yet.")
     seeds["pb:pb-bt-luck"] = luck
     seeds["pb:pb-bt-base"] = (f"Always saying down: {_pb_rate(ba.get('fell_rate'))}. Always saying up: {_pb_rate(ba.get('rose_rate'))} "
-                              f"({_pb_n(ba.get('moves_of'))} windows)." if ba and ba.get("moves_of") else "")
+                              f"({_pb_n(ba.get('moves_of'))} weekly calls)." if ba and ba.get("moves_of") else "")
     lt = d.get("latest") or {}
     lc = lt.get("calls") or []
     seeds["pb:pb-latest-when"] = (f"Made at the {_pb_date(lt['date'])} close." if lt.get("date") else

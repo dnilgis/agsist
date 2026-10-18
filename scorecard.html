@@ -133,7 +133,7 @@
           <p class="pb-verdict" id="pb-bt-verdict"><!--SEED:pb:pb-bt-verdict-->No better than a coin flip; below half in 4 of 5 ways of counting, and worse than always saying down.<!--/SEED--></p>
           <p id="pb-bt-line"><!--SEED:pb:pb-bt-line-->Jan 7, 2013 to Aug 31, 2026. Right on 1,301 of 2,736 weekly calls (47.6%). Across four non-overlapping groups of calls: 44.6% to 51.2% (170 windows).<!--/SEED--></p>
           <p id="pb-bt-luck"><!--SEED:pb:pb-bt-luck-->Odds pure guessing does at least this well: about 96 in 100; at least this badly: about 4 in 100 (about 10 in 100 after adjusting for the records tested at once).<!--/SEED--></p>
-          <p id="pb-bt-base"><!--SEED:pb:pb-bt-base-->Always saying down: 51.1%. Always saying up: 48.9% (2,736 windows).<!--/SEED--></p>
+          <p id="pb-bt-base"><!--SEED:pb:pb-bt-base-->Always saying down: 51.1%. Always saying up: 48.9% (2,736 weekly calls).<!--/SEED--></p>
         </section>
       </div>
       <p class="pb-note">The two boxes are kept apart on purpose. The backtest is the rule replayed on 2013&ndash;2026 history. The live record is calls made in public before the outcome was known. Adding them together would let old history prop up the live number.</p>
@@ -295,7 +295,7 @@
       $('pb-bt-verdict').textContent=B.v;
       $('pb-bt-line').textContent=ba?(fdate(ba.first)+' to '+fdate(ba.last)+'. '+B.line):'Backtest not computed yet.';
       $('pb-bt-luck').textContent=B.luck;
-      if(ba&&ba.moves_of){$('pb-bt-base').textContent='Always saying down: '+rate(ba.fell_rate)+'. Always saying up: '+rate(ba.rose_rate)+' ('+n(ba.moves_of)+' windows).';}
+      if(ba&&ba.moves_of){$('pb-bt-base').textContent='Always saying down: '+rate(ba.fell_rate)+'. Always saying up: '+rate(ba.rose_rate)+' ('+n(ba.moves_of)+' weekly calls).';}
       if(bt.cutoff)$('pb-cutoff').textContent=bt.cutoff;
 
       var lt=(d.latest||{}),lc=lt.calls||[];
