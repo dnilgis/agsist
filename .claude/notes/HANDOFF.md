@@ -21,6 +21,9 @@ This file is public (the repo and Pages serve it). Nothing private goes in it.
    rerun alone: rain-print-buy-path "review sheet keeps the tick", fresh-visitor, gdu-calculator-h2h, nav-full-oct18.
    New data files change data/feeds.json: rebuild it (`python3 scripts/build_feeds.py`) and commit, or feeds-guard fails.
 4. `scripts/dev/push.sh <working-branch>` pushes to main (merges are authorized) and mirrors the working branch.
+   Oct 18 collision: shipping from a helper worktree force-pushed the working branch and dropped commits made only there.
+   push.sh now merges origin/<working-branch> into HEAD first and never force-pushes. Rule: commit notes and decisions in the
+   tree you ship from, or merge the working branch into it before shipping; never `git push -f` anywhere.
 - Workflows: `gh workflow run <file>.yml -R dnilgis/agsist --ref main -f x=y` works (Oct 18). Fallback, the REST API:
   `gh api -X POST repos/dnilgis/agsist/actions/workflows/<file>.yml/dispatches -f ref=main [-F 'inputs[x]=y']`.
   land-data.yml has one concurrency slot: a second dispatch while one runs replaces any pending one. Queue them one at a time.
