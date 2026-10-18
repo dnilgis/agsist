@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Haymow desk | AGSIST</title>
+<!-- Sig's desk for The Haymow (subs worker v5.30 hay board). Not in the menu or a
+     sitemap, and noindex. Every call needs LIST_TOKEN: it is sent only in the
+     Authorization header, never in an address. It is kept in this browser's
+     localStorage so it is pasted once; "Forget the token" clears it.
+     The list route returns each poster's phone and email; this page keeps them
+     out of the list and shows one post's only when Sig presses "Show phone and
+     email". Nothing is logged. No analytics on this page.
+     Calls only /hay/admin/list, /hay/admin/hide, /hay/admin/clear, /hay/admin/mark.
+     A link from the digest email can end in #<post id>: that post is marked
+     when the list loads (the part after # never leaves the browser). -->
+<style>
+:root{--bg:#f6f5f1;--panel:#fff;--text:#1E2125;--dim:#5E6475;--line:#d6d9d2;--accent:#2B5C8A;--warn:#A8321E;--ok:#2f6b3a;--held:#8a5a00}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a;--held:#e0b25c}}
+:root[data-theme="dark"]{--bg:#1b1c1a;--panel:#252623;--text:#e9edeb;--dim:#b4b8b1;--line:#3a3c37;--accent:#8db6d8;--warn:#e08a78;--ok:#8fc79a;--held:#e0b25c}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.35rem;margin:0 0 .3rem}
+h2{font-size:1.05rem;margin:0 0 .6rem}
+p{margin:.3rem 0;color:var(--dim)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin:14px 0}
+label{display:block;font-size:.85rem;font-weight:600;margin:.55rem 0 .15rem}
+input,select{font:inherit;font-size:16px;width:100%;box-sizing:border-box;min-height:40px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text)}
+button{font:inherit;font-weight:600;min-height:40px;padding:0 1rem;margin-top:.8rem;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button.quiet{background:none;color:var(--accent)}
+button.small{min-height:36px;margin:.15rem .3rem .15rem 0;padding:0 .7rem;font-size:.85rem}
+button.warn{border-color:var(--warn);background:none;color:var(--warn)}
+:root[data-theme="dark"] button:not(.quiet):not(.warn){color:#10151a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet):not(.warn){color:#10151a}}
+button:disabled{opacity:.5;cursor:default}
+.tok-row{display:flex;gap:8px;align-items:center}
+.tok-row input{flex:1}
+.tok-row button{margin-top:0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:.6rem}
+.bar button{margin-top:0}
+.bar select{width:auto;min-width:200px}
+.out{margin-top:.7rem;white-space:pre-wrap;word-break:break-word;font-size:.9rem}
+.out.bad{color:var(--warn)}.out.good{color:var(--ok)}
+.post{border-top:1px solid var(--line);padding:.8rem 0}
+.post:first-child{border-top:0}
+.post.pick{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+.post h3{font-size:1rem;margin:0 0 .25rem;line-height:1.35}
+.post p{margin:.15rem 0;color:var(--text);font-size:.92rem}
+.post .k{color:var(--dim);font-weight:600;margin-right:.3rem}
+.post .note{white-space:pre-wrap;word-break:break-word}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;border:1px solid var(--line);border-radius:3px;padding:0 .4rem;margin:0 .3rem .1rem 0;color:var(--dim);vertical-align:1px}
+.tag.live{color:var(--ok);border-color:var(--ok)}
+.tag.held{color:var(--held);border-color:var(--held)}
+.tag.hidden,.tag.rep{color:var(--warn);border-color:var(--warn)}
+.dim{color:var(--dim);font-size:.82rem}
+.contact{margin:.35rem 0;padding:.4rem .6rem;border:1px dashed var(--line);border-radius:5px;font-size:.92rem}
+.contact a{color:var(--accent)}
+.acts{margin-top:.35rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>Haymow desk</h1>
+  <p>Every post on The Haymow board, newest first, with its reports. Hide takes a post off the board. Clear puts it back up and drops its reports. Mark seen keeps it out of the next digest email.</p>
+
+  <section>
+    <label for="tok">Token (LIST_TOKEN)</label>
+    <div class="tok-row"><input id="tok" type="password" autocomplete="off" spellcheck="false"><button type="button" id="tok-forget" class="small quiet">Forget the token</button></div>
+    <p>Kept in this browser only. Never put it in a link.</p>
+  </section>
+
+  <section id="posts">
+    <h2>Posts</h2>
+    <div class="bar">
+      <label for="show" style="margin:0">Show</label>
+      <select id="show">
+        <option value="all">All</option>
+        <option value="held">Held by the screen</option>
+        <option value="reported">Reported</option>
+        <option value="hidden">Hidden</option>
+        <option value="live">Live</option>
+      </select>
+      <button type="button" id="load">Load the list</button>
+      <button type="button" id="mark-all" class="quiet" hidden>Mark all shown seen</button>
+    </div>
+    <div id="out" class="out" role="status"></div>
+    <div id="list"></div>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  var API = 'https://agsist-subs.dnilgis.workers.dev/hay/admin/';
+  var TOK_KEY = 'agsist-haymow-admin-token';
+  var PRODUCTS = { alfalfa: 'Alfalfa', grass: 'Grass hay', mixed: 'Mixed hay', straw: 'Straw', 'corn-stalks': 'Corn stalks', baleage: 'Baleage or haylage', other: 'Other forage' };
+  var BALES = { 'small-square': 'small squares', 'large-square': 'large squares', round: 'round bales', wrapped: 'wrapped bales', bulk: 'bulk' };
+  var CUT = { '1': '1st cutting', '2': '2nd cutting', '3': '3rd cutting', '4': '4th cutting or later' };
+  var WHY_HIDDEN = { reports: 'hidden by reports', sig: 'hidden by you' };
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
+  function show(html, kind) { var o = $('out'); o.innerHTML = html; o.className = 'out' + (kind ? ' ' + kind : ''); }
+  try { $('tok').value = localStorage.getItem(TOK_KEY) || ''; } catch (e) {}
+  $('tok').addEventListener('change', function () { try { localStorage.setItem(TOK_KEY, $('tok').value.trim()); } catch (e) {} });
+  $('tok-forget').addEventListener('click', function () { $('tok').value = ''; try { localStorage.removeItem(TOK_KEY); } catch (e) {} });
+
+  /* The only way this page reaches the worker: /hay/admin/<path>, token in the header. */
+  function call(path, body) {
+    var tok = $('tok').value.trim();
+    if (!tok) return Promise.resolve({ ok: false, error: 'Paste the token first.' });
+    try { localStorage.setItem(TOK_KEY, tok); } catch (e) {}
+    return fetch(API + path, { method: body ? 'POST' : 'GET', body: body ? JSON.stringify(body) : undefined, cache: 'no-store', referrerPolicy: 'no-referrer',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok } })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 403) j.error = 'The token was not accepted.'; return j; }); },
+        function () { return { ok: false, error: 'Could not reach the worker.' }; });
+  }
+
+  var POSTS = [];       // public fields, reports and status only
+  var CONTACT = {};     // id -> {phone, email}; drawn only when Sig asks for one post
+  var OPEN = {};        // ids whose phone and email are showing
+  function pick() { return (/^#([0-9a-hjkmnp-tv-z]{10})$/.exec(location.hash || '') || [])[1] || ''; }
+  function toPick() {
+    var id = pick(), el = id && $('p-' + id);
+    if (!id || el) { if (el) el.scrollIntoView({ block: 'center' }); return; }
+    if (POSTS.some(function (p) { return p.id === id; })) { $('show').value = 'all'; render(); el = $('p-' + id); if (el) el.scrollIntoView({ block: 'center' }); }
+  }
+
+  function reports(p) { return Array.isArray(p.reports) ? p.reports : []; }
+  function inFilter(p, f) {
+    if (f === 'held') return p.status === 'held';
+    if (f === 'reported') return reports(p).length > 0 || p.why_hidden === 'reports';
+    if (f === 'hidden') return p.status === 'hidden';
+    if (f === 'live') return p.status === 'live';
+    return true;
+  }
+  function when(ms) {
+    if (!ms) return '';
+    var d = new Date(ms);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+  function money(n) { return '$' + (Math.round(n * 100) / 100).toFixed(2).replace(/\.00$/, ''); }
+  function line(p) {
+    var bits = [PRODUCTS[p.product] || 'Hay'];
+    if (p.cutting && CUT[p.cutting]) bits.push(CUT[p.cutting]);
+    if (p.count != null) bits.push(Number(p.count).toLocaleString('en-US') + ' ' + (BALES[p.bale] || 'bales'));
+    else if (p.bale) bits.push(BALES[p.bale] || p.bale);
+    if (p.price != null) bits.push(money(p.price) + ' a ' + (p.unit || 'bale'));
+    if (p.weight) bits.push(p.weight + ' lb bales');
+    return (p.kind === 'sale' ? 'For sale' : 'Wanted') + ': ' + bits.join(', ');
+  }
+  function statusTag(p) {
+    if (p.status === 'live') return '<span class="tag live">Live</span>';
+    if (p.status === 'held') return '<span class="tag held">Held' + (p.why_hidden ? ': ' + esc(p.why_hidden) : '') + '</span>';
+    return '<span class="tag hidden">' + esc(WHY_HIDDEN[p.why_hidden] ? 'Hidden: ' + WHY_HIDDEN[p.why_hidden] : 'Hidden') + '</span>';
+  }
+  function row(k, v) { return v === '' || v == null ? '' : '<p><span class="k">' + esc(k) + '</span>' + esc(v) + '</p>'; }
+  function card(p) {
+    var reps = reports(p), now = Date.now(), c = CONTACT[p.id] || {};
+    var test = ['rfv', 'rfq', 'cp'].filter(function (k) { return p[k] != null; }).map(function (k) { return k.toUpperCase() + ' ' + p[k] + (k === 'cp' ? '%' : ''); }).join(', ');
+    var d = p.delivery, deliv = d === 'yes' ? 'Yes' : (d == null || d === '' || d === 'no' ? 'No' : 'Up to ' + d + ' miles');
+    var h = '<div class="post' + (p.id === pick() ? ' pick' : '') + '" id="p-' + esc(p.id) + '" data-id="' + esc(p.id) + '">' +
+      '<h3>' + esc(line(p)) + '</h3>' +
+      '<p>' + statusTag(p) + (reps.length ? '<span class="tag rep">' + reps.length + ' report' + (reps.length === 1 ? '' : 's') + '</span>' : '') +
+      (p.n ? '' : '<span class="tag">Not seen</span>') + ((p.exp || 0) <= now ? '<span class="tag">Expired</span>' : '') + '</p>' +
+      row('Where', p.place ? p.place + ' (' + (p.zip || '') + ')' : 'ZIP ' + (p.zip || '')) +
+      row('Test', test) + row('Delivery', deliv) +
+      (p.note ? '<p class="note"><span class="k">Note</span>' + esc(p.note) + '</p>' : '') +
+      row('Name', p.name || '') +
+      (reps.length ? row('Reports', reps.map(function (x) { return (x && x.why ? x.why : 'other') + (x && x.ts ? ' (' + when(x.ts) + ')' : ''); }).join(', ')) : '') +
+      '<p class="dim">Posted ' + esc(when(p.ts)) + (p.updated && p.updated !== p.ts ? ', changed ' + esc(when(p.updated)) : '') + ', ends ' + esc(when(p.exp)) + '. Id ' + esc(p.id) + '</p>';
+    if (OPEN[p.id]) {
+      h += '<div class="contact">' +
+        (c.phone ? '<div><span class="k">Phone</span><a href="tel:' + esc(String(c.phone).replace(/[^0-9+]/g, '')) + '">' + esc(c.phone) + '</a></div>' : '') +
+        (c.email ? '<div><span class="k">Email</span><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></div>' : '') +
+        (!c.phone && !c.email ? '<div class="dim">No phone or email on this post.</div>' : '') + '</div>';
+    }
+    h += '<div class="acts">' +
+      (p.status !== 'hidden' ? '<button type="button" class="small warn" data-act="hide">Hide</button>' : '') +
+      (p.status !== 'live' || reps.length ? '<button type="button" class="small" data-act="clear">Clear</button>' : '') +
+      (p.n ? '' : '<button type="button" class="small quiet" data-act="mark">Mark seen</button>') +
+      '<button type="button" class="small quiet" data-act="contact">' + (OPEN[p.id] ? 'Hide phone and email' : 'Show phone and email') + '</button>' +
+      '</div></div>';
+    return h;
+  }
+  function counts() {
+    var c = { all: 0, held: 0, reported: 0, hidden: 0, live: 0 };
+    POSTS.forEach(function (p) { Object.keys(c).forEach(function (f) { if (inFilter(p, f)) c[f]++; }); });
+    return c;
+  }
+  function render() {
+    var f = $('show').value, rows = POSTS.filter(function (p) { return inFilter(p, f); });
+    var c = counts();
+    Array.prototype.forEach.call($('show').options, function (o) { o.textContent = o.textContent.replace(/ \(\d+\)$/, '') + ' (' + c[o.value] + ')'; });
+    $('list').innerHTML = rows.length ? rows.map(card).join('') : '<p>No posts here.</p>';
+    $('mark-all').hidden = !rows.some(function (p) { return !p.n; });
+  }
+  function load(msg) {
+    show('Loading...');
+    return call('list').then(function (j) {
+      if (!j || !j.ok || !Array.isArray(j.posts)) { show(esc((j && j.error) || 'The list did not load.'), 'bad'); return; }
+      CONTACT = {};
+      POSTS = j.posts.filter(function (p) { return p && typeof p === 'object' && typeof p.id === 'string'; }).map(function (p) {
+        var o = {};
+        Object.keys(p).forEach(function (k) { if (k !== 'phone' && k !== 'email') o[k] = p[k]; });
+        CONTACT[p.id] = { phone: p.phone || '', email: p.email || '' };
+        return o;
+      }).sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      Object.keys(OPEN).forEach(function (id) { if (!CONTACT[id]) delete OPEN[id]; });
+      var c = counts();
+      render();
+      show(msg || (c.all + ' post' + (c.all === 1 ? '' : 's') + ': ' + c.live + ' live, ' + c.held + ' held, ' + c.hidden + ' hidden, ' + c.reported + ' reported.'), msg ? 'good' : '');
+      if (!msg) toPick();
+    });
+  }
+  $('load').addEventListener('click', function () { load(); });
+  $('show').addEventListener('change', render);
+  window.addEventListener('hashchange', function () { render(); toPick(); });
+  $('mark-all').addEventListener('click', function () {
+    var ids = POSTS.filter(function (p) { return inFilter(p, $('show').value) && !p.n; }).map(function (p) { return p.id; });
+    if (!ids.length) return;
+    this.disabled = true;
+    var b = this;
+    call('mark', { ids: ids }).then(function (j) {
+      b.disabled = false;
+      if (!j || !j.ok) { show(esc((j && j.error) || 'Mark seen did not go through.'), 'bad'); return; }
+      load('Marked ' + (j.marked != null ? j.marked : ids.length) + ' seen.');
+    });
+  });
+  $('list').addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-act]');
+    if (!b) return;
+    var box = b.closest('.post'), id = box && box.getAttribute('data-id'), act = b.getAttribute('data-act');
+    if (!id) return;
+    if (act === 'contact') { if (OPEN[id]) delete OPEN[id]; else OPEN[id] = 1; render(); return; }
+    var p = POSTS.filter(function (x) { return x.id === id; })[0];
+    if (act === 'clear' && p && reports(p).length && !window.confirm('Put this post back up and drop its ' + reports(p).length + ' report' + (reports(p).length === 1 ? '' : 's') + '?')) return;
+    b.disabled = true;
+    var req = act === 'mark' ? call('mark', { ids: [id] }) : call(act, { id: id });
+    req.then(function (j) {
+      b.disabled = false;
+      if (!j || !j.ok) { show(esc((j && j.error) || 'That did not go through.'), 'bad'); return; }
+      load(act === 'hide' ? 'Hidden: ' + id + '. It is off the board.' : act === 'clear' ? 'Cleared: ' + id + '. It is back on the board.' : 'Marked seen: ' + id + '.');
+    });
+  });
+  if ($('tok').value) load();
+})();
+</script>
+</body>
+</html>
