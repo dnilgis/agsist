@@ -178,6 +178,7 @@ PAGES = [
     ]),
     ("About this site", [
         ("/data-sources", "Data Sources", "where every number comes from"),
+        ("/glossary", "Farm Market Glossary", "plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses"),
         ("/status", "Status", "whether each data feed is current right now"),
         ("/developer", "Embed Tools and Data Feeds", "embeddable GDU and ARC or PLC widgets, and the open JSON feeds"),
         ("/changelog", "Changelog", "dated list of site changes"),
