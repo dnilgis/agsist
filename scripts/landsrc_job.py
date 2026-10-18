@@ -35,6 +35,12 @@ import sys
 import elevsites_job as EJ
 
 STATES = {"IA": "19", "OH": "39", "NE": "31", "SD": "46", "MN": "27", "MI": "26", "KS": "20", "MO": "29", "IN": "18", "ND": "38"}
+# What fx/landnation's state inventory (land-nation/sources.md, Oct 18) says for each state, so this
+# county list does not redo it: where a statewide file exists or prices are not public, county rows are a cross-check.
+STATE_STATUS = {"IA": "county by county", "OH": "county by county", "SD": "county by county", "MI": "county or township",
+                "IN": "statewide sales disclosure file (fx/landnation parser)", "MN": "statewide eCRV extract by request",
+                "NE": "statewide sales file by request, fee", "KS": "nondisclosure (price confidential)",
+                "ND": "nondisclosure (no price filing)", "MO": "nondisclosure in most counties"}
 TEXT_BUDGET = 22000
 MIN_PAGE_TEXT = 2000
 FORMATS = ["csv", "xls", "gis_service", "gis_download", "search_only", "pdf_list", "none", "unclear"]
@@ -209,7 +215,7 @@ def collect(bundle, results):
     per = {}
     for st in STATES:
         rs = [r for r in rows if r["state"] == st]
-        per[st] = {"captured": len(rs), "noSite": sum(c["state"] == st for c in bundle.get("noSite", [])),
+        per[st] = {"statewide": STATE_STATUS[st], "captured": len(rs), "noSite": sum(c["state"] == st for c in bundle.get("noSite", [])),
                    "free": sum(r["free_sale_data"] == "yes" for r in rs),
                    "download": sum(r["free_sale_data"] == "yes" and r["format"] in ("csv", "xls", "gis_download", "gis_service") for r in rs),
                    "withPrice": sum(r["free_sale_data"] == "yes" and r["includes_price"] == "yes" for r in rs),
@@ -229,9 +235,10 @@ def markdown(t, landnation_note=""):
          "before anything is fetched in bulk.", ""]
     if landnation_note:
         L += [landnation_note, ""]
-    L += ["| State | Captured | No site | Free sales | Download or service | With price | Vendors |", "|---|---|---|---|---|---|---|"]
+    L += ["| State | State level (fx/landnation) | Captured | No site | Free sales | Download or service | With price | Vendors |",
+          "|---|---|---|---|---|---|---|---|"]
     for st, p in t["perState"].items():
-        L.append(f"| {st} | {p['captured']} | {p['noSite']} | {p['free']} | {p['download']} | {p['withPrice']} | "
+        L.append(f"| {st} | {p.get('statewide', '')} | {p['captured']} | {p['noSite']} | {p['free']} | {p['download']} | {p['withPrice']} | "
                  f"{', '.join(f'{k} {v}' for k, v in p['vendors'].items())} |")
     L += ["", "## Counties, most usable first", "",
           "| Score | County | Free | Format | Price | Acres | Class | Vendor | Terms | Data URL | Flags |", "|---|---|---|---|---|---|---|---|---|---|---|"]
@@ -263,9 +270,9 @@ def selftest():
     assert score(b) == 0 and check(e, None)["flags"] == ["no answer"]
     res = {"batch_id": "b", "actual_cost_usd": 1.0, "items": {cid_of(e["key"]): {"result": "succeeded", "parsed": good}}}
     t = collect({"landsrc": [e], "caps": "c", "noSite": [{"fips": "19001", "name": "Adair", "state": "IA"}]}, res)
-    assert t["perState"]["IA"] == {"captured": 1, "noSite": 1, "free": 1, "download": 1, "withPrice": 1, "vendors": {"county_own": 1}}, t["perState"]["IA"]
+    assert t["perState"]["IA"] == {"statewide": "county by county", "captured": 1, "noSite": 1, "free": 1, "download": 1, "withPrice": 1, "vendors": {"county_own": 1}}, t["perState"]["IA"]
     md = markdown(t, "Statewide sources: see fx/landnation.")
-    assert "| IA | 1 | 1 | 1 | 1 | 1 | county_own 1 |" in md and "Story, IA (19169)" in md and "fx/landnation" in md
+    assert "| IA | county by county | 1 | 1 | 1 | 1 | 1 | county_own 1 |" in md and "Story, IA (19169)" in md and "fx/landnation" in md
     print("landsrc selftest ok")
 
 
