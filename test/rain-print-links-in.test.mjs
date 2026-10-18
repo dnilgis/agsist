@@ -17,6 +17,7 @@ test("every county rain page carries one plain link to the bare /rain-print insi
   for (const st of readdirSync(ROOT + "rain", { withFileTypes: true }).filter((d) => d.isDirectory())) {
     for (const f of readdirSync(ROOT + "rain/" + st.name).filter((x) => x.endsWith(".html"))) {
       const h = read(`rain/${st.name}/${f}`);
+      if (h.includes('name="agsist-pointer"')) continue;   // a county that left the data (test/pointer-pages.test.mjs)
       const sell = h.split('class="rc-sell"')[1].split("</div>")[0];
       assert.match(sell, /<a href="\/rain-print">Rainfall art of any town and year<\/a>/, f);
       assert.equal(h.split('href="/rain-print"').length - 1, 1, f);

@@ -189,6 +189,7 @@ test("every county page's answers equal the calculator's math on the state file:
     for (const f of readdirSync(ROOT + "arc-plc/" + sd.name)) {
       if (!f.endsWith(".html") || f.endsWith("-sheet.html")) continue;
       const html = readFileSync(ROOT + "arc-plc/" + sd.name + "/" + f, "utf8");
+      if (html.includes('name="agsist-pointer"')) continue;   // a county that left the data (test/pointer-pages.test.mjs)
       const m0 = /data-arcplc [^>]*data-state="([A-Z]{2})" data-fips="(\d{5})"/.exec(html);
       assert.ok(m0, `${sd.name}/${f}: calculator carries its county`);
       const S = states[m0[1]] || (states[m0[1]] = state(m0[1]));

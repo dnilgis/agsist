@@ -103,11 +103,13 @@ test("formatting matches the build's rounding (half up after rounding to 9 place
 /* ------------------------------------------------------------------ the live tree */
 const states = {};
 const mathDoc = (st) => states[st] || (states[st] = JSON.parse(readFileSync(ROOT + `data/arc-plc/math/${st}.json`, "utf8")));
+// a county that left the data is a pointer page (scripts/pointer_pages.py, test/pointer-pages.test.mjs)
+const isPointer = (rel) => readFileSync(ROOT + rel, "utf8").includes('name="agsist-pointer"');
 function countyPages() {
   const out = [];
   for (const sd of readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((x) => x.isDirectory())) {
     for (const f of readdirSync(ROOT + "arc-plc/" + sd.name)) {
-      if (f.endsWith(".html") && !f.endsWith("-sheet.html")) out.push([sd.name, f]);
+      if (f.endsWith(".html") && !f.endsWith("-sheet.html") && !isPointer(`arc-plc/${sd.name}/${f}`)) out.push([sd.name, f]);
     }
   }
   return out;
@@ -186,7 +188,8 @@ test("county pages carry key numbers and the shared sheet link; old sheet URLs a
   for (const sm of readdirSync(ROOT).filter((x) => /^sitemap.*\.xml$/.test(x))) assert.ok(!/-sheet|arc-plc\/sheet/.test(readFileSync(ROOT + sm, "utf8")), `${sm} lists a sheet`);
   const sheet = readFileSync(ROOT + "arc-plc/sheet.html", "utf8");
   assert.ok(sheet.includes('content="noindex,follow"'), "the shared sheet is noindex");
-  const withPages = readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((x) => x.isDirectory()).map((x) => x.name);
+  const withPages = readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((x) => x.isDirectory()).map((x) => x.name)
+    .filter((s) => readdirSync(ROOT + "arc-plc/" + s).some((f) => f.endsWith(".html") && !isPointer(`arc-plc/${s}/${f}`)));
   assert.ok(withPages.length >= 45, `${withPages.length} state folders`);
   for (const s of withPages) assert.ok(SHEET_CFG.states[s] && existsSync(ROOT + `data/arc-plc/math/${SHEET_CFG.states[s]}.json`), `the sheet knows ${s} and its math file`);
 });

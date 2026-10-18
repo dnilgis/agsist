@@ -129,7 +129,9 @@ test("Your state links only to state pages that exist, and to every one that doe
     for (const [code, slug] of Object.entries(SLUG)) {
       const p = pat.replace("%", slug);
       const file = join(ROOT, p.endsWith("/") ? p + "index.html" : p + ".html");
-      assert.equal(ctx.has(list, code), existsSync(file), `${label} ${code}: table says ${ctx.has(list, code)}, disk says ${existsSync(file)}`);
+      // a pointer page (a state that left the data, scripts/pointer_pages.py) is not a state page
+      const real = existsSync(file) && !readFileSync(file, "utf8").includes('name="agsist-pointer"');
+      assert.equal(ctx.has(list, code), real, `${label} ${code}: table says ${ctx.has(list, code)}, disk says ${real}`);
     }
   }
   // the state names in the page match the slug table

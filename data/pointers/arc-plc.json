@@ -1,0 +1,41 @@
+{
+ "about": "Pointer pages left where a generated page dropped out of its set (scripts/pointer_pages.py). path: file; to: where it sends readers; since: date retired.",
+ "pointers": {
+  "arc-plc/connecticut.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/fairfield-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/hartford-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/litchfield-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/middlesex-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/new-haven-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/new-london-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/tolland-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  },
+  "arc-plc/connecticut/windham-county.html": {
+   "to": "/arc-plc",
+   "since": "2026-10-09"
+  }
+ }
+}
