@@ -546,7 +546,7 @@
       var nums = 'Expected ' + pay$(v.plc) + ' PLC vs ' + pay$(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';
       if (v.verdict === 'none') return '<b>' + Y + ': neither expected to pay.</b> ' + nums;
       if (v.verdict === 'close') return '<b>' + Y + ': close, either one.</b> About ' + money(Math.abs(v.diff)) + ' apart, too small or too uncertain to call. ' + nums;
-      var note = (v.borrowed && v.verdict.indexOf('lean_') === 0 ? ' Capped at Leans: this crop&rsquo;s price spread is sized to corn&rsquo;s October swings.' : '') +
+      var note = (v.borrowed && v.verdict.indexOf('lean_') === 0 ? ' Capped at Leans: this crop borrows corn&rsquo;s price swings.' : '') +
         (v.altDown ? ' Not a clear pick: a futures-based price start gives a different call.' : '');
       if (v.verdict.indexOf('lean_') === 0) {
         var side = v.verdict.slice(5), other = side === 'plc' ? 'arc' : 'plc', ow = side === 'plc' ? v.arcWins : v.plcWins;

@@ -56,7 +56,7 @@ print(A.read_cause_total('Heat and drought have pulled $169.1 million in crop in
   assert.match(read("farmland-atlas/sheet.html"), /\['Corn yield, median',null,M\.yld,f1\]/);
 });
 
-test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the benchmark, wheat spread", () => {
+test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the benchmark", () => {
   const h = read("arc-plc.html");
   assert.match(h, /added to the base on the other farms where you hold an enrolled share, come to 10 acres or less \(7 CFR 1412\.51\)/);
   assert.match(h, /Peanuts carry a separate limit of their own\./);
@@ -64,10 +64,6 @@ test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the bench
   const c = read("arc-plc/texas/childress-county.html");
   assert.match(c, /<title>Childress Co\., TX ARC or PLC 2026: Irrigated wheat/);
   assert.match(c, /comes in under <b>41\.6 bu<\/b> at USDA&rsquo;s price outlook, \$5\.70\. That is above the 41\.00 bu benchmark/);
-  const k = read("arc-plc/iowa/kossuth-county.html");
-  assert.ok(!k.includes("borrows corn"), "wheat's spread is its own, sized to corn's");
-  for (const f of ["components/arc-plc.js", "components/arc-plc-math.js", "components/arc-plc-simple.js"]) assert.ok(!read(f).includes("borrows corn") && !read(f).includes("'borrow'"), f);
-  assert.match(k, /arc-plc-simple\.js\?v=12/);
 });
 
 test("cash bids: Hold-to note says how the month is picked; Alabama listed; top-bid heading", () => {

@@ -381,11 +381,12 @@ UID:2026-12-11-arc-plc-2026-signup-deadline@agsist.com
 DTSTAMP:20261016T120000Z
 DTSTART;VALUE=DATE:20261211
 SUMMARY:2026 ARC/PLC signup deadline (FSA)
-DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. No electio
- n means you keep your 2025 choice but get no 2026 payment.\nCompare ARC an
- d PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa
- .usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-
- key-price-revenue-safety-net
+DESCRIPTION:Last day to sign 2026 ARC or PLC at your FSA office. Changing y
+ our election is optional\, but every farm needs a signed 2026 enrollment c
+ ontract. Miss Dec 11 and the farm keeps its 2025 choice but gets no 2026 p
+ ayment.\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\n
+ Source: https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announce
+ s-2026-2027-enrollment-key-price-revenue-safety-net
 URL:https://agsist.com/arc-plc
 END:VEVENT
 BEGIN:VEVENT

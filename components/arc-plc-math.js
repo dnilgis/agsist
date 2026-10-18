@@ -104,7 +104,7 @@
       v.n + ' past-year scenarios, ARC-CO in ' + v.arc_wins;
     if (w_ === 'none') return 'Neither expected to pay (' + nums + ').';
     if (w_ === 'close') return 'Close, either one: about ' + usd(v.diff / 100) + ' apart, too small or too uncertain to call (' + nums + ').';
-    var note = (v.borrowed && w_.indexOf('lean_') === 0 ? ' Capped at Leans: this crop&rsquo;s price spread is sized to corn&rsquo;s October swings.' : '') +
+    var note = (v.borrowed && w_.indexOf('lean_') === 0 ? ' Capped at Leans: this crop borrows corn&rsquo;s price swings.' : '') +
       (v.alt_down ? ' Not a clear pick: a futures-based price start gives a different call.' : '');
     if (w_.indexOf('lean_') === 0) {
       var side = w_.slice(5), other = side === 'plc' ? 'arc' : 'plc', ow = side === 'plc' ? v.arc_wins : v.plc_wins;

@@ -153,7 +153,7 @@ STYLES_V = "24"
 LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "10"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14)
-CALC_V = "12"   # 12: borrowed-spread wording (sized to corn's October swings), 2026-10-18; 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "11"   # 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -489,7 +489,7 @@ def verdict_line(v):
         return f"Neither expected to pay ({nums})."
     if w_ == "close":
         return f"Close, either one: about {usd(abs(v['diff']))} apart, too small or too uncertain to call ({nums})."
-    note = (" Capped at Leans: this crop&rsquo;s price spread is sized to corn&rsquo;s October swings." if v.get("borrowed") and w_.startswith("lean_") else "") + \
+    note = (" Capped at Leans: this crop borrows corn&rsquo;s price swings." if v.get("borrowed") and w_.startswith("lean_") else "") + \
            (" Not a clear pick: a futures-based price start gives a different call." if v.get("alt_down") else "")
     if w_.startswith("lean_"):
         side = w_[5:]
@@ -2445,7 +2445,7 @@ def gap_line(v, lc, y, cd, by=None):
         if ow == 0:
             t += f" {WORD[other]} did not come out ahead in any of the {v['n']} price years we ran."
         if v.get("borrowed"):
-            t += f" {lc[0].upper() + lc[1:]} {'have' if lc.endswith('s') else 'has'} a price spread sized to corn&rsquo;s October swings, so {'they stop' if lc.endswith('s') else 'it stops'} at Leans."
+            t += f" {lc[0].upper() + lc[1:]} {'borrow' if lc.endswith('s') else 'borrows'} corn&rsquo;s price swings, so {'they stop' if lc.endswith('s') else 'it stops'} at Leans."
         if v.get("alt_down"):
             t += " A futures-based price start gives a different answer, so it stops at Leans."
         return t

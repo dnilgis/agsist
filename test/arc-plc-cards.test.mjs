@@ -124,10 +124,15 @@ test("trigger line on every card with a price outlook: floor(90% x benchmark x b
       const ent = cty.k[k].find((x) => x.d === e.split(":")[0] && (x.sub || "") === unesc(e.split(":")[1] || ""));
       if (!cen) { assert.ok(!trig, `${p} ${k}: no price outlook, no trigger`); continue; }
       assert.ok(trig, `${p} ${k}: trigger line`);
-      const want = Math.floor(Math.round(0.9 * ent.by * cd.bp.value / Math.max(cen, cd.loan) * 1e6) / 1e6);
-      const got = +/under <b>([\d,]+) (?:bu|lb)<\/b>/.exec(trig)[1].replace(/,/g, "");
+      const raw = 0.9 * ent.by * cd.bp.value / Math.max(cen, cd.loan);
+      const whole = Math.floor(Math.round(raw * 1e6) / 1e6);
+      // at or over the benchmark the line is floored to a tenth, so "under 41 bu ... above the 41.00 bu
+      // benchmark" cannot print (Childress Co., TX, 2026-10-18); still floored, so "under N" stays true
+      const want = whole >= ent.by ? Math.floor(Math.round(raw * 10 * 1e6) / 1e6) / 10 : whole;
+      const got = +/under <b>([\d,.]+) (?:bu|lb)<\/b>/.exec(trig)[1].replace(/,/g, "");
       assert.equal(got, want, `${p} ${k}: ${got} vs ${want}`);
-      assert.equal(/pays even on a normal crop/.test(trig), want >= ent.by, `${p} ${k}: normal-crop note`);
+      assert.ok(got <= raw + 1e-9, `${p} ${k}: floored`);
+      assert.equal(/pays even on a normal crop/.test(trig), raw > ent.by, `${p} ${k}: normal-crop note`);
       n++;
     }
   }
