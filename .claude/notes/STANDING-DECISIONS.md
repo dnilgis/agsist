@@ -131,3 +131,11 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 17, Sig) More email signups wherever a reader has a reason to want an email; every ask must have a real sender.
 - (Oct 17, Sig) Bid boards skipped on a pass count for 6 h after their last good read, everywhere (pages, ZIP search, homepage card).
 - (Oct 17, Sig) The bids repo is attached to Claude Code sessions; fixes there are fine to push (npm test first, author dnilgis).
+- (Oct 18, Sig) Rain Print: shipping damage or loss replaced free, same serial; phone 715-797-2428 on Rain Print and business pages;
+  email stays sig@farmers1st.com; paper is heavy textured cotton fine-art paper (no brand on the site; dye inks, no archival claim);
+  framed prints get a white mat (mats arrive Mon Oct 19); Stripe address field stays on; prices unchanged this Christmas; business
+  sample = order one at regular price, credited on 10+; footer Sponsor link hidden on Rain Print pages.
+- (Oct 18, Sig) Menu: full redesign approved (Prices | Livestock | Field | Money & Land | Daily, ZIP chip, signup footer, Bids by state
+  page). Phone bottom bar and footer state links deferred.
+- (Oct 18, Sig) Spend the expiring API credits: stories for PRF/Atlas/town/co-op pages, accuracy passes (top pages and every set),
+  elevator website classifier for bids coverage, tool FAQ gaps, first-time visitor read. Monthly story refreshes are OK.
