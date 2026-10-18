@@ -1502,8 +1502,27 @@ def answer_and_desc(picks, snap_ct, place):
     """(sentence, meta description): the fullest sentence whose description
     fits DESC_MAX, the description being "<place> cash bids. <sentence> Call to
     confirm." -> ("", "") when no variant fits (the caller keeps its old text)."""
-    for n, basis in ((ANSWER_CROPS, True), (ANSWER_CROPS, False), (1, True), (1, False)):
-        a = answer_sentence(picks, snap_ct, n, basis)
+    town = place.rsplit(", ", 1)[0]
+
+    def named(lvl):
+        # 0 the full name; 1 without this page's own town ("Total Grain Marketing
+        # (Fairgrange)"); 2 without the delivery point, for one crop only
+        out = {}
+        for c, (r, name) in picks.items():
+            if lvl >= 1:
+                name = re.sub(rf"(\([^()]*), {re.escape(town)}\)$", r"\1)", name)
+            if lvl >= 2:
+                name = re.sub(r"\s*\([^()]*\)$", "", name) or name
+            out[c] = (r, name)
+        return out
+    for n, lvl, basis in ((ANSWER_CROPS, 0, True), (ANSWER_CROPS, 0, False), (ANSWER_CROPS, 1, True),
+                          (ANSWER_CROPS, 1, False), (1, 0, True), (1, 0, False), (1, 1, True), (1, 1, False),
+                          (1, 2, True), (1, 2, False)):
+        pk = named(lvl) if lvl else picks
+        cs = [c for c in CROPS if c in picks][:n]
+        if len({pk[c][1] for c in cs}) < len({picks[c][1] for c in cs}):
+            continue          # two elevators would read as one
+        a = answer_sentence(pk, snap_ct, n, basis)
         if not a:
             return "", ""
         for d in (f"{place} cash bids. {a} Call to confirm.", f"{place} cash bids. {a}"):
@@ -3536,6 +3555,26 @@ def _selftest_restricted():
     assert "11.67" not in sen
     assert top_nearby(rc["rows"])["soybeans"][0] == 11.41
     assert "open_far" not in rc["rows"][2], "the table's own row is not changed"
+    # a long delivery-point name gives up the town, then (one crop) the point, before the second crop or the answer
+    tg = {"corn": (row("corn", 4.39, -0.35, ("ZC", 11, 2026), "2026-10", "Oct 2026"),
+                   "Total Grain Marketing (Fairgrange, Charleston)"),
+          "soybeans": (row("soybeans", 12.23, -0.38, ("ZS", 10, 2026), "2026-10", "Oct 2026"),
+                       "Total Grain Marketing (Fairgrange, Charleston)")}
+    a, d = answer_and_desc(tg, snap, "Charleston, IL")
+    assert "Total Grain Marketing (Fairgrange" in a and len(d) <= DESC_MAX, a
+    tg2 = {c: (r, "Total Grain Marketing (Lis, Newton)") for c, (r, _) in tg.items()}
+    a, d = answer_and_desc(tg2, snap, "Newton, IL")
+    assert a.startswith("Nearest-delivery bids: corn $4.39 at Total Grain Marketing (Lis) for Oct 2026") \
+        and "soybeans $12.23" in a and len(d) <= DESC_MAX, a
+    fv = {"corn": (row("corn", 4.59, None, None, "2026-10", "Oct 2026"),
+                   "Frenchman Valley Farmers Cooperative, Inc. (Culbertson Shuttle)")}
+    a, d = answer_and_desc(fv, snap, "Culbertson, NE")
+    assert a and len(d) <= DESC_MAX, (a, d)
+    two = {"corn": (tg["corn"][0], "CHS United Plains Ag"),
+           "wheat": (row("wheat", 6.34, -0.5, ("KE", 11, 2026), "2026-10", "Open Storage"),
+                     "CHS United Plains Ag (Kanco, Tribune)")}
+    a, _ = answer_and_desc(two, snap, "Tribune, KS")
+    assert "wheat" not in a or "at CHS United Plains Ag (Kanco" in a, "two boards never read as one: " + a
     # an open bid a month after the restricted one: an ordinary answer
     rc2 = dict(rc, rows=rc["rows"][:2] + [row("soybeans", 11.70, -0.90, ("ZS", 10, 2026), "2026-11", "Nov 2026")])
     p2 = answer_picks([rc2])["soybeans"][0]
