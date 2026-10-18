@@ -171,6 +171,10 @@ TELLS = [
                                 r"good to know|pro tip|heads up|in short|tl;?dr|translation|the catch|the kicker)\s*:",
                                 re.I)),
     ("bottom-line", re.compile(r"\bthe bottom line\b|\bbottom line\s*:", re.I)),
+    # an index level printed as dollars ("The S&P 500 gained to $6,824", "Dollar index steady at $100.00"),
+    # daily archive Apr 10, 2026 (sets accuracy pass, 2026-10-18): an index is points, not a price
+    ("index-dollars", re.compile(r"\b(?:S&P(?:\s*500)?|Dow(?:\s+Jones)?|Nasdaq|Russell(?:\s*2000)?|dollar index|DXY|U\.S\. dollar index)"
+                                 r"\b[^.;!?$\d]{0,40}\$\s?\d", re.I)),
     ("signpost", re.compile(r"\bhere(?:'|’)s (?:what|why|how|the thing)\b|\bwhy (?:it|this) matters\b|"
                             r"\bwhat you need to know\b|\bwhen it comes to\b|\bkeep in mind\b|"
                             r"\b(?:it(?:'|’)s|it is)\s+important\s+to\b", re.I)),
@@ -499,6 +503,8 @@ _FAIL_TELL = [
     "Honestly, nobody knows.",
     "Cattle may potentially slip.",
     "Beans led on crush, not exports, and cattle eased on supply, not demand.",
+    "The S&P 500 gained to $6,824 continuing its recent strength.",
+    "Dollar index steady at $100.00 keeps export competitiveness neutral.",
 ]
 _PASS_TELL = [
     "Corn held $5.00 even with heavy stocks.",
@@ -513,6 +519,8 @@ _PASS_TELL = [
     "Corn may slip if harvest runs fast.",
     "The honest number is in the table.",
     "Corn held, not yet under $4.80, and the bounce came from the cash side, not a report.",
+    "The S&P 500 gained to 6,824 while corn held $4.80.",
+    "The dollar index sat at 100.0 and beans held $12.90.",
 ]
 
 
