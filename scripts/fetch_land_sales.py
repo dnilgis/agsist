@@ -1270,7 +1270,7 @@ WI_CONV = {"SALE": "Sale", "SALEREPDEED": "Sale", "GIFT": "Gift", "PARENTGIFT": 
 WI_RELATED = ("FAMILY", "PARENTCHILD", "SPOUSES", "EXSPOUSES", "SHAREHOLDER", "EMPLOYER")
 WI_HEAD = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
            "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED", "ACRESLINE1",
-           "ACRESANYPARCEL"]
+           "ACRESANYPARCEL", "FLAGS"]
 
 
 def wi_date(s):
@@ -1316,8 +1316,10 @@ def wi_returns(fh):
             "cc": tx(el, "County/CountyCode"), "doc": tx(el, "County/DocumentNumber"), "rec": wi_date(tx(el, "County/RecordedDate")),
             "date": wi_date(tx(el, "Document/ConveyanceDate")), "doctype": tx(el, "Document/DocumentType"),
             "conv": tx(el, "Document/ConveyanceType"), "rel": tx(el, "Document/GrantorGranteeRelationship"),
+            "own": tx(el, "Document/Ownership"),
             "parcels": [{"muni": tx(p, "Municipality"), "pin": tx(p, "ParcelNumber"), "use": tx(p, "PropertyUseType"),
-                         "acres": parse_num(tx(p, "TotalAcres")), "part": tx(p, "PartOfParcelTransferred")} for p in kids(el, "Parcels", "Parcel")],
+                         "acres": parse_num(tx(p, "TotalAcres")), "part": tx(p, "PartOfParcelTransferred"),
+                         "ptype": tx(p, "PropertyType")} for p in kids(el, "Parcels", "Parcel")],
             "grantors": [wi_name(g, tx) for g in kids(el, "Grantors", "Grantor")],
             "grantees": [wi_name(g, tx) for g in kids(el, "Grantees", "Grantee")],
             "price": parse_num(tx(el, "Fee/SalePrice")), "exempt": tx(el, "Fee/Exemption"), "legal": tx(el, "LegalDescription")[:LEGAL_MAX + 20],
@@ -1387,6 +1389,26 @@ def wi_learn_munis(csv_blob, index):
     return out
 
 
+def wi_flags(ret):
+    """Plain words from the return: Property Type on every parcel (LAND is land only; a type naming
+    buildings on any parcel is with buildings; anything else says nothing), Part of Parcel Transferred
+    other than ALL on any parcel (split parcel), Ownership partial (less than full interest).
+    Only LAND, ALL and FULL are seen in our sample; a value naming PART or BUILD is read, any other
+    value says nothing rather than a guess."""
+    ps = ret.get("parcels") or []
+    out = []
+    if re.search(r"PART", ret.get("own") or "", re.I):
+        out.append("less than full interest")
+    if any(re.search(r"PART", p.get("part") or "", re.I) for p in ps):
+        out.append("split parcel")
+    types = [(p.get("ptype") or "").upper() for p in ps]
+    if any(re.search(r"BUILD|IMPROV", t) for t in types):
+        out.append("with buildings")
+    elif types and all(t == "LAND" for t in types):
+        out.append("land only")
+    return out
+
+
 def wi_row(ret, munis):
     """One farm or forest return as a row under WI_HEAD, or None for any other return."""
     ps = ret["parcels"]
@@ -1402,6 +1424,9 @@ def wi_row(ret, munis):
         if c and c not in codes:
             codes.append(c)
     ac, ac1 = wi_acres(ps)
+    flags = wi_flags(ret)
+    if "split parcel" in flags:
+        ac = None              # part of a parcel: its Total Acres may be the whole parcel's
     conv = WI_DOC.get(ret["doctype"], ret["doctype"].title())
     if ret["rel"] in WI_RELATED:
         conv += ", related parties"
@@ -1416,7 +1441,7 @@ def wi_row(ret, munis):
     return [ret["doc"], ret["date"] or "", f(ret["price"]), f(ac), " ".join(codes), conv, ps[0]["pin"],
             munis.get((ret["cc"], ps[0]["muni"]), ""), county, ret["legal"], names(ret["grantors"]), names(ret["grantees"]),
             ret["exempt"], str(len(ps)), ret["rec"] or "", f(ac1) if len(ps) > 1 else "",
-            f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2))]
+            f(round(sum(p["acres"] for p in ps if p["acres"] and p["acres"] > 0), 2)), "; ".join(flags)]
 
 
 def held(st, out=None):
@@ -1813,8 +1838,13 @@ def selftest():
     ck("WI class: farm codes first, buildings classes kept", by["900002"]["cls"] == "4 1" and by["900008"]["cls"] == "6" and by["900010"]["cls"] == "5M 1")
     ck("WI names and county: St Croix code 55, entity names whole", by["900008"]["county"] == "St. Croix" and by["900008"]["grantor"] == "SYNTHETIC LAND LLC"
        and by["900002"]["grantor"] == "SYNTHETIC, SELLER B; SYNTHETIC, SELLER C")
-    ck("WI deed type: related parties and gift said, fee exemption flagged", by["900008"]["conv"] == "Quit Claim Deed, Related Parties, Parent/Child Gift"
-       and by["900008"]["exempt"] == 1 and by["900001"]["exempt"] == 0 and by["900001"]["conv"] == "Warranty Deed, Sale")
+    ck("WI deed type: related parties and gift said, fee exemption flagged", by["900008"]["conv"] == "Quit Claim Deed, Related Parties, Parent/Child Gift; land only"
+       and by["900008"]["exempt"] == 1 and by["900001"]["exempt"] == 0 and by["900001"]["conv"] == "Warranty Deed, Sale; land only")
+    ck("WI XML: Property Type kept (land only, with buildings), part of a parcel and a partial interest said, acres blank",
+       by["900010"]["conv"] == "Warranty Deed, Sale; less than full interest; split parcel; with buildings" and by["900010"]["acres"] is None
+       and wi_flags({"parcels": [{"ptype": "LAND"}, {"ptype": "CONDO"}]}) == [] and wi_flags({"parcels": [], "own": "FULL"}) == [])
+    ck("WI XML: a split parcel blanks acres a whole parcel would keep",
+       wi_row(dict(rets[0], parcels=[dict(rets[0]["parcels"][0], part="PART")]), mu)[3] == "" and rows[0][3] == "40")
     ck("WI town: from the learned name, the form muni_key reads", by["900001"]["muni"] == "TOWN OF CHETEK" and muni_key(by["900001"]["muni"]) == ("T", "CHETEK"))
     ck("WI town: an unknown code is left blank, not guessed", wi_row(dict(rets[0], cc="04"), mu)[7] == "")
     later = dict(by["900001"], rec="2024-05-02", price=1)
