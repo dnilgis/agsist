@@ -1,0 +1,3690 @@
+{
+ "about": "What answered for Field Scout's on-and-around card, read from a GitHub runner with the page's Origin. browser_ok means a web page may read the answer. Raw answers are on the raw branch at the saved path.",
+ "checked_utc": "2026-10-18T17:03:29Z",
+ "services": [
+  {
+   "acao": "https://agsist.com",
+   "attrs": [
+    "FLD_ZONE",
+    "SFHA_TF",
+    "ZONE_SUBTY"
+   ],
+   "browser_ok": true,
+   "bytes": 668533,
+   "features": 3,
+   "fields": [
+    {
+     "alias": "FLD_ZONE",
+     "name": "FLD_ZONE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ZONE_SUBTY",
+     "name": "ZONE_SUBTY",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SFHA_TF",
+     "name": "SFHA_TF",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPolygon",
+   "id": "nfhl-zones-ia",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/nfhl-zones-ia.json",
+   "status": 200,
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query",
+   "what": "FEMA flood zones in the field"
+  },
+  {
+   "acao": "https://agsist.com",
+   "attrs": [
+    "EFF_DATE",
+    "FIRM_PAN"
+   ],
+   "browser_ok": true,
+   "bytes": 340,
+   "features": 1,
+   "fields": [
+    {
+     "alias": "FIRM_PAN",
+     "name": "FIRM_PAN",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "EFF_DATE",
+     "name": "EFF_DATE",
+     "type": "esriFieldTypeDate"
+    }
+   ],
+   "geometryType": null,
+   "id": "nfhl-panel-ia",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/nfhl-panel-ia.json",
+   "status": 200,
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/3/query",
+   "what": "FEMA FIRM panel at the field center"
+  },
+  {
+   "acao": "https://agsist.com",
+   "browser_ok": true,
+   "bytes": 395,
+   "features": 0,
+   "fields": [
+    {
+     "alias": "WETLAND_TYPE",
+     "name": "WETLAND_TYPE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ATTRIBUTE",
+     "name": "ATTRIBUTE",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPolygon",
+   "id": "nwi-ia",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/nwi-ia.json",
+   "status": 200,
+   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0/query",
+   "what": "USFWS wetlands in the field"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 29183,
+   "id": "dep-ia",
+   "json": true,
+   "post": true,
+   "samples": 144,
+   "saved": "data/land-raw/layers/dep-ia.json",
+   "status": 200,
+   "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples",
+   "what": "USGS 3DEP elevation samples"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 703,
+   "id": "wind0-ia",
+   "json": true,
+   "keys": [
+    "case_id",
+    "p_name",
+    "t_cap",
+    "xlong",
+    "ylat"
+   ],
+   "post": false,
+   "rows": 7,
+   "saved": "data/land-raw/layers/wind0-ia.json",
+   "status": 200,
+   "url": "https://energy.usgs.gov/api/uswtdb/v1/turbines?xlong=gte.-93.5950&xlong=lte.-93.4002&ylat=gte.41.9893&ylat=lte.42.1343&select=case_id,p_name,t_cap,xlong,ylat",
+   "what": "USGS wind turbines within 5 mi box"
+  },
+  {
+   "acao": null,
+   "browser_ok": false,
+   "bytes": 113,
+   "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1010)>",
+   "id": "wind1-ia",
+   "post": false,
+   "saved": "data/land-raw/layers/wind1-ia.json",
+   "status": null,
+   "url": "https://eersc.usgs.gov/api/uswtdb/v1/turbines?xlong=gte.-93.5950&xlong=lte.-93.4002&ylat=gte.41.9893&ylat=lte.42.1343&select=case_id,p_name,t_cap,xlong,ylat",
+   "what": "USGS wind turbines within 5 mi box"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 170,
+   "id": "solar0-ia",
+   "json": true,
+   "keys": [
+    "case_id",
+    "p_cap_ac",
+    "p_year",
+    "xlong",
+    "ylat"
+   ],
+   "post": false,
+   "rows": 2,
+   "saved": "data/land-raw/layers/solar0-ia.json",
+   "status": 200,
+   "url": "https://energy.usgs.gov/api/uspvdb/v1/projects?xlong=gte.-93.6923&xlong=lte.-93.3029&ylat=gte.41.9169&ylat=lte.42.2067&select=case_id,p_year,p_cap_ac,xlong,ylat",
+   "what": "USGS large solar within 10 mi box"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 64509,
+   "elements": 37,
+   "id": "osm-ia",
+   "json": true,
+   "post": true,
+   "saved": "data/land-raw/layers/osm-ia.json",
+   "status": 200,
+   "url": "https://overpass-api.de/api/interpreter",
+   "what": "OpenStreetMap power lines and substations within 5 mi"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 103,
+   "error": {
+    "code": 499,
+    "details": [
+     "Token Required"
+    ],
+    "message": "Token Required",
+    "messageCode": "GWM_0003"
+   },
+   "id": "nced-ia",
+   "json": true,
+   "post": true,
+   "saved": "data/land-raw/layers/nced-ia.json",
+   "status": 200,
+   "url": "https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/NCED/FeatureServer/0/query",
+   "what": "NCED easements in the field"
+  },
+  {
+   "acao": "https://agsist.com",
+   "attrs": [
+    "FLD_ZONE",
+    "SFHA_TF",
+    "ZONE_SUBTY"
+   ],
+   "browser_ok": true,
+   "bytes": 1772842,
+   "features": 1,
+   "fields": [
+    {
+     "alias": "FLD_ZONE",
+     "name": "FLD_ZONE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ZONE_SUBTY",
+     "name": "ZONE_SUBTY",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SFHA_TF",
+     "name": "SFHA_TF",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPolygon",
+   "id": "nfhl-zones-wi",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/nfhl-zones-wi.json",
+   "status": 200,
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query",
+   "what": "FEMA flood zones in the field"
+  },
+  {
+   "acao": "https://agsist.com",
+   "attrs": [
+    "EFF_DATE",
+    "FIRM_PAN"
+   ],
+   "browser_ok": true,
+   "bytes": 340,
+   "features": 1,
+   "fields": [
+    {
+     "alias": "FIRM_PAN",
+     "name": "FIRM_PAN",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "EFF_DATE",
+     "name": "EFF_DATE",
+     "type": "esriFieldTypeDate"
+    }
+   ],
+   "geometryType": null,
+   "id": "nfhl-panel-wi",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/nfhl-panel-wi.json",
+   "status": 200,
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/3/query",
+   "what": "FEMA FIRM panel at the field center"
+  },
+  {
+   "acao": "https://agsist.com",
+   "browser_ok": true,
+   "bytes": 395,
+   "features": 0,
+   "fields": [
+    {
+     "alias": "WETLAND_TYPE",
+     "name": "WETLAND_TYPE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ATTRIBUTE",
+     "name": "ATTRIBUTE",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPolygon",
+   "id": "nwi-wi",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/nwi-wi.json",
+   "status": 200,
+   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0/query",
+   "what": "USFWS wetlands in the field"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 26579,
+   "id": "dep-wi",
+   "json": true,
+   "post": true,
+   "samples": 144,
+   "saved": "data/land-raw/layers/dep-wi.json",
+   "status": 200,
+   "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/getSamples",
+   "what": "USGS 3DEP elevation samples"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 2,
+   "id": "wind0-wi",
+   "json": true,
+   "post": false,
+   "rows": 0,
+   "saved": "data/land-raw/layers/wind0-wi.json",
+   "status": 200,
+   "url": "https://energy.usgs.gov/api/uswtdb/v1/turbines?xlong=gte.-91.7552&xlong=lte.-91.5497&ylat=gte.45.2393&ylat=lte.45.3843&select=case_id,p_name,t_cap,xlong,ylat",
+   "what": "USGS wind turbines within 5 mi box"
+  },
+  {
+   "acao": null,
+   "browser_ok": false,
+   "bytes": 113,
+   "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1010)>",
+   "id": "wind1-wi",
+   "post": false,
+   "saved": "data/land-raw/layers/wind1-wi.json",
+   "status": null,
+   "url": "https://eersc.usgs.gov/api/uswtdb/v1/turbines?xlong=gte.-91.7552&xlong=lte.-91.5497&ylat=gte.45.2393&ylat=lte.45.3843&select=case_id,p_name,t_cap,xlong,ylat",
+   "what": "USGS wind turbines within 5 mi box"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 84,
+   "id": "solar0-wi",
+   "json": true,
+   "keys": [
+    "case_id",
+    "p_cap_ac",
+    "p_year",
+    "xlong",
+    "ylat"
+   ],
+   "post": false,
+   "rows": 1,
+   "saved": "data/land-raw/layers/solar0-wi.json",
+   "status": 200,
+   "url": "https://energy.usgs.gov/api/uspvdb/v1/projects?xlong=gte.-91.8580&xlong=lte.-91.4469&ylat=gte.45.1669&ylat=lte.45.4567&select=case_id,p_year,p_cap_ac,xlong,ylat",
+   "what": "USGS large solar within 10 mi box"
+  },
+  {
+   "acao": null,
+   "browser_ok": false,
+   "bytes": 534,
+   "head": "# 502 Gateway Timeout\n\nThis Overpass API server is currently at capacity. All query workers are busy\nand the request queue is full.\n\n## What to do\n\nRetry your request using exponential backoff: wait a",
+   "id": "osm-wi",
+   "json": false,
+   "post": true,
+   "saved": "data/land-raw/layers/osm-wi.json",
+   "status": 502,
+   "url": "https://overpass-api.de/api/interpreter",
+   "what": "OpenStreetMap power lines and substations within 5 mi"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 103,
+   "error": {
+    "code": 499,
+    "details": [
+     "Token Required"
+    ],
+    "message": "Token Required",
+    "messageCode": "GWM_0003"
+   },
+   "id": "nced-wi",
+   "json": true,
+   "post": true,
+   "saved": "data/land-raw/layers/nced-wi.json",
+   "status": 200,
+   "url": "https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/NCED/FeatureServer/0/query",
+   "what": "NCED easements in the field"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 103,
+   "error": {
+    "code": 499,
+    "details": [
+     "Token Required"
+    ],
+    "message": "Token Required",
+    "messageCode": "GWM_0003"
+   },
+   "id": "nced-meta",
+   "json": true,
+   "post": false,
+   "saved": "data/land-raw/layers/nced-meta.json",
+   "status": 200,
+   "url": "https://services.arcgis.com/QVENGdaPbd4LUkLV/ArcGIS/rest/services/NCED/FeatureServer/0?f=json",
+   "what": "NCED layer fields"
+  },
+  {
+   "acao": "https://agsist.com",
+   "browser_ok": true,
+   "bytes": 52139,
+   "fields": [
+    {
+     "alias": "OBJECTID",
+     "name": "OBJECTID",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "DFIRM_ID",
+     "name": "DFIRM_ID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "FLD_AR_ID",
+     "name": "FLD_AR_ID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "STUDY_TYP",
+     "name": "STUDY_TYP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "FLD_ZONE",
+     "name": "FLD_ZONE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ZONE_SUBTY",
+     "name": "ZONE_SUBTY",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SFHA_TF",
+     "name": "SFHA_TF",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "STATIC_BFE",
+     "name": "STATIC_BFE",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "V_DATUM",
+     "name": "V_DATUM",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "DEPTH",
+     "name": "DEPTH",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "LEN_UNIT",
+     "name": "LEN_UNIT",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "VELOCITY",
+     "name": "VELOCITY",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "VEL_UNIT",
+     "name": "VEL_UNIT",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "AR_REVERT",
+     "name": "AR_REVERT",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "AR_SUBTRV",
+     "name": "AR_SUBTRV",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "BFE_REVERT",
+     "name": "BFE_REVERT",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "DEP_REVERT",
+     "name": "DEP_REVERT",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "DUAL_ZONE",
+     "name": "DUAL_ZONE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SOURCE_CIT",
+     "name": "SOURCE_CIT",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Shape",
+     "name": "SHAPE",
+     "type": "esriFieldTypeGeometry"
+    },
+    {
+     "alias": "SHAPE.STArea()",
+     "name": "SHAPE.STArea()",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "SHAPE.STLength()",
+     "name": "SHAPE.STLength()",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "GFID",
+     "name": "GFID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "GlobalID",
+     "name": "GlobalID",
+     "type": "esriFieldTypeGlobalID"
+    }
+   ],
+   "geometryType": "esriGeometryPolygon",
+   "id": "nfhl-28-meta",
+   "json": true,
+   "name": "Flood Hazard Zones",
+   "post": false,
+   "saved": "data/land-raw/layers/nfhl-28-meta.json",
+   "status": 200,
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28?f=json",
+   "what": "FEMA flood zone layer fields"
+  },
+  {
+   "acao": "https://agsist.com",
+   "browser_ok": true,
+   "bytes": 6563,
+   "fields": [
+    {
+     "alias": "OBJECTID",
+     "name": "OBJECTID",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "DFIRM_ID",
+     "name": "DFIRM_ID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "VERSION_ID",
+     "name": "VERSION_ID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "FIRM_ID",
+     "name": "FIRM_ID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ST_FIPS",
+     "name": "ST_FIPS",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "PCOMM",
+     "name": "PCOMM",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "PANEL",
+     "name": "PANEL",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SUFFIX",
+     "name": "SUFFIX",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "FIRM_PAN",
+     "name": "FIRM_PAN",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "PANEL_TYP",
+     "name": "PANEL_TYP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "PRE_DATE",
+     "name": "PRE_DATE",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "EFF_DATE",
+     "name": "EFF_DATE",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "SCALE",
+     "name": "SCALE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "PNP_REASON",
+     "name": "PNP_REASON",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "BASE_TYP",
+     "name": "BASE_TYP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SOURCE_CIT",
+     "name": "SOURCE_CIT",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "GFID",
+     "name": "GFID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SHAPE",
+     "name": "SHAPE",
+     "type": "esriFieldTypeGeometry"
+    },
+    {
+     "alias": "SHAPE.STArea()",
+     "name": "SHAPE.STArea()",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "SHAPE.STLength()",
+     "name": "SHAPE.STLength()",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "GlobalID",
+     "name": "GlobalID",
+     "type": "esriFieldTypeGlobalID"
+    }
+   ],
+   "geometryType": "esriGeometryPolygon",
+   "id": "nfhl-3-meta",
+   "json": true,
+   "name": "FIRM Panels",
+   "post": false,
+   "saved": "data/land-raw/layers/nfhl-3-meta.json",
+   "status": 200,
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/3?f=json",
+   "what": "FEMA FIRM panel layer fields"
+  },
+  {
+   "acao": "https://agsist.com",
+   "browser_ok": true,
+   "bytes": 9671,
+   "fields": [
+    {
+     "alias": "OBJECTID",
+     "name": "OBJECTID",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "SHAPE",
+     "name": "Shape",
+     "type": "esriFieldTypeGeometry"
+    },
+    {
+     "alias": "Shape_Length",
+     "name": "Shape_Length",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "Shape_Area",
+     "name": "Shape_Area",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "GlobalID",
+     "name": "GlobalID",
+     "type": "esriFieldTypeGlobalID"
+    },
+    {
+     "alias": "ATTRIBUTE",
+     "name": "ATTRIBUTE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "WETLAND_TYPE",
+     "name": "WETLAND_TYPE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "QAQC_CODE",
+     "name": "QAQC_CODE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ACRES",
+     "name": "ACRES",
+     "type": "esriFieldTypeDouble"
+    }
+   ],
+   "geometryType": "esriGeometryPolygon",
+   "id": "nwi-meta",
+   "json": true,
+   "name": "Wetlands",
+   "post": false,
+   "saved": "data/land-raw/layers/nwi-meta.json",
+   "status": 200,
+   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0?f=json",
+   "what": "NWI layer fields"
+  },
+  {
+   "acao": "https://agsist.com",
+   "browser_ok": true,
+   "bytes": 8769,
+   "fields": [
+    {
+     "alias": "OBJECTID",
+     "name": "OBJECTID",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "MAPLABELNA",
+     "name": "MAPLABELNA",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "LEGENDTYPE",
+     "name": "LEGENDTYPE",
+     "type": "esriFieldTypeSmallInteger"
+    },
+    {
+     "alias": "PUBLICVIEW",
+     "name": "PUBLICVIEW",
+     "type": "esriFieldTypeSmallInteger"
+    },
+    {
+     "alias": "Shape",
+     "name": "Shape",
+     "type": "esriFieldTypeGeometry"
+    },
+    {
+     "alias": "uniqueID",
+     "name": "uniqueID",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "LOCID",
+     "name": "LOCID",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "stfacid",
+     "name": "stfacid",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "progid",
+     "name": "progid",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "facName",
+     "name": "facName",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "LocAddress",
+     "name": "LocAddress",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "CityName",
+     "name": "CityName",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "State",
+     "name": "State",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "locZip",
+     "name": "locZip",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "countyName",
+     "name": "countyName",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "FO",
+     "name": "FO",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "locSupplem",
+     "name": "locSupplem",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "opStatus",
+     "name": "opStatus",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "OperatType",
+     "name": "OperatType",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Swine",
+     "name": "Swine",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "CattleDair",
+     "name": "CattleDair",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "CattleBeef",
+     "name": "CattleBeef",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Chickens",
+     "name": "Chickens",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Turkeys",
+     "name": "Turkeys",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Horses",
+     "name": "Horses",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "SheepLGoat",
+     "name": "SheepLGoat",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Other",
+     "name": "Other",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "AnimalUnit",
+     "name": "AnimalUnit",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "ConsPermit",
+     "name": "ConsPermit",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "NPDESPermit",
+     "name": "NPDESPermit",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "MMP",
+     "name": "MMP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "PindexMMP",
+     "name": "PindexMMP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "NMP",
+     "name": "NMP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "BasinInspection",
+     "name": "BasinInspection",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "TownshipNa",
+     "name": "TownshipNa",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Tier",
+     "name": "Tier",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Range",
+     "name": "Range",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "rangeDir",
+     "name": "rangeDir",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Sectn",
+     "name": "Sectn",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Latitude",
+     "name": "Latitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "Longitude",
+     "name": "Longitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "X_Coord",
+     "name": "X_Coord",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Y_Coord",
+     "name": "Y_Coord",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Accuracy",
+     "name": "Accuracy",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "colMthTxt",
+     "name": "colMthTxt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "refPntTxt",
+     "name": "refPntTxt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "VerifyTxt",
+     "name": "VerifyTxt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "collectBy",
+     "name": "collectBy",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ColDate",
+     "name": "ColDate",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "locComment",
+     "name": "locComment",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Congress",
+     "name": "Congress",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "StHouse",
+     "name": "StHouse",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "StSenate",
+     "name": "StSenate",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "HUC",
+     "name": "HUC",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Hyperlink",
+     "name": "Hyperlink",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPoint",
+   "id": "feed-meta-ia",
+   "json": true,
+   "name": "Animal Feeding Facilities",
+   "post": false,
+   "saved": "data/land-raw/layers/feed-meta-ia.json",
+   "status": 200,
+   "url": "https://programs.iowadnr.gov/geospatial/rest/services/OneStop/QueryEnvFacs/MapServer/2?f=json",
+   "what": "IA feedlot layer fields"
+  },
+  {
+   "acao": "https://agsist.com",
+   "attrs": [
+    "Accuracy",
+    "AnimalUnit",
+    "BasinInspection",
+    "CattleBeef",
+    "CattleDair",
+    "Chickens",
+    "CityName",
+    "ColDate",
+    "Congress",
+    "ConsPermit",
+    "FO",
+    "HUC",
+    "Horses",
+    "Hyperlink",
+    "LEGENDTYPE",
+    "LOCID",
+    "Latitude",
+    "LocAddress",
+    "Longitude",
+    "MAPLABELNA",
+    "MMP",
+    "NMP",
+    "NPDESPermit",
+    "OBJECTID",
+    "OperatType",
+    "Other",
+    "PUBLICVIEW",
+    "PindexMMP",
+    "Range",
+    "Sectn",
+    "SheepLGoat",
+    "StHouse",
+    "StSenate",
+    "State",
+    "Swine",
+    "Tier",
+    "TownshipNa",
+    "Turkeys",
+    "VerifyTxt",
+    "X_Coord",
+    "Y_Coord",
+    "colMthTxt",
+    "collectBy",
+    "countyName",
+    "facName",
+    "locComment",
+    "locSupplem",
+    "locZip",
+    "opStatus",
+    "progid",
+    "rangeDir",
+    "refPntTxt",
+    "stfacid",
+    "uniqueID"
+   ],
+   "browser_ok": true,
+   "bytes": 10203,
+   "features": 4,
+   "fields": [
+    {
+     "alias": "OBJECTID",
+     "name": "OBJECTID",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "MAPLABELNA",
+     "name": "MAPLABELNA",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "LEGENDTYPE",
+     "name": "LEGENDTYPE",
+     "type": "esriFieldTypeSmallInteger"
+    },
+    {
+     "alias": "PUBLICVIEW",
+     "name": "PUBLICVIEW",
+     "type": "esriFieldTypeSmallInteger"
+    },
+    {
+     "alias": "uniqueID",
+     "name": "uniqueID",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "LOCID",
+     "name": "LOCID",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "stfacid",
+     "name": "stfacid",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "progid",
+     "name": "progid",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "facName",
+     "name": "facName",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "LocAddress",
+     "name": "LocAddress",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "CityName",
+     "name": "CityName",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "State",
+     "name": "State",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "locZip",
+     "name": "locZip",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "countyName",
+     "name": "countyName",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "FO",
+     "name": "FO",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "locSupplem",
+     "name": "locSupplem",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "opStatus",
+     "name": "opStatus",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "OperatType",
+     "name": "OperatType",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Swine",
+     "name": "Swine",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "CattleDair",
+     "name": "CattleDair",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "CattleBeef",
+     "name": "CattleBeef",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Chickens",
+     "name": "Chickens",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Turkeys",
+     "name": "Turkeys",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Horses",
+     "name": "Horses",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "SheepLGoat",
+     "name": "SheepLGoat",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Other",
+     "name": "Other",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "AnimalUnit",
+     "name": "AnimalUnit",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "ConsPermit",
+     "name": "ConsPermit",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "NPDESPermit",
+     "name": "NPDESPermit",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "MMP",
+     "name": "MMP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "PindexMMP",
+     "name": "PindexMMP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "NMP",
+     "name": "NMP",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "BasinInspection",
+     "name": "BasinInspection",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "TownshipNa",
+     "name": "TownshipNa",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Tier",
+     "name": "Tier",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Range",
+     "name": "Range",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "rangeDir",
+     "name": "rangeDir",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Sectn",
+     "name": "Sectn",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Latitude",
+     "name": "Latitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "Longitude",
+     "name": "Longitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "X_Coord",
+     "name": "X_Coord",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Y_Coord",
+     "name": "Y_Coord",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Accuracy",
+     "name": "Accuracy",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "colMthTxt",
+     "name": "colMthTxt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "refPntTxt",
+     "name": "refPntTxt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "VerifyTxt",
+     "name": "VerifyTxt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "collectBy",
+     "name": "collectBy",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ColDate",
+     "name": "ColDate",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "locComment",
+     "name": "locComment",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Congress",
+     "name": "Congress",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "StHouse",
+     "name": "StHouse",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "StSenate",
+     "name": "StSenate",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "HUC",
+     "name": "HUC",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Hyperlink",
+     "name": "Hyperlink",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPoint",
+   "id": "feed-ia",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/feed-ia.json",
+   "status": 200,
+   "url": "https://programs.iowadnr.gov/geospatial/rest/services/OneStop/QueryEnvFacs/MapServer/2/query",
+   "what": "IA feedlots within 3 mi of a test point"
+  },
+  {
+   "acao": "https://agsist.com",
+   "browser_ok": true,
+   "bytes": 39874,
+   "fields": [
+    {
+     "alias": "objectid",
+     "name": "objectid",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "item_id",
+     "name": "item_id",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ai_id",
+     "name": "ai_id",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "int_doc_id",
+     "name": "int_doc_id",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "si_cat",
+     "name": "si_cat",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "si_id",
+     "name": "si_id",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "name",
+     "name": "name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "program_list",
+     "name": "program_list",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "status_fdlt",
+     "name": "status_fdlt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "activity_reg",
+     "name": "activity_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "num_reg",
+     "name": "num_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "co_num_reg",
+     "name": "co_num_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "title_reg",
+     "name": "title_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "type_reg",
+     "name": "type_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "start_d_reg",
+     "name": "start_d_reg",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "end_d_reg",
+     "name": "end_d_reg",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "active_reg",
+     "name": "active_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "permit_flag",
+     "name": "permit_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "activity_per",
+     "name": "activity_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "num_per",
+     "name": "num_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "title_per",
+     "name": "title_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "type_per",
+     "name": "type_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "start_d_per",
+     "name": "start_d_per",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "end_d_per",
+     "name": "end_d_per",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "cafo_flag",
+     "name": "cafo_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "owner",
+     "name": "owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "phone_owner",
+     "name": "phone_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "addr_m_owner",
+     "name": "addr_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "city_m_owner",
+     "name": "city_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "state_m_owner",
+     "name": "state_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "zip_m_owner",
+     "name": "zip_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "contact",
+     "name": "contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "phone_contact",
+     "name": "phone_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "addr_m_contact",
+     "name": "addr_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "city_m_contact",
+     "name": "city_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "state_m_contact",
+     "name": "state_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "zip_m_contact",
+     "name": "zip_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "addr_p_feedlot",
+     "name": "addr_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "city_p_feedlot",
+     "name": "city_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "state_p_feedlot",
+     "name": "state_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "zip_p_feedlot",
+     "name": "zip_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "county_code",
+     "name": "county_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "county_name",
+     "name": "county_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "cong_dist",
+     "name": "cong_dist",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "house_dist",
+     "name": "house_dist",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "senate_dist",
+     "name": "senate_dist",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc8",
+     "name": "huc8",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc8_name",
+     "name": "huc8_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc10",
+     "name": "huc10",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc10_name",
+     "name": "huc10_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc12",
+     "name": "huc12",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc12_name",
+     "name": "huc12_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "dwsma_code",
+     "name": "dwsma_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "dwsma_name",
+     "name": "dwsma_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "loc_desc",
+     "name": "loc_desc",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "trdsqq",
+     "name": "trdsqq",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "pls_township",
+     "name": "pls_township",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "range",
+     "name": "range",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "range_dir",
+     "name": "range_dir",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "section",
+     "name": "section",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "quarters",
+     "name": "quarters",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "latitude",
+     "name": "latitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "longitude",
+     "name": "longitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "method_code",
+     "name": "method_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "method_desc",
+     "name": "method_desc",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ref_code",
+     "name": "ref_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ref_desc",
+     "name": "ref_desc",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "verified_flag",
+     "name": "verified_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "collection_date",
+     "name": "collection_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "open_lot_flag",
+     "name": "open_lot_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "building_flag",
+     "name": "building_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "pasture_flag",
+     "name": "pasture_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "lq_store_flag",
+     "name": "lq_store_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "lq_s_close_date",
+     "name": "lq_s_close_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "sol_store_flag",
+     "name": "sol_store_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "sol_s_close_date",
+     "name": "sol_s_close_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "river_stream_flag",
+     "name": "river_stream_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "shoreland_flag",
+     "name": "shoreland_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "h_well_distance",
+     "name": "h_well_distance",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "m_well_distance",
+     "name": "m_well_distance",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "last_animal_date",
+     "name": "last_animal_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "waterbody_type_code",
+     "name": "waterbody_type_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "au_count",
+     "name": "au_count",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "animal_count",
+     "name": "animal_count",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "primary_stock",
+     "name": "primary_stock",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "birds_au",
+     "name": "birds_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bovines_au",
+     "name": "bovines_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "deerelk_au",
+     "name": "deerelk_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "goatsheep_au",
+     "name": "goatsheep_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "horses_au",
+     "name": "horses_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "lamaalpac_au",
+     "name": "lamaalpac_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "pigs_au",
+     "name": "pigs_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "other_au",
+     "name": "other_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "cattle_dl",
+     "name": "cattle_dl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "heifer_d",
+     "name": "heifer_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "calf_d",
+     "name": "calf_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "cattle_db",
+     "name": "cattle_db",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "steer_b",
+     "name": "steer_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "heifer_b",
+     "name": "heifer_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "cow_calf_b",
+     "name": "cow_calf_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "calf_b",
+     "name": "calf_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bull_mature",
+     "name": "bull_mature",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "veal_calf",
+     "name": "veal_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "swine_big",
+     "name": "swine_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "swine_medium",
+     "name": "swine_medium",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "swine_little",
+     "name": "swine_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "horse",
+     "name": "horse",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "sheep",
+     "name": "sheep",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_lm",
+     "name": "chx_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_b_big",
+     "name": "chx_b_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_b_little",
+     "name": "chx_b_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_l_big",
+     "name": "chx_l_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_l_little",
+     "name": "chx_l_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "turkey_big",
+     "name": "turkey_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "turkey_little",
+     "name": "turkey_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "duck",
+     "name": "duck",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "duck_lm",
+     "name": "duck_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "alpacas",
+     "name": "alpacas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bison",
+     "name": "bison",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bison_calf",
+     "name": "bison_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "camels",
+     "name": "camels",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "deer",
+     "name": "deer",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "donkey_mule",
+     "name": "donkey_mule",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "elk",
+     "name": "elk",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "emus_ostriches",
+     "name": "emus_ostriches",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "peacocks",
+     "name": "peacocks",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "fowl",
+     "name": "fowl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "foxes",
+     "name": "foxes",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "geese",
+     "name": "geese",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "goats",
+     "name": "goats",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "goats_small",
+     "name": "goats_small",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "ponies",
+     "name": "ponies",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "llamas",
+     "name": "llamas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "mink",
+     "name": "mink",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "rabbits",
+     "name": "rabbits",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "reindeer_caribou",
+     "name": "reindeer_caribou",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "unknown",
+     "name": "unknown",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_cat_dl",
+     "name": "au_cat_dl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_hef_d",
+     "name": "au_hef_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_calf_d",
+     "name": "au_calf_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_cat_db",
+     "name": "au_cat_db",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_steer_b",
+     "name": "au_steer_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_hef_b",
+     "name": "au_hef_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_cwcal_b",
+     "name": "au_cwcal_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_calf_b",
+     "name": "au_calf_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_bull_mature",
+     "name": "au_bull_mature",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_veal_calf",
+     "name": "au_veal_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_swine_b",
+     "name": "au_swine_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_swine_m",
+     "name": "au_swine_m",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_swine_l",
+     "name": "au_swine_l",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_horse",
+     "name": "au_horse",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_sheep",
+     "name": "au_sheep",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_lm",
+     "name": "au_chx_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_bbig",
+     "name": "au_chx_bbig",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_blittle",
+     "name": "au_chx_blittle",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_lbig",
+     "name": "au_chx_lbig",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_llittle",
+     "name": "au_chx_llittle",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_turk_big",
+     "name": "au_turk_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_turk_little",
+     "name": "au_turk_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_duck",
+     "name": "au_duck",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_duck_lm",
+     "name": "au_duck_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_alpacas",
+     "name": "au_alpacas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_bison",
+     "name": "au_bison",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_bison_calf",
+     "name": "au_bison_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_camels",
+     "name": "au_camels",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_deer",
+     "name": "au_deer",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_donkey_mule",
+     "name": "au_donkey_mule",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_elk",
+     "name": "au_elk",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_emus_ostriches",
+     "name": "au_emus_ostriches",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_peacocks",
+     "name": "au_peacocks",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_fowl",
+     "name": "au_fowl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_foxes",
+     "name": "au_foxes",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_geese",
+     "name": "au_geese",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_goats",
+     "name": "au_goats",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_goats_small",
+     "name": "au_goats_small",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_ponies",
+     "name": "au_ponies",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_llamas",
+     "name": "au_llamas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_mink",
+     "name": "au_mink",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_rabbits",
+     "name": "au_rabbits",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_reindeer_caribou",
+     "name": "au_reindeer_caribou",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_unknown",
+     "name": "au_unknown",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "category_fdlt",
+     "name": "category_fdlt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "type_fdlt",
+     "name": "type_fdlt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "reg_required",
+     "name": "reg_required",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "reg_current",
+     "name": "reg_current",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "per_class",
+     "name": "per_class",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "per_active",
+     "name": "per_active",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "npdes_sds",
+     "name": "npdes_sds",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPoint",
+   "id": "feed-meta-mn",
+   "json": true,
+   "name": "Feedlots",
+   "post": false,
+   "saved": "data/land-raw/layers/feed-meta-mn.json",
+   "status": 200,
+   "url": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_pca/env_feedlots/FeatureServer/0?f=json",
+   "what": "MN feedlot layer fields"
+  },
+  {
+   "acao": "https://agsist.com",
+   "attrs": [
+    "active_reg",
+    "activity_per",
+    "activity_reg",
+    "addr_m_contact",
+    "addr_m_owner",
+    "addr_p_feedlot",
+    "ai_id",
+    "alpacas",
+    "animal_count",
+    "au_alpacas",
+    "au_bison",
+    "au_bison_calf",
+    "au_bull_mature",
+    "au_calf_b",
+    "au_calf_d",
+    "au_camels",
+    "au_cat_db",
+    "au_cat_dl",
+    "au_chx_bbig",
+    "au_chx_blittle",
+    "au_chx_lbig",
+    "au_chx_llittle",
+    "au_chx_lm",
+    "au_count",
+    "au_cwcal_b",
+    "au_deer",
+    "au_donkey_mule",
+    "au_duck",
+    "au_duck_lm",
+    "au_elk",
+    "au_emus_ostriches",
+    "au_fowl",
+    "au_foxes",
+    "au_geese",
+    "au_goats",
+    "au_goats_small",
+    "au_hef_b",
+    "au_hef_d",
+    "au_horse",
+    "au_llamas",
+    "au_mink",
+    "au_peacocks",
+    "au_ponies",
+    "au_rabbits",
+    "au_reindeer_caribou",
+    "au_sheep",
+    "au_steer_b",
+    "au_swine_b",
+    "au_swine_l",
+    "au_swine_m",
+    "au_turk_big",
+    "au_turk_little",
+    "au_unknown",
+    "au_veal_calf",
+    "birds_au",
+    "bison",
+    "bison_calf",
+    "bovines_au",
+    "building_flag",
+    "bull_mature",
+    "cafo_flag",
+    "calf_b",
+    "calf_d",
+    "camels",
+    "category_fdlt",
+    "cattle_db",
+    "cattle_dl",
+    "chx_b_big",
+    "chx_b_little",
+    "chx_l_big",
+    "chx_l_little",
+    "chx_lm",
+    "city_m_contact",
+    "city_m_owner",
+    "city_p_feedlot",
+    "co_num_reg",
+    "collection_date",
+    "cong_dist",
+    "contact",
+    "county_code",
+    "county_name",
+    "cow_calf_b",
+    "deer",
+    "deerelk_au",
+    "donkey_mule",
+    "duck",
+    "duck_lm",
+    "dwsma_code",
+    "dwsma_name",
+    "elk",
+    "emus_ostriches",
+    "end_d_per",
+    "end_d_reg",
+    "fowl",
+    "foxes",
+    "geese",
+    "goats",
+    "goats_small",
+    "goatsheep_au",
+    "h_well_distance",
+    "heifer_b",
+    "heifer_d",
+    "horse",
+    "horses_au",
+    "house_dist",
+    "huc10",
+    "huc10_name",
+    "huc12",
+    "huc12_name",
+    "huc8",
+    "huc8_name",
+    "int_doc_id",
+    "item_id",
+    "lamaalpac_au",
+    "last_animal_date",
+    "latitude",
+    "llamas",
+    "loc_desc",
+    "longitude",
+    "lq_s_close_date",
+    "lq_store_flag",
+    "m_well_distance",
+    "method_code",
+    "method_desc",
+    "mink",
+    "name",
+    "npdes_sds",
+    "num_per",
+    "num_reg",
+    "objectid",
+    "open_lot_flag",
+    "other_au",
+    "owner",
+    "pasture_flag",
+    "peacocks",
+    "per_active",
+    "per_class",
+    "permit_flag",
+    "phone_contact",
+    "phone_owner",
+    "pigs_au",
+    "pls_township",
+    "ponies",
+    "primary_stock",
+    "program_list",
+    "quarters",
+    "rabbits",
+    "range",
+    "range_dir",
+    "ref_code",
+    "ref_desc",
+    "reg_current",
+    "reg_required",
+    "reindeer_caribou",
+    "river_stream_flag",
+    "section",
+    "senate_dist",
+    "sheep",
+    "shoreland_flag",
+    "si_cat",
+    "si_id",
+    "sol_s_close_date",
+    "sol_store_flag",
+    "start_d_per",
+    "start_d_reg",
+    "state_m_contact",
+    "state_m_owner",
+    "state_p_feedlot",
+    "status_fdlt",
+    "steer_b",
+    "swine_big",
+    "swine_little",
+    "swine_medium",
+    "title_per",
+    "title_reg",
+    "trdsqq",
+    "turkey_big",
+    "turkey_little",
+    "type_fdlt",
+    "type_per",
+    "type_reg",
+    "unknown",
+    "veal_calf",
+    "verified_flag",
+    "waterbody_type_code",
+    "zip_m_contact",
+    "zip_m_owner",
+    "zip_p_feedlot"
+   ],
+   "browser_ok": true,
+   "bytes": 84164,
+   "features": 18,
+   "fields": [
+    {
+     "alias": "objectid",
+     "name": "objectid",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "item_id",
+     "name": "item_id",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ai_id",
+     "name": "ai_id",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "int_doc_id",
+     "name": "int_doc_id",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "si_cat",
+     "name": "si_cat",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "si_id",
+     "name": "si_id",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "name",
+     "name": "name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "program_list",
+     "name": "program_list",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "status_fdlt",
+     "name": "status_fdlt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "activity_reg",
+     "name": "activity_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "num_reg",
+     "name": "num_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "co_num_reg",
+     "name": "co_num_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "title_reg",
+     "name": "title_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "type_reg",
+     "name": "type_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "start_d_reg",
+     "name": "start_d_reg",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "end_d_reg",
+     "name": "end_d_reg",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "active_reg",
+     "name": "active_reg",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "permit_flag",
+     "name": "permit_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "activity_per",
+     "name": "activity_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "num_per",
+     "name": "num_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "title_per",
+     "name": "title_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "type_per",
+     "name": "type_per",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "start_d_per",
+     "name": "start_d_per",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "end_d_per",
+     "name": "end_d_per",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "cafo_flag",
+     "name": "cafo_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "owner",
+     "name": "owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "phone_owner",
+     "name": "phone_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "addr_m_owner",
+     "name": "addr_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "city_m_owner",
+     "name": "city_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "state_m_owner",
+     "name": "state_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "zip_m_owner",
+     "name": "zip_m_owner",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "contact",
+     "name": "contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "phone_contact",
+     "name": "phone_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "addr_m_contact",
+     "name": "addr_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "city_m_contact",
+     "name": "city_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "state_m_contact",
+     "name": "state_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "zip_m_contact",
+     "name": "zip_m_contact",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "addr_p_feedlot",
+     "name": "addr_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "city_p_feedlot",
+     "name": "city_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "state_p_feedlot",
+     "name": "state_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "zip_p_feedlot",
+     "name": "zip_p_feedlot",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "county_code",
+     "name": "county_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "county_name",
+     "name": "county_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "cong_dist",
+     "name": "cong_dist",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "house_dist",
+     "name": "house_dist",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "senate_dist",
+     "name": "senate_dist",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc8",
+     "name": "huc8",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc8_name",
+     "name": "huc8_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc10",
+     "name": "huc10",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc10_name",
+     "name": "huc10_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc12",
+     "name": "huc12",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "huc12_name",
+     "name": "huc12_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "dwsma_code",
+     "name": "dwsma_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "dwsma_name",
+     "name": "dwsma_name",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "loc_desc",
+     "name": "loc_desc",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "trdsqq",
+     "name": "trdsqq",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "pls_township",
+     "name": "pls_township",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "range",
+     "name": "range",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "range_dir",
+     "name": "range_dir",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "section",
+     "name": "section",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "quarters",
+     "name": "quarters",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "latitude",
+     "name": "latitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "longitude",
+     "name": "longitude",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "method_code",
+     "name": "method_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "method_desc",
+     "name": "method_desc",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ref_code",
+     "name": "ref_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "ref_desc",
+     "name": "ref_desc",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "verified_flag",
+     "name": "verified_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "collection_date",
+     "name": "collection_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "open_lot_flag",
+     "name": "open_lot_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "building_flag",
+     "name": "building_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "pasture_flag",
+     "name": "pasture_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "lq_store_flag",
+     "name": "lq_store_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "lq_s_close_date",
+     "name": "lq_s_close_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "sol_store_flag",
+     "name": "sol_store_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "sol_s_close_date",
+     "name": "sol_s_close_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "river_stream_flag",
+     "name": "river_stream_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "shoreland_flag",
+     "name": "shoreland_flag",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "h_well_distance",
+     "name": "h_well_distance",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "m_well_distance",
+     "name": "m_well_distance",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "last_animal_date",
+     "name": "last_animal_date",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "waterbody_type_code",
+     "name": "waterbody_type_code",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "au_count",
+     "name": "au_count",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "animal_count",
+     "name": "animal_count",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "primary_stock",
+     "name": "primary_stock",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "birds_au",
+     "name": "birds_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bovines_au",
+     "name": "bovines_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "deerelk_au",
+     "name": "deerelk_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "goatsheep_au",
+     "name": "goatsheep_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "horses_au",
+     "name": "horses_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "lamaalpac_au",
+     "name": "lamaalpac_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "pigs_au",
+     "name": "pigs_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "other_au",
+     "name": "other_au",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "cattle_dl",
+     "name": "cattle_dl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "heifer_d",
+     "name": "heifer_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "calf_d",
+     "name": "calf_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "cattle_db",
+     "name": "cattle_db",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "steer_b",
+     "name": "steer_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "heifer_b",
+     "name": "heifer_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "cow_calf_b",
+     "name": "cow_calf_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "calf_b",
+     "name": "calf_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bull_mature",
+     "name": "bull_mature",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "veal_calf",
+     "name": "veal_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "swine_big",
+     "name": "swine_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "swine_medium",
+     "name": "swine_medium",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "swine_little",
+     "name": "swine_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "horse",
+     "name": "horse",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "sheep",
+     "name": "sheep",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_lm",
+     "name": "chx_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_b_big",
+     "name": "chx_b_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_b_little",
+     "name": "chx_b_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_l_big",
+     "name": "chx_l_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "chx_l_little",
+     "name": "chx_l_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "turkey_big",
+     "name": "turkey_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "turkey_little",
+     "name": "turkey_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "duck",
+     "name": "duck",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "duck_lm",
+     "name": "duck_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "alpacas",
+     "name": "alpacas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bison",
+     "name": "bison",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "bison_calf",
+     "name": "bison_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "camels",
+     "name": "camels",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "deer",
+     "name": "deer",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "donkey_mule",
+     "name": "donkey_mule",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "elk",
+     "name": "elk",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "emus_ostriches",
+     "name": "emus_ostriches",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "peacocks",
+     "name": "peacocks",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "fowl",
+     "name": "fowl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "foxes",
+     "name": "foxes",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "geese",
+     "name": "geese",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "goats",
+     "name": "goats",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "goats_small",
+     "name": "goats_small",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "ponies",
+     "name": "ponies",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "llamas",
+     "name": "llamas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "mink",
+     "name": "mink",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "rabbits",
+     "name": "rabbits",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "reindeer_caribou",
+     "name": "reindeer_caribou",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "unknown",
+     "name": "unknown",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_cat_dl",
+     "name": "au_cat_dl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_hef_d",
+     "name": "au_hef_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_calf_d",
+     "name": "au_calf_d",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_cat_db",
+     "name": "au_cat_db",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_steer_b",
+     "name": "au_steer_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_hef_b",
+     "name": "au_hef_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_cwcal_b",
+     "name": "au_cwcal_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_calf_b",
+     "name": "au_calf_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_bull_mature",
+     "name": "au_bull_mature",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_veal_calf",
+     "name": "au_veal_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_swine_b",
+     "name": "au_swine_b",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_swine_m",
+     "name": "au_swine_m",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_swine_l",
+     "name": "au_swine_l",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_horse",
+     "name": "au_horse",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_sheep",
+     "name": "au_sheep",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_lm",
+     "name": "au_chx_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_bbig",
+     "name": "au_chx_bbig",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_blittle",
+     "name": "au_chx_blittle",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_lbig",
+     "name": "au_chx_lbig",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_chx_llittle",
+     "name": "au_chx_llittle",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_turk_big",
+     "name": "au_turk_big",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_turk_little",
+     "name": "au_turk_little",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_duck",
+     "name": "au_duck",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_duck_lm",
+     "name": "au_duck_lm",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_alpacas",
+     "name": "au_alpacas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_bison",
+     "name": "au_bison",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_bison_calf",
+     "name": "au_bison_calf",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_camels",
+     "name": "au_camels",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_deer",
+     "name": "au_deer",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_donkey_mule",
+     "name": "au_donkey_mule",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_elk",
+     "name": "au_elk",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_emus_ostriches",
+     "name": "au_emus_ostriches",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_peacocks",
+     "name": "au_peacocks",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_fowl",
+     "name": "au_fowl",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_foxes",
+     "name": "au_foxes",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_geese",
+     "name": "au_geese",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_goats",
+     "name": "au_goats",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_goats_small",
+     "name": "au_goats_small",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_ponies",
+     "name": "au_ponies",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_llamas",
+     "name": "au_llamas",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_mink",
+     "name": "au_mink",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_rabbits",
+     "name": "au_rabbits",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_reindeer_caribou",
+     "name": "au_reindeer_caribou",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "au_unknown",
+     "name": "au_unknown",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "category_fdlt",
+     "name": "category_fdlt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "type_fdlt",
+     "name": "type_fdlt",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "reg_required",
+     "name": "reg_required",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "reg_current",
+     "name": "reg_current",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "per_class",
+     "name": "per_class",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "per_active",
+     "name": "per_active",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "npdes_sds",
+     "name": "npdes_sds",
+     "type": "esriFieldTypeString"
+    }
+   ],
+   "geometryType": "esriGeometryPoint",
+   "id": "feed-mn",
+   "json": true,
+   "name": null,
+   "post": true,
+   "saved": "data/land-raw/layers/feed-mn.json",
+   "status": 200,
+   "url": "https://enterprise.gisdata.mn.gov/aghost/rest/services/us_mn_state_pca/env_feedlots/FeatureServer/0/query",
+   "what": "MN feedlots within 3 mi of a test point"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 10848,
+   "fields": [
+    {
+     "alias": "OBJECTID_1",
+     "name": "OBJECTID_1",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "OBJECTID",
+     "name": "OBJECTID",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "ID",
+     "name": "ID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "TYPE",
+     "name": "TYPE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "STATUS",
+     "name": "STATUS",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "NAICS_CODE",
+     "name": "NAICS_CODE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "NAICS_DESC",
+     "name": "NAICS_DESC",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SOURCE",
+     "name": "SOURCE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SOURCEDATE",
+     "name": "SOURCEDATE",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "VAL_METHOD",
+     "name": "VAL_METHOD",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "VAL_DATE",
+     "name": "VAL_DATE",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "OWNER",
+     "name": "OWNER",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "VOLTAGE",
+     "name": "VOLTAGE",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "VOLT_CLASS",
+     "name": "VOLT_CLASS",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "INFERRED",
+     "name": "INFERRED",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SUB_1",
+     "name": "SUB_1",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SUB_2",
+     "name": "SUB_2",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "SHAPE__Len",
+     "name": "SHAPE__Len",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "GlobalID",
+     "name": "GlobalID",
+     "type": "esriFieldTypeGlobalID"
+    },
+    {
+     "alias": "Shape__Length",
+     "name": "Shape__Length",
+     "type": "esriFieldTypeDouble"
+    }
+   ],
+   "geometryType": "esriGeometryPolyline",
+   "id": "lines-0",
+   "json": true,
+   "lastEditUTC": "2023-09-05",
+   "name": "Electric_Power_Transmission_Lines",
+   "post": false,
+   "saved": "data/land-raw/layers/lines-0.json",
+   "status": 200,
+   "url": "https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Power_Transmission_Lines/FeatureServer/0?f=json",
+   "what": "national power line layer (HIFLD style)"
+  },
+  {
+   "acao": "*",
+   "browser_ok": true,
+   "bytes": 16448,
+   "fields": [
+    {
+     "alias": "System Object Identifier (Internal)",
+     "name": "OBJECTID_1",
+     "type": "esriFieldTypeOID"
+    },
+    {
+     "alias": "Object ID",
+     "name": "OBJECTID",
+     "type": "esriFieldTypeInteger"
+    },
+    {
+     "alias": "Transmission Line Unique Identifier",
+     "name": "ID",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Line Type",
+     "name": "TYPE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Operational Status of Line",
+     "name": "STATUS",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "North American Industry Classification System (NAICS) Code",
+     "name": "NAICS_CODE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "North American Industry Classification System (NAICS) Description",
+     "name": "NAICS_DESC",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Data Source Reference",
+     "name": "SOURCE",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Data Source Publication Date",
+     "name": "SOURCEDATE",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "Validation Method",
+     "name": "VAL_METHOD",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Validation Date",
+     "name": "VAL_DATE",
+     "type": "esriFieldTypeDate"
+    },
+    {
+     "alias": "Transmission Line Ownership Entity",
+     "name": "OWNER",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Voltage (Kilovolts)",
+     "name": "VOLTAGE",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "Voltage Class",
+     "name": "VOLT_CLASS",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Attribute Inference Indicator",
+     "name": "INFERRED",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Origin Substation Name",
+     "name": "SUB_1",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Destination Substation Name",
+     "name": "SUB_2",
+     "type": "esriFieldTypeString"
+    },
+    {
+     "alias": "Shape Length",
+     "name": "Shape__Len",
+     "type": "esriFieldTypeDouble"
+    },
+    {
+     "alias": "Shape Length",
+     "name": "Shape__Length",
+     "type": "esriFieldTypeDouble"
+    }
+   ],
+   "geometryType": "esriGeometryPolyline",
+   "id": "lines-1",
+   "json": true,
+   "lastEditUTC": "2026-05-19",
+   "name": "Electric_Power_Transmission_Lines_A",
+   "post": false,
+   "saved": "data/land-raw/layers/lines-1.json",
+   "status": 200,
+   "url": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0?f=json",
+   "what": "national power line layer (HIFLD style)"
+  }
+ ],
+ "wi_dnr_candidates": []
+}
