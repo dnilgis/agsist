@@ -32,26 +32,34 @@ def make(fee=100, acre=10000):
         for k in [c for c in HEAD["SALEDISC.txt"] if c[:2] in ("B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B1", "C1", "C2", "C3", "C4", "C6")]:
             d.setdefault(k, "N")
         d["B1_Valuable_Consider"] = "Y"
+        # the real file's blanks: no contract date reads 1900-01-01, the text boxes are empty
+        d.update({"B4_Trade_Parcel": "", "B5_Land_Contract_Term": "", "B5_Land_Contract_Date": "1900-01-01", "B6_Partial_Description": "",
+                  "C6_Form_Total": "", "P2_16_Valid_Trending": "Y", "P2_17_Validation_Complete": "Y"})
+        split = kw.pop("split", False)
         d.update(kw)
         D.append(d)
         for i, (pin, cls, ac, imp) in enumerate(parcels):
-            P.append({"SDF_ID": sid, "Parcel_Instance_No": "%03d" % (i + 1), "A1_Parcel_Number": pin, "A3_Land": "N" if imp else "Y",
+            P.append({"SDF_ID": sid, "Parcel_Instance_No": "%03d" % (i + 1), "A1_Parcel_Number": pin, "A2_Split": "Y" if split and i == 0 else "N", "A3_Land": "N" if imp else "Y",
                       "A4_Improvement": "Y" if imp else "N", "A5_City": "SAMPLETOWN", "A5_State": "IN", "A5_ZipCode": "46711",
                       "A7_Legal_Description": "SYNTHETIC PT NW 1/4 SEC %d" % n, "P2_6_Prop_Class_Code": cls, "P2_9_Acreage": str(int(round(ac * acre)))})
         C.append({"SDF_ID": sid, "Contact_Instance_No": "001", "Contact_Type": "S", "Name": seller, "Phone": "5550000000"})
         C.append({"SDF_ID": sid, "Contact_Instance_No": "002", "Contact_Type": "B", "Name": buyer})
         C.append({"SDF_ID": sid, "Contact_Instance_No": "003", "Contact_Type": "P", "Name": "SYNTHETIC PREPARER"})
-    form(1, "01", "Adams", 400000, [("010000000000000001", "100", 40.0, False)])
+    form(1, "01", "Adams", 400000, [("010000000000000001", "100", 40.0, False)], B3_Vacant_Land="Y")
     form(2, "01", "ADAMS COUNTY", 500000, [("010000000000000002", "101", 30.5, True), ("010000000000000003", "100", 9.5, False)],
          E2_PersProp="1000000", B5_Land_Contract="Y")
     form(3, "01", "Adams", 250000, [("010000000000000004", "510", 0.5, True)])
     form(4, "08", "Carrol", 120000, [("080000000000000005", "100", 20.0, False)], B1_Valuable_Consider="N")
-    form(5, "08", "Carrol", 90000, [("080000000000000006", "100", 10.0, False)], C3_Quitclaim="Y", E4_Relationship_Discount="2000000")
+    form(5, "08", "Carrol", 90000, [("080000000000000006", "100", 10.0, False)], C3_Quitclaim="Y", E4_Relationship_Discount="2000000",
+         P2_16_Valid_Trending="N")
     form(6, "08", "Carroll", 800000, [("080000000000000007", "100", 80.0, False)], C6_Multiple_Forms="Y")
     form(7, "92", "WHITLEY COUNTY", 1500000, [("920000000000000008", "100", 80.0, False), ("920000000000000009", "100", 80.0, False)])
     form(8, "92", "Whitley", 200000, [("920000000000000010", "120", 25.0, False)], C4_Auction="Y", B2_Buyer_Adjacent="Y")
     form(9, "92", "Whitley", 0, [("920000000000000011", "100", 5.0, False), ("920000000000000012", "400", 1.0, True)], G1_Sales_Price="30000000")
     form(10, "92", "Whitley", 50000, [("920000000000000013", "101", 4.0, True)], B6_Partial_Interest="Y")
+    form(11, "92", "Whitley", 350000, [("920000000000000014", "100", 35.0, False)], split=True, B3_Vacant_Land="Y")
+    form(12, "92", "Whitley", 450000, [("920000000000000015", "100", 45.0, False)], B5_Land_Contract_Date="2020-05-01",
+         B5_Land_Contract_Term="2020-2026", B3_Vacant_Land="Y")
     b = io.BytesIO()
     z = zipfile.ZipFile(b, "w", zipfile.ZIP_DEFLATED)
     z.writestr("SALEDISC.txt", tsv(D, HEAD["SALEDISC.txt"]).encode("utf-16"))

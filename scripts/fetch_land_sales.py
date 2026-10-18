@@ -1059,6 +1059,36 @@ def in_conv(d):
     return ", ".join(bits)
 
 
+def in_flags(d, parcels):
+    """Plain words on what kind of sale the form says it was (the words field-scout-land.js reads):
+    the assessor's P2_16 valid-for-trending call, B3 vacant land, A2 split on any parcel, B5 land
+    contract (the box, or a contract date other than the file's 1900-01-01 blank), B2 buyer owns
+    adjacent land, C4 auction, B8 court order."""
+    y = lambda k: (d.get(k) or "").strip().upper() == "Y"
+    n = lambda k: (d.get(k) or "").strip().upper() == "N"
+    out = []
+    if y("B8_Court_Order"):
+        out.append("court ordered")
+    if y("C4_Auction"):
+        out.append("auction")
+    if y("B2_Buyer_Adjacent"):
+        out.append("adjacent owner")
+    lcd = (d.get("B5_Land_Contract_Date") or "").strip()
+    if y("B5_Land_Contract") or (parse_date(lcd) and not lcd.startswith("1900-")):
+        out.append("installment contract")
+    if any((p.get("A2_Split") or "").strip().upper() == "Y" for p in parcels):
+        out.append("split parcel")
+    if y("B3_Vacant_Land"):
+        out.append("land only")
+    elif n("B3_Vacant_Land"):
+        out.append("with buildings")
+    if y("P2_16_Valid_Trending"):
+        out.append("valid for trending")
+    elif n("P2_16_Valid_Trending"):
+        out.append("not valid for trending")
+    return out
+
+
 def in_drop(d):
     """Forms that are not a sale of a whole property for money, left out of Indiana's files:
     no valuable consideration (B1), a trade (B4), a partial interest (B6), a transfer to a charity
@@ -1082,7 +1112,7 @@ def in_table(files, rep=None):
     rep = rep if rep is not None else {}
     head = ["DOCUMENTNUMBER", "DATEOFCONVEYANCE", "TOTALVALUE", "ACRES", "PROPERTYCLASS", "CONVEYANCETYPE", "PARCELNUMBER",
             "MUNICIPALITY", "COUNTY", "LEGALDESCRIPTION", "GRANTORNAME", "GRANTEENAME", "EXEMPTION", "TOTALPARCELS", "DATERECORDED",
-            "ACRESLINE1", "ZIP"]
+            "ACRESLINE1", "ZIP", "FLAGS"]
     yield head
     seen = set()
     names = {v["fips"]: v["name"] for v in county_index("IN").values()}
@@ -1149,6 +1179,9 @@ def in_table(files, rep=None):
                     and all(a and 0 < a <= 640 for a in acs)
                     and not (len(acs) > 1 and len(set(acs)) == 1 and acs[0] > 40))   # one tract's figure on every parcel
             ac = round(sum(acs), 4) if sure else None
+            flags = in_flags(d, ps)
+            if "split parcel" in flags:
+                ac = None                # part of a parcel: the acreage may be the whole parcel's
             if several:
                 n = max(n, 2)            # the price may cover parcels on another form: no $/acre
             first = ps[0] if ps else {}
@@ -1157,7 +1190,7 @@ def in_table(files, rep=None):
                    in_conv(d), pins[0] if pins else "", clean(first.get("A5_City"), 40).upper(), county,
                    clean(first.get("A7_Legal_Description"), LEGAL_MAX), "; ".join(who.get((sid, "S"), [])), "; ".join(who.get((sid, "B"), [])),
                    "", str(n), d.get("P2_14_Date_Received") or "", "" if a1 is None or n == 1 else str(round(a1, 4)),
-                   (first.get("A5_ZipCode") or "")[:5]]
+                   (first.get("A5_ZipCode") or "")[:5], "; ".join(flags)]
 
 
 def in_places(recs, zcta_blob):
@@ -1718,8 +1751,15 @@ def selftest():
        and ib["07"]["county"] == "Whitley")
     ck("IN: classes as the land card reads them (farm 4, timber 6, improved farm 7, commercial 2)",
        ib["01"]["cls"] == "4" and ib["02"]["cls"] == "4 7" and ib["08"]["cls"] == "6" and ib["09"]["cls"] == "4 2")
-    ck("IN: quitclaim and a family discount read as non-market words", ib["05"]["conv"] == "Quitclaim Deed, Related Parties"
-       and ib["02"]["conv"] == "Sale, Land Contract" and ib["08"]["conv"] == "Sale, Auction, Buyer Owns Adjacent Land")
+    ck("IN: quitclaim and a family discount read as non-market words", ib["05"]["conv"].startswith("Quitclaim Deed, Related Parties; ")
+       and ib["02"]["conv"].startswith("Sale, Land Contract; ") and ib["08"]["conv"].startswith("Sale, Auction, Buyer Owns Adjacent Land; "))
+    ck("IN: the deed type is not cut at 60 characters", len(ib["08"]["conv"]) > 60 and ib["08"]["conv"].endswith("; valid for trending"))
+    ck("IN: P2_16 valid for trending read both ways", ib["01"]["conv"].endswith("; valid for trending") and ib["05"]["conv"].endswith("; not valid for trending"))
+    ck("IN: B3 vacant land read as land only or with buildings", "; land only;" in ib["01"]["conv"] and "; with buildings;" in ib["05"]["conv"])
+    ck("IN: A2 split on a parcel: said, acres blank", ib["11"]["acres"] is None and "; split parcel;" in ib["11"]["conv"] and "split parcel" not in ib["12"]["conv"])
+    ck("IN: B5 land contract, the box or a contract date, says installment contract; the 1900-01-01 blank does not",
+       "installment contract" in ib["02"]["conv"] and "installment contract" in ib["12"]["conv"] and "installment contract" not in ib["01"]["conv"])
+    ck("IN: B2 adjacent and C4 auction in the plain words too", "; auction; adjacent owner;" in ib["08"]["conv"])
     ck("IN: a commercial-section price is read when the residential one is blank", ib["09"]["price"] == 300000)
     ck("IN: buyer and seller names only, never the preparer", ib["01"]["grantor"] == "SYNTHETIC SELLER" and ib["01"]["grantee"] == "SYNTHETIC BUYER")
     ck("IN: conveyance and received dates", ib["01"]["date"] == "2026-03-01" and ib["01"]["rec"] == "2026-04-01")
