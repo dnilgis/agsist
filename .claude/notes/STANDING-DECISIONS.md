@@ -146,3 +146,6 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 18, Sig) Net elevator price tool: not yet.
 - (Oct 18, Sig) Sponsors on land pages: any sponsor is OK, realtors included ("Sponsor" label, unsold shows nothing).
 - (Oct 18, Sig) Paid tools: undecided; build free first. Owner contact exports and a hay listings board: open questions (see the opportunity map doc).
+- (Oct 18, Sig) Owner names, middle ground: one parcel's owner shows on click as today; no bulk owner or contact lists for anyone (energy agents included). Screening reports carry no names and link to the county's own owner lookup.
+- (Oct 18, Sig) Hay listing board: build it (readers post hay for sale or wanted; no cut, no routing, contacts never in the page HTML or feed).
+- (Oct 18, Sig) Net price tool: wait.
