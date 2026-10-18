@@ -182,7 +182,7 @@ test("page wiring: one hook in field-scout.js, its own file, collapsed card", ()
   const core = read("field-scout.js");
   assert.match(core, /var FS_LAYERS_SRC='\/field-scout-layers\.js\?v=\d+'/);
   assert.match(core, /fsScript\(FS_LAYERS_SRC, '__fsLayers'\)/);
-  assert.match(read("field-scout.html"), /\/field-scout\.js\?v=17"/);
+  assert.match(read("field-scout.html"), /\/field-scout\.js\?v=19"/);
   const src = read("field-scout-layers.js");
   assert.match(src, /G\.__fsLayers = function \(FSX\)/);
   assert.match(src, /<details class="fsl" id="fsl">/);           // closed by default
