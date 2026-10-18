@@ -47,8 +47,6 @@
   }
   @media (max-width:700px){
     .footer .footer-inner{padding-left:1rem;padding-right:1rem;}
-    .footer .footer-top{padding-bottom:.6rem;margin-bottom:0;gap:.45rem;}
-    .footer .footer-brand img{height:30px;}
     footer.footer .footer-cols{display:block!important;columns:auto;gap:0;padding-bottom:0;margin-bottom:0;}
     footer details.footer-col{display:block;margin:0;border-bottom:1px solid var(--border);}
     footer details.footer-col > summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;cursor:pointer;}
@@ -59,44 +57,75 @@
     footer details.footer-col[open]{padding-bottom:.4rem;}
     .footer .footer-adspace{margin-top:.75rem;padding-top:0;border-top:0;}
     .footer .adspace-head{margin-bottom:.4rem;}
-    .footer .footer-bottom{padding:.5rem 0 .6rem;}
     .footer .footer-legal{justify-content:center;row-gap:0;}
   }
   @media (prefers-reduced-motion:reduce){footer details.footer-col > summary::after{transition:none;}}
-  /* 2026-10-18 footer: a top band (the daily email, email + optional ZIP, and one Rain Print line),
-     then Prices | Livestock | Field | Money & Land | Work with us | About. */
-  .footer-band{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:.6rem 2rem;align-items:start;padding:1rem 0 1.2rem;margin-bottom:1.1rem;border-bottom:1px solid var(--border)}
+  /* 2026-10-18 footer v2 (Sig: "footer seems strained"): one grid, the header's max width and left edge.
+     Band: logo + one-line tagline in columns 1-3; columns 4-6 hold the daily email box, then the daily
+     links and the Rain Print line (alone and level with the logo when the box is hidden for a subscriber).
+     Then Prices | Livestock | Field | Money & Land | Work with us | About on the same six columns.
+     Last, one small line and the legal links. Spacing steps: .5 / 1 / 1.5 / 2 rem. */
+  footer.footer{padding:2rem 0 0}
+  footer.footer .footer-band,footer.footer .footer-cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));column-gap:1.5rem}
+  footer.footer .footer-band{align-items:start;row-gap:1rem;padding:0 0 1.5rem;margin:0;border-bottom:1px solid var(--border)}
+  footer.footer .footer-band:has([data-signup-ask][hidden]){align-items:center}
+  .footer-brand{grid-column:1 / span 3;display:flex;align-items:center;gap:1rem;min-width:0}
+  .footer-logo{display:inline-flex;flex:none;line-height:0}
+  .footer-logo img{height:36px;width:auto;max-width:210px;object-fit:contain}
+  footer.footer .footer-tagline{margin:0;font-size:.86rem;line-height:1.5;color:var(--text-dim)}
+  .footer-band-side{grid-column:4 / span 3;min-width:0;display:flex;flex-direction:column;gap:.5rem}
+  .footer-band-ask:has(> [data-signup-ask][hidden]){display:none}
   .footer-band-ask .sa-ask{margin:0}
-  .footer-band-side p{margin:.2rem 0 .5rem;font-size:.86rem;line-height:1.5}
+  /* the box sits in half the grid: question on its own line, then email + button */
+  .footer-band-ask .sa-f{grid-template-columns:minmax(0,1fr) auto}
+  .footer-band-ask .sa-l{grid-column:1 / -1}
+  .footer-band-ask .sa-in{grid-column:1}
+  .footer-band-ask .sa-b{grid-column:2}
+  .footer-band-side p{margin:0;font-size:.86rem;line-height:1.5}
   .footer-band-side a{color:var(--text-dim);text-decoration:none}
   .footer-band-side a:hover{color:var(--brand)}
   .footer-band-rp a{color:var(--text)}
   .footer-band-rp b{color:var(--brand)}
-  .footer-band-daily .footer-sep{margin:0 .45rem;color:var(--text-muted)}
-  footer.footer .footer-cols{grid-template-columns:repeat(6,minmax(0,1fr))}
-  @media (max-width:1100px){footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  @media (max-width:700px){.footer-band{grid-template-columns:1fr;padding:.6rem 0 .8rem;margin-bottom:.4rem}}
+  .footer-band-daily .footer-sep{margin:0 .5rem;color:var(--text-muted)}
+  footer.footer .footer-cols{row-gap:1.5rem;padding:1.5rem 0;margin:0;border-bottom:1px solid var(--border)}
+  footer.footer .footer-adspace{margin-top:0;padding:1.5rem 0;border-top:0;border-bottom:1px solid var(--border)}
+  footer.footer .footer-bottom{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem 1.5rem;padding:1rem 0 1.5rem}
+  .footer-small .status-dot{flex:none}
+  .footer-small{margin:0;display:flex;align-items:center;flex-wrap:wrap;gap:0 .5rem;font-size:.78rem;line-height:1.6;color:var(--text-muted)}
+  .footer-small a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px}
+  .footer-small a:hover{color:var(--brand)}
+  footer.footer .footer-legal{gap:.5rem}
+  @media (max-width:1100px){
+    footer.footer .footer-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
+    footer.footer .footer-band{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .footer-brand{grid-column:1}.footer-band-side{grid-column:2}
+    .footer-brand{flex-direction:column;align-items:flex-start;gap:.5rem}
+  }
+  @media (max-width:700px){
+    footer.footer{padding-top:1.5rem}
+    footer.footer .footer-band{grid-template-columns:1fr;padding-bottom:1rem}
+    .footer-brand,.footer-band-side{grid-column:1}
+    .footer-brand{flex-direction:row;align-items:center;gap:.75rem}
+    .footer-logo img{height:30px}
+    footer.footer .footer-cols{display:block!important;padding:0}
+    footer.footer .footer-adspace{padding:1rem 0}
+    footer.footer .footer-bottom{flex-direction:column;align-items:center;text-align:center;gap:.5rem;padding:1rem 0 1.25rem}
+    .footer-small{justify-content:center}
+  }
 </style>
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-top">
+    <div class="footer-band">
       <div class="footer-brand">
         <style>/* self-contained theme swap: footer can render without header.html (fallback path) */
         .ftlg-l{display:none}
         [data-theme="light"] .ftlg-l{display:inline-block}
         [data-theme="light"] .ftlg-d{display:none}</style>
-        <img class="ftlg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148" style="height:36px;width:auto;object-fit:contain;max-width:210px">
-        <img class="ftlg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148" style="height:36px;width:auto;object-fit:contain;max-width:210px">
-        <div class="footer-brand-text">
-          <span class="footer-tagline">Free agricultural prices, tools &amp; news</span>
-          <span class="footer-built">Built in Chetek, Wisconsin</span>
-        </div>
+        <a class="footer-logo" href="/" aria-label="AGSIST home"><img class="ftlg-d" src="/img/logo-agsist-ondark.svg" alt="AGSIST" width="317" height="148"><img class="ftlg-l" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="317" height="148"></a>
+        <p class="footer-tagline">Free agricultural prices, tools &amp; news. Built in Chetek, Wisconsin.</p>
       </div>
-      <div class="footer-status"><span class="status-dot"></span><span>Data refreshed through the trading session</span></div>
-    </div>
-    <div class="footer-band">
-      <div class="footer-band-ask"><div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every weekday morning" data-source="footer"></div></div>
       <div class="footer-band-side">
+        <div class="footer-band-ask"><div data-signup-ask="AGSIST Daily: the markets and your top local bid, free, every weekday morning" data-source="footer"></div></div>
         <p class="footer-band-daily"><a href="/daily">Today&rsquo;s briefing</a><span class="footer-sep">&middot;</span><a href="/news">The Wire</a><span class="footer-sep">&middot;</span><a href="/archive">Archive</a></p>
         <p class="footer-band-rp"><a href="/rain-print"><b>Rain Print:</b> your farm&rsquo;s year of rain, framed &rarr;</a></p>
       </div>
@@ -193,8 +222,6 @@
         <a href="/changelog"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>What&rsquo;s new</a>
       </details>
     </div>
-
-
     <div class="footer-adspace" id="footer-adspace" hidden>
       <div class="adspace-head">
         <span class="adspace-lbl">Advertise on AGSIST</span>
@@ -203,10 +230,11 @@
       <div class="adspace-row" id="adspace-row"></div>
     </div>
     <div class="footer-bottom">
+      <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Data refreshed through the trading session. For information, not financial advice. <a href="/data-sources">Where the numbers come from</a></p>
       <div class="footer-legal">
-        <span>© 2026 AGSIST</span><span class="footer-sep">·</span>
-        <a href="/privacy">Privacy</a><span class="footer-sep">·</span>
-        <a href="/accessibility">Accessibility</a><span class="footer-sep">·</span>
+        <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
+        <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>
+        <a href="/accessibility">Accessibility</a><span class="footer-sep">&middot;</span>
         <a href="/terms">Terms</a>
       </div>
     </div>

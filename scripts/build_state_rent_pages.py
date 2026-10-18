@@ -1177,7 +1177,7 @@ def build_hub(states, stats, generated):
 <script src="/components/loader.js?v=19"></script>
 {SORT_JS}
 <script src="/components/glossary.js?v=1" defer></script>
-<script src="/components/next-links.js?v=1" defer></script>
+<script src="/components/next-links.js?v=2" defer></script>
 </body>
 </html>
 """
