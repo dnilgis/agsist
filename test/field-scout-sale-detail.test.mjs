@@ -30,7 +30,7 @@ function expectFor(c, r, f) {
     case "acres": return r.acres > 0 ? [String(+(+r.acres).toFixed(2))] : r.acUnsure ? ["uncertain"] : ["not in the record"];
     case "tac": return v != null ? [esc(v)] : [];
     case "np": return [`Parcels in this sale</th><td>${+v || 1}`];
-    case "cls": return v ? [esc(F.classLabel(v))] : ["not in the record"];
+    case "cls": return v ? [esc(F.classLabel(v, f.state))] : ["not in the record"];
     case "conv": return v ? [esc(v)] : ["not in the record"];
     case "pid": return v ? [esc(v)] : ["not in the record"];
     case "muni": return r.muniName ? [esc(r.muniName)] : ["not in the record"];

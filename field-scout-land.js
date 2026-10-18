@@ -142,10 +142,11 @@
   // with the checked rule (acres_rule 2 in scripts/fetch_land_sales.py: each added parcel read
   // once, in acres). Files built before it summed repeated added-parcel rows, so a 160-acre
   // quarter could read 894.9 acres. Uncertain acres show as unknown and give no $/acre.
+  // One parcel over 640 acres (a full section) is read the same way: acres uncertain.
   FSLand.ACRES_RULE = 2;
+  FSLand.ONE_PARCEL_MAX_AC = 640;
   FSLand.rowObjs = function (file) {
     if (!file || !file.cols || !file.rows) return [];
-    var ix = {}; file.cols.forEach(function (c, i) { ix[c] = i; });
     var munis = file.munis || {}, checked = (+file.acres_rule || 0) >= FSLand.ACRES_RULE;
     return file.rows.map(function (a) {
       var o = {}; file.cols.forEach(function (c, i) { o[c] = a[i]; });
@@ -153,43 +154,184 @@
       if (m) { o.muniName = m[0]; o.lat = m[1]; o.lng = m[2]; }
       else o.muniName = o.muni;
       if ((+o.np || 1) > 1 && (!checked || !(num(o.acres) > 0))) { o.acres = null; o.acUnsure = true; }
+      else if ((+o.np || 1) <= 1 && num(o.acres) > FSLand.ONE_PARCEL_MAX_AC) { o.acBig = num(o.acres); o.acres = null; o.acUnsure = true; }
       o.ppa = FSLand.perAcre(o.price, o.acres);
       o.county = file.county; o.st = file.state; o.fips = file.fips; o.src = file.source_short;
       return o;
     });
   };
 
-  // Wisconsin property classes (the assessment classes printed on the tax bill).
-  var CLASS = { '1': 'Residential', '2': 'Commercial', '3': 'Manufacturing', '4': 'Agricultural', '5': 'Undeveloped',
-    '5M': 'Agricultural forest', '6': 'Productive forest', '7': 'Other (farm buildings)', 'X': 'Exempt' };
-  FSLand.classLabel = function (c) {
-    return String(c || '').split(/[\s,;/]+/).filter(Boolean).map(function (x) { return CLASS[x.toUpperCase()] || x; }).join(', ');
+  // Property classes as each state's file writes them. Wisconsin: the assessment classes on the
+  // tax bill. Indiana: scripts/fetch_land_sales.py in_class (farm 4, timber 6, an improved farm
+  // parcel 7, and 1, 2, 3 for a house, commercial or industrial parcel on the same form).
+  // Illinois: every row is 4, the declaration's farm use (Line 8); it does not say whether
+  // buildings were part of the sale.
+  var CLASS = {
+    WI: { '1': 'Residential', '2': 'Commercial', '3': 'Manufacturing', '4': 'Agricultural', '5': 'Undeveloped',
+      '5M': 'Agricultural forest', '6': 'Productive forest', '7': 'Other (farm buildings)', 'X': 'Exempt' },
+    IN: { '1': 'Residential', '2': 'Commercial', '3': 'Industrial', '4': 'Farm land', '6': 'Timber', '7': 'Farm buildings' },
+    IL: { '4': 'Farm' }
+  };
+  FSLand.classLabel = function (c, st) {
+    var T = CLASS[String(st || '').toUpperCase()] || CLASS.WI;
+    return String(c || '').split(/[\s,;/]+/).filter(Boolean).map(function (x) { return T[x.toUpperCase()] || x; }).join(', ');
+  };
+  // The class note in a state's own words (never "Wisconsin class" on an Indiana or Illinois sale).
+  FSLand.classNote = function (c, st) {
+    st = String(st || '').toUpperCase();
+    if (st === 'IL') return 'the declaration marks the current use as farm, Line 8; it does not say whether buildings were included';
+    if (st === 'IN') return 'Indiana sales disclosure property class, farm parcel' + (/(^|\s)7(\s|$)/.test(String(c || '')) ? ', improved (buildings)' : '');
+    if (st === 'WI') return 'Wisconsin class ' + String(c || '');
+    return 'class ' + String(c || '');
+  };
+  // Document number in a state's own words.
+  FSLand.docLabel = function (st) {
+    st = String(st || '').toUpperCase();
+    return st === 'IN' ? 'Indiana sales disclosure ID' : st === 'IL' ? 'MyDec declaration ID' : st === 'WI' ? 'transfer return document' : 'doc';
   };
   FSLand.FARM_CLASSES = ['4', '5', '5M', '6', '7'];
   FSLand.hasBuildings = function (c) { return /(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(c || '')); };
+  // Whether the state's file can say if buildings sold with the land. Illinois' cannot.
+  FSLand.buildingsKnown = function (st) { return String(st || '').toUpperCase() !== 'IL'; };
 
-  // A sale counts as a comp only when it reads like a market sale: a price, acres,
-  // and a deed type that normally carries one. Quit claims, gifts and the transfers
-  // the return marks exempt from the fee are left out by default.
-  // Related-party sales (Illinois MyDec Line 10b; the builder adds ", related parties" to the deed
-  // type) are not arm's length, and court, partition, mineral and beneficial-interest transfers
-  // are not a field changing hands at a market price. A multi-parcel sale whose acres are
-  // uncertain stays listed, with no $/acre.
-  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEMENT|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT OFFICER|BENEFICIAL INTEREST/;
-  FSLand.marketSale = function (r) {
-    if (!r || !(num(r.price) > 0) || !(num(r.acres) > 0 || r.acUnsure)) return false;
-    if (r.exempt) return false;
-    if (FSLand.NON_MARKET.test(String(r.conv || '').toUpperCase())) return false;
-    return true;
+  // ── the market-sale rule (Oct 18, 2026) ─────────────────────────────
+  // One rule for Field Scout's Sold land nearby, the comp report and the Farmland Atlas.
+  // scripts/build_land_summary.py ports it line for line; test/land-rule.test.mjs runs both on
+  // the same rows and compares. A sale is a market sale when:
+  //   - it has a price, and acres (or a multi-parcel sale whose acres are uncertain: listed, no $/acre)
+  //   - it is not exempt from the transfer fee, and the buyer and seller are not marked related
+  //   - its deed type normally carries a market price. Out: quit claims, gifts, corrections,
+  //     terminations, transfer on death, sheriff, foreclosure and in-lieu deeds, court-ordered and
+  //     court officer deeds (a type cut short in the state file, "COURT O", still reads), judicial,
+  //     commissioner, partition, easements, leases, mineral and beneficial-interest transfers,
+  //     trades and exchanges, condemnation and highway takings, and the deed that closes out a
+  //     land or installment contract (its price was set years before, and the contract was the sale).
+  //     Auctions and sales to a neighbor stay in: those are open-market farm sales.
+  //   - it is a whole interest: not "an undivided one-third interest", not "less than full interest"
+  //   - it is not dated after today (a typo on a return)
+  FSLand.NON_MARKET = /QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\bTOD\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED/;
+  // A sale of a share of the land is not a price for the whole.
+  FSLand.PARTIAL = /\bUNDIVIDED\b|LESS THAN (?:FULL|100 ?%|THE WHOLE|ENTIRE)|PARTIAL INTEREST|\b(?:ONE|TWO|THREE)[- ](?:HALF|THIRD|THIRDS|FOURTH|FOURTHS|QUARTER|FIFTH|SIXTH)\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}\s*\/\s*\d{1,2}(?:TH|RD|ND)?\s+(?:UNDIVIDED\s+)?INTEREST\b|\b\d{1,2}(?:\.\d+)?\s*%\s+(?:UNDIVIDED\s+)?INTEREST\b/;
+  FSLand.PPA_FLOOR = 500;     // under this $/acre: listed, marked, out of every middle and low figure
+  FSLand.GROUP_DAYS = 31;     // deeds of one parcel this close together are one sale
+  FSLand.GROUP_LEGAL = 40;    // with no parcel number, the first this many letters of the legal
+  FSLand.today = function () { var d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+  FSLand.yearsBefore = function (iso, y) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso); var d = new Date(Date.UTC(+m[1] - y, +m[2] - 1, +m[3]));
+    return d.toISOString().slice(0, 10);
   };
+  FSLand.partial = function (r) {
+    if (!r) return false;
+    if (r.grp) return !!r.grpPartial;
+    return FSLand.PARTIAL.test((String(r.legal || '') + ' | ' + String(r.conv || '')).toUpperCase());
+  };
+  // Why a row is not a market sale, as short keys; empty when it is one. today: YYYY-MM-DD.
+  FSLand.screen = function (r, today) {
+    if (!r) return ['price'];
+    var out = [];
+    if (!(num(r.price) > 0)) out.push('price');
+    if (!(num(r.acres) > 0 || r.acUnsure)) out.push('acres');
+    if (r.exempt) out.push('exempt');
+    var c = String(r.conv || '').toUpperCase();
+    if (/RELATED PART/.test(c)) out.push('related');
+    else if (FSLand.NON_MARKET.test(c)) out.push('deed');
+    if (FSLand.partial(r)) out.push('partial');
+    var d = String(r.date || '').slice(0, 10);
+    if (d && d > (today || FSLand.today())) out.push('future');
+    return out;
+  };
+  FSLand.marketSale = function (r, today) { return FSLand.screen(r, today).length === 0; };
+  // A $/acre that can feed a middle or a low: known, and not under the floor.
+  FSLand.lowPpa = function (r) { return !!r && r.ppa != null && r.ppa < FSLand.PPA_FLOOR; };
+  FSLand.statOK = function (r) { return !!r && r.ppa != null && r.ppa >= FSLand.PPA_FLOOR; };
+
+  // One row per sale. rows: rowObjs output, any counties.
+  //  1. Repeated copies of one record keep the first: the same document in one county, or the same
+  //     date, price, parcel, seller and buyer.
+  //  2. Market sales (a share of the land allowed here) of one parcel in one county, the same parcel
+  //     number or, with none, the same first 40 letters of the legal description, within 31 days of
+  //     the first, are one sale filed as several deeds. It is listed once with the total price.
+  //     It gets a $/acre only when every deed carries the same full acres and one buyer (each deed
+  //     is a seller's share of the whole); otherwise it is listed with no $/acre and is a share sale
+  //     if any deed reads as one. Other rows pass through as they are.
+  function dayNo(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? Math.round(Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5) : null; }
+  function up(s) { return clean(s).toUpperCase(); }
+  FSLand.groupKey = function (r) {
+    var k = FSLand.parcelKeys(r.pid), co = String(r.fips || r.county || '');
+    if (k) return co + '|p|' + k.strip;
+    var l = up(r.legal);
+    return l.length >= 10 ? co + '|l|' + l.slice(0, FSLand.GROUP_LEGAL) : null;
+  };
+  FSLand.saleRows = function (rows, today) {
+    var seen = {}, once = [];
+    (rows || []).forEach(function (r) {
+      var co = String(r.fips || r.county || ''), p = num(r.price);
+      var k1 = r.doc ? co + '|d|' + up(r.doc) : null;
+      var pk = FSLand.parcelKeys(r.pid);
+      var where = pk ? pk.strip : up(r.legal).length >= 10 ? up(r.legal).slice(0, FSLand.GROUP_LEGAL) : '';
+      var k2 = where ? co + '|' + String(r.date || '').slice(0, 10) + '|' + (p == null ? '' : Math.round(p * 100)) + '|' + where + '|' + up(r.grantor) + '|' + up(r.grantee) : null;
+      if ((k1 && seen[k1]) || (k2 && seen[k2])) return;
+      if (k1) seen[k1] = 1;
+      if (k2) seen[k2] = 1;
+      once.push(r);
+    });
+    var by = {}, order = [];
+    once.forEach(function (r, i) {
+      var why = FSLand.screen(r, today).filter(function (w) { return w !== 'partial'; });
+      var k = !why.length && dayNo(r.date) != null ? FSLand.groupKey(r) : null;
+      if (!k) { order.push({ i: i, r: r }); return; }
+      (by[k] = by[k] || []).push({ i: i, r: r });
+    });
+    Object.keys(by).forEach(function (k) {
+      var list = by[k].sort(function (a, b) { var x = String(a.r.date), y = String(b.r.date); return x < y ? -1 : x > y ? 1 : a.i - b.i; });
+      var cur = null;
+      list.forEach(function (e) {
+        var d = dayNo(e.r.date);
+        if (cur && d - cur.d0 <= FSLand.GROUP_DAYS) { cur.m.push(e.r); return; }
+        cur = { d0: d, i: e.i, m: [e.r] }; order.push(cur);
+      });
+    });
+    order.sort(function (a, b) { return a.i - b.i; });
+    return order.map(function (g) {
+      if (g.r) return g.r;
+      if (g.m.length === 1) return g.m[0];
+      var m = g.m, f = m[0], o = {};
+      for (var key in f) o[key] = f[key];
+      var a0 = num(f.acres);
+      var sameAc = m.every(function (x) { return !x.acUnsure && num(x.acres) > 0 && num(x.acres) === a0; });
+      var buyers = m.map(function (x) { return up(x.grantee); }).filter(function (x, i, s) { return x && s.indexOf(x) === i; });
+      o.grp = m.length;
+      o.grpRows = m;
+      o.grpPrices = m.map(function (x) { return num(x.price); });
+      o.date2 = m[m.length - 1].date;
+      o.price = m.reduce(function (s, x) { return s + num(x.price); }, 0);
+      o.grpWhole = sameAc && buyers.length <= 1;
+      o.acres = sameAc ? a0 : null;
+      o.acUnsure = !sameAc;
+      o.ppa = o.grpWhole ? FSLand.perAcre(o.price, o.acres) : null;
+      o.grpPartial = !o.grpWhole && m.some(function (x) { return FSLand.partial(x); });
+      o.conv = m.map(function (x) { return clean(x.conv); }).filter(function (x, i, s) { return x && s.indexOf(x) === i; }).join('; ');
+      o.np = Math.max.apply(null, m.map(function (x) { return +x.np || 1; }));
+      return o;
+    });
+  };
+  // A sale filed as several deeds, in words.
+  FSLand.groupText = function (r) {
+    if (!r || !r.grp) return '';
+    return 'filed as ' + r.grp + ' deeds' + (r.date2 && r.date2 !== r.date ? ' from ' + FSLand.fmtDate(r.date) + ' to ' + FSLand.fmtDate(r.date2) : ' the same day') + ', ' + FSLand.fmtMoney(r.price) + ' in all' +
+      (r.grpWhole ? '' : r.acUnsure ? '; the deeds do not carry the same acres, so no $/acre' : '; more than one buyer, so no $/acre');
+  };
+  FSLand.LOW_TEXT = 'far below the range, likely not a whole open-market sale';
+  FSLand.UNVERIFIED = 'Unverified: taken from public transfer records, not confirmed with a party to the sale.';
 
   // Filters for the comps list. f = { minAc, maxAc, minPpa, maxPpa, since (YYYY-MM-DD),
   // cls: ['4',...] (any match), maxMi, all (include non-market deeds), sort, dir }
-  FSLand.filterComps = function (rows, f, origin) {
-    f = f || {};
-    var out = (rows || []).filter(function (r) {
+  FSLand.filterComps = function (rows, f, origin, today) {
+    f = f || {}; today = today || FSLand.today();
+    var out = FSLand.saleRows(rows, today).filter(function (r) {
       if (!(num(r.price) > 0) || !(num(r.acres) > 0 || r.acUnsure)) return false;   // a list of prices needs a price
-      if (!f.all && !FSLand.marketSale(r)) return false;
+      if (String(r.date || '').slice(0, 10) > today) return false;                  // dated after today: left out everywhere
+      if (!f.all && !FSLand.marketSale(r, today)) return false;
       var ac = num(r.acres), ppa = r.ppa != null ? r.ppa : FSLand.perAcre(r.price, r.acres);
       if (f.minAc != null && !(ac >= f.minAc)) return false;
       if (f.maxAc != null && !(ac <= f.maxAc)) return false;
@@ -217,9 +359,10 @@
     });
     return out;
   };
-  // Middle of the $/acre list (the median), with the count. Nothing under 3 sales.
+  // Middle of the $/acre list (the median), with the count. Nothing under 3 sales. A sale under
+  // the $/acre floor, or one with no $/acre (uncertain acres, a split filing), never feeds it.
   FSLand.medianPpa = function (rows) {
-    var v = (rows || []).map(function (r) { return r.ppa; }).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; });
+    var v = (rows || []).filter(FSLand.statOK).map(function (r) { return r.ppa; }).sort(function (a, b) { return a - b; });
     if (v.length < 3) return null;
     var m = v.length >> 1;
     return { ppa: v.length % 2 ? v[m] : Math.round((v[m - 1] + v[m]) / 2), n: v.length };
@@ -331,10 +474,10 @@
       else if (r.acUnsure) bits.push((+r.np || 2) + ' parcels, acres uncertain');
       if (ppa != null) bits.push(fm(ppa) + '/ac');
       var who = names ? ('<div>' + esc(r.grantor || 'seller not given') + ' &rarr; ' + esc(r.grantee || 'buyer not given') + '</div>') : '';
-      var meta = [r.conv ? esc(r.conv) : null, r.cls ? esc(FSLand.classLabel(r.cls)) : null, r.exempt ? 'exempt from the transfer fee' : null,
+      var meta = [r.conv ? esc(r.conv) : null, r.cls ? esc(FSLand.classLabel(r.cls, r.st || (cov && cov.st))) : null, r.exempt ? 'exempt from the transfer fee' : null,
         m.how === 'format' ? 'parcel number matched with county formatting set aside' : null,
         m.how === 'uncertain' ? '<span class="fl-warn">match uncertain: same section, quarter and town, parcel number differs (often a split)</span>' : null,
-        r.doc ? 'doc ' + esc(r.doc) : null].filter(Boolean).join(' &middot; ');
+        r.doc ? esc(FSLand.docLabel(r.st || (cov && cov.st))) + ' ' + esc(r.doc) : null].filter(Boolean).join(' &middot; ');
       return '<li><span class="d">' + fd(r.date) + '</span> &middot; ' + bits.join(' &middot; ') + who + '<div class="m">' + meta + '</div></li>';
     }).join('');
     return '<ul class="fl-hist">' + li + '</ul>' +
@@ -350,12 +493,13 @@
     function th(k, t, n) { return '<th class="' + (n ? 'n' : '') + '">' + (opts.detail ? '<button type="button" data-sort="' + k + '">' + t + '</button>' : t) + '</th>'; }
     return '<div class="fl-tblw"><table class="fl-tbl' + (opts.detail ? ' fl-tap' : '') + '"><thead><tr>' + th('date', 'Date') + th('ppa', '$/ac', 1) + th('acres', 'Acres', 1) + th('price', 'Price', 1) + th('mi', 'Miles', 1) + '<th>Town, class</th>' + (opts.src ? '<th>Source</th>' : '') + '</tr></thead><tbody>' +
       list.slice(0, max).map(function (r, i) {
-        var town = esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls)) : '');
+        var town = esc(r.muniName || '') + (r.cls ? ', ' + esc(FSLand.classLabel(r.cls, r.st)) : '');
         var date = opts.detail ? '<button type="button" class="fl-sale" data-sale="' + i + '" aria-haspopup="dialog" aria-label="' + esc('Everything on the sale of ' + fd(r.date) + (r.price > 0 ? ', ' + fm(r.price) : '') + (r.acres > 0 ? ', ' + (+r.acres).toFixed(1) + ' acres' : '') + (r.muniName ? ', ' + r.muniName : '')) + '">' + fd(r.date) + '</button>' : fd(r.date);
         /* data-l: the column name a phone shows over each value when the rows stack into cards (2026-10-17) */
-        return '<tr' + (opts.detail ? ' data-row="' + i + '"' : '') + '><td data-l="Date">' + date + '</td><td class="n" data-l="$/ac">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n" data-l="Acres">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td class="n" data-l="Price">' + fm(r.price) + '</td><td class="n" data-l="Miles">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td class="t" data-l="Town, class">' + town + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + '</td>' +
+        return '<tr' + (opts.detail ? ' data-row="' + i + '"' : '') + '><td data-l="Date">' + date + '</td><td class="n" data-l="$/ac">' + (r.ppa != null ? fm(r.ppa) : '') + '</td><td class="n" data-l="Acres">' + (r.acres > 0 ? (+r.acres).toFixed(1) : r.acUnsure ? '<span title="' + (+r.np || 2) + ' parcels on one return; acres uncertain">?</span>' : '') + '</td><td class="n" data-l="Price">' + fm(r.price) + '</td><td class="n" data-l="Miles">' + (r.mi != null ? (r.mi < 0.5 ? '&lt;1' : r.mi.toFixed(0)) : '') + '</td><td class="t" data-l="Town, class">' + town + (FSLand.hasBuildings(r.cls) ? ' <span class="fl-warn">with buildings</span>' : '') + (r.grp ? ' <span class="fl-warn">' + esc(FSLand.groupText(r)) + '</span>' : '') + (FSLand.lowPpa(r) ? ' <span class="fl-warn">' + FSLand.LOW_TEXT + '</span>' : '') + '</td>' +
           (opts.src ? '<td class="t" data-l="Source">' + esc(r.src || '') + (r.doc ? ' ' + esc(r.doc) : '') + '</td>' : '') + '</tr>';
-      }).join('') + '</tbody></table></div>' + (list.length > max && opts.detail ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + '. Narrow the filters to see the rest.</p>' : '');
+      }).join('') + '</tbody></table></div>' + (list.length > max && opts.detail ? '<p class="fl-note">Showing ' + max + ' of ' + list.length + '. Narrow the filters to see the rest.</p>' : '') +
+      '<p class="fl-note">' + FSLand.UNVERIFIED + '</p>';
   };
 
   // ── one sale in full: the detail panel (Oct 18, 2026) ───────────────
@@ -381,16 +525,10 @@
   };
   FSLand.relatedParty = function (r) { return /RELATED PART/i.test(String(r && r.conv || '')); };
   // Why a sale is left out of the market-sales list (empty when it is in).
-  FSLand.notMarketWhy = function (r) {
-    var why = [];
-    if (!(num(r.price) > 0)) why.push('no price on the return');
-    if (!(num(r.acres) > 0) && !r.acUnsure) why.push('no acres on the return');
-    if (r.exempt) why.push('exempt from the transfer fee');
-    var c = String(r.conv || '').toUpperCase();
-    if (/RELATED PART/.test(c)) why.push('buyer and seller related');
-    else if (FSLand.NON_MARKET.test(c)) why.push('the deed type does not usually carry a market price');
-    return why;
-  };
+  FSLand.WHY = { price: 'no price on the return', acres: 'no acres on the return', exempt: 'exempt from the transfer fee',
+    related: 'buyer and seller related', deed: 'the deed type does not usually carry a market price',
+    partial: 'the record reads as a share of the land (undivided, fractional or less than full interest)', future: 'dated after today, likely a typo on the return' };
+  FSLand.notMarketWhy = function (r, today) { return FSLand.screen(r, today).map(function (k) { return FSLand.WHY[k]; }); };
   // ArcGIS where clause that finds one parcel number in a parcel service, as written and with
   // punctuation set aside. Quotes are doubled; nothing but the parcel number goes in.
   FSLand.parcelWhere = function (svc, pid) {
@@ -417,7 +555,8 @@
   // file; others: matchTransfers of the same parcel, this sale left out. Plain strings for node.
   FSLand.saleDetailHTML = function (r, file, others) {
     file = file || {}; others = others || [];
-    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', WI = st === 'WI';
+    var st = String(r.st || file.state || '').toUpperCase(), IL = st === 'IL', IN = st === 'IN', WI = st === 'WI';
+    var form = IL ? 'declaration' : IN ? 'sales disclosure form' : 'return';
     var cols = file.cols || [];
     var has = function (c) { return cols.indexOf(c) >= 0; };
     var v = function (x) { return x == null || x === '' ? null : x; };
@@ -430,18 +569,23 @@
     row(IL ? 'Deed date (instrument date)' : 'Deed date (date of conveyance)', v(r.date) ? fd(r.date) : NOTIN);
     row('Recorded (filed)', has('rec') ? (v(r.rec) ? fd(r.rec) : NOTIN) : NOTKEPT, has('rec') ? null : 'The state file has the recording date; our copy keeps only the deed date for ' + esc(st || 'this state') + '.');
     row('Price', price > 0 ? fm(price) : price === 0 ? '$0 on the ' + (IL ? 'declaration' : 'return') : NOTIN,
-      IL ? 'Net consideration (Line 13 of Form PTAX-203), or full consideration (Line 11) when Line 13 is blank. Covers everything that sold.' : 'Sale price on the transfer return. Covers everything that sold, buildings included.');
+      (IL ? 'Net consideration (Line 13 of Form PTAX-203: full consideration less personal property, Line 12a), or full consideration (Line 11) when Line 13 is blank. Covers the real estate that sold, buildings included.'
+        : IN ? 'Sales price (E1) less personal property (E2) on the Indiana sales disclosure form. Covers the real estate that sold, buildings included.'
+        : 'Sale price on the transfer return. Covers everything that sold, buildings included.') + (r.grp ? ' ' + esc(FSLand.groupText(r)) + ': ' + r.grpPrices.map(fm).join(' + ') + '.' : ''));
     row('Acres', ac > 0 ? (+ac).toFixed(2).replace(/\.?0+$/, '') : r.acUnsure ? '<span class="fl-warn">uncertain</span>' : NOTIN,
-      r.acUnsure ? np + ' parcels on one ' + (IL ? 'declaration' : 'return') + ' and the acres do not add up for sure, so we print no total.' : (np > 1 ? 'All ' + np + ' parcels together.' : null));
+      r.acBig ? 'The record gives ' + esc(r.acBig) + ' acres on one parcel, more than a full section (640), so we treat the acres as uncertain.' :
+      r.acUnsure ? np + ' parcels on one ' + form + ' and the acres do not add up for sure, so we print no total.' : (np > 1 ? 'All ' + np + ' parcels together.' : null));
     if (has('ac1') && (np > 1 || v(r.ac1) != null)) row(IL ? 'Lot size or acreage as written (Line 1)' : 'Acres on the first parcel line', v(r.ac1) != null ? esc(r.ac1) : NOTIN, np > 1 ? 'As the filer wrote it. Often the whole sale, sometimes one parcel.' : null);
     if (has('tac') && v(r.tac) != null) row('Acres added over repeated rows', v(r.tac) != null ? esc(r.tac) : NOTIN);
-    row('$/acre', r.ppa != null ? fm(r.ppa) : '<span class="fl-miss">not figured</span>', r.ppa != null ? 'Price over acres.' : (price > 0 ? 'Acres are not known for sure.' : 'There is no price to divide.'));
+    row('$/acre', r.ppa != null ? fm(r.ppa) + (FSLand.lowPpa(r) ? ' <span class="fl-warn">' + FSLand.LOW_TEXT + '</span>' : '') : '<span class="fl-miss">not figured</span>',
+      r.ppa != null ? 'Price over acres.' + (FSLand.lowPpa(r) ? ' Under ' + fm(FSLand.PPA_FLOOR) + ' an acre: listed, but left out of every middle and low figure.' : '') : (price > 0 ? (r.grp ? 'Filed as ' + r.grp + ' deeds that do not resolve to one whole sale.' : 'Acres are not known for sure.') : 'There is no price to divide.'));
     row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
-    row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls)) + ' <span class="fl-note">(' + (IL ? 'the declaration marks the current use as farm, Line 8' : 'Wisconsin class ' + esc(r.cls)) + ')</span>' : NOTIN);
+    row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls, st)) + ' <span class="fl-note">(' + esc(FSLand.classNote(r.cls, st)) + ')</span>' : NOTIN);
     row('Buyer and seller related', FSLand.relatedParty(r) ? '<span class="fl-warn">Yes</span>, the ' + (IL ? 'declaration (Line 10b)' : 'return') + ' says so' : 'Not marked related on the ' + (IL ? 'declaration' : 'return'));
     row(IL ? 'State transfer tax' : 'Transfer fee', r.exempt ? 'Exemption claimed' + (IL ? ' (Line 16)' : ' (an exemption number is on the return)') : (has('exempt') ? 'No exemption claimed' : NOTIN));
     var why = FSLand.notMarketWhy(r);
-    row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court and partition deeds and fee-exempt transfers.');
+    row('In the market-sales list', why.length ? 'No: ' + esc(why.join('; ')) : 'Yes', 'Arm’s length is not stated on the form; we leave out related parties, gifts, quit claims, court, foreclosure, trade and partition deeds, shares of the land and fee-exempt transfers.');
+    row('Verified', 'No', 'Taken from public transfer records, not confirmed with a party to the sale.');
 
     group('Who');
     if (file.names && has('grantor')) {
@@ -476,12 +620,12 @@
 
     var links = (file.links || []).map(function (l) { return '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>'; }).join(' &middot; ');
     var office = IL ? 'Clerk and Recorder' : 'Register of Deeds';
-    var src = '<p class="fl-note">' + esc(file.source || 'State transfer data') + (v(r.doc) ? ', document ' + esc(r.doc) : '') + '. ' +
+    var src = '<p class="fl-note">' + esc(file.source || 'State transfer data') + (v(r.doc) ? ', ' + esc(FSLand.docLabel(st)) + ' ' + esc(r.doc) : '') + '. ' +
       (file.fetched_utc ? 'Our copy was read ' + fd(String(file.fetched_utc).slice(0, 10)) + '. ' : '') +
       'The deed itself is at the ' + esc((r.county || file.county || 'county') + ' County ' + office) + '.</p>' + (links ? '<p class="fl-note fl-links">' + links + '</p>' : '');
     var notIn = '<p class="fl-note"><b>Not in our copy:</b> the street address, ' + (np > 1 ? 'the other parcel numbers, ' : '') +
-      'the parcel outline, financing, any personal property in the price (machinery, grain, buildings’ contents), and why the land sold. The full ' +
-      (IL ? 'declaration' : 'transfer return') + ' or the deed has more. This is a public record of one sale, not an appraisal.</p>';
+      'the parcel outline, financing, ' + (IL || IN ? 'what personal property the form took out of the price, ' : 'any personal property in the price (machinery, grain, buildings’ contents), ') + 'and why the land sold. The full ' +
+      (IL ? 'declaration' : IN ? 'sales disclosure form' : 'transfer return') + ' or the deed has more. This is a public record of one sale, not an appraisal.</p>';
 
     return '<table class="fl-kv fl-sd-kv">' + rows.join('') + '</table>' +
       '<h3>On the map</h3><div class="fl-sd-map"><button type="button" class="fl-btn" data-sd="map">Show on map</button><div id="fl-sd-where" class="fl-note">Looking for this parcel on the parcel map.</div></div>' +

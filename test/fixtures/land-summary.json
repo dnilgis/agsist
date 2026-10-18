@@ -1,7 +1,7 @@
 {
  "_note": "Made-up rows (SYNTHETIC names) shared by scripts/build_land_summary.py --selftest and test/atlas-sales.test.mjs, so the Python port and field-scout-land.js agree. Every number is worked by hand in test/atlas-sales.test.mjs.",
  "fetched": "2026-10-17T06:39:42Z",
- "non_market": "QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\\bTOD\\b|SHERIFF|FORECLOS|EASEMENT|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT OFFICER|BENEFICIAL INTEREST",
+ "non_market": "QUIT|GIFT|CORRECT|TERMINAT|TRANSFER ON DEATH|\\bTOD\\b|SHERIFF|FORECLOS|EASEM|LEASE|RELATED PART|PARTITION|MINERAL|JUDICIAL|JUDGE|COMMISSIONER|COURT O|BENEFICIAL INTEREST|TRADE|EXCHANGE|IN LIEU|CONDEMN|STATE HIGHWAY|AWARD OF DAMAGES|INSTALLMENT CONTRACT|CONTRACT SATISFIED",
  "file": {
   "state": "IL",
   "county": "Fixture",
@@ -350,7 +350,7 @@
    true,
    false,
    false,
-   true,
+   false,
    false,
    true,
    true,

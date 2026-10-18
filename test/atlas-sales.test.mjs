@@ -46,7 +46,7 @@ test("the Python builder passes its selftest on the shared fixture", () => {
 
 test("field-scout-land.js reads the shared fixture the way the Python port does", () => {
   const rows = F.rowObjs(FX.file);
-  assert.deepEqual(rows.map((r) => F.marketSale(r)), FX.expect.market);
+  assert.deepEqual(rows.map((r) => F.marketSale(r, FX.fetched.slice(0, 10))), FX.expect.market);
   assert.deepEqual(rows.map((r) => r.ppa), FX.expect.ppa);
   // one deed-type rule: the Python pattern is the field-scout one, character for character
   const py = /^NON_MARKET = r"(.*)"$/m.exec(PY)[1];
@@ -56,7 +56,7 @@ test("field-scout-land.js reads the shared fixture the way the Python port does"
   assert.equal(F.ACRES_RULE, 2);
   // the same median: field scout's medianPpa on the 6 comparables of the last 12 months
   const W = FX.expect.windows.cur;
-  const comp = rows.filter((r) => F.marketSale(r) && r.ppa != null && r.acres >= 20 && r.date >= W[0] && r.date <= W[1]);
+  const comp = rows.filter((r) => F.marketSale(r, FX.fetched.slice(0, 10)) && r.ppa != null && r.acres >= 20 && r.date >= W[0] && r.date <= W[1]);
   assert.deepEqual(F.medianPpa(comp), { ppa: FX.expect.county.med.med, n: FX.expect.county.med.n });
 });
 
