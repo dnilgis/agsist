@@ -149,3 +149,4 @@ These are decisions Sig has made. Any session working on agsist.com, dnilgis/bid
 - (Oct 18, Sig) Owner names, middle ground: one parcel's owner shows on click as today; no bulk owner or contact lists for anyone (energy agents included). Screening reports carry no names and link to the county's own owner lookup.
 - (Oct 18, Sig) Hay listing board: build it (readers post hay for sale or wanted; no cut, no routing, contacts never in the page HTML or feed).
 - (Oct 18, Sig) Net price tool: wait.
+- (Oct 18, Sig) PRF state sponsor slots: crop insurance agencies may sponsor (labeled "Sponsor"; Farmers First still never takes a slot; no lead capture or routing).
