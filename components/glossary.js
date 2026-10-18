@@ -106,14 +106,17 @@
     while ((n = w.nextNode())) {
       if (!/[A-Za-z]{3}/.test(n.nodeValue)) continue;
       if (skipEl(n.parentNode, top.parentNode)) continue;
-      if (mostlyNumber(n.parentNode.textContent)) continue;
+      var pt = n.parentNode.textContent || '';
+      if (pt.replace(/\s+/g, ' ').trim().length < 20) continue;  /* card titles, unit labels, chips */
+      if (mostlyNumber(pt)) continue;
       out.push(n);
     }
     return out;
   }
 
-  var CSS = '.gl-term{font:inherit;color:inherit;background:none;border:0;border-radius:2px;padding:0;margin:0;cursor:help;display:inline;line-height:inherit;letter-spacing:inherit;text-transform:inherit;text-align:inherit;text-decoration:underline dotted;text-decoration-thickness:1px;text-underline-offset:.2em;-webkit-tap-highlight-color:transparent}' +
-    '.gl-term:hover,.gl-term[aria-expanded="true"]{text-decoration-style:solid;background:rgba(var(--gold-rgb,212,162,63),.12)}' +
+  /* !important: page CSS styles bare buttons (borders, min-height, padding); a mark must read as text */
+  var CSS = 'button.gl-term{font:inherit!important;color:inherit!important;background:none!important;border:0!important;border-radius:2px!important;padding:0!important;margin:0!important;min-height:0!important;min-width:0!important;height:auto!important;width:auto!important;box-shadow:none!important;cursor:help;display:inline!important;vertical-align:baseline!important;line-height:inherit!important;letter-spacing:inherit!important;text-transform:inherit!important;text-align:inherit;white-space:inherit;text-decoration:underline dotted!important;text-decoration-thickness:1px!important;text-underline-offset:.2em;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent}' +
+    'button.gl-term:hover,button.gl-term[aria-expanded="true"]{text-decoration-style:solid!important;background:rgba(var(--gold-rgb,212,162,63),.14)!important}' +
     '.gl-term:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:2px}' +
     '.gl-pop{position:absolute;z-index:9000;box-sizing:border-box;width:min(330px,calc(100vw - 32px));background:var(--surface,#101415);color:var(--text,#e8ece9);border:1px solid var(--border-2,rgba(132,160,168,.3));border-radius:8px;padding:.7rem .85rem .6rem;font:400 .875rem/1.45 var(--font-body,system-ui,sans-serif);text-align:left;text-transform:none;letter-spacing:0;box-shadow:0 8px 28px rgba(0,0,0,.35)}' +
     '.gl-pop[hidden]{display:none}.gl-pop b{display:block;margin:0 1.6rem .2rem 0;font-weight:700}.gl-pop p{margin:0 0 .45rem}' +
@@ -125,7 +128,6 @@
 
   function ensurePop() {
     if (pop) return pop;
-    var st = doc.createElement('style'); st.textContent = CSS; doc.head.appendChild(st);
     pop = doc.createElement('div');
     pop.id = 'gl-pop'; pop.className = 'gl-pop'; pop.setAttribute('role', 'dialog'); pop.hidden = true;
     pop.innerHTML = '<button type="button" class="gl-x" aria-label="Close">&times;</button><b id="gl-pop-t"></b><p id="gl-pop-d"></p><a id="gl-pop-a" href="/glossary">More in the glossary</a>';
@@ -185,8 +187,9 @@
     var nodes = textNodes(top);
     var marks = pickMarks(nodes.map(function (n) { return n.nodeValue; }), compiled, MAX);
     /* wrap from the last mark back so earlier offsets stay right */
-    for (var i = marks.length - 1; i >= 0; i--) wrap(nodes[marks[i].seg], marks[i].start, marks[i].end, byId[marks[i].id]);
     if (!marks.length) return;
+    var st = doc.createElement('style'); st.textContent = CSS; doc.head.appendChild(st);
+    for (var i = marks.length - 1; i >= 0; i--) wrap(nodes[marks[i].seg], marks[i].start, marks[i].end, byId[marks[i].id]);
     var hover = root.matchMedia && root.matchMedia('(hover: hover) and (pointer: fine)').matches;
     top.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('.gl-term');
