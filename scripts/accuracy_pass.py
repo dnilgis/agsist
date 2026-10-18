@@ -29,6 +29,12 @@ Modes (run by .github/workflows/accuracy-pass.yml, dispatch only):
                     into findings.json and findings.md (severity, whether the
                     quote is really on the page, what backs it, template reach,
                     traffic). Leads for a person to check, never page edits.
+  sets OUT          build a "sets" bundle: about 3% of every generated page set,
+                    stratified by state, each page with the data slice it was built
+                    from and the set's reference excerpts (scripts/accuracy_sets.py).
+                    estimate, submit, collect and report then run as usual; a sets
+                    bundle uses its own prompt (errors only, cause template or
+                    page data), no web search, and report ranks set-wide issues first.
 
 Every output lands in accuracy-pass/ and goes to the raw branch through
 scripts/push_raw.sh. Nothing here touches a page.
@@ -95,6 +101,9 @@ Meta description: {meta}
 
 
 def build_params(entry, today):
+    if entry.get("set"):
+        import accuracy_sets as AS
+        return AS.build_params(entry, today, MODEL)
     data = "\n\n".join(f"--- {d['path']} ---\n{d['body']}" for d in entry.get("data", [])) or "(none)"
     params = {
         "model": MODEL,
@@ -169,17 +178,24 @@ def worst_case(base_tokens):
     return (inp * PRICE_CACHE_WRITE + MAX_TOKENS * PRICE_OUT) / 1e6 + MAX_SEARCHES * PRICE_SEARCH
 
 
+def worst_case_of(entry, base_tokens):
+    if entry.get("set"):
+        import accuracy_sets as AS
+        return AS.worst_case(base_tokens, PRICE_CACHE_WRITE, PRICE_OUT)
+    return worst_case(base_tokens)
+
+
 def estimate(bundle, today):
     total = 0.0
     rows = []
     for e in bundle["pages"]:
         p = build_params(e, today)
         try:
-            n = json.loads(http("POST", "/messages/count_tokens", {k: p[k] for k in ("model", "system", "tools", "messages", "thinking")}))["input_tokens"]
+            n = json.loads(http("POST", "/messages/count_tokens", {k: p[k] for k in ("model", "system", "tools", "messages", "thinking") if k in p}))["input_tokens"]
         except SystemExit as err:
             print(f"::warning::count_tokens failed for {e['page']} ({err}); using characters / 3", flush=True)
             n = len(json.dumps(p)) // 3
-        c = worst_case(n)
+        c = worst_case_of(e, n)
         rows.append({"page": e["page"], "label": e.get("label"), "input_tokens": n, "worst_case_usd": round(c, 3)})
         total += c
         print(f"{e['page']}: {n} input tokens, worst case ${c:.2f}", flush=True)
@@ -350,14 +366,16 @@ def cmd_collect(wait_min):
             entry["error"] = res.get("error")
         pages[cid] = entry
     counts = {v: 0 for v in VERDICTS}
+    errors = 0
     for e in pages.values():
         for c in (e.get("parsed") or {}).get("claims", []):
             counts[c.get("verdict")] = counts.get(c.get("verdict"), 0) + 1
+        errors += len((e.get("parsed") or {}).get("errors") or [])     # sets bundles
     out = {"batch_id": bid, "model": rec["model"], "actual_cost_usd": round(cost, 2), "tokens": tok,
-           "verdict_counts": counts, "claims_total": sum(counts.values()),
+           "verdict_counts": counts, "claims_total": sum(counts.values()), "errors_total": errors,
            "results": {k: pages[k]["result"] for k in pages}, "pages": pages}
     json.dump(out, open(f"{OUT}/results.json", "w"), indent=1)
-    print(f"::notice title=Accuracy pass results::actual cost ${cost:.2f}; claims {sum(counts.values())}; {counts}", flush=True)
+    print(f"::notice title=Accuracy pass results::actual cost ${cost:.2f}; claims {sum(counts.values())}; {counts}; errors {errors}", flush=True)
 
 
 # ---- report: rank the leads (likely_wrong / likely_outdated) into findings.json + findings.md ----
@@ -445,7 +463,16 @@ def cmd_report(bundle_path):
     if not os.path.exists(res_path):
         print(f"no {res_path}; nothing to rank", flush=True)
         return
-    rep, md = build_report(json.load(open(res_path)), json.load(open(bundle_path)))
+    bundle = json.load(open(bundle_path))
+    if bundle.get("mode") == "sets":
+        import accuracy_sets as AS
+        rep, md = AS.build_report(json.load(open(res_path)), bundle)
+        json.dump(rep, open(f"{OUT}/findings.json", "w"), indent=1)
+        open(f"{OUT}/findings.md", "w").write(md)
+        print(f"::notice title=Accuracy sets leads::{rep['issues']} issues ({rep['setwide_issues']} set-wide) from "
+              f"{rep['errors_total']} flags ranked into {OUT}/findings.json and findings.md", flush=True)
+        return
+    rep, md = build_report(json.load(open(res_path)), bundle)
     json.dump(rep, open(f"{OUT}/findings.json", "w"), indent=1)
     open(f"{OUT}/findings.md", "w").write(md)
     hi = sum(1 for l in rep["findings"] if l["severity"] == "high")
@@ -503,7 +530,73 @@ def selftest():
     assert rep["findings"][1]["quote_on_page"] is False and rep["findings"][1]["backed_by"] == "none" and "flag" in rep["findings"][1]
     assert rep["findings"][0]["score"] > rep["findings"][1]["score"] and "b" in rep["pages_without_a_parsed_answer"]
     assert "| 1 | medium wrong | rent/iowa.html" in md
+    sets_selftest()
     print("selftest ok")
+
+
+def sets_selftest():
+    """The sets mode: sampler, slicer, request shape, cost bound, collect count, set-wide ranking."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import accuracy_sets as AS
+    items = [(f"rain/{s}/c{i}.html", "") for s, n in (("iowa", 99), ("texas", 254), ("delaware", 3)) for i in range(n)]
+    pick = AS.sample(items, "county")
+    assert len(pick) == 11 and pick == AS.sample(items, "county"), pick                # ceil(3% of 356), same every run
+    by = {s: sum(1 for p, _ in pick if f"/{s}/" in p) for s in ("iowa", "texas", "delaware")}
+    assert by["texas"] > by["iowa"] >= 2 and sum(by.values()) == 11, by
+    assert len(AS.sample(items[:5], "county")) == 3 and len(AS.sample(items[:2], "county")) == 2
+    raw = ('<html><head><title>Story County, IA</title><meta name="description" content="d">'
+           '<link rel="canonical" href="https://agsist.com/rain/iowa/story-county">'
+           '<script type="application/ld+json">{"@type":"Dataset"}</script></head><body><nav>Menu Corn Soybeans</nav>'
+           '<h1 data-fips="19169">Story County, Iowa rain</h1><p>27.61 in since Jan 1</p><script>var x=1</script></body></html>')
+    title, meta, canon, text, ld, stub = AS.page_text(raw)
+    assert title == "Story County, IA" and "27.61 in" in text and "Menu" not in text and "var x" not in text and not stub
+    assert ld == ['{"@type":"Dataset"}'] and canon.endswith("story-county")
+    assert AS.page_text('<meta http-equiv="refresh" content="0; url=/x">')[5]
+    ids = AS.ids_of("county", "rain/iowa/story-county.html", raw, title)
+    assert ids["ST"] == "IA" and ids["fips"] == "19169" and ids["county"] == "Story County", ids
+    assert AS.ids_of("town", "cash-bids/illinois/ashton.html", "<h1>Cash grain bids in Ashton, IL today</h1>", "")["town"] == "Ashton"
+    assert AS.ids_of("company", "cash-bids/company/adm.html", "<h1>ADM cash grain bids today</h1>", "")["company"] == "ADM"
+    assert AS.ids_of("date", "hail/2022-05-01.html", "", "")["year"] == "2022"
+    data = {"edate": "2026-10-13", "counties": {"19169": {"acc": 1, "cum": list(range(400))},
+                                                 **{str(19000 + i): {"acc": i, "cum": list(range(400))} for i in range(1, 60, 2)}}}
+    strong, keys = AS.needles(ids)
+    sl = AS.slice_json(data, strong, keys, 3000)
+    assert "19169" in sl["counties"] and "19001" not in sl["counties"] and "_omitted" in sl["counties"] and sl["edate"] == "2026-10-13", sl.keys()
+    rows = {"st": "IA", "c": [{"f": "19169", "n": "Story"}] + [{"f": str(19200 + i), "n": "x" * 50} for i in range(1, 200, 2)]}
+    sl2 = AS.slice_json(rows, strong, keys, 2000)
+    assert sl2["c"][0]["f"] == "19169" and len(sl2["c"]) == 2 and "other rows" in sl2["c"][1]["_omitted"]
+    e = {"set": "rain-county", "label": "rain-county", "reach": 2691, "page": "rain/iowa/story-county.html",
+         "url": canon, "title": title, "meta": meta, "text": text, "ld": ld, "ids": ids,
+         "data": [{"path": "data/rain/ia.json", "body": json.dumps(sl)}], "refs": "[ncei-normals-1991-2020]\nNormals"}
+    p = build_params(e, "October 18, 2026")
+    assert p["model"] == MODEL and "tools" not in p and p["max_tokens"] == AS.MAX_TOKENS and "budget_tokens" not in json.dumps(p)
+    assert p["system"][0]["cache_control"] == {"type": "ephemeral"} and "rain-county (2691 pages" in p["system"][0]["text"]
+    assert "ncei-normals" in p["system"][0]["text"] and "data/rain/ia.json" in p["messages"][0]["content"]
+    assert "\u2014" not in AS.SYSTEM and "\u2014" not in AS.USER
+    # the measured bundle (Oct 18, 2026): 443 pages, about 25k characters (under 9k tokens) each, under a $40 cap at the worst case
+    assert 450 * worst_case_of(e, 9000) < 40 and worst_case_of(e, 9000) < worst_case_of({}, 9000)
+    # set-wide ranking: the same template mistake on two pages outranks a one-page data slip
+    mk = lambda page, fips, county, errs: (page, {"page": page, "set": "rain-county", "text": text + " Normal is 1991-2020", "ld": [], "title": "", "meta": "",
+                                                  "ids": {"ST": "IA", "fips": fips, "county": county}}, errs)
+    pg = [mk("rain/iowa/story-county.html", "19169", "Story County", [
+              {"exact_text": "27.61 in since Jan 1", "problem": "Story County total does not match the data acc value 2761",
+               "evidence": "data/rain/ia.json counties.19169.acc = 2761", "data_path": "x", "cause": "page_data", "severity": "medium"},
+              {"exact_text": "Normal is 1991-2020", "problem": "normals period label says 1991-2020 but data uses 1981-2010 normals",
+               "evidence": "data/rain/ia.json normals_period", "data_path": "y", "cause": "unclear", "severity": "low"}]),
+          mk("rain/iowa/boone-county.html", "19015", "Boone County", [
+              {"exact_text": "Normal is 1991-2020", "problem": "normals period label says 1991-2020 but data uses 1981-2010 normals",
+               "evidence": "data/rain/ia.json normals_period", "data_path": "y", "cause": "unclear", "severity": "low"}])]
+    res = {"batch_id": "b", "model": MODEL, "actual_cost_usd": 1.0, "pages": {
+        custom_id(pg_): {"page": pg_, "label": "rain-county", "result": "succeeded", "stop_reason": "end_turn", "parsed": {"errors": errs}}
+        for pg_, _, errs in pg}}
+    res["pages"]["x"] = {"page": "rain/iowa/x.html", "result": "succeeded", "stop_reason": "max_tokens", "parsed": None}
+    bun = {"mode": "sets", "sets": {"rain-county": {"pages": 2691, "sampled": 81, "refs": []}}, "pages": [b_ for _, b_, _ in pg]}
+    rep, md = AS.build_report(res, bun)
+    top = rep["issues_ranked"][0]
+    assert top["setwide"] and top["pages_flagging"] == 2 and "1981-2010" in top["problem"], top
+    assert rep["issues_ranked"][1]["setwide"] is False and rep["issues_ranked"][1]["quote_on_page" if False else "evidence_solid_share"] == 1.0
+    assert rep["errors_total"] == 3 and rep["issues"] == 2 and "x" in rep["pages_without_a_parsed_answer"]
+    assert md.index("Set-wide issues") < md.index("Single-page issues") and "| rain-county | 2691 | 81 | 2 | 2 | 1 |" in md, md
 
 
 def take(args, flag, default=None):
@@ -533,5 +626,9 @@ if __name__ == "__main__":
         cmd_collect(int(a[1]) if len(a) > 1 else 0)
     elif a[0] == "report":
         cmd_report(a[1])
+    elif a[0] == "sets":
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import accuracy_sets as AS
+        AS.main(a[1:])
     else:
-        sys.exit("modes: selftest | estimate BUNDLE | submit BUNDLE | collect [WAIT_MINUTES] | report BUNDLE  [--run NAME] [--cap N] [--budget-with RUNS] [--calibrate-from RUN]")
+        sys.exit("modes: selftest | estimate BUNDLE | submit BUNDLE | collect [WAIT_MINUTES] | report BUNDLE | sets OUT  [--run NAME] [--cap N] [--budget-with RUNS] [--calibrate-from RUN]")
