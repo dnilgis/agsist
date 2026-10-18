@@ -525,6 +525,23 @@
     return b.join(', ');
   };
 
+  // The comparable sales report (/comp-report, one shared page) for a field outline or for one
+  // sale's parcel, carrying the Sold land nearby filters. sub: { pts } or { pid, fips, lat, lng, town }.
+  FSLand.compReportURL = function (sub, f) {
+    sub = sub || {}; f = f || {}; var b = [];
+    if (sub.pts && sub.pts.length >= 3) b.push('f=' + encodeURIComponent(sub.pts.map(function (q) { return (+q.lat).toFixed(5) + ',' + (+q.lng).toFixed(5); }).join('~')));
+    else if (sub.lat != null && sub.lng != null) { b.push('lat=' + (+sub.lat).toFixed(5), 'lon=' + (+sub.lng).toFixed(5)); if (sub.town) b.push('at=town'); }
+    if (sub.pid) b.push('pid=' + encodeURIComponent(sub.pid));
+    if (sub.fips) b.push('fips=' + encodeURIComponent(sub.fips));
+    if (f.maxMi != null && isFinite(f.maxMi)) b.push('r=' + (+f.maxMi));
+    b.push('from=' + (f.since || 'any'));
+    b.push('amin=' + (f.minAc != null && isFinite(f.minAc) ? +f.minAc : 'any'));
+    if (f.maxAc != null && isFinite(f.maxAc)) b.push('amax=' + (+f.maxAc));
+    if (f.cls && f.cls.length) b.push('cls=' + f.cls.join(','));
+    if (f.all) b.push('all=1');
+    return '/comp-report?' + b.join('&');
+  };
+
   if (typeof module === 'object' && module.exports) { module.exports = FSLand; return; }
   G.FSLand = FSLand;
 
@@ -912,7 +929,8 @@
       var head = [r.price > 0 ? fm(r.price) : 'No price', r.acres > 0 ? (+r.acres).toFixed(1) + ' ac' : null, r.ppa != null ? fm(r.ppa) + '/ac' : null].filter(Boolean).join(' &middot; ');
       el.innerHTML = '<div class="fl-sd-h"><div style="flex:1;min-width:0"><div class="fl-sd-grab" aria-hidden="true"></div><h2 id="fl-sd-t">Sale of ' + fd(r.date) + '<br><span class="fl-big" style="font-size:1rem">' + head + '</span></h2>' +
         '<p class="fl-note">' + esc([r.muniName, r.county ? r.county + ' County, ' + r.st : null].filter(Boolean).join(', ')) + '</p></div>' +
-        '<button type="button" class="fl-sd-x" aria-label="Close sale details">&times;</button></div>' + FSLand.saleDetailHTML(r, file, others);
+        '<button type="button" class="fl-sd-x" aria-label="Close sale details">&times;</button></div>' +
+        '<p class="fl-note"><a class="fl-btn" style="display:inline-block;text-decoration:none" id="fl-sd-cr" target="_blank" rel="noopener" href="' + esc(FSLand.compReportURL({ pid: r.pid, fips: r.fips, lat: r.lat, lng: r.lng, town: true }, S.f)) + '">Comparable sales report</a> Sales near this parcel, with this list\u2019s filters.</p>' + FSLand.saleDetailHTML(r, file, others);
       document.body.appendChild(bg); document.body.appendChild(el);
       var d = { r: r, el: el, bg: bg, opener: keepOpener, ov: document.body.style.overflow, parcel: null };
       document.body.style.overflow = 'hidden';
@@ -950,6 +968,8 @@
       S.list = list;
       set('fl-clist', (med ? '<p><span class="fl-big">' + fm(med.ppa) + '/ac</span> <span class="fl-note">middle of ' + med.n + ' sales below with known acres.' + left + '</span></p>' : '<p class="fl-note">Fewer than 3 sales with known acres match; no middle price shown.' + left + '</p>') +
         (list.length ? '<p class="fl-note">Tap a sale for everything on its record.</p>' : '') + FSLand.compsTable(list, 40, { detail: true }));
+      var crp = document.getElementById('fl-comprep');
+      if (crp && S.pts) crp.setAttribute('href', FSLand.compReportURL({ pts: S.pts }, S.f));
       var rep = document.getElementById('fl-report');
       if (rep) { var base = rep.getAttribute('data-base') || rep.getAttribute('href'); rep.setAttribute('data-base', base); var cf = FSLand.encodeFilter(S.f); rep.setAttribute('href', base + (cf ? '&cf=' + encodeURIComponent(cf) : '')); }
       var b = document.getElementById('fl-clist');
@@ -976,6 +996,7 @@
         '<label>Class<select data-f="cls"><option value="">farm, forest, undeveloped</option><option value="4">Agricultural only</option><option value="5M,6">Forest</option><option value="5">Undeveloped</option><option value="7">With farm buildings</option></select></label>' +
         '<label>Deeds<select data-f="all"><option value="">market sales</option><option value="1">every deed type</option></select></label>' +
         '</div><div id="fl-clist"></div>' +
+        '<p class="fl-note"><a class="fl-btn" style="display:inline-block;text-decoration:none" id="fl-comprep" href="#" target="_blank" rel="noopener">Comparable sales report</a> Numbered comps, map, search stated, print or CSV. Free.</p>' +
         '<p class="fl-note">' + esc(f.source || 'State transfer returns') + '. ' + (FSLand.coverageText(cov, f.state) ? esc(FSLand.coverageText(cov, f.state)) + '. ' : '') + 'Price is what the return lists for the whole sale, buildings included unless the class is bare land. Miles run from your field to the center of the town where the sale was filed, not to the parcel. Market sales leave out quit claims, gifts, sales between related parties, court and partition deeds, and fee-exempt transfers.</p>';
     }
     function wireFilters() {
