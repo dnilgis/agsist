@@ -933,7 +933,7 @@ HUB_FAQ = [
     {"q": "What is the average cash rent per acre in my county?",
      "a": "USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, "
           "separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state above to see every "
-          "published county rate and its history. If your county is not listed, NASS did not get enough survey responses to publish a rate for it."},
+          "published county rate and its history. If your county is not listed, it is under the 20,000-acre line, or NASS held the rate back because too few farms answered or a figure could identify one farm."},
     {"q": "When is county cash rent data released?",
      "a": "USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted "
           "earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication."},
@@ -1056,15 +1056,19 @@ def build_hub(states, stats, generated):
         i = sum(1 for m in pvals if m < v) / max(1, len(pvals))
         return "#af3a32" if i >= .8 else ("#9c4b3d" if i >= .6 else ("#a8823c" if i >= .4 else ("#5a656a" if i >= .2 else "#396d4f")))
     tiles = []
+
+    def whole(x):
+        """Half up, like the table and the state pages: $50.50 is $51 (round() gave $50, 2026-10-18)."""
+        return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
     for ab, (c, r) in TILE.items():
         if ab in stats:
             hk, hm = hub_view(stats[ab])[:2]
             pv = pmed(stats[ab])
             # a 64px tile fits "$9.80" or "$65", not "$65.25": whole dollars from $10 up (the table keeps cents)
-            pt = (f"${round(pv):,}" if pv >= 10 else f"${pv:.2f}") if pv is not None else "n/a"
+            pt = (f"${whole(pv):,}" if pv >= 10 else f"${pv:.2f}") if pv is not None else "n/a"
             pa = (f' data-pv="{pt}" data-pbg="{pcolor(pv)}"' if pv is not None else ' data-pv="n/a" data-pbg="#2a3133"')
             tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(hm, hk)}"'
-                         f' data-cv="${round(hm):,}" data-cbg="{quint_color(hm, hk)}"{pa}><span class="rh-tst">{ab}</span><span class="rh-tge">${round(hm):,}</span></a>')
+                         f' data-cv="${whole(hm):,}" data-cbg="{quint_color(hm, hk)}"{pa}><span class="rh-tst">{ab}</span><span class="rh-tge">${whole(hm):,}</span></a>')
         else:
             tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
     tile_html = ('<div class="rh-sw" role="group" aria-label="Land type on the map"><button type="button" class="on" aria-pressed="true" data-rh="c">Cropland</button>'
