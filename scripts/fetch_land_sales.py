@@ -127,7 +127,7 @@ STATES.update({
                   {"t": "Indiana DLGF sales disclosure search", "url": "https://www.in.gov/dlgf/assessments/sales-disclosure-form-information/"}],
         "since_note": "Our Indiana copy starts with 2021 forms (STATS Indiana's current file layout); older forms are in its legacy files and at the county assessor.",
         "terms": "free download, no login; STATS Indiana says the data are made available for research through a DLGF and IBRC partnership; no written reuse terms found (not checked from here: the sandbox cannot open the site)",
-        # data/ is close to its 300 MB budget (284 MB on Oct 18): Indiana's files stay under 8 MB, trimmed
+        # data/ has its 300 MB budget (264 MB published on Oct 18): Indiana's files stay under 8 MB, trimmed
         # like Wisconsin (10+ acre sales first, then the oldest filing year) when they would not fit.
         "max_mb": 8,
     },
