@@ -24,7 +24,7 @@
   // Component cache version. Bump on every chrome deploy so browsers fetch the
   // new header/footer; between deploys the files cache normally (no refetch /
   // no nav-flash on each page navigation).
-  var CV = '60'; // v60 2026-10-17: signup-ask.js?v=8 (passes data-after for PRF grid notices); v59 2026-10-17: signup-ask.js?v=7 (briefing box ticked on alert asks); v58 2026-10-17: Custom rates in the menu and footer under Money & Land; v57 2026-10-17: Rain on your field (radar) in the menu and footer under Crop & Field; v56 2026-10-17: high-contrast menu button (forced-colors styles in header.html); v55 2026-10-17: Cash Bid Index in the menu and footer; v54 2026-10-16: Editorial standards in the footer; v53 2026-10-16: Fall anhydrous soil temp and Harvest now or wait in the menu and footer; v52 2026-10-16: Combine loss check and CCC loan calculator in the menu and footer; v51 2026-10-16: Sale barn prices in the menu and footer under Markets; v50 2026-10-16: Hay prices in the menu and footer under Markets; v49 2026-10-16: Nutrient removal value in the menu and footer, grain shrink separator in the no-script menu; v48 2026-10-16: Grain shrink in the menu and footer; v47 2026-10-15: Harvest price tracker named in full and moved to Markets, after Milk (Sig could not find it); v46 2026-10-15: LRP livestock price insurance in the menu and footer; v45 2026-10-15: Grain EMC in the menu and footer; v44 2026-10-14: Manure value and Fast Facts reference tables in the menu and footer; v43 2026-10-13: Rain by county in the menu and footer; v42 2026-10-13: Rain Print and the rain gauge page in the menu and footer; v41 2026-10-12: craft pass, service worker registers from loader.js; v40 2026-10-12: icons on Corn, Soybeans, Wheat, Cattle, Milk and the footer's last four links; v39 2026-10-11: signup-ask.js?v=6 (optional ZIP on Daily asks, one-time notice asks); v38 2026-10-11: menu label Harvest price; v37 2026-10-11: footer supporter strip hidden until a supporter is active, bottom-row Advertise link; v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
+  var CV = '61'; // v61 2026-10-18: menu fixes round 1 (search.js takes a ZIP, drops near me/price words, finds towns with no page; drawer focus trap, aria-modal, focus back to the menu button; aria-controls on dropdowns; footer column names are spans, not <h2> in <summary>; Pod counts, Drought monitor, Planting date, Field Scout and Urea loss risk in the menu; Rain Print for business in the footer; phone header theme switch moved into the menu); v60 2026-10-17: signup-ask.js?v=8 (passes data-after for PRF grid notices); v59 2026-10-17: signup-ask.js?v=7 (briefing box ticked on alert asks); v58 2026-10-17: Custom rates in the menu and footer under Money & Land; v57 2026-10-17: Rain on your field (radar) in the menu and footer under Crop & Field; v56 2026-10-17: high-contrast menu button (forced-colors styles in header.html); v55 2026-10-17: Cash Bid Index in the menu and footer; v54 2026-10-16: Editorial standards in the footer; v53 2026-10-16: Fall anhydrous soil temp and Harvest now or wait in the menu and footer; v52 2026-10-16: Combine loss check and CCC loan calculator in the menu and footer; v51 2026-10-16: Sale barn prices in the menu and footer under Markets; v50 2026-10-16: Hay prices in the menu and footer under Markets; v49 2026-10-16: Nutrient removal value in the menu and footer, grain shrink separator in the no-script menu; v48 2026-10-16: Grain shrink in the menu and footer; v47 2026-10-15: Harvest price tracker named in full and moved to Markets, after Milk (Sig could not find it); v46 2026-10-15: LRP livestock price insurance in the menu and footer; v45 2026-10-15: Grain EMC in the menu and footer; v44 2026-10-14: Manure value and Fast Facts reference tables in the menu and footer; v43 2026-10-13: Rain by county in the menu and footer; v42 2026-10-13: Rain Print and the rain gauge page in the menu and footer; v41 2026-10-12: craft pass, service worker registers from loader.js; v40 2026-10-12: icons on Corn, Soybeans, Wheat, Cattle, Milk and the footer's last four links; v39 2026-10-11: signup-ask.js?v=6 (optional ZIP on Daily asks, one-time notice asks); v38 2026-10-11: menu label Harvest price; v37 2026-10-11: footer supporter strip hidden until a supporter is active, bottom-row Advertise link; v36 2026-10-10: the menu grouped by question, phone drawer folds each question; v35 2026-10-09: ARC or PLC short-answer pages; v34 2026-10-09: ARC or PLC link in the menu and footer; v33 2026-10-09: ARC/PLC calculator; v32 2026-10-09: plainer copy in shared components; v31 2026-10-09: signup wording, card tokens; v30 2026-10-09: one look, variable fonts; v29 2026-10-09: no-jump layout and loading states kit; v28 2026-10-09: menu shows Farmland Atlas once, footer keeps Cash Rent by State; v27 2026-10-09: instant pages, prerender-safe analytics, Updated stamps; v26 2026-10-09: header search button; v25 2026-10-09: em-dash cleanup and link fixes; v24 2026-10-08: footer sponsor pill no longer overlaps on phones; v23 2026-10-08: footer link columns fold into <details> on phones (closed at 700px and under)
                  // v22 2026-09-19: the Farmland Atlas link restored to the Land group, drawer and footer (the 9/13 upload dropped it)
                  // v21 2026-09-13: Farmland Atlas link in the Land group of the header, the drawer and the footer
                  // v20 2026-09-05: sponsor-metrics.js loaded sitewide; footer sponsor card measured on the MRC rule
@@ -137,6 +137,11 @@
       // Set ARIA attributes on first load
       trigger.setAttribute('aria-haspopup', 'true');
       trigger.setAttribute('aria-expanded', 'false');
+      var panel = dd.querySelector('.nav-panel');
+      if (panel) {
+        if (!panel.id) panel.id = (dd.id || 'dd') + '-panel';
+        trigger.setAttribute('aria-controls', panel.id);
+      }
 
       trigger.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -184,7 +189,36 @@
     if (dr) {
       dr.setAttribute('aria-hidden', 'true');
       dr.setAttribute('inert', '');
+      dr.setAttribute('aria-modal', 'true');
     }
+
+    // Focus stays inside the open drawer (2026-10-18): Tab from the last
+    // control goes to the first, Shift+Tab from the first to the last. Links
+    // inside a folded question are skipped, as the browser skips them.
+    function drFocusables() {
+      if (!dr) return [];
+      return Array.prototype.filter.call(dr.querySelectorAll('a[href], button, summary, input, select, [tabindex]:not([tabindex="-1"])'), function (el) {
+        if (el.disabled) return false;
+        var d = el.closest('details');
+        if (d && !d.open && el.tagName !== 'SUMMARY') return false;
+        if (el.tagName === 'SUMMARY' && d && d.parentElement && d.parentElement.closest('details:not([open])')) return false;
+        return el.offsetParent !== null || el.getClientRects().length > 0;
+      });
+    }
+    if (dr) dr.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab' || !dr.classList.contains('open')) return;
+      var f = drFocusables();
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1], at = document.activeElement;
+      if (e.shiftKey && (at === first || !dr.contains(at))) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && (at === last || !dr.contains(at))) { e.preventDefault(); first.focus(); }
+    });
+    // A click or a focus that lands outside the open drawer comes back in.
+    document.addEventListener('focusin', function (e) {
+      if (!dr || !dr.classList.contains('open') || dr.contains(e.target)) return;
+      var f = drFocusables();
+      if (f.length) f[0].focus();
+    });
 
     function openDr() {
       if (dr) {
@@ -206,6 +240,7 @@
     }
 
     function closeDr() {
+      var wasOpen = !!(dr && dr.classList.contains('open'));
       if (dr) {
         dr.classList.remove('open');
         dr.setAttribute('aria-hidden', 'true');
@@ -219,6 +254,8 @@
       }
       document.body.style.overflow = '';
       document.documentElement.classList.remove('drawer-open');
+      // Hand focus back to the menu button, so a keyboard reader is where they were.
+      if (wasOpen && ham && ham.offsetParent !== null) ham.focus();
     }
 
     window.closeDr = closeDr;
