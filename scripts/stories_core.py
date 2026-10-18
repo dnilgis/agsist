@@ -84,11 +84,13 @@ COMMON_CAPS = {"As", "Of", "USDA", "RMA", "NASS", "NOAA", "AGSIST", "PRF", "The"
 UP = r"rose|risen|climbed|increased|gained|grew|higher|more than|above|stronger than|up"
 DOWN = r"fell|fallen|dropped|declined|decreased|lower|less than|below|weaker than|down|slipped"
 SAME = r"even with|the same as|unchanged|level with"
-DIR_RE = re.compile(r"\b(" + UP + "|" + DOWN + "|" + SAME + r")\b", re.I)
+DIR_RE = re.compile(r"\b(" + UP + "|" + DOWN + "|" + SAME + r"|over(?= the (?:state|county|\w+ median|median|trend|average))|under(?= the (?:state|county|\w+ median|median|trend|average)))\b", re.I)
 
 
 def dir_of(w):
     w = w.lower()
+    if w in ("over", "under"):
+        return "up" if w == "over" else "down"
     if re.fullmatch(UP, w):
         return "up"
     if re.fullmatch(DOWN, w):
@@ -324,6 +326,12 @@ def check(story, spec, extra=None, facts=None):
                     if k in c["opt"] and not re.search(classes[k], se):
                         continue    # an optional tie is checked only when its sentence names one
                     got = bound(classes[k], cl, se, a, prev if k not in c["opt"] else "", b)
+                    if k in c["opt"]:
+                        # an optional tie (a year): one after the figure in its clause decides it ("from 2017 to $3,980
+                        # an acre in 2022"); with none after, the one before it
+                        af = re.search(classes[k], cl[1][b - cl[0]:])
+                        if af:
+                            got = af.group(0)
                     if got != want and not (isinstance(want, (list, tuple, set)) and got in want):
                         fine = False
                         break
@@ -334,36 +342,66 @@ def check(story, spec, extra=None, facts=None):
                     break
             if not okc:
                 bad.append(f"{label} sits with the wrong fact")
-    # ---- direction words: each needs a fact that gives that way
+    # ---- direction words. Numbers on both sides decide it when they are there: 'rose from $250 to $290',
+    # 'fell to 60%' after '193%', '157.5 bu, above the trend of 141.8 bu'. Otherwise a fact must give that way
+    # (its words in the clause, else the sentence, else the sentence before for 'That is up 11.9%').
+    COMPARE = re.compile(r"above|below|higher|lower|more than|less than|stronger than|weaker than|over|under|even with|the same as|level with", re.I)
+    prev_se = ""
     for st, se in sentences(m_):
         cls = clauses(se)
         for m in DIR_RE.finditer(se):
-            if m.group(1).lower() == "up" and not re.match(r"\s+\$?\d", se[m.end():]):
+            if m.group(1).lower() in ("up", "down") and not re.match(r"\s+\$?\d", se[m.end():]):
                 continue    # 'up' only as 'up 26.1%'
-            if m.group(1).lower() == "down" and not re.match(r"\s+\$?\d", se[m.end():]):
-                continue
             want = dir_of(m.group(1))
             cl = next((ct for cs, ct in cls if cs <= m.start() < cs + len(ct) + 1), se)
-            ds = [d for d in spec.get("dirs", []) if re.search(d["kw"], cl, re.I)] or \
-                 [d for d in spec.get("dirs", []) if re.search(d["kw"], se, re.I)]
-            if not ds:
-                # 'fell to 60%', 'rose from $250 to $290': the numbers on either side give the way
-                after = [t for t in tokens(cl) if t[0] >= m.end() - (se.find(cl) if cl in se else 0) and t[2] != "year"]
-                before = [t for t in tokens(se[:m.start()]) if t[2] != "year"]
-                pair = None
-                fm = re.match(r"\s+(?:by\s+\S+\s+)?from\s+(\S+)\s+(?:in\s+\d{4}\s+)?to\s+(\S+)", se[m.end():])
-                if fm:
-                    a_ = tokens(fm.group(1)) + tokens(fm.group(2))
-                    if len(a_) == 2 and a_[0][2] == a_[1][2]:
-                        pair = (float(a_[0][3]), float(a_[1][3]))
-                elif before and after and before[-1][2] == after[0][2] and before[-1][2] != "year":
-                    pair = (float(before[-1][3]), float(after[0][3]))
-                if pair is None:
-                    bad.append(f"'{m.group(1)}' compares something the facts do not")
-                elif (want == "up" and not pair[1] > pair[0]) or (want == "down" and not pair[1] < pair[0]) or (want == "same" and pair[0] != pair[1]):
+            cs0 = next((cs for cs, ct in cls if cs <= m.start() < cs + len(ct) + 1), 0)
+            after = [t for t in tokens(cl) if t[0] >= m.end() - cs0 and t[2] != "year"]
+            before = [t for t in tokens(se[:m.start()]) if t[2] != "year"]
+            pair = None
+            fm = re.match(r"\s+(?:by\s+\S+\s+)?from\s+(\S+)\s+(?:in\s+\d{4}\s+)?to\s+(\S+)", se[m.end():])
+            if fm:
+                a_ = tokens(fm.group(1)) + tokens(fm.group(2))
+                if len(a_) == 2 and a_[0][2] == a_[1][2]:
+                    pair = (float(a_[0][3]), float(a_[1][3]))
+            elif after and [t for t in before if t[2] == after[0][2] or {t[2], after[0][2]} <= {"bu", "int"}] and \
+                    not (COMPARE.fullmatch(m.group(1)) and [d for d in spec.get("dirs", []) if re.search(d["kw"], cl, re.I)]):
+                bts = [t for t in before if t[2] == after[0][2] or {t[2], after[0][2]} <= {"bu", "int"}]
+                if COMPARE.fullmatch(m.group(1)):
+                    # what is compared is the subject, not where a change started ('down from $57,464 ..., and below $30,143')
+                    bts = [t for t in bts if not re.search(r"\bfrom\s*$", se[:t[0]])] or bts[:0]
+                bt = bts[-1] if bts else None
+                if bt is not None:
+                    x, y = float(bt[3]), float(after[0][3])
+                    # a comparison says how the first stands against the second ('157.5 bu, above the trend of 141.8');
+                    # a move goes from the first to the second, and so does 'Nov-Dec was lower at 44%' after '52%'
+                    subj_after = re.match(r"\s+(?:\w+\s+){0,2}at\s", se[m.end():])
+                    pair = (y, x) if COMPARE.fullmatch(m.group(1)) and not subj_after else (x, y)
+            if pair is not None:
+                if (want == "up" and not pair[1] > pair[0]) or (want == "down" and not pair[1] < pair[0]) or (want == "same" and abs(pair[0] - pair[1]) > 0.01 * max(abs(pair[0]), abs(pair[1]))):
                     bad.append(f"'{m.group(1)}' is the wrong way for {pair[0]:g} to {pair[1]:g}")
+                continue
+            back = re.match(r"\s*(?:That|It|This|Which)\b", se)
+            # a fact's way counts only where its subject is named: in the sentence, else the latest subject named
+            # before it ('That is down 7%', 'It still sits above the Georgia median')
+            subs = [d for d in spec.get("dirs", []) if d.get("subj")]
+            here = [d for d in subs if re.search(d["subj"], se, re.I)]
+            if not here:
+                earlier = [x for _, x in sentences(m_[:st])]
+                for x in reversed(earlier):
+                    here = [d for d in subs if re.search(d["subj"], x, re.I)]
+                    if here:
+                        break
+            dd = [d for d in spec.get("dirs", []) if not d.get("subj")] + here
+            cl_back = re.match(r"\s*(?:That|It|This|Which|that|which)\b", cl)
+            ds = [d for d in dd if re.search(d["kw"], cl, re.I)] or \
+                 ([d for d in dd if re.search(d["kw"], prev_se, re.I)] if cl_back else []) or \
+                 [d for d in dd if re.search(d["kw"], se, re.I)] or \
+                 ([d for d in dd if re.search(d["kw"], prev_se, re.I)] if back else [])
+            if not ds:
+                bad.append(f"'{m.group(1)}' compares something the facts do not")
             elif not any(d["dir"] == want for d in ds):
                 bad.append(f"'{m.group(1)}' is the wrong way (facts: {sorted({d['dir'] for d in ds})})")
+        prev_se = se
     if extra:
         bad += extra(s0, m_, facts)
     return sorted(set(bad))

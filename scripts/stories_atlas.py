@@ -176,7 +176,11 @@ def spec(f):
             masks.append((r"(?i)\b(?:the\s+)?" + re.escape(s["rank"]).replace(r"\ ", r"\s+") + r"(?:\s+counties)?\b", f"RANK{tag}"))
         try:
             a, b = float(K.canon(mine)), float(K.canon(s["median"]))
-            dirs.append({"kw": r"median|middle|state|RANK" + tag, "dir": "up" if a > b else ("down" if a < b else "same"), "about": kw})
+            skw = r"\bstate\b|" + re.escape(f["state"]) + "|RANK" + tag
+            subj = {"rent": r"\brent", "irrigated": r"irrigated", "land": r"land|census|buildings|value"}[kw]
+            dirs.append({"kw": skw, "dir": "up" if a > b else ("down" if a < b else "same"), "subj": subj})
+            if b and abs(a - b) / b < 0.02:
+                dirs.append({"kw": skw, "dir": "same", "subj": subj})     # "about even with the state median" within 2%
         except ValueError:
             pass
     r = f.get("rent")
@@ -207,7 +211,7 @@ def spec(f):
         claims.append(K.claim("money", lv["per_acre"], kw=LK, opt=Y(lv["census_year"])))
         years.add(lv["census_year"])
         for y, v in lv["earlier_census"].items():
-            claims.append(K.claim("money", v, kw=LK, opt=Y(y)))
+            claims.append(K.claim("money", v, kw=LK + r"|figure|stood|back in|it was", opt=Y(y)))
             years.add(int(y))
         ch = lv.get("change")
         if ch:
@@ -236,7 +240,11 @@ def spec(f):
                 masks.append((r"(?i)\b(?:the\s+)?" + re.escape(s["rank"]).replace(r"\ ", r"\s+") + r"(?:\s+counties)?\b", "RANKCORN"))
             try:
                 a, b = float(t["bu_ac"]), float(s["median"])
-                dirs.append({"kw": r"median|middle|state|RANKCORN", "dir": "up" if a > b else ("down" if a < b else "same")})
+                ckw = r"\bstate\b|" + re.escape(f["state"]) + "|RANKCORN"
+                csubj = r"corn|yield|\bbu\b|trend"
+                dirs.append({"kw": ckw, "dir": "up" if a > b else ("down" if a < b else "same"), "subj": csubj})
+                if b and abs(a - b) / b < 0.02:
+                    dirs.append({"kw": ckw, "dir": "same", "subj": csubj})
             except ValueError:
                 pass
     if co.get("last_year"):
@@ -253,12 +261,16 @@ def spec(f):
         md = co["median"]
         claims.append(K.claim("bu", md["bu_ac"], kw=r"median"))
         claims.append(K.claim("int", md["bu_ac"], kw=r"median"))
-        claims.append(K.claim("int", md["years"], kw=r"years"))
+        claims.append(K.claim("int", md["years"], kw=r"\byears?\b|-year"))
         years |= {md["from"], md["to"]}
     if f.get("rented_share_2022"):
-        claims.append(K.claim("pct", f["rented_share_2022"], kw=r"rented|rent", opt=Y(2022)))
-    return {"lead": f["as_of"], "literal": [f["county"], f["state"]], "masks": masks, "claims": claims, "years": years, "dates": {f["as_of"]}, "names": names,
-            "classes": {"year": YEAR_RX}, "banned": BANNED, "unban": ["average"], "supers": [], "dirs": dirs, "chars": (120, 650)}
+        claims.append(K.claim("pct", f["rented_share_2022"], kw=r"rented|rent|renters", opt=Y(2022)))
+    pre = [(r"\bon record\b", "ONRECORD")]
+    ly = (co.get("last_year") or {}).get("year")
+    if ly and str(ly + 1) == f["as_of_iso"][:4]:
+        pre.append((r"\blast year\b", str(ly)))
+    return {"lead": f["as_of"], "literal": [f["county"]], "premasks": pre, "masks": masks, "claims": claims, "years": years, "dates": {f["as_of"]}, "names": names,
+            "classes": {"year": YEAR_RX}, "banned": BANNED, "unban": ["average", "about", "rank", "ranks", "ranked", "ten", "decade"], "supers": [], "dirs": dirs, "chars": (120, 650)}
 
 
 BANNED = ["buyer", "buyers", "seller", "sellers", "sold", "sale", "sales", "selling", "buy", "buying", "bought", "auction",
@@ -272,6 +284,16 @@ def extra(s, m, f):
     bad = []
     if f.get("land_value_note") and re.search(r"land value|census value|land and buildings", s, re.I):
         bad.append("speaks of a land value the page flags to read with care")
+    spans = {c["to_year"] - c["from_year"] for c in (f.get("rent_change"), (f.get("land_value") or {}).get("change")) if c}
+    for st, se in K.sentences(m):
+        if re.search(r"\bten\b|\bdecade\b", se, re.I) and 10 not in spans:
+            bad.append("ten years when no change on the page spans ten years")
+        rc_ = f.get("rent_change") or {}
+        if re.search(r"\bten\b|\bdecade\b", se, re.I) and 10 in spans and not re.search(r"\brent|\b" + str(rc_.get("from_year", "x")) + r"\b", se, re.I) and \
+                (f.get("rent_change") or {}).get("to_year", 0) - (f.get("rent_change") or {}).get("from_year", 0) == 10:
+            bad.append("ten years said of something other than the rent")
+        if re.search(r"\branks?\b|\branked\b", se, re.I) and not re.search(r"RANK[A-Z]+", se):
+            bad.append("a rank the facts do not give")
     if not f.get("land_value") and re.search(r"land and buildings|census value|land value", s, re.I):
         bad.append("a land value the facts do not give")
     # a rent with no year beside it in its sentence reads as this year's: it must be the rent's own year then
@@ -421,6 +443,51 @@ def selftest():
         pairs.append((f"As of Oct 16, {f['rented_share_2022']} of farmland in Story County was rented from others in the 2022 census. Cash rent was $290 an acre in 2026.",
                       f"As of Oct 16, {f['rented_share_2022']} of farmland in Story County was rented from others in the 2017 census. Cash rent was $290 an acre in 2026."))
     K.run_pairs(S, f, pairs, ok)
+    # false positives from the first Atlas batch (Oct 2026, 1,927 of 3,043 rejected), on a fixed copy of the facts
+    g = json.loads(json.dumps(f))
+    g["county"], g["state"], g["state_code"] = "Story County", "Iowa", "IA"
+    g["rent"] = {"per_acre": "$290", "year": 2026, "state": {"median": "$266", "rank": "18th highest of 99", "median_of_year": None, "counties": 99}}
+    g["rent_change"] = {"pct": "26.1%", "dir": "up", "from_year": 2016, "to_year": 2026, "from": "$230", "to": "$290"}
+    g["land_value"] = {"per_acre": "$10,914", "census_year": 2022, "earlier_census": {"2012": "$7,838", "2017": "$9,467"},
+                       "change": {"pct": "15.3%", "dir": "up", "from_year": 2017, "to_year": 2022, "per_year": "2.9% a year"},
+                       "state": {"median": "$10,800", "rank": "13th highest of 99", "median_of_year": None, "counties": 99}, "means": "x"}
+    g["corn"] = {"trend": {"bu_ac": "217.2", "label": "14-yr trend (projected 2026)", "practice": "all practices",
+                           "state": {"median": "218.8", "rank": None, "median_of_year": None, "counties": 83}},
+                 "last_year": {"year": 2025, "bu_ac": "204.0"}, "median": {"from": 2008, "to": 2025, "bu_ac": "188.7", "years": 18}}
+    g["rented_share_2022"] = "55%"
+    fp = [
+        ("As of Oct 16, cash rent in Story County runs $290 an acre for 2026 and ranks 18th highest of 99 in Iowa. About 55% of the farmland was rented in 2022.",
+         "As of Oct 16, cash rent in Story County runs $290 an acre for 2026 and ranks 17th highest of 99 in Iowa. About 55% of the farmland was rented in 2022."),
+        ("As of Oct 16, corn made 204.0 bu in 2025, below the 14-yr trend of 217.2 bu. Cash rent in Story County was $290 an acre in 2026.",
+         "As of Oct 16, corn made 204.0 bu in 2025, above the 14-yr trend of 217.2 bu. Cash rent in Story County was $290 an acre in 2026."),
+        ("As of Oct 16, cash rent in Story County runs $290 an acre in 2026, the 18th highest of 99 against an Iowa median of $266. That is up 26.1% from $230 in 2016.",
+         "As of Oct 16, cash rent in Story County runs $290 an acre in 2026, the 18th highest of 99 against an Iowa median of $266. That is down 26.1% from $230 in 2016."),
+        ("As of Oct 16, cash rent in Story County is $290 an acre for 2026, up 26.1% from $230 in 2016 and above the state median of $266. Land and buildings came to $10,914 in 2022.",
+         "As of Oct 16, cash rent in Story County is $290 an acre for 2026, up 26.1% from $230 in 2016 and below the state median of $266. Land and buildings came to $10,914 in 2022."),
+        ("As of Oct 16, the census value of land and buildings was $10,914 an acre in 2022, up 15.3% from 2017. Back in 2012 it stood at $7,838.",
+         "As of Oct 16, the census value of land and buildings was $10,914 an acre in 2022, up 15.3% from 2017. Back in 2017 it stood at $7,838."),
+        ("As of Oct 16, the census value of land and buildings rose 15.3% from 2017 to $10,914 an acre in 2022. Cash rent ran $290 an acre in 2026.",
+         "As of Oct 16, the census value of land and buildings rose 15.3% from 2017 to $9,467 an acre in 2022. Cash rent ran $290 an acre in 2026."),
+        ("As of Oct 16, corn trends at 217.2 bu for 2026, though last year came in at 204.0 bu. That sits about even with the Iowa median of 218.8 bu.",
+         "As of Oct 16, corn trends at 217.2 bu for 2026, though last year came in at 188.7 bu. That sits about even with the Iowa median of 218.8 bu."),
+        ("As of Oct 16, corn made 204.0 bu in 2025, well over the 18 year county median of 188.7 bu. Rent ran $290 an acre in 2026.",
+         "As of Oct 16, corn made 204.0 bu in 2025, well over the 17 year county median of 188.7 bu. Rent ran $290 an acre in 2026."),
+        ("As of Oct 16, rent in Story County was $290 an acre in 2026. That is up 26.1% from $230 in 2016, a fair climb for ten years.",
+         "As of Oct 16, the census value of land and buildings was $10,914 an acre in 2022, up 15.3% in ten years. Rent was $290 an acre in 2026."),
+        ("As of Oct 16, rent was $290 an acre in 2026, and Story County has 18 years on record for corn, with a median of 188.7 bu. Renters farm 55% of the ground.",
+         "As of Oct 16, rent was $290 an acre in 2026, and Story County has the record corn crop, with a median of 188.7 bu. Renters farm 55% of the ground."),
+        ("As of Oct 16, the census value of land and buildings was $10,914 an acre in 2022, just over the Iowa median of $10,800. Rent was $290 an acre in 2026.",
+         "As of Oct 16, the census value of land and buildings was $10,914 an acre in 2022, just under the Iowa median of $10,800. Rent was $290 an acre in 2026."),
+    ]
+    fp += [
+        ("As of Oct 16, the census value of land and buildings in Story County was $10,914 an acre in 2022, up 15.3% from $9,467 in 2017. "
+         "It sits just over the Iowa median of $10,800.",
+         "As of Oct 16, the census value of land and buildings in Story County was $10,914 an acre in 2022, up 15.3% from $9,467 in 2017. "
+         "It sits just under the Iowa median of $10,800."),
+        ("As of Oct 16, cash rent in Story County runs $290 an acre in 2026. That is up 26.1% from $230 in 2016, and above the Iowa median of $266.",
+         "As of Oct 16, cash rent in Story County runs $290 an acre in 2026. That is down 26.1% from $230 in 2016, and above the Iowa median of $266."),
+    ]
+    K.run_pairs(S, g, fp, ok)
     # flagged land value: never spoken of
     g = json.loads(json.dumps(f))
     g["land_value"], g["land_value_note"] = None, "x"
