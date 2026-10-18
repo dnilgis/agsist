@@ -58,6 +58,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import county_yield as CY  # noqa: E402  (one fit, one withholding rule, one set of names)
+import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 from atlas_layers_p1 import FULL_YEAR_MAPS, years_covered  # noqa: E402  one full-year gate, one way to name a gap
 
@@ -2068,15 +2069,32 @@ def build(root=".", out_root=None, only=None, quiet=False):
     ordered = [recs[f] for f in sorted(recs, key=lambda f: (W.C[f]["state"], W.label[f].lower()))]
     if not only and not problems:
         keep = {os.path.normpath(os.path.join(out_root, W.path(f))) for f in recs}
+        gone = []
         for st in W.by_state:
             fold = os.path.join(out_root, OUT, slugify(STATE_NAMES[st]))
             if os.path.isdir(fold):
                 for nm in os.listdir(fold):
                     fp = os.path.normpath(os.path.join(fold, nm))
                     if nm.endswith(".html") and nm != "index.html" and fp not in keep:
-                        os.remove(fp)
-                        if not quiet:
-                            print("  removed orphan page %s/%s" % (os.path.basename(fold), nm), file=sys.stderr)
+                        gone.append(os.path.relpath(fp, out_root))
+        # a county that left the data stays as a pointer to its state page (scripts/pointer_pages.py),
+        # never a 404; the state pages are written just below, so they count as real
+        states_now = {slugify(STATE_NAMES[st]) for st in W.by_state}
+
+        def atlas_parent(rel):
+            sl = rel.replace(os.sep, "/").split("/")[1]
+            return [(f"/{OUT}/{sl}/", PP.label(sl)), ("/" + OUT, "Farmland Atlas")]
+
+        def real(rel):
+            parts = rel.split("/")
+            if len(parts) == 3 and parts[2] == "index.html" and parts[1] in states_now:
+                return True
+            return PP.real_page(out_root, rel)
+        changed, orphans = PP.settle(out_root, "farmland-atlas", gone, atlas_parent, real=real)
+        for rel in orphans:
+            os.remove(os.path.join(out_root, rel))
+        if not quiet and (changed or orphans):
+            print("  %d pointer file(s) written, %d orphan page(s) removed" % (len(changed), len(orphans)), file=sys.stderr)
     for st in sorted(W.by_state):
         if only:
             continue

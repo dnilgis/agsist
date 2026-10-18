@@ -37,6 +37,9 @@ _SMALL = {"and", "of", "the", "de", "la", "du"}
 
 def label(slug):
     """'yakutat-city-and-borough' -> 'Yakutat City and Borough'."""
+    slug = slug.replace(os.sep, "/").rstrip("/")
+    if slug.endswith("/index.html"):
+        slug = slug[: -len("/index.html")]
     slug = os.path.basename(slug)
     if slug.endswith(".html"):
         slug = slug[:-5]
@@ -129,12 +132,12 @@ def real_page(root, rel):
 
 
 def resolve(root, cands, real=None):
-    """First (url, parent name) whose file is a real page; the last one is the fallback."""
+    """First (url, parent name) whose file is a real page, or None when none is."""
     real = real or (lambda rel: real_page(root, rel))
     for url, nm in cands:
         if any(real(f) for f in file_of(url)):
             return url, nm
-    return cands[-1]
+    return None
 
 
 def settle(root, set_name, gone, target_for, real=None, check=False, today=None, name_for=None):
@@ -144,13 +147,19 @@ def settle(root, set_name, gone, target_for, real=None, check=False, today=None,
     target_for(rel) -> [(url, parent name), ...] best first; the first that is a real page wins
     (so a county whose state page also left points at the hub). real(rel) says whether a file will
     be a real page after this build (default: what is on disk now). Never deletes anything.
-    check=True writes nothing and returns what would change. Returns the changed paths."""
+    check=True writes nothing and reports what would change. Returns (changed paths, orphans):
+    an orphan has no real page left to point at (the whole set is empty); the caller removes it
+    as before, since a pointer to a 404 helps nobody."""
     today = today or datetime.date.today().isoformat()
     old = load(root, set_name)
-    new, changed = {}, []
+    new, changed, orphans = {}, [], []
     for rel in sorted(set(gone)):
         rel = rel.replace(os.sep, "/")
-        to, parent = resolve(root, target_for(rel), real)
+        hit = resolve(root, target_for(rel), real)
+        if hit is None:
+            orphans.append(rel)
+            continue
+        to, parent = hit
         body = page(to, (name_for or label)(rel), parent)
         p = os.path.join(root, rel)
         have = None
@@ -178,7 +187,7 @@ def settle(root, set_name, gone, target_for, real=None, check=False, today=None,
                 with open(mf, "w", encoding="utf-8") as f:
                     f.write(_dump(new))
             changed.append(rel_mf)
-    return changed
+    return changed, orphans
 
 
 def problems(root):
@@ -224,7 +233,7 @@ def selftest():
         def tf(rel):
             st = rel.split("/")[1]
             return [(f"/rain/{st}", label(st)), ("/rain", "Rain")]
-        ch = settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf, today="2026-10-18")
+        ch, _ = settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf, today="2026-10-18")
         ok(set(ch) == {"rain/iowa/story-county.html", "rain/maine/york-county.html", "data/pointers/rain.json"}, f"changed {ch}")
         t = open(os.path.join(d, "rain/iowa/story-county.html")).read()
         ok(len(t.encode()) <= MAX_BYTES, f"pointer is {len(t.encode())} bytes")
@@ -241,13 +250,13 @@ def selftest():
         ok(not is_pointer(os.path.join(d, "rain/iowa.html")), "a real page is not a pointer")
         ok(problems(d) == [], f"problems {problems(d)}")
         # a later run: nothing changes, the date holds
-        ok(settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf, today="2026-10-20") == [], "idempotent")
+        ok(settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf, today="2026-10-20") == ([], []), "idempotent")
         ok(load(d, "rain")["rain/iowa/story-county.html"]["since"] == "2026-10-18", "since kept")
-        ok(settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf, check=True) == [], "check clean")
+        ok(settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf, check=True) == ([], []), "check clean")
         # the state page leaves too: its county re-aims at the hub
         os.remove(os.path.join(d, "rain/iowa.html"))
         ok(settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf, check=True)
-           == ["rain/iowa/story-county.html", "data/pointers/rain.json"], "check sees the re-aim")
+           == (["rain/iowa/story-county.html", "data/pointers/rain.json"], []), "check sees the re-aim")
         settle(d, "rain", ["rain/iowa/story-county.html", "rain/maine/york-county.html"], tf)
         ok('url=/rain"' in open(os.path.join(d, "rain/iowa/story-county.html")).read(), "re-aimed at the hub")
         # York County comes back: the real page overwrites the pointer and the manifest drops it
@@ -258,6 +267,11 @@ def selftest():
         w("rain/iowa/story-county.html", page("/rain/ohio", "Story County", "Ohio"))
         ok(any("manifest says" in b for b in problems(d)), "mismatch caught")
         ok(any("not a real page" in b for b in problems(d)), "dead target caught")
+        # nothing real left to point at: an orphan, not a pointer to a 404
+        os.remove(os.path.join(d, "rain.html"))
+        ch, orph = settle(d, "rain", ["rain/iowa/story-county.html"], tf, check=True)
+        ok(orph == ["rain/iowa/story-county.html"], f"orphan {orph}")
+    ok(label("cash-bids/new-york/index.html") == "New York", "a state index page is named for its folder")
     ok(label("yakutat-city-and-borough") == "Yakutat City and Borough", label("yakutat-city-and-borough"))
     ok(url_of("cash-bids/ohio/index.html") == "/cash-bids/ohio/" and url_of("rain/iowa.html") == "/rain/iowa", "url_of")
     if fails:

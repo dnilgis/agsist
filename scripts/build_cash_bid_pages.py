@@ -87,6 +87,7 @@ import sys
 from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import build_state_basis_pages as SB  # noqa: E402  (helpers + the network reader, one copy)
 import basis_method as BM  # noqa: E402  (the one state-basis method)
 import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px.cash)
@@ -2495,6 +2496,18 @@ def _hist_lookup(hist_dir):
     return get
 
 
+def cash_parent(rel, pre=OUT_DIR):
+    """Where a dropped cash-bids page points: a town at its state page, a company at the company
+    list, a state at the states list; the hub /cash-bids last."""
+    parts = rel.split("/")
+    hub = [("/" + pre, "cash bids")]
+    if len(parts) == 3 and parts[1] == "company":
+        return [(f"/{pre}/company/", "elevator companies")] + hub
+    if len(parts) == 3 and parts[2] != "index.html":
+        return [(f"/{pre}/{parts[1]}/", PP.label(parts[1]))] + hub
+    return [(f"/{pre}/states", "cash bids by state")] + hub
+
+
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
               min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None,
               companies_out=None):
@@ -2558,10 +2571,15 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     for co in companies.values():
         for _, bd in co["locs"]:
             bd["company_path"], bd["company_short"] = co["path"], co["short"]
-    before = set()
+    before, before_real = set(), set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
-            before |= {os.path.relpath(os.path.join(dp, f), out_dir) for f in fs if f.endswith(".html")}
+            for f in fs:
+                if f.endswith(".html"):
+                    rel = os.path.relpath(os.path.join(dp, f), out_dir)
+                    before.add(rel)
+                    if not PP.is_pointer(os.path.join(dp, f)):
+                        before_real.add(rel)
     tmp = out_dir.rstrip("/") + ".tmp"
     shutil.rmtree(tmp, ignore_errors=True)
     os.makedirs(tmp)
@@ -2597,14 +2615,30 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             json.dump({"town": {f"{m['state'].lower()}/{m['slug']}": m["story_facts"] for m in metas if m.get("story_facts")},
                        "company": {m["slug"]: m["story_facts"] for m in cmetas if m.get("story_facts")}},
                       f, ensure_ascii=False, separators=(",", ":"))
-    # swap in: towns that no longer have any network board disappear with the old tree
+    # a town, state or company page this run did not write (no network board there now) stays as a
+    # pointer to its parent page (scripts/pointer_pages.py), never a 404: carry the old file into the
+    # new tree, swap, then turn it into a pointer (an old pointer keeps its date)
+    built = set()
+    for dp, _, fs in os.walk(tmp):
+        built |= {os.path.relpath(os.path.join(dp, f), tmp) for f in fs if f.endswith(".html")}
+    gone = sorted(before - built)
+    for rel in gone:
+        os.makedirs(os.path.dirname(os.path.join(tmp, rel)), exist_ok=True)
+        shutil.copyfile(os.path.join(out_dir, rel), os.path.join(tmp, rel))
     shutil.rmtree(out_dir, ignore_errors=True)
     os.replace(tmp, out_dir)
+    site_root = os.path.dirname(out_dir.rstrip("/")) or "."
+    pre = os.path.basename(out_dir.rstrip("/"))
+    _, orphans = PP.settle(site_root, OUT_DIR, [pre + "/" + r.replace(os.sep, "/") for r in gone],
+                           lambda r: cash_parent(r, pre))
+    for r in orphans:
+        os.remove(os.path.join(site_root, r))
     after = set()
     for dp, _, fs in os.walk(out_dir):
-        after |= {os.path.relpath(os.path.join(dp, f), out_dir) for f in fs if f.endswith(".html")}
+        after |= {os.path.relpath(os.path.join(dp, f), out_dir) for f in fs
+                  if f.endswith(".html") and not PP.is_pointer(os.path.join(dp, f))}
     new_urls = []
-    for rel in sorted(after - before):
+    for rel in sorted(after - before_real):
         u = "/" + OUT_DIR + "/" + rel.replace(os.sep, "/")
         u = u[:-len("index.html")] if u.endswith("/index.html") else u[:-5]
         new_urls.append(SITE + u)
@@ -2997,6 +3031,16 @@ def selftest():
         # a rebuild from the same snapshot writes the same bytes and nothing new
         _, _, _, new2 = build_all(merged, index, ZT, out_dir=out, root=".", min_towns=0, now=parse_ts("2026-10-07T20:00:00Z"))
         assert new2 == [] and open(os.path.join(out, "nebraska", "fremont.html")).read() == fr
+        # a town that loses its last board leaves a pointer to its state page, kept on later runs
+        with open(os.path.join(out, "iowa", "old-town.html"), "w") as f:
+            f.write("<title>a real town page from an earlier run</title>")
+        for _ in range(2):
+            _, _, _, new3 = build_all(merged, index, ZT, out_dir=out, root=".", min_towns=0, now=parse_ts("2026-10-07T20:00:00Z"))
+            pt = open(os.path.join(out, "iowa", "old-town.html")).read()
+            assert PP.pointer_target(pt) == "/cash-bids/iowa/" and "Old Town is now covered on the" in pt, pt
+            assert new3 == [], new3
+        assert PP.load(td, "cash-bids")["cash-bids/iowa/old-town.html"]["to"] == "/cash-bids/iowa/"
+        assert len(pt.encode()) <= PP.MAX_BYTES and 'content="noindex, follow"' in pt
         try:
             build_all(merged, index, ZT, out_dir=out, min_towns=0, now=parse_ts("2026-10-08T03:00:00Z"))
             raise AssertionError("stale snapshot built")

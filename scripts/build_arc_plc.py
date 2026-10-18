@@ -137,6 +137,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
+import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 
 SITE = "https://agsist.com"
 YEARS = (2026, 2027)
@@ -3276,6 +3277,19 @@ def render_all(D):
     return out, stats
 
 
+def arc_parent(rel):
+    """Where a dropped ARC/PLC page points: its state page, else the hub."""
+    parts = rel.replace(os.sep, "/").split("/")
+    if len(parts) == 3:
+        return [(f"/{OUT_DIR}/{parts[1]}", PP.label(parts[1])), (f"/{OUT_DIR}", "ARC/PLC")]
+    return [(f"/{OUT_DIR}", "ARC/PLC")]
+
+
+def arc_name(rel):
+    b = os.path.basename(rel)[:-5]
+    return PP.label(b[:-6]) + " counter sheet" if b.endswith("-sheet") else PP.label(b)
+
+
 def existing_outputs(root):
     paths = set()
     for d_, ext in ((OUT_DIR, ".html"), (OUT_STATE_JSON, ".json")):
@@ -3330,7 +3344,14 @@ def main_build(root=".", check=False):
                 os.makedirs(os.path.dirname(p) or ".", exist_ok=True)
                 with open(p, "w", encoding="utf-8") as f:
                     f.write(content)
+    # a page this build no longer writes (a state or county left the data) stays as a pointer to its
+    # parent (scripts/pointer_pages.py), never a 404; the per-state data files go as before
     gone = sorted(existing_outputs(root) - set(out))
+    pages = [r for r in gone if r.endswith(".html")]
+    changed, orphans = PP.settle(root, "arc-plc", pages, arc_parent, real=lambda r: r in out, check=check,
+                                 name_for=arc_name)
+    stale += [r + " (pointer)" for r in changed]
+    gone = [r for r in gone if r not in pages] + orphans
     for rel in gone:
         stale.append(rel + " (no longer built)")
         if not check:

@@ -43,6 +43,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
 import inject_static_nav as nav  # noqa: E402
+import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 
 D = os.path.join(ROOT, "data", "prf")
@@ -437,11 +438,17 @@ def main():
                 rel = os.path.join(S.slug(st["name"]), fn)
                 if fn.endswith(".html") and rel not in want:
                     stale.append(rel)
+    # a county that left USDA's files stays as a pointer to its state page (scripts/pointer_pages.py)
+    def prf_parent(rel):
+        st_slug = rel.split("/")[1]
+        return [(f"/prf/{st_slug}", PP.label(st_slug)), ("/prf", "PRF")]
+    changed, orphans = PP.settle(ROOT, "prf", ["prf/" + r.replace(os.sep, "/") for r in stale], prf_parent, check=check)
+    stale = [r for r in stale if "prf/" + r.replace(os.sep, "/") in orphans]
     have_sm = open(SITEMAP, encoding="utf-8").read() if os.path.exists(SITEMAP) else None
     if check:
         if have_sm != sm:
             bad.append("sitemap-prf.xml")
-        bad += stale
+        bad += stale + changed
         if bad:
             print("PRF county pages out of date:", ", ".join(bad[:5]), "... run python3 scripts/build_prf_counties.py")
             return 1
@@ -452,7 +459,7 @@ def main():
     if have_sm != sm:
         open(SITEMAP, "w", encoding="utf-8").write(sm)
     print(f"{len(want)} county pages written to prf/<state>/, {total / 1048576:.1f} MB, largest {max(len(b.encode()) for b in want.values()) // 1024} KB; "
-          f"{len(stale)} stale removed; sitemap-prf.xml {len(urls)} URLs")
+          f"{len(stale)} stale removed, {len(changed)} pointers written; sitemap-prf.xml {len(urls)} URLs")
     return 0
 
 

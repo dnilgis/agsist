@@ -47,6 +47,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import county_rain as R  # noqa: E402
 import build_prf_states as S  # noqa: E402  boot() and text_of()
+import pointer_pages as PP  # noqa: E402
 import inject_static_nav as nav  # noqa: E402
 import county_stories as CS  # noqa: E402
 
@@ -913,6 +914,14 @@ def owned(root):
     return out
 
 
+def rain_parent(rel):
+    """Where a dropped rain page points: its state page, else the hub."""
+    parts = rel.split("/")
+    if len(parts) == 3:
+        return [(f"/rain/{parts[1]}", PP.label(parts[1])), ("/rain", "Rain")]
+    return [("/rain", "Rain")]
+
+
 def write_or_check(want, root, check):
     bad, wrote = [], 0
     for rel, body in want.items():
@@ -925,9 +934,14 @@ def write_or_check(want, root, check):
                 os.makedirs(os.path.dirname(p) or root, exist_ok=True)
                 open(p, "w", encoding="utf-8").write(body)
                 wrote += 1
-    stale = sorted(owned(root) - set(want))
+    # a county or state page this build no longer writes stays as a pointer to its parent
+    # (scripts/pointer_pages.py), never a 404; only the hub and sitemap are owned outright
+    gone = sorted(owned(root) - set(want))
+    pages = [r for r in gone if r.startswith("rain/")]
+    changed, orphans = PP.settle(root, "rain", pages, rain_parent, real=lambda r: r in want, check=check)
+    stale = [r for r in gone if r not in pages] + orphans
     if check:
-        return bad + stale
+        return bad + changed + stale
     for rel in stale:
         os.remove(os.path.join(root, rel))
     for dd in glob.glob(os.path.join(root, "rain", "*")):
@@ -1158,6 +1172,20 @@ def selftest():
         ok("https://agsist.com/rain</loc>" in sm and "https://agsist.com/rain/iowa/story-county</loc>" in sm, "sitemap URLs are clean")
         hub = want["rain.html"]
         ok("static-nav:header" in hub, "hub carries the static nav")
+        # a county that leaves the data leaves a pointer to its state page, and comes back cleanly
+        gp = os.path.join(site, "rain", "iowa", "gone-county.html")
+        os.makedirs(os.path.dirname(gp), exist_ok=True)
+        open(gp, "w").write("<title>old real page</title>")
+        write_or_check(want, site, False)
+        g = open(gp).read()
+        ok(PP.pointer_target(g) == "/rain/iowa" and "Gone County is now covered on the" in g, "dropped county: pointer to its state page")
+        ok("sitemap" not in g and "gone-county" not in want["sitemap-rain.xml"], "pointer stays out of the sitemap")
+        ok(write_or_check(want, site, True) == [], "a settled pointer passes --check")
+        ok("rain/iowa/gone-county.html" in PP.load(site, "rain"), "pointer in the manifest")
+        want2 = dict(want, **{"rain/iowa/gone-county.html": "<title>back</title>"})
+        write_or_check(want2, site, False)
+        ok(open(gp).read() == "<title>back</title>" and "rain/iowa/gone-county.html" not in PP.load(site, "rain"), "returned county replaces its pointer")
+        os.remove(gp)
         # no data at all: an empty sitemap and nothing else
         empty = build(os.path.join(t, "nothing"))
         ok(list(empty) == ["sitemap-rain.xml"] and "<loc>" not in empty["sitemap-rain.xml"], "no data: empty sitemap only")
