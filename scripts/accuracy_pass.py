@@ -25,6 +25,10 @@ Modes (run by .github/workflows/accuracy-pass.yml, dispatch only):
   collect           read batch.json, poll until the batch ends (or the wait runs
                     out), then write results.json: per-page claims plus the
                     actual cost from each result's usage
+  report BUNDLE     rank the likely_wrong / likely_outdated claims of results.json
+                    into findings.json and findings.md (severity, whether the
+                    quote is really on the page, what backs it, template reach,
+                    traffic). Leads for a person to check, never page edits.
 
 Every output lands in accuracy-pass/ and goes to the raw branch through
 scripts/push_raw.sh. Nothing here touches a page.
@@ -356,6 +360,98 @@ def cmd_collect(wait_min):
     print(f"::notice title=Accuracy pass results::actual cost ${cost:.2f}; claims {sum(counts.values())}; {counts}", flush=True)
 
 
+# ---- report: rank the leads (likely_wrong / likely_outdated) into findings.json + findings.md ----
+SEV = {"high": 3, "medium": 2, "low": 1}
+LEAD_VERDICTS = ("likely_wrong", "likely_outdated")
+
+
+def _squash(s):
+    return re.sub(r"\s+", " ", (s or "").replace("\u2019", "'").replace("\u201c", '"').replace("\u201d", '"')).strip().lower()
+
+
+def lead_score(lead):
+    """Higher first. Severity leads; then how solid the evidence looks from the
+    outside (the quote is really on the page; a cited source was in the
+    model's own results or the evidence names a data file); then reach (pages
+    built from the same template) and traffic. A lead is a question for a
+    person, not a finding: nothing here decides that a page is wrong."""
+    sev = SEV.get(lead.get("severity"), 1)
+    ev = (1.0 if lead["quote_on_page"] else 0.4) * (1.0 if lead["backed_by"] != "none" else 0.6)
+    reach = lead.get("reach") or 1
+    traffic = lead.get("traffic_score") or 0
+    return round(sev * 10 * ev + min(reach, 3000) ** 0.5 / 10 + traffic * 20, 3)
+
+
+def build_report(results, bundle):
+    by_page = {e["page"]: e for e in bundle.get("pages", [])}
+    leads, seen = [], set()
+    for cid, e in results["pages"].items():
+        b = by_page.get(e["page"], {})
+        hay = _squash(b.get("text", "") + " " + " ".join(b.get("ld", [])) + " " + b.get("title", "") + " " + b.get("meta", ""))
+        for c in (e.get("parsed") or {}).get("claims", []):
+            if c.get("verdict") not in LEAD_VERDICTS:
+                continue
+            key = (e["page"], _squash(c.get("exact_text"))[:200])
+            if key in seen:
+                continue
+            seen.add(key)
+            q = _squash(c.get("exact_text"))
+            ev = (c.get("evidence") or "")
+            backed = ("source" if c.get("source_url") and c.get("source_seen_in_results")
+                      else "data" if re.search(r"/data/|builder input|\.json|the page itself|arithmetic|math|sum", ev, re.I)
+                      else "none")
+            lead = {"page": e["page"], "url": b.get("url"), "label": e.get("label") or b.get("label"),
+                    "reach": b.get("reach", 1), "traffic_rank": b.get("traffic_rank"), "traffic_score": b.get("traffic_score", 0),
+                    "verdict": c.get("verdict"), "severity": c.get("severity") or "low",
+                    "exact_text": c.get("exact_text"), "claim": c.get("claim"), "correct_value": c.get("correct_value"),
+                    "suggested_fix": c.get("suggested_fix"), "evidence": ev, "source_url": c.get("source_url"),
+                    "source_seen_in_results": bool(c.get("source_seen_in_results")),
+                    "quote_on_page": bool(q) and q[:160] in hay, "backed_by": backed}
+            if c.get("source_url") and not c.get("source_seen_in_results"):
+                lead["flag"] = "cited URL was not in the model's own search results"
+            lead["score"] = lead_score(lead)
+            leads.append(lead)
+    leads.sort(key=lambda x: (-x["score"], x["page"]))
+    for i, l in enumerate(leads):
+        l["rank"] = i + 1
+    problems = {k: v.get("result") if v.get("result") != "succeeded" else v.get("stop_reason")
+                for k, v in results["pages"].items()
+                if v.get("result") != "succeeded" or v.get("stop_reason") != "end_turn" or not v.get("parsed")}
+    rep = {"batch_id": results.get("batch_id"), "model": results.get("model"), "actual_cost_usd": results.get("actual_cost_usd"),
+           "pages": len(results["pages"]), "claims_total": results.get("claims_total"), "verdict_counts": results.get("verdict_counts"),
+           "leads": len(leads), "pages_without_a_parsed_answer": problems,
+           "how_ranked": "severity x evidence (quote found on the page; source seen in the model's own search results or a data file named) "
+                         "+ template reach + traffic. Leads are not findings: check each against the repo and the references branch before a fix.",
+           "findings": leads}
+    md = [f"# Accuracy pass leads, ranked ({results.get('batch_id')})", "",
+          f"Model {results.get('model')}, {len(results['pages'])} pages, {results.get('claims_total')} claims, "
+          f"actual cost ${results.get('actual_cost_usd')}. Verdicts: {results.get('verdict_counts')}.", "",
+          "These are leads, not findings. Each one needs a check against the page's data, its builder and the references branch "
+          "before anything changes. `quote` = the exact text was found on the rendered page; `backed` = what the model leaned on.", ""]
+    if problems:
+        md += ["Pages with no usable answer (rerun or read results-raw.jsonl): " + ", ".join(f"{k} ({v})" for k, v in problems.items()), ""]
+    md += ["| # | sev | page (template, pages) | text on the page | correct value / evidence | backed | quote |", "|---|---|---|---|---|---|---|"]
+    cell = lambda s, n=300: (s or "").replace("|", "/").replace("\n", " ")[:n]
+    for l in leads:
+        where = l["page"] + (f" ({l['label']}, {l['reach']})" if l.get("label") else "") + (f" [traffic #{l['traffic_rank']}]" if l.get("traffic_rank") else "")
+        md.append(f"| {l['rank']} | {l['severity']} {l['verdict'].replace('likely_', '')} | {cell(where)} | {cell(l['exact_text'], 220)} | "
+                  f"{cell(l['correct_value'], 200)}. {cell(l['evidence'], 300)}{' ' + l['source_url'] if l.get('source_url') else ''}"
+                  f"{' (' + l['flag'] + ')' if l.get('flag') else ''} | {l['backed_by']} | {'yes' if l['quote_on_page'] else 'NO'} |")
+    return rep, "\n".join(md) + "\n"
+
+
+def cmd_report(bundle_path):
+    res_path = f"{OUT}/results.json"
+    if not os.path.exists(res_path):
+        print(f"no {res_path}; nothing to rank", flush=True)
+        return
+    rep, md = build_report(json.load(open(res_path)), json.load(open(bundle_path)))
+    json.dump(rep, open(f"{OUT}/findings.json", "w"), indent=1)
+    open(f"{OUT}/findings.md", "w").write(md)
+    hi = sum(1 for l in rep["findings"] if l["severity"] == "high")
+    print(f"::notice title=Accuracy pass leads::{rep['leads']} leads ({hi} high) ranked into {OUT}/findings.json and findings.md", flush=True)
+
+
 def selftest():
     global ROOT
     e = {"page": "rent/iowa.html", "url": "https://agsist.com/rent/iowa", "title": "t", "text": "Corn is $4.10.",
@@ -394,6 +490,19 @@ def selftest():
         assert abs(calibrated(500_000, "ra") - 10.0 * 0.5 * CALIBRATION_MARGIN) < 1e-9
     finally:
         ROOT = keep
+    # report ranking
+    res = {"batch_id": "b", "model": MODEL, "actual_cost_usd": 1.0, "claims_total": 3, "verdict_counts": {}, "pages": {
+        "a": {"page": "rent/iowa.html", "result": "succeeded", "stop_reason": "end_turn", "parsed": {"claims": [
+            {"exact_text": "Corn is  $4.10.", "verdict": "likely_wrong", "severity": "medium", "evidence": "/data/x.json says 4.20"},
+            {"exact_text": "Not on the page", "verdict": "likely_wrong", "severity": "medium", "evidence": "guess", "source_url": "https://n.example", "source_seen_in_results": False},
+            {"exact_text": "Corn is $4.10.", "verdict": "likely_wrong", "severity": "medium", "evidence": "dup"},
+            {"exact_text": "x", "verdict": "supported_by_data"}]}},
+        "b": {"page": "x.html", "result": "errored"}}}
+    rep, md = build_report(res, {"pages": [dict(e, reach=48, traffic_score=0.01)]})
+    assert rep["leads"] == 2 and rep["findings"][0]["exact_text"] == "Corn is  $4.10." and rep["findings"][0]["quote_on_page"]
+    assert rep["findings"][1]["quote_on_page"] is False and rep["findings"][1]["backed_by"] == "none" and "flag" in rep["findings"][1]
+    assert rep["findings"][0]["score"] > rep["findings"][1]["score"] and "b" in rep["pages_without_a_parsed_answer"]
+    assert "| 1 | medium wrong | rent/iowa.html" in md
     print("selftest ok")
 
 
@@ -422,5 +531,7 @@ if __name__ == "__main__":
         cmd_submit(a[1], cap, budget_with, calibrate_from)
     elif a[0] == "collect":
         cmd_collect(int(a[1]) if len(a) > 1 else 0)
+    elif a[0] == "report":
+        cmd_report(a[1])
     else:
-        sys.exit("modes: selftest | estimate BUNDLE | submit BUNDLE | collect [WAIT_MINUTES]  [--run NAME] [--cap N] [--budget-with RUNS] [--calibrate-from RUN]")
+        sys.exit("modes: selftest | estimate BUNDLE | submit BUNDLE | collect [WAIT_MINUTES] | report BUNDLE  [--run NAME] [--cap N] [--budget-with RUNS] [--calibrate-from RUN]")

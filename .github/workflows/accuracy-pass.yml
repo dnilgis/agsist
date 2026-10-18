@@ -11,14 +11,16 @@ name: Accuracy pass
 #                  runs in budget_with), refuse if <record>/batch.json is
 #                  already on raw, submit one batch, then wait and collect
 #   mode=collect   wait for the batch and write <record>/results.json
+#   (submit and collect then rank the leads: <record>/findings.json and
+#   findings.md, severity first, for a person to check before any fix)
 
 # The push trigger exists only so GitHub registers this workflow from a branch
 # that is not main (dispatch needs that); a push runs the selftest and nothing
 # else, no API call and no spend.
 on:
   push:
-    branches: [fx/accpass]
-    paths: [.github/workflows/accuracy-pass.yml]
+    branches: [fx/accpass, fx/accpass3]
+    paths: [.github/workflows/accuracy-pass.yml, scripts/accuracy_pass.py]
   workflow_dispatch:
     inputs:
       mode:
@@ -104,3 +106,10 @@ jobs:
       - name: Save results to raw
         if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
         run: bash scripts/push_raw.sh "accuracy-pass results ${{ inputs.run }}" "$REC/batch-status.json" "$REC/results.json" "$REC/results-raw.jsonl"
+      - name: Rank the leads
+        if: ${{ !cancelled() && (inputs.mode == 'submit' || inputs.mode == 'collect') }}
+        run: |
+          python scripts/accuracy_pass.py report /tmp/bundle.json
+          if [ -f "$REC/findings.json" ]; then
+            bash scripts/push_raw.sh "accuracy-pass findings ${{ inputs.run }}" "$REC/findings.json" "$REC/findings.md"
+          fi
