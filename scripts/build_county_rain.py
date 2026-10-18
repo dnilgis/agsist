@@ -620,7 +620,11 @@ def county_page(ctx):
          "description": f"Daily precipitation from the {kind_word(c)} {stw['raw']} ({stw['sid'].split(' ')[0]}) in {full}, added up by month for {year} through {long_date(asof)}"
                         + (", with NOAA daily normals summed over the same days." if c["usual"] is not None else "."),
          "url": url, "temporalCoverage": f"{year}-01-01/{asof}", "isBasedOn": "https://www.rcc-acis.org/",
-         "spatialCoverage": {"@type": "Place", "name": full, "geo": {"@type": "GeoCoordinates", "latitude": stw["ll"][1], "longitude": stw["ll"][0]}},
+         # the coordinates are the gauge's, not the county's (Bowie Co., TX: Texarkana, 20 miles from the middle), so they
+         # go on a Place named for the gauge (sets pass, 2026-10-18)
+         "spatialCoverage": [{"@type": "Place", "name": full},
+                             {"@type": "Place", "name": f"{kind_word(c)} {stw['raw']} ({stw['sid'].split(' ')[0]})",
+                              "geo": {"@type": "GeoCoordinates", "latitude": stw["ll"][1], "longitude": stw["ll"][0]}}],
          "creator": PUBLISHER, "dateModified": d["fetched"][:10],
          "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{ORIGIN}/data/rain/{st.lower()}.json"}},
         {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
