@@ -4928,5 +4928,6 @@
     syncGiftUse();
     ga('rain_print_gift_open', { kind: g.kind || '' });
   }
-  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', giftStart); else giftStart();
+  // rp-gift.js comes after this file; deferred, both run before DOMContentLoaded, so wait for it while the page is still parsing or running its deferred scripts
+  if (doc.readyState === 'loading' || (doc.readyState === 'interactive' && !root.AgRpGift)) doc.addEventListener('DOMContentLoaded', giftStart); else giftStart();
 })(typeof window !== 'undefined' ? window : this);

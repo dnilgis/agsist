@@ -209,9 +209,10 @@
   .rp-date .rp-mo{grid-column:2}.rp-date .rp-dy{grid-column:3}.rp-date .rp-lab{grid-column:4;min-width:0}
   .rp-date .rp-rm{grid-column:5;justify-self:end;width:2rem;min-height:36px;padding:0;border:0;border-radius:var(--r-sm);background:none;color:var(--text-muted);font:inherit;font-size:1.25rem;line-height:1;cursor:pointer}
   .rp-date .rp-rm{min-width:24px}
-  /* phone: while a text box has the keyboard, the sticky preview steps aside (2026-10-17, panels: strip, menu and
-     pay bar took 38% of the screen while typing) */
-  @media (max-width:899px){body:has(:is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus) .rp-strip{display:none}}
+  /* phone: while a text box has the keyboard, the sticky preview folds to its one line of words, "On the print: ..."
+     (2026-10-17, panels: strip, menu and pay bar took 38% of the screen while typing) */
+  @media (max-width:899px){body:has(:is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus) .rp-strip :is(.rp-mini,.chip){display:none}
+    body:has(:is(input:not([type=checkbox]):not([type=radio]),textarea,select):focus) .rp-strip{padding-top:4px;padding-bottom:4px}}
   .rp-date .rp-rm:hover{color:var(--text);background:var(--surface-2,var(--surface))}
   .rp-date .rp-rm:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
   .rp-date .rp-rm[hidden]{display:none}
@@ -745,10 +746,10 @@
             <button class="btn btn-primary rp-pay" id="rp-pay" type="button">Check it and pay $89</button>
             <p class="rp-promise" id="rp-promise">You see a proof first, and get a full refund any time before I print.</p>
             <p class="rp-note rp-madeby" id="rp-madeby">Made by Sig Lindquist in Chetek, Wisconsin. Your proof comes from sig@farmers1st.com, your receipt from Stripe.</p>
-            <p class="rp-another" id="rp-another-wrap" hidden><button type="button" class="rp-linkbtn" id="rp-another">Make another: same town, a different year</button></p>
             <p class="rp-arrive" id="rp-arrive" hidden></p>
             <p class="rp-note" id="rp-paid-hint" hidden></p>
             <div class="rp-noname" id="rp-noname" hidden><p>There&rsquo;s no name on it yet.</p><div class="rp-acts"><button class="btn btn-secondary" type="button" id="rp-noname-add">Add a name</button><button class="btn btn-secondary" type="button" id="rp-noname-go">Check out without a name</button></div></div>
+            <p class="rp-another" id="rp-another-wrap" hidden><button type="button" class="rp-linkbtn" id="rp-another">Make another: same town, a different year</button></p>
             <p class="rp-note" id="rp-buy-note" aria-live="polite"></p>
           </div>
           <!-- 2026-10-16: the framed picture sits open under Pay (it used to hide inside What you get), so a phone's Pay

@@ -54,7 +54,7 @@ test("Christmas dates come from data/rain-print.json, never from the page", () =
   assert.ok(!/\b20\d\d\b/.test(ARTICLE), "no year written into the article");
   assert.match(HTML, /fetch\('\/data\/rain-print\.json'/);
   assert.match(HTML, /P\.xmasLine\(cfg, today\)/);
-  assert.match(HTML, /rain-print-promo\.js\?v=4" defer/);
+  assert.match(HTML, /rain-print-promo\.js\?v=5" defer/);
   // the shared line, against the shipped file
   const short = (iso) => P.xmasLine({ print_christmas_cutoff: iso, framed_christmas_cutoff: iso }, iso.slice(0, 4) + "-10-02").match(/by (\w+ \d+)/)[1];
   const pc = short(J.print_christmas_cutoff), fc = short(J.framed_christmas_cutoff);
