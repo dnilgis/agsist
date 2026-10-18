@@ -113,7 +113,7 @@ test("standing rules: no sponsor, name off the print, honest copy", () => {
   assert.match(COPY, /net 30/);
   assert.match(COPY, /W-9 on request/);
   assert.match(COPY, /one proof sheet/);
-  assert.match(COPY, /Mockup of a framed print/);
+  assert.match(COPY, /A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek\. This test print is shown without its white mat\./, "a real photo, captioned truthfully: no mat in it yet");
   assert.ok(!/—|&mdash;/.test(HTML), "no em dashes");
   assert.ok(!/—/.test(JS), "no em dashes in the script's copy");
   assert.ok(!/compliments of|archival|founding|only \d+ left|hurry|limited time|best[- ]selling|\d+ (businesses|elevators) (have )?(ordered|trust)/i.test(COPY), "no claims Sig ruled out, no fake scarcity or counts");

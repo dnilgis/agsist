@@ -420,7 +420,7 @@ test("prints ship flat between chipboard, never rolled; the framed one has a whi
   assert.doesNotMatch(HTML, /no mat|trim it to size|a little bigger than 12 x 18/);
   assert.ok(!/stock frame/.test(HTML), "a black frame, not a 'stock' one (2026-10-15)");
   // the box picture is a render of an older layout: it says so, and it keeps its shape
-  assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos of real prints coming soon\.<\/figcaption>/);
+  assert.match(HTML, /<figcaption>Mockup of a framed print\. Photos with the white mat coming soon\.<\/figcaption>/);
   assert.match(HTML, /\.rp-onwall img\{display:block;width:100%;height:auto\}/);
 });
 
