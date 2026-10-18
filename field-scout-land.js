@@ -365,6 +365,7 @@
   var NOTIN = '<span class="fl-miss">not in the record</span>';
   var NOTKEPT = '<span class="fl-miss">not in our copy of the record</span>';
   FSLand.NOT_IN_RECORD = 'not in the record';
+  FSLand.NAME_MAX = 80;     // fetch_land_sales.py keeps the first 80 characters of a name
   // Section, township and range for display, read from numerals or from words with numerals beside
   // them ("Section Twenty-nine (29), Township fifteen (15) North, Range Six (6) E").
   FSLand.strOf = function (legal) {
@@ -432,8 +433,8 @@
       IL ? 'Net consideration (Line 13 of Form PTAX-203), or full consideration (Line 11) when Line 13 is blank. Covers everything that sold.' : 'Sale price on the transfer return. Covers everything that sold, buildings included.');
     row('Acres', ac > 0 ? (+ac).toFixed(2).replace(/\.?0+$/, '') : r.acUnsure ? '<span class="fl-warn">uncertain</span>' : NOTIN,
       r.acUnsure ? np + ' parcels on one ' + (IL ? 'declaration' : 'return') + ' and the acres do not add up for sure, so we print no total.' : (np > 1 ? 'All ' + np + ' parcels together.' : null));
-    if (has('ac1')) row(IL ? 'Lot size or acreage as written (Line 1)' : 'Acres on the first parcel line', v(r.ac1) != null ? esc(r.ac1) : NOTIN, np > 1 ? 'As the filer wrote it. Often the whole sale, sometimes one parcel.' : null);
-    if (has('tac')) row('Acres added over repeated rows', v(r.tac) != null ? esc(r.tac) : NOTIN);
+    if (has('ac1') && (np > 1 || v(r.ac1) != null)) row(IL ? 'Lot size or acreage as written (Line 1)' : 'Acres on the first parcel line', v(r.ac1) != null ? esc(r.ac1) : NOTIN, np > 1 ? 'As the filer wrote it. Often the whole sale, sometimes one parcel.' : null);
+    if (has('tac') && v(r.tac) != null) row('Acres added over repeated rows', v(r.tac) != null ? esc(r.tac) : NOTIN);
     row('$/acre', r.ppa != null ? fm(r.ppa) : '<span class="fl-miss">not figured</span>', r.ppa != null ? 'Price over acres.' : (price > 0 ? 'Acres are not known for sure.' : 'There is no price to divide.'));
     row('Deed or conveyance type', v(r.conv) ? esc(r.conv) : NOTIN);
     row('Property class', v(r.cls) ? esc(FSLand.classLabel(r.cls)) + ' <span class="fl-note">(' + (IL ? 'the declaration marks the current use as farm, Line 8' : 'Wisconsin class ' + esc(r.cls)) + ')</span>' : NOTIN);
@@ -444,8 +445,9 @@
 
     group('Who');
     if (file.names && has('grantor')) {
-      row('Seller (grantor)', v(r.grantor) ? esc(r.grantor) : NOTIN);
-      row('Buyer (grantee)', v(r.grantee) ? esc(r.grantee) : NOTIN);
+      var cut = function (x) { return String(x || '').length >= FSLand.NAME_MAX ? 'May be cut short: our copy keeps the first ' + FSLand.NAME_MAX + ' characters.' : null; };
+      row('Seller (grantor)', v(r.grantor) ? esc(r.grantor) : NOTIN, cut(r.grantor));
+      row('Buyer (grantee)', v(r.grantee) ? esc(r.grantee) : NOTIN, cut(r.grantee));
     } else {
       row('Seller and buyer', NOTKEPT, 'The free state data does not carry names here; the deed at the county has them.');
     }
@@ -473,7 +475,7 @@
     }).join('') + '</ul>' : '<p class="fl-note">No other transfer of parcel ' + esc(r.pid || '(no number)') + ' is in our copy. ' + esc(FSLand.coverageText(file.coverage, st)) + '.</p>';
 
     var links = (file.links || []).map(function (l) { return '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.t) + '</a>'; }).join(' &middot; ');
-    var office = IL ? 'County Clerk and Recorder' : 'Register of Deeds';
+    var office = IL ? 'Clerk and Recorder' : 'Register of Deeds';
     var src = '<p class="fl-note">' + esc(file.source || 'State transfer data') + (v(r.doc) ? ', document ' + esc(r.doc) : '') + '. ' +
       (file.fetched_utc ? 'Our copy was read ' + fd(String(file.fetched_utc).slice(0, 10)) + '. ' : '') +
       'The deed itself is at the ' + esc((r.county || file.county || 'county') + ' County ' + office) + '.</p>' + (links ? '<p class="fl-note fl-links">' + links + '</p>' : '');
@@ -858,14 +860,17 @@
         if (SD !== d) return;
         var svcs = FSLand.servicesFor(reg || {}, r.st, r.fips).filter(function (s) { return FSLand.parcelWhere(s, r.pid); });
         if (!svcs.length) { none('No free public parcel map that we have checked covers ' + esc(r.county) + ' County yet, so we do not name a current owner. The county assessor or treasurer has it.'); return; }
+        var answered = 0;
         (function tryNext(i) {
           if (SD !== d) return;
+          if (i >= svcs.length && !answered) { none(esc(svcs[0].name) + ' did not answer just now, so we cannot name the current owner. Tap the sale again in a minute.'); return; }
           if (i >= svcs.length) { none('Parcel ' + esc(r.pid) + ' did not come up on ' + esc(svcs[0].name) + ' (the county may write the number another way, or the parcel was split or renumbered since the sale). We do not guess an owner.'); return; }
           var svc = svcs[i];
           var url = svc.url.replace(/\/$/, '') + '/query?f=json&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=10&where=' + encodeURIComponent(FSLand.parcelWhere(svc, r.pid));
           getJSON(url, 20000).then(function (j) {
             if (SD !== d) return;
             if (!j || j.error || !j.features) throw new Error('no answer');
+            answered++;
             var ps = j.features.map(function (f) { var p = FSLand.parseParcel(f.attributes, svc); p.rings = FSLand.ringsToLatLngs(f.geometry); p.svc = svc; return p; });
             var p = FSLand.pickParcel(ps, r.pid, r.county);
             if (!p) return tryNext(i + 1);
