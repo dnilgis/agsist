@@ -463,9 +463,12 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
-          FACT_CHECK_MODE: ${{ vars.FACT_CHECK_MODE || 'report' }}
+          # Pinned to report (Sig, Oct 17: log only for a calibration week, review Oct 24). A repo variable
+          # can no longer switch it to block by accident; change this line when Sig says block.
+          FACT_CHECK_MODE: report
         run: |
-          python scripts/test_fact_check.py
+          echo "fact check: model=$FACT_CHECK_MODEL mode=$FACT_CHECK_MODE"
+          FACT_CHECK_MODE= python scripts/test_fact_check.py
           python scripts/fact_check_briefing.py
 
       # v4.2 (Phase 2 C7): post-critic ops alert. Reads daily.json's
